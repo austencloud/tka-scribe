@@ -2,7 +2,13 @@
 
 metadata:
   description: "Complex word formations including CAPs, extended sequences, and advanced combinations"
-  complexity_levels: ["4-letter words", "8-letter words", "16-count sequences", "reversal sequences"]
+  complexity_levels:
+    [
+      "4-letter words",
+      "8-letter words",
+      "16-count sequences",
+      "reversal sequences",
+    ]
 
 # 4-Letter Word Examples
 four_letter_words:
@@ -12,14 +18,14 @@ four_letter_words:
     variations:
       thumb_orientations: ["in|in", "out|out", "in|out"]
       execution_notes: "Each variation requires different negative space approach"
-      
+
   DJII:
     letters: ["D", "J", "I", "I"]
     description: "Compound word plus hybrid repeats"
     cap_type: "Mirrored CAP"
     repetitions: 2
     total_beats: 8
-    
+
   BBLF:
     letters: ["B", "B", "L", "F"]
     description: "Mixed Type 1 and compound letters"
@@ -32,12 +38,12 @@ gamma_four_letter:
     description: "Mixed Quarter-Same and Quarter-Opp"
     cap_type: "Rotated CAP"
     gamma_pattern: "Each word ends in gamma on opposite side"
-    
+
   VPUQ:
     letters: ["V", "P", "U", "Q"]
     description: "Quarter-Same and Quarter-Opp combination"
     cap_type: "Rotated CAP"
-    
+
   MVNU:
     letters: ["M", "V", "N", "U"]
     description: "Quarter-Opp and Quarter-Same mix"
@@ -50,12 +56,12 @@ type_2_cap_words:
     description: "Type 1 and Type 2 combination"
     cap_type: "Rotated CAP"
     pattern: "Travel between α/β and Γ"
-    
+
   EΔUZ:
     letters: ["E", "Δ", "U", "Z"]
     description: "Compound and Type 2 mix"
     cap_type: "Rotated CAP"
-    
+
   OYHθ:
     letters: ["O", "Y", "H", "θ"]
     description: "Gamma and Type 2 combination"
@@ -70,7 +76,7 @@ sixteen_count_sequences:
       total_beats: 16
       cap_type: "Rotated+Swapped CAP"
       pattern: "Each repetition 90° from start, takes 4 reps to return home"
-      
+
     EΔQY:
       letters: ["E", "Δ", "Q", "Y"]
       repetitions: 4
@@ -86,7 +92,7 @@ eight_letter_words:
     total_beats: 16
     cap_type: "Rotated CAP"
     complexity: "Mixed Type 1, Type 2, and compound letters"
-    
+
   CΣNZIθVW:
     letters: ["C", "Σ", "N", "Z", "I", "θ", "V", "W"]
     repetitions: 2
@@ -102,25 +108,25 @@ reversal_words:
       description: "Requires prop-reversals when combining hybrid C with non-hybrid A"
       impossibility_note: "Cannot execute without prop-reversals"
       left_hand_pattern: "Reversal on every beat"
-      
+
     BCBC:
       letters: ["B", "C", "B", "C"]
       description: "Antispin-hybrid alternation"
       right_hand_pattern: "Prop-reversing after every beat"
       outcome: "Eventually returns to home"
-      
+
   full_reversal_examples:
     CCKE:
       letters: ["C", "C", "K", "E"]
       description: "Uses full-reversal"
       complexity: "Also includes prop-reversals within sequence"
       challenge: "Identify each reversal type"
-      
+
     FLII:
       letters: ["F", "L", "I", "I"]
       description: "Full-reversal CAP"
       additional_reversals: "Contains prop-reversals"
-      
+
     DAK:
       letters: ["D", "A", "K"]
       description: "3-letter word with full-reversal"
@@ -132,12 +138,12 @@ prop_reversal_caps:
     letters: ["E", "Σ", "Q", "Y"]
     cap_type: "Rotated CAP"
     reversal_pattern: "Includes prop-reversals"
-    
+
   TWKθ:
     letters: ["T", "W", "K", "θ"]
     cap_type: "Rotated CAP"
     reversal_pattern: "Prop-reversals integrated"
-    
+
   BΔMX:
     letters: ["B", "Δ", "M", "X"]
     cap_type: "Rotated CAP"
@@ -149,16 +155,16 @@ construction_principles:
   word_length_flexibility:
     description: "Words can be any length"
     examples: ["3-letter: DAK", "4-letter: AABB", "8-letter: CΣNZIθVW"]
-    
+
   cap_requirements:
     ending_position: "Word must end on variation of start position"
     enables_repetition: "Allows seamless CAP formation"
-    
+
   reversal_integration:
     placement_effects: "Different reversal locations create notably different outcomes"
     word_category: "Same letters with different reversals = different presentations"
     includes: "Variations on reversals and thumb orientations"
-    
+
   complexity_scaling:
     simple_to_complex: "Build from basic letter combinations to advanced CAPs"
     execution_requirements: "More complex words need advanced execution techniques"
@@ -169,12 +175,12 @@ performance_applications:
   solo_practice:
     progression: "Start with simple words, build to complex CAPs"
     skill_development: "Master execution techniques through word practice"
-    
+
   group_choreography:
     formations: ["tunnel", "side by side", "staggered"]
     variations: ["mirrored", "rotated", "swapped between performers"]
     dynamic_potential: "Complex words become engaging with multiple performers"
-    
+
   musical_integration:
     timing_alignment: "16-count sequences align with common musical phrases"
     rhythmic_structure: "Beat-based notation matches musical timing"

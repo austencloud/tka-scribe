@@ -10,21 +10,21 @@ alpha_to_alpha:
   A:
     motion_type: "Dual-Shift"
     start_position: "alpha"
-    end_position: "alpha" 
+    end_position: "alpha"
     handpath: "Split-Same"
     rotation: "prospin"
     pattern_position: "Pro"
     self_combines: true
-    
+
   B:
     motion_type: "Dual-Shift"
     start_position: "alpha"
     end_position: "alpha"
-    handpath: "Split-Same" 
+    handpath: "Split-Same"
     rotation: "antispin"
     pattern_position: "Anti"
     self_combines: true
-    
+
   C:
     motion_type: "Dual-Shift"
     start_position: "alpha"
@@ -36,7 +36,7 @@ alpha_to_alpha:
     flexibility: "Right can be pro/left anti, or vice versa"
     self_combines: true
 
-# Beta->Beta Letters (Tog-Same handpath)  
+# Beta->Beta Letters (Tog-Same handpath)
 beta_to_beta:
   G:
     motion_type: "Dual-Shift"
@@ -46,16 +46,16 @@ beta_to_beta:
     rotation: "prospin"
     pattern_position: "Pro"
     self_combines: true
-    
+
   H:
     motion_type: "Dual-Shift"
     start_position: "beta"
     end_position: "beta"
     handpath: "Tog-Same"
-    rotation: "antispin" 
+    rotation: "antispin"
     pattern_position: "Anti"
     self_combines: true
-    
+
   I:
     motion_type: "Dual-Shift"
     start_position: "beta"
@@ -79,7 +79,7 @@ compound_beta_to_alpha:
     combines_with: ["J"]
     compound_word: "DJ"
     mnemonic: "Disco Jam"
-    
+
   E:
     motion_type: "Dual-Shift"
     start_position: "beta"
@@ -91,7 +91,7 @@ compound_beta_to_alpha:
     combines_with: ["K"]
     compound_word: "EK"
     mnemonic: "Exploding Kitten"
-    
+
   F:
     motion_type: "Dual-Shift"
     start_position: "beta"
@@ -116,10 +116,10 @@ compound_alpha_to_beta:
     pattern_position: "Pro"
     combines_with: ["D"]
     compound_word: "DJ"
-    
+
   K:
     motion_type: "Dual-Shift"
-    start_position: "alpha" 
+    start_position: "alpha"
     end_position: "beta"
     handpath_options: ["Tog-Opp", "Split-Opp"]
     handpath_determination: "Depends on whether continued handpath leads to simultaneous convergence"
@@ -127,7 +127,7 @@ compound_alpha_to_beta:
     pattern_position: "Anti"
     combines_with: ["E"]
     compound_word: "EK"
-    
+
   L:
     motion_type: "Dual-Shift"
     start_position: "alpha"
@@ -152,7 +152,7 @@ gamma_quarter_opp:
     combines_with: ["P", "N", "Q", "O", "R"]
     compound_words: ["MP"]
     mnemonic: "Magic Potion"
-    
+
   N:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -163,7 +163,7 @@ gamma_quarter_opp:
     combines_with: ["Q", "M", "P", "O", "R"]
     compound_words: ["NQ"]
     mnemonic: "Never Quit"
-    
+
   O:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -174,7 +174,7 @@ gamma_quarter_opp:
     combines_with: ["R", "M", "P", "N", "Q"]
     compound_words: ["OR"]
     mnemonic: "Open Road"
-    
+
   P:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -184,7 +184,7 @@ gamma_quarter_opp:
     pattern_position: "Iso"
     combines_with: ["M", "N", "Q", "O", "R"]
     compound_words: ["MP"]
-    
+
   Q:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -194,7 +194,7 @@ gamma_quarter_opp:
     pattern_position: "Anti"
     combines_with: ["N", "M", "P", "O", "R"]
     compound_words: ["NQ"]
-    
+
   R:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -217,7 +217,7 @@ gamma_quarter_same:
     pattern_note: "Pro leading hand"
     self_combines: true
     word_form: "SS"
-    
+
   T:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -227,7 +227,7 @@ gamma_quarter_same:
     pattern_note: "Anti leading hand"
     self_combines: true
     word_form: "TT"
-    
+
   U:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -239,7 +239,7 @@ gamma_quarter_same:
     self_combines: true
     word_form: "UU"
     distinguishing_feature: "Cannot be rotated into V"
-    
+
   V:
     motion_type: "Dual-Shift"
     start_position: "gamma"
@@ -257,15 +257,15 @@ rotation_system:
   prospin_rule:
     description: "Handpath direction matches staff rotation direction"
     example: "East→North (counterclockwise handpath) + prospin = counterclockwise staff rotation"
-    
+
   antispin_rule:
     description: "Handpath direction opposite to staff rotation direction"
     example: "East→North (counterclockwise handpath) + antispin = clockwise staff rotation"
-    
+
   hybrid_mechanics:
     description: "One hand prospin, one hand antispin"
     variations: "Double the variations - either hand can be pro or anti"
-    
+
 # Pattern Recognition
 learning_aids:
   pro_anti_hybrid_pattern:

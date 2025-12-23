@@ -15,7 +15,7 @@ gamma_to_alpha:
     category: "open"
     rotation: "prospin"
     cross_shift_form: "W-"
-    
+
   X:
     motion_type: "Shift"
     start_position: "gamma"
@@ -33,7 +33,7 @@ gamma_to_beta:
     category: "close"
     rotation: "prospin"
     cross_shift_form: "Y-"
-    
+
   Z:
     motion_type: "Shift"
     start_position: "gamma"
@@ -53,7 +53,7 @@ alpha_to_gamma:
     rotation: "prospin"
     cross_shift_form: "Σ-"
     spoken_as: "Sigma"
-    
+
   Delta:
     symbol: "Δ"
     motion_type: "Shift"
@@ -75,7 +75,7 @@ beta_to_gamma:
     rotation: "prospin"
     cross_shift_form: "θ-"
     spoken_as: "Theta"
-    
+
   Omega:
     symbol: "Ω"
     motion_type: "Shift"
@@ -91,7 +91,7 @@ continuous_words:
   WΣYθ:
     letters: ["W", "Σ", "Y", "θ"]
     description: "Continuous motion sequence"
-    
+
   XΔZΩ:
     letters: ["X", "Δ", "Z", "Ω"]
     description: "Continuous motion sequence"
@@ -101,7 +101,7 @@ movement_categories:
   opening:
     description: "Movements that open or expand from compact positions"
     letters: ["W", "X", "θ", "Ω"]
-    
+
   closing:
     description: "Movements that close or compact from expanded positions"
     letters: ["Y", "Z", "Σ", "Δ"]
@@ -115,7 +115,7 @@ pattern_recognition:
       - "Y(prospin) - Z(antispin): Gamma→Beta"
       - "Σ(prospin) - Δ(antispin): Alpha→Gamma"
       - "θ(prospin) - Ω(antispin): Beta→Gamma"
-    
+
   rotation_mechanics:
     prospin_rule: "Handpath direction matches staff rotation direction"
     antispin_rule: "Handpath direction opposite to staff rotation direction"

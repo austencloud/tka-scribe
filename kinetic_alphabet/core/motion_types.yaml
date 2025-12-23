@@ -9,12 +9,12 @@ fundamental_motions:
   shift:
     description: "Move to an adjacent point"
     distance: "short"
-    
+
   dash:
-    description: "Move to the opposite point"  
+    description: "Move to the opposite point"
     distance: "long"
     note: "Moves slightly faster due to longer travel distance"
-    
+
   static:
     description: "Stay at current point"
     distance: "none"
@@ -35,7 +35,7 @@ motion_types:
       split: "Split time - hands hit key points with offset timing"
       determination: "Tog vs Split determined by continuing handpath to see if convergence is simultaneous"
     focus: "Simultaneous motions between two positions, relative to center point"
-    
+
   type_2:
     name: "Shift"
     description: "One hand travels to adjacent point, other remains static"
@@ -44,14 +44,14 @@ motion_types:
       opening: "Moving from Gamma to Alpha/Beta"
       closing: "Moving from Alpha/Beta to Gamma"
     note: "Simple at this stage, becomes complex with rotations added to static motions"
-    
+
   type_3:
     name: "Cross-Shift"
     description: "One hand shifts, other dashes"
     fundamental_combination: "shift + dash"
     timing_note: "Dash moves slightly faster, requires halfway point timing"
     creates: "Zan's Diamond variations"
-    
+
   type_4:
     name: "Dash"
     description: "One hand travels to opposite point, other remains static"
@@ -59,13 +59,13 @@ motion_types:
     examples:
       alpha_to_beta: "Creates two-beta sequence"
       gamma_to_gamma: "Creates 4-beat sequence"
-    
+
   type_5:
     name: "Dual-Dash"
     description: "Both hands travel to opposite points"
     fundamental_combination: "dash + dash"
     effect: "Both hands dash simultaneously to opposite points"
-    
+
   type_6:
     name: "Static"
     description: "Both hands remain still for a beat"
@@ -78,7 +78,7 @@ timing_concepts:
     description: "Midpoint in Cross-Shift motions"
     purpose: "Ensures dash moves at correct speed relative to shift"
     note: "One hand at center point, one at diagonal hand point"
-    
+
   simultaneous_focus:
     description: "TKA emphasizes motions between two positions relative to center"
     application: "Particularly important in Dual-Shift movements"

@@ -11,14 +11,14 @@ execution_methods:
     description: "Pass prop through space around body (above shoulders, behind elbows, etc.)"
     benefits:
       - "Face audience consistently"
-      - "Reduce body movement" 
+      - "Reduce body movement"
       - "Maintain visual presentation"
     applications:
       shoulder_space: "Pass thumb end through space above right shoulder"
       arm_space: "Pass pinky end on inside of right arm"
     examples:
       four_petal_antispin: "Pass thumb end through negative space above right shoulder on beat 2"
-      
+
   body_turns:
     description: "Turn torso to execute patterns with longer staves"
     benefits:
@@ -30,7 +30,7 @@ execution_methods:
       execution_and_aesthetics: "Serves both technical execution and artistic expression"
     examples:
       360_isolation: "Turn torso left on beat 3, staff moves in wheel-plane relative to left-facing view"
-      
+
   combination_approach:
     description: "Use both negative space and body turns"
     flexibility: "Each method equally important for maximum capability"
@@ -43,7 +43,7 @@ finger_spinning:
     - "Inability to check thumb orientation on each beat"
     - "Reduces tracking capability"
     - "Not encouraged by TKA system"
-    
+
   alternatives:
     primary: "Negative space and body turns"
     thumb_tracking: "Mark thumb end with line for position checking"
@@ -54,12 +54,12 @@ thumb_tracking:
   purpose: "Keep track of rotations and check position on every beat"
   notation: "Mark thumb end with line in pictographs"
   center_point_rule: "An end is always at center point in examples"
-  
+
   orientation_types:
     thumbs_in: "Both thumbs pointing toward center"
     thumbs_out: "Both thumbs pointing away from center"
     mixed: "One thumb in, one thumb out (in/out or out/in)"
-    
+
   starting_convention:
     default: "Most sequences start with thumbs in for consistency"
     flexibility: "Equally valid to start from any thumb orientation"
@@ -72,13 +72,13 @@ staff_motions:
     base_unit: "90 degree isolation"
     thumb_effect: "Orientation remains same throughout motion"
     execution: "Natural following motion"
-    
+
   antispin:
     description: "Prop rotates opposite direction of handpath"
     base_unit: "90 degree antispin"
     thumb_effect: "Ends swap orientation (in→out, out→in)"
     execution: "Counter-rotation against handpath"
-    
+
   dash_motion:
     thumb_effect: "Ends also swap orientation in base dash"
     center_point: "Halfway through motion, staff center is at grid center"
@@ -88,12 +88,12 @@ plane_usage:
   wall_plane:
     description: "Primary performance plane facing audience"
     default: "Standard orientation for most sequences"
-    
+
   wheel_plane:
     description: "Perpendicular plane accessed through body turns"
     access_method: "Turn body left/right to access"
     temporary_usage: "Brief transitions for specific beats"
-    
+
   plane_switching:
     example: "Beat 5 right hand on left side requires body turn to wheel plane"
     return: "Turn back to center for following beats"
@@ -105,12 +105,12 @@ execution_variations:
     same_word_different_feel: "AABB feels different with different thumb starts"
     negative_space_types: "Above/below shoulder vs behind elbow"
     technique_requirements: "Different orientations require different execution approaches"
-    
+
   body_turn_timing:
     beat_specific: "Turn on specific beats for technical reasons"
     energy_addition: "Also serves aesthetic/contrast purposes"
     plane_coordination: "Coordinate staff positions with body orientation"
-    
+
   execution_choice:
     flexibility: "Same sequence can be executed multiple ways"
     performer_preference: "Choose based on comfort and aesthetic goals"
@@ -121,12 +121,12 @@ learning_approach:
   fundamental_concepts:
     prerequisites: ["360° Isolation", "4-Petal Antispin"]
     vtg_reference: "VTG 1:1 motion familiarity helpful"
-    
+
   practice_recommendations:
     direction_practice: "Practice each word in both directions"
     orientation_practice: "Try with thumbs out after mastering thumbs in"
     execution_experimentation: "Try both negative space and body turns"
-    
+
   skill_development:
     precision_maintenance: "Check thumb orientation on every beat"
     technique_integration: "Combine execution methods fluidly"

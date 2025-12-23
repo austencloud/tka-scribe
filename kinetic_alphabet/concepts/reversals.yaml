@@ -16,7 +16,7 @@ reversal_types:
     transitions:
       prospin_to_antispin: "Pro→Anti"
       antispin_to_prospin: "Anti→Pro"
-    
+
   prop_reversal:
     description: "Hand continues to next point while prop reverses direction"
     prop_behavior: "Prop changes rotation direction"
@@ -26,7 +26,7 @@ reversal_types:
     transitions:
       prospin_to_antispin: "Pro→Anti"
       antispin_to_prospin: "Anti→Pro"
-    
+
   full_reversal:
     description: "Both prop and hand retrace their paths"
     behavior: "Return to previous position as if going backwards in time"
@@ -42,16 +42,16 @@ reversal_applications:
     acac_sequence:
       requirement: "Prop-reversals necessary when combining hybrid C with non-hybrid A"
       impossibility: "Cannot execute ACAC without prop-reversals"
-      
+
     bcbc_sequence:
       pattern: "Right hand prop-reversing after every beat"
       outcome: "Eventually returns to home"
-      
+
   reversal_placement_effects:
     description: "Reversal location in word leads to notably different outcomes"
     variability: "Same word (e.g., AABB) has multiple presentations"
     includes: "Variations on reversals and thumb orientation"
-    
+
   reversal_alternation:
     pattern: "Reversals can alternate between hands"
     example: "Left (R) and right (R) alternating pattern"
@@ -64,11 +64,11 @@ notation_rules:
     color: "Corresponding hand color (red/blue)"
     placement: "Between pictographs where reversal occurs"
     purpose: "Indicate something unusual happening"
-    
+
   no_marking_needed:
     hand_reversal: "No special notation required"
     reason: "Least disruptive and most common"
-    
+
   reversal_identification:
     challenge: "In complex sequences, identify where each reversal type occurs"
     skill_development: "Practice recognizing reversal patterns"
@@ -78,7 +78,7 @@ cap_integration:
   mirrored_caps:
     reversal_timing: "Often use reversals to achieve mirroring"
     example: "Reversal after beat 1, repeat mirrored with reversal after beat 5"
-    
+
   continuous_paths:
     versus_broken_paths: "Reversals can create either continuous or broken hand paths"
     design_choice: "Full-reversals create broken paths, hand-reversals maintain continuity"
@@ -89,11 +89,11 @@ advanced_applications:
     example: "Beat 5 with right hand coming down on left side requires body turn"
     plane_switching: "Move from wall plane to wheel plane via body turn"
     execution_method: "Body turn serves both motion execution and energy/contrast"
-    
+
   reversal_combinations:
     all_three_types: "Hand, prop, and full reversals in single sequence"
     identification_challenge: "Advanced skill to recognize each type"
-    
+
   static_beat_reversals:
     description: "Reversal with beat of no motion in between"
     notation: "Still mark with R for prop reversal indication"
@@ -105,12 +105,12 @@ sequence_impact:
     antispin_effect: "Ends swap orientation (in→out, out→in)"
     dash_effect: "Thumb ends also swap orientation in base dash"
     prospin_effect: "Thumb orientation remains same"
-    
+
   execution_requirements:
     negative_space: "Required for certain reversal sequences"
     body_turns: "Alternative to negative space for execution"
     finger_spinning_avoidance: "Maintain precision with proper technique"
-    
+
   sequence_feel:
     different_outcomes: "Same letter sequence feels completely different"
     factors: "Start position, rotation direction, thumb orientation"

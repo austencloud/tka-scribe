@@ -14,14 +14,14 @@ alpha_beta_same_direction:
       handpath: "Split-Same"
       rotation: "prospin"
       repetitions: "Self-repeating"
-      
+
     BB:
-      letters: ["B", "B"] 
+      letters: ["B", "B"]
       description: "Split-Same antispin sequence"
       handpath: "Split-Same"
       rotation: "antispin"
       repetitions: "Self-repeating"
-      
+
     CC:
       letters: ["C", "C"]
       description: "Split-Same hybrid sequence"
@@ -29,7 +29,7 @@ alpha_beta_same_direction:
       rotation: "hybrid"
       repetitions: "Self-repeating"
       flexibility: "Either hand can be prospin or antispin"
-      
+
   beta_to_beta_tog_same:
     GG:
       letters: ["G", "G"]
@@ -37,14 +37,14 @@ alpha_beta_same_direction:
       handpath: "Tog-Same"
       rotation: "prospin"
       repetitions: "Self-repeating"
-      
+
     HH:
       letters: ["H", "H"]
       description: "Tog-Same antispin sequence"
       handpath: "Tog-Same"
       rotation: "antispin"
       repetitions: "Self-repeating"
-      
+
     II:
       letters: ["I", "I"]
       description: "Tog-Same hybrid sequence"
@@ -61,7 +61,7 @@ compound_words:
     handpath_variations: ["Tog-Opp", "Split-Opp"]
     rotation: "isolation"
     note: "Cannot self-combine, requires pairing"
-    
+
   EK:
     letters: ["E", "K"]
     mnemonic: "Exploding Kitten"
@@ -69,7 +69,7 @@ compound_words:
     handpath_variations: ["Tog-Opp", "Split-Opp"]
     rotation: "antispin"
     note: "Cannot self-combine, requires pairing"
-    
+
   FL:
     letters: ["F", "L"]
     mnemonic: "Fruity Loops"
@@ -86,14 +86,14 @@ gamma_quarter_opp_words:
     description: "Continuous Gamma->Gamma Quarter-Opp sequence"
     rotation: "isolation"
     handpath: "Quarter-Opp"
-    
+
   NQ:
     letters: ["N", "Q"]
     mnemonic: "Never Quit"
     description: "Continuous Gamma->Gamma Quarter-Opp sequence"
     rotation: "antispin"
     handpath: "Quarter-Opp"
-    
+
   OR:
     letters: ["O", "R"]
     mnemonic: "Open Road"
@@ -109,14 +109,14 @@ gamma_quarter_same_words:
     handpath: "Quarter-Same"
     rotation: "isolation"
     leading_hand: "isolation (round motion like letter U)"
-    
+
   TT:
     letters: ["T", "T"]
     description: "Quarter-Same antispin sequence"
     handpath: "Quarter-Same"
     rotation: "antispin"
     leading_hand: "antispin (spiky motion like letter V)"
-    
+
   UU:
     letters: ["U", "U"]
     description: "Quarter-Same isolation sequence"
@@ -124,7 +124,7 @@ gamma_quarter_same_words:
     rotation: "isolation"
     visual_mnemonic: "Round motion like letter U"
     distinguishing_note: "Cannot be rotated into V"
-    
+
   VV:
     letters: ["V", "V"]
     description: "Quarter-Same antispin sequence"
@@ -139,7 +139,7 @@ type_2_continuous:
     letters: ["W", "Σ", "Y", "θ"]
     description: "Continuous Type 2 Shift sequence"
     pattern: "Gamma->Alpha->Gamma->Beta->Gamma"
-    
+
   XΔZΩ:
     letters: ["X", "Δ", "Z", "Ω"]
     description: "Continuous Type 2 Shift sequence"
@@ -151,12 +151,12 @@ practice_guidance:
     body_turns: "For Tog-Opp, cross arms or body turn to use plane behind"
     negative_space: "For Split-Opp, either body turn or use negative space"
     both_valid: "Both execution methods equally valid"
-    
+
   practice_progression:
     directions: "Practice each word in both directions"
     thumb_orientations: "Practice with thumbs out after mastering thumbs in"
     variations: "Explore different execution approaches"
-    
+
   word_flexibility:
     pictograph_primary: "Letters don't give all information"
     detailed_notation: "Full pictograph sequences needed for complete clarity"
@@ -168,12 +168,12 @@ memory_systems:
   mnemonics:
     compound_words: "Disco Jam, Exploding Kitten, Fruity Loops"
     gamma_words: "Magic Potion, Never Quit, Open Road"
-    
+
   pattern_recognition:
     pro_anti_hybrid: "Each group follows Pro-Anti-Hybrid pattern"
     leading_following: "Gamma Quarter-Same has leading and following hands"
     self_combination: "Some letters self-combine, others require pairs"
-    
+
   visual_mnemonics:
     U_shape: "U leads with round motion like letter U"
     V_shape: "V leads with spiky motion like letter V"
