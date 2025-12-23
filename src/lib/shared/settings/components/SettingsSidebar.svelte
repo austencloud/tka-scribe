@@ -126,7 +126,9 @@
     align-items: center;
     gap: clamp(10px, 3cqi, 14px);
     padding: 14px 16px; /* Consistent padding for predictable sizing */
-    min-height: var(--min-touch-target); /* WCAG AAA: 48px minimum, we use 48px for comfort */
+    min-height: var(
+      --min-touch-target
+    ); /* WCAG AAA: 48px minimum, we use 48px for comfort */
     flex: 1; /* Allow items to grow and fill space evenly */
     max-height: 72px; /* Cap growth so items don't get too tall */
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));

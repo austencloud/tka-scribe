@@ -266,22 +266,28 @@ export function generateDangerTheme(mode: ThemeMode): DangerTheme {
     // Light/colorful backgrounds (Aurora, etc.) - very opaque dark red surface
     return {
       bg: "linear-gradient(135deg, rgba(60, 12, 18, 0.95) 0%, rgba(75, 18, 25, 0.92) 100%)",
-      hoverBg: "linear-gradient(135deg, rgba(75, 15, 22, 0.96) 0%, rgba(90, 22, 30, 0.94) 100%)",
+      hoverBg:
+        "linear-gradient(135deg, rgba(75, 15, 22, 0.96) 0%, rgba(90, 22, 30, 0.94) 100%)",
       border: "rgba(239, 68, 68, 0.6)",
       hoverBorder: "rgba(239, 68, 68, 0.75)",
-      shadow: "inset 0 1px 0 rgba(239, 68, 68, 0.2), 0 4px 20px rgba(0, 0, 0, 0.4)",
-      hoverShadow: "inset 0 1px 0 rgba(239, 68, 68, 0.25), 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(239, 68, 68, 0.25)",
+      shadow:
+        "inset 0 1px 0 rgba(239, 68, 68, 0.2), 0 4px 20px rgba(0, 0, 0, 0.4)",
+      hoverShadow:
+        "inset 0 1px 0 rgba(239, 68, 68, 0.25), 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 24px rgba(239, 68, 68, 0.25)",
     };
   }
 
   // Dark backgrounds - opaque dark red (matches other card opacity but red-tinted)
   return {
     bg: "linear-gradient(135deg, rgba(45, 10, 15, 0.92) 0%, rgba(55, 15, 20, 0.88) 100%)",
-    hoverBg: "linear-gradient(135deg, rgba(55, 12, 18, 0.94) 0%, rgba(65, 18, 25, 0.9) 100%)",
+    hoverBg:
+      "linear-gradient(135deg, rgba(55, 12, 18, 0.94) 0%, rgba(65, 18, 25, 0.9) 100%)",
     border: "rgba(239, 68, 68, 0.45)",
     hoverBorder: "rgba(239, 68, 68, 0.6)",
-    shadow: "inset 0 1px 0 rgba(239, 68, 68, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3)",
-    hoverShadow: "inset 0 1px 0 rgba(239, 68, 68, 0.2), 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 20px rgba(239, 68, 68, 0.18)",
+    shadow:
+      "inset 0 1px 0 rgba(239, 68, 68, 0.15), 0 4px 16px rgba(0, 0, 0, 0.3)",
+    hoverShadow:
+      "inset 0 1px 0 rgba(239, 68, 68, 0.2), 0 8px 28px rgba(0, 0, 0, 0.4), 0 0 20px rgba(239, 68, 68, 0.18)",
   };
 }
 
@@ -367,7 +373,10 @@ export function applyThemeFromColors(
   // Adapt based on background luminance. Use these for new components.
   // ═══════════════════════════════════════════════════════════════════════════
   root.style.setProperty("--theme-panel-bg", matteTheme.panelBg);
-  root.style.setProperty("--theme-panel-elevated-bg", matteTheme.panelElevatedBg);
+  root.style.setProperty(
+    "--theme-panel-elevated-bg",
+    matteTheme.panelElevatedBg
+  );
   root.style.setProperty("--theme-card-bg", matteTheme.cardBg);
   root.style.setProperty("--theme-card-hover-bg", matteTheme.cardHoverBg);
   root.style.setProperty("--theme-accent", matteTheme.accent);
@@ -383,9 +392,15 @@ export function applyThemeFromColors(
   root.style.setProperty("--theme-danger-bg", dangerTheme.bg);
   root.style.setProperty("--theme-danger-hover-bg", dangerTheme.hoverBg);
   root.style.setProperty("--theme-danger-border", dangerTheme.border);
-  root.style.setProperty("--theme-danger-hover-border", dangerTheme.hoverBorder);
+  root.style.setProperty(
+    "--theme-danger-hover-border",
+    dangerTheme.hoverBorder
+  );
   root.style.setProperty("--theme-danger-shadow", dangerTheme.shadow);
-  root.style.setProperty("--theme-danger-hover-shadow", dangerTheme.hoverShadow);
+  root.style.setProperty(
+    "--theme-danger-hover-shadow",
+    dangerTheme.hoverShadow
+  );
 
   // ═══════════════════════════════════════════════════════════════════════════
   // LAYER 3: Semantic Colors (--semantic-*, --prop-*)

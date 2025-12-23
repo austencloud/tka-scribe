@@ -132,7 +132,11 @@
       endEdit();
     }
     // Close add mode if clicking outside add form (but not on the add button itself)
-    if (addingToCategory && !target.closest(".add-entry-form") && !target.closest(".add-entry-btn")) {
+    if (
+      addingToCategory &&
+      !target.closest(".add-entry-form") &&
+      !target.closest(".add-entry-btn")
+    ) {
       cancelAdd();
     }
   }

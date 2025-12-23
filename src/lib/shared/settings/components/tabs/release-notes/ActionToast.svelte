@@ -58,8 +58,13 @@
 
   .toast-btn {
     padding: 6px 12px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
     border-radius: 6px;
     color: var(--theme-accent, #c4b5fd);
     font-size: 12px;
@@ -69,7 +74,11 @@
   }
 
   .toast-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
     color: var(--theme-accent-strong, #ddd6fe);
   }
 </style>

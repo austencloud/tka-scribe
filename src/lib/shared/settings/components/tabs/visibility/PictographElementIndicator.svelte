@@ -18,10 +18,19 @@
 -->
 <script lang="ts">
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import { GridLocation, GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    GridLocation,
+    GridMode,
+    GridPosition,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import PictographWithVisibility from "$lib/shared/pictograph/shared/components/PictographWithVisibility.svelte";
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-  import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    MotionType,
+    RotationDirection,
+    Orientation,
+    MotionColor,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   type IndicatedElement =
     | "tka"
@@ -85,7 +94,9 @@
   };
 
   // CSS class based on which element is indicated
-  const indicatorClass = $derived(indicatedElement ? `indicate-${indicatedElement}` : "");
+  const indicatorClass = $derived(
+    indicatedElement ? `indicate-${indicatedElement}` : ""
+  );
 </script>
 
 <div
@@ -149,18 +160,38 @@
     --dim-opacity: 0.25;
   }
 
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.tka-glyph),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.vtg-glyph),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.elemental-glyph),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.position-glyph),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.reversal-indicators),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.turns-column),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.arrow-svg),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.tka-glyph),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.vtg-glyph),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.elemental-glyph),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.position-glyph),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.reversal-indicators),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.turns-column),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.arrow-svg),
   .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.prop-svg),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.grid-container),
-  .element-indicator[class*="indicate-"] .pictograph-wrapper :global([id*="layer2_point"]) {
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global(.grid-container),
+  .element-indicator[class*="indicate-"]
+    .pictograph-wrapper
+    :global([id*="layer2_point"]) {
     opacity: var(--dim-opacity, 0.25);
-    transition: opacity 300ms ease, filter 300ms ease;
+    transition:
+      opacity 300ms ease,
+      filter 300ms ease;
   }
 
   /* Highlight TKA Glyph */
@@ -231,17 +262,22 @@
   .animating.indicate-vtg .pictograph-wrapper :global(.vtg-glyph),
   .animating.indicate-elemental .pictograph-wrapper :global(.elemental-glyph),
   .animating.indicate-positions .pictograph-wrapper :global(.position-glyph),
-  .animating.indicate-reversals .pictograph-wrapper :global(.reversal-indicators),
+  .animating.indicate-reversals
+    .pictograph-wrapper
+    :global(.reversal-indicators),
   .animating.indicate-turnNumbers .pictograph-wrapper :global(.turns-column),
   .animating.indicate-arrows .pictograph-wrapper :global(.arrow-svg),
   .animating.indicate-props .pictograph-wrapper :global(.prop-svg),
   .animating.indicate-grid .pictograph-wrapper :global(.grid-container),
-  .animating.indicate-nonRadial .pictograph-wrapper :global([id*="layer2_point"]) {
+  .animating.indicate-nonRadial
+    .pictograph-wrapper
+    :global([id*="layer2_point"]) {
     animation: pulse-glow 2s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+    0%,
+    100% {
       filter: drop-shadow(0 0 8px currentColor);
     }
     50% {

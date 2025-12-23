@@ -1,7 +1,15 @@
 <!-- ChangeGroupSection - Single changelog category with admin editing -->
 <script lang="ts">
-  import type { ChangelogCategory, ChangelogEntry } from "$lib/features/feedback/domain/models/version-models";
-  import { CATEGORY_ICONS, CATEGORY_LABELS, CATEGORY_PLACEHOLDERS, CATEGORY_ADD_LABELS } from "$lib/features/feedback/domain/constants/changelog-constants";
+  import type {
+    ChangelogCategory,
+    ChangelogEntry,
+  } from "$lib/features/feedback/domain/models/version-models";
+  import {
+    CATEGORY_ICONS,
+    CATEGORY_LABELS,
+    CATEGORY_PLACEHOLDERS,
+    CATEGORY_ADD_LABELS,
+  } from "$lib/features/feedback/domain/constants/changelog-constants";
   import EditableChangelogItem from "./EditableChangelogItem.svelte";
 
   let {
@@ -64,18 +72,30 @@
 
     {#if isAdmin && isAddingEntry}
       <li class="add-entry-form">
-        <textarea bind:value={newEntryText} placeholder={CATEGORY_PLACEHOLDERS[category]} rows="2"></textarea>
+        <textarea
+          bind:value={newEntryText}
+          placeholder={CATEGORY_PLACEHOLDERS[category]}
+          rows="2"
+        ></textarea>
         <div class="add-entry-actions">
-          <button type="button" class="glass-btn primary" onclick={() => void onConfirmAdd()} disabled={!newEntryText.trim()}>
+          <button
+            type="button"
+            class="glass-btn primary"
+            onclick={() => void onConfirmAdd()}
+            disabled={!newEntryText.trim()}
+          >
             <i class="fas fa-plus"></i> Add
           </button>
-          <button type="button" class="glass-btn" onclick={onCancelAdd}>Cancel</button>
+          <button type="button" class="glass-btn" onclick={onCancelAdd}
+            >Cancel</button
+          >
         </div>
       </li>
     {:else if isAdmin}
       <li>
         <button type="button" class="add-entry-btn" onclick={onStartAdd}>
-          <i class="fas fa-plus"></i> {CATEGORY_ADD_LABELS[category]}
+          <i class="fas fa-plus"></i>
+          {CATEGORY_ADD_LABELS[category]}
         </button>
       </li>
     {/if}
@@ -83,8 +103,12 @@
 </div>
 
 <style>
-  .change-group { margin-bottom: 20px; }
-  .change-group:last-child { margin-bottom: 0; }
+  .change-group {
+    margin-bottom: 20px;
+  }
+  .change-group:last-child {
+    margin-bottom: 0;
+  }
 
   .group-title {
     display: flex;
@@ -104,16 +128,36 @@
     font-weight: 500;
   }
 
-  .group-title.fixed { color: color-mix(in srgb, var(--semantic-error, #ef4444) 70%, white); }
-  .group-title.fixed i { color: var(--semantic-error, #ef4444); }
-  .group-title.added { color: var(--theme-accent, #c4b5fd); }
-  .group-title.added i { color: var(--theme-accent, #8b5cf6); }
-  .group-title.improved { color: var(--semantic-info, #93c5fd); }
-  .group-title.improved i { color: var(--semantic-info, #3b82f6); }
+  .group-title.fixed {
+    color: color-mix(in srgb, var(--semantic-error, #ef4444) 70%, white);
+  }
+  .group-title.fixed i {
+    color: var(--semantic-error, #ef4444);
+  }
+  .group-title.added {
+    color: var(--theme-accent, #c4b5fd);
+  }
+  .group-title.added i {
+    color: var(--theme-accent, #8b5cf6);
+  }
+  .group-title.improved {
+    color: var(--semantic-info, #93c5fd);
+  }
+  .group-title.improved i {
+    color: var(--semantic-info, #3b82f6);
+  }
 
-  .change-list { margin: 0; padding: 0; list-style: none; }
-  .change-list li { margin-bottom: 6px; }
-  .change-list li:last-child { margin-bottom: 0; }
+  .change-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .change-list li {
+    margin-bottom: 6px;
+  }
+  .change-list li:last-child {
+    margin-bottom: 0;
+  }
 
   .add-entry-btn {
     display: flex;
@@ -131,8 +175,16 @@
   }
 
   .add-entry-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 10%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
     color: var(--theme-accent, rgba(139, 92, 246, 0.8));
   }
 
@@ -142,7 +194,8 @@
     gap: 8px;
     padding: 10px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 8px;
   }
 
@@ -162,10 +215,18 @@
 
   .add-entry-form textarea:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 50%,
+      transparent
+    );
   }
 
-  .add-entry-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .add-entry-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
 
   .glass-btn {
     display: flex;
@@ -188,15 +249,30 @@
     transform: translateY(-1px);
   }
 
-  .glass-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .glass-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
   .glass-btn.primary {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
     color: var(--theme-accent, #c4b5fd);
   }
 
   .glass-btn.primary:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 25%,
+      transparent
+    );
   }
 </style>

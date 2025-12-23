@@ -14,7 +14,10 @@
 import { browser } from "$app/environment";
 import { injectable } from "inversify";
 import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
-import { updateBodyBackground, type CustomBackgroundOptions } from "../../background/shared/background-preloader";
+import {
+  updateBodyBackground,
+  type CustomBackgroundOptions,
+} from "../../background/shared/background-preloader";
 import { ThemeService } from "../../theme/services/ThemeService";
 import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "../../pictograph/prop/domain/enums/PropType";
@@ -66,7 +69,9 @@ const settingsState = $state<AppSettings>(initialSettings);
 /**
  * Get custom background options from settings for crossfade transition
  */
-function getCustomBackgroundOptions(settings: Partial<AppSettings>): CustomBackgroundOptions {
+function getCustomBackgroundOptions(
+  settings: Partial<AppSettings>
+): CustomBackgroundOptions {
   return {
     color: settings.backgroundColor,
     colors: settings.gradientColors,
@@ -89,10 +94,12 @@ class SettingsState implements ISettingsState {
     // Process any offline queue on startup
     if (browser) {
       this.processOfflineQueue();
-      
+
       // Listen for online events to process queued changes
       this.onlineHandler = () => {
-        console.log("🌐 [SettingsState] Back online, processing offline queue...");
+        console.log(
+          "🌐 [SettingsState] Back online, processing offline queue..."
+        );
         this.processOfflineQueue();
       };
       window.addEventListener("online", this.onlineHandler);
@@ -128,15 +135,14 @@ class SettingsState implements ISettingsState {
 
       // Subscribe to real-time updates from other devices
       if (this.firebasePersistence.onSettingsChange) {
-        this.unsubscribeFirebaseSync = this.firebasePersistence.onSettingsChange(
-          (remoteSettings) => {
+        this.unsubscribeFirebaseSync =
+          this.firebasePersistence.onSettingsChange((remoteSettings) => {
             // Only apply remote settings if we're not in the middle of saving
             // This prevents our own saves from being re-applied
             if (!this.isSavingToFirebase) {
               this.applyRemoteSettings(remoteSettings);
             }
-          }
-        );
+          });
       }
     }
   }
@@ -151,14 +157,16 @@ class SettingsState implements ISettingsState {
     try {
       const firebaseSettings = await this.firebasePersistence.loadSettings();
       const localTimestamp = settingsState._localTimestamp || 0;
-      
+
       if (firebaseSettings) {
         // Check if we have pending local changes that are newer
         if (localTimestamp > 0) {
           // We have local changes with a timestamp - push them to Firebase
           // This ensures local changes made while offline are not lost
           debug.success("Local settings are newer, pushing to Firebase");
-          await this.firebasePersistence.saveSettings(this.getSettingsForPersistence());
+          await this.firebasePersistence.saveSettings(
+            this.getSettingsForPersistence()
+          );
         } else {
           // No local timestamp means fresh load - accept Firebase settings
           this.applyRemoteSettings(firebaseSettings);
@@ -166,7 +174,9 @@ class SettingsState implements ISettingsState {
         }
       } else {
         // No Firebase settings - push local settings to Firebase
-        await this.firebasePersistence.saveSettings(this.getSettingsForPersistence());
+        await this.firebasePersistence.saveSettings(
+          this.getSettingsForPersistence()
+        );
         debug.success("Pushed local settings to Firebase");
       }
     } catch (error) {
@@ -196,7 +206,10 @@ class SettingsState implements ISettingsState {
     // Apply to state (preserve local timestamp)
     const currentTimestamp = settingsState._localTimestamp;
     for (const key in merged) {
-      if (Object.prototype.hasOwnProperty.call(merged, key) && key !== '_localTimestamp') {
+      if (
+        Object.prototype.hasOwnProperty.call(merged, key) &&
+        key !== "_localTimestamp"
+      ) {
         settingsState[key as keyof AppSettings] = merged[
           key as keyof AppSettings
         ] as never;
@@ -207,7 +220,10 @@ class SettingsState implements ISettingsState {
 
     // Update background if changed
     if (remoteSettings.backgroundType) {
-      updateBodyBackground(remoteSettings.backgroundType, getCustomBackgroundOptions(remoteSettings));
+      updateBodyBackground(
+        remoteSettings.backgroundType,
+        getCustomBackgroundOptions(remoteSettings)
+      );
       ThemeService.updateTheme(remoteSettings.backgroundType);
     }
 
@@ -223,7 +239,7 @@ class SettingsState implements ISettingsState {
       this.unsubscribeFirebaseSync();
       this.unsubscribeFirebaseSync = null;
     }
-    
+
     // Remove online event listener
     if (browser && this.onlineHandler) {
       window.removeEventListener("online", this.onlineHandler);
@@ -252,7 +268,7 @@ class SettingsState implements ISettingsState {
     value: AppSettings[K]
   ): Promise<void> {
     const previousValue = settingsState[key];
-    
+
     // Skip if value hasn't changed
     if (previousValue === value) {
       return;
@@ -260,13 +276,16 @@ class SettingsState implements ISettingsState {
 
     // CRITICAL: Direct assignment for Svelte 5 reactivity
     settingsState[key] = value;
-    
+
     // Track when this change was made locally
     settingsState._localTimestamp = Date.now();
 
     // Update body background immediately if background type changed
     if (key === "backgroundType") {
-      updateBodyBackground(value as BackgroundType, getCustomBackgroundOptions(settingsState));
+      updateBodyBackground(
+        value as BackgroundType,
+        getCustomBackgroundOptions(settingsState)
+      );
       ThemeService.updateTheme(value as string);
 
       // Track background popularity (non-blocking)
@@ -280,9 +299,15 @@ class SettingsState implements ISettingsState {
 
     // Log settings change for analytics (non-blocking)
     try {
-      const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+      const activityService = tryResolve<IActivityLogService>(
+        TYPES.IActivityLogService
+      );
       if (activityService) {
-        void activityService.logSettingChange(key, String(previousValue), String(value));
+        void activityService.logSettingChange(
+          key,
+          String(previousValue),
+          String(value)
+        );
       }
     } catch {
       // Silently fail - activity logging is non-critical
@@ -293,8 +318,9 @@ class SettingsState implements ISettingsState {
     // Track if background type actually changed
     const oldBackgroundType = settingsState.backgroundType;
     const newBackgroundType = newSettings.backgroundType;
-    const backgroundTypeChanged = newBackgroundType && newBackgroundType !== oldBackgroundType;
-    
+    const backgroundTypeChanged =
+      newBackgroundType && newBackgroundType !== oldBackgroundType;
+
     // CRITICAL: In Svelte 5, we need to update individual properties to trigger reactivity
     // Object.assign doesn't trigger Svelte 5 runes reactivity
     for (const key in newSettings) {
@@ -304,13 +330,16 @@ class SettingsState implements ISettingsState {
         ] as never;
       }
     }
-    
+
     // Track when these changes were made locally
     settingsState._localTimestamp = Date.now();
 
     // Update body background immediately ONLY if background type actually changed
     if (backgroundTypeChanged) {
-      updateBodyBackground(newBackgroundType, getCustomBackgroundOptions(newSettings));
+      updateBodyBackground(
+        newBackgroundType,
+        getCustomBackgroundOptions(newSettings)
+      );
       ThemeService.updateTheme(newBackgroundType);
 
       // Track background popularity (non-blocking)
@@ -348,8 +377,9 @@ class SettingsState implements ISettingsState {
     this.isSavingToFirebase = true;
 
     const settingsToSave = this.getSettingsForPersistence();
-    
-    this.pendingFirebaseSave = this.firebasePersistence.saveSettings(settingsToSave)
+
+    this.pendingFirebaseSave = this.firebasePersistence
+      .saveSettings(settingsToSave)
       .then(() => {
         // Successfully saved - clear local timestamp since Firebase is now in sync
         settingsState._localTimestamp = undefined;
@@ -374,11 +404,11 @@ class SettingsState implements ISettingsState {
    */
   private queueOfflineChange(settings: AppSettings): void {
     if (!browser) return;
-    
+
     try {
       const queueEntry = {
         settings,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queueEntry));
       console.log("📦 [SettingsState] Queued settings for offline sync");
@@ -392,7 +422,7 @@ class SettingsState implements ISettingsState {
    */
   private async processOfflineQueue(): Promise<void> {
     if (!browser) return;
-    
+
     try {
       const queuedData = localStorage.getItem(OFFLINE_QUEUE_KEY);
       if (!queuedData) return;
@@ -417,7 +447,7 @@ class SettingsState implements ISettingsState {
    */
   private clearOfflineQueue(): void {
     if (!browser) return;
-    
+
     try {
       localStorage.removeItem(OFFLINE_QUEUE_KEY);
     } catch (error) {
@@ -435,7 +465,10 @@ class SettingsState implements ISettingsState {
       // Also clear from Firebase if authenticated
       if (authState.isAuthenticated && this.firebasePersistence) {
         void this.firebasePersistence.clearSettings().catch((error) => {
-          console.error("❌ [SettingsState] Failed to clear Firebase settings:", error);
+          console.error(
+            "❌ [SettingsState] Failed to clear Firebase settings:",
+            error
+          );
         });
       }
     } catch (error) {
@@ -480,7 +513,7 @@ class SettingsState implements ISettingsState {
 
       // Clean up any _localTimestamp that was incorrectly saved to localStorage
       // This metadata field should only exist in memory, never persisted
-      if ('_localTimestamp' in merged) {
+      if ("_localTimestamp" in merged) {
         delete merged._localTimestamp;
       }
 
@@ -507,7 +540,10 @@ class SettingsState implements ISettingsState {
       // Filter out _localTimestamp - it's only for in-memory conflict resolution
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _localTimestamp, ...settingsToSave } = settings;
-      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settingsToSave));
+      localStorage.setItem(
+        SETTINGS_STORAGE_KEY,
+        JSON.stringify(settingsToSave)
+      );
     } catch (error) {
       console.error("Failed to save settings to localStorage:", error);
     }

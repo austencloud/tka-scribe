@@ -21,6 +21,7 @@
   import Drawer from "../../../foundation/ui/Drawer.svelte";
   import AccountSecuritySection from "../../../auth/components/AccountSecuritySection.svelte";
   import RobustAvatar from "../../../components/avatar/RobustAvatar.svelte";
+  import SubscriptionCard from "./profile/SubscriptionCard.svelte";
 
   import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
   import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
@@ -329,94 +330,116 @@
         </div>
       </section>
 
-      <!-- Settings Grid - 2x2 layout for utility cards -->
-      <div class="settings-grid">
-        <!-- Connected Accounts -->
-        <section class="glass-card accounts-card">
-          <header class="card-header">
-            <div class="card-icon">
-              <i class="fas fa-link"></i>
-            </div>
-            <div class="card-header-text">
-              <h3 class="card-title">Connected Accounts</h3>
-              <p class="card-subtitle">Manage linked providers</p>
-            </div>
-          </header>
-          <div class="card-content">
-            <ConnectedAccounts
-              bind:this={connectedAccountsRef}
-              onProviderSelect={handleProviderSelect}
-            />
-          </div>
-        </section>
-
-        <!-- Security -->
-        {#if authService}
-          <section class="glass-card security-card">
+      <!-- Settings Grid - Two column masonry layout -->
+      <div class="settings-columns">
+        <!-- Left Column -->
+        <div class="settings-column">
+          <!-- Connected Accounts -->
+          <section class="glass-card accounts-card">
             <header class="card-header">
               <div class="card-icon">
-                <i class="fas fa-shield-alt"></i>
+                <i class="fas fa-link"></i>
               </div>
               <div class="card-header-text">
-                <h3 class="card-title">Security</h3>
-                <p class="card-subtitle">Protect sensitive actions</p>
+                <h3 class="card-title">Connected Accounts</h3>
+                <p class="card-subtitle">Manage linked providers</p>
               </div>
             </header>
             <div class="card-content">
-              <AccountSecuritySection {hapticService} />
-            </div>
-          </section>
-        {/if}
-
-        <!-- Password Section (only for password-authenticated users) -->
-        {#if hasPasswordProvider()}
-          <section class="glass-card password-card">
-            <header class="card-header">
-              <div class="card-icon">
-                <i class="fas fa-key"></i>
-              </div>
-              <div class="card-header-text">
-                <h3 class="card-title">Password</h3>
-                <p class="card-subtitle">Update your account security</p>
-              </div>
-            </header>
-            <div class="card-content">
-              <PasswordSection
-                onChangePassword={handleChangePassword}
-                {hapticService}
+              <ConnectedAccounts
+                bind:this={connectedAccountsRef}
+                onProviderSelect={handleProviderSelect}
               />
             </div>
           </section>
-        {/if}
 
-        <!-- Storage Section -->
-        <section class="glass-card storage-card">
-          <header class="card-header">
-            <div class="card-icon">
-              <i class="fas fa-database"></i>
+          <!-- Security -->
+          {#if authService}
+            <section class="glass-card security-card">
+              <header class="card-header">
+                <div class="card-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="card-header-text">
+                  <h3 class="card-title">Security</h3>
+                  <p class="card-subtitle">Protect sensitive actions</p>
+                </div>
+              </header>
+              <div class="card-content">
+                <AccountSecuritySection {hapticService} />
+              </div>
+            </section>
+          {/if}
+        </div>
+
+        <!-- Right Column -->
+        <div class="settings-column">
+          <!-- Subscription -->
+          <section class="glass-card subscription-card">
+            <header class="card-header">
+              <div class="card-icon premium-icon">
+                <i class="fas fa-crown"></i>
+              </div>
+              <div class="card-header-text">
+                <h3 class="card-title">Subscription</h3>
+                <p class="card-subtitle">Support TKA development</p>
+              </div>
+            </header>
+            <div class="card-content">
+              <SubscriptionCard {hapticService} />
             </div>
-            <div class="card-header-text">
-              <h3 class="card-title">Storage</h3>
-              <p class="card-subtitle">Manage local cached data</p>
+          </section>
+
+          <!-- Password Section (only for password-authenticated users) -->
+          {#if hasPasswordProvider()}
+            <section class="glass-card password-card">
+              <header class="card-header">
+                <div class="card-icon">
+                  <i class="fas fa-key"></i>
+                </div>
+                <div class="card-header-text">
+                  <h3 class="card-title">Password</h3>
+                  <p class="card-subtitle">Update your account security</p>
+                </div>
+              </header>
+              <div class="card-content">
+                <PasswordSection
+                  onChangePassword={handleChangePassword}
+                  {hapticService}
+                />
+              </div>
+            </section>
+          {/if}
+
+          <!-- Storage Section -->
+          <section class="glass-card storage-card">
+            <header class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-database"></i>
+              </div>
+              <div class="card-header-text">
+                <h3 class="card-title">Storage</h3>
+                <p class="card-subtitle">Manage local cached data</p>
+              </div>
+            </header>
+            <div class="card-content">
+              <div class="storage-content">
+                <button
+                  class="action-btn"
+                  onclick={handleClearCache}
+                  disabled={clearingCache}
+                >
+                  <i class="fas fa-broom"></i>
+                  <span>{clearingCache ? "Clearing..." : "Clear Cache"}</span>
+                </button>
+                <p class="hint-text">
+                  Clears IndexedDB, localStorage, and cookies. Your cloud data
+                  is safe.
+                </p>
+              </div>
             </div>
-          </header>
-          <div class="card-content">
-            <div class="storage-content">
-              <button
-                class="action-btn"
-                onclick={handleClearCache}
-                disabled={clearingCache}
-              >
-                <i class="fas fa-broom"></i>
-                <span>{clearingCache ? "Clearing..." : "Clear Cache"}</span>
-              </button>
-              <p class="hint-text">
-                Clears IndexedDB, localStorage, and cookies. Your cloud data is
-                safe.
-              </p>
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
 
       <!-- Danger Zone - Full width, separated from grid -->
@@ -564,31 +587,37 @@
   }
 
   /* ========================================
-     SETTINGS GRID - 2x2 layout for utility cards
+     SETTINGS COLUMNS - Two independent flex columns (masonry-like)
+     Each column stacks cards naturally without row alignment
      ======================================== */
-  .settings-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(10px, 2cqi, 20px);
+  .settings-columns {
+    display: flex;
+    gap: clamp(10px, 2cqi, 16px);
     max-width: 100%;
   }
 
-  .settings-grid .glass-card {
-    /* Cards should stretch to fill their grid cell */
-    height: 100%;
-    min-width: 0;
+  .settings-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(10px, 2cqi, 16px);
+    min-width: 0; /* Prevent overflow */
   }
 
   /* Single column on narrow screens */
   @container profile-tab (max-width: 600px) {
-    .settings-grid {
-      grid-template-columns: 1fr;
+    .settings-columns {
+      flex-direction: column;
     }
   }
 
   /* Tighter spacing on very small screens */
   @container profile-tab (max-width: 360px) {
-    .settings-grid {
+    .settings-columns {
+      gap: 8px;
+    }
+
+    .settings-column {
       gap: 8px;
     }
 
@@ -788,6 +817,18 @@
 
   .danger-card .card-title {
     color: #fecaca;
+  }
+
+  /* ========================================
+     SUBSCRIPTION CARD - Premium accent
+     ======================================== */
+  .subscription-card .premium-icon {
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.2),
+      rgba(251, 191, 36, 0.15)
+    );
+    color: #fbbf24;
   }
 
   /* ========================================

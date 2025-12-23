@@ -107,7 +107,10 @@
     ); /* Minimal padding to maximize pictograph space */
     min-height: 300px; /* Reduced minimum to allow more flexibility */
     container-type: size;
-    box-shadow: var(--theme-shadow, inset 0 2px 8px rgba(0, 0, 0, 0.1)); /* iOS inset shadow for depth */
+    box-shadow: var(
+      --theme-shadow,
+      inset 0 2px 8px rgba(0, 0, 0, 0.1)
+    ); /* iOS inset shadow for depth */
   }
 
   /* Pictograph wrapper - uses container query units to size based on preview-container */

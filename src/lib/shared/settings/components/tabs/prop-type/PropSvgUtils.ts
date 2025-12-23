@@ -1,6 +1,6 @@
 /**
  * PropSvgUtils - Utilities for loading and coloring prop SVGs
- * 
+ *
  * Uses the centralized svg-color-utils for color transformation.
  */
 

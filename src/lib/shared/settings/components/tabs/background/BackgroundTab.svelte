@@ -142,7 +142,9 @@
       <!-- Animated Backgrounds Section -->
       <div class="category-section">
         <div class="category-header">
-          <span class="category-icon"><i class="fas fa-wand-magic-sparkles"></i></span>
+          <span class="category-icon"
+            ><i class="fas fa-wand-magic-sparkles"></i></span
+          >
           <span class="category-label">Animated</span>
         </div>
         <div class="card-grid animated-grid">
@@ -248,15 +250,22 @@
     border-radius: 12px;
     font-size: 18px;
     flex-shrink: 0;
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
     color: var(--theme-accent, #a855f7);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
     transition: all 0.15s ease;
   }
 
   .settings-panel:hover .panel-icon {
-    box-shadow: 0 0 16px color-mix(in srgb, var(--theme-accent, #a855f7) 30%, transparent);
+    box-shadow: 0 0 16px
+      color-mix(in srgb, var(--theme-accent, #a855f7) 30%, transparent);
   }
 
   .panel-header-text {
@@ -269,7 +278,8 @@
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   .panel-subtitle {
@@ -311,7 +321,8 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   /* ========================================
@@ -361,12 +372,20 @@
   }
 
   .background-tab::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 20%,
+      transparent
+    );
     border-radius: 3px;
   }
 
   .background-tab::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 35%,
+      transparent
+    );
   }
 
   /* ========================================

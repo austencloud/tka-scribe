@@ -15,8 +15,12 @@ class ChangelogEditState {
   undoStack = $state<UndoAction[]>([]);
   redoStack = $state<UndoAction[]>([]);
 
-  get canUndo() { return this.undoStack.length > 0; }
-  get canRedo() { return this.redoStack.length > 0; }
+  get canUndo() {
+    return this.undoStack.length > 0;
+  }
+  get canRedo() {
+    return this.redoStack.length > 0;
+  }
 
   pushUndo(action: UndoAction) {
     this.undoStack = [...this.undoStack, action];
@@ -34,8 +38,14 @@ class ChangelogEditState {
       const entries = version.changelogEntries || [];
       entries.splice(action.absoluteIndex, 0, action.entry);
       version.changelogEntries = [...entries];
-      await versionService.updateChangelogEntries(version.version, version.changelogEntries);
-      this.redoStack = [...this.redoStack, { type: "add", absoluteIndex: action.absoluteIndex }];
+      await versionService.updateChangelogEntries(
+        version.version,
+        version.changelogEntries
+      );
+      this.redoStack = [
+        ...this.redoStack,
+        { type: "add", absoluteIndex: action.absoluteIndex },
+      ];
       return "Entry restored";
     }
 
@@ -45,8 +55,18 @@ class ChangelogEditState {
       if (deletedEntry) {
         entries.splice(action.absoluteIndex, 1);
         version.changelogEntries = [...entries];
-        await versionService.updateChangelogEntries(version.version, version.changelogEntries);
-        this.redoStack = [...this.redoStack, { type: "delete", entry: deletedEntry, absoluteIndex: action.absoluteIndex }];
+        await versionService.updateChangelogEntries(
+          version.version,
+          version.changelogEntries
+        );
+        this.redoStack = [
+          ...this.redoStack,
+          {
+            type: "delete",
+            entry: deletedEntry,
+            absoluteIndex: action.absoluteIndex,
+          },
+        ];
         return "Entry removed";
       }
     }
@@ -62,8 +82,19 @@ class ChangelogEditState {
         };
         version.changelogEntries![action.absoluteIndex] = restoredEntry;
         version.changelogEntries = [...version.changelogEntries!];
-        await versionService.updateChangelogEntry(version.version, action.absoluteIndex, restoredEntry);
-        this.redoStack = [...this.redoStack, { type: "edit", oldText: currentText, absoluteIndex: action.absoluteIndex }];
+        await versionService.updateChangelogEntry(
+          version.version,
+          action.absoluteIndex,
+          restoredEntry
+        );
+        this.redoStack = [
+          ...this.redoStack,
+          {
+            type: "edit",
+            oldText: currentText,
+            absoluteIndex: action.absoluteIndex,
+          },
+        ];
         return "Edit reverted";
       }
     }
@@ -72,7 +103,10 @@ class ChangelogEditState {
       const currentText = version.releaseNotes || "";
       version.releaseNotes = action.oldText;
       await versionService.updateReleaseNotes(version.version, action.oldText);
-      this.redoStack = [...this.redoStack, { type: "editReleaseNotes", oldText: currentText }];
+      this.redoStack = [
+        ...this.redoStack,
+        { type: "editReleaseNotes", oldText: currentText },
+      ];
       return "Release notes reverted";
     }
 
@@ -90,8 +124,14 @@ class ChangelogEditState {
       const entries = version.changelogEntries || [];
       entries.splice(action.absoluteIndex, 0, action.entry);
       version.changelogEntries = [...entries];
-      await versionService.updateChangelogEntries(version.version, version.changelogEntries);
-      this.undoStack = [...this.undoStack, { type: "add", absoluteIndex: action.absoluteIndex }];
+      await versionService.updateChangelogEntries(
+        version.version,
+        version.changelogEntries
+      );
+      this.undoStack = [
+        ...this.undoStack,
+        { type: "add", absoluteIndex: action.absoluteIndex },
+      ];
       return "Entry restored";
     }
 
@@ -101,8 +141,18 @@ class ChangelogEditState {
       if (deletedEntry) {
         entries.splice(action.absoluteIndex, 1);
         version.changelogEntries = [...entries];
-        await versionService.updateChangelogEntries(version.version, version.changelogEntries);
-        this.undoStack = [...this.undoStack, { type: "delete", entry: deletedEntry, absoluteIndex: action.absoluteIndex }];
+        await versionService.updateChangelogEntries(
+          version.version,
+          version.changelogEntries
+        );
+        this.undoStack = [
+          ...this.undoStack,
+          {
+            type: "delete",
+            entry: deletedEntry,
+            absoluteIndex: action.absoluteIndex,
+          },
+        ];
         return "Entry removed";
       }
     }
@@ -118,8 +168,19 @@ class ChangelogEditState {
         };
         version.changelogEntries![action.absoluteIndex] = restoredEntry;
         version.changelogEntries = [...version.changelogEntries!];
-        await versionService.updateChangelogEntry(version.version, action.absoluteIndex, restoredEntry);
-        this.undoStack = [...this.undoStack, { type: "edit", oldText: currentText, absoluteIndex: action.absoluteIndex }];
+        await versionService.updateChangelogEntry(
+          version.version,
+          action.absoluteIndex,
+          restoredEntry
+        );
+        this.undoStack = [
+          ...this.undoStack,
+          {
+            type: "edit",
+            oldText: currentText,
+            absoluteIndex: action.absoluteIndex,
+          },
+        ];
         return "Edit reapplied";
       }
     }
@@ -128,7 +189,10 @@ class ChangelogEditState {
       const currentText = version.releaseNotes || "";
       version.releaseNotes = action.oldText;
       await versionService.updateReleaseNotes(version.version, action.oldText);
-      this.undoStack = [...this.undoStack, { type: "editReleaseNotes", oldText: currentText }];
+      this.undoStack = [
+        ...this.undoStack,
+        { type: "editReleaseNotes", oldText: currentText },
+      ];
       return "Release notes reapplied";
     }
 

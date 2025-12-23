@@ -23,8 +23,12 @@
   }>();
 
   const isEmpty = $derived(!preset);
-  const blueInfo = $derived(preset ? getPropTypeDisplayInfo(preset.bluePropType) : null);
-  const redInfo = $derived(preset ? getPropTypeDisplayInfo(preset.redPropType) : null);
+  const blueInfo = $derived(
+    preset ? getPropTypeDisplayInfo(preset.bluePropType) : null
+  );
+  const redInfo = $derived(
+    preset ? getPropTypeDisplayInfo(preset.redPropType) : null
+  );
   const isCatDog = $derived(
     preset && preset.catDogMode && preset.bluePropType !== preset.redPropType
   );
@@ -104,7 +108,11 @@
   }
 
   .preset-slot.empty:hover {
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 8%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 8%,
+      transparent
+    );
     border-color: var(--theme-accent, #a855f7);
   }
 
@@ -120,7 +128,11 @@
 
   /* Selected state */
   .preset-slot.selected {
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 15%,
+      transparent
+    );
     border-color: var(--theme-accent, #a855f7);
     border-style: solid;
   }
@@ -180,9 +192,8 @@
   }
 
   .dual-props .prop-icon.red {
-    filter:
-      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3))
-      hue-rotate(125deg) saturate(1.2);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3)) hue-rotate(125deg)
+      saturate(1.2);
   }
 
   /* Focus state */

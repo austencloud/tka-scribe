@@ -10,7 +10,10 @@
   export let formatDate: (date: Date) => string;
 </script>
 
-<NotificationsSectionShell eyebrow="Announcements" title="System messages & releases">
+<NotificationsSectionShell
+  eyebrow="Announcements"
+  title="System messages & releases"
+>
   {#if isLoading}
     <div class="loading-state panel-shell">
       <i class="fas fa-spinner fa-spin"></i>

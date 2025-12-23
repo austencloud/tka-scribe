@@ -43,8 +43,13 @@
 
 <style>
   .motion-controls {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 8%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
     border-radius: 10px;
     padding: 16px;
   }
@@ -67,7 +72,11 @@
   @media (prefers-contrast: high) {
     .motion-controls {
       border-width: 2px;
-      border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      border-color: color-mix(
+        in srgb,
+        var(--semantic-info, #3b82f6) 40%,
+        transparent
+      );
     }
   }
 </style>

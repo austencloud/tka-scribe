@@ -49,7 +49,10 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 12px;
-    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    transition:
+      transform 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
   }
 
   .announcement-item:not(.dismissed):hover {
@@ -104,18 +107,29 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 18%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 18%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 10px;
     color: var(--theme-accent, #a5b4fc);
     font-size: 12px;
     font-weight: 700;
     text-decoration: none;
-    transition: transform 180ms ease, background 180ms ease;
+    transition:
+      transform 180ms ease,
+      background 180ms ease;
   }
 
   .action-link:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
     transform: translateY(-1px);
   }
 

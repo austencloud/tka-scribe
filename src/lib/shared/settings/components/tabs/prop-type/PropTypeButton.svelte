@@ -245,7 +245,8 @@
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
     color: var(--theme-text, rgba(255, 255, 255, 0.85));
     position: relative;
-    padding: clamp(8px, 1.5cqi, 12px) clamp(6px, 1cqi, 8px) clamp(6px, 1cqi, 10px);
+    padding: clamp(8px, 1.5cqi, 12px) clamp(6px, 1cqi, 8px)
+      clamp(6px, 1cqi, 10px);
     gap: clamp(4px, 1cqi, 8px);
     border-radius: 12px;
     box-sizing: border-box;
@@ -267,18 +268,33 @@
 
   /* Selected - Uses theme accent */
   .prop-button.selected {
-    background: color-mix(in srgb, var(--theme-accent, #007aff) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #007aff) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #007aff) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #007aff) 50%,
+      transparent
+    );
     color: var(--theme-text, #ffffff);
     transform: scale(1.02); /* Slightly larger when selected */
     box-shadow:
-      0 6px 20px color-mix(in srgb, var(--theme-accent, #007aff) 25%, transparent),
-      0 2px 6px color-mix(in srgb, var(--theme-accent, #007aff) 15%, transparent),
-      inset 0 0 0 1px color-mix(in srgb, var(--theme-accent, #007aff) 20%, transparent);
+      0 6px 20px
+        color-mix(in srgb, var(--theme-accent, #007aff) 25%, transparent),
+      0 2px 6px
+        color-mix(in srgb, var(--theme-accent, #007aff) 15%, transparent),
+      inset 0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #007aff) 20%, transparent);
   }
 
   .prop-button.selected:hover {
-    background: color-mix(in srgb, var(--theme-accent, #007aff) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #007aff) 20%,
+      transparent
+    );
     transform: translateY(-1px) scale(1.03);
   }
 
@@ -345,7 +361,8 @@
     line-height: 1.2;
     flex-shrink: 0;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
 
   /* Checkmark container */
@@ -433,7 +450,11 @@
 
     .prop-button.selected {
       border: 2px solid var(--theme-accent, #0a84ff);
-      background: color-mix(in srgb, var(--theme-accent, #0a84ff) 15%, transparent);
+      background: color-mix(
+        in srgb,
+        var(--theme-accent, #0a84ff) 15%,
+        transparent
+      );
     }
   }
 

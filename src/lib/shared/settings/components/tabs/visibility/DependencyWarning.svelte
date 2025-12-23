@@ -21,7 +21,8 @@
 <style>
   .dependency-warning {
     background: var(--semantic-warning-dim, rgba(245, 158, 11, 0.15));
-    border: 2px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
     border-radius: 8px;
     padding: 12px;
     color: var(--semantic-warning, #f59e0b);

@@ -51,7 +51,8 @@
     {
       id: "positions",
       label: "Positions Glyph",
-      description: "Start → End position indicator at the top of the pictograph.",
+      description:
+        "Start → End position indicator at the top of the pictograph.",
       icon: "fa-map-marker-alt",
       color: "#fbbf24",
     },
@@ -65,7 +66,8 @@
     {
       id: "turnNumbers",
       label: "Turn Numbers",
-      description: "Rotation counts shown beside the TKA glyph. Only visible when glyph is on.",
+      description:
+        "Rotation counts shown beside the TKA glyph. Only visible when glyph is on.",
       icon: "fa-hashtag",
       color: "#60a5fa",
     },

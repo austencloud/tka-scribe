@@ -85,15 +85,21 @@
       <div class="use-case-grid">
         <div class="use-case">
           <span class="use-case-label">For Teaching</span>
-          <span class="use-case-desc">Enable word, beat numbers, and start position</span>
+          <span class="use-case-desc"
+            >Enable word, beat numbers, and start position</span
+          >
         </div>
         <div class="use-case">
           <span class="use-case-label">For Social Media</span>
-          <span class="use-case-desc">Enable word and user info for attribution</span>
+          <span class="use-case-desc"
+            >Enable word and user info for attribution</span
+          >
         </div>
         <div class="use-case">
           <span class="use-case-label">Clean Export</span>
-          <span class="use-case-desc">Disable everything for minimal pictograph-only images</span>
+          <span class="use-case-desc"
+            >Disable everything for minimal pictograph-only images</span
+          >
         </div>
       </div>
     </div>

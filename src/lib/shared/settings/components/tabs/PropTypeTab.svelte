@@ -128,13 +128,16 @@
     newPresets[index] = newPreset;
 
     // Clean up undefined entries but keep structure
-    const cleanedPresets = newPresets.map((p, i) => p || null).filter((p): p is PropPreset => p !== null);
+    const cleanedPresets = newPresets
+      .map((p, i) => p || null)
+      .filter((p): p is PropPreset => p !== null);
 
     propPresets = cleanedPresets;
-    selectedPresetIndex = cleanedPresets.findIndex(p =>
-      p.bluePropType === newPreset.bluePropType &&
-      p.redPropType === newPreset.redPropType &&
-      p.catDogMode === newPreset.catDogMode
+    selectedPresetIndex = cleanedPresets.findIndex(
+      (p) =>
+        p.bluePropType === newPreset.bluePropType &&
+        p.redPropType === newPreset.redPropType &&
+        p.catDogMode === newPreset.catDogMode
     );
 
     onUpdate?.({ key: "propPresets", value: cleanedPresets });
@@ -143,7 +146,8 @@
 
   function updateCurrentPreset() {
     // Update the currently selected preset with the current prop configuration
-    if (selectedPresetIndex < 0 || selectedPresetIndex >= propPresets.length) return;
+    if (selectedPresetIndex < 0 || selectedPresetIndex >= propPresets.length)
+      return;
 
     const updatedPreset: PropPreset = {
       bluePropType: selectedBluePropType,
@@ -387,7 +391,9 @@
     ? selectedBluePropType
     : selectedRedPropType}
   color={selectingHand}
-  title={selectingHand === "blue" ? "Select Left Hand Prop" : "Select Right Hand Prop"}
+  title={selectingHand === "blue"
+    ? "Select Left Hand Prop"
+    : "Select Right Hand Prop"}
   onSelect={handlePropSelect}
 />
 
@@ -443,8 +449,13 @@
     height: 44px;
     border-radius: 12px;
     font-size: 18px;
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
     color: var(--theme-accent, #a855f7);
   }
 
@@ -536,12 +547,20 @@
   }
 
   .prop-card.blue {
-    border-color: color-mix(in srgb, var(--prop-blue, #2e3192) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--prop-blue, #2e3192) 30%,
+      transparent
+    );
     background: color-mix(in srgb, var(--prop-blue, #2e3192) 8%, transparent);
   }
 
   .prop-card.blue:hover {
-    border-color: color-mix(in srgb, var(--prop-blue, #2e3192) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--prop-blue, #2e3192) 50%,
+      transparent
+    );
     background: color-mix(in srgb, var(--prop-blue, #2e3192) 15%, transparent);
   }
 
@@ -589,15 +608,12 @@
 
   /* Color-code prop icons based on hand */
   .prop-card.blue .prop-icon {
-    filter:
-      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))
-      saturate(1.1);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) saturate(1.1);
   }
 
   .prop-card.red .prop-icon {
-    filter:
-      drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3))
-      hue-rotate(125deg) saturate(1.2);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3)) hue-rotate(125deg)
+      saturate(1.2);
   }
 
   .prop-name {

@@ -28,7 +28,9 @@ const STATS_COLLECTION = "stats";
 const POPULARITY_DOC = "backgroundPopularity";
 
 @injectable()
-export class BackgroundPopularityService implements IBackgroundPopularityService {
+export class BackgroundPopularityService
+  implements IBackgroundPopularityService
+{
   private unsubscribe: Unsubscribe | null = null;
   private cachedCounts: BackgroundPopularityCounts = {};
 

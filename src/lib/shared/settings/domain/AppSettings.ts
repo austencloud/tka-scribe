@@ -21,7 +21,7 @@ export interface PropPreset {
 export interface AppSettings {
   // Metadata for sync tracking (not persisted to Firebase)
   _localTimestamp?: number;
-  
+
   gridMode: GridMode;
   userName?: string;
   propType?: PropType; // Legacy - kept for backward compatibility

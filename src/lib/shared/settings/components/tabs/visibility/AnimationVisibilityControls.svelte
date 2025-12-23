@@ -221,32 +221,60 @@
 
   /* Active State - Uses theme accent */
   .control-btn.active {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 40%,
+      transparent
+    );
     color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .control-btn.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 50%,
+      transparent
+    );
     color: var(--theme-accent, #93c5fd);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
-      0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   /* Motion Color Variants - Use prop colors for motion icons */
   .control-btn.motion-blue.active {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 40%,
+      transparent
+    );
     color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .control-btn.motion-blue.active i {
@@ -254,18 +282,35 @@
   }
 
   .control-btn.motion-blue.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 50%,
+      transparent
+    );
     color: var(--theme-accent, #93c5fd);
   }
 
   .control-btn.motion-red.active {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 40%,
+      transparent
+    );
     color: var(--theme-accent, #60a5fa);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.1),
-      0 0 0 1px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
   }
 
   .control-btn.motion-red.active i {
@@ -273,8 +318,16 @@
   }
 
   .control-btn.motion-red.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 50%,
+      transparent
+    );
     color: var(--theme-accent, #93c5fd);
   }
 
@@ -338,7 +391,11 @@
     }
 
     .control-btn.active {
-      border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 80%, transparent);
+      border-color: color-mix(
+        in srgb,
+        var(--theme-accent, #3b82f6) 80%,
+        transparent
+      );
     }
   }
 </style>

@@ -23,8 +23,9 @@
   async function generatePreview() {
     isGenerating = true;
     try {
-      const compositionService =
-        resolve<IImageCompositionService>(TYPES.IImageCompositionService);
+      const compositionService = resolve<IImageCompositionService>(
+        TYPES.IImageCompositionService
+      );
 
       // Generate canvas from beat data
       const canvas = await compositionService.composeSequenceImage(

@@ -112,7 +112,6 @@
   const variationLabel = $derived(getVariationLabel(selectedPropType));
   const variations = $derived(getAllVariations(selectedPropType));
   const variationIndex = $derived(getVariationIndex(selectedPropType));
-
 </script>
 
 <Drawer
@@ -134,9 +133,7 @@
       <button class="variation-toggle" onclick={toggleVariation}>
         <span class="variation-indicator">
           {#each variations as _, i}
-            <span
-              class="variation-dot"
-              class:active={i === variationIndex}
+            <span class="variation-dot" class:active={i === variationIndex}
             ></span>
           {/each}
         </span>

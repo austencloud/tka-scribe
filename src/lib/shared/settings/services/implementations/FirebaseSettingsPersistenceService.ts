@@ -55,7 +55,11 @@ export class FirebaseSettingsPersistenceService
         const data = docSnap.data();
         // Remove Firestore metadata fields
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { updatedAt: _updatedAt, createdAt: _createdAt, ...settings } = data;
+        const {
+          updatedAt: _updatedAt,
+          createdAt: _createdAt,
+          ...settings
+        } = data;
         return settings as AppSettings;
       }
       return null;
@@ -166,7 +170,12 @@ export class FirebaseSettingsPersistenceService
             const data = snapshot.data();
             // Remove Firestore metadata fields
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { updatedAt: _updatedAt, createdAt: _createdAt, clearedAt: _clearedAt, ...settings } = data;
+            const {
+              updatedAt: _updatedAt,
+              createdAt: _createdAt,
+              clearedAt: _clearedAt,
+              ...settings
+            } = data;
             if (Object.keys(settings).length > 0) {
               callback(settings as AppSettings);
             }

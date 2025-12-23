@@ -140,7 +140,11 @@
 
   .version-card:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
-    border-color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 30%,
+      transparent
+    );
   }
 
   .version-card:active {

@@ -114,7 +114,8 @@
       color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent),
       color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 24px;
   }
 
