@@ -80,7 +80,9 @@ export class AuditLogService implements IAuditLogService {
         entries.push({
           id: doc.id,
           timestamp:
-            timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp as string),
+            timestamp instanceof Timestamp
+              ? timestamp.toDate()
+              : new Date(timestamp as string),
           action: (data["action"] as AuditActionType) ?? "other",
           performedBy: (data["performedBy"] as string) ?? "unknown",
           affectedUserId: (data["affectedUserId"] as string) ?? undefined,
@@ -99,7 +101,10 @@ export class AuditLogService implements IAuditLogService {
   /**
    * Get audit log entries for a specific user
    */
-  async getUserActions(userId: string, limitCount: number): Promise<AuditLogEntry[]> {
+  async getUserActions(
+    userId: string,
+    limitCount: number
+  ): Promise<AuditLogEntry[]> {
     const firestore = await getFirestoreInstance();
     if (!firestore) {
       return [];
@@ -123,7 +128,9 @@ export class AuditLogService implements IAuditLogService {
         entries.push({
           id: doc.id,
           timestamp:
-            timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp as string),
+            timestamp instanceof Timestamp
+              ? timestamp.toDate()
+              : new Date(timestamp as string),
           action: (data["action"] as AuditActionType) ?? "other",
           performedBy: (data["performedBy"] as string) ?? "unknown",
           affectedUserId: (data["affectedUserId"] as string) ?? undefined,
@@ -169,7 +176,9 @@ export class AuditLogService implements IAuditLogService {
         entries.push({
           id: doc.id,
           timestamp:
-            timestamp instanceof Timestamp ? timestamp.toDate() : new Date(timestamp as string),
+            timestamp instanceof Timestamp
+              ? timestamp.toDate()
+              : new Date(timestamp as string),
           action: (data["action"] as AuditActionType) ?? "other",
           performedBy: (data["performedBy"] as string) ?? "unknown",
           affectedUserId: (data["affectedUserId"] as string) ?? undefined,

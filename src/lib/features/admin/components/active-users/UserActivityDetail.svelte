@@ -46,7 +46,10 @@
 
     try {
       const service = resolve<IUserActivityService>(TYPES.IUserActivityService);
-      sessionEvents = await service.getSessionActivity(userId, session.sessionId);
+      sessionEvents = await service.getSessionActivity(
+        userId,
+        session.sessionId
+      );
     } catch (e) {
       console.error("Failed to load session events:", e);
       sessionEvents = [];
@@ -125,7 +128,9 @@
           >
             <div class="session-header">
               <span class="session-date">{formatDate(session.startedAt)}</span>
-              <span class="session-duration">{formatDuration(session.duration)}</span>
+              <span class="session-duration"
+                >{formatDuration(session.duration)}</span
+              >
             </div>
             <div class="session-meta">
               <span class="event-count">
@@ -158,10 +163,13 @@
                       <i class="fas {getEventIcon(event.category)}"></i>
                       <div class="event-info">
                         <span class="event-type">{event.eventType}</span>
-                        <span class="event-time">{formatTime(event.timestamp)}</span>
+                        <span class="event-time"
+                          >{formatTime(event.timestamp)}</span
+                        >
                       </div>
                       {#if event.metadata?.module}
-                        <span class="event-module">{event.metadata.module}</span>
+                        <span class="event-module">{event.metadata.module}</span
+                        >
                       {/if}
                     </div>
                   {/each}

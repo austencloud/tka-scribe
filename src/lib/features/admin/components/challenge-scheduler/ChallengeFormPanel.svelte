@@ -561,7 +561,8 @@
 
   .schedule-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .creation-form::-webkit-scrollbar {

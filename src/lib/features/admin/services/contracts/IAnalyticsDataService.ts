@@ -118,7 +118,9 @@ export interface IAnalyticsDataService {
   /**
    * Get activity event breakdown by type for the time range
    */
-  getEventTypeBreakdown(timeRange: AnalyticsTimeRange): Promise<EventTypeBreakdown[]>;
+  getEventTypeBreakdown(
+    timeRange: AnalyticsTimeRange
+  ): Promise<EventTypeBreakdown[]>;
 
   /**
    * Get module usage statistics for the time range

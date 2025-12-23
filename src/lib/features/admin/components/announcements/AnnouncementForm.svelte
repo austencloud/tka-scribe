@@ -488,7 +488,8 @@
     padding: 16px 20px;
     min-height: var(--min-touch-target);
     background: linear-gradient(135deg, #1a1a24 0%, #16161e 100%);
-    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 12px;
     color: #ffffff;
     font-size: 15px;
@@ -681,7 +682,8 @@
       color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
       var(--theme-accent, #6366f1) 100%
     );
-    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 140%, white);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 140%, white);
     color: #ffffff;
     box-shadow:
       0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),

@@ -15,7 +15,10 @@
     <div class="activity-chart skeleton-chart">
       <div class="chart-container">
         {#each Array(20) as _, i}
-          <div class="bar skeleton-bar" style="height: {30 + Math.random() * 50}%"></div>
+          <div
+            class="bar skeleton-bar"
+            style="height: {30 + Math.random() * 50}%"
+          ></div>
         {/each}
       </div>
       <div class="chart-labels">
@@ -44,7 +47,10 @@
   {:else}
     <div class="no-data-message">
       <i class="fas fa-info-circle"></i>
-      <span>Historical activity tracking requires Firebase indexes or Cloud Functions. Current "Active Today" count is shown above.</span>
+      <span
+        >Historical activity tracking requires Firebase indexes or Cloud
+        Functions. Current "Active Today" count is shown above.</span
+      >
     </div>
   {/if}
 </section>
@@ -125,7 +131,11 @@
 
   /* Skeleton styles */
   .skeleton-chart .skeleton-bar {
-    background: linear-gradient(to top, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.15));
+    background: linear-gradient(
+      to top,
+      rgba(255, 255, 255, 0.1),
+      rgba(255, 255, 255, 0.15)
+    );
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -139,7 +149,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

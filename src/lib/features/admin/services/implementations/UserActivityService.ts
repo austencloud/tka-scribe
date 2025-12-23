@@ -23,7 +23,11 @@ import type {
   SessionSummary,
   UserActivityQueryOptions,
 } from "../contracts/IUserActivityService";
-import type { ActivityEvent, ActivityCategory, ActivityEventType } from "$lib/shared/analytics/domain/models/ActivityEvent";
+import type {
+  ActivityEvent,
+  ActivityCategory,
+  ActivityEventType,
+} from "$lib/shared/analytics/domain/models/ActivityEvent";
 import type { UserPresenceWithId } from "$lib/shared/presence/domain/models/presence-models";
 
 @injectable()
@@ -131,10 +135,7 @@ export class UserActivityService implements IUserActivityService {
     }
   }
 
-  async getUserSessions(
-    userId: string,
-    limit = 10
-  ): Promise<SessionSummary[]> {
+  async getUserSessions(userId: string, limit = 10): Promise<SessionSummary[]> {
     try {
       // Get recent activity and group by sessionId
       const events = await this.getUserActivity({

@@ -79,7 +79,10 @@ export interface IUserActivityService {
    * @param userId - User ID
    * @param sessionId - Session ID
    */
-  getSessionActivity(userId: string, sessionId: string): Promise<ActivityEvent[]>;
+  getSessionActivity(
+    userId: string,
+    sessionId: string
+  ): Promise<ActivityEvent[]>;
 
   /**
    * Get presence stats (active/inactive counts, by module, etc.)

@@ -17,7 +17,7 @@ interface AdminNavigationContext {
 }
 
 function createAdminNavigationContext() {
-  let context = $state<AdminNavigationContext>({
+  const context = $state<AdminNavigationContext>({
     selectedUserId: null,
     selectedChallengeId: null,
     selectedAnnouncementId: null,

@@ -60,7 +60,10 @@ export interface AnnouncementDismissal {
 /**
  * Default announcement for creation
  */
-export const DEFAULT_ANNOUNCEMENT: Omit<Announcement, "id" | "createdAt" | "createdBy"> = {
+export const DEFAULT_ANNOUNCEMENT: Omit<
+  Announcement,
+  "id" | "createdAt" | "createdBy"
+> = {
   title: "",
   message: "",
   severity: "info",

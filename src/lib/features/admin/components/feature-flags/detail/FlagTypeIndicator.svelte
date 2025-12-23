@@ -5,11 +5,13 @@
 
   let { category }: Props = $props();
 
-  const config = $derived({
-    module: { icon: "fa-cubes", label: "module" },
-    tab: { icon: "fa-window-restore", label: "tab" },
-    capability: { icon: "fa-magic", label: "capability" },
-  }[category]);
+  const config = $derived(
+    {
+      module: { icon: "fa-cubes", label: "module" },
+      tab: { icon: "fa-window-restore", label: "tab" },
+      capability: { icon: "fa-magic", label: "capability" },
+    }[category]
+  );
 </script>
 
 <div class="type-indicator {category}">
@@ -40,14 +42,26 @@
   }
 
   .type-indicator.module {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 40%,
+      transparent
+    );
     color: #a78bfa;
   }
 
   .type-indicator.tab {
     background: var(--accent-2026-indigo-soft);
-    border-color: color-mix(in srgb, var(--accent-2026-indigo) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--accent-2026-indigo) 40%,
+      transparent
+    );
     color: #60a5fa;
   }
 

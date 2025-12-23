@@ -26,7 +26,11 @@
 
   // Get the accent color - extracted or fallback
   let accentColor = $derived(
-    cardColor ?? getCachedOrFallbackColor(user.photoURL ?? undefined, user.displayName ?? "User")
+    cardColor ??
+      getCachedOrFallbackColor(
+        user.photoURL ?? undefined,
+        user.displayName ?? "User"
+      )
   );
 
   /**

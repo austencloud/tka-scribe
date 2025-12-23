@@ -26,7 +26,10 @@
             <span class="skeleton-count"></span>
           </div>
           <div class="event-bar">
-            <div class="event-bar-fill skeleton-bar" style="width: {40 + i * 10}%"></div>
+            <div
+              class="event-bar-fill skeleton-bar"
+              style="width: {40 + i * 10}%"
+            ></div>
           </div>
         </div>
       {/each}
@@ -35,7 +38,8 @@
   {:else if events.length > 0}
     <div class="event-breakdown">
       {#each events as event}
-        {@const percentage = getTotalEvents() > 0 ? (event.count / getTotalEvents()) * 100 : 0}
+        {@const percentage =
+          getTotalEvents() > 0 ? (event.count / getTotalEvents()) * 100 : 0}
         <div class="event-row">
           <div class="event-header">
             <div class="event-icon" style="color: {event.color}">
@@ -59,7 +63,10 @@
   {:else}
     <div class="no-data-message">
       <i class="fas fa-info-circle"></i>
-      <span>No activity events recorded yet. Events will appear as users interact with the app.</span>
+      <span
+        >No activity events recorded yet. Events will appear as users interact
+        with the app.</span
+      >
     </div>
   {/if}
 </section>
@@ -206,7 +213,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

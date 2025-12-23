@@ -33,7 +33,11 @@ const QUERY_TIMEOUT_MS = 10000;
 /**
  * Wrap a promise with a timeout
  */
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  fallback: T
+): Promise<T> {
   return Promise.race([
     promise,
     new Promise<T>((resolve) => {
@@ -56,7 +60,9 @@ export class SystemStateService implements ISystemStateService {
    */
   private async isFirestoreAvailable(): Promise<boolean> {
     const firestore = await getFirestoreInstance();
-    return firestore !== null && firestore !== undefined && auth.currentUser !== null;
+    return (
+      firestore !== null && firestore !== undefined && auth.currentUser !== null
+    );
   }
 
   /**
@@ -107,7 +113,11 @@ export class SystemStateService implements ISystemStateService {
     try {
       const firestore = await getFirestoreInstance();
       const usersRef = collection(firestore, "users");
-      const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
+      const snapshot = await withTimeout(
+        getDocs(usersRef),
+        QUERY_TIMEOUT_MS,
+        null
+      );
 
       if (!snapshot) {
         return [];
@@ -136,13 +146,19 @@ export class SystemStateService implements ISystemStateService {
     const lastActivity = data["lastActivityDate"];
     let lastActivityDate: Date | null = null;
     if (lastActivity) {
-      lastActivityDate = lastActivity instanceof Timestamp ? lastActivity.toDate() : new Date(lastActivity as string);
+      lastActivityDate =
+        lastActivity instanceof Timestamp
+          ? lastActivity.toDate()
+          : new Date(lastActivity as string);
     }
 
     const createdAt = data["createdAt"];
     let createdAtDate: Date | null = null;
     if (createdAt) {
-      createdAtDate = createdAt instanceof Timestamp ? createdAt.toDate() : new Date(createdAt as string);
+      createdAtDate =
+        createdAt instanceof Timestamp
+          ? createdAt.toDate()
+          : new Date(createdAt as string);
     }
 
     return {
@@ -189,7 +205,11 @@ export class SystemStateService implements ISystemStateService {
     try {
       const firestore = await getFirestoreInstance();
       const challengesRef = collection(firestore, "daily_challenges");
-      const snapshot = await withTimeout(getDocs(challengesRef), QUERY_TIMEOUT_MS, null);
+      const snapshot = await withTimeout(
+        getDocs(challengesRef),
+        QUERY_TIMEOUT_MS,
+        null
+      );
 
       if (!snapshot) {
         return [];
@@ -201,13 +221,19 @@ export class SystemStateService implements ISystemStateService {
         const scheduledDate = data["scheduledDate"];
         let scheduledDateObj: Date | null = null;
         if (scheduledDate) {
-          scheduledDateObj = scheduledDate instanceof Timestamp ? scheduledDate.toDate() : new Date(scheduledDate as string);
+          scheduledDateObj =
+            scheduledDate instanceof Timestamp
+              ? scheduledDate.toDate()
+              : new Date(scheduledDate as string);
         }
 
         const createdAt = data["createdAt"];
         let createdAtDate: Date | null = null;
         if (createdAt) {
-          createdAtDate = createdAt instanceof Timestamp ? createdAt.toDate() : new Date(createdAt as string);
+          createdAtDate =
+            createdAt instanceof Timestamp
+              ? createdAt.toDate()
+              : new Date(createdAt as string);
         }
 
         challenges.push({
@@ -237,7 +263,11 @@ export class SystemStateService implements ISystemStateService {
     try {
       const firestore = await getFirestoreInstance();
       const challengesRef = collection(firestore, "train_challenges");
-      const snapshot = await withTimeout(getDocs(challengesRef), QUERY_TIMEOUT_MS, null);
+      const snapshot = await withTimeout(
+        getDocs(challengesRef),
+        QUERY_TIMEOUT_MS,
+        null
+      );
 
       if (!snapshot) {
         return [];
@@ -249,7 +279,10 @@ export class SystemStateService implements ISystemStateService {
         const createdAt = data["createdAt"];
         let createdAtDate: Date | null = null;
         if (createdAt) {
-          createdAtDate = createdAt instanceof Timestamp ? createdAt.toDate() : new Date(createdAt as string);
+          createdAtDate =
+            createdAt instanceof Timestamp
+              ? createdAt.toDate()
+              : new Date(createdAt as string);
         }
 
         challenges.push({
@@ -279,7 +312,11 @@ export class SystemStateService implements ISystemStateService {
     try {
       const firestore = await getFirestoreInstance();
       const announcementsRef = collection(firestore, "announcements");
-      const snapshot = await withTimeout(getDocs(announcementsRef), QUERY_TIMEOUT_MS, null);
+      const snapshot = await withTimeout(
+        getDocs(announcementsRef),
+        QUERY_TIMEOUT_MS,
+        null
+      );
 
       if (!snapshot) {
         return [];
@@ -291,20 +328,27 @@ export class SystemStateService implements ISystemStateService {
         const createdAt = data["createdAt"];
         let createdAtDate: Date | null = null;
         if (createdAt) {
-          createdAtDate = createdAt instanceof Timestamp ? createdAt.toDate() : new Date(createdAt as string);
+          createdAtDate =
+            createdAt instanceof Timestamp
+              ? createdAt.toDate()
+              : new Date(createdAt as string);
         }
 
         const expiresAt = data["expiresAt"];
         let expiresAtDate: Date | null = null;
         if (expiresAt) {
-          expiresAtDate = expiresAt instanceof Timestamp ? expiresAt.toDate() : new Date(expiresAt as string);
+          expiresAtDate =
+            expiresAt instanceof Timestamp
+              ? expiresAt.toDate()
+              : new Date(expiresAt as string);
         }
 
         announcements.push({
           id: doc.id,
           title: (data["title"] as string) ?? "Untitled",
           message: (data["message"] as string) ?? "",
-          severity: (data["severity"] as "info" | "warning" | "critical") ?? "info",
+          severity:
+            (data["severity"] as "info" | "warning" | "critical") ?? "info",
           audiences: (data["audiences"] as string[]) ?? [],
           displayMode: (data["displayMode"] as "modal" | "banner") ?? "modal",
           createdAt: createdAtDate,

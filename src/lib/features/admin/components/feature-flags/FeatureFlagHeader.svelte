@@ -114,7 +114,8 @@
   .toggle-btn.active {
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     color: var(--theme-accent);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent) 15%, transparent);
   }
 
   /* Hide text on very small screens, show only icons */

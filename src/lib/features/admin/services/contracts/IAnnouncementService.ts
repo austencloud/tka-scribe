@@ -10,7 +10,9 @@ export interface IAnnouncementService {
   /**
    * Create a new announcement
    */
-  createAnnouncement(announcement: Omit<Announcement, "id" | "createdAt">): Promise<string>;
+  createAnnouncement(
+    announcement: Omit<Announcement, "id" | "createdAt">
+  ): Promise<string>;
 
   /**
    * Update an existing announcement
@@ -50,5 +52,7 @@ export interface IAnnouncementService {
   /**
    * Search users by name or email
    */
-  searchUsers(query: string): Promise<Array<{ uid: string; displayName: string; email: string }>>;
+  searchUsers(
+    query: string
+  ): Promise<Array<{ uid: string; displayName: string; email: string }>>;
 }

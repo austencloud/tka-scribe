@@ -157,7 +157,11 @@
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%, var(--theme-accent, #6366f1) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
+      var(--theme-accent, #6366f1) 100%
+    );
     border: none;
     border-radius: 10px;
     color: white;
@@ -169,7 +173,8 @@
 
   .create-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .create-button:active {

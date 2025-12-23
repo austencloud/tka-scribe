@@ -37,7 +37,11 @@ const QUERY_TIMEOUT_MS = 10000;
 /**
  * Wrap a promise with a timeout
  */
-function withTimeout<T>(promise: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  fallback: T
+): Promise<T> {
   return Promise.race([
     promise,
     new Promise<T>((resolve) => {
@@ -61,9 +65,10 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    */
   private async isFirestoreAvailable(): Promise<boolean> {
     const firestore = await getFirestoreInstance();
-    return firestore !== null && firestore !== undefined && auth.currentUser !== null;
+    return (
+      firestore !== null && firestore !== undefined && auth.currentUser !== null
+    );
   }
-
 
   /**
    * Get summary metrics
@@ -72,7 +77,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    *
    * OPTIMIZED: Uses SystemStateService for unified data hub
    */
-  async getSummaryMetrics(_timeRange: AnalyticsTimeRange): Promise<SummaryMetrics> {
+  async getSummaryMetrics(
+    _timeRange: AnalyticsTimeRange
+  ): Promise<SummaryMetrics> {
     // Return empty metrics if Firebase is not available
     if (!(await this.isFirestoreAvailable())) {
       return this.getEmptySummaryMetrics();
@@ -126,7 +133,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Primary: Uses activity log events for accurate per-day tracking
    * Fallback: Uses lastActivityDate from user documents
    */
-  async getUserActivity(timeRange: AnalyticsTimeRange): Promise<UserActivityPoint[]> {
+  async getUserActivity(
+    timeRange: AnalyticsTimeRange
+  ): Promise<UserActivityPoint[]> {
     if (!(await this.isFirestoreAvailable())) {
       return [];
     }
@@ -135,7 +144,8 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
     try {
       // Try to get activity from the activity log service first
-      const dailyActiveUsers = await this.activityLogService.getDailyActiveUsers(startDate, days);
+      const dailyActiveUsers =
+        await this.activityLogService.getDailyActiveUsers(startDate, days);
 
       // If we got data from activity logs, use it
       if (dailyActiveUsers.size > 0) {
@@ -173,7 +183,11 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     try {
       const firestore = await getFirestoreInstance();
       const usersRef = collection(firestore, "users");
-      const snapshot = await withTimeout(getDocs(usersRef), QUERY_TIMEOUT_MS, null);
+      const snapshot = await withTimeout(
+        getDocs(usersRef),
+        QUERY_TIMEOUT_MS,
+        null
+      );
 
       if (!snapshot || snapshot.empty) {
         return this.getEmptyActivityPoints(startDate, days);
@@ -185,7 +199,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
         const data = doc.data();
         const lastActivity = data["lastActivityDate"];
         if (lastActivity) {
-          const date = lastActivity.toDate ? lastActivity.toDate() : new Date(lastActivity);
+          const date = lastActivity.toDate
+            ? lastActivity.toDate()
+            : new Date(lastActivity);
           userActivityDates.push(date);
         }
       });
@@ -223,7 +239,10 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
       return activityPoints;
     } catch (error) {
-      console.error("Failed to get user activity from lastActivityDate:", error);
+      console.error(
+        "Failed to get user activity from lastActivityDate:",
+        error
+      );
       return this.getEmptyActivityPoints(startDate, days);
     }
   }
@@ -231,7 +250,10 @@ export class AnalyticsDataService implements IAnalyticsDataService {
   /**
    * Generate empty activity points for error cases
    */
-  private getEmptyActivityPoints(startDate: Date, days: number): UserActivityPoint[] {
+  private getEmptyActivityPoints(
+    startDate: Date,
+    days: number
+  ): UserActivityPoint[] {
     const activityPoints: UserActivityPoint[] = [];
     for (let i = 0; i < days; i++) {
       const dayDate = new Date(startDate);
@@ -248,7 +270,12 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    */
   async getContentStatistics(): Promise<ContentStatistics> {
     if (!(await this.isFirestoreAvailable())) {
-      return { totalSequences: 0, publicSequences: 0, totalViews: 0, totalShares: 0 };
+      return {
+        totalSequences: 0,
+        publicSequences: 0,
+        totalViews: 0,
+        totalShares: 0,
+      };
     }
 
     const systemState = await this.systemStateService.getSystemState();
@@ -287,7 +314,11 @@ export class AnalyticsDataService implements IAnalyticsDataService {
     try {
       const firestore = await getFirestoreInstance();
       const sequencesRef = collection(firestore, "publicSequences");
-      const q = query(sequencesRef, orderBy("views", "desc"), limit(limitCount));
+      const q = query(
+        sequencesRef,
+        orderBy("views", "desc"),
+        limit(limitCount)
+      );
       const snapshot = await withTimeout(getDocs(q), QUERY_TIMEOUT_MS, null);
 
       if (!snapshot) {
@@ -302,7 +333,10 @@ export class AnalyticsDataService implements IAnalyticsDataService {
           name: (data["name"] as string) ?? "Untitled",
           word: (data["word"] as string) ?? "",
           views: (data["views"] as number) ?? 0,
-          creator: (data["creatorName"] as string) ?? (data["creatorId"] as string) ?? "Unknown",
+          creator:
+            (data["creatorName"] as string) ??
+            (data["creatorId"] as string) ??
+            "Unknown",
         });
       });
 
@@ -375,7 +409,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
   /**
    * Get activity event breakdown by type for the time range
    */
-  async getEventTypeBreakdown(timeRange: AnalyticsTimeRange): Promise<EventTypeBreakdown[]> {
+  async getEventTypeBreakdown(
+    timeRange: AnalyticsTimeRange
+  ): Promise<EventTypeBreakdown[]> {
     if (!(await this.isFirestoreAvailable())) {
       return [];
     }
@@ -426,7 +462,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Get module usage statistics for the time range
    * Now supports module:tab format (e.g., "create:generator")
    */
-  async getModuleUsage(timeRange: AnalyticsTimeRange): Promise<ModuleUsageData[]> {
+  async getModuleUsage(
+    timeRange: AnalyticsTimeRange
+  ): Promise<ModuleUsageData[]> {
     if (!(await this.isFirestoreAvailable())) {
       return [];
     }
@@ -445,7 +483,10 @@ export class AnalyticsDataService implements IAnalyticsDataService {
       const moduleCounts = new Map<string, number>();
       for (const event of events) {
         const moduleWithTab = (event.metadata?.module as string) ?? "unknown";
-        moduleCounts.set(moduleWithTab, (moduleCounts.get(moduleWithTab) ?? 0) + 1);
+        moduleCounts.set(
+          moduleWithTab,
+          (moduleCounts.get(moduleWithTab) ?? 0) + 1
+        );
       }
 
       // Module and tab display config
@@ -467,10 +508,19 @@ export class AnalyticsDataService implements IAnalyticsDataService {
         "learn:play": { label: "Learn → Play", color: "#f472b6" },
         // Discover tabs
         "explore:gallery": { label: "Explore → Gallery", color: "#a855f7" },
-        "explore:collections": { label: "Explore → Collections", color: "#f59e0b" },
+        "explore:collections": {
+          label: "Explore → Collections",
+          color: "#f59e0b",
+        },
         // Community tabs
-        "community:leaderboards": { label: "Community → Leaderboards", color: "#fbbf24" },
-        "community:creators": { label: "Community → Creators", color: "#06b6d4" },
+        "community:leaderboards": {
+          label: "Community → Leaderboards",
+          color: "#fbbf24",
+        },
+        "community:creators": {
+          label: "Community → Creators",
+          color: "#06b6d4",
+        },
         "community:support": { label: "Community → Support", color: "#ec4899" },
         // Animate tabs
         "animate:single": { label: "Animate → Single", color: "#3b82f6" },
@@ -562,8 +612,16 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    */
   private async fetchUserDetails(
     userIds: string[]
-  ): Promise<Map<string, { displayName: string; photoURL: string | null; email: string | null }>> {
-    const userMap = new Map<string, { displayName: string; photoURL: string | null; email: string | null }>();
+  ): Promise<
+    Map<
+      string,
+      { displayName: string; photoURL: string | null; email: string | null }
+    >
+  > {
+    const userMap = new Map<
+      string,
+      { displayName: string; photoURL: string | null; email: string | null }
+    >();
 
     if (userIds.length === 0) return userMap;
 
@@ -583,14 +641,27 @@ export class AnalyticsDataService implements IAnalyticsDataService {
 
             return {
               userId,
-              displayName: (data["displayName"] as string) ?? (data["email"] as string).split("@")[0] ?? "Unknown User",
+              displayName:
+                (data["displayName"] as string) ??
+                (data["email"] as string).split("@")[0] ??
+                "Unknown User",
               photoURL,
               email: (data["email"] as string) ?? null,
             };
           }
-          return { userId, displayName: "Unknown User", photoURL: null, email: null };
+          return {
+            userId,
+            displayName: "Unknown User",
+            photoURL: null,
+            email: null,
+          };
         } catch {
-          return { userId, displayName: "Unknown User", photoURL: null, email: null };
+          return {
+            userId,
+            displayName: "Unknown User",
+            photoURL: null,
+            email: null,
+          };
         }
       });
 
@@ -617,7 +688,9 @@ export class AnalyticsDataService implements IAnalyticsDataService {
    * Google and Facebook profile picture URLs stored in Firebase Auth can expire.
    * Using the provider ID to construct a fresh URL is more reliable.
    */
-  private getReliableProfilePictureURL(userData: Record<string, unknown>): string | null {
+  private getReliableProfilePictureURL(
+    userData: Record<string, unknown>
+  ): string | null {
     // 1. Try Google ID first - most reliable
     const googleId = userData["googleId"] as string | undefined;
     if (googleId) {

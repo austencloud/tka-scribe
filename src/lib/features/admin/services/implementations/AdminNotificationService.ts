@@ -40,12 +40,20 @@ export class AdminNotificationService {
 
       // Create notification for each admin (respecting preferences)
       const notificationPromises = adminIds.map((adminId) =>
-        this.createAdminNotification(adminId, newUserId, newUserEmail, newUserDisplayName)
+        this.createAdminNotification(
+          adminId,
+          newUserId,
+          newUserEmail,
+          newUserDisplayName
+        )
       );
 
       await Promise.all(notificationPromises);
     } catch (error) {
-      console.error("❌ [AdminNotificationService] Failed to notify admins of new signup:", error);
+      console.error(
+        "❌ [AdminNotificationService] Failed to notify admins of new signup:",
+        error
+      );
       // Don't throw - notifications are non-critical
     }
   }
@@ -125,7 +133,8 @@ export class AdminNotificationService {
    */
   private async shouldNotify(adminId: string): Promise<boolean> {
     try {
-      const preferences = await notificationPreferencesService.getPreferences(adminId);
+      const preferences =
+        await notificationPreferencesService.getPreferences(adminId);
       const prefKey = getPreferenceKeyForType("admin-new-user-signup");
 
       if (!prefKey) {

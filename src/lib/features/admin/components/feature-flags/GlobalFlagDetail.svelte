@@ -35,7 +35,8 @@
 
   const flagStyle = $derived(getFeatureIconAndColor(selectedFlag.id));
   const hasChanges = $derived(
-    editedMinimumRole !== selectedFlag.minimumRole || editedEnabled !== selectedFlag.enabled
+    editedMinimumRole !== selectedFlag.minimumRole ||
+      editedEnabled !== selectedFlag.enabled
   );
 </script>
 
@@ -65,14 +66,19 @@
       </div>
 
       <div class="detail-section">
-        <FlagStatusDisplay enabled={selectedFlag.enabled} minimumRole={selectedFlag.minimumRole} />
+        <FlagStatusDisplay
+          enabled={selectedFlag.enabled}
+          minimumRole={selectedFlag.minimumRole}
+        />
       </div>
     </div>
   {/snippet}
 
   {#snippet actions()}
     {#if hasChanges}
-      <AdminActionButton variant="secondary" onclick={onReset}>Reset</AdminActionButton>
+      <AdminActionButton variant="secondary" onclick={onReset}
+        >Reset</AdminActionButton
+      >
     {/if}
     <AdminActionButton
       variant="primary"

@@ -174,7 +174,11 @@
     width: 24px;
     height: 24px;
     border-radius: var(--radius-2026-xs);
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
     color: var(--semantic-error, #fca5a5);
     font-size: 11px;
   }

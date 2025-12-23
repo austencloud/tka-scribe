@@ -8,7 +8,7 @@
 
   let { modules, loading = false }: Props = $props();
 
-  const maxViews = $derived(Math.max(...modules.map(m => m.views), 1));
+  const maxViews = $derived(Math.max(...modules.map((m) => m.views), 1));
 </script>
 
 <section class="section">
@@ -23,7 +23,10 @@
             <span class="skeleton-views"></span>
           </div>
           <div class="module-bar">
-            <div class="module-bar-fill skeleton-bar" style="width: {80 - i * 12}%"></div>
+            <div
+              class="module-bar-fill skeleton-bar"
+              style="width: {80 - i * 12}%"
+            ></div>
           </div>
         </div>
       {/each}
@@ -33,16 +36,22 @@
       {#each modules as module}
         <div class="module-row">
           <div class="module-header">
-            <div class="module-icon" style="background: {module.color}20; color: {module.color}">
+            <div
+              class="module-icon"
+              style="background: {module.color}20; color: {module.color}"
+            >
               <i class="fas fa-cube"></i>
             </div>
             <span class="module-label">{module.label}</span>
-            <span class="module-views">{module.views.toLocaleString()} views</span>
+            <span class="module-views"
+              >{module.views.toLocaleString()} views</span
+            >
           </div>
           <div class="module-bar">
             <div
               class="module-bar-fill"
-              style="width: {(module.views / maxViews) * 100}%; background: {module.color}"
+              style="width: {(module.views / maxViews) *
+                100}%; background: {module.color}"
             ></div>
           </div>
         </div>
@@ -51,7 +60,10 @@
   {:else}
     <div class="no-data-message">
       <i class="fas fa-info-circle"></i>
-      <span>No module navigation data yet. Usage stats will appear as users navigate between modules.</span>
+      <span
+        >No module navigation data yet. Usage stats will appear as users
+        navigate between modules.</span
+      >
     </div>
   {/if}
 </section>
@@ -178,7 +190,12 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

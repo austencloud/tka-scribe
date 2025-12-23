@@ -52,11 +52,7 @@
     <!-- Content Area -->
     <main class="admin-content">
       {#if !activeSection || activeSection === "users"}
-        <div
-          id="users-panel"
-          role="tabpanel"
-          aria-labelledby="users-tab"
-        >
+        <div id="users-panel" role="tabpanel" aria-labelledby="users-tab">
           <ActiveUsersPanel />
         </div>
       {:else if activeSection === "challenges" && adminChallengeService}

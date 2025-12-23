@@ -126,7 +126,8 @@
       <button
         class="stat-button"
         class:selected={statusFilter === "inactive"}
-        onclick={() => setFilter(statusFilter === "inactive" ? "all" : "inactive")}
+        onclick={() =>
+          setFilter(statusFilter === "inactive" ? "all" : "inactive")}
       >
         <span class="stat-value inactive">{inactiveCount}</span>
         <span class="stat-label">Inactive</span>

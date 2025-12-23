@@ -53,7 +53,9 @@ export class AnnouncementService implements IAnnouncementService {
       showAsModal: doc.showAsModal as boolean,
       createdAt: this.firestoreToDate(doc.createdAt),
       createdBy: doc.createdBy as string,
-      expiresAt: doc.expiresAt ? this.firestoreToDate(doc.expiresAt) : undefined,
+      expiresAt: doc.expiresAt
+        ? this.firestoreToDate(doc.expiresAt)
+        : undefined,
       targetUserId: doc.targetUserId as string | undefined,
       actionUrl: doc.actionUrl as string | undefined,
       actionLabel: doc.actionLabel as string | undefined,
@@ -67,7 +69,10 @@ export class AnnouncementService implements IAnnouncementService {
     announcement: Omit<Announcement, "id" | "createdAt">
   ): Promise<string> {
     const firestore = await getFirestoreInstance();
-    const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
+    const announcementsRef = collection(
+      firestore,
+      this.ANNOUNCEMENTS_COLLECTION
+    );
     const newDoc = doc(announcementsRef);
 
     // Build data object, excluding undefined fields (Firestore doesn't accept undefined)
@@ -115,14 +120,21 @@ export class AnnouncementService implements IAnnouncementService {
     if (updates.title !== undefined) updateData.title = updates.title;
     if (updates.message !== undefined) updateData.message = updates.message;
     if (updates.severity !== undefined) updateData.severity = updates.severity;
-    if (updates.targetAudience !== undefined) updateData.targetAudience = updates.targetAudience;
-    if (updates.showAsModal !== undefined) updateData.showAsModal = updates.showAsModal;
-    if (updates.targetUserId !== undefined) updateData.targetUserId = updates.targetUserId;
-    if (updates.actionUrl !== undefined) updateData.actionUrl = updates.actionUrl;
-    if (updates.actionLabel !== undefined) updateData.actionLabel = updates.actionLabel;
+    if (updates.targetAudience !== undefined)
+      updateData.targetAudience = updates.targetAudience;
+    if (updates.showAsModal !== undefined)
+      updateData.showAsModal = updates.showAsModal;
+    if (updates.targetUserId !== undefined)
+      updateData.targetUserId = updates.targetUserId;
+    if (updates.actionUrl !== undefined)
+      updateData.actionUrl = updates.actionUrl;
+    if (updates.actionLabel !== undefined)
+      updateData.actionLabel = updates.actionLabel;
 
     if (updates.expiresAt !== undefined) {
-      updateData.expiresAt = updates.expiresAt ? Timestamp.fromDate(updates.expiresAt) : null;
+      updateData.expiresAt = updates.expiresAt
+        ? Timestamp.fromDate(updates.expiresAt)
+        : null;
     }
 
     await updateDoc(docRef, updateData);
@@ -142,7 +154,10 @@ export class AnnouncementService implements IAnnouncementService {
    */
   async getAllAnnouncements(): Promise<Announcement[]> {
     const firestore = await getFirestoreInstance();
-    const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
+    const announcementsRef = collection(
+      firestore,
+      this.ANNOUNCEMENTS_COLLECTION
+    );
     const q = query(announcementsRef, orderBy("createdAt", "desc"));
 
     const snapshot = await getDocs(q);
@@ -155,11 +170,16 @@ export class AnnouncementService implements IAnnouncementService {
   async getActiveAnnouncementsForUser(userId: string): Promise<Announcement[]> {
     const firestore = await getFirestoreInstance();
     const now = Timestamp.now();
-    const announcementsRef = collection(firestore, this.ANNOUNCEMENTS_COLLECTION);
+    const announcementsRef = collection(
+      firestore,
+      this.ANNOUNCEMENTS_COLLECTION
+    );
 
     // Get user document to check admin status
     const userDoc = await getDoc(doc(firestore, `users/${userId}`));
-    const isAdmin = userDoc.exists() ? (userDoc.data()?.isAdmin as boolean) : false;
+    const isAdmin = userDoc.exists()
+      ? (userDoc.data()?.isAdmin as boolean)
+      : false;
 
     // Get all announcements (we'll filter targeting client-side)
     const snapshot = await getDocs(
@@ -237,7 +257,8 @@ export class AnnouncementService implements IAnnouncementService {
   async getUndismissedModalAnnouncements(
     userId: string
   ): Promise<Announcement[]> {
-    const activeAnnouncements = await this.getActiveAnnouncementsForUser(userId);
+    const activeAnnouncements =
+      await this.getActiveAnnouncementsForUser(userId);
 
     // Filter for modal-only and check dismissal status
     const modalAnnouncements = activeAnnouncements.filter((a) => a.showAsModal);

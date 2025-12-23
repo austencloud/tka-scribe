@@ -6,7 +6,10 @@
 
 import type { DailyChallenge } from "$lib/shared/gamification/domain/models/achievement-models";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ChallengeScheduleEntry, ChallengeFormData } from '../../domain/models/AdminModels';
+import type {
+  ChallengeScheduleEntry,
+  ChallengeFormData,
+} from "../../domain/models/AdminModels";
 
 export interface IAdminChallengeService {
   /**

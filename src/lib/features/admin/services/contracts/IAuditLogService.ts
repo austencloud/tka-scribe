@@ -5,19 +5,19 @@
  */
 
 export type AuditActionType =
-  | 'role_changed'
-  | 'account_disabled'
-  | 'account_enabled'
-  | 'user_data_reset'
-  | 'user_deleted'
-  | 'challenge_created'
-  | 'challenge_updated'
-  | 'challenge_deleted'
-  | 'announcement_created'
-  | 'announcement_updated'
-  | 'announcement_deleted'
-  | 'flag_updated'
-  | 'other';
+  | "role_changed"
+  | "account_disabled"
+  | "account_enabled"
+  | "user_data_reset"
+  | "user_deleted"
+  | "challenge_created"
+  | "challenge_updated"
+  | "challenge_deleted"
+  | "announcement_created"
+  | "announcement_updated"
+  | "announcement_deleted"
+  | "flag_updated"
+  | "other";
 
 export interface AuditLogEntry {
   id: string;
@@ -53,5 +53,8 @@ export interface IAuditLogService {
   /**
    * Get audit log entries for a specific action type
    */
-  getActionsByType(actionType: AuditActionType, limit: number): Promise<AuditLogEntry[]>;
+  getActionsByType(
+    actionType: AuditActionType,
+    limit: number
+  ): Promise<AuditLogEntry[]>;
 }
