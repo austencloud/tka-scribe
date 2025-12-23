@@ -61,16 +61,22 @@ export function setSettingsPortalOrigin(x: number, y: number) {
   const yPercent = (y / vh) * 100;
   // Store for reuse on exit
   navigationCoordinator.settingsEntryOrigin = { x: xPercent, y: yPercent };
-  document.documentElement.style.setProperty('--portal-origin-x', `${xPercent}%`);
-  document.documentElement.style.setProperty('--portal-origin-y', `${yPercent}%`);
+  document.documentElement.style.setProperty(
+    "--portal-origin-x",
+    `${xPercent}%`
+  );
+  document.documentElement.style.setProperty(
+    "--portal-origin-y",
+    `${yPercent}%`
+  );
 }
 
 // Restore the original entry origin for exit animation
 // Creates consistent "dive in / pull out from same spot" experience
 export function restoreSettingsPortalOrigin() {
   const { x, y } = navigationCoordinator.settingsEntryOrigin;
-  document.documentElement.style.setProperty('--portal-origin-x', `${x}%`);
-  document.documentElement.style.setProperty('--portal-origin-y', `${y}%`);
+  document.documentElement.style.setProperty("--portal-origin-x", `${x}%`);
+  document.documentElement.style.setProperty("--portal-origin-y", `${y}%`);
 }
 
 // Derived state as functions (Svelte 5 doesn't allow exporting $derived directly)
@@ -149,7 +155,17 @@ export function moduleSections() {
 
 // Module order for determining slide direction
 // Settings is included for transition support but accessed via footer gear icon
-const MODULE_ORDER = ['dashboard', 'create', 'discover', 'learn', 'compose', 'train', 'feedback', 'admin', 'settings'];
+const MODULE_ORDER = [
+  "dashboard",
+  "create",
+  "discover",
+  "learn",
+  "compose",
+  "train",
+  "feedback",
+  "admin",
+  "settings",
+];
 
 // Module change handler with View Transitions
 // targetTab: Optional tab to navigate to (used when clicking a section in a different module)
@@ -179,28 +195,32 @@ export async function handleModuleChange(
 
   // Coming FROM dashboard - skip (Dashboard.svelte handles dive-in animation)
   // Exception: settings portal has its own animation that should always play
-  const isLeavingDashboard = currentMod === 'dashboard';
+  const isLeavingDashboard = currentMod === "dashboard";
 
   // Going TO dashboard - use pull-out animation
-  const isGoingToDashboard = moduleId === 'dashboard';
+  const isGoingToDashboard = moduleId === "dashboard";
 
   // Settings portal transitions - special "dimension" feel
-  const isEnteringSettings = moduleId === 'settings';
-  const isExitingSettings = currentMod === 'settings';
+  const isEnteringSettings = moduleId === "settings";
+  const isExitingSettings = currentMod === "settings";
 
   // Allow view transitions when:
   // 1. Not leaving dashboard (normal case)
   // 2. OR entering/exiting settings (settings portal always animates)
-  const shouldUseViewTransition = !isLeavingDashboard || isEnteringSettings || isExitingSettings;
+  const shouldUseViewTransition =
+    !isLeavingDashboard || isEnteringSettings || isExitingSettings;
 
-  if (typeof doc.startViewTransition === 'function' && shouldUseViewTransition) {
+  if (
+    typeof doc.startViewTransition === "function" &&
+    shouldUseViewTransition
+  ) {
     if (isEnteringSettings) {
       // ENTERING SETTINGS - Portal expand animation
       // Store where we came from for the return journey (persist to survive HMR)
       navigationCoordinator.previousModuleBeforeSettings = currentMod;
       savePreviousModule(currentMod);
 
-      document.documentElement.classList.add('settings-portal-enter');
+      document.documentElement.classList.add("settings-portal-enter");
 
       const transition = doc.startViewTransition(async () => {
         navigationState.setCurrentModule(moduleId, targetTab);
@@ -208,7 +228,7 @@ export async function handleModuleChange(
       });
 
       transition.finished.finally(() => {
-        document.documentElement.classList.remove('settings-portal-enter');
+        document.documentElement.classList.remove("settings-portal-enter");
         if (!shouldSkipHistory) {
           pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
         }
@@ -217,7 +237,7 @@ export async function handleModuleChange(
       // EXITING SETTINGS - Portal collapse animation
       // Restore original entry point for consistent "pull out" to same spot
       restoreSettingsPortalOrigin();
-      document.documentElement.classList.add('settings-portal-exit');
+      document.documentElement.classList.add("settings-portal-exit");
 
       const transition = doc.startViewTransition(async () => {
         navigationState.setCurrentModule(moduleId, targetTab);
@@ -225,7 +245,7 @@ export async function handleModuleChange(
       });
 
       transition.finished.finally(() => {
-        document.documentElement.classList.remove('settings-portal-exit');
+        document.documentElement.classList.remove("settings-portal-exit");
         navigationCoordinator.previousModuleBeforeSettings = null;
         savePreviousModule(null);
         if (!shouldSkipHistory) {
@@ -234,7 +254,7 @@ export async function handleModuleChange(
       });
     } else if (isGoingToDashboard) {
       // Pull-out effect when going back to dashboard
-      document.documentElement.classList.add('back-transition');
+      document.documentElement.classList.add("back-transition");
 
       const transition = doc.startViewTransition(async () => {
         navigationState.setCurrentModule(moduleId, targetTab);
@@ -242,15 +262,20 @@ export async function handleModuleChange(
       });
 
       transition.finished.finally(() => {
-        document.documentElement.classList.remove('back-transition');
+        document.documentElement.classList.remove("back-transition");
         if (!shouldSkipHistory) {
           pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
         }
       });
     } else {
       // Module-to-module: horizontal slide
-      document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
-      document.documentElement.classList.add(goingRight ? 'module-slide-left' : 'module-slide-right');
+      document.documentElement.classList.remove(
+        "module-slide-left",
+        "module-slide-right"
+      );
+      document.documentElement.classList.add(
+        goingRight ? "module-slide-left" : "module-slide-right"
+      );
 
       const transition = doc.startViewTransition(async () => {
         navigationState.setCurrentModule(moduleId, targetTab);
@@ -258,7 +283,10 @@ export async function handleModuleChange(
       });
 
       transition.finished.finally(() => {
-        document.documentElement.classList.remove('module-slide-left', 'module-slide-right');
+        document.documentElement.classList.remove(
+          "module-slide-left",
+          "module-slide-right"
+        );
         if (!shouldSkipHistory) {
           pushHistoryState(moduleId, targetTab ?? navigationState.activeTab);
         }
@@ -277,13 +305,13 @@ export async function handleModuleChange(
 // Tab order for determining slide direction (per module)
 // Note: Compose module playback is an overlay, not a tab
 const TAB_ORDERS: Record<string, string[]> = {
-  create: ['assembler', 'constructor', 'generator', 'editor', 'export'],
-  discover: ['sequences', 'collections', 'creators', 'library'],
-  learn: ['concepts', 'play', 'codex'],
-  compose: ['arrange', 'browse'],
-  train: ['drills', 'challenges', 'progress'],
-  collect: ['achievements', 'badges', 'stats'],
-  feedback: ['submit', 'manage'],
+  create: ["assembler", "constructor", "generator", "editor", "export"],
+  discover: ["sequences", "collections", "creators", "library"],
+  learn: ["concepts", "play", "codex"],
+  compose: ["arrange", "browse"],
+  train: ["drills", "challenges", "progress"],
+  collect: ["achievements", "badges", "stats"],
+  feedback: ["submit", "manage"],
 };
 
 // Section change handler with View Transitions
@@ -325,17 +353,25 @@ export function handleSectionChange(
   };
 
   // Use View Transitions if available
-  if (typeof doc.startViewTransition === 'function') {
+  if (typeof doc.startViewTransition === "function") {
     // Add direction class for CSS to target
-    document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
-    document.documentElement.classList.add(goingRight ? 'tab-slide-left' : 'tab-slide-right');
+    document.documentElement.classList.remove(
+      "tab-slide-left",
+      "tab-slide-right"
+    );
+    document.documentElement.classList.add(
+      goingRight ? "tab-slide-left" : "tab-slide-right"
+    );
 
     const transition = doc.startViewTransition(() => {
       updateState();
     });
 
     transition.finished.finally(() => {
-      document.documentElement.classList.remove('tab-slide-left', 'tab-slide-right');
+      document.documentElement.classList.remove(
+        "tab-slide-left",
+        "tab-slide-right"
+      );
       if (!shouldSkipHistory) {
         pushHistoryState(module as ModuleId, sectionId);
       }
@@ -412,7 +448,10 @@ let historyInitialized = false;
  * Parse the URL hash and extract module/section IDs
  * Expected format: #moduleId or #moduleId/sectionId
  */
-function parseHashNavigation(): { moduleId: ModuleId; sectionId?: string } | null {
+function parseHashNavigation(): {
+  moduleId: ModuleId;
+  sectionId?: string;
+} | null {
   if (typeof window === "undefined") return null;
 
   const hash = window.location.hash;
@@ -429,7 +468,9 @@ function parseHashNavigation(): { moduleId: ModuleId; sectionId?: string } | nul
 
   // If section is provided, validate it exists for this module
   if (sectionId) {
-    const validSection = moduleDefinition.sections.some((s) => s.id === sectionId);
+    const validSection = moduleDefinition.sections.some(
+      (s) => s.id === sectionId
+    );
     if (!validSection) {
       // Module is valid but section isn't - return module only
       return { moduleId };
@@ -450,7 +491,10 @@ export function initializeNavigationHistory() {
     // URL has a valid module/section - navigate to it (overrides localStorage)
     if (hashNav.moduleId !== navigationState.currentModule) {
       navigationState.setCurrentModule(hashNav.moduleId, hashNav.sectionId);
-    } else if (hashNav.sectionId && hashNav.sectionId !== navigationState.activeTab) {
+    } else if (
+      hashNav.sectionId &&
+      hashNav.sectionId !== navigationState.activeTab
+    ) {
       navigationState.setActiveTab(hashNav.sectionId);
     }
   }
@@ -466,9 +510,15 @@ export function initializeNavigationHistory() {
     const targetSection = state.sectionId;
 
     if (targetModule !== navigationState.currentModule) {
-      await handleModuleChange(targetModule, targetSection, { skipHistory: true, initiatedByHistory: true });
+      await handleModuleChange(targetModule, targetSection, {
+        skipHistory: true,
+        initiatedByHistory: true,
+      });
     } else if (targetSection && targetSection !== navigationState.activeTab) {
-      handleSectionChange(targetSection, { skipHistory: true, initiatedByHistory: true });
+      handleSectionChange(targetSection, {
+        skipHistory: true,
+        initiatedByHistory: true,
+      });
     } else if (!targetSection && navigationState.activeTab) {
       // Module with no stored tab; clear any lingering tab state
       navigationState.setActiveTab("");

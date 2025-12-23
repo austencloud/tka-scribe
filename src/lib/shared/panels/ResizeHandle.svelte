@@ -129,7 +129,9 @@
   .handle-visual {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 2px;
-    transition: background 0.15s ease, transform 0.15s ease;
+    transition:
+      background 0.15s ease,
+      transform 0.15s ease;
   }
 
   .horizontal .handle-visual {

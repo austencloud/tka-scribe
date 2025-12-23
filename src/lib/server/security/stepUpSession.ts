@@ -67,10 +67,13 @@ export function verifyStepUpToken(params: {
   if (!safeEqual(sigB64, expectedSig)) return null;
 
   try {
-    const claims = JSON.parse(base64urlDecode(payloadB64).toString("utf8")) as StepUpClaims;
+    const claims = JSON.parse(
+      base64urlDecode(payloadB64).toString("utf8")
+    ) as StepUpClaims;
     const now = params.now ?? Math.floor(Date.now() / 1000);
     if (!claims?.uid || typeof claims.uid !== "string") return null;
-    if (typeof claims.exp !== "number" || typeof claims.iat !== "number") return null;
+    if (typeof claims.exp !== "number" || typeof claims.iat !== "number")
+      return null;
     if (now >= claims.exp) return null;
     return claims;
   } catch {

@@ -83,5 +83,6 @@ export async function clearAllGalleryCaches(): Promise<void> {
 
 // Make it available globally for easy console access
 if (typeof window !== "undefined") {
-  (window as unknown as Record<string, unknown>).__clearGalleryCache = clearAllGalleryCaches;
+  (window as unknown as Record<string, unknown>).__clearGalleryCache =
+    clearAllGalleryCaches;
 }

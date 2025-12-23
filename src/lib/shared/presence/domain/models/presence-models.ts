@@ -97,7 +97,10 @@ export function computeActivityStatus(
 /**
  * Format "Active X ago" string for display (Facebook-style)
  */
-export function formatActivityTime(lastActivity: number, online: boolean): string {
+export function formatActivityTime(
+  lastActivity: number,
+  online: boolean
+): string {
   if (!online) {
     return formatLastSeenTime(lastActivity);
   }

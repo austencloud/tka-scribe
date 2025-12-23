@@ -41,7 +41,9 @@
 
     // Resolve sheet router service
     try {
-      sheetRouterService = resolve<ISheetRouterService>(TYPES.ISheetRouterService);
+      sheetRouterService = resolve<ISheetRouterService>(
+        TYPES.ISheetRouterService
+      );
     } catch (error) {
       console.error("Failed to resolve SheetRouterService:", error);
       return;
@@ -50,17 +52,19 @@
     const cleanupFns: Array<() => void> = [];
 
     // Listen for route changes (spotlight, etc.)
-    const cleanupRouteListener = sheetRouterService.onRouteChange((state: RouteState) => {
-      spotlightSequenceId = state.spotlight || null;
+    const cleanupRouteListener = sheetRouterService.onRouteChange(
+      (state: RouteState) => {
+        spotlightSequenceId = state.spotlight || null;
 
-      // Sync with legacy spotlight state if needed
-      if (state.spotlight && !getShowSpotlight()) {
-        // Route opened spotlight - SpotlightViewer will handle fetching
-      } else if (!state.spotlight && getShowSpotlight()) {
-        // Route closed spotlight
-        closeSpotlightViewer();
+        // Sync with legacy spotlight state if needed
+        if (state.spotlight && !getShowSpotlight()) {
+          // Route opened spotlight - SpotlightViewer will handle fetching
+        } else if (!state.spotlight && getShowSpotlight()) {
+          // Route closed spotlight
+          closeSpotlightViewer();
+        }
       }
-    });
+    );
     cleanupFns.push(cleanupRouteListener);
 
     // Initialize spotlight from URL on mount

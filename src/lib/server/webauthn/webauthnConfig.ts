@@ -11,4 +11,3 @@ export function getWebAuthnRP(event: RequestEvent): {
 
   return { rpID, rpName, origin };
 }
-

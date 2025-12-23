@@ -553,7 +553,7 @@
     gap: 4px;
   }
 
-  /* Small devices (iPhone SE, small phones): Fixed compact canvas */
+  /* Small devices (iPhone SE, small phones): Canvas expands to fill space */
   @media (max-width: 430px) and (max-height: 752px) {
     .canvas-container {
       padding: 8px !important;
@@ -565,15 +565,15 @@
     }
 
     .content-wrapper.mobile-expanded :global(.canvas-area) {
-      flex: 0 0 auto;
+      flex: 1 1 auto;
       min-height: 200px;
-      max-height: 280px;
+      max-height: none;
     }
 
     .content-wrapper.mobile-expanded :global(.controls-panel) {
-      flex: 1 1 0;
+      flex: 0 0 auto;
       min-height: 0;
-      overflow-y: auto;
+      overflow-y: visible;
       max-height: none;
       padding: 8px;
       gap: 8px;
@@ -592,11 +592,13 @@
     }
 
     .content-wrapper.mobile-expanded :global(.canvas-area) {
+      flex: 1 1 auto;
       min-height: 180px;
-      max-height: 240px;
+      max-height: none;
     }
 
     .content-wrapper.mobile-expanded :global(.controls-panel) {
+      flex: 0 0 auto;
       padding: 6px;
       gap: 6px;
     }

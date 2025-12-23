@@ -48,7 +48,10 @@ export function createPersistenceHelper<T>(options: PersistenceOptions<T>) {
       // Deep merge with defaults to handle schema evolution
       return mergeWithDefaults(parsed, defaultValue);
     } catch (error) {
-      console.error(`Failed to load state from localStorage (key: ${key}):`, error);
+      console.error(
+        `Failed to load state from localStorage (key: ${key}):`,
+        error
+      );
       return structuredClone(defaultValue);
     }
   }
@@ -62,7 +65,10 @@ export function createPersistenceHelper<T>(options: PersistenceOptions<T>) {
     try {
       localStorage.setItem(key, JSON.stringify(state));
     } catch (error) {
-      console.error(`Failed to save state to localStorage (key: ${key}):`, error);
+      console.error(
+        `Failed to save state to localStorage (key: ${key}):`,
+        error
+      );
     }
   }
 
@@ -90,15 +96,27 @@ export function createPersistenceHelper<T>(options: PersistenceOptions<T>) {
  * Preserves structure while ensuring all default keys exist
  */
 function mergeWithDefaults<T>(current: T, defaults: T): T {
-  if (typeof defaults !== "object" || defaults === null || Array.isArray(defaults)) {
+  if (
+    typeof defaults !== "object" ||
+    defaults === null ||
+    Array.isArray(defaults)
+  ) {
     return current ?? defaults;
   }
 
   const result = { ...defaults };
 
-  if (typeof current === "object" && current !== null && !Array.isArray(current)) {
+  if (
+    typeof current === "object" &&
+    current !== null &&
+    !Array.isArray(current)
+  ) {
     for (const key in current) {
-      if (key in defaults && typeof defaults[key as keyof T] === "object" && !Array.isArray(defaults[key as keyof T])) {
+      if (
+        key in defaults &&
+        typeof defaults[key as keyof T] === "object" &&
+        !Array.isArray(defaults[key as keyof T])
+      ) {
         (result as Record<string, unknown>)[key] = mergeWithDefaults(
           current[key],
           defaults[key as keyof T]

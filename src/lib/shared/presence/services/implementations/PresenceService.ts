@@ -181,7 +181,9 @@ export class PresenceService implements IPresenceService {
   ): () => void {
     const presenceListRef = ref(database, "presence");
 
-    const handleValue = (snapshot: { val: () => Record<string, UserPresence> | null }) => {
+    const handleValue = (snapshot: {
+      val: () => Record<string, UserPresence> | null;
+    }) => {
       const data = snapshot.val();
       if (!data) {
         callback([]);

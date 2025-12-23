@@ -1,6 +1,6 @@
 /**
  * SVG Color Utilities
- * 
+ *
  * Centralized color transformation for SVGs across the entire application.
  * This single source of truth prevents inconsistencies when preserving
  * accent colors during color transformations.
@@ -15,7 +15,7 @@ import { MotionColor } from "../pictograph/shared/domain/enums/pictograph-enums"
 export const ACCENT_COLORS_TO_PRESERVE = [
   "#c9ac68", // Gold/tan color used for minihoop grip
   "#ffffff", // White - used for background shapes/accents
-  "#fff",    // White shorthand
+  "#fff", // White shorthand
 ] as const;
 
 /**
@@ -43,7 +43,7 @@ export function shouldPreserveColor(color: string): boolean {
 /**
  * Apply color transformation to an SVG string.
  * Preserves accent colors, transparent fills, and "none" values.
- * 
+ *
  * @param svgText - The raw SVG string
  * @param targetColor - The color to apply (hex string like "#2E3192")
  * @param options - Optional configuration
@@ -136,7 +136,7 @@ export function applyColorToSvg(
 /**
  * Apply motion color to an SVG string.
  * Convenience wrapper that uses the standard motion color map.
- * 
+ *
  * @param svgText - The raw SVG string
  * @param motionColor - The MotionColor enum value
  * @param options - Optional configuration
@@ -151,9 +151,10 @@ export function applyMotionColorToSvg(
     makeClassNamesUnique?: boolean;
   } = {}
 ): string {
-  const targetColor = MOTION_COLOR_MAP[motionColor] || MOTION_COLOR_MAP[MotionColor.BLUE];
+  const targetColor =
+    MOTION_COLOR_MAP[motionColor] || MOTION_COLOR_MAP[MotionColor.BLUE];
   const colorSuffix = motionColor.toLowerCase();
-  
+
   return applyColorToSvg(svgText, targetColor, {
     ...options,
     colorSuffix,

@@ -60,7 +60,7 @@
   // Initialize sizes from panel defaults
   $effect(() => {
     if (sizes.length !== panels.length) {
-      sizes = panels.map(p => p.defaultSize ?? 1);
+      sizes = panels.map((p) => p.defaultSize ?? 1);
     }
   });
 
@@ -74,9 +74,10 @@
   function handleDrag(index: number, delta: number) {
     if (!containerRef || dragStartSizes.length === 0) return;
 
-    const containerSize = direction === "horizontal"
-      ? containerRef.clientWidth
-      : containerRef.clientHeight;
+    const containerSize =
+      direction === "horizontal"
+        ? containerRef.clientWidth
+        : containerRef.clientHeight;
 
     // Account for gaps
     const totalGaps = (panels.length - 1) * gap;
@@ -92,10 +93,10 @@
     // Get constraints
     const panel1 = panels[index];
     const panel2 = panels[index + 1];
-    const minFlex1 = panel1.minSize ? (panel1.minSize / pixelsPerFlex) : 0.1;
-    const minFlex2 = panel2.minSize ? (panel2.minSize / pixelsPerFlex) : 0.1;
-    const maxFlex1 = panel1.maxSize ? (panel1.maxSize / pixelsPerFlex) : Infinity;
-    const maxFlex2 = panel2.maxSize ? (panel2.maxSize / pixelsPerFlex) : Infinity;
+    const minFlex1 = panel1.minSize ? panel1.minSize / pixelsPerFlex : 0.1;
+    const minFlex2 = panel2.minSize ? panel2.minSize / pixelsPerFlex : 0.1;
+    const maxFlex1 = panel1.maxSize ? panel1.maxSize / pixelsPerFlex : Infinity;
+    const maxFlex2 = panel2.maxSize ? panel2.maxSize / pixelsPerFlex : Infinity;
 
     // Calculate new sizes with constraints
     let newSize1 = dragStartSizes[index] + deltaFlex;

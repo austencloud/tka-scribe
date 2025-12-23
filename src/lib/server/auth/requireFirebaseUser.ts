@@ -14,7 +14,9 @@ function getBearerToken(event: RequestEvent): string | null {
   return match?.[1] ?? null;
 }
 
-export async function requireFirebaseUser(event: RequestEvent): Promise<FirebaseUser> {
+export async function requireFirebaseUser(
+  event: RequestEvent
+): Promise<FirebaseUser> {
   const token = getBearerToken(event);
   if (!token) {
     throw Object.assign(new Error("Missing Authorization Bearer token"), {
@@ -36,7 +38,8 @@ export async function requireFirebaseUser(event: RequestEvent): Promise<Firebase
           : typeof displayName === "string"
             ? displayName
             : undefined,
-      authTime: typeof decoded.auth_time === "number" ? decoded.auth_time : undefined,
+      authTime:
+        typeof decoded.auth_time === "number" ? decoded.auth_time : undefined,
     };
   } catch {
     throw Object.assign(new Error("Invalid or expired token"), {

@@ -3,10 +3,7 @@ CircleQuarterIcon.svelte - Custom SVG icon showing a 90° quarter circle segment
 Matches the visual style of Font Awesome's circle-half-stroke icon
 -->
 <script lang="ts">
-  let {
-    size = "1em",
-    color = "currentColor",
-  } = $props<{
+  let { size = "1em", color = "currentColor" } = $props<{
     size?: string;
     color?: string;
   }>();

@@ -5,6 +5,7 @@ This document describes the standardized approach for adding localStorage persis
 ## Overview
 
 All panel states that should persist across page refreshes now use a unified pattern:
+
 1. **Persistence Utility** - Generic helper for load/save operations
 2. **Reactive $effect** - Automatic save-on-change using Svelte 5 runes
 3. **Type-safe** - Full TypeScript support with proper typing
@@ -71,11 +72,13 @@ $effect(() => {
 Creates a persistence helper for a specific state type.
 
 **Parameters:**
+
 - `key` - localStorage key (string)
 - `defaultValue` - Default value (type T, used for type inference)
 - `version` - (Optional) For future migration support
 
 **Returns:** Object with methods:
+
 - `load(): T` - Load from localStorage with error handling
 - `save(state: T): void` - Save to localStorage
 - `setupAutoSave(state: T): void` - Called from $effect for auto-save
@@ -162,28 +165,34 @@ $effect(() => {
 ## Applied Examples in TKA-Studio
 
 ### Animation Panel (`animation-panel-state.svelte.ts`)
+
 - Persists: `speed` (0.1 to 3.0), `shouldLoop` (boolean)
 - Use: Restores playback preferences on page refresh
 
 ### Video Record Settings (`video-record-settings.svelte.ts`)
+
 - Persists: `referenceView`, animation settings, grid settings
 - Use: Saves all recording configuration across sessions
 
 ### Sequence Actions Panel (`panel-coordination-state.svelte.ts` + `SequenceActionsPanel.svelte`)
+
 - Persists: Panel open state + editing mode (turns/transforms)
 - Use: Reopens panel in same state on page refresh
 
 ### Compose Module (`compose-module-state.svelte.ts`)
+
 - Persists: Current tab (arrange/browse), animation mode
 - Use: Restores tab and playback mode on navigation
 
 ### Animation Settings (`animation-settings-state.svelte.ts`)
+
 - Persists: BPM, loop, trail settings (with migration logic)
 - Use: Global animation preferences across entire app
 
 ## Error Handling
 
 The utility automatically handles:
+
 - Missing localStorage (SSR/non-browser environment)
 - Invalid JSON (corrupted data)
 - Storage quota exceeded
@@ -201,7 +210,8 @@ The helper provides deep merging for evolving schemas:
 interface Settings {
   oldField: string;
   newField: string; // Added in v0.2
-  nested: { // Added in v0.3
+  nested: {
+    // Added in v0.3
     value: number;
   };
 }
@@ -234,20 +244,22 @@ expect(localStorage.getItem("key")).toContain("new value");
 ## Common Mistakes to Avoid
 
 ❌ **Don't:** Call `save()` directly in setters
+
 ```typescript
 // OLD PATTERN - DON'T DO THIS
 setSpeed: (speed) => {
   this.speed = speed;
   saveSpeed(speed); // Manual save call - no longer needed
-}
+};
 ```
 
 ✅ **Do:** Let $effect handle persistence
+
 ```typescript
 // NEW PATTERN - USE THIS
 setSpeed: (speed) => {
   this.speed = speed; // $effect detects change and saves
-}
+};
 
 $effect(() => {
   void this.speed;
@@ -256,6 +268,7 @@ $effect(() => {
 ```
 
 ❌ **Don't:** Forget to access properties in $effect
+
 ```typescript
 // WRONG - won't trigger on changes
 $effect(() => {
@@ -264,6 +277,7 @@ $effect(() => {
 ```
 
 ✅ **Do:** Access all tracked properties
+
 ```typescript
 // RIGHT - triggers on any property change
 $effect(() => {
@@ -285,6 +299,7 @@ When refactoring existing state with old pattern:
 5. **Add:** Single `$effect()` with property access + `setupAutoSave()`
 
 See commit history for refactoring examples:
+
 - `animation-panel-state.svelte.ts`
 - `compose-module-state.svelte.ts`
 - `animation-settings-state.svelte.ts`
