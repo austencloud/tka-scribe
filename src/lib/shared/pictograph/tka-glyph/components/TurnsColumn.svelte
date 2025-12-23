@@ -13,7 +13,7 @@ Props:
 - x, y: Base position (matches TKAGlyph positioning)
 -->
 <script lang="ts">
-import type { PictographData } from "../../shared/domain/models/PictographData";
+  import type { PictographData } from "../../shared/domain/models/PictographData";
   import type { Dimensions } from "../utils/turn-position-calculator";
   import {
     parseTurnsTuple,
@@ -23,7 +23,10 @@ import type { PictographData } from "../../shared/domain/models/PictographData";
   } from "../utils/turn-tuple-parser";
   import { calculateTurnPositions } from "../utils/turn-position-calculator";
   import { TurnColorInterpreter } from "../services/implementations/TurnColorInterpreter";
-  import { getLetterDimensions, preloadLetterDimensions } from "./TKAGlyph.svelte";
+  import {
+    getLetterDimensions,
+    preloadLetterDimensions,
+  } from "./TKAGlyph.svelte";
 
   let {
     turnsTuple = "(s, 0, 0)",

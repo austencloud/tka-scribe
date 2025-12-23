@@ -5,9 +5,12 @@
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
 
-import type { IArrowPathResolver } from '../contracts/IArrowPathResolver';
+import type { IArrowPathResolver } from "../contracts/IArrowPathResolver";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
-import { MotionType, Orientation } from "../../../../shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  Orientation,
+} from "../../../../shared/domain/enums/pictograph-enums";
 import { injectable } from "inversify";
 import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 
@@ -67,7 +70,8 @@ export class ArrowPathResolver implements IArrowPathResolver {
 
     // Folder is based on START orientation only ("from_radial" = starts from radial)
     const radialPath =
-      startOrientation === Orientation.IN || startOrientation === Orientation.OUT
+      startOrientation === Orientation.IN ||
+      startOrientation === Orientation.OUT
         ? "from_radial"
         : "from_nonradial";
 

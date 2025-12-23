@@ -14,7 +14,10 @@ import type { PictographData } from "../../domain/models/PictographData";
 import { createPictographData } from "../../domain/factories/createPictographData";
 import type { IEnumMapper } from "../../../../foundation/services/contracts/data/IEnumMapper";
 import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
-import type { CSVRow, ICSVPictographParser } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
+import type {
+  CSVRow,
+  ICSVPictographParser,
+} from "../../../../foundation/services/contracts/data/ICSVPictographParser";
 import { Orientation } from "../../domain/enums/pictograph-enums";
 import { TYPES } from "../../../../inversify/types";
 import { inject, injectable } from "inversify";

@@ -5,11 +5,11 @@
  * Independent sub-state - no dependencies on arrow state.
  */
 
-import type { PictographData } from "../../domain/models/PictographData"
+import type { PictographData } from "../../domain/models/PictographData";
 import type { MotionData } from "../../domain/models/MotionData";
 import type { PropType } from "../../../prop/domain/enums/PropType";
-import type { PropAssets } from '../../../prop/domain/models/PropAssets';
-import type { PropPosition } from '../../../prop/domain/models/PropPosition';
+import type { PropAssets } from "../../../prop/domain/models/PropAssets";
+import type { PropPosition } from "../../../prop/domain/models/PropPosition";
 import type { IPropPlacementService } from "../../../prop/services/contracts/IPropPlacementService";
 import type { IPropSvgLoader } from "../../../prop/services/contracts/IPropSvgLoader";
 import type { IPropTypeConfigurationService } from "../../../prop/services/contracts/IPropTypeConfigurationService";

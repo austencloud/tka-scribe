@@ -160,13 +160,16 @@ export class TurnColorInterpreter {
    * Get the actual motion type, considering prefloat motion type for float motions
    */
   private getActualMotionType(motion: MotionData): string {
-    const motionType = (motion as unknown as Record<string, unknown>).motionType;
-    const motionTypeStr = typeof motionType === 'string' ? motionType.toLowerCase() : '';
+    const motionType = (motion as unknown as Record<string, unknown>)
+      .motionType;
+    const motionTypeStr =
+      typeof motionType === "string" ? motionType.toLowerCase() : "";
 
     // If it's a float motion, use the prefloatMotionType instead
     if (motionTypeStr === "float") {
-      const prefloatType = (motion as unknown as Record<string, unknown>).prefloatMotionType;
-      if (typeof prefloatType === 'string') {
+      const prefloatType = (motion as unknown as Record<string, unknown>)
+        .prefloatMotionType;
+      if (typeof prefloatType === "string") {
         return prefloatType.toLowerCase();
       }
     }
@@ -177,8 +180,10 @@ export class TurnColorInterpreter {
    * Check if a motion is a shift motion (pro/anti/float)
    */
   private isShiftMotion(motion: MotionData): boolean {
-    const motionType = (motion as unknown as Record<string, unknown>).motionType;
-    const motionTypeStr = typeof motionType === 'string' ? motionType.toLowerCase() : '';
+    const motionType = (motion as unknown as Record<string, unknown>)
+      .motionType;
+    const motionTypeStr =
+      typeof motionType === "string" ? motionType.toLowerCase() : "";
     return ["pro", "anti", "float"].includes(motionTypeStr);
   }
 

@@ -10,9 +10,15 @@ Uses pure runes instead of stores for reactivity.
 
   // Module-level caches shared across ALL TKAGlyph instances
   // This prevents redundant fetches when multiple glyphs render the same letter
-  const globalDimensionsCache = new Map<string, { width: number; height: number }>();
+  const globalDimensionsCache = new Map<
+    string,
+    { width: number; height: number }
+  >();
   const globalSvgDataUrlCache = new Map<string, string>(); // Cache SVG as data URL for instant rendering
-  const globalLoadingPromises = new Map<string, Promise<{ width: number; height: number }>>();
+  const globalLoadingPromises = new Map<
+    string,
+    Promise<{ width: number; height: number }>
+  >();
 
   /**
    * Get cached data URL for a letter, or null if not cached.
@@ -25,7 +31,10 @@ Uses pure runes instead of stores for reactivity.
    * Get cached dimensions for a letter, or default if not cached.
    * Used by TurnsColumn to position turn numbers to the right of the letter.
    */
-  export function getLetterDimensions(letter: string | null | undefined): { width: number; height: number } {
+  export function getLetterDimensions(letter: string | null | undefined): {
+    width: number;
+    height: number;
+  } {
     if (!letter) return { width: 100, height: 100 };
     return globalDimensionsCache.get(letter) ?? { width: 100, height: 100 };
   }
@@ -36,57 +45,77 @@ Uses pure runes instead of stores for reactivity.
    * Caches both dimensions AND the SVG as a data URL for instant rendering.
    * Returns a promise that resolves when all letters are cached.
    */
-  export async function preloadLetterDimensions(letters: (string | null | undefined)[]): Promise<void> {
-    const uniqueLetters = [...new Set(letters.filter((l): l is string => l != null && l.trim() !== ""))];
+  export async function preloadLetterDimensions(
+    letters: (string | null | undefined)[]
+  ): Promise<void> {
+    const uniqueLetters = [
+      ...new Set(
+        letters.filter((l): l is string => l != null && l.trim() !== "")
+      ),
+    ];
 
-    await Promise.all(uniqueLetters.map(async (letter) => {
-      // Already cached - skip
-      if (globalDimensionsCache.has(letter) && globalSvgDataUrlCache.has(letter)) return;
+    await Promise.all(
+      uniqueLetters.map(async (letter) => {
+        // Already cached - skip
+        if (
+          globalDimensionsCache.has(letter) &&
+          globalSvgDataUrlCache.has(letter)
+        )
+          return;
 
-      // Already loading - wait for it
-      if (globalLoadingPromises.has(letter)) {
-        await globalLoadingPromises.get(letter);
-        return;
-      }
-
-      // Load and cache
-      const loadPromise = (async () => {
-        try {
-          const svgPath = getPath(letter as LetterType);
-          const response = await fetch(svgPath);
-          if (!response.ok) throw new Error(`Failed to fetch ${svgPath}`);
-
-          const svgText = await response.text();
-          const viewBoxMatch = svgText.match(/viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i);
-
-          const dims = viewBoxMatch
-            ? { width: parseFloat(viewBoxMatch[1] || "100"), height: parseFloat(viewBoxMatch[2] || "100") }
-            : { width: 100, height: 100 };
-
-          // Cache dimensions
-          globalDimensionsCache.set(letter, dims);
-
-          // Cache SVG as data URL for instant rendering (no network request needed)
-          const dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgText)))}`;
-          globalSvgDataUrlCache.set(letter, dataUrl);
-
-          return dims;
-        } catch (error) {
-          console.error(`Failed to preload letter dimensions for ${letter}:`, error);
-          return { width: 50, height: 50 };
-        } finally {
-          globalLoadingPromises.delete(letter);
+        // Already loading - wait for it
+        if (globalLoadingPromises.has(letter)) {
+          await globalLoadingPromises.get(letter);
+          return;
         }
-      })();
 
-      globalLoadingPromises.set(letter, loadPromise);
-      await loadPromise;
-    }));
+        // Load and cache
+        const loadPromise = (async () => {
+          try {
+            const svgPath = getPath(letter as LetterType);
+            const response = await fetch(svgPath);
+            if (!response.ok) throw new Error(`Failed to fetch ${svgPath}`);
+
+            const svgText = await response.text();
+            const viewBoxMatch = svgText.match(
+              /viewBox\s*=\s*"[\d.-]+\s+[\d.-]+\s+([\d.-]+)\s+([\d.-]+)"/i
+            );
+
+            const dims = viewBoxMatch
+              ? {
+                  width: parseFloat(viewBoxMatch[1] || "100"),
+                  height: parseFloat(viewBoxMatch[2] || "100"),
+                }
+              : { width: 100, height: 100 };
+
+            // Cache dimensions
+            globalDimensionsCache.set(letter, dims);
+
+            // Cache SVG as data URL for instant rendering (no network request needed)
+            const dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgText)))}`;
+            globalSvgDataUrlCache.set(letter, dataUrl);
+
+            return dims;
+          } catch (error) {
+            console.error(
+              `Failed to preload letter dimensions for ${letter}:`,
+              error
+            );
+            return { width: 50, height: 50 };
+          } finally {
+            globalLoadingPromises.delete(letter);
+          }
+        })();
+
+        globalLoadingPromises.set(letter, loadPromise);
+        await loadPromise;
+      })
+    );
   }
 </script>
 
 <script lang="ts">
-import type { PictographData } from "../../shared/domain/models/PictographData";
+  import type { PictographData } from "../../shared/domain/models/PictographData";
   import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { getLetterImagePath } from "../utils/letter-image-getter";
   import { onMount } from "svelte";

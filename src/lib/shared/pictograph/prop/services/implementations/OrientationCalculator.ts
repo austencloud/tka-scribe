@@ -15,7 +15,10 @@ import {
   Orientation,
   RotationDirection,
 } from "../../../shared/domain/enums/pictograph-enums";
-import { createMotionData, type MotionData } from "../../../shared/domain/models/MotionData";
+import {
+  createMotionData,
+  type MotionData,
+} from "../../../shared/domain/models/MotionData";
 import type { BeatData } from "../../../../../features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "../../../../../features/create/shared/domain/models/StartPositionData";
 import { injectable } from "inversify";
@@ -240,8 +243,11 @@ export class OrientationCalculator implements IOrientationCalculator {
   /**
    * Update start orientations - returns updated beat data
    */
-  updateStartOrientations(nextBeat: BeatData, lastBeat: BeatData | StartPositionData): BeatData {
-    if (nextBeat.isBlank || ('isBlank' in lastBeat && lastBeat.isBlank)) {
+  updateStartOrientations(
+    nextBeat: BeatData,
+    lastBeat: BeatData | StartPositionData
+  ): BeatData {
+    if (nextBeat.isBlank || ("isBlank" in lastBeat && lastBeat.isBlank)) {
       throw new Error("Both beats must have motion data (not be blank)");
     }
 

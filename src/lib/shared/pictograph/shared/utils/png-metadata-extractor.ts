@@ -41,7 +41,9 @@ export class PngMetadataExtractor {
 
       // Parse and return the complete metadata structure
       const parsed = JSON.parse(metadataJson) as Record<string, unknown>;
-      const sequence = parsed['sequence'] as Record<string, unknown>[] | undefined;
+      const sequence = parsed["sequence"] as
+        | Record<string, unknown>[]
+        | undefined;
       return sequence ?? [parsed];
     } catch (error) {
       console.error("Error extracting PNG metadata:", error);
@@ -126,9 +128,15 @@ export class PngMetadataExtractor {
         if (response.ok) {
           const jsonData = (await response.json()) as Record<string, unknown>;
           // Extract sequence array from the sidecar JSON structure
-          const metadata = jsonData['metadata'] as Record<string, unknown> | undefined;
-          const metadataSequence = metadata?.['sequence'] as Record<string, unknown>[] | undefined;
-          const directSequence = jsonData['sequence'] as Record<string, unknown>[] | undefined;
+          const metadata = jsonData["metadata"] as
+            | Record<string, unknown>
+            | undefined;
+          const metadataSequence = metadata?.["sequence"] as
+            | Record<string, unknown>[]
+            | undefined;
+          const directSequence = jsonData["sequence"] as
+            | Record<string, unknown>[]
+            | undefined;
           return metadataSequence ?? directSequence ?? [];
         }
       } catch {
@@ -177,12 +185,21 @@ export class PngMetadataExtractor {
           const response = await fetch(jsonPath);
           if (response.ok) {
             const jsonData = (await response.json()) as Record<string, unknown>;
-            const metadata = jsonData["metadata"] as {
-              sequence: Record<string, unknown>[];
-              date_added?: string;
-              is_favorite?: boolean;
-            } | undefined;
-            return metadata ?? (jsonData as { sequence: Record<string, unknown>[]; date_added?: string; is_favorite?: boolean });
+            const metadata = jsonData["metadata"] as
+              | {
+                  sequence: Record<string, unknown>[];
+                  date_added?: string;
+                  is_favorite?: boolean;
+                }
+              | undefined;
+            return (
+              metadata ??
+              (jsonData as {
+                sequence: Record<string, unknown>[];
+                date_added?: string;
+                is_favorite?: boolean;
+              })
+            );
           }
         } catch (error) {
           // Fall back to version guessing if the specific version fails
@@ -198,12 +215,21 @@ export class PngMetadataExtractor {
         const response = await fetch(jsonPath);
         if (response.ok) {
           const jsonData = (await response.json()) as Record<string, unknown>;
-          const metadata = jsonData["metadata"] as {
-            sequence: Record<string, unknown>[];
-            date_added?: string;
-            is_favorite?: boolean;
-          } | undefined;
-          return metadata ?? (jsonData as { sequence: Record<string, unknown>[]; date_added?: string; is_favorite?: boolean });
+          const metadata = jsonData["metadata"] as
+            | {
+                sequence: Record<string, unknown>[];
+                date_added?: string;
+                is_favorite?: boolean;
+              }
+            | undefined;
+          return (
+            metadata ??
+            (jsonData as {
+              sequence: Record<string, unknown>[];
+              date_added?: string;
+              is_favorite?: boolean;
+            })
+          );
         }
       } catch (error) {
         // Continue to next version silently
@@ -300,18 +326,14 @@ export class PngMetadataExtractor {
       );
 
       const author = String(firstEntry["author"] ?? "MISSING");
-      const startPosition = String(startPositionEntries[0]?.["sequence_start_position"] ?? "MISSING");
+      const startPosition = String(
+        startPositionEntries[0]?.["sequence_start_position"] ?? "MISSING"
+      );
       const level = String(firstEntry["level"] ?? "MISSING");
 
-      console.log(
-        `👤 [UNIFIED METADATA] Author: ${author}`
-      );
-      console.log(
-        `📍 [UNIFIED METADATA] Start Position: ${startPosition}`
-      );
-      console.log(
-        `📊 [UNIFIED METADATA] Level: ${level}`
-      );
+      console.log(`👤 [UNIFIED METADATA] Author: ${author}`);
+      console.log(`📍 [UNIFIED METADATA] Start Position: ${startPosition}`);
+      console.log(`📊 [UNIFIED METADATA] Level: ${level}`);
 
       // Extract motion types for each beat
       console.log(`🎯 [UNIFIED METADATA] Motion types for ${sequenceName}:`);

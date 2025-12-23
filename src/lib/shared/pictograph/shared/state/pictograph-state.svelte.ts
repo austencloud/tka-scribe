@@ -12,13 +12,13 @@ import type { MotionColor } from "../domain/enums/pictograph-enums";
 import type { MotionData } from "../domain/models/MotionData";
 import type { PictographData } from "../domain/models/PictographData";
 import type { PropType } from "../../prop/domain/enums/PropType";
-import { resolve, TYPES, loadSharedModules } from '../../../inversify/di';
+import { resolve, TYPES, loadSharedModules } from "../../../inversify/di";
 import { untrack } from "svelte";
 import { getSettings } from "../../../application/state/app-state.svelte";
 import type { ArrowAssets } from "../../arrow/orchestration/domain/arrow-models";
 import type { IArrowLifecycleManager } from "../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
-import type { PropAssets } from '../../prop/domain/models/PropAssets';
-import type { PropPosition } from '../../prop/domain/models/PropPosition';
+import type { PropAssets } from "../../prop/domain/models/PropAssets";
+import type { PropPosition } from "../../prop/domain/models/PropPosition";
 import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
 import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
 
@@ -97,9 +97,13 @@ export function createPictographState(
         componentManagementService = await resolve<IComponentManagementService>(
           TYPES.IComponentManagementService
         );
-        arrowLifecycleManager = await resolve<IArrowLifecycleManager>(TYPES.IArrowLifecycleManager);
+        arrowLifecycleManager = await resolve<IArrowLifecycleManager>(
+          TYPES.IArrowLifecycleManager
+        );
         propSvgLoader = await resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
-        propPlacementService = await resolve<IPropPlacementService>(TYPES.IPropPlacementService);
+        propPlacementService = await resolve<IPropPlacementService>(
+          TYPES.IPropPlacementService
+        );
         servicesInitialized = true;
       } catch (error) {
         console.error("Failed to initialize pictograph services:", error);
@@ -336,8 +340,8 @@ export function createPictographState(
               color,
               {
                 ...motionData,
-                propType: settingsPropType
-              } as MotionData
+                propType: settingsPropType,
+              } as MotionData,
             ] as [string, MotionData];
           }
 
@@ -345,8 +349,8 @@ export function createPictographState(
         });
 
       // Process all motions in parallel for better performance
-      const motionPromises = motionsWithOverrides
-        .map(async ([color, motionData]: [string, MotionData]) => {
+      const motionPromises = motionsWithOverrides.map(
+        async ([color, motionData]: [string, MotionData]) => {
           try {
             if (!motionData.propPlacementData) {
               throw new Error("No prop placement data available");
@@ -359,10 +363,7 @@ export function createPictographState(
                 motionData.propPlacementData,
                 motionData
               ),
-              propPlacementService!.calculatePlacement(
-                currentData,
-                motionData
-              ),
+              propPlacementService!.calculatePlacement(currentData, motionData),
             ]);
 
             if (!renderData.svgData) {
@@ -389,7 +390,8 @@ export function createPictographState(
               error instanceof Error ? error.message : "Unknown error";
             errors[color] = errorMessage;
           }
-        });
+        }
+      );
 
       await Promise.all(motionPromises);
 
@@ -465,8 +467,8 @@ export function createPictographState(
             color,
             motionData: {
               ...motionData,
-              propType: settingsPropType
-            }
+              propType: settingsPropType,
+            },
           };
         }
 

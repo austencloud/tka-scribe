@@ -189,7 +189,13 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
   // Cubic bezier easing function - implements CSS cubic-bezier
   // Standard "ease" is cubic-bezier(0.25, 0.1, 0.25, 1.0)
-  function cubicBezier(t: number, p1x: number, p1y: number, p2x: number, p2y: number): number {
+  function cubicBezier(
+    t: number,
+    p1x: number,
+    p1y: number,
+    p2x: number,
+    p2y: number
+  ): number {
     // Simple approximation for cubic bezier with x coordinates at 0 and 1
     // Using Newton-Raphson method for better accuracy
     const cx = 3.0 * p1x;
@@ -220,7 +226,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     if (gridMode !== previousGridMode) {
       const previousRotation = cumulativeRotation;
       const direction = getGridRotationDirection();
-      const newRotation = cumulativeRotation + (45 * direction);
+      const newRotation = cumulativeRotation + 45 * direction;
 
       // Animate rotation smoothly if element is available
       if (gridContainerElement) {
@@ -235,14 +241,21 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           // Matches the easing used by arrows and props
           const eased = cubicBezier(progress, 0.25, 0.1, 0.25, 1.0);
 
-          const currentRotation = previousRotation + (newRotation - previousRotation) * eased;
-          gridContainerElement.setAttribute('transform', `rotate(${currentRotation}, 475, 475)`);
+          const currentRotation =
+            previousRotation + (newRotation - previousRotation) * eased;
+          gridContainerElement.setAttribute(
+            "transform",
+            `rotate(${currentRotation}, 475, 475)`
+          );
 
           if (progress < 1) {
             requestAnimationFrame(animate);
           } else {
             // Ensure final value is exact
-            gridContainerElement.setAttribute('transform', `rotate(${newRotation}, 475, 475)`);
+            gridContainerElement.setAttribute(
+              "transform",
+              `rotate(${newRotation}, 475, 475)`
+            );
           }
         };
 

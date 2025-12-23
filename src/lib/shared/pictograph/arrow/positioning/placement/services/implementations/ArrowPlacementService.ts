@@ -9,7 +9,10 @@ import type { MotionType } from "../../../../../shared/domain/enums/pictograph-e
 import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import { jsonCache } from "$lib/shared/pictograph/shared/services/implementations/SimpleJsonCache";
-import type { AllPlacementData, JsonPlacementData } from "../../domain/models/PlacementDataTypes";
+import type {
+  AllPlacementData,
+  JsonPlacementData,
+} from "../../domain/models/PlacementDataTypes";
 import type { IArrowPlacementService } from "../contracts/IArrowPlacementService";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
@@ -74,7 +77,9 @@ export class ArrowPlacementService implements IArrowPlacementService {
 
     // Log when we're loading a new grid mode (helps trace startup issues)
     // Include stack trace to help identify what triggered the load
-    debug.log(`Loading ${actualGridMode} mode placement data (lazy load triggered)`);
+    debug.log(
+      `Loading ${actualGridMode} mode placement data (lazy load triggered)`
+    );
     if (actualGridMode === GridMode.BOX) {
       debug.log(`BOX mode placement load triggered from:`, new Error().stack);
     }

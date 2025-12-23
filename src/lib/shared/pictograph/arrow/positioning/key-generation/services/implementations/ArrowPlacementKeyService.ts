@@ -9,7 +9,7 @@ import { MotionType } from "../../../../../shared/domain/enums/pictograph-enums"
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import { injectable } from "inversify";
-import type { IArrowPlacementKeyService } from '../contracts/IArrowPlacementKeyService';
+import type { IArrowPlacementKeyService } from "../contracts/IArrowPlacementKeyService";
 
 @injectable()
 export class ArrowPlacementKeyService implements IArrowPlacementKeyService {

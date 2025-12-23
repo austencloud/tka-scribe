@@ -24,12 +24,13 @@ export class SpecialPlacementOriKeyGenerator
         const blueLayer = ["in", "out"].includes(blueEndOri) ? 1 : 2;
         const redLayer = ["in", "out"].includes(redEndOri) ? 1 : 2;
 
-
         let key: string;
         if (blueLayer === 1 && redLayer === 1) key = "from_layer1";
         else if (blueLayer === 2 && redLayer === 2) key = "from_layer2";
-        else if (blueLayer === 1 && redLayer === 2) key = "from_layer3_blue1_red2";
-        else if (blueLayer === 2 && redLayer === 1) key = "from_layer3_blue2_red1";
+        else if (blueLayer === 1 && redLayer === 2)
+          key = "from_layer3_blue1_red2";
+        else if (blueLayer === 2 && redLayer === 1)
+          key = "from_layer3_blue2_red1";
         else key = "from_layer1";
 
         return key;

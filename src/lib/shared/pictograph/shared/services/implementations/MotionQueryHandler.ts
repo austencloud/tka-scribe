@@ -193,7 +193,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     gridMode: GridMode
   ): Promise<PictographData[]> {
     try {
-      await this.ensureInitialized(); 
+      await this.ensureInitialized();
 
       if (!this.parsedData) {
         console.error("❌ No parsed CSV data available");

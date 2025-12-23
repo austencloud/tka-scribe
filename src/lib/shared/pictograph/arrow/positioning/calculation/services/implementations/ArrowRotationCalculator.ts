@@ -5,7 +5,7 @@ import {
 } from "../../../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
-import type { ISpecialPlacementService } from '../../../placement/services/contracts/IArrowPlacementService';
+import type { ISpecialPlacementService } from "../../../placement/services/contracts/IArrowPlacementService";
 import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "../../../../../../inversify/types";
@@ -141,16 +141,14 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
     // For OVERRIDE rotation maps, use end orientation (matches how placement data is organized)
     const isEndRadial =
-      endOrientation === Orientation.IN ||
-      endOrientation === Orientation.OUT;
-
+      endOrientation === Orientation.IN || endOrientation === Orientation.OUT;
 
     // STEP 1: Check for rotation override (uses END orientation to match data organization)
     const overrideRotation = await this.checkRotationOverride(
       motion,
       location,
       pictographData,
-      isEndRadial  // Use END orientation for override map selection
+      isEndRadial // Use END orientation for override map selection
     );
 
     if (overrideRotation !== null) {
@@ -159,7 +157,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
     // STEP 2: Use normal rotation maps (uses START orientation for normal rendering)
     const rotationMap = RotationMapSelector.selectStaticMap(
-      isStartRadial,  // Use START orientation for normal map selection
+      isStartRadial, // Use START orientation for normal map selection
       rotationDirection
     );
 
@@ -206,19 +204,20 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
 
     // Determine if end orientation is radial (for override map selection)
     const isEndRadial =
-      endOrientation === Orientation.IN ||
-      endOrientation === Orientation.OUT;
+      endOrientation === Orientation.IN || endOrientation === Orientation.OUT;
 
     // STEP 1: Check for rotation override (uses END orientation to match data organization)
     const overrideRotation = await this.checkRotationOverride(
       motion,
       location,
       pictographData,
-      isEndRadial  // Use END orientation for override map selection
+      isEndRadial // Use END orientation for override map selection
     );
 
     if (overrideRotation !== null) {
-      console.log(`🔄 [DashRotation] ${motion.color} → OVERRIDE angle: ${overrideRotation} (using endOri-based isRadial=${isEndRadial})`);
+      console.log(
+        `🔄 [DashRotation] ${motion.color} → OVERRIDE angle: ${overrideRotation} (using endOri-based isRadial=${isEndRadial})`
+      );
       return overrideRotation;
     }
 
@@ -283,18 +282,23 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     const letter = pictographData?.letter;
 
     if (!pictographData) {
-      console.log(`🔍 [RotationOverride] Skipping - no pictographData for ${motionType}`);
+      console.log(
+        `🔍 [RotationOverride] Skipping - no pictographData for ${motionType}`
+      );
       return null;
     }
     if (!this.specialPlacementService) {
-      console.log(`🔍 [RotationOverride] Skipping - no specialPlacementService for ${letter} ${motionType}`);
+      console.log(
+        `🔍 [RotationOverride] Skipping - no specialPlacementService for ${letter} ${motionType}`
+      );
       return null;
     }
     if (!this.rotationOverrideKeyGenerator) {
-      console.log(`🔍 [RotationOverride] Skipping - no rotationOverrideKeyGenerator for ${letter} ${motionType}`);
+      console.log(
+        `🔍 [RotationOverride] Skipping - no rotationOverrideKeyGenerator for ${letter} ${motionType}`
+      );
       return null;
     }
-
 
     return RotationOverrideChecker.checkAndApplyOverride(
       motion,

@@ -9,8 +9,14 @@ Now with intelligent rotation animation matching prop behavior!
   import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
   import type { MotionData } from "../../../shared/domain/models/MotionData";
   import type { PictographData } from "../../../shared/domain/models/PictographData";
-  import { Orientation, RotationDirection } from "../../../shared/domain/enums/pictograph-enums";
-  import type { ArrowAssets, ArrowPosition } from "../../orchestration/domain/arrow-models";
+  import {
+    Orientation,
+    RotationDirection,
+  } from "../../../shared/domain/enums/pictograph-enums";
+  import type {
+    ArrowAssets,
+    ArrowPosition,
+  } from "../../orchestration/domain/arrow-models";
   import { selectedArrowState } from "../../../../../features/create/shared/state/selected-arrow-state.svelte";
 
   let {

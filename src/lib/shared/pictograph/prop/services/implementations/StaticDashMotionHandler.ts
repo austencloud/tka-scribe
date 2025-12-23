@@ -3,7 +3,10 @@
  */
 
 import { GridLocation, GridMode } from "../../../grid/domain/enums/grid-enums";
-import type { MotionColor, VectorDirection } from "../../../shared/domain/enums/pictograph-enums";
+import type {
+  MotionColor,
+  VectorDirection,
+} from "../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { BoxLoc, DiamondLoc } from "../../domain/direction/DirectionMaps";
 import {

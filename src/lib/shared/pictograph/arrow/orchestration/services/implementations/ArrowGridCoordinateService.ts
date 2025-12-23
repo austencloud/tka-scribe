@@ -11,7 +11,7 @@ import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import { Point } from "fabric";
 import { injectable } from "inversify";
 import { createGridPointData } from "../../../../grid/utils/grid-coordinate-utils";
-import type { IArrowGridCoordinateService } from '../contracts/IArrowGridCoordinateService';
+import type { IArrowGridCoordinateService } from "../contracts/IArrowGridCoordinateService";
 
 @injectable()
 export class ArrowGridCoordinateService implements IArrowGridCoordinateService {

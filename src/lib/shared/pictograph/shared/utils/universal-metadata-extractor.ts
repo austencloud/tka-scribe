@@ -74,7 +74,8 @@ export class UniversalMetadataExtractor {
         );
 
         // PNG metadata has different structure - extract what we need
-        const sequence = (pngMetadata.sequence as Record<string, unknown>[]) || [];
+        const sequence =
+          (pngMetadata.sequence as Record<string, unknown>[]) || [];
         const beats = sequence.filter(
           (step: Record<string, unknown>) =>
             step["letter"] && !step["sequence_start_position"]
@@ -272,7 +273,11 @@ export class UniversalMetadataExtractor {
 
     // Return in original format (without extraction metadata)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { extractionSource: _extractionSource, extractionTime: _extractionTime, ...originalFormat } = result;
+    const {
+      extractionSource: _extractionSource,
+      extractionTime: _extractionTime,
+      ...originalFormat
+    } = result;
     return originalFormat;
   }
 
@@ -318,7 +323,8 @@ export class UniversalMetadataExtractor {
       const differences: string[] = [];
 
       // Extract PNG beats from sequence structure
-      const pngSequence = (pngMetadata.sequence as Record<string, unknown>[]) || [];
+      const pngSequence =
+        (pngMetadata.sequence as Record<string, unknown>[]) || [];
       const pngBeats = pngSequence.filter(
         (step: Record<string, unknown>) =>
           step["letter"] && !step["sequence_start_position"]

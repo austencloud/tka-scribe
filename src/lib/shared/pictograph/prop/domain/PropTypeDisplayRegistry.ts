@@ -294,22 +294,22 @@ export function getNextVariation(propType: PropType): PropType {
 export function getVariationLabel(propType: PropType): string {
   const base = getBasePropType(propType);
   const variants = BASE_TO_VARIANTS[base];
-  
+
   if (!variants || variants.length === 0) {
     return "";
   }
-  
+
   // Base is version 1
   if (propType === base) {
     return "Ver 1";
   }
-  
+
   // Find index in variants
   const index = variants.indexOf(propType);
   if (index >= 0) {
     return `Ver ${index + 2}`;
   }
-  
+
   return "";
 }
 
@@ -319,10 +319,10 @@ export function getVariationLabel(propType: PropType): string {
 export function getVariationIndex(propType: PropType): number {
   const base = getBasePropType(propType);
   if (propType === base) return 0;
-  
+
   const variants = BASE_TO_VARIANTS[base];
   if (!variants) return 0;
-  
+
   const index = variants.indexOf(propType);
   return index >= 0 ? index + 1 : 0;
 }

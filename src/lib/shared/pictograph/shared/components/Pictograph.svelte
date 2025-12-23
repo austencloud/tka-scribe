@@ -308,12 +308,18 @@
   const allComponentsLoaded = $derived.by(() => {
     if (!pictographState.hasValidData) return false;
 
-    // Required components: grid only (props and arrows are pre-loaded by parent)
-    const requiredComponents = ["grid"];
+    // Required components: grid, plus props and arrows must be ready
+    const gridLoaded = loadedComponents.has("grid");
 
-    return requiredComponents.every((component) =>
-      loadedComponents.has(component)
-    );
+    // Check if props and arrows are ready (have positions calculated)
+    const propsReady =
+      pictographState.showProps &&
+      Object.keys(pictographState.propPositions).length > 0;
+    const arrowsReady =
+      pictographState.showArrows &&
+      Object.keys(pictographState.arrowPositions).length > 0;
+
+    return gridLoaded && propsReady && arrowsReady;
   });
 
   // Derive grid mode from pictograph data using Svelte 5 runes

@@ -10,7 +10,7 @@
  * Based on legacy vtg_glyph.py implementation.
  */
 
-import { VTGMode, ElementalType } from '../enums/pictograph-enums';
+import { VTGMode, ElementalType } from "../enums/pictograph-enums";
 import type { Letter } from "../../../../foundation/domain/models/Letter";
 import type { PictographData } from "../models/PictographData";
 import { GridMode, GridPosition } from "../../../grid/domain/enums/grid-enums";

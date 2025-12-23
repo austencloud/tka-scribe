@@ -1,4 +1,4 @@
-import type { PictographData } from '../models/PictographData';
+import type { PictographData } from "../models/PictographData";
 
 export function createPictographData(
   data: Partial<PictographData> = {}

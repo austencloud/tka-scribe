@@ -4,7 +4,10 @@
  * Interface for arrow-specific coordinate functionality using the authoritative grid data.
  */
 
-import type { GridLocation, GridMode } from "../../../../grid/domain/enums/grid-enums";
+import type {
+  GridLocation,
+  GridMode,
+} from "../../../../grid/domain/enums/grid-enums";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { Point } from "fabric";
 

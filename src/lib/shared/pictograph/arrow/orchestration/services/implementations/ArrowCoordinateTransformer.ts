@@ -6,7 +6,7 @@
  */
 
 import { injectable } from "inversify";
-import type { IArrowCoordinateTransformer } from '../contracts/IArrowCoordinateTransformer';
+import type { IArrowCoordinateTransformer } from "../contracts/IArrowCoordinateTransformer";
 
 @injectable()
 export class ArrowCoordinateTransformer implements IArrowCoordinateTransformer {

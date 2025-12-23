@@ -6,7 +6,7 @@
  * - Box locations (NE, SE, SW, NW) in start/end positions = BOX mode
  */
 
-import type { IGridModeDeriver } from '../contracts/IGridModeDeriver';
+import type { IGridModeDeriver } from "../contracts/IGridModeDeriver";
 import { GridLocation, GridMode } from "../../domain/enums/grid-enums";
 import type { GridData } from "../../domain/models/grid-models";
 import type { MotionData } from "../../../shared/domain/models/MotionData";

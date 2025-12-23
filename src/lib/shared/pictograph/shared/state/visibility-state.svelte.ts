@@ -23,7 +23,9 @@ let settingsServiceInstance: any = null;
 async function getSettingsService() {
   if (!browser) return null;
   if (!settingsServiceInstance) {
-    const { settingsService } = await import("../../../settings/state/SettingsState.svelte");
+    const { settingsService } = await import(
+      "../../../settings/state/SettingsState.svelte"
+    );
     settingsServiceInstance = settingsService;
   }
   return settingsServiceInstance;
@@ -60,7 +62,12 @@ export class VisibilityStateManager {
     new Map();
 
   // Dependent glyphs that require both motions to be visible
-  private readonly DEPENDENT_GLYPHS = ["tkaGlyph", "vtgGlyph", "elementalGlyph", "positionsGlyph"];
+  private readonly DEPENDENT_GLYPHS = [
+    "tkaGlyph",
+    "vtgGlyph",
+    "elementalGlyph",
+    "positionsGlyph",
+  ];
 
   // Sub-elements that depend on their parent glyph
   private readonly TKA_SUB_ELEMENTS = ["turnNumbers"];
@@ -117,11 +124,15 @@ export class VisibilityStateManager {
     // Apply persisted settings (only if they exist)
     if (v.tkaGlyph !== undefined) this.settings.tkaGlyph = v.tkaGlyph;
     if (v.vtgGlyph !== undefined) this.settings.vtgGlyph = v.vtgGlyph;
-    if (v.elementalGlyph !== undefined) this.settings.elementalGlyph = v.elementalGlyph;
-    if (v.positionsGlyph !== undefined) this.settings.positionsGlyph = v.positionsGlyph;
-    if (v.reversalIndicators !== undefined) this.settings.reversalIndicators = v.reversalIndicators;
+    if (v.elementalGlyph !== undefined)
+      this.settings.elementalGlyph = v.elementalGlyph;
+    if (v.positionsGlyph !== undefined)
+      this.settings.positionsGlyph = v.positionsGlyph;
+    if (v.reversalIndicators !== undefined)
+      this.settings.reversalIndicators = v.reversalIndicators;
     if (v.turnNumbers !== undefined) this.settings.turnNumbers = v.turnNumbers;
-    if (v.nonRadialPoints !== undefined) this.settings.nonRadialPoints = v.nonRadialPoints;
+    if (v.nonRadialPoints !== undefined)
+      this.settings.nonRadialPoints = v.nonRadialPoints;
 
     // Notify observers that settings have been loaded
     this.notifyObservers(["all"]);
@@ -221,15 +232,11 @@ export class VisibilityStateManager {
     // Always notify "all" observers
     const allObservers = this.observers.get("all");
     if (allObservers) {
-      debug.log(
-        `Notifying ${allObservers.size} "all" observers`
-      );
+      debug.log(`Notifying ${allObservers.size} "all" observers`);
       allObservers.forEach((callback) => callbacksToNotify.add(callback));
     }
 
-    debug.log(
-      `Total callbacks to execute: ${callbacksToNotify.size}`
-    );
+    debug.log(`Total callbacks to execute: ${callbacksToNotify.size}`);
 
     // Execute callbacks
     callbacksToNotify.forEach((callback) => {
@@ -348,9 +355,7 @@ export class VisibilityStateManager {
     if (glyphType in this.settings) {
       (this.settings as unknown as Record<string, boolean>)[glyphType] =
         visible;
-      debug.log(
-        "Notifying observers for glyph change"
-      );
+      debug.log("Notifying observers for glyph change");
       this.notifyObservers(["glyph"]);
       // Persist to storage (async, non-blocking)
       void this.persistSettings();
@@ -402,9 +407,13 @@ export class VisibilityStateManager {
    * Get all visible glyph types
    */
   getVisibleGlyphs(): string[] {
-    return ["tkaGlyph", "reversalIndicators", "vtgGlyph", "elementalGlyph", "positionsGlyph"].filter(
-      (glyph) => this.getGlyphVisibility(glyph)
-    );
+    return [
+      "tkaGlyph",
+      "reversalIndicators",
+      "vtgGlyph",
+      "elementalGlyph",
+      "positionsGlyph",
+    ].filter((glyph) => this.getGlyphVisibility(glyph));
   }
 
   /**

@@ -11,7 +11,7 @@
 
 import { injectable, inject } from "inversify";
 import { TYPES } from "../../../../../../inversify/types";
-import type { PictographData } from "../../../../../shared/domain/models/PictographData"
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation/services/implementations/SpecialPlacementOriKeyGenerator";

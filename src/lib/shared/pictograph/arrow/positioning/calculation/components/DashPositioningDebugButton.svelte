@@ -11,7 +11,7 @@ Usage:
 />
 -->
 <script lang="ts">
-import type { PictographData } from "../../../../shared/domain/models/PictographData";
+  import type { PictographData } from "../../../../shared/domain/models/PictographData";
   // TODO: Restore when useDashPositioningDebug.svelte is implemented
   // import { useDashPositioningDebug } from "../services/implementations/useDashPositioningDebug.svelte";
 
@@ -110,7 +110,11 @@ import type { PictographData } from "../../../../shared/domain/models/Pictograph
 <style>
   .debug-button {
     padding: 8px 16px;
-    background: linear-gradient(135deg, var(--theme-accent, #667eea) 0%, var(--theme-accent-strong, #764ba2) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #667eea) 0%,
+      var(--theme-accent-strong, #764ba2) 100%
+    );
     color: white;
     border: none;
     border-radius: 6px;
@@ -118,12 +122,14 @@ import type { PictographData } from "../../../../shared/domain/models/Pictograph
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .debug-button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .debug-button:active:not(:disabled) {

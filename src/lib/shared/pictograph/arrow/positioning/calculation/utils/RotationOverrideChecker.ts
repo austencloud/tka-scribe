@@ -1,7 +1,7 @@
 import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
-import type { ISpecialPlacementService } from '../../placement/services/contracts/IArrowPlacementService';
+import type { ISpecialPlacementService } from "../../placement/services/contracts/IArrowPlacementService";
 import type { IRotationAngleOverrideKeyGenerator } from "../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { RotationMapSelector } from "./RotationMapSelector";
 import { normalizeRotationDirection } from "./RotationDirectionUtils";
@@ -39,8 +39,6 @@ export class RotationOverrideChecker {
           pictographData
         );
 
-
-
       const hasOverride =
         await specialPlacementService.hasRotationAngleOverride(
           motion,
@@ -48,16 +46,17 @@ export class RotationOverrideChecker {
           overrideKey
         );
 
-
       if (hasOverride) {
         const overrideAngle = this.getRotationFromOverrideMap(
           isRadial,
           location,
           motion.rotationDirection
         );
-        console.log(`🎯 OVERRIDE APPLIED! Angle: ${overrideAngle}° (isRadial=${isRadial}, location=${location}, rotDir=${motion.rotationDirection})`);
+        console.log(
+          `🎯 OVERRIDE APPLIED! Angle: ${overrideAngle}° (isRadial=${isRadial}, location=${location}, rotDir=${motion.rotationDirection})`
+        );
         return overrideAngle;
-      } 
+      }
     } catch (error) {
       // If override check fails, return null to fall through to normal rotation
       console.warn("Rotation override check failed:", error);

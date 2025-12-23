@@ -5,8 +5,10 @@
  * PictographBorderManager dual border system.
  */
 
-
-import { getLetterType, type Letter } from "../../../foundation/domain/models/Letter";
+import {
+  getLetterType,
+  type Letter,
+} from "../../../foundation/domain/models/Letter";
 import { LETTER_TYPE_COLORS } from "../domain/constants/pictograph-constants";
 
 /**

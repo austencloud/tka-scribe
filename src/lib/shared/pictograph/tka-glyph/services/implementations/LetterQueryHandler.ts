@@ -14,9 +14,15 @@ import { inject, injectable, optional } from "inversify";
 import type { ParsedCsvRow } from "../../../../../features/create/generate/shared/domain/csv-handling/CsvModels";
 
 import type { Letter } from "../../../../foundation/domain/models/Letter";
-import type { CSVRow, ICSVPictographParser } from "../../../../foundation/services/contracts/data/ICSVPictographParser";
+import type {
+  CSVRow,
+  ICSVPictographParser,
+} from "../../../../foundation/services/contracts/data/ICSVPictographParser";
 import { GridMode } from "../../../grid/domain/enums/grid-enums";
-import type { ICSVLoader, ILetterQueryHandler } from "../../../../foundation/services/contracts/data/data-contracts";
+import type {
+  ICSVLoader,
+  ILetterQueryHandler,
+} from "../../../../foundation/services/contracts/data/data-contracts";
 
 interface CsvParseError {
   error: string;

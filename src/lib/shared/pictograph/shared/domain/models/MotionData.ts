@@ -13,7 +13,12 @@ import { GridLocation, GridMode } from "../../../grid/domain/enums/grid-enums";
 import { type PropPlacementData } from "../../../prop/domain/models/PropPlacementData";
 import { createPropPlacementData } from "../../../prop/domain/factories/createPropPlacementData";
 import { PropType } from "../../../prop/domain/enums/PropType";
-import { MotionColor, MotionType, RotationDirection, Orientation } from '../enums/pictograph-enums';
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+  Orientation,
+} from "../enums/pictograph-enums";
 
 export interface MotionData {
   readonly motionType: MotionType;

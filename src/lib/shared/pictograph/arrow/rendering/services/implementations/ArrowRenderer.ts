@@ -5,12 +5,16 @@
  *
  */
 
-import type { MotionColor} from "../../../../shared/domain/enums/pictograph-enums";
-import { MotionType, Orientation, RotationDirection } from "../../../../shared/domain/enums/pictograph-enums";
-import type { IArrowPathResolver } from '../contracts/IArrowPathResolver';
-import type { IArrowSvgLoader } from '../contracts/IArrowSvgLoader';
-import type { IArrowSvgParser } from '../contracts/IArrowSvgParser';
-import type { ISvgColorTransformer } from '../contracts/IArrowSvgColorTransformer';
+import type { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "../../../../shared/domain/enums/pictograph-enums";
+import type { IArrowPathResolver } from "../contracts/IArrowPathResolver";
+import type { IArrowSvgLoader } from "../contracts/IArrowSvgLoader";
+import type { IArrowSvgParser } from "../contracts/IArrowSvgParser";
+import type { ISvgColorTransformer } from "../contracts/IArrowSvgColorTransformer";
 
 import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";

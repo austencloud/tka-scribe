@@ -15,13 +15,13 @@
 
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import { resolve, TYPES } from '../../../../../../inversify/bootstrap';
+import { resolve, TYPES } from "../../../../../../inversify/bootstrap";
 import type { IGridModeDeriver } from "../../../../../grid/services/contracts/IGridModeDeriver.ts";
 import { GridMode } from "../../../../../grid/domain/enums/grid-enums.ts";
-import type { PictographData } from "../../../../../shared/domain/models/PictographData"
+import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
-import type { ISpecialPlacementService } from '../contracts/IArrowPlacementService';
+import type { ISpecialPlacementService } from "../contracts/IArrowPlacementService";
 import type { ISpecialPlacementDataService } from "../contracts/ISpecialPlacementDataService";
 import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
 import type { ISpecialPlacementLookupService } from "../contracts/ISpecialPlacementLookupService";
@@ -147,7 +147,6 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     // Step 3: Generate turns tuple
     const turnsTuple = this.tupleGenerator.generateTurnsTuple(pictographData);
 
-
     // Step 4: Check localStorage for user overrides (takes priority)
     const localStorageOverride = this.checkLocalStorageOverride(
       gridMode,
@@ -170,7 +169,6 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     if (!letterData || Object.keys(letterData).length === 0) {
       return false;
     }
-
 
     // Step 6: Lookup rotation override in JSON data
     // Try motion-type-based key first (e.g., static_rot_angle_override)
