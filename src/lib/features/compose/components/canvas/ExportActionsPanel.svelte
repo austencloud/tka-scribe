@@ -141,10 +141,12 @@
 <Drawer
   bind:isOpen={isSettingsOpen}
   placement="bottom"
+  respectLayoutMode={true}
   closeOnBackdrop={true}
   closeOnEscape={true}
   ariaLabel="Export Settings"
   showHandle={true}
+  class="export-settings-sheet"
 >
   <div class="settings-sheet">
     <header class="sheet-header">
@@ -430,12 +432,19 @@
      SETTINGS SHEET
      =========================== */
 
+  /* Export settings sheet drawer styling */
+  :global(.drawer-content.export-settings-sheet) {
+    /* Ensure proper z-index above animation panel */
+    z-index: 1001;
+  }
+
   .settings-sheet {
     display: flex;
     flex-direction: column;
     padding: 20px;
     padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     max-height: 70vh;
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
   }
 
   .sheet-header {

@@ -6,6 +6,7 @@
   - Bilateral prop toggle for both ends vs single end
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import {
     animationSettings,
     TrailMode,
@@ -53,11 +54,19 @@
   );
 
   // Get current trail style from visibility manager (global state)
-  let currentPreset = $state<TrailStyle>("subtle");
+  let currentPreset = $state<TrailStyle>(animationVisibilityManager.getTrailStyle());
 
-  // Sync with visibility manager on mount and changes
-  $effect(() => {
-    currentPreset = animationVisibilityManager.getTrailStyle();
+  // Register as observer to get notified when trail style changes
+  onMount(() => {
+    const handleVisibilityChange = () => {
+      currentPreset = animationVisibilityManager.getTrailStyle();
+    };
+
+    animationVisibilityManager.registerObserver(handleVisibilityChange);
+
+    return () => {
+      animationVisibilityManager.unregisterObserver(handleVisibilityChange);
+    };
   });
 
   // Only show the bilateral toggle when trails are enabled

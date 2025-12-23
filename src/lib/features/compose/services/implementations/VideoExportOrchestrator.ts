@@ -24,6 +24,7 @@ import type {
   VideoExportProgress,
 } from "../contracts/IVideoExportOrchestrator";
 import type { IVideoExportService } from "../contracts/IVideoExportService";
+import type { ICompositeVideoRenderer } from "../contracts/ICompositeVideoRenderer";
 
 interface LetterOverlayAssets {
   image: HTMLImageElement | null;
@@ -46,7 +47,9 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
     @inject(TYPES.ISvgImageService)
     private readonly svgImageService: ISvgImageService,
     @inject(TYPES.IFileDownloadService)
-    private readonly fileDownloadService: IFileDownloadService
+    private readonly fileDownloadService: IFileDownloadService,
+    @inject(TYPES.ICompositeVideoRenderer)
+    private readonly compositeRenderer: ICompositeVideoRenderer
   ) {}
 
   async executeExport(
@@ -130,6 +133,21 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         `📊 Export settings: ${totalFrames} frames @ ${fps} FPS, ${loopCount} loop(s), ${panelState.speed}x speed (${Math.round(panelState.speed * 60)} BPM), ${secondsPerBeat.toFixed(2)}s per beat, frame delay ${frameDelay}ms`
       );
 
+      // Check if composite mode is enabled
+      const isCompositeMode = options.compositeMode && options.compositeMode !== 'none';
+
+      // Initialize composite renderer if in composite mode
+      if (isCompositeMode) {
+        console.log(`🎨 Composite mode enabled: ${options.compositeMode}`);
+        await this.compositeRenderer.initialize(panelState.sequenceData, {
+          orientation: options.compositeMode as 'horizontal' | 'vertical',
+          gridBeatSize: options.gridBeatSize ?? 120,
+          includeStartPosition: options.includeStartPosition ?? false,
+          showBeatNumbers: options.showBeatNumbers ?? true,
+        });
+        await this.compositeRenderer.cacheStaticGrid();
+      }
+
       // CRITICAL: Use actual canvas pixel size, not CSS display size
       // The canvas.width is the actual pixel dimension used for rendering
       // getBoundingClientRect().width would give the CSS display size which is different
@@ -137,8 +155,17 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
 
       // Create offscreen canvas for compositing (so we don't touch the visible canvas)
       const offscreenCanvas = document.createElement("canvas");
-      offscreenCanvas.width = canvas.width;
-      offscreenCanvas.height = canvas.height;
+
+      // Set canvas dimensions based on mode
+      if (isCompositeMode) {
+        const compositeDims = this.compositeRenderer.getCompositeDimensions();
+        offscreenCanvas.width = compositeDims.width;
+        offscreenCanvas.height = compositeDims.height;
+        console.log(`🎨 Composite canvas: ${compositeDims.width}x${compositeDims.height}`);
+      } else {
+        offscreenCanvas.width = canvas.width;
+        offscreenCanvas.height = canvas.height;
+      }
       const offscreenCtx = offscreenCanvas.getContext("2d", {
         willReadFrequently: false,
       });
@@ -179,14 +206,21 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         await this.waitForAnimationFrame();
         await this.waitForAnimationFrame();
 
-        // Copy the live canvas to the offscreen canvas (preserves visible animation)
-        offscreenCtx.clearRect(
-          0,
-          0,
-          offscreenCanvas.width,
-          offscreenCanvas.height
-        );
-        offscreenCtx.drawImage(canvas, 0, 0);
+        // Render frame based on mode
+        if (isCompositeMode) {
+          // Composite mode: render animation + grid + beat highlight
+          const beatIndex = Math.floor(beat);
+          this.compositeRenderer.renderCompositeFrame(canvas, beatIndex, offscreenCanvas);
+        } else {
+          // Normal mode: copy the live canvas to the offscreen canvas (preserves visible animation)
+          offscreenCtx.clearRect(
+            0,
+            0,
+            offscreenCanvas.width,
+            offscreenCanvas.height
+          );
+          offscreenCtx.drawImage(canvas, 0, 0);
+        }
 
         // Get the letter for the current beat
         const beatLetter = this.getLetterForBeat(beat, panelState);
@@ -321,6 +355,11 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       this.restorePlaybackState(playbackController, captureState);
       this._isExporting = false;
       this.shouldCancel = false;
+
+      // Clean up composite renderer if it was used
+      if (options.compositeMode && options.compositeMode !== 'none') {
+        this.compositeRenderer.dispose();
+      }
     }
   }
 

@@ -161,6 +161,11 @@
     return "Vivid";
   });
 
+  // Derive playback mode label for settings summary
+  const playbackModeLabel = $derived(
+    playbackMode === "step" ? "Step" : "Continuous"
+  );
+
   // Get propType for trail controls
   const currentPropType = $derived.by(() => {
     const firstBeat = sequenceData?.beats?.[0];
@@ -217,16 +222,19 @@
         {onStepFullBeatForward}
       />
 
-      <PlaybackModeToggle
-        {playbackMode}
-        {isPlaying}
-        {onPlaybackModeChange}
-        {onPlaybackToggle}
-      />
+      <!-- Hide PlaybackModeToggle on compact mobile - it's in settings sheet instead -->
+      {#if !useCompactControls}
+        <PlaybackModeToggle
+          {playbackMode}
+          {isPlaying}
+          {onPlaybackModeChange}
+          {onPlaybackToggle}
+        />
+      {/if}
     </div>
 
-    <!-- Step Mode Settings Row (shown when step mode active) -->
-    {#if playbackMode === "step"}
+    <!-- Step Mode Settings Row (shown when step mode active and not compact) -->
+    {#if playbackMode === "step" && !useCompactControls}
       <div class="control-row step-settings-container">
         <StepModeSettings
           {stepPlaybackStepSize}
@@ -252,7 +260,7 @@
         >
           <i class="fas fa-sliders-h" aria-hidden="true"></i>
           <span class="settings-btn-label">Settings</span>
-          <span class="settings-summary">{bpm} BPM · {currentTrailPreset}</span>
+          <span class="settings-summary">{playbackModeLabel} · {bpm} BPM</span>
         </button>
       </div>
     {:else}
@@ -297,19 +305,24 @@
   {/if}
 </div>
 
-<!-- Settings Sheet -->
+<!-- Settings Sheet (Playback settings - not export settings) -->
 <AnimationSettingsSheet
   bind:isOpen={isSettingsSheetOpen}
   bind:bpm
   {blueMotionVisible}
   {redMotionVisible}
-  {isCircular}
-  {loopCount}
   {currentPropType}
+  {playbackMode}
+  {stepPlaybackPauseMs}
+  {stepPlaybackStepSize}
+  {isPlaying}
   onBpmChange={handleBpmChange}
   {onToggleBlue}
   {onToggleRed}
-  {onLoopCountChange}
+  {onPlaybackModeChange}
+  {onStepPlaybackPauseMsChange}
+  {onStepPlaybackStepSizeChange}
+  {onPlaybackToggle}
 />
 
 <style>

@@ -25,6 +25,14 @@ export interface VideoExportOrchestratorOptions {
   fps?: number;
   /** Desired output format (mp4 or webm) */
   format?: VideoExportFormat;
+  /** Composite mode: renders animation + grid side-by-side with beat highlighting */
+  compositeMode?: 'none' | 'horizontal' | 'vertical';
+  /** Size of each beat cell in composite grid (default: 120) */
+  gridBeatSize?: number;
+  /** Show beat numbers in composite grid (default: true) */
+  showBeatNumbers?: boolean;
+  /** Include start position in composite grid (default: false) */
+  includeStartPosition?: boolean;
 }
 
 export interface IVideoExportOrchestrator {

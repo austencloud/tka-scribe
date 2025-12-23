@@ -8,31 +8,45 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import AnimationSettingsContent from "./AnimationSettingsContent.svelte";
   import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import type {
+    PlaybackMode,
+    StepPlaybackStepSize,
+  } from "../../state/animation-panel-state.svelte";
 
   let {
     isOpen = $bindable(false),
     bpm = $bindable(60),
     blueMotionVisible = true,
     redMotionVisible = true,
-    isCircular = false,
-    loopCount = 1,
     currentPropType = null,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
+    isPlaying = false,
     onBpmChange = () => {},
     onToggleBlue = () => {},
     onToggleRed = () => {},
-    onLoopCountChange = () => {},
+    onPlaybackModeChange = () => {},
+    onStepPlaybackPauseMsChange = () => {},
+    onStepPlaybackStepSizeChange = () => {},
+    onPlaybackToggle = () => {},
   }: {
     isOpen: boolean;
     bpm: number;
     blueMotionVisible?: boolean;
     redMotionVisible?: boolean;
-    isCircular?: boolean;
-    loopCount?: number;
     currentPropType?: PropType | string | null;
+    playbackMode?: PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: StepPlaybackStepSize;
+    isPlaying?: boolean;
     onBpmChange?: (bpm: number) => void;
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
-    onLoopCountChange?: (count: number) => void;
+    onPlaybackModeChange?: (mode: PlaybackMode) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onPlaybackToggle?: () => void;
   } = $props();
 </script>
 
@@ -63,13 +77,18 @@
         bind:bpm
         {blueMotionVisible}
         {redMotionVisible}
-        {isCircular}
-        {loopCount}
         {currentPropType}
+        {playbackMode}
+        {stepPlaybackPauseMs}
+        {stepPlaybackStepSize}
+        {isPlaying}
         {onBpmChange}
         {onToggleBlue}
         {onToggleRed}
-        {onLoopCountChange}
+        {onPlaybackModeChange}
+        {onStepPlaybackPauseMsChange}
+        {onStepPlaybackStepSizeChange}
+        {onPlaybackToggle}
       />
     </div>
   </div>
@@ -81,15 +100,13 @@
     --sheet-width: min(320px, 85vw);
   }
 
-  /* Position settings sheet to not overlap bottom navigation */
+  /*
+   * Settings sheet opens on top of animation panel (which is already above bottom nav),
+   * so no bottom offset needed - it can extend to the full height
+   */
   :global(.drawer-content.settings-sheet) {
-    /* Leave space for bottom navigation (64px + safe area) */
-    bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
-    /* Limit height to available space */
-    max-height: calc(
-      100dvh - 64px - env(safe-area-inset-bottom, 0px)
-    ) !important;
-    /* Rounded bottom corners since it's not touching bottom of screen */
+    bottom: 0 !important;
+    max-height: 100dvh !important;
     border-radius: 16px 0 0 16px !important;
   }
 
@@ -97,7 +114,6 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     min-width: 280px;
     height: 100%;
     background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));

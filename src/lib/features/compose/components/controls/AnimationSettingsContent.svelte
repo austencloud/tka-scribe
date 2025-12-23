@@ -2,44 +2,85 @@
   AnimationSettingsContent.svelte
 
   Content for the animation settings sheet/drawer.
-  Consolidates all animation configuration options:
+  Consolidates playback configuration options:
+  - Playback mode (continuous/step)
   - Motion visibility toggles
   - Speed (BPM) controls
   - Trail presets
-  - Loop count (when applicable)
+
+  Note: Export settings (loop count) are in ExportActionsPanel
 -->
 <script lang="ts">
   import BpmChips from "./BpmChips.svelte";
   import SimpleTrailControls from "../trail/SimpleTrailControls.svelte";
-  import LoopCountControls from "./LoopCountControls.svelte";
+  import PlaybackModeToggle from "./PlaybackModeToggle.svelte";
+  import StepModeSettings from "./StepModeSettings.svelte";
   import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import type {
+    PlaybackMode,
+    StepPlaybackStepSize,
+  } from "../../state/animation-panel-state.svelte";
 
   let {
     bpm = $bindable(60),
     blueMotionVisible = true,
     redMotionVisible = true,
-    isCircular = false,
-    loopCount = 1,
     currentPropType = null,
+    playbackMode = "continuous",
+    stepPlaybackPauseMs = 250,
+    stepPlaybackStepSize = 1,
+    isPlaying = false,
     onBpmChange = () => {},
     onToggleBlue = () => {},
     onToggleRed = () => {},
-    onLoopCountChange = () => {},
+    onPlaybackModeChange = () => {},
+    onStepPlaybackPauseMsChange = () => {},
+    onStepPlaybackStepSizeChange = () => {},
+    onPlaybackToggle = () => {},
   }: {
     bpm: number;
     blueMotionVisible?: boolean;
     redMotionVisible?: boolean;
-    isCircular?: boolean;
-    loopCount?: number;
     currentPropType?: PropType | string | null;
+    playbackMode?: PlaybackMode;
+    stepPlaybackPauseMs?: number;
+    stepPlaybackStepSize?: StepPlaybackStepSize;
+    isPlaying?: boolean;
     onBpmChange?: (bpm: number) => void;
     onToggleBlue?: () => void;
     onToggleRed?: () => void;
-    onLoopCountChange?: (count: number) => void;
+    onPlaybackModeChange?: (mode: PlaybackMode) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
+    onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onPlaybackToggle?: () => void;
   } = $props();
 </script>
 
 <div class="settings-content">
+  <!-- Playback Mode -->
+  <section class="settings-section">
+    <h4 class="settings-section-title">Playback Mode</h4>
+    <div class="playback-mode-row">
+      <PlaybackModeToggle
+        {playbackMode}
+        {isPlaying}
+        onPlaybackModeChange={onPlaybackModeChange}
+        onPlaybackToggle={onPlaybackToggle}
+      />
+    </div>
+    {#if playbackMode === "step"}
+      <div class="step-settings-wrapper">
+        <StepModeSettings
+          {stepPlaybackStepSize}
+          {stepPlaybackPauseMs}
+          {isPlaying}
+          onStepPlaybackStepSizeChange={onStepPlaybackStepSizeChange}
+          onStepPlaybackPauseMsChange={onStepPlaybackPauseMsChange}
+        />
+      </div>
+    {/if}
+  </section>
+
   <!-- Motion Visibility -->
   <section class="settings-section">
     <h4 class="settings-section-title">Motion Visibility</h4>
@@ -82,9 +123,6 @@
     <h4 class="settings-section-title">Trails</h4>
     <SimpleTrailControls propType={currentPropType} />
   </section>
-
-  <!-- Export Settings - Loop Count -->
-  <LoopCountControls {isCircular} {loopCount} {onLoopCountChange} />
 </div>
 
 <style>
@@ -156,5 +194,15 @@
 
   .visibility-toggle:active {
     transform: scale(0.97);
+  }
+
+  /* Playback mode */
+  .playback-mode-row {
+    display: flex;
+    justify-content: center;
+  }
+
+  .step-settings-wrapper {
+    margin-top: 12px;
   }
 </style>
