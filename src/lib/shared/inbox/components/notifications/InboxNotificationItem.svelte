@@ -194,7 +194,8 @@
   <!-- Content -->
   <div class="content">
     <p class="message">{notification.message}</p>
-    <span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span>
+    <span class="time">{formatRelativeTimeVerbose(notification.createdAt)}</span
+    >
   </div>
 
   <!-- Chevron indicator -->

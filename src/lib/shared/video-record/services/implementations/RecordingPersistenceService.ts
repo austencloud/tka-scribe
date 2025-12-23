@@ -55,7 +55,9 @@ export interface IRecordingPersistenceService {
 }
 
 @injectable()
-export class RecordingPersistenceService implements IRecordingPersistenceService {
+export class RecordingPersistenceService
+  implements IRecordingPersistenceService
+{
   private getUserId(): string {
     const user = auth.currentUser;
     if (!user) {
@@ -71,9 +73,14 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   /**
    * Convert Firestore document to RecordingMetadata
    */
-  private docToRecording(docData: Record<string, unknown>, recordingId: string): RecordingMetadata {
-    const recordedAtField = docData.recordedAt as { toDate?: () => Date } | undefined;
-    
+  private docToRecording(
+    docData: Record<string, unknown>,
+    recordingId: string
+  ): RecordingMetadata {
+    const recordedAtField = docData.recordedAt as
+      | { toDate?: () => Date }
+      | undefined;
+
     return {
       id: recordingId,
       userId: docData.userId as string,
@@ -84,7 +91,11 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
       fileSize: docData.fileSize as number,
       mimeType: docData.mimeType as string,
       recordedAt: recordedAtField?.toDate?.() ?? new Date(),
-      deviceType: docData.deviceType as "mobile" | "tablet" | "desktop" | undefined,
+      deviceType: docData.deviceType as
+        | "mobile"
+        | "tablet"
+        | "desktop"
+        | undefined,
       thumbnailUrl: docData.thumbnailUrl as string | undefined,
       notes: docData.notes as string | undefined,
       metadata: (docData.metadata as Record<string, unknown>) ?? {},
@@ -140,7 +151,9 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
     return this.docToRecording(docSnap.data(), recordingId);
   }
 
-  async getRecordingsForSequence(sequenceId: string): Promise<RecordingMetadata[]> {
+  async getRecordingsForSequence(
+    sequenceId: string
+  ): Promise<RecordingMetadata[]> {
     const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const collectionPath = this.getRecordingsCollectionPath(userId);
@@ -185,6 +198,8 @@ export class RecordingPersistenceService implements IRecordingPersistenceService
   async deleteRecordingsForSequence(sequenceId: string): Promise<void> {
     const recordings = await this.getRecordingsForSequence(sequenceId);
     await Promise.all(recordings.map((r) => this.deleteRecording(r.id)));
-    console.log(`🗑️ Deleted ${recordings.length} recordings for sequence ${sequenceId}`);
+    console.log(
+      `🗑️ Deleted ${recordings.length} recordings for sequence ${sequenceId}`
+    );
   }
 }

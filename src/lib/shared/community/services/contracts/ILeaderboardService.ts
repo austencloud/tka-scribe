@@ -27,7 +27,10 @@ export interface ILeaderboardService {
   /**
    * Get any user's rank in a specific category
    */
-  getUserRank(userId: string, category: LeaderboardCategory): Promise<number | null>;
+  getUserRank(
+    userId: string,
+    category: LeaderboardCategory
+  ): Promise<number | null>;
 
   /**
    * Subscribe to real-time leaderboard updates

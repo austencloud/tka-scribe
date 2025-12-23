@@ -39,11 +39,13 @@
     }).format(date);
   }
 
-  const creator = $derived(video.collaborators.find((c) => c.role === "creator"));
+  const creator = $derived(
+    video.collaborators.find((c) => c.role === "creator")
+  );
   const isCollab = $derived(video.collaborators.length > 1);
 </script>
 
-<button class="video-card" onclick={onclick} type="button">
+<button class="video-card" {onclick} type="button">
   <!-- Thumbnail -->
   <div class="thumbnail">
     {#if video.thumbnailUrl}

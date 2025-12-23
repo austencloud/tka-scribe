@@ -139,7 +139,10 @@ export const migrationState = {
   },
 
   get remindersRemaining() {
-    return Math.max(0, MIGRATION_CONFIG.TOTAL_REMINDERS - storedState.remindersShown);
+    return Math.max(
+      0,
+      MIGRATION_CONFIG.TOTAL_REMINDERS - storedState.remindersShown
+    );
   },
 
   get totalReminders() {
@@ -207,10 +210,12 @@ export const migrationState = {
     if (storedState.remindersShown === 0) return true;
 
     // Critical severity gets modal
-    if (getMigrationSeverity(getDaysUntilDeadline()) === "critical") return true;
+    if (getMigrationSeverity(getDaysUntilDeadline()) === "critical")
+      return true;
 
     // Final reminder gets modal
-    if (storedState.remindersShown >= MIGRATION_CONFIG.TOTAL_REMINDERS - 1) return true;
+    if (storedState.remindersShown >= MIGRATION_CONFIG.TOTAL_REMINDERS - 1)
+      return true;
 
     return false;
   },

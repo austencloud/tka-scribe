@@ -75,7 +75,11 @@ export interface UserPreviewData {
   notifications: PreviewNotification[];
 }
 
-export type LazySection = "sequences" | "collections" | "achievements" | "notifications";
+export type LazySection =
+  | "sequences"
+  | "collections"
+  | "achievements"
+  | "notifications";
 
 interface UserPreviewState {
   isActive: boolean;
@@ -120,7 +124,10 @@ export const userPreviewState = $state<UserPreviewState>({
  * @param userId - The user ID to preview
  * @param eager - If true, loads all sections immediately (for backward compat)
  */
-export async function loadUserPreview(userId: string, eager = false): Promise<void> {
+export async function loadUserPreview(
+  userId: string,
+  eager = false
+): Promise<void> {
   if (!browser) return;
 
   userPreviewState.isLoading = true;
@@ -131,26 +138,35 @@ export async function loadUserPreview(userId: string, eager = false): Promise<vo
   try {
     if (eager) {
       // Legacy behavior: fetch all data at once
-      const res = await fetch(`/api/preview-user?userId=${encodeURIComponent(userId)}`);
+      const res = await fetch(
+        `/api/preview-user?userId=${encodeURIComponent(userId)}`
+      );
 
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || `Request failed: ${res.status}`);
       }
 
-      const data = await res.json() as UserPreviewData;
+      const data = (await res.json()) as UserPreviewData;
       userPreviewState.data = data;
-      userPreviewState.loadedSections = new Set(["sequences", "collections", "achievements", "notifications"]);
+      userPreviewState.loadedSections = new Set([
+        "sequences",
+        "collections",
+        "achievements",
+        "notifications",
+      ]);
     } else {
       // Lazy mode: only fetch profile + gamification initially
-      const res = await fetch(`/api/preview-user?userId=${encodeURIComponent(userId)}&sections=profile,gamification`);
+      const res = await fetch(
+        `/api/preview-user?userId=${encodeURIComponent(userId)}&sections=profile,gamification`
+      );
 
       if (!res.ok) {
         const text = await res.text();
         throw new Error(text || `Request failed: ${res.status}`);
       }
 
-      const data = await res.json() as Partial<UserPreviewData>;
+      const data = (await res.json()) as Partial<UserPreviewData>;
       userPreviewState.data = {
         profile: data.profile ?? null,
         gamification: data.gamification ?? null,
@@ -163,7 +179,8 @@ export async function loadUserPreview(userId: string, eager = false): Promise<vo
 
     userPreviewState.isActive = true;
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to load user preview";
+    const message =
+      err instanceof Error ? err.message : "Failed to load user preview";
     userPreviewState.error = message;
     userPreviewState.isActive = false;
     userPreviewState.data = { ...initialData };
@@ -186,7 +203,8 @@ export async function loadUserPreview(userId: string, eager = false): Promise<vo
  * });
  */
 export async function loadPreviewSection(section: LazySection): Promise<void> {
-  if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile) return;
+  if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile)
+    return;
   if (userPreviewState.loadedSections.has(section)) return; // Already loaded
 
   const userId = userPreviewState.data.profile.uid;
@@ -229,7 +247,8 @@ export async function loadPreviewSection(section: LazySection): Promise<void> {
 export async function refreshPreviewSection(
   section: "sequences" | "collections" | "achievements" | "notifications"
 ): Promise<void> {
-  if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile) return;
+  if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile)
+    return;
 
   const userId = userPreviewState.data.profile.uid;
   userPreviewState.loadingSection = section;
@@ -299,7 +318,9 @@ export function getEffectiveUserId(actualUserId: string | null): string | null {
 /**
  * Get the effective display name
  */
-export function getEffectiveDisplayName(actualDisplayName: string | null): string | null {
+export function getEffectiveDisplayName(
+  actualDisplayName: string | null
+): string | null {
   if (userPreviewState.isActive && userPreviewState.data.profile) {
     return userPreviewState.data.profile.displayName;
   }
@@ -309,7 +330,9 @@ export function getEffectiveDisplayName(actualDisplayName: string | null): strin
 /**
  * Get the effective photo URL
  */
-export function getEffectivePhotoURL(actualPhotoURL: string | null): string | null {
+export function getEffectivePhotoURL(
+  actualPhotoURL: string | null
+): string | null {
   if (userPreviewState.isActive && userPreviewState.data.profile) {
     return userPreviewState.data.profile.photoURL;
   }

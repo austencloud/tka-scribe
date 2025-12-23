@@ -5,7 +5,10 @@
  * Collection path: videos/{videoId}
  */
 
-import type { CollaborativeVideo, VideoVisibility } from "../../domain/CollaborativeVideo";
+import type {
+  CollaborativeVideo,
+  VideoVisibility,
+} from "../../domain/CollaborativeVideo";
 
 /**
  * Result of querying videos for a user's library

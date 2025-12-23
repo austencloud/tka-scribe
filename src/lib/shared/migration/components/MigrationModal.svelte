@@ -5,7 +5,10 @@
 -->
 <script lang="ts">
   import { fade, fly } from "svelte/transition";
-  import { MIGRATION_CONFIG, getNewDomainUrl } from "../config/migration-config";
+  import {
+    MIGRATION_CONFIG,
+    getNewDomainUrl,
+  } from "../config/migration-config";
   import { migrationState } from "../state/migration-state.svelte";
 
   interface Props {
@@ -55,8 +58,8 @@
       </div>
 
       <p class="explanation">
-        To continue using the app, you'll need to reinstall it from the new address.
-        Your account and all your data will be there waiting for you.
+        To continue using the app, you'll need to reinstall it from the new
+        address. Your account and all your data will be there waiting for you.
       </p>
     </div>
 

@@ -1,4 +1,7 @@
-import type { TextRenderOptions, UserExportInfo as UserInfo } from "../../domain/models/SequenceExportOptions";
+import type {
+  TextRenderOptions,
+  UserExportInfo as UserInfo,
+} from "../../domain/models/SequenceExportOptions";
 /**
  * Text rendering service for titles, user info, and overlays
  * Equivalent to desktop WordDrawer, UserInfoDrawer, DifficultyLevelDrawer

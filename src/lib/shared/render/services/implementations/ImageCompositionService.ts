@@ -1,4 +1,4 @@
- /**
+/**
  * Simple Image Composition Service
  *
  * Dead-simple approach: Render pictographs directly onto a single canvas.
@@ -12,14 +12,20 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
-import { renderPictographToSVG, type PictographVisibilityOptions } from "../../utils/pictograph-to-svg";
+import {
+  renderPictographToSVG,
+  type PictographVisibilityOptions,
+} from "../../utils/pictograph-to-svg";
 import { simplifyRepeatedWord } from "../../utils/word-simplifier";
 import { getVisibilityStateManager } from "../../../pictograph/shared/state/visibility-state.svelte";
 
 import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
 import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
-import type { CompositionProgressCallback, IImageCompositionService } from "../contracts/IImageCompositionService";
+import type {
+  CompositionProgressCallback,
+  IImageCompositionService,
+} from "../contracts/IImageCompositionService";
 import type { ILayoutCalculationService } from "../contracts/ILayoutCalculationService";
 import type { ITextRenderingService } from "../contracts/ITextRenderingService";
 
@@ -111,7 +117,9 @@ export class ImageCompositionService implements IImageCompositionService {
         ? this.calculateHeaderHeight(beatCount, beatSize)
         : 0;
 
-    console.log(`📐 Layout: beatSize=${beatSize}, headerHeight=${headerHeight}, rows=${rows}, cols=${columns}`);
+    console.log(
+      `📐 Layout: beatSize=${beatSize}, headerHeight=${headerHeight}, rows=${rows}, cols=${columns}`
+    );
 
     // Calculate footer height if user info should be included
     const footerHeight = options.addUserInfo
@@ -135,7 +143,8 @@ export class ImageCompositionService implements IImageCompositionService {
     ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
 
     // Calculate total items to render for progress tracking
-    const hasStartPosition = options.includeStartPosition && sequence.startPosition;
+    const hasStartPosition =
+      options.includeStartPosition && sequence.startPosition;
     const totalItems = sequence.beats.length + (hasStartPosition ? 1 : 0);
     let renderedCount = 0;
 
@@ -149,7 +158,10 @@ export class ImageCompositionService implements IImageCompositionService {
       const startBeatNumber = options.addBeatNumbers ? 0 : undefined;
       // Apply prop type override if provided
       const startPositionData = options.propTypeOverride
-        ? this.applyPropTypeOverride(sequence.startPosition, options.propTypeOverride)
+        ? this.applyPropTypeOverride(
+            sequence.startPosition,
+            options.propTypeOverride
+          )
         : sequence.startPosition;
       await this.renderPictographAt(
         ctx,
@@ -162,7 +174,11 @@ export class ImageCompositionService implements IImageCompositionService {
         visibilitySettings // Pass visibility settings
       );
       renderedCount++;
-      onProgress?.({ current: renderedCount, total: totalItems, stage: "rendering" });
+      onProgress?.({
+        current: renderedCount,
+        total: totalItems,
+        stage: "rendering",
+      });
     }
 
     // Step 5: Render all beats in the grid
@@ -193,7 +209,11 @@ export class ImageCompositionService implements IImageCompositionService {
         visibilitySettings // Pass visibility settings
       );
       renderedCount++;
-      onProgress?.({ current: renderedCount, total: totalItems, stage: "rendering" });
+      onProgress?.({
+        current: renderedCount,
+        total: totalItems,
+        stage: "rendering",
+      });
     }
 
     // Step 6: Draw cell borders only between occupied cells
@@ -238,7 +258,7 @@ export class ImageCompositionService implements IImageCompositionService {
           beatScale: options.beatScale || 1,
         },
         footerHeight, // Pass footer height for proper text positioning
-        beatCount     // Pass beat count for legacy-matching font sizing
+        beatCount // Pass beat count for legacy-matching font sizing
       );
     }
 
@@ -520,7 +540,7 @@ export class ImageCompositionService implements IImageCompositionService {
 
     // Header height = 1x beat size for balanced proportions
     // This ensures the header doesn't dominate the image
-    return Math.floor(beatSize/3);
+    return Math.floor(beatSize / 3);
   }
 
   /**
@@ -536,19 +556,16 @@ export class ImageCompositionService implements IImageCompositionService {
    * Apply prop type override to a beat or start position
    * Creates a shallow copy with prop type overridden in motion data
    */
-  private applyPropTypeOverride<T extends BeatData | PictographData | StartPositionData>(
-    data: T,
-    propType: PropType
-  ): T {
+  private applyPropTypeOverride<
+    T extends BeatData | PictographData | StartPositionData,
+  >(data: T, propType: PropType): T {
     return {
       ...data,
       motions: {
         blue: data.motions.blue
           ? { ...data.motions.blue, propType }
           : undefined,
-        red: data.motions.red
-          ? { ...data.motions.red, propType }
-          : undefined,
+        red: data.motions.red ? { ...data.motions.red, propType } : undefined,
       },
     };
   }
@@ -561,7 +578,9 @@ export class ImageCompositionService implements IImageCompositionService {
     // Use the difficulty calculator to analyze beats dynamically
     if (sequence.beats && sequence.beats.length > 0) {
       // Copy to mutable array for the calculator
-      return this.difficultyCalculator.calculateDifficultyLevel([...sequence.beats]);
+      return this.difficultyCalculator.calculateDifficultyLevel([
+        ...sequence.beats,
+      ]);
     }
 
     // Fallback to stored level if no beats

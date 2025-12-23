@@ -5,19 +5,19 @@
  * All durations and easings align with the CSS design tokens in app.css.
  */
 
-import { cubicOut, quintOut, backOut, elasticOut } from 'svelte/easing';
-import type { TransitionConfig } from 'svelte/transition';
+import { cubicOut, quintOut, backOut, elasticOut } from "svelte/easing";
+import type { TransitionConfig } from "svelte/transition";
 
 // ============================================================================
 // DURATION CONSTANTS (match app.css tokens)
 // ============================================================================
 
 export const DURATION = {
-  instant: 100,    // Micro-feedback (hover states, toggles)
-  fast: 150,       // Quick UI responses (buttons, inputs)
-  normal: 200,     // Standard transitions (panels, tabs)
-  emphasis: 280,   // Emphasized changes (module switches)
-  dramatic: 350,   // Major transitions (drawers, modals)
+  instant: 100, // Micro-feedback (hover states, toggles)
+  fast: 150, // Quick UI responses (buttons, inputs)
+  normal: 200, // Standard transitions (panels, tabs)
+  emphasis: 280, // Emphasized changes (module switches)
+  dramatic: 350, // Major transitions (drawers, modals)
 } as const;
 
 // ============================================================================
@@ -25,9 +25,9 @@ export const DURATION = {
 // ============================================================================
 
 export const STAGGER = {
-  micro: 30,       // Tight sequences (list items)
-  normal: 50,      // Standard sequences (cards)
-  relaxed: 80,     // Spread out (major sections)
+  micro: 30, // Tight sequences (list items)
+  normal: 50, // Standard sequences (cards)
+  relaxed: 80, // Spread out (major sections)
 } as const;
 
 // ============================================================================
@@ -35,9 +35,9 @@ export const STAGGER = {
 // ============================================================================
 
 export const SLIDE_DISTANCE = {
-  sm: 8,   // Subtle slides (tabs)
-  md: 12,  // Standard slides (cards, panels)
-  lg: 20,  // Prominent slides (modals)
+  sm: 8, // Subtle slides (tabs)
+  md: 12, // Standard slides (cards, panels)
+  lg: 20, // Prominent slides (modals)
 } as const;
 
 // ============================================================================
@@ -56,8 +56,8 @@ export function easeSpring(t: number): number {
   return t === 0
     ? 0
     : t === 1
-    ? 1
-    : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+      ? 1
+      : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
 }
 
 // ============================================================================
@@ -113,7 +113,7 @@ export function flyUp(
     delay = 0,
     duration = DURATION.normal,
     y = SLIDE_DISTANCE.md,
-    easing = cubicOut
+    easing = cubicOut,
   }: FlyParams = {}
 ): TransitionConfig {
   return {
@@ -137,7 +137,7 @@ export function flyDown(
     delay = 0,
     duration = DURATION.normal,
     y = SLIDE_DISTANCE.md,
-    easing = cubicOut
+    easing = cubicOut,
   }: FlyParams = {}
 ): TransitionConfig {
   return {
@@ -161,7 +161,7 @@ export function flyLeft(
     delay = 0,
     duration = DURATION.normal,
     x = SLIDE_DISTANCE.md,
-    easing = cubicOut
+    easing = cubicOut,
   }: FlyParams = {}
 ): TransitionConfig {
   return {
@@ -185,7 +185,7 @@ export function flyRight(
     delay = 0,
     duration = DURATION.normal,
     x = SLIDE_DISTANCE.md,
-    easing = cubicOut
+    easing = cubicOut,
   }: FlyParams = {}
 ): TransitionConfig {
   return {
@@ -220,7 +220,7 @@ export function scalePop(
     delay = 0,
     duration = DURATION.normal,
     start = 0.95,
-    easing = backOut
+    easing = backOut,
   }: ScaleParams = {}
 ): TransitionConfig {
   return {
@@ -244,7 +244,7 @@ export function scaleSpring(
     delay = 0,
     duration = DURATION.emphasis,
     start = 0.9,
-    easing = quintOut
+    easing = quintOut,
   }: ScaleParams = {}
 ): TransitionConfig {
   return {
@@ -282,7 +282,7 @@ export function flyUpScale(
     duration = DURATION.normal,
     y = SLIDE_DISTANCE.md,
     scale = 0.98,
-    easing = cubicOut
+    easing = cubicOut,
   }: CombinedParams = {}
 ): TransitionConfig {
   return {
@@ -308,7 +308,7 @@ export function flyDownScale(
     duration = DURATION.normal,
     y = SLIDE_DISTANCE.md,
     scale = 0.98,
-    easing = cubicOut
+    easing = cubicOut,
   }: CombinedParams = {}
 ): TransitionConfig {
   return {
@@ -341,7 +341,7 @@ export function staggerDelay(
   baseDelay: number = 0,
   staggerMs: number = STAGGER.normal
 ): number {
-  return baseDelay + (index * staggerMs);
+  return baseDelay + index * staggerMs;
 }
 
 /**
@@ -354,7 +354,7 @@ export function staggerDelayCapped(
   staggerMs: number = STAGGER.normal,
   maxDelay: number = 400
 ): number {
-  const calculatedDelay = baseDelay + (index * staggerMs);
+  const calculatedDelay = baseDelay + index * staggerMs;
   return Math.min(calculatedDelay, maxDelay);
 }
 

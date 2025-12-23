@@ -486,7 +486,11 @@
   }
 
   .fullscreen-prompt {
-    background: color-mix(in srgb, var(--theme-panel-bg, #0f172a) 94%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #0f172a) 94%,
+      transparent
+    );
     border-radius: 12px;
     box-shadow: 0 12px 40px var(--theme-shadow, rgba(0, 0, 0, 0.5));
     max-width: 420px;
@@ -495,7 +499,8 @@
   }
 
   .fullscreen-prompt.nag-mode {
-    border: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
   }
 
   .prompt-content {
@@ -539,7 +544,11 @@
   }
 
   .install-button:hover {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 85%,
+      #000
+    );
     transform: translateY(-1px);
   }
 
@@ -571,7 +580,11 @@
   }
 
   .manual-instructions {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 12%,
+      transparent
+    );
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 16px;
@@ -618,7 +631,11 @@
   .nag-reminder {
     margin-top: 18px;
     padding: 12px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 14%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 14%,
+      transparent
+    );
     border-radius: 10px;
     font-size: 14px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));

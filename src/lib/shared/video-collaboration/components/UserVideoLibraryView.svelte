@@ -11,7 +11,10 @@
 <script lang="ts">
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICollaborativeVideoService, UserVideoLibrary } from "../services/contracts/ICollaborativeVideoService";
+  import type {
+    ICollaborativeVideoService,
+    UserVideoLibrary,
+  } from "../services/contracts/ICollaborativeVideoService";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
   import { onMount } from "svelte";
   import CollaborativeVideoCard from "./CollaborativeVideoCard.svelte";
@@ -33,7 +36,9 @@
 
   onMount(async () => {
     const container = await getContainerInstance();
-    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
+    videoService = container.get<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
     loadLibrary();
   });
 
@@ -54,7 +59,9 @@
   }
 
   // Derived counts
-  const allCount = $derived((library?.created.length ?? 0) + (library?.collaborations.length ?? 0));
+  const allCount = $derived(
+    (library?.created.length ?? 0) + (library?.collaborations.length ?? 0)
+  );
   const createdCount = $derived(library?.created.length ?? 0);
   const collabCount = $derived(library?.collaborations.length ?? 0);
   const pendingCount = $derived(library?.pendingInvites.length ?? 0);
@@ -100,7 +107,9 @@
         >
           {tab.label}
           {#if tab.count > 0}
-            <span class="count" class:pending={tab.id === "invites"}>{tab.count}</span>
+            <span class="count" class:pending={tab.id === "invites"}
+              >{tab.count}</span
+            >
           {/if}
         </button>
       {/each}

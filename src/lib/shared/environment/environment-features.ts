@@ -43,12 +43,18 @@ export function isModuleEnabledInEnvironment(moduleId: ModuleId): boolean {
 
   // Development mode - all modules enabled unless explicitly disabled
   if (isDevelopment()) {
-    return getEnvFlag(`PUBLIC_ENABLE_${moduleId.toUpperCase().replace(/-/g, "_")}_MODULE`, true);
+    return getEnvFlag(
+      `PUBLIC_ENABLE_${moduleId.toUpperCase().replace(/-/g, "_")}_MODULE`,
+      true
+    );
   }
 
   // Production mode - only explicitly enabled modules
   if (isProduction()) {
-    return getEnvFlag(`PUBLIC_ENABLE_${moduleId.toUpperCase().replace(/-/g, "_")}_MODULE`, false);
+    return getEnvFlag(
+      `PUBLIC_ENABLE_${moduleId.toUpperCase().replace(/-/g, "_")}_MODULE`,
+      false
+    );
   }
 
   // Default to true for unknown environments

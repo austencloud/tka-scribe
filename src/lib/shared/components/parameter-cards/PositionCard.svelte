@@ -35,8 +35,12 @@ Supports Alpha, Beta, Gamma positions with Greek symbol pills
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    rippleService = tryResolve<IRippleEffectService>(
+      TYPES.IRippleEffectService
+    );
 
     if (cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
@@ -61,7 +65,7 @@ Supports Alpha, Beta, Gamma positions with Greek symbol pills
 
   const displayValue = $derived(
     value
-      ? STARTING_POSITIONS_LIST.find((p) => p.id === value)?.fullName ?? value
+      ? (STARTING_POSITIONS_LIST.find((p) => p.id === value)?.fullName ?? value)
       : "Any"
   );
 </script>
@@ -115,7 +119,12 @@ Supports Alpha, Beta, Gamma positions with Greek symbol pills
     padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: radial-gradient(ellipse at top left, #a78bfa 0%, #8b5cf6 40%, #6d28d9 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #a78bfa 0%,
+      #8b5cf6 40%,
+      #6d28d9 100%
+    );
     border: none;
     color: white;
     text-align: center;

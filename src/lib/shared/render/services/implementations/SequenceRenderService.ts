@@ -12,7 +12,10 @@ import { inject, injectable } from "inversify";
 import type { ISequenceRenderService } from "../contracts/ISequenceRenderService";
 import { LayoutCalculationService } from "./LayoutCalculationService";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
-import type { CompositionProgressCallback, IImageCompositionService } from "../contracts/IImageCompositionService";
+import type {
+  CompositionProgressCallback,
+  IImageCompositionService,
+} from "../contracts/IImageCompositionService";
 import type { IImageFormatConverterService } from "../contracts/IImageFormatConverterService";
 
 @injectable()
@@ -82,7 +85,11 @@ export class SequenceRenderService implements ISequenceRenderService {
       const fullOptions = this.mergeWithDefaults(options);
 
       // Render to canvas first (with progress callback)
-      const canvas = await this.renderSequenceToCanvas(sequence, fullOptions, onProgress);
+      const canvas = await this.renderSequenceToCanvas(
+        sequence,
+        fullOptions,
+        onProgress
+      );
 
       // Convert to blob using format service
       const blob = await this.formatService.canvasToBlob(canvas, {

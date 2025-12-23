@@ -16,12 +16,17 @@ export interface BaseAdminProps {
 /**
  * Component size variants
  */
-export type AdminSize = 'sm' | 'md' | 'lg';
+export type AdminSize = "sm" | "md" | "lg";
 
 /**
  * Component style variants
  */
-export type AdminVariant = 'primary' | 'secondary' | 'warning' | 'danger' | 'info';
+export type AdminVariant =
+  | "primary"
+  | "secondary"
+  | "warning"
+  | "danger"
+  | "info";
 
 /**
  * Item with selection state
@@ -45,7 +50,13 @@ export interface FilterOption {
 /**
  * Form field types
  */
-export type AdminFormFieldType = 'text' | 'select' | 'textarea' | 'toggle' | 'radio' | 'number';
+export type AdminFormFieldType =
+  | "text"
+  | "select"
+  | "textarea"
+  | "toggle"
+  | "radio"
+  | "number";
 
 /**
  * Select option for form fields
@@ -66,13 +77,13 @@ export interface StatCardData {
   color?: string;
   change?: number;
   changeLabel?: string;
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: "up" | "down" | "neutral";
 }
 
 /**
  * Modal variant types
  */
-export type ModalVariant = 'confirm' | 'warning' | 'danger' | 'info';
+export type ModalVariant = "confirm" | "warning" | "danger" | "info";
 
 /**
  * Button click handler

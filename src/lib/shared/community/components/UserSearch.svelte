@@ -11,7 +11,12 @@
     oninput?: (value: string) => void;
   }
 
-  let { value = $bindable(""), placeholder = "Search users...", maxWidth, oninput }: Props = $props();
+  let {
+    value = $bindable(""),
+    placeholder = "Search users...",
+    maxWidth,
+    oninput,
+  }: Props = $props();
 </script>
 
 <div class="user-search">

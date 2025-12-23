@@ -89,8 +89,7 @@ export const TABLE_INDEXES = {
   // Train module tables (v4)
   [TABLE_NAMES.TRAIN_PERFORMANCES]:
     "++id, sequenceId, performedAt, grade, [sequenceId+performedAt], score.percentage",
-  [TABLE_NAMES.TRAIN_CALIBRATION_PROFILES]:
-    "++id, name, createdAt, isDefault",
+  [TABLE_NAMES.TRAIN_CALIBRATION_PROFILES]: "++id, name, createdAt, isDefault",
 } as const;
 
 // ============================================================================

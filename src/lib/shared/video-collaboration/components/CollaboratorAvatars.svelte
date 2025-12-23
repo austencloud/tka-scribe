@@ -20,7 +20,9 @@
   } = $props();
 
   const visibleCollaborators = $derived(collaborators.slice(0, maxVisible));
-  const overflowCount = $derived(Math.max(0, collaborators.length - maxVisible));
+  const overflowCount = $derived(
+    Math.max(0, collaborators.length - maxVisible)
+  );
   const hasOverflow = $derived(overflowCount > 0);
 
   const sizeClasses = {
@@ -33,9 +35,11 @@
 <button
   class="collaborator-avatars {sizeClasses[size]}"
   class:clickable={!!onclick}
-  onclick={onclick}
+  {onclick}
   type="button"
-  aria-label="{collaborators.length} collaborator{collaborators.length !== 1 ? 's' : ''}"
+  aria-label="{collaborators.length} collaborator{collaborators.length !== 1
+    ? 's'
+    : ''}"
 >
   <div class="avatar-stack">
     {#each visibleCollaborators as collaborator, i}

@@ -79,7 +79,9 @@ export interface UserPreviewContext {
   getEffectiveEmail(actualEmail: string | null): string | null;
 
   /** Get effective gamification data (previewed or actual) */
-  getEffectiveGamification(actual: PreviewGamification | null): PreviewGamification | null;
+  getEffectiveGamification(
+    actual: PreviewGamification | null
+  ): PreviewGamification | null;
 
   /** Get effective sequences (previewed or actual) */
   getEffectiveSequences<T>(actual: T[]): T[] | PreviewSequence[];
@@ -175,7 +177,9 @@ function createPreviewContext(): UserPreviewContext {
       return actualEmail;
     },
 
-    getEffectiveGamification(actual: PreviewGamification | null): PreviewGamification | null {
+    getEffectiveGamification(
+      actual: PreviewGamification | null
+    ): PreviewGamification | null {
       if (userPreviewState.isActive && userPreviewState.data.gamification) {
         return userPreviewState.data.gamification;
       }

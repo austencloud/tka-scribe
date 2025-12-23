@@ -73,7 +73,14 @@ export interface IActivityLogService {
    * @param metadata - Additional sequence data
    */
   logSequenceAction(
-    action: "create" | "save" | "delete" | "edit" | "view" | "play" | "generate",
+    action:
+      | "create"
+      | "save"
+      | "delete"
+      | "edit"
+      | "view"
+      | "play"
+      | "generate",
     sequenceId: string,
     metadata?: Partial<ActivityMetadata>
   ): Promise<void>;
@@ -94,7 +101,12 @@ export interface IActivityLogService {
    * @param metadata - Achievement details
    */
   logAchievementAction(
-    action: "achievement_unlock" | "challenge_start" | "challenge_complete" | "xp_earn" | "level_up",
+    action:
+      | "achievement_unlock"
+      | "challenge_start"
+      | "challenge_complete"
+      | "xp_earn"
+      | "level_up",
     metadata?: Partial<ActivityMetadata>
   ): Promise<void>;
 
@@ -121,19 +133,28 @@ export interface IActivityLogService {
    * @param startDate - Start of range
    * @param endDate - End of range
    */
-  getActivitySummary(startDate: Date, endDate: Date): Promise<ActivitySummary[]>;
+  getActivitySummary(
+    startDate: Date,
+    endDate: Date
+  ): Promise<ActivitySummary[]>;
 
   /**
    * Get daily active user counts for a date range
    * @param startDate - Start of range
    * @param days - Number of days
    */
-  getDailyActiveUsers(startDate: Date, days: number): Promise<Map<string, number>>;
+  getDailyActiveUsers(
+    startDate: Date,
+    days: number
+  ): Promise<Map<string, number>>;
 
   /**
    * Get event counts by type for a date range
    * @param startDate - Start of range
    * @param endDate - End of range
    */
-  getEventCounts(startDate: Date, endDate: Date): Promise<Map<ActivityEventType, number>>;
+  getEventCounts(
+    startDate: Date,
+    endDate: Date
+  ): Promise<Map<ActivityEventType, number>>;
 }

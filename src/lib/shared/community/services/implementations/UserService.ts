@@ -23,9 +23,16 @@ import type { Timestamp, DocumentData } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { getUserAchievementsPath } from "$lib/shared/gamification/data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from "$lib/shared/gamification/domain/constants/achievement-definitions";
-import type { Achievement, UserAchievement } from "$lib/shared/gamification/domain/models/achievement-models";
+import type {
+  Achievement,
+  UserAchievement,
+} from "$lib/shared/gamification/domain/models/achievement-models";
 import type { IUserService } from "../contracts/IUserService";
-import type { EnhancedUserProfile, UserProfile, CreatorQueryOptions } from "../../domain/models/enhanced-user-profile";
+import type {
+  EnhancedUserProfile,
+  UserProfile,
+  CreatorQueryOptions,
+} from "../../domain/models/enhanced-user-profile";
 
 import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
 
@@ -186,31 +193,31 @@ export class UserService implements IUserService {
         (querySnapshot) => {
           // Process async operations without blocking
           void (async () => {
-          // Get list of users current user is following
-          let followingSet = new Set<string>();
-          if (currentUserId) {
-            followingSet = await this.getFollowingIds(currentUserId);
-          }
-
-          const users: EnhancedUserProfile[] = [];
-
-          for (const docSnap of querySnapshot.docs) {
-            const data = docSnap.data() as FirestoreUserData;
-            const isFollowing =
-              currentUserId !== docSnap.id && followingSet.has(docSnap.id);
-            const user = await this.mapFirestoreToEnhancedProfile(
-              docSnap.id,
-              data,
-              isFollowing
-            );
-            if (user) {
-              users.push(user);
+            // Get list of users current user is following
+            let followingSet = new Set<string>();
+            if (currentUserId) {
+              followingSet = await this.getFollowingIds(currentUserId);
             }
-          }
 
-          // Apply client-side filtering and sorting
-          let filteredUsers = this.applyFilters(users, options);
-          filteredUsers = this.applySorting(filteredUsers, options);
+            const users: EnhancedUserProfile[] = [];
+
+            for (const docSnap of querySnapshot.docs) {
+              const data = docSnap.data() as FirestoreUserData;
+              const isFollowing =
+                currentUserId !== docSnap.id && followingSet.has(docSnap.id);
+              const user = await this.mapFirestoreToEnhancedProfile(
+                docSnap.id,
+                data,
+                isFollowing
+              );
+              if (user) {
+                users.push(user);
+              }
+            }
+
+            // Apply client-side filtering and sorting
+            let filteredUsers = this.applyFilters(users, options);
+            filteredUsers = this.applySorting(filteredUsers, options);
 
             callback(filteredUsers);
           })();
@@ -277,8 +284,16 @@ export class UserService implements IUserService {
           firestore,
           `${this.USERS_COLLECTION}/${targetUserId}/followers/${currentUserId}`
         );
-        const currentUserRef = doc(firestore, this.USERS_COLLECTION, currentUserId);
-        const targetUserRef = doc(firestore, this.USERS_COLLECTION, targetUserId);
+        const currentUserRef = doc(
+          firestore,
+          this.USERS_COLLECTION,
+          currentUserId
+        );
+        const targetUserRef = doc(
+          firestore,
+          this.USERS_COLLECTION,
+          targetUserId
+        );
 
         // Check if already following
         const followingDoc = await transaction.get(followingRef);
@@ -327,7 +342,10 @@ export class UserService implements IUserService {
    * 3. Decrement current user's followingCount
    * 4. Decrement target user's followerCount
    */
-  async unfollowUser(currentUserId: string, targetUserId: string): Promise<void> {
+  async unfollowUser(
+    currentUserId: string,
+    targetUserId: string
+  ): Promise<void> {
     if (currentUserId === targetUserId) {
       throw new Error("Users cannot unfollow themselves");
     }
@@ -344,8 +362,16 @@ export class UserService implements IUserService {
           firestore,
           `${this.USERS_COLLECTION}/${targetUserId}/followers/${currentUserId}`
         );
-        const currentUserRef = doc(firestore, this.USERS_COLLECTION, currentUserId);
-        const targetUserRef = doc(firestore, this.USERS_COLLECTION, targetUserId);
+        const currentUserRef = doc(
+          firestore,
+          this.USERS_COLLECTION,
+          currentUserId
+        );
+        const targetUserRef = doc(
+          firestore,
+          this.USERS_COLLECTION,
+          targetUserId
+        );
 
         // Check if actually following
         const followingDoc = await transaction.get(followingRef);
@@ -370,7 +396,10 @@ export class UserService implements IUserService {
 
         // Update counts (ensure we don't go below 0)
         transaction.update(currentUserRef, {
-          followingCount: Math.max(0, (currentUserData.followingCount ?? 0) - 1),
+          followingCount: Math.max(
+            0,
+            (currentUserData.followingCount ?? 0) - 1
+          ),
         });
         transaction.update(targetUserRef, {
           followerCount: Math.max(0, (targetUserData.followerCount ?? 0) - 1),
@@ -385,7 +414,10 @@ export class UserService implements IUserService {
   /**
    * Check if a user is following another user
    */
-  async isFollowing(currentUserId: string, targetUserId: string): Promise<boolean> {
+  async isFollowing(
+    currentUserId: string,
+    targetUserId: string
+  ): Promise<boolean> {
     if (currentUserId === targetUserId) {
       return false; // Can't follow yourself
     }
@@ -488,7 +520,10 @@ export class UserService implements IUserService {
           callback(docSnap.exists());
         },
         (error) => {
-          console.error(`[UserService] Follow status subscription error:`, error);
+          console.error(
+            `[UserService] Follow status subscription error:`,
+            error
+          );
           callback(false);
         }
       );
@@ -594,7 +629,9 @@ export class UserService implements IUserService {
    * Fetch user's top achievements from Firestore subcollection
    * Returns the most recent unlocked achievements (up to 5)
    */
-  private async fetchUserTopAchievements(userId: string): Promise<Achievement[]> {
+  private async fetchUserTopAchievements(
+    userId: string
+  ): Promise<Achievement[]> {
     try {
       const firestore = await getFirestoreInstance();
       // Get user's unlocked achievements from subcollection

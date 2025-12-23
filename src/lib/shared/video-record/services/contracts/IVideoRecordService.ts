@@ -9,7 +9,7 @@ export interface RecordingProgress {
   /** Current recording duration in seconds */
   currentDuration: number;
   /** Recording state: 'recording' | 'paused' | 'stopped' */
-  state: 'recording' | 'paused' | 'stopped';
+  state: "recording" | "paused" | "stopped";
 }
 
 export interface RecordingResult {
@@ -29,7 +29,7 @@ export interface RecordingResult {
 
 export interface RecordingOptions {
   /** Video format: 'webm' or 'mp4' (default: 'webm') */
-  format?: 'webm' | 'mp4';
+  format?: "webm" | "mp4";
   /** Video quality (0-1, default: 0.9) */
   quality?: number;
   /** Maximum recording duration in seconds (default: 60) */
@@ -95,7 +95,11 @@ export interface IVideoRecordService {
    * @param videoBlob - Video blob to cache
    * @param duration - Recording duration in seconds
    */
-  cacheRecording(recordingId: string, videoBlob: Blob, duration: number): Promise<void>;
+  cacheRecording(
+    recordingId: string,
+    videoBlob: Blob,
+    duration: number
+  ): Promise<void>;
 
   /**
    * Clear cached recording
@@ -121,5 +125,7 @@ export interface IVideoRecordService {
    *
    * @param recordingId - Recording identifier
    */
-  getRecordingState(recordingId: string): 'idle' | 'recording' | 'paused' | 'stopped';
+  getRecordingState(
+    recordingId: string
+  ): "idle" | "recording" | "paused" | "stopped";
 }

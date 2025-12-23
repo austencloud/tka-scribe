@@ -8,11 +8,18 @@
  */
 
 import { injectable } from "inversify";
-import type { IShortcutRegistryService } from '../contracts/IShortcutRegistryService';
+import type { IShortcutRegistryService } from "../contracts/IShortcutRegistryService";
 import type { Shortcut } from "../../domain/models/Shortcut";
-import type { KeyModifier, ShortcutContext } from '../../domain/types/keyboard-types';
+import type {
+  KeyModifier,
+  ShortcutContext,
+} from "../../domain/types/keyboard-types";
 import { keyboardShortcutState } from "../../state/keyboard-shortcut-state.svelte";
-import { keyComboEquals, parseKeyCombo, buildKeyCombo } from "../../utils/key-combo-utils";
+import {
+  keyComboEquals,
+  parseKeyCombo,
+  buildKeyCombo,
+} from "../../utils/key-combo-utils";
 
 @injectable()
 export class ShortcutRegistryService implements IShortcutRegistryService {

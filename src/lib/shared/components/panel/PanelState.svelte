@@ -99,7 +99,11 @@
   .panel-state__retry {
     margin-top: 8px;
     padding: 10px 20px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 15%,
+      transparent
+    );
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
     border-radius: 8px;
     color: var(--theme-text, white);
@@ -110,7 +114,11 @@
   }
 
   .panel-state__retry:hover {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 25%,
+      transparent
+    );
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 

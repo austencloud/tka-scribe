@@ -21,8 +21,12 @@
 <script lang="ts">
   import AnimationShareDrawer from "../animation-engine/components/AnimationShareDrawer.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
-  import type { IVideoExportOrchestrator, VideoExportProgress, VideoExportFormat } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
-import type { IVideoExportService } from "$lib/features/compose/services/contracts/IVideoExportService";
+  import type {
+    IVideoExportOrchestrator,
+    VideoExportProgress,
+    VideoExportFormat,
+  } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
+  import type { IVideoExportService } from "$lib/features/compose/services/contracts/IVideoExportService";
   import type { ISequenceLoopabilityChecker } from "$lib/features/compose/services/contracts/ISequenceLoopabilityChecker";
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
@@ -617,7 +621,8 @@ import type { IVideoExportService } from "$lib/features/compose/services/contrac
       }, VIDEO_EXPORT_SUCCESS_DELAY_MS);
     } catch (error) {
       // Don't log cancellation as an error - it's intentional
-      const isCancellation = error instanceof Error && error.message.includes("cancelled");
+      const isCancellation =
+        error instanceof Error && error.message.includes("cancelled");
       if (!isCancellation) {
         console.error("Video export failed:", error);
       }
@@ -640,7 +645,9 @@ import type { IVideoExportService } from "$lib/features/compose/services/contrac
   function handleExportVideo() {
     // Use the best available video format (MP4 preferred for universal compatibility)
     const bestFormat = videoExportService?.getBestFormat() ?? "webm";
-    console.log(`🎬 AnimationSheetCoordinator: handleExportVideo called, using ${bestFormat}`);
+    console.log(
+      `🎬 AnimationSheetCoordinator: handleExportVideo called, using ${bestFormat}`
+    );
     _handleExport(bestFormat);
   }
 </script>

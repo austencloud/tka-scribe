@@ -6,7 +6,7 @@
  * Domain: Keyboard Shortcuts - Command Palette State
  */
 
-import type { CommandPaletteItem } from '../domain/types/keyboard-types';
+import type { CommandPaletteItem } from "../domain/types/keyboard-types";
 
 /**
  * Create command palette state

@@ -5,7 +5,12 @@
  * for displaying error modals/toasts to users.
  */
 
-import type { AppError, ErrorContext, ErrorSeverity, ShowErrorOptions } from "../domain/error-models";
+import type {
+  AppError,
+  ErrorContext,
+  ErrorSeverity,
+  ShowErrorOptions,
+} from "../domain/error-models";
 
 // Reactive error state
 let currentError = $state<AppError | null>(null);
@@ -21,7 +26,8 @@ export function showError(options: ShowErrorOptions): string {
   const id = `error_${++errorIdCounter}_${Date.now()}`;
 
   const severity = options.severity ?? "error";
-  const reportable = options.reportable ?? (severity === "error" || severity === "critical");
+  const reportable =
+    options.reportable ?? (severity === "error" || severity === "critical");
 
   const appError: AppError = {
     id,

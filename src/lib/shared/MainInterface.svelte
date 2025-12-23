@@ -92,7 +92,10 @@
   const isPrimaryNavVisible = $derived(() => {
     const module = currentModule();
     // Hide during Create module onboarding tutorial
-    if (module === "create" && navigationState.isCreationMethodSelectorVisible) {
+    if (
+      module === "create" &&
+      navigationState.isCreationMethodSelectorVisible
+    ) {
       return false;
     }
     // Hide during Discover module scroll

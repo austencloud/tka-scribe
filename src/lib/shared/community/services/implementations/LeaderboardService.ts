@@ -119,7 +119,9 @@ export class LeaderboardService implements ILeaderboardService {
       ...(achievementCount !== undefined && { achievementCount }),
       ...(currentStreak !== undefined && { currentStreak }),
       ...(longestStreak !== undefined && { longestStreak }),
-      ...(weeklyChallengesCompleted !== undefined && { weeklyChallengesCompleted }),
+      ...(weeklyChallengesCompleted !== undefined && {
+        weeklyChallengesCompleted,
+      }),
       ...(skillsCompleted !== undefined && { skillsCompleted }),
       isCurrentUser: userId === currentUserId,
       ...(tierValue && { tier: tierValue }),
@@ -237,10 +239,7 @@ export class LeaderboardService implements ILeaderboardService {
 
       return null;
     } catch (error) {
-      console.error(
-        "LeaderboardService: Error fetching user rank",
-        error
-      );
+      console.error("LeaderboardService: Error fetching user rank", error);
       return null;
     }
   }

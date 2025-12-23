@@ -15,22 +15,29 @@ import type { IOnboardingPersistenceService } from "../services/contracts/IOnboa
 // Lazy service resolution to avoid circular dependencies
 let _onboardingService: IOnboardingPersistenceService | null = null;
 let _serviceResolved = false;
+let _servicePromise: Promise<IOnboardingPersistenceService | null> | null =
+  null;
 
 function getOnboardingService(): IOnboardingPersistenceService | null {
   if (_serviceResolved) return _onboardingService;
 
-  try {
-    // Dynamic import to avoid circular dependency
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const di = require("$lib/shared/inversify/di") as { resolve: <T>(type: symbol) => T };
-    _onboardingService = di.resolve<IOnboardingPersistenceService>(
-      TYPES.IOnboardingPersistenceService
-    );
-  } catch {
-    // Service not available (e.g., container not initialized yet)
-    _onboardingService = null;
+  if (!_servicePromise) {
+    _servicePromise = import("$lib/shared/inversify/di")
+      .then((di) => {
+        _onboardingService = di.resolve<IOnboardingPersistenceService>(
+          TYPES.IOnboardingPersistenceService
+        );
+        return _onboardingService;
+      })
+      .catch(() => {
+        _onboardingService = null;
+        return null;
+      })
+      .finally(() => {
+        _serviceResolved = true;
+      });
   }
-  _serviceResolved = true;
+
   return _onboardingService;
 }
 

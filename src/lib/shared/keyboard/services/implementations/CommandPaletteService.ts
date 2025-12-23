@@ -8,8 +8,8 @@
  */
 
 import { injectable } from "inversify";
-import type { ICommandPaletteService } from '../contracts/ICommandPaletteService';
-import type { CommandPaletteItem } from '../../domain/types/keyboard-types';
+import type { ICommandPaletteService } from "../contracts/ICommandPaletteService";
+import type { CommandPaletteItem } from "../../domain/types/keyboard-types";
 
 @injectable()
 export class CommandPaletteService implements ICommandPaletteService {

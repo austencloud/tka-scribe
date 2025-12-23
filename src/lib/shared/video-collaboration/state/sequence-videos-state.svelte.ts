@@ -47,7 +47,9 @@ export interface SequenceVideosState {
 /**
  * Create reactive state for videos linked to a sequence
  */
-export function createSequenceVideosState(sequenceId: string): SequenceVideosState {
+export function createSequenceVideosState(
+  sequenceId: string
+): SequenceVideosState {
   let videos = $state<CollaborativeVideo[]>([]);
   let loading = $state(true);
   let error = $state<string | null>(null);

@@ -23,7 +23,9 @@
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let dashboard = $state<ChallengeDashboard | null>(null);
-  let activeTab = $state<"overview" | "daily" | "weekly" | "skills">("overview");
+  let activeTab = $state<"overview" | "daily" | "weekly" | "skills">(
+    "overview"
+  );
 
   // Service
   let coordinator: IChallengeCoordinator | null = null;
@@ -38,11 +40,15 @@
 
   onMount(async () => {
     try {
-      coordinator = tryResolve<IChallengeCoordinator>(TYPES.IChallengeCoordinator);
+      coordinator = tryResolve<IChallengeCoordinator>(
+        TYPES.IChallengeCoordinator
+      );
 
       if (!coordinator) {
         // Services not yet loaded, try resolving
-        coordinator = resolve<IChallengeCoordinator>(TYPES.IChallengeCoordinator);
+        coordinator = resolve<IChallengeCoordinator>(
+          TYPES.IChallengeCoordinator
+        );
       }
 
       await coordinator.initialize();
@@ -75,7 +81,7 @@
   <PanelTabs
     {tabs}
     {activeTab}
-    onchange={(value: string) => activeTab = value as typeof activeTab}
+    onchange={(value: string) => (activeTab = value as typeof activeTab)}
   />
 
   <PanelContent>
@@ -189,7 +195,10 @@
       {:else if activeTab === "skills"}
         <!-- Skills Tab -->
         <SkillProgressionList
-          skills={[...dashboard.skills.inProgressSkills, ...dashboard.skills.recentlyCompleted]}
+          skills={[
+            ...dashboard.skills.inProgressSkills,
+            ...dashboard.skills.recentlyCompleted,
+          ]}
           progressMap={dashboard.skills.userProgress}
           onSkillSelect={refreshDashboard}
         />

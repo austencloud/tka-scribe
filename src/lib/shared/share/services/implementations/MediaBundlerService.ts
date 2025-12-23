@@ -6,13 +6,16 @@
  */
 
 import { injectable, inject } from "inversify";
-import type { IShareService } from '../contracts/IShareService';
-import type { IMediaBundlerService } from '../contracts/IMediaBundlerService';
+import type { IShareService } from "../contracts/IShareService";
+import type { IMediaBundlerService } from "../contracts/IMediaBundlerService";
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { InstagramMediaItem } from '../../domain/models/InstagramMedia';
-import type { ShareOptions } from '../../domain/models/ShareOptions';
-import { INSTAGRAM_MEDIA_CONSTRAINTS, validateMediaItem } from '../../domain/models/InstagramMedia';
-import { TYPES } from '../../../inversify/bootstrap';
+import type { InstagramMediaItem } from "../../domain/models/InstagramMedia";
+import type { ShareOptions } from "../../domain/models/ShareOptions";
+import {
+  INSTAGRAM_MEDIA_CONSTRAINTS,
+  validateMediaItem,
+} from "../../domain/models/InstagramMedia";
+import { TYPES } from "../../../inversify/bootstrap";
 
 @injectable()
 export class MediaBundlerService implements IMediaBundlerService {
@@ -54,7 +57,8 @@ export class MediaBundlerService implements IMediaBundlerService {
       return items;
     } catch (error: unknown) {
       console.error("Failed to bundle sequence media:", error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       throw new Error(`Media bundling failed: ${errorMessage}`);
     }
   }

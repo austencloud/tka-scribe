@@ -29,7 +29,12 @@
       bind:value={query}
     />
     {#if query}
-      <button class="clear-btn" onclick={clearSearch} type="button" aria-label="Clear search">
+      <button
+        class="clear-btn"
+        onclick={clearSearch}
+        type="button"
+        aria-label="Clear search"
+      >
         <i class="fas fa-times"></i>
       </button>
     {/if}
@@ -100,7 +105,8 @@
   .search-input:focus {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
     border-color: var(--theme-accent-strong, #8b5cf6);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
   }
 
   .clear-btn {
@@ -121,8 +127,16 @@
   }
 
   .clear-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
   }
 
@@ -136,8 +150,17 @@
     gap: 6px;
     padding: 10px 14px;
     min-height: 44px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 8%, rgba(255, 255, 255, 0.06));
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 20%, rgba(255, 255, 255, 0.1));
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 8%,
+      rgba(255, 255, 255, 0.06)
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--semantic-error, #ef4444) 20%,
+        rgba(255, 255, 255, 0.1)
+      );
     border-radius: 10px;
     font-size: 12px;
     font-weight: 600;
@@ -154,8 +177,16 @@
   }
 
   .reset-all-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, rgba(255, 255, 255, 0.08));
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      rgba(255, 255, 255, 0.08)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 40%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
     transform: translateY(-1px);
   }
@@ -195,13 +226,15 @@
 
   /* Focus visible states */
   .search-input:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
     outline-offset: 2px;
   }
 
   .reset-all-btn:focus-visible,
   .clear-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
     outline-offset: 2px;
   }
 </style>

@@ -320,7 +320,9 @@ export class OnboardingPersistenceService
   /**
    * Subscribe to real-time updates
    */
-  async subscribe(callback: (status: OnboardingStatus) => void): Promise<() => void> {
+  async subscribe(
+    callback: (status: OnboardingStatus) => void
+  ): Promise<() => void> {
     const docRef = await this.getOnboardingDocRef();
     if (!docRef) {
       // Not authenticated - just return current status
@@ -387,9 +389,7 @@ export class OnboardingPersistenceService
         mergedStatus.appSkipped =
           localStatus.appSkipped || cloudStatus.appSkipped;
         mergedStatus.appCompletedAt =
-          localStatus.appCompletedAt ||
-          cloudStatus.appCompletedAt ||
-          null;
+          localStatus.appCompletedAt || cloudStatus.appCompletedAt || null;
 
         // Per-module: prefer completed
         for (const moduleId of MODULES_WITH_ONBOARDING) {
@@ -398,8 +398,7 @@ export class OnboardingPersistenceService
 
           mergedStatus.modules[moduleId] = {
             completed: local?.completed || cloud?.completed || false,
-            completedAt:
-              local?.completedAt || cloud?.completedAt || null,
+            completedAt: local?.completedAt || cloud?.completedAt || null,
           };
         }
 
@@ -409,10 +408,7 @@ export class OnboardingPersistenceService
         await this.saveStatus(localStatus);
       }
     } catch (error) {
-      console.error(
-        "❌ [OnboardingPersistenceService] Failed to sync:",
-        error
-      );
+      console.error("❌ [OnboardingPersistenceService] Failed to sync:", error);
     }
   }
 }

@@ -42,7 +42,7 @@
   class="panel-grid"
   class:centered
   style:grid-template-columns={gridTemplateColumns}
-  style:gap={gap}
+  style:gap
 >
   {@render children()}
 </div>

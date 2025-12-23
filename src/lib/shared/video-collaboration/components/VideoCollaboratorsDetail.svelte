@@ -5,7 +5,10 @@
   Shows all collaborators with roles and join dates.
 -->
 <script lang="ts">
-  import type { CollaborativeVideo, VideoCollaborator } from "../domain/CollaborativeVideo";
+  import type {
+    CollaborativeVideo,
+    VideoCollaborator,
+  } from "../domain/CollaborativeVideo";
   import { auth } from "$lib/shared/auth/firebase";
 
   const {
@@ -83,7 +86,9 @@
           <button
             class="remove-btn"
             onclick={() => onRemoveCollaborator?.(collaborator.userId)}
-            aria-label={collaborator.userId === currentUserId ? "Leave collaboration" : "Remove collaborator"}
+            aria-label={collaborator.userId === currentUserId
+              ? "Leave collaboration"
+              : "Remove collaborator"}
           >
             <i class="fas fa-times"></i>
           </button>

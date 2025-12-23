@@ -126,7 +126,9 @@ export async function extractVideoThumbnail(
 /**
  * Get video duration without loading the entire file
  */
-export async function getVideoDuration(videoFile: File | Blob): Promise<number> {
+export async function getVideoDuration(
+  videoFile: File | Blob
+): Promise<number> {
   return new Promise((resolve, reject) => {
     const video = document.createElement("video");
     video.preload = "metadata";

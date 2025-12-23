@@ -58,7 +58,9 @@
 
   // Recording state
   let recordingId = $state<string | null>(null);
-  let recordingState = $state<"idle" | "recording" | "paused" | "stopped">("idle");
+  let recordingState = $state<"idle" | "recording" | "paused" | "stopped">(
+    "idle"
+  );
   let recordingDuration = $state(0);
   let recordedVideo = $state<RecordingResult | null>(null);
   let playbackVideoElement = $state<HTMLVideoElement | null>(null);
@@ -114,7 +116,8 @@
       cameraStream = stream;
       cameraInitialized = true;
     } catch (error) {
-      cameraError = error instanceof Error ? error.message : "Failed to access camera";
+      cameraError =
+        error instanceof Error ? error.message : "Failed to access camera";
     }
   }
 
@@ -205,7 +208,9 @@
 
       if (recordedVideo.videoBlob && navigator.canShare) {
         const filename = `tka-${sequenceName}-${Date.now()}.webm`;
-        const file = new File([recordedVideo.videoBlob], filename, { type: "video/webm" });
+        const file = new File([recordedVideo.videoBlob], filename, {
+          type: "video/webm",
+        });
         const shareData: ShareData = {
           title: `TKA Recording: ${sequenceName}`,
           text: `Check out my flow recording: ${sequenceName}`,
@@ -284,7 +289,11 @@
     </div>
   {:else}
     <!-- Settings Button (Top Right) -->
-    <button class="settings-fab" onclick={() => settingsOpen = true} aria-label="Settings">
+    <button
+      class="settings-fab"
+      onclick={() => (settingsOpen = true)}
+      aria-label="Settings"
+    >
       <i class="fas fa-cog"></i>
     </button>
 
@@ -326,12 +335,20 @@
       {#if showReferencePanel && activeReferenceView && sequence}
         <div class="media-panel reference-panel">
           <div class="panel-label">
-            <i class="fas {activeReferenceView === 'animation' ? 'fa-play-circle' : 'fa-th'}"></i>
+            <i
+              class="fas {activeReferenceView === 'animation'
+                ? 'fa-play-circle'
+                : 'fa-th'}"
+            ></i>
             {activeReferenceView === "animation" ? "Animation" : "Grid"}
           </div>
           <div class="reference-wrapper">
             {#if activeReferenceView === "animation"}
-              <InlineAnimationPlayer {sequence} autoPlay={true} showControls={false} />
+              <InlineAnimationPlayer
+                {sequence}
+                autoPlay={true}
+                showControls={false}
+              />
             {:else if activeReferenceView === "grid"}
               <GridPreview
                 {sequence}
@@ -352,22 +369,45 @@
       {#if recordedVideo}
         <!-- Playback State -->
         <div class="control-group">
-          <span class="duration-badge">{formatDuration(recordedVideo.duration || 0)}</span>
+          <span class="duration-badge"
+            >{formatDuration(recordedVideo.duration || 0)}</span
+          >
           <div class="control-buttons">
-            <button class="control-btn secondary" onclick={discardRecording} aria-label="Record Again">
+            <button
+              class="control-btn secondary"
+              onclick={discardRecording}
+              aria-label="Record Again"
+            >
               <i class="fas fa-redo"></i>
             </button>
-            <button class="control-btn primary" onclick={shareRecording} disabled={isSharing} aria-label="Share">
-              <i class="fas {isSharing ? 'fa-spinner fa-spin' : 'fa-share-nodes'}"></i>
+            <button
+              class="control-btn primary"
+              onclick={shareRecording}
+              disabled={isSharing}
+              aria-label="Share"
+            >
+              <i
+                class="fas {isSharing
+                  ? 'fa-spinner fa-spin'
+                  : 'fa-share-nodes'}"
+              ></i>
             </button>
-            <button class="control-btn success" onclick={saveRecording} aria-label="Save">
+            <button
+              class="control-btn success"
+              onclick={saveRecording}
+              aria-label="Save"
+            >
               <i class="fas fa-download"></i>
             </button>
           </div>
         </div>
       {:else if recordingState === "idle"}
         <!-- Ready to Record -->
-        <button class="record-btn" onclick={startRecording} aria-label="Start Recording">
+        <button
+          class="record-btn"
+          onclick={startRecording}
+          aria-label="Start Recording"
+        >
           <span class="record-dot"></span>
         </button>
       {:else if recordingState === "recording"}
@@ -378,13 +418,25 @@
             {formatDuration(recordingDuration)}
           </span>
           <div class="control-buttons">
-            <button class="control-btn secondary" onclick={pauseRecording} aria-label="Pause">
+            <button
+              class="control-btn secondary"
+              onclick={pauseRecording}
+              aria-label="Pause"
+            >
               <i class="fas fa-pause"></i>
             </button>
-            <button class="control-btn primary" onclick={stopRecording} aria-label="Stop">
+            <button
+              class="control-btn primary"
+              onclick={stopRecording}
+              aria-label="Stop"
+            >
               <i class="fas fa-stop"></i>
             </button>
-            <button class="control-btn danger" onclick={cancelRecording} aria-label="Cancel">
+            <button
+              class="control-btn danger"
+              onclick={cancelRecording}
+              aria-label="Cancel"
+            >
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -397,13 +449,25 @@
             {formatDuration(recordingDuration)}
           </span>
           <div class="control-buttons">
-            <button class="control-btn success" onclick={resumeRecording} aria-label="Resume">
+            <button
+              class="control-btn success"
+              onclick={resumeRecording}
+              aria-label="Resume"
+            >
               <i class="fas fa-play"></i>
             </button>
-            <button class="control-btn primary" onclick={stopRecording} aria-label="Stop">
+            <button
+              class="control-btn primary"
+              onclick={stopRecording}
+              aria-label="Stop"
+            >
               <i class="fas fa-stop"></i>
             </button>
-            <button class="control-btn danger" onclick={cancelRecording} aria-label="Cancel">
+            <button
+              class="control-btn danger"
+              onclick={cancelRecording}
+              aria-label="Cancel"
+            >
               <i class="fas fa-times"></i>
             </button>
           </div>
@@ -421,7 +485,7 @@
   gridSettings={settings.current.gridSettings}
   {bluePropType}
   {redPropType}
-  onClose={() => settingsOpen = false}
+  onClose={() => (settingsOpen = false)}
   onReferenceViewChange={(v) => settings.setReferenceView(v)}
   onGridSettingsChange={(s) => {
     settings.setGridAnimated(s.animated);
@@ -600,8 +664,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
 
   .control-buttons {
@@ -648,7 +717,8 @@
 
   .control-btn.danger {
     background: var(--semantic-error-dim, rgba(239, 68, 68, 0.2));
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
     color: var(--semantic-error, #ef4444);
   }
 
@@ -681,7 +751,11 @@
   }
 
   .record-btn:hover {
-    border-color: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 70%, white);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 70%,
+      white
+    );
     transform: scale(1.05);
   }
 
@@ -699,7 +773,8 @@
 
   .record-btn:hover .record-dot {
     transform: scale(1.1);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    box-shadow: 0 0 20px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
   }
 
   /* Loading/Error States */
@@ -760,7 +835,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Responsive */

@@ -70,10 +70,7 @@ export interface IShortcutCustomizationService {
    * @param keyCombo The proposed key combo
    * @returns Conflict information if one exists, null otherwise
    */
-  detectConflict(
-    shortcutId: string,
-    keyCombo: string
-  ): ShortcutConflict | null;
+  detectConflict(shortcutId: string, keyCombo: string): ShortcutConflict | null;
 
   /**
    * Get all current conflicts in the shortcut system

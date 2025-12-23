@@ -37,8 +37,12 @@
   onMount(async () => {
     const container = await getContainerInstance();
     userService = container.get<IUserService>(TYPES.IUserService);
-    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
-    hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    videoService = container.get<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
+    hapticService = container.get<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Search state
@@ -55,7 +59,9 @@
   const existingUserIds = $derived(
     new Set([
       ...video.collaborators.map((c) => c.userId),
-      ...video.pendingInvites.filter((i) => i.status === "pending").map((i) => i.userId),
+      ...video.pendingInvites
+        .filter((i) => i.status === "pending")
+        .map((i) => i.userId),
     ])
   );
 
@@ -94,7 +100,11 @@
     hapticService?.trigger("selection");
 
     try {
-      await videoService.inviteCollaborator(video.id, user.id, user.displayName);
+      await videoService.inviteCollaborator(
+        video.id,
+        user.id,
+        user.displayName
+      );
       hapticService?.trigger("success");
 
       // Remove from search results
@@ -187,8 +197,14 @@
                 />
               </div>
               <div class="user-info">
-                <span class="user-name">{collaborator.displayName || "Unknown"}</span>
-                <span class="user-role">{collaborator.role === "creator" ? "Creator" : "Collaborator"}</span>
+                <span class="user-name"
+                  >{collaborator.displayName || "Unknown"}</span
+                >
+                <span class="user-role"
+                  >{collaborator.role === "creator"
+                    ? "Creator"
+                    : "Collaborator"}</span
+                >
               </div>
               {#if collaborator.role === "creator"}
                 <span class="creator-badge">

@@ -140,10 +140,15 @@ Shows all 4 orientations: in, out, clock, counter
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent) 25%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 25%, transparent)
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent)) 25%,
+        transparent
+      )
     );
     border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    box-shadow: 0 0 20px
+      color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
 
   .orientation-cell:focus-visible {

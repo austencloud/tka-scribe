@@ -62,13 +62,23 @@
   }
 
   .conflict-warning.error {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 10%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   .conflict-warning.warning {
-    background: color-mix(in srgb, var(--semantic-warning, #eab308) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #eab308) 10%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
   }
 
   .conflict-icon {

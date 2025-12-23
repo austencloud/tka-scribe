@@ -77,7 +77,9 @@
       <strong>We're moving to {MIGRATION_CONFIG.NEW_DOMAIN}!</strong>
       {#if daysLeft > 0}
         <span class="deadline">
-          {daysLeft} {daysLeft === 1 ? "day" : "days"} until {MIGRATION_CONFIG.OLD_DOMAIN} stops working
+          {daysLeft}
+          {daysLeft === 1 ? "day" : "days"} until {MIGRATION_CONFIG.OLD_DOMAIN} stops
+          working
         </span>
       {:else}
         <span class="deadline urgent">Update now to keep using TKA Scribe</span>
@@ -90,9 +92,7 @@
         <span>Update Now</span>
       </button>
 
-      <button class="learn-more" onclick={onShowModal}>
-        Learn More
-      </button>
+      <button class="learn-more" onclick={onShowModal}> Learn More </button>
 
       {#if remindersRemaining > 0}
         <button
@@ -232,7 +232,8 @@
   }
 
   @keyframes critical-pulse {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
     }
     50% {

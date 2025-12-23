@@ -5,8 +5,8 @@
  */
 
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { InstagramMediaItem } from '../../domain/models/InstagramMedia';
-import type { ShareOptions } from '../../domain/models/ShareOptions';
+import type { InstagramMediaItem } from "../../domain/models/InstagramMedia";
+import type { ShareOptions } from "../../domain/models/ShareOptions";
 
 export interface IMediaBundlerService {
   /**

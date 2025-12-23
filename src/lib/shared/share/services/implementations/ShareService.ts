@@ -10,7 +10,10 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 import { TYPES } from "../../../inversify/types";
 import { inject, injectable } from "inversify";
 import type { ShareOptions } from "../../domain/models/ShareOptions";
-import type { ImageGenerationProgressCallback, IShareService } from "../contracts/IShareService";
+import type {
+  ImageGenerationProgressCallback,
+  IShareService,
+} from "../contracts/IShareService";
 import { PreviewCacheService } from "./PreviewCacheService";
 
 @injectable()

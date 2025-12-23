@@ -298,7 +298,10 @@ export const LIBRARY_ONBOARDING: ModuleOnboardingContent = {
 // ============================================================================
 // CONTENT MAP (for easy lookup by module ID)
 // ============================================================================
-export const MODULE_ONBOARDING_CONTENT: Record<string, ModuleOnboardingContent> = {
+export const MODULE_ONBOARDING_CONTENT: Record<
+  string,
+  ModuleOnboardingContent
+> = {
   discover: DISCOVER_ONBOARDING,
   learn: LEARN_ONBOARDING,
   compose: COMPOSE_ONBOARDING,

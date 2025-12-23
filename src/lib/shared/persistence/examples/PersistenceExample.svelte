@@ -6,10 +6,10 @@
 -->
 
 <script lang="ts">
-import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-import type { TabId } from "../../navigation/domain/types";
-import { resolve } from "../../inversify/di";
-import { TYPES } from "../../inversify/types";
+  import type { SequenceData } from "../../foundation/domain/models/SequenceData";
+  import type { TabId } from "../../navigation/domain/types";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import type { IPersistenceService } from "../services/contracts/IPersistenceService";
 

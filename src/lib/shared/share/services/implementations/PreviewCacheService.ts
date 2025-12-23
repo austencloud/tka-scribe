@@ -7,7 +7,7 @@
 
 import { browser } from "$app/environment";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ShareOptions } from '../../domain/models/ShareOptions';
+import type { ShareOptions } from "../../domain/models/ShareOptions";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const debug = createComponentLogger("PreviewCacheService");
@@ -78,7 +78,8 @@ export class PreviewCacheService {
     let hash = 2166136261;
     for (let i = 0; i < beatsJson.length; i++) {
       hash ^= beatsJson.charCodeAt(i);
-      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+      hash +=
+        (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
     }
     return (hash >>> 0).toString(36);
   }

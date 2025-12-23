@@ -28,8 +28,12 @@ Shows count of active options, click to open configuration sheet
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    rippleService = tryResolve<IRippleEffectService>(
+      TYPES.IRippleEffectService
+    );
 
     if (cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
@@ -54,7 +58,9 @@ Shows count of active options, click to open configuration sheet
     }
   }
 
-  const displayValue = $derived(activeCount > 0 ? `${activeCount} active` : "Configure");
+  const displayValue = $derived(
+    activeCount > 0 ? `${activeCount} active` : "Configure"
+  );
 </script>
 
 <div
@@ -75,9 +81,16 @@ Shows count of active options, click to open configuration sheet
 
   <div class="options-display">
     <span class="options-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <circle cx="12" cy="12" r="3" />
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+        />
       </svg>
     </span>
     <span class="options-value">{displayValue}</span>
@@ -107,7 +120,12 @@ Shows count of active options, click to open configuration sheet
     padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: radial-gradient(ellipse at top left, #a78bfa 0%, #8b5cf6 40%, #7c3aed 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #a78bfa 0%,
+      #8b5cf6 40%,
+      #7c3aed 100%
+    );
     border: none;
     color: white;
     text-align: center;
@@ -130,7 +148,12 @@ Shows count of active options, click to open configuration sheet
   }
 
   .options-card.has-active {
-    background: radial-gradient(ellipse at top left, #34d399 0%, #10b981 40%, #059669 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #34d399 0%,
+      #10b981 40%,
+      #059669 100%
+    );
     box-shadow:
       0 1px 2px hsl(160deg 70% 45% / 0.15),
       0 2px 4px hsl(160deg 70% 45% / 0.12),
@@ -195,8 +218,12 @@ Shows count of active options, click to open configuration sheet
   }
 
   @keyframes cardEnter {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .card-header {

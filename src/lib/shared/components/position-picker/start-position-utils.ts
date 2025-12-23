@@ -4,9 +4,18 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { GridMode, GridLocation, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  GridMode,
+  GridLocation,
+  GridPosition,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  MotionColor,
+  Orientation,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
@@ -97,8 +106,11 @@ const BOX_POSITIONS: Array<{ position: GridPosition; letter: Letter }> = [
  * Create all 16 start position variations for the given grid mode
  * Returns full PictographData objects with proper motion data
  */
-export function createStartPositionVariations(gridMode: GridMode): PictographData[] {
-  const positions = gridMode === GridMode.DIAMOND ? DIAMOND_POSITIONS : BOX_POSITIONS;
+export function createStartPositionVariations(
+  gridMode: GridMode
+): PictographData[] {
+  const positions =
+    gridMode === GridMode.DIAMOND ? DIAMOND_POSITIONS : BOX_POSITIONS;
 
   return positions.map((pos) => {
     const [blueLocation, redLocation] = POSITION_LOCATIONS[pos.position];

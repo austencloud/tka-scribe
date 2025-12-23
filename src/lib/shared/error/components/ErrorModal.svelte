@@ -17,7 +17,10 @@
 
   const error = $derived(getCurrentError());
 
-  const severityConfig: Record<string, { icon: string; color: string; bg: string; title: string }> = {
+  const severityConfig: Record<
+    string,
+    { icon: string; color: string; bg: string; title: string }
+  > = {
     info: {
       icon: "fa-info-circle",
       color: "#60a5fa",
@@ -44,7 +47,12 @@
     },
   };
 
-  function getConfig(severity: string): { icon: string; color: string; bg: string; title: string } {
+  function getConfig(severity: string): {
+    icon: string;
+    color: string;
+    bg: string;
+    title: string;
+  } {
     return severityConfig[severity] ?? severityConfig.error!;
   }
 
@@ -59,13 +67,18 @@
 
     isReporting = true;
     try {
-      const errorService = tryResolve<IErrorHandlingService>(TYPES.IErrorHandlingService);
+      const errorService = tryResolve<IErrorHandlingService>(
+        TYPES.IErrorHandlingService
+      );
       if (!errorService) {
         toast.error("Unable to submit bug report - service unavailable");
         return;
       }
 
-      const feedbackId = await errorService.reportBug(error.id, userComment || undefined);
+      const feedbackId = await errorService.reportBug(
+        error.id,
+        userComment || undefined
+      );
 
       if (feedbackId) {
         toast.success("Bug report submitted. Thank you!");
@@ -112,7 +125,11 @@
           <i class="fas {config.icon} error-icon"></i>
         </div>
         <h2 id="error-title" class="error-title">{config.title}</h2>
-        <button class="close-button" onclick={handleDismiss} aria-label="Dismiss error">
+        <button
+          class="close-button"
+          onclick={handleDismiss}
+          aria-label="Dismiss error"
+        >
           <i class="fas fa-times"></i>
         </button>
       </div>

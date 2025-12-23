@@ -8,7 +8,10 @@
   with the animation panel controls.
 -->
 <script lang="ts">
-  import type { ReferenceViewType, GridSettings } from "../state/video-record-settings.svelte";
+  import type {
+    ReferenceViewType,
+    GridSettings,
+  } from "../state/video-record-settings.svelte";
   import SimpleTrailControls from "$lib/features/compose/components/trail/SimpleTrailControls.svelte";
   import MotionVisibilityButtons from "$lib/features/compose/components/trail/MotionVisibilityButtons.svelte";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
@@ -92,7 +95,9 @@
         <!-- Reference View Section -->
         <section class="settings-section">
           <h4>Reference View</h4>
-          <p class="section-hint">Choose what to display alongside your camera feed</p>
+          <p class="section-hint">
+            Choose what to display alongside your camera feed
+          </p>
 
           <div class="option-grid">
             {#if !isMobile}
@@ -130,7 +135,7 @@
             <h4>Animation Settings</h4>
 
             <!-- Trail Controls (Off/Subtle/Vivid) with bilateral toggle -->
-            <SimpleTrailControls bluePropType={bluePropType} redPropType={redPropType} />
+            <SimpleTrailControls {bluePropType} {redPropType} />
 
             <!-- Motion Visibility -->
             <div class="motion-visibility-row">
@@ -151,7 +156,9 @@
         {#if referenceView === "grid"}
           <section class="settings-section">
             <h4>Grid Settings</h4>
-            <p class="section-hint">Adjust playback speed for the animated grid</p>
+            <p class="section-hint">
+              Adjust playback speed for the animated grid
+            </p>
 
             <div class="slider-row">
               <span>Speed (BPM)</span>
@@ -162,7 +169,12 @@
                   max="120"
                   step="5"
                   value={gridSettings.bpm}
-                  oninput={(e) => onGridSettingsChange({ ...gridSettings, bpm: Number(e.currentTarget.value), animated: true })}
+                  oninput={(e) =>
+                    onGridSettingsChange({
+                      ...gridSettings,
+                      bpm: Number(e.currentTarget.value),
+                      animated: true,
+                    })}
                 />
                 <span class="slider-value">{gridSettings.bpm}</span>
               </div>
@@ -188,8 +200,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .sheet-content {
@@ -311,9 +327,14 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent, #3b82f6) 18%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 14%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 14%, transparent)
+        100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 45%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 45%,
+      transparent
+    );
     color: var(--theme-accent, #3b82f6);
   }
 
@@ -367,7 +388,11 @@
   .slider-control input[type="range"] {
     flex: 1;
     height: 4px;
-    background: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.18)) 55%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.18)) 55%,
+      transparent
+    );
     border-radius: 2px;
     appearance: none;
     cursor: pointer;

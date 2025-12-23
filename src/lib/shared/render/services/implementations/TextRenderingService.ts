@@ -8,7 +8,10 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../../../inversify/types";
 import type { IDimensionCalculationService } from "../contracts/IDimensionCalculationService";
-import type { TextRenderOptions, UserExportInfo } from "../../domain/models/SequenceExportOptions";
+import type {
+  TextRenderOptions,
+  UserExportInfo,
+} from "../../domain/models/SequenceExportOptions";
 import type { ITextRenderingService } from "../contracts/ITextRenderingService";
 @injectable()
 export class TextRenderingService implements ITextRenderingService {
@@ -107,7 +110,14 @@ export class TextRenderingService implements ITextRenderingService {
     const footerY = canvas.height - footerHeight;
 
     // Draw gradient background
-    this.drawFooterGradient(ctx, 0, footerY, canvas.width, footerHeight, levelStyle);
+    this.drawFooterGradient(
+      ctx,
+      0,
+      footerY,
+      canvas.width,
+      footerHeight,
+      levelStyle
+    );
 
     // Calculate font size based on footer height (larger, bolder text)
     const finalFontSize = footerHeight * 0.55;
@@ -265,26 +275,26 @@ export class TextRenderingService implements ITextRenderingService {
         break;
       case 3:
         // Gold gradient (matching legacy exactly)
-        gradient.addColorStop(0, "rgb(255, 215, 0)");      // Gold
-        gradient.addColorStop(0.2, "rgb(238, 201, 0)");    // Goldenrod
-        gradient.addColorStop(0.4, "rgb(218, 165, 32)");   // Goldenrod darker
-        gradient.addColorStop(0.6, "rgb(184, 134, 11)");   // Dark goldenrod
-        gradient.addColorStop(0.8, "rgb(139, 69, 19)");    // Saddle brown
-        gradient.addColorStop(1, "rgb(85, 107, 47)");      // Dark olive green
+        gradient.addColorStop(0, "rgb(255, 215, 0)"); // Gold
+        gradient.addColorStop(0.2, "rgb(238, 201, 0)"); // Goldenrod
+        gradient.addColorStop(0.4, "rgb(218, 165, 32)"); // Goldenrod darker
+        gradient.addColorStop(0.6, "rgb(184, 134, 11)"); // Dark goldenrod
+        gradient.addColorStop(0.8, "rgb(139, 69, 19)"); // Saddle brown
+        gradient.addColorStop(1, "rgb(85, 107, 47)"); // Dark olive green
         break;
       case 4:
         // Purple gradient (matching legacy exactly)
-        gradient.addColorStop(0, "rgb(200, 162, 200)");    // Lavender
+        gradient.addColorStop(0, "rgb(200, 162, 200)"); // Lavender
         gradient.addColorStop(0.3, "rgb(170, 132, 170)");
-        gradient.addColorStop(0.6, "rgb(148, 0, 211)");    // Dark violet
-        gradient.addColorStop(1, "rgb(100, 0, 150)");      // Deep purple
+        gradient.addColorStop(0.6, "rgb(148, 0, 211)"); // Dark violet
+        gradient.addColorStop(1, "rgb(100, 0, 150)"); // Deep purple
         break;
       case 5:
         // Red/Orange gradient (matching legacy exactly)
-        gradient.addColorStop(0, "rgb(255, 69, 0)");       // Orange red
-        gradient.addColorStop(0.4, "rgb(255, 0, 0)");      // Red
-        gradient.addColorStop(0.8, "rgb(139, 0, 0)");      // Dark red
-        gradient.addColorStop(1, "rgb(100, 0, 0)");        // Very dark red
+        gradient.addColorStop(0, "rgb(255, 69, 0)"); // Orange red
+        gradient.addColorStop(0.4, "rgb(255, 0, 0)"); // Red
+        gradient.addColorStop(0.8, "rgb(139, 0, 0)"); // Dark red
+        gradient.addColorStop(1, "rgb(100, 0, 0)"); // Very dark red
         break;
       default:
         // Fallback to light gray
@@ -299,8 +309,14 @@ export class TextRenderingService implements ITextRenderingService {
    * Get level style (colors) matching Explorer Gallery SequenceCard
    * 1=white, 2=silver, 3=gold, 4=red, 5=purple
    */
-  private getLevelStyle(level: number): { background: string[]; textColor: string } {
-    const levelStyles: Record<number, { background: string[]; textColor: string }> = {
+  private getLevelStyle(level: number): {
+    background: string[];
+    textColor: string;
+  } {
+    const levelStyles: Record<
+      number,
+      { background: string[]; textColor: string }
+    > = {
       1: {
         // White - Beginner
         background: [
@@ -450,12 +466,12 @@ export class TextRenderingService implements ITextRenderingService {
     let baseMargin: number;
     if (beatCount <= 1) {
       baseFontSize = 50 / 2.3; // ~22pt
-      baseMargin = 50 / 3;     // ~17
+      baseMargin = 50 / 3; // ~17
     } else if (beatCount === 2) {
       baseFontSize = 50 / 1.5; // ~33pt
-      baseMargin = 50 / 2;     // 25
+      baseMargin = 50 / 2; // 25
     } else {
-      baseFontSize = 50;       // 50pt
+      baseFontSize = 50; // 50pt
       baseMargin = 50;
     }
 
@@ -477,9 +493,10 @@ export class TextRenderingService implements ITextRenderingService {
     }
 
     // Notes (bottom-center) - Georgia Normal weight, NOT italic (matching legacy)
-    const notes = userInfo.notes && userInfo.notes.trim() !== ""
-      ? userInfo.notes
-      : "Created using The Kinetic Alphabet";
+    const notes =
+      userInfo.notes && userInfo.notes.trim() !== ""
+        ? userInfo.notes
+        : "Created using The Kinetic Alphabet";
     ctx.font = `${fontSize}px Georgia, serif`;
     ctx.textAlign = "center";
     ctx.fillText(notes, canvas.width / 2, yPosition);

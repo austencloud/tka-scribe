@@ -75,11 +75,7 @@ export class VideoRecordService implements IVideoRecordService {
   ): Promise<string> {
     const recordingId = this.generateRecordingId();
 
-    const {
-      format = "webm",
-      quality = 0.9,
-      maxDuration = 60,
-    } = options;
+    const { format = "webm", quality = 0.9, maxDuration = 60 } = options;
 
     // Determine best MIME type
     const preferredMimeType =
@@ -214,7 +210,9 @@ export class VideoRecordService implements IVideoRecordService {
     // Stop MediaRecorder
     const videoBlob = await new Promise<Blob>((resolve, reject) => {
       state.mediaRecorder.onstop = () => {
-        const blob = new Blob(state.chunks, { type: state.mediaRecorder.mimeType });
+        const blob = new Blob(state.chunks, {
+          type: state.mediaRecorder.mimeType,
+        });
         console.log(
           `📦 Recording complete: ${recordingId} (${(blob.size / 1024).toFixed(1)}KB)`
         );
@@ -231,7 +229,9 @@ export class VideoRecordService implements IVideoRecordService {
         state.mediaRecorder.stop();
       } else {
         // Already stopped, create blob immediately
-        const blob = new Blob(state.chunks, { type: state.mediaRecorder.mimeType });
+        const blob = new Blob(state.chunks, {
+          type: state.mediaRecorder.mimeType,
+        });
         resolve(blob);
       }
     });
@@ -285,7 +285,9 @@ export class VideoRecordService implements IVideoRecordService {
   /**
    * Get cached recording by ID
    */
-  async getCachedRecording(recordingId: string): Promise<RecordingResult | null> {
+  async getCachedRecording(
+    recordingId: string
+  ): Promise<RecordingResult | null> {
     try {
       const db = await this.initDB();
 
@@ -394,7 +396,9 @@ export class VideoRecordService implements IVideoRecordService {
   /**
    * Get current recording state
    */
-  getRecordingState(recordingId: string): 'idle' | 'recording' | 'paused' | 'stopped' {
+  getRecordingState(
+    recordingId: string
+  ): "idle" | "recording" | "paused" | "stopped" {
     const state = this.activeRecordings.get(recordingId);
     if (!state) return "idle";
     return this.getRecordingStateInternal(state);
@@ -405,7 +409,7 @@ export class VideoRecordService implements IVideoRecordService {
    */
   private getRecordingStateInternal(
     state: RecordingState
-  ): 'recording' | 'paused' | 'stopped' {
+  ): "recording" | "paused" | "stopped" {
     if (state.mediaRecorder.state === "recording") return "recording";
     if (state.mediaRecorder.state === "paused") return "paused";
     return "stopped";

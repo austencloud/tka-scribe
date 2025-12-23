@@ -75,7 +75,7 @@
         currentDateKey = dateKey;
         currentGroup = {
           date: message.createdAt,
-          messages: [message]
+          messages: [message],
         };
         groups.push(currentGroup);
       } else if (currentGroup) {
@@ -102,7 +102,8 @@
             <MessageBubble
               {message}
               isOwn={message.senderId === currentUserId}
-              isNew={groupIndex === messageGroups.length - 1 && messageIndex === group.messages.length - 1}
+              isNew={groupIndex === messageGroups.length - 1 &&
+                messageIndex === group.messages.length - 1}
               {otherParticipantId}
             />
           {/each}

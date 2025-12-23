@@ -33,7 +33,9 @@ export const VARIANT_WIDTHS = {
  * generateSrcset("/gallery/A/A_ver1.webp")
  * // Returns: "/gallery/A/A_ver1_small.webp 300w, /gallery/A/A_ver1_medium.webp 600w, /gallery/A/A_ver1.webp 1200w"
  */
-export function generateSrcset(baseUrl: string | undefined): string | undefined {
+export function generateSrcset(
+  baseUrl: string | undefined
+): string | undefined {
   if (!baseUrl) return undefined;
 
   // Extract base name and extension
@@ -57,7 +59,9 @@ export function generateSrcset(baseUrl: string | undefined): string | undefined 
  * @param context - The display context ('grid' | 'detail' | 'fullscreen')
  * @returns sizes attribute string
  */
-export function generateSizes(context: "grid" | "detail" | "fullscreen" = "grid"): string {
+export function generateSizes(
+  context: "grid" | "detail" | "fullscreen" = "grid"
+): string {
   switch (context) {
     case "fullscreen":
       return "100vw";
@@ -74,7 +78,9 @@ export function generateSizes(context: "grid" | "detail" | "fullscreen" = "grid"
  * Get the smallest variant URL for lazy loading optimization.
  * Useful for placeholder images or low-bandwidth scenarios.
  */
-export function getSmallVariantUrl(baseUrl: string | undefined): string | undefined {
+export function getSmallVariantUrl(
+  baseUrl: string | undefined
+): string | undefined {
   if (!baseUrl) return undefined;
 
   const extIndex = baseUrl.lastIndexOf(".");

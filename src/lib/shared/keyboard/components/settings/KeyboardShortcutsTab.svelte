@@ -10,8 +10,14 @@
   import { cubicOut } from "svelte/easing";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IShortcutCustomizationService, ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizationService";
-  import type { ShortcutScope, ShortcutConflict } from "../../domain/types/keyboard-types";
+  import type {
+    IShortcutCustomizationService,
+    ShortcutWithBinding,
+  } from "../../services/contracts/IShortcutCustomizationService";
+  import type {
+    ShortcutScope,
+    ShortcutConflict,
+  } from "../../domain/types/keyboard-types";
   import ShortcutSearchBar from "./ShortcutSearchBar.svelte";
   import ShortcutScopeSection from "./ShortcutScopeSection.svelte";
   import ShortcutKeyCapture from "./ShortcutKeyCapture.svelte";
@@ -23,7 +29,9 @@
   // Local state
   let searchQuery = $state("");
   let allShortcuts = $state<ShortcutWithBinding[]>([]);
-  let expandedScopes = $state<Set<ShortcutScope>>(new Set(["navigation", "action", "editing"]));
+  let expandedScopes = $state<Set<ShortcutScope>>(
+    new Set(["navigation", "action", "editing"])
+  );
 
   // Edit modal state
   let editingItem = $state<ShortcutWithBinding | null>(null);
@@ -142,7 +150,10 @@
 
   function detectConflict(keyCombo: string): ShortcutConflict | null {
     if (!customizationService || !editingItem) return null;
-    return customizationService.detectConflict(editingItem.shortcut.id, keyCombo);
+    return customizationService.detectConflict(
+      editingItem.shortcut.id,
+      keyCombo
+    );
   }
 
   function toggleScope(scope: ShortcutScope) {
@@ -180,7 +191,12 @@
           {@const shortcuts = groupedByScope().get(scope)!}
           <div
             class="scope-section-wrapper"
-            in:fly={{ y: 16, duration: 250, delay: scopeIndex * 50, easing: cubicOut }}
+            in:fly={{
+              y: 16,
+              duration: 250,
+              delay: scopeIndex * 50,
+              easing: cubicOut,
+            }}
           >
             <ShortcutScopeSection
               {scope}

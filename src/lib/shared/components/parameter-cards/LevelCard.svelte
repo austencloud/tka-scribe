@@ -78,7 +78,7 @@ Uses shared StepperCard for consistent styling with Generate module
 {:else}
   <StepperCard
     title="Level"
-    currentValue={currentValue}
+    {currentValue}
     {minValue}
     maxValue={3}
     onIncrement={handleIncrement}

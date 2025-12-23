@@ -5,15 +5,18 @@
  */
 
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-import type { ShareOptions } from '../domain/models/ShareOptions';
-import { SHARE_PRESETS, DEFAULT_SHARE_OPTIONS } from '../domain/models/ShareOptions';
-import type { IShareService } from '../services/contracts/IShareService';
-import { tryResolve, TYPES } from '../../inversify/di';
+import type { ShareOptions } from "../domain/models/ShareOptions";
+import {
+  SHARE_PRESETS,
+  DEFAULT_SHARE_OPTIONS,
+} from "../domain/models/ShareOptions";
+import type { IShareService } from "../services/contracts/IShareService";
+import { tryResolve, TYPES } from "../../inversify/di";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
-import { getUser } from '../../auth/state/authState.svelte';
-import { settingsService } from '../../settings/state/SettingsState.svelte';
-import { PropType } from '../../pictograph/prop/domain/enums/PropType';
-import { getImageCompositionManager } from './image-composition-state.svelte';
+import { getUser } from "../../auth/state/authState.svelte";
+import { settingsService } from "../../settings/state/SettingsState.svelte";
+import { PropType } from "../../pictograph/prop/domain/enums/PropType";
+import { getImageCompositionManager } from "./image-composition-state.svelte";
 
 export interface ShareState {
   // Current options
@@ -33,7 +36,10 @@ export interface ShareState {
   // Actions
   updateOptions: (newOptions: Partial<ShareOptions>) => void;
   selectPreset: (presetName: string) => void;
-  generatePreview: (sequence: SequenceData, forceRegenerate?: boolean) => Promise<void>;
+  generatePreview: (
+    sequence: SequenceData,
+    forceRegenerate?: boolean
+  ) => Promise<void>;
   downloadImage: (sequence: SequenceData, filename?: string) => Promise<void>;
   resetErrors: () => void;
 
@@ -95,14 +101,16 @@ export function createShareState(shareService: IShareService): ShareState {
     const defaultPropType = PropType.STAFF;
 
     // Get bluePropType, falling back to propType (legacy), then default
-    const bluePropType = settings.bluePropType || settings.propType || defaultPropType;
+    const bluePropType =
+      settings.bluePropType || settings.propType || defaultPropType;
 
     // Get redPropType, falling back to propType (legacy), then default
-    const redPropType = settings.redPropType || settings.propType || defaultPropType;
+    const redPropType =
+      settings.redPropType || settings.propType || defaultPropType;
 
     return {
       blue: bluePropType,
-      red: redPropType
+      red: redPropType,
     };
   }
 
@@ -158,10 +166,14 @@ export function createShareState(shareService: IShareService): ShareState {
         imageCompositionManager.setAddBeatNumbers(newOptions.addBeatNumbers);
       }
       if (newOptions.addDifficultyLevel !== undefined) {
-        imageCompositionManager.setAddDifficultyLevel(newOptions.addDifficultyLevel);
+        imageCompositionManager.setAddDifficultyLevel(
+          newOptions.addDifficultyLevel
+        );
       }
       if (newOptions.includeStartPosition !== undefined) {
-        imageCompositionManager.setIncludeStartPosition(newOptions.includeStartPosition);
+        imageCompositionManager.setIncludeStartPosition(
+          newOptions.includeStartPosition
+        );
       }
       if (newOptions.addUserInfo !== undefined) {
         imageCompositionManager.setAddUserInfo(newOptions.addUserInfo);
@@ -181,13 +193,20 @@ export function createShareState(shareService: IShareService): ShareState {
         // Update the global image composition settings with preset values
         imageCompositionManager.setAddWord(options.addWord);
         imageCompositionManager.setAddBeatNumbers(options.addBeatNumbers);
-        imageCompositionManager.setAddDifficultyLevel(options.addDifficultyLevel);
-        imageCompositionManager.setIncludeStartPosition(options.includeStartPosition);
+        imageCompositionManager.setAddDifficultyLevel(
+          options.addDifficultyLevel
+        );
+        imageCompositionManager.setIncludeStartPosition(
+          options.includeStartPosition
+        );
         imageCompositionManager.setAddUserInfo(options.addUserInfo);
       }
     },
 
-    generatePreview: async (sequence: SequenceData, forceRegenerate = false) => {
+    generatePreview: async (
+      sequence: SequenceData,
+      forceRegenerate = false
+    ) => {
       if (!sequence) return;
 
       // Check cache first (unless forcing regeneration)
@@ -224,29 +243,36 @@ export function createShareState(shareService: IShareService): ShareState {
             ...data,
             motions: {
               ...data.motions,
-              blue: data.motions.blue ? {
-                ...data.motions.blue,
-                propType: currentPropTypes.blue
-              } : data.motions.blue,
-              red: data.motions.red ? {
-                ...data.motions.red,
-                propType: currentPropTypes.red
-              } : data.motions.red,
-            }
+              blue: data.motions.blue
+                ? {
+                    ...data.motions.blue,
+                    propType: currentPropTypes.blue,
+                  }
+                : data.motions.blue,
+              red: data.motions.red
+                ? {
+                    ...data.motions.red,
+                    propType: currentPropTypes.red,
+                  }
+                : data.motions.red,
+            },
           };
         };
 
         const sequenceWithCurrentProps = {
           ...sequence,
           // Update all beats
-          beats: sequence.beats?.map(beat => updateMotionsPropTypes(beat)) || [],
+          beats:
+            sequence.beats?.map((beat) => updateMotionsPropTypes(beat)) || [],
           // Update BOTH start position fields (primary and legacy)
           ...(sequence.startPosition && {
-            startPosition: updateMotionsPropTypes(sequence.startPosition)
+            startPosition: updateMotionsPropTypes(sequence.startPosition),
           }),
           ...(sequence.startingPositionBeat && {
-            startingPositionBeat: updateMotionsPropTypes(sequence.startingPositionBeat)
-          })
+            startingPositionBeat: updateMotionsPropTypes(
+              sequence.startingPositionBeat
+            ),
+          }),
         };
 
         // Generate preview with the prop-type-overridden sequence
@@ -301,33 +327,44 @@ export function createShareState(shareService: IShareService): ShareState {
             ...data,
             motions: {
               ...data.motions,
-              blue: data.motions.blue ? {
-                ...data.motions.blue,
-                propType: currentPropTypes.blue
-              } : data.motions.blue,
-              red: data.motions.red ? {
-                ...data.motions.red,
-                propType: currentPropTypes.red
-              } : data.motions.red,
-            }
+              blue: data.motions.blue
+                ? {
+                    ...data.motions.blue,
+                    propType: currentPropTypes.blue,
+                  }
+                : data.motions.blue,
+              red: data.motions.red
+                ? {
+                    ...data.motions.red,
+                    propType: currentPropTypes.red,
+                  }
+                : data.motions.red,
+            },
           };
         };
 
         const sequenceWithCurrentProps = {
           ...sequence,
           // Update all beats
-          beats: sequence.beats?.map(beat => updateMotionsPropTypes(beat)) || [],
+          beats:
+            sequence.beats?.map((beat) => updateMotionsPropTypes(beat)) || [],
           // Update BOTH start position fields (primary and legacy)
           ...(sequence.startPosition && {
-            startPosition: updateMotionsPropTypes(sequence.startPosition)
+            startPosition: updateMotionsPropTypes(sequence.startPosition),
           }),
           ...(sequence.startingPositionBeat && {
-            startingPositionBeat: updateMotionsPropTypes(sequence.startingPositionBeat)
-          })
+            startingPositionBeat: updateMotionsPropTypes(
+              sequence.startingPositionBeat
+            ),
+          }),
         };
 
         // Download image with the prop-type-overridden sequence
-        await shareService.downloadImage(sequenceWithCurrentProps, options, filename);
+        await shareService.downloadImage(
+          sequenceWithCurrentProps,
+          options,
+          filename
+        );
 
         // Track successful download
         lastDownloadedFile =
@@ -335,7 +372,9 @@ export function createShareState(shareService: IShareService): ShareState {
 
         // Log share/download action for analytics (non-blocking)
         try {
-          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          const activityService = tryResolve<IActivityLogService>(
+            TYPES.IActivityLogService
+          );
           if (activityService) {
             void activityService.logShareAction("sequence_export", {
               sequenceId: sequence.id,

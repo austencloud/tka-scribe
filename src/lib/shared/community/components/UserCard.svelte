@@ -283,7 +283,9 @@
     font-size: 10px;
     color: var(--card-accent);
     opacity: 0.75;
-    transition: opacity 0.2s ease, color 0.3s ease;
+    transition:
+      opacity 0.2s ease,
+      color 0.3s ease;
   }
 
   .user-card:hover .stat i {

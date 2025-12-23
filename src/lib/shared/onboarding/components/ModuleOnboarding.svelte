@@ -92,7 +92,10 @@
         case "ArrowDown":
           if (isOnChoiceStep) {
             event.preventDefault();
-            focusedChoiceIndex = Math.min(tabs.length - 1, focusedChoiceIndex + 1);
+            focusedChoiceIndex = Math.min(
+              tabs.length - 1,
+              focusedChoiceIndex + 1
+            );
           }
           break;
         case "Enter":
@@ -150,8 +153,7 @@
       icon: "fa-rocket",
       title: "Ready to Start!",
       subtitle: `Choose where to begin in ${moduleName}`,
-      description:
-        "You can switch between tabs anytime using the navigation.",
+      description: "You can switch between tabs anytime using the navigation.",
       color: moduleColor,
     },
   ]);
@@ -342,8 +344,9 @@
 
                 {#if tabs.length <= 5}
                   <p class="keyboard-hint">
-                    <kbd>↑</kbd><kbd>↓</kbd> to navigate · <kbd>Enter</kbd> to select
-                    · {#each tabs as _, i}<kbd>{i + 1}</kbd>{/each} for quick pick
+                    <kbd>↑</kbd><kbd>↓</kbd> to navigate · <kbd>Enter</kbd> to
+                    select · {#each tabs as _, i}<kbd>{i + 1}</kbd>{/each} for quick
+                    pick
                   </p>
                 {/if}
               </div>
@@ -518,7 +521,8 @@
   .welcome-icon,
   .choice-icon {
     background: var(--icon-color);
-    box-shadow: 0 8px 32px color-mix(in srgb, var(--icon-color) 40%, transparent);
+    box-shadow: 0 8px 32px
+      color-mix(in srgb, var(--icon-color) 40%, transparent);
   }
 
   .tab-slide .slide-icon {

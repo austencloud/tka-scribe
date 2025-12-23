@@ -10,7 +10,10 @@
     parseKeyCombo,
     formatKeyForDisplay,
   } from "../../utils/key-combo-utils";
-  import type { KeyModifier, ParsedKeyCombo } from "../../domain/types/keyboard-types";
+  import type {
+    KeyModifier,
+    ParsedKeyCombo,
+  } from "../../domain/types/keyboard-types";
 
   let {
     keyCombo = "",
@@ -74,7 +77,11 @@
   }
 </script>
 
-<div class="key-combo" class:small={size === "small"} class:large={size === "large"}>
+<div
+  class="key-combo"
+  class:small={size === "small"}
+  class:large={size === "large"}
+>
   {#each sortedModifiers as mod, i}
     <kbd class="kbd modifier" class:pressable>{formatModifier(mod)}</kbd>
     {#if !isMac}
@@ -122,7 +129,8 @@
     border-radius: 6px;
 
     /* Text styling */
-    font-family: ui-monospace, "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
+    font-family:
+      ui-monospace, "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
     font-size: 12px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.85));
@@ -140,9 +148,21 @@
 
   /* Modifier keys - theme accent tint */
   .kbd.modifier {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
-    border-bottom-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, rgba(0, 0, 0, 0.2));
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 25%,
+      transparent
+    );
+    border-bottom-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      rgba(0, 0, 0, 0.2)
+    );
     color: var(--theme-accent-strong, #a78bfa);
   }
 
@@ -176,7 +196,8 @@
 
   .kbd.modifier.pressable:hover {
     box-shadow:
-      0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, transparent),
+      0 6px 16px
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, transparent),
       0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }

@@ -68,7 +68,8 @@ export function isOnOldDomain(): boolean {
  * Get the full new URL with current path
  */
 export function getNewDomainUrl(): string {
-  if (typeof window === "undefined") return `https://${MIGRATION_CONFIG.NEW_DOMAIN}`;
+  if (typeof window === "undefined")
+    return `https://${MIGRATION_CONFIG.NEW_DOMAIN}`;
 
   const { pathname, search, hash } = window.location;
   return `https://${MIGRATION_CONFIG.NEW_DOMAIN}${pathname}${search}${hash}`;

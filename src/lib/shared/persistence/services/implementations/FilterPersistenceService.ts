@@ -15,9 +15,12 @@ import type {
 import { StorageService } from "../../../foundation/services/implementations/StorageService";
 
 const storageService = new StorageService();
-const safeSessionStorageGet = storageService.safeSessionStorageGet.bind(storageService);
-const safeSessionStorageSet = storageService.safeSessionStorageSet.bind(storageService);
-const safeSessionStorageRemove = storageService.removeSessionStorageItem.bind(storageService);
+const safeSessionStorageGet =
+  storageService.safeSessionStorageGet.bind(storageService);
+const safeSessionStorageSet =
+  storageService.safeSessionStorageSet.bind(storageService);
+const safeSessionStorageRemove =
+  storageService.removeSessionStorageItem.bind(storageService);
 
 @injectable()
 export class FilterPersistenceService implements IFilterPersistenceService {
@@ -103,8 +106,9 @@ export class FilterPersistenceService implements IFilterPersistenceService {
 
       // Convert date strings back to Date objects with type validation
       return parsed
-        .filter((filter): filter is Record<string, unknown> =>
-          typeof filter === "object" && filter !== null
+        .filter(
+          (filter): filter is Record<string, unknown> =>
+            typeof filter === "object" && filter !== null
         )
         .filter((filter) => this.isValidFilterHistoryEntry(filter))
         .map((filter) => ({

@@ -4,9 +4,16 @@
   Place this component once at the app root level.
 -->
 <script lang="ts">
-  import { toastQueue, removeToast, type Toast } from "../state/toast-state.svelte";
+  import {
+    toastQueue,
+    removeToast,
+    type Toast,
+  } from "../state/toast-state.svelte";
 
-  const typeConfig: Record<string, { icon: string; color: string; bg: string }> = {
+  const typeConfig: Record<
+    string,
+    { icon: string; color: string; bg: string }
+  > = {
     info: {
       icon: "fa-info-circle",
       color: "#60a5fa",
@@ -29,7 +36,11 @@
     },
   };
 
-  function getConfig(type: string): { icon: string; color: string; bg: string } {
+  function getConfig(type: string): {
+    icon: string;
+    color: string;
+    bg: string;
+  } {
     return typeConfig[type] ?? typeConfig.info!;
   }
 </script>

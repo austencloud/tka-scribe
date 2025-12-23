@@ -55,7 +55,11 @@
   labelledBy="video-record-panel-title"
   onClose={handleClose}
 >
-  <div class="video-record-drawer" role="dialog" aria-labelledby="video-record-panel-title">
+  <div
+    class="video-record-drawer"
+    role="dialog"
+    aria-labelledby="video-record-panel-title"
+  >
     <PanelHeader
       title={heading}
       isMobile={!isSideBySideLayout}
@@ -65,11 +69,7 @@
     <h2 id="video-record-panel-title" class="sr-only">{heading}</h2>
 
     <div class="video-record-drawer__content">
-      <VideoRecordPanel
-        {sequence}
-        onClose={handleClose}
-        onSave={handleSave}
-      />
+      <VideoRecordPanel {sequence} onClose={handleClose} onSave={handleSave} />
     </div>
   </div>
 </CreatePanelDrawer>

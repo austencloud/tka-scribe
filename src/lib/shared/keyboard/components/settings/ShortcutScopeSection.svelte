@@ -65,7 +65,9 @@
 
   const color = $derived(scopeColors[scope] || "#6366f1");
   const icon = $derived(scopeIcons[scope] || "fa-folder");
-  const customizedCount = $derived(shortcuts.filter((s) => s.isCustomized).length);
+  const customizedCount = $derived(
+    shortcuts.filter((s) => s.isCustomized).length
+  );
 
   function toggleExpanded() {
     isExpanded = !isExpanded;
@@ -99,7 +101,12 @@
         {#each shortcuts as item, index (item.shortcut.id)}
           <div
             class="shortcut-item-wrapper"
-            in:fly={{ y: 8, duration: 200, delay: Math.min(index * 20, 200), easing: cubicOut }}
+            in:fly={{
+              y: 8,
+              duration: 200,
+              delay: Math.min(index * 20, 200),
+              easing: cubicOut,
+            }}
           >
             <ShortcutListItem
               {item}
@@ -198,8 +205,13 @@
     height: 26px;
     padding: 0 8px;
     /* Subtle glass with scope color tint */
-    background: color-mix(in srgb, var(--scope-color) 12%, rgba(255, 255, 255, 0.08));
-    border: 1px solid color-mix(in srgb, var(--scope-color) 25%, rgba(255, 255, 255, 0.1));
+    background: color-mix(
+      in srgb,
+      var(--scope-color) 12%,
+      rgba(255, 255, 255, 0.08)
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--scope-color) 25%, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
@@ -209,7 +221,11 @@
 
   .customized-count {
     padding: 5px 10px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 12%,
+      transparent
+    );
     border-radius: 6px;
     font-size: 12px;
     font-weight: 600;

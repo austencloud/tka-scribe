@@ -201,7 +201,11 @@ export function addCollaborationInvite(
   }
 
   // Don't invite if already has pending invite
-  if (video.pendingInvites.some((i) => i.userId === userId && i.status === "pending")) {
+  if (
+    video.pendingInvites.some(
+      (i) => i.userId === userId && i.status === "pending"
+    )
+  ) {
     return video;
   }
 
@@ -333,21 +337,32 @@ export function updateVideoVisibility(
 /**
  * Check if a user is a collaborator on this video
  */
-export function isCollaborator(video: CollaborativeVideo, userId: string): boolean {
+export function isCollaborator(
+  video: CollaborativeVideo,
+  userId: string
+): boolean {
   return video.collaborators.some((c) => c.userId === userId);
 }
 
 /**
  * Check if a user has a pending invite
  */
-export function hasPendingInvite(video: CollaborativeVideo, userId: string): boolean {
-  return video.pendingInvites.some((i) => i.userId === userId && i.status === "pending");
+export function hasPendingInvite(
+  video: CollaborativeVideo,
+  userId: string
+): boolean {
+  return video.pendingInvites.some(
+    (i) => i.userId === userId && i.status === "pending"
+  );
 }
 
 /**
  * Check if a user can view this video
  */
-export function canViewVideo(video: CollaborativeVideo, userId?: string): boolean {
+export function canViewVideo(
+  video: CollaborativeVideo,
+  userId?: string
+): boolean {
   if (video.visibility === "public") return true;
   if (!userId) return false;
   if (video.visibility === "private") return video.creatorId === userId;

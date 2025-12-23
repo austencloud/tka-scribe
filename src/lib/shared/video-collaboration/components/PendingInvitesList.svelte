@@ -25,7 +25,9 @@
 
   onMount(async () => {
     const container = await getContainerInstance();
-    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
+    videoService = container.get<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
     loadPendingInvites();
   });
 

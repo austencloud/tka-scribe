@@ -29,7 +29,7 @@ function createOnboardingState() {
   const completedAtStr = localStorage.getItem(ONBOARDING_COMPLETED_AT_KEY);
   const completedAt = completedAtStr ? new Date(completedAtStr) : null;
 
-  let state = $state<OnboardingState>({
+  const state = $state<OnboardingState>({
     hasCompleted: completed,
     wasSkipped: skipped,
     completedAt,

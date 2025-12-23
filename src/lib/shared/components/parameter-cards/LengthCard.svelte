@@ -44,8 +44,12 @@ Can operate as stepper (inline) or panel opener (click to select)
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    rippleService = tryResolve<IRippleEffectService>(
+      TYPES.IRippleEffectService
+    );
 
     if (mode === "panel-opener" && cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
@@ -95,7 +99,11 @@ Can operate as stepper (inline) or panel opener (click to select)
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (mode === "panel-opener" && !disabled && (event.key === "Enter" || event.key === " ")) {
+    if (
+      mode === "panel-opener" &&
+      !disabled &&
+      (event.key === "Enter" || event.key === " ")
+    ) {
       event.preventDefault();
       handleCardClick();
     }
@@ -107,7 +115,7 @@ Can operate as stepper (inline) or panel opener (click to select)
 {#if mode === "stepper"}
   <StepperCard
     title="Length"
-    currentValue={currentValue}
+    {currentValue}
     {minValue}
     maxValue={max}
     onIncrement={handleIncrement}
@@ -140,7 +148,12 @@ Can operate as stepper (inline) or panel opener (click to select)
     </div>
 
     <div class="click-indicator" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <path d="M9 18l6-6-6-6" />
       </svg>
     </div>
@@ -164,7 +177,12 @@ Can operate as stepper (inline) or panel opener (click to select)
     padding: clamp(6px, 2cqh, 12px) clamp(4px, 1.5cqw, 8px);
 
     border-radius: 16px;
-    background: radial-gradient(ellipse at top left, #fbbf24 0%, #f59e0b 40%, #d97706 100%);
+    background: radial-gradient(
+      ellipse at top left,
+      #fbbf24 0%,
+      #f59e0b 40%,
+      #d97706 100%
+    );
     border: none;
     color: white;
     text-align: center;
@@ -232,8 +250,12 @@ Can operate as stepper (inline) or panel opener (click to select)
   }
 
   @keyframes cardEnter {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .card-header {

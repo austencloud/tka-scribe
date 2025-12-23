@@ -10,7 +10,15 @@ import type { AppSettings } from "../../settings/domain/AppSettings";
 import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "../../foundation/domain/models/SequenceData";
 import Dexie, { type EntityTable } from "dexie";
-import type { AchievementNotification, DailyChallenge, UserAchievement, UserChallengeProgress, UserStreak, UserXP, XPGainEvent } from '../../gamification/domain/models/achievement-models';
+import type {
+  AchievementNotification,
+  DailyChallenge,
+  UserAchievement,
+  UserChallengeProgress,
+  UserStreak,
+  UserXP,
+  XPGainEvent,
+} from "../../gamification/domain/models/achievement-models";
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,

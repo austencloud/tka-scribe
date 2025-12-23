@@ -29,13 +29,18 @@ export const testPreviewState = $state({
   suggestions: [] as { id: string; displayName?: string; email?: string }[],
 });
 
-export async function loadPreviewNotifications(userId: string, userLabel?: string) {
+export async function loadPreviewNotifications(
+  userId: string,
+  userLabel?: string
+) {
   if (!browser) return;
   testPreviewState.isLoading = true;
   testPreviewState.error = null;
 
   try {
-    const res = await fetch(`/api/preview-notifications?userId=${encodeURIComponent(userId)}&limit=20`);
+    const res = await fetch(
+      `/api/preview-notifications?userId=${encodeURIComponent(userId)}&limit=20`
+    );
     if (!res.ok) {
       const text = await res.text();
       throw new Error(text || `Request failed: ${res.status}`);
@@ -46,7 +51,8 @@ export async function loadPreviewNotifications(userId: string, userLabel?: strin
     testPreviewState.userLabel = userLabel || userId;
     testPreviewState.isActive = true;
   } catch (err: any) {
-    testPreviewState.error = err?.message || "Failed to load preview notifications";
+    testPreviewState.error =
+      err?.message || "Failed to load preview notifications";
     testPreviewState.isActive = false;
     testPreviewState.notifications = [];
   } finally {

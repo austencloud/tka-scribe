@@ -68,8 +68,12 @@ export function clearToasts(): void {
 
 // Convenience methods
 export const toast = {
-  info: (message: string, duration?: number) => showToast(message, "info", duration),
-  success: (message: string, duration?: number) => showToast(message, "success", duration),
-  warning: (message: string, duration?: number) => showToast(message, "warning", duration),
-  error: (message: string, duration?: number) => showToast(message, "error", duration),
+  info: (message: string, duration?: number) =>
+    showToast(message, "info", duration),
+  success: (message: string, duration?: number) =>
+    showToast(message, "success", duration),
+  warning: (message: string, duration?: number) =>
+    showToast(message, "warning", duration),
+  error: (message: string, duration?: number) =>
+    showToast(message, "error", duration),
 };

@@ -13,8 +13,15 @@
   import ConflictWarning from "./ConflictWarning.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import type { ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizationService";
-  import type { ShortcutConflict, ParsedKeyCombo } from "../../domain/types/keyboard-types";
-  import { keyComboFromEvent, buildKeyCombo, parseKeyCombo } from "../../utils/key-combo-utils";
+  import type {
+    ShortcutConflict,
+    ParsedKeyCombo,
+  } from "../../domain/types/keyboard-types";
+  import {
+    keyComboFromEvent,
+    buildKeyCombo,
+    parseKeyCombo,
+  } from "../../utils/key-combo-utils";
 
   let {
     isOpen = $bindable(false),
@@ -111,7 +118,9 @@
   });
 
   const hasCapture = $derived(!!capturedCombo && parsedCapture);
-  const canSave = $derived(hasCapture && (!conflict || conflict.severity !== "error"));
+  const canSave = $derived(
+    hasCapture && (!conflict || conflict.severity !== "error")
+  );
 </script>
 
 {#if isMobile}
@@ -128,7 +137,12 @@
     <div class="capture-sheet">
       <header class="capture-header">
         <h3 class="capture-title">Edit Shortcut</h3>
-        <button class="close-btn" onclick={handleCancel} type="button" aria-label="Close">
+        <button
+          class="close-btn"
+          onclick={handleCancel}
+          type="button"
+          aria-label="Close"
+        >
           <i class="fas fa-times"></i>
         </button>
       </header>
@@ -138,7 +152,9 @@
           <div class="shortcut-info">
             <div class="shortcut-name">{item.shortcut.label}</div>
             {#if item.shortcut.description}
-              <div class="shortcut-description">{item.shortcut.description}</div>
+              <div class="shortcut-description">
+                {item.shortcut.description}
+              </div>
             {/if}
           </div>
 
@@ -160,7 +176,9 @@
             {:else if parsedCapture}
               <KeyboardKeyDisplay parsed={parsedCapture} size="large" />
             {:else}
-              <span class="capture-placeholder">Tap to capture new shortcut</span>
+              <span class="capture-placeholder"
+                >Tap to capture new shortcut</span
+              >
             {/if}
           </button>
 
@@ -191,7 +209,11 @@
             Clear
           </button>
           <div class="footer-spacer"></div>
-          <button class="btn btn-secondary" onclick={handleCancel} type="button">
+          <button
+            class="btn btn-secondary"
+            onclick={handleCancel}
+            type="button"
+          >
             Cancel
           </button>
           <button
@@ -210,12 +232,21 @@
   <!-- Desktop: Inline Modal -->
   {#if isOpen && item}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div class="capture-overlay" onclick={handleCancel} onkeydown={(e) => e.key === "Escape" && handleCancel()}>
+    <div
+      class="capture-overlay"
+      onclick={handleCancel}
+      onkeydown={(e) => e.key === "Escape" && handleCancel()}
+    >
       <!-- svelte-ignore a11y_click_events_have_key_events -->
       <div class="capture-modal" onclick={(e) => e.stopPropagation()}>
         <header class="capture-header">
           <h3 class="capture-title">Edit Shortcut</h3>
-          <button class="close-btn" onclick={handleCancel} type="button" aria-label="Close">
+          <button
+            class="close-btn"
+            onclick={handleCancel}
+            type="button"
+            aria-label="Close"
+          >
             <i class="fas fa-times"></i>
           </button>
         </header>
@@ -224,7 +255,9 @@
           <div class="shortcut-info">
             <div class="shortcut-name">{item.shortcut.label}</div>
             {#if item.shortcut.description}
-              <div class="shortcut-description">{item.shortcut.description}</div>
+              <div class="shortcut-description">
+                {item.shortcut.description}
+              </div>
             {/if}
           </div>
 
@@ -246,7 +279,9 @@
             {:else if parsedCapture}
               <KeyboardKeyDisplay parsed={parsedCapture} size="large" />
             {:else}
-              <span class="capture-placeholder">Click to capture new shortcut</span>
+              <span class="capture-placeholder"
+                >Click to capture new shortcut</span
+              >
             {/if}
           </button>
 
@@ -277,7 +312,11 @@
             Clear Binding
           </button>
           <div class="footer-spacer"></div>
-          <button class="btn btn-secondary" onclick={handleCancel} type="button">
+          <button
+            class="btn btn-secondary"
+            onclick={handleCancel}
+            type="button"
+          >
             Cancel
           </button>
           <button
@@ -421,28 +460,42 @@
     min-height: 80px;
     padding: 20px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 2px dashed color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    border: 2px dashed
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
     border-radius: 12px;
     cursor: pointer;
     transition: all 200ms ease;
   }
 
   .capture-area:hover {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 5%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 5%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 60%,
+      transparent
+    );
   }
 
   .capture-area.capturing {
     border-style: solid;
     border-color: var(--theme-accent-strong, #8b5cf6);
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 8%,
+      transparent
+    );
     animation: pulse-glow 1.5s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
     0%,
     100% {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      box-shadow: 0 0 0 0
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
     }
     50% {
       box-shadow: 0 0 0 8px transparent;
@@ -451,8 +504,16 @@
 
   .capture-area.has-value {
     border-style: solid;
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 50%, transparent);
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 5%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 50%,
+      transparent
+    );
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 5%,
+      transparent
+    );
   }
 
   .capture-prompt {
@@ -513,7 +574,11 @@
   }
 
   .btn-primary:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 85%,
+      #000
+    );
   }
 
   .btn-primary:disabled {

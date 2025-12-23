@@ -6,7 +6,10 @@
  * across 4+ different services in the image export system.
  */
 
-import type { SVGConversionOptions, RenderQualitySettings } from "../../domain/models/SvgConversion";
+import type {
+  SVGConversionOptions,
+  RenderQualitySettings,
+} from "../../domain/models/SvgConversion";
 
 // ============================================================================
 // SERVICE CONTRACTS (Behavioral Interfaces)

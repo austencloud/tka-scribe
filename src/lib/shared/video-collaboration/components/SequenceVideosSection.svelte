@@ -5,7 +5,10 @@
   Designed to be embedded in sequence detail panels.
 -->
 <script lang="ts">
-  import { tryResolve, loadFeatureModule } from "$lib/shared/inversify/container";
+  import {
+    tryResolve,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -37,8 +40,12 @@
       console.warn("[SequenceVideosSection] Failed to load share module:", e);
     }
 
-    videoService = tryResolve<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    videoService = tryResolve<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     loadVideos();
   });
 
@@ -293,7 +300,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.2) 0%,
+      rgba(139, 92, 246, 0.2) 100%
+    );
     color: white;
     font-size: 1.25rem;
   }

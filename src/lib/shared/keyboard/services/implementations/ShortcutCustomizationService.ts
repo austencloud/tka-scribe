@@ -148,8 +148,7 @@ export class ShortcutCustomizationService
         if (contextsCanConflict(context, otherContexts)) {
           // Determine severity
           const hasDirectOverlap = otherContexts.some(
-            (c) =>
-              c === context || c === "global" || context === "global"
+            (c) => c === context || c === "global" || context === "global"
           );
 
           return {
@@ -210,8 +209,7 @@ export class ShortcutCustomizationService
         for (const context of contexts) {
           if (contextsCanConflict(context, otherContexts)) {
             const hasDirectOverlap = otherContexts.some(
-              (c) =>
-                c === context || c === "global" || context === "global"
+              (c) => c === context || c === "global" || context === "global"
             );
 
             conflicts.push({

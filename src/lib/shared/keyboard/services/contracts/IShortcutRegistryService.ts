@@ -8,7 +8,10 @@
  */
 
 import type { Shortcut } from "../../domain/models/Shortcut";
-import type { KeyModifier, ShortcutContext } from '../../domain/types/keyboard-types';
+import type {
+  KeyModifier,
+  ShortcutContext,
+} from "../../domain/types/keyboard-types";
 
 export interface IShortcutRegistryService {
   /**

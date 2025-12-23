@@ -27,15 +27,21 @@
 
   onMount(async () => {
     const container = await getContainerInstance();
-    videoService = container.get<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
-    hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    videoService = container.get<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
+    hapticService = container.get<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   let isProcessing = $state(false);
   let error = $state<string | null>(null);
 
   // Get the creator info
-  const creator = $derived(video.collaborators.find((c) => c.role === "creator"));
+  const creator = $derived(
+    video.collaborators.find((c) => c.role === "creator")
+  );
 
   async function handleAccept() {
     if (!videoService || isProcessing) return;
@@ -98,7 +104,8 @@
     </div>
 
     <p class="invite-message">
-      <strong>{creator?.displayName || "Someone"}</strong> invited you to collaborate on a video
+      <strong>{creator?.displayName || "Someone"}</strong> invited you to
+      collaborate on a video
       {#if video.sequenceName}
         for <strong>"{video.sequenceName}"</strong>
       {/if}

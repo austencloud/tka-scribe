@@ -20,11 +20,7 @@
 </script>
 
 {#if interactive}
-  <button
-    class="panel-card panel-card--interactive"
-    onclick={onclick}
-    type="button"
-  >
+  <button class="panel-card panel-card--interactive" {onclick} type="button">
     {@render children()}
   </button>
 {:else}

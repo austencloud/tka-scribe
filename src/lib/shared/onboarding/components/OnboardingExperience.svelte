@@ -138,9 +138,7 @@
   </div>
 
   <!-- Skip button -->
-  <button class="skip-button" onclick={handleSkip}>
-    Skip intro
-  </button>
+  <button class="skip-button" onclick={handleSkip}> Skip intro </button>
 
   {#if step === 0}
     <!-- Step 0: Welcome -->
@@ -159,8 +157,8 @@
 
       <p class="description anim-item" style="--anim-order: 3">
         TKA Scribe helps you <strong>create</strong>, <strong>learn</strong>,
-        and <strong>share</strong> flow arts choreography using the Kinetic
-        Alphabet notation system.
+        and <strong>share</strong> flow arts choreography using the Kinetic Alphabet
+        notation system.
       </p>
 
       <button
@@ -230,7 +228,11 @@
         {/each}
       </div>
 
-      <button class="back-link anim-item" style="--anim-order: 3" onclick={handleBack}>
+      <button
+        class="back-link anim-item"
+        style="--anim-order: 3"
+        onclick={handleBack}
+      >
         <i class="fas fa-arrow-left"></i> Back
       </button>
     </div>

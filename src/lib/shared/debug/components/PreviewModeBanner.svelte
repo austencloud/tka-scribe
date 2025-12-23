@@ -59,7 +59,9 @@
             <!-- User Preview Mode -->
             <span class="banner-label">Preview Mode</span>
             <span class="banner-user">
-              Viewing as: <strong>{profile.displayName || profile.email || profile.uid}</strong>
+              Viewing as: <strong
+                >{profile.displayName || profile.email || profile.uid}</strong
+              >
               {#if profile.role && profile.role !== "user"}
                 <span class="role-badge">{profile.role}</span>
               {/if}

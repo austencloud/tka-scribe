@@ -57,7 +57,11 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
     return user.uid;
   }
 
-  private getUserInfo(): { uid: string; displayName?: string; avatarUrl?: string } {
+  private getUserInfo(): {
+    uid: string;
+    displayName?: string;
+    avatarUrl?: string;
+  } {
     const user = auth.currentUser;
     if (!user) {
       throw new Error("User must be authenticated");
@@ -105,7 +109,11 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
         message: invite.message as string | undefined,
         invitedAt: invitedAtField?.toDate?.() ?? new Date(),
         invitedBy: invite.invitedBy as string,
-        status: invite.status as "pending" | "accepted" | "declined" | "expired",
+        status: invite.status as
+          | "pending"
+          | "accepted"
+          | "declined"
+          | "expired",
         respondedAt: respondedAtField?.toDate?.(),
       };
     });
@@ -279,7 +287,11 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
     }
 
     // Check if already has pending invite
-    if (video.pendingInvites.some((i) => i.userId === userId && i.status === "pending")) {
+    if (
+      video.pendingInvites.some(
+        (i) => i.userId === userId && i.status === "pending"
+      )
+    ) {
       throw new Error("User already has a pending invite");
     }
 
@@ -367,7 +379,9 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
       updatedAt: serverTimestamp(),
     });
 
-    console.log(`✅ ${userInfo.uid} accepted collaboration on video ${videoId}`);
+    console.log(
+      `✅ ${userInfo.uid} accepted collaboration on video ${videoId}`
+    );
   }
 
   async declineInvite(videoId: string): Promise<void> {
@@ -427,10 +441,14 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
 
     // Only creator or self can remove
     if (currentUserId !== video.creatorId && currentUserId !== userId) {
-      throw new Error("Only the creator or the user themselves can remove a collaborator");
+      throw new Error(
+        "Only the creator or the user themselves can remove a collaborator"
+      );
     }
 
-    const collaboratorToRemove = video.collaborators.find((c) => c.userId === userId);
+    const collaboratorToRemove = video.collaborators.find(
+      (c) => c.userId === userId
+    );
     if (!collaboratorToRemove) {
       throw new Error("User is not a collaborator");
     }
@@ -455,7 +473,9 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
   // QUERY OPERATIONS
   // ============================================================================
 
-  async getVideosForSequence(sequenceId: string): Promise<CollaborativeVideo[]> {
+  async getVideosForSequence(
+    sequenceId: string
+  ): Promise<CollaborativeVideo[]> {
     const firestore = await getFirestoreInstance();
     const collectionRef = collection(firestore, VIDEOS_COLLECTION);
     const q = query(
@@ -496,7 +516,9 @@ export class CollaborativeVideoService implements ICollaborativeVideoService {
     );
 
     const created = allCollaborations.filter((v) => v.creatorId === userId);
-    const collaborations = allCollaborations.filter((v) => v.creatorId !== userId);
+    const collaborations = allCollaborations.filter(
+      (v) => v.creatorId !== userId
+    );
     const pendingInvites = pendingSnapshot.docs.map((doc) =>
       this.docToVideo(doc.data(), doc.id)
     );

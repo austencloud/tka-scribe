@@ -119,23 +119,52 @@ export class ActivityLogService implements IActivityLogService {
 
       // Add relevant metadata (only primitive types, truncate strings)
       if (metadata) {
-        if (metadata["module"]) params["module"] = String(metadata["module"]).slice(0, 100);
-        if (metadata["sequenceId"]) params["sequence_id"] = String(metadata["sequenceId"]).slice(0, 100);
-        if (metadata["word"]) params["word"] = String(metadata["word"]).slice(0, 100);
-        if (metadata["sequenceLength"]) params["sequence_length"] = Number(metadata["sequenceLength"]);
-        if (metadata["generationType"]) params["generation_type"] = String(metadata["generationType"]).slice(0, 100);
-        if (metadata["capType"]) params["cap_type"] = String(metadata["capType"]).slice(0, 100);
-        if (metadata["shareMethod"]) params["share_method"] = String(metadata["shareMethod"]).slice(0, 100);
-        if (metadata["exportFormat"]) params["export_format"] = String(metadata["exportFormat"]).slice(0, 100);
-        if (metadata["achievementId"]) params["achievement_id"] = String(metadata["achievementId"]).slice(0, 100);
-        if (metadata["xpAmount"]) params["xp_amount"] = Number(metadata["xpAmount"]);
-        if (metadata["newLevel"]) params["new_level"] = Number(metadata["newLevel"]);
-        if (metadata["settingKey"]) params["setting_key"] = String(metadata["settingKey"]).slice(0, 100);
-        if (metadata["lessonId"]) params["lesson_id"] = String(metadata["lessonId"]).slice(0, 100);
-        if (metadata["quizId"]) params["quiz_id"] = String(metadata["quizId"]).slice(0, 100);
-        if (metadata["score"] !== undefined) params["score"] = Number(metadata["score"]);
-        if (metadata["correct"] !== undefined) params["correct"] = Boolean(metadata["correct"]);
-        if (metadata["durationMs"]) params["duration_ms"] = Number(metadata["durationMs"]);
+        if (metadata["module"])
+          params["module"] = String(metadata["module"]).slice(0, 100);
+        if (metadata["sequenceId"])
+          params["sequence_id"] = String(metadata["sequenceId"]).slice(0, 100);
+        if (metadata["word"])
+          params["word"] = String(metadata["word"]).slice(0, 100);
+        if (metadata["sequenceLength"])
+          params["sequence_length"] = Number(metadata["sequenceLength"]);
+        if (metadata["generationType"])
+          params["generation_type"] = String(metadata["generationType"]).slice(
+            0,
+            100
+          );
+        if (metadata["capType"])
+          params["cap_type"] = String(metadata["capType"]).slice(0, 100);
+        if (metadata["shareMethod"])
+          params["share_method"] = String(metadata["shareMethod"]).slice(
+            0,
+            100
+          );
+        if (metadata["exportFormat"])
+          params["export_format"] = String(metadata["exportFormat"]).slice(
+            0,
+            100
+          );
+        if (metadata["achievementId"])
+          params["achievement_id"] = String(metadata["achievementId"]).slice(
+            0,
+            100
+          );
+        if (metadata["xpAmount"])
+          params["xp_amount"] = Number(metadata["xpAmount"]);
+        if (metadata["newLevel"])
+          params["new_level"] = Number(metadata["newLevel"]);
+        if (metadata["settingKey"])
+          params["setting_key"] = String(metadata["settingKey"]).slice(0, 100);
+        if (metadata["lessonId"])
+          params["lesson_id"] = String(metadata["lessonId"]).slice(0, 100);
+        if (metadata["quizId"])
+          params["quiz_id"] = String(metadata["quizId"]).slice(0, 100);
+        if (metadata["score"] !== undefined)
+          params["score"] = Number(metadata["score"]);
+        if (metadata["correct"] !== undefined)
+          params["correct"] = Boolean(metadata["correct"]);
+        if (metadata["durationMs"])
+          params["duration_ms"] = Number(metadata["durationMs"]);
       }
 
       logEvent(analytics, eventName, params);
@@ -281,7 +310,14 @@ export class ActivityLogService implements IActivityLogService {
    * Log a sequence action
    */
   async logSequenceAction(
-    action: "create" | "save" | "delete" | "edit" | "view" | "play" | "generate",
+    action:
+      | "create"
+      | "save"
+      | "delete"
+      | "edit"
+      | "view"
+      | "play"
+      | "generate",
     sequenceId: string,
     metadata?: Partial<ActivityMetadata>
   ): Promise<void> {
@@ -306,7 +342,12 @@ export class ActivityLogService implements IActivityLogService {
    * Log an achievement/XP event
    */
   async logAchievementAction(
-    action: "achievement_unlock" | "challenge_start" | "challenge_complete" | "xp_earn" | "level_up",
+    action:
+      | "achievement_unlock"
+      | "challenge_start"
+      | "challenge_complete"
+      | "xp_earn"
+      | "level_up",
     metadata?: Partial<ActivityMetadata>
   ): Promise<void> {
     await this.log(action, "achievement", metadata);
@@ -351,7 +392,9 @@ export class ActivityLogService implements IActivityLogService {
   /**
    * Query events for a specific user
    */
-  private async queryUserEvents(options: ActivityQueryOptions): Promise<ActivityEvent[]> {
+  private async queryUserEvents(
+    options: ActivityQueryOptions
+  ): Promise<ActivityEvent[]> {
     const firestore = await getFirestoreInstance();
     const activityRef = collection(
       firestore,
@@ -361,7 +404,10 @@ export class ActivityLogService implements IActivityLogService {
     try {
       // Try simple query first - just get all events and filter in memory
       // This avoids needing composite indexes
-      let q = query(activityRef, orderBy("timestamp", options.orderDirection ?? "desc"));
+      let q = query(
+        activityRef,
+        orderBy("timestamp", options.orderDirection ?? "desc")
+      );
 
       if (options.limit) {
         q = query(q, firestoreLimit(options.limit * 2)); // Get extra to allow for filtering
@@ -414,7 +460,9 @@ export class ActivityLogService implements IActivityLogService {
    * Query events across all users using collection group
    * Falls back to current user's events if collection group query fails (requires index)
    */
-  private async queryAllEvents(options: ActivityQueryOptions): Promise<ActivityEvent[]> {
+  private async queryAllEvents(
+    options: ActivityQueryOptions
+  ): Promise<ActivityEvent[]> {
     // Firestore has a maximum limit of 10000 documents per query
     const FIRESTORE_MAX_LIMIT = 10000;
 
@@ -423,14 +471,23 @@ export class ActivityLogService implements IActivityLogService {
       // Collection group query for activityLog across all users
       const activityGroupRef = collectionGroup(firestore, "activityLog");
 
-      let q = query(activityGroupRef, orderBy("timestamp", options.orderDirection ?? "desc"));
+      let q = query(
+        activityGroupRef,
+        orderBy("timestamp", options.orderDirection ?? "desc")
+      );
 
       if (options.startDate) {
-        q = query(q, where("timestamp", ">=", Timestamp.fromDate(options.startDate)));
+        q = query(
+          q,
+          where("timestamp", ">=", Timestamp.fromDate(options.startDate))
+        );
       }
 
       if (options.endDate) {
-        q = query(q, where("timestamp", "<=", Timestamp.fromDate(options.endDate)));
+        q = query(
+          q,
+          where("timestamp", "<=", Timestamp.fromDate(options.endDate))
+        );
       }
 
       // Apply limit, capping at Firestore's maximum
@@ -472,7 +529,10 @@ export class ActivityLogService implements IActivityLogService {
   /**
    * Get activity summary for a date range
    */
-  async getActivitySummary(startDate: Date, endDate: Date): Promise<ActivitySummary[]> {
+  async getActivitySummary(
+    startDate: Date,
+    endDate: Date
+  ): Promise<ActivitySummary[]> {
     const events = await this.queryEvents({
       startDate,
       endDate,
@@ -497,8 +557,10 @@ export class ActivityLogService implements IActivityLogService {
 
       const summary = summaryByDate.get(dateKey)!;
       summary.totalEvents++;
-      summary.byCategory[event.category] = (summary.byCategory[event.category] ?? 0) + 1;
-      summary.byEventType[event.eventType] = (summary.byEventType[event.eventType] ?? 0) + 1;
+      summary.byCategory[event.category] =
+        (summary.byCategory[event.category] ?? 0) + 1;
+      summary.byEventType[event.eventType] =
+        (summary.byEventType[event.eventType] ?? 0) + 1;
     }
 
     // Calculate unique users per day
@@ -526,7 +588,10 @@ export class ActivityLogService implements IActivityLogService {
   /**
    * Get daily active user counts for a date range
    */
-  async getDailyActiveUsers(startDate: Date, days: number): Promise<Map<string, number>> {
+  async getDailyActiveUsers(
+    startDate: Date,
+    days: number
+  ): Promise<Map<string, number>> {
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + days);
 
@@ -565,7 +630,10 @@ export class ActivityLogService implements IActivityLogService {
   /**
    * Get event counts by type for a date range
    */
-  async getEventCounts(startDate: Date, endDate: Date): Promise<Map<ActivityEventType, number>> {
+  async getEventCounts(
+    startDate: Date,
+    endDate: Date
+  ): Promise<Map<ActivityEventType, number>> {
     const events = await this.queryEvents({
       startDate,
       endDate,

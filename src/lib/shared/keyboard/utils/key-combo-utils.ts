@@ -6,7 +6,10 @@
  * Domain: Keyboard Shortcuts - Utilities
  */
 
-import type { KeyModifier, ParsedKeyCombo } from "../domain/types/keyboard-types";
+import type {
+  KeyModifier,
+  ParsedKeyCombo,
+} from "../domain/types/keyboard-types";
 
 /**
  * Order of modifiers for consistent formatting and comparison
@@ -26,7 +29,10 @@ export function parseKeyCombo(combo: string): ParsedKeyCombo {
     return { key: "", modifiers: [] };
   }
 
-  const parts = combo.toLowerCase().split("+").map((p) => p.trim());
+  const parts = combo
+    .toLowerCase()
+    .split("+")
+    .map((p) => p.trim());
   const modifiers: KeyModifier[] = [];
   let key = "";
 
@@ -37,7 +43,12 @@ export function parseKeyCombo(combo: string): ParsedKeyCombo {
       modifiers.push("alt");
     } else if (part === "shift") {
       modifiers.push("shift");
-    } else if (part === "meta" || part === "cmd" || part === "command" || part === "win") {
+    } else if (
+      part === "meta" ||
+      part === "cmd" ||
+      part === "command" ||
+      part === "win"
+    ) {
       modifiers.push("meta");
     } else {
       // This is the main key - preserve case for special keys
@@ -46,7 +57,9 @@ export function parseKeyCombo(combo: string): ParsedKeyCombo {
   }
 
   // Sort modifiers for consistent ordering
-  modifiers.sort((a, b) => MODIFIER_ORDER.indexOf(a) - MODIFIER_ORDER.indexOf(b));
+  modifiers.sort(
+    (a, b) => MODIFIER_ORDER.indexOf(a) - MODIFIER_ORDER.indexOf(b)
+  );
 
   return { key, modifiers };
 }
@@ -117,7 +130,10 @@ export function buildKeyCombo(key: string, modifiers: KeyModifier[]): string {
  * formatKeyComboForDisplay("ctrl+shift+k", true) // "^⇧K" (Mac)
  * formatKeyComboForDisplay("ctrl+shift+k", false) // "Ctrl+Shift+K" (Windows)
  */
-export function formatKeyComboForDisplay(combo: string, isMac: boolean): string {
+export function formatKeyComboForDisplay(
+  combo: string,
+  isMac: boolean
+): string {
   const { key, modifiers } = parseKeyCombo(combo);
   return formatParsedKeyCombo(key, modifiers, isMac);
 }

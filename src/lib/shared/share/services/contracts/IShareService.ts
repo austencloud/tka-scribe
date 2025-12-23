@@ -6,7 +6,7 @@
  */
 
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
-import type { ShareOptions } from '../../domain/models/ShareOptions';
+import type { ShareOptions } from "../../domain/models/ShareOptions";
 
 /**
  * Progress callback for image generation

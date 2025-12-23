@@ -110,4 +110,6 @@ export function createVideoRecordSettings() {
   };
 }
 
-export type VideoRecordSettingsState = ReturnType<typeof createVideoRecordSettings>;
+export type VideoRecordSettingsState = ReturnType<
+  typeof createVideoRecordSettings
+>;

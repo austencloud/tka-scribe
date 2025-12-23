@@ -7,7 +7,10 @@
 
 import { Canvas, loadSVGFromString, Rect, util } from "fabric";
 import { injectable } from "inversify";
-import type { RenderQualitySettings, SVGConversionOptions } from "../../domain/models/SvgConversion";
+import type {
+  RenderQualitySettings,
+  SVGConversionOptions,
+} from "../../domain/models/SvgConversion";
 import type { ISVGToCanvasConverterService } from "../contracts/ISVGToCanvasConverterService";
 
 @injectable()

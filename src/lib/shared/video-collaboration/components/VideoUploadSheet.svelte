@@ -5,7 +5,10 @@
   Handles: file selection → metadata extraction → upload → save to Firestore
 -->
 <script lang="ts">
-  import { tryResolve, loadFeatureModule } from "$lib/shared/inversify/container";
+  import {
+    tryResolve,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IFirebaseVideoUploadService } from "$lib/shared/share/services/contracts/IFirebaseVideoUploadService";
   import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
@@ -15,9 +18,15 @@
   import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
-  import { createVideoFromUpload, getVideoFileMetadata } from "../helpers/create-video-from-upload";
+  import {
+    createVideoFromUpload,
+    getVideoFileMetadata,
+  } from "../helpers/create-video-from-upload";
   import type { VideoVisibility } from "../domain/CollaborativeVideo";
-  import { extractVideoThumbnail, type ThumbnailResult } from "../utils/thumbnail-extractor";
+  import {
+    extractVideoThumbnail,
+    type ThumbnailResult,
+  } from "../utils/thumbnail-extractor";
 
   const {
     show = false,
@@ -44,9 +53,15 @@
       console.warn("[VideoUploadSheet] Failed to load share module:", e);
     }
 
-    uploadService = tryResolve<IFirebaseVideoUploadService>(TYPES.IFirebaseVideoUploadService);
-    videoService = tryResolve<ICollaborativeVideoService>(TYPES.ICollaborativeVideoService);
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    uploadService = tryResolve<IFirebaseVideoUploadService>(
+      TYPES.IFirebaseVideoUploadService
+    );
+    videoService = tryResolve<ICollaborativeVideoService>(
+      TYPES.ICollaborativeVideoService
+    );
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     console.log("[VideoUploadSheet] Services resolved:", {
       uploadService: !!uploadService,
@@ -116,7 +131,12 @@
     extractVideoThumbnail(file)
       .then((result) => {
         thumbnail = result;
-        console.log("[VideoUploadSheet] Thumbnail extracted:", result.width, "x", result.height);
+        console.log(
+          "[VideoUploadSheet] Thumbnail extracted:",
+          result.width,
+          "x",
+          result.height
+        );
       })
       .catch((e) => {
         console.warn("Could not extract thumbnail:", e);
@@ -137,12 +157,14 @@
     }
     if (!uploadService) {
       console.error("FirebaseVideoUploadService not available");
-      uploadError = "Upload service not available. Please refresh and try again.";
+      uploadError =
+        "Upload service not available. Please refresh and try again.";
       return;
     }
     if (!videoService) {
       console.error("CollaborativeVideoService not available");
-      uploadError = "Video service not available. Please refresh and try again.";
+      uploadError =
+        "Video service not available. Please refresh and try again.";
       return;
     }
     if (!currentUser) {
@@ -330,7 +352,11 @@
           <!-- Visibility -->
           <div class="option-group">
             <span class="option-label" id="visibility-label">Visibility</span>
-            <div class="visibility-options" role="group" aria-labelledby="visibility-label">
+            <div
+              class="visibility-options"
+              role="group"
+              aria-labelledby="visibility-label"
+            >
               <button
                 class="visibility-btn"
                 class:active={visibility === "public"}
@@ -360,7 +386,9 @@
 
           <!-- Description -->
           <div class="option-group">
-            <label for="video-description" class="option-label">Description (optional)</label>
+            <label for="video-description" class="option-label"
+              >Description (optional)</label
+            >
             <textarea
               id="video-description"
               bind:value={description}

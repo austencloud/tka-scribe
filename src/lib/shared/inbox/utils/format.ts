@@ -9,17 +9,17 @@
  * Compact format for space-constrained UI
  */
 export function formatRelativeTime(date: Date): string {
-	const now = new Date();
-	const diff = now.getTime() - date.getTime();
-	const minutes = Math.floor(diff / 60000);
-	const hours = Math.floor(diff / 3600000);
-	const days = Math.floor(diff / 86400000);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
 
-	if (minutes < 1) return "Now";
-	if (minutes < 60) return `${minutes}m`;
-	if (hours < 24) return `${hours}h`;
-	if (days < 7) return `${days}d`;
-	return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  if (minutes < 1) return "Now";
+  if (minutes < 60) return `${minutes}m`;
+  if (hours < 24) return `${hours}h`;
+  if (days < 7) return `${days}d`;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 /**
@@ -27,24 +27,24 @@ export function formatRelativeTime(date: Date): string {
  * More readable format for notifications
  */
 export function formatRelativeTimeVerbose(date: Date): string {
-	const now = new Date();
-	const diff = now.getTime() - date.getTime();
-	const minutes = Math.floor(diff / 60000);
-	const hours = Math.floor(diff / 3600000);
-	const days = Math.floor(diff / 86400000);
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
 
-	if (minutes < 1) return "Just now";
-	if (minutes < 60) return `${minutes}m ago`;
-	if (hours < 24) return `${hours}h ago`;
-	if (days < 7) return `${days}d ago`;
-	return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
 /**
  * Format a date as time only (e.g., "2:30 PM")
  */
 export function formatTime(date: Date): string {
-	return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 }
 
 /**
@@ -52,22 +52,22 @@ export function formatTime(date: Date): string {
  * Returns up to 2 characters
  */
 export function getInitials(name: string): string {
-	if (!name) return "?";
-	return name
-		.split(" ")
-		.filter((n) => n.length > 0)
-		.map((n) => n[0])
-		.join("")
-		.substring(0, 2)
-		.toUpperCase();
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .filter((n) => n.length > 0)
+    .map((n) => n[0])
+    .join("")
+    .substring(0, 2)
+    .toUpperCase();
 }
 
 /**
  * Truncate text with ellipsis
  */
 export function truncateText(text: string, maxLength: number): string {
-	if (text.length <= maxLength) return text;
-	return text.substring(0, maxLength - 3) + "...";
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - 3) + "...";
 }
 
 /**
@@ -75,27 +75,27 @@ export function truncateText(text: string, maxLength: number): string {
  * Used for avatar background when no photo is available
  */
 export function getAvatarColor(userId: string): string {
-	const colors = [
-		"#3b82f6", // blue
-		"#8b5cf6", // purple
-		"#ec4899", // pink
-		"#ef4444", // red
-		"#f97316", // orange
-		"#eab308", // yellow
-		"#22c55e", // green
-		"#14b8a6", // teal
-		"#06b6d4"  // cyan
-	];
+  const colors = [
+    "#3b82f6", // blue
+    "#8b5cf6", // purple
+    "#ec4899", // pink
+    "#ef4444", // red
+    "#f97316", // orange
+    "#eab308", // yellow
+    "#22c55e", // green
+    "#14b8a6", // teal
+    "#06b6d4", // cyan
+  ];
 
-	// Simple hash function
-	let hash = 0;
-	for (let i = 0; i < userId.length; i++) {
-		const char = userId.charCodeAt(i);
-		hash = (hash << 5) - hash + char;
-		hash = hash & hash; // Convert to 32-bit integer
-	}
+  // Simple hash function
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++) {
+    const char = userId.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
 
-	const index = Math.abs(hash) % colors.length;
-	// Type assertion - array is non-empty and index is always valid
-	return colors[index] as string;
+  const index = Math.abs(hash) % colors.length;
+  // Type assertion - array is non-empty and index is always valid
+  return colors[index] as string;
 }

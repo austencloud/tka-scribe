@@ -6,7 +6,10 @@
  */
 
 import { injectable } from "inversify";
-import type { IFirebaseVideoUploadService, VideoUploadResult } from "../contracts/IFirebaseVideoUploadService";
+import type {
+  IFirebaseVideoUploadService,
+  VideoUploadResult,
+} from "../contracts/IFirebaseVideoUploadService";
 import { getStorageInstance } from "$lib/shared/auth/firebase";
 import { auth } from "$lib/shared/auth/firebase";
 
@@ -31,19 +34,18 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     videoFile: File | Blob,
     onProgress?: (percent: number) => void
   ): Promise<VideoUploadResult> {
-    const {
-      ref,
-      uploadBytesResumable,
-      getDownloadURL,
-    } = await import("firebase/storage");
+    const { ref, uploadBytesResumable, getDownloadURL } = await import(
+      "firebase/storage"
+    );
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 
     // Generate storage path: users/{userId}/recordings/{sequenceId}/{timestamp}.mp4
     const timestamp = Date.now();
-    const extension = videoFile instanceof File
-      ? videoFile.name.split(".").pop() || "mp4"
-      : "mp4";
+    const extension =
+      videoFile instanceof File
+        ? videoFile.name.split(".").pop() || "mp4"
+        : "mp4";
     const storagePath = `users/${userId}/recordings/${sequenceId}/${timestamp}.${extension}`;
 
     console.log(`📤 Uploading video to: ${storagePath}`);
@@ -67,7 +69,8 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
         "state_changed",
         (snapshot) => {
           // Calculate progress percentage
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           onProgress?.(Math.round(progress));
           console.log(`📤 Upload progress: ${progress.toFixed(1)}%`);
         },
@@ -97,7 +100,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     animationBlob: Blob,
     format: "webp" | "gif"
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const { ref, uploadBytes, getDownloadURL } = await import(
+      "firebase/storage"
+    );
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 
@@ -136,7 +141,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     try {
       const recordingsList = await listAll(recordingsRef);
       await Promise.all(recordingsList.items.map((item) => deleteObject(item)));
-      console.log(`🗑️ Deleted ${recordingsList.items.length} recordings for sequence ${sequenceId}`);
+      console.log(
+        `🗑️ Deleted ${recordingsList.items.length} recordings for sequence ${sequenceId}`
+      );
     } catch (error) {
       console.warn("Failed to delete recordings:", error);
     }
@@ -148,7 +155,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     try {
       const animationsList = await listAll(animationsRef);
       await Promise.all(animationsList.items.map((item) => deleteObject(item)));
-      console.log(`🗑️ Deleted ${animationsList.items.length} animations for sequence ${sequenceId}`);
+      console.log(
+        `🗑️ Deleted ${animationsList.items.length} animations for sequence ${sequenceId}`
+      );
     } catch (error) {
       console.warn("Failed to delete animations:", error);
     }
@@ -172,7 +181,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     thumbnailBlob: Blob,
     videoTimestamp: number
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const { ref, uploadBytes, getDownloadURL } = await import(
+      "firebase/storage"
+    );
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 
@@ -205,7 +216,9 @@ export class FirebaseVideoUploadService implements IFirebaseVideoUploadService {
     thumbnailBlob: Blob,
     format: "png" | "jpeg" | "webp" = "png"
   ): Promise<VideoUploadResult> {
-    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const { ref, uploadBytes, getDownloadURL } = await import(
+      "firebase/storage"
+    );
     const storage = await getStorageInstance();
     const userId = this.getUserId();
 

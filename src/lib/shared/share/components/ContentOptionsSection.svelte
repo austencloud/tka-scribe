@@ -221,7 +221,11 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem 1.25rem;
-    background: linear-gradient(135deg, var(--theme-accent, #667eea) 0%, var(--theme-accent-strong, #764ba2) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #667eea) 0%,
+      var(--theme-accent-strong, #764ba2) 100%
+    );
     color: white;
     border: none;
     border-radius: 8px;
@@ -229,15 +233,21 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 4px 15px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
     min-width: 200px;
     justify-content: center;
   }
 
   .customize-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #5a67d8) 0%, var(--theme-accent, #6b46c1) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #5a67d8) 0%,
+      var(--theme-accent, #6b46c1) 100%
+    );
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent) 40%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .customize-btn:disabled {

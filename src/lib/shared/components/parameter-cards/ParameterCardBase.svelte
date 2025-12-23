@@ -42,8 +42,12 @@ Used by both Generate and Discover for consistent Bento card styling
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    rippleService = tryResolve<IRippleEffectService>(
+      TYPES.IRippleEffectService
+    );
 
     if (clickable && cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
@@ -63,7 +67,12 @@ Used by both Generate and Discover for consistent Bento card styling
   }
 
   function handleKeydown(event: KeyboardEvent) {
-    if (clickable && onClick && !disabled && (event.key === "Enter" || event.key === " ")) {
+    if (
+      clickable &&
+      onClick &&
+      !disabled &&
+      (event.key === "Enter" || event.key === " ")
+    ) {
       event.preventDefault();
       handleClick();
     }
@@ -106,7 +115,12 @@ Used by both Generate and Discover for consistent Bento card styling
 
   {#if clickable && !disabled}
     <div class="click-indicator" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <path d="M9 18l6-6-6-6" />
       </svg>
     </div>
