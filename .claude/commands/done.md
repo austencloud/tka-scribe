@@ -18,6 +18,7 @@ The command expects the document ID and admin notes:
 ```
 
 **Example:**
+
 ```bash
 /done abc123xyz "Fixed card height overflow in Kanban board"
 ```

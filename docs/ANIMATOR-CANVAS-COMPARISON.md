@@ -3,6 +3,7 @@
 ## File Structure
 
 ### Before (Monolith)
+
 ```
 src/lib/shared/animation-engine/
 └── components/
@@ -20,6 +21,7 @@ src/lib/shared/animation-engine/
 ```
 
 ### After (Primitives)
+
 ```
 src/lib/shared/animation-engine/
 ├── components/
@@ -53,6 +55,7 @@ src/lib/shared/animation-engine/
 ## Code Comparison: Beat Number Calculation
 
 ### Before (Inline Logic)
+
 ```typescript
 // Inside AnimatorCanvas.svelte (lines 138-150)
 const beatNumber = $derived.by(() => {
@@ -70,12 +73,14 @@ const beatNumber = $derived.by(() => {
 ```
 
 **Problems**:
+
 - Logic mixed with component code
 - Hard to test without rendering component
 - Can't reuse in other components
 - Unclear what it does without reading full implementation
 
 ### After (Pure Utility)
+
 ```typescript
 // BeatNumberCalculator.ts (lines 18-32)
 export function calculateBeatNumber(
@@ -97,12 +102,14 @@ const beatNumber = $derived(calculateBeatNumber(sequenceData, beatData));
 ```
 
 **Benefits**:
+
 - ✅ Pure function - easy to test
 - ✅ Reusable across components
 - ✅ Clear name documents purpose
 - ✅ Can add helpers (getBeatLabel, isStartPosition) in same file
 
 **Test Example**:
+
 ```typescript
 // Easy to test without component
 expect(calculateBeatNumber(null, null)).toBe(0);
@@ -114,6 +121,7 @@ expect(calculateBeatNumber(sequence, sequence.beats[0])).toBe(1);
 ## Code Comparison: Texture Loading
 
 ### Before (Inline Service)
+
 ```typescript
 // Inside AnimatorCanvas.svelte (lines 527-541)
 function initializePropTextureService() {
@@ -144,12 +152,14 @@ function initializeGlyphTextureService() {
 ```
 
 **Problems**:
+
 - Two separate services doing related things
 - Callbacks scattered across component
 - Hard to test texture loading in isolation
 - Unclear lifecycle (when does each get initialized?)
 
 ### After (Coordinator)
+
 ```typescript
 // AnimatorTextureCoordinator.svelte.ts (lines 26-55)
 export class AnimatorTextureCoordinator {
@@ -201,6 +211,7 @@ textureCoordinator.setCallbacks({
 ```
 
 **Benefits**:
+
 - ✅ All texture logic in one place
 - ✅ Clear lifecycle (initialize → load → destroy)
 - ✅ Easy to test (mock callbacks, verify loading)
@@ -208,6 +219,7 @@ textureCoordinator.setCallbacks({
 - ✅ Single coordinator handles prop, glyph, grid textures
 
 **Test Example**:
+
 ```typescript
 const coordinator = new AnimatorTextureCoordinator();
 const onLoadComplete = vi.fn();
@@ -225,6 +237,7 @@ expect(onLoadComplete).toHaveBeenCalled();
 ## Code Comparison: Frame Parameter Construction
 
 ### Before (Inline Object)
+
 ```typescript
 // Inside AnimatorCanvas.svelte (lines 597-646)
 function getFrameParams(): RenderFrameParams {
@@ -254,7 +267,7 @@ function getFrameParams(): RenderFrameParams {
 
   // Debug logging for first call
   if (!hasLoggedFrameParams) {
-    console.log('[AnimatorCanvas] getFrameParams FULL DETAILS:', {
+    console.log("[AnimatorCanvas] getFrameParams FULL DETAILS:", {
       hasBlueProp: !!params.props.blueProp,
       hasRedProp: !!params.props.redProp,
       gridVisible: params.visibility.gridVisible,
@@ -263,14 +276,18 @@ function getFrameParams(): RenderFrameParams {
       blueMotionVisible: params.visibility.blueMotionVisible,
       redMotionVisible: params.visibility.redMotionVisible,
       hideProps: params.trailSettings.hideProps,
-      bluePropAngles: params.props.blueProp ? {
-        centerPathAngle: params.props.blueProp.centerPathAngle,
-        staffRotationAngle: params.props.blueProp.staffRotationAngle
-      } : null,
-      redPropAngles: params.props.redProp ? {
-        centerPathAngle: params.props.redProp.centerPathAngle,
-        staffRotationAngle: params.props.redProp.staffRotationAngle
-      } : null
+      bluePropAngles: params.props.blueProp
+        ? {
+            centerPathAngle: params.props.blueProp.centerPathAngle,
+            staffRotationAngle: params.props.blueProp.staffRotationAngle,
+          }
+        : null,
+      redPropAngles: params.props.redProp
+        ? {
+            centerPathAngle: params.props.redProp.centerPathAngle,
+            staffRotationAngle: params.props.redProp.staffRotationAngle,
+          }
+        : null,
     });
     hasLoggedFrameParams = true;
   }
@@ -280,12 +297,14 @@ function getFrameParams(): RenderFrameParams {
 ```
 
 **Problems**:
+
 - Inline object construction mixed with debug logging
 - Hard to test param building logic
 - Can't reuse in other contexts
 - Debug logic clutters the param construction
 
 ### After (Pure Utility)
+
 ```typescript
 // CanvasFrameParams.ts (lines 55-78)
 export function buildFrameParams(input: FrameParamsInput): RenderFrameParams {
@@ -335,6 +354,7 @@ function getFrameParams() {
 ```
 
 **Benefits**:
+
 - ✅ Pure function - testable without component
 - ✅ Clear input/output types
 - ✅ No side effects (debug logging removed)
@@ -342,6 +362,7 @@ function getFrameParams() {
 - ✅ Type-safe input structure
 
 **Test Example**:
+
 ```typescript
 const params = buildFrameParams({
   beatData: mockBeatData,
@@ -360,6 +381,7 @@ expect(params.visibility.gridVisible).toBe(true);
 ## Debugging Experience
 
 ### Before: "Where's the bug?"
+
 ```
 Problem: Textures not loading
 
@@ -378,6 +400,7 @@ Debugging approach:
 ```
 
 ### After: "It's in the texture coordinator"
+
 ```
 Problem: Textures not loading
 
@@ -401,6 +424,7 @@ Debugging approach:
 ## AI-Assisted Development
 
 ### Before: "Hallucinating Through Bugs"
+
 ```
 User: "Fix texture loading"
 
@@ -414,6 +438,7 @@ Result: More bugs, more confusion
 ```
 
 ### After: "Focused Debugging"
+
 ```
 User: "Fix texture loading"
 
@@ -433,6 +458,7 @@ Result: Fix applied correctly, no collateral damage
 ### Scenario: "Add texture caching"
 
 #### Before
+
 ```
 Files to modify:
 - AnimatorCanvas.svelte (find texture logic scattered across file)
@@ -446,6 +472,7 @@ Time: 1-2 hours (finding all texture code)
 ```
 
 #### After
+
 ```
 Files to modify:
 - AnimatorTextureCoordinator.svelte.ts (one file, clear scope)
@@ -460,6 +487,7 @@ Time: 15-30 minutes (focused change)
 ### Scenario: "Change beat number format"
 
 #### Before
+
 ```
 Files to modify:
 - AnimatorCanvas.svelte
@@ -472,6 +500,7 @@ Time: 30 minutes
 ```
 
 #### After
+
 ```
 Files to modify:
 - BeatNumberCalculator.ts
@@ -495,6 +524,7 @@ Time: 10-15 minutes (function + tests)
 ### Potential future optimizations enabled:
 
 1. **Lazy coordinator loading**
+
    ```typescript
    // Load texture coordinator only when needed
    if (!textureCoordinator && needsTextures) {
@@ -503,6 +533,7 @@ Time: 10-15 minutes (function + tests)
    ```
 
 2. **Parallel texture loading**
+
    ```typescript
    // Coordinators can load in parallel
    await Promise.all([
@@ -523,14 +554,14 @@ Time: 10-15 minutes (function + tests)
 
 ## Conclusion
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Main canvas LOC | 731 | 480 | -34% |
-| Responsibilities in main file | 9+ | 3 | -67% |
-| Pure utilities | 0 | 3 | +3 |
-| Service coordinators | 0 | 3 | +3 |
-| Testable without rendering | ❌ | ✅ | 100% |
-| AI context required | 731 lines | 131 lines avg | -82% |
-| Time to find texture logic | 5-10 min | 30 sec | -90% |
+| Metric                        | Before    | After         | Change |
+| ----------------------------- | --------- | ------------- | ------ |
+| Main canvas LOC               | 731       | 480           | -34%   |
+| Responsibilities in main file | 9+        | 3             | -67%   |
+| Pure utilities                | 0         | 3             | +3     |
+| Service coordinators          | 0         | 3             | +3     |
+| Testable without rendering    | ❌        | ✅            | 100%   |
+| AI context required           | 731 lines | 131 lines avg | -82%   |
+| Time to find texture logic    | 5-10 min  | 30 sec        | -90%   |
 
 **Result**: A cleaner, more maintainable, AI-friendly AnimatorCanvas that follows 2025 best practices.

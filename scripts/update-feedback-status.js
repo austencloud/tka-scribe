@@ -1,18 +1,18 @@
 /**
  * Update feedback item status
  */
-import admin from 'firebase-admin';
-import { readFileSync } from 'fs';
+import admin from "firebase-admin";
+import { readFileSync } from "fs";
 
 // Load service account key
 const serviceAccount = JSON.parse(
-  readFileSync('./serviceAccountKey.json', 'utf8')
+  readFileSync("./serviceAccountKey.json", "utf8")
 );
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
@@ -24,24 +24,34 @@ async function updateFeedbackStatus() {
   const notes = process.argv[4];
 
   if (!feedbackId || !status) {
-    console.error('Usage: node scripts/update-feedback-status.js <feedbackId> <status> [notes]');
-    console.error('Valid statuses: new, in-progress, in-review, completed, archived');
+    console.error(
+      "Usage: node scripts/update-feedback-status.js <feedbackId> <status> [notes]"
+    );
+    console.error(
+      "Valid statuses: new, in-progress, in-review, completed, archived"
+    );
     process.exit(1);
   }
 
-  const validStatuses = ['new', 'in-progress', 'in-review', 'completed', 'archived'];
+  const validStatuses = [
+    "new",
+    "in-progress",
+    "in-review",
+    "completed",
+    "archived",
+  ];
   if (!validStatuses.includes(status)) {
     console.error(`Invalid status: ${status}`);
-    console.error(`Valid statuses: ${validStatuses.join(', ')}`);
+    console.error(`Valid statuses: ${validStatuses.join(", ")}`);
     process.exit(1);
   }
 
   console.log(`Updating feedback ${feedbackId} to ${status}...`);
 
-  const ref = db.collection('feedback').doc(feedbackId);
+  const ref = db.collection("feedback").doc(feedbackId);
   const updateData = {
     status,
-    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   };
 
   if (notes) {
@@ -56,7 +66,7 @@ async function updateFeedbackStatus() {
   }
 }
 
-updateFeedbackStatus().catch(error => {
-  console.error('❌ Error:', error.message);
+updateFeedbackStatus().catch((error) => {
+  console.error("❌ Error:", error.message);
   process.exit(1);
 });

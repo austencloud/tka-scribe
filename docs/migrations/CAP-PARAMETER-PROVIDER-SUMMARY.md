@@ -12,6 +12,7 @@
 - ✅ Clean, well-documented API
 
 **Consolidated Services:**
+
 1. `InvertedLetterService` (22 lines)
 2. `RotationDirectionService` (45 lines)
 3. `TurnIntensityLevelService` (46 lines)
@@ -28,6 +29,7 @@
 ### 3. Updated DI Container
 
 **Files Updated:**
+
 - ✅ `src/lib/shared/inversify/types.ts` - Added `ICAPParameterProvider` symbol
 - ✅ `src/lib/shared/inversify/modules/build.module.ts` - Added binding
 - ✅ `src/lib/modules/create/generate/shared/services/contracts/index.ts` - Exported interface
@@ -38,6 +40,7 @@
 ### 4. Created Migration Documentation
 
 **Files Created:**
+
 - ✅ `docs/migrations/CAP-PARAMETER-PROVIDER-MIGRATION.md` - Complete migration guide
 - ✅ `docs/migrations/MirroredInvertedCAPExecutor-MIGRATED-EXAMPLE.ts` - Real working example
 
@@ -46,16 +49,19 @@
 ## 📊 Impact
 
 ### Service Count Reduction
+
 - **Before:** 287 services
 - **After Migration:** 284 services
 - **Reduction:** -3 services (-1%)
 
 ### Code Organization
+
 - **Before:** 4 scattered services (22, 45, 46, 97 lines)
 - **After:** 1 cohesive service (300 lines)
 - **Benefit:** All CAP parameter logic in ONE place ✅
 
 ### Maintainability
+
 - ✅ Easier to find CAP parameter functionality
 - ✅ Related methods grouped together
 - ✅ Less DI container noise
@@ -68,6 +74,7 @@
 ### Required: Migrate Call Sites
 
 1. **Find all usages:**
+
    ```bash
    grep -r "IInvertedLetterService\|IRotationDirectionService\|ITurnIntensityManagerService" src/lib/modules/create/generate --include="*.ts"
    ```
@@ -80,6 +87,7 @@
    - UI components using turn intensity
 
 3. **Migration pattern:**
+
    ```typescript
    // OLD
    @inject(TYPES.IInvertedLetterService)
@@ -93,6 +101,7 @@
 ### Testing
 
 After migration, verify:
+
 - [ ] All 13 CAP types still generate correctly
 - [ ] Turn intensity UI shows correct values
 - [ ] No DI container errors
@@ -104,6 +113,7 @@ After migration, verify:
 Once all call sites are migrated:
 
 1. **Remove old service files:**
+
    ```bash
    rm src/lib/modules/create/generate/shared/services/implementations/InvertedLetterService.ts
    rm src/lib/modules/create/generate/circular/services/implementations/RotationDirectionService.ts
@@ -112,6 +122,7 @@ Once all call sites are migrated:
    ```
 
 2. **Remove old interfaces:**
+
    ```bash
    rm src/lib/modules/create/generate/shared/services/contracts/IInvertedLetterService.ts
    rm src/lib/modules/create/generate/circular/services/contracts/IRotationDirectionService.ts
@@ -119,11 +130,14 @@ Once all call sites are migrated:
    ```
 
 3. **Remove old DI bindings from build.module.ts:**
+
    ```typescript
    // Remove these lines:
    options.bind(TYPES.IInvertedLetterService).to(InvertedLetterService);
    options.bind(TYPES.IRotationDirectionService).to(RotationDirectionService);
-   options.bind(TYPES.ITurnIntensityManagerService).to(TurnIntensityLevelService);
+   options
+     .bind(TYPES.ITurnIntensityManagerService)
+     .to(TurnIntensityLevelService);
    ```
 
 4. **Remove old type symbols from types.ts:**
@@ -148,6 +162,7 @@ Once all call sites are migrated:
 ## 🔥 Benefits Summary
 
 ### Before
+
 ```
 InvertedLetterService.ts        (22 lines)
 RotationDirectionService.ts          (45 lines)
@@ -158,6 +173,7 @@ TurnIntensityManagerService.ts       (97 lines)
 ```
 
 ### After
+
 ```
 CAPParameterProvider.ts             (300 lines)
 ─────────────────────────────────────
@@ -165,6 +181,7 @@ CAPParameterProvider.ts             (300 lines)
 ```
 
 **You now have:**
+
 - ✅ Less cognitive overhead
 - ✅ Better discoverability
 - ✅ Cohesive domain grouping
@@ -177,6 +194,7 @@ CAPParameterProvider.ts             (300 lines)
 ## 🎉 Success Criteria
 
 Migration is complete when:
+
 - [ ] All call sites updated to use `ICAPParameterProvider`
 - [ ] All tests passing
 - [ ] Old service files deleted

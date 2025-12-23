@@ -5,11 +5,13 @@
 TKA Scribe now has a proper production release workflow with environment-based feature visibility.
 
 ### Before
+
 - All features visible to all users (controlled only by role)
 - Admin had to manually hide features
 - No distinction between "in development" and "publicly released"
 
 ### After
+
 - Production shows only released features
 - Development/preview shows all features
 - Clean separation of production and development environments
@@ -22,6 +24,7 @@ TKA Scribe now has a proper production release workflow with environment-based f
 1. **Update your local environment:**
 
    Create `.env.local` (this file is gitignored):
+
    ```bash
    # .env.local
    PUBLIC_ENVIRONMENT=development
@@ -40,6 +43,7 @@ TKA Scribe now has a proper production release workflow with environment-based f
    ```
 
    Or copy from the example:
+
    ```bash
    cp .env.development .env.local
    ```
@@ -52,20 +56,24 @@ TKA Scribe now has a proper production release workflow with environment-based f
 ### Testing Your Changes
 
 1. **Local testing** (as before):
+
    ```bash
    npm run dev
    ```
+
    All modules will be visible.
 
 2. **Test production settings locally** (new):
+
    ```bash
    # Temporarily edit .env.local
    PUBLIC_ENVIRONMENT=production
    PUBLIC_ENABLE_LEARN_MODULE=false
    # ... other production flags
-   
+
    npm run dev
    ```
+
    Now you'll see what production users see.
 
 3. **Deploy preview** (automatic):
@@ -76,12 +84,14 @@ TKA Scribe now has a proper production release workflow with environment-based f
 ### Creating PRs
 
 **No change to your workflow!**
+
 - Create feature branches as before
 - Push → get preview URL
 - Review and test on preview
 - Merge when ready
 
 **To release to production:**
+
 - Create PR to `main` (or `release` if using that strategy)
 - If enabling a new module, include netlify.toml update in the PR
 
@@ -130,6 +140,7 @@ Admins still see all modules even in production. This is by design - admins bypa
 ### Managing Releases
 
 1. **To release a feature:**
+
    ```toml
    # Edit netlify.toml
    [context.production.environment]
@@ -151,6 +162,7 @@ In development environments, you can still use role override to test as differen
 This is a **non-breaking** addition. All existing functionality works as before.
 
 ### New Files:
+
 - `src/lib/shared/environment/environment-features.ts` (new helper functions)
 - `.env.production` (production defaults)
 - `.env.development` (development defaults)
@@ -158,12 +170,14 @@ This is a **non-breaking** addition. All existing functionality works as before.
 - `docs/RELEASE-QUICK-REFERENCE.md` (quick guide)
 
 ### Modified Files:
+
 - `netlify.toml` (added environment variables)
 - `src/lib/shared/auth/services/FeatureFlagService.svelte.ts` (added environment check)
 - `src/types/global.d.ts` (added new env var types)
 - `config/.env.example` (added new variables)
 
 ### No Changes Needed In:
+
 - Your feature components
 - Existing feature flags
 - Role-based access control
@@ -172,34 +186,43 @@ This is a **non-breaking** addition. All existing functionality works as before.
 ## FAQ
 
 **Q: Do I need to update my feature code?**
+
 - A: No! Everything is backwards compatible.
 
 **Q: Will my local dev environment break?**
+
 - A: No. Just create `.env.local` with development settings (see above).
 
 **Q: What about existing deployed previews?**
+
 - A: They'll keep working. Next deploy will pick up new settings.
 
 **Q: Can I opt out of this?**
+
 - A: Technically yes (set all flags to `"true"` in production), but defeats the purpose.
 
 **Q: What if I want a module visible in production for testing?**
+
 - A: Either:
   1. Set flag to `"true"` in production (releases to everyone)
   2. Test on a preview deployment (recommended)
   3. Use your admin account (admins see all modules)
 
 **Q: How do I know what's released vs in development?**
+
 - A: Check `netlify.toml` → `[context.production]`
 - Or see the quick reference: `docs/RELEASE-QUICK-REFERENCE.md`
 
 **Q: Does this affect mobile PWA installs?**
+
 - A: PWA installs use the production URL, so they see only released features.
 
 **Q: Can users upgrade to see unreleased features?**
+
 - A: Not directly. Admin can manually set user role, but environment flags still apply (unless they're admin).
 
 **Q: What about Firebase rules and backend?**
+
 - A: No changes needed. This only affects frontend visibility.
 
 ## Testing the Migration

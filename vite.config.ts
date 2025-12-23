@@ -112,7 +112,7 @@ const devCachePlugin = () => ({
         const url = req.url || "";
 
         // Skip WebSocket upgrade requests - critical for HMR
-        if (req.headers.upgrade === 'websocket') {
+        if (req.headers.upgrade === "websocket") {
           next();
           return;
         }
@@ -129,7 +129,10 @@ const devCachePlugin = () => ({
         ) {
           const originalWriteHead = res.writeHead;
           res.writeHead = function (...args: any[]) {
-            res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+            res.setHeader(
+              "Cache-Control",
+              "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0"
+            );
             res.setHeader("Pragma", "no-cache");
             res.setHeader("Expires", "0");
             res.setHeader("Surrogate-Control", "no-store");
@@ -194,7 +197,9 @@ const webpStaticCopyPlugin = () => {
 };
 
 // Read package.json version at build time
-const packageJson = JSON.parse(fs.readFileSync(path.resolve(dirname, 'package.json'), 'utf-8'));
+const packageJson = JSON.parse(
+  fs.readFileSync(path.resolve(dirname, "package.json"), "utf-8")
+);
 
 // ============================================================================
 // VITE 6.0 CONFIGURATION (2025 - Optimized for SvelteKit 2)
@@ -251,7 +256,8 @@ export default defineConfig({
             if (id.includes("firebase")) return "vendor-firebase";
             if (id.includes("dexie")) return "vendor-dexie";
             // pixi.js is heavy (~500KB) - keep it in its own chunk
-            if (id.includes("pixi.js") || id.includes("pixi")) return "vendor-pixi";
+            if (id.includes("pixi.js") || id.includes("pixi"))
+              return "vendor-pixi";
             return "vendor";
           }
         },

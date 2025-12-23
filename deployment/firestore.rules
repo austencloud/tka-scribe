@@ -235,6 +235,50 @@ service cloud.firestore {
     }
 
     // ============================================================================
+    // STRIPE SUBSCRIPTION COLLECTIONS
+    // Firebase Stripe Extension manages these collections
+    // ============================================================================
+
+    // Customer data - managed by Stripe extension
+    match /customers/{uid} {
+      // Users can only read their own customer data
+      allow read: if isOwner(uid);
+      // Extension writes this data via admin SDK (no client writes)
+      allow write: if false;
+
+      // Checkout sessions - created by client, processed by extension
+      match /checkout_sessions/{sessionId} {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+
+      // Subscriptions - managed by extension webhooks
+      match /subscriptions/{subscriptionId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+
+      // Payment methods - managed by extension
+      match /payments/{paymentId} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+    }
+
+    // Products catalog - public read, admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      // Price tiers for each product
+      match /prices/{priceId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    }
+
+    // ============================================================================
     // ACTIVITY LOGGING
     // ============================================================================
 

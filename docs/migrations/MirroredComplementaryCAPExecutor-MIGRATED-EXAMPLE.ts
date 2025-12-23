@@ -12,7 +12,10 @@
 
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionColor, MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
@@ -115,10 +118,9 @@ export class MirroredInvertedCAPExecutor {
     if (!previousMatchingBeat.letter) {
       throw new Error("Previous matching beat must have a letter");
     }
-    const invertedLetter =
-      this.capParams.getInvertedLetter(
-        previousMatchingBeat.letter as string
-      ) as Letter;
+    const invertedLetter = this.capParams.getInvertedLetter(
+      previousMatchingBeat.letter as string
+    ) as Letter;
 
     const mirroredEndPosition = this._getMirroredPosition(previousMatchingBeat);
 

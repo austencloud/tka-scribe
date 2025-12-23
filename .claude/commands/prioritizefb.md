@@ -22,6 +22,7 @@ This returns JSON with all "new" status items that have no priority set.
 For each feedback item, determine priority (high/medium/low) based on:
 
 ### HIGH Priority
+
 - **Blocks core workflows** - users can't create, save, or share choreography
 - **Data loss risk** - sequences could be lost, settings not saved
 - **Crashes or freezes** - app becomes unusable
@@ -29,18 +30,21 @@ For each feedback item, determine priority (high/medium/low) based on:
 - **Affects many users** - core features everyone uses
 
 ### MEDIUM Priority
+
 - **Degrades experience** - feature works but poorly (slow, janky, confusing)
 - **Missing expected functionality** - "I expected X to do Y but it doesn't"
 - **Moderate UX friction** - extra clicks, confusing flow, poor feedback
 - **New features that would help workflows** - not just nice-to-have
 
 ### LOW Priority
+
 - **Polish/cosmetic** - visual tweaks, minor alignment, icon preferences
 - **Edge cases** - rare scenarios, unusual configurations
 - **Nice-to-haves** - "it would be cool if..." without clear workflow benefit
 - **Preferences** - personal taste rather than usability issues
 
 ### Context matters more than keywords
+
 - A bug labeled "minor" might actually block a workflow → HIGH
 - A feature request with urgent language might just be a nice-to-have → LOW
 - Consider: How many flow artists would be affected? How severely?
@@ -49,21 +53,23 @@ For each feedback item, determine priority (high/medium/low) based on:
 
 Show a table with your recommendations:
 
-| Priority | ID (first 8 chars) | Type | Summary | Reasoning |
-|----------|---------------------|------|---------|-----------|
-| HIGH | abc12345 | bug | Can't save sequences | Blocks core workflow |
-| MEDIUM | def67890 | feature | Add undo button | Would improve editing UX |
-| LOW | ghi11223 | general | Change icon color | Cosmetic preference |
+| Priority | ID (first 8 chars) | Type    | Summary              | Reasoning                |
+| -------- | ------------------ | ------- | -------------------- | ------------------------ |
+| HIGH     | abc12345           | bug     | Can't save sequences | Blocks core workflow     |
+| MEDIUM   | def67890           | feature | Add undo button      | Would improve editing UX |
+| LOW      | ghi11223           | general | Change icon color    | Cosmetic preference      |
 
 ## Step 4: Ask for confirmation
 
 Ask the user:
+
 - "Apply these priorities?"
 - Or if they want to adjust any before applying
 
 ## Step 5: Apply priorities (after confirmation)
 
 For each item, run:
+
 ```bash
 node fetch-feedback.js <id> priority <high|medium|low>
 ```

@@ -24,6 +24,7 @@ That's it! You're ready to develop with all features enabled.
 ### Developing (Default)
 
 Just work normally in VSCode:
+
 - All modules are visible
 - Full development environment
 - No restrictions
@@ -39,6 +40,7 @@ When you're ready to release a feature to production, just type:
 ```
 
 in your conversation with any AI assistant. They'll guide you through:
+
 1. Showing current production status
 2. Asking which modules to enable/disable
 3. Updating netlify.toml
@@ -48,6 +50,7 @@ in your conversation with any AI assistant. They'll guide you through:
 ## 💡 Key Commands
 
 ### For AI Assistants
+
 ```
 /release       # Start release workflow
 /fb            # Run feedback workflow (Claude Code)
@@ -57,6 +60,7 @@ in your conversation with any AI assistant. They'll guide you through:
 ```
 
 ### For Terminal
+
 ```bash
 npm run release:prod  # Release to production
 npm run feedback:flow # Run feedback workflow
@@ -66,7 +70,9 @@ npm run env:prod      # Production simulation
 ```
 
 ### For VSCode
+
 Press `Ctrl+Shift+P` (or `Cmd+Shift+P`), then:
+
 - "🚀 Release to Production"
 - "💬 Feedback Release Flow"
 - "🔍 Check Current Environment"
@@ -82,6 +88,7 @@ All major AI assistants understand the workflow:
 - **Cursor** (`.cursorrules`)
 
 They automatically:
+
 - ✅ Detect when you're developing vs releasing
 - ✅ Help build features without restrictions
 - ✅ Guide you through releases when you type `/release`

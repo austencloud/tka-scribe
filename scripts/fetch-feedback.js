@@ -11,19 +11,19 @@
  *   5. When moving to in-review/completed, add resolution notes to explain what was done
  */
 
-import admin from 'firebase-admin';
-import { readFileSync } from 'fs';
-import { execSync } from 'child_process';
-import { existsSync, mkdirSync } from 'fs';
+import admin from "firebase-admin";
+import { readFileSync } from "fs";
+import { execSync } from "child_process";
+import { existsSync, mkdirSync } from "fs";
 
 // Load service account key
 const serviceAccount = JSON.parse(
-  readFileSync('./serviceAccountKey.json', 'utf8')
+  readFileSync("./serviceAccountKey.json", "utf8")
 );
 
 // Initialize Firebase Admin
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
@@ -34,32 +34,40 @@ const STALE_CLAIM_MS = 2 * 60 * 60 * 1000;
 /**
  * Send notification to user when their feedback is resolved/completed
  */
-async function notifyUserFeedbackResolved(userId, feedbackId, feedbackTitle, message) {
+async function notifyUserFeedbackResolved(
+  userId,
+  feedbackId,
+  feedbackTitle,
+  message
+) {
   if (!userId) {
-    console.log('  ⚠️  No userId - skipping notification');
+    console.log("  ⚠️  No userId - skipping notification");
     return null;
   }
 
   try {
-    const notificationRef = db.collection('users').doc(userId).collection('notifications');
+    const notificationRef = db
+      .collection("users")
+      .doc(userId)
+      .collection("notifications");
 
     const notification = {
       userId,
-      type: 'feedback-resolved',
+      type: "feedback-resolved",
       feedbackId,
-      feedbackTitle: feedbackTitle || 'Your feedback',
-      message: message || 'Your feedback has been addressed! Check it out.',
+      feedbackTitle: feedbackTitle || "Your feedback",
+      message: message || "Your feedback has been addressed! Check it out.",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       read: false,
-      fromUserId: 'system',
-      fromUserName: 'TKA Scribe'
+      fromUserId: "system",
+      fromUserName: "TKA Scribe",
     };
 
     const docRef = await notificationRef.add(notification);
     console.log(`  📬 Notification sent to user`);
     return docRef.id;
   } catch (error) {
-    console.error('  ⚠️  Failed to send notification:', error.message);
+    console.error("  ⚠️  Failed to send notification:", error.message);
     return null;
   }
 }
@@ -74,7 +82,7 @@ async function downloadFeedbackImages(feedbackId, imageUrls) {
   }
 
   // Ensure feedback-images directory exists
-  const imageDir = './feedback-images';
+  const imageDir = "./feedback-images";
   if (!existsSync(imageDir)) {
     mkdirSync(imageDir);
   }
@@ -89,11 +97,13 @@ async function downloadFeedbackImages(feedbackId, imageUrls) {
     try {
       // Use curl with --ssl-no-revoke to handle certificate issues
       execSync(`curl --ssl-no-revoke -s -o "${filepath}" "${url}"`, {
-        stdio: 'pipe'
+        stdio: "pipe",
       });
       downloadedPaths.push(filepath);
     } catch (error) {
-      console.error(`  ⚠️  Failed to download image ${i + 1}: ${error.message}`);
+      console.error(
+        `  ⚠️  Failed to download image ${i + 1}: ${error.message}`
+      );
     }
   }
 
@@ -104,27 +114,28 @@ async function downloadFeedbackImages(feedbackId, imageUrls) {
  * List all feedback with queue status summary
  */
 async function listAllFeedback() {
-  console.log('\n📋 Feedback Queue Status\n');
-  console.log('='.repeat(70));
+  console.log("\n📋 Feedback Queue Status\n");
+  console.log("=".repeat(70));
 
   try {
-    const snapshot = await db.collection('feedback')
-      .orderBy('createdAt', 'desc')
+    const snapshot = await db
+      .collection("feedback")
+      .orderBy("createdAt", "desc")
       .get();
 
     if (snapshot.empty) {
-      console.log('\n  No feedback found in the database.\n');
+      console.log("\n  No feedback found in the database.\n");
       return;
     }
 
-    const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     // Count by status (4 kanban columns)
-    const counts = { new: 0, 'in-progress': 0, 'in-review': 0, archived: 0 };
-    items.forEach(item => {
-      const status = item.status || 'new';
+    const counts = { new: 0, "in-progress": 0, "in-review": 0, archived: 0 };
+    items.forEach((item) => {
+      const status = item.status || "new";
       // Map legacy statuses to current ones
-      if (status === 'resolved' || status === 'deferred') {
+      if (status === "resolved" || status === "deferred") {
         counts.archived++;
       } else if (counts.hasOwnProperty(status)) {
         counts[status]++;
@@ -133,60 +144,80 @@ async function listAllFeedback() {
       }
     });
 
-    console.log(`\n  Queue: ${counts.new} new | ${counts['in-progress']} in progress | ${counts['in-review']} in review | ${counts.archived} archived\n`);
-    console.log('─'.repeat(70));
+    console.log(
+      `\n  Queue: ${counts.new} new | ${counts["in-progress"]} in progress | ${counts["in-review"]} in review | ${counts.archived} archived\n`
+    );
+    console.log("─".repeat(70));
 
     // Show unclaimed (new) items first
-    const newItems = items.filter(i => i.status === 'new' || !i.status);
-    const inProgressItems = items.filter(i => i.status === 'in-progress');
-    const inReviewItems = items.filter(i => i.status === 'in-review');
-    const archivedItems = items.filter(i =>
-      i.status === 'archived' || i.status === 'resolved' || i.status === 'deferred'
+    const newItems = items.filter((i) => i.status === "new" || !i.status);
+    const inProgressItems = items.filter((i) => i.status === "in-progress");
+    const inReviewItems = items.filter((i) => i.status === "in-review");
+    const archivedItems = items.filter(
+      (i) =>
+        i.status === "archived" ||
+        i.status === "resolved" ||
+        i.status === "deferred"
     );
 
     if (newItems.length > 0) {
-      console.log('\n  🆕 UNCLAIMED (ready to work on):\n');
+      console.log("\n  🆕 UNCLAIMED (ready to work on):\n");
       newItems.forEach((item, idx) => {
-        const title = (item.title || 'No title').substring(0, 50);
-        console.log(`     ${item.id.substring(0, 8)}... | ${item.type || 'N/A'} | ${title}${item.title?.length > 50 ? '...' : ''}`);
+        const title = (item.title || "No title").substring(0, 50);
+        console.log(
+          `     ${item.id.substring(0, 8)}... | ${item.type || "N/A"} | ${title}${item.title?.length > 50 ? "..." : ""}`
+        );
       });
     }
 
     if (inProgressItems.length > 0) {
-      console.log('\n  🔄 IN PROGRESS (being worked on):\n');
-      inProgressItems.forEach(item => {
-        const title = (item.title || 'No title').substring(0, 50);
-        const claimedAt = item.claimedAt?.toDate?.() ? item.claimedAt.toDate().toLocaleString() : 'Unknown';
-        const isStale = item.claimedAt?.toDate?.() && (Date.now() - item.claimedAt.toDate().getTime()) > STALE_CLAIM_MS;
-        console.log(`     ${item.id.substring(0, 8)}... | ${item.type || 'N/A'} | ${title}${item.title?.length > 50 ? '...' : ''}`);
-        console.log(`       └─ Claimed: ${claimedAt}${isStale ? ' ⚠️ STALE' : ''}`);
+      console.log("\n  🔄 IN PROGRESS (being worked on):\n");
+      inProgressItems.forEach((item) => {
+        const title = (item.title || "No title").substring(0, 50);
+        const claimedAt = item.claimedAt?.toDate?.()
+          ? item.claimedAt.toDate().toLocaleString()
+          : "Unknown";
+        const isStale =
+          item.claimedAt?.toDate?.() &&
+          Date.now() - item.claimedAt.toDate().getTime() > STALE_CLAIM_MS;
+        console.log(
+          `     ${item.id.substring(0, 8)}... | ${item.type || "N/A"} | ${title}${item.title?.length > 50 ? "..." : ""}`
+        );
+        console.log(
+          `       └─ Claimed: ${claimedAt}${isStale ? " ⚠️ STALE" : ""}`
+        );
       });
     }
 
     if (inReviewItems.length > 0) {
-      console.log('\n  👁️ IN REVIEW (awaiting tester confirmation):\n');
-      inReviewItems.forEach(item => {
-        const title = (item.title || 'No title').substring(0, 50);
-        console.log(`     ${item.id.substring(0, 8)}... | ${item.type || 'N/A'} | ${title}${item.title?.length > 50 ? '...' : ''}`);
+      console.log("\n  👁️ IN REVIEW (awaiting tester confirmation):\n");
+      inReviewItems.forEach((item) => {
+        const title = (item.title || "No title").substring(0, 50);
+        console.log(
+          `     ${item.id.substring(0, 8)}... | ${item.type || "N/A"} | ${title}${item.title?.length > 50 ? "..." : ""}`
+        );
       });
     }
 
     if (archivedItems.length > 0) {
-      console.log('\n  📦 ARCHIVED:\n');
-      archivedItems.slice(0, 5).forEach(item => {
-        const title = (item.title || 'No title').substring(0, 50);
-        const note = item.adminNotes ? ` - ${item.adminNotes.substring(0, 30)}${item.adminNotes.length > 30 ? '...' : ''}` : '';
-        console.log(`     ${item.id.substring(0, 8)}... | ${item.type || 'N/A'} | ${title}${item.title?.length > 50 ? '...' : ''}${note}`);
+      console.log("\n  📦 ARCHIVED:\n");
+      archivedItems.slice(0, 5).forEach((item) => {
+        const title = (item.title || "No title").substring(0, 50);
+        const note = item.adminNotes
+          ? ` - ${item.adminNotes.substring(0, 30)}${item.adminNotes.length > 30 ? "..." : ""}`
+          : "";
+        console.log(
+          `     ${item.id.substring(0, 8)}... | ${item.type || "N/A"} | ${title}${item.title?.length > 50 ? "..." : ""}${note}`
+        );
       });
       if (archivedItems.length > 5) {
         console.log(`     ... and ${archivedItems.length - 5} more`);
       }
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
-
+    console.log("\n" + "=".repeat(70) + "\n");
   } catch (error) {
-    console.error('\n  Error listing feedback:', error.message);
+    console.error("\n  Error listing feedback:", error.message);
     throw error;
   }
 }
@@ -204,8 +235,9 @@ async function claimNextFeedback(priorityFilter = null) {
     let isReclaim = false;
 
     if (!priorityFilter) {
-      const staleSnapshot = await db.collection('feedback')
-        .where('status', '==', 'in-progress')
+      const staleSnapshot = await db
+        .collection("feedback")
+        .where("status", "==", "in-progress")
         .get();
 
       for (const doc of staleSnapshot.docs) {
@@ -225,30 +257,38 @@ async function claimNextFeedback(priorityFilter = null) {
     // Priority order: no priority first (needs triage), then high, medium, low
     // Within same priority, oldest first
     if (!itemToClaim) {
-      const newSnapshot = await db.collection('feedback')
-        .where('status', '==', 'new')
+      const newSnapshot = await db
+        .collection("feedback")
+        .where("status", "==", "new")
         .get();
 
       if (!newSnapshot.empty) {
-        let items = newSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        let items = newSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
         // Filter by priority if specified
         if (priorityFilter) {
-          items = items.filter(item => item.priority === priorityFilter);
+          items = items.filter((item) => item.priority === priorityFilter);
           if (items.length === 0) {
-            console.log('\n' + '='.repeat(70));
-            console.log(`\n  ✨ No ${priorityFilter.toUpperCase()} priority items in queue!\n`);
-            console.log('  Run `node fetch-feedback.js list` to see all items.');
-            console.log('\n' + '='.repeat(70) + '\n');
+            console.log("\n" + "=".repeat(70));
+            console.log(
+              `\n  ✨ No ${priorityFilter.toUpperCase()} priority items in queue!\n`
+            );
+            console.log(
+              "  Run `node fetch-feedback.js list` to see all items."
+            );
+            console.log("\n" + "=".repeat(70) + "\n");
             return null;
           }
         }
 
         // Sort by priority order, then by createdAt
-        const priorityOrder = { '': 0, 'high': 1, 'medium': 2, 'low': 3 };
+        const priorityOrder = { "": 0, high: 1, medium: 2, low: 3 };
         const sortedItems = items.sort((a, b) => {
-          const priorityA = priorityOrder[a.priority || ''] ?? 4;
-          const priorityB = priorityOrder[b.priority || ''] ?? 4;
+          const priorityA = priorityOrder[a.priority || ""] ?? 4;
+          const priorityB = priorityOrder[b.priority || ""] ?? 4;
           if (priorityA !== priorityB) {
             return priorityA - priorityB;
           }
@@ -263,13 +303,14 @@ async function claimNextFeedback(priorityFilter = null) {
         }
       } else if (!priorityFilter) {
         // Also check items with no status field (legacy) - only when not filtering
-        const legacySnapshot = await db.collection('feedback')
-          .orderBy('createdAt', 'asc')
+        const legacySnapshot = await db
+          .collection("feedback")
+          .orderBy("createdAt", "asc")
           .get();
 
-        const legacyItem = legacySnapshot.docs.find(doc => {
+        const legacyItem = legacySnapshot.docs.find((doc) => {
           const data = doc.data();
-          return !data.status || data.status === 'new';
+          return !data.status || data.status === "new";
         });
 
         if (legacyItem) {
@@ -279,94 +320,115 @@ async function claimNextFeedback(priorityFilter = null) {
     }
 
     if (!itemToClaim) {
-      console.log('\n' + '='.repeat(70));
-      console.log('\n  ✨ QUEUE EMPTY - No unclaimed feedback items!\n');
-      console.log('  Run `node fetch-feedback.js list` to see all items.');
-      console.log('\n' + '='.repeat(70) + '\n');
+      console.log("\n" + "=".repeat(70));
+      console.log("\n  ✨ QUEUE EMPTY - No unclaimed feedback items!\n");
+      console.log("  Run `node fetch-feedback.js list` to see all items.");
+      console.log("\n" + "=".repeat(70) + "\n");
       return null;
     }
 
     // Claim the item (use hyphenated status to match UI)
-    await db.collection('feedback').doc(itemToClaim.id).update({
-      status: 'in-progress',
-      claimedAt: admin.firestore.FieldValue.serverTimestamp()
+    await db.collection("feedback").doc(itemToClaim.id).update({
+      status: "in-progress",
+      claimedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     // Output the claimed item details
     const createdAt = itemToClaim.createdAt?.toDate?.()
       ? itemToClaim.createdAt.toDate().toLocaleString()
-      : 'Unknown date';
+      : "Unknown date";
 
-    console.log('\n' + '='.repeat(70));
-    console.log(`\n  ${isReclaim ? '🔄 RECLAIMED' : '🎯 CLAIMED'} FEEDBACK\n`);
-    console.log('─'.repeat(70));
+    console.log("\n" + "=".repeat(70));
+    console.log(`\n  ${isReclaim ? "🔄 RECLAIMED" : "🎯 CLAIMED"} FEEDBACK\n`);
+    console.log("─".repeat(70));
     console.log(`  ID: ${itemToClaim.id}`);
-    console.log(`  Type: ${itemToClaim.type || 'N/A'}`);
-    console.log(`  Priority: ${itemToClaim.priority || 'N/A'}`);
-    console.log(`  User: ${itemToClaim.userDisplayName || itemToClaim.userEmail || 'Anonymous'}`);
+    console.log(`  Type: ${itemToClaim.type || "N/A"}`);
+    console.log(`  Priority: ${itemToClaim.priority || "N/A"}`);
+    console.log(
+      `  User: ${itemToClaim.userDisplayName || itemToClaim.userEmail || "Anonymous"}`
+    );
     console.log(`  Created: ${createdAt}`);
-    console.log('─'.repeat(70));
-    console.log(`  Title: ${itemToClaim.title || 'No title'}`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
+    console.log(`  Title: ${itemToClaim.title || "No title"}`);
+    console.log("─".repeat(70));
     console.log(`  Description:\n`);
-    console.log(`  ${itemToClaim.description || 'No description'}`);
-    console.log('─'.repeat(70));
-    console.log(`  Module: ${itemToClaim.capturedModule || 'Unknown'}`);
-    console.log(`  Tab: ${itemToClaim.capturedTab || 'Unknown'}`);
+    console.log(`  ${itemToClaim.description || "No description"}`);
+    console.log("─".repeat(70));
+    console.log(`  Module: ${itemToClaim.capturedModule || "Unknown"}`);
+    console.log(`  Tab: ${itemToClaim.capturedTab || "Unknown"}`);
     if (itemToClaim.adminNotes) {
-      console.log('─'.repeat(70));
+      console.log("─".repeat(70));
       console.log(`  Previous Notes: ${itemToClaim.adminNotes}`);
     }
 
     // Show subtasks if they exist
     if (itemToClaim.subtasks?.length > 0) {
-      console.log('─'.repeat(70));
-      const completed = itemToClaim.subtasks.filter(s => s.status === 'completed').length;
-      console.log(`  📋 SUBTASKS (${completed}/${itemToClaim.subtasks.length} completed):\n`);
-      itemToClaim.subtasks.forEach(s => {
-        const statusIcon = s.status === 'completed' ? '✅' :
-                          s.status === 'in-progress' ? '🔄' : '⬚';
-        const deps = s.dependsOn?.length > 0 ? ` (depends: ${s.dependsOn.join(', ')})` : '';
+      console.log("─".repeat(70));
+      const completed = itemToClaim.subtasks.filter(
+        (s) => s.status === "completed"
+      ).length;
+      console.log(
+        `  📋 SUBTASKS (${completed}/${itemToClaim.subtasks.length} completed):\n`
+      );
+      itemToClaim.subtasks.forEach((s) => {
+        const statusIcon =
+          s.status === "completed"
+            ? "✅"
+            : s.status === "in-progress"
+              ? "🔄"
+              : "⬚";
+        const deps =
+          s.dependsOn?.length > 0
+            ? ` (depends: ${s.dependsOn.join(", ")})`
+            : "";
         console.log(`     ${statusIcon} #${s.id} ${s.title}${deps}`);
       });
 
       // Find next available subtask (pending, with all dependencies completed)
-      const nextSubtask = itemToClaim.subtasks.find(s => {
-        if (s.status !== 'pending') return false;
+      const nextSubtask = itemToClaim.subtasks.find((s) => {
+        if (s.status !== "pending") return false;
         if (!s.dependsOn?.length) return true;
-        return s.dependsOn.every(depId => {
-          const dep = itemToClaim.subtasks.find(d => d.id === depId);
-          return dep?.status === 'completed';
+        return s.dependsOn.every((depId) => {
+          const dep = itemToClaim.subtasks.find((d) => d.id === depId);
+          return dep?.status === "completed";
         });
       });
 
       if (nextSubtask) {
-        console.log(`\n  ➡️ Next subtask: #${nextSubtask.id} ${nextSubtask.title}`);
+        console.log(
+          `\n  ➡️ Next subtask: #${nextSubtask.id} ${nextSubtask.title}`
+        );
       }
     }
 
     // Download and display images if they exist
     if (itemToClaim.imageUrls && itemToClaim.imageUrls.length > 0) {
-      console.log('─'.repeat(70));
+      console.log("─".repeat(70));
       console.log(`  📸 IMAGES (${itemToClaim.imageUrls.length}):\n`);
 
-      const downloadedPaths = await downloadFeedbackImages(itemToClaim.id, itemToClaim.imageUrls);
+      const downloadedPaths = await downloadFeedbackImages(
+        itemToClaim.id,
+        itemToClaim.imageUrls
+      );
 
       if (downloadedPaths.length > 0) {
         downloadedPaths.forEach((path, idx) => {
           console.log(`     [${idx + 1}] Downloaded to: ${path}`);
         });
-        console.log(`\n  ✅ Images ready to view - use the Read tool on the paths above`);
+        console.log(
+          `\n  ✅ Images ready to view - use the Read tool on the paths above`
+        );
       }
     }
 
-    console.log('\n' + '='.repeat(70));
-    console.log(`\n  To resolve: node fetch-feedback.js ${itemToClaim.id} in-review "Your notes here"\n`);
+    console.log("\n" + "=".repeat(70));
+    console.log(
+      `\n  To resolve: node fetch-feedback.js ${itemToClaim.id} in-review "Your notes here"\n`
+    );
 
     return itemToClaim;
-
   } catch (error) {
-    console.error('\n  Error claiming feedback:', error.message);
+    console.error("\n  Error claiming feedback:", error.message);
     throw error;
   }
 }
@@ -376,7 +438,7 @@ async function claimNextFeedback(priorityFilter = null) {
  */
 async function updateFeedbackTitle(docId, title) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -386,20 +448,19 @@ async function updateFeedbackTitle(docId, title) {
 
     await docRef.update({
       title: title,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ TITLE UPDATED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
     console.log(`  New Title: ${title}`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return { id: docId, title };
-
   } catch (error) {
-    console.error('\n  Error updating title:', error.message);
+    console.error("\n  Error updating title:", error.message);
     throw error;
   }
 }
@@ -409,7 +470,7 @@ async function updateFeedbackTitle(docId, title) {
  */
 async function updateResolutionNotes(docId, notes) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -419,22 +480,21 @@ async function updateResolutionNotes(docId, notes) {
 
     await docRef.update({
       resolutionNotes: notes,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     const item = doc.data();
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ RESOLUTION NOTES UPDATED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
-    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Title: ${item.title || "No title"}`);
     console.log(`  Resolution Notes: ${notes}`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return { id: docId, resolutionNotes: notes };
-
   } catch (error) {
-    console.error('\n  Error updating resolution notes:', error.message);
+    console.error("\n  Error updating resolution notes:", error.message);
     throw error;
   }
 }
@@ -444,7 +504,7 @@ async function updateResolutionNotes(docId, notes) {
  */
 async function updateFeedbackById(docId, status, adminNotes) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -454,32 +514,40 @@ async function updateFeedbackById(docId, status, adminNotes) {
 
     // Map common status aliases to correct format (4 valid statuses)
     const statusMap = {
-      'in_progress': 'in-progress',
-      'in_review': 'in-review',
-      'inprogress': 'in-progress',
-      'inreview': 'in-review',
-      'resolved': 'archived',  // resolved is now archived
-      'deferred': 'archived',  // deferred is now archived (use adminNotes to explain)
+      in_progress: "in-progress",
+      in_review: "in-review",
+      inprogress: "in-progress",
+      inreview: "in-review",
+      resolved: "archived", // resolved is now archived
+      deferred: "archived", // deferred is now archived (use adminNotes to explain)
     };
     const normalizedStatus = statusMap[status] || status;
 
     // Validate status is one of the 5 valid values
-    const validStatuses = ['new', 'in-progress', 'in-review', 'completed', 'archived'];
+    const validStatuses = [
+      "new",
+      "in-progress",
+      "in-review",
+      "completed",
+      "archived",
+    ];
     if (!validStatuses.includes(normalizedStatus)) {
-      console.log(`\n  ⚠️ Invalid status "${status}". Valid: ${validStatuses.join(', ')}\n`);
+      console.log(
+        `\n  ⚠️ Invalid status "${status}". Valid: ${validStatuses.join(", ")}\n`
+      );
       return null;
     }
 
     const updateData = {
       status: normalizedStatus,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
 
     // Clear claimedAt when archiving, completing, or moving to review
-    if (['archived', 'completed', 'in-review'].includes(normalizedStatus)) {
+    if (["archived", "completed", "in-review"].includes(normalizedStatus)) {
       updateData.claimedAt = admin.firestore.FieldValue.delete();
     }
-    if (normalizedStatus === 'archived') {
+    if (normalizedStatus === "archived") {
       updateData.resolvedAt = admin.firestore.FieldValue.serverTimestamp();
     }
 
@@ -490,33 +558,33 @@ async function updateFeedbackById(docId, status, adminNotes) {
     await docRef.update(updateData);
 
     const item = doc.data();
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ FEEDBACK UPDATED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
-    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Title: ${item.title || "No title"}`);
     console.log(`  New Status: ${normalizedStatus}`);
     if (adminNotes) {
       console.log(`  Admin Notes: ${adminNotes}`);
     }
 
     // Send notification to user when marking as completed
-    if (normalizedStatus === 'completed' && item.userId) {
-      console.log('─'.repeat(70));
+    if (normalizedStatus === "completed" && item.userId) {
+      console.log("─".repeat(70));
       await notifyUserFeedbackResolved(
         item.userId,
         docId,
         item.title,
-        adminNotes || 'Your feedback has been addressed and is ready for the next release!'
+        adminNotes ||
+          "Your feedback has been addressed and is ready for the next release!"
       );
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return { id: docId, ...item };
-
   } catch (error) {
-    console.error('\n  Error updating feedback:', error.message);
+    console.error("\n  Error updating feedback:", error.message);
     throw error;
   }
 }
@@ -526,7 +594,7 @@ async function updateFeedbackById(docId, status, adminNotes) {
  */
 async function addSubtask(docId, title, description, dependsOn = []) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -544,7 +612,7 @@ async function addSubtask(docId, title, description, dependsOn = []) {
       id: newId,
       title,
       description,
-      status: 'pending'
+      status: "pending",
     };
 
     // Only add dependsOn if there are dependencies
@@ -556,23 +624,22 @@ async function addSubtask(docId, title, description, dependsOn = []) {
 
     await docRef.update({
       subtasks,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ SUBTASK ADDED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  Feedback: ${item.title || docId}`);
     console.log(`  Subtask #${newId}: ${title}`);
     if (dependsOn.length > 0) {
-      console.log(`  Depends on: ${dependsOn.join(', ')}`);
+      console.log(`  Depends on: ${dependsOn.join(", ")}`);
     }
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return newSubtask;
-
   } catch (error) {
-    console.error('\n  Error adding subtask:', error.message);
+    console.error("\n  Error adding subtask:", error.message);
     throw error;
   }
 }
@@ -582,7 +649,7 @@ async function addSubtask(docId, title, description, dependsOn = []) {
  */
 async function updateSubtaskStatus(docId, subtaskId, status) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -593,45 +660,46 @@ async function updateSubtaskStatus(docId, subtaskId, status) {
     const item = doc.data();
     const subtasks = item.subtasks || [];
 
-    const subtaskIndex = subtasks.findIndex(s => s.id === subtaskId);
+    const subtaskIndex = subtasks.findIndex((s) => s.id === subtaskId);
     if (subtaskIndex === -1) {
       console.log(`\n  ❌ Subtask not found: ${subtaskId}\n`);
       return null;
     }
 
-    const validStatuses = ['pending', 'in-progress', 'completed'];
+    const validStatuses = ["pending", "in-progress", "completed"];
     if (!validStatuses.includes(status)) {
-      console.log(`\n  ⚠️ Invalid subtask status. Valid: ${validStatuses.join(', ')}\n`);
+      console.log(
+        `\n  ⚠️ Invalid subtask status. Valid: ${validStatuses.join(", ")}\n`
+      );
       return null;
     }
 
     subtasks[subtaskIndex].status = status;
-    if (status === 'completed') {
+    if (status === "completed") {
       subtasks[subtaskIndex].completedAt = new Date();
     }
 
     await docRef.update({
       subtasks,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     // Show progress
-    const completed = subtasks.filter(s => s.status === 'completed').length;
+    const completed = subtasks.filter((s) => s.status === "completed").length;
     const total = subtasks.length;
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ SUBTASK UPDATED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  Feedback: ${item.title || docId}`);
     console.log(`  Subtask #${subtaskId}: ${subtasks[subtaskIndex].title}`);
     console.log(`  New Status: ${status}`);
     console.log(`  Progress: ${completed}/${total} subtasks completed`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return subtasks[subtaskIndex];
-
   } catch (error) {
-    console.error('\n  Error updating subtask:', error.message);
+    console.error("\n  Error updating subtask:", error.message);
     throw error;
   }
 }
@@ -641,7 +709,7 @@ async function updateSubtaskStatus(docId, subtaskId, status) {
  */
 async function listSubtasks(docId) {
   try {
-    const doc = await db.collection('feedback').doc(docId).get();
+    const doc = await db.collection("feedback").doc(docId).get();
 
     if (!doc.exists) {
       console.log(`\n  ❌ Feedback not found: ${docId}\n`);
@@ -651,31 +719,39 @@ async function listSubtasks(docId) {
     const item = { id: doc.id, ...doc.data() };
     const subtasks = item.subtasks || [];
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  📋 SUBTASKS for: ${item.title || docId}\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
 
     if (subtasks.length === 0) {
-      console.log('  No subtasks defined.\n');
+      console.log("  No subtasks defined.\n");
     } else {
-      const completed = subtasks.filter(s => s.status === 'completed').length;
+      const completed = subtasks.filter((s) => s.status === "completed").length;
       console.log(`  Progress: ${completed}/${subtasks.length} completed\n`);
 
-      subtasks.forEach(s => {
-        const statusIcon = s.status === 'completed' ? '✅' :
-                          s.status === 'in-progress' ? '🔄' : '⬚';
-        const deps = s.dependsOn?.length > 0 ? ` (depends: ${s.dependsOn.join(', ')})` : '';
+      subtasks.forEach((s) => {
+        const statusIcon =
+          s.status === "completed"
+            ? "✅"
+            : s.status === "in-progress"
+              ? "🔄"
+              : "⬚";
+        const deps =
+          s.dependsOn?.length > 0
+            ? ` (depends: ${s.dependsOn.join(", ")})`
+            : "";
         console.log(`  ${statusIcon} #${s.id} ${s.title}${deps}`);
-        console.log(`     ${s.description.substring(0, 70)}${s.description.length > 70 ? '...' : ''}`);
+        console.log(
+          `     ${s.description.substring(0, 70)}${s.description.length > 70 ? "..." : ""}`
+        );
       });
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return subtasks;
-
   } catch (error) {
-    console.error('\n  Error listing subtasks:', error.message);
+    console.error("\n  Error listing subtasks:", error.message);
     throw error;
   }
 }
@@ -685,7 +761,7 @@ async function listSubtasks(docId) {
  */
 async function deleteFeedback(docId) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -696,17 +772,16 @@ async function deleteFeedback(docId) {
     const item = doc.data();
     await docRef.delete();
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  🗑️ FEEDBACK DELETED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
-    console.log(`  Title: ${item.title || 'No title'}`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log(`  Title: ${item.title || "No title"}`);
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return { id: docId, deleted: true };
-
   } catch (error) {
-    console.error('\n  Error deleting feedback:', error.message);
+    console.error("\n  Error deleting feedback:", error.message);
     throw error;
   }
 }
@@ -716,7 +791,7 @@ async function deleteFeedback(docId) {
  */
 async function getFeedbackById(docId) {
   try {
-    const doc = await db.collection('feedback').doc(docId).get();
+    const doc = await db.collection("feedback").doc(docId).get();
 
     if (!doc.exists) {
       console.log(`\n  ❌ Feedback not found: ${docId}\n`);
@@ -726,69 +801,88 @@ async function getFeedbackById(docId) {
     const item = { id: doc.id, ...doc.data() };
     const createdAt = item.createdAt?.toDate?.()
       ? item.createdAt.toDate().toLocaleString()
-      : 'Unknown date';
+      : "Unknown date";
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  FEEDBACK DETAILS\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${item.id}`);
-    console.log(`  Type: ${item.type || 'N/A'}`);
-    console.log(`  Status: ${item.status || 'new'}`);
-    console.log(`  Priority: ${item.priority || 'N/A'}`);
-    console.log(`  User: ${item.userDisplayName || item.userEmail || 'Anonymous'}`);
+    console.log(`  Type: ${item.type || "N/A"}`);
+    console.log(`  Status: ${item.status || "new"}`);
+    console.log(`  Priority: ${item.priority || "N/A"}`);
+    console.log(
+      `  User: ${item.userDisplayName || item.userEmail || "Anonymous"}`
+    );
     console.log(`  Created: ${createdAt}`);
-    console.log('─'.repeat(70));
-    console.log(`  Title: ${item.title || 'No title'}`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
+    console.log(`  Title: ${item.title || "No title"}`);
+    console.log("─".repeat(70));
     console.log(`  Description:\n`);
-    console.log(`  ${item.description || 'No description'}`);
-    console.log('─'.repeat(70));
-    console.log(`  Module: ${item.capturedModule || 'Unknown'}`);
-    console.log(`  Tab: ${item.capturedTab || 'Unknown'}`);
+    console.log(`  ${item.description || "No description"}`);
+    console.log("─".repeat(70));
+    console.log(`  Module: ${item.capturedModule || "Unknown"}`);
+    console.log(`  Tab: ${item.capturedTab || "Unknown"}`);
     if (item.adminNotes) {
-      console.log('─'.repeat(70));
+      console.log("─".repeat(70));
       console.log(`  Admin Notes: ${item.adminNotes}`);
     }
     if (item.resolutionNotes) {
-      console.log('─'.repeat(70));
+      console.log("─".repeat(70));
       console.log(`  Resolution Notes: ${item.resolutionNotes}`);
     }
 
     // Show subtasks if they exist
     if (item.subtasks?.length > 0) {
-      console.log('─'.repeat(70));
-      const completed = item.subtasks.filter(s => s.status === 'completed').length;
-      console.log(`  📋 SUBTASKS (${completed}/${item.subtasks.length} completed):\n`);
-      item.subtasks.forEach(s => {
-        const statusIcon = s.status === 'completed' ? '✅' :
-                          s.status === 'in-progress' ? '🔄' : '⬚';
-        const deps = s.dependsOn?.length > 0 ? ` (depends: ${s.dependsOn.join(', ')})` : '';
+      console.log("─".repeat(70));
+      const completed = item.subtasks.filter(
+        (s) => s.status === "completed"
+      ).length;
+      console.log(
+        `  📋 SUBTASKS (${completed}/${item.subtasks.length} completed):\n`
+      );
+      item.subtasks.forEach((s) => {
+        const statusIcon =
+          s.status === "completed"
+            ? "✅"
+            : s.status === "in-progress"
+              ? "🔄"
+              : "⬚";
+        const deps =
+          s.dependsOn?.length > 0
+            ? ` (depends: ${s.dependsOn.join(", ")})`
+            : "";
         console.log(`     ${statusIcon} #${s.id} ${s.title}${deps}`);
-        console.log(`        ${s.description.substring(0, 60)}${s.description.length > 60 ? '...' : ''}`);
+        console.log(
+          `        ${s.description.substring(0, 60)}${s.description.length > 60 ? "..." : ""}`
+        );
       });
     }
 
     // Download and display images if they exist
     if (item.imageUrls && item.imageUrls.length > 0) {
-      console.log('─'.repeat(70));
+      console.log("─".repeat(70));
       console.log(`  📸 IMAGES (${item.imageUrls.length}):\n`);
 
-      const downloadedPaths = await downloadFeedbackImages(item.id, item.imageUrls);
+      const downloadedPaths = await downloadFeedbackImages(
+        item.id,
+        item.imageUrls
+      );
 
       if (downloadedPaths.length > 0) {
         downloadedPaths.forEach((path, idx) => {
           console.log(`     [${idx + 1}] Downloaded to: ${path}`);
         });
-        console.log(`\n  ✅ Images ready to view - use the Read tool on the paths above`);
+        console.log(
+          `\n  ✅ Images ready to view - use the Read tool on the paths above`
+        );
       }
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return item;
-
   } catch (error) {
-    console.error('\n  Error fetching feedback:', error.message);
+    console.error("\n  Error fetching feedback:", error.message);
     throw error;
   }
 }
@@ -798,7 +892,7 @@ async function getFeedbackById(docId) {
  */
 async function deferFeedback(docId, deferUntilDate, reason) {
   try {
-    const feedbackRef = db.collection('feedback').doc(docId);
+    const feedbackRef = db.collection("feedback").doc(docId);
     const doc = await feedbackRef.get();
 
     if (!doc.exists) {
@@ -809,7 +903,9 @@ async function deferFeedback(docId, deferUntilDate, reason) {
     // Parse date (YYYY-MM-DD format)
     const parsedDate = new Date(deferUntilDate);
     if (isNaN(parsedDate.getTime())) {
-      console.log(`\n  ❌ Invalid date format. Use YYYY-MM-DD (e.g., 2026-03-15)\n`);
+      console.log(
+        `\n  ❌ Invalid date format. Use YYYY-MM-DD (e.g., 2026-03-15)\n`
+      );
       return;
     }
 
@@ -817,23 +913,22 @@ async function deferFeedback(docId, deferUntilDate, reason) {
     parsedDate.setHours(23, 59, 59, 999);
 
     await feedbackRef.update({
-      status: 'archived',
+      status: "archived",
       deferredUntil: admin.firestore.Timestamp.fromDate(parsedDate),
       adminNotes: reason || `Deferred until ${deferUntilDate}`,
-      archivedAt: admin.firestore.FieldValue.serverTimestamp()
+      archivedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ⏰ DEFERRED until ${deferUntilDate}`);
     console.log(`\n  Item: ${docId}`);
-    console.log(`  Reason: ${reason || 'No reason provided'}`);
+    console.log(`  Reason: ${reason || "No reason provided"}`);
     console.log(`\n  📌 This item will auto-reactivate on ${deferUntilDate}`);
     console.log(`     Run 'node scripts/reactivate-deferred.js' manually`);
     console.log(`     or wait for daily cron job to run.`);
-    console.log('\n' + '='.repeat(70) + '\n');
-
+    console.log("\n" + "=".repeat(70) + "\n");
   } catch (error) {
-    console.error('\n  Error deferring feedback:', error.message);
+    console.error("\n  Error deferring feedback:", error.message);
     throw error;
   }
 }
@@ -842,14 +937,16 @@ async function deferFeedback(docId, deferUntilDate, reason) {
  * Update feedback priority
  */
 async function updateFeedbackPriority(docId, priority) {
-  const validPriorities = ['low', 'medium', 'high'];
+  const validPriorities = ["low", "medium", "high"];
   if (!validPriorities.includes(priority)) {
-    console.log(`\n  ⚠️ Invalid priority "${priority}". Valid: ${validPriorities.join(', ')}\n`);
+    console.log(
+      `\n  ⚠️ Invalid priority "${priority}". Valid: ${validPriorities.join(", ")}\n`
+    );
     return null;
   }
 
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -859,22 +956,21 @@ async function updateFeedbackPriority(docId, priority) {
 
     await docRef.update({
       priority: priority,
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     const item = doc.data();
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ PRIORITY UPDATED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
-    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Title: ${item.title || "No title"}`);
     console.log(`  Priority: ${priority.toUpperCase()}`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return { id: docId, priority };
-
   } catch (error) {
-    console.error('\n  Error updating priority:', error.message);
+    console.error("\n  Error updating priority:", error.message);
     throw error;
   }
 }
@@ -891,124 +987,176 @@ async function updateFeedbackPriority(docId, priority) {
 async function prioritizeFeedback(dryRun = false, jsonOutput = false) {
   try {
     // Fetch all "new" items without a priority
-    const snapshot = await db.collection('feedback')
-      .where('status', '==', 'new')
+    const snapshot = await db
+      .collection("feedback")
+      .where("status", "==", "new")
       .get();
 
     const unprioritized = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(item => !item.priority);
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((item) => !item.priority);
 
     if (unprioritized.length === 0) {
       if (jsonOutput) {
-        console.log(JSON.stringify({ items: [], message: 'All feedback items already have priorities' }));
+        console.log(
+          JSON.stringify({
+            items: [],
+            message: "All feedback items already have priorities",
+          })
+        );
       } else {
-        console.log('\n' + '='.repeat(70));
-        console.log('\n  ✨ All feedback items already have priorities!\n');
-        console.log('='.repeat(70) + '\n');
+        console.log("\n" + "=".repeat(70));
+        console.log("\n  ✨ All feedback items already have priorities!\n");
+        console.log("=".repeat(70) + "\n");
       }
       return;
     }
 
     // JSON output mode - just dump the raw data for AI analysis
     if (jsonOutput) {
-      const items = unprioritized.map(item => ({
+      const items = unprioritized.map((item) => ({
         id: item.id,
-        type: item.type || 'general',
+        type: item.type || "general",
         title: item.title || null,
         description: item.description || item.content || null,
         module: item.module || null,
         tab: item.tab || null,
         userName: item.userName || null,
-        createdAt: item.createdAt?._seconds ? new Date(item.createdAt._seconds * 1000).toISOString() : null
+        createdAt: item.createdAt?._seconds
+          ? new Date(item.createdAt._seconds * 1000).toISOString()
+          : null,
       }));
       console.log(JSON.stringify({ items, count: items.length }, null, 2));
       return;
     }
 
-    console.log('\n' + '='.repeat(70));
-    console.log(`\n  🎯 AUTO-PRIORITIZING ${unprioritized.length} FEEDBACK ITEMS\n`);
-    console.log('─'.repeat(70));
+    console.log("\n" + "=".repeat(70));
+    console.log(
+      `\n  🎯 AUTO-PRIORITIZING ${unprioritized.length} FEEDBACK ITEMS\n`
+    );
+    console.log("─".repeat(70));
 
     // Keywords for priority detection
     const highKeywords = [
-      'crash', 'broken', 'error', 'bug', 'fail', 'can\'t', 'cannot', 'doesn\'t work',
-      'won\'t', 'stuck', 'freeze', 'hang', 'data loss', 'security', 'blocking',
-      'urgent', 'critical', 'severe', 'major', 'unusable', 'impossible'
+      "crash",
+      "broken",
+      "error",
+      "bug",
+      "fail",
+      "can't",
+      "cannot",
+      "doesn't work",
+      "won't",
+      "stuck",
+      "freeze",
+      "hang",
+      "data loss",
+      "security",
+      "blocking",
+      "urgent",
+      "critical",
+      "severe",
+      "major",
+      "unusable",
+      "impossible",
     ];
     const lowKeywords = [
-      'could', 'maybe', 'minor', 'small', 'cosmetic', 'polish', 'nice to have',
-      'nitpick', 'suggestion', 'idea', 'would be nice', 'eventually', 'someday',
-      'tweak', 'slightly', 'little'
+      "could",
+      "maybe",
+      "minor",
+      "small",
+      "cosmetic",
+      "polish",
+      "nice to have",
+      "nitpick",
+      "suggestion",
+      "idea",
+      "would be nice",
+      "eventually",
+      "someday",
+      "tweak",
+      "slightly",
+      "little",
     ];
 
     const results = { high: [], medium: [], low: [] };
 
     for (const item of unprioritized) {
-      const text = `${item.description || ''} ${item.title || ''}`.toLowerCase();
-      const type = item.type || 'general';
+      const text =
+        `${item.description || ""} ${item.title || ""}`.toLowerCase();
+      const type = item.type || "general";
 
-      let priority = 'medium'; // Default
+      let priority = "medium"; // Default
 
       // Type-based priority
-      if (type === 'bug') {
-        priority = 'high'; // Bugs start as high
+      if (type === "bug") {
+        priority = "high"; // Bugs start as high
       }
 
       // Keyword overrides
-      const hasHighKeyword = highKeywords.some(kw => text.includes(kw));
-      const hasLowKeyword = lowKeywords.some(kw => text.includes(kw));
+      const hasHighKeyword = highKeywords.some((kw) => text.includes(kw));
+      const hasLowKeyword = lowKeywords.some((kw) => text.includes(kw));
 
       if (hasHighKeyword) {
-        priority = 'high';
-      } else if (hasLowKeyword && type !== 'bug') {
-        priority = 'low';
+        priority = "high";
+      } else if (hasLowKeyword && type !== "bug") {
+        priority = "low";
       }
 
       // Feature requests without urgency keywords are medium
-      if (type === 'feature' && !hasHighKeyword && !hasLowKeyword) {
-        priority = 'medium';
+      if (type === "feature" && !hasHighKeyword && !hasLowKeyword) {
+        priority = "medium";
       }
 
       // Enhancements are typically medium-low
-      if (type === 'enhancement' && !hasHighKeyword) {
-        priority = hasLowKeyword ? 'low' : 'medium';
+      if (type === "enhancement" && !hasHighKeyword) {
+        priority = hasLowKeyword ? "low" : "medium";
       }
 
       // General feedback without keywords is low
-      if (type === 'general' && !hasHighKeyword) {
-        priority = 'low';
+      if (type === "general" && !hasHighKeyword) {
+        priority = "low";
       }
 
       results[priority].push(item);
 
-      const title = (item.title || item.description?.substring(0, 40) || 'Untitled').substring(0, 45);
-      const icon = priority === 'high' ? '🔴' : priority === 'medium' ? '🟡' : '🟢';
-      console.log(`  ${icon} ${priority.toUpperCase().padEnd(6)} | ${item.type?.padEnd(11) || 'general    '} | ${title}${title.length >= 45 ? '...' : ''}`);
+      const title = (
+        item.title ||
+        item.description?.substring(0, 40) ||
+        "Untitled"
+      ).substring(0, 45);
+      const icon =
+        priority === "high" ? "🔴" : priority === "medium" ? "🟡" : "🟢";
+      console.log(
+        `  ${icon} ${priority.toUpperCase().padEnd(6)} | ${item.type?.padEnd(11) || "general    "} | ${title}${title.length >= 45 ? "..." : ""}`
+      );
 
       if (!dryRun) {
-        await db.collection('feedback').doc(item.id).update({
+        await db.collection("feedback").doc(item.id).update({
           priority,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp()
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
       }
     }
 
-    console.log('\n' + '─'.repeat(70));
-    console.log(`\n  Summary: ${results.high.length} high | ${results.medium.length} medium | ${results.low.length} low`);
+    console.log("\n" + "─".repeat(70));
+    console.log(
+      `\n  Summary: ${results.high.length} high | ${results.medium.length} medium | ${results.low.length} low`
+    );
 
     if (dryRun) {
-      console.log('\n  ⚠️  DRY RUN - No changes made. Run without --dry-run to apply.');
+      console.log(
+        "\n  ⚠️  DRY RUN - No changes made. Run without --dry-run to apply."
+      );
     } else {
-      console.log('\n  ✅ All items prioritized!');
+      console.log("\n  ✅ All items prioritized!");
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return results;
-
   } catch (error) {
-    console.error('\n  Error prioritizing feedback:', error.message);
+    console.error("\n  Error prioritizing feedback:", error.message);
     throw error;
   }
 }
@@ -1018,7 +1166,7 @@ async function prioritizeFeedback(dryRun = false, jsonOutput = false) {
  */
 async function setInternalOnly(docId, isInternalOnly) {
   try {
-    const feedbackRef = db.collection('feedback').doc(docId);
+    const feedbackRef = db.collection("feedback").doc(docId);
     const doc = await feedbackRef.get();
 
     if (!doc.exists) {
@@ -1026,21 +1174,22 @@ async function setInternalOnly(docId, isInternalOnly) {
       return;
     }
 
-    const value = isInternalOnly === 'true' || isInternalOnly === true;
+    const value = isInternalOnly === "true" || isInternalOnly === true;
 
     await feedbackRef.update({
-      isInternalOnly: value
+      isInternalOnly: value,
     });
 
     const item = doc.data();
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ UPDATED`);
     console.log(`\n  Item: ${item.title || docId}`);
-    console.log(`  Internal Only: ${value ? 'YES (excluded from user changelog)' : 'NO (included in user changelog)'}`);
-    console.log('\n' + '='.repeat(70) + '\n');
-
+    console.log(
+      `  Internal Only: ${value ? "YES (excluded from user changelog)" : "NO (included in user changelog)"}`
+    );
+    console.log("\n" + "=".repeat(70) + "\n");
   } catch (error) {
-    console.error('\n  Error updating feedback:', error.message);
+    console.error("\n  Error updating feedback:", error.message);
     throw error;
   }
 }
@@ -1127,7 +1276,7 @@ EXAMPLES
  */
 async function unclaimFeedback(docId) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -1136,29 +1285,30 @@ async function unclaimFeedback(docId) {
     }
 
     const item = doc.data();
-    if (item.status !== 'in-progress') {
-      console.log(`\n  ⚠️  Item is not in-progress (current: ${item.status}). Cannot unclaim.\n`);
+    if (item.status !== "in-progress") {
+      console.log(
+        `\n  ⚠️  Item is not in-progress (current: ${item.status}). Cannot unclaim.\n`
+      );
       return null;
     }
 
     await docRef.update({
-      status: 'new',
+      status: "new",
       claimedAt: admin.firestore.FieldValue.delete(),
-      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  🔓 FEEDBACK UNCLAIMED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
-    console.log(`  Title: ${item.title || 'No title'}`);
+    console.log(`  Title: ${item.title || "No title"}`);
     console.log(`  Status: new (back in queue)`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
-    return { id: docId, status: 'new' };
-
+    return { id: docId, status: "new" };
   } catch (error) {
-    console.error('\n  Error unclaiming feedback:', error.message);
+    console.error("\n  Error unclaiming feedback:", error.message);
     throw error;
   }
 }
@@ -1168,7 +1318,7 @@ async function unclaimFeedback(docId) {
  */
 async function claimSpecificFeedback(docId) {
   try {
-    const docRef = db.collection('feedback').doc(docId);
+    const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
 
     if (!doc.exists) {
@@ -1179,58 +1329,67 @@ async function claimSpecificFeedback(docId) {
     const item = doc.data();
 
     // Check if already claimed
-    if (item.status === 'in-progress') {
-      const claimedAt = item.claimedAt?.toDate?.() ? item.claimedAt.toDate().toLocaleString() : 'Unknown';
+    if (item.status === "in-progress") {
+      const claimedAt = item.claimedAt?.toDate?.()
+        ? item.claimedAt.toDate().toLocaleString()
+        : "Unknown";
       console.log(`\n  ⚠️  Item already in-progress (claimed: ${claimedAt})`);
-      console.log(`  Use 'unclaim ${docId}' first if you want to reclaim it.\n`);
+      console.log(
+        `  Use 'unclaim ${docId}' first if you want to reclaim it.\n`
+      );
       return null;
     }
 
     // Check if in terminal state
-    if (['completed', 'archived'].includes(item.status)) {
-      console.log(`\n  ⚠️  Item is ${item.status}. Cannot claim completed/archived items.\n`);
+    if (["completed", "archived"].includes(item.status)) {
+      console.log(
+        `\n  ⚠️  Item is ${item.status}. Cannot claim completed/archived items.\n`
+      );
       return null;
     }
 
     await docRef.update({
-      status: 'in-progress',
-      claimedAt: admin.firestore.FieldValue.serverTimestamp()
+      status: "in-progress",
+      claimedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     // Output the claimed item details (reuse display logic)
     const createdAt = item.createdAt?.toDate?.()
       ? item.createdAt.toDate().toLocaleString()
-      : 'Unknown date';
+      : "Unknown date";
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  🎯 CLAIMED FEEDBACK\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docId}`);
-    console.log(`  Type: ${item.type || 'N/A'}`);
-    console.log(`  Priority: ${item.priority || 'N/A'}`);
-    console.log(`  User: ${item.userDisplayName || item.userEmail || 'Anonymous'}`);
+    console.log(`  Type: ${item.type || "N/A"}`);
+    console.log(`  Priority: ${item.priority || "N/A"}`);
+    console.log(
+      `  User: ${item.userDisplayName || item.userEmail || "Anonymous"}`
+    );
     console.log(`  Created: ${createdAt}`);
-    console.log('─'.repeat(70));
-    console.log(`  Title: ${item.title || 'No title'}`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
+    console.log(`  Title: ${item.title || "No title"}`);
+    console.log("─".repeat(70));
     console.log(`  Description:\n`);
-    console.log(`  ${item.description || 'No description'}`);
-    console.log('─'.repeat(70));
-    console.log(`  Module: ${item.capturedModule || 'Unknown'}`);
-    console.log(`  Tab: ${item.capturedTab || 'Unknown'}`);
+    console.log(`  ${item.description || "No description"}`);
+    console.log("─".repeat(70));
+    console.log(`  Module: ${item.capturedModule || "Unknown"}`);
+    console.log(`  Tab: ${item.capturedTab || "Unknown"}`);
 
     if (item.adminNotes) {
-      console.log('─'.repeat(70));
+      console.log("─".repeat(70));
       console.log(`  Previous Notes: ${item.adminNotes}`);
     }
 
-    console.log('\n' + '='.repeat(70));
-    console.log(`\n  To resolve: node fetch-feedback.js ${docId} in-review "Your notes here"\n`);
+    console.log("\n" + "=".repeat(70));
+    console.log(
+      `\n  To resolve: node fetch-feedback.js ${docId} in-review "Your notes here"\n`
+    );
 
     return { id: docId, ...item };
-
   } catch (error) {
-    console.error('\n  Error claiming feedback:', error.message);
+    console.error("\n  Error claiming feedback:", error.message);
     throw error;
   }
 }
@@ -1240,63 +1399,69 @@ async function claimSpecificFeedback(docId) {
  */
 async function searchFeedback(query) {
   try {
-    const snapshot = await db.collection('feedback')
-      .orderBy('createdAt', 'desc')
+    const snapshot = await db
+      .collection("feedback")
+      .orderBy("createdAt", "desc")
       .get();
 
     if (snapshot.empty) {
-      console.log('\n  No feedback found in the database.\n');
+      console.log("\n  No feedback found in the database.\n");
       return [];
     }
 
     const queryLower = query.toLowerCase();
     const matches = snapshot.docs
-      .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(item => {
-        const title = (item.title || '').toLowerCase();
-        const desc = (item.description || '').toLowerCase();
-        const notes = (item.adminNotes || '').toLowerCase();
-        const module = (item.capturedModule || '').toLowerCase();
-        return title.includes(queryLower) ||
-               desc.includes(queryLower) ||
-               notes.includes(queryLower) ||
-               module.includes(queryLower);
+      .map((doc) => ({ id: doc.id, ...doc.data() }))
+      .filter((item) => {
+        const title = (item.title || "").toLowerCase();
+        const desc = (item.description || "").toLowerCase();
+        const notes = (item.adminNotes || "").toLowerCase();
+        const module = (item.capturedModule || "").toLowerCase();
+        return (
+          title.includes(queryLower) ||
+          desc.includes(queryLower) ||
+          notes.includes(queryLower) ||
+          module.includes(queryLower)
+        );
       });
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  🔍 SEARCH RESULTS for "${query}"\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
 
     if (matches.length === 0) {
       console.log(`  No feedback found matching "${query}"\n`);
     } else {
       console.log(`  Found ${matches.length} item(s):\n`);
 
-      matches.forEach(item => {
-        const statusIcon = {
-          'new': '🆕',
-          'in-progress': '🔄',
-          'in-review': '👁️',
-          'completed': '✅',
-          'archived': '📦'
-        }[item.status] || '❓';
+      matches.forEach((item) => {
+        const statusIcon =
+          {
+            new: "🆕",
+            "in-progress": "🔄",
+            "in-review": "👁️",
+            completed: "✅",
+            archived: "📦",
+          }[item.status] || "❓";
 
-        const priorityIcon = {
-          'high': '🔴',
-          'medium': '🟡',
-          'low': '🟢'
-        }[item.priority] || '⚪';
+        const priorityIcon =
+          {
+            high: "🔴",
+            medium: "🟡",
+            low: "🟢",
+          }[item.priority] || "⚪";
 
-        const title = (item.title || 'No title').substring(0, 50);
-        console.log(`  ${statusIcon} ${priorityIcon} ${item.id.substring(0, 8)}... | ${title}${item.title?.length > 50 ? '...' : ''}`);
+        const title = (item.title || "No title").substring(0, 50);
+        console.log(
+          `  ${statusIcon} ${priorityIcon} ${item.id.substring(0, 8)}... | ${title}${item.title?.length > 50 ? "..." : ""}`
+        );
       });
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
     return matches;
-
   } catch (error) {
-    console.error('\n  Error searching feedback:', error.message);
+    console.error("\n  Error searching feedback:", error.message);
     throw error;
   }
 }
@@ -1306,22 +1471,28 @@ async function searchFeedback(query) {
  */
 async function showStats() {
   try {
-    const snapshot = await db.collection('feedback').get();
+    const snapshot = await db.collection("feedback").get();
 
     if (snapshot.empty) {
-      console.log('\n  No feedback in the database.\n');
+      console.log("\n  No feedback in the database.\n");
       return;
     }
 
-    const items = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     // Count by status
-    const byStatus = { new: 0, 'in-progress': 0, 'in-review': 0, completed: 0, archived: 0 };
-    items.forEach(item => {
-      const status = item.status || 'new';
+    const byStatus = {
+      new: 0,
+      "in-progress": 0,
+      "in-review": 0,
+      completed: 0,
+      archived: 0,
+    };
+    items.forEach((item) => {
+      const status = item.status || "new";
       if (byStatus.hasOwnProperty(status)) {
         byStatus[status]++;
-      } else if (['resolved', 'deferred'].includes(status)) {
+      } else if (["resolved", "deferred"].includes(status)) {
         byStatus.archived++;
       } else {
         byStatus.new++;
@@ -1330,16 +1501,19 @@ async function showStats() {
 
     // Count by type
     const byType = {};
-    items.forEach(item => {
-      const type = item.type || 'general';
+    items.forEach((item) => {
+      const type = item.type || "general";
       byType[type] = (byType[type] || 0) + 1;
     });
 
     // Count by priority (only non-archived)
-    const activeItems = items.filter(i => !['completed', 'archived', 'resolved', 'deferred'].includes(i.status));
+    const activeItems = items.filter(
+      (i) =>
+        !["completed", "archived", "resolved", "deferred"].includes(i.status)
+    );
     const byPriority = { high: 0, medium: 0, low: 0, unset: 0 };
-    activeItems.forEach(item => {
-      const priority = item.priority || 'unset';
+    activeItems.forEach((item) => {
+      const priority = item.priority || "unset";
       if (byPriority.hasOwnProperty(priority)) {
         byPriority[priority]++;
       } else {
@@ -1348,55 +1522,70 @@ async function showStats() {
     });
 
     // Find stale items
-    const staleItems = items.filter(item => {
-      if (item.status !== 'in-progress') return false;
+    const staleItems = items.filter((item) => {
+      if (item.status !== "in-progress") return false;
       if (!item.claimedAt?.toDate?.()) return false;
-      return (Date.now() - item.claimedAt.toDate().getTime()) > STALE_CLAIM_MS;
+      return Date.now() - item.claimedAt.toDate().getTime() > STALE_CLAIM_MS;
     });
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  📊 FEEDBACK QUEUE STATISTICS\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
 
     console.log(`\n  BY STATUS:`);
     console.log(`    🆕 New:          ${byStatus.new.toString().padStart(3)}`);
-    console.log(`    🔄 In Progress:  ${byStatus['in-progress'].toString().padStart(3)}${staleItems.length > 0 ? ` (${staleItems.length} stale)` : ''}`);
-    console.log(`    👁️  In Review:    ${byStatus['in-review'].toString().padStart(3)}`);
-    console.log(`    ✅ Completed:    ${byStatus.completed.toString().padStart(3)}`);
-    console.log(`    📦 Archived:     ${byStatus.archived.toString().padStart(3)}`);
+    console.log(
+      `    🔄 In Progress:  ${byStatus["in-progress"].toString().padStart(3)}${staleItems.length > 0 ? ` (${staleItems.length} stale)` : ""}`
+    );
+    console.log(
+      `    👁️  In Review:    ${byStatus["in-review"].toString().padStart(3)}`
+    );
+    console.log(
+      `    ✅ Completed:    ${byStatus.completed.toString().padStart(3)}`
+    );
+    console.log(
+      `    📦 Archived:     ${byStatus.archived.toString().padStart(3)}`
+    );
     console.log(`    ─────────────────────`);
     console.log(`    📝 Total:        ${items.length.toString().padStart(3)}`);
 
     console.log(`\n  BY TYPE:`);
-    Object.entries(byType).sort((a, b) => b[1] - a[1]).forEach(([type, count]) => {
-      console.log(`    ${type.padEnd(12)} ${count.toString().padStart(3)}`);
-    });
+    Object.entries(byType)
+      .sort((a, b) => b[1] - a[1])
+      .forEach(([type, count]) => {
+        console.log(`    ${type.padEnd(12)} ${count.toString().padStart(3)}`);
+      });
 
     console.log(`\n  ACTIVE BY PRIORITY:`);
     console.log(`    🔴 High:     ${byPriority.high.toString().padStart(3)}`);
     console.log(`    🟡 Medium:   ${byPriority.medium.toString().padStart(3)}`);
     console.log(`    🟢 Low:      ${byPriority.low.toString().padStart(3)}`);
     if (byPriority.unset > 0) {
-      console.log(`    ⚪ Unset:    ${byPriority.unset.toString().padStart(3)}  ← run 'prioritize' to assign`);
+      console.log(
+        `    ⚪ Unset:    ${byPriority.unset.toString().padStart(3)}  ← run 'prioritize' to assign`
+      );
     }
 
     // Actionable summary
-    console.log('\n' + '─'.repeat(70));
-    const actionable = byStatus.new + byStatus['in-review'];
+    console.log("\n" + "─".repeat(70));
+    const actionable = byStatus.new + byStatus["in-review"];
     if (actionable > 0) {
-      console.log(`\n  📌 ${actionable} item(s) need attention (${byStatus.new} new, ${byStatus['in-review']} awaiting review)`);
+      console.log(
+        `\n  📌 ${actionable} item(s) need attention (${byStatus.new} new, ${byStatus["in-review"]} awaiting review)`
+      );
     }
     if (byStatus.completed > 0) {
       console.log(`  🚀 ${byStatus.completed} item(s) ready for release`);
     }
     if (staleItems.length > 0) {
-      console.log(`  ⚠️  ${staleItems.length} stale in-progress item(s) (claimed >2h ago)`);
+      console.log(
+        `  ⚠️  ${staleItems.length} stale in-progress item(s) (claimed >2h ago)`
+      );
     }
 
-    console.log('\n' + '='.repeat(70) + '\n');
-
+    console.log("\n" + "=".repeat(70) + "\n");
   } catch (error) {
-    console.error('\n  Error fetching stats:', error.message);
+    console.error("\n  Error fetching stats:", error.message);
     throw error;
   }
 }
@@ -1409,12 +1598,12 @@ async function addFeedback(args) {
   const flags = {};
   let i = 0;
   while (i < args.length) {
-    if (args[i].startsWith('--')) {
+    if (args[i].startsWith("--")) {
       const flag = args[i].substring(2);
-      if (flag === 'internal-only') {
+      if (flag === "internal-only") {
         flags.isInternalOnly = true;
         i++;
-      } else if (i + 1 < args.length && !args[i + 1].startsWith('--')) {
+      } else if (i + 1 < args.length && !args[i + 1].startsWith("--")) {
         flags[flag] = args[i + 1];
         i += 2;
       } else {
@@ -1427,50 +1616,59 @@ async function addFeedback(args) {
 
   // Validate required fields
   if (!flags.title) {
-    console.log('\n  ❌ Missing required --title\n');
-    console.log('  Usage: node fetch-feedback.js add --title "Title" --description "Desc" [options]');
-    console.log('  Options: --type, --priority, --module, --tab, --internal-only, --user\n');
+    console.log("\n  ❌ Missing required --title\n");
+    console.log(
+      '  Usage: node fetch-feedback.js add --title "Title" --description "Desc" [options]'
+    );
+    console.log(
+      "  Options: --type, --priority, --module, --tab, --internal-only, --user\n"
+    );
     return null;
   }
 
   if (!flags.description) {
-    console.log('\n  ❌ Missing required --description\n');
+    console.log("\n  ❌ Missing required --description\n");
     return null;
   }
 
   // Validate type
-  const validTypes = ['bug', 'feature', 'enhancement', 'general'];
-  const type = flags.type || 'enhancement';
+  const validTypes = ["bug", "feature", "enhancement", "general"];
+  const type = flags.type || "enhancement";
   if (!validTypes.includes(type)) {
-    console.log(`\n  ⚠️  Invalid type "${type}". Valid: ${validTypes.join(', ')}\n`);
+    console.log(
+      `\n  ⚠️  Invalid type "${type}". Valid: ${validTypes.join(", ")}\n`
+    );
     return null;
   }
 
   // Validate priority if provided
-  const validPriorities = ['low', 'medium', 'high'];
+  const validPriorities = ["low", "medium", "high"];
   if (flags.priority && !validPriorities.includes(flags.priority)) {
-    console.log(`\n  ⚠️  Invalid priority "${flags.priority}". Valid: ${validPriorities.join(', ')}\n`);
+    console.log(
+      `\n  ⚠️  Invalid priority "${flags.priority}". Valid: ${validPriorities.join(", ")}\n`
+    );
     return null;
   }
 
   // User lookup (default to Austen)
   const AUSTEN_USER = {
-    userId: 'PBp3GSBO6igCKPwJyLZNmVEmamI3',
-    userDisplayName: 'Austen Cloud',
-    userEmail: 'austencloud@gmail.com',
-    userPhotoURL: 'https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c'
+    userId: "PBp3GSBO6igCKPwJyLZNmVEmamI3",
+    userDisplayName: "Austen Cloud",
+    userEmail: "austencloud@gmail.com",
+    userPhotoURL:
+      "https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c",
   };
 
   const feedbackData = {
     title: flags.title,
     description: flags.description,
     type,
-    status: 'new',
+    status: "new",
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     userId: AUSTEN_USER.userId,
     userDisplayName: AUSTEN_USER.userDisplayName,
     userEmail: AUSTEN_USER.userEmail,
-    userPhotoURL: AUSTEN_USER.userPhotoURL
+    userPhotoURL: AUSTEN_USER.userPhotoURL,
   };
 
   if (flags.priority) {
@@ -1487,11 +1685,11 @@ async function addFeedback(args) {
   }
 
   try {
-    const docRef = await db.collection('feedback').add(feedbackData);
+    const docRef = await db.collection("feedback").add(feedbackData);
 
-    console.log('\n' + '='.repeat(70));
+    console.log("\n" + "=".repeat(70));
     console.log(`\n  ✅ FEEDBACK CREATED\n`);
-    console.log('─'.repeat(70));
+    console.log("─".repeat(70));
     console.log(`  ID: ${docRef.id}`);
     console.log(`  Title: ${flags.title}`);
     console.log(`  Type: ${type}`);
@@ -1499,12 +1697,11 @@ async function addFeedback(args) {
     if (flags.module) console.log(`  Module: ${flags.module}`);
     if (flags.tab) console.log(`  Tab: ${flags.tab}`);
     if (flags.isInternalOnly) console.log(`  Internal Only: YES`);
-    console.log('\n' + '='.repeat(70) + '\n');
+    console.log("\n" + "=".repeat(70) + "\n");
 
     return { id: docRef.id, ...feedbackData };
-
   } catch (error) {
-    console.error('\n  Error creating feedback:', error.message);
+    console.error("\n  Error creating feedback:", error.message);
     throw error;
   }
 }
@@ -1513,146 +1710,167 @@ async function addFeedback(args) {
 const args = process.argv.slice(2);
 
 async function main() {
-  const validPriorities = ['low', 'medium', 'high'];
+  const validPriorities = ["low", "medium", "high"];
 
   if (args.length === 0) {
     // No args: claim next item
     await claimNextFeedback();
-  } else if (args[0] === 'help' || args[0] === '--help' || args[0] === '-h') {
+  } else if (args[0] === "help" || args[0] === "--help" || args[0] === "-h") {
     // Show help
     showHelp();
   } else if (validPriorities.includes(args[0])) {
     // Priority filter: claim next item with specified priority
     await claimNextFeedback(args[0]);
-  } else if (args[0] === 'list') {
+  } else if (args[0] === "list") {
     // List all feedback
     await listAllFeedback();
-  } else if (args[0] === 'stats') {
+  } else if (args[0] === "stats") {
     // Show queue statistics
     await showStats();
-  } else if (args[0] === 'search') {
+  } else if (args[0] === "search") {
     // Search: search <query>
     if (!args[1]) {
-      console.log('\n  Usage: node fetch-feedback.js search <query>\n');
+      console.log("\n  Usage: node fetch-feedback.js search <query>\n");
       console.log('  Example: node fetch-feedback.js search "button"\n');
       return;
     }
-    await searchFeedback(args.slice(1).join(' '));
-  } else if (args[0] === 'claim') {
+    await searchFeedback(args.slice(1).join(" "));
+  } else if (args[0] === "claim") {
     // Claim specific: claim <id>
     if (!args[1]) {
-      console.log('\n  Usage: node fetch-feedback.js claim <id>\n');
+      console.log("\n  Usage: node fetch-feedback.js claim <id>\n");
       return;
     }
     await claimSpecificFeedback(args[1]);
-  } else if (args[0] === 'unclaim') {
+  } else if (args[0] === "unclaim") {
     // Unclaim: unclaim <id>
     if (!args[1]) {
-      console.log('\n  Usage: node fetch-feedback.js unclaim <id>\n');
+      console.log("\n  Usage: node fetch-feedback.js unclaim <id>\n");
       return;
     }
     await unclaimFeedback(args[1]);
-  } else if (args[0] === 'add') {
+  } else if (args[0] === "add") {
     // Add with flags: add --title "X" --description "Y" [options]
     await addFeedback(args.slice(1));
-  } else if (args[0] === 'delete') {
+  } else if (args[0] === "delete") {
     // Delete: delete <id>
     if (!args[1]) {
-      console.log('\n  Usage: node fetch-feedback.js delete <id>\n');
+      console.log("\n  Usage: node fetch-feedback.js delete <id>\n");
       return;
     }
     await deleteFeedback(args[1]);
-  } else if (args[0] === 'prioritize') {
+  } else if (args[0] === "prioritize") {
     // Auto-prioritize all unprioritized feedback
-    const dryRun = args.includes('--dry-run');
-    const jsonOutput = args.includes('--json');
+    const dryRun = args.includes("--dry-run");
+    const jsonOutput = args.includes("--json");
     await prioritizeFeedback(dryRun, jsonOutput);
-  } else if (args[0] === 'create') {
+  } else if (args[0] === "create") {
     // Create new feedback: create "title" "description" [type] [module] [tab]
     const title = args[1];
     const description = args[2];
-    const type = args[3] || 'enhancement';
-    const module = args[4] || 'Unknown';
-    const tab = args[5] || 'Unknown';
+    const type = args[3] || "enhancement";
+    const module = args[4] || "Unknown";
+    const tab = args[5] || "Unknown";
 
     if (!title || !description) {
-      console.log('\n  Usage: node fetch-feedback.js create "title" "description" [type] [module] [tab]');
-      console.log('  Types: bug, feature, enhancement, general');
-      console.log('  Example: node fetch-feedback.js create "Fix trail jank" "Trails appear janky..." enhancement compose playback\n');
+      console.log(
+        '\n  Usage: node fetch-feedback.js create "title" "description" [type] [module] [tab]'
+      );
+      console.log("  Types: bug, feature, enhancement, general");
+      console.log(
+        '  Example: node fetch-feedback.js create "Fix trail jank" "Trails appear janky..." enhancement compose playback\n'
+      );
       return;
     }
 
     // Use Austen's actual user info so avatars work correctly
     const AUSTEN_USER = {
-      userId: 'PBp3GSBO6igCKPwJyLZNmVEmamI3',
-      userDisplayName: 'Austen Cloud',
-      userEmail: 'austencloud@gmail.com',
-      userPhotoURL: 'https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c'
+      userId: "PBp3GSBO6igCKPwJyLZNmVEmamI3",
+      userDisplayName: "Austen Cloud",
+      userEmail: "austencloud@gmail.com",
+      userPhotoURL:
+        "https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c",
     };
 
-    const docRef = await db.collection('feedback').add({
+    const docRef = await db.collection("feedback").add({
       title,
       description: description,
       type,
       capturedModule: module,
       capturedTab: tab,
-      status: 'new',
+      status: "new",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       userId: AUSTEN_USER.userId,
       userDisplayName: AUSTEN_USER.userDisplayName,
       userEmail: AUSTEN_USER.userEmail,
-      userPhotoURL: AUSTEN_USER.userPhotoURL
+      userPhotoURL: AUSTEN_USER.userPhotoURL,
     });
 
-    console.log('\n======================================================================');
-    console.log('\n  ✅ FEEDBACK CREATED\n');
-    console.log('──────────────────────────────────────────────────────────────────────');
+    console.log(
+      "\n======================================================================"
+    );
+    console.log("\n  ✅ FEEDBACK CREATED\n");
+    console.log(
+      "──────────────────────────────────────────────────────────────────────"
+    );
     console.log(`  ID: ${docRef.id}`);
     console.log(`  Title: ${title}`);
     console.log(`  Type: ${type}`);
     console.log(`  Module: ${module} / ${tab}`);
-    console.log('\n======================================================================\n');
-  } else if (args[1] === 'defer') {
+    console.log(
+      "\n======================================================================\n"
+    );
+  } else if (args[1] === "defer") {
     // Defer: <id> defer "YYYY-MM-DD" "Reason"
     if (!args[2]) {
-      console.log('\n  Usage: node fetch-feedback.js <id> defer "YYYY-MM-DD" "Reason"\n');
-      console.log('  Example: node fetch-feedback.js abc123 defer "2026-03-15" "Revisit after Q1"\n');
+      console.log(
+        '\n  Usage: node fetch-feedback.js <id> defer "YYYY-MM-DD" "Reason"\n'
+      );
+      console.log(
+        '  Example: node fetch-feedback.js abc123 defer "2026-03-15" "Revisit after Q1"\n'
+      );
       return;
     }
     await deferFeedback(args[0], args[2], args[3]);
-  } else if (args[1] === 'internal-only') {
+  } else if (args[1] === "internal-only") {
     // Internal-only: <id> internal-only true/false
     if (!args[2]) {
-      console.log('\n  Usage: node fetch-feedback.js <id> internal-only true/false\n');
-      console.log('  Example: node fetch-feedback.js abc123 internal-only true\n');
+      console.log(
+        "\n  Usage: node fetch-feedback.js <id> internal-only true/false\n"
+      );
+      console.log(
+        "  Example: node fetch-feedback.js abc123 internal-only true\n"
+      );
       return;
     }
     await setInternalOnly(args[0], args[2]);
-  } else if (args[1] === 'title') {
+  } else if (args[1] === "title") {
     // Update title: <id> title "new title"
     await updateFeedbackTitle(args[0], args[2]);
-  } else if (args[1] === 'priority') {
+  } else if (args[1] === "priority") {
     // Update priority: <id> priority <low|medium|high>
     await updateFeedbackPriority(args[0], args[2]);
-  } else if (args[1] === 'resolution') {
+  } else if (args[1] === "resolution") {
     // Update resolution notes: <id> resolution "resolution notes"
     await updateResolutionNotes(args[0], args[2]);
-  } else if (args[1] === 'subtask') {
+  } else if (args[1] === "subtask") {
     // Subtask commands: <id> subtask <command> [args...]
     const docId = args[0];
     const subCommand = args[2];
 
-    if (subCommand === 'add') {
+    if (subCommand === "add") {
       // <id> subtask add "title" "description" [dependsOn...]
       const title = args[3];
       const description = args[4];
       const dependsOn = args.slice(5); // Remaining args are dependency IDs
       if (!title || !description) {
-        console.log('\n  Usage: node fetch-feedback.js <id> subtask add "title" "description" [dependsOn...]\n');
+        console.log(
+          '\n  Usage: node fetch-feedback.js <id> subtask add "title" "description" [dependsOn...]\n'
+        );
         return;
       }
       await addSubtask(docId, title, description, dependsOn);
-    } else if (subCommand === 'list') {
+    } else if (subCommand === "list") {
       // <id> subtask list
       await listSubtasks(docId);
     } else if (subCommand) {
@@ -1661,16 +1879,18 @@ async function main() {
       const subtaskId = subCommand;
       const status = args[3];
       if (!status) {
-        console.log('\n  Usage: node fetch-feedback.js <id> subtask <subtaskId> <status>\n');
-        console.log('  Valid statuses: pending, in-progress, completed\n');
+        console.log(
+          "\n  Usage: node fetch-feedback.js <id> subtask <subtaskId> <status>\n"
+        );
+        console.log("  Valid statuses: pending, in-progress, completed\n");
         return;
       }
       await updateSubtaskStatus(docId, subtaskId, status);
     } else {
-      console.log('\n  Subtask commands:');
+      console.log("\n  Subtask commands:");
       console.log('    <id> subtask add "title" "description" [dependsOn...]');
-      console.log('    <id> subtask list');
-      console.log('    <id> subtask <subtaskId> <status>\n');
+      console.log("    <id> subtask list");
+      console.log("    <id> subtask <subtaskId> <status>\n");
     }
   } else if (args[1]) {
     // Update: <id> <status> ["notes"]

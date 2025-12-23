@@ -24,16 +24,19 @@ git push origin release/enable-learn-module
 ## 📋 Quick Commands
 
 ### View Current Production Config
+
 ```bash
 cat netlify.toml | grep -A 20 "\[context.production\]"
 ```
 
 ### View Current Development Config
+
 ```bash
 cat netlify.toml | grep -A 20 "\[context.develop\]"
 ```
 
 ### Test Production Settings Locally
+
 ```bash
 # Create .env.local with production settings
 echo "PUBLIC_ENVIRONMENT=production" > .env.local
@@ -46,26 +49,26 @@ npm run dev
 
 Check `netlify.toml` → `[context.production]`:
 
-| Module | Status | Notes |
-|--------|--------|-------|
-| Dashboard | ✅ Released | Always visible |
-| Create | ✅ Released | Constructor & Generator tabs |
-| Discover | ✅ Released | Gallery, Creators, Collections |
-| Feedback | ✅ Released | Submit & view own feedback |
-| Learn | ❌ Not Released | Admin only |
-| Library | ❌ Not Released | Admin only |
-| Compose | ❌ Not Released | Admin only |
-| Train | ❌ Not Released | Admin only |
-| ML Training | ❌ Not Released | Admin only |
+| Module      | Status          | Notes                          |
+| ----------- | --------------- | ------------------------------ |
+| Dashboard   | ✅ Released     | Always visible                 |
+| Create      | ✅ Released     | Constructor & Generator tabs   |
+| Discover    | ✅ Released     | Gallery, Creators, Collections |
+| Feedback    | ✅ Released     | Submit & view own feedback     |
+| Learn       | ❌ Not Released | Admin only                     |
+| Library     | ❌ Not Released | Admin only                     |
+| Compose     | ❌ Not Released | Admin only                     |
+| Train       | ❌ Not Released | Admin only                     |
+| ML Training | ❌ Not Released | Admin only                     |
 
 ## 🔐 Access Control Matrix
 
-| User Type | Production | Development |
-|-----------|-----------|-------------|
-| **Guest** | Create, Discover | Create, Discover, Learn, Library, etc. |
-| **User (signed in)** | Create, Discover, Feedback | All modules |
-| **Tester** | Create, Discover, Feedback | All modules |
-| **Admin** | All modules (bypass env restrictions) | All modules |
+| User Type            | Production                            | Development                            |
+| -------------------- | ------------------------------------- | -------------------------------------- |
+| **Guest**            | Create, Discover                      | Create, Discover, Learn, Library, etc. |
+| **User (signed in)** | Create, Discover, Feedback            | All modules                            |
+| **Tester**           | Create, Discover, Feedback            | All modules                            |
+| **Admin**            | All modules (bypass env restrictions) | All modules                            |
 
 ## 🌐 Deployment URLs
 
@@ -77,6 +80,7 @@ Check `netlify.toml` → `[context.production]`:
 ## 📝 Common Tasks
 
 ### Enable Module in Production
+
 ```toml
 # netlify.toml
 [context.production.environment]
@@ -84,6 +88,7 @@ Check `netlify.toml` → `[context.production]`:
 ```
 
 ### Disable Module in Production
+
 ```toml
 # netlify.toml
 [context.production.environment]
@@ -91,6 +96,7 @@ Check `netlify.toml` → `[context.production]`:
 ```
 
 ### Add New Module Flags
+
 ```toml
 # netlify.toml - Add to all contexts
 [context.production.environment]
@@ -108,19 +114,22 @@ Check `netlify.toml` → `[context.production]`:
 ### Module Not Showing Up?
 
 1. **Check environment flag** (netlify.toml)
+
    ```
    PUBLIC_ENABLE_[MODULE]_MODULE = "true" ?
    ```
 
 2. **Check user role** (Firestore)
+
    ```
    User role >= module minimum role ?
    ```
 
 3. **Check browser console**
+
    ```javascript
-   console.log(import.meta.env.PUBLIC_ENVIRONMENT)
-   console.log(import.meta.env.PUBLIC_ENABLE_LEARN_MODULE)
+   console.log(import.meta.env.PUBLIC_ENVIRONMENT);
+   console.log(import.meta.env.PUBLIC_ENABLE_LEARN_MODULE);
    ```
 
 4. **Clear browser cache**
@@ -130,10 +139,8 @@ Check `netlify.toml` → `[context.production]`:
 
 1. **Check which environment you're on**
    - Look at URL (tka.studio vs deploy-preview)
-   
 2. **Verify environment variables in Netlify**
    - Netlify UI → Site settings → Environment variables
-   
 3. **Check build logs**
    - Netlify UI → Deploys → [Latest] → Deploy log
 
@@ -177,7 +184,7 @@ git push origin main
 ## 💡 Pro Tips
 
 1. **Always test on preview first** - Every PR gets a preview URL
-2. **Use feature branches** - Keep main clean and stable  
+2. **Use feature branches** - Keep main clean and stable
 3. **Small, frequent releases** - Easier to test and rollback
 4. **Monitor after release** - Watch analytics and error logs
 5. **Communicate releases** - Keep users and testers informed

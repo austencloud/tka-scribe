@@ -24,7 +24,9 @@ if (!cookiesFilePath) {
   console.log("\nUsage:");
   console.log("  node upload-youtube-cookies.js <cookies-file-path>");
   console.log("\nExample:");
-  console.log("  node upload-youtube-cookies.js ~/Downloads/youtube-cookies.txt");
+  console.log(
+    "  node upload-youtube-cookies.js ~/Downloads/youtube-cookies.txt"
+  );
   process.exit(1);
 }
 
@@ -55,5 +57,7 @@ exec(command, (error, stdout, stderr) => {
   console.log("     cd deployment && firebase deploy --only functions");
   console.log("  2. Try extracting audio again in the app");
   console.log("\n💡 Note: Cookies may expire after a few months.");
-  console.log("   If extraction fails again, re-export and upload fresh cookies.");
+  console.log(
+    "   If extraction fails again, re-export and upload fresh cookies."
+  );
 });

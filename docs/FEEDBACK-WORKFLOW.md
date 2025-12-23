@@ -47,11 +47,13 @@ The feedback system uses a **5-status workflow** with two distinct phases:
 ## Status Definitions
 
 ### 1. `new` - Unclaimed
+
 **What it means:** Feedback has been submitted and is ready for someone to work on.
 
 **Who sets it:** Automatic on submission via feedback form
 
 **Next actions:**
+
 - Run `/fb` to auto-claim the oldest item
 - Or manually view with `node fetch-feedback.js <id>`
 
@@ -60,11 +62,13 @@ The feedback system uses a **5-status workflow** with two distinct phases:
 ---
 
 ### 2. `in-progress` - Claimed & Working
+
 **What it means:** An agent/developer has claimed this and is actively working on it.
 
 **Who sets it:** `/fb` command auto-claims and sets this status
 
 **Next actions:**
+
 1. Assess: Is this a good idea? (see /fb protocol step 2)
 2. Interpret: What are they actually asking for?
 3. Get approval: Confirm approach with user
@@ -78,11 +82,13 @@ The feedback system uses a **5-status workflow** with two distinct phases:
 ---
 
 ### 3. `in-review` - Awaiting User Verification
+
 **What it means:** Implementation is done, waiting for user to test and confirm it works.
 
 **Who sets it:** Agent/developer after implementing
 
 **Command:**
+
 ```bash
 node fetch-feedback.js <id> in-review "Testing steps:
 1. Navigate to [module/tab]
@@ -91,6 +97,7 @@ node fetch-feedback.js <id> in-review "Testing steps:
 ```
 
 **Next actions:**
+
 - User tests the fix/feature
 - If works → move to `completed`
 - If broken → move back to `in-progress` with notes
@@ -100,11 +107,13 @@ node fetch-feedback.js <id> in-review "Testing steps:
 ---
 
 ### 4. `completed` - Verified & Staged for Release
+
 **What it means:** User confirmed it works. Item is now **staged for the next release**.
 
 **Who sets it:** User after testing
 
 **Command:**
+
 ```bash
 # Preview what will be in next release (optional but recommended)
 node scripts/release.js -p
@@ -114,6 +123,7 @@ node fetch-feedback.js <id> completed "Verified working on [device/browser]"
 ```
 
 **Important:**
+
 - Items stay in `completed` status until `/release` is run
 - This allows batching multiple fixes into one release
 - They are **not yet archived** - still visible in Kanban
@@ -123,17 +133,22 @@ node fetch-feedback.js <id> completed "Verified working on [device/browser]"
 ---
 
 ### 5. `archived` - Closed
+
 **What it means:** Item is closed and no longer active. Two ways to get here:
 
 #### Path A: Released (from `completed`)
+
 When `/release` runs, all `completed` items are:
+
 1. Tagged with `fixedInVersion` field (e.g., "0.1.1")
 2. Moved to `archived` status
 3. Included in release changelog
 4. Added to What's New tab
 
 #### Path B: Declined (from any status)
+
 When feedback won't be implemented:
+
 ```bash
 node fetch-feedback.js <id> archived "Reason: [declined/wont-fix/deferred/duplicate]"
 ```
@@ -235,6 +250,7 @@ node fetch-feedback.js <id> archived "Reason: [declined/wont-fix/deferred/duplic
 ## Quick Reference Commands
 
 ### Claiming & Status Updates
+
 ```bash
 # Auto-claim next item
 node fetch-feedback.js
@@ -256,6 +272,7 @@ node fetch-feedback.js <id> title "Short descriptive title"
 ```
 
 ### Complex Items (Subtasks)
+
 ```bash
 # Add subtask
 node fetch-feedback.js <id> subtask add "Step 1" "Description"
@@ -272,6 +289,7 @@ node fetch-feedback.js <id> subtask list
 ```
 
 ### Release Preview & Execution
+
 ```bash
 # Quick preview (use in /fb workflow)
 node scripts/release.js -p
@@ -288,12 +306,15 @@ node scripts/release.js --dry-run
 ## Best Practices
 
 ### 1. **Always provide testing instructions**
+
 When moving to `in-review`, give clear steps. Bad example:
+
 ```bash
 node fetch-feedback.js <id> in-review "Fixed"  # ❌ Too vague
 ```
 
 Good example:
+
 ```bash
 node fetch-feedback.js <id> in-review "Testing:
 1. Go to Discover → Gallery
@@ -303,13 +324,17 @@ node fetch-feedback.js <id> in-review "Testing:
 ```
 
 ### 2. **Preview before marking completed**
+
 Always run `node scripts/release.js -p` before marking as `completed`. This helps you:
+
 - See if you have enough fixes for a release
 - Understand version bump (patch vs minor)
 - Plan batching strategy
 
 ### 3. **Use subtasks for complex work**
+
 If a feedback item requires multiple steps or has prerequisites, break it down:
+
 ```bash
 node fetch-feedback.js <id> subtask add "Add database schema" "..."
 node fetch-feedback.js <id> subtask add "Create API endpoint" "..." 1
@@ -319,7 +344,9 @@ node fetch-feedback.js <id> subtask add "Update UI component" "..." 2
 This lets multiple agents work on prerequisites in parallel.
 
 ### 4. **Batch releases thoughtfully**
+
 Don't ship every single bug fix immediately. Good batching strategies:
+
 - **Daily builds**: 3-5 small bug fixes
 - **Feature releases**: 1-2 features + related bug fixes
 - **Hotfixes**: Critical bugs only, ship ASAP
@@ -327,7 +354,9 @@ Don't ship every single bug fix immediately. Good batching strategies:
 Use `node scripts/release.js -p` to see what's ready and decide timing.
 
 ### 5. **Archive declined items promptly**
+
 If feedback won't be implemented, move it to `archived` with a reason:
+
 ```bash
 node fetch-feedback.js <id> archived "Declined: out of scope for v1"
 node fetch-feedback.js <id> archived "Won't fix: working as intended"
@@ -342,22 +371,27 @@ This keeps the Kanban board clean and communicates decisions.
 ## Troubleshooting
 
 ### "I marked something as completed but it's not in What's New"
+
 **Cause:** `completed` items are staged, not released yet.
 
 **Solution:** Run `/release` to batch them into a version.
 
 ### "Item has been in-progress for days"
+
 **Cause:** Agent claimed it but got stuck or abandoned it.
 
 **Solution:** If >2 hours old, next `/fb` run will auto-reclaim it as stale.
 
 ### "I want to unclaim an item I'm working on"
+
 **Solution:** Move it back to `new`:
+
 ```bash
 node fetch-feedback.js <id> new "Unclaiming for now"
 ```
 
 ### "Release is showing old commits, not my completed feedback"
+
 **Cause:** No items have `status: completed` in Firestore.
 
 **Solution:** Make sure you used `completed` not `archived` when marking items ready for release.
@@ -367,29 +401,32 @@ node fetch-feedback.js <id> new "Unclaiming for now"
 ## Architecture Notes
 
 ### Why Two Phases?
+
 The split between Kanban (active work) and Release (versioning) allows:
+
 1. **Flexible batching** - you control when things ship
 2. **Clear history** - see exactly what went into each version
 3. **Parallel workflows** - multiple agents can work on different items
 4. **User transparency** - What's New tab shows version-tagged changes
 
 ### Database Schema
+
 ```typescript
 interface FeedbackItem {
   // Identity
   id: string;
 
   // Content
-  type: 'bug' | 'feature' | 'general';
+  type: "bug" | "feature" | "general";
   title: string;
   description: string;
 
   // Kanban tracking
-  status: 'new' | 'in-progress' | 'in-review' | 'completed' | 'archived';
+  status: "new" | "in-progress" | "in-review" | "completed" | "archived";
   claimedAt?: Timestamp;
 
   // Release tracking
-  fixedInVersion?: string;  // e.g., "0.1.1"
+  fixedInVersion?: string; // e.g., "0.1.1"
   archivedAt?: Timestamp;
 
   // Complex work

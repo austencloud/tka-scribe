@@ -15,3 +15,8 @@ node_modules/
 
 # Archive folders
 archive/
+
+# Non-app TS/JS sources excluded from main tsconfig
+deployment/functions/
+functions/
+docs/migrations/

@@ -2,17 +2,18 @@
  * Add owner data to bundled sequence-index.json
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from "fs";
 
 const AUSTEN_USER = {
-  ownerId: 'PBp3GSBO6igCKPwJyLZNmVEmamI3',
-  ownerDisplayName: 'Austen Cloud',
-  ownerAvatarUrl: 'https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c'
+  ownerId: "PBp3GSBO6igCKPwJyLZNmVEmamI3",
+  ownerDisplayName: "Austen Cloud",
+  ownerAvatarUrl:
+    "https://lh3.googleusercontent.com/a/ACg8ocJ3KdjUMAOYNbg_fpHXouXfgTPntLXQVQVQwb_bsbViiAQujwYYJg=s96-c",
 };
 
 // Read the JSON file
-const filePath = './static/sequence-index.json';
-const data = JSON.parse(readFileSync(filePath, 'utf8'));
+const filePath = "./static/sequence-index.json";
+const data = JSON.parse(readFileSync(filePath, "utf8"));
 
 console.log(`\nUpdating ${data.totalSequences} sequences with owner data...\n`);
 

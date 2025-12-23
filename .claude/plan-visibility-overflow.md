@@ -5,12 +5,14 @@
 On iPhone SE (375×667), the Visibility Settings content overflows. Looking at the structure:
 
 ### Current Space Budget
+
 - Drawer header: ~48px
 - Back button: ~48px
 - VisibilityTab header + description + Show Preview button: ~100-120px
 - **Available for controls: ~452px**
 
 ### What Needs to Fit
+
 - ElementVisibilityControls contains:
   - 3 section titles (Element Visibility, Motion Visibility, Grid Elements)
   - 9 ChipRow buttons (each has `min-height: 48px`)
@@ -18,6 +20,7 @@ On iPhone SE (375×667), the Visibility Settings content overflows. Looking at t
   - Padding and margins
 
 Current calculation:
+
 - 9 chips × 48px = 432px (just the chips)
 - Plus ~80px for titles, dividers, margins
 - **Total: ~512px (overflows by ~60px)**
@@ -40,4 +43,5 @@ Make ChipRow and ElementVisibilityControls height-aware using parent container q
    - Tighten overall padding
 
 ### Target Result
+
 All 9 toggles + 2 motion toggles + 1 grid toggle should fit without scrolling on iPhone SE.

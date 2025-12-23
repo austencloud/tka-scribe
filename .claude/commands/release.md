@@ -18,6 +18,7 @@ node scripts/release.js --dry-run
 ```
 
 This will:
+
 - Query Firestore for items with status "completed"
 - If no completed feedback: fallback to git commit history since last tag
 - Calculate feedback summary (bugs, features, general) OR parse commits
@@ -28,11 +29,13 @@ This will:
 The script automatically handles two modes:
 
 **Feedback Mode** (preferred):
+
 - Uses completed feedback items from Firestore
 - Archives feedback and creates version record
 - Shows feedback count and breakdown
 
 **Git History Mode** (fallback):
+
 - Parses commits since last tag (or all commits if no tags)
 - Uses conventional commit format to categorize changes
 - Skips Firestore operations
@@ -45,6 +48,7 @@ The script automatically handles two modes:
 **Audience**: Flow artists who create choreography. They don't code, don't know what "persistence" or "endpoints" mean, and just want to know what's better for them.
 
 **Rewriting Rules**:
+
 1. **Remove developer jargon**: No "persistence", "endpoints", "state", "components", "services"
 2. **Focus on user benefit**: What can they DO now? What problem is fixed?
 3. **Be specific and concrete**: "Videos now save properly" not "Fixed video persistence"
@@ -66,6 +70,7 @@ The script automatically handles two modes:
 ### Step 3: Show Preview to User
 
 Display the output from the dry-run, which includes:
+
 - Source indicator (feedback mode or git history mode)
 - Completed feedback count and breakdown OR commit count
 - Current version vs. suggested new version
@@ -81,6 +86,7 @@ Use AskUserQuestion to confirm the release:
 **Header:** "Release"
 
 **Options:**
+
 1. **"Yes, release now"**
    - Description: "Update package.json, create git commit & tag, GitHub release, archive feedback"
 
@@ -114,6 +120,7 @@ node scripts/release.js --confirm --changelog .release-changelog.json
 ```
 
 This will:
+
 - Update package.json version field
 - Create git commit with changelog
 - Create annotated git tag
@@ -127,10 +134,13 @@ Then proceed to Step 6.
 **Note:** The announcement summarizes key features and links to Settings → What's New for full details. Use `--skip-announcement` if you don't want to notify users.
 
 #### If "Edit changelog":
+
 Let the user provide corrections, then update your rewritten changelog and return to Step 4.
 
 #### If "Change version number":
+
 Ask for manual version input, then execute with:
+
 ```bash
 node scripts/release.js --version {USER_VERSION} --confirm
 ```
@@ -138,6 +148,7 @@ node scripts/release.js --version {USER_VERSION} --confirm
 Validate the version format (semver) before proceeding.
 
 #### If "Cancel":
+
 Exit gracefully with message: "Release cancelled. No changes made."
 
 ### Step 5: Ask About Pushing to Remote
@@ -149,6 +160,7 @@ After successful release, use AskUserQuestion again:
 **Header:** "Push"
 
 **Options:**
+
 1. **"Yes, push tags and commits"**
    - Description: "Push the release commit and tag to origin"
 
@@ -156,6 +168,7 @@ After successful release, use AskUserQuestion again:
    - Description: "Keep changes local for now"
 
 #### If "Yes, push tags and commits":
+
 ```bash
 git push && git push --tags
 ```
@@ -163,7 +176,9 @@ git push && git push --tags
 Show output and confirm success.
 
 #### If "No, I'll push manually":
+
 Show reminder:
+
 ```
 ✓ Release v{VERSION} committed locally.
   To push later: git push && git push --tags
@@ -174,14 +189,17 @@ Show reminder:
 The release script automatically suggests a version based on changelog content:
 
 **Feedback Mode:**
+
 - **Minor bump** (0.1.0 → 0.2.0): At least one `feature` type feedback item
 - **Patch bump** (0.1.0 → 0.1.1): Only `bug` or `general` type feedback items
 
 **Git History Mode:**
+
 - **Minor bump** (0.1.0 → 0.2.0): At least one `feat:` commit
 - **Patch bump** (0.1.0 → 0.1.1): Only `fix:`, `refactor:`, `style:`, or `chore:` commits
 
 **Both Modes:**
+
 - **Manual override**: User can specify any semver version with `--version` flag
 
 ## Important Notes
@@ -196,12 +214,14 @@ The release script automatically suggests a version based on changelog content:
 ## Error Handling
 
 The release script will exit with error if:
+
 - No completed feedback AND no commits since last tag → explain options
 - Version format invalid → show semver examples
 - Firestore operation fails (feedback mode only) → error message with details
 - Git operation fails → error message with details
 
 If any step fails after confirmation:
+
 - Git operations are atomic (commit + tag together)
 - If Firestore fails after git operations (feedback mode), user must manually clean up
 - Show clear error message with recovery steps
@@ -347,6 +367,7 @@ node scripts/temp/backfill-github-releases.js
 ```
 
 This will:
+
 - Check all git tags in the repository
 - Compare against existing GitHub releases
 - For each tag without a release:

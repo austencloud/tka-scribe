@@ -10,82 +10,127 @@
  *   --dry-run    Preview changes without writing to file
  */
 
-import { readFileSync, writeFileSync } from 'fs';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, writeFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const SEQUENCE_INDEX_PATH = resolve(__dirname, '../static/data/sequence-index.json');
+const SEQUENCE_INDEX_PATH = resolve(
+  __dirname,
+  "../static/data/sequence-index.json"
+);
 
 // CAP Type definitions (mirrored from circular-models.ts)
 const CAPType = {
-  STRICT_ROTATED: 'strict_rotated',
-  STRICT_MIRRORED: 'strict_mirrored',
-  STRICT_SWAPPED: 'strict_swapped',
-  STRICT_INVERTED: 'strict_inverted',
-  MIRRORED_SWAPPED: 'mirrored_swapped',
-  SWAPPED_INVERTED: 'swapped_inverted',
-  MIRRORED_INVERTED: 'mirrored_inverted',
-  ROTATED_SWAPPED: 'rotated_swapped',
-  ROTATED_INVERTED: 'rotated_inverted',
-  MIRRORED_ROTATED: 'mirrored_rotated',
-  MIRRORED_ROTATED_INVERTED: 'mirrored_rotated_inverted',
-  MIRRORED_SWAPPED_INVERTED: 'mirrored_swapped_inverted',
+  STRICT_ROTATED: "strict_rotated",
+  STRICT_MIRRORED: "strict_mirrored",
+  STRICT_SWAPPED: "strict_swapped",
+  STRICT_INVERTED: "strict_inverted",
+  MIRRORED_SWAPPED: "mirrored_swapped",
+  SWAPPED_INVERTED: "swapped_inverted",
+  MIRRORED_INVERTED: "mirrored_inverted",
+  ROTATED_SWAPPED: "rotated_swapped",
+  ROTATED_INVERTED: "rotated_inverted",
+  MIRRORED_ROTATED: "mirrored_rotated",
+  MIRRORED_ROTATED_INVERTED: "mirrored_rotated_inverted",
+  MIRRORED_SWAPPED_INVERTED: "mirrored_swapped_inverted",
 };
 
 const CAPComponent = {
-  ROTATED: 'rotated',
-  MIRRORED: 'mirrored',
-  SWAPPED: 'swapped',
-  INVERTED: 'inverted',
+  ROTATED: "rotated",
+  MIRRORED: "mirrored",
+  SWAPPED: "swapped",
+  INVERTED: "inverted",
 };
 
 // Component to CAPType mapping
 const COMPONENT_TO_CAP_TYPE = {
-  'rotated': CAPType.STRICT_ROTATED,
-  'mirrored': CAPType.STRICT_MIRRORED,
-  'swapped': CAPType.STRICT_SWAPPED,
-  'inverted': CAPType.STRICT_INVERTED,
-  'mirrored,swapped': CAPType.MIRRORED_SWAPPED,
-  'inverted,swapped': CAPType.SWAPPED_INVERTED,
-  'inverted,mirrored': CAPType.MIRRORED_INVERTED,
-  'rotated,swapped': CAPType.ROTATED_SWAPPED,
-  'inverted,rotated': CAPType.ROTATED_INVERTED,
-  'mirrored,rotated': CAPType.MIRRORED_ROTATED,
-  'inverted,mirrored,rotated': CAPType.MIRRORED_ROTATED_INVERTED,
-  'inverted,mirrored,swapped': CAPType.MIRRORED_SWAPPED_INVERTED,
+  rotated: CAPType.STRICT_ROTATED,
+  mirrored: CAPType.STRICT_MIRRORED,
+  swapped: CAPType.STRICT_SWAPPED,
+  inverted: CAPType.STRICT_INVERTED,
+  "mirrored,swapped": CAPType.MIRRORED_SWAPPED,
+  "inverted,swapped": CAPType.SWAPPED_INVERTED,
+  "inverted,mirrored": CAPType.MIRRORED_INVERTED,
+  "rotated,swapped": CAPType.ROTATED_SWAPPED,
+  "inverted,rotated": CAPType.ROTATED_INVERTED,
+  "mirrored,rotated": CAPType.MIRRORED_ROTATED,
+  "inverted,mirrored,rotated": CAPType.MIRRORED_ROTATED_INVERTED,
+  "inverted,mirrored,swapped": CAPType.MIRRORED_SWAPPED_INVERTED,
 };
 
 // Position maps for CAP detection
 const HALVED_CAPS = new Set([
-  'alpha1,alpha3', 'alpha3,alpha1', 'alpha2,alpha4', 'alpha4,alpha2',
-  'alpha5,alpha7', 'alpha7,alpha5', 'alpha6,alpha8', 'alpha8,alpha6',
-  'beta1,beta3', 'beta3,beta1', 'beta2,beta4', 'beta4,beta2',
-  'beta5,beta7', 'beta7,beta5', 'beta6,beta8', 'beta8,beta6',
-  'gamma1,gamma9', 'gamma9,gamma1', 'gamma3,gamma11', 'gamma11,gamma3',
-  'gamma5,gamma13', 'gamma13,gamma5', 'gamma7,gamma15', 'gamma15,gamma7',
+  "alpha1,alpha3",
+  "alpha3,alpha1",
+  "alpha2,alpha4",
+  "alpha4,alpha2",
+  "alpha5,alpha7",
+  "alpha7,alpha5",
+  "alpha6,alpha8",
+  "alpha8,alpha6",
+  "beta1,beta3",
+  "beta3,beta1",
+  "beta2,beta4",
+  "beta4,beta2",
+  "beta5,beta7",
+  "beta7,beta5",
+  "beta6,beta8",
+  "beta8,beta6",
+  "gamma1,gamma9",
+  "gamma9,gamma1",
+  "gamma3,gamma11",
+  "gamma11,gamma3",
+  "gamma5,gamma13",
+  "gamma13,gamma5",
+  "gamma7,gamma15",
+  "gamma15,gamma7",
 ]);
 
 const VERTICAL_MIRROR_MAP = {
-  'alpha1': 'alpha2', 'alpha2': 'alpha1', 'alpha3': 'alpha4', 'alpha4': 'alpha3',
-  'alpha5': 'alpha6', 'alpha6': 'alpha5', 'alpha7': 'alpha8', 'alpha8': 'alpha7',
-  'beta1': 'beta2', 'beta2': 'beta1', 'beta3': 'beta4', 'beta4': 'beta3',
-  'beta5': 'beta6', 'beta6': 'beta5', 'beta7': 'beta8', 'beta8': 'beta7',
-  'gamma1': 'gamma2', 'gamma2': 'gamma1', 'gamma3': 'gamma4', 'gamma4': 'gamma3',
+  alpha1: "alpha2",
+  alpha2: "alpha1",
+  alpha3: "alpha4",
+  alpha4: "alpha3",
+  alpha5: "alpha6",
+  alpha6: "alpha5",
+  alpha7: "alpha8",
+  alpha8: "alpha7",
+  beta1: "beta2",
+  beta2: "beta1",
+  beta3: "beta4",
+  beta4: "beta3",
+  beta5: "beta6",
+  beta6: "beta5",
+  beta7: "beta8",
+  beta8: "beta7",
+  gamma1: "gamma2",
+  gamma2: "gamma1",
+  gamma3: "gamma4",
+  gamma4: "gamma3",
 };
 
 const INVERTED_LETTER_MAP = {
-  'A': 'V', 'V': 'A',
-  'B': 'W', 'W': 'B',
-  'C': 'X', 'X': 'C',
-  'D': 'Y', 'Y': 'D',
-  'E': 'Z', 'Z': 'E',
-  'F': 'Σ', 'Σ': 'F',
-  'G': 'Δ', 'Δ': 'G',
-  'H': 'θ', 'θ': 'H',
-  'I': 'Ω', 'Ω': 'I',
+  A: "V",
+  V: "A",
+  B: "W",
+  W: "B",
+  C: "X",
+  X: "C",
+  D: "Y",
+  Y: "D",
+  E: "Z",
+  Z: "E",
+  F: "Σ",
+  Σ: "F",
+  G: "Δ",
+  Δ: "G",
+  H: "θ",
+  θ: "H",
+  I: "Ω",
+  Ω: "I",
 };
 
 /**
@@ -99,10 +144,10 @@ function extractBeats(sequence) {
   const rawSequence = sequence.fullMetadata.sequence;
 
   // Filter to get only beat objects (have 'letter' field, not metadata or start position)
-  const beats = rawSequence.filter(item => {
-    if (typeof item !== 'object' || item === null) return false;
-    if ('word' in item) return false; // Skip metadata entry
-    if ('sequence_start_position' in item) return false; // Skip start position
+  const beats = rawSequence.filter((item) => {
+    if (typeof item !== "object" || item === null) return false;
+    if ("word" in item) return false; // Skip metadata entry
+    if ("sequence_start_position" in item) return false; // Skip start position
     if (item.beat === 0) return false; // Skip start position
     return Boolean(item.letter);
   });
@@ -119,9 +164,11 @@ function getStartPosition(sequence) {
   const rawSequence = sequence.fullMetadata.sequence;
 
   // Find start position entry
-  const startEntry = rawSequence.find(item =>
-    (typeof item === 'object' && item !== null) &&
-    ('sequence_start_position' in item || item.beat === 0)
+  const startEntry = rawSequence.find(
+    (item) =>
+      typeof item === "object" &&
+      item !== null &&
+      ("sequence_start_position" in item || item.beat === 0)
   );
 
   if (!startEntry) return null;
@@ -159,17 +206,19 @@ function checkCircularity(sequence) {
   const rawSequence = sequence.fullMetadata.sequence;
 
   // Find start position entry (beat 0)
-  const startEntry = rawSequence.find(item =>
-    (typeof item === 'object' && item !== null) &&
-    ('sequence_start_position' in item || item.beat === 0)
+  const startEntry = rawSequence.find(
+    (item) =>
+      typeof item === "object" &&
+      item !== null &&
+      ("sequence_start_position" in item || item.beat === 0)
   );
 
   if (!startEntry?.end_pos) return false;
 
   // Find last beat (highest beat number that isn't the start)
-  const beats = rawSequence.filter(item =>
-    (typeof item === 'object' && item !== null) &&
-    item.beat > 0 && item.letter
+  const beats = rawSequence.filter(
+    (item) =>
+      typeof item === "object" && item !== null && item.beat > 0 && item.letter
   );
 
   if (beats.length === 0) return false;
@@ -219,7 +268,8 @@ function detectsSwapping(beats) {
 
   const halfLength = length / 2;
 
-  for (let i = 0; i < Math.min(halfLength, 2); i++) { // Check first 2 pairs
+  for (let i = 0; i < Math.min(halfLength, 2); i++) {
+    // Check first 2 pairs
     const firstBeat = beats[i];
     const secondBeat = beats[halfLength + i];
 
@@ -247,7 +297,8 @@ function detectsInversion(beats) {
 
   const halfLength = length / 2;
 
-  for (let i = 0; i < Math.min(halfLength, 2); i++) { // Check first 2 pairs
+  for (let i = 0; i < Math.min(halfLength, 2); i++) {
+    // Check first 2 pairs
     const firstBeat = beats[i];
     const secondBeat = beats[halfLength + i];
 
@@ -255,8 +306,12 @@ function detectsInversion(beats) {
 
     // Check letter inversion
     if (firstBeat.letter && secondBeat.letter) {
-      const expectedLetter = INVERTED_LETTER_MAP[firstBeat.letter.toUpperCase()];
-      if (expectedLetter && secondBeat.letter.toUpperCase() !== expectedLetter) {
+      const expectedLetter =
+        INVERTED_LETTER_MAP[firstBeat.letter.toUpperCase()];
+      if (
+        expectedLetter &&
+        secondBeat.letter.toUpperCase() !== expectedLetter
+      ) {
         return false;
       }
     }
@@ -269,7 +324,7 @@ function detectsInversion(beats) {
 function mapComponentsToCAPType(components) {
   if (components.size === 0) return null;
 
-  const sortedComponents = Array.from(components).sort().join(',');
+  const sortedComponents = Array.from(components).sort().join(",");
   return COMPONENT_TO_CAP_TYPE[sortedComponents] || null;
 }
 
@@ -308,16 +363,16 @@ function detectCAPType(sequence) {
 
 // Main migration function
 function migrateCapTypes(dryRun = false) {
-  console.log(`\n🔄 CAP Type Migration${dryRun ? ' (DRY RUN)' : ''}\n`);
+  console.log(`\n🔄 CAP Type Migration${dryRun ? " (DRY RUN)" : ""}\n`);
   console.log(`Reading from: ${SEQUENCE_INDEX_PATH}\n`);
 
   // Read the sequence index
   let data;
   try {
-    const content = readFileSync(SEQUENCE_INDEX_PATH, 'utf8');
+    const content = readFileSync(SEQUENCE_INDEX_PATH, "utf8");
     data = JSON.parse(content);
   } catch (err) {
-    console.error('Failed to read sequence-index.json:', err.message);
+    console.error("Failed to read sequence-index.json:", err.message);
     process.exit(1);
   }
 
@@ -351,11 +406,14 @@ function migrateCapTypes(dryRun = false) {
         // Count CAP types
         if (result.capType) {
           stats.withCapType++;
-          capTypeCounts[result.capType] = (capTypeCounts[result.capType] || 0) + 1;
+          capTypeCounts[result.capType] =
+            (capTypeCounts[result.capType] || 0) + 1;
         }
 
         // Update sequence
-        const needsUpdate = result.isCircular !== seq.isCircular || result.capType !== seq.capType;
+        const needsUpdate =
+          result.isCircular !== seq.isCircular ||
+          result.capType !== seq.capType;
 
         if (needsUpdate) {
           if (!dryRun) {
@@ -379,38 +437,42 @@ function migrateCapTypes(dryRun = false) {
       writeFileSync(SEQUENCE_INDEX_PATH, JSON.stringify(data, null, 2));
       console.log(`\n✅ Wrote changes to ${SEQUENCE_INDEX_PATH}`);
     } catch (err) {
-      console.error('Failed to write sequence-index.json:', err.message);
+      console.error("Failed to write sequence-index.json:", err.message);
       process.exit(1);
     }
   }
 
   // Print results
-  console.log('\n📊 Migration Results\n');
+  console.log("\n📊 Migration Results\n");
   console.log(`Total sequences:     ${stats.total}`);
   console.log(`Circular sequences:  ${stats.circular}`);
   console.log(`With CAP type:       ${stats.withCapType}`);
   console.log(`Already had CAP:     ${stats.alreadyHadCapType}`);
-  console.log(`${dryRun ? 'Would update' : 'Updated'}:        ${stats.updated}`);
+  console.log(
+    `${dryRun ? "Would update" : "Updated"}:        ${stats.updated}`
+  );
   console.log(`Errors:              ${stats.errors}`);
 
   if (Object.keys(capTypeCounts).length > 0) {
-    console.log('\n📈 CAP Type Distribution\n');
-    const sortedTypes = Object.entries(capTypeCounts).sort((a, b) => b[1] - a[1]);
+    console.log("\n📈 CAP Type Distribution\n");
+    const sortedTypes = Object.entries(capTypeCounts).sort(
+      (a, b) => b[1] - a[1]
+    );
     for (const [type, count] of sortedTypes) {
       console.log(`  ${type}: ${count}`);
     }
   }
 
   if (dryRun) {
-    console.log('\n⚠️  Dry run complete. No changes were made.');
-    console.log('Run without --dry-run to apply changes.\n');
+    console.log("\n⚠️  Dry run complete. No changes were made.");
+    console.log("Run without --dry-run to apply changes.\n");
   } else {
-    console.log('\n✅ Migration complete!\n');
+    console.log("\n✅ Migration complete!\n");
   }
 }
 
 // Parse command line args
 const args = process.argv.slice(2);
-const dryRun = args.includes('--dry-run');
+const dryRun = args.includes("--dry-run");
 
 migrateCapTypes(dryRun);

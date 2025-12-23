@@ -7,6 +7,7 @@ TKA Scribe now has a proper release workflow that separates production (public r
 ## The Two-Track System
 
 ### 1. **Production Branch** (`main`)
+
 - **What it is**: The stable, public-facing version
 - **Who sees it**: All users at https://tka.studio
 - **What's enabled**: Only modules marked as "released"
@@ -21,6 +22,7 @@ TKA Scribe now has a proper release workflow that separates production (public r
   - ❌ ML Training (admin only)
 
 ### 2. **Development Branch** (`develop` or any other branch)
+
 - **What it is**: Preview environment for testing
 - **Who sees it**: Developers, testers, and anyone with the preview URL
 - **What's enabled**: All features, including unreleased ones
@@ -42,21 +44,25 @@ User Access = Environment Visibility AND Role Permission
 #### Example Scenarios:
 
 **Scenario 1: Regular user on production**
+
 - Environment: Only Create, Discover, Feedback visible
 - Role: User (basic access)
 - Result: Can access Create, Discover, Feedback
 
 **Scenario 2: Tester on production**
+
 - Environment: Only Create, Discover, Feedback visible
 - Role: Tester (enhanced access)
 - Result: Can access Create, Discover, Feedback (same as regular user)
 
 **Scenario 3: Admin on production**
+
 - Environment: Only Create, Discover, Feedback visible
 - Role: Admin (full access)
 - Result: Can access all modules (environment restrictions don't apply to admins)
 
 **Scenario 4: Tester on development**
+
 - Environment: All modules visible
 - Role: Tester
 - Result: Can access all modules they have permission for
@@ -105,6 +111,7 @@ The deployment configuration is in `netlify.toml`:
    - Users will now see the new module on https://tka.studio
 
 ### Quick Release Checklist:
+
 - [ ] Feature tested on `develop` preview
 - [ ] Testers have approved the feature
 - [ ] Update `netlify.toml` production context
@@ -172,27 +179,32 @@ Every PR gets a deploy preview with full feature access.
 ## Testing Before Release
 
 ### For Testers:
+
 1. Share the deploy preview URL from your PR
 2. Testers can access all features on the preview
 3. Collect feedback before merging to main
 
 ### For Admins:
+
 - Can override role in development to test as different user types
 - `PUBLIC_ENABLE_ROLE_OVERRIDE=true` enables debug tools
 
 ## Private Alpha/Beta Testing
 
 ### Option A: Invite-Only via Netlify Identity
+
 - Configure Netlify Identity to "Invite only" mode
 - Only users you invite can create accounts
 - Works on both production and preview deployments
 
 ### Option B: Password-Protected Dev Site
+
 - Add site password in Netlify settings
 - Visitors must enter password to access any preview
 - Good for truly private testing
 
 ### Option C: Role-Based (Current System)
+
 - Testers sign in and get "tester" role
 - Access controlled by role permissions
 - Production and dev have different visibility
@@ -202,10 +214,10 @@ Every PR gets a deploy preview with full feature access.
 ### Checking Module Visibility:
 
 ```typescript
-import { featureFlagService } from '$lib/shared/auth/services/FeatureFlagService.svelte';
+import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
 
 // Checks both environment AND role
-const canAccessLearn = featureFlagService.canAccessModule('learn');
+const canAccessLearn = featureFlagService.canAccessModule("learn");
 ```
 
 ### The Check Flow:
@@ -230,6 +242,7 @@ canAccessModule('learn')
 ## Common Tasks
 
 ### Add a New Module:
+
 1. Create the module code
 2. Add to `MODULE_DEFINITIONS`
 3. Add environment flag to netlify.toml (set `"false"` in production initially)
@@ -238,28 +251,34 @@ canAccessModule('learn')
 6. When ready: Change flag to `"true"` in production context
 
 ### Temporarily Disable a Released Module:
+
 1. Edit `netlify.toml` → `[context.production]`
 2. Change module flag to `"false"`
 3. Deploy to main
 4. Module hidden from users (but still in code)
 
 ### Check What's Released:
+
 Look at `netlify.toml` → `[context.production]` → flags set to `"true"`
 
 ## Troubleshooting
 
 **Module not showing in production but visible in dev?**
+
 - Check `netlify.toml` → `[context.production]` → module flag should be `"true"`
 
 **Module showing for some users but not others?**
+
 - Check their role (user/tester/admin)
 - Environment visibility + role = final access
 
 **Need to test production config locally?**
+
 - Set `PUBLIC_ENVIRONMENT=production` in `.env.local`
 - Or create `.env.production.local` for production overrides
 
 **Deploy preview not showing new features?**
+
 - Verify `[context.deploy-preview]` has features enabled
 - Check Netlify build logs for environment variables
 

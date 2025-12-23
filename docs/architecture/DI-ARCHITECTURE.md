@@ -29,14 +29,15 @@ The Svelte compiler transforms your `.svelte` files into runtime code. You have 
 
 ### Available Options for Svelte
 
-| Approach | How it works | Trade-offs |
-|----------|--------------|------------|
-| `resolve(TYPES.X)` | Global service locator | Works everywhere, survives HMR, supports interfaces |
-| `getContext()` | Component-tree scoped | Only works within component tree, requires provider setup |
-| Props | Pass services as props | Doesn't scale, verbose, couples parent to child needs |
-| Module singletons | `export const service = new X()` | No interface abstraction, hard to test, no lazy loading |
+| Approach           | How it works                     | Trade-offs                                                |
+| ------------------ | -------------------------------- | --------------------------------------------------------- |
+| `resolve(TYPES.X)` | Global service locator           | Works everywhere, survives HMR, supports interfaces       |
+| `getContext()`     | Component-tree scoped            | Only works within component tree, requires provider setup |
+| Props              | Pass services as props           | Doesn't scale, verbose, couples parent to child needs     |
+| Module singletons  | `export const service = new X()` | No interface abstraction, hard to test, no lazy loading   |
 
 **We chose `resolve(TYPES.X)` because:**
+
 1. Services need to be shared across unrelated component trees
 2. HMR (Hot Module Replacement) requires container persistence
 3. Interface-based programming enables testing and substitution
@@ -50,15 +51,20 @@ For services depending on other services, Inversify provides **proper constructo
 
 ```typescript
 @injectable()
-export class AnimationPlaybackController implements IAnimationPlaybackController {
+export class AnimationPlaybackController
+  implements IAnimationPlaybackController
+{
   constructor(
-    @inject(TYPES.IAnimationStateService) private stateService: IAnimationStateService,
-    @inject(TYPES.IBeatCalculationService) private beatCalc: IBeatCalculationService
+    @inject(TYPES.IAnimationStateService)
+    private stateService: IAnimationStateService,
+    @inject(TYPES.IBeatCalculationService)
+    private beatCalc: IBeatCalculationService
   ) {}
 }
 ```
 
 This is textbook dependency injection. Dependencies are:
+
 - Declared explicitly in the constructor
 - Injected by the container at instantiation
 - Easily mockable in tests
@@ -69,7 +75,7 @@ At the boundary where Svelte components need services:
 
 ```svelte
 <script lang="ts">
-  import { resolve, TYPES } from '$shared/inversify';
+  import { resolve, TYPES } from "$shared/inversify";
 
   const animationService = resolve(TYPES.IAnimationPlaybackController);
 </script>
@@ -99,6 +105,7 @@ declare global {
 ```
 
 Without this, every code change would:
+
 1. Destroy the container
 2. Lose all instantiated services
 3. Break the running application
@@ -128,11 +135,11 @@ src/lib/shared/inversify/
 
 ```typescript
 // Preferred: Domain-specific import (clearer intent)
-import { AnimationTypes } from '$shared/inversify/types';
+import { AnimationTypes } from "$shared/inversify/types";
 const controller = resolve(AnimationTypes.IAnimationPlaybackController);
 
 // Also valid: Unified import (backward compatible)
-import { TYPES } from '$shared/inversify/types';
+import { TYPES } from "$shared/inversify/types";
 const controller = resolve(TYPES.IAnimationPlaybackController);
 ```
 

@@ -10,6 +10,7 @@ Analyze all TypeScript errors in the project and automatically determine the bes
 ## Workflow
 
 1. **Run TypeScript compiler** to get all errors:
+
    ```bash
    npx tsc --noEmit
    ```

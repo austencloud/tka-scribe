@@ -5,12 +5,14 @@
 We've consolidated 4 small CAP-related services into one cohesive `CAPParameterProvider`:
 
 **Consolidated Services:**
+
 - ✅ `InvertedLetterService` (22 lines)
 - ✅ `RotationDirectionService` (45 lines)
 - ✅ `TurnIntensityLevelService` (46 lines)
 - ✅ `TurnIntensityManagerService` (97 lines)
 
 **New Service:**
+
 - `CAPParameterProvider` (~300 lines)
 
 ---
@@ -20,6 +22,7 @@ We've consolidated 4 small CAP-related services into one cohesive `CAPParameterP
 ### Example 1: InvertedLetterService
 
 **❌ OLD CODE:**
+
 ```typescript
 import type { IInvertedLetterService } from "../contracts";
 
@@ -38,6 +41,7 @@ export class MirroredInvertedCAPExecutor {
 ```
 
 **✅ NEW CODE:**
+
 ```typescript
 import type { ICAPParameterProvider } from "../contracts";
 
@@ -56,6 +60,7 @@ export class MirroredInvertedCAPExecutor {
 ```
 
 **Changes:**
+
 1. Replace `IInvertedLetterService` → `ICAPParameterProvider`
 2. Replace `TYPES.IInvertedLetterService` → `TYPES.ICAPParameterProvider`
 3. Rename variable `invertedLetterService` → `capParams` (or any name you prefer)
@@ -66,6 +71,7 @@ export class MirroredInvertedCAPExecutor {
 ### Example 2: RotationDirectionService
 
 **❌ OLD CODE:**
+
 ```typescript
 import type { IRotationDirectionService } from "../contracts";
 
@@ -77,15 +83,17 @@ export class GenerationOrchestrationService {
   ) {}
 
   generateSequence(options: GenerationOptions) {
-    const directions = this.rotationDirectionService.determineRotationDirections(
-      options.propContinuity
-    );
+    const directions =
+      this.rotationDirectionService.determineRotationDirections(
+        options.propContinuity
+      );
     // ...
   }
 }
 ```
 
 **✅ NEW CODE:**
+
 ```typescript
 import type { ICAPParameterProvider } from "../contracts";
 
@@ -106,6 +114,7 @@ export class GenerationOrchestrationService {
 ```
 
 **Changes:**
+
 1. Replace `IRotationDirectionService` → `ICAPParameterProvider`
 2. Replace `TYPES.IRotationDirectionService` → `TYPES.ICAPParameterProvider`
 3. Rename variable `rotationDirectionService` → `capParams`
@@ -118,6 +127,7 @@ export class GenerationOrchestrationService {
 This service is special - it's instantiated directly with `new` because it needs runtime parameters.
 
 **❌ OLD CODE:**
+
 ```typescript
 // Dynamic instantiation with parameters
 const { TurnIntensityManagerService } = await import(
@@ -134,6 +144,7 @@ const allocation = turnManager.allocateTurnsForBlueAndRed();
 ```
 
 **✅ NEW CODE:**
+
 ```typescript
 // Use injected CAPParameterProvider instead
 @injectable()
@@ -156,6 +167,7 @@ export class PartialSequenceGenerator {
 ```
 
 **Changes:**
+
 1. Stop using `new TurnIntensityManagerService(...)`
 2. Inject `ICAPParameterProvider` instead
 3. Call `capParams.allocateTurns(wordLength, level, maxIntensity)`
@@ -166,6 +178,7 @@ export class PartialSequenceGenerator {
 ### Example 4: TurnIntensityLevelService (UI)
 
 **❌ OLD CODE:**
+
 ```typescript
 // For UI display of allowed turn values
 @injectable()
@@ -182,6 +195,7 @@ export class GeneratePanel {
 ```
 
 **✅ NEW CODE:**
+
 ```typescript
 @injectable()
 export class GeneratePanel {
@@ -197,6 +211,7 @@ export class GeneratePanel {
 ```
 
 **Changes:**
+
 1. Replace `TYPES.ITurnIntensityManagerService` → `TYPES.ICAPParameterProvider`
 2. Rename variable `turnIntensityService` → `capParams`
 3. Method name stays the same: `getAllowedTurnsForLevel()`
@@ -213,7 +228,9 @@ interface ICAPParameterProvider {
   getInvertedLetter(letter: string): string;
 
   // From RotationDirectionService
-  determineRotationDirections(propContinuity?: PropContinuity): RotationDirections;
+  determineRotationDirections(
+    propContinuity?: PropContinuity
+  ): RotationDirections;
 
   // From TurnIntensityLevelService
   getAllowedTurnsForLevel(level: DifficultyLevel): number[];
@@ -238,6 +255,7 @@ grep -r "IInvertedLetterService\|IRotationDirectionService\|ITurnIntensityManage
 ```
 
 **Expected files to update:**
+
 1. `MirroredInvertedCAPExecutor.ts`
 2. `MirroredSwappedInvertedCAPExecutor.ts`
 3. `RotatedInvertedCAPExecutor.ts`
@@ -268,9 +286,9 @@ If something breaks, the old services are still bound in the container:
 
 ```typescript
 // These still work during migration:
-resolve(TYPES.IInvertedLetterService)
-resolve(TYPES.IRotationDirectionService)
-resolve(TYPES.ITurnIntensityManagerService)
+resolve(TYPES.IInvertedLetterService);
+resolve(TYPES.IRotationDirectionService);
+resolve(TYPES.ITurnIntensityManagerService);
 ```
 
 You can gradually migrate files one at a time.

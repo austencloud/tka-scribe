@@ -25,6 +25,7 @@ git log $(git tag -l "v*" --sort=-version:refname | head -1)..HEAD --oneline --n
 Match feedback items with their corresponding commits where possible. Categorize as:
 
 ### User-Facing (include in changelog)
+
 - `feat:` / `feature:` - New features users will see
 - `fix:` / `bug:` - Bug fixes that affected user experience
 - `perf:` - Performance improvements users will notice
@@ -32,6 +33,7 @@ Match feedback items with their corresponding commits where possible. Categorize
 - Commits mentioning UI components, user flows, or visible behavior
 
 ### Internal (exclude from user changelog, but note for dev section)
+
 - `refactor:` - Code restructuring with no behavior change
 - `chore:` - Maintenance tasks, dependencies, tooling
 - `test:` - Test additions/changes

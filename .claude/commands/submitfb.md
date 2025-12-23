@@ -16,6 +16,7 @@ You are helping the user submit feedback to the TKA Scribe feedback tracking sys
    - **Subtasks**: If this is a complex feature, break it down into subtasks
 
 2. **Show the user what you're about to submit** in a clear format:
+
    ```
    📋 Feedback to Submit:
 
@@ -36,6 +37,7 @@ You are helping the user submit feedback to the TKA Scribe feedback tracking sys
 
 4. **Submit the feedback** using the `submit-feedback.js` script:
    - For simple feedback (no subtasks):
+
      ```bash
      node scripts/submit-feedback.js "Title" "Description" --type [type] --priority [priority] --module [module] --tab [tab]
      ```
@@ -68,6 +70,7 @@ You are helping the user submit feedback to the TKA Scribe feedback tracking sys
 ## Example Usage
 
 **Simple feature:**
+
 ```
 User: "We should add keyboard shortcuts for the animation panel"
 
@@ -90,6 +93,7 @@ Confirm submission? (yes/no)
 ```
 
 **Complex feature with subtasks:**
+
 ```
 User: "Let's build the video recording system we discussed"
 

@@ -34,6 +34,7 @@ When user needs environment management:
 ### Git Hook Awareness
 
 Git hooks automatically manage environment:
+
 - `post-checkout`: Auto-updates .env.local when switching branches
 - `pre-commit`: Warns when committing to production branches
 
@@ -53,12 +54,14 @@ This project uses **two-layer access control**:
 ### When User is Developing
 
 **Default assumptions:**
+
 - Working in development mode
 - All features should be accessible
 - `.env.local` should have development settings
 - No need to worry about production visibility
 
 **What to do:**
+
 - Help implement features freely
 - Don't restrict module access
 - Use full development environment
@@ -68,6 +71,7 @@ This project uses **two-layer access control**:
 **Trigger words:** `/release`, "push to production", "release to users", "make this live"
 
 **What to do:**
+
 1. Run: `node scripts/release-to-production.js`
 2. Guide through:
    - Current production status
@@ -81,11 +85,13 @@ This project uses **two-layer access control**:
 ### File Operations
 
 **When creating/editing code:**
+
 - Assume development mode
 - Don't add production-specific restrictions in code
 - Let environment system handle visibility
 
 **When editing netlify.toml:**
+
 - Only do this during `/release` workflow
 - Update `[context.production.environment]` section
 - Ask for confirmation before changing
@@ -109,12 +115,14 @@ node scripts/release-to-production.js
 ### Context Awareness
 
 **VSCode Workspace Indicators:**
+
 - If files are being edited → Development mode
 - If .env.local exists → Check its contents
 - If on `main` branch → Extra caution, might be release mode
 - If on feature/dev branch → Definitely development mode
 
 **User Intent Indicators:**
+
 - "Let's build..." → Development
 - "I want to add..." → Development
 - "Can you help me..." → Development
@@ -125,12 +133,14 @@ node scripts/release-to-production.js
 ### Error Prevention
 
 **Never:**
+
 - Suggest editing production code to hide features
 - Add environment checks in component code (use FeatureFlagService)
 - Modify netlify.toml without explicit release intent
 - Assume production mode when developing
 
 **Always:**
+
 - Ask for confirmation before production changes
 - Run preview tests before suggesting release
 - Use the proper release workflow
@@ -146,17 +156,17 @@ node scripts/release-to-production.js
 ### Example Interactions
 
 **User:** "Help me add a new feature to the Learn module"
-**Claude:** *Assumes development mode, helps freely*
+**Claude:** _Assumes development mode, helps freely_
 
 **User:** "This is ready to go live"
 **Claude:** "Great! Let's release this to production. I'll run the release workflow..."
-*Executes: `node scripts/release-to-production.js`*
+_Executes: `node scripts/release-to-production.js`_
 
 **User:** "Push to main"
 **Claude:** "Are you ready to release these changes to production? This will make them visible to all users. If yes, I'll start the release workflow."
 
 **User:** "/release"
-**Claude:** *Immediately runs: `node scripts/release-to-production.js`*
+**Claude:** _Immediately runs: `node scripts/release-to-production.js`_
 
 ### Smart Defaults
 
@@ -168,6 +178,7 @@ node scripts/release-to-production.js
 ### Integration with Existing Tools
 
 The release system integrates with:
+
 - Firebase Admin (for version management)
 - Git (for commits and tags)
 - Netlify (for deployments)

@@ -11,6 +11,7 @@ The TKA Scribe release system now has **full AI assistant integration**. Claude,
 AI assistants automatically detect your intent:
 
 **Development Mode** (default):
+
 - ✅ You're editing code in VSCode
 - ✅ You're on a feature/develop branch
 - ✅ You're asking to "build" or "add" something
@@ -19,6 +20,7 @@ AI assistants automatically detect your intent:
 **Result**: All modules visible, full development environment, help you build freely
 
 **Release Mode** (explicit):
+
 - ⚠️ You type `/release`
 - ⚠️ You say "push to production"
 - ⚠️ You want to "release to users"
@@ -51,12 +53,14 @@ AI: Starting feedback release flow...
 ```
 
 This runs `scripts/release.js --preview` which:
+
 1. Collects completed feedback items
 2. Generates changelog from feedback
 3. Shows preview for review
 4. Waits for confirmation to release
 
 The AI will:
+
 1. Run `node scripts/release-to-production.js`
 2. Show current production status
 3. Ask which modules to enable/disable
@@ -67,6 +71,7 @@ The AI will:
 ### Other Trigger Phrases
 
 The AI recognizes these as release intent:
+
 - "push to production"
 - "release to users"
 - "make this live"
@@ -107,6 +112,7 @@ Git hooks automatically manage your environment:
 ### post-checkout Hook
 
 When you switch branches:
+
 - Switches to `main/release` → Copies `.env.production` to `.env.local`
 - Switches to other branches → Copies `.env.development` to `.env.local`
 
@@ -122,6 +128,7 @@ git checkout develop
 ### pre-commit Hook
 
 When you commit:
+
 - Warns if you're on `main` or `release` branch
 - Reminds you that commits here are production changes
 
@@ -130,6 +137,7 @@ When you commit:
 ### Claude (via .claude/rules.md)
 
 Claude understands:
+
 - When you're developing (default)
 - When you want to release (`/release`)
 - How to guide you through production releases
@@ -138,6 +146,7 @@ Claude understands:
 ### GitHub Copilot (via .github/copilot-instructions.md)
 
 Copilot knows:
+
 - Development mode is default
 - `/release` triggers release workflow
 - Ask before making production changes
@@ -146,6 +155,7 @@ Copilot knows:
 ### Cursor (via .cursorrules)
 
 Cursor recognizes:
+
 - Auto-context detection
 - Smart command shortcuts
 - Development vs release intent
@@ -160,7 +170,7 @@ You: Help me add a new feature to the Learn module
 
 AI: Sure! I'll help you build that. Since we're in development mode,
     all modules are accessible. Let's start by...
-    
+
     [Helps you implement without restrictions]
 ```
 
@@ -191,14 +201,14 @@ AI: Let me check your current environment...
     🔍 Current Environment Status
     📍 Git Branch: develop
     ✅ DEVELOPMENT branch
-    
+
     🔧 .env.local: development
-    
+
     📦 Module Visibility:
     Create: ✅
     Learn: ✅
     Library: ✅
-    
+
     ✅ Development mode - All features enabled
 ```
 
@@ -209,7 +219,7 @@ You: Let's push this to main
 
 AI: ⚠️ WARNING: Pushing to main will deploy to production.
     Are you ready to release these changes to users?
-    
+
     If yes, I recommend using the /release command to properly
     update module visibility first.
 ```
@@ -299,6 +309,7 @@ netlify.toml              # Deployment config with module visibility
 ### AI Not Recognizing Commands
 
 Make sure you're using supported AI assistants:
+
 - Claude (via `.claude/rules.md`)
 - GitHub Copilot (via `.github/copilot-instructions.md`)
 - Cursor (via `.cursorrules`)
@@ -306,12 +317,14 @@ Make sure you're using supported AI assistants:
 ### Git Hooks Not Working
 
 Install husky:
+
 ```bash
 npm install
 # Husky hooks install automatically via postinstall
 ```
 
 Or manually:
+
 ```bash
 npx husky install
 ```
@@ -319,6 +332,7 @@ npx husky install
 ### Environment Not Switching
 
 Manually switch:
+
 ```bash
 npm run env:dev    # Development
 npm run env:prod   # Production simulation
@@ -327,6 +341,7 @@ npm run env:prod   # Production simulation
 ### AI Still Adding Production Checks
 
 Remind the AI:
+
 ```
 "Remember, I'm in development mode. Don't add production restrictions.
 Let the FeatureFlagService handle visibility."
@@ -391,6 +406,7 @@ You'll know the system is working when:
 ## Remember
 
 The goal is **zero mental overhead**:
+
 - Develop freely without thinking about production
 - Type `/release` when ready to go live
 - Everything else is automatic

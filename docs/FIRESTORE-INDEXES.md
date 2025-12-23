@@ -5,8 +5,10 @@ This project requires specific composite indexes for efficient querying.
 ## Required Indexes
 
 ### 1. Deferred Feedback Reactivation
+
 **Collection:** `feedback`
 **Fields:**
+
 - `status` (Ascending)
 - `deferredUntil` (Ascending)
 
@@ -29,6 +31,7 @@ Index creation takes a few minutes. Once complete, the script will work.
 ## Why Indexes Are Needed
 
 Firestore requires composite indexes for queries that:
+
 1. Use multiple `where()` clauses
 2. Combine `where()` with `orderBy()`
 
@@ -37,6 +40,7 @@ Our deferred feedback query uses both `status == 'archived'` AND `deferredUntil 
 ## Verifying Indexes
 
 Check active indexes:
+
 ```bash
 # View in Firebase Console
 https://console.firebase.google.com/project/the-kinetic-alphabet/firestore/indexes
@@ -48,6 +52,7 @@ firebase firestore:indexes
 ## Future Indexes
 
 As the project grows, you may need additional indexes for:
+
 - Complex feedback filtering
 - Release history queries
 - User activity tracking

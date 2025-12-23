@@ -17,7 +17,7 @@ Dependency Injection (DI) is a design pattern where a class receives its depende
 ```typescript
 class OrderService {
   private emailService: EmailService;
-  
+
   constructor() {
     this.emailService = new EmailService(); // Creates its own dependency
   }
@@ -49,7 +49,7 @@ The Service Locator pattern is when code requests dependencies from a central re
 ```typescript
 class OrderService {
   private emailService: EmailService | null = null;
-  
+
   async doWork() {
     // Fetches dependency when needed, hidden from callers
     this.emailService = resolve(TYPES.IEmailService);
@@ -60,11 +60,11 @@ class OrderService {
 
 ### Why Service Locator Defeats DI's Purpose
 
-| DI Benefit | How Service Locator Defeats It |
-|------------|-------------------------------|
-| **Visible Dependencies** | Dependencies are hidden inside method bodies. You can't see what a class needs by looking at its constructor. |
-| **Compile-Time Safety** | Errors only occur at runtime when `resolve()` is called. If a service isn't bound, you won't know until the app crashes. |
-| **Testability** | Tests must set up the entire DI container or mock the global `resolve()` function. You can't just pass in a mock through the constructor. |
+| DI Benefit               | How Service Locator Defeats It                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Visible Dependencies** | Dependencies are hidden inside method bodies. You can't see what a class needs by looking at its constructor.                             |
+| **Compile-Time Safety**  | Errors only occur at runtime when `resolve()` is called. If a service isn't bound, you won't know until the app crashes.                  |
+| **Testability**          | Tests must set up the entire DI container or mock the global `resolve()` function. You can't just pass in a mock through the constructor. |
 
 ---
 
@@ -73,6 +73,7 @@ class OrderService {
 ### The Mega-Registry Problem
 
 **File:** `src/lib/shared/inversify/types.ts`
+
 - **558 lines** containing ~280 Symbol definitions
 - Every feature in the app imports from this one file
 - No module boundaries - everything depends on everything
@@ -80,6 +81,7 @@ class OrderService {
 ### The resolve() Proliferation
 
 A grep search for `resolve(TYPES.` found **50+ occurrences** scattered throughout:
+
 - Service implementations
 - Svelte components
 - Lifecycle initializers
@@ -90,7 +92,9 @@ A grep search for `resolve(TYPES.` found **50+ occurrences** scattered throughou
 
 ```typescript
 @injectable()
-export class CreateModuleInitializationService implements ICreateModuleInitializationService {
+export class CreateModuleInitializationService
+  implements ICreateModuleInitializationService
+{
   // 12+ nullable fields - a code smell
   private sequenceService: ISequenceService | null = null;
   private beatMutationService: IBeatMutationService | null = null;
@@ -111,7 +115,7 @@ export class CreateModuleInitializationService implements ICreateModuleInitializ
     // ... more resolve() calls
 
     return {
-      sequenceService: this.sequenceService!,  // Bang assertions everywhere
+      sequenceService: this.sequenceService!, // Bang assertions everywhere
       beatMutationService: this.beatMutationService!,
       // ...
     };
@@ -134,7 +138,8 @@ export class CreateModuleInitializationService implements ICreateModuleInitializ
 @injectable()
 export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   constructor(
-    @inject(TYPES.ICAPGeneratorFactory) private generatorFactory: ICAPGeneratorFactory,
+    @inject(TYPES.ICAPGeneratorFactory)
+    private generatorFactory: ICAPGeneratorFactory,
     @inject(TYPES.IBeatFactory) private beatFactory: IBeatFactory,
     @inject(TYPES.ILoggingService) private loggingService: ILoggingService
   ) {}
@@ -154,7 +159,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 Three separate classes do similar initialization work:
 
 1. `CreateModuleInitializationService.ts` - 300 lines
-2. `CreateModuleInitializer.ts` - 263 lines  
+2. `CreateModuleInitializer.ts` - 263 lines
 3. `ServiceInitializer.ts` - Unknown
 
 This violates DRY (Don't Repeat Yourself) and creates confusion about which is canonical.
@@ -177,6 +182,7 @@ This couples UI components directly to the DI container. Components should recei
 ### Hidden Bugs
 
 With Service Locator, you can have code that:
+
 - Compiles successfully
 - Passes type checking
 - Runs fine in development
@@ -188,7 +194,10 @@ To unit test a service that uses `resolve()`:
 
 ```typescript
 // You can't do this:
-const service = new CreateModuleInitializationService(mockSequenceService, mockBeatService);
+const service = new CreateModuleInitializationService(
+  mockSequenceService,
+  mockBeatService
+);
 
 // You have to do this:
 beforeEach(() => {
@@ -202,6 +211,7 @@ beforeEach(() => {
 ### Maintenance Burden
 
 When you see a class with an empty constructor and 12 nullable private fields, you have no idea:
+
 - What this class actually needs
 - Whether those fields are ever null
 - What order the initialization must happen in
@@ -215,6 +225,7 @@ When you see a class with an empty constructor and 12 nullable private fields, y
 **Goal:** Understand the actual dependency relationships before changing anything.
 
 **Actions:**
+
 1. List all `resolve(TYPES.*)` call sites
 2. For each call site, document:
    - Which class contains the call
@@ -235,7 +246,7 @@ When you see a class with an empty constructor and 12 nullable private fields, y
 @injectable()
 export class CreateModuleInitializationService {
   private sequenceService: ISequenceService | null = null;
-  
+
   async initialize() {
     this.sequenceService = resolve(TYPES.ISequenceService);
     return { sequenceService: this.sequenceService! };
@@ -250,7 +261,8 @@ export class CreateModuleInitializationService {
 export class CreateModuleInitializationService {
   constructor(
     @inject(TYPES.ISequenceService) private sequenceService: ISequenceService,
-    @inject(TYPES.IBeatMutationService) private beatMutationService: IBeatMutationService,
+    @inject(TYPES.IBeatMutationService)
+    private beatMutationService: IBeatMutationService
     // ... all dependencies listed here
   ) {}
 
@@ -265,6 +277,7 @@ export class CreateModuleInitializationService {
 ```
 
 **Key Changes:**
+
 - All dependencies in constructor with `@inject()` decorators
 - No nullable fields
 - No `!` assertions
@@ -293,9 +306,9 @@ src/lib/shared/inversify/types.ts  // Only truly shared symbols
 
 ```typescript
 export const CREATE_TYPES = {
-  ISequenceService: Symbol.for('ISequenceService'),
-  IBeatMutationService: Symbol.for('IBeatMutationService'),
-  IBeatSelectionService: Symbol.for('IBeatSelectionService'),
+  ISequenceService: Symbol.for("ISequenceService"),
+  IBeatMutationService: Symbol.for("IBeatMutationService"),
+  IBeatSelectionService: Symbol.for("IBeatSelectionService"),
   // Only symbols used by the Create feature
 };
 ```
@@ -312,7 +325,9 @@ export const CREATE_TYPES = {
 // src/lib/features/create/inversify/create.module.ts
 export const createModule = new ContainerModule((bind) => {
   bind(CREATE_TYPES.ISequenceService).to(SequenceService).inSingletonScope();
-  bind(CREATE_TYPES.IBeatMutationService).to(BeatMutationService).inSingletonScope();
+  bind(CREATE_TYPES.IBeatMutationService)
+    .to(BeatMutationService)
+    .inSingletonScope();
   // Only Create feature bindings
 });
 ```
@@ -326,7 +341,9 @@ container.load(sharedModule);
 
 // Feature modules loaded on-demand
 export async function loadCreateFeature() {
-  const { createModule } = await import('../../features/create/inversify/create.module');
+  const { createModule } = await import(
+    "../../features/create/inversify/create.module"
+  );
   container.load(createModule);
 }
 ```
@@ -339,7 +356,7 @@ export async function loadCreateFeature() {
 
 ```typescript
 // In src/lib/shared/pictograph/...
-import { SomeType } from '../../features/create/...';  // BAD: shared imports from feature
+import { SomeType } from "../../features/create/..."; // BAD: shared imports from feature
 ```
 
 **Solution:**
@@ -356,7 +373,7 @@ import { SomeType } from '../../features/create/...';  // BAD: shared imports fr
 
 ```svelte
 <script>
-  import { resolve, TYPES } from '$lib/shared/inversify/di';
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   const service = resolve(TYPES.ISomeService);
 </script>
 ```
@@ -368,7 +385,7 @@ import { SomeType } from '../../features/create/...';  // BAD: shared imports fr
 <script>
   import { setContext } from 'svelte';
   import { resolve, TYPES } from '$lib/shared/inversify/di';
-  
+
   // Resolve once at the top level
   setContext('sequenceService', resolve(TYPES.ISequenceService));
 </script>
@@ -385,6 +402,7 @@ import { SomeType } from '../../features/create/...';  // BAD: shared imports fr
 **Goal:** One initializer class per feature, not three.
 
 **Actions:**
+
 1. Compare `CreateModuleInitializationService`, `CreateModuleInitializer`, and `ServiceInitializer`
 2. Identify the canonical one (probably the most complete)
 3. Migrate any unique functionality to the canonical one
@@ -422,15 +440,15 @@ Phase 1 (investigation) should happen before Phase 2 to understand the scope.
 
 ## Appendix: Key Files to Examine
 
-| File | Purpose | Lines |
-|------|---------|-------|
-| `src/lib/shared/inversify/types.ts` | Central symbol registry | 558 |
-| `src/lib/shared/inversify/di.ts` | resolve() function | ~250 |
-| `src/lib/shared/inversify/container.ts` | Container configuration | ~400 |
-| `src/lib/features/create/shared/services/implementations/CreateModuleInitializationService.ts` | Main offender | 300 |
-| `src/lib/features/create/shared/lifecycle/CreateModuleInitializer.ts` | Duplicate initializer | 263 |
-| `src/lib/features/create/shared/services/ServiceInitializer.ts` | Another duplicate | Unknown |
-| `src/lib/features/create/generate/circular/services/implementations/PartialSequenceGenerator.ts` | Good example of proper DI | ~100 |
+| File                                                                                             | Purpose                   | Lines   |
+| ------------------------------------------------------------------------------------------------ | ------------------------- | ------- |
+| `src/lib/shared/inversify/types.ts`                                                              | Central symbol registry   | 558     |
+| `src/lib/shared/inversify/di.ts`                                                                 | resolve() function        | ~250    |
+| `src/lib/shared/inversify/container.ts`                                                          | Container configuration   | ~400    |
+| `src/lib/features/create/shared/services/implementations/CreateModuleInitializationService.ts`   | Main offender             | 300     |
+| `src/lib/features/create/shared/lifecycle/CreateModuleInitializer.ts`                            | Duplicate initializer     | 263     |
+| `src/lib/features/create/shared/services/ServiceInitializer.ts`                                  | Another duplicate         | Unknown |
+| `src/lib/features/create/generate/circular/services/implementations/PartialSequenceGenerator.ts` | Good example of proper DI | ~100    |
 
 ---
 
@@ -442,10 +460,10 @@ Phase 1 (investigation) should happen before Phase 2 to understand the scope.
 @injectable()
 class MyService {
   private dep: IDependency | null = null;
-  
+
   doWork() {
-    this.dep = resolve(TYPES.IDependency);  // BAD
-    this.dep!.something();  // BAD: bang assertion
+    this.dep = resolve(TYPES.IDependency); // BAD
+    this.dep!.something(); // BAD: bang assertion
   }
 }
 ```
@@ -455,12 +473,10 @@ class MyService {
 ```typescript
 @injectable()
 class MyService {
-  constructor(
-    @inject(TYPES.IDependency) private dep: IDependency
-  ) {}
-  
+  constructor(@inject(TYPES.IDependency) private dep: IDependency) {}
+
   doWork() {
-    this.dep.something();  // GOOD: always available, no assertion needed
+    this.dep.something(); // GOOD: always available, no assertion needed
   }
 }
 ```

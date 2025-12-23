@@ -8,6 +8,7 @@ allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, mcp__playwright__brows
 **Arguments:** `$ARGUMENTS`
 
 Supports optional priority filter:
+
 - `/fb` - claim next item (highest priority first)
 - `/fb low` - claim next LOW priority item (quick wins)
 - `/fb medium` - claim next MEDIUM priority item
@@ -18,6 +19,7 @@ Supports optional priority filter:
 Users may use vague or incorrect terminology. Here's the actual structure:
 
 **Modules** (main nav items):
+
 - `create` - Build sequences (tabs: assembler, constructor, generator)
 - `discover` - Browse sequences (tabs: gallery, collections, creators)
 - `compose` - Animate sequences (tabs: arrange, browse)
@@ -28,6 +30,7 @@ Users may use vague or incorrect terminology. Here's the actual structure:
 - `dashboard` - Home/launcher
 
 **Common user confusions:**
+
 - "main screen" / "home" → likely `discover` gallery or `dashboard`
 - "my sequences" / "saved" → `discover/gallery` with "My Library" scope toggle
 - "practice mode" / "camera thing" → `train`
@@ -38,9 +41,10 @@ Users may use vague or incorrect terminology. Here's the actual structure:
 
 ## Workflow
 
-Run `node fetch-feedback.js $ARGUMENTS` to auto-claim the next unclaimed feedback item.
+Run `scripts/node fetch-feedback.js $ARGUMENTS` to auto-claim the next unclaimed feedback item.
 
 The script will:
+
 1. Find the oldest feedback with status "new"
 2. Mark it as "in-progress" with a timestamp (so other agents skip it)
 3. Output the full details for you to work on
@@ -114,7 +118,9 @@ After displaying feedback, **immediately assess complexity** to route to the mos
 Evaluate the feedback against these criteria:
 
 #### TRIVIAL → Delegate to Haiku (1/10th token cost)
+
 **Indicators:**
+
 - Keywords: "tiny", "small", "quick", "just", "simple", "swap", "change"
 - Icon or text changes
 - CSS tweaks (colors, spacing, sizing, overflow fixes)
@@ -124,6 +130,7 @@ Evaluate the feedback against these criteria:
 - String/label updates
 
 **Examples:**
+
 - "Change the icon for X to Y"
 - "The text spills over" (CSS overflow)
 - "Cap the value at 3"
@@ -131,7 +138,9 @@ Evaluate the feedback against these criteria:
 - "Apply the same styling as X to Y"
 
 #### MEDIUM → Delegate to Sonnet (1/3rd token cost)
+
 **Indicators:**
+
 - Clear bug with specific reproduction steps
 - Feature scoped to 1-3 files
 - "When X happens, do Y" patterns
@@ -141,13 +150,16 @@ Evaluate the feedback against these criteria:
 - Event handler fixes
 
 **Examples:**
+
 - "When I click X, nothing happens"
 - "The panel doesn't close when..."
 - "Add a clear button to the form"
 - "Filter not persisting correctly"
 
 #### COMPLEX → Handle directly with Opus
+
 **Indicators:**
+
 - Keywords: "Dashboard", "System", "Architecture", "Authentication"
 - Multi-module coordination
 - Security/auth features
@@ -158,6 +170,7 @@ Evaluate the feedback against these criteria:
 - Policy/UX decisions needed
 
 **Examples:**
+
 - "Add Two-Factor Authentication"
 - "Admin monitoring dashboard"
 - "Rethink how X works"
@@ -174,6 +187,7 @@ Evaluate the feedback against these criteria:
 ```
 
 **Example:**
+
 ```
 **Complexity Assessment:** TRIVIAL
 **Model Routing:** Delegating to Haiku
@@ -189,12 +203,14 @@ Evaluate the feedback against these criteria:
 3. **ASK FOR EXPLICIT CONFIRMATION** - "Should I proceed?" or "Would you like me to implement this?"
 
 **DO NOT:**
+
 - Start working without confirmation
 - Delegate to a subagent without confirmation
 - Assume approval based on the feedback being in the queue
 - Skip this step for "simple" tasks
 
 **Example:**
+
 ```
 Based on this feedback, I understand you want to change the submit button icon from "send" to "paper airplane". This seems straightforward and should improve the visual metaphor for submission.
 
@@ -204,7 +220,9 @@ Should I proceed with delegating this to Haiku?
 ### Step 4: Execute Based on Triage (Only After Confirmation)
 
 #### For TRIVIAL tasks (DELEGATE to Haiku):
+
 **DO NOT implement yourself.** Use the Task tool with:
+
 ```
 Task tool parameters:
 - subagent_type: "general-purpose"
@@ -219,7 +237,9 @@ Task tool parameters:
 ```
 
 #### For MEDIUM tasks (DELEGATE to Sonnet):
+
 **DO NOT implement yourself.** Use the Task tool with:
+
 ```
 Task tool parameters:
 - subagent_type: "general-purpose"
@@ -235,17 +255,20 @@ Task tool parameters:
 ```
 
 #### For COMPLEX tasks (Handle as Opus):
+
 **DO NOT delegate.** Handle directly following the Standard Workflow below.
 
 ### Step 5: Review Delegated Results (TRIVIAL/MEDIUM only)
 
 When a Haiku/Sonnet agent completes:
+
 1. Read their implementation summary
 2. Verify approach is sound (spot-check key changes)
 3. If good: Confirm completion to user, offer to mark complete
 4. If issues: Either fix them yourself or re-delegate with corrections
 
 **DO NOT:**
+
 - Re-implement trivial changes yourself "just to be sure"
 - Spend more tokens reviewing than the task itself would have cost
 - Delegate upward (don't send Haiku tasks to Sonnet)
@@ -255,6 +278,7 @@ When a Haiku/Sonnet agent completes:
 ## Standard Workflow (for COMPLEX items handled as Opus)
 
 **Note:** If you reached this section, you already:
+
 1. Completed Model Triage and determined this is a COMPLEX task requiring Opus
 2. Got user confirmation to proceed
 
@@ -292,6 +316,7 @@ When a Haiku/Sonnet agent completes:
 
 6. **Move to review and add resolution notes:**
    After implementation, move to `in-review` with brief admin notes:
+
    ```
    node fetch-feedback.js <document-id> in-review "Fixed card height overflow in Kanban board"
    ```
@@ -317,6 +342,7 @@ When a Haiku/Sonnet agent completes:
    - **Visibility:** Shown to all users who submitted the feedback
 
    **When to add resolution notes:**
+
    ```bash
    # User-facing feature (needs resolution notes)
    node fetch-feedback.js <id> in-review "Fixed gallery card overflow"
@@ -344,33 +370,39 @@ When a Haiku/Sonnet agent completes:
    This gives the user a chance to test first and verify it actually works.
 
 8. **When user confirms the fix works:**
-    Only after the user confirms, mark as completed:
-    ```
-    node fetch-feedback.js <document-id> completed "Verified working"
-    ```
+   Only after the user confirms, mark as completed:
 
-    **Workflow context:**
-    - `completed` items are staged for the next release
-    - They stay visible in the "completed" column until `/release` is run
-    - When `/release` runs, they're archived and tagged with the version number
-    - This lets you batch multiple fixes into one release
+   ```
+   node fetch-feedback.js <document-id> completed "Verified working"
+   ```
+
+   **Workflow context:**
+   - `completed` items are staged for the next release
+   - They stay visible in the "completed" column until `/release` is run
+   - When `/release` runs, they're archived and tagged with the version number
+   - This lets you batch multiple fixes into one release
 
 ### Complex feedback with subtasks
+
 When you claim feedback that's too large to implement directly (requires multiple prerequisites, infrastructure changes, or multi-sprint work):
 
 1. **Break it down into subtasks** instead of deferring:
+
    ```
    node fetch-feedback.js <id> subtask add "Short title" "What needs to be done"
    ```
 
 2. **Specify dependencies** if subtasks must be done in order:
+
    ```
    node fetch-feedback.js <id> subtask add "Step 2" "Description" 1
    node fetch-feedback.js <id> subtask add "Step 3" "Description" 1 2
    ```
+
    (The numbers at the end are IDs of subtasks this depends on)
 
 3. **Update subtask status** as you work:
+
    ```
    node fetch-feedback.js <id> subtask 1 in-progress
    node fetch-feedback.js <id> subtask 1 completed
@@ -384,6 +416,7 @@ When you claim feedback that's too large to implement directly (requires multipl
 The feedback stays in the queue. When agents claim it, they see the subtasks and can work on the next available one (pending with all dependencies completed).
 
 ### Archiving without releasing
+
 When feedback won't be implemented, move directly to `archived` with a clear reason:
 
 ```bash
@@ -403,6 +436,7 @@ node fetch-feedback.js <id> archived "Cannot reproduce: Needs more details"
 **Important:** Archived items bypass the release process. They don't get a `fixedInVersion` tag and won't appear in What's New. Use this for items that are closed but not shipped.
 
 ### Deferring to a future date
+
 **NEW:** Instead of archiving permanently, defer items with automatic reactivation:
 
 ```bash
@@ -413,12 +447,14 @@ node fetch-feedback.js <id> defer "2026-01-15" "Low priority, defer 6 weeks"
 ```
 
 **How it works:**
+
 1. Item moves to `archived` status with `deferredUntil` timestamp
 2. Daily cron job (GitHub Actions) runs `scripts/reactivate-deferred.js`
 3. When date arrives, item automatically moves back to `new` status
 4. You can manually trigger: `node scripts/reactivate-deferred.js`
 
 **Preview deferred items:**
+
 ```bash
 node scripts/reactivate-deferred.js --dry-run
 ```
@@ -426,12 +462,14 @@ node scripts/reactivate-deferred.js --dry-run
 Shows what will reactivate without making changes.
 
 **Why use defer instead of archive:**
+
 - Items resurface automatically - you don't forget about them
 - Clear timeline expectations ("revisit in 3 months")
 - Keeps backlog clean while preserving valid feedback
 - Don't defer things you'll never do - use `archived` for permanent closure
 
 ### Other commands
+
 - `node fetch-feedback.js list` - See queue status
 - `node fetch-feedback.js <id>` - View a specific item by document ID
 - `node fetch-feedback.js <id> title "short title"` - Update title
@@ -441,9 +479,11 @@ Shows what will reactivate without making changes.
 - `node scripts/release.js --show-last` - View what shipped in last release
 
 ### Stale claims
+
 If a feedback item has been "in-progress" for over 2 hours, it's considered stale and will be auto-reclaimed by the next agent that runs `/fb`.
 
 ### Status values (4 columns matching Kanban board)
+
 - `new` - Unclaimed, ready to be picked up
 - `in-progress` - Being worked on
 - `in-review` - Done, waiting for tester confirmation
@@ -458,6 +498,7 @@ If a feedback item has been "in-progress" for over 2 hours, it's considered stal
 **Feedback:** "The feedback submit button icon should be a paper airplane instead of a send icon"
 
 **Triage Decision:**
+
 ```
 Complexity Assessment: TRIVIAL
 Model Routing: Delegating to Haiku
@@ -465,6 +506,7 @@ Reasoning: Simple icon swap in a single component. No logic changes.
 ```
 
 **Confirmation Step:**
+
 ```
 This is a straightforward icon change in the feedback submit button. Changing from a "send" icon to a "paper airplane" icon should improve the visual metaphor for submission. This is a purely cosmetic change with no logic implications.
 
@@ -472,6 +514,7 @@ Should I proceed with delegating this to Haiku?
 ```
 
 **Action (after user confirms):**
+
 ```typescript
 Task({
   subagent_type: "general-purpose",
@@ -488,8 +531,8 @@ Task({
 
     After completing, run:
     node fetch-feedback.js abc123 in-review "Changed submit button icon to paper airplane"
-  `
-})
+  `,
+});
 ```
 
 ### Example 2: MEDIUM → Delegate to Sonnet
@@ -497,6 +540,7 @@ Task({
 **Feedback:** "When I close the feedback panel, it should save my draft automatically"
 
 **Triage Decision:**
+
 ```
 Complexity Assessment: MEDIUM
 Model Routing: Delegating to Sonnet
@@ -504,6 +548,7 @@ Reasoning: Clear feature request. Requires state management and persistence logi
 ```
 
 **Confirmation Step:**
+
 ```
 This is a quality-of-life improvement that prevents users from losing their work when they accidentally close the feedback panel. The implementation would involve:
 - Persisting draft text to localStorage on panel close
@@ -514,6 +559,7 @@ This is a good UX enhancement with clear scope. Should I proceed with delegating
 ```
 
 **Action (after user confirms):**
+
 ```typescript
 Task({
   subagent_type: "general-purpose",
@@ -543,8 +589,8 @@ Task({
 
     After completing, run:
     node fetch-feedback.js def456 in-review "Added auto-save for feedback drafts"
-  `
-})
+  `,
+});
 ```
 
 ### Example 3: COMPLEX → Handle as Opus
@@ -552,6 +598,7 @@ Task({
 **Feedback:** "I've been thinking about how users discover new features. We should add a What's New notification system that shows release notes in-app when users log in after an update."
 
 **Triage Decision:**
+
 ```
 Complexity Assessment: COMPLEX
 Model Routing: Handling as Opus
@@ -559,6 +606,7 @@ Reasoning: Ambiguous requirements, multi-module feature (auth, settings, notific
 ```
 
 **Confirmation Step:**
+
 ```
 This is a significant feature that would help users stay informed about new capabilities. However, there are several architectural decisions to make:
 
