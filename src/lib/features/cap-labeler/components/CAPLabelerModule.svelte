@@ -31,6 +31,7 @@
   import WholeModePanel from "./panels/WholeModePanel.svelte";
   import NotesInput from "./shared/NotesInput.svelte";
   import SequenceBrowserDrawer from "./shared/SequenceBrowserDrawer.svelte";
+  import SequenceBrowserSidebar from "./shared/SequenceBrowserSidebar.svelte";
 
   // Lifecycle
   let isReady = $state(false);
@@ -300,6 +301,21 @@
     await capLabelerState.deleteLabel(currentSequence.word);
   }
 
+  async function handleConfirmAutoLabel() {
+    if (!currentSequence || !currentLabel) return;
+
+    // Confirm the auto-label by removing the verification flag
+    const confirmedLabel = {
+      ...currentLabel,
+      needsVerification: false,
+      autoLabeled: true, // Keep this for tracking
+      labeledAt: new Date().toISOString(),
+    };
+
+    await capLabelerState.saveLabel(confirmedLabel);
+    capLabelerState.nextSequence();
+  }
+
   // Keyboard event handling (shift key for section selection)
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === "Shift" && labelingMode === "section" && sectionState) {
@@ -330,31 +346,44 @@
   </div>
 {:else}
   <div class="cap-labeler-module">
-    <CAPLabelerHeader
-      {stats}
-      {filterMode}
-      onFilterChange={handleFilterChange}
-      onExportToggle={() => capLabelerState.setShowExport(!showExport)}
-      onExportLabels={() => capLabelerState.exportLabels()}
-      onImportFile={(file) => capLabelerState.importLabels(file)}
-      onSyncLocalStorage={() => capLabelerState.syncLocalStorageToFirebase()}
-      {showExport}
-      {syncStatus}
-      sequences={capLabelerState.circularSequences}
-      onJumpToSequence={(id) => capLabelerState.jumpToSequence(id)}
-      onOpenBrowser={() => (showBrowserDrawer = true)}
-    />
+    <div class="layout-container">
+      <!-- Left sidebar - visible on wide screens only -->
+      <SequenceBrowserSidebar
+        sequences={capLabelerState.circularSequences}
+        labels={capLabelerState.labels}
+        currentSequenceId={currentSequence?.id ?? null}
+        {filterMode}
+        onSelectSequence={(id) => capLabelerState.jumpToSequence(id)}
+        onFilterChange={handleFilterChange}
+      />
 
-    <SequenceBrowserDrawer
-      isOpen={showBrowserDrawer}
-      sequences={capLabelerState.circularSequences}
-      labels={capLabelerState.labels}
-      currentSequenceId={currentSequence?.id ?? null}
-      onClose={() => (showBrowserDrawer = false)}
-      onSelectSequence={(id) => capLabelerState.jumpToSequence(id)}
-    />
+      <!-- Main content area -->
+      <div class="main-area">
+        <CAPLabelerHeader
+          {stats}
+          {filterMode}
+          onFilterChange={handleFilterChange}
+          onExportToggle={() => capLabelerState.setShowExport(!showExport)}
+          onExportLabels={() => capLabelerState.exportLabels()}
+          onImportFile={(file) => capLabelerState.importLabels(file)}
+          onSyncLocalStorage={() => capLabelerState.syncLocalStorageToFirebase()}
+          {showExport}
+          {syncStatus}
+          sequences={capLabelerState.circularSequences}
+          onJumpToSequence={(id) => capLabelerState.jumpToSequence(id)}
+          onOpenBrowser={() => (showBrowserDrawer = true)}
+        />
 
-    <div class="main-content">
+        <SequenceBrowserDrawer
+          isOpen={showBrowserDrawer}
+          sequences={capLabelerState.circularSequences}
+          labels={capLabelerState.labels}
+          currentSequenceId={currentSequence?.id ?? null}
+          onClose={() => (showBrowserDrawer = false)}
+          onSelectSequence={(id) => capLabelerState.jumpToSequence(id)}
+        />
+
+        <div class="main-content">
       <!-- Left panel: Sequence preview and beat grid -->
       <SequencePreviewPanel
         sequence={currentSequence}
@@ -382,6 +411,8 @@
           sectionDesignations={sectionState?.savedSections ?? []}
           beatPairDesignations={beatPairState?.savedBeatPairs ?? []}
           isFreeform={wholeState?.isFreeform ?? false}
+          needsVerification={currentLabel?.needsVerification ?? false}
+          autoDetectedDesignations={currentLabel?.designations ?? []}
           onRemoveWholeDesignation={handleRemoveDesignation}
           onRemoveSectionDesignation={handleRemoveSection}
           onRemoveBeatPairDesignation={handleRemoveBeatPair}
@@ -389,6 +420,7 @@
             wholeState?.actions.setFreeform(!wholeState?.isFreeform)}
           onMarkUnknown={handleMarkUnknown}
           onSaveAndNext={handleSaveAndNext}
+          onConfirmAutoLabel={handleConfirmAutoLabel}
           canSave={(wholeState?.pendingDesignations.length ?? 0) > 0 ||
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||
@@ -447,20 +479,25 @@
       </div>
     </div>
 
-    <!-- Navigation -->
-    <div class="navigation">
-      <button
-        onclick={() => capLabelerState.previousSequence()}
-        disabled={capLabelerState.currentIndex === 0}
-      >
-        Previous
-      </button>
-      <button onclick={() => capLabelerState.skipSequence()}> Skip </button>
-      <span class="position">
-        {capLabelerState.currentIndex + 1} / {filteredSequences.length}
-      </span>
+        <!-- Navigation -->
+        <div class="navigation">
+          <button
+            onclick={() => capLabelerState.previousSequence()}
+            disabled={capLabelerState.currentIndex === 0}
+          >
+            Previous
+          </button>
+          <button onclick={() => capLabelerState.skipSequence()}> Skip </button>
+          <span class="position">
+            {capLabelerState.currentIndex + 1} / {filteredSequences.length}
+          </span>
+        </div>
+      </div>
+      <!-- End main-area -->
     </div>
+    <!-- End layout-container -->
   </div>
+  <!-- End cap-labeler-module -->
 {/if}
 
 <style>
@@ -469,9 +506,35 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: var(--theme-bg, #0a0a0a);
-    color: var(--theme-text, #ffffff);
+    background: var(--background);
+    color: var(--foreground);
     overflow: hidden;
+  }
+
+  .layout-container {
+    display: grid;
+    grid-template-columns: 1fr 1400px;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  /* Hide sidebar on narrow screens */
+  @media (max-width: 1200px) {
+    .layout-container {
+      grid-template-columns: 1fr;
+    }
+
+    .layout-container > :first-child {
+      display: none;
+    }
+  }
+
+  .main-area {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
   }
 
   .loading,
@@ -480,17 +543,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: var(--space-lg, 16px);
+    gap: var(--spacing-lg);
     height: 100vh;
-    font-size: var(--font-size-lg, 18px);
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-lg);
+    color: var(--muted);
   }
 
   .spinner {
     width: 48px;
     height: 48px;
     border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-top-color: var(--theme-accent, #36c3ff);
+    border-top-color: var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -502,25 +565,28 @@
   }
 
   .empty-state button {
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--theme-accent, #36c3ff);
-    color: #000;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--gradient-primary);
+    color: var(--foreground);
     border: none;
-    border-radius: var(--radius-md, 6px);
-    font-size: var(--font-size-min, 14px);
+    border-radius: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .empty-state button:hover {
-    opacity: 0.8;
+    transform: translateY(var(--hover-lift-sm));
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
 
   .main-content {
     display: grid;
     grid-template-columns: 1fr 400px;
-    gap: var(--space-lg, 16px);
-    padding: var(--space-lg, 16px);
+    gap: var(--spacing-lg);
+    padding: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
     flex: 1;
     overflow: hidden;
   }
@@ -528,9 +594,9 @@
   .labeling-panel {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md, 12px);
+    gap: var(--spacing-md);
     overflow-y: auto;
-    padding-right: var(--space-xs, 4px);
+    padding-right: var(--spacing-xs);
   }
 
   .labeling-panel::-webkit-scrollbar {
@@ -542,36 +608,38 @@
   }
 
   .labeling-panel::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 3px;
   }
 
   .labeling-panel::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-hover, rgba(255, 255, 255, 0.3));
+    background: rgba(255, 255, 255, 0.25);
   }
 
   .navigation {
     display: flex;
     align-items: center;
-    gap: var(--space-md, 12px);
-    padding: var(--space-md, 12px);
+    gap: var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
     border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--surface-glass);
   }
 
   .navigation button {
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--theme-button-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text, #ffffff);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-color);
+    color: var(--foreground);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: var(--radius-md, 6px);
-    font-size: var(--font-size-min, 14px);
+    border-radius: 8px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .navigation button:hover:not(:disabled) {
-    background: var(--theme-button-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-hover, rgba(255, 255, 255, 0.2));
+    background: var(--surface-hover);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .navigation button:disabled {
@@ -581,8 +649,8 @@
 
   .position {
     margin-left: auto;
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--muted);
   }
 
   @media (max-width: 1024px) {

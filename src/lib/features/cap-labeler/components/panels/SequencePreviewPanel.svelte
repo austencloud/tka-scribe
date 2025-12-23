@@ -5,10 +5,7 @@
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import {
-    formatSectionBeats,
-    formatDesignation,
-  } from "../../utils/formatting";
+  import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
     sequence: SequenceEntry | null;
@@ -63,101 +60,147 @@
     return options.filter((col) => col <= length);
   });
 
-  // Smart default column count for CAP labeling:
-  // - 16 beats (4-letter words) → 4 columns (shows 4 beats per row = 4 letters)
-  // - 8 beats (2-letter words) → 4 columns (shows 4 beats per row = 2 letters)
-  // - Otherwise use manual or null (auto)
+  // Smart default column count based on CAP detection
   const smartDefaultColumns = $derived(() => {
     if (!sequence) return null;
     const length = sequence.sequenceLength;
-    // For 16-beat sequences, always use 4 columns
+
+    // 1. Try to use current label's designation intervals
+    if (currentLabel?.designations?.length) {
+      const designation = currentLabel.designations[0];
+      const intervals = designation?.transformationIntervals;
+
+      if (intervals) {
+        // Check all interval types for halved/quartered
+        const allIntervals = [
+          intervals.rotation,
+          intervals.swap,
+          intervals.mirror,
+          intervals.flip,
+          intervals.invert,
+        ].filter(Boolean);
+
+        // If any are quartered, use length/4
+        if (allIntervals.includes("quartered")) {
+          const cols = length / 4;
+          if (Number.isInteger(cols) && cols >= 2) return cols;
+        }
+        // If any are halved, use length/2
+        if (allIntervals.includes("halved")) {
+          const cols = length / 2;
+          if (Number.isInteger(cols) && cols >= 2) return cols;
+        }
+      }
+    }
+
+    // 2. Try auto-detected capType from sequence metadata
+    const capType = sequence.capType;
+    if (capType) {
+      const capTypeLower = capType.toLowerCase();
+      if (capTypeLower.includes("quartered")) {
+        const cols = length / 4;
+        if (Number.isInteger(cols) && cols >= 2) return cols;
+      }
+      if (capTypeLower.includes("halved")) {
+        const cols = length / 2;
+        if (Number.isInteger(cols) && cols >= 2) return cols;
+      }
+    }
+
+    // 3. Intelligent fallback based on sequence length factors
+    // Prefer 4-column layout for common lengths
     if (length === 16) return 4;
-    // For 8-beat sequences, use 4 columns
+    if (length === 12) return 4;
     if (length === 8) return 4;
-    return null; // Let BeatGrid auto-calculate
+    if (length % 4 === 0 && length / 4 >= 2) return length / 4;
+    if (length % 3 === 0 && length / 3 >= 2) return length / 3;
+    if (length % 2 === 0 && length / 2 >= 2 && length / 2 <= 8) return length / 2;
+
+    return null;
   });
 
-  // Effective column count (use manual if set, otherwise smart default)
   const effectiveColumnCount = $derived(
     manualColumnCount ?? smartDefaultColumns()
   );
 </script>
 
 <div class="sequence-preview">
+  <!-- Header -->
   <div class="sequence-header">
-    <div class="sequence-info">
-      <h2>{sequence?.word || "No sequence"}</h2>
-      {#if sequence}
-        <div class="meta">
-          <span class="meta-id" title="Sequence ID">ID: {sequence.id}</span>
-          <span>Length: {sequence.sequenceLength}</span>
-          <span
-            class="grid-mode-badge"
-            class:box={authoritativeGridMode === GridMode.BOX}
-          >
-            {authoritativeGridMode === GridMode.BOX ? "◇ BOX" : "◆ DIAMOND"}
-          </span>
-          {#if sequence.fullMetadata?.sequence?.[0]?.gridMode && sequence.fullMetadata.sequence[0].gridMode !== sequence.gridMode}
-            <span
-              class="grid-mode-mismatch"
-              title="Top-level gridMode differs from metadata"
-            >
-              ⚠️ Fix: top says "{sequence.gridMode}"
-            </span>
+    <h2 class="sequence-word">{sequence?.word || "No sequence"}</h2>
+
+    <div class="header-actions">
+      {#if currentLabel && onDeleteLabel}
+        <button class="action-btn danger" onclick={onDeleteLabel} title="Delete existing label">
+          <FontAwesomeIcon icon="trash" size="0.85em" />
+        </button>
+      {/if}
+      {#if onCopyJson}
+        <button class="action-btn" onclick={onCopyJson} title="Copy sequence JSON">
+          {#if copiedToast}
+            <FontAwesomeIcon icon="check" size="0.85em" />
+          {:else}
+            <FontAwesomeIcon icon="copy" size="0.85em" />
           {/if}
-          <span>CAP: {sequence.capType || "none"}</span>
-        </div>
+        </button>
       {/if}
     </div>
-    {#if onCopyJson}
-      <button class="copy-json-btn" onclick={onCopyJson}>
-        {copiedToast ? "✓ Copied!" : "Copy JSON"}
-      </button>
-    {/if}
   </div>
 
-  <!-- BeatGrid with real Pictographs -->
+  <!-- Metadata row -->
+  {#if sequence}
+    <div class="meta-row">
+      <span class="meta-item">{sequence.sequenceLength} beats</span>
+      <span class="meta-item grid-mode" class:box={authoritativeGridMode === GridMode.BOX}>
+        {authoritativeGridMode === GridMode.BOX ? "BOX" : "DIAMOND"}
+      </span>
+      {#if sequence.fullMetadata?.sequence?.[0]?.gridMode && sequence.fullMetadata.sequence[0].gridMode !== sequence.gridMode}
+        <span class="meta-item warning" title="Top-level gridMode differs from metadata">
+          Grid Mismatch
+        </span>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- Beat Grid -->
   {#if parsedBeats.length > 0}
     <div class="beat-grid-section">
-      <!-- Grid controls bar -->
-      <div class="grid-controls-bar">
-        <!-- Start position toggle + Column chips -->
-        <div class="control-group">
+      <!-- Grid controls -->
+      <div class="grid-controls">
+        <button
+          class="control-chip"
+          class:active={showStartPosition}
+          onclick={() => onShowStartPositionChange(!showStartPosition)}
+        >
+          Start Pos
+        </button>
+        <span class="control-divider"></span>
+        <span class="control-label">Columns:</span>
+        <div class="chip-group">
           <button
             class="control-chip"
-            class:active={showStartPosition}
-            onclick={() => onShowStartPositionChange(!showStartPosition)}
+            class:active={manualColumnCount === null}
+            onclick={() => onColumnCountChange(null)}
           >
-            Start
+            Auto{manualColumnCount === null && effectiveColumnCount !== null
+              ? ` (${effectiveColumnCount})`
+              : ""}
           </button>
-          <span class="control-divider">|</span>
-          <span class="control-label">Cols:</span>
-          <div class="chip-group">
+          {#each availableColumnOptions() as colCount}
             <button
               class="control-chip"
-              class:active={manualColumnCount === null}
-              onclick={() => onColumnCountChange(null)}
+              class:active={manualColumnCount === colCount}
+              onclick={() => onColumnCountChange(colCount)}
             >
-              Auto{manualColumnCount === null && effectiveColumnCount !== null
-                ? ` (${effectiveColumnCount})`
-                : ""}
+              {colCount}
             </button>
-            {#each availableColumnOptions() as colCount}
-              <button
-                class="control-chip"
-                class:active={manualColumnCount === colCount}
-                onclick={() => onColumnCountChange(colCount)}
-              >
-                {colCount}
-              </button>
-            {/each}
-          </div>
+          {/each}
         </div>
       </div>
 
       <div
         class="beat-grid-wrapper"
-        class:section-mode={labelingMode === "section"}
+        class:interactive={labelingMode !== "whole"}
       >
         <BeatGrid
           beats={parsedBeats}
@@ -173,54 +216,7 @@
       </div>
     </div>
   {:else}
-    <div class="no-thumbnail">No beat data available</div>
-  {/if}
-
-  {#if currentLabel}
-    <div class="current-label">
-      <div class="label-header">
-        <strong>Labeled as:</strong>
-        {#if onDeleteLabel}
-          <button class="delete-label-btn" onclick={onDeleteLabel}>
-            Delete Label
-          </button>
-        {/if}
-      </div>
-      {#if currentLabel.isFreeform}
-        <span class="freeform-tag">Freeform</span>
-      {:else if currentLabel.sections && currentLabel.sections.length > 0}
-        <!-- Section-based labels -->
-        <div class="label-sections">
-          {#each currentLabel.sections as section}
-            <div class="label-section-item">
-              <span class="section-beats"
-                >{formatSectionBeats(section.beats)}</span
-              >
-              <span class="section-components"
-                >{formatDesignation(section)}</span
-              >
-            </div>
-          {/each}
-        </div>
-      {:else if currentLabel.designations?.length > 0}
-        <div class="label-designations">
-          {#each currentLabel.designations as d, i}
-            <span class="designation-tag">
-              {formatDesignation(d)}
-              <span class="designation-type">({d.capType})</span>
-            </span>
-            {#if i < currentLabel.designations.length - 1}
-              <span class="designation-or">OR</span>
-            {/if}
-          {/each}
-        </div>
-      {:else}
-        Freeform
-      {/if}
-      {#if currentLabel.notes}
-        <div class="label-notes">Notes: {currentLabel.notes}</div>
-      {/if}
-    </div>
+    <div class="no-data">No beat data available</div>
   {/if}
 </div>
 
@@ -229,274 +225,180 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--surface-raised, rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-lg, 12px);
-    padding: var(--space-xl, 20px);
+    background: var(--surface-glass);
+    border-radius: 12px;
+    padding: var(--spacing-lg);
     overflow: hidden;
   }
 
+  /* Header */
   .sequence-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-lg, 16px);
+    align-items: center;
+    margin-bottom: var(--spacing-md);
     flex-shrink: 0;
   }
 
-  .sequence-info h2 {
-    margin: 0 0 var(--space-md, 12px);
-    font-size: var(--text-4xl, 28px);
+  .sequence-word {
+    margin: 0;
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
   }
 
-  .meta {
+  .header-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+  }
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .action-btn:hover {
+    background: var(--surface-hover);
+    color: var(--foreground);
+  }
+
+  .action-btn.danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+  }
+
+  /* Metadata row */
+  .meta-row {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-md, 12px);
-    font-size: var(--text-md, 13px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    flex-shrink: 0;
   }
 
-  .meta-id {
+  .meta-item {
+    padding: 2px var(--spacing-sm);
+    background: var(--surface-color);
+    border-radius: 4px;
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+  }
+
+  .meta-item.id {
     font-family: monospace;
-    color: var(--text-faint, rgba(255, 255, 255, 0.4));
-    font-size: var(--text-xs, 11px);
+    color: var(--muted);
   }
 
-  .grid-mode-badge {
-    padding: 2px var(--space-sm, 8px);
-    border-radius: var(--radius-xs, 4px);
+  .meta-item.grid-mode {
     font-weight: 600;
-    font-size: var(--text-xs, 11px);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.3));
+    background: rgba(99, 102, 241, 0.2);
     color: #a5b4fc;
-    border: 1px solid rgba(99, 102, 241, 0.5);
   }
 
-  .grid-mode-badge.box {
-    background: var(--accent-warning-soft, rgba(234, 179, 8, 0.2));
+  .meta-item.grid-mode.box {
+    background: rgba(234, 179, 8, 0.2);
     color: #fde047;
-    border-color: rgba(234, 179, 8, 0.5);
   }
 
-  .grid-mode-mismatch {
-    font-size: var(--text-xs, 11px);
-    color: #fbbf24;
+  .meta-item.warning {
     background: rgba(251, 191, 36, 0.15);
-    padding: 2px var(--space-xs, 4px);
-    border-radius: var(--radius-xs, 4px);
+    color: #fbbf24;
   }
 
-  .copy-json-btn {
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.2));
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-primary, #fff);
-    cursor: pointer;
-    font-size: var(--text-sm, 12px);
-    transition: var(--transition-default, 0.15s ease);
-    white-space: nowrap;
-  }
-
-  .copy-json-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
+  /* Beat Grid Section */
   .beat-grid-section {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
     flex: 1;
     min-height: 0;
     overflow: hidden;
   }
 
+  .grid-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .control-label {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .control-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+  }
+
+  .chip-group {
+    display: flex;
+    gap: 4px;
+  }
+
+  .control-chip {
+    padding: 6px 12px;
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: var(--transition-micro);
+  }
+
+  .control-chip:hover {
+    background: var(--surface-hover);
+    color: var(--foreground);
+  }
+
+  .control-chip.active {
+    background: rgba(99, 102, 241, 0.25);
+    border-color: var(--primary-color);
+    color: var(--foreground);
+  }
+
   .beat-grid-wrapper {
-    width: 100%;
-    height: 100%;
-    background: var(--surface-inset, rgba(0, 0, 0, 0.3));
-    border-radius: var(--radius-lg, 12px);
-    padding: var(--space-lg, 16px);
-    box-sizing: border-box;
+    flex: 1;
+    min-height: 0;
+    background: var(--surface-dark);
+    border-radius: 12px;
+    padding: var(--spacing-md);
     overflow: auto;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  .beat-grid-wrapper.section-mode {
-    border: 2px solid rgba(59, 130, 246, 0.4);
+  .beat-grid-wrapper.interactive {
+    border: 2px solid rgba(99, 102, 241, 0.3);
     cursor: pointer;
   }
 
-  .no-thumbnail {
-    width: 100%;
-    height: 300px;
+  .no-data {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--surface-raised, rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-faint, rgba(255, 255, 255, 0.4));
-  }
-
-  .grid-controls-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--space-xl, 20px);
-    margin-bottom: var(--space-sm, 8px);
-    flex-shrink: 0;
-  }
-
-  .control-group {
-    display: flex;
-    align-items: center;
-    gap: var(--space-sm, 8px);
-  }
-
-  .control-label {
-    font-size: var(--text-xs, 11px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .control-divider {
-    color: var(--border-strong, rgba(255, 255, 255, 0.2));
-    margin: 0 var(--space-xs, 4px);
-  }
-
-  .chip-group {
-    display: flex;
-    gap: var(--space-xs, 4px);
-  }
-
-  .control-chip {
-    padding: 5px 10px;
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    font-size: var(--text-sm, 12px);
-    cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
-  }
-
-  .control-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: var(--text-primary, #fff);
-  }
-
-  .control-chip.active {
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.3));
-    border-color: var(--accent-primary, #6366f1);
-    color: var(--text-primary, #fff);
-  }
-
-  .current-label {
-    margin-top: var(--space-lg, 16px);
-    padding: var(--space-md, 12px);
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.3));
-    border-radius: var(--radius-md, 8px);
-    font-size: var(--text-lg, 14px);
-    flex-shrink: 0;
-    max-width: 100%;
-  }
-
-  .label-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-sm, 8px);
-  }
-
-  .delete-label-btn {
-    padding: 4px var(--space-sm, 8px);
-    background: var(--accent-danger-soft, rgba(239, 68, 68, 0.2));
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: var(--radius-xs, 4px);
-    font-size: var(--text-xs, 11px);
-    cursor: pointer;
-    transition: var(--transition-default, 0.15s ease);
-    white-space: nowrap;
-  }
-
-  .delete-label-btn:hover {
-    background: rgba(239, 68, 68, 0.3);
-    border-color: rgba(239, 68, 68, 0.5);
-  }
-
-  .label-notes {
-    margin-top: var(--space-sm, 8px);
-    font-size: var(--text-sm, 12px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
-  }
-
-  .label-designations {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-sm, 8px);
-    margin-top: var(--space-sm, 8px);
-  }
-
-  .designation-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-xs, 4px);
-    padding: var(--space-xs, 4px) 10px;
-    background: var(--accent-success-soft, rgba(34, 197, 94, 0.2));
-    border-radius: var(--radius-sm, 6px);
-    font-size: var(--text-md, 13px);
-  }
-
-  .designation-type {
-    font-size: 10px;
-    color: var(--text-faint, rgba(255, 255, 255, 0.4));
-    font-family: monospace;
-  }
-
-  .designation-or {
-    font-size: var(--text-xs, 11px);
-    color: var(--text-faint, rgba(255, 255, 255, 0.4));
-    font-weight: 600;
-  }
-
-  .freeform-tag {
-    padding: var(--space-xs, 4px) 10px;
-    background: var(--accent-danger-soft, rgba(239, 68, 68, 0.2));
-    border-radius: var(--radius-sm, 6px);
-    font-size: var(--text-md, 13px);
-  }
-
-  .label-sections {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xs, 4px);
-    margin-top: var(--space-sm, 8px);
-  }
-
-  .label-section-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: var(--space-xs, 4px) 10px;
-    background: rgba(59, 130, 246, 0.15);
-    border-radius: var(--radius-sm, 6px);
-    font-size: var(--text-md, 13px);
-  }
-
-  .label-section-item .section-beats {
-    font-weight: 600;
-    color: #60a5fa;
-    min-width: 70px;
-  }
-
-  .label-section-item .section-components {
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--surface-dark);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: var(--font-size-sm);
   }
 </style>

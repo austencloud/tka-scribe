@@ -31,6 +31,8 @@ function componentToIntervalKey(
     flipped: "flip",
     inverted: "invert",
     rewound: null, // rewound doesn't have an interval concept
+    repeated: null, // repeated doesn't have an interval - it's about repetition count
+    modular: null, // modular has multiple motifs with different intervals each
   };
   return map[component] ?? null;
 }

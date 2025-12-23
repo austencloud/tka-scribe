@@ -4,16 +4,15 @@ import type { LabeledSequence } from "./ICAPLabelsFirebaseService";
 /**
  * Filter mode for sequences
  */
-export type FilterMode = "all" | "unlabeled" | "labeled" | "unknown";
+export type FilterMode = "needsVerification" | "verified";
 
 /**
  * Sequence statistics
  */
 export interface SequenceStats {
   total: number;
-  labeled: number;
-  unlabeled: number;
-  unknown: number;
+  needsVerification: number;
+  verified: number;
 }
 
 /**

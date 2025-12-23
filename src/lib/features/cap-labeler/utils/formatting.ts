@@ -87,6 +87,8 @@ function componentToIntervalKey(
     flipped: "flip",
     inverted: "invert",
     rewound: null,
+    repeated: null,
+    modular: null,
   };
   return map[component] ?? null;
 }

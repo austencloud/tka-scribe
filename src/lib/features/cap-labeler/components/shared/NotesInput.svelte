@@ -1,4 +1,10 @@
 <script lang="ts">
+  /**
+   * Notes Input
+   *
+   * Simple text input for optional notes about a sequence.
+   * Uses shared design tokens from app.css.
+   */
   interface Props {
     value: string;
     onInput: (value: string) => void;
@@ -19,30 +25,54 @@
 </script>
 
 <div class="notes-section">
-  <label>
-    Notes (optional):
-    <input type="text" {value} oninput={handleInput} {placeholder} />
+  <label class="notes-label">
+    <span class="label-text">Notes (optional)</span>
+    <input
+      type="text"
+      class="notes-input"
+      {value}
+      oninput={handleInput}
+      {placeholder}
+    />
   </label>
 </div>
 
 <style>
   .notes-section {
-    margin-top: var(--space-xl, 20px);
+    margin-top: var(--spacing-md);
   }
 
-  .notes-section label {
+  .notes-label {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm, 8px);
-    font-size: var(--text-lg, 14px);
+    gap: var(--spacing-xs);
   }
 
-  .notes-section input {
-    padding: 10px var(--space-md, 12px);
-    background: var(--surface-inset, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-primary, #fff);
-    font-size: var(--text-lg, 14px);
+  .label-text {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .notes-input {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-dark);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
+    transition: var(--transition-fast);
+  }
+
+  .notes-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: var(--surface-color);
+  }
+
+  .notes-input::placeholder {
+    color: var(--muted);
   }
 </style>

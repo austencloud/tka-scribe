@@ -1,10 +1,17 @@
 <script lang="ts">
+  /**
+   * Saved Sections List
+   *
+   * Displays saved section designations with color-coded borders.
+   * Uses shared design tokens from app.css.
+   */
   import type { SectionDesignation } from "../../domain/models/section-models";
   import { SECTION_COLORS } from "../../domain/constants/section-colors";
   import {
     formatSectionBeats,
     formatDesignation,
   } from "../../utils/formatting";
+  import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
     sections: SectionDesignation[];
@@ -16,18 +23,23 @@
 
 {#if sections.length > 0}
   <div class="saved-sections">
-    <span class="saved-label">Saved sections:</span>
+    <span class="saved-label">Saved sections</span>
     {#each sections as section, i}
       <div
         class="saved-section-tag"
-        style="--section-color: {SECTION_COLORS[i % SECTION_COLORS.length]
-          ?.border}"
+        style="--section-color: {SECTION_COLORS[i % SECTION_COLORS.length]?.border}"
       >
         <div class="section-info">
           <span class="section-beats">{formatSectionBeats(section.beats)}</span>
           <span class="section-components">{formatDesignation(section)}</span>
         </div>
-        <button class="remove-btn" onclick={() => onRemove(i)}>×</button>
+        <button
+          class="remove-btn"
+          onclick={() => onRemove(i)}
+          title="Remove section"
+        >
+          <FontAwesomeIcon icon="xmark" size="0.85em" />
+        </button>
       </div>
     {/each}
   </div>
@@ -37,26 +49,29 @@
   .saved-sections {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-md, 12px);
-    background: var(--surface-raised, rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-md, 8px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--surface-glass);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
   }
 
   .saved-label {
-    font-size: var(--text-sm, 12px);
+    font-size: var(--font-size-xs);
     font-weight: 600;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    margin-bottom: var(--space-xs, 4px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    margin-bottom: var(--spacing-xs);
   }
 
   .saved-section-tag {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--radius-sm, 6px);
+    border-radius: 8px;
     border-left: 4px solid var(--section-color, rgba(59, 130, 246, 0.8));
   }
 
@@ -64,32 +79,41 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: var(--space-xs, 4px);
+    gap: 2px;
+    min-width: 0;
   }
 
-  .saved-section-tag .section-beats {
+  .section-beats {
     font-weight: 600;
-    font-size: var(--font-size-min, 14px);
-    color: var(--text-primary, #fff);
+    font-size: var(--font-size-sm);
+    color: var(--foreground);
   }
 
-  .saved-section-tag .section-components {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+  .section-components {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .saved-section-tag .remove-btn {
-    padding: var(--space-xs, 4px);
+  .remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
     background: transparent;
     border: none;
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
-    font-size: var(--text-lg, 14px);
+    border-radius: 6px;
+    color: var(--muted);
     cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
-    line-height: 1;
+    transition: var(--transition-micro);
+    flex-shrink: 0;
   }
 
-  .saved-section-tag .remove-btn:hover {
-    color: var(--accent-danger, #ef4444);
+  .remove-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
   }
 </style>

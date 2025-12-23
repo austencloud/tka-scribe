@@ -1,4 +1,10 @@
 <script lang="ts">
+  /**
+   * Transformation List
+   *
+   * Displays detected transformations as selectable options.
+   * Uses shared design tokens from app.css.
+   */
   interface Props {
     transformations: string[];
     selectedTransformation?: string;
@@ -10,7 +16,7 @@
 
 {#if transformations.length > 0}
   <div class="detected-transformations">
-    <span class="transformations-label">Detected Transformations:</span>
+    <span class="transformations-label">Detected Transformations</span>
     <div class="transformations-list">
       {#each transformations as transformation}
         <button
@@ -29,41 +35,45 @@
   .detected-transformations {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
   }
 
   .transformations-label {
-    font-size: var(--text-sm, 12px);
+    font-size: var(--font-size-xs);
     font-weight: 600;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
   }
 
   .transformations-list {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
   }
 
   .transformation-option {
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    font-size: var(--text-sm, 12px);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-xs);
     cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .transformation-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: var(--surface-color);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--foreground);
   }
 
   .transformation-option.selected {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(99, 102, 241, 0.3) 100%);
     border-color: #8b5cf6;
-    color: var(--text-primary, #fff);
+    color: var(--foreground);
     font-weight: 600;
   }
 </style>

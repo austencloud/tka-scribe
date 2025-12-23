@@ -3,6 +3,7 @@
 
   Uses the existing Drawer infrastructure to browse and jump to any sequence.
   Shows thumbnail previews with label status indicators.
+  Uses shared design tokens from app.css.
 -->
 <script lang="ts">
   import type { SequenceEntry } from "../../domain/models/sequence-models";
@@ -98,9 +99,9 @@
 >
   <div class="drawer-content">
     <div class="drawer-header">
-      <h2>Browse Sequences</h2>
+      <h2 class="drawer-title">Browse Sequences</h2>
       <button class="close-btn" onclick={() => (isOpen = false)}>
-        <FontAwesomeIcon icon="times" size="1.2em" />
+        <FontAwesomeIcon icon="xmark" size="1.2em" />
       </button>
     </div>
 
@@ -114,7 +115,7 @@
       />
       {#if searchQuery}
         <button class="clear-search" onclick={() => (searchQuery = "")}>
-          <FontAwesomeIcon icon="times" size="0.8em" />
+          <FontAwesomeIcon icon="xmark" size="0.8em" />
         </button>
       {/if}
     </div>
@@ -206,54 +207,59 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--surface-base, #0f0f1a);
+    background: var(--background);
   }
 
   .drawer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-lg, 16px) var(--space-xl, 20px);
-    border-bottom: 1px solid var(--border-default, rgba(255, 255, 255, 0.1));
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     flex-shrink: 0;
   }
 
-  .drawer-header h2 {
+  .drawer-title {
     margin: 0;
-    font-size: var(--text-xl, 18px);
-    color: var(--text-primary, #fff);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--foreground);
   }
 
   .close-btn {
-    padding: var(--space-sm, 8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     background: transparent;
     border: none;
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--muted);
     cursor: pointer;
-    border-radius: var(--radius-sm, 6px);
-    transition: var(--transition-fast, 0.1s ease);
+    border-radius: 8px;
+    transition: var(--transition-fast);
   }
 
   .close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary, #fff);
+    background: var(--surface-color);
+    color: var(--foreground);
   }
 
   .drawer-search {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
-    margin: var(--space-md, 12px) var(--space-xl, 20px);
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) var(--spacing-xl);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
+    color: var(--muted);
     flex-shrink: 0;
   }
 
   .drawer-search:focus-within {
-    border-color: var(--accent-primary, #6366f1);
+    border-color: var(--primary-color);
   }
 
   .drawer-search input {
@@ -261,73 +267,77 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--text-primary, #fff);
-    font-size: var(--text-md, 13px);
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
   }
 
   .drawer-search input::placeholder {
-    color: var(--text-muted, rgba(255, 255, 255, 0.4));
+    color: var(--muted);
   }
 
   .clear-search {
-    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     background: transparent;
     border: none;
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--muted);
     cursor: pointer;
-    border-radius: var(--radius-xs, 4px);
+    border-radius: 4px;
   }
 
   .clear-search:hover {
-    color: var(--text-primary, #fff);
+    color: var(--foreground);
   }
 
   .drawer-filters {
     display: flex;
-    gap: var(--space-xs, 4px);
-    padding: 0 var(--space-xl, 20px);
-    margin-bottom: var(--space-md, 12px);
+    gap: 4px;
+    padding: 0 var(--spacing-xl);
+    margin-bottom: var(--spacing-md);
     flex-shrink: 0;
     flex-wrap: wrap;
   }
 
   .filter-chip {
-    padding: var(--space-xs, 4px) var(--space-sm, 8px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-pill, 9999px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 9999px;
+    color: var(--muted-foreground);
     cursor: pointer;
-    font-size: var(--text-sm, 12px);
-    transition: var(--transition-fast, 0.1s ease);
+    font-size: var(--font-size-xs);
+    transition: var(--transition-fast);
   }
 
   .filter-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--surface-hover);
   }
 
   .filter-chip.active {
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.3));
-    border-color: var(--accent-primary, #6366f1);
-    color: var(--text-primary, #fff);
+    background: rgba(99, 102, 241, 0.25);
+    border-color: var(--primary-color);
+    color: var(--foreground);
   }
 
   .sequence-count {
-    padding: 0 var(--space-xl, 20px);
-    margin-bottom: var(--space-sm, 8px);
-    font-size: var(--text-sm, 12px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    padding: 0 var(--spacing-xl);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-xs);
+    color: var(--muted);
     flex-shrink: 0;
   }
 
   .sequence-grid {
     flex: 1;
     overflow-y: auto;
-    padding: 0 var(--space-md, 12px) var(--space-md, 12px);
+    padding: 0 var(--spacing-md) var(--spacing-md);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: min-content;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
     align-items: start;
   }
 
@@ -340,36 +350,36 @@
   }
 
   .sequence-grid::-webkit-scrollbar-thumb {
-    background: var(--border-default, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
     border-radius: 3px;
   }
 
   .sequence-card {
     display: flex;
     flex-direction: column;
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.05));
+    background: var(--surface-color);
     border: 1px solid transparent;
-    border-radius: var(--radius-md, 8px);
+    border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
+    transition: var(--transition-fast);
     padding: 0;
     min-width: 0;
   }
 
   .sequence-card:hover {
-    background: var(--surface-raised, rgba(255, 255, 255, 0.08));
-    border-color: var(--border-default, rgba(255, 255, 255, 0.15));
+    background: var(--surface-hover);
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .sequence-card.current {
-    border-color: var(--accent-primary, #6366f1);
-    box-shadow: 0 0 0 1px var(--accent-primary, #6366f1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
   }
 
   .card-thumbnail {
     position: relative;
-    background: var(--surface-inset, rgba(0, 0, 0, 0.3));
+    background: var(--surface-dark);
   }
 
   .card-thumbnail img {
@@ -389,7 +399,7 @@
       rgba(99, 102, 241, 0.2),
       rgba(139, 92, 246, 0.2)
     );
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--muted);
     font-size: 1.5rem;
     font-weight: 600;
   }
@@ -407,7 +417,7 @@
     font-size: 10px;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.1);
-    color: var(--text-muted, rgba(255, 255, 255, 0.4));
+    color: var(--muted);
     backdrop-filter: blur(4px);
   }
 
@@ -425,22 +435,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--space-xs, 4px) var(--space-sm, 8px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.03));
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.03);
   }
 
   .card-word {
-    font-size: var(--text-sm, 12px);
+    font-size: var(--font-size-xs);
     font-weight: 500;
-    color: var(--text-primary, #fff);
+    color: var(--foreground);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .card-meta {
-    font-size: var(--text-xs, 10px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    font-size: 10px;
+    color: var(--muted);
     flex-shrink: 0;
   }
 </style>

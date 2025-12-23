@@ -1,15 +1,20 @@
 <script lang="ts">
+  /**
+   * CAP Labeler Header
+   *
+   * Header with stats, filter chips, search, and import/export controls.
+   * Uses shared design tokens from app.css.
+   */
   import type { SequenceEntry } from "../../domain/models/sequence-models";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
-  type FilterMode = "all" | "unlabeled" | "labeled" | "unknown";
+  type FilterMode = "needsVerification" | "verified";
   type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
   interface Stats {
     total: number;
-    labeled: number;
-    unlabeled: number;
-    unknown: number;
+    needsVerification: number;
+    verified: number;
   }
 
   interface Props {
@@ -22,7 +27,6 @@
     onSyncLocalStorage: () => void;
     showExport: boolean;
     syncStatus: SyncStatus;
-    // New props for navigation
     sequences: SequenceEntry[];
     onJumpToSequence: (sequenceId: string) => void;
     onOpenBrowser: () => void;
@@ -53,7 +57,7 @@
     const query = searchQuery.toLowerCase();
     return sequences
       .filter((s) => s.word.toLowerCase().includes(query))
-      .slice(0, 8); // Limit to 8 suggestions
+      .slice(0, 8);
   });
 
   function handleSearchInput(e: Event) {
@@ -84,63 +88,36 @@
     }
   }
 
-  // Computed remaining count
-  const remaining = $derived(stats.total - stats.labeled);
 </script>
 
 <header class="header">
-  <h1>CAP Type Labeler</h1>
+  <h1 class="header-title">CAP Type Labeler</h1>
   <div class="stats">
-    <span class="stat">{stats.labeled} labeled</span>
-    <span class="stat">{remaining} remaining</span>
-    <span class="stat">{stats.total} total circular</span>
+    <div class="stats-group">
+      <span class="stat">{stats.verified} verified</span>
+      <span class="stat">{stats.needsVerification} need verification</span>
+      <span class="stat">{stats.total} total circular</span>
+    </div>
+    <span class="stats-divider"></span>
     <span
       class="sync-status"
       class:syncing={syncStatus === "syncing"}
       class:error={syncStatus === "error"}
     >
       {#if syncStatus === "syncing"}
-        ⟳ Syncing...
+        <FontAwesomeIcon icon="spinner" size="0.85em" /> Syncing...
       {:else if syncStatus === "error"}
-        ⚠ Sync error
+        <FontAwesomeIcon icon="exclamation-triangle" size="0.85em" /> Sync error
       {:else}
-        ✓ Firebase
+        <FontAwesomeIcon icon="check" size="0.85em" /> Firebase
       {/if}
     </span>
   </div>
 </header>
 
 <div class="controls-bar">
-  <div class="filter-chips">
-    <button
-      class="filter-chip"
-      class:active={filterMode === "unlabeled"}
-      onclick={() => onFilterChange("unlabeled")}
-    >
-      Unlabeled
-    </button>
-    <button
-      class="filter-chip"
-      class:active={filterMode === "labeled"}
-      onclick={() => onFilterChange("labeled")}
-    >
-      Labeled
-    </button>
-    <button
-      class="filter-chip"
-      class:active={filterMode === "unknown"}
-      onclick={() => onFilterChange("unknown")}
-    >
-      Unknown ({stats.unknown})
-    </button>
-    <button
-      class="filter-chip"
-      class:active={filterMode === "all"}
-      onclick={() => onFilterChange("all")}
-    >
-      All
-    </button>
-  </div>
+
+
 
   <!-- Search and Browse -->
   <div class="nav-controls">
@@ -149,7 +126,7 @@
       <input
         type="text"
         class="search-input"
-        placeholder="Jump to sequence..."
+        placeholder="Search sequences..."
         value={searchQuery}
         oninput={handleSearchInput}
         onkeydown={handleSearchKeydown}
@@ -191,9 +168,11 @@
 {#if showExport}
   <div class="export-panel">
     <button class="btn-primary" onclick={onExportLabels}>
+      <FontAwesomeIcon icon="download" size="0.9em" />
       Export Labels JSON
     </button>
     <label class="btn-secondary">
+      <FontAwesomeIcon icon="upload" size="0.9em" />
       Import Labels
       <input
         type="file"
@@ -203,7 +182,8 @@
       />
     </label>
     <button class="btn-sync" onclick={onSyncLocalStorage}>
-      ↑ Sync localStorage → Firebase
+      <FontAwesomeIcon icon="cloud-arrow-up" size="0.9em" />
+      Sync localStorage → Firebase
     </button>
   </div>
 {/if}
@@ -213,143 +193,192 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-xl, 20px);
-    padding-bottom: var(--space-lg, 16px);
-    border-bottom: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
-  .header h1 {
+  .header-title {
     margin: 0;
-    font-size: var(--text-3xl, 24px);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
   }
 
   .stats {
     display: flex;
-    gap: var(--space-lg, 16px);
+    align-items: center;
+    gap: var(--spacing-md);
+  }
+
+  .stats-group {
+    display: flex;
+    gap: var(--spacing-sm);
+  }
+
+  .stats-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
   }
 
   .stat {
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    padding: var(--space-xs, 4px) var(--space-md, 12px);
-    border-radius: var(--radius-sm, 6px);
-    font-size: var(--text-md, 13px);
+    background: var(--surface-color);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
+    color: var(--muted-foreground);
+    white-space: nowrap;
   }
 
   .sync-status {
-    padding: var(--space-xs, 4px) var(--space-md, 12px);
-    border-radius: var(--radius-sm, 6px);
-    font-size: var(--text-sm, 12px);
-    background: var(--accent-success-soft, rgba(34, 197, 94, 0.2));
-    color: var(--accent-success, #22c55e);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: 6px;
+    font-size: var(--font-size-xs);
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
   }
 
   .sync-status.syncing {
-    background: var(--accent-warning-soft, rgba(234, 179, 8, 0.2));
-    color: var(--accent-warning, #eab308);
+    background: rgba(234, 179, 8, 0.2);
+    color: #eab308;
     animation: pulse 1s infinite;
   }
 
   .sync-status.error {
-    background: var(--accent-danger-soft, rgba(239, 68, 68, 0.2));
-    color: var(--accent-danger, #ef4444);
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
   }
 
   @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.6;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
 
   .controls-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-xl, 20px);
+    margin-bottom: var(--spacing-lg);
+    padding: 0 var(--spacing-lg);
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
   }
 
   .filter-chips {
     display: flex;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
   }
 
   .filter-chip {
-    padding: var(--space-sm, 8px) var(--space-lg, 16px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-pill, 9999px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 9999px;
+    color: var(--muted-foreground);
     cursor: pointer;
-    font-size: var(--text-md, 13px);
-    transition: var(--transition-default, 0.15s ease);
+    font-size: var(--font-size-sm);
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .filter-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--surface-hover);
   }
 
   .filter-chip.active {
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.3));
-    border-color: var(--accent-primary, #6366f1);
-    color: var(--text-primary, #fff);
+    background: rgba(99, 102, 241, 0.25);
+    border-color: var(--primary-color);
+    color: var(--foreground);
+  }
+
+  .filter-chip.verify {
+    border-color: rgba(234, 179, 8, 0.4);
+    color: #eab308;
+  }
+
+  .filter-chip.verify:hover {
+    background: rgba(234, 179, 8, 0.15);
+  }
+
+  .filter-chip.verify.active {
+    background: rgba(234, 179, 8, 0.25);
+    border-color: #eab308;
   }
 
   .io-controls {
     display: flex;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
   }
 
   .btn-secondary {
-    padding: 10px var(--space-lg, 16px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: none;
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-primary, #fff);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    color: var(--foreground);
     cursor: pointer;
-    font-size: var(--text-md, 13px);
-    transition: var(--transition-default, 0.15s ease);
+    font-size: var(--font-size-sm);
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--surface-hover);
   }
 
   .export-panel {
     display: flex;
-    gap: var(--space-md, 12px);
-    margin-bottom: var(--space-xl, 20px);
-    padding: var(--space-lg, 16px);
-    background: var(--surface-raised, rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-md, 8px);
+    gap: var(--spacing-md);
+    margin: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
+    padding: var(--spacing-md);
+    background: var(--surface-glass);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    flex-wrap: wrap;
   }
 
   .btn-primary {
-    padding: 10px var(--space-lg, 16px);
-    border-radius: var(--radius-sm, 6px);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: 8px;
     cursor: pointer;
-    font-size: var(--text-md, 13px);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
     border: none;
-    transition: var(--transition-default, 0.15s ease);
-    background: var(--accent-primary, #6366f1);
-    color: var(--text-primary, #fff);
+    transition: var(--transition-fast);
+    background: var(--gradient-primary);
+    color: var(--foreground);
+    min-height: var(--min-touch-target);
   }
 
   .btn-primary:hover {
-    opacity: 0.9;
+    transform: translateY(var(--hover-lift-sm));
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
 
   .btn-sync {
-    padding: 10px var(--space-lg, 16px);
-    background: var(--accent-success-soft, rgba(34, 197, 94, 0.2));
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(34, 197, 94, 0.2);
     border: 1px solid rgba(34, 197, 94, 0.4);
-    border-radius: var(--radius-sm, 6px);
-    color: var(--accent-success, #22c55e);
+    border-radius: 8px;
+    color: #22c55e;
     cursor: pointer;
-    font-size: var(--text-md, 13px);
-    transition: var(--transition-default, 0.15s ease);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .btn-sync:hover {
@@ -360,37 +389,37 @@
   .nav-controls {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
   }
 
   .search-container {
     position: relative;
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
+    color: var(--muted);
   }
 
   .search-container:focus-within {
-    border-color: var(--accent-primary, #6366f1);
-    background: var(--surface-raised, rgba(255, 255, 255, 0.1));
+    border-color: var(--primary-color);
+    background: var(--surface-hover);
   }
 
   .search-input {
     background: transparent;
     border: none;
     outline: none;
-    color: var(--text-primary, #fff);
-    font-size: var(--text-md, 13px);
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
     width: 160px;
   }
 
   .search-input::placeholder {
-    color: var(--text-muted, rgba(255, 255, 255, 0.4));
+    color: var(--muted);
   }
 
   .search-suggestions {
@@ -399,9 +428,9 @@
     left: 0;
     right: 0;
     margin-top: 4px;
-    background: var(--surface-elevated, #1a1a2e);
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-md, 8px);
+    background: var(--surface-glass);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
     overflow: hidden;
     z-index: 100;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -412,40 +441,43 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: transparent;
     border: none;
-    color: var(--text-primary, #fff);
+    color: var(--foreground);
     cursor: pointer;
     text-align: left;
-    transition: background 0.1s;
+    transition: var(--transition-micro);
   }
 
   .suggestion-item:hover {
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.2));
+    background: rgba(99, 102, 241, 0.2);
   }
 
   .suggestion-word {
     font-weight: 500;
+    font-size: var(--font-size-sm);
   }
 
   .suggestion-length {
-    font-size: var(--text-xs, 11px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-xs);
+    color: var(--muted);
   }
 
   .browse-btn {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--accent-primary-soft, rgba(99, 102, 241, 0.2));
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(99, 102, 241, 0.2);
     border: 1px solid rgba(99, 102, 241, 0.4);
-    border-radius: var(--radius-md, 8px);
-    color: var(--accent-primary-light, #a5b4fc);
+    border-radius: 8px;
+    color: #a5b4fc;
     cursor: pointer;
-    font-size: var(--text-md, 13px);
-    transition: var(--transition-default, 0.15s ease);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
   .browse-btn:hover {

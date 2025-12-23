@@ -39,6 +39,7 @@ interface CAPLabelerStateData {
 
   // Subscription cleanup
   unsubscribe: (() => void) | null;
+  popstateHandler: ((event: PopStateEvent) => void) | null;
 }
 
 class CAPLabelerStateManager {
@@ -56,7 +57,7 @@ class CAPLabelerStateManager {
 
       const parsed = JSON.parse(stored);
       return {
-        filterMode: parsed.filterMode || "all",
+        filterMode: parsed.filterMode || "needsVerification",
         showStartPosition: parsed.showStartPosition ?? true,
         manualColumnCount: parsed.manualColumnCount ?? null,
       };
@@ -97,7 +98,7 @@ class CAPLabelerStateManager {
       labels: new Map(),
       currentIndex: 0,
       loading: true,
-      filterMode: persisted?.filterMode || "all",
+      filterMode: persisted?.filterMode || "needsVerification",
       notes: "",
       syncStatus: "idle",
       labelingMode: "whole",
@@ -105,6 +106,7 @@ class CAPLabelerStateManager {
       showStartPosition: persisted?.showStartPosition ?? true,
       manualColumnCount: persisted?.manualColumnCount ?? null,
       unsubscribe: null,
+      popstateHandler: null,
     };
   }
 
@@ -197,6 +199,7 @@ class CAPLabelerStateManager {
         labeled: this.state.labels.size,
         unlabeled: this.circularSequences.length - this.state.labels.size,
         unknown: 0,
+        needsVerification: 0,
       };
     }
 
@@ -236,7 +239,7 @@ class CAPLabelerStateManager {
       const urlFilter = navigationService?.getFilterFromUrl();
       if (
         urlFilter &&
-        ["all", "labeled", "unlabeled", "unknown"].includes(urlFilter)
+        ["all", "labeled", "unlabeled", "unknown", "needsVerification"].includes(urlFilter)
       ) {
         this.state.filterMode = urlFilter as FilterMode;
       }
@@ -247,13 +250,17 @@ class CAPLabelerStateManager {
         this.navigateToSequenceId(urlSeqId);
       }
 
-      // Update URL with current state
+      // Update URL with current state (don't add to history on initial load)
       if (navigationService && this.currentSequence) {
         navigationService.updateUrlWithSequence(
           this.currentSequence.id,
-          this.state.filterMode
+          this.state.filterMode,
+          false // Don't add initial state to history
         );
       }
+
+      // Set up popstate listener for browser back/forward navigation
+      this.setupPopstateListener();
     } catch (error) {
       console.error("[CAPLabelerState] Failed to initialize:", error);
     } finally {
@@ -261,10 +268,82 @@ class CAPLabelerStateManager {
     }
   }
 
+  private setupPopstateListener() {
+    if (typeof window === "undefined") return;
+
+    // Remove existing listener if any
+    if (this.state.popstateHandler) {
+      window.removeEventListener("popstate", this.state.popstateHandler);
+    }
+
+    // Create new popstate handler
+    const handler = (event: PopStateEvent) => {
+      const state = event.state as { sequenceId?: string; filterMode?: string } | null;
+
+      if (state?.sequenceId) {
+        // Navigate to the sequence from history state
+        this.navigateToSequenceIdWithoutHistory(state.sequenceId);
+      } else {
+        // Fallback: try to get from URL
+        const navigationService = this.getNavigationService();
+        const urlSeqId = navigationService?.getSequenceFromUrl();
+        if (urlSeqId) {
+          this.navigateToSequenceIdWithoutHistory(urlSeqId);
+        }
+      }
+    };
+
+    this.state.popstateHandler = handler;
+    window.addEventListener("popstate", handler);
+  }
+
+  /**
+   * Navigate to a sequence without adding to browser history
+   * (used when handling popstate events)
+   */
+  private navigateToSequenceIdWithoutHistory(sequenceId: string) {
+    const targetSeq = this.circularSequences.find((s) => s.id === sequenceId);
+    if (!targetSeq) {
+      console.warn(`[Popstate] Sequence "${sequenceId}" not found`);
+      return;
+    }
+
+    const label = this.state.labels.get(targetSeq.word);
+    const needsVerification = label?.needsVerification === true;
+    const isVerified = label && !label.needsVerification;
+
+    // Adjust filter mode if necessary to show the target sequence
+    if (this.state.filterMode === "needsVerification" && !needsVerification) {
+      // Switching to verified filter to show the target
+      this.state.filterMode = "verified";
+    } else if (this.state.filterMode === "verified" && !isVerified) {
+      // Switching to needsVerification filter to show the target
+      this.state.filterMode = "needsVerification";
+    }
+
+    // Find the index in the filtered list
+    const targetIndex = this.filteredSequences.findIndex(
+      (s) => s.id === sequenceId
+    );
+
+    if (targetIndex >= 0) {
+      this.state.currentIndex = targetIndex;
+      console.log(
+        `[Popstate] Navigated to sequence "${sequenceId}" (index ${targetIndex})`
+      );
+    }
+  }
+
   dispose() {
     if (this.state.unsubscribe) {
       this.state.unsubscribe();
       this.state.unsubscribe = null;
+    }
+
+    // Clean up popstate listener
+    if (this.state.popstateHandler && typeof window !== "undefined") {
+      window.removeEventListener("popstate", this.state.popstateHandler);
+      this.state.popstateHandler = null;
     }
   }
 
@@ -316,17 +395,17 @@ class CAPLabelerStateManager {
       return;
     }
 
-    const isLabeled = this.state.labels.has(targetSeq.word);
     const label = this.state.labels.get(targetSeq.word);
-    const isUnknown = label?.isUnknown === true;
+    const needsVerification = label?.needsVerification === true;
+    const isVerified = label && !label.needsVerification;
 
     // Adjust filter mode if necessary to show the target sequence
-    if (this.state.filterMode === "unlabeled" && isLabeled) {
-      this.state.filterMode = "all";
-    } else if (this.state.filterMode === "labeled" && !isLabeled) {
-      this.state.filterMode = "all";
-    } else if (this.state.filterMode === "unknown" && !isUnknown) {
-      this.state.filterMode = "all";
+    if (this.state.filterMode === "needsVerification" && !needsVerification) {
+      // Switching to verified filter to show the target
+      this.state.filterMode = "verified";
+    } else if (this.state.filterMode === "verified" && !isVerified) {
+      // Switching to needsVerification filter to show the target
+      this.state.filterMode = "needsVerification";
     }
 
     // Find the index in the filtered list
@@ -546,7 +625,7 @@ class CAPLabelerStateManager {
       labels: new Map(),
       currentIndex: 0,
       loading: false,
-      filterMode: "all",
+      filterMode: "needsVerification",
       notes: "",
       syncStatus: "idle",
       labelingMode: "whole",
@@ -554,6 +633,7 @@ class CAPLabelerStateManager {
       showStartPosition: true,
       manualColumnCount: null,
       unsubscribe: null,
+      popstateHandler: null,
     };
   }
 }
@@ -577,6 +657,7 @@ if (import.meta.hot) {
       showStartPosition: capLabelerState.showStartPosition,
       manualColumnCount: capLabelerState.manualColumnCount,
       unsubscribe: capLabelerState["state"].unsubscribe,
+      popstateHandler: null, // Don't preserve event handlers across HMR
     };
   });
 }

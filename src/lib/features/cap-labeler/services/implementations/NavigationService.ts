@@ -21,7 +21,11 @@ export class NavigationService implements INavigationService {
     return currentIndex;
   }
 
-  updateUrlWithSequence(sequenceId: string | null, filterMode?: string): void {
+  updateUrlWithSequence(
+    sequenceId: string | null,
+    filterMode?: string,
+    addToHistory: boolean = true
+  ): void {
     if (typeof window === "undefined") return;
 
     const url = new URL(window.location.href);
@@ -35,8 +39,16 @@ export class NavigationService implements INavigationService {
       url.searchParams.set("filter", filterMode);
     }
 
-    // Use replaceState to avoid polluting browser history
-    window.history.replaceState({}, "", url.toString());
+    // Store sequence ID in history state for popstate handling
+    const state = { sequenceId, filterMode };
+
+    if (addToHistory) {
+      // Use pushState to enable browser back/forward navigation
+      window.history.pushState(state, "", url.toString());
+    } else {
+      // Use replaceState when we don't want to add a history entry
+      window.history.replaceState(state, "", url.toString());
+    }
   }
 
   getSequenceFromUrl(): string | null {

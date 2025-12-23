@@ -9,7 +9,9 @@ export type ComponentId =
   | "mirrored"
   | "flipped"
   | "inverted"
-  | "rewound";
+  | "rewound"
+  | "repeated"
+  | "modular";
 
 /**
  * CAP designation for a sequence or section

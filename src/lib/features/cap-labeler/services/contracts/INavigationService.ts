@@ -16,8 +16,13 @@ export interface INavigationService {
 
   /**
    * Update URL with current sequence ID and optionally filter mode
+   * @param addToHistory - If true, uses pushState (enables back button). If false, uses replaceState.
    */
-  updateUrlWithSequence(sequenceId: string | null, filterMode?: string): void;
+  updateUrlWithSequence(
+    sequenceId: string | null,
+    filterMode?: string,
+    addToHistory?: boolean
+  ): void;
 
   /**
    * Get sequence ID from URL

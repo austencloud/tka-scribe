@@ -49,6 +49,20 @@ export const BASE_COMPONENTS = [
     icon: "backward",
     color: "#ec4899",
   },
+  {
+    id: "repeated",
+    label: "Repeated",
+    description: "Sequence repeats 2-4x for true circularity (orientations match)",
+    icon: "repeat",
+    color: "#f59e0b",
+  },
+  {
+    id: "modular",
+    label: "Modular",
+    description: "Multiple motifs transform independently at different intervals",
+    icon: "layer-group",
+    color: "#8b5cf6",
+  },
 ] as const;
 
 export type ComponentId = (typeof BASE_COMPONENTS)[number]["id"];
@@ -82,6 +96,11 @@ export function componentsToCAPType(
       CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED,
     rewound: "rewound",
     inverted_rewound: "rewound_inverted",
+    repeated: "repeated",
+    repeated_rotated: "repeated_rotated",
+    repeated_mirrored: "repeated_mirrored",
+    repeated_swapped: "repeated_swapped",
+    modular: "modular",
     // Add more combinations as needed
   };
 

@@ -3,7 +3,7 @@
    * Whole Mode Builder Panel
    *
    * Component selection grid for adding whole-sequence designations.
-   * Designations are displayed in the unified DesignationsPanel above.
+   * Uses shared design tokens from app.css.
    */
   import type { ComponentId } from "../../domain/constants/cap-components";
   import type {
@@ -45,19 +45,16 @@
     { id: "inverted", key: "invert", color: "#eb7d00" },
   ];
 
-  // Get interval config for a component
   function getIntervalConfig(id: ComponentId) {
     return intervalComponents.find((c) => c.id === id);
   }
 
-  // Check if component has interval selected
   function hasInterval(id: ComponentId): boolean {
     const config = getIntervalConfig(id);
     if (!config) return false;
     return !!transformationIntervals[config.key];
   }
 
-  // Get interval display for component
   function getIntervalDisplay(id: ComponentId): string {
     const config = getIntervalConfig(id);
     if (!config) return "";
@@ -67,21 +64,19 @@
     return "";
   }
 
-  // Can add designation?
   const canAdd = $derived(selectedComponents.size > 0);
 </script>
 
-<div class="whole-mode-builder">
-  <div class="builder-hint">
+<div class="builder-panel">
+  <p class="builder-hint">
     Select components that describe the whole sequence pattern
-  </div>
+  </p>
 
-  <!-- Component Grid with Integrated Intervals -->
   <div class="component-grid">
     {#each BASE_COMPONENTS as component}
       {@const intervalConfig = getIntervalConfig(component.id)}
       {@const isSelected = selectedComponents.has(component.id)}
-      <div class="component-cell" class:selected={isSelected}>
+      <div class="component-cell">
         <button
           class="component-btn"
           class:selected={isSelected}
@@ -95,58 +90,51 @@
           />
           <span class="component-name">{component.label}</span>
           {#if isSelected && hasInterval(component.id)}
-            <span class="interval-badge"
-              >{getIntervalDisplay(component.id)}</span
-            >
+            <span class="interval-badge">{getIntervalDisplay(component.id)}</span>
           {/if}
         </button>
 
-        <!-- Interval chips (shown when component is selected and supports intervals) -->
         {#if isSelected && intervalConfig}
           <div class="interval-row">
             <button
               class="interval-chip"
-              class:active={transformationIntervals[intervalConfig.key] ===
-                "halved"}
+              class:active={transformationIntervals[intervalConfig.key] === "halved"}
               style="--chip-color: {intervalConfig.color}"
               onclick={() => onSetInterval(intervalConfig.key, "halved")}
-              >½</button
-            >
+            >½</button>
             <button
               class="interval-chip"
-              class:active={transformationIntervals[intervalConfig.key] ===
-                "quartered"}
+              class:active={transformationIntervals[intervalConfig.key] === "quartered"}
               style="--chip-color: {intervalConfig.color}"
               onclick={() => onSetInterval(intervalConfig.key, "quartered")}
-              >¼</button
-            >
+            >¼</button>
           </div>
         {/if}
       </div>
     {/each}
   </div>
 
-  <!-- Add button -->
-  <button class="add-btn" disabled={!canAdd} onclick={onAddDesignation}>
+  <button class="btn-add" disabled={!canAdd} onclick={onAddDesignation}>
     <FontAwesomeIcon icon="plus" size="0.9em" />
     Add to designations
   </button>
 </div>
 
 <style>
-  .whole-mode-builder {
+  .builder-panel {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md, 12px);
-    padding: var(--space-md, 12px);
-    background: var(--surface-inset, rgba(0, 0, 0, 0.2));
-    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-    border-radius: var(--radius-lg, 12px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--surface-dark);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
   }
 
   .builder-hint {
-    font-size: var(--text-xs, 11px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+    margin: 0;
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
     text-align: center;
   }
 
@@ -154,7 +142,7 @@
   .component-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-sm, 8px);
+    gap: var(--spacing-sm);
   }
 
   .component-cell {
@@ -168,29 +156,34 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    padding: var(--space-sm, 8px);
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.05));
-    border: 2px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    padding: var(--spacing-sm);
+    background: var(--surface-color);
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 8px;
+    color: var(--muted-foreground);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: var(--transition-fast);
     position: relative;
   }
 
   .component-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--surface-hover);
     border-color: color-mix(in srgb, var(--component-color) 40%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .component-btn:active {
+    transform: translateY(0);
   }
 
   .component-btn.selected {
     background: color-mix(in srgb, var(--component-color) 20%, transparent);
     border-color: var(--component-color);
-    color: var(--text-primary, #fff);
+    color: var(--foreground);
   }
 
   .component-name {
-    font-size: var(--text-xs, 11px);
+    font-size: var(--font-size-xs);
     font-weight: 600;
   }
 
@@ -220,49 +213,50 @@
   .interval-chip {
     flex: 1;
     padding: 4px;
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    font-size: var(--text-sm, 12px);
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-xs);
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition: var(--transition-micro);
   }
 
   .interval-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--surface-hover);
   }
 
   .interval-chip.active {
     background: color-mix(in srgb, var(--chip-color) 30%, transparent);
     border-color: var(--chip-color);
-    color: var(--text-primary, #fff);
+    color: var(--foreground);
   }
 
   /* Add Button */
-  .add-btn {
+  .btn-add {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(99, 102, 241, 0.15);
     border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-primary, #fff);
-    font-size: var(--text-sm, 12px);
+    border-radius: 8px;
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
-  .add-btn:hover:not(:disabled) {
+  .btn-add:hover:not(:disabled) {
     background: rgba(99, 102, 241, 0.25);
     border-color: rgba(99, 102, 241, 0.5);
   }
 
-  .add-btn:disabled {
+  .btn-add:disabled {
     opacity: 0.4;
     cursor: not-allowed;
   }

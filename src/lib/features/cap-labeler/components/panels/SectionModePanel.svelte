@@ -1,4 +1,10 @@
 <script lang="ts">
+  /**
+   * Section Mode Builder Panel
+   *
+   * Select beat ranges and assign component transformations or base words.
+   * Uses shared design tokens from app.css.
+   */
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { ComponentId } from "../../domain/constants/cap-components";
   import SavedSectionsList from "../shared/SavedSectionsList.svelte";
@@ -17,7 +23,7 @@
     onRemoveSection: (index: number) => void;
     onMarkUnknown: () => void;
     onNext: () => void;
-    canProceed: boolean; // false if there's unsaved work
+    canProceed: boolean;
   }
 
   let {
@@ -33,7 +39,6 @@
     canProceed,
   }: Props = $props();
 
-  // Compute selection label
   const selectionLabel = $derived(() => {
     if (selectedComponents.size === 0) return "None";
     return Array.from(selectedComponents)
@@ -42,42 +47,40 @@
   });
 </script>
 
-<div class="section-mode-panel">
-  <div class="section-mode-hint">
+<div class="section-panel">
+  <div class="section-hint">
     Click start beat, then end beat to select range. Pick components or base
     word, then "Add Section".
   </div>
 
   <!-- Current selection status -->
   {#if selectedBeats.size > 0}
-    <div class="current-selection-status">
-      <span class="selection-count">{selectedBeats.size} beats selected</span>
+    <div class="selection-status">
+      <span class="beat-count">{selectedBeats.size} beats selected</span>
       {#if selectedComponents.size > 0}
-        <span class="selection-arrow">→</span>
-        <span class="selection-components">{selectionLabel()}</span>
+        <span class="arrow">→</span>
+        <span class="components">{selectionLabel()}</span>
       {/if}
     </div>
   {/if}
 
-  <!-- Base Word selector (optional) -->
-  <div class="base-word-selector">
-    <div class="base-word-header">
-      <span class="base-word-label">Base Word (optional):</span>
+  <!-- Base Word selector -->
+  <div class="base-word-section">
+    <div class="section-header">
+      <span class="section-label">Base Word (optional)</span>
       {#if selectedBaseWord}
-        <button class="clear-base-word" onclick={() => onBaseWordChange(null)}>
+        <button class="clear-btn" onclick={() => onBaseWordChange(null)}>
           Clear
         </button>
       {/if}
     </div>
-    <div class="base-word-chips">
+    <div class="chip-group">
       {#each BASE_WORDS as baseWord}
         <button
-          class="base-word-chip"
+          class="base-chip"
           class:selected={selectedBaseWord === baseWord.id}
           onclick={() =>
-            onBaseWordChange(
-              selectedBaseWord === baseWord.id ? null : baseWord.id
-            )}
+            onBaseWordChange(selectedBaseWord === baseWord.id ? null : baseWord.id)}
         >
           {baseWord.name}
         </button>
@@ -86,9 +89,8 @@
   </div>
 
   <!-- Add Section button -->
-  <!-- Can add section if: beats selected AND (components selected OR base word selected) -->
   <button
-    class="add-section-btn"
+    class="btn-add"
     onclick={onAddSection}
     disabled={selectedBeats.size === 0 ||
       (selectedComponents.size === 0 && !selectedBaseWord)}
@@ -97,204 +99,202 @@
     Add Section
   </button>
 
-  <!-- Unknown button (for sequences that need review) -->
-  <button class="unknown-btn" onclick={onMarkUnknown}>
+  <!-- Unknown button -->
+  <button class="btn-unknown" onclick={onMarkUnknown}>
     Unknown - Review Later
   </button>
 
   <!-- Saved sections -->
   <SavedSectionsList sections={savedSections} onRemove={onRemoveSection} />
 
-  <!-- Next button (disabled if there's unsaved work) -->
+  <!-- Next button -->
   {#if savedSections.length > 0}
     <button
-      class="next-btn"
+      class="btn-next"
       onclick={onNext}
       disabled={!canProceed}
-      title={!canProceed
-        ? "Save or clear your current selection first"
-        : "Go to next sequence"}
+      title={!canProceed ? "Save or clear your current selection first" : "Go to next sequence"}
     >
-      Next →
+      Next
+      <FontAwesomeIcon icon="arrow-right" size="0.9em" />
     </button>
   {/if}
 </div>
 
 <style>
-  .section-mode-panel {
+  .section-panel {
     display: flex;
     flex-direction: column;
-    gap: var(--space-md, 12px);
+    gap: var(--spacing-sm);
   }
 
-  .section-mode-hint {
-    font-size: var(--text-sm, 12px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
-    background: var(--surface-raised, rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-sm, 6px);
-    border-left: 3px solid var(--accent-primary, #6366f1);
+  .section-hint {
+    font-size: var(--font-size-sm);
+    color: var(--muted-foreground);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--surface-color);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary-color);
   }
 
-  .current-selection-status {
+  .selection-status {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-md, 12px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
     background: rgba(251, 191, 36, 0.15);
-    border: 1px solid rgba(251, 191, 36, 0.5);
-    border-radius: var(--radius-md, 8px);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    border-radius: 8px;
   }
 
-  .selection-count {
+  .beat-count {
     font-weight: 600;
     color: #fbbf24;
   }
 
-  .selection-arrow {
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
+  .arrow {
+    color: var(--muted-foreground);
   }
 
-  .selection-components {
-    color: var(--text-primary, #fff);
+  .components {
+    color: var(--foreground);
   }
 
-  .add-section-btn {
+  .base-word-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .section-label {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--muted-foreground);
+  }
+
+  .clear-btn {
+    padding: 2px var(--spacing-sm);
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-radius: 4px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: var(--transition-micro);
+  }
+
+  .clear-btn:hover {
+    background: var(--surface-color);
+    color: var(--foreground);
+  }
+
+  .chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .base-chip {
+    padding: 4px 8px;
+    background: var(--surface-color);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-xs);
+    font-family: monospace;
+    cursor: pointer;
+    transition: var(--transition-micro);
+  }
+
+  .base-chip:hover {
+    background: var(--surface-hover);
+    color: var(--foreground);
+  }
+
+  .base-chip.selected {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.5);
+    color: #4ade80;
+  }
+
+  .btn-add {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-md, 12px) var(--space-xl, 20px);
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--gradient-primary);
     border: none;
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-primary, #fff);
-    font-size: var(--text-lg, 14px);
+    border-radius: 8px;
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-smooth, 0.2s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
-  .add-section-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  .btn-add:hover:not(:disabled) {
+    transform: translateY(var(--hover-lift-sm));
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
   }
 
-  .add-section-btn:disabled {
+  .btn-add:disabled {
     opacity: 0.4;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
   }
 
-  .unknown-btn {
-    flex: 1;
-    padding: var(--space-md, 12px) var(--space-lg, 16px);
+  .btn-unknown {
+    padding: var(--spacing-md);
     background: rgba(234, 179, 8, 0.15);
     border: 1px solid rgba(234, 179, 8, 0.4);
-    border-radius: var(--radius-md, 8px);
+    border-radius: 8px;
     color: #eab308;
     cursor: pointer;
-    font-size: var(--text-md, 13px);
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    transition: var(--transition-default, 0.15s ease);
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
-  .unknown-btn:hover {
+  .btn-unknown:hover {
     background: rgba(234, 179, 8, 0.25);
     border-color: rgba(234, 179, 8, 0.6);
   }
 
-  .base-word-selector {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-sm, 8px);
-  }
-
-  .base-word-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .base-word-label {
-    font-size: var(--font-size-compact, 12px);
-    font-weight: 500;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-  }
-
-  .clear-base-word {
-    padding: 2px var(--space-sm, 8px);
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--radius-xs, 4px);
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
-    font-size: var(--font-size-xs, 11px);
-    cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
-  }
-
-  .clear-base-word:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary, #fff);
-  }
-
-  .base-word-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs, 4px);
-  }
-
-  .base-word-chip {
-    padding: 4px 8px;
-    background: var(--surface-overlay, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--border-default, rgba(255, 255, 255, 0.15));
-    border-radius: var(--radius-sm, 6px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    font-size: var(--font-size-compact, 12px);
-    font-family: monospace;
-    cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
-  }
-
-  .base-word-chip:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: var(--text-primary, #fff);
-  }
-
-  .base-word-chip.selected {
-    background: rgba(34, 197, 94, 0.25);
-    border-color: rgba(34, 197, 94, 0.6);
-    color: #4ade80;
-  }
-
-  .next-btn {
+  .btn-next {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-md, 12px) var(--space-xl, 20px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
     background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
     border: none;
-    border-radius: var(--radius-md, 8px);
-    color: var(--text-primary, #fff);
-    font-size: var(--text-lg, 14px);
+    border-radius: 8px;
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-smooth, 0.2s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    transition: var(--transition-fast);
+    min-height: var(--min-touch-target);
   }
 
-  .next-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+  .btn-next:hover:not(:disabled) {
+    transform: translateY(var(--hover-lift-sm));
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
   }
 
-  .next-btn:disabled {
+  .btn-next:disabled {
     opacity: 0.4;
     cursor: not-allowed;
     transform: none;
-    box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);
   }
 </style>

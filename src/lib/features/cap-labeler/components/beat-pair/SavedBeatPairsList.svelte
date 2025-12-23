@@ -1,5 +1,12 @@
 <script lang="ts">
+  /**
+   * Saved Beat Pairs List
+   *
+   * Displays saved beat pair relationships with transformation info.
+   * Uses shared design tokens from app.css.
+   */
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
+  import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
     beatPairs: BeatPairRelationship[];
@@ -11,17 +18,20 @@
 
 {#if beatPairs.length > 0}
   <div class="saved-beatpairs">
-    <span class="saved-label">Saved Beat Pairs:</span>
+    <span class="saved-label">Saved beat pairs</span>
     {#each beatPairs as pair, i}
       <div class="saved-beatpair-tag">
-        <span class="beatpair-beats"
-          >{pair.keyBeat} ↔ {pair.correspondingBeat}</span
+        <span class="beatpair-beats">{pair.keyBeat} ↔ {pair.correspondingBeat}</span>
+        <span class="beatpair-transformation">
+          {pair.confirmedTransformation || pair.detectedTransformations[0]}
+        </span>
+        <button
+          class="remove-btn"
+          onclick={() => onRemove(i)}
+          title="Remove beat pair"
         >
-        <span class="beatpair-transformation"
-          >{pair.confirmedTransformation ||
-            pair.detectedTransformations[0]}</span
-        >
-        <button class="remove-btn" onclick={() => onRemove(i)}>×</button>
+          <FontAwesomeIcon icon="xmark" size="0.85em" />
+        </button>
       </div>
     {/each}
   </div>
@@ -31,52 +41,62 @@
   .saved-beatpairs {
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-md, 12px);
-    background: var(--surface-raised, rgba(255, 255, 255, 0.05));
-    border-radius: var(--radius-md, 8px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--surface-glass);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
   }
 
   .saved-label {
-    font-size: var(--text-sm, 12px);
+    font-size: var(--font-size-xs);
     font-weight: 600;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
-    margin-bottom: var(--space-xs, 4px);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted-foreground);
+    margin-bottom: var(--spacing-xs);
   }
 
   .saved-beatpair-tag {
     display: flex;
     align-items: center;
-    gap: var(--space-sm, 8px);
-    padding: var(--space-sm, 8px) var(--space-md, 12px);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(0, 0, 0, 0.2);
-    border-radius: var(--radius-sm, 6px);
-    border-left: 4px solid rgba(139, 92, 246, 0.8);
+    border-radius: 8px;
+    border-left: 4px solid rgba(168, 85, 247, 0.8);
   }
 
-  .saved-beatpair-tag .beatpair-beats {
+  .beatpair-beats {
     font-weight: 600;
-    color: var(--text-primary, #fff);
-    min-width: 60px;
+    font-size: var(--font-size-sm);
+    color: var(--foreground);
+    min-width: 70px;
   }
 
-  .saved-beatpair-tag .beatpair-transformation {
+  .beatpair-transformation {
     flex: 1;
-    color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
   }
 
-  .saved-beatpair-tag .remove-btn {
-    padding: var(--space-xs, 4px);
+  .remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
     background: transparent;
     border: none;
-    color: var(--text-muted, rgba(255, 255, 255, 0.5));
-    font-size: var(--text-lg, 14px);
+    border-radius: 6px;
+    color: var(--muted);
     cursor: pointer;
-    transition: var(--transition-fast, 0.1s ease);
-    line-height: 1;
+    transition: var(--transition-micro);
+    flex-shrink: 0;
   }
 
-  .saved-beatpair-tag .remove-btn:hover {
-    color: var(--accent-danger, #ef4444);
+  .remove-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
   }
 </style>

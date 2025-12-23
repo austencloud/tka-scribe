@@ -33,19 +33,16 @@ export class SequenceLoadingService implements ISequenceLoadingService {
 
     // Apply filter mode
     switch (filterMode) {
-      case "all":
-        return circularSequences;
-
-      case "unlabeled":
-        return circularSequences.filter((s) => !labels.has(s.word));
-
-      case "labeled":
-        return circularSequences.filter((s) => labels.has(s.word));
-
-      case "unknown":
+      case "needsVerification":
         return circularSequences.filter(
-          (s) => labels.get(s.word)?.isUnknown === true
+          (s) => labels.get(s.word)?.needsVerification === true
         );
+
+      case "verified":
+        return circularSequences.filter((s) => {
+          const label = labels.get(s.word);
+          return label && !label.needsVerification;
+        });
 
       default:
         return circularSequences;
@@ -58,17 +55,17 @@ export class SequenceLoadingService implements ISequenceLoadingService {
   ): SequenceStats {
     const circularSequences = sequences.filter((s) => s.isCircular);
     const total = circularSequences.length;
-    const labeled = labels.size;
-    const unlabeled = total - labeled;
-    const unknown = Array.from(labels.values()).filter(
-      (l) => l.isUnknown === true
+
+    const needsVerification = Array.from(labels.values()).filter(
+      (l) => l.needsVerification === true
     ).length;
+
+    const verified = labels.size - needsVerification;
 
     return {
       total,
-      labeled,
-      unlabeled,
-      unknown,
+      needsVerification,
+      verified,
     };
   }
 }
