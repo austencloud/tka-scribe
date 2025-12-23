@@ -106,8 +106,13 @@ export class TagService implements ITagService {
     const tagId = crypto.randomUUID();
     const tagData = createTag(normalizedName, userId, options);
 
+    // Remove undefined values for Firebase
+    const cleanTagData = Object.fromEntries(
+      Object.entries(tagData).filter(([_, v]) => v !== undefined)
+    );
+
     await setDoc(doc(firestore, getUserTagPath(userId, tagId)), {
-      ...tagData,
+      ...cleanTagData,
       createdAt: serverTimestamp(),
     });
 

@@ -73,7 +73,9 @@ export class LibraryService implements ILibraryService {
     @inject(TYPES.IAchievementService)
     private achievementService: IAchievementService,
     @inject(TYPES.ITagService)
-    private tagService: ITagService
+    private tagService: ITagService,
+    @inject(TYPES.IOrientationCycleDetector)
+    private orientationCycleDetector: import("../../../../create/generate/circular/services/contracts/IOrientationCycleDetector").IOrientationCycleDetector
   ) {}
 
   /**
@@ -201,6 +203,28 @@ export class LibraryService implements ILibraryService {
       } catch (error) {
         console.error("[LibraryService] Tag migration failed:", error);
         // Continue with save even if migration fails
+      }
+    }
+
+    // Detect orientation cycle count for circular sequences
+    if (librarySequence.isCircular) {
+      try {
+        const cycleResult = this.orientationCycleDetector.detectOrientationCycle(
+          librarySequence
+        );
+        librarySequence = {
+          ...librarySequence,
+          orientationCycleCount: cycleResult.cycleCount,
+        };
+        console.log(
+          `[LibraryService] Detected orientation cycle count: ${cycleResult.cycleCount}`
+        );
+      } catch (error) {
+        console.error(
+          "[LibraryService] Orientation cycle detection failed:",
+          error
+        );
+        // Continue with save even if detection fails
       }
     }
 
