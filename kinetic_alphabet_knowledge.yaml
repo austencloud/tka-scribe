@@ -407,7 +407,7 @@ words:
     - name: "OR"
       mnemonic: "Open Road"
 
-# CAPs (Circular Arrangement Patterns)
+# CAPs (Continuous Assembly Patterns)
 # Sequences that return to their starting position through specific transformations
 caps:
   definition: |

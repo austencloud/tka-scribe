@@ -12,7 +12,7 @@ You are prioritizing feedback for TKA-Studio, an application for **flow artists*
 Run this command to get all feedback items that need prioritization:
 
 ```bash
-node fetch-feedback.js prioritize --json
+node scripts/fetch-feedback.js.js prioritize --json
 ```
 
 This returns JSON with all "new" status items that have no priority set.
@@ -71,7 +71,7 @@ Ask the user:
 For each item, run:
 
 ```bash
-node fetch-feedback.js <id> priority <high|medium|low>
+node scripts/fetch-feedback.js.js <id> priority <high|medium|low>
 ```
 
 You can batch these with `&&` for efficiency.

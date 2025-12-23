@@ -237,7 +237,7 @@ When running `/fb`, you MUST start your response with the raw feedback details i
 - UX improvements they'll notice (performance, smoother interactions, easier workflows)
 - **User perspective test:** Would a flow artist care about this?
 
-**❌ Mark as internal-only** (`node fetch-feedback.js <id> internal-only true`):
+**❌ Mark as internal-only** (`node scripts/fetch-feedback.js.js <id> internal-only true`):
 
 - Developer workflow tooling (release scripts, feedback systems, build tools)
 - Admin-only features (analytics, feedback Kanban, internal dashboards)

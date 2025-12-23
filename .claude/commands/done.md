@@ -59,7 +59,7 @@ The command expects the document ID and admin notes:
 The command will extract the document ID and admin notes from the command arguments and run:
 
 ```bash
-node fetch-feedback.js <document-id> completed "admin notes"
+node scripts/fetch-feedback.js.js <document-id> completed "admin notes"
 ```
 
 This marks the item as completed and ready for the next release.

@@ -41,7 +41,7 @@ Users may use vague or incorrect terminology. Here's the actual structure:
 
 ## Workflow
 
-Run `scripts/node fetch-feedback.js $ARGUMENTS` to auto-claim the next unclaimed feedback item.
+Run `scripts/node scripts/fetch-feedback.js.js $ARGUMENTS` to auto-claim the next unclaimed feedback item.
 
 The script will:
 
@@ -233,7 +233,7 @@ Task tool parameters:
   2. Exact file(s) to modify with paths
   3. Specific change to make
   4. How to verify it worked
-  5. After completing: "Move to in-review with: node fetch-feedback.js [id] in-review '[admin notes]'"
+  5. After completing: "Move to in-review with: node scripts/fetch-feedback.js.js [id] in-review '[admin notes]'"
 ```
 
 #### For MEDIUM tasks (DELEGATE to Sonnet):
@@ -251,7 +251,7 @@ Task tool parameters:
   3. Expected behavior vs current behavior
   4. Suggested implementation approach
   5. Testing steps
-  6. After completing: "Move to in-review with: node fetch-feedback.js [id] in-review '[admin notes]'"
+  6. After completing: "Move to in-review with: node scripts/fetch-feedback.js.js [id] in-review '[admin notes]'"
 ```
 
 #### For COMPLEX tasks (Handle as Opus):
@@ -289,7 +289,7 @@ When a Haiku/Sonnet agent completes:
    - Should capture the essence at a glance (e.g., "Mobile nav overlap", "Slow gallery load", "Missing undo button")
    - Update Firebase:
      ```
-     node fetch-feedback.js <document-id> title "Your short title"
+     node scripts/fetch-feedback.js.js <document-id> title "Your short title"
      ```
 
 2. **Assess the feedback honestly:**
@@ -318,7 +318,7 @@ When a Haiku/Sonnet agent completes:
    After implementation, move to `in-review` with brief admin notes:
 
    ```
-   node fetch-feedback.js <document-id> in-review "Fixed card height overflow in Kanban board"
+   node scripts/fetch-feedback.js.js <document-id> in-review "Fixed card height overflow in Kanban board"
    ```
 
    **Admin notes (internal reference - only visible to admins):**
@@ -345,11 +345,11 @@ When a Haiku/Sonnet agent completes:
 
    ```bash
    # User-facing feature (needs resolution notes)
-   node fetch-feedback.js <id> in-review "Fixed gallery card overflow"
-   node fetch-feedback.js <id> resolution "Sequence cards in the gallery now display correctly without being cut off."
+   node scripts/fetch-feedback.js.js <id> in-review "Fixed gallery card overflow"
+   node scripts/fetch-feedback.js.js <id> resolution "Sequence cards in the gallery now display correctly without being cut off."
 
    # Admin-only feature (skip resolution notes)
-   node fetch-feedback.js <id> in-review "Fixed Kanban column drag-drop"
+   node scripts/fetch-feedback.js.js <id> in-review "Fixed Kanban column drag-drop"
    # No resolution command needed - admin notes are sufficient
    ```
 
@@ -373,7 +373,7 @@ When a Haiku/Sonnet agent completes:
    Only after the user confirms, mark as completed:
 
    ```
-   node fetch-feedback.js <document-id> completed "Verified working"
+   node scripts/fetch-feedback.js.js <document-id> completed "Verified working"
    ```
 
    **Workflow context:**
@@ -389,14 +389,14 @@ When you claim feedback that's too large to implement directly (requires multipl
 1. **Break it down into subtasks** instead of deferring:
 
    ```
-   node fetch-feedback.js <id> subtask add "Short title" "What needs to be done"
+   node scripts/fetch-feedback.js.js <id> subtask add "Short title" "What needs to be done"
    ```
 
 2. **Specify dependencies** if subtasks must be done in order:
 
    ```
-   node fetch-feedback.js <id> subtask add "Step 2" "Description" 1
-   node fetch-feedback.js <id> subtask add "Step 3" "Description" 1 2
+   node scripts/fetch-feedback.js.js <id> subtask add "Step 2" "Description" 1
+   node scripts/fetch-feedback.js.js <id> subtask add "Step 3" "Description" 1 2
    ```
 
    (The numbers at the end are IDs of subtasks this depends on)
@@ -404,13 +404,13 @@ When you claim feedback that's too large to implement directly (requires multipl
 3. **Update subtask status** as you work:
 
    ```
-   node fetch-feedback.js <id> subtask 1 in-progress
-   node fetch-feedback.js <id> subtask 1 completed
+   node scripts/fetch-feedback.js.js <id> subtask 1 in-progress
+   node scripts/fetch-feedback.js.js <id> subtask 1 completed
    ```
 
 4. **View subtasks**:
    ```
-   node fetch-feedback.js <id> subtask list
+   node scripts/fetch-feedback.js.js <id> subtask list
    ```
 
 The feedback stays in the queue. When agents claim it, they see the subtasks and can work on the next available one (pending with all dependencies completed).
@@ -421,16 +421,16 @@ When feedback won't be implemented, move directly to `archived` with a clear rea
 
 ```bash
 # Item declined (not a good fit for the product)
-node fetch-feedback.js <id> archived "Declined: Out of scope for v1 vision"
+node scripts/fetch-feedback.js.js <id> archived "Declined: Out of scope for v1 vision"
 
 # Won't fix (working as intended)
-node fetch-feedback.js <id> archived "Won't fix: This is expected behavior"
+node scripts/fetch-feedback.js.js <id> archived "Won't fix: This is expected behavior"
 
 # Duplicate of another item
-node fetch-feedback.js <id> archived "Duplicate of #xyz123abc"
+node scripts/fetch-feedback.js.js <id> archived "Duplicate of #xyz123abc"
 
 # Cannot reproduce
-node fetch-feedback.js <id> archived "Cannot reproduce: Needs more details"
+node scripts/fetch-feedback.js.js <id> archived "Cannot reproduce: Needs more details"
 ```
 
 **Important:** Archived items bypass the release process. They don't get a `fixedInVersion` tag and won't appear in What's New. Use this for items that are closed but not shipped.
@@ -441,9 +441,9 @@ node fetch-feedback.js <id> archived "Cannot reproduce: Needs more details"
 
 ```bash
 # Defer until specific date (YYYY-MM-DD format)
-node fetch-feedback.js <id> defer "2026-03-15" "Revisit after Q1 roadmap finalized"
-node fetch-feedback.js <id> defer "2026-06-01" "Wait for Svelte 6 release"
-node fetch-feedback.js <id> defer "2026-01-15" "Low priority, defer 6 weeks"
+node scripts/fetch-feedback.js.js <id> defer "2026-03-15" "Revisit after Q1 roadmap finalized"
+node scripts/fetch-feedback.js.js <id> defer "2026-06-01" "Wait for Svelte 6 release"
+node scripts/fetch-feedback.js.js <id> defer "2026-01-15" "Low priority, defer 6 weeks"
 ```
 
 **How it works:**
@@ -470,12 +470,12 @@ Shows what will reactivate without making changes.
 
 ### Other commands
 
-- `node fetch-feedback.js list` - See queue status
-- `node fetch-feedback.js <id>` - View a specific item by document ID
-- `node fetch-feedback.js <id> title "short title"` - Update title
-- `node fetch-feedback.js <id> resolution "notes"` - Add resolution notes (user-facing summary)
-- `node fetch-feedback.js <id> <status> "notes"` - Update status
-- `node fetch-feedback.js delete <id>` - Delete a feedback item
+- `node scripts/fetch-feedback.js.js list` - See queue status
+- `node scripts/fetch-feedback.js.js <id>` - View a specific item by document ID
+- `node scripts/fetch-feedback.js.js <id> title "short title"` - Update title
+- `node scripts/fetch-feedback.js.js <id> resolution "notes"` - Add resolution notes (user-facing summary)
+- `node scripts/fetch-feedback.js.js <id> <status> "notes"` - Update status
+- `node scripts/fetch-feedback.js.js delete <id>` - Delete a feedback item
 - `node scripts/release.js --show-last` - View what shipped in last release
 
 ### Stale claims
@@ -530,7 +530,7 @@ Task({
     (use the icon system already in place - likely FontAwesome or similar)
 
     After completing, run:
-    node fetch-feedback.js abc123 in-review "Changed submit button icon to paper airplane"
+    node scripts/fetch-feedback.js.js abc123 in-review "Changed submit button icon to paper airplane"
   `,
 });
 ```
@@ -588,7 +588,7 @@ Task({
     4. Submit feedback - draft should clear
 
     After completing, run:
-    node fetch-feedback.js def456 in-review "Added auto-save for feedback drafts"
+    node scripts/fetch-feedback.js.js def456 in-review "Added auto-save for feedback drafts"
   `,
 });
 ```
