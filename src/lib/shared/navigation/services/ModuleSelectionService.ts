@@ -1,7 +1,11 @@
 import { injectable } from "inversify";
 
 import type { ModuleDefinition } from "../domain/types";
-import type { ModuleSelectionState, ModuleSelectionContext, ModuleSelectionResult } from "../domain/models/ModuleSelection";
+import type {
+  ModuleSelectionState,
+  ModuleSelectionContext,
+  ModuleSelectionResult,
+} from "../domain/models/ModuleSelection";
 import type { IModuleSelectionService } from "./contracts/IModuleSelectionService";
 
 @injectable()

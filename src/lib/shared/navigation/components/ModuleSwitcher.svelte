@@ -268,8 +268,12 @@
 
   /* Close button - accessible touch target (50px minimum) */
   .close-button {
-    width: var(--min-touch-target); /* Increased from 36px for proper touch target */
-    height: var(--min-touch-target); /* Increased from 36px for proper touch target */
+    width: var(
+      --min-touch-target
+    ); /* Increased from 36px for proper touch target */
+    height: var(
+      --min-touch-target
+    ); /* Increased from 36px for proper touch target */
     border-radius: 12px; /* Slightly larger to match new size */
     background: transparent;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));

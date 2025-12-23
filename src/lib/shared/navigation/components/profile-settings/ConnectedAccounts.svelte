@@ -52,7 +52,6 @@
   // Email linking drawer state
   let showEmailLinkingDrawer = $state(false);
 
-
   onMount(() => {
     authService = resolve<IAuthService>(TYPES.IAuthService);
     hapticService = resolve<IHapticFeedbackService>(
@@ -242,8 +241,16 @@
                   class="unlink-btn desktop-only"
                   role="button"
                   tabindex="-1"
-                  onclick={(e) => { e.stopPropagation(); unlinkProvider(providerId as ProviderId); }}
-                  onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); unlinkProvider(providerId as ProviderId); }}}
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    unlinkProvider(providerId as ProviderId);
+                  }}
+                  onkeydown={(e) => {
+                    if (e.key === "Enter") {
+                      e.stopPropagation();
+                      unlinkProvider(providerId as ProviderId);
+                    }
+                  }}
                   aria-label="Disconnect {config.name}"
                 >
                   {#if isUnlinking}
@@ -350,7 +357,6 @@
   bind:isOpen={showEmailLinkingDrawer}
   onSuccess={handleEmailLinkingSuccess}
 />
-
 
 <style>
   .connected-accounts {

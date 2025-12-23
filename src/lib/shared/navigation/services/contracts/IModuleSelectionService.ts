@@ -1,5 +1,8 @@
-import type { ModuleSelectionContext, ModuleSelectionResult, ModuleSelectionState } from "../../domain/models/ModuleSelection";
-
+import type {
+  ModuleSelectionContext,
+  ModuleSelectionResult,
+  ModuleSelectionState,
+} from "../../domain/models/ModuleSelection";
 
 /**
  * Service for managing module selection logic and filtering

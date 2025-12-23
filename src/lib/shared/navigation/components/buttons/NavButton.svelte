@@ -69,7 +69,9 @@
   onclick={handleClick}
   ontouchend={handleClick}
   {disabled}
-  aria-label="{ariaLabel || label}{badgeCount > 0 ? `, ${badgeCount} unread` : ''}"
+  aria-label="{ariaLabel || label}{badgeCount > 0
+    ? `, ${badgeCount} unread`
+    : ''}"
   style="--section-color: {color}; --section-gradient: {gradient};"
 >
   <span class="nav-icon">{@html icon}</span>

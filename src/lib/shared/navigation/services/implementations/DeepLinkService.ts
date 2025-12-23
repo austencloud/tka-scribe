@@ -207,7 +207,8 @@ export class DeepLinkService implements IDeepLinkService {
 
     // Check if data is stale
     const isStale =
-      Date.now() - this.storedData.timestamp > DeepLinkService.STALE_THRESHOLD_MS;
+      Date.now() - this.storedData.timestamp >
+      DeepLinkService.STALE_THRESHOLD_MS;
     if (isStale) {
       this.storedData = null;
       return null;
@@ -228,7 +229,8 @@ export class DeepLinkService implements IDeepLinkService {
     }
 
     const isStale =
-      Date.now() - this.storedData.timestamp > DeepLinkService.STALE_THRESHOLD_MS;
+      Date.now() - this.storedData.timestamp >
+      DeepLinkService.STALE_THRESHOLD_MS;
     return !isStale;
   }
 
@@ -239,9 +241,10 @@ export class DeepLinkService implements IDeepLinkService {
   /**
    * Parse a deep link URL and extract module + sequence data
    */
-  private parseDeepLinkURL(
-    url: string
-  ): { module: string; sequence: ReturnType<ISequenceEncoderService["decode"]> } | null {
+  private parseDeepLinkURL(url: string): {
+    module: string;
+    sequence: ReturnType<ISequenceEncoderService["decode"]>;
+  } | null {
     return this.sequenceEncoderService.parseDeepLink(url);
   }
 }

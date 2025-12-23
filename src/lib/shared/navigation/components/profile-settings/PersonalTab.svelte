@@ -436,7 +436,9 @@
 
   .section.compact :global(.button) {
     padding: 11px 20px;
-    min-height: var(--min-touch-target); /* WCAG 2.1 AA minimum touch target size */
+    min-height: var(
+      --min-touch-target
+    ); /* WCAG 2.1 AA minimum touch target size */
     font-size: 14px;
     gap: 8px;
     border-radius: 8px;
@@ -445,7 +447,9 @@
 
   .section.very-compact :global(.button) {
     padding: 11px 18px;
-    min-height: var(--min-touch-target); /* WCAG 2.1 AA minimum touch target size */
+    min-height: var(
+      --min-touch-target
+    ); /* WCAG 2.1 AA minimum touch target size */
     font-size: 13px;
     gap: 6px;
     border-radius: 8px;

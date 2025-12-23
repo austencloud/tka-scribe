@@ -61,9 +61,7 @@
 
   // Show user's profile picture for dashboard module when signed in
   const showProfilePicture = $derived(
-    module.id === "dashboard" &&
-      authState.isAuthenticated &&
-      effectivePhotoURL
+    module.id === "dashboard" && authState.isAuthenticated && effectivePhotoURL
   );
   const profilePictureUrl = $derived(effectivePhotoURL || "");
   const profileDisplayName = $derived(effectiveDisplayName);
@@ -205,7 +203,11 @@
   /* Active module indicator - glass effect with module color */
   .module-button.active {
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: color-mix(in srgb, var(--module-color) 15%, rgba(0, 0, 0, 0.25));
+    background: color-mix(
+      in srgb,
+      var(--module-color) 15%,
+      rgba(0, 0, 0, 0.25)
+    );
     border-color: color-mix(in srgb, var(--module-color) 35%, transparent);
     box-shadow:
       0 0 0 1px color-mix(in srgb, var(--module-color) 20%, transparent) inset,

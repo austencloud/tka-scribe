@@ -176,7 +176,10 @@ export function createNavigationState() {
       // Migration: community and account modules retired, redirect to dashboard
       currentModule = "dashboard";
       localStorage.setItem(CURRENT_MODULE_KEY, "dashboard");
-    } else if (savedModule && MODULE_DEFINITIONS.some((m) => m.id === savedModule)) {
+    } else if (
+      savedModule &&
+      MODULE_DEFINITIONS.some((m) => m.id === savedModule)
+    ) {
       currentModule = savedModule as ModuleId;
     }
 
@@ -217,13 +220,20 @@ export function createNavigationState() {
     const savedLastPanels = localStorage.getItem(TAB_LAST_PANELS_KEY);
     if (savedLastPanels) {
       try {
-        const parsed = JSON.parse(savedLastPanels) as Record<string, string | null>;
+        const parsed = JSON.parse(savedLastPanels) as Record<
+          string,
+          string | null
+        >;
         // Validate tab keys - format "moduleId:tabId"
         const filteredEntries = Object.entries(parsed).filter(([tabKey]) => {
           const [moduleId, tabId] = tabKey.split(":");
           if (!moduleId || !tabId) return false;
-          const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
-          return moduleDefinition?.sections.some((tab) => tab.id === tabId) ?? false;
+          const moduleDefinition = MODULE_DEFINITIONS.find(
+            (m) => m.id === moduleId
+          );
+          return (
+            moduleDefinition?.sections.some((tab) => tab.id === tabId) ?? false
+          );
         });
         if (filteredEntries.length > 0) {
           lastPanelByTab = Object.fromEntries(filteredEntries);
@@ -258,9 +268,15 @@ export function createNavigationState() {
     // Note: These comparisons use the current values directly (not in a closure)
     const moduleAtInit = currentModule;
     const tabAtInit = activeTab;
-    if (moduleAtInit === "learn" && LEARN_TABS.some((t) => t.id === tabAtInit)) {
+    if (
+      moduleAtInit === "learn" &&
+      LEARN_TABS.some((t) => t.id === tabAtInit)
+    ) {
       currentLearnMode = tabAtInit;
-    } else if (moduleAtInit === "create" && CREATE_TABS.some((t) => t.id === tabAtInit)) {
+    } else if (
+      moduleAtInit === "create" &&
+      CREATE_TABS.some((t) => t.id === tabAtInit)
+    ) {
       currentCreateMode = tabAtInit;
     }
   }
@@ -312,10 +328,7 @@ export function createNavigationState() {
     }
 
     try {
-      localStorage.setItem(
-        TAB_LAST_PANELS_KEY,
-        JSON.stringify(lastPanelByTab)
-      );
+      localStorage.setItem(TAB_LAST_PANELS_KEY, JSON.stringify(lastPanelByTab));
     } catch (error) {
       console.warn("NavigationState: failed to persist tab panel map:", error);
     }
@@ -333,7 +346,11 @@ export function createNavigationState() {
       // This ensures previous always reflects where user was before opening feedback
       if (currentModule !== moduleId) {
         // Only save if leaving a "real" location (not feedback/settings)
-        if (currentModule && currentModule !== "feedback" && currentModule !== "settings") {
+        if (
+          currentModule &&
+          currentModule !== "feedback" &&
+          currentModule !== "settings"
+        ) {
           previousModule = currentModule;
           previousTab = activeTab;
           savePreviousModuleToSession(currentModule);
@@ -350,7 +367,10 @@ export function createNavigationState() {
       let nextTab = activeTab;
       if (moduleDefinition && moduleDefinition.sections.length > 0) {
         // If targetTab is specified and valid, use it directly
-        if (targetTab && moduleDefinition.sections.some((tab) => tab.id === targetTab)) {
+        if (
+          targetTab &&
+          moduleDefinition.sections.some((tab) => tab.id === targetTab)
+        ) {
           nextTab = targetTab;
         } else {
           // Otherwise fall back to remembered or first tab
@@ -382,10 +402,15 @@ export function createNavigationState() {
       // Include the tab for more granular tracking (e.g., "create:generator")
       if (previousModuleLocal !== moduleId) {
         try {
-          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          const activityService = tryResolve<IActivityLogService>(
+            TYPES.IActivityLogService
+          );
           if (activityService) {
             const moduleWithTab = nextTab ? `${moduleId}:${nextTab}` : moduleId;
-            void activityService.logModuleView(moduleWithTab, previousModuleLocal);
+            void activityService.logModuleView(
+              moduleWithTab,
+              previousModuleLocal
+            );
           }
         } catch {
           // Silently fail - activity logging is non-critical
@@ -393,7 +418,9 @@ export function createNavigationState() {
 
         // Update presence with new location (non-blocking)
         try {
-          const presenceService = tryResolve<IPresenceService>(TYPES.IPresenceService);
+          const presenceService = tryResolve<IPresenceService>(
+            TYPES.IPresenceService
+          );
           if (presenceService) {
             void presenceService.updateLocation(moduleId, nextTab || null);
           }
@@ -439,11 +466,16 @@ export function createNavigationState() {
       // Log tab switch for analytics (non-blocking)
       if (previousTab !== tabId) {
         try {
-          const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+          const activityService = tryResolve<IActivityLogService>(
+            TYPES.IActivityLogService
+          );
           if (activityService) {
             const moduleWithTab = `${currentModule}:${tabId}`;
             const previousModuleWithTab = `${currentModule}:${previousTab}`;
-            void activityService.logModuleView(moduleWithTab, previousModuleWithTab);
+            void activityService.logModuleView(
+              moduleWithTab,
+              previousModuleWithTab
+            );
           }
         } catch {
           // Silently fail - activity logging is non-critical
@@ -451,7 +483,9 @@ export function createNavigationState() {
 
         // Update presence with new tab (non-blocking)
         try {
-          const presenceService = tryResolve<IPresenceService>(TYPES.IPresenceService);
+          const presenceService = tryResolve<IPresenceService>(
+            TYPES.IPresenceService
+          );
           if (presenceService) {
             void presenceService.updateLocation(currentModule, tabId);
           }
@@ -696,7 +730,11 @@ export function createNavigationState() {
      * @param moduleId The module (defaults to current module)
      * @param tabId The tab within the module (defaults to active tab)
      */
-    setLastPanelForTab(panelId: string | null, moduleId?: ModuleId, tabId?: string) {
+    setLastPanelForTab(
+      panelId: string | null,
+      moduleId?: ModuleId,
+      tabId?: string
+    ) {
       const module = moduleId ?? currentModule;
       const tab = tabId ?? activeTab;
       const tabKey = `${module}:${tab}`;

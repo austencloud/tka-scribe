@@ -20,7 +20,8 @@
 
   // Require exact match of their username/email (case-insensitive)
   let isConfirmationValid = $derived(
-    confirmationText.toLowerCase().trim() === userIdentifier.toLowerCase().trim()
+    confirmationText.toLowerCase().trim() ===
+      userIdentifier.toLowerCase().trim()
   );
 
   function toggleExpanded() {
@@ -226,8 +227,8 @@
 
   .confirmation-label strong {
     color: #ef4444;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-      monospace;
+    font-family:
+      ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     background: rgba(239, 68, 68, 0.15);
     padding: 2px 6px;
     border-radius: 4px;
@@ -239,8 +240,8 @@
     width: 100%;
     padding: 12px 14px;
     font-size: 14px;
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-      monospace;
+    font-family:
+      ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     letter-spacing: 0.5px;
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(239, 68, 68, 0.25);

@@ -193,7 +193,11 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1),
+      var(--theme-accent-strong, #4f46e5)
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -221,7 +225,11 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--theme-accent, #6366f1), var(--theme-accent-strong, #4f46e5));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #6366f1),
+      var(--theme-accent-strong, #4f46e5)
+    );
     display: flex;
     align-items: center;
     justify-content: center;
@@ -311,7 +319,8 @@
 
   /* Accessibility - Focus Indicators */
   .photo-wrapper:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    outline: 3px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
     outline-offset: 2px;
     border-radius: 50%;
   }

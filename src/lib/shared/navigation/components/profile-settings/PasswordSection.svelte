@@ -45,9 +45,7 @@
   }
 
   const isFormValid = $derived(
-    passwordState.new &&
-      passwordState.new.length >= 8 &&
-      !uiState.saving
+    passwordState.new && passwordState.new.length >= 8 && !uiState.saving
   );
 
   const isPasswordWeak = $derived(
@@ -89,7 +87,8 @@
           </button>
         </div>
         <p class="hint-message subtle">
-          If you have passkeys enabled, you can leave this blank and verify with your device.
+          If you have passkeys enabled, you can leave this blank and verify with
+          your device.
         </p>
       </div>
 
@@ -222,7 +221,11 @@
 
   .input:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 60%,
+      transparent
+    );
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
   }
 
@@ -293,24 +296,39 @@
       var(--theme-accent-strong, #4f46e5)
     );
     color: white;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
     filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .button--secondary {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
     color: var(--theme-accent, #a5b4fc);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 60%,
+      transparent
+    );
   }
 
   .button:active:not(:disabled) {

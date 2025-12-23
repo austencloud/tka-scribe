@@ -20,7 +20,9 @@ import {
 } from "../../config/storage-keys";
 
 @injectable()
-export class NavigationPersistenceService implements INavigationPersistenceService {
+export class NavigationPersistenceService
+  implements INavigationPersistenceService
+{
   // ─────────────────────────────────────────────────────────────────────────────
   // Module Persistence
   // ─────────────────────────────────────────────────────────────────────────────
@@ -78,14 +80,21 @@ export class NavigationPersistenceService implements INavigationPersistenceServi
       const parsed = JSON.parse(saved) as Record<string, string>;
 
       // Validate each entry against module definitions
-      const validEntries = Object.entries(parsed).filter(([moduleId, tabId]) => {
-        const moduleDef = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
-        return moduleDef?.sections.some((tab) => tab.id === tabId) ?? false;
-      });
+      const validEntries = Object.entries(parsed).filter(
+        ([moduleId, tabId]) => {
+          const moduleDef = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
+          return moduleDef?.sections.some((tab) => tab.id === tabId) ?? false;
+        }
+      );
 
-      return Object.fromEntries(validEntries) as Partial<Record<ModuleId, string>>;
+      return Object.fromEntries(validEntries) as Partial<
+        Record<ModuleId, string>
+      >;
     } catch (error) {
-      console.warn("NavigationPersistenceService: failed to parse module tab map:", error);
+      console.warn(
+        "NavigationPersistenceService: failed to parse module tab map:",
+        error
+      );
       return {};
     }
   }
@@ -96,7 +105,10 @@ export class NavigationPersistenceService implements INavigationPersistenceServi
     try {
       localStorage.setItem(MODULE_LAST_TABS_KEY, JSON.stringify(lastTabs));
     } catch (error) {
-      console.warn("NavigationPersistenceService: failed to persist module tab map:", error);
+      console.warn(
+        "NavigationPersistenceService: failed to persist module tab map:",
+        error
+      );
     }
   }
 
@@ -123,7 +135,10 @@ export class NavigationPersistenceService implements INavigationPersistenceServi
 
       return Object.fromEntries(validEntries);
     } catch (error) {
-      console.warn("NavigationPersistenceService: failed to parse tab panel map:", error);
+      console.warn(
+        "NavigationPersistenceService: failed to parse tab panel map:",
+        error
+      );
       return {};
     }
   }
@@ -134,7 +149,10 @@ export class NavigationPersistenceService implements INavigationPersistenceServi
     try {
       localStorage.setItem(TAB_LAST_PANELS_KEY, JSON.stringify(lastPanels));
     } catch (error) {
-      console.warn("NavigationPersistenceService: failed to persist tab panel map:", error);
+      console.warn(
+        "NavigationPersistenceService: failed to persist tab panel map:",
+        error
+      );
     }
   }
 

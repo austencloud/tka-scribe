@@ -5,10 +5,7 @@
   Designed to sit on top of profile photos or buttons.
 -->
 <script lang="ts">
-  let {
-    count = 0,
-    max = 99,
-  } = $props<{
+  let { count = 0, max = 99 } = $props<{
     count?: number;
     max?: number;
   }>();
@@ -58,7 +55,8 @@
   }
 
   @keyframes badge-pulse {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
     }
     50% {

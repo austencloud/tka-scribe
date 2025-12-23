@@ -28,7 +28,9 @@ export class LetterDeriverService implements ILetterDeriverService {
     private gridModeDeriver: IGridModeDeriver | null
   ) {}
 
-  async deriveLettersForSequence(sequence: SequenceData): Promise<SequenceData> {
+  async deriveLettersForSequence(
+    sequence: SequenceData
+  ): Promise<SequenceData> {
     if (!this.motionQueryHandler) {
       console.warn(
         "MotionQueryHandler not available - letters will not be derived"
@@ -105,11 +107,12 @@ export class LetterDeriverService implements ILetterDeriverService {
         beat.motions.red
       );
 
-      const letter = (await this.motionQueryHandler.findLetterByMotionConfiguration(
-        beat.motions.blue,
-        beat.motions.red,
-        gridMode
-      )) as BeatData["letter"];
+      const letter =
+        (await this.motionQueryHandler.findLetterByMotionConfiguration(
+          beat.motions.blue,
+          beat.motions.red,
+          gridMode
+        )) as BeatData["letter"];
 
       if (letter) {
         return { ...beat, letter };

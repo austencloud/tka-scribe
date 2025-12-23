@@ -65,7 +65,12 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent) 15%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 15%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent)) 15%,
+          transparent
+        )
+        100%
     );
     border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 12px;
@@ -80,7 +85,12 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent) 25%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 25%, transparent) 100%
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, var(--theme-accent)) 25%,
+          transparent
+        )
+        100%
     );
     border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     transform: translateX(4px);
@@ -100,7 +110,10 @@
   }
 
   .install-icon {
-    color: var(--theme-accent-strong, var(--theme-accent, rgba(139, 92, 246, 1)));
+    color: var(
+      --theme-accent-strong,
+      var(--theme-accent, rgba(139, 92, 246, 1))
+    );
   }
 
   .item-info {

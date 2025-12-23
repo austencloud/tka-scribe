@@ -412,14 +412,6 @@ export const SETTINGS_TABS: Section[] = [
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
-  {
-    id: "support",
-    label: "Support",
-    icon: '<i class="fas fa-heart"></i>',
-    description: "Support TKA development",
-    color: "#ec4899",
-    gradient: "linear-gradient(135deg, #f472b6 0%, #ec4899 100%)",
-  },
 ];
 
 // Feedback tabs configuration (testers/admins only)

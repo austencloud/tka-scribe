@@ -1,8 +1,8 @@
 <!-- Mobile Navigation - Responsive Bottom/Side Navigation Orchestrator -->
 <!-- Automatically adapts between bottom (portrait) and side (landscape) layouts -->
 <script lang="ts">
-import { resolve } from "../../inversify/di";
-import { TYPES } from "../../inversify/types";
+  import { resolve } from "../../inversify/di";
+  import { TYPES } from "../../inversify/types";
   import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "../../device/domain/models/device-models";
   import { onMount } from "svelte";
@@ -81,10 +81,7 @@ import { TYPES } from "../../inversify/types";
         responsiveSettings = deviceDetector!.getResponsiveSettings();
       });
     } catch (error) {
-      console.warn(
-        "MobileNavigation: Failed to resolve DeviceDetector",
-        error
-      );
+      console.warn("MobileNavigation: Failed to resolve DeviceDetector", error);
     }
 
     // Return cleanup function

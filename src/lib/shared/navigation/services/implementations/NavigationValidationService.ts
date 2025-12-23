@@ -11,7 +11,9 @@ import type { ModuleDefinition, ModuleId, Section } from "../../domain/types";
 import { MODULE_DEFINITIONS } from "../../config/module-definitions";
 
 @injectable()
-export class NavigationValidationService implements INavigationValidationService {
+export class NavigationValidationService
+  implements INavigationValidationService
+{
   /**
    * Check if a module ID is valid
    */
@@ -62,7 +64,7 @@ export class NavigationValidationService implements INavigationValidationService
    */
   getDefaultTabForModule(moduleId: ModuleId): string | null {
     const tabs = this.getTabsForModule(moduleId);
-    return tabs.length > 0 ? tabs[0]?.id ?? null : null;
+    return tabs.length > 0 ? (tabs[0]?.id ?? null) : null;
   }
 
   /**

@@ -80,7 +80,11 @@
 
   .menu-button:hover {
     opacity: 0.85;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
   }
 
   .menu-button:active {

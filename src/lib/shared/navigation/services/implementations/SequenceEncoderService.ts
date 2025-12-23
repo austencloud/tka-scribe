@@ -544,7 +544,9 @@ export class SequenceEncoderService implements ISequenceEncoderService {
     const gridMode = this.inferGridModeFromMotion(startLocation, endLocation);
 
     // DEBUG: Log decoded motion orientation
-    console.log(`🔓 [URL Decoder] ${color} motion: startOri="${startOrientation}" → endOri="${endOrientation}" (from "${startOrientCode}" → "${endOrientCode}")`);
+    console.log(
+      `🔓 [URL Decoder] ${color} motion: startOri="${startOrientation}" → endOri="${endOrientation}" (from "${startOrientCode}" → "${endOrientCode}")`
+    );
 
     return {
       motionType,

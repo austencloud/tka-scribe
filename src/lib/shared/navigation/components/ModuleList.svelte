@@ -611,12 +611,18 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .cell-background {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15)) !important;
+      background: var(
+        --theme-card-hover-bg,
+        rgba(255, 255, 255, 0.15)
+      ) !important;
       border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4)) !important;
     }
 
     .module-cell.active .cell-background {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25)) !important;
+      background: var(
+        --theme-card-hover-bg,
+        rgba(255, 255, 255, 0.25)
+      ) !important;
       border: 2px solid white !important;
     }
   }

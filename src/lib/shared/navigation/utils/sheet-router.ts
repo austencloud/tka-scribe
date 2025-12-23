@@ -177,9 +177,7 @@ export function closeSheet(): void {
     updateURL(newState, "replace");
 
     // Dispatch event to update components
-    window.dispatchEvent(
-      new CustomEvent("route-change", { detail: newState })
-    );
+    window.dispatchEvent(new CustomEvent("route-change", { detail: newState }));
   } else {
     // No sheet in URL, just dispatch close event
     window.dispatchEvent(
@@ -230,9 +228,7 @@ export function closeSpotlight(): void {
     updateURL(newState, "replace");
 
     // Dispatch event to update components
-    window.dispatchEvent(
-      new CustomEvent("route-change", { detail: newState })
-    );
+    window.dispatchEvent(new CustomEvent("route-change", { detail: newState }));
   } else {
     // No spotlight in URL
     window.dispatchEvent(

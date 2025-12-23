@@ -187,11 +187,7 @@ export function setupViewportTracking(): (() => void) | null {
 // TAB TRANSITION HELPERS
 // ============================================================================
 
-const TAB_ORDER: SettingsTab[] = [
-  "personal",
-  "security",
-  "subscription",
-];
+const TAB_ORDER: SettingsTab[] = ["personal", "security", "subscription"];
 
 /**
  * Calculate and update transition direction when tab changes

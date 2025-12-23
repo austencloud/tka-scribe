@@ -29,7 +29,8 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent) 50%,
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent)
+        50%,
       rgba(236, 72, 153, 0.06) 100%
     );
     display: flex;

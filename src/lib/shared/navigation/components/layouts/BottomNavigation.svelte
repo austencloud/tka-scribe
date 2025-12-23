@@ -192,11 +192,7 @@
   <!-- Current Module's Sections - Use overflow selector for modules with >4 tabs -->
   {#if shouldUseOverflowSelector}
     <div class="sections-overflow" class:hidden={shouldHideNav}>
-      <TabOverflowSelector
-        {sections}
-        {currentSection}
-        {onSectionChange}
-      />
+      <TabOverflowSelector {sections} {currentSection} {onSectionChange} />
     </div>
   {:else}
     <div class="sections" class:hidden={shouldHideNav}>
@@ -435,7 +431,11 @@
 
   .nav-back-button:hover {
     opacity: 0.85;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
   }
 
   .nav-back-button:active {

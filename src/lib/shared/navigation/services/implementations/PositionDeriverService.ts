@@ -46,7 +46,9 @@ export class PositionDeriverService implements IPositionDeriverService {
       sequence.startingPositionBeat;
 
     if (sequence.startPosition) {
-      updatedStartPosition = this.derivePositionsForBeat(sequence.startPosition);
+      updatedStartPosition = this.derivePositionsForBeat(
+        sequence.startPosition
+      );
     }
 
     if (sequence.startingPositionBeat) {

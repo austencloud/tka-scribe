@@ -65,7 +65,10 @@ export class SheetRouterService implements ISheetRouterService {
     return state;
   }
 
-  private updateURL(state: RouteState, mode: "push" | "replace" = "push"): void {
+  private updateURL(
+    state: RouteState,
+    mode: "push" | "replace" = "push"
+  ): void {
     if (!browser) return;
 
     const url = new URL(window.location.href);
@@ -96,7 +99,10 @@ export class SheetRouterService implements ISheetRouterService {
         state.animationPanel.speed !== undefined &&
         state.animationPanel.speed !== 1
       ) {
-        url.searchParams.set("animSpeed", state.animationPanel.speed.toString());
+        url.searchParams.set(
+          "animSpeed",
+          state.animationPanel.speed.toString()
+        );
       }
       if (state.animationPanel.isPlaying) {
         url.searchParams.set("animPlaying", "true");
@@ -224,7 +230,9 @@ export class SheetRouterService implements ISheetRouterService {
     this.dispatchRouteChange(newState);
   }
 
-  updateAnimationPanelState(animationState: Partial<AnimationPanelState>): void {
+  updateAnimationPanelState(
+    animationState: Partial<AnimationPanelState>
+  ): void {
     if (!browser) return;
 
     const currentState = this.parseRouteState();

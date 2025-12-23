@@ -2,7 +2,11 @@ import { injectable } from "inversify";
 
 import type { INavigationViewportService } from "./contracts/IViewportService";
 import { ViewportMode } from "../domain/enums/ViewportMode";
-import type { ViewportState, SafeAreaInsets, ViewportDimensions } from "../domain/models/ViewportState";
+import type {
+  ViewportState,
+  SafeAreaInsets,
+  ViewportDimensions,
+} from "../domain/models/ViewportState";
 
 @injectable()
 export class NavigationViewportService implements INavigationViewportService {

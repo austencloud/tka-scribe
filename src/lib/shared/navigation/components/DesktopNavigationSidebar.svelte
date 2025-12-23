@@ -80,7 +80,8 @@
   // This prevents the flash of tabs on initial load
   const isCreateTutorialActive = $derived(
     navigationState.currentModule === "create" &&
-      (navigationState.isCreationMethodSelectorVisible || !hasCompletedCreateTutorial())
+      (navigationState.isCreationMethodSelectorVisible ||
+        !hasCompletedCreateTutorial())
   );
   const isOnTutorialChoiceStep = $derived(
     navigationState.isCreateTutorialOnChoiceStep
@@ -90,7 +91,9 @@
   // Returns a function that checks localStorage directly to avoid flash
   function hasCompletedModuleOnboarding(moduleId: string): boolean {
     if (typeof localStorage === "undefined") return true;
-    return localStorage.getItem(`tka-${moduleId}-onboarding-completed`) === "true";
+    return (
+      localStorage.getItem(`tka-${moduleId}-onboarding-completed`) === "true"
+    );
   }
 
   // Get filtered settings sections using feature flag service
@@ -202,21 +205,33 @@
   }
 
   // Modules that have onboarding (excluding Create which has its own handling)
-  const modulesWithOnboarding = ["discover", "learn", "compose", "train", "library"];
+  const modulesWithOnboarding = [
+    "discover",
+    "learn",
+    "compose",
+    "train",
+    "library",
+  ];
 
   // Filter sections based on module-specific rules (e.g., admin-only tabs)
   // Uses featureFlagService.canAccessTab() for role-based access control
   // For modules with onboarding: tabs hidden until onboarding completed or on choice step
   function getFilteredSections(module: ModuleDefinition): Section[] {
     // Hide Create module tabs during tutorial (until choice step)
-    if (module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep) {
+    if (
+      module.id === "create" &&
+      isCreateTutorialActive &&
+      !isOnTutorialChoiceStep
+    ) {
       return [];
     }
 
     // Hide other module tabs during their onboarding (until choice step or completed)
     // Use same pattern as Create: check localStorage directly to avoid flash
     if (modulesWithOnboarding.includes(module.id)) {
-      const isOnChoiceStep = navigationState.isModuleOnboardingOnChoiceStep(module.id);
+      const isOnChoiceStep = navigationState.isModuleOnboardingOnChoiceStep(
+        module.id
+      );
       const hasCompleted = hasCompletedModuleOnboarding(module.id);
       const isCurrentModule = navigationState.currentModule === module.id;
 
@@ -358,10 +373,20 @@
               {@const moduleColor = module.color || "#a855f7"}
               {@const filteredSections = getFilteredSections(module)}
               {@const hasTabs = isModuleActive && filteredSections.length > 0}
-              {@const isCreateInTutorialCollapsed = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
-              {@const isModuleInOnboardingCollapsed = modulesWithOnboarding.includes(module.id) && navigationState.currentModule === module.id && !hasCompletedModuleOnboarding(module.id) && !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
-              {@const forceActiveCollapsed = isCreateInTutorialCollapsed || isModuleInOnboardingCollapsed}
-              {@const shouldShowGlassContainer = (isModuleActive || forceActiveCollapsed) && (hasTabs || module.id === "dashboard")}
+              {@const isCreateInTutorialCollapsed =
+                module.id === "create" &&
+                isCreateTutorialActive &&
+                !isOnTutorialChoiceStep}
+              {@const isModuleInOnboardingCollapsed =
+                modulesWithOnboarding.includes(module.id) &&
+                navigationState.currentModule === module.id &&
+                !hasCompletedModuleOnboarding(module.id) &&
+                !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
+              {@const forceActiveCollapsed =
+                isCreateInTutorialCollapsed || isModuleInOnboardingCollapsed}
+              {@const shouldShowGlassContainer =
+                (isModuleActive || forceActiveCollapsed) &&
+                (hasTabs || module.id === "dashboard")}
 
               <!-- Module Context Group: Unified visual container for module + tabs -->
               <div
@@ -412,12 +437,27 @@
             {@const isExpanded = expandedModules.has(module.id)}
             {@const moduleColor = module.color || "#a855f7"}
             {@const filteredSections = getFilteredSections(module)}
-            {@const isCreateOnChoiceStep = module.id === "create" && isOnTutorialChoiceStep}
-            {@const isModuleOnChoiceStep = modulesWithOnboarding.includes(module.id) && navigationState.isModuleOnboardingOnChoiceStep(module.id)}
-            {@const shouldCelebrate = (isCreateOnChoiceStep || isModuleOnChoiceStep) && filteredSections.length > 0}
-            {@const isCreateInTutorial = module.id === "create" && isCreateTutorialActive && !isOnTutorialChoiceStep}
-            {@const isModuleInOnboarding = modulesWithOnboarding.includes(module.id) && navigationState.currentModule === module.id && !hasCompletedModuleOnboarding(module.id) && !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
-            {@const forceActiveStyleLocal = isCreateInTutorial || isModuleInOnboarding || module.id === "dashboard"}
+            {@const isCreateOnChoiceStep =
+              module.id === "create" && isOnTutorialChoiceStep}
+            {@const isModuleOnChoiceStep =
+              modulesWithOnboarding.includes(module.id) &&
+              navigationState.isModuleOnboardingOnChoiceStep(module.id)}
+            {@const shouldCelebrate =
+              (isCreateOnChoiceStep || isModuleOnChoiceStep) &&
+              filteredSections.length > 0}
+            {@const isCreateInTutorial =
+              module.id === "create" &&
+              isCreateTutorialActive &&
+              !isOnTutorialChoiceStep}
+            {@const isModuleInOnboarding =
+              modulesWithOnboarding.includes(module.id) &&
+              navigationState.currentModule === module.id &&
+              !hasCompletedModuleOnboarding(module.id) &&
+              !navigationState.isModuleOnboardingOnChoiceStep(module.id)}
+            {@const forceActiveStyleLocal =
+              isCreateInTutorial ||
+              isModuleInOnboarding ||
+              module.id === "dashboard"}
 
             <ModuleGroup
               module={{ ...module, sections: filteredSections }}
@@ -552,7 +592,7 @@
     height: 32px;
     display: flex;
     align-items: center;
-    justify 48pxent: center;
+    justify-content: center;
     font-size: 16px;
     border-radius: 8px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -606,7 +646,7 @@
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size:  48px(13px, 7.5cqw, 15px);
+    font-size: clamp(13px, 7.5cqw, 15px);
     font-weight: 600;
     text-align: left;
   }

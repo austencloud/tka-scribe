@@ -4,7 +4,12 @@
   import type { Section } from "../../domain/types";
   import NotificationBadge from "../NotificationBadge.svelte";
 
-  let { section, isActive, onClick, badgeCount = 0 } = $props<{
+  let {
+    section,
+    isActive,
+    onClick,
+    badgeCount = 0,
+  } = $props<{
     section: Section;
     isActive: boolean;
     onClick: () => void;

@@ -47,7 +47,9 @@
   // Set up toggle event listener for chevron rotation
   onMount(() => {
     // Resolve haptic service
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     const element = popoverElement;
     if (!element) return;
@@ -246,7 +248,6 @@
     opacity: 0;
     scale: 0.95;
   }
-
 
   /* ============================================================================
      TAB GRID - Responsive grid layout
