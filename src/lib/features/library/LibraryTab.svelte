@@ -27,7 +27,10 @@
   $effect(() => {
     const section = navigationState.currentSection;
     // Only update if section actually changed
-    if (section !== prevSection && (section === "sequences" || section === "acts")) {
+    if (
+      section !== prevSection &&
+      (section === "sequences" || section === "acts")
+    ) {
       prevSection = section;
       untrack(() => {
         activeMode = section;

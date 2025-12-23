@@ -170,7 +170,8 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     }
 
     return (
-      mirrorVertical(blue1.startLocation) === blue2.startLocation.toLowerCase() &&
+      mirrorVertical(blue1.startLocation) ===
+        blue2.startLocation.toLowerCase() &&
       mirrorVertical(blue1.endLocation) === blue2.endLocation.toLowerCase() &&
       mirrorVertical(red1.startLocation) === red2.startLocation.toLowerCase() &&
       mirrorVertical(red1.endLocation) === red2.endLocation.toLowerCase()
@@ -203,7 +204,8 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     }
 
     return (
-      flipHorizontal(blue1.startLocation) === blue2.startLocation.toLowerCase() &&
+      flipHorizontal(blue1.startLocation) ===
+        blue2.startLocation.toLowerCase() &&
       flipHorizontal(blue1.endLocation) === blue2.endLocation.toLowerCase() &&
       flipHorizontal(red1.startLocation) === red2.startLocation.toLowerCase() &&
       flipHorizontal(red1.endLocation) === red2.endLocation.toLowerCase()
@@ -245,8 +247,14 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     // Apply rotation to beat1, then swap colors, check if matches beat2
     const rotate180 = (loc: string) => {
       const map: Record<string, string> = {
-        n: "s", s: "n", e: "w", w: "e",
-        ne: "sw", sw: "ne", nw: "se", se: "nw",
+        n: "s",
+        s: "n",
+        e: "w",
+        w: "e",
+        ne: "sw",
+        sw: "ne",
+        nw: "se",
+        se: "nw",
       };
       return map[loc.toLowerCase()] || loc;
     };
@@ -277,8 +285,14 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     // Apply rotation to beat1, then invert motion types, check if matches beat2
     const rotate180 = (loc: string) => {
       const map: Record<string, string> = {
-        n: "s", s: "n", e: "w", w: "e",
-        ne: "sw", sw: "ne", nw: "se", se: "nw",
+        n: "s",
+        s: "n",
+        e: "w",
+        w: "e",
+        ne: "sw",
+        sw: "ne",
+        nw: "se",
+        se: "nw",
       };
       return map[loc.toLowerCase()] || loc;
     };
@@ -314,12 +328,24 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     const mirrorThenFlip = (loc: string) => {
       // Mirror: e↔w, then flip: n↔s
       const mirrorMap: Record<string, string> = {
-        n: "n", s: "s", e: "w", w: "e",
-        ne: "nw", nw: "ne", se: "sw", sw: "se",
+        n: "n",
+        s: "s",
+        e: "w",
+        w: "e",
+        ne: "nw",
+        nw: "ne",
+        se: "sw",
+        sw: "se",
       };
       const flipMap: Record<string, string> = {
-        n: "s", s: "n", e: "e", w: "w",
-        ne: "se", se: "ne", nw: "sw", sw: "nw",
+        n: "s",
+        s: "n",
+        e: "e",
+        w: "w",
+        ne: "se",
+        se: "ne",
+        nw: "sw",
+        sw: "nw",
       };
       const mirrored = mirrorMap[loc.toLowerCase()] || loc;
       return flipMap[mirrored] || mirrored;
@@ -335,7 +361,8 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     }
 
     return (
-      mirrorThenFlip(blue1.startLocation) === blue2.startLocation.toLowerCase() &&
+      mirrorThenFlip(blue1.startLocation) ===
+        blue2.startLocation.toLowerCase() &&
       mirrorThenFlip(blue1.endLocation) === blue2.endLocation.toLowerCase() &&
       mirrorThenFlip(red1.startLocation) === red2.startLocation.toLowerCase() &&
       mirrorThenFlip(red1.endLocation) === red2.endLocation.toLowerCase()
@@ -346,8 +373,14 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     // Apply mirror (e↔w) to beat1, then swap colors, check if matches beat2
     const mirrorVertical = (loc: string) => {
       const map: Record<string, string> = {
-        n: "n", s: "s", e: "w", w: "e",
-        ne: "nw", nw: "ne", se: "sw", sw: "se",
+        n: "n",
+        s: "s",
+        e: "w",
+        w: "e",
+        ne: "nw",
+        nw: "ne",
+        se: "sw",
+        sw: "se",
       };
       return map[loc.toLowerCase()] || loc;
     };
@@ -365,10 +398,12 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     // After swap: the mirrored blue1 becomes new red, mirrored red1 becomes new blue
     // So: new blue = mirrored red1, new red = mirrored blue1
     return (
-      mirrorVertical(red1.startLocation) === blue2.startLocation.toLowerCase() &&
+      mirrorVertical(red1.startLocation) ===
+        blue2.startLocation.toLowerCase() &&
       mirrorVertical(red1.endLocation) === blue2.endLocation.toLowerCase() &&
       red1.motionType === blue2.motionType &&
-      mirrorVertical(blue1.startLocation) === red2.startLocation.toLowerCase() &&
+      mirrorVertical(blue1.startLocation) ===
+        red2.startLocation.toLowerCase() &&
       mirrorVertical(blue1.endLocation) === red2.endLocation.toLowerCase() &&
       blue1.motionType === red2.motionType
     );
@@ -378,8 +413,14 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     // Apply flip (n↔s) to beat1, then swap colors, check if matches beat2
     const flipHorizontal = (loc: string) => {
       const map: Record<string, string> = {
-        n: "s", s: "n", e: "e", w: "w",
-        ne: "se", se: "ne", nw: "sw", sw: "nw",
+        n: "s",
+        s: "n",
+        e: "e",
+        w: "w",
+        ne: "se",
+        se: "ne",
+        nw: "sw",
+        sw: "nw",
       };
       return map[loc.toLowerCase()] || loc;
     };
@@ -397,10 +438,12 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
     // After swap: the flipped blue1 becomes new red, flipped red1 becomes new blue
     // So: new blue = flipped red1, new red = flipped blue1
     return (
-      flipHorizontal(red1.startLocation) === blue2.startLocation.toLowerCase() &&
+      flipHorizontal(red1.startLocation) ===
+        blue2.startLocation.toLowerCase() &&
       flipHorizontal(red1.endLocation) === blue2.endLocation.toLowerCase() &&
       red1.motionType === blue2.motionType &&
-      flipHorizontal(blue1.startLocation) === red2.startLocation.toLowerCase() &&
+      flipHorizontal(blue1.startLocation) ===
+        red2.startLocation.toLowerCase() &&
       flipHorizontal(blue1.endLocation) === red2.endLocation.toLowerCase() &&
       blue1.motionType === red2.motionType
     );

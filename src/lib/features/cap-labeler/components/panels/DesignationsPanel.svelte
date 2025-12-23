@@ -2,7 +2,10 @@
   import type { CAPDesignation } from "../../domain/models/label-models";
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
-  import { formatDesignation, formatSectionBeats } from "../../utils/formatting";
+  import {
+    formatDesignation,
+    formatSectionBeats,
+  } from "../../utils/formatting";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
@@ -38,7 +41,9 @@
 
   // Total designation count
   const totalCount = $derived(
-    wholeDesignations.length + sectionDesignations.length + beatPairDesignations.length
+    wholeDesignations.length +
+      sectionDesignations.length +
+      beatPairDesignations.length
   );
 
   // Format beat pair for display
@@ -70,7 +75,11 @@
         <div class="designation-item whole">
           <span class="designation-badge">W</span>
           <span class="designation-label">{formatDesignation(d)}</span>
-          <button class="remove-btn" onclick={() => onRemoveWholeDesignation(i)} title="Remove">
+          <button
+            class="remove-btn"
+            onclick={() => onRemoveWholeDesignation(i)}
+            title="Remove"
+          >
             <FontAwesomeIcon icon="xmark" size="0.85em" />
           </button>
         </div>
@@ -81,7 +90,11 @@
         <div class="designation-item section">
           <span class="designation-badge">S</span>
           <span class="designation-label">{formatSection(s)}</span>
-          <button class="remove-btn" onclick={() => onRemoveSectionDesignation(i)} title="Remove">
+          <button
+            class="remove-btn"
+            onclick={() => onRemoveSectionDesignation(i)}
+            title="Remove"
+          >
             <FontAwesomeIcon icon="xmark" size="0.85em" />
           </button>
         </div>
@@ -92,7 +105,11 @@
         <div class="designation-item beatpair">
           <span class="designation-badge">P</span>
           <span class="designation-label">{formatBeatPair(bp)}</span>
-          <button class="remove-btn" onclick={() => onRemoveBeatPairDesignation(i)} title="Remove">
+          <button
+            class="remove-btn"
+            onclick={() => onRemoveBeatPairDesignation(i)}
+            title="Remove"
+          >
             <FontAwesomeIcon icon="xmark" size="0.85em" />
           </button>
         </div>
@@ -102,7 +119,9 @@
       {#if isFreeform}
         <div class="designation-item freeform">
           <span class="designation-badge">F</span>
-          <span class="designation-label">Freeform (no recognizable pattern)</span>
+          <span class="designation-label"
+            >Freeform (no recognizable pattern)</span
+          >
         </div>
       {/if}
     {/if}
@@ -118,18 +137,11 @@
       Freeform
     </button>
 
-    <button
-      class="action-btn unknown"
-      onclick={onMarkUnknown}
-    >
+    <button class="action-btn unknown" onclick={onMarkUnknown}>
       Unknown
     </button>
 
-    <button
-      class="action-btn save"
-      onclick={onSaveAndNext}
-      disabled={!canSave}
-    >
+    <button class="action-btn save" onclick={onSaveAndNext} disabled={!canSave}>
       Save & Next
     </button>
   </div>
@@ -190,22 +202,38 @@
   }
 
   .designation-item.whole {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.12) 0%,
+      rgba(139, 92, 246, 0.08) 100%
+    );
     border-color: rgba(99, 102, 241, 0.25);
   }
 
   .designation-item.section {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.12) 0%,
+      rgba(99, 102, 241, 0.08) 100%
+    );
     border-color: rgba(59, 130, 246, 0.25);
   }
 
   .designation-item.beatpair {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(168, 85, 247, 0.12) 0%,
+      rgba(139, 92, 246, 0.08) 100%
+    );
     border-color: rgba(168, 85, 247, 0.25);
   }
 
   .designation-item.freeform {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.08) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(239, 68, 68, 0.12) 0%,
+      rgba(220, 38, 38, 0.08) 100%
+    );
     border-color: rgba(239, 68, 68, 0.25);
   }
 

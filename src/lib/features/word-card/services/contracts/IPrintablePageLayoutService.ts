@@ -46,7 +46,10 @@ export interface IPrintablePageLayoutService {
    * @param margins - Page margins
    * @returns Rectangle representing the content area
    */
-  calculateContentArea(pageSize: PageDimensions, margins: PageMargins): Rectangle;
+  calculateContentArea(
+    pageSize: PageDimensions,
+    margins: PageMargins
+  ): Rectangle;
 
   /**
    * Calculate optimal grid configuration for cards on a page

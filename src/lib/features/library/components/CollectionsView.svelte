@@ -91,7 +91,8 @@
           <button
             class="collection-card"
             onclick={() => handleOpenCollection(collection)}
-            style="--card-color: {collection.color || 'var(--theme-accent-strong, #8b5cf6)'}"
+            style="--card-color: {collection.color ||
+              'var(--theme-accent-strong, #8b5cf6)'}"
           >
             <div class="card-icon">
               <i class="fas {collection.icon || 'fa-folder'}"></i>

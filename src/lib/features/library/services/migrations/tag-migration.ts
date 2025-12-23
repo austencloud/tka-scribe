@@ -22,12 +22,12 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
  * Migration result
  */
 export interface TagMigrationResult {
-	/** New structured tags */
-	readonly sequenceTags: SequenceTag[];
-	/** Tag IDs for backward compatibility */
-	readonly tagIds: string[];
-	/** Whether migration was performed */
-	readonly migrated: boolean;
+  /** New structured tags */
+  readonly sequenceTags: SequenceTag[];
+  /** Tag IDs for backward compatibility */
+  readonly tagIds: string[];
+  /** Whether migration was performed */
+  readonly migrated: boolean;
 }
 
 /**
@@ -44,61 +44,67 @@ export interface TagMigrationResult {
  * @returns Migration result with sequenceTags and tagIds
  */
 export async function migrateSequenceTags(
-	sequence: LibrarySequence | (SequenceData & Partial<LibrarySequence>),
-	tagService: ITagService
+  sequence: LibrarySequence | (SequenceData & Partial<LibrarySequence>),
+  tagService: ITagService
 ): Promise<TagMigrationResult> {
-	// Case 1: Already migrated (has sequenceTags)
-	if ("sequenceTags" in sequence && sequence.sequenceTags && sequence.sequenceTags.length > 0) {
-		const sequenceTags = [...sequence.sequenceTags];
-		return {
-			sequenceTags,
-			tagIds: sequenceTags.map((st) => st.tagId),
-			migrated: false,
-		};
-	}
+  // Case 1: Already migrated (has sequenceTags)
+  if (
+    "sequenceTags" in sequence &&
+    sequence.sequenceTags &&
+    sequence.sequenceTags.length > 0
+  ) {
+    const sequenceTags = [...sequence.sequenceTags];
+    return {
+      sequenceTags,
+      tagIds: sequenceTags.map((st) => st.tagId),
+      migrated: false,
+    };
+  }
 
-	// Case 2: Has tagIds (already have tag documents, just need to wrap in SequenceTag)
-	if ("tagIds" in sequence && sequence.tagIds && sequence.tagIds.length > 0) {
-		const sequenceTags = sequence.tagIds.map((tagId) => createSequenceTag(tagId, "user"));
-		return {
-			sequenceTags,
-			tagIds: sequence.tagIds as string[],
-			migrated: true,
-		};
-	}
+  // Case 2: Has tagIds (already have tag documents, just need to wrap in SequenceTag)
+  if ("tagIds" in sequence && sequence.tagIds && sequence.tagIds.length > 0) {
+    const sequenceTags = sequence.tagIds.map((tagId) =>
+      createSequenceTag(tagId, "user")
+    );
+    return {
+      sequenceTags,
+      tagIds: sequence.tagIds as string[],
+      migrated: true,
+    };
+  }
 
-	// Case 3: Has legacy tags (string[]) - create tag documents
-	if ("tags" in sequence && sequence.tags && sequence.tags.length > 0) {
-		const sequenceTags: SequenceTag[] = [];
-		const tagIds: string[] = [];
+  // Case 3: Has legacy tags (string[]) - create tag documents
+  if ("tags" in sequence && sequence.tags && sequence.tags.length > 0) {
+    const sequenceTags: SequenceTag[] = [];
+    const tagIds: string[] = [];
 
-		for (const tagName of sequence.tags) {
-			if (!tagName || tagName.trim() === "") continue;
+    for (const tagName of sequence.tags) {
+      if (!tagName || tagName.trim() === "") continue;
 
-			try {
-				// Create tag (or get existing if duplicate)
-				const libraryTag = await tagService.createTag(tagName);
-				sequenceTags.push(createSequenceTag(libraryTag.id, "user"));
-				tagIds.push(libraryTag.id);
-			} catch (error) {
-				console.error(`Failed to migrate tag "${tagName}":`, error);
-				// Continue with other tags
-			}
-		}
+      try {
+        // Create tag (or get existing if duplicate)
+        const libraryTag = await tagService.createTag(tagName);
+        sequenceTags.push(createSequenceTag(libraryTag.id, "user"));
+        tagIds.push(libraryTag.id);
+      } catch (error) {
+        console.error(`Failed to migrate tag "${tagName}":`, error);
+        // Continue with other tags
+      }
+    }
 
-		return {
-			sequenceTags,
-			tagIds,
-			migrated: true,
-		};
-	}
+    return {
+      sequenceTags,
+      tagIds,
+      migrated: true,
+    };
+  }
 
-	// Case 4: No tags
-	return {
-		sequenceTags: [],
-		tagIds: [],
-		migrated: false,
-	};
+  // Case 4: No tags
+  return {
+    sequenceTags: [],
+    tagIds: [],
+    migrated: false,
+  };
 }
 
 /**
@@ -111,45 +117,51 @@ export async function migrateSequenceTags(
  * @returns Array of migration results
  */
 export async function batchMigrateSequenceTags(
-	sequences: (LibrarySequence | (SequenceData & Partial<LibrarySequence>))[],
-	tagService: ITagService,
-	onProgress?: (completed: number, total: number) => void
+  sequences: (LibrarySequence | (SequenceData & Partial<LibrarySequence>))[],
+  tagService: ITagService,
+  onProgress?: (completed: number, total: number) => void
 ): Promise<TagMigrationResult[]> {
-	const results: TagMigrationResult[] = [];
+  const results: TagMigrationResult[] = [];
 
-	for (let i = 0; i < sequences.length; i++) {
-		const sequence = sequences[i];
-		if (!sequence) {
-			if (onProgress) {
-				onProgress(i + 1, sequences.length);
-			}
-			continue;
-		}
-		const result = await migrateSequenceTags(sequence, tagService);
-		results.push(result);
+  for (let i = 0; i < sequences.length; i++) {
+    const sequence = sequences[i];
+    if (!sequence) {
+      if (onProgress) {
+        onProgress(i + 1, sequences.length);
+      }
+      continue;
+    }
+    const result = await migrateSequenceTags(sequence, tagService);
+    results.push(result);
 
-		if (onProgress) {
-			onProgress(i + 1, sequences.length);
-		}
-	}
+    if (onProgress) {
+      onProgress(i + 1, sequences.length);
+    }
+  }
 
-	return results;
+  return results;
 }
 
 /**
  * Check if a sequence needs migration
  */
 export function needsMigration(
-	sequence: LibrarySequence | (SequenceData & Partial<LibrarySequence>)
+  sequence: LibrarySequence | (SequenceData & Partial<LibrarySequence>)
 ): boolean {
-	// Already has sequenceTags
-	if ("sequenceTags" in sequence && sequence.sequenceTags && sequence.sequenceTags.length > 0) {
-		return false;
-	}
+  // Already has sequenceTags
+  if (
+    "sequenceTags" in sequence &&
+    sequence.sequenceTags &&
+    sequence.sequenceTags.length > 0
+  ) {
+    return false;
+  }
 
-	// Has legacy data to migrate
-	const hasTagIds = "tagIds" in sequence && sequence.tagIds && sequence.tagIds.length > 0;
-	const hasTags = "tags" in sequence && sequence.tags && sequence.tags.length > 0;
+  // Has legacy data to migrate
+  const hasTagIds =
+    "tagIds" in sequence && sequence.tagIds && sequence.tagIds.length > 0;
+  const hasTags =
+    "tags" in sequence && sequence.tags && sequence.tags.length > 0;
 
-	return hasTagIds || hasTags;
+  return hasTagIds || hasTags;
 }

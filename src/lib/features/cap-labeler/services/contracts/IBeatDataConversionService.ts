@@ -1,7 +1,15 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
-import { GridLocation, GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  GridLocation,
+  GridPosition,
+  GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 /**
  * Raw beat data from sequence-index.json (camelCase format)
@@ -92,7 +100,9 @@ export interface IBeatDataConversionService {
     gridMode: GridMode
   ): {
     beats: BeatData[];
-    startPosition: (StartPositionData & { beatNumber: number; isBlank: boolean }) | null;
+    startPosition:
+      | (StartPositionData & { beatNumber: number; isBlank: boolean })
+      | null;
   };
 
   /**

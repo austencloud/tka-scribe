@@ -18,136 +18,136 @@
  * PublicSequenceIndex - Denormalized public sequence for Explore
  */
 export interface PublicSequenceIndex {
-	/** Sequence ID (same as document ID and source sequence ID) */
-	readonly id: string;
+  /** Sequence ID (same as document ID and source sequence ID) */
+  readonly id: string;
 
-	/** Reference path to source: users/{ownerId}/sequences/{id} */
-	readonly sourceRef: string;
+  /** Reference path to source: users/{ownerId}/sequences/{id} */
+  readonly sourceRef: string;
 
-	// ============================================================
-	// OWNER INFO (denormalized)
-	// ============================================================
+  // ============================================================
+  // OWNER INFO (denormalized)
+  // ============================================================
 
-	/** Owner user ID */
-	readonly ownerId: string;
+  /** Owner user ID */
+  readonly ownerId: string;
 
-	/** Owner display name (denormalized from user profile) */
-	readonly ownerDisplayName: string;
+  /** Owner display name (denormalized from user profile) */
+  readonly ownerDisplayName: string;
 
-	/** Owner avatar URL (denormalized from user profile) */
-	readonly ownerAvatarUrl?: string;
+  /** Owner avatar URL (denormalized from user profile) */
+  readonly ownerAvatarUrl?: string;
 
-	// ============================================================
-	// SEQUENCE DISPLAY FIELDS
-	// ============================================================
+  // ============================================================
+  // SEQUENCE DISPLAY FIELDS
+  // ============================================================
 
-	/** Sequence name */
-	readonly name: string;
+  /** Sequence name */
+  readonly name: string;
 
-	/** Word/phrase the sequence represents */
-	readonly word: string;
+  /** Word/phrase the sequence represents */
+  readonly word: string;
 
-	/** Thumbnail URLs (first 1-3 for preview) */
-	readonly thumbnails: readonly string[];
+  /** Thumbnail URLs (first 1-3 for preview) */
+  readonly thumbnails: readonly string[];
 
-	/** Total beat count */
-	readonly sequenceLength?: number;
+  /** Total beat count */
+  readonly sequenceLength?: number;
 
-	/** Difficulty level (e.g., "beginner", "intermediate", "advanced") */
-	readonly difficultyLevel?: string;
+  /** Difficulty level (e.g., "beginner", "intermediate", "advanced") */
+  readonly difficultyLevel?: string;
 
-	// ============================================================
-	// ENGAGEMENT METRICS
-	// ============================================================
+  // ============================================================
+  // ENGAGEMENT METRICS
+  // ============================================================
 
-	/** Number of times this has been forked */
-	readonly forkCount: number;
+  /** Number of times this has been forked */
+  readonly forkCount: number;
 
-	/** Number of times this has been viewed */
-	readonly viewCount: number;
+  /** Number of times this has been viewed */
+  readonly viewCount: number;
 
-	/** Number of users who starred/liked this */
-	readonly starCount: number;
+  /** Number of users who starred/liked this */
+  readonly starCount: number;
 
-	// ============================================================
-	// CATEGORIZATION
-	// ============================================================
+  // ============================================================
+  // CATEGORIZATION
+  // ============================================================
 
-	/** Denormalized tag names (not IDs) for filtering */
-	readonly tags: readonly string[];
+  /** Denormalized tag names (not IDs) for filtering */
+  readonly tags: readonly string[];
 
-	// ============================================================
-	// FORK INFO
-	// ============================================================
+  // ============================================================
+  // FORK INFO
+  // ============================================================
 
-	/** Whether this is a forked sequence */
-	readonly isForked: boolean;
+  /** Whether this is a forked sequence */
+  readonly isForked: boolean;
 
-	/** Original creator ID (if forked) */
-	readonly originalCreatorId?: string;
+  /** Original creator ID (if forked) */
+  readonly originalCreatorId?: string;
 
-	/** Original creator name (if forked) */
-	readonly originalCreatorName?: string;
+  /** Original creator name (if forked) */
+  readonly originalCreatorName?: string;
 
-	// ============================================================
-	// TIMESTAMPS
-	// ============================================================
+  // ============================================================
+  // TIMESTAMPS
+  // ============================================================
 
-	/** When published to public feed */
-	readonly publishedAt: Date;
+  /** When published to public feed */
+  readonly publishedAt: Date;
 
-	/** When last updated */
-	readonly updatedAt: Date;
+  /** When last updated */
+  readonly updatedAt: Date;
 }
 
 /**
  * Create a public sequence index from a LibrarySequence
  */
 export function createPublicSequenceIndex(
-	sequence: {
-		id: string;
-		ownerId: string;
-		name: string;
-		word: string;
-		thumbnails: readonly string[];
-		sequenceLength?: number;
-		difficultyLevel?: string;
-		forkCount: number;
-		viewCount: number;
-		starCount: number;
-		source: string;
-		forkAttribution?: {
-			originalCreatorId: string;
-			originalCreatorName: string;
-		};
-	},
-	owner: {
-		displayName: string;
-		avatarUrl?: string;
-	},
-	tagNames: readonly string[]
+  sequence: {
+    id: string;
+    ownerId: string;
+    name: string;
+    word: string;
+    thumbnails: readonly string[];
+    sequenceLength?: number;
+    difficultyLevel?: string;
+    forkCount: number;
+    viewCount: number;
+    starCount: number;
+    source: string;
+    forkAttribution?: {
+      originalCreatorId: string;
+      originalCreatorName: string;
+    };
+  },
+  owner: {
+    displayName: string;
+    avatarUrl?: string;
+  },
+  tagNames: readonly string[]
 ): PublicSequenceIndex {
-	const now = new Date();
+  const now = new Date();
 
-	return {
-		id: sequence.id,
-		sourceRef: `users/${sequence.ownerId}/sequences/${sequence.id}`,
-		ownerId: sequence.ownerId,
-		ownerDisplayName: owner.displayName,
-		ownerAvatarUrl: owner.avatarUrl,
-		name: sequence.name,
-		word: sequence.word,
-		thumbnails: sequence.thumbnails.slice(0, 3),
-		sequenceLength: sequence.sequenceLength,
-		difficultyLevel: sequence.difficultyLevel,
-		forkCount: sequence.forkCount,
-		viewCount: sequence.viewCount,
-		starCount: sequence.starCount,
-		tags: tagNames,
-		isForked: sequence.source === "forked",
-		originalCreatorId: sequence.forkAttribution?.originalCreatorId,
-		originalCreatorName: sequence.forkAttribution?.originalCreatorName,
-		publishedAt: now,
-		updatedAt: now,
-	};
+  return {
+    id: sequence.id,
+    sourceRef: `users/${sequence.ownerId}/sequences/${sequence.id}`,
+    ownerId: sequence.ownerId,
+    ownerDisplayName: owner.displayName,
+    ownerAvatarUrl: owner.avatarUrl,
+    name: sequence.name,
+    word: sequence.word,
+    thumbnails: sequence.thumbnails.slice(0, 3),
+    sequenceLength: sequence.sequenceLength,
+    difficultyLevel: sequence.difficultyLevel,
+    forkCount: sequence.forkCount,
+    viewCount: sequence.viewCount,
+    starCount: sequence.starCount,
+    tags: tagNames,
+    isForked: sequence.source === "forked",
+    originalCreatorId: sequence.forkAttribution?.originalCreatorId,
+    originalCreatorName: sequence.forkAttribution?.originalCreatorName,
+    publishedAt: now,
+    updatedAt: now,
+  };
 }

@@ -16,7 +16,7 @@
  * @example "users/abc123/sequences"
  */
 export function getUserSequencesPath(userId: string): string {
-	return `users/${userId}/sequences`;
+  return `users/${userId}/sequences`;
 }
 
 /**
@@ -24,10 +24,10 @@ export function getUserSequencesPath(userId: string): string {
  * @example "users/abc123/sequences/seq456"
  */
 export function getUserSequencePath(
-	userId: string,
-	sequenceId: string
+  userId: string,
+  sequenceId: string
 ): string {
-	return `users/${userId}/sequences/${sequenceId}`;
+  return `users/${userId}/sequences/${sequenceId}`;
 }
 
 /**
@@ -35,7 +35,7 @@ export function getUserSequencePath(
  * @example "users/abc123/collections"
  */
 export function getUserCollectionsPath(userId: string): string {
-	return `users/${userId}/collections`;
+  return `users/${userId}/collections`;
 }
 
 /**
@@ -43,10 +43,10 @@ export function getUserCollectionsPath(userId: string): string {
  * @example "users/abc123/collections/col789"
  */
 export function getUserCollectionPath(
-	userId: string,
-	collectionId: string
+  userId: string,
+  collectionId: string
 ): string {
-	return `users/${userId}/collections/${collectionId}`;
+  return `users/${userId}/collections/${collectionId}`;
 }
 
 /**
@@ -54,7 +54,7 @@ export function getUserCollectionPath(
  * @example "users/abc123/acts"
  */
 export function getUserActsPath(userId: string): string {
-	return `users/${userId}/acts`;
+  return `users/${userId}/acts`;
 }
 
 /**
@@ -62,7 +62,7 @@ export function getUserActsPath(userId: string): string {
  * @example "users/abc123/acts/act012"
  */
 export function getUserActPath(userId: string, actId: string): string {
-	return `users/${userId}/acts/${actId}`;
+  return `users/${userId}/acts/${actId}`;
 }
 
 /**
@@ -70,7 +70,7 @@ export function getUserActPath(userId: string, actId: string): string {
  * @example "users/abc123/tags"
  */
 export function getUserTagsPath(userId: string): string {
-	return `users/${userId}/tags`;
+  return `users/${userId}/tags`;
 }
 
 /**
@@ -78,7 +78,7 @@ export function getUserTagsPath(userId: string): string {
  * @example "users/abc123/tags/tag345"
  */
 export function getUserTagPath(userId: string, tagId: string): string {
-	return `users/${userId}/tags/${tagId}`;
+  return `users/${userId}/tags/${tagId}`;
 }
 
 // ============================================================================
@@ -90,7 +90,7 @@ export function getUserTagPath(userId: string, tagId: string): string {
  * @example "publicSequences"
  */
 export function getPublicSequencesPath(): string {
-	return "publicSequences";
+  return "publicSequences";
 }
 
 /**
@@ -98,7 +98,7 @@ export function getPublicSequencesPath(): string {
  * @example "publicSequences/seq456"
  */
 export function getPublicSequencePath(sequenceId: string): string {
-	return `publicSequences/${sequenceId}`;
+  return `publicSequences/${sequenceId}`;
 }
 
 // ============================================================================
@@ -110,7 +110,7 @@ export function getPublicSequencePath(sequenceId: string): string {
  * @example "sequenceMetadata"
  */
 export function getSequenceMetadataCollectionPath(): string {
-	return "sequenceMetadata";
+  return "sequenceMetadata";
 }
 
 /**
@@ -118,7 +118,7 @@ export function getSequenceMetadataCollectionPath(): string {
  * @example "sequenceMetadata/seq456"
  */
 export function getSequenceMetadataPath(sequenceId: string): string {
-	return `sequenceMetadata/${sequenceId}`;
+  return `sequenceMetadata/${sequenceId}`;
 }
 
 // ============================================================================
@@ -129,38 +129,38 @@ export function getSequenceMetadataPath(sequenceId: string): string {
  * Firestore collection names used by the Library module
  */
 export const LIBRARY_COLLECTIONS = {
-	/** User's library sequences */
-	SEQUENCES: "sequences",
-	/** User's collections (folders) */
-	COLLECTIONS: "collections",
-	/** User's acts (playlists) */
-	ACTS: "acts",
-	/** User's custom tags */
-	TAGS: "tags",
-	/** Global public sequences index */
-	PUBLIC_SEQUENCES: "publicSequences",
-	/** Global sequence metadata (fork lineage) */
-	SEQUENCE_METADATA: "sequenceMetadata",
+  /** User's library sequences */
+  SEQUENCES: "sequences",
+  /** User's collections (folders) */
+  COLLECTIONS: "collections",
+  /** User's acts (playlists) */
+  ACTS: "acts",
+  /** User's custom tags */
+  TAGS: "tags",
+  /** Global public sequences index */
+  PUBLIC_SEQUENCES: "publicSequences",
+  /** Global sequence metadata (fork lineage) */
+  SEQUENCE_METADATA: "sequenceMetadata",
 } as const;
 
 /**
  * Maximum limits for library operations
  */
 export const LIBRARY_LIMITS = {
-	/** Max sequences per user */
-	MAX_SEQUENCES_PER_USER: 1000,
-	/** Max collections per user */
-	MAX_COLLECTIONS_PER_USER: 100,
-	/** Max acts per user */
-	MAX_ACTS_PER_USER: 50,
-	/** Max tags per user */
-	MAX_TAGS_PER_USER: 100,
-	/** Max sequences per collection */
-	MAX_SEQUENCES_PER_COLLECTION: 500,
-	/** Max sequences per act */
-	MAX_SEQUENCES_PER_ACT: 100,
-	/** Max tags per sequence */
-	MAX_TAGS_PER_SEQUENCE: 20,
-	/** Default query limit */
-	DEFAULT_QUERY_LIMIT: 50,
+  /** Max sequences per user */
+  MAX_SEQUENCES_PER_USER: 1000,
+  /** Max collections per user */
+  MAX_COLLECTIONS_PER_USER: 100,
+  /** Max acts per user */
+  MAX_ACTS_PER_USER: 50,
+  /** Max tags per user */
+  MAX_TAGS_PER_USER: 100,
+  /** Max sequences per collection */
+  MAX_SEQUENCES_PER_COLLECTION: 500,
+  /** Max sequences per act */
+  MAX_SEQUENCES_PER_ACT: 100,
+  /** Max tags per sequence */
+  MAX_TAGS_PER_SEQUENCE: 20,
+  /** Default query limit */
+  DEFAULT_QUERY_LIMIT: 50,
 } as const;

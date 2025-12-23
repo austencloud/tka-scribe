@@ -189,7 +189,11 @@
 
   /* Old page (dashboard) zooms out and fades */
   /* Exclude settings portal transitions - they have their own animations in view-transitions.css */
-  :global(:root:not(.settings-portal-enter):not(.settings-portal-exit)::view-transition-old(root)) {
+  :global(
+    :root:not(.settings-portal-enter):not(
+        .settings-portal-exit
+      )::view-transition-old(root)
+  ) {
     animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-out-fade;
     transform-origin: var(--transition-origin-x, 50%)
       var(--transition-origin-y, 50%);
@@ -197,7 +201,11 @@
 
   /* New page (module) zooms in from card position */
   /* Exclude settings portal transitions - they have their own animations in view-transitions.css */
-  :global(:root:not(.settings-portal-enter):not(.settings-portal-exit)::view-transition-new(root)) {
+  :global(
+    :root:not(.settings-portal-enter):not(
+        .settings-portal-exit
+      )::view-transition-new(root)
+  ) {
     animation: 350ms cubic-bezier(0.4, 0, 0.2, 1) both zoom-in-reveal;
     transform-origin: var(--transition-origin-x, 50%)
       var(--transition-origin-y, 50%);

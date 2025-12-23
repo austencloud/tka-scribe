@@ -21,7 +21,7 @@ interface DashboardState {
 }
 
 function createDashboardState() {
-  let state: DashboardState = $state({
+  const state: DashboardState = $state({
     challengeDrawerOpen: false,
     signInToastMessage: "",
     showSignInToast: false,
@@ -39,7 +39,7 @@ function createDashboardState() {
   const effectiveDisplayName = $derived(
     isPreviewActive && previewProfile
       ? previewProfile.displayName
-      : user?.displayName ?? null
+      : (user?.displayName ?? null)
   );
 
   const sequenceCount = $derived(
@@ -63,7 +63,11 @@ function createDashboardState() {
   const welcomeMessage = $derived.by(() => {
     // When previewing another user, show their name
     if (isPreviewActive && previewProfile) {
-      const firstName = (previewProfile.displayName || previewProfile.email || "User").split(" ")[0];
+      const firstName = (
+        previewProfile.displayName ||
+        previewProfile.email ||
+        "User"
+      ).split(" ")[0];
       return `Viewing as ${firstName}`;
     }
     // Normal authenticated user

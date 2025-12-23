@@ -28,8 +28,9 @@
   // Get recently created sequences (last 7 days)
   const recentSequences = $derived.by(() => {
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    return libraryState.sequences.filter(s => {
-      const createdAt = s.createdAt instanceof Date ? s.createdAt : new Date(s.createdAt);
+    return libraryState.sequences.filter((s) => {
+      const createdAt =
+        s.createdAt instanceof Date ? s.createdAt : new Date(s.createdAt);
       return createdAt > weekAgo;
     });
   });
@@ -50,11 +51,16 @@
 
     for (const { label, days, tolerance } of timeframes) {
       const targetDate = new Date(today.getTime() - days * 24 * 60 * 60 * 1000);
-      const minDate = new Date(targetDate.getTime() - tolerance * 24 * 60 * 60 * 1000);
-      const maxDate = new Date(targetDate.getTime() + tolerance * 24 * 60 * 60 * 1000);
+      const minDate = new Date(
+        targetDate.getTime() - tolerance * 24 * 60 * 60 * 1000
+      );
+      const maxDate = new Date(
+        targetDate.getTime() + tolerance * 24 * 60 * 60 * 1000
+      );
 
-      const match = libraryState.sequences.find(s => {
-        const createdAt = s.createdAt instanceof Date ? s.createdAt : new Date(s.createdAt);
+      const match = libraryState.sequences.find((s) => {
+        const createdAt =
+          s.createdAt instanceof Date ? s.createdAt : new Date(s.createdAt);
         return createdAt >= minDate && createdAt <= maxDate;
       });
 
@@ -70,17 +76,25 @@
   const mostRecentSequence = $derived.by(() => {
     if (libraryState.sequences.length === 0) return null;
     return [...libraryState.sequences].sort((a, b) => {
-      const aDate = a.updatedAt instanceof Date ? a.updatedAt : new Date(a.updatedAt);
-      const bDate = b.updatedAt instanceof Date ? b.updatedAt : new Date(b.updatedAt);
+      const aDate =
+        a.updatedAt instanceof Date ? a.updatedAt : new Date(a.updatedAt);
+      const bDate =
+        b.updatedAt instanceof Date ? b.updatedAt : new Date(b.updatedAt);
       return bDate.getTime() - aDate.getTime();
     })[0];
   });
 
   onMount(() => {
-    sessionService = tryResolve<ISessionTrackingService>(TYPES.ISessionTrackingService);
+    sessionService = tryResolve<ISessionTrackingService>(
+      TYPES.ISessionTrackingService
+    );
 
     // Ensure library sequences are loaded
-    if (authState.isAuthenticated && libraryState.sequences.length === 0 && !libraryState.isLoading) {
+    if (
+      authState.isAuthenticated &&
+      libraryState.sequences.length === 0 &&
+      !libraryState.isLoading
+    ) {
       libraryState.loadSequences();
     }
 
@@ -172,7 +186,9 @@
         <div class="stat-row">
           <div class="stat-item library">
             <div class="stat-value">{totalSequences}</div>
-            <div class="stat-label">{totalSequences === 1 ? 'sequence' : 'sequences'}</div>
+            <div class="stat-label">
+              {totalSequences === 1 ? "sequence" : "sequences"}
+            </div>
           </div>
           {#if recentSequences.length > 0}
             <div class="stat-item recent">
@@ -206,7 +222,9 @@
 
           <!-- "On This Day" Revisit -->
           {#if revisitSequence}
-            {@const revisitThumbnailUrl = getThumbnailUrl(revisitSequence.sequence)}
+            {@const revisitThumbnailUrl = getThumbnailUrl(
+              revisitSequence.sequence
+            )}
             <button class="sequence-card revisit" onclick={revisitOldSequence}>
               <div class="card-thumbnail">
                 {#if revisitThumbnailUrl}
@@ -255,8 +273,13 @@
     flex-direction: column;
     height: 100%;
     padding: 24px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 22%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 10%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 22%, transparent);
     border-radius: 24px;
   }
 
@@ -273,7 +296,11 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
     border-radius: 14px;
     color: var(--theme-accent, #6366f1);
     font-size: 18px;
@@ -313,8 +340,12 @@
   }
 
   @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
   }
 
   .empty-state {
@@ -365,7 +396,11 @@
     align-items: center;
     gap: 2px;
     padding: 12px 8px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 8%,
+      transparent
+    );
     border-radius: 12px;
     max-width: 100px;
   }
@@ -402,8 +437,13 @@
     align-items: center;
     gap: 8px;
     padding: 10px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 8%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
     border-radius: 16px;
     cursor: pointer;
     transition: all 150ms ease;
@@ -413,18 +453,34 @@
   }
 
   .sequence-card:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 14%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 14%,
+      transparent
+    );
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .sequence-card.revisit {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 8%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 8%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 15%,
+      transparent
+    );
   }
 
   .sequence-card.revisit:hover {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 14%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 14%,
+      transparent
+    );
   }
 
   .card-thumbnail {
@@ -432,7 +488,11 @@
     aspect-ratio: 1;
     border-radius: 12px;
     overflow: hidden;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 10%,
+      transparent
+    );
   }
 
   .card-thumbnail img {
@@ -447,13 +507,21 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
     font-size: 32px;
   }
 
   .thumbnail-placeholder.revisit {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 15%,
+      transparent
+    );
     color: var(--semantic-warning, #f59e0b);
   }
 
@@ -495,8 +563,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 
   .view-all-btn {

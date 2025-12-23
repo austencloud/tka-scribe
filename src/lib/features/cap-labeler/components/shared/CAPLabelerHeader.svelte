@@ -40,7 +40,7 @@
     syncStatus,
     sequences,
     onJumpToSequence,
-    onOpenBrowser
+    onOpenBrowser,
   }: Props = $props();
 
   // Search state
@@ -52,7 +52,7 @@
     if (!searchQuery.trim()) return [];
     const query = searchQuery.toLowerCase();
     return sequences
-      .filter(s => s.word.toLowerCase().includes(query))
+      .filter((s) => s.word.toLowerCase().includes(query))
       .slice(0, 8); // Limit to 8 suggestions
   });
 
@@ -94,7 +94,11 @@
     <span class="stat">{stats.labeled} labeled</span>
     <span class="stat">{remaining} remaining</span>
     <span class="stat">{stats.total} total circular</span>
-    <span class="sync-status" class:syncing={syncStatus === "syncing"} class:error={syncStatus === "error"}>
+    <span
+      class="sync-status"
+      class:syncing={syncStatus === "syncing"}
+      class:error={syncStatus === "error"}
+    >
       {#if syncStatus === "syncing"}
         ⟳ Syncing...
       {:else if syncStatus === "error"}
@@ -149,8 +153,8 @@
         value={searchQuery}
         oninput={handleSearchInput}
         onkeydown={handleSearchKeydown}
-        onfocus={() => showSuggestions = true}
-        onblur={() => setTimeout(() => showSuggestions = false, 150)}
+        onfocus={() => (showSuggestions = true)}
+        onblur={() => setTimeout(() => (showSuggestions = false), 150)}
       />
       {#if showSuggestions && filteredSuggestions().length > 0}
         <div class="search-suggestions">
@@ -167,7 +171,11 @@
       {/if}
     </div>
 
-    <button class="browse-btn" onclick={onOpenBrowser} title="Browse all sequences">
+    <button
+      class="browse-btn"
+      onclick={onOpenBrowser}
+      title="Browse all sequences"
+    >
       <FontAwesomeIcon icon="list" size="1em" />
       Browse
     </button>
@@ -247,8 +255,13 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
   }
 
   .controls-bar {

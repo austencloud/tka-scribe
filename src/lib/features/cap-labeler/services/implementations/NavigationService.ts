@@ -74,13 +74,18 @@ export class NavigationService implements INavigationService {
     URL.revokeObjectURL(url);
   }
 
-  async importLabelsFromJson(file: File): Promise<Map<string, LabeledSequence>> {
+  async importLabelsFromJson(
+    file: File
+  ): Promise<Map<string, LabeledSequence>> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
 
       reader.onload = (e) => {
         try {
-          const data = JSON.parse(e.target?.result as string) as Record<string, LabeledSequence>;
+          const data = JSON.parse(e.target?.result as string) as Record<
+            string,
+            LabeledSequence
+          >;
           const labels = new Map(Object.entries(data));
           resolve(labels);
         } catch (error) {

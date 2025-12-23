@@ -14,8 +14,13 @@
     <span class="saved-label">Saved Beat Pairs:</span>
     {#each beatPairs as pair, i}
       <div class="saved-beatpair-tag">
-        <span class="beatpair-beats">{pair.keyBeat} ↔ {pair.correspondingBeat}</span>
-        <span class="beatpair-transformation">{pair.confirmedTransformation || pair.detectedTransformations[0]}</span>
+        <span class="beatpair-beats"
+          >{pair.keyBeat} ↔ {pair.correspondingBeat}</span
+        >
+        <span class="beatpair-transformation"
+          >{pair.confirmedTransformation ||
+            pair.detectedTransformations[0]}</span
+        >
         <button class="remove-btn" onclick={() => onRemove(i)}>×</button>
       </div>
     {/each}

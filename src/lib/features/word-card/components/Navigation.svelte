@@ -208,14 +208,16 @@
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
   }
 
   .length-button.selected {
     background: var(--primary-color);
     border-color: var(--primary-light);
     color: white;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .separator {
@@ -257,7 +259,8 @@
   .column-select:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
   }
 
   .column-select option {

@@ -6,13 +6,24 @@
  */
 
 // Tab types for settings module
-export type SettingsTab = "profile" | "props" | "background" | "visibility" | "misc";
+export type SettingsTab =
+  | "profile"
+  | "props"
+  | "background"
+  | "visibility"
+  | "misc";
 
 // LocalStorage key
 const STORAGE_KEY = "tka-settings-active-tab";
 
 // Valid tabs for validation
-const VALID_TABS: SettingsTab[] = ["profile", "props", "background", "visibility", "misc"];
+const VALID_TABS: SettingsTab[] = [
+  "profile",
+  "props",
+  "background",
+  "visibility",
+  "misc",
+];
 
 // Default tab
 const DEFAULT_TAB: SettingsTab = "props";

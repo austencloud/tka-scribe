@@ -1,5 +1,8 @@
 <script lang="ts">
-  import { BASE_COMPONENTS, type ComponentId } from "../../domain/constants/cap-components";
+  import {
+    BASE_COMPONENTS,
+    type ComponentId,
+  } from "../../domain/constants/cap-components";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
@@ -7,10 +10,7 @@
     onLabelingModeChange: (mode: "whole" | "section" | "beatpair") => void;
   }
 
-  let {
-    labelingMode,
-    onLabelingModeChange,
-  }: Props = $props();
+  let { labelingMode, onLabelingModeChange }: Props = $props();
 </script>
 
 <div class="component-selection-panel">

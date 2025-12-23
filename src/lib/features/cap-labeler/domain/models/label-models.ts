@@ -74,7 +74,9 @@ export type FilterMode = "all" | "unlabeled" | "labeled" | "unknown";
 /**
  * Helper: Get human-readable description of transformation intervals
  */
-export function describeTransformationIntervals(intervals: TransformationIntervals): string {
+export function describeTransformationIntervals(
+  intervals: TransformationIntervals
+): string {
   const parts: string[] = [];
 
   if (intervals.rotation && intervals.rotation !== "none") {
@@ -103,7 +105,7 @@ export function describeTransformationIntervals(intervals: TransformationInterva
  * Example: "1-3_2-4" returns [[1,3], [2,4]]
  */
 export function parseSectionGrouping(grouping: SectionGrouping): number[][] {
-  return grouping.split("_").map(group =>
-    group.split("-").map(n => parseInt(n, 10))
-  );
+  return grouping
+    .split("_")
+    .map((group) => group.split("-").map((n) => parseInt(n, 10)));
 }

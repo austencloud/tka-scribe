@@ -5,8 +5,8 @@
   Provides options to load a sequence from various sources.
 -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   interface Props {
     onLoadSequence: (sequence: SequenceData) => void;
@@ -32,7 +32,8 @@ import { navigationState } from "$lib/shared/navigation/state/navigation-state.s
 
     <h2 class="title">No Sequence Selected</h2>
     <p class="description">
-      Select a sequence to start editing. You can load sequences from the Create or Discover modules.
+      Select a sequence to start editing. You can load sequences from the Create
+      or Discover modules.
     </p>
 
     <div class="action-buttons">
@@ -54,11 +55,17 @@ import { navigationState } from "$lib/shared/navigation/state/navigation-state.s
       <ul class="info-list">
         <li>
           <i class="fas fa-pen"></i>
-          <span><strong>Beat Mode</strong>: Adjust turns, rotation direction for each beat</span>
+          <span
+            ><strong>Beat Mode</strong>: Adjust turns, rotation direction for
+            each beat</span
+          >
         </li>
         <li>
           <i class="fas fa-layer-group"></i>
-          <span><strong>Sequence Mode</strong>: Mirror, rotate, swap colors, reverse</span>
+          <span
+            ><strong>Sequence Mode</strong>: Mirror, rotate, swap colors,
+            reverse</span
+          >
         </li>
       </ul>
     </div>

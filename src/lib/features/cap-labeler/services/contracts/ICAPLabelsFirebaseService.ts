@@ -1,5 +1,8 @@
 import type { BeatPairRelationship } from "./IBeatPairAnalysisService";
-import type { CAPDesignation, SectionDesignation } from "./ICAPDesignationService";
+import type {
+  CAPDesignation,
+  SectionDesignation,
+} from "./ICAPDesignationService";
 
 /**
  * Labeled sequence data

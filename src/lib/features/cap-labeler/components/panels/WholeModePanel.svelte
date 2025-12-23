@@ -6,7 +6,10 @@
    * Designations are displayed in the unified DesignationsPanel above.
    */
   import type { ComponentId } from "../../domain/constants/cap-components";
-  import type { TransformationIntervals, TransformationInterval } from "../../domain/models/label-models";
+  import type {
+    TransformationIntervals,
+    TransformationInterval,
+  } from "../../domain/models/label-models";
   import { BASE_COMPONENTS } from "../../domain/constants/cap-components";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
@@ -14,7 +17,10 @@
     selectedComponents: Set<ComponentId>;
     transformationIntervals: TransformationIntervals;
     onToggleComponent: (component: ComponentId) => void;
-    onSetInterval: (key: keyof TransformationIntervals, value: TransformationInterval) => void;
+    onSetInterval: (
+      key: keyof TransformationIntervals,
+      value: TransformationInterval
+    ) => void;
     onAddDesignation: () => void;
   }
 
@@ -27,7 +33,11 @@
   }: Props = $props();
 
   // Components that support intervals
-  const intervalComponents: { id: ComponentId; key: keyof TransformationIntervals; color: string }[] = [
+  const intervalComponents: {
+    id: ComponentId;
+    key: keyof TransformationIntervals;
+    color: string;
+  }[] = [
     { id: "rotated", key: "rotation", color: "#36c3ff" },
     { id: "swapped", key: "swap", color: "#26e600" },
     { id: "mirrored", key: "mirror", color: "#6F2DA8" },
@@ -37,7 +47,7 @@
 
   // Get interval config for a component
   function getIntervalConfig(id: ComponentId) {
-    return intervalComponents.find(c => c.id === id);
+    return intervalComponents.find((c) => c.id === id);
   }
 
   // Check if component has interval selected
@@ -78,10 +88,16 @@
           style="--component-color: {component.color}"
           onclick={() => onToggleComponent(component.id)}
         >
-          <FontAwesomeIcon icon={component.icon} size="1.2em" color={component.color} />
+          <FontAwesomeIcon
+            icon={component.icon}
+            size="1.2em"
+            color={component.color}
+          />
           <span class="component-name">{component.label}</span>
           {#if isSelected && hasInterval(component.id)}
-            <span class="interval-badge">{getIntervalDisplay(component.id)}</span>
+            <span class="interval-badge"
+              >{getIntervalDisplay(component.id)}</span
+            >
           {/if}
         </button>
 
@@ -90,16 +106,20 @@
           <div class="interval-row">
             <button
               class="interval-chip"
-              class:active={transformationIntervals[intervalConfig.key] === "halved"}
+              class:active={transformationIntervals[intervalConfig.key] ===
+                "halved"}
               style="--chip-color: {intervalConfig.color}"
               onclick={() => onSetInterval(intervalConfig.key, "halved")}
-            >½</button>
+              >½</button
+            >
             <button
               class="interval-chip"
-              class:active={transformationIntervals[intervalConfig.key] === "quartered"}
+              class:active={transformationIntervals[intervalConfig.key] ===
+                "quartered"}
               style="--chip-color: {intervalConfig.color}"
               onclick={() => onSetInterval(intervalConfig.key, "quartered")}
-            >¼</button>
+              >¼</button
+            >
           </div>
         {/if}
       </div>
@@ -107,11 +127,7 @@
   </div>
 
   <!-- Add button -->
-  <button
-    class="add-btn"
-    disabled={!canAdd}
-    onclick={onAddDesignation}
-  >
+  <button class="add-btn" disabled={!canAdd} onclick={onAddDesignation}>
     <FontAwesomeIcon icon="plus" size="0.9em" />
     Add to designations
   </button>

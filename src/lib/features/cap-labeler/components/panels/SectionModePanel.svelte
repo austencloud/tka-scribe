@@ -37,14 +37,15 @@
   const selectionLabel = $derived(() => {
     if (selectedComponents.size === 0) return "None";
     return Array.from(selectedComponents)
-      .map(c => BASE_COMPONENTS.find(b => b.id === c)?.label ?? c)
+      .map((c) => BASE_COMPONENTS.find((b) => b.id === c)?.label ?? c)
       .join(" + ");
   });
 </script>
 
 <div class="section-mode-panel">
   <div class="section-mode-hint">
-    Click start beat, then end beat to select range. Pick components or base word, then "Add Section".
+    Click start beat, then end beat to select range. Pick components or base
+    word, then "Add Section".
   </div>
 
   <!-- Current selection status -->
@@ -73,7 +74,10 @@
         <button
           class="base-word-chip"
           class:selected={selectedBaseWord === baseWord.id}
-          onclick={() => onBaseWordChange(selectedBaseWord === baseWord.id ? null : baseWord.id)}
+          onclick={() =>
+            onBaseWordChange(
+              selectedBaseWord === baseWord.id ? null : baseWord.id
+            )}
         >
           {baseWord.name}
         </button>
@@ -86,25 +90,20 @@
   <button
     class="add-section-btn"
     onclick={onAddSection}
-    disabled={selectedBeats.size === 0 || (selectedComponents.size === 0 && !selectedBaseWord)}
+    disabled={selectedBeats.size === 0 ||
+      (selectedComponents.size === 0 && !selectedBaseWord)}
   >
     <FontAwesomeIcon icon="plus" size="1em" />
     Add Section
   </button>
 
   <!-- Unknown button (for sequences that need review) -->
-  <button
-    class="unknown-btn"
-    onclick={onMarkUnknown}
-  >
+  <button class="unknown-btn" onclick={onMarkUnknown}>
     Unknown - Review Later
   </button>
 
   <!-- Saved sections -->
-  <SavedSectionsList
-    sections={savedSections}
-    onRemove={onRemoveSection}
-  />
+  <SavedSectionsList sections={savedSections} onRemove={onRemoveSection} />
 
   <!-- Next button (disabled if there's unsaved work) -->
   {#if savedSections.length > 0}
@@ -112,7 +111,9 @@
       class="next-btn"
       onclick={onNext}
       disabled={!canProceed}
-      title={!canProceed ? "Save or clear your current selection first" : "Go to next sequence"}
+      title={!canProceed
+        ? "Save or clear your current selection first"
+        : "Go to next sequence"}
     >
       Next →
     </button>

@@ -1,7 +1,10 @@
 <script lang="ts">
   import type { SectionDesignation } from "../../domain/models/section-models";
   import { SECTION_COLORS } from "../../domain/constants/section-colors";
-  import { formatSectionBeats, formatDesignation } from "../../utils/formatting";
+  import {
+    formatSectionBeats,
+    formatDesignation,
+  } from "../../utils/formatting";
 
   interface Props {
     sections: SectionDesignation[];
@@ -15,7 +18,11 @@
   <div class="saved-sections">
     <span class="saved-label">Saved sections:</span>
     {#each sections as section, i}
-      <div class="saved-section-tag" style="--section-color: {SECTION_COLORS[i % SECTION_COLORS.length]?.border}">
+      <div
+        class="saved-section-tag"
+        style="--section-color: {SECTION_COLORS[i % SECTION_COLORS.length]
+          ?.border}"
+      >
         <div class="section-info">
           <span class="section-beats">{formatSectionBeats(section.beats)}</span>
           <span class="section-components">{formatDesignation(section)}</span>

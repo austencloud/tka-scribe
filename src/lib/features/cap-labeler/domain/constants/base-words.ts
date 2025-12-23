@@ -29,7 +29,7 @@ export const BASE_WORDS: BaseWord[] = [
   { id: "vvvv", name: "VVVV", pattern: "VVVV", beatCount: 4 },
 ];
 
-export const BASE_WORD_MAP = new Map(BASE_WORDS.map(bw => [bw.id, bw]));
+export const BASE_WORD_MAP = new Map(BASE_WORDS.map((bw) => [bw.id, bw]));
 
 /**
  * Get base word by ID

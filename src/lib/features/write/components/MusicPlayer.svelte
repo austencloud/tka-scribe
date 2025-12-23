@@ -267,13 +267,15 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-fast);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .position-slider::-webkit-slider-thumb:hover {
     background: var(--primary-light);
     transform: scale(1.1);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .position-slider::-moz-range-track {
@@ -315,7 +317,10 @@
   }
 
   .time-separator {
-    color: var(--theme-text-dim, var(--text-secondary, rgba(255, 255, 255, 0.6)));
+    color: var(
+      --theme-text-dim,
+      var(--text-secondary, rgba(255, 255, 255, 0.6))
+    );
   }
 
   .control-buttons {
@@ -339,13 +344,15 @@
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(8px);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
   }
 
   .control-button:hover:not(:disabled) {
     background: var(--primary-light);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   .control-button:active:not(:disabled) {
@@ -356,7 +363,10 @@
   .control-button:disabled {
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text-dim, var(--text-secondary, rgba(255, 255, 255, 0.6)));
+    color: var(
+      --theme-text-dim,
+      var(--text-secondary, rgba(255, 255, 255, 0.6))
+    );
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
@@ -404,11 +414,17 @@
 
     .title,
     .status {
-      font-size: var(--font-size-compact, 12px); /* Supplementary, compact minimum */
+      font-size: var(
+        --font-size-compact,
+        12px
+      ); /* Supplementary, compact minimum */
     }
 
     .time-display {
-      font-size: var(--font-size-compact, 12px); /* Supplementary, compact minimum */
+      font-size: var(
+        --font-size-compact,
+        12px
+      ); /* Supplementary, compact minimum */
     }
 
     .control-button {

@@ -25,7 +25,6 @@ export const ANIMATION_CONSTANTS = {
 
 export function getModuleGradient(id: ModuleId | string): string {
   return (
-    MODULE_GRADIENTS[id] ||
-    "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)"
+    MODULE_GRADIENTS[id] || "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)"
   );
 }

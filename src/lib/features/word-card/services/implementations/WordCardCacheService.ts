@@ -111,10 +111,7 @@ export class WordCardCacheService implements IWordCardCacheService {
   /**
    * Store sequence data in cache
    */
-  storeSequenceData(
-    sequenceId: string,
-    data: SequenceData
-  ): void {
+  storeSequenceData(sequenceId: string, data: SequenceData): void {
     try {
       const dataSize = this.estimateSequenceDataSize(data);
       const entry: CacheEntry = {

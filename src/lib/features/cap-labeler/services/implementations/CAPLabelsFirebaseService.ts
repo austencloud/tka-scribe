@@ -138,7 +138,9 @@ export class CAPLabelsFirebaseService implements ICAPLabelsFirebaseService {
       }
 
       this.syncStatus = successCount === entries.length ? "synced" : "error";
-      console.log(`Synced ${successCount}/${entries.length} labels to Firebase`);
+      console.log(
+        `Synced ${successCount}/${entries.length} labels to Firebase`
+      );
     } catch (error) {
       console.error("Failed to sync to Firebase:", error);
       this.syncStatus = "error";
@@ -151,7 +153,9 @@ export class CAPLabelsFirebaseService implements ICAPLabelsFirebaseService {
    */
   private async loadFromFirebase(): Promise<Map<string, LabeledSequence>> {
     const firestore = await this.ensureFirestore();
-    const snapshot = await getDocs(collection(firestore, CAP_LABELS_COLLECTION));
+    const snapshot = await getDocs(
+      collection(firestore, CAP_LABELS_COLLECTION)
+    );
 
     const labels = new Map<string, LabeledSequence>();
     snapshot.forEach((docSnap) => {

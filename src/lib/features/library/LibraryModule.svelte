@@ -114,24 +114,24 @@
     />
   </div>
 {:else}
-<div class="library-module">
-  <div class="content-container">
-    <!-- Sequences Tab -->
-    <div class="tab-panel" class:active={isTabActive("sequences")}>
-      <SequencesView />
-    </div>
+  <div class="library-module">
+    <div class="content-container">
+      <!-- Sequences Tab -->
+      <div class="tab-panel" class:active={isTabActive("sequences")}>
+        <SequencesView />
+      </div>
 
-    <!-- Collections Tab -->
-    <div class="tab-panel" class:active={isTabActive("collections")}>
-      <CollectionsView />
-    </div>
+      <!-- Collections Tab -->
+      <div class="tab-panel" class:active={isTabActive("collections")}>
+        <CollectionsView />
+      </div>
 
-    <!-- Compositions Tab -->
-    <div class="tab-panel" class:active={isTabActive("compositions")}>
-      <CompositionsView />
+      <!-- Compositions Tab -->
+      <div class="tab-panel" class:active={isTabActive("compositions")}>
+        <CompositionsView />
+      </div>
     </div>
   </div>
-</div>
 {/if}
 
 <style>

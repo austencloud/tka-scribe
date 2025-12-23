@@ -26,7 +26,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
   IPrintablePageLayoutService,
-  IPageFactoryService
+  IPageFactoryService,
 } from "../contracts/word-card-contracts";
 
 @injectable()

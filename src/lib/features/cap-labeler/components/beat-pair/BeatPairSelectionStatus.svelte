@@ -15,14 +15,20 @@
     <div class="beatpair-selection-info">
       {#if firstBeat !== null}
         <span class="beatpair-key">
-          <span class="beatpair-indicator" style="background: rgba(34, 197, 94, 0.35); border: 2px solid rgba(34, 197, 94, 0.9);"></span>
+          <span
+            class="beatpair-indicator"
+            style="background: rgba(34, 197, 94, 0.35); border: 2px solid rgba(34, 197, 94, 0.9);"
+          ></span>
           Key Beat: {firstBeat}
         </span>
       {/if}
       {#if secondBeat !== null}
         <span class="beatpair-arrow">→</span>
         <span class="beatpair-corresponding">
-          <span class="beatpair-indicator" style="background: rgba(168, 85, 247, 0.35); border: 2px solid rgba(168, 85, 247, 0.9);"></span>
+          <span
+            class="beatpair-indicator"
+            style="background: rgba(168, 85, 247, 0.35); border: 2px solid rgba(168, 85, 247, 0.9);"
+          ></span>
           Corresponding: {secondBeat}
         </span>
       {/if}

@@ -1,6 +1,9 @@
 import { SliceSize } from "$lib/features/create/generate/circular/domain/models/circular-models";
 import type { SectionDesignation } from "../domain/models/section-models";
-import { BASE_COMPONENTS, type ComponentId } from "../domain/constants/cap-components";
+import {
+  BASE_COMPONENTS,
+  type ComponentId,
+} from "../domain/constants/cap-components";
 import type { TransformationIntervals } from "../domain/models/label-models";
 
 interface CAPDesignation {
@@ -24,7 +27,9 @@ function formatInterval(interval: string | undefined): string {
 /**
  * Format a designation for display (works with both CAPDesignation and SectionDesignation)
  */
-export function formatDesignation(d: CAPDesignation | SectionDesignation): string {
+export function formatDesignation(
+  d: CAPDesignation | SectionDesignation
+): string {
   // Check for base word first (for section designations with only a base word)
   const hasBaseWord = "baseWord" in d && d.baseWord;
 
@@ -32,11 +37,12 @@ export function formatDesignation(d: CAPDesignation | SectionDesignation): strin
   if (d.components.length === 0 && !hasBaseWord) return "Freeform";
 
   // Build component labels with their intervals
-  const intervals = "transformationIntervals" in d ? d.transformationIntervals : undefined;
+  const intervals =
+    "transformationIntervals" in d ? d.transformationIntervals : undefined;
   const componentParts: string[] = [];
 
   for (const c of d.components) {
-    const componentDef = BASE_COMPONENTS.find(b => b.id === c);
+    const componentDef = BASE_COMPONENTS.find((b) => b.id === c);
     let componentLabel = componentDef?.label ?? c;
 
     // Add interval suffix for components that have one
@@ -71,7 +77,9 @@ export function formatDesignation(d: CAPDesignation | SectionDesignation): strin
 /**
  * Map component IDs to their corresponding interval keys
  */
-function componentToIntervalKey(component: ComponentId): keyof TransformationIntervals | null {
+function componentToIntervalKey(
+  component: ComponentId
+): keyof TransformationIntervals | null {
   const map: Record<ComponentId, keyof TransformationIntervals | null> = {
     rotated: "rotation",
     swapped: "swap",

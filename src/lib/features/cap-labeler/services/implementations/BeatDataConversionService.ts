@@ -2,14 +2,23 @@ import { injectable } from "inversify";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { GridLocation, GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  GridLocation,
+  GridPosition,
+  GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  MotionColor,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type {
   IBeatDataConversionService,
   RawBeatData,
-  SequenceEntry
+  SequenceEntry,
 } from "../contracts/IBeatDataConversionService";
 
 /**
@@ -120,7 +129,9 @@ export class BeatDataConversionService implements IBeatDataConversionService {
     gridMode: GridMode
   ): {
     beats: BeatData[];
-    startPosition: (StartPositionData & { beatNumber: number; isBlank: boolean }) | null;
+    startPosition:
+      | (StartPositionData & { beatNumber: number; isBlank: boolean })
+      | null;
   } {
     if (!rawSequence || rawSequence.length === 0) {
       return { beats: [], startPosition: null };
@@ -140,10 +151,12 @@ export class BeatDataConversionService implements IBeatDataConversionService {
     // NOTE: We add beatNumber: 0 and isBlank: false so BeatGrid/BeatCell
     // properly recognize and render this as the start position with "Start" label
     // Using type assertion because StartPositionData doesn't include these runtime fields
-    let startPosition: (StartPositionData & {
-      beatNumber: number;
-      isBlank: boolean;
-    }) | null = null;
+    let startPosition:
+      | (StartPositionData & {
+          beatNumber: number;
+          isBlank: boolean;
+        })
+      | null = null;
 
     if (startPosElement) {
       const blueAttrs = startPosElement.blueAttributes;

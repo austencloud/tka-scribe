@@ -6,7 +6,10 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { loadFeatureModule } from "$lib/shared/inversify/container";
+  import {
+    ensureContainerInitialized,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/container";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
   import type { IBeatDataConversionService } from "../services/contracts/IBeatDataConversionService";
@@ -42,6 +45,7 @@
   onMount(() => {
     // Load CAP labeler DI module and initialize
     (async () => {
+      await ensureContainerInitialized();
       await loadFeatureModule("cap-labeler");
 
       // Create mode states AFTER services are registered
@@ -84,11 +88,14 @@
     );
 
     if (!conversionService) {
-      console.warn("[CAPLabelerModule] BeatDataConversionService not available");
+      console.warn(
+        "[CAPLabelerModule] BeatDataConversionService not available"
+      );
       return { beats: [], startPosition: null };
     }
 
-    const gridMode = conversionService.getAuthoritativeGridMode(currentSequence);
+    const gridMode =
+      conversionService.getAuthoritativeGridMode(currentSequence);
     return conversionService.convertRawToBeats(
       currentSequence.word,
       currentSequence.fullMetadata.sequence,
@@ -145,7 +152,7 @@
       // Currently selected beats (bright yellow/gold)
       const selectionColor = {
         bg: "rgba(251, 191, 36, 0.35)",
-        border: "rgba(251, 191, 36, 0.9)"
+        border: "rgba(251, 191, 36, 0.9)",
       };
       sectionState.selectedBeats.forEach((beatNum) => {
         map.set(beatNum, selectionColor);
@@ -157,14 +164,14 @@
       if (beatPairState.firstBeat !== null) {
         map.set(beatPairState.firstBeat, {
           bg: "rgba(34, 197, 94, 0.35)",
-          border: "rgba(34, 197, 94, 0.9)"
+          border: "rgba(34, 197, 94, 0.9)",
         });
       }
       // Second beat (purple)
       if (beatPairState.secondBeat !== null) {
         map.set(beatPairState.secondBeat, {
           bg: "rgba(168, 85, 247, 0.35)",
-          border: "rgba(168, 85, 247, 0.9)"
+          border: "rgba(168, 85, 247, 0.9)",
         });
       }
     }
@@ -176,11 +183,12 @@
   const derivedCapType = $derived.by(() => {
     if (!sectionState || !wholeState) return null;
 
-    const components = labelingMode === "section"
-      ? sectionState.selectedComponents
-      : labelingMode === "whole"
-      ? wholeState.selectedComponents
-      : new Set();
+    const components =
+      labelingMode === "section"
+        ? sectionState.selectedComponents
+        : labelingMode === "whole"
+          ? wholeState.selectedComponents
+          : new Set();
 
     if (components.size === 0) return null;
 
@@ -188,20 +196,20 @@
 
     // Component mapping (simplified - real mapping in CAPDesignationService)
     const mapping: Record<string, string> = {
-      "rotated": "STRICT_ROTATED",
-      "mirrored": "STRICT_MIRRORED",
-      "flipped": "strict_flipped",
-      "swapped": "STRICT_SWAPPED",
-      "inverted": "STRICT_INVERTED",
-      "inverted_swapped": "SWAPPED_INVERTED",
-      "inverted_rotated": "ROTATED_INVERTED",
-      "mirrored_swapped": "MIRRORED_SWAPPED",
-      "flipped_swapped": "flipped_swapped",
-      "inverted_mirrored": "MIRRORED_INVERTED",
-      "flipped_inverted": "flipped_inverted",
-      "rotated_swapped": "ROTATED_SWAPPED",
-      "mirrored_rotated": "MIRRORED_ROTATED",
-      "flipped_rotated": "flipped_rotated",
+      rotated: "STRICT_ROTATED",
+      mirrored: "STRICT_MIRRORED",
+      flipped: "strict_flipped",
+      swapped: "STRICT_SWAPPED",
+      inverted: "STRICT_INVERTED",
+      inverted_swapped: "SWAPPED_INVERTED",
+      inverted_rotated: "ROTATED_INVERTED",
+      mirrored_swapped: "MIRRORED_SWAPPED",
+      flipped_swapped: "flipped_swapped",
+      inverted_mirrored: "MIRRORED_INVERTED",
+      flipped_inverted: "flipped_inverted",
+      rotated_swapped: "ROTATED_SWAPPED",
+      mirrored_rotated: "MIRRORED_ROTATED",
+      flipped_rotated: "flipped_rotated",
     };
 
     return mapping[sorted] ?? `custom_${sorted}`;
@@ -234,7 +242,11 @@
 
   async function handleRemoveSection(index: number) {
     if (!currentSequence || !sectionState) return;
-    await sectionState.actions.removeSection(currentSequence.word, index, notes);
+    await sectionState.actions.removeSection(
+      currentSequence.word,
+      index,
+      notes
+    );
   }
 
   function handleRemoveBeatPair(index: number) {
@@ -330,7 +342,7 @@
       {syncStatus}
       sequences={capLabelerState.circularSequences}
       onJumpToSequence={(id) => capLabelerState.jumpToSequence(id)}
-      onOpenBrowser={() => showBrowserDrawer = true}
+      onOpenBrowser={() => (showBrowserDrawer = true)}
     />
 
     <SequenceBrowserDrawer
@@ -338,7 +350,7 @@
       sequences={capLabelerState.circularSequences}
       labels={capLabelerState.labels}
       currentSequenceId={currentSequence?.id ?? null}
-      onClose={() => showBrowserDrawer = false}
+      onClose={() => (showBrowserDrawer = false)}
       onSelectSequence={(id) => capLabelerState.jumpToSequence(id)}
     />
 
@@ -351,7 +363,8 @@
         {currentLabel}
         {showStartPosition}
         {manualColumnCount}
-        onShowStartPositionChange={(val) => capLabelerState.setShowStartPosition(val)}
+        onShowStartPositionChange={(val) =>
+          capLabelerState.setShowStartPosition(val)}
         onColumnCountChange={(val) => capLabelerState.setManualColumnCount(val)}
         onBeatClick={handleBeatClick}
         {highlightedBeats}
@@ -372,15 +385,14 @@
           onRemoveWholeDesignation={handleRemoveDesignation}
           onRemoveSectionDesignation={handleRemoveSection}
           onRemoveBeatPairDesignation={handleRemoveBeatPair}
-          onSetFreeform={() => wholeState?.actions.setFreeform(!wholeState?.isFreeform)}
+          onSetFreeform={() =>
+            wholeState?.actions.setFreeform(!wholeState?.isFreeform)}
           onMarkUnknown={handleMarkUnknown}
           onSaveAndNext={handleSaveAndNext}
-          canSave={
-            (wholeState?.pendingDesignations.length ?? 0) > 0 ||
+          canSave={(wholeState?.pendingDesignations.length ?? 0) > 0 ||
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||
-            (wholeState?.isFreeform ?? false)
-          }
+            (wholeState?.isFreeform ?? false)}
         />
 
         <!-- Mode Toggle -->
@@ -401,7 +413,8 @@
             onRemoveSection={handleRemoveSection}
             onMarkUnknown={handleMarkUnknown}
             onNext={() => capLabelerState.nextSequence()}
-            canProceed={sectionState.selectedBeats.size === 0 && sectionState.selectedComponents.size === 0}
+            canProceed={sectionState.selectedBeats.size === 0 &&
+              sectionState.selectedComponents.size === 0}
           />
         {:else if labelingMode === "beatpair" && beatPairState}
           <BeatPairModePanel
@@ -411,7 +424,8 @@
             transformationIntervals={beatPairState.transformationIntervals}
             onClearSelection={() => beatPairState!.actions.clearSelection()}
             onToggleComponent={(c) => beatPairState!.actions.toggleComponent(c)}
-            onSetInterval={(key, val) => beatPairState!.actions.setTransformationInterval(key, val)}
+            onSetInterval={(key, val) =>
+              beatPairState!.actions.setTransformationInterval(key, val)}
             onAddBeatPair={() => beatPairState!.actions.addBeatPair()}
           />
         {:else if labelingMode === "whole" && wholeState}
@@ -419,7 +433,8 @@
             selectedComponents={wholeState.selectedComponents}
             transformationIntervals={wholeState.transformationIntervals}
             onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
-            onSetInterval={(key, val) => wholeState!.actions.setTransformationInterval(key, val)}
+            onSetInterval={(key, val) =>
+              wholeState!.actions.setTransformationInterval(key, val)}
             onAddDesignation={handleAddDesignation}
           />
         {/if}
@@ -440,9 +455,7 @@
       >
         Previous
       </button>
-      <button onclick={() => capLabelerState.skipSequence()}>
-        Skip
-      </button>
+      <button onclick={() => capLabelerState.skipSequence()}> Skip </button>
       <span class="position">
         {capLabelerState.currentIndex + 1} / {filteredSequences.length}
       </span>
@@ -483,7 +496,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .empty-state button {

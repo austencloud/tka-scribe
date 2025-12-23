@@ -5,7 +5,10 @@
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import { formatSectionBeats, formatDesignation } from "../../utils/formatting";
+  import {
+    formatSectionBeats,
+    formatDesignation,
+  } from "../../utils/formatting";
 
   interface Props {
     sequence: SequenceEntry | null;
@@ -47,7 +50,9 @@
 
   // Get authoritative grid mode
   const authoritativeGridMode = $derived(
-    sequence?.fullMetadata?.sequence?.[0]?.gridMode || sequence?.gridMode || "diamond"
+    sequence?.fullMetadata?.sequence?.[0]?.gridMode ||
+      sequence?.gridMode ||
+      "diamond"
   );
 
   // Available column options based on sequence length
@@ -55,7 +60,7 @@
     if (!sequence) return [];
     const length = sequence.sequenceLength;
     const options = [2, 3, 4, 5, 6, 8, 10, 12];
-    return options.filter(col => col <= length);
+    return options.filter((col) => col <= length);
   });
 
   // Smart default column count for CAP labeling:
@@ -73,7 +78,9 @@
   });
 
   // Effective column count (use manual if set, otherwise smart default)
-  const effectiveColumnCount = $derived(manualColumnCount ?? smartDefaultColumns());
+  const effectiveColumnCount = $derived(
+    manualColumnCount ?? smartDefaultColumns()
+  );
 </script>
 
 <div class="sequence-preview">
@@ -84,11 +91,17 @@
         <div class="meta">
           <span class="meta-id" title="Sequence ID">ID: {sequence.id}</span>
           <span>Length: {sequence.sequenceLength}</span>
-          <span class="grid-mode-badge" class:box={authoritativeGridMode === GridMode.BOX}>
+          <span
+            class="grid-mode-badge"
+            class:box={authoritativeGridMode === GridMode.BOX}
+          >
             {authoritativeGridMode === GridMode.BOX ? "◇ BOX" : "◆ DIAMOND"}
           </span>
           {#if sequence.fullMetadata?.sequence?.[0]?.gridMode && sequence.fullMetadata.sequence[0].gridMode !== sequence.gridMode}
-            <span class="grid-mode-mismatch" title="Top-level gridMode differs from metadata">
+            <span
+              class="grid-mode-mismatch"
+              title="Top-level gridMode differs from metadata"
+            >
               ⚠️ Fix: top says "{sequence.gridMode}"
             </span>
           {/if}
@@ -125,7 +138,9 @@
               class:active={manualColumnCount === null}
               onclick={() => onColumnCountChange(null)}
             >
-              Auto{manualColumnCount === null && effectiveColumnCount !== null ? ` (${effectiveColumnCount})` : ""}
+              Auto{manualColumnCount === null && effectiveColumnCount !== null
+                ? ` (${effectiveColumnCount})`
+                : ""}
             </button>
             {#each availableColumnOptions() as colCount}
               <button
@@ -140,14 +155,19 @@
         </div>
       </div>
 
-      <div class="beat-grid-wrapper" class:section-mode={labelingMode === "section"}>
+      <div
+        class="beat-grid-wrapper"
+        class:section-mode={labelingMode === "section"}
+      >
         <BeatGrid
           beats={parsedBeats}
           startPosition={showStartPosition ? startPosition : null}
-          onBeatClick={onBeatClick}
-          selectedBeatNumber={labelingMode === "whole" ? selectedBeatNumber : null}
+          {onBeatClick}
+          selectedBeatNumber={labelingMode === "whole"
+            ? selectedBeatNumber
+            : null}
           manualColumnCount={effectiveColumnCount}
-          highlightedBeats={highlightedBeats}
+          {highlightedBeats}
           heightSizingRowThreshold={20}
         />
       </div>
@@ -173,8 +193,12 @@
         <div class="label-sections">
           {#each currentLabel.sections as section}
             <div class="label-section-item">
-              <span class="section-beats">{formatSectionBeats(section.beats)}</span>
-              <span class="section-components">{formatDesignation(section)}</span>
+              <span class="section-beats"
+                >{formatSectionBeats(section.beats)}</span
+              >
+              <span class="section-components"
+                >{formatDesignation(section)}</span
+              >
             </div>
           {/each}
         </div>

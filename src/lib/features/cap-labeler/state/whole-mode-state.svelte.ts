@@ -10,10 +10,10 @@ import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
 import type { ICAPLabelsFirebaseService } from "../services/contracts/ICAPLabelsFirebaseService";
 import type { ICAPDesignationService } from "../services/contracts/ICAPDesignationService";
 import type {
-	CAPDesignation,
-	LabeledSequence,
-	TransformationIntervals,
-	TransformationInterval,
+  CAPDesignation,
+  LabeledSequence,
+  TransformationIntervals,
+  TransformationInterval,
 } from "../domain/models/label-models";
 import type { ComponentId } from "../domain/constants/cap-components";
 import type { SliceSize } from "$lib/features/create/generate/circular/domain/models/circular-models";
@@ -21,280 +21,320 @@ import type { SliceSize } from "$lib/features/create/generate/circular/domain/mo
 /**
  * Map component IDs to their corresponding interval keys
  */
-function componentToIntervalKey(component: ComponentId): keyof TransformationIntervals | null {
-	const map: Record<ComponentId, keyof TransformationIntervals | null> = {
-		rotated: "rotation",
-		swapped: "swap",
-		mirrored: "mirror",
-		flipped: "flip",
-		inverted: "invert",
-		rewound: null, // rewound doesn't have an interval concept
-	};
-	return map[component] ?? null;
+function componentToIntervalKey(
+  component: ComponentId
+): keyof TransformationIntervals | null {
+  const map: Record<ComponentId, keyof TransformationIntervals | null> = {
+    rotated: "rotation",
+    swapped: "swap",
+    mirrored: "mirror",
+    flipped: "flip",
+    inverted: "invert",
+    rewound: null, // rewound doesn't have an interval concept
+  };
+  return map[component] ?? null;
 }
 
 export interface WholeModeState {
-	// Component selection
-	selectedComponents: Set<ComponentId>;
-	isFreeform: boolean;
-	selectedSliceSize: SliceSize | null;
+  // Component selection
+  selectedComponents: Set<ComponentId>;
+  isFreeform: boolean;
+  selectedSliceSize: SliceSize | null;
 
-	// Per-transformation intervals
-	transformationIntervals: TransformationIntervals;
+  // Per-transformation intervals
+  transformationIntervals: TransformationIntervals;
 
-	// Multiple designations
-	pendingDesignations: CAPDesignation[];
+  // Multiple designations
+  pendingDesignations: CAPDesignation[];
 
-	// Actions
-	actions: {
-		toggleComponent(component: ComponentId): void;
-		setSliceSize(size: SliceSize | null): void;
-		setTransformationInterval(
-			transformation: keyof TransformationIntervals,
-			interval: TransformationInterval
-		): void;
-		setFreeform(isFreeform: boolean): void;
-		addDesignation(derivedCapType: string | null): void;
-		removeDesignation(index: number): void;
-		labelSequence(
-			currentWord: string,
-			notes: string,
-			derivedCapType: string | null
-		): Promise<void>;
-		markAsUnknown(currentWord: string, notes: string): Promise<void>;
-		clearSelection(): void;
-	};
+  // Actions
+  actions: {
+    toggleComponent(component: ComponentId): void;
+    setSliceSize(size: SliceSize | null): void;
+    setTransformationInterval(
+      transformation: keyof TransformationIntervals,
+      interval: TransformationInterval
+    ): void;
+    setFreeform(isFreeform: boolean): void;
+    addDesignation(derivedCapType: string | null): void;
+    removeDesignation(index: number): void;
+    labelSequence(
+      currentWord: string,
+      notes: string,
+      derivedCapType: string | null
+    ): Promise<void>;
+    markAsUnknown(currentWord: string, notes: string): Promise<void>;
+    clearSelection(): void;
+  };
 }
 
 /**
  * Create whole mode state for a CAP labeler instance
  */
 export function createWholeModeState(): WholeModeState {
-	// State
-	let selectedComponents = $state(new Set<ComponentId>());
-	let isFreeform = $state(false);
-	let selectedSliceSize = $state<SliceSize | null>(null);
-	let transformationIntervals = $state<TransformationIntervals>({});
-	let pendingDesignations = $state<CAPDesignation[]>([]);
+  // State
+  let selectedComponents = $state(new Set<ComponentId>());
+  let isFreeform = $state(false);
+  let selectedSliceSize = $state<SliceSize | null>(null);
+  let transformationIntervals = $state<TransformationIntervals>({});
+  let pendingDesignations = $state<CAPDesignation[]>([]);
 
-	// Services
-	const labelsService = tryResolve<ICAPLabelsFirebaseService>(
-		CAPLabelerTypes.ICAPLabelsFirebaseService
-	);
-	const designationService = tryResolve<ICAPDesignationService>(
-		CAPLabelerTypes.ICAPDesignationService
-	);
+  // Services
+  const labelsService = tryResolve<ICAPLabelsFirebaseService>(
+    CAPLabelerTypes.ICAPLabelsFirebaseService
+  );
+  const designationService = tryResolve<ICAPDesignationService>(
+    CAPLabelerTypes.ICAPDesignationService
+  );
 
-	// Actions
-	const actions = {
-		toggleComponent(component: ComponentId) {
-			if (isFreeform) {
-				isFreeform = false;
-			}
-			const newSet = new Set(selectedComponents);
-			if (newSet.has(component)) {
-				newSet.delete(component);
-				// Clear interval for this component when deselected
-				const intervalKey = componentToIntervalKey(component);
-				if (intervalKey) {
-					transformationIntervals = { ...transformationIntervals, [intervalKey]: undefined };
-				}
-			} else {
-				newSet.add(component);
-			}
-			selectedComponents = newSet;
-		},
+  // Actions
+  const actions = {
+    toggleComponent(component: ComponentId) {
+      if (isFreeform) {
+        isFreeform = false;
+      }
+      const newSet = new Set(selectedComponents);
+      if (newSet.has(component)) {
+        newSet.delete(component);
+        // Clear interval for this component when deselected
+        const intervalKey = componentToIntervalKey(component);
+        if (intervalKey) {
+          transformationIntervals = {
+            ...transformationIntervals,
+            [intervalKey]: undefined,
+          };
+        }
+      } else {
+        newSet.add(component);
+      }
+      selectedComponents = newSet;
+    },
 
-		setSliceSize(size: SliceSize | null) {
-			selectedSliceSize = size;
-			// Also update transformationIntervals.rotation for backwards compatibility
-			if (size) {
-				transformationIntervals = { ...transformationIntervals, rotation: size };
-			}
-		},
+    setSliceSize(size: SliceSize | null) {
+      selectedSliceSize = size;
+      // Also update transformationIntervals.rotation for backwards compatibility
+      if (size) {
+        transformationIntervals = {
+          ...transformationIntervals,
+          rotation: size,
+        };
+      }
+    },
 
-		setTransformationInterval(
-			transformation: keyof TransformationIntervals,
-			interval: TransformationInterval
-		) {
-			transformationIntervals = { ...transformationIntervals, [transformation]: interval };
-			// Keep selectedSliceSize in sync for backwards compatibility
-			if (transformation === "rotation") {
-				selectedSliceSize = interval === "halved" || interval === "quartered"
-					? (interval as SliceSize)
-					: null;
-			}
-		},
+    setTransformationInterval(
+      transformation: keyof TransformationIntervals,
+      interval: TransformationInterval
+    ) {
+      transformationIntervals = {
+        ...transformationIntervals,
+        [transformation]: interval,
+      };
+      // Keep selectedSliceSize in sync for backwards compatibility
+      if (transformation === "rotation") {
+        selectedSliceSize =
+          interval === "halved" || interval === "quartered"
+            ? (interval as SliceSize)
+            : null;
+      }
+    },
 
-		setFreeform(freeform: boolean) {
-			isFreeform = freeform;
-			if (freeform) {
-				selectedComponents = new Set();
-				transformationIntervals = {};
-			}
-		},
+    setFreeform(freeform: boolean) {
+      isFreeform = freeform;
+      if (freeform) {
+        selectedComponents = new Set();
+        transformationIntervals = {};
+      }
+    },
 
-		addDesignation(derivedCapType: string | null) {
-			if (selectedComponents.size === 0) {
-				console.warn("[WholeModeState] Cannot add designation: no components selected");
-				return;
-			}
+    addDesignation(derivedCapType: string | null) {
+      if (selectedComponents.size === 0) {
+        console.warn(
+          "[WholeModeState] Cannot add designation: no components selected"
+        );
+        return;
+      }
 
-			// Build intervals only for selected components
-			const relevantIntervals: TransformationIntervals = {};
-			if (selectedComponents.has("rotated") && transformationIntervals.rotation) {
-				relevantIntervals.rotation = transformationIntervals.rotation;
-			}
-			if (selectedComponents.has("swapped") && transformationIntervals.swap) {
-				relevantIntervals.swap = transformationIntervals.swap;
-			}
-			if (selectedComponents.has("mirrored") && transformationIntervals.mirror) {
-				relevantIntervals.mirror = transformationIntervals.mirror;
-			}
-			if (selectedComponents.has("flipped") && transformationIntervals.flip) {
-				relevantIntervals.flip = transformationIntervals.flip;
-			}
-			if (selectedComponents.has("inverted") && transformationIntervals.invert) {
-				relevantIntervals.invert = transformationIntervals.invert;
-			}
+      // Build intervals only for selected components
+      const relevantIntervals: TransformationIntervals = {};
+      if (
+        selectedComponents.has("rotated") &&
+        transformationIntervals.rotation
+      ) {
+        relevantIntervals.rotation = transformationIntervals.rotation;
+      }
+      if (selectedComponents.has("swapped") && transformationIntervals.swap) {
+        relevantIntervals.swap = transformationIntervals.swap;
+      }
+      if (
+        selectedComponents.has("mirrored") &&
+        transformationIntervals.mirror
+      ) {
+        relevantIntervals.mirror = transformationIntervals.mirror;
+      }
+      if (selectedComponents.has("flipped") && transformationIntervals.flip) {
+        relevantIntervals.flip = transformationIntervals.flip;
+      }
+      if (
+        selectedComponents.has("inverted") &&
+        transformationIntervals.invert
+      ) {
+        relevantIntervals.invert = transformationIntervals.invert;
+      }
 
-			const designation: CAPDesignation = {
-				components: Array.from(selectedComponents),
-				capType: derivedCapType,
-				sliceSize: selectedComponents.has("rotated") ? selectedSliceSize : null,
-				transformationIntervals: Object.keys(relevantIntervals).length > 0 ? relevantIntervals : undefined,
-			};
+      const designation: CAPDesignation = {
+        components: Array.from(selectedComponents),
+        capType: derivedCapType,
+        sliceSize: selectedComponents.has("rotated") ? selectedSliceSize : null,
+        transformationIntervals:
+          Object.keys(relevantIntervals).length > 0
+            ? relevantIntervals
+            : undefined,
+      };
 
-			// Check if this exact combination already exists
-			if (designationService) {
-				const exists = designationService.isDuplicateDesignation(
-					designation,
-					pendingDesignations
-				);
-				if (exists) {
-					console.warn("[WholeModeState] Designation already exists");
-					return;
-				}
-			}
+      // Check if this exact combination already exists
+      if (designationService) {
+        const exists = designationService.isDuplicateDesignation(
+          designation,
+          pendingDesignations
+        );
+        if (exists) {
+          console.warn("[WholeModeState] Designation already exists");
+          return;
+        }
+      }
 
-			pendingDesignations = [...pendingDesignations, designation];
+      pendingDesignations = [...pendingDesignations, designation];
 
-			// Clear selection for next designation
-			selectedComponents = new Set();
-			selectedSliceSize = null;
-			transformationIntervals = {};
-		},
+      // Clear selection for next designation
+      selectedComponents = new Set();
+      selectedSliceSize = null;
+      transformationIntervals = {};
+    },
 
-		removeDesignation(index: number) {
-			pendingDesignations = pendingDesignations.filter((_, i) => i !== index);
-		},
+    removeDesignation(index: number) {
+      pendingDesignations = pendingDesignations.filter((_, i) => i !== index);
+    },
 
-		async labelSequence(
-			currentWord: string,
-			notes: string,
-			derivedCapType: string | null
-		) {
-			if (!labelsService) {
-				console.warn("[WholeModeState] LabelsService not available");
-				return;
-			}
+    async labelSequence(
+      currentWord: string,
+      notes: string,
+      derivedCapType: string | null
+    ) {
+      if (!labelsService) {
+        console.warn("[WholeModeState] LabelsService not available");
+        return;
+      }
 
-			// Build all designations (pending + current selection if any)
-			const allDesignations = [...pendingDesignations];
-			if (selectedComponents.size > 0) {
-				// Build intervals for current selection
-				const relevantIntervals: TransformationIntervals = {};
-				if (selectedComponents.has("rotated") && transformationIntervals.rotation) {
-					relevantIntervals.rotation = transformationIntervals.rotation;
-				}
-				if (selectedComponents.has("swapped") && transformationIntervals.swap) {
-					relevantIntervals.swap = transformationIntervals.swap;
-				}
-				if (selectedComponents.has("mirrored") && transformationIntervals.mirror) {
-					relevantIntervals.mirror = transformationIntervals.mirror;
-				}
-				if (selectedComponents.has("flipped") && transformationIntervals.flip) {
-					relevantIntervals.flip = transformationIntervals.flip;
-				}
-				if (selectedComponents.has("inverted") && transformationIntervals.invert) {
-					relevantIntervals.invert = transformationIntervals.invert;
-				}
+      // Build all designations (pending + current selection if any)
+      const allDesignations = [...pendingDesignations];
+      if (selectedComponents.size > 0) {
+        // Build intervals for current selection
+        const relevantIntervals: TransformationIntervals = {};
+        if (
+          selectedComponents.has("rotated") &&
+          transformationIntervals.rotation
+        ) {
+          relevantIntervals.rotation = transformationIntervals.rotation;
+        }
+        if (selectedComponents.has("swapped") && transformationIntervals.swap) {
+          relevantIntervals.swap = transformationIntervals.swap;
+        }
+        if (
+          selectedComponents.has("mirrored") &&
+          transformationIntervals.mirror
+        ) {
+          relevantIntervals.mirror = transformationIntervals.mirror;
+        }
+        if (selectedComponents.has("flipped") && transformationIntervals.flip) {
+          relevantIntervals.flip = transformationIntervals.flip;
+        }
+        if (
+          selectedComponents.has("inverted") &&
+          transformationIntervals.invert
+        ) {
+          relevantIntervals.invert = transformationIntervals.invert;
+        }
 
-				allDesignations.push({
-					components: Array.from(selectedComponents),
-					capType: derivedCapType,
-					sliceSize: selectedComponents.has("rotated") ? selectedSliceSize : null,
-					transformationIntervals: Object.keys(relevantIntervals).length > 0 ? relevantIntervals : undefined,
-				});
-			}
+        allDesignations.push({
+          components: Array.from(selectedComponents),
+          capType: derivedCapType,
+          sliceSize: selectedComponents.has("rotated")
+            ? selectedSliceSize
+            : null,
+          transformationIntervals:
+            Object.keys(relevantIntervals).length > 0
+              ? relevantIntervals
+              : undefined,
+        });
+      }
 
-			const label: LabeledSequence = {
-				word: currentWord,
-				designations: allDesignations,
-				isFreeform,
-				labeledAt: new Date().toISOString(),
-				notes,
-			};
+      const label: LabeledSequence = {
+        word: currentWord,
+        designations: allDesignations,
+        isFreeform,
+        labeledAt: new Date().toISOString(),
+        notes,
+      };
 
-			try {
-				await labelsService.saveLabelToFirebase(currentWord, label);
-			} catch (error) {
-				console.error("[WholeModeState] Failed to label sequence:", error);
-			}
+      try {
+        await labelsService.saveLabelToFirebase(currentWord, label);
+      } catch (error) {
+        console.error("[WholeModeState] Failed to label sequence:", error);
+      }
 
-			// Clear after labeling
-			this.clearSelection();
-		},
+      // Clear after labeling
+      this.clearSelection();
+    },
 
-		async markAsUnknown(currentWord: string, notes: string) {
-			if (!labelsService) {
-				console.warn("[WholeModeState] LabelsService not available");
-				return;
-			}
+    async markAsUnknown(currentWord: string, notes: string) {
+      if (!labelsService) {
+        console.warn("[WholeModeState] LabelsService not available");
+        return;
+      }
 
-			const label: LabeledSequence = {
-				word: currentWord,
-				designations: [],
-				isFreeform: false,
-				isUnknown: true,
-				labeledAt: new Date().toISOString(),
-				notes,
-			};
+      const label: LabeledSequence = {
+        word: currentWord,
+        designations: [],
+        isFreeform: false,
+        isUnknown: true,
+        labeledAt: new Date().toISOString(),
+        notes,
+      };
 
-			try {
-				await labelsService.saveLabelToFirebase(currentWord, label);
-			} catch (error) {
-				console.error("[WholeModeState] Failed to mark as unknown:", error);
-			}
+      try {
+        await labelsService.saveLabelToFirebase(currentWord, label);
+      } catch (error) {
+        console.error("[WholeModeState] Failed to mark as unknown:", error);
+      }
 
-			this.clearSelection();
-		},
+      this.clearSelection();
+    },
 
-		clearSelection() {
-			selectedComponents = new Set();
-			isFreeform = false;
-			pendingDesignations = [];
-			selectedSliceSize = null;
-			transformationIntervals = {};
-		},
-	};
+    clearSelection() {
+      selectedComponents = new Set();
+      isFreeform = false;
+      pendingDesignations = [];
+      selectedSliceSize = null;
+      transformationIntervals = {};
+    },
+  };
 
-	return {
-		get selectedComponents() {
-			return selectedComponents;
-		},
-		get isFreeform() {
-			return isFreeform;
-		},
-		get selectedSliceSize() {
-			return selectedSliceSize;
-		},
-		get transformationIntervals() {
-			return transformationIntervals;
-		},
-		get pendingDesignations() {
-			return pendingDesignations;
-		},
-		actions,
-	};
+  return {
+    get selectedComponents() {
+      return selectedComponents;
+    },
+    get isFreeform() {
+      return isFreeform;
+    },
+    get selectedSliceSize() {
+      return selectedSliceSize;
+    },
+    get transformationIntervals() {
+      return transformationIntervals;
+    },
+    get pendingDesignations() {
+      return pendingDesignations;
+    },
+    actions,
+  };
 }

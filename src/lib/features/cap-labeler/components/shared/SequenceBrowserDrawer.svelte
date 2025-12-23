@@ -27,7 +27,7 @@
     labels,
     currentSequenceId,
     onClose,
-    onSelectSequence
+    onSelectSequence,
   }: Props = $props();
 
   // Local filter state
@@ -40,11 +40,11 @@
 
     // Apply status filter
     if (localFilter === "labeled") {
-      result = result.filter(s => labels.has(s.word));
+      result = result.filter((s) => labels.has(s.word));
     } else if (localFilter === "unlabeled") {
-      result = result.filter(s => !labels.has(s.word));
+      result = result.filter((s) => !labels.has(s.word));
     } else if (localFilter === "unknown") {
-      result = result.filter(s => {
+      result = result.filter((s) => {
         const label = labels.get(s.word);
         return label?.isUnknown === true;
       });
@@ -53,14 +53,16 @@
     // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(s => s.word.toLowerCase().includes(query));
+      result = result.filter((s) => s.word.toLowerCase().includes(query));
     }
 
     return result;
   });
 
   // Get label status for a sequence
-  function getLabelStatus(seq: SequenceEntry): "labeled" | "unlabeled" | "unknown" {
+  function getLabelStatus(
+    seq: SequenceEntry
+  ): "labeled" | "unlabeled" | "unknown" {
     const label = labels.get(seq.word);
     if (!label) return "unlabeled";
     if (label.isUnknown) return "unknown";
@@ -97,7 +99,7 @@
   <div class="drawer-content">
     <div class="drawer-header">
       <h2>Browse Sequences</h2>
-      <button class="close-btn" onclick={() => isOpen = false}>
+      <button class="close-btn" onclick={() => (isOpen = false)}>
         <FontAwesomeIcon icon="times" size="1.2em" />
       </button>
     </div>
@@ -111,7 +113,7 @@
         bind:value={searchQuery}
       />
       {#if searchQuery}
-        <button class="clear-search" onclick={() => searchQuery = ""}>
+        <button class="clear-search" onclick={() => (searchQuery = "")}>
           <FontAwesomeIcon icon="times" size="0.8em" />
         </button>
       {/if}
@@ -122,28 +124,28 @@
       <button
         class="filter-chip"
         class:active={localFilter === "all"}
-        onclick={() => localFilter = "all"}
+        onclick={() => (localFilter = "all")}
       >
         All ({sequences.length})
       </button>
       <button
         class="filter-chip"
         class:active={localFilter === "unlabeled"}
-        onclick={() => localFilter = "unlabeled"}
+        onclick={() => (localFilter = "unlabeled")}
       >
         Unlabeled
       </button>
       <button
         class="filter-chip"
         class:active={localFilter === "labeled"}
-        onclick={() => localFilter = "labeled"}
+        onclick={() => (localFilter = "labeled")}
       >
         Labeled
       </button>
       <button
         class="filter-chip"
         class:active={localFilter === "unknown"}
-        onclick={() => localFilter = "unknown"}
+        onclick={() => (localFilter = "unknown")}
       >
         Unknown
       </button>
@@ -176,7 +178,11 @@
               </div>
             {/if}
             <!-- Status badge overlay -->
-            <div class="status-badge" class:labeled={status === "labeled"} class:unknown={status === "unknown"}>
+            <div
+              class="status-badge"
+              class:labeled={status === "labeled"}
+              class:unknown={status === "unknown"}
+            >
               {#if status === "labeled"}
                 <FontAwesomeIcon icon="check" size="0.7em" />
               {:else if status === "unknown"}
@@ -378,7 +384,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.2),
+      rgba(139, 92, 246, 0.2)
+    );
     color: var(--text-muted, rgba(255, 255, 255, 0.5));
     font-size: 1.5rem;
     font-weight: 600;

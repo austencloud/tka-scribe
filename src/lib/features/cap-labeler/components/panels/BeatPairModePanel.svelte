@@ -7,7 +7,10 @@
    * including interval qualifiers (½ or ¼).
    */
   import type { ComponentId } from "../../domain/constants/cap-components";
-  import type { TransformationIntervals, TransformationInterval } from "../../domain/models/label-models";
+  import type {
+    TransformationIntervals,
+    TransformationInterval,
+  } from "../../domain/models/label-models";
   import { BASE_COMPONENTS } from "../../domain/constants/cap-components";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
@@ -18,7 +21,10 @@
     transformationIntervals: TransformationIntervals;
     onClearSelection: () => void;
     onToggleComponent: (component: ComponentId) => void;
-    onSetInterval: (key: keyof TransformationIntervals, value: TransformationInterval) => void;
+    onSetInterval: (
+      key: keyof TransformationIntervals,
+      value: TransformationInterval
+    ) => void;
     onAddBeatPair: () => void;
   }
 
@@ -34,7 +40,11 @@
   }: Props = $props();
 
   // Components that support intervals
-  const intervalComponents: { id: ComponentId; key: keyof TransformationIntervals; color: string }[] = [
+  const intervalComponents: {
+    id: ComponentId;
+    key: keyof TransformationIntervals;
+    color: string;
+  }[] = [
     { id: "rotated", key: "rotation", color: "#36c3ff" },
     { id: "swapped", key: "swap", color: "#26e600" },
     { id: "mirrored", key: "mirror", color: "#6F2DA8" },
@@ -44,7 +54,7 @@
 
   // Get interval config for a component
   function getIntervalConfig(id: ComponentId) {
-    return intervalComponents.find(c => c.id === id);
+    return intervalComponents.find((c) => c.id === id);
   }
 
   // Check if component has interval selected
@@ -66,15 +76,14 @@
 
   // Can add beat pair?
   const canAdd = $derived(
-    firstBeat !== null &&
-    secondBeat !== null &&
-    selectedComponents.size > 0
+    firstBeat !== null && secondBeat !== null && selectedComponents.size > 0
   );
 
   // Selection status text
   const selectionStatus = $derived.by(() => {
     if (firstBeat === null) return "Click first beat (key beat)";
-    if (secondBeat === null) return `Beat ${firstBeat} selected → Click second beat`;
+    if (secondBeat === null)
+      return `Beat ${firstBeat} selected → Click second beat`;
     return `Beat ${firstBeat} ↔ Beat ${secondBeat}`;
   });
 
@@ -90,7 +99,11 @@
   <div class="beat-selection" class:complete={hasBothBeats}>
     <span class="selection-text">{selectionStatus}</span>
     {#if firstBeat !== null}
-      <button class="clear-btn" onclick={onClearSelection} title="Clear selection">
+      <button
+        class="clear-btn"
+        onclick={onClearSelection}
+        title="Clear selection"
+      >
         <FontAwesomeIcon icon="xmark" size="0.85em" />
       </button>
     {/if}
@@ -109,10 +122,16 @@
             style="--component-color: {component.color}"
             onclick={() => onToggleComponent(component.id)}
           >
-            <FontAwesomeIcon icon={component.icon} size="1.2em" color={component.color} />
+            <FontAwesomeIcon
+              icon={component.icon}
+              size="1.2em"
+              color={component.color}
+            />
             <span class="component-name">{component.label}</span>
             {#if isSelected && hasInterval(component.id)}
-              <span class="interval-badge">{getIntervalDisplay(component.id)}</span>
+              <span class="interval-badge"
+                >{getIntervalDisplay(component.id)}</span
+              >
             {/if}
           </button>
 
@@ -121,16 +140,20 @@
             <div class="interval-row">
               <button
                 class="interval-chip"
-                class:active={transformationIntervals[intervalConfig.key] === "halved"}
+                class:active={transformationIntervals[intervalConfig.key] ===
+                  "halved"}
                 style="--chip-color: {intervalConfig.color}"
                 onclick={() => onSetInterval(intervalConfig.key, "halved")}
-              >½</button>
+                >½</button
+              >
               <button
                 class="interval-chip"
-                class:active={transformationIntervals[intervalConfig.key] === "quartered"}
+                class:active={transformationIntervals[intervalConfig.key] ===
+                  "quartered"}
                 style="--chip-color: {intervalConfig.color}"
                 onclick={() => onSetInterval(intervalConfig.key, "quartered")}
-              >¼</button>
+                >¼</button
+              >
             </div>
           {/if}
         </div>
@@ -138,11 +161,7 @@
     </div>
 
     <!-- Add button -->
-    <button
-      class="add-btn"
-      disabled={!canAdd}
-      onclick={onAddBeatPair}
-    >
+    <button class="add-btn" disabled={!canAdd} onclick={onAddBeatPair}>
       <FontAwesomeIcon icon="plus" size="0.9em" />
       Add beat pair
     </button>

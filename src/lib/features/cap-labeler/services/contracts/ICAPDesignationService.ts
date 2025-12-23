@@ -3,7 +3,13 @@ import type { SliceSize } from "$lib/features/create/generate/circular/domain/mo
 /**
  * Base CAP component ID
  */
-export type ComponentId = "rotated" | "swapped" | "mirrored" | "flipped" | "inverted" | "rewound";
+export type ComponentId =
+  | "rotated"
+  | "swapped"
+  | "mirrored"
+  | "flipped"
+  | "inverted"
+  | "rewound";
 
 /**
  * CAP designation for a sequence or section

@@ -54,7 +54,11 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 12%,
+      transparent
+    );
     border-radius: var(--radius-2026-sm, 10px);
     color: var(--semantic-warning, #f59e0b);
     font-size: 16px;

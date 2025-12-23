@@ -5,7 +5,11 @@
     placeholder?: string;
   }
 
-  let { value = $bindable(""), onInput, placeholder = "Any observations about this sequence..." }: Props = $props();
+  let {
+    value = $bindable(""),
+    onInput,
+    placeholder = "Any observations about this sequence...",
+  }: Props = $props();
 
   function handleInput(e: Event) {
     const target = e.target as HTMLInputElement;
@@ -17,12 +21,7 @@
 <div class="notes-section">
   <label>
     Notes (optional):
-    <input
-      type="text"
-      {value}
-      oninput={handleInput}
-      {placeholder}
-    />
+    <input type="text" {value} oninput={handleInput} {placeholder} />
   </label>
 </div>
 

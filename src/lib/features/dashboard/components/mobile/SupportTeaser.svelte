@@ -54,7 +54,11 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 12%,
+      transparent
+    );
     border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-accent-strong, #8b5cf6);
     font-size: 16px;

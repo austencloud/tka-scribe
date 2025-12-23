@@ -9,6 +9,7 @@
 **CAP type is determined by analyzing the actual motion data between beats, NOT by the sequence name or letters.**
 
 The same letter combination (e.g., "AB" vs "BA") can have completely different CAP types depending on:
+
 - The specific hand paths used
 - The version/variation of the sequence
 - How the performer chose to execute the movements
@@ -21,19 +22,19 @@ The same letter combination (e.g., "AB" vs "BA") can have completely different C
 
 ### Positional Transformations
 
-| Transform | Description | Position Changes |
-|-----------|-------------|------------------|
-| **ROTATED** | 180° rotation around center | n↔s AND e↔w |
-| **FLIPPED** | Reflection across horizontal axis (top↔bottom) | n↔s only |
-| **MIRRORED** | Reflection across vertical axis (left↔right) | e↔w only |
+| Transform    | Description                                     | Position Changes |
+| ------------ | ----------------------------------------------- | ---------------- |
+| **ROTATED**  | 180° rotation around center                     | n↔s AND e↔w    |
+| **FLIPPED**  | Reflection across horizontal axis (top↔bottom) | n↔s only        |
+| **MIRRORED** | Reflection across vertical axis (left↔right)   | e↔w only        |
 
 ### Other Transformations
 
-| Transform | Description |
-|-----------|-------------|
-| **SWAPPED** | Blue and red props exchange roles (positions AND motion types must match after swap) |
-| **INVERTED** | Motion types swap: pro↔anti |
-| **SAME** | Beats are identical (no transformation) |
+| Transform    | Description                                                                          |
+| ------------ | ------------------------------------------------------------------------------------ |
+| **SWAPPED**  | Blue and red props exchange roles (positions AND motion types must match after swap) |
+| **INVERTED** | Motion types swap: pro↔anti                                                         |
+| **SAME**     | Beats are identical (no transformation)                                              |
 
 ---
 
@@ -42,6 +43,7 @@ The same letter combination (e.g., "AB" vs "BA") can have completely different C
 Combined transformations (e.g., "ROTATED + SWAPPED") are only valid when applying both operations **in sequence** produces the observed result.
 
 **Important**: Just because two beats satisfy ROTATED individually AND satisfy SWAPPED individually does NOT mean "ROTATED + SWAPPED" is valid. You must actually:
+
 1. Apply rotation to beat 1
 2. Then apply swap to the rotated result
 3. Check if that matches beat 2
@@ -62,13 +64,17 @@ Symmetric beat patterns can satisfy multiple individual checks without the combi
 ## Labeling Modes
 
 ### Whole Sequence Mode
+
 Use when the entire sequence exhibits a consistent transformation pattern throughout.
 
 ### Section Mode
+
 Use when different parts of the sequence have different CAP patterns. Can also designate base words (AAAA, BBBB, etc.) for hybrid sequences.
 
 ### Beat-Pair Mode
+
 Use to analyze specific beat-to-beat relationships. Best for:
+
 - Complex sequences with varying patterns
 - Verifying what transformation exists between specific beats
 - Hybrid sequences that combine multiple base words
@@ -77,13 +83,14 @@ Use to analyze specific beat-to-beat relationships. Best for:
 
 ## Session Insights Log
 
-*Add dated entries as new patterns are discovered:*
+_Add dated entries as new patterns are discovered:_
 
 ### 2024-12-20
+
 - Realized that position-only checks for SWAPPED cause false positives. Fixed by requiring motion types to also match.
 - Combined transformation detection was incorrectly assuming "if A passes AND B passes, then A+B passes". Fixed to actually apply transformations in sequence.
 - Added SAME detection for identical beats.
 
 ---
 
-*Last updated: 2024-12-20*
+_Last updated: 2024-12-20_

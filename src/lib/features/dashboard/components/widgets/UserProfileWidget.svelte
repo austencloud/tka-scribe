@@ -302,7 +302,8 @@
     height: 44px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
     flex-shrink: 0;
   }
 
@@ -425,8 +426,16 @@
   }
 
   .stat-item:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 8%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 15%,
+      transparent
+    );
   }
 
   .stat-icon {
@@ -436,7 +445,11 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-2026-xs, 8px);
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 12%,
+      transparent
+    );
     color: var(--theme-accent, #6366f1);
     font-size: 13px;
     flex-shrink: 0;
@@ -517,7 +530,11 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 12%,
+      transparent
+    );
     border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-accent, #6366f1);
     font-size: 20px;

@@ -114,7 +114,9 @@
     }
 
     try {
-      motionQueryHandler = resolve<IMotionQueryHandler>(TYPES.IMotionQueryHandler);
+      motionQueryHandler = resolve<IMotionQueryHandler>(
+        TYPES.IMotionQueryHandler
+      );
       console.log("EditModule: Resolved motion query handler");
     } catch (error) {
       console.warn("Failed to resolve IMotionQueryHandler:", error);
@@ -135,7 +137,10 @@
    * Handle beat updates with letter derivation
    * When motion properties change (rotation direction, turns, etc.), re-derive the letter
    */
-  async function handleBeatUpdate(beatIndex: number, updates: Partial<BeatData>) {
+  async function handleBeatUpdate(
+    beatIndex: number,
+    updates: Partial<BeatData>
+  ) {
     const sequence = editState.editingSequence;
     if (!sequence) return;
 
@@ -154,14 +159,18 @@
       if (blueMotion && redMotion) {
         try {
           // Derive grid mode from motions
-          const gridMode = gridModeDeriver.deriveGridMode(blueMotion, redMotion);
+          const gridMode = gridModeDeriver.deriveGridMode(
+            blueMotion,
+            redMotion
+          );
 
           // Find the correct letter for this motion configuration
-          const newLetter = await motionQueryHandler.findLetterByMotionConfiguration(
-            blueMotion,
-            redMotion,
-            gridMode
-          );
+          const newLetter =
+            await motionQueryHandler.findLetterByMotionConfiguration(
+              blueMotion,
+              redMotion,
+              gridMode
+            );
 
           if (newLetter && newLetter !== updatedBeat.letter) {
             console.log(
@@ -171,7 +180,10 @@
             updates = { ...updates, letter: newLetter as Letter };
           }
         } catch (error) {
-          console.warn("EditModule: Failed to derive letter for beat update:", error);
+          console.warn(
+            "EditModule: Failed to derive letter for beat update:",
+            error
+          );
         }
       }
     }
