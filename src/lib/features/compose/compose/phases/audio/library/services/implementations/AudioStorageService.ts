@@ -54,7 +54,8 @@ export class AudioStorageService implements IAudioStorageService {
           "state_changed",
           (snapshot) => {
             // Progress updates
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             onProgress?.({
               progress,
               stage: "uploading",

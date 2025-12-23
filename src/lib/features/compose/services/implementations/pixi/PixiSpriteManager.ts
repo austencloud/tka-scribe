@@ -112,7 +112,10 @@ export class PixiSpriteManager {
         spriteAlpha: this.glyphSprite.alpha,
         spriteVisible: this.glyphSprite.visible,
         spritePosition: { x: this.glyphSprite.x, y: this.glyphSprite.y },
-        spriteSize: { width: this.glyphSprite.width, height: this.glyphSprite.height },
+        spriteSize: {
+          width: this.glyphSprite.width,
+          height: this.glyphSprite.height,
+        },
       });
     }
     if (this.previousGlyphSprite && previousAlpha !== undefined) {

@@ -98,7 +98,9 @@ export function generateCellId(row: number, col: number): string {
 /**
  * Parse cell ID to get row and column
  */
-export function parseCellId(cellId: string): { row: number; col: number } | null {
+export function parseCellId(
+  cellId: string
+): { row: number; col: number } | null {
   const match = cellId.match(/^cell-(\d+)-(\d+)$/);
   if (!match || !match[1] || !match[2]) return null;
   return { row: parseInt(match[1], 10), col: parseInt(match[2], 10) };

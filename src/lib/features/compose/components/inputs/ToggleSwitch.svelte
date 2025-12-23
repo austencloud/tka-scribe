@@ -11,7 +11,12 @@
     label?: string;
   }
 
-  const { checked, onToggle, disabled = false, label = "Toggle" }: Props = $props();
+  const {
+    checked,
+    onToggle,
+    disabled = false,
+    label = "Toggle",
+  }: Props = $props();
 </script>
 
 <button

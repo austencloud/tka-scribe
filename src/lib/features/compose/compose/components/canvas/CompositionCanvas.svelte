@@ -41,7 +41,8 @@
   style:grid-template={gridTemplate}
   style:aspect-ratio={aspectRatio}
   role="grid"
-  aria-label="Composition grid with {composition.layout.rows} rows and {composition.layout.cols} columns"
+  aria-label="Composition grid with {composition.layout
+    .rows} rows and {composition.layout.cols} columns"
 >
   {#each composition.cells as cell (cell.id)}
     <CompositionCell
@@ -64,7 +65,10 @@
     /* Canvas aspect ratio matches grid layout (set via style binding) */
     background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
     border-radius: 0;
-    box-shadow: var(--theme-shadow, 0 clamp(4px, 1cqi, 12px) clamp(16px, 4cqi, 40px) rgba(0, 0, 0, 0.4));
+    box-shadow: var(
+      --theme-shadow,
+      0 clamp(4px, 1cqi, 12px) clamp(16px, 4cqi, 40px) rgba(0, 0, 0, 0.4)
+    );
     container-type: size;
     container-name: grid;
     overflow: hidden;

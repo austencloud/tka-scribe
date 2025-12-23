@@ -18,8 +18,9 @@ export const pixiModule = new ContainerModule(
     // Pixi Animation Renderer - guard against duplicate bindings
     // NOT a singleton - each AnimatorCanvas instance needs its own renderer
     if (!isBound(TYPES.IPixiAnimationRenderer)) {
-      bind<IPixiAnimationRenderer>(TYPES.IPixiAnimationRenderer)
-        .to(PixiAnimationRenderer);
+      bind<IPixiAnimationRenderer>(TYPES.IPixiAnimationRenderer).to(
+        PixiAnimationRenderer
+      );
     }
   }
 );

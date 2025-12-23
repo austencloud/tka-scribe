@@ -58,7 +58,7 @@ export interface RenderProgress {
   currentFrame: number;
   totalFrames: number;
   percent: number;
-  phase: 'preparing' | 'rendering' | 'encoding';
+  phase: "preparing" | "rendering" | "encoding";
 }
 
 export class VideoFrameRenderer {
@@ -75,7 +75,7 @@ export class VideoFrameRenderer {
   ) {
     this.orchestrator = orchestrator;
     this.config = {
-      backgroundColor: '#ffffff',
+      backgroundColor: "#ffffff",
       showGrid: true,
       showTrails: true,
       maxTrailLength: 500,
@@ -84,13 +84,13 @@ export class VideoFrameRenderer {
     };
 
     // Create offscreen canvas
-    this.canvas = document.createElement('canvas');
+    this.canvas = document.createElement("canvas");
     this.canvas.width = config.canvasSize;
     this.canvas.height = config.canvasSize;
 
-    const ctx = this.canvas.getContext('2d');
+    const ctx = this.canvas.getContext("2d");
     if (!ctx) {
-      throw new Error('Failed to get 2D context');
+      throw new Error("Failed to get 2D context");
     }
     this.ctx = ctx;
 
@@ -101,7 +101,7 @@ export class VideoFrameRenderer {
    * Prepare for rendering by pre-calculating all trail data
    */
   prepareSequence(sequence: SequenceData): void {
-    console.log('📊 Pre-calculating trail data...');
+    console.log("📊 Pre-calculating trail data...");
 
     this.trailData = this.trailGenerator.generateTrailsForSequence(
       this.orchestrator,
@@ -114,7 +114,9 @@ export class VideoFrameRenderer {
       }
     );
 
-    console.log(`✅ Trail data generated: ${this.trailData.blueLeft.length} points per trail`);
+    console.log(
+      `✅ Trail data generated: ${this.trailData.blueLeft.length} points per trail`
+    );
   }
 
   /**
@@ -144,12 +146,12 @@ export class VideoFrameRenderer {
       );
 
       // Blue trails (combine left and right for visual effect)
-      this.drawTrail(trails.blueLeft, '#2563eb', 0.8); // Blue-600
-      this.drawTrail(trails.blueRight, '#3b82f6', 0.6); // Blue-500 lighter
+      this.drawTrail(trails.blueLeft, "#2563eb", 0.8); // Blue-600
+      this.drawTrail(trails.blueRight, "#3b82f6", 0.6); // Blue-500 lighter
 
       // Red trails
-      this.drawTrail(trails.redLeft, '#dc2626', 0.8); // Red-600
-      this.drawTrail(trails.redRight, '#ef4444', 0.6); // Red-500 lighter
+      this.drawTrail(trails.redLeft, "#dc2626", 0.8); // Red-600
+      this.drawTrail(trails.redRight, "#ef4444", 0.6); // Red-500 lighter
     }
 
     // Get prop states and draw props
@@ -157,8 +159,8 @@ export class VideoFrameRenderer {
     const blueState = this.orchestrator.getBluePropState();
     const redState = this.orchestrator.getRedPropState();
 
-    this.drawProp(blueState, '#2563eb', this.config.bluePropDimensions);
-    this.drawProp(redState, '#dc2626', this.config.redPropDimensions);
+    this.drawProp(blueState, "#2563eb", this.config.bluePropDimensions);
+    this.drawProp(redState, "#dc2626", this.config.redPropDimensions);
 
     return this.canvas;
   }
@@ -184,7 +186,7 @@ export class VideoFrameRenderer {
       currentFrame: 0,
       totalFrames: 0,
       percent: 0,
-      phase: 'preparing',
+      phase: "preparing",
     });
 
     this.prepareSequence(sequence);
@@ -199,12 +201,12 @@ export class VideoFrameRenderer {
       currentFrame: 0,
       totalFrames,
       percent: 0,
-      phase: 'rendering',
+      phase: "rendering",
     });
 
     // Render each frame
     for (let frameIndex = 0; frameIndex < totalFrames; frameIndex++) {
-      const beat = (frameIndex / fps); // Convert frame to beat position
+      const beat = frameIndex / fps; // Convert frame to beat position
 
       this.renderFrame(beat);
 
@@ -223,11 +225,11 @@ export class VideoFrameRenderer {
           currentFrame: frameIndex,
           totalFrames,
           percent: (frameIndex / totalFrames) * 100,
-          phase: 'rendering',
+          phase: "rendering",
         });
 
         // Yield to prevent blocking UI
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
     }
 
@@ -235,7 +237,7 @@ export class VideoFrameRenderer {
       currentFrame: totalFrames,
       totalFrames,
       percent: 100,
-      phase: 'rendering',
+      phase: "rendering",
     });
 
     return frames;
@@ -251,7 +253,7 @@ export class VideoFrameRenderer {
     const gridScaleFactor = canvasSize / VIEWBOX_SIZE;
 
     // Grid line style
-    this.ctx.strokeStyle = 'rgba(200, 200, 200, 0.5)';
+    this.ctx.strokeStyle = "rgba(200, 200, 200, 0.5)";
     this.ctx.lineWidth = 1;
 
     // Draw diamond shape
@@ -277,7 +279,7 @@ export class VideoFrameRenderer {
     const handRadius = GRID_HALFWAY_POINT_OFFSET * gridScaleFactor;
     this.ctx.beginPath();
     this.ctx.arc(centerX, centerY, handRadius, 0, Math.PI * 2);
-    this.ctx.strokeStyle = 'rgba(150, 150, 150, 0.3)';
+    this.ctx.strokeStyle = "rgba(150, 150, 150, 0.3)";
     this.ctx.stroke();
   }
 
@@ -291,8 +293,8 @@ export class VideoFrameRenderer {
 
     this.ctx.strokeStyle = color;
     this.ctx.lineWidth = trailWidth!;
-    this.ctx.lineCap = 'round';
-    this.ctx.lineJoin = 'round';
+    this.ctx.lineCap = "round";
+    this.ctx.lineJoin = "round";
 
     // Draw trail with fading opacity
     for (let i = 1; i < points.length; i++) {
@@ -314,7 +316,12 @@ export class VideoFrameRenderer {
    * Draw a prop (as a rounded rectangle)
    */
   private drawProp(
-    propState: { centerPathAngle: number; staffRotationAngle: number; x?: number; y?: number },
+    propState: {
+      centerPathAngle: number;
+      staffRotationAngle: number;
+      x?: number;
+      y?: number;
+    },
     color: string,
     dimensions: { width: number; height: number }
   ): void {
@@ -359,7 +366,7 @@ export class VideoFrameRenderer {
     this.ctx.fill();
 
     // Draw prop outline
-    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+    this.ctx.strokeStyle = "rgba(0, 0, 0, 0.3)";
     this.ctx.lineWidth = 1;
     this.ctx.stroke();
 
@@ -381,7 +388,12 @@ export class VideoFrameRenderer {
     this.ctx.lineTo(x + width - radius, y);
     this.ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
     this.ctx.lineTo(x + width, y + height - radius);
-    this.ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    this.ctx.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius,
+      y + height
+    );
     this.ctx.lineTo(x + radius, y + height);
     this.ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     this.ctx.lineTo(x, y + radius);

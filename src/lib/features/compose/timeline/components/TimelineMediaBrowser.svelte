@@ -108,7 +108,9 @@
     try {
       await loadFeatureModule("discover");
       loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+      thumbnailService = tryResolve<IDiscoverThumbnailService>(
+        TYPES.IDiscoverThumbnailService
+      );
       servicesReady = !!(loaderService && thumbnailService);
     } catch (err) {
       console.error("TimelineMediaBrowser: Failed to init services:", err);
@@ -229,7 +231,10 @@
         <div class="sequence-preview">
           <div class="preview-thumbnail">
             {#if getCoverUrl(selectedSequence)}
-              <img src={getCoverUrl(selectedSequence)} alt={selectedSequence.word || "Sequence"} />
+              <img
+                src={getCoverUrl(selectedSequence)}
+                alt={selectedSequence.word || "Sequence"}
+              />
             {:else}
               <div class="placeholder-thumb">
                 <i class="fas fa-film"></i>
@@ -237,13 +242,19 @@
             {/if}
           </div>
           <div class="preview-info">
-            <h3>{selectedSequence.word || selectedSequence.name || "Unnamed"}</h3>
+            <h3>
+              {selectedSequence.word || selectedSequence.name || "Unnamed"}
+            </h3>
             <p>{selectedSequence.beats?.length || 0} beats</p>
             {#if selectedSequence.author}
               <p class="author">by {selectedSequence.author}</p>
             {/if}
             {#if onPreview && hasAnimation(selectedSequence)}
-              <button class="preview-button" onclick={handlePreview} title="Preview in Source Monitor">
+              <button
+                class="preview-button"
+                onclick={handlePreview}
+                title="Preview in Source Monitor"
+              >
                 <i class="fas fa-eye"></i>
                 <span>Preview</span>
               </button>
@@ -258,7 +269,8 @@
           <button
             class="media-option"
             class:disabled={!hasAnimation(selectedSequence)}
-            onclick={() => hasAnimation(selectedSequence) && handleImport("animation")}
+            onclick={() =>
+              hasAnimation(selectedSequence) && handleImport("animation")}
             disabled={!hasAnimation(selectedSequence)}
           >
             <div class="option-icon animation">
@@ -308,7 +320,8 @@
           <button
             class="media-option"
             class:disabled={!hasRecording(selectedSequence)}
-            onclick={() => hasRecording(selectedSequence) && handleImport("recording")}
+            onclick={() =>
+              hasRecording(selectedSequence) && handleImport("recording")}
             disabled={!hasRecording(selectedSequence)}
           >
             <div class="option-icon recording">
@@ -345,7 +358,7 @@
         {#if searchQuery}
           <button
             class="clear-search"
-            onclick={() => searchQuery = ""}
+            onclick={() => (searchQuery = "")}
             aria-label="Clear search"
           >
             <i class="fas fa-times"></i>
@@ -358,7 +371,7 @@
         <button
           class="filter-tab"
           class:active={filterMode === "all"}
-          onclick={() => filterMode = "all"}
+          onclick={() => (filterMode = "all")}
         >
           <i class="fas fa-th"></i>
           All Sequences
@@ -366,7 +379,7 @@
         <button
           class="filter-tab"
           class:active={filterMode === "with-recordings"}
-          onclick={() => filterMode = "with-recordings"}
+          onclick={() => (filterMode = "with-recordings")}
         >
           <i class="fas fa-video"></i>
           With Recordings
@@ -399,7 +412,9 @@
             {#if filterMode === "with-recordings"}
               <i class="fas fa-video-slash"></i>
               <p>No sequences with recordings</p>
-              <span class="empty-hint">Record a performance in the Create module</span>
+              <span class="empty-hint"
+                >Record a performance in the Create module</span
+              >
             {:else}
               <i class="fas fa-search"></i>
               <p>No sequences found</p>
@@ -433,8 +448,16 @@
 <style>
   :global(.drawer-content.timeline-media-browser) {
     max-width: 500px;
-    --sheet-bg: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.4));
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.4)) !important;
+    --sheet-bg: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.4)
+    );
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.4)
+    ) !important;
     backdrop-filter: blur(24px) !important;
   }
 
@@ -688,7 +711,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .error-state button {

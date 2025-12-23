@@ -104,7 +104,10 @@
 
     // Calculate new scroll position, clamped to valid range
     const maxScroll = Math.max(0, duration - visibleDuration);
-    const newScrollTime = Math.max(0, Math.min(maxScroll, dragStartViewport + deltaTime));
+    const newScrollTime = Math.max(
+      0,
+      Math.min(maxScroll, dragStartViewport + deltaTime)
+    );
 
     // Use onScroll for dragging viewport (scrolls waveform)
     onScroll?.(newScrollTime);
@@ -113,10 +116,10 @@
   // End drag
   function endDrag() {
     isDragging = false;
-    window.removeEventListener('mousemove', handleMouseMove);
-    window.removeEventListener('mouseup', handleMouseUp);
-    window.removeEventListener('touchmove', handleTouchMove);
-    window.removeEventListener('touchend', handleTouchEnd);
+    window.removeEventListener("mousemove", handleMouseMove);
+    window.removeEventListener("mouseup", handleMouseUp);
+    window.removeEventListener("touchmove", handleTouchMove);
+    window.removeEventListener("touchend", handleTouchEnd);
   }
 
   // Mouse events
@@ -124,8 +127,8 @@
     e.stopPropagation();
     e.preventDefault();
     startDrag(e.clientX);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   }
 
   function handleMouseMove(e: MouseEvent) {
@@ -143,8 +146,8 @@
     const touch = e.touches[0];
     if (touch) {
       startDrag(touch.clientX);
-      window.addEventListener('touchmove', handleTouchMove, { passive: false });
-      window.addEventListener('touchend', handleTouchEnd);
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
+      window.addEventListener("touchend", handleTouchEnd);
     }
   }
 
@@ -203,13 +206,8 @@
     </div>
 
     <!-- Playhead -->
-    <div
-      class="minimap-playhead"
-      style="left: {playheadPercent}%;"
-    ></div>
+    <div class="minimap-playhead" style="left: {playheadPercent}%;"></div>
   </div>
-
-
 </div>
 
 <style>
@@ -256,7 +254,9 @@
     border: 1px solid rgba(139, 92, 246, 0.6);
     border-radius: 2px;
     cursor: grab;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease;
     min-width: 8px;
   }
 
@@ -308,8 +308,6 @@
     z-index: 2;
     transform: translateX(-50%);
   }
-
-
 
   /* Make viewport indicator larger/easier to grab on touch devices */
   @media (pointer: coarse) {

@@ -565,11 +565,15 @@ const TRACK_COLORS = [
 ];
 
 function getRandomClipColor(): string {
-  return CLIP_COLORS[Math.floor(Math.random() * CLIP_COLORS.length)] ?? "#4a9eff";
+  return (
+    CLIP_COLORS[Math.floor(Math.random() * CLIP_COLORS.length)] ?? "#4a9eff"
+  );
 }
 
 function getRandomTrackColor(): string {
-  return TRACK_COLORS[Math.floor(Math.random() * TRACK_COLORS.length)] ?? "#868e96";
+  return (
+    TRACK_COLORS[Math.floor(Math.random() * TRACK_COLORS.length)] ?? "#868e96"
+  );
 }
 
 // ============================================================================
@@ -594,7 +598,9 @@ export function clipsOverlap(a: TimelineClip, b: TimelineClip): boolean {
 /**
  * Calculate the total duration of a project (end of last clip)
  */
-export function calculateProjectDuration(project: TimelineProject): TimeSeconds {
+export function calculateProjectDuration(
+  project: TimelineProject
+): TimeSeconds {
   let maxEnd: TimeSeconds = 0;
 
   for (const track of project.tracks) {
@@ -617,14 +623,20 @@ export function calculateProjectDuration(project: TimelineProject): TimeSeconds 
 /**
  * Convert time to pixel position
  */
-export function timeToPixels(time: TimeSeconds, pixelsPerSecond: number): number {
+export function timeToPixels(
+  time: TimeSeconds,
+  pixelsPerSecond: number
+): number {
   return time * pixelsPerSecond;
 }
 
 /**
  * Convert pixel position to time
  */
-export function pixelsToTime(pixels: number, pixelsPerSecond: number): TimeSeconds {
+export function pixelsToTime(
+  pixels: number,
+  pixelsPerSecond: number
+): TimeSeconds {
   return pixels / pixelsPerSecond;
 }
 
@@ -665,7 +677,8 @@ export function snapTime(
   }
 
   if (settings.snapToGrid) {
-    const gridSnap = Math.round(time / settings.gridInterval) * settings.gridInterval;
+    const gridSnap =
+      Math.round(time / settings.gridInterval) * settings.gridInterval;
     checkSnap(gridSnap);
   }
 

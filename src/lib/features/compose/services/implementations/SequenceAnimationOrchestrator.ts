@@ -7,8 +7,14 @@
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import type { PropState, PropStates } from "../../shared/domain/types/PropState";
-import type { SequenceData, SequenceMetadata } from "$lib/shared/foundation/domain/models/SequenceData";
+import type {
+  PropState,
+  PropStates,
+} from "../../shared/domain/types/PropState";
+import type {
+  SequenceData,
+  SequenceMetadata,
+} from "$lib/shared/foundation/domain/models/SequenceData";
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -81,8 +87,10 @@ export class SequenceAnimationOrchestrator
         author: (sequenceData.metadata["author"] as string) || "",
         totalBeats: beats.length,
         propType: sequenceData.propType, // Legacy fallback
-        bluePropType: settings.bluePropType || settings.propType || sequenceData.propType,
-        redPropType: settings.redPropType || settings.propType || sequenceData.propType,
+        bluePropType:
+          settings.bluePropType || settings.propType || sequenceData.propType,
+        redPropType:
+          settings.redPropType || settings.propType || sequenceData.propType,
         gridMode: sequenceData.gridMode,
       };
 
@@ -132,7 +140,8 @@ export class SequenceAnimationOrchestrator
     const beatMotions = beatState.currentBeatData?.motions;
     const hasBeatMotions = beatMotions?.blue && beatMotions?.red;
     if (!hasBeatMotions) {
-      const key = beatState.currentBeatData?.beatNumber ?? beatState.currentBeatIndex;
+      const key =
+        beatState.currentBeatData?.beatNumber ?? beatState.currentBeatIndex;
       if (!this.missingMotionLogged.has(key)) {
         this.missingMotionLogged.add(key);
         console.warn(
@@ -205,9 +214,8 @@ export class SequenceAnimationOrchestrator
 
   private findFirstBeatWithMotion(): BeatData | null {
     return (
-      this.beats.find(
-        (beat) => beat?.motions?.blue && beat?.motions?.red
-      ) ?? null
+      this.beats.find((beat) => beat?.motions?.blue && beat?.motions?.red) ??
+      null
     );
   }
 
@@ -235,9 +243,7 @@ export class SequenceAnimationOrchestrator
     }
 
     const initialAngles =
-      this.propInterpolationService.calculateInitialAngles(
-        firstBeatWithMotion
-      );
+      this.propInterpolationService.calculateInitialAngles(firstBeatWithMotion);
 
     if (initialAngles.isValid) {
       this.animationStateService.setPropStates(

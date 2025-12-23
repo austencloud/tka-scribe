@@ -28,7 +28,9 @@ export function loadFromStorage<T>(key: string, defaultValue: T): T {
             const seenIds = new Set<string>();
             track.clips = track.clips.filter((clip: { id: string }) => {
               if (seenIds.has(clip.id)) {
-                console.warn(`[Timeline] Removed duplicate clip ID: ${clip.id}`);
+                console.warn(
+                  `[Timeline] Removed duplicate clip ID: ${clip.id}`
+                );
                 return false;
               }
               seenIds.add(clip.id);

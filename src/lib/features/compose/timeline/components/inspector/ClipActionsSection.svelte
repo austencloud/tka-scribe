@@ -12,7 +12,14 @@
     onDelete: () => void;
   }
 
-  let { locked, muted, onToggleLock, onToggleMute, onDuplicate, onDelete }: Props = $props();
+  let {
+    locked,
+    muted,
+    onToggleLock,
+    onToggleMute,
+    onDuplicate,
+    onDelete,
+  }: Props = $props();
 </script>
 
 <section class="section">
@@ -22,20 +29,12 @@
   </div>
 
   <div class="action-buttons">
-    <button
-      class="action-btn"
-      class:active={locked}
-      onclick={onToggleLock}
-    >
+    <button class="action-btn" class:active={locked} onclick={onToggleLock}>
       <i class="fa-solid {locked ? 'fa-lock' : 'fa-lock-open'}"></i>
       {locked ? "Unlock" : "Lock"}
     </button>
 
-    <button
-      class="action-btn"
-      class:active={muted}
-      onclick={onToggleMute}
-    >
+    <button class="action-btn" class:active={muted} onclick={onToggleMute}>
       <i class="fa-solid {muted ? 'fa-volume-xmark' : 'fa-volume-high'}"></i>
       {muted ? "Unmute" : "Mute"}
     </button>
@@ -55,5 +54,5 @@
 </section>
 
 <style>
-  @import './inspector-styles.css';
+  @import "./inspector-styles.css";
 </style>

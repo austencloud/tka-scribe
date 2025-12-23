@@ -29,7 +29,10 @@ import type {
 import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import { PixiAnimationRenderer } from "./PixiAnimationRenderer";
-import { DEFAULT_TRAIL_SETTINGS, type TrailSettings } from "../../shared/domain/types/TrailTypes";
+import {
+  DEFAULT_TRAIL_SETTINGS,
+  type TrailSettings,
+} from "../../shared/domain/types/TrailTypes";
 
 // IndexedDB database name and store for video caching
 const DB_NAME = "tka-video-cache";
@@ -72,7 +75,9 @@ export class VideoPreRenderService implements IVideoPreRenderService {
   generateSequenceId(sequence: SequenceData): string {
     const word = sequence.word || sequence.name || "unknown";
     const beatCount = sequence.beats.length || 0;
-    const hash = this.simpleHash(JSON.stringify(sequence.beats.slice(0, 3) || []));
+    const hash = this.simpleHash(
+      JSON.stringify(sequence.beats.slice(0, 3) || [])
+    );
     return `${word}-${beatCount}-${hash}`;
   }
 
@@ -83,7 +88,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash;
     }
     return Math.abs(hash).toString(36).substring(0, 6);
@@ -140,7 +145,9 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       };
     }
 
-    console.log(`🎬 Starting video generation for ${sequenceId} (${totalBeats} beats @ ${fps}fps)`);
+    console.log(
+      `🎬 Starting video generation for ${sequenceId} (${totalBeats} beats @ ${fps}fps)`
+    );
     console.log(`📐 Using REAL PixiJS renderer with actual SVG assets`);
 
     // Create offscreen container for PixiJS
@@ -190,11 +197,19 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         svgGenerator.generateRedPropSvg("staff"),
       ]);
 
-      const bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
-      const redPropDimensions = { width: redPropData.width, height: redPropData.height };
+      const bluePropDimensions = {
+        width: bluePropData.width,
+        height: bluePropData.height,
+      };
+      const redPropDimensions = {
+        width: redPropData.width,
+        height: redPropData.height,
+      };
 
       // Get orchestrator for calculating prop states
-      const orchestrator = resolve<ISequenceAnimationOrchestrator>(TYPES.ISequenceAnimationOrchestrator);
+      const orchestrator = resolve<ISequenceAnimationOrchestrator>(
+        TYPES.ISequenceAnimationOrchestrator
+      );
 
       // Initialize orchestrator with sequence data
       const initSuccess = orchestrator.initializeWithDomainData(sequence);
@@ -213,9 +228,8 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       const stream = canvas.captureStream(0);
       const videoTrack = stream.getVideoTracks()[0];
 
-      const preferredMimeType = format === "webm"
-        ? "video/webm;codecs=vp9"
-        : "video/mp4";
+      const preferredMimeType =
+        format === "webm" ? "video/webm;codecs=vp9" : "video/mp4";
 
       const mimeType = MediaRecorder.isTypeSupported(preferredMimeType)
         ? preferredMimeType
@@ -246,7 +260,9 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       const frameDuration = 1000 / videoFps; // ~33.3ms per frame
       const startTime = performance.now();
 
-      console.log(`🎥 Rendering ${totalFrames} frames at ${videoFps}fps (${totalBeats} beats)`);
+      console.log(
+        `🎥 Rendering ${totalFrames} frames at ${videoFps}fps (${totalBeats} beats)`
+      );
 
       // Trail settings for rendering
       const trailSettings: TrailSettings = {
@@ -271,7 +287,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         }
 
         // Small delay to ensure MediaRecorder captures the frame
-        await new Promise(resolve => setTimeout(resolve, frameDuration));
+        await new Promise((resolve) => setTimeout(resolve, frameDuration));
       };
 
       // Render each frame using the REAL PixiJS renderer
@@ -353,9 +369,13 @@ export class VideoPreRenderService implements IVideoPreRenderService {
 
       const videoBlob = await new Promise<Blob>((resolve) => {
         mediaRecorder.onstop = () => {
-          console.log(`📦 MediaRecorder stopped with ${recordedChunks.length} chunks`);
+          console.log(
+            `📦 MediaRecorder stopped with ${recordedChunks.length} chunks`
+          );
           const blob = new Blob(recordedChunks, { type: mimeType });
-          console.log(`📦 Created video blob: ${(blob.size / 1024).toFixed(1)}KB, type: ${blob.type}`);
+          console.log(
+            `📦 Created video blob: ${(blob.size / 1024).toFixed(1)}KB, type: ${blob.type}`
+          );
           resolve(blob);
         };
       });
@@ -380,7 +400,9 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         phase: "complete",
       });
 
-      console.log(`✅ Video generated with REAL PixiJS: ${sequenceId} (${duration.toFixed(1)}s, ${(videoBlob.size / 1024).toFixed(0)}KB)`);
+      console.log(
+        `✅ Video generated with REAL PixiJS: ${sequenceId} (${duration.toFixed(1)}s, ${(videoBlob.size / 1024).toFixed(0)}KB)`
+      );
 
       this.isCurrentlyRendering = false;
 
@@ -404,7 +426,10 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       console.error("Video generation failed:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error during rendering",
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown error during rendering",
         sequenceId,
       };
     }
@@ -448,7 +473,11 @@ export class VideoPreRenderService implements IVideoPreRenderService {
   /**
    * Store a rendered video in cache
    */
-  async cacheVideo(sequenceId: string, videoBlob: Blob, duration?: number): Promise<void> {
+  async cacheVideo(
+    sequenceId: string,
+    videoBlob: Blob,
+    duration?: number
+  ): Promise<void> {
     try {
       const db = await this.initDB();
 

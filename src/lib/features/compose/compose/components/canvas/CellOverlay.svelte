@@ -55,7 +55,8 @@
       title="Toggle {cell.type === 'single' ? 'tunnel' : 'single'} mode"
       aria-label="Toggle cell type"
     >
-      <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}"></i>
+      <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}"
+      ></i>
     </button>
 
     <button
@@ -99,7 +100,9 @@
     border-radius: clamp(4px, 2cqi, 10px);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
     z-index: 10;
   }
 

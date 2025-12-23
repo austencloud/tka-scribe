@@ -42,10 +42,7 @@
       <span>No sequence loaded</span>
     </div>
   {:else}
-    <div
-      class="beat-grid"
-      style:--grid-cols={gridColumns()}
-    >
+    <div class="beat-grid" style:--grid-cols={gridColumns()}>
       {#each beats() as beat, index}
         {@const beatNumber = index + 1}
         {@const isCurrentBeat = isPlaying && currentBeat === beatNumber}
@@ -55,10 +52,7 @@
           class:played={isPlaying && currentBeat > beatNumber}
         >
           <div class="beat-content">
-            <TKAGlyph
-              pictographData={beat}
-              letter={beat?.letter}
-            />
+            <TKAGlyph pictographData={beat} letter={beat?.letter} />
           </div>
           <span class="beat-number">{beatNumber}</span>
         </div>

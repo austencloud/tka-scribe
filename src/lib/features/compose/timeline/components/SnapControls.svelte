@@ -48,10 +48,30 @@
 
   // Snap type definitions - must be $derived for reactivity in {#each}
   const snapTypes = $derived([
-    { key: "snapToBeats", label: "Beats", icon: "fa-drum", active: snapToBeats },
-    { key: "snapToClips", label: "Clips", icon: "fa-film", active: snapToClips },
-    { key: "snapToGrid", label: "Grid", icon: "fa-border-all", active: snapToGrid },
-    { key: "snapToPlayhead", label: "Playhead", icon: "fa-location-crosshairs", active: snapToPlayhead },
+    {
+      key: "snapToBeats",
+      label: "Beats",
+      icon: "fa-drum",
+      active: snapToBeats,
+    },
+    {
+      key: "snapToClips",
+      label: "Clips",
+      icon: "fa-film",
+      active: snapToClips,
+    },
+    {
+      key: "snapToGrid",
+      label: "Grid",
+      icon: "fa-border-all",
+      active: snapToGrid,
+    },
+    {
+      key: "snapToPlayhead",
+      label: "Playhead",
+      icon: "fa-location-crosshairs",
+      active: snapToPlayhead,
+    },
   ]);
 
   function toggleMaster() {
@@ -59,10 +79,14 @@
   }
 
   function toggleSnapType(key: string) {
-    const currentValue = key === "snapToBeats" ? snapToBeats
-      : key === "snapToClips" ? snapToClips
-      : key === "snapToGrid" ? snapToGrid
-      : snapToPlayhead;
+    const currentValue =
+      key === "snapToBeats"
+        ? snapToBeats
+        : key === "snapToClips"
+          ? snapToClips
+          : key === "snapToGrid"
+            ? snapToGrid
+            : snapToPlayhead;
     timelineState.updateSnapSettings({ [key]: !currentValue });
   }
 
@@ -122,7 +146,7 @@
   <!-- More Options Button -->
   <button
     class="more-btn"
-    onclick={() => showAdvancedSheet = true}
+    onclick={() => (showAdvancedSheet = true)}
     title="More snap options"
     aria-label="More snap options"
   >
@@ -133,7 +157,7 @@
 <!-- Advanced Settings Sheet -->
 <Drawer
   isOpen={showAdvancedSheet}
-  onclose={() => showAdvancedSheet = false}
+  onclose={() => (showAdvancedSheet = false)}
   placement={sheetPlacement}
   class="snap-settings-sheet"
   labelledBy="snap-settings-title"
@@ -141,7 +165,7 @@
   <div class="sheet-content">
     <div class="sheet-header">
       <h2 id="snap-settings-title">Snap Settings</h2>
-      <button class="close-btn" onclick={() => showAdvancedSheet = false}>
+      <button class="close-btn" onclick={() => (showAdvancedSheet = false)}>
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
@@ -359,7 +383,11 @@
   /* Sheet Styles */
   :global(.drawer-content.snap-settings-sheet) {
     max-width: 400px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)) !important;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.5)
+    ) !important;
     backdrop-filter: blur(24px) !important;
   }
 

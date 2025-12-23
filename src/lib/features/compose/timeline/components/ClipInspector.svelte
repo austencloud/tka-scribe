@@ -29,7 +29,7 @@
     const state = getState();
     isClipInspectorOpen = state.isClipInspectorOpen;
     clip = state.clipBeingEdited
-      ? state.allClips.find((c) => c.id === state.clipBeingEdited) ?? null
+      ? (state.allClips.find((c) => c.id === state.clipBeingEdited) ?? null)
       : null;
   });
 
@@ -95,7 +95,9 @@
 
   function updateOpacity(value: number) {
     if (!clip) return;
-    getState().updateClip(clip.id, { opacity: Math.max(0, Math.min(1, value)) });
+    getState().updateClip(clip.id, {
+      opacity: Math.max(0, Math.min(1, value)),
+    });
   }
 
   function toggleLock() {
@@ -137,11 +139,7 @@
     </div>
 
     <div class="inspector-content">
-      <ClipInfoSection
-        {clip}
-        {effectiveDuration}
-        onUpdateLabel={updateLabel}
-      />
+      <ClipInfoSection {clip} {effectiveDuration} onUpdateLabel={updateLabel} />
 
       <ClipSpeedSection
         playbackRate={clip.playbackRate}

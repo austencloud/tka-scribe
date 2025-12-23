@@ -42,7 +42,9 @@ export class WebCodecsVideoEncoder {
   }
 
   static isSupported(): boolean {
-    return typeof VideoEncoder !== "undefined" && typeof VideoFrame !== "undefined";
+    return (
+      typeof VideoEncoder !== "undefined" && typeof VideoFrame !== "undefined"
+    );
   }
 
   async initialize(): Promise<void> {
@@ -98,7 +100,10 @@ export class WebCodecsVideoEncoder {
     });
 
     // Create resize canvas if dimensions need adjustment
-    if (this.encoderWidth !== this.width || this.encoderHeight !== this.height) {
+    if (
+      this.encoderWidth !== this.width ||
+      this.encoderHeight !== this.height
+    ) {
       this.resizeCanvas = document.createElement("canvas");
       this.resizeCanvas.width = this.encoderWidth;
       this.resizeCanvas.height = this.encoderHeight;
@@ -119,7 +124,12 @@ export class WebCodecsVideoEncoder {
     if (this.resizeCanvas && this.resizeCtx) {
       // Draw the source canvas onto the resize canvas (slightly larger to meet even dimensions)
       this.resizeCtx.fillStyle = "#000000";
-      this.resizeCtx.fillRect(0, 0, this.resizeCanvas.width, this.resizeCanvas.height);
+      this.resizeCtx.fillRect(
+        0,
+        0,
+        this.resizeCanvas.width,
+        this.resizeCanvas.height
+      );
       this.resizeCtx.drawImage(canvas, 0, 0);
       canvasToEncode = this.resizeCanvas;
     }

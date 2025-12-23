@@ -26,7 +26,9 @@
   }
 
   // Local reactive state
-  let clip = $state<ReturnType<typeof getState>["allClips"][number] | undefined>(undefined);
+  let clip = $state<
+    ReturnType<typeof getState>["allClips"][number] | undefined
+  >(undefined);
 
   // Sync from timeline state
   $effect(() => {
@@ -64,19 +66,21 @@
 </script>
 
 {#if clip}
-  <div
-    class="context-menu"
-    style="left: {x}px; top: {y}px"
-    role="menu"
-  >
+  <div class="context-menu" style="left: {x}px; top: {y}px" role="menu">
     <!-- Edit section -->
-    <button class="menu-item" onclick={() => handleAction(() => getState().duplicateClip(clipId))}>
+    <button
+      class="menu-item"
+      onclick={() => handleAction(() => getState().duplicateClip(clipId))}
+    >
       <i class="fa-solid fa-copy"></i>
       <span>Duplicate</span>
       <kbd>Ctrl+D</kbd>
     </button>
 
-    <button class="menu-item danger" onclick={() => handleAction(() => getState().removeClip(clipId))}>
+    <button
+      class="menu-item danger"
+      onclick={() => handleAction(() => getState().removeClip(clipId))}
+    >
       <i class="fa-solid fa-trash"></i>
       <span>Delete</span>
       <kbd>Del</kbd>
@@ -85,19 +89,36 @@
     <div class="divider"></div>
 
     <!-- Toggle section -->
-    <button class="menu-item" onclick={() => handleAction(() => getState().updateClip(clipId, { muted: !clip?.muted }))}>
-      <i class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}"></i>
+    <button
+      class="menu-item"
+      onclick={() =>
+        handleAction(() =>
+          getState().updateClip(clipId, { muted: !clip?.muted })
+        )}
+    >
+      <i class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}"
+      ></i>
       <span>{clip?.muted ? "Unmute" : "Mute"}</span>
       <kbd>M</kbd>
     </button>
 
-    <button class="menu-item" onclick={() => handleAction(() => getState().updateClip(clipId, { locked: !clip?.locked }))}>
+    <button
+      class="menu-item"
+      onclick={() =>
+        handleAction(() =>
+          getState().updateClip(clipId, { locked: !clip?.locked })
+        )}
+    >
       <i class="fa-solid {clip?.locked ? 'fa-lock-open' : 'fa-lock'}"></i>
       <span>{clip?.locked ? "Unlock" : "Lock"}</span>
       <kbd>L</kbd>
     </button>
 
-    <button class="menu-item" onclick={() => handleAction(() => getState().setClipLoop(clipId, !clip?.loop))}>
+    <button
+      class="menu-item"
+      onclick={() =>
+        handleAction(() => getState().setClipLoop(clipId, !clip?.loop))}
+    >
       <i class="fa-solid fa-repeat"></i>
       <span>{clip?.loop ? "Disable Loop" : "Enable Loop"}</span>
     </button>
@@ -112,25 +133,54 @@
         <i class="fa-solid fa-chevron-right submenu-arrow"></i>
       </button>
       <div class="submenu-content">
-        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 0.25))}>
+        <button
+          class="menu-item"
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 0.25))}
+        >
           <span>0.25x (Very Slow)</span>
         </button>
-        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 0.5))}>
+        <button
+          class="menu-item"
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 0.5))}
+        >
           <span>0.5x (Slow)</span>
         </button>
-        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 0.75))}>
+        <button
+          class="menu-item"
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 0.75))}
+        >
           <span>0.75x</span>
         </button>
-        <button class="menu-item" class:active={clip?.playbackRate === 1} onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 1))}>
+        <button
+          class="menu-item"
+          class:active={clip?.playbackRate === 1}
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 1))}
+        >
           <span>1x (Normal)</span>
         </button>
-        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 1.5))}>
+        <button
+          class="menu-item"
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 1.5))}
+        >
           <span>1.5x</span>
         </button>
-        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 2))}>
+        <button
+          class="menu-item"
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 2))}
+        >
           <span>2x (Fast)</span>
         </button>
-        <button class="menu-item" onclick={() => handleAction(() => getState().setClipPlaybackRate(clipId, 4))}>
+        <button
+          class="menu-item"
+          onclick={() =>
+            handleAction(() => getState().setClipPlaybackRate(clipId, 4))}
+        >
           <span>4x (Very Fast)</span>
         </button>
       </div>
@@ -139,7 +189,10 @@
     <div class="divider"></div>
 
     <!-- Inspector -->
-    <button class="menu-item" onclick={() => handleAction(() => getState().openClipInspector(clipId))}>
+    <button
+      class="menu-item"
+      onclick={() => handleAction(() => getState().openClipInspector(clipId))}
+    >
       <i class="fa-solid fa-sliders"></i>
       <span>Open Inspector</span>
     </button>

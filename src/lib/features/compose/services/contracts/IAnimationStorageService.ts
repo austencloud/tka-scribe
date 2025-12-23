@@ -5,7 +5,7 @@
  * from Firestore. Provides CRUD operations for animation configurations.
  */
 
-import type { Animation } from '../../shared/domain/Animation';
+import type { Animation } from "../../shared/domain/Animation";
 
 export interface IAnimationStorageService {
   /**

@@ -137,7 +137,11 @@ export class AnimationPlaybackController
     this.updatePropStatesFromEngine();
   }
 
-  animateToBeat(beat: number, duration: number = 300, linear: boolean = false): void {
+  animateToBeat(
+    beat: number,
+    duration: number = 300,
+    linear: boolean = false
+  ): void {
     this.animateToBeatInternal(beat, duration, linear, true);
   }
 

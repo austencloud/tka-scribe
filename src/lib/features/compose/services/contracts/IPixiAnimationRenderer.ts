@@ -7,7 +7,10 @@
 
 import type { Application } from "pixi.js";
 import type { PropState } from "../../shared/domain/types/PropState";
-import type { TrailPoint, TrailSettings } from "../../shared/domain/types/TrailTypes";
+import type {
+  TrailPoint,
+  TrailSettings,
+} from "../../shared/domain/types/TrailTypes";
 
 /**
  * Visibility settings for animation rendering

@@ -81,12 +81,16 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
     );
 
     // Create video exporter
-    const exporter = await this.videoExportService.createManualExporter(canvas.width, canvas.height, {
-      format: exportFormat as "webm" | "mp4",
-      fps: options.fps ?? VIDEO_EXPORT_FPS,
-      filename,
-      autoDownload: false,
-    });
+    const exporter = await this.videoExportService.createManualExporter(
+      canvas.width,
+      canvas.height,
+      {
+        format: exportFormat as "webm" | "mp4",
+        fps: options.fps ?? VIDEO_EXPORT_FPS,
+        filename,
+        autoDownload: false,
+      }
+    );
 
     const captureState = {
       wasPlaying: panelState.isPlaying,
@@ -122,7 +126,9 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       // beatsPerFrame = totalBeats / framesPerLoop (for single loop)
       const beatsPerFrame = panelState.totalBeats / framesPerLoop;
 
-      console.log(`📊 Export settings: ${totalFrames} frames @ ${fps} FPS, ${loopCount} loop(s), ${panelState.speed}x speed (${Math.round(panelState.speed * 60)} BPM), ${secondsPerBeat.toFixed(2)}s per beat, frame delay ${frameDelay}ms`);
+      console.log(
+        `📊 Export settings: ${totalFrames} frames @ ${fps} FPS, ${loopCount} loop(s), ${panelState.speed}x speed (${Math.round(panelState.speed * 60)} BPM), ${secondsPerBeat.toFixed(2)}s per beat, frame delay ${frameDelay}ms`
+      );
 
       // CRITICAL: Use actual canvas pixel size, not CSS display size
       // The canvas.width is the actual pixel dimension used for rendering
@@ -153,7 +159,9 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
 
       // Crossfade configuration (matches GlyphOverlay.svelte)
       const CROSSFADE_DURATION_MS = 200;
-      const crossfadeDurationFrames = Math.ceil((CROSSFADE_DURATION_MS / 1000) * fps);
+      const crossfadeDurationFrames = Math.ceil(
+        (CROSSFADE_DURATION_MS / 1000) * fps
+      );
       let framesSinceTransition = 0;
 
       for (let i = 0; i < totalFrames; i++) {
@@ -172,7 +180,12 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
         await this.waitForAnimationFrame();
 
         // Copy the live canvas to the offscreen canvas (preserves visible animation)
-        offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+        offscreenCtx.clearRect(
+          0,
+          0,
+          offscreenCanvas.width,
+          offscreenCanvas.height
+        );
         offscreenCtx.drawImage(canvas, 0, 0);
 
         // Get the letter for the current beat
@@ -283,7 +296,9 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
       console.log("🔄 Encoding video...");
       onProgress({ progress: 0, stage: "encoding" });
       const outputBlob = await exporter.finish();
-      console.log(`✅ ${exportFormat.toUpperCase()} encoded, size: ${(outputBlob.size / 1024 / 1024).toFixed(2)} MB`);
+      console.log(
+        `✅ ${exportFormat.toUpperCase()} encoded, size: ${(outputBlob.size / 1024 / 1024).toFixed(2)} MB`
+      );
 
       console.log(`📥 Downloading ${exportFormat.toUpperCase()}: ${filename}`);
       await this.fileDownloadService.downloadBlob(outputBlob, filename);

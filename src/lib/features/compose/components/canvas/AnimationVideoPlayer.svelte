@@ -246,7 +246,7 @@
 
 <!-- Generate video button (when no video exists) -->
 <!-- {#if !videoResult && !isGeneratingVideo && sequenceData} -->
-  <!-- <GenerateVideoButton onGenerate={startVideoGeneration} /> -->
+<!-- <GenerateVideoButton onGenerate={startVideoGeneration} /> -->
 <!-- {/if} -->
 
 <!-- Mode toggle (when video exists) -->

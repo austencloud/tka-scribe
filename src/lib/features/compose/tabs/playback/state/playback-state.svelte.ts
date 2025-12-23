@@ -10,7 +10,10 @@ import type { TrailSettings } from "../../../shared/domain/types/TrailTypes";
 import { DEFAULT_TRAIL_SETTINGS } from "../../../shared/domain/types/TrailTypes";
 import type { ComposeMode } from "../../../shared/state/compose-module-state.svelte";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import type { PlaybackMode, StepPlaybackStepSize } from "../../../state/animation-panel-state.svelte";
+import type {
+  PlaybackMode,
+  StepPlaybackStepSize,
+} from "../../../state/animation-panel-state.svelte";
 
 const debug = createComponentLogger("PlaybackState");
 
@@ -94,11 +97,20 @@ export type PlaybackState = {
   // Mutators - Mode & Sequences
   setCurrentMode: (mode: ComposeMode) => void;
   setSequences: (sequences: AnimationSequenceSlot[]) => void;
-  updateSequenceSlot: (index: number, slot: Partial<AnimationSequenceSlot>) => void;
+  updateSequenceSlot: (
+    index: number,
+    slot: Partial<AnimationSequenceSlot>
+  ) => void;
 
   // Mutators - Canvas Settings
-  updateCanvasSettings: (canvasId: string, settings: Partial<CanvasSettings>) => void;
-  updateTrailSettings: (canvasId: string, trailSettings: Partial<TrailSettings>) => void;
+  updateCanvasSettings: (
+    canvasId: string,
+    settings: Partial<CanvasSettings>
+  ) => void;
+  updateTrailSettings: (
+    canvasId: string,
+    trailSettings: Partial<TrailSettings>
+  ) => void;
 
   // Mutators - Mobile UI
   setMobileToolView: (view: MobileToolView) => void;
@@ -262,7 +274,12 @@ export function createPlaybackState(): PlaybackState {
     },
 
     setEasingType(easing: EasingType) {
-      const validTypes: EasingType[] = ["linear", "ease-in", "ease-out", "ease-in-out"];
+      const validTypes: EasingType[] = [
+        "linear",
+        "ease-in",
+        "ease-out",
+        "ease-in-out",
+      ];
       easingType = validTypes.includes(easing) ? easing : "linear";
       saveToStorage(STORAGE_KEYS.EASING_TYPE, easingType);
       debug.log(`Easing type set to ${easingType}`);
@@ -283,10 +300,17 @@ export function createPlaybackState(): PlaybackState {
       const existing = sequences[index];
       if (index >= 0 && index < sequences.length && existing) {
         sequences[index] = {
-          sequence: slot.sequence !== undefined ? slot.sequence : existing.sequence,
+          sequence:
+            slot.sequence !== undefined ? slot.sequence : existing.sequence,
           visible: slot.visible !== undefined ? slot.visible : existing.visible,
-          blueVisible: slot.blueVisible !== undefined ? slot.blueVisible : existing.blueVisible,
-          redVisible: slot.redVisible !== undefined ? slot.redVisible : existing.redVisible,
+          blueVisible:
+            slot.blueVisible !== undefined
+              ? slot.blueVisible
+              : existing.blueVisible,
+          redVisible:
+            slot.redVisible !== undefined
+              ? slot.redVisible
+              : existing.redVisible,
         };
         console.log(`🎬 Playback: Sequence slot ${index} updated`, slot);
       }
@@ -299,10 +323,19 @@ export function createPlaybackState(): PlaybackState {
       if (index !== -1 && existing) {
         canvasSettings[index] = {
           id: settings.id !== undefined ? settings.id : existing.id,
-          trailSettings: settings.trailSettings !== undefined ? settings.trailSettings : existing.trailSettings,
-          rotationOffset: settings.rotationOffset !== undefined ? settings.rotationOffset : existing.rotationOffset,
+          trailSettings:
+            settings.trailSettings !== undefined
+              ? settings.trailSettings
+              : existing.trailSettings,
+          rotationOffset:
+            settings.rotationOffset !== undefined
+              ? settings.rotationOffset
+              : existing.rotationOffset,
         };
-        console.log(`🎨 Playback: Canvas settings updated for ${canvasId}`, settings);
+        console.log(
+          `🎨 Playback: Canvas settings updated for ${canvasId}`,
+          settings
+        );
       } else {
         // Create new canvas settings if not found
         canvasSettings.push({
@@ -313,7 +346,10 @@ export function createPlaybackState(): PlaybackState {
       }
     },
 
-    updateTrailSettings(canvasId: string, trailSettings: Partial<TrailSettings>) {
+    updateTrailSettings(
+      canvasId: string,
+      trailSettings: Partial<TrailSettings>
+    ) {
       const index = canvasSettings.findIndex((cs) => cs.id === canvasId);
       const existing = canvasSettings[index];
       if (index !== -1 && existing) {
@@ -324,7 +360,10 @@ export function createPlaybackState(): PlaybackState {
             ...trailSettings,
           },
         };
-        console.log(`🎨 Playback: Trail settings updated for ${canvasId}`, trailSettings);
+        console.log(
+          `🎨 Playback: Trail settings updated for ${canvasId}`,
+          trailSettings
+        );
       }
     },
 

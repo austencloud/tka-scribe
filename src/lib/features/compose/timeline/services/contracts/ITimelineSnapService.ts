@@ -8,7 +8,11 @@
  * - Snap to playhead position
  */
 
-import type { TimeSeconds, TimelineClip, SnapSettings } from "../../domain/timeline-types";
+import type {
+  TimeSeconds,
+  TimelineClip,
+  SnapSettings,
+} from "../../domain/timeline-types";
 
 export type SnapType = "beat" | "clip-start" | "clip-end" | "grid" | "playhead";
 

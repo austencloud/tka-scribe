@@ -5,7 +5,10 @@
  * pro, anti, static, dash, and float motions.
  */
 
-import type { Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type {
+  Orientation,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 export interface IMotionCalculator {
   /**

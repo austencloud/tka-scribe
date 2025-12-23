@@ -114,7 +114,10 @@ export class AudioLibraryService implements IAudioLibraryService {
       };
 
       // Update local library
-      this.library = [track, ...this.library.filter((t) => t.trackId !== trackId)];
+      this.library = [
+        track,
+        ...this.library.filter((t) => t.trackId !== trackId),
+      ];
 
       // Upload to cloud storage in the background (non-blocking)
       this.uploadToCloudBackground(trackId, file, title);
@@ -130,7 +133,11 @@ export class AudioLibraryService implements IAudioLibraryService {
   /**
    * Upload to cloud storage in the background (non-blocking)
    */
-  private async uploadToCloudBackground(trackId: string, file: File, title: string): Promise<void> {
+  private async uploadToCloudBackground(
+    trackId: string,
+    file: File,
+    title: string
+  ): Promise<void> {
     try {
       console.log("☁️ Starting background upload to cloud storage...");
       const cloudUrl = await this.audioStorage.uploadAudioFile(trackId, file);
@@ -146,7 +153,10 @@ export class AudioLibraryService implements IAudioLibraryService {
 
       console.log("☁️ Background upload complete:", title);
     } catch (error) {
-      console.warn("☁️ Background upload failed (local copy still available):", error);
+      console.warn(
+        "☁️ Background upload failed (local copy still available):",
+        error
+      );
       // Don't throw - local copy is still usable
     }
   }
@@ -210,7 +220,8 @@ export class AudioLibraryService implements IAudioLibraryService {
 
       return audioBlob;
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Download failed";
+      const message =
+        error instanceof Error ? error.message : "Download failed";
       onProgress?.({
         stage: "error",
         progress: 0,

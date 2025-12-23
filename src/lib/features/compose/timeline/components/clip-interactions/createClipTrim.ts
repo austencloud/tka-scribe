@@ -36,7 +36,10 @@ export function createClipTrim(
 
     const deltaX = e.clientX - dragStartX;
     const deltaRatio = deltaX / getWidth();
-    const newInPoint = Math.max(0, Math.min(clip.outPoint - 0.1, dragStartValue + deltaRatio));
+    const newInPoint = Math.max(
+      0,
+      Math.min(clip.outPoint - 0.1, dragStartValue + deltaRatio)
+    );
     getState().setClipInOutPoints(clip.id, newInPoint, clip.outPoint);
   }
 
@@ -69,7 +72,10 @@ export function createClipTrim(
 
     const deltaX = e.clientX - dragStartX;
     const deltaRatio = deltaX / getWidth();
-    const newOutPoint = Math.max(clip.inPoint + 0.1, Math.min(1, dragStartValue + deltaRatio));
+    const newOutPoint = Math.max(
+      clip.inPoint + 0.1,
+      Math.min(1, dragStartValue + deltaRatio)
+    );
     getState().setClipInOutPoints(clip.id, clip.inPoint, newOutPoint);
   }
 

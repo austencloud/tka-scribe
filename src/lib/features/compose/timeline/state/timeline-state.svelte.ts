@@ -31,7 +31,11 @@ import {
   snapTime,
 } from "../domain/timeline-types";
 
-import { loadFromStorage, saveToStorage, TIMELINE_STORAGE_KEYS } from "./timeline-storage";
+import {
+  loadFromStorage,
+  saveToStorage,
+  TIMELINE_STORAGE_KEYS,
+} from "./timeline-storage";
 import { createPlayheadActions } from "./actions/playhead-actions";
 import { createSelectionActions } from "./actions/selection-actions";
 import { createViewportActions } from "./actions/viewport-actions";
@@ -62,7 +66,9 @@ function deduplicateProjectClips(proj: TimelineProject): TimelineProject {
     const seenClipIds = new Set<string>();
     const dedupedClips = track.clips.filter((clip) => {
       if (seenClipIds.has(clip.id)) {
-        console.warn(`[Timeline] Removed duplicate clip ID in track ${track.id}: ${clip.id}`);
+        console.warn(
+          `[Timeline] Removed duplicate clip ID in track ${track.id}: ${clip.id}`
+        );
         return false;
       }
       seenClipIds.add(clip.id);
@@ -76,7 +82,9 @@ function deduplicateProjectClips(proj: TimelineProject): TimelineProject {
   const finalTracks = tracksWithDedupedClips.map((track) => {
     const uniqueClips = track.clips.filter((clip) => {
       if (allClipIds.has(clip.id)) {
-        console.warn(`[Timeline] Removed cross-track duplicate clip ID: ${clip.id}`);
+        console.warn(
+          `[Timeline] Removed cross-track duplicate clip ID: ${clip.id}`
+        );
         return false;
       }
       allClipIds.add(clip.id);
@@ -101,13 +109,18 @@ export function createTimelineState() {
 
   // Load project from storage and deduplicate to prevent Svelte each_key_duplicate errors
   let project = $state<TimelineProject>(
-    deduplicateProjectClips(loadFromStorage(TIMELINE_STORAGE_KEYS.PROJECT, createProject()))
+    deduplicateProjectClips(
+      loadFromStorage(TIMELINE_STORAGE_KEYS.PROJECT, createProject())
+    )
   );
 
   let playhead = $state<PlayheadState>(createDefaultPlayheadState());
   let selection = $state<SelectionState>(createDefaultSelectionState());
   let viewport = $state<ViewportState>(
-    loadFromStorage(TIMELINE_STORAGE_KEYS.VIEWPORT, createDefaultViewportState())
+    loadFromStorage(
+      TIMELINE_STORAGE_KEYS.VIEWPORT,
+      createDefaultViewportState()
+    )
   );
 
   // UI State
@@ -135,21 +148,27 @@ export function createTimelineState() {
       .filter((c) => selection.selectedClipIds.includes(c.id))
   );
 
-  const selectedClip = $derived(selectedClips.length === 1 ? selectedClips[0] : null);
+  const selectedClip = $derived(
+    selectedClips.length === 1 ? selectedClips[0] : null
+  );
   // Deduplicate clips by ID to prevent Svelte each_key_duplicate errors
   const allClips = $derived.by(() => {
     const clips = project.tracks.flatMap((t) => t.clips);
     const seenIds = new Set<string>();
     return clips.filter((clip) => {
       if (seenIds.has(clip.id)) {
-        console.warn(`[Timeline] Filtered duplicate clip ID in allClips: ${clip.id}`);
+        console.warn(
+          `[Timeline] Filtered duplicate clip ID in allClips: ${clip.id}`
+        );
         return false;
       }
       seenIds.add(clip.id);
       return true;
     });
   });
-  const clipEdges = $derived(allClips.flatMap((c) => [c.startTime, getClipEndTime(c)]));
+  const clipEdges = $derived(
+    allClips.flatMap((c) => [c.startTime, getClipEndTime(c)])
+  );
   const totalDuration = $derived(calculateProjectDuration(project));
   const hasSelection = $derived(selection.selectedClipIds.length > 0);
   const canUndo = $derived(false); // TODO: implement history
@@ -346,21 +365,34 @@ export function createTimelineState() {
       trackId = project.tracks[0]?.id ?? "";
     }
 
-    const snappedStart = snapTime(startTime, project.snap, [], clipEdges, playhead.position);
+    const snappedStart = snapTime(
+      startTime,
+      project.snap,
+      [],
+      clipEdges,
+      playhead.position
+    );
     const clip = createClip(sequence, trackId, snappedStart, options);
 
     project = {
       ...project,
       tracks: project.tracks.map((t) =>
         t.id === trackId
-          ? { ...t, clips: [...t.clips, clip].sort((a, b) => a.startTime - b.startTime) }
+          ? {
+              ...t,
+              clips: [...t.clips, clip].sort(
+                (a, b) => a.startTime - b.startTime
+              ),
+            }
           : t
       ),
       updatedAt: new Date(),
     };
 
     saveProject();
-    console.log(`🎬 Timeline: Added clip "${sequence.name}" at ${snappedStart}s`);
+    console.log(
+      `🎬 Timeline: Added clip "${sequence.name}" at ${snappedStart}s`
+    );
     return clip;
   }
 
@@ -428,7 +460,9 @@ export function createTimelineState() {
           [],
           clipEdges.filter((t) => {
             const clip = allClips.find((c) => c.id === clipId);
-            return clip ? t !== clip.startTime && t !== getClipEndTime(clip) : true;
+            return clip
+              ? t !== clip.startTime && t !== getClipEndTime(clip)
+              : true;
           }),
           playhead.position
         );
@@ -443,8 +477,17 @@ export function createTimelineState() {
           if (t.id === clip.trackId) {
             return { ...t, clips: t.clips.filter((c) => c.id !== clipId) };
           } else if (t.id === newTrackId) {
-            const movedClip = { ...clip, trackId: newTrackId, startTime: finalTime };
-            return { ...t, clips: [...t.clips, movedClip].sort((a, b) => a.startTime - b.startTime) };
+            const movedClip = {
+              ...clip,
+              trackId: newTrackId,
+              startTime: finalTime,
+            };
+            return {
+              ...t,
+              clips: [...t.clips, movedClip].sort(
+                (a, b) => a.startTime - b.startTime
+              ),
+            };
           }
           return t;
         }),
@@ -460,7 +503,11 @@ export function createTimelineState() {
     updateClip(clipId, { duration: Math.max(0.1, duration) });
   }
 
-  function setClipInOutPoints(clipId: string, inPoint: number, outPoint: number) {
+  function setClipInOutPoints(
+    clipId: string,
+    inPoint: number,
+    outPoint: number
+  ) {
     updateClip(clipId, {
       inPoint: Math.max(0, Math.min(1, inPoint)),
       outPoint: Math.max(0, Math.min(1, outPoint)),
@@ -489,7 +536,12 @@ export function createTimelineState() {
       ...project,
       tracks: project.tracks.map((t) =>
         t.id === clip.trackId
-          ? { ...t, clips: [...t.clips, newClip].sort((a, b) => a.startTime - b.startTime) }
+          ? {
+              ...t,
+              clips: [...t.clips, newClip].sort(
+                (a, b) => a.startTime - b.startTime
+              ),
+            }
           : t
       ),
       updatedAt: new Date(),
@@ -587,26 +639,58 @@ export function createTimelineState() {
 
   return {
     // Core state getters
-    get project() { return project; },
-    get playhead() { return playhead; },
-    get selection() { return selection; },
-    get viewport() { return viewport; },
+    get project() {
+      return project;
+    },
+    get playhead() {
+      return playhead;
+    },
+    get selection() {
+      return selection;
+    },
+    get viewport() {
+      return viewport;
+    },
 
     // Derived getters
-    get selectedClips() { return selectedClips; },
-    get selectedClip() { return selectedClip; },
-    get allClips() { return allClips; },
-    get totalDuration() { return totalDuration; },
-    get hasSelection() { return hasSelection; },
-    get canUndo() { return canUndo; },
-    get canRedo() { return canRedo; },
+    get selectedClips() {
+      return selectedClips;
+    },
+    get selectedClip() {
+      return selectedClip;
+    },
+    get allClips() {
+      return allClips;
+    },
+    get totalDuration() {
+      return totalDuration;
+    },
+    get hasSelection() {
+      return hasSelection;
+    },
+    get canUndo() {
+      return canUndo;
+    },
+    get canRedo() {
+      return canRedo;
+    },
 
     // UI state getters
-    get isClipInspectorOpen() { return isClipInspectorOpen; },
-    get isTrackSettingsOpen() { return isTrackSettingsOpen; },
-    get isProjectSettingsOpen() { return isProjectSettingsOpen; },
-    get clipBeingEdited() { return clipBeingEdited; },
-    get isDragging() { return isDragging; },
+    get isClipInspectorOpen() {
+      return isClipInspectorOpen;
+    },
+    get isTrackSettingsOpen() {
+      return isTrackSettingsOpen;
+    },
+    get isProjectSettingsOpen() {
+      return isProjectSettingsOpen;
+    },
+    get clipBeingEdited() {
+      return clipBeingEdited;
+    },
+    get isDragging() {
+      return isDragging;
+    },
 
     // Project mutations
     setProjectName,

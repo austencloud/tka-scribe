@@ -134,18 +134,14 @@ export class SVGGenerator implements ISVGGenerator {
   /**
    * Generate blue prop SVG with dynamic prop type
    */
-  async generateBluePropSvg(
-    propType: string = "staff"
-  ): Promise<PropSvgData> {
+  async generateBluePropSvg(propType: string = "staff"): Promise<PropSvgData> {
     return this.generatePropSvg(propType, "#2E3192");
   }
 
   /**
    * Generate red prop SVG with dynamic prop type
    */
-  async generateRedPropSvg(
-    propType: string = "staff"
-  ): Promise<PropSvgData> {
+  async generateRedPropSvg(propType: string = "staff"): Promise<PropSvgData> {
     return this.generatePropSvg(propType, "#ED1C24");
   }
 

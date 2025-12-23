@@ -38,7 +38,9 @@
     isDragging = true;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      const rect = (e.target as HTMLElement).parentElement?.getBoundingClientRect();
+      const rect = (
+        e.target as HTMLElement
+      ).parentElement?.getBoundingClientRect();
       if (!rect) return;
       const x = moveEvent.clientX - rect.left;
       const time = pixelsToTime(x, pixelsPerSecond);
@@ -95,7 +97,10 @@
     transform: translateX(-50%);
     color: var(--semantic-error, #ff4444);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
-            drop-shadow(0 0 6px color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent));
+      drop-shadow(
+        0 0 6px
+          color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent)
+      );
     transition: all 0.2s ease;
   }
 
@@ -103,7 +108,10 @@
   .playhead.dragging .playhead-head {
     transform: translateX(-50%) scale(1.3);
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7))
-            drop-shadow(0 0 12px color-mix(in srgb, var(--semantic-error, #ff4444) 70%, transparent));
+      drop-shadow(
+        0 0 12px
+          color-mix(in srgb, var(--semantic-error, #ff4444) 70%, transparent)
+      );
   }
 
   .playhead-line {
@@ -113,14 +121,20 @@
     width: 1px;
     height: 100%;
     background: var(--semantic-error, #ff4444);
-    box-shadow: 0 0 6px color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent),
-                0 0 12px color-mix(in srgb, var(--semantic-error, #ff4444) 30%, transparent);
+    box-shadow:
+      0 0 6px
+        color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent),
+      0 0 12px
+        color-mix(in srgb, var(--semantic-error, #ff4444) 30%, transparent);
   }
 
   .playhead.dragging .playhead-line {
     width: 2px;
     left: -0.5px;
-    box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-error, #ff4444) 60%, transparent),
-                0 0 16px color-mix(in srgb, var(--semantic-error, #ff4444) 40%, transparent);
+    box-shadow:
+      0 0 8px
+        color-mix(in srgb, var(--semantic-error, #ff4444) 60%, transparent),
+      0 0 16px
+        color-mix(in srgb, var(--semantic-error, #ff4444) 40%, transparent);
   }
 </style>

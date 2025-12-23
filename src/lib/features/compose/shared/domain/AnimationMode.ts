@@ -14,9 +14,14 @@
  * - grid: Display sequences in a grid layout
  * - side-by-side: Display two sequences side-by-side for comparison
  */
-export type AnimationMode = 'single' | 'tunnel' | 'mirror' | 'grid' | 'side-by-side';
+export type AnimationMode =
+  | "single"
+  | "tunnel"
+  | "mirror"
+  | "grid"
+  | "side-by-side";
 
 /**
  * Default animation mode
  */
-export const DEFAULT_ANIMATION_MODE: AnimationMode = 'single';
+export const DEFAULT_ANIMATION_MODE: AnimationMode = "single";

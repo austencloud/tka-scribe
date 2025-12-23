@@ -33,7 +33,10 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
     type: SequenceType
   ): Promise<SequenceData | null> {
     try {
-      console.log(`🎬 TunnelModeSequenceManager: Loading ${type} sequence:`, sequence.id);
+      console.log(
+        `🎬 TunnelModeSequenceManager: Loading ${type} sequence:`,
+        sequence.id
+      );
 
       const result = await this.loadSequenceData(sequence);
 
@@ -72,8 +75,11 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
 
     // Check if identifier looks like a UUID (user-created sequence)
     // UUIDs: 8-4-4-4-12 hex pattern, gallery words are letters like "DKIIEJII"
-    const isUUID = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    
+    const isUUID = (id: string) =>
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        id
+      );
+
     // Get a valid gallery-compatible identifier (word preferred, or non-UUID id)
     const getGalleryIdentifier = (s: SequenceData): string | null => {
       if (s.word && s.word.trim()) return s.word;
@@ -99,7 +105,9 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
           console.warn(`⚠️ Could not load sequence from gallery: ${galleryId}`);
         }
       } else {
-        console.log(`ℹ️ User-created sequence ${sequence.id} has no gallery entry`);
+        console.log(
+          `ℹ️ User-created sequence ${sequence.id} has no gallery entry`
+        );
       }
     }
     // Hydrate if missing motion data (try gallery lookup)
@@ -114,11 +122,14 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
     }
 
     // Normalize startPosition
-    const withStarting = fullSequence as unknown as { startingPositionBeat?: unknown };
+    const withStarting = fullSequence as unknown as {
+      startingPositionBeat?: unknown;
+    };
     if (!fullSequence.startPosition && withStarting.startingPositionBeat) {
       fullSequence = {
         ...fullSequence,
-        startPosition: withStarting.startingPositionBeat as SequenceData["startPosition"],
+        startPosition:
+          withStarting.startingPositionBeat as SequenceData["startPosition"],
       };
     }
 
@@ -153,9 +164,8 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
           break;
 
         case "rewind":
-          transformed = await this.transformationService.rewindSequence(
-            sequence
-          );
+          transformed =
+            await this.transformationService.rewindSequence(sequence);
           break;
 
         default:

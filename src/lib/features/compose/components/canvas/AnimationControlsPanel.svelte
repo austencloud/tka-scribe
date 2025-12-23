@@ -305,7 +305,7 @@
   {redMotionVisible}
   {isCircular}
   {loopCount}
-  currentPropType={currentPropType}
+  {currentPropType}
   onBpmChange={handleBpmChange}
   {onToggleBlue}
   {onToggleRed}

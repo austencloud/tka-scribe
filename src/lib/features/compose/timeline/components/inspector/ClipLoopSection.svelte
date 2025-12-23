@@ -37,12 +37,13 @@
         min="0"
         max="100"
         value={loopCount}
-        onchange={(e) => onUpdateLoopCount(parseInt((e.target as HTMLInputElement).value))}
+        onchange={(e) =>
+          onUpdateLoopCount(parseInt((e.target as HTMLInputElement).value))}
       />
     </div>
   {/if}
 </section>
 
 <style>
-  @import './inspector-styles.css';
+  @import "./inspector-styles.css";
 </style>

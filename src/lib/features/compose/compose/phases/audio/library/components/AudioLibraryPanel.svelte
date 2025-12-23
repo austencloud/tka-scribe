@@ -14,11 +14,16 @@
     onAudioSelected,
     onClose,
   }: {
-    onAudioSelected: (audioBlob: Blob, metadata: { title: string; duration: number }) => void;
+    onAudioSelected: (
+      audioBlob: Blob,
+      metadata: { title: string; duration: number }
+    ) => void;
     onClose: () => void;
   } = $props();
 
-  const audioLibrary = container.get<IAudioLibraryService>(AudioTypes.IAudioLibraryService);
+  const audioLibrary = container.get<IAudioLibraryService>(
+    AudioTypes.IAudioLibraryService
+  );
 
   let tracks = $state<AudioTrackLocal[]>([]);
   let isLoading = $state(true);
@@ -76,7 +81,8 @@
             duration: track.duration,
           },
           (progress) => {
-            downloadProgress = progress.message || `${Math.round(progress.progress)}%`;
+            downloadProgress =
+              progress.message || `${Math.round(progress.progress)}%`;
           }
         );
 
@@ -174,11 +180,7 @@
       onchange={handleFileUpload}
       hidden
     />
-    <button
-      class="upload-btn"
-      onclick={openFilePicker}
-      disabled={isUploading}
-    >
+    <button class="upload-btn" onclick={openFilePicker} disabled={isUploading}>
       {#if isUploading}
         <i class="fas fa-spinner fa-spin"></i>
         {uploadProgress}
@@ -224,7 +226,8 @@
             class:cloud-only={!track.isLocallyAvailable && track.cloudUrl}
             class:unavailable={!track.isLocallyAvailable && !track.cloudUrl}
             onclick={() => handleTrackSelect(track)}
-            disabled={downloadingTrackId === track.trackId || (!track.isLocallyAvailable && !track.cloudUrl)}
+            disabled={downloadingTrackId === track.trackId ||
+              (!track.isLocallyAvailable && !track.cloudUrl)}
           >
             <div class="track-icon">
               {#if downloadingTrackId === track.trackId}

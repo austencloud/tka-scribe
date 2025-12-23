@@ -17,7 +17,11 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
-import type { AudioTrack, AudioTrackLocal, AudioSource } from "../domain/models/AudioTrack";
+import type {
+  AudioTrack,
+  AudioTrackLocal,
+  AudioSource,
+} from "../domain/models/AudioTrack";
 import { toLocalTrack } from "../domain/models/AudioTrack";
 import { listCachedTrackIds } from "./audio-library-persistence";
 
@@ -54,7 +58,9 @@ export async function saveTrackMetadata(
   const collectionRef = await getUserAudioCollection();
   const docRef = doc(collectionRef, trackId);
 
-  const trackData: Omit<AudioTrack, "addedAt"> & { addedAt: ReturnType<typeof serverTimestamp> } = {
+  const trackData: Omit<AudioTrack, "addedAt"> & {
+    addedAt: ReturnType<typeof serverTimestamp>;
+  } = {
     trackId,
     title: metadata.title,
     artist: metadata.artist,

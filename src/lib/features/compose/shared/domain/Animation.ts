@@ -6,9 +6,9 @@
  * canvas configurations, and playback settings.
  */
 
-import type { AnimationMode } from './AnimationMode';
-import type { TrailSettings } from './types/TrailTypes';
-import { TrailMode } from './types/TrailTypes';
+import type { AnimationMode } from "./AnimationMode";
+import type { TrailSettings } from "./types/TrailTypes";
+import { TrailMode } from "./types/TrailTypes";
 
 /**
  * Animation Entity
@@ -130,7 +130,7 @@ export function createAnimation(
  */
 export function updateAnimation(
   animation: Animation,
-  updates: Partial<Omit<Animation, 'id' | 'creatorId' | 'createdAt'>>
+  updates: Partial<Omit<Animation, "id" | "creatorId" | "createdAt">>
 ): Animation {
   return {
     ...animation,

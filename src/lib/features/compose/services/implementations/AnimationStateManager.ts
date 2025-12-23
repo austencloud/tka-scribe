@@ -5,9 +5,15 @@
  * Single responsibility: Prop state management and coordinate transformations.
  */
 
-import type { PropState, PropStates } from "../../shared/domain/types/PropState";
+import type {
+  PropState,
+  PropStates,
+} from "../../shared/domain/types/PropState";
 import { injectable } from "inversify";
-import type { IAnimationStateManager, InterpolationResult } from "../contracts/IAnimationStateManager";
+import type {
+  IAnimationStateManager,
+  InterpolationResult,
+} from "../contracts/IAnimationStateManager";
 
 @injectable()
 export class AnimationStateManager implements IAnimationStateManager {

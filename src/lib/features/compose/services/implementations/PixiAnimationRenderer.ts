@@ -22,9 +22,15 @@
 
 import { Container, Graphics } from "pixi.js";
 import { injectable } from "inversify";
-import type { IPixiAnimationRenderer, AnimationVisibilitySettings } from "../contracts/IPixiAnimationRenderer";
+import type {
+  IPixiAnimationRenderer,
+  AnimationVisibilitySettings,
+} from "../contracts/IPixiAnimationRenderer";
 import type { PropState } from "../../shared/domain/types/PropState";
-import type { TrailPoint, TrailSettings } from "../../shared/domain/types/TrailTypes";
+import type {
+  TrailPoint,
+  TrailSettings,
+} from "../../shared/domain/types/TrailTypes";
 import { PixiApplicationManager } from "./pixi/PixiApplicationManager";
 import { PixiTextureLoader } from "./pixi/PixiTextureLoader";
 import { PixiSpriteManager } from "./pixi/PixiSpriteManager";
@@ -116,7 +122,10 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     bluePropType: string,
     redPropType: string
   ): Promise<void> {
-    await this.textureLoader.loadPerColorPropTextures(bluePropType, redPropType);
+    await this.textureLoader.loadPerColorPropTextures(
+      bluePropType,
+      redPropType
+    );
   }
 
   async loadSecondaryPropTextures(
@@ -155,7 +164,9 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
   ): Promise<void> {
     // Guard: spriteManager must be initialized
     if (!this.spriteManager) {
-      console.warn('[PixiAnimationRenderer] Cannot load glyph texture - not fully initialized');
+      console.warn(
+        "[PixiAnimationRenderer] Cannot load glyph texture - not fully initialized"
+      );
       return;
     }
 
@@ -206,7 +217,7 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
       !this.trailRenderer ||
       !this.propRenderer
     ) {
-      console.warn('[PixiAnimationRenderer] renderScene skipped - not ready');
+      console.warn("[PixiAnimationRenderer] renderScene skipped - not ready");
       return;
     }
 

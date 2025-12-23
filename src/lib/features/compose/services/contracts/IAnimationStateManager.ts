@@ -5,7 +5,10 @@
  * Handles prop state updates and management.
  */
 
-import type { PropState, PropStates } from "../../shared/domain/types/PropState";
+import type {
+  PropState,
+  PropStates,
+} from "../../shared/domain/types/PropState";
 
 export interface IAnimationStateManager {
   getBluePropState(): PropState;

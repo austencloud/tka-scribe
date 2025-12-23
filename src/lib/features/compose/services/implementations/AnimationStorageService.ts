@@ -5,7 +5,7 @@
  * Stores animations in the user's collection: users/{userId}/animations/{animationId}
  */
 
-import { injectable } from 'inversify';
+import { injectable } from "inversify";
 import {
   doc,
   getDoc,
@@ -19,16 +19,19 @@ import {
   getCountFromServer,
   serverTimestamp,
   type Timestamp,
-} from 'firebase/firestore';
-import { getFirestoreInstance } from '$lib/shared/auth/firebase';
-import type { IAnimationStorageService } from '../contracts/IAnimationStorageService';
-import type { Animation } from '../../shared/domain/Animation';
-import { createAnimation, updateAnimation } from '../../shared/domain/Animation';
+} from "firebase/firestore";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import type { IAnimationStorageService } from "../contracts/IAnimationStorageService";
+import type { Animation } from "../../shared/domain/Animation";
+import {
+  createAnimation,
+  updateAnimation,
+} from "../../shared/domain/Animation";
 
 /**
  * Firestore collection path constants
  */
-const ANIMATIONS_COLLECTION = 'animations';
+const ANIMATIONS_COLLECTION = "animations";
 const DEFAULT_LIST_LIMIT = 50;
 const MAX_ANIMATIONS_PER_USER = 500;
 
@@ -85,9 +88,9 @@ export class AnimationStorageService implements IAnimationStorageService {
       creatorId: data.creatorId,
       createdAt: data.createdAt.toDate(),
       updatedAt: data.updatedAt.toDate(),
-      mode: data.mode as Animation['mode'],
-      sequences: data.sequences as Animation['sequences'],
-      canvasSettings: data.canvasSettings as Animation['canvasSettings'],
+      mode: data.mode as Animation["mode"],
+      sequences: data.sequences as Animation["sequences"],
+      canvasSettings: data.canvasSettings as Animation["canvasSettings"],
       globalSettings: data.globalSettings,
       thumbnail: data.thumbnail,
       tags: data.tags,
@@ -122,7 +125,7 @@ export class AnimationStorageService implements IAnimationStorageService {
     try {
       // Validate user ID
       if (!animation.creatorId) {
-        throw new Error('Animation must have a creatorId to save');
+        throw new Error("Animation must have a creatorId to save");
       }
 
       const docRef = await this.getAnimationDocRef(
@@ -188,7 +191,7 @@ export class AnimationStorageService implements IAnimationStorageService {
       const collectionRef = await this.getUserAnimationsCollectionRef(userId);
       const q = query(
         collectionRef,
-        orderBy('updatedAt', 'desc'),
+        orderBy("updatedAt", "desc"),
         firestoreLimit(limit)
       );
 

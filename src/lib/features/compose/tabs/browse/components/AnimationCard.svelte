@@ -284,8 +284,13 @@ Features:
   }
 
   .animation-card.selected {
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 80%,
+      transparent
+    );
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
   }
 
   /* Card Media */

@@ -18,7 +18,11 @@
 
   import { onMount } from "svelte";
   import { getCompositionState } from "./state/composition-state.svelte";
-  import type { WorkflowPhase, BeatMarker, TempoRegion } from "./state/composition-state.svelte";
+  import type {
+    WorkflowPhase,
+    BeatMarker,
+    TempoRegion,
+  } from "./state/composition-state.svelte";
   import CompositionCanvas from "./components/canvas/CompositionCanvas.svelte";
   import CanvasControls from "./components/controls/CanvasControls.svelte";
   import TemplatesSheet from "./components/sheets/TemplatesSheet.svelte";
@@ -188,11 +192,7 @@
       />
     {:else if currentPhase === "export"}
       <!-- Export Phase -->
-      <ExportPhase
-        {hasContent}
-        {hasAudio}
-        {audioState}
-      />
+      <ExportPhase {hasContent} {hasAudio} {audioState} />
     {/if}
   </div>
 
@@ -336,10 +336,18 @@
   }
 
   @keyframes fadeInOut {
-    0% { opacity: 0; }
-    10% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; }
+    0% {
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 
   /* Reduced motion */

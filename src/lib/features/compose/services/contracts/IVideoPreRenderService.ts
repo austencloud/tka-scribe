@@ -17,7 +17,7 @@ export interface VideoRenderProgress {
   /** Estimated time remaining in ms */
   estimatedTimeRemaining: number;
   /** Current phase: 'rendering' | 'encoding' | 'complete' */
-  phase: 'rendering' | 'encoding' | 'complete';
+  phase: "rendering" | "encoding" | "complete";
 }
 
 export interface VideoRenderResult {
@@ -47,7 +47,7 @@ export interface VideoRenderOptions {
   /** Whether to include trails in the render */
   includeTrails?: boolean;
   /** Video format: 'webm' or 'mp4' (default: 'webm') */
-  format?: 'webm' | 'mp4';
+  format?: "webm" | "mp4";
   /** Video quality (0-1, default: 0.9) */
   quality?: number;
 }

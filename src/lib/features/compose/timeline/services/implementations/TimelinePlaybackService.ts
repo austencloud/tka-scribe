@@ -100,7 +100,10 @@ export class TimelinePlaybackService implements ITimelinePlaybackService {
 
   seek(position: TimeSeconds): void {
     const state = getTimelineState();
-    const clampedPosition = Math.max(0, Math.min(state.totalDuration, position));
+    const clampedPosition = Math.max(
+      0,
+      Math.min(state.totalDuration, position)
+    );
     state.setPlayheadPosition(clampedPosition);
 
     // Sync audio position
@@ -233,7 +236,10 @@ export class TimelinePlaybackService implements ITimelinePlaybackService {
 
   disconnectAudio(): void {
     if (this.audioElement) {
-      this.audioElement.removeEventListener("timeupdate", this.handleAudioTimeUpdate);
+      this.audioElement.removeEventListener(
+        "timeupdate",
+        this.handleAudioTimeUpdate
+      );
       this.audioElement = null;
     }
     this.audioSyncEnabled = false;
@@ -268,7 +274,8 @@ export class TimelinePlaybackService implements ITimelinePlaybackService {
     if (this.audioSyncEnabled && this.audioElement) {
       const state = getTimelineState();
       this.audioElement.currentTime = state.playhead.position;
-      this.audioElement.playbackRate = state.playhead.shuttleSpeed * state.playhead.direction;
+      this.audioElement.playbackRate =
+        state.playhead.shuttleSpeed * state.playhead.direction;
       this.audioElement.play().catch(console.error);
     }
 
@@ -301,15 +308,24 @@ export class TimelinePlaybackService implements ITimelinePlaybackService {
     this.lastFrameTime = currentTime;
 
     // Calculate new position
-    const deltaSeconds = (deltaMs / 1000) * state.playhead.shuttleSpeed * state.playhead.direction;
+    const deltaSeconds =
+      (deltaMs / 1000) * state.playhead.shuttleSpeed * state.playhead.direction;
     let newPosition = state.playhead.position + deltaSeconds;
 
     // Handle loop region
     if (state.playhead.loopStart !== null && state.playhead.loopEnd !== null) {
-      if (state.playhead.direction === 1 && newPosition >= state.playhead.loopEnd) {
-        newPosition = state.playhead.loopStart + (newPosition - state.playhead.loopEnd);
-      } else if (state.playhead.direction === -1 && newPosition <= state.playhead.loopStart) {
-        newPosition = state.playhead.loopEnd - (state.playhead.loopStart - newPosition);
+      if (
+        state.playhead.direction === 1 &&
+        newPosition >= state.playhead.loopEnd
+      ) {
+        newPosition =
+          state.playhead.loopStart + (newPosition - state.playhead.loopEnd);
+      } else if (
+        state.playhead.direction === -1 &&
+        newPosition <= state.playhead.loopStart
+      ) {
+        newPosition =
+          state.playhead.loopEnd - (state.playhead.loopStart - newPosition);
       }
     }
 

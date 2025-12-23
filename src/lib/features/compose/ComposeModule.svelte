@@ -85,7 +85,11 @@
   // Sync current tab with navigation state
   $effect(() => {
     const section = navigationState.activeTab;
-    if (section === "arrange" || section === "browse" || section === "timeline") {
+    if (
+      section === "arrange" ||
+      section === "browse" ||
+      section === "timeline"
+    ) {
       composeState.setCurrentTab(section as ComposeTab);
     }
   });
@@ -111,7 +115,10 @@
 
     // Set default tab if none persisted or invalid
     const section = navigationState.activeTab;
-    if (!section || (section !== "arrange" && section !== "browse" && section !== "timeline")) {
+    if (
+      !section ||
+      (section !== "arrange" && section !== "browse" && section !== "timeline")
+    ) {
       navigationState.setActiveTab("arrange");
     }
 
@@ -124,7 +131,9 @@
         // For now, just navigate to the specified tab
         if (
           deepLinkData.tabId &&
-          (deepLinkData.tabId === "arrange" || deepLinkData.tabId === "browse" || deepLinkData.tabId === "timeline")
+          (deepLinkData.tabId === "arrange" ||
+            deepLinkData.tabId === "browse" ||
+            deepLinkData.tabId === "timeline")
         ) {
           navigationState.setActiveTab(deepLinkData.tabId);
           composeState.setCurrentTab(deepLinkData.tabId as ComposeTab);
@@ -161,28 +170,28 @@
     />
   </div>
 {:else}
-<div class="compose-module">
-  <div class="content-container">
-    {#key composeState.currentTab}
-      <div class="tab-panel">
-        {#if isTabActive("arrange")}
-          <CompositionBuilder />
-        {:else if isTabActive("browse")}
-          <BrowseTab />
-        {:else if isTabActive("timeline")}
-          <TimelinePanel />
-        {/if}
-      </div>
-    {/key}
-  </div>
-
-  <!-- Playback Overlay - renders fullscreen over tabs when open -->
-  {#if composeState.isPlaybackOpen}
-    <div class="playback-overlay">
-      <PlaybackOverlay />
+  <div class="compose-module">
+    <div class="content-container">
+      {#key composeState.currentTab}
+        <div class="tab-panel">
+          {#if isTabActive("arrange")}
+            <CompositionBuilder />
+          {:else if isTabActive("browse")}
+            <BrowseTab />
+          {:else if isTabActive("timeline")}
+            <TimelinePanel />
+          {/if}
+        </div>
+      {/key}
     </div>
-  {/if}
-</div>
+
+    <!-- Playback Overlay - renders fullscreen over tabs when open -->
+    {#if composeState.isPlaybackOpen}
+      <div class="playback-overlay">
+        <PlaybackOverlay />
+      </div>
+    {/if}
+  </div>
 {/if}
 
 <style>

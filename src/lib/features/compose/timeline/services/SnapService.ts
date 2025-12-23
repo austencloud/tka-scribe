@@ -8,7 +8,11 @@
  * - Playhead position
  */
 
-import type { TimeSeconds, SnapSettings, TimelineClip } from "../domain/timeline-types";
+import type {
+  TimeSeconds,
+  SnapSettings,
+  TimelineClip,
+} from "../domain/timeline-types";
 import { getClipEndTime } from "../domain/timeline-types";
 import { generateBeatTimestamps } from "$lib/features/compose/compose/phases/audio/bpm-analyzer";
 
@@ -62,11 +66,11 @@ export const SNAP_THRESHOLD_PRECISE = 0.08;
 
 /** Priority order for snap types (lower = higher priority) */
 const SNAP_PRIORITY: Record<SnapType, number> = {
-  "playhead": 0,
+  playhead: 0,
   "clip-start": 1,
   "clip-end": 1,
-  "beat": 2,
-  "grid": 3,
+  beat: 2,
+  grid: 3,
 };
 
 // ============================================================================
@@ -77,7 +81,14 @@ const SNAP_PRIORITY: Record<SnapType, number> = {
  * Calculate snap points for the given context
  */
 export function calculateSnapPoints(context: SnapContext): SnapPoint[] {
-  const { clips, excludeClipIds, audioBpm, audioDuration, playheadPosition, settings } = context;
+  const {
+    clips,
+    excludeClipIds,
+    audioBpm,
+    audioDuration,
+    playheadPosition,
+    settings,
+  } = context;
   const points: SnapPoint[] = [];
 
   // Beat markers
@@ -114,7 +125,11 @@ export function calculateSnapPoints(context: SnapContext): SnapPoint[] {
 
   // Grid intervals
   if (settings.snapToGrid && settings.gridInterval > 0) {
-    const maxTime = Math.max(audioDuration, ...clips.map(c => getClipEndTime(c)), 60);
+    const maxTime = Math.max(
+      audioDuration,
+      ...clips.map((c) => getClipEndTime(c)),
+      60
+    );
     for (let t = 0; t <= maxTime + 10; t += settings.gridInterval) {
       points.push({
         time: t,
@@ -157,7 +172,10 @@ export function findNearestSnapPoint(
         const nearestPriority = SNAP_PRIORITY[nearestPoint.type];
 
         // Only replace if this point is closer OR same distance but higher priority
-        if (distance < nearestDistance || (distance === nearestDistance && currentPriority < nearestPriority)) {
+        if (
+          distance < nearestDistance ||
+          (distance === nearestDistance && currentPriority < nearestPriority)
+        ) {
           nearestPoint = point;
           nearestDistance = distance;
         }
@@ -211,7 +229,7 @@ export function getSnapPointsInRange(
   endTime: TimeSeconds
 ): SnapPoint[] {
   const allPoints = calculateSnapPoints(context);
-  return allPoints.filter(p => p.time >= startTime && p.time <= endTime);
+  return allPoints.filter((p) => p.time >= startTime && p.time <= endTime);
 }
 
 /**

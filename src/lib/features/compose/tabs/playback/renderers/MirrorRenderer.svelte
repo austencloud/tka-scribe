@@ -34,7 +34,7 @@
 </script>
 
 <div class="mirror-renderer">
-  <CanvasControls canvasId="mirror" onOpenSettings={onOpenSettings} />
+  <CanvasControls canvasId="mirror" {onOpenSettings} />
 
   <div class="canvas-split">
     <!-- Original Side -->
@@ -54,7 +54,11 @@
     <div class="split-divider">
       <div class="divider-line"></div>
       <div class="divider-icon">
-        <i class="fas fa-{axis === 'vertical' ? 'arrows-left-right' : 'arrows-up-down'}"></i>
+        <i
+          class="fas fa-{axis === 'vertical'
+            ? 'arrows-left-right'
+            : 'arrows-up-down'}"
+        ></i>
       </div>
       <div class="divider-line"></div>
     </div>

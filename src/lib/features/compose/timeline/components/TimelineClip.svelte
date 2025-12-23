@@ -29,16 +29,22 @@
   }
 
   // Drag mode state
-  let dragMode = $state<"move" | "trim-left" | "trim-right" | "resize" | null>(null);
+  let dragMode = $state<"move" | "trim-left" | "trim-right" | "resize" | null>(
+    null
+  );
   let isChangingTrack = $state(false);
 
   // Computed dimensions
   const left = $derived(timeToPixels(clip.startTime, pixelsPerSecond));
-  const width = $derived(Math.max(20, timeToPixels(clip.duration, pixelsPerSecond)));
+  const width = $derived(
+    Math.max(20, timeToPixels(clip.duration, pixelsPerSecond))
+  );
 
   // Display info
   const displayName = $derived(clip.label || clip.sequence.name || "Untitled");
-  const speedLabel = $derived(clip.playbackRate !== 1 ? `${clip.playbackRate.toFixed(1)}x` : null);
+  const speedLabel = $derived(
+    clip.playbackRate !== 1 ? `${clip.playbackRate.toFixed(1)}x` : null
+  );
   const trimLabel = $derived(
     clip.inPoint > 0 || clip.outPoint < 1
       ? `${Math.round(clip.inPoint * 100)}%-${Math.round(clip.outPoint * 100)}%`
@@ -48,7 +54,9 @@
   // Visual states
   const isDragging = $derived(dragMode !== null);
   const isMoveDragging = $derived(dragMode === "move");
-  const isTrimming = $derived(dragMode === "trim-left" || dragMode === "trim-right");
+  const isTrimming = $derived(
+    dragMode === "trim-left" || dragMode === "trim-right"
+  );
   const isResizing = $derived(dragMode === "resize");
 
   // Initialize interaction handlers
@@ -62,7 +70,8 @@
         isChangingTrack = false;
       },
       onTrackChange: (targetTrackId) => {
-        isChangingTrack = targetTrackId !== null && targetTrackId !== clip.trackId;
+        isChangingTrack =
+          targetTrackId !== null && targetTrackId !== clip.trackId;
       },
     }
   );
@@ -76,8 +85,16 @@
     onDragStart: () => (dragMode = "trim-right"),
     onDragEnd: () => (dragMode = null),
   };
-  const { handleTrimLeftStart } = createClipTrim(() => clip, () => width, trimLeftCallbacks);
-  const { handleTrimRightStart } = createClipTrim(() => clip, () => width, trimRightCallbacks);
+  const { handleTrimLeftStart } = createClipTrim(
+    () => clip,
+    () => width,
+    trimLeftCallbacks
+  );
+  const { handleTrimRightStart } = createClipTrim(
+    () => clip,
+    () => width,
+    trimRightCallbacks
+  );
 
   const { handleResizeStart } = createClipResize(
     () => clip,
@@ -176,10 +193,16 @@
       {/if}
 
       {#if clip.inPoint > 0}
-        <div class="trim-indicator left" style="width: {clip.inPoint * 100}%"></div>
+        <div
+          class="trim-indicator left"
+          style="width: {clip.inPoint * 100}%"
+        ></div>
       {/if}
       {#if clip.outPoint < 1}
-        <div class="trim-indicator right" style="width: {(1 - clip.outPoint) * 100}%"></div>
+        <div
+          class="trim-indicator right"
+          style="width: {(1 - clip.outPoint) * 100}%"
+        ></div>
       {/if}
     </div>
 
@@ -188,7 +211,9 @@
       <div class="clip-badges">
         {#if speedLabel}<span class="badge speed">{speedLabel}</span>{/if}
         {#if trimLabel}<span class="badge trim">{trimLabel}</span>{/if}
-        {#if clip.loop}<span class="badge loop" title="Looping"><i class="fa-solid fa-repeat"></i></span>{/if}
+        {#if clip.loop}<span class="badge loop" title="Looping"
+            ><i class="fa-solid fa-repeat"></i></span
+          >{/if}
       </div>
     </div>
   </div>
@@ -232,7 +257,12 @@
     transition: all 0.2s ease;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     user-select: none;
-    border: 1px solid color-mix(in srgb, var(--clip-color, var(--theme-accent, #4a9eff)) 70%, white);
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--clip-color, var(--theme-accent, #4a9eff)) 70%,
+        white
+      );
   }
 
   .timeline-clip:hover {
@@ -243,8 +273,9 @@
   .timeline-clip.selected {
     outline: 2px solid var(--theme-text, white);
     outline-offset: -2px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5),
-                0 0 12px color-mix(in srgb, var(--theme-text, white) 30%, transparent);
+    box-shadow:
+      0 4px 16px rgba(0, 0, 0, 0.5),
+      0 0 12px color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   .timeline-clip.muted {
@@ -261,30 +292,34 @@
 
   .timeline-clip.move-dragging {
     cursor: grabbing;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6),
-                0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent);
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.6),
+      0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent);
   }
 
   .timeline-clip.changing-track {
     outline: 2px solid #cc5de8;
     outline-offset: -2px;
-    box-shadow: 0 6px 20px rgba(204, 93, 232, 0.5),
-                0 0 16px rgba(204, 93, 232, 0.4);
+    box-shadow:
+      0 6px 20px rgba(204, 93, 232, 0.5),
+      0 0 16px rgba(204, 93, 232, 0.4);
     opacity: 0.85;
   }
 
   .timeline-clip.trimming {
     outline: 2px solid #ffd43b;
     outline-offset: -2px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
-                0 0 12px rgba(255, 212, 59, 0.3);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.4),
+      0 0 12px rgba(255, 212, 59, 0.3);
   }
 
   .timeline-clip.resizing {
     outline: 2px solid var(--semantic-success, #51cf66);
     outline-offset: -2px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4),
-                0 0 12px rgba(81, 207, 102, 0.3);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.4),
+      0 0 12px rgba(81, 207, 102, 0.3);
   }
 
   .clip-body {
@@ -385,19 +420,31 @@
   }
 
   .badge.speed {
-    background: color-mix(in srgb, var(--semantic-success, #51cf66) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #51cf66) 25%,
+      transparent
+    );
     color: var(--semantic-success, #51cf66);
     border-color: var(--semantic-success, #51cf66);
   }
 
   .badge.trim {
-    background: color-mix(in srgb, var(--semantic-warning, #ffd43b) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #ffd43b) 25%,
+      transparent
+    );
     color: var(--semantic-warning, #ffd43b);
     border-color: var(--semantic-warning, #ffd43b);
   }
 
   .badge.loop {
-    background: color-mix(in srgb, var(--semantic-info, #4a9eff) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #4a9eff) 25%,
+      transparent
+    );
     color: var(--semantic-info, #4a9eff);
     border-color: var(--semantic-info, #4a9eff);
   }
@@ -412,7 +459,9 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.15s ease, background 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      background 0.15s ease;
     z-index: 10;
   }
 

@@ -128,9 +128,7 @@ export class SequenceFramePreRenderer {
     document.body.appendChild(this.offscreenContainer);
 
     // Import PixiAnimationRenderer class directly
-    const { PixiAnimationRenderer } = await import(
-      "./PixiAnimationRenderer"
-    );
+    const { PixiAnimationRenderer } = await import("./PixiAnimationRenderer");
     const offscreenRenderer = new PixiAnimationRenderer();
 
     // Initialize with offscreen container
@@ -154,7 +152,9 @@ export class SequenceFramePreRenderer {
     }
 
     if (!this.offscreenRenderer) {
-      console.warn("[SequenceFramePreRenderer] Cannot load glyph - offscreen renderer not initialized");
+      console.warn(
+        "[SequenceFramePreRenderer] Cannot load glyph - offscreen renderer not initialized"
+      );
       return;
     }
 
@@ -164,7 +164,9 @@ export class SequenceFramePreRenderer {
       const response = await fetch(imagePath);
 
       if (!response.ok) {
-        console.warn(`[SequenceFramePreRenderer] Failed to fetch letter ${letter} from ${imagePath}`);
+        console.warn(
+          `[SequenceFramePreRenderer] Failed to fetch letter ${letter} from ${imagePath}`
+        );
         this.loadedGlyphs.add(letter); // Mark as attempted to avoid repeated failures
         return;
       }
@@ -172,11 +174,17 @@ export class SequenceFramePreRenderer {
       let svgText = await response.text();
 
       // Parse original viewBox to get glyph dimensions
-      const viewBoxMatch = svgText.match(/viewBox\s*=\s*"([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)"/i);
+      const viewBoxMatch = svgText.match(
+        /viewBox\s*=\s*"([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)\s+([\d.-]+)"/i
+      );
       const viewBoxX = viewBoxMatch?.[1] ? parseFloat(viewBoxMatch[1]) : 0;
       const viewBoxY = viewBoxMatch?.[2] ? parseFloat(viewBoxMatch[2]) : 0;
-      const viewBoxWidth = viewBoxMatch?.[3] ? parseFloat(viewBoxMatch[3]) : 100;
-      const viewBoxHeight = viewBoxMatch?.[4] ? parseFloat(viewBoxMatch[4]) : 100;
+      const viewBoxWidth = viewBoxMatch?.[3]
+        ? parseFloat(viewBoxMatch[3])
+        : 100;
+      const viewBoxHeight = viewBoxMatch?.[4]
+        ? parseFloat(viewBoxMatch[4])
+        : 100;
 
       // CRITICAL: Modify SVG to have full 950x950 viewBox (matching GlyphRenderer.svelte logic)
       // This ensures the glyph appears at the correct position when rendered
@@ -188,13 +196,22 @@ export class SequenceFramePreRenderer {
       svgText = svgText.replace(/height\s*=\s*"[\d.-]+"/i, 'height="950"');
 
       // Load texture into offscreen renderer
-      await this.offscreenRenderer.loadGlyphTexture(svgText, viewBoxWidth, viewBoxHeight);
+      await this.offscreenRenderer.loadGlyphTexture(
+        svgText,
+        viewBoxWidth,
+        viewBoxHeight
+      );
 
       // Mark as loaded
       this.loadedGlyphs.add(letter);
-      console.log(`✅ [SequenceFramePreRenderer] Loaded glyph texture for letter "${letter}"`);
+      console.log(
+        `✅ [SequenceFramePreRenderer] Loaded glyph texture for letter "${letter}"`
+      );
     } catch (error) {
-      console.error(`[SequenceFramePreRenderer] Error loading glyph for letter ${letter}:`, error);
+      console.error(
+        `[SequenceFramePreRenderer] Error loading glyph for letter ${letter}:`,
+        error
+      );
       this.loadedGlyphs.add(letter); // Mark as attempted to avoid repeated failures
     }
   }
@@ -224,7 +241,8 @@ export class SequenceFramePreRenderer {
 
     try {
       // Initialize orchestrator with sequence data
-      const initSuccess = this.orchestrator.initializeWithDomainData(sequenceData);
+      const initSuccess =
+        this.orchestrator.initializeWithDomainData(sequenceData);
       if (!initSuccess) {
         throw new Error("Failed to initialize orchestrator with sequence data");
       }
@@ -236,7 +254,9 @@ export class SequenceFramePreRenderer {
       const frameTimeMs = 1000 / fullConfig.fps;
       const totalFrames = Math.ceil(totalDurationMs / frameTimeMs);
 
-      console.log(`🎬 Pre-rendering sequence: ${sequenceData.word || sequenceData.id}`);
+      console.log(
+        `🎬 Pre-rendering sequence: ${sequenceData.word || sequenceData.id}`
+      );
       console.log(`   Frames: ${totalFrames} @ ${fullConfig.fps} FPS`);
       console.log(`   Duration: ${totalDurationMs}ms (${totalBeats} beats)`);
 
@@ -244,7 +264,10 @@ export class SequenceFramePreRenderer {
       const startTime = performance.now();
 
       // Create offscreen canvas for rendering
-      const offscreenCanvas = new OffscreenCanvas(fullConfig.canvasSize, fullConfig.canvasSize);
+      const offscreenCanvas = new OffscreenCanvas(
+        fullConfig.canvasSize,
+        fullConfig.canvasSize
+      );
       const ctx = offscreenCanvas.getContext("2d");
       if (!ctx) {
         throw new Error("Failed to get 2D context from offscreen canvas");
@@ -282,8 +305,12 @@ export class SequenceFramePreRenderer {
       }
 
       const renderTime = performance.now() - startTime;
-      console.log(`✅ Pre-render complete in ${(renderTime / 1000).toFixed(2)}s`);
-      console.log(`   Average: ${(renderTime / totalFrames).toFixed(2)}ms per frame`);
+      console.log(
+        `✅ Pre-render complete in ${(renderTime / 1000).toFixed(2)}s`
+      );
+      console.log(
+        `   Average: ${(renderTime / totalFrames).toFixed(2)}ms per frame`
+      );
 
       this.currentRender = {
         sequenceId: sequenceData.id,
@@ -320,7 +347,10 @@ export class SequenceFramePreRenderer {
 
     while (currentFrame < totalFrames && !this.shouldCancel) {
       // Render chunk of frames
-      const chunkEnd = Math.min(currentFrame + config.framesPerChunk, totalFrames);
+      const chunkEnd = Math.min(
+        currentFrame + config.framesPerChunk,
+        totalFrames
+      );
 
       for (let frame = currentFrame; frame < chunkEnd; frame++) {
         await this.renderSingleFrame(
@@ -448,7 +478,6 @@ export class SequenceFramePreRenderer {
       if (metadata.gridMode) {
         await this.offscreenRenderer.loadGridTexture(metadata.gridMode);
       }
-
     }
 
     // Calculate animation state for this beat
@@ -538,7 +567,8 @@ export class SequenceFramePreRenderer {
       return null;
     }
 
-    const beatDurationMs = this.currentRender.totalDurationMs / this.currentRender.totalBeats;
+    const beatDurationMs =
+      this.currentRender.totalDurationMs / this.currentRender.totalBeats;
     const timestamp = beat * beatDurationMs;
 
     return this.getFrameAtTimestamp(timestamp);

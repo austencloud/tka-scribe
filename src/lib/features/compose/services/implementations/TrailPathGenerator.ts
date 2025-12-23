@@ -135,7 +135,7 @@ export class TrailPathGenerator {
     const DEBUG_SAMPLE_INTERVAL = samplesPerBeat; // Log once per beat
 
     for (let i = 0; i <= totalSamples; i++) {
-      const beat = (i / samplesPerBeat);
+      const beat = i / samplesPerBeat;
       const timestamp = beat / totalBeats; // Normalized 0-1
 
       // Get prop states at this beat position
@@ -172,31 +172,65 @@ export class TrailPathGenerator {
       );
 
       // Add points to trails
-      blueLeft.push({ x: blueEnds.left.x, y: blueEnds.left.y, beat, timestamp });
-      blueRight.push({ x: blueEnds.right.x, y: blueEnds.right.y, beat, timestamp });
+      blueLeft.push({
+        x: blueEnds.left.x,
+        y: blueEnds.left.y,
+        beat,
+        timestamp,
+      });
+      blueRight.push({
+        x: blueEnds.right.x,
+        y: blueEnds.right.y,
+        beat,
+        timestamp,
+      });
       redLeft.push({ x: redEnds.left.x, y: redEnds.left.y, beat, timestamp });
-      redRight.push({ x: redEnds.right.x, y: redEnds.right.y, beat, timestamp });
+      redRight.push({
+        x: redEnds.right.x,
+        y: redEnds.right.y,
+        beat,
+        timestamp,
+      });
 
       // Debug logging
       if (DEBUG_SAMPLES && i % DEBUG_SAMPLE_INTERVAL === 0) {
         console.log(`🎯 Trail Point @ beat ${beat.toFixed(2)}:`, {
           blueState: {
-            centerPathAngle: (blueState.centerPathAngle * 180 / Math.PI).toFixed(1) + '°',
-            staffRotationAngle: (blueState.staffRotationAngle * 180 / Math.PI).toFixed(1) + '°',
+            centerPathAngle:
+              ((blueState.centerPathAngle * 180) / Math.PI).toFixed(1) + "°",
+            staffRotationAngle:
+              ((blueState.staffRotationAngle * 180) / Math.PI).toFixed(1) + "°",
           },
-          blueCenter: { x: blueCenter.x.toFixed(1), y: blueCenter.y.toFixed(1) },
+          blueCenter: {
+            x: blueCenter.x.toFixed(1),
+            y: blueCenter.y.toFixed(1),
+          },
           blueEnds: {
-            left: { x: blueEnds.left.x.toFixed(1), y: blueEnds.left.y.toFixed(1) },
-            right: { x: blueEnds.right.x.toFixed(1), y: blueEnds.right.y.toFixed(1) },
+            left: {
+              x: blueEnds.left.x.toFixed(1),
+              y: blueEnds.left.y.toFixed(1),
+            },
+            right: {
+              x: blueEnds.right.x.toFixed(1),
+              y: blueEnds.right.y.toFixed(1),
+            },
           },
           redState: {
-            centerPathAngle: (redState.centerPathAngle * 180 / Math.PI).toFixed(1) + '°',
-            staffRotationAngle: (redState.staffRotationAngle * 180 / Math.PI).toFixed(1) + '°',
+            centerPathAngle:
+              ((redState.centerPathAngle * 180) / Math.PI).toFixed(1) + "°",
+            staffRotationAngle:
+              ((redState.staffRotationAngle * 180) / Math.PI).toFixed(1) + "°",
           },
           redCenter: { x: redCenter.x.toFixed(1), y: redCenter.y.toFixed(1) },
           redEnds: {
-            left: { x: redEnds.left.x.toFixed(1), y: redEnds.left.y.toFixed(1) },
-            right: { x: redEnds.right.x.toFixed(1), y: redEnds.right.y.toFixed(1) },
+            left: {
+              x: redEnds.left.x.toFixed(1),
+              y: redEnds.left.y.toFixed(1),
+            },
+            right: {
+              x: redEnds.right.x.toFixed(1),
+              y: redEnds.right.y.toFixed(1),
+            },
           },
         });
       }

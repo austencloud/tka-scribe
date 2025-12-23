@@ -68,7 +68,10 @@ function createSmoothCurve(
     const p0 = i > 0 ? controlPoints[i - 1]! : controlPoints[i]!;
     const p1 = controlPoints[i]!;
     const p2 = controlPoints[i + 1]!;
-    const p3 = i < controlPoints.length - 2 ? controlPoints[i + 2]! : controlPoints[i + 1]!;
+    const p3 =
+      i < controlPoints.length - 2
+        ? controlPoints[i + 2]!
+        : controlPoints[i + 1]!;
 
     // Calculate t values for centripetal parameterization
     const getT = (t: number, pa: Point2D, pb: Point2D) => {
@@ -292,7 +295,10 @@ export class PixiTrailRenderer {
 
     // Debug: Log first few input points for segmented trail
     console.log(`📏 SEGMENTED TRAIL INPUT (${points.length} points):`);
-    console.log(`   First 3 points:`, points.slice(0, 3).map(p => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`));
+    console.log(
+      `   First 3 points:`,
+      points.slice(0, 3).map((p) => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`)
+    );
 
     // Draw trail segments with varying opacity
     for (let i = 0; i < points.length - 1; i++) {

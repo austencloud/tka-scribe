@@ -41,8 +41,15 @@
     snapToBeats = state.project.snap.snapToBeats;
 
     // Generate beat markers from audio BPM
-    if (state.project.audio.bpm && state.project.audio.duration && state.project.snap.snapToBeats) {
-      beatMarkers = generateBeatTimestamps(state.project.audio.bpm, state.project.audio.duration);
+    if (
+      state.project.audio.bpm &&
+      state.project.audio.duration &&
+      state.project.snap.snapToBeats
+    ) {
+      beatMarkers = generateBeatTimestamps(
+        state.project.audio.bpm,
+        state.project.audio.duration
+      );
       downbeats = beatMarkers.filter((_, i) => i % 4 === 0);
     } else {
       beatMarkers = [];
@@ -77,13 +84,16 @@
     }
 
     // Active snap position in pixels
-    activeSnapX = activeSnapTime !== null
-      ? timeToPixels(activeSnapTime, pixelsPerSecond)
-      : null;
+    activeSnapX =
+      activeSnapTime !== null
+        ? timeToPixels(activeSnapTime, pixelsPerSecond)
+        : null;
   });
 
   // Determine snap type for styling
-  function getSnapType(time: TimeSeconds): "beat" | "clip" | "grid" | "playhead" {
+  function getSnapType(
+    time: TimeSeconds
+  ): "beat" | "clip" | "grid" | "playhead" {
     if (Math.abs(time - playheadPosition) < 0.01) return "playhead";
     if (downbeats.includes(time)) return "beat";
     if (clipEdges.includes(time)) return "clip";
@@ -144,7 +154,11 @@
 
   /* Beat marker guides - purple/info color */
   .snap-guide.beat {
-    background: color-mix(in srgb, var(--semantic-info, #4a9eff) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #4a9eff) 15%,
+      transparent
+    );
   }
 
   /* Grid guides - subtle theme stroke */
@@ -154,7 +168,11 @@
 
   /* Clip edge guides - accent */
   .snap-guide.clip {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #4a9eff) 15%,
+      transparent
+    );
   }
 
   /* Active snap indicator - bright and prominent */
@@ -165,26 +183,32 @@
 
   .snap-guide.active.beat {
     background: color-mix(in srgb, var(--semantic-info, #4a9eff) 80%, white);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-info, #4a9eff) 60%, transparent),
-                0 0 20px color-mix(in srgb, var(--semantic-info, #4a9eff) 30%, transparent);
+    box-shadow:
+      0 0 10px
+        color-mix(in srgb, var(--semantic-info, #4a9eff) 60%, transparent),
+      0 0 20px
+        color-mix(in srgb, var(--semantic-info, #4a9eff) 30%, transparent);
   }
 
   .snap-guide.active.clip {
     background: var(--theme-accent, #4a9eff);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 60%, transparent),
-                0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+    box-shadow:
+      0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 60%, transparent),
+      0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
   .snap-guide.active.grid {
     background: var(--theme-text, rgba(255, 255, 255, 0.6));
-    box-shadow: 0 0 8px color-mix(in srgb, var(--theme-text, white) 40%, transparent),
-                0 0 16px color-mix(in srgb, var(--theme-text, white) 20%, transparent);
+    box-shadow:
+      0 0 8px color-mix(in srgb, var(--theme-text, white) 40%, transparent),
+      0 0 16px color-mix(in srgb, var(--theme-text, white) 20%, transparent);
   }
 
   .snap-guide.active.playhead {
     background: var(--theme-text, rgba(255, 255, 255, 0.9));
-    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-text, white) 60%, transparent),
-                0 0 20px color-mix(in srgb, var(--theme-text, white) 30%, transparent);
+    box-shadow:
+      0 0 10px color-mix(in srgb, var(--theme-text, white) 60%, transparent),
+      0 0 20px color-mix(in srgb, var(--theme-text, white) 30%, transparent);
   }
 
   .snap-label {

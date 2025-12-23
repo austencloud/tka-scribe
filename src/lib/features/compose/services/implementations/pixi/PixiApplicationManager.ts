@@ -97,7 +97,9 @@ export class PixiApplicationManager {
 
   render(): void {
     if (!this.isInitialized || !this.app?.renderer) {
-      console.warn('[PixiApplicationManager] Skipped render - not initialized or no renderer');
+      console.warn(
+        "[PixiApplicationManager] Skipped render - not initialized or no renderer"
+      );
       return;
     }
 
@@ -105,7 +107,7 @@ export class PixiApplicationManager {
       const stage = this.app.stage;
       if (!stage || stage.destroyed) {
         if (!this.hasLoggedRenderPipeError) {
-          console.warn('[PixiApplicationManager] Stage is null or destroyed');
+          console.warn("[PixiApplicationManager] Stage is null or destroyed");
           this.hasLoggedRenderPipeError = true;
         }
         this.isInitialized = false;
@@ -117,7 +119,7 @@ export class PixiApplicationManager {
 
       // Debug: log successful render once
       if (!this.hasLoggedSuccessfulRender) {
-        console.log('[PixiApplicationManager] Attempting first render...');
+        console.log("[PixiApplicationManager] Attempting first render...");
         this.hasLoggedSuccessfulRender = true;
       }
 
@@ -125,7 +127,7 @@ export class PixiApplicationManager {
     } catch (error) {
       // Catch WebGL errors like context loss or invalid state
       if (!this.hasLoggedRenderPipeError) {
-        console.error('[PixiApplicationManager] Render error:', error);
+        console.error("[PixiApplicationManager] Render error:", error);
         this.hasLoggedRenderPipeError = true;
       }
       // Don't stop render loop on errors - renderer might recover

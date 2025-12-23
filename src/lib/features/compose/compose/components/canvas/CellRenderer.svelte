@@ -8,7 +8,11 @@
 
   import { onMount, onDestroy } from "svelte";
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
-  import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
+  import {
+    resolve,
+    loadPixiModule,
+    loadFeatureModule,
+  } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { CellConfig } from "../../domain/types";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
@@ -95,9 +99,14 @@
     if (!primarySequence || !playbackController) return;
 
     try {
-      console.log(`🎬 CellRenderer [${cell.id}]: Initializing with ${primarySequence.name}`);
+      console.log(
+        `🎬 CellRenderer [${cell.id}]: Initializing with ${primarySequence.name}`
+      );
 
-      const success = playbackController.initialize(primarySequence, animationState);
+      const success = playbackController.initialize(
+        primarySequence,
+        animationState
+      );
 
       if (!success) {
         throw new Error("Failed to initialize animation");
@@ -106,7 +115,9 @@
       // Apply rotation if set
       if (cell.rotationOffset && cell.rotationOffset !== 0) {
         // TODO: Apply rotation to the animation canvas
-        console.log(`🔄 CellRenderer [${cell.id}]: Rotation ${cell.rotationOffset}°`);
+        console.log(
+          `🔄 CellRenderer [${cell.id}]: Rotation ${cell.rotationOffset}°`
+        );
       }
 
       // Auto-start if previewing

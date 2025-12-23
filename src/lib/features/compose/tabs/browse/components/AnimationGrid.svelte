@@ -131,8 +131,7 @@ Features:
     {#each animations as animation (animation.id)}
       <AnimationCard
         {animation}
-        onPrimaryAction={(anim) =>
-          handleAnimationAction("view-detail", anim)}
+        onPrimaryAction={(anim) => handleAnimationAction("view-detail", anim)}
       />
     {/each}
   </div>

@@ -20,7 +20,11 @@
 {#if !isSideBySideLayout}
   <!-- Minimal Mobile Header - info button on left, close button on right -->
   <div class="mobile-header">
-    <button class="mobile-info-btn" onclick={onShowHelp} aria-label="Show help and shortcuts">
+    <button
+      class="mobile-info-btn"
+      onclick={onShowHelp}
+      aria-label="Show help and shortcuts"
+    >
       <i class="fas fa-circle-info"></i>
     </button>
     <button class="mobile-close-btn" onclick={onClose} aria-label="Close panel">
@@ -30,7 +34,11 @@
 {:else}
   <!-- Desktop Header - info button on left, title centered, close button on right -->
   <header class="desktop-header">
-    <button class="header-info-btn" onclick={onShowHelp} aria-label="Show help and shortcuts">
+    <button
+      class="header-info-btn"
+      onclick={onShowHelp}
+      aria-label="Show help and shortcuts"
+    >
       <i class="fas fa-circle-info"></i>
     </button>
     <span class="header-title">Animation Viewer</span>
@@ -108,7 +116,7 @@
     flex-shrink: 0;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
     min-height: 72px;
-    width:100%;
+    width: 100%;
   }
 
   .header-title {

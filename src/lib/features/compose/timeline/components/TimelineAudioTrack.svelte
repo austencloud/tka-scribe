@@ -164,7 +164,6 @@
 
       // Update project state
       getState().setAudioFile(file.name, audioUrl);
-
     } catch (error) {
       console.error("Failed to load audio:", error);
     } finally {
@@ -264,7 +263,8 @@
             class="bpm-input"
             value={audioBpm ?? ""}
             placeholder="BPM"
-            onchange={(e) => setBpm(parseInt((e.target as HTMLInputElement).value))}
+            onchange={(e) =>
+              setBpm(parseInt((e.target as HTMLInputElement).value))}
             min="40"
             max="240"
           />
@@ -302,10 +302,7 @@
     aria-label="Audio waveform"
   >
     {#if hasAudio}
-      <div
-        class="waveform-wrapper"
-        style="width: {timelineWidth}px"
-      >
+      <div class="waveform-wrapper" style="width: {timelineWidth}px">
         <!-- Beat markers overlay -->
         {#if audioBpm}
           <div class="beat-markers">

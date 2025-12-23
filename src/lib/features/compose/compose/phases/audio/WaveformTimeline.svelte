@@ -1,3 +1,11 @@
+<script context="module" lang="ts">
+  function formatTime(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  }
+</script>
+
 <!--
   WaveformTimeline.svelte
 
@@ -132,10 +140,10 @@
       backend: "WebAudio",
       minPxPerSec: DEFAULT_ZOOM,
       // Zoom/scroll configuration
-      fillParent: false,      // Allow waveform to expand when zoomed
-      autoScroll: true,       // Auto-scroll to keep cursor visible
-      autoCenter: true,       // Center cursor during playback
-      hideScrollbar: true,    // Hide scrollbar - minimap handles navigation
+      fillParent: false, // Allow waveform to expand when zoomed
+      autoScroll: true, // Auto-scroll to keep cursor visible
+      autoCenter: true, // Center cursor during playback
+      hideScrollbar: true, // Hide scrollbar - minimap handles navigation
     });
 
     // Log zoom events for debugging
@@ -322,80 +330,86 @@
     <!-- Wavesurfer container - wavesurfer handles its own scroll via Shadow DOM -->
     <div class="waveform-container" bind:this={containerEl}></div>
 
-  {#if !isReady}
-    <div class="loading-overlay">
-      <i class="fas fa-spinner fa-spin"></i>
-      <span>Loading waveform...</span>
-    </div>
-  {/if}
+    {#if !isReady}
+      <div class="loading-overlay">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading waveform...</span>
+      </div>
+    {/if}
 
-  <!-- Controls bar -->
-  <div class="controls-bar">
-    <!-- Playback controls -->
-    <div class="playback-controls">
-      <button
-        class="control-btn"
-        onclick={() => wavesurfer?.playPause()}
-        disabled={!isReady}
-        title={isPlaying ? "Pause (Space)" : "Play (Space)"}
-      >
-        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
-      </button>
-      <button
-        class="control-btn"
-        onclick={() => wavesurfer?.stop()}
-        disabled={!isReady}
-        title="Stop"
-      >
-        <i class="fas fa-stop"></i>
-      </button>
-    </div>
+    <!-- Controls bar -->
+    <div class="controls-bar">
+      <!-- Playback controls -->
+      <div class="playback-controls">
+        <button
+          class="control-btn"
+          onclick={() => wavesurfer?.playPause()}
+          disabled={!isReady}
+          title={isPlaying ? "Pause (Space)" : "Play (Space)"}
+        >
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        </button>
+        <button
+          class="control-btn"
+          onclick={() => wavesurfer?.stop()}
+          disabled={!isReady}
+          title="Stop"
+        >
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
 
-    <!-- Time display -->
-    <div class="time-display">
-      <span class="current">{formatTime(internalTime)}</span>
-      <span class="separator">/</span>
-      <span class="total">{formatTime(duration)}</span>
-    </div>
+      <!-- Time display -->
+      <div class="time-display">
+        <span class="current">{formatTime(internalTime)}</span>
+        <span class="separator">/</span>
+        <span class="total">{formatTime(duration)}</span>
+      </div>
 
-    <!-- Zoom controls -->
-    <div class="zoom-controls">
-      <button
-        class="control-btn small"
-        onclick={() => { zoomLevel = Math.max(MIN_ZOOM, zoomLevel - 20); applyZoom(zoomLevel); }}
-        disabled={!isReady || zoomLevel <= MIN_ZOOM}
-        title="Zoom out"
-      >
-        <i class="fas fa-search-minus"></i>
-      </button>
-      <input
-        type="range"
-        class="zoom-slider"
-        min={MIN_ZOOM}
-        max={MAX_ZOOM}
-        value={zoomLevel}
-        oninput={handleZoomChange}
-        disabled={!isReady}
-        title="Zoom level: {zoomLevel}px/s"
-      />
-      <button
-        class="control-btn small"
-        onclick={() => { zoomLevel = Math.min(MAX_ZOOM, zoomLevel + 20); applyZoom(zoomLevel); }}
-        disabled={!isReady || zoomLevel >= MAX_ZOOM}
-        title="Zoom in"
-      >
-        <i class="fas fa-search-plus"></i>
-      </button>
-      <button
-        class="control-btn small"
-        onclick={resetZoom}
-        disabled={!isReady || zoomLevel === DEFAULT_ZOOM}
-        title="Reset zoom"
-      >
-        <i class="fas fa-compress-arrows-alt"></i>
-      </button>
+      <!-- Zoom controls -->
+      <div class="zoom-controls">
+        <button
+          class="control-btn small"
+          onclick={() => {
+            zoomLevel = Math.max(MIN_ZOOM, zoomLevel - 20);
+            applyZoom(zoomLevel);
+          }}
+          disabled={!isReady || zoomLevel <= MIN_ZOOM}
+          title="Zoom out"
+        >
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <input
+          type="range"
+          class="zoom-slider"
+          min={MIN_ZOOM}
+          max={MAX_ZOOM}
+          value={zoomLevel}
+          oninput={handleZoomChange}
+          disabled={!isReady}
+          title="Zoom level: {zoomLevel}px/s"
+        />
+        <button
+          class="control-btn small"
+          onclick={() => {
+            zoomLevel = Math.min(MAX_ZOOM, zoomLevel + 20);
+            applyZoom(zoomLevel);
+          }}
+          disabled={!isReady || zoomLevel >= MAX_ZOOM}
+          title="Zoom in"
+        >
+          <i class="fas fa-search-plus"></i>
+        </button>
+        <button
+          class="control-btn small"
+          onclick={resetZoom}
+          disabled={!isReady || zoomLevel === DEFAULT_ZOOM}
+          title="Reset zoom"
+        >
+          <i class="fas fa-compress-arrows-alt"></i>
+        </button>
+      </div>
     </div>
-  </div>
 
     <!-- Keyboard hints (shown when focused) -->
     {#if isFocused && isReady}
@@ -407,14 +421,6 @@
     {/if}
   </div>
 </div>
-
-<script context="module" lang="ts">
-  function formatTime(seconds: number): string {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  }
-</script>
 
 <style>
   .waveform-wrapper {

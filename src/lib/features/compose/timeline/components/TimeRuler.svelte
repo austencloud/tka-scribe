@@ -30,7 +30,12 @@
 
   // Generate tick marks
   const ticks = $derived.by(() => {
-    const result: Array<{ id: string; time: number; major: boolean; x: number }> = [];
+    const result: Array<{
+      id: string;
+      time: number;
+      major: boolean;
+      x: number;
+    }> = [];
     const interval = tickInterval;
     const major = majorInterval;
 
@@ -62,11 +67,7 @@
 
 <div class="time-ruler">
   {#each ticks as tick (tick.id)}
-    <div
-      class="tick"
-      class:major={tick.major}
-      style="left: {tick.x}px"
-    >
+    <div class="tick" class:major={tick.major} style="left: {tick.x}px">
       <div class="tick-line"></div>
       {#if tick.major}
         <span class="tick-label">{formatTime(tick.time)}</span>

@@ -29,7 +29,10 @@
     {#if onBrowseLibrary}
       <button
         class="action-btn primary"
-        onclick={(e) => { e.stopPropagation(); onBrowseLibrary(); }}
+        onclick={(e) => {
+          e.stopPropagation();
+          onBrowseLibrary();
+        }}
       >
         <i class="fa-solid fa-folder-open"></i>
         Browse Library
@@ -122,8 +125,9 @@
     background: var(--theme-accent-strong, #3a7ed0);
     border-color: var(--theme-accent-strong, #3a7ed0);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
-                0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
   .action-btn.primary:active {

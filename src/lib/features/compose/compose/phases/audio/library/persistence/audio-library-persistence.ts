@@ -105,9 +105,10 @@ export async function saveAudio(
 /**
  * Load audio from IndexedDB
  */
-export async function loadAudio(
-  trackId: string
-): Promise<{ blob: Blob; metadata: { title: string; duration: number; thumbnailUrl?: string } } | null> {
+export async function loadAudio(trackId: string): Promise<{
+  blob: Blob;
+  metadata: { title: string; duration: number; thumbnailUrl?: string };
+} | null> {
   try {
     const db = await openDatabase();
 

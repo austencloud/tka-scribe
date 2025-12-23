@@ -53,7 +53,13 @@ export async function analyzeAudioBpm(
     // For short audio (<30s), analyze the whole thing
     if (duration < 30) {
       onProgress?.(0.5);
-      return await analyzeSection(audioBuffer, 0, duration, audioContext, sampleRate);
+      return await analyzeSection(
+        audioBuffer,
+        0,
+        duration,
+        audioContext,
+        sampleRate
+      );
     }
 
     // For longer audio, analyze in sections and find the best one
@@ -68,18 +74,30 @@ export async function analyzeAudioBpm(
 
     let currentStart = startOffset;
     let sectionIndex = 0;
-    const totalSections = Math.ceil((endOffset - startOffset - SECTION_SIZE) / SECTION_STEP) + 1;
+    const totalSections =
+      Math.ceil((endOffset - startOffset - SECTION_SIZE) / SECTION_STEP) + 1;
 
     while (currentStart + SECTION_SIZE <= endOffset) {
       const sectionEnd = Math.min(currentStart + SECTION_SIZE, endOffset);
 
       // Extract section from audio buffer
-      const sectionBuffer = extractSection(audioBuffer, currentStart, sectionEnd, audioContext);
+      const sectionBuffer = extractSection(
+        audioBuffer,
+        currentStart,
+        sectionEnd,
+        audioContext
+      );
 
-      onProgress?.(0.2 + (0.6 * sectionIndex / totalSections));
+      onProgress?.(0.2 + (0.6 * sectionIndex) / totalSections);
 
       try {
-        const result = await analyzeSection(sectionBuffer, currentStart, sectionEnd, audioContext, sampleRate);
+        const result = await analyzeSection(
+          sectionBuffer,
+          currentStart,
+          sectionEnd,
+          audioContext,
+          sampleRate
+        );
         sections.push({
           bpm: result.bpm,
           confidence: result.confidence,
@@ -100,7 +118,13 @@ export async function analyzeAudioBpm(
     // Find section with highest confidence
     if (sections.length === 0) {
       // Fallback: analyze whole buffer
-      return await analyzeSection(audioBuffer, 0, duration, audioContext, sampleRate);
+      return await analyzeSection(
+        audioBuffer,
+        0,
+        duration,
+        audioContext,
+        sampleRate
+      );
     }
 
     // Sort by confidence descending
@@ -131,7 +155,9 @@ export async function analyzeAudioBpm(
 
     onProgress?.(1.0);
 
-    console.log(`🎵 BPM analysis: ${sections.length} sections analyzed, best at ${best.startTime}s-${best.endTime}s`);
+    console.log(
+      `🎵 BPM analysis: ${sections.length} sections analyzed, best at ${best.startTime}s-${best.endTime}s`
+    );
 
     return {
       bpm: mostCommonBpm,
@@ -193,7 +219,10 @@ async function analyzeSection(
   if (result && result.length > 0) {
     const bestResult = result[0];
     const maxExpectedCount = 100;
-    const normalizedConfidence = Math.min(1, (bestResult?.count ?? 0) / maxExpectedCount);
+    const normalizedConfidence = Math.min(
+      1,
+      (bestResult?.count ?? 0) / maxExpectedCount
+    );
 
     return {
       bpm: Math.round(bestResult?.tempo ?? 120),

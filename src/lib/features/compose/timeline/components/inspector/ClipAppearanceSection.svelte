@@ -12,7 +12,14 @@
     onUpdateOpacity: (value: number) => void;
   }
 
-  let { color, rotation, opacity, onUpdateColor, onUpdateRotation, onUpdateOpacity }: Props = $props();
+  let {
+    color,
+    rotation,
+    opacity,
+    onUpdateColor,
+    onUpdateRotation,
+    onUpdateOpacity,
+  }: Props = $props();
 
   const COLOR_PRESETS = [
     "#4a9eff", // Blue
@@ -56,7 +63,8 @@
       max="360"
       step="15"
       value={rotation}
-      oninput={(e) => onUpdateRotation(parseInt((e.target as HTMLInputElement).value))}
+      oninput={(e) =>
+        onUpdateRotation(parseInt((e.target as HTMLInputElement).value))}
     />
   </div>
 
@@ -69,13 +77,14 @@
       max="1"
       step="0.05"
       value={opacity}
-      oninput={(e) => onUpdateOpacity(parseFloat((e.target as HTMLInputElement).value))}
+      oninput={(e) =>
+        onUpdateOpacity(parseFloat((e.target as HTMLInputElement).value))}
     />
   </div>
 </section>
 
 <style>
-  @import './inspector-styles.css';
+  @import "./inspector-styles.css";
 
   .color-presets {
     display: flex;

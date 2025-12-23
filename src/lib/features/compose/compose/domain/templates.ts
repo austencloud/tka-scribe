@@ -22,9 +22,7 @@ const SINGLE_TEMPLATE: CompositionTemplate = {
   icon: "fa-square",
   description: "Full-screen single sequence",
   layout: { rows: 1, cols: 1 },
-  cellDefaults: [
-    { type: "single", rotationOffset: 0 },
-  ],
+  cellDefaults: [{ type: "single", rotationOffset: 0 }],
   color: "#3b82f6", // Blue
 };
 
@@ -40,7 +38,12 @@ const MIRROR_TEMPLATE: CompositionTemplate = {
   layout: { rows: 1, cols: 2 },
   cellDefaults: [
     { type: "single", rotationOffset: 0, isMirrored: false },
-    { type: "single", rotationOffset: 0, isMirrored: true, mirrorSourceCellId: "cell-0-0" },
+    {
+      type: "single",
+      rotationOffset: 0,
+      isMirrored: true,
+      mirrorSourceCellId: "cell-0-0",
+    },
   ],
   color: "#8b5cf6", // Purple
 };
@@ -72,9 +75,7 @@ const TUNNEL_TEMPLATE: CompositionTemplate = {
   icon: "fa-circle-notch",
   description: "2-4 sequences overlaid",
   layout: { rows: 1, cols: 1 },
-  cellDefaults: [
-    { type: "tunnel" },
-  ],
+  cellDefaults: [{ type: "tunnel" }],
   color: "#ec4899", // Pink
 };
 
@@ -184,7 +185,9 @@ export function getAdvancedTemplates(): CompositionTemplate[] {
  * Create cells from a template
  * Applies the template's cell defaults to generate configured cells
  */
-export function createCellsFromTemplate(template: CompositionTemplate): CellConfig[] {
+export function createCellsFromTemplate(
+  template: CompositionTemplate
+): CellConfig[] {
   const cells: CellConfig[] = [];
   const { rows, cols } = template.layout;
 
@@ -218,7 +221,10 @@ export function findMatchingTemplate(
 ): CompositionTemplate | undefined {
   return COMPOSITION_TEMPLATES.find((template) => {
     // Check layout matches
-    if (template.layout.rows !== layout.rows || template.layout.cols !== layout.cols) {
+    if (
+      template.layout.rows !== layout.rows ||
+      template.layout.cols !== layout.cols
+    ) {
       return false;
     }
 

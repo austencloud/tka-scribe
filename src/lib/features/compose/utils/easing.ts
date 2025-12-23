@@ -31,9 +31,7 @@ export function applyEasing(progress: number, easingType: EasingType): number {
 
     case "ease-in-out":
       // Cubic ease-in-out: slow start and end, fast middle
-      return t < 0.5
-        ? 4 * t * t * t
-        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
     default:
       return t;
@@ -44,7 +42,7 @@ export function applyEasing(progress: number, easingType: EasingType): number {
  * Easing function descriptions for UI
  */
 export const EASING_DESCRIPTIONS: Record<EasingType, string> = {
-  "linear": "Constant speed",
+  linear: "Constant speed",
   "ease-in": "Slow start, fast end",
   "ease-out": "Fast start, slow end",
   "ease-in-out": "Smooth acceleration and deceleration",
@@ -54,7 +52,7 @@ export const EASING_DESCRIPTIONS: Record<EasingType, string> = {
  * Easing function display labels for UI
  */
 export const EASING_LABELS: Record<EasingType, string> = {
-  "linear": "Linear",
+  linear: "Linear",
   "ease-in": "Ease In",
   "ease-out": "Ease Out",
   "ease-in-out": "Ease Both",

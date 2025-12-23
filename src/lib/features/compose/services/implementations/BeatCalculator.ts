@@ -7,7 +7,10 @@
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
 import { injectable } from "inversify";
-import type { BeatCalculationResult, IBeatCalculator } from "../contracts/IBeatCalculator";
+import type {
+  BeatCalculationResult,
+  IBeatCalculator,
+} from "../contracts/IBeatCalculator";
 
 @injectable()
 export class BeatCalculator implements IBeatCalculator {
@@ -62,20 +65,19 @@ export class BeatCalculator implements IBeatCalculator {
       return false;
     }
 
-    const isValid = beats.every(
-      (beat, index) => {
-        const valid = beat && typeof beat.beatNumber === "number" && beat.beatNumber >= 0;
-        if (!valid) {
-          console.error(`BeatCalculator: Invalid beat at index ${index}:`, {
-            beat,
-            hasBeat: !!beat,
-            beatNumber: beat?.beatNumber,
-            beatNumberType: typeof beat?.beatNumber,
-          });
-        }
-        return valid;
+    const isValid = beats.every((beat, index) => {
+      const valid =
+        beat && typeof beat.beatNumber === "number" && beat.beatNumber >= 0;
+      if (!valid) {
+        console.error(`BeatCalculator: Invalid beat at index ${index}:`, {
+          beat,
+          hasBeat: !!beat,
+          beatNumber: beat?.beatNumber,
+          beatNumberType: typeof beat?.beatNumber,
+        });
       }
-    );
+      return valid;
+    });
 
     return isValid;
   }

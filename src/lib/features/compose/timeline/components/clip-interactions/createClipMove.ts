@@ -44,7 +44,7 @@ export function createClipMove(
 
   /** Get clip by ID from state (survives component remount) */
   function getClipById(id: string): TimelineClip | undefined {
-    return getState().allClips.find(c => c.id === id);
+    return getState().allClips.find((c) => c.id === id);
   }
 
   /**
@@ -56,17 +56,23 @@ export function createClipMove(
     const tracks = state.project.tracks;
 
     // Find the tracks container element
-    const tracksContainer = document.querySelector('.tracks-scroll-content');
+    const tracksContainer = document.querySelector(".tracks-scroll-content");
     if (!tracksContainer) return null;
 
     const containerRect = tracksContainer.getBoundingClientRect();
-    const relativeY = clientY - containerRect.top + (tracksContainer.parentElement?.scrollTop ?? 0);
+    const relativeY =
+      clientY -
+      containerRect.top +
+      (tracksContainer.parentElement?.scrollTop ?? 0);
 
     // Calculate cumulative heights to find which track
     let cumulativeHeight = 0;
     for (const track of tracks) {
       const trackHeight = track.height;
-      if (relativeY >= cumulativeHeight && relativeY < cumulativeHeight + trackHeight) {
+      if (
+        relativeY >= cumulativeHeight &&
+        relativeY < cumulativeHeight + trackHeight
+      ) {
         return track.id;
       }
       cumulativeHeight += trackHeight;
@@ -110,10 +116,14 @@ export function createClipMove(
     // Use skipSnap since we already applied snap via the snap service
     if (targetTrackId && targetTrackId !== clip.trackId) {
       // Moving to a different track - include track ID
-      getState().moveClip(dragClipId, snappedTime, targetTrackId, { skipSnap: true });
+      getState().moveClip(dragClipId, snappedTime, targetTrackId, {
+        skipSnap: true,
+      });
     } else {
       // Same track - just update position
-      getState().moveClip(dragClipId, snappedTime, undefined, { skipSnap: true });
+      getState().moveClip(dragClipId, snappedTime, undefined, {
+        skipSnap: true,
+      });
     }
   }
 

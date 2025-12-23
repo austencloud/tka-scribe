@@ -185,8 +185,9 @@
   .control-btn:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15),
-                0 0 8px color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
+    box-shadow:
+      0 4px 8px rgba(0, 0, 0, 0.15),
+      0 0 8px color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
     transform: translateY(-1px);
   }
 
@@ -196,10 +197,15 @@
   }
 
   .control-btn.active {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #4a9eff) 25%,
+      transparent
+    );
     border-color: var(--theme-accent, #4a9eff);
     color: var(--theme-accent, #4a9eff);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+    box-shadow: 0 0 12px
+      color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
   }
 
   .control-btn.play-btn {
@@ -210,16 +216,18 @@
   }
 
   .control-btn.play-btn:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
-                0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
   }
 
   .control-btn.play-btn.playing {
     background: var(--theme-accent, #4a9eff);
     border-color: var(--theme-accent-strong, #3a7ed0);
     color: white;
-    box-shadow: 0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent),
-                0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow:
+      0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent),
+      0 4px 8px rgba(0, 0, 0, 0.2);
   }
 
   .time-display {
@@ -261,14 +269,20 @@
     font-size: 10px;
     font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent),
-                0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow:
+      0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent),
+      0 2px 4px rgba(0, 0, 0, 0.2);
     animation: pulse 1s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
   }
 
   .spacer {
@@ -294,7 +308,11 @@
     padding: 6px 14px;
     border-radius: 8px;
     border: 1px solid var(--theme-accent, #4a9eff);
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #4a9eff) 12%,
+      transparent
+    );
     color: var(--theme-accent, #4a9eff);
     cursor: pointer;
     font-size: var(--font-size-compact, 12px);
@@ -308,8 +326,9 @@
     background: var(--theme-accent, #4a9eff);
     border-color: var(--theme-accent-strong, #3a7ed0);
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2),
-                0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 35%, transparent);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 35%, transparent);
     transform: translateY(-1px);
   }
 

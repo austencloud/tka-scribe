@@ -37,13 +37,21 @@
   }
 
   .status-overlay.muted {
-    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 60%,
+      transparent
+    );
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 16px;
   }
 
   .status-overlay.locked {
-    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 30%,
+      transparent
+    );
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     font-size: 14px;
   }

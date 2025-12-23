@@ -7,7 +7,11 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { AudioState, BeatMarker, TempoRegion } from "../../state/composition-state.svelte";
+  import type {
+    AudioState,
+    BeatMarker,
+    TempoRegion,
+  } from "../../state/composition-state.svelte";
   import WaveformTimeline from "./WaveformTimeline.svelte";
   import BeatMarkerTrack from "./BeatMarkerTrack.svelte";
   import TempoRegionTrack from "./TempoRegionTrack.svelte";
@@ -61,7 +65,13 @@
 
   // Auto-analyze BPM when audio is loaded (only once)
   $effect(() => {
-    if (audioState.isLoaded && audioState.url && !audioState.detectedBpm && !audioState.isAnalyzing && !analysisAttempted) {
+    if (
+      audioState.isLoaded &&
+      audioState.url &&
+      !audioState.detectedBpm &&
+      !audioState.isAnalyzing &&
+      !analysisAttempted
+    ) {
       analyzeBpm();
     }
   });
@@ -85,13 +95,19 @@
       bpmIsUncertain = result.isUncertain ?? result.confidence < 0.5;
 
       if (bpmIsUncertain) {
-        console.log(`🎵 BPM estimate: ${result.bpm} (low confidence: ${(result.confidence * 100).toFixed(0)}%) - verify manually`);
+        console.log(
+          `🎵 BPM estimate: ${result.bpm} (low confidence: ${(result.confidence * 100).toFixed(0)}%) - verify manually`
+        );
       } else {
-        console.log(`🎵 BPM detected: ${result.bpm} (confidence: ${(result.confidence * 100).toFixed(0)}%)`);
+        console.log(
+          `🎵 BPM detected: ${result.bpm} (confidence: ${(result.confidence * 100).toFixed(0)}%)`
+        );
       }
 
       if (result.bestSectionStart !== undefined) {
-        console.log(`🎵 Best beat detection at ${result.bestSectionStart}s into the track`);
+        console.log(
+          `🎵 Best beat detection at ${result.bestSectionStart}s into the track`
+        );
       }
     } catch (err) {
       console.error("🎵 BPM analysis failed:", err);
@@ -149,7 +165,10 @@
     fileInput?.click();
   }
 
-  function handleLibraryAudioSelected(audioBlob: Blob, metadata: { title: string; duration: number }) {
+  function handleLibraryAudioSelected(
+    audioBlob: Blob,
+    metadata: { title: string; duration: number }
+  ) {
     // Create a File from the Blob with the track title
     const fileName = `${metadata.title.replace(/[^a-zA-Z0-9 ]/g, "")}.mp3`;
     const file = new File([audioBlob], fileName, { type: "audio/mpeg" });
@@ -175,7 +194,9 @@
       </div>
       <h3>Audio Timeline</h3>
       <p>The audio editor is optimized for desktop screens.</p>
-      <p class="hint">Switch to a larger screen for the full timeline experience.</p>
+      <p class="hint">
+        Switch to a larger screen for the full timeline experience.
+      </p>
     </div>
   {:else}
     <!-- Desktop Audio Editor -->
@@ -218,7 +239,12 @@
             </div>
 
             <div class="source-buttons">
-              <LibrarySourceButton onclick={(e) => { e.stopPropagation(); openLibraryPanel(); }} />
+              <LibrarySourceButton
+                onclick={(e) => {
+                  e.stopPropagation();
+                  openLibraryPanel();
+                }}
+              />
             </div>
           </div>
         {/if}
@@ -230,7 +256,9 @@
               <i class="fas fa-file-audio"></i>
               <span class="file-name">{audioState.fileName}</span>
               <span class="duration">
-                {Math.floor(audioState.duration / 60)}:{String(Math.floor(audioState.duration % 60)).padStart(2, "0")}
+                {Math.floor(audioState.duration / 60)}:{String(
+                  Math.floor(audioState.duration % 60)
+                ).padStart(2, "0")}
               </span>
             </div>
             <button class="clear-btn" onclick={onClearAudio}>
@@ -258,7 +286,10 @@
                   Analyzing sections... {Math.round(bpmAnalysisProgress * 100)}%
                 </span>
                 <div class="progress-bar">
-                  <div class="progress-fill" style="width: {bpmAnalysisProgress * 100}%"></div>
+                  <div
+                    class="progress-fill"
+                    style="width: {bpmAnalysisProgress * 100}%"
+                  ></div>
                 </div>
               </div>
             {:else if bpmError}
@@ -349,7 +380,9 @@
             onRemoveMarker={onRemoveBeatMarker}
             onClearAll={() => {
               // Clear all beat markers
-              audioState.globalBeatMarkers.forEach((m) => onRemoveBeatMarker(m.id));
+              audioState.globalBeatMarkers.forEach((m) =>
+                onRemoveBeatMarker(m.id)
+              );
             }}
           />
         </div>

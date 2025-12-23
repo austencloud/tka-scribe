@@ -12,7 +12,14 @@
     onResetTrim: () => void;
   }
 
-  let { inPoint, outPoint, beatCount, onUpdateInPoint, onUpdateOutPoint, onResetTrim }: Props = $props();
+  let {
+    inPoint,
+    outPoint,
+    beatCount,
+    onUpdateInPoint,
+    onUpdateOutPoint,
+    onResetTrim,
+  }: Props = $props();
 
   // Convert to percentages for display
   let inPointPercent = $derived(Math.round(inPoint * 100));
@@ -48,7 +55,8 @@
           min="0"
           max="99"
           value={inPointPercent}
-          oninput={(e) => onUpdateInPoint(parseInt((e.target as HTMLInputElement).value))}
+          oninput={(e) =>
+            onUpdateInPoint(parseInt((e.target as HTMLInputElement).value))}
         />
         <span class="value-label">{inPointPercent}%</span>
       </div>
@@ -63,7 +71,8 @@
           min="1"
           max="100"
           value={outPointPercent}
-          oninput={(e) => onUpdateOutPoint(parseInt((e.target as HTMLInputElement).value))}
+          oninput={(e) =>
+            onUpdateOutPoint(parseInt((e.target as HTMLInputElement).value))}
         />
         <span class="value-label">{outPointPercent}%</span>
       </div>
@@ -77,7 +86,7 @@
 </section>
 
 <style>
-  @import './inspector-styles.css';
+  @import "./inspector-styles.css";
 
   .trim-range {
     position: relative;

@@ -97,8 +97,11 @@
       <div class="beats-container">
         {#each visibleBeats() as beatTime, index}
           {@const position = getPositionPercent(beatTime)}
-          {@const measureNum = showAllBeats ? Math.floor(index / 4) + 1 : index + 1}
-          {@const isCurrentMeasure = currentMeasure() === (showAllBeats ? Math.floor(index / 4) : index)}
+          {@const measureNum = showAllBeats
+            ? Math.floor(index / 4) + 1
+            : index + 1}
+          {@const isCurrentMeasure =
+            currentMeasure() === (showAllBeats ? Math.floor(index / 4) : index)}
           {@const isDownbeat = !showAllBeats || index % 4 === 0}
           <div
             class="beat-marker"

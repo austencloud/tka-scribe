@@ -16,7 +16,8 @@ export interface ViewportContext {
 }
 
 export function createViewportActions(ctx: ViewportContext) {
-  const { getViewport, setViewport, getTotalDuration, getPlayheadPosition } = ctx;
+  const { getViewport, setViewport, getTotalDuration, getPlayheadPosition } =
+    ctx;
 
   function setZoom(pixelsPerSecond: number) {
     const viewport = {

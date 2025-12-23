@@ -205,7 +205,7 @@ export function createCompositionState() {
 
   const selectedCell = $derived(
     selectedCellId
-      ? composition.cells.find((c) => c.id === selectedCellId) ?? null
+      ? (composition.cells.find((c) => c.id === selectedCellId) ?? null)
       : null
   );
 
@@ -316,7 +316,10 @@ export function createCompositionState() {
 
   function setCellSequences(cellId: string, sequences: SequenceData[]) {
     updateCell(cellId, { sequences });
-    console.log(`🎨 Composition: Cell ${cellId} sequences updated`, sequences.map((s) => s.name));
+    console.log(
+      `🎨 Composition: Cell ${cellId} sequences updated`,
+      sequences.map((s) => s.name)
+    );
   }
 
   function addSequenceToCell(cellId: string, sequence: SequenceData) {
@@ -335,13 +338,17 @@ export function createCompositionState() {
 
   function removeSequenceFromCell(cellId: string, sequenceIndex: number) {
     const cell = composition.cells.find((c) => c.id === cellId);
-    if (!cell || sequenceIndex < 0 || sequenceIndex >= cell.sequences.length) return;
+    if (!cell || sequenceIndex < 0 || sequenceIndex >= cell.sequences.length)
+      return;
 
     const newSequences = cell.sequences.filter((_, i) => i !== sequenceIndex);
     setCellSequences(cellId, newSequences);
   }
 
-  function setCellTrailSettings(cellId: string, settings: Partial<TrailSettings>) {
+  function setCellTrailSettings(
+    cellId: string,
+    settings: Partial<TrailSettings>
+  ) {
     const cell = composition.cells.find((c) => c.id === cellId);
     if (!cell) return;
 
@@ -354,9 +361,14 @@ export function createCompositionState() {
     updateCell(cellId, { rotationOffset: rotation });
   }
 
-  function setCellMediaType(cellId: string, mediaType: "animation" | "video" | "beatGrid" | "image") {
+  function setCellMediaType(
+    cellId: string,
+    mediaType: "animation" | "video" | "beatGrid" | "image"
+  ) {
     updateCell(cellId, { mediaType });
-    console.log(`🎨 Composition: Cell ${cellId} media type set to ${mediaType}`);
+    console.log(
+      `🎨 Composition: Cell ${cellId} media type set to ${mediaType}`
+    );
   }
 
   function clearCell(cellId: string) {
@@ -528,7 +540,12 @@ export function createCompositionState() {
 
     // Save to IndexedDB cache (for persistence across refreshes)
     if (!skipCache) {
-      saveAudioToCache(file, audioState.duration, audioState.detectedBpm, audioState.manualBpm);
+      saveAudioToCache(
+        file,
+        audioState.duration,
+        audioState.detectedBpm,
+        audioState.manualBpm
+      );
     }
   }
 
@@ -660,7 +677,9 @@ export function createCompositionState() {
       (a, b) => a.startTime - b.startTime
     );
     audioState = { ...audioState, tempoRegions: regions };
-    console.log(`🎵 Composition: Added tempo region at ${region.startTime}s (${region.bpm} BPM)`);
+    console.log(
+      `🎵 Composition: Added tempo region at ${region.startTime}s (${region.bpm} BPM)`
+    );
   }
 
   function removeTempoRegion(regionId: string) {
@@ -752,32 +771,72 @@ export function createCompositionState() {
 
   return {
     // Core state getters
-    get composition() { return composition; },
-    get isPlaying() { return isPlaying; },
-    get isPreviewing() { return isPreviewing; },
-    get bpm() { return bpm; },
-    get shouldLoop() { return shouldLoop; },
-    get currentBeat() { return currentBeat; },
+    get composition() {
+      return composition;
+    },
+    get isPlaying() {
+      return isPlaying;
+    },
+    get isPreviewing() {
+      return isPreviewing;
+    },
+    get bpm() {
+      return bpm;
+    },
+    get shouldLoop() {
+      return shouldLoop;
+    },
+    get currentBeat() {
+      return currentBeat;
+    },
 
     // UI state getters
-    get selectedCellId() { return selectedCellId; },
-    get isTemplatesOpen() { return isTemplatesOpen; },
-    get isCellConfigOpen() { return isCellConfigOpen; },
-    get isSettingsOpen() { return isSettingsOpen; },
-    get isFullscreen() { return isFullscreen; },
+    get selectedCellId() {
+      return selectedCellId;
+    },
+    get isTemplatesOpen() {
+      return isTemplatesOpen;
+    },
+    get isCellConfigOpen() {
+      return isCellConfigOpen;
+    },
+    get isSettingsOpen() {
+      return isSettingsOpen;
+    },
+    get isFullscreen() {
+      return isFullscreen;
+    },
 
     // Workflow phase getters
-    get currentPhase() { return currentPhase; },
-    get audioState() { return audioState; },
+    get currentPhase() {
+      return currentPhase;
+    },
+    get audioState() {
+      return audioState;
+    },
 
     // Derived getters
-    get cellCount() { return cellCount; },
-    get hasEmptyCells() { return hasEmptyCells; },
-    get canPlay() { return canPlay; },
-    get isComplete() { return isComplete; },
-    get selectedCell() { return selectedCell; },
-    get effectiveBpm() { return effectiveBpm; },
-    get hasAudio() { return hasAudio; },
+    get cellCount() {
+      return cellCount;
+    },
+    get hasEmptyCells() {
+      return hasEmptyCells;
+    },
+    get canPlay() {
+      return canPlay;
+    },
+    get isComplete() {
+      return isComplete;
+    },
+    get selectedCell() {
+      return selectedCell;
+    },
+    get effectiveBpm() {
+      return effectiveBpm;
+    },
+    get hasAudio() {
+      return hasAudio;
+    },
 
     // Layout mutations
     setLayout,

@@ -159,7 +159,10 @@ export class TimelinePlaybackEngine {
     this.audioSyncEnabled = true;
 
     // Listen for audio time updates as fallback sync
-    audioElement.addEventListener("timeupdate", this.handleAudioTimeUpdate.bind(this));
+    audioElement.addEventListener(
+      "timeupdate",
+      this.handleAudioTimeUpdate.bind(this)
+    );
 
     console.log("🔊 TimelinePlaybackEngine: Audio connected");
   }
@@ -169,7 +172,10 @@ export class TimelinePlaybackEngine {
    */
   disconnectAudio(): void {
     if (this.audioElement) {
-      this.audioElement.removeEventListener("timeupdate", this.handleAudioTimeUpdate.bind(this));
+      this.audioElement.removeEventListener(
+        "timeupdate",
+        this.handleAudioTimeUpdate.bind(this)
+      );
       this.audioElement = null;
     }
     this.audioSyncEnabled = false;
@@ -268,7 +274,8 @@ export class TimelinePlaybackEngine {
     this.lastFrameTime = currentTime;
 
     // Calculate new position
-    const deltaSeconds = (deltaMs / 1000) * state.shuttleSpeed * state.direction;
+    const deltaSeconds =
+      (deltaMs / 1000) * state.shuttleSpeed * state.direction;
     let newPosition = state.position + deltaSeconds;
 
     // Handle loop region
@@ -308,7 +315,9 @@ export class TimelinePlaybackEngine {
    * Update which clips are active at current position
    */
   private updateActiveClips(position: TimeSeconds): void {
-    const activeClips = this.getActiveClipsAt(position).map((info) => info.clip);
+    const activeClips = this.getActiveClipsAt(position).map(
+      (info) => info.clip
+    );
     this.config.onActiveClipsChange(activeClips);
   }
 
@@ -337,7 +346,9 @@ let engineInstance: TimelinePlaybackEngine | null = null;
 /**
  * Create or get the singleton playback engine
  */
-export function createPlaybackEngine(config: PlaybackEngineConfig): TimelinePlaybackEngine {
+export function createPlaybackEngine(
+  config: PlaybackEngineConfig
+): TimelinePlaybackEngine {
   if (engineInstance) {
     engineInstance.destroy();
   }

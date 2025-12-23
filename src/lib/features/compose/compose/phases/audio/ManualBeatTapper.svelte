@@ -172,16 +172,26 @@
           <div class="recent-header">
             <span>Recent Taps</span>
             <div class="recent-actions">
-              <button class="action-btn" onclick={removeLast} title="Remove last tap">
+              <button
+                class="action-btn"
+                onclick={removeLast}
+                title="Remove last tap"
+              >
                 <i class="fas fa-undo"></i>
               </button>
-              <button class="action-btn danger" onclick={clearAllTaps} title="Clear all taps">
+              <button
+                class="action-btn danger"
+                onclick={clearAllTaps}
+                title="Clear all taps"
+              >
                 <i class="fas fa-trash"></i>
               </button>
             </div>
           </div>
           <div class="tap-list">
-            {#each [...beatMarkers].sort((a, b) => b.time - a.time).slice(0, 5) as marker}
+            {#each [...beatMarkers]
+              .sort((a, b) => b.time - a.time)
+              .slice(0, 5) as marker}
               <div class="tap-item">
                 <span class="tap-beat">Beat {marker.beat}</span>
                 <span class="tap-time">{formatTime(marker.time)}</span>
@@ -202,7 +212,8 @@
       <div class="instructions">
         <p>
           <i class="fas fa-info-circle"></i>
-          Play the audio and tap along with the beats. The average BPM will be calculated from your taps.
+          Play the audio and tap along with the beats. The average BPM will be calculated
+          from your taps.
         </p>
       </div>
     </div>
@@ -327,7 +338,11 @@
     justify-content: center;
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.3) 0%, rgba(245, 158, 11, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(251, 191, 36, 0.3) 0%,
+      rgba(245, 158, 11, 0.3) 100%
+    );
     border: 2px solid rgba(251, 191, 36, 0.5);
     border-radius: 50%;
     color: rgba(251, 191, 36, 1);
@@ -350,7 +365,11 @@
   .tap-button:active:not(:disabled),
   .tap-button.feedback {
     transform: scale(0.95);
-    background: linear-gradient(135deg, rgba(251, 191, 36, 0.5) 0%, rgba(245, 158, 11, 0.5) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(251, 191, 36, 0.5) 0%,
+      rgba(245, 158, 11, 0.5) 100%
+    );
   }
 
   .tap-button:disabled {

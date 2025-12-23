@@ -86,7 +86,10 @@
     const deltaTime = deltaPercent * totalDuration;
 
     const maxScroll = Math.max(0, totalDuration - visibleDuration);
-    const newScrollTime = Math.max(0, Math.min(maxScroll, dragStartViewport + deltaTime));
+    const newScrollTime = Math.max(
+      0,
+      Math.min(maxScroll, dragStartViewport + deltaTime)
+    );
 
     onScroll?.(newScrollTime);
   }
@@ -201,7 +204,9 @@
     border: 1px solid rgba(74, 158, 255, 0.5);
     border-radius: 2px;
     cursor: grab;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease;
     min-width: 8px;
   }
 

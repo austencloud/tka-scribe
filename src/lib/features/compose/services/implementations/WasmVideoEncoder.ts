@@ -48,7 +48,10 @@ export class WasmVideoEncoder {
     this.encoder.initialize();
 
     // Create a canvas for resizing if dimensions need adjustment
-    if (this.encoderWidth !== this.width || this.encoderHeight !== this.height) {
+    if (
+      this.encoderWidth !== this.width ||
+      this.encoderHeight !== this.height
+    ) {
       this.resizeCanvas = document.createElement("canvas");
       this.resizeCanvas.width = this.encoderWidth;
       this.resizeCanvas.height = this.encoderHeight;
@@ -66,7 +69,13 @@ export class WasmVideoEncoder {
     // Get the canvas to encode from (resize if needed)
     let canvasToEncode = sourceCanvas;
     if (this.resizeCanvas && this.resizeCtx) {
-      this.resizeCtx.drawImage(sourceCanvas, 0, 0, this.resizeCanvas.width, this.resizeCanvas.height);
+      this.resizeCtx.drawImage(
+        sourceCanvas,
+        0,
+        0,
+        this.resizeCanvas.width,
+        this.resizeCanvas.height
+      );
       canvasToEncode = this.resizeCanvas;
     }
 
@@ -76,7 +85,12 @@ export class WasmVideoEncoder {
       throw new Error("Could not get canvas context");
     }
 
-    const imageData = ctx.getImageData(0, 0, canvasToEncode.width, canvasToEncode.height);
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      canvasToEncode.width,
+      canvasToEncode.height
+    );
 
     // h264-mp4-encoder expects RGBA data
     this.encoder.addFrameRgba(imageData.data);

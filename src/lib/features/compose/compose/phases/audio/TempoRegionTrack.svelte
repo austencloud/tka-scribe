@@ -143,7 +143,7 @@
   <div class="track-body">
     <!-- Base BPM indicator -->
     <div class="base-bpm-line" title="Base BPM: {baseBpm ?? 'Not set'}">
-      <span class="base-label">{baseBpm ?? '?'}</span>
+      <span class="base-label">{baseBpm ?? "?"}</span>
     </div>
 
     <!-- Tempo regions -->
@@ -158,13 +158,18 @@
           background: {getBpmColor(region.bpm)};
         "
         onclick={() => startEditing(region)}
-        title="{region.bpm} BPM ({region.startTime.toFixed(1)}s - {region.endTime.toFixed(1)}s)"
+        title="{region.bpm} BPM ({region.startTime.toFixed(
+          1
+        )}s - {region.endTime.toFixed(1)}s)"
       >
         <span class="region-bpm">{region.bpm}</span>
         {#if !isEditing}
           <button
             class="region-delete"
-            onclick={(e) => { e.stopPropagation(); onRemoveRegion?.(region.id); }}
+            onclick={(e) => {
+              e.stopPropagation();
+              onRemoveRegion?.(region.id);
+            }}
             title="Remove region"
           >
             <i class="fas fa-times"></i>
@@ -228,17 +233,13 @@
             <i class="fas fa-check"></i>
             Add
           </button>
-          <button class="cancel-btn" onclick={cancelAddRegion}>
-            Cancel
-          </button>
+          <button class="cancel-btn" onclick={cancelAddRegion}> Cancel </button>
         {:else}
           <button class="confirm-btn" onclick={saveEdit}>
             <i class="fas fa-check"></i>
             Save
           </button>
-          <button class="cancel-btn" onclick={cancelEdit}>
-            Cancel
-          </button>
+          <button class="cancel-btn" onclick={cancelEdit}> Cancel </button>
         {/if}
       </div>
     </div>

@@ -75,11 +75,12 @@ export function createBrowseState() {
         case "name":
           comparison = a.name.localeCompare(b.name);
           break;
-        case "popularity":
+        case "popularity": {
           const aPopularity = (a.viewCount || 0) + (a.shareCount || 0) * 2;
           const bPopularity = (b.viewCount || 0) + (b.shareCount || 0) * 2;
           comparison = aPopularity - bPopularity;
           break;
+        }
       }
 
       return sortDirection === "asc" ? comparison : -comparison;

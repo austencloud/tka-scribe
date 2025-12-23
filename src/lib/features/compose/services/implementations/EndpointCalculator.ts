@@ -9,7 +9,10 @@
 
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { MotionEndpoints } from "$lib/shared/pictograph/shared/domain/models/MotionEndpoints";
-import { MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IAngleCalculator } from "../contracts/IAngleCalculator";

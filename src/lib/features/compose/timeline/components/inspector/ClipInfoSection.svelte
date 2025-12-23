@@ -59,7 +59,7 @@
 </section>
 
 <style>
-  @import './inspector-styles.css';
+  @import "./inspector-styles.css";
 
   .info-row {
     display: flex;

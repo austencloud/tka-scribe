@@ -47,8 +47,16 @@ export class PixiTextureLoader {
       // CRITICAL: Create new textures BEFORE destroying old ones
       // This prevents race condition where renderScene uses destroyed texture
       const [newBlueTexture, newRedTexture] = await Promise.all([
-        this.createTextureFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
-        this.createTextureFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+        this.createTextureFromSVG(
+          bluePropData.svg,
+          bluePropData.width,
+          bluePropData.height
+        ),
+        this.createTextureFromSVG(
+          redPropData.svg,
+          redPropData.width,
+          redPropData.height
+        ),
       ]);
 
       // Now safe to destroy old textures and swap
@@ -95,8 +103,16 @@ export class PixiTextureLoader {
       // CRITICAL: Create new textures BEFORE destroying old ones
       // This prevents race condition where renderScene uses destroyed texture
       const [newBlueTexture, newRedTexture] = await Promise.all([
-        this.createTextureFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
-        this.createTextureFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+        this.createTextureFromSVG(
+          bluePropData.svg,
+          bluePropData.width,
+          bluePropData.height
+        ),
+        this.createTextureFromSVG(
+          redPropData.svg,
+          redPropData.width,
+          redPropData.height
+        ),
       ]);
 
       // Now safe to destroy old textures and swap
@@ -112,7 +128,10 @@ export class PixiTextureLoader {
         red: this.redPropTexture,
       };
     } catch (error) {
-      console.error("[PixiTextureLoader] Failed to load per-color prop textures:", error);
+      console.error(
+        "[PixiTextureLoader] Failed to load per-color prop textures:",
+        error
+      );
       throw error;
     }
   }
@@ -184,7 +203,9 @@ export class PixiTextureLoader {
     try {
       const { TYPES } = await import("$lib/shared/inversify/types");
       const { resolve } = await import("$lib/shared/inversify/di");
-      const { GridMode } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
+      const { GridMode } = await import(
+        "$lib/shared/pictograph/grid/domain/enums/grid-enums"
+      );
       const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
 
       // Convert gridMode string to GridMode enum
@@ -243,7 +264,7 @@ export class PixiTextureLoader {
       if (resource?.source) {
         const canvas = resource.source as HTMLCanvasElement;
         if (canvas instanceof HTMLCanvasElement) {
-          const ctx = canvas.getContext('2d');
+          const ctx = canvas.getContext("2d");
           if (ctx) {
             // Check a small region where the glyph should be (bottom-left)
             // Glyph at x=50, y=800 in 952px viewBox = x=100, y=1600 in 1900px texture
@@ -384,4 +405,3 @@ export class PixiTextureLoader {
     this.previousGlyphTexture = null;
   }
 }
-

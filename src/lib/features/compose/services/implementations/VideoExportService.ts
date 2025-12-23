@@ -54,17 +54,16 @@ export class VideoExportService implements IVideoExportService {
       throw new Error("Export already in progress");
     }
 
-    const {
-      bitrate = 5_000_000,
-      fps = VIDEO_EXPORT_FPS,
-    } = options;
+    const { bitrate = 5_000_000, fps = VIDEO_EXPORT_FPS } = options;
 
     this.isCurrentlyExporting = true;
     this.shouldCancel = false;
 
     // Choose encoder based on browser support
     const useWebCodecs = this.hasWebCodecs();
-    console.log(`🎬 Using ${useWebCodecs ? "WebCodecs" : "WASM"} encoder for video export`);
+    console.log(
+      `🎬 Using ${useWebCodecs ? "WebCodecs" : "WASM"} encoder for video export`
+    );
 
     if (useWebCodecs) {
       this.activeEncoder = new WebCodecsVideoEncoder({

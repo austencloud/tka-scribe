@@ -61,7 +61,10 @@ export interface AudioTrackLocal extends AudioTrack {
 /**
  * Convert Firestore track to local track with availability check
  */
-export function toLocalTrack(track: AudioTrack, isLocallyAvailable: boolean): AudioTrackLocal {
+export function toLocalTrack(
+  track: AudioTrack,
+  isLocallyAvailable: boolean
+): AudioTrackLocal {
   return {
     ...track,
     isLocallyAvailable,

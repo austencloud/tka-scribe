@@ -49,10 +49,11 @@ const stepPlaybackPauseMsPersistence = createPersistenceHelper<number>({
   defaultValue: 250,
 });
 
-const stepPlaybackStepSizePersistence = createPersistenceHelper<StepPlaybackStepSize>({
-  key: "tka_animation_step_playback_step_size",
-  defaultValue: 1,
-});
+const stepPlaybackStepSizePersistence =
+  createPersistenceHelper<StepPlaybackStepSize>({
+    key: "tka_animation_step_playback_step_size",
+    defaultValue: 1,
+  });
 
 export type AnimationPanelState = {
   // Playback state
@@ -115,7 +116,9 @@ export function createAnimationPanelState(): AnimationPanelState {
   let shouldLoop = $state(loopPersistence.load());
   let playbackMode = $state<PlaybackMode>(playbackModePersistence.load());
   let stepPlaybackPauseMs = $state(stepPlaybackPauseMsPersistence.load());
-  let stepPlaybackStepSize = $state<StepPlaybackStepSize>(stepPlaybackStepSizePersistence.load());
+  let stepPlaybackStepSize = $state<StepPlaybackStepSize>(
+    stepPlaybackStepSizePersistence.load()
+  );
 
   // Export settings
   let exportLoopCount = $state(exportLoopCountPersistence.load());

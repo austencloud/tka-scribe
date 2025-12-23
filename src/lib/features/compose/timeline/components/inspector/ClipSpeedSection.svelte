@@ -49,7 +49,8 @@
         max="4"
         step="0.05"
         value={playbackRate}
-        oninput={(e) => onUpdateSpeed(parseFloat((e.target as HTMLInputElement).value))}
+        oninput={(e) =>
+          onUpdateSpeed(parseFloat((e.target as HTMLInputElement).value))}
       />
       <input
         type="number"
@@ -58,14 +59,15 @@
         max="4"
         step="0.05"
         value={playbackRate.toFixed(2)}
-        onchange={(e) => onUpdateSpeed(parseFloat((e.target as HTMLInputElement).value))}
+        onchange={(e) =>
+          onUpdateSpeed(parseFloat((e.target as HTMLInputElement).value))}
       />
     </div>
   </div>
 </section>
 
 <style>
-  @import './inspector-styles.css';
+  @import "./inspector-styles.css";
 
   .speed-presets {
     display: flex;

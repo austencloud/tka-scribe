@@ -39,14 +39,16 @@
       title: "Mirror",
       description: "Side-by-side mirrored copy",
       slotCount: 1,
-      gradient: "linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, #7c3aed 100%)", // Purple
+      gradient:
+        "linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, #7c3aed 100%)", // Purple
     },
     {
       id: "tunnel" as ComposeMode,
       title: "Tunnel",
       description: "Two sequences overlaid",
       slotCount: 2,
-      gradient: "linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, var(--theme-accent-strong, #4f46e5) 100%)", // Blue
+      gradient:
+        "linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, var(--theme-accent-strong, #4f46e5) 100%)", // Blue
     },
     {
       id: "grid" as ComposeMode,

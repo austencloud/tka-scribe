@@ -35,13 +35,37 @@
   let loopCount = $state(1);
   let isExporting = $state(false);
 
-  const formats: Array<{ value: ExportFormat; label: string; icon: string; description: string }> = [
-    { value: "mp4", label: "MP4 Video", icon: "fas fa-film", description: "Best for sharing" },
-    { value: "gif", label: "GIF", icon: "fas fa-image", description: "Animated, no audio" },
-    { value: "webm", label: "WebM", icon: "fas fa-video", description: "Web optimized" },
+  const formats: Array<{
+    value: ExportFormat;
+    label: string;
+    icon: string;
+    description: string;
+  }> = [
+    {
+      value: "mp4",
+      label: "MP4 Video",
+      icon: "fas fa-film",
+      description: "Best for sharing",
+    },
+    {
+      value: "gif",
+      label: "GIF",
+      icon: "fas fa-image",
+      description: "Animated, no audio",
+    },
+    {
+      value: "webm",
+      label: "WebM",
+      icon: "fas fa-video",
+      description: "Web optimized",
+    },
   ];
 
-  const qualities: Array<{ value: "low" | "medium" | "high"; label: string; resolution: string }> = [
+  const qualities: Array<{
+    value: "low" | "medium" | "high";
+    label: string;
+    resolution: string;
+  }> = [
     { value: "low", label: "Low", resolution: "480p" },
     { value: "medium", label: "Medium", resolution: "720p" },
     { value: "high", label: "High", resolution: "1080p" },
@@ -155,7 +179,7 @@
           <div class="loop-control">
             <button
               class="loop-btn"
-              onclick={() => loopCount = Math.max(1, loopCount - 1)}
+              onclick={() => (loopCount = Math.max(1, loopCount - 1))}
               disabled={loopCount <= 1}
             >
               <i class="fas fa-minus"></i>
@@ -163,7 +187,7 @@
             <span class="loop-count">{loopCount}x</span>
             <button
               class="loop-btn"
-              onclick={() => loopCount = Math.min(10, loopCount + 1)}
+              onclick={() => (loopCount = Math.min(10, loopCount + 1))}
               disabled={loopCount >= 10}
             >
               <i class="fas fa-plus"></i>
@@ -484,7 +508,11 @@
     justify-content: center;
     gap: 0.75rem;
     padding: 1rem 2rem;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.8) 0%, rgba(124, 58, 237, 0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.8) 0%,
+      rgba(124, 58, 237, 0.8) 100%
+    );
     border: none;
     border-radius: 12px;
     color: white;
@@ -495,7 +523,11 @@
   }
 
   .export-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 1) 0%, rgba(124, 58, 237, 1) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 1) 0%,
+      rgba(124, 58, 237, 1) 100%
+    );
     transform: translateY(-1px);
   }
 

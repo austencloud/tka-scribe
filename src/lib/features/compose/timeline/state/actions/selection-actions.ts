@@ -5,8 +5,15 @@
  * Uses callback injection to preserve Svelte 5 reactivity.
  */
 
-import type { SelectionState, TimelineClip, TimeSeconds } from "../../domain/timeline-types";
-import { createDefaultSelectionState, getClipEndTime } from "../../domain/timeline-types";
+import type {
+  SelectionState,
+  TimelineClip,
+  TimeSeconds,
+} from "../../domain/timeline-types";
+import {
+  createDefaultSelectionState,
+  getClipEndTime,
+} from "../../domain/timeline-types";
 
 export interface SelectionContext {
   getSelection: () => SelectionState;
@@ -49,7 +56,11 @@ export function createSelectionActions(ctx: SelectionContext) {
     setSelection(createDefaultSelectionState());
   }
 
-  function selectClipsInRange(start: TimeSeconds, end: TimeSeconds, trackIds?: string[]) {
+  function selectClipsInRange(
+    start: TimeSeconds,
+    end: TimeSeconds,
+    trackIds?: string[]
+  ) {
     const clipsInRange = getAllClips().filter((c) => {
       const inTimeRange = c.startTime < end && getClipEndTime(c) > start;
       const inTrackRange = !trackIds || trackIds.includes(c.trackId);

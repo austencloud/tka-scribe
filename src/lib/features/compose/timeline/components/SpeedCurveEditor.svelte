@@ -12,7 +12,10 @@
    */
 
   import { getTimelineState } from "../state/timeline-state.svelte";
-  import type { SpeedCurvePreset, TimelineClip } from "../domain/timeline-types";
+  import type {
+    SpeedCurvePreset,
+    TimelineClip,
+  } from "../domain/timeline-types";
 
   interface Props {
     clipId: string;
@@ -26,7 +29,9 @@
   }
 
   // Local reactive state
-  let clip = $state<ReturnType<typeof getState>["allClips"][number] | undefined>(undefined);
+  let clip = $state<
+    ReturnType<typeof getState>["allClips"][number] | undefined
+  >(undefined);
 
   // Sync from timeline state
   $effect(() => {
@@ -34,13 +39,48 @@
   });
 
   // Available presets
-  const PRESETS: { id: SpeedCurvePreset; name: string; icon: string; description: string }[] = [
-    { id: "linear", name: "Linear", icon: "fa-arrow-right", description: "Constant speed" },
-    { id: "ease-in", name: "Ease In", icon: "fa-arrow-right-to-arc", description: "Slow start, fast finish" },
-    { id: "ease-out", name: "Ease Out", icon: "fa-arrow-left-from-arc", description: "Fast start, slow finish" },
-    { id: "ease-in-out", name: "Ease In/Out", icon: "fa-arrows-left-right", description: "Smooth acceleration and deceleration" },
-    { id: "bounce", name: "Bounce", icon: "fa-basketball", description: "Bouncy effect at end" },
-    { id: "elastic", name: "Elastic", icon: "fa-wave-square", description: "Springy overshoot" },
+  const PRESETS: {
+    id: SpeedCurvePreset;
+    name: string;
+    icon: string;
+    description: string;
+  }[] = [
+    {
+      id: "linear",
+      name: "Linear",
+      icon: "fa-arrow-right",
+      description: "Constant speed",
+    },
+    {
+      id: "ease-in",
+      name: "Ease In",
+      icon: "fa-arrow-right-to-arc",
+      description: "Slow start, fast finish",
+    },
+    {
+      id: "ease-out",
+      name: "Ease Out",
+      icon: "fa-arrow-left-from-arc",
+      description: "Fast start, slow finish",
+    },
+    {
+      id: "ease-in-out",
+      name: "Ease In/Out",
+      icon: "fa-arrows-left-right",
+      description: "Smooth acceleration and deceleration",
+    },
+    {
+      id: "bounce",
+      name: "Bounce",
+      icon: "fa-basketball",
+      description: "Bouncy effect at end",
+    },
+    {
+      id: "elastic",
+      name: "Elastic",
+      icon: "fa-wave-square",
+      description: "Springy overshoot",
+    },
   ];
 
   // Current selection
@@ -94,8 +134,11 @@
         return position === 0
           ? 0
           : position === 1
-          ? baseSpeed
-          : baseSpeed * Math.pow(2, -10 * position) * Math.sin((position * 10 - 0.75) * c4) + baseSpeed;
+            ? baseSpeed
+            : baseSpeed *
+                Math.pow(2, -10 * position) *
+                Math.sin((position * 10 - 0.75) * c4) +
+              baseSpeed;
 
       default:
         return baseSpeed;
@@ -215,7 +258,9 @@
   function applyPreset(preset: SpeedCurvePreset) {
     selectedPreset = preset;
     // In a full implementation, this would update the clip's speedCurve property
-    console.log(`🎢 Speed curve preset "${preset}" selected for clip ${clipId}`);
+    console.log(
+      `🎢 Speed curve preset "${preset}" selected for clip ${clipId}`
+    );
   }
 </script>
 
@@ -262,7 +307,9 @@
             onmouseleave={handleCanvasMouseLeave}
           ></canvas>
           <div class="axis-labels">
-            <span class="label y-max">{((clip?.playbackRate ?? 1) * 2).toFixed(1)}x</span>
+            <span class="label y-max"
+              >{((clip?.playbackRate ?? 1) * 2).toFixed(1)}x</span
+            >
             <span class="label y-min">0x</span>
             <span class="label x-min">Start</span>
             <span class="label x-max">End</span>
@@ -281,7 +328,10 @@
     <!-- Info -->
     <div class="info-box">
       <i class="fa-solid fa-info-circle"></i>
-      <p>Speed curves allow the playback speed to change over the clip duration. Select a preset above to see how speed varies from start to end.</p>
+      <p>
+        Speed curves allow the playback speed to change over the clip duration.
+        Select a preset above to see how speed varies from start to end.
+      </p>
     </div>
   </div>
 </div>
@@ -430,10 +480,22 @@
     position: absolute;
   }
 
-  .y-max { top: 4px; left: 4px; }
-  .y-min { bottom: 4px; left: 4px; }
-  .x-min { bottom: 4px; left: 4px; }
-  .x-max { bottom: 4px; right: 4px; }
+  .y-max {
+    top: 4px;
+    left: 4px;
+  }
+  .y-min {
+    bottom: 4px;
+    left: 4px;
+  }
+  .x-min {
+    bottom: 4px;
+    left: 4px;
+  }
+  .x-max {
+    bottom: 4px;
+    right: 4px;
+  }
 
   .hover-info {
     display: flex;

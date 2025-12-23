@@ -82,7 +82,13 @@ export class CanvasRenderer implements ICanvasRenderer {
     letterViewBoxDimensions: { width: number; height: number },
     opacity: number = 1
   ): void {
-    this.drawLetter(ctx, canvasSize, letterImage, letterViewBoxDimensions, opacity);
+    this.drawLetter(
+      ctx,
+      canvasSize,
+      letterImage,
+      letterViewBoxDimensions,
+      opacity
+    );
   }
 
   /**
@@ -126,7 +132,6 @@ export class CanvasRenderer implements ICanvasRenderer {
     staffImage: HTMLImageElement,
     viewBoxDimensions: { width: number; height: number }
   ): void {
-
     // Calculate position
     const centerX = canvasSize / 2;
     const centerY = canvasSize / 2;
@@ -188,7 +193,6 @@ export class CanvasRenderer implements ICanvasRenderer {
     letterViewBoxDimensions: { width: number; height: number },
     opacity: number = 1
   ): void {
-
     const gridScaleFactor = canvasSize / 950; // 950 is the viewBox size
 
     // Position matches TKAGlyph.svelte defaults: x=50, y=800 in 952px viewBox
