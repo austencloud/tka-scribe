@@ -18,6 +18,7 @@ export const ExportTypes = {
   ICollaborativeVideoService: Symbol.for("ICollaborativeVideoService"),
   IVideoExportService: Symbol.for("IVideoExportService"),
   IVideoExportOrchestrator: Symbol.for("IVideoExportOrchestrator"),
+  ICompositeVideoRenderer: Symbol.for("ICompositeVideoRenderer"),
 
   // Image Export
   IPageImageExportService: Symbol.for("IPageImageExportService"),

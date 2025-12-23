@@ -53,6 +53,7 @@ import { BeatGenerationOrchestrator } from "../../../features/create/generate/sh
 import { CAPParameterProvider } from "../../../features/create/generate/shared/services/implementations/CAPParameterProvider";
 import { CAPTypeService } from "../../../features/create/generate/shared/services/implementations/CAPTypeService";
 import { CAPDetectionService } from "../../../features/create/generate/circular/services/implementations/CAPDetectionService";
+import { OrientationCycleDetector } from "../../../features/create/generate/circular/services/implementations/OrientationCycleDetector";
 import { CardConfigurationService } from "../../../features/create/generate/shared/services/implementations/CardConfigurationService";
 import { GenerationOrchestrationService } from "../../../features/create/generate/shared/services/implementations/GenerationOrchestrationService";
 import { PictographFilterService } from "../../../features/create/generate/shared/services/implementations/PictographFilterService";
@@ -201,6 +202,9 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.ICardConfigurationService).to(CardConfigurationService);
     options.bind(TYPES.ICAPTypeService).to(CAPTypeService);
     options.bind(TYPES.ICAPDetectionService).to(CAPDetectionService);
+    options
+      .bind(TYPES.IOrientationCycleDetector)
+      .to(OrientationCycleDetector);
 
     // Generation Orchestration Services (SRP Refactoring - Dec 2024)
     options

@@ -61,6 +61,7 @@ let _state = $state<AuthState>({
 
 // Auth listener cleanup
 let cleanupAuthListener: (() => void) | null = null;
+let cleanupSubscriptionListener: (() => void) | null = null;
 
 /**
  * Get the effective user ID (previewed user or actual)
@@ -132,6 +133,72 @@ export function isAdmin(): boolean {
  */
 export function getRole(): UserRole {
   return _state.role;
+}
+
+/**
+ * Initialize subscription status listener
+ * Watches Firestore for subscription changes and syncs role to auth state
+ */
+async function initializeSubscriptionListener(user: User) {
+  // Clean up existing listener if any
+  if (cleanupSubscriptionListener) {
+    cleanupSubscriptionListener();
+    cleanupSubscriptionListener = null;
+  }
+
+  try {
+    const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+    const firestore = await getFirestoreInstance();
+    const { collection, onSnapshot } = await import("firebase/firestore");
+
+    const subscriptionsRef = collection(
+      firestore,
+      `customers/${user.uid}/subscriptions`
+    );
+
+    cleanupSubscriptionListener = onSnapshot(
+      subscriptionsRef,
+      async (snapshot) => {
+        // Skip initial snapshot (only react to changes)
+        if (snapshot.metadata.hasPendingWrites) return;
+
+        console.log("🔄 [authState] Subscription changed, refreshing token...");
+
+        try {
+          // Force token refresh to get updated custom claims from server
+          const idTokenResult = await user.getIdTokenResult(true);
+          const newRole = (idTokenResult.claims.role as UserRole) || "user";
+          const newIsAdmin = idTokenResult.claims.admin === true;
+
+          // Only update if role actually changed
+          if (newRole !== _state.role || newIsAdmin !== _state.isAdmin) {
+            console.log(
+              `✅ [authState] Role synced: ${_state.role} → ${newRole}`
+            );
+
+            _state = {
+              ..._state,
+              role: newRole,
+              isAdmin: newIsAdmin,
+            };
+
+            // Re-initialize feature flags with new role
+            await featureFlagService.initialize(user.uid, newRole);
+          }
+        } catch (error) {
+          console.error("❌ [authState] Failed to refresh token:", error);
+        }
+      },
+      (error) => {
+        console.error("❌ [authState] Subscription listener error:", error);
+      }
+    );
+  } catch (error) {
+    console.error(
+      "❌ [authState] Failed to initialize subscription listener:",
+      error
+    );
+  }
 }
 
 /**
@@ -327,6 +394,9 @@ export function initializeAuthListener() {
         } catch {
           // Silently fail - system collections init is non-critical
         }
+
+        // Initialize subscription listener for real-time role sync
+        void initializeSubscriptionListener(user);
       }
 
       // Revalidate current module after auth state changes
@@ -394,6 +464,12 @@ export async function signOut() {
       }
     } catch {
       // Silently fail - presence is non-critical
+    }
+
+    // Clean up subscription listener
+    if (cleanupSubscriptionListener) {
+      cleanupSubscriptionListener();
+      cleanupSubscriptionListener = null;
     }
 
     // Sign out from Firebase
@@ -503,6 +579,10 @@ export function cleanup() {
   if (cleanupAuthListener) {
     cleanupAuthListener();
     cleanupAuthListener = null;
+  }
+  if (cleanupSubscriptionListener) {
+    cleanupSubscriptionListener();
+    cleanupSubscriptionListener = null;
   }
 }
 

@@ -370,13 +370,9 @@
   }
 
   .option-toggle.active {
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.15) 0%,
-      rgba(5, 150, 105, 0.1) 100%
-    );
-    border-color: rgba(16, 185, 129, 0.4);
-    color: rgba(167, 243, 208, 1);
+    background: var(--theme-accent-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-accent, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, white);
   }
 
   .option-toggle:disabled {
@@ -413,14 +409,10 @@
   }
 
   .chip.active {
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.2) 0%,
-      rgba(5, 150, 105, 0.15) 100%
-    );
-    border-color: rgba(16, 185, 129, 0.5);
-    color: rgba(167, 243, 208, 1);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+    background: var(--theme-accent-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-accent, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text, white);
+    box-shadow: 0 0 12px var(--theme-accent-glow, rgba(255, 255, 255, 0.1));
   }
 
   .chip:disabled {
@@ -439,10 +431,10 @@
     gap: 8px;
     padding: 14px 20px;
     min-height: var(--touch-target-min, 48px);
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: var(--theme-accent, rgba(255, 255, 255, 0.15));
     border: none;
     border-radius: 12px;
-    color: white;
+    color: var(--theme-text, white);
     font-size: var(--font-size-min, 14px);
     font-weight: 700;
     cursor: pointer;
@@ -451,7 +443,7 @@
 
   .export-button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 8px 20px var(--theme-accent-glow, rgba(255, 255, 255, 0.2));
   }
 
   .export-button:disabled {
@@ -469,7 +461,7 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    background: var(--theme-accent, rgba(255, 255, 255, 0.3));
     transition: width 0.3s ease-out;
   }
 

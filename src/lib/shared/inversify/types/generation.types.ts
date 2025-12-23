@@ -60,4 +60,5 @@ export const GenerationTypes = {
 
   // CAP Detection (reverse of generation - detect CAP type from existing sequence)
   ICAPDetectionService: Symbol.for("ICAPDetectionService"),
+  IOrientationCycleDetector: Symbol.for("IOrientationCycleDetector"),
 } as const;

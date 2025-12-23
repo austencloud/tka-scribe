@@ -47,6 +47,7 @@
       import("../../features/discover/shared/components/DiscoverModule.svelte"),
     // community module retired - creators moved to discover, challenges to dashboard
     learn: () => import("../../features/learn/LearnTab.svelte"),
+    premium: () => import("../../features/premium/PremiumModule.svelte"),
     animate: () => import("../../features/compose/ComposeModule.svelte"),
     train: () => import("../../features/train/components/TrainModule.svelte"),
     library: () => import("../../features/library/LibraryModule.svelte"),

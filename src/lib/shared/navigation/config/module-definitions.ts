@@ -59,6 +59,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: LEARN_TABS,
   },
   {
+    id: "premium",
+    label: "Go Premium",
+    icon: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
+    color: "#fbbf24", // Gold - premium/upgrade
+    description: "Support TKA and unlock premium features",
+    isMain: true, // Visibility controlled by getModuleDefinitions() - only shown to non-premium users
+    sections: [], // Single-tab module - no sub-tabs
+  },
+  {
     id: "compose",
     label: "Compose",
     icon: '<i class="fas fa-photo-film" style="color: #ec4899;"></i>',

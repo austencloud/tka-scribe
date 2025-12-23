@@ -396,12 +396,24 @@ export function getModuleDefinitions() {
   // This ensures $derived recalculates when these values change
   const _isAdmin = featureFlagService.isAdmin;
   const _isTester = featureFlagService.isTester;
+  const _isPremium = featureFlagService.isPremium;
   const _effectiveRole = featureFlagService.effectiveRole;
 
   return MODULE_DEFINITIONS.filter((module) => {
     // Settings module is accessed via sidebar footer gear icon, not main module list
     if (module.id === "settings") {
       return false;
+    }
+
+    // Premium module is ONLY shown to non-premium users (inverse visibility)
+    // Exception: Admins can always access it for testing/preview
+    if (module.id === "premium") {
+      // Hide if auth not initialized (prevents flash of premium module)
+      if (!isAuthInitialized || !isFeatureFlagsInitialized) {
+        return false;
+      }
+      // Show if user is NOT premium, OR if user is admin (for testing)
+      return !_isPremium || _isAdmin;
     }
 
     // If auth/feature flags not initialized, show core modules optimistically

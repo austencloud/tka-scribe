@@ -44,8 +44,10 @@ export interface SequenceData {
    */
   readonly isFavorite: boolean;
   readonly isCircular: boolean;
-  /** Detected Circular Arrangement Pattern type (populated by migration/save) */
+  /** Detected Continuous Assembly Pattern type (populated by migration/save) */
   readonly capType?: CAPType | null;
+  /** Number of sequence repetitions needed to return to starting orientation (1, 2, or 4) */
+  readonly orientationCycleCount?: 1 | 2 | 4;
   readonly difficultyLevel?: string;
   readonly tags: readonly string[];
   readonly metadata: Record<string, unknown>;
@@ -81,6 +83,7 @@ export function createSequenceData(
     isFavorite: data.isFavorite ?? false,
     isCircular: data.isCircular ?? false,
     ...(data.capType !== undefined && { capType: data.capType }),
+    ...(data.orientationCycleCount !== undefined && { orientationCycleCount: data.orientationCycleCount }),
     tags: data.tags ?? [],
     metadata: data.metadata ?? {},
     ...(data.sequenceLength !== undefined && {

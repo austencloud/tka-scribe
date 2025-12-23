@@ -11,6 +11,7 @@ import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService
 import { libraryState } from "$lib/features/library/state/library-state.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
+import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
 
 interface DashboardState {
   challengeDrawerOpen: boolean;
@@ -18,6 +19,8 @@ interface DashboardState {
   showSignInToast: boolean;
   signInToastTimeout: ReturnType<typeof setTimeout> | null;
   isVisible: boolean;
+  feedbackDetailItem: FeedbackItem | null;
+  feedbackDetailOpen: boolean;
 }
 
 function createDashboardState() {
@@ -27,6 +30,8 @@ function createDashboardState() {
     showSignInToast: false,
     signInToastTimeout: null,
     isVisible: false,
+    feedbackDetailItem: null,
+    feedbackDetailOpen: false,
   });
 
   // Derived values
@@ -129,6 +134,16 @@ function createDashboardState() {
     }
   }
 
+  function openFeedbackDetail(item: FeedbackItem) {
+    state.feedbackDetailItem = item;
+    state.feedbackDetailOpen = true;
+  }
+
+  function closeFeedbackDetail() {
+    state.feedbackDetailOpen = false;
+    state.feedbackDetailItem = null;
+  }
+
   return {
     get challengeDrawerOpen() {
       return state.challengeDrawerOpen;
@@ -152,6 +167,14 @@ function createDashboardState() {
       state.isVisible = value;
     },
 
+    get feedbackDetailItem() {
+      return state.feedbackDetailItem;
+    },
+
+    get feedbackDetailOpen() {
+      return state.feedbackDetailOpen;
+    },
+
     isAuthenticated,
     user,
     sequenceCount,
@@ -164,6 +187,8 @@ function createDashboardState() {
 
     showSignInRequiredToast,
     clearToast,
+    openFeedbackDetail,
+    closeFeedbackDetail,
   };
 }
 

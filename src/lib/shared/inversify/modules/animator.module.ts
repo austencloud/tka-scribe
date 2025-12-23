@@ -10,6 +10,7 @@ import { CoordinateUpdater } from "../../../features/compose/services/implementa
 import { EndpointCalculator } from "../../../features/compose/services/implementations/EndpointCalculator";
 import { VideoExportOrchestrator } from "../../../features/compose/services/implementations/VideoExportOrchestrator";
 import { VideoExportService } from "../../../features/compose/services/implementations/VideoExportService";
+import { CompositeVideoRenderer } from "../../../features/compose/services/implementations/CompositeVideoRenderer";
 import { MotionCalculator } from "../../../features/compose/services/implementations/MotionCalculator";
 // PixiAnimationRenderer moved to on-demand loading in PixiModule (pixi.js ~500KB)
 import { PropInterpolator as PropInterpolationService } from "../../../features/compose/services/implementations/PropInterpolator";
@@ -53,6 +54,7 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IVideoExportService).to(VideoExportService);
     options.bind(TYPES.IVideoExportOrchestrator).to(VideoExportOrchestrator);
+    options.bind(TYPES.ICompositeVideoRenderer).to(CompositeVideoRenderer);
 
     // === TRAIL SERVICES ===
     options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);
