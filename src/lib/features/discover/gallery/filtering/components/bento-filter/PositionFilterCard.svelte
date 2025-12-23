@@ -23,7 +23,9 @@ Supports Alpha, Beta, Gamma starting positions
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   const positions = [
@@ -43,7 +45,8 @@ Supports Alpha, Beta, Gamma starting positions
 
   const displayValue = $derived(
     currentPosition
-      ? positions.find((p) => p.id === currentPosition)?.fullName ?? currentPosition
+      ? (positions.find((p) => p.id === currentPosition)?.fullName ??
+          currentPosition)
       : "Any"
   );
 </script>
@@ -95,13 +98,20 @@ Supports Alpha, Beta, Gamma starting positions
     padding: clamp(8px, 2cqh, 14px) clamp(6px, 2cqw, 10px);
 
     border-radius: 16px;
-    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6), var(--theme-accent-strong, #4f46e5));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #8b5cf6),
+      var(--theme-accent-strong, #4f46e5)
+    );
     border: none;
 
     box-shadow:
-      0 1px 2px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent),
-      0 2px 4px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 32%, transparent),
-      0 4px 8px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent),
+      0 1px 2px
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent),
+      0 2px 4px
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 32%, transparent),
+      0 4px 8px
+        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     overflow: hidden;

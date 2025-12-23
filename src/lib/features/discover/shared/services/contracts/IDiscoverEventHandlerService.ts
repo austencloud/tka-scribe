@@ -69,7 +69,9 @@ export interface IDiscoverEventHandlerService {
   /**
    * Handle delete confirmation
    */
-  handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null): Promise<void>;
+  handleDeleteConfirm(
+    deleteConfirmationData: Record<string, unknown> | null
+  ): Promise<void>;
 
   /**
    * Handle delete cancellation

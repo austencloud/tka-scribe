@@ -128,8 +128,16 @@ Modern, touch-friendly interface for selecting view presets
   }
 
   .preset-option.active {
-    background: color-mix(in srgb, var(--theme-accent, #667eea) 15%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #667eea) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #667eea) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #667eea) 40%,
+      transparent
+    );
   }
 
   .preset-icon {
@@ -146,7 +154,11 @@ Modern, touch-friendly interface for selecting view presets
   }
 
   .preset-option.active .preset-icon {
-    background: color-mix(in srgb, var(--theme-accent, #667eea) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #667eea) 30%,
+      transparent
+    );
     color: var(--theme-accent, #667eea);
   }
 

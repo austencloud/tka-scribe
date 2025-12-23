@@ -198,5 +198,4 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
       grid-auto-rows: minmax(auto, 160px);
     }
   }
-
 </style>

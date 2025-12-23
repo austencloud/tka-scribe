@@ -21,7 +21,10 @@
 </script>
 
 {#if hasRanks}
-  <div class="rankings-section" transition:fly={{ y: 20, duration: 300, delay: 150 }}>
+  <div
+    class="rankings-section"
+    transition:fly={{ y: 20, duration: 300, delay: 150 }}
+  >
     <h3 class="rankings-title">
       <i class="fas fa-chart-line"></i>
       Rankings
@@ -60,7 +63,10 @@
     </div>
   </div>
 {:else if isLoadingRanks}
-  <div class="rankings-section" transition:fly={{ y: 20, duration: 300, delay: 150 }}>
+  <div
+    class="rankings-section"
+    transition:fly={{ y: 20, duration: 300, delay: 150 }}
+  >
     <h3 class="rankings-title">
       <i class="fas fa-chart-line"></i>
       Rankings

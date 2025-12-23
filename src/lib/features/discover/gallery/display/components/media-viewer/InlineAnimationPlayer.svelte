@@ -66,13 +66,20 @@
     if (!animationState.sequenceData) return null;
     const currentBeat = animationState.currentBeat;
 
-    if (currentBeat === 0 && !animationState.isPlaying && animationState.sequenceData.startPosition) {
+    if (
+      currentBeat === 0 &&
+      !animationState.isPlaying &&
+      animationState.sequenceData.startPosition
+    ) {
       return animationState.sequenceData.startPosition.letter || null;
     }
 
     if (animationState.sequenceData.beats?.length > 0) {
       const beatIndex = Math.floor(currentBeat);
-      const clampedIndex = Math.max(0, Math.min(beatIndex, animationState.sequenceData.beats.length - 1));
+      const clampedIndex = Math.max(
+        0,
+        Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
+      );
       return animationState.sequenceData.beats[clampedIndex]?.letter || null;
     }
 
@@ -83,13 +90,20 @@
     if (!animationState.sequenceData) return null;
     const currentBeat = animationState.currentBeat;
 
-    if (currentBeat === 0 && !animationState.isPlaying && animationState.sequenceData.startPosition) {
+    if (
+      currentBeat === 0 &&
+      !animationState.isPlaying &&
+      animationState.sequenceData.startPosition
+    ) {
       return animationState.sequenceData.startPosition;
     }
 
     if (animationState.sequenceData.beats?.length > 0) {
       const beatIndex = Math.floor(currentBeat);
-      const clampedIndex = Math.max(0, Math.min(beatIndex, animationState.sequenceData.beats.length - 1));
+      const clampedIndex = Math.max(
+        0,
+        Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
+      );
       return animationState.sequenceData.beats[clampedIndex] || null;
     }
 
@@ -97,7 +111,9 @@
   });
 
   // Prefer sequence prop's gridMode (always current) over animation state (may be stale during switch)
-  let gridMode = $derived(sequence?.gridMode ?? animationState.sequenceData?.gridMode);
+  let gridMode = $derived(
+    sequence?.gridMode ?? animationState.sequenceData?.gridMode
+  );
 
   // Load services on mount
   onMount(async () => {
@@ -106,7 +122,9 @@
       await loadFeatureModule("animate");
 
       sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
-      playbackController = resolve<IAnimationPlaybackController>(TYPES.IAnimationPlaybackController);
+      playbackController = resolve<IAnimationPlaybackController>(
+        TYPES.IAnimationPlaybackController
+      );
       servicesReady = true;
     } catch (err) {
       console.error("Failed to initialize animation player:", err);
@@ -155,7 +173,10 @@
 
       // Initialize playback
       animationState.setShouldLoop(true);
-      const success = playbackController.initialize(fullSequence, animationState);
+      const success = playbackController.initialize(
+        fullSequence,
+        animationState
+      );
 
       if (!success) {
         throw new Error("Failed to initialize playback");
@@ -177,7 +198,9 @@
     }
   }
 
-  async function loadSequenceData(seq: SequenceData): Promise<SequenceData | null> {
+  async function loadSequenceData(
+    seq: SequenceData
+  ): Promise<SequenceData | null> {
     if (!sequenceService) return null;
 
     const hasMotionData = (s: SequenceData) =>
@@ -250,17 +273,17 @@
         >
           {#if isPlaying}
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+              <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
             </svg>
           {:else}
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
+              <path d="M8 5v14l11-7z" />
             </svg>
           {/if}
         </button>
 
         <div class="bpm-controls">
-          <BpmChips bpm={bpm} variant="compact" onBpmChange={handleBpmChange} />
+          <BpmChips {bpm} variant="compact" onBpmChange={handleBpmChange} />
         </div>
       </div>
     {/if}
@@ -363,7 +386,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .error-state {

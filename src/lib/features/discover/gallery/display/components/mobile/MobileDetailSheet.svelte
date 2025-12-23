@@ -49,12 +49,16 @@
     return () => window.removeEventListener("resize", handleResize);
   });
 
-  const expandedHeight = $derived(Math.round(viewportHeight * (EXPANDED_HEIGHT_PERCENT / 100)));
+  const expandedHeight = $derived(
+    Math.round(viewportHeight * (EXPANDED_HEIGHT_PERCENT / 100))
+  );
   const peekTranslateY = $derived(viewportHeight - PEEK_HEIGHT);
   const expandedTranslateY = $derived(viewportHeight - expandedHeight);
 
   // Current position based on state
-  const targetTranslateY = $derived(sheetState === "peek" ? peekTranslateY : expandedTranslateY);
+  const targetTranslateY = $derived(
+    sheetState === "peek" ? peekTranslateY : expandedTranslateY
+  );
 
   // Handle touch start
   function handleTouchStart(e: TouchEvent) {
@@ -122,7 +126,10 @@
   const sheetTransform = $derived.by(() => {
     let y = targetTranslateY;
     if (isDragging) {
-      y = Math.max(expandedTranslateY, Math.min(peekTranslateY + 50, currentTranslateY + dragDeltaY));
+      y = Math.max(
+        expandedTranslateY,
+        Math.min(peekTranslateY + 50, currentTranslateY + dragDeltaY)
+      );
     }
     return `translateY(${y}px)`;
   });
@@ -156,7 +163,11 @@
   aria-label="Sequence details"
 >
   <!-- Drag handle (always visible) -->
-  <button class="drag-handle" onclick={handleDragHandleClick} aria-label="Expand details">
+  <button
+    class="drag-handle"
+    onclick={handleDragHandleClick}
+    aria-label="Expand details"
+  >
     <div class="handle-bar"></div>
   </button>
 
@@ -213,22 +224,52 @@
       <!-- Action buttons -->
       <div class="actions">
         <button class="action-btn" onclick={() => onAction?.("edit")}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+            />
             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
           </svg>
           <span>Edit</span>
         </button>
         <button class="action-btn" onclick={() => onAction?.("fullscreen")}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+            />
           </svg>
           <span>Full View</span>
         </button>
-        <button class="action-btn action-btn-danger" onclick={() => onAction?.("delete")}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button
+          class="action-btn action-btn-danger"
+          onclick={() => onAction?.("delete")}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <polyline points="3 6 5 6 21 6" />
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            <path
+              d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+            />
           </svg>
           <span>Delete</span>
         </button>
@@ -240,10 +281,23 @@
 <!-- Video Player Modal -->
 {#if showVideoPlayer}
   <div class="video-modal" role="dialog" aria-label="Video player">
-    <button class="video-backdrop" onclick={() => (showVideoPlayer = null)} aria-label="Close video player"></button>
+    <button
+      class="video-backdrop"
+      onclick={() => (showVideoPlayer = null)}
+      aria-label="Close video player"
+    ></button>
     <div class="video-container">
-      <button class="video-close" onclick={() => (showVideoPlayer = null)} aria-label="Close video">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button
+        class="video-close"
+        onclick={() => (showVideoPlayer = null)}
+        aria-label="Close video"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
@@ -428,11 +482,19 @@
 
   .action-btn-danger {
     color: var(--semantic-error, #ef4444);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
   }
 
   .action-btn-danger:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 15%,
+      transparent
+    );
     color: var(--semantic-error, #ff6b6b);
   }
 

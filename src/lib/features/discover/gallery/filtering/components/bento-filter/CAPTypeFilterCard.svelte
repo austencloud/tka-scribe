@@ -92,7 +92,10 @@ Options: All → Non-Circular → Circular → specific CAP types
 
   // Current index in the options array
   const currentIndex = $derived(
-    Math.max(0, options.findIndex((opt) => opt.value === currentValue))
+    Math.max(
+      0,
+      options.findIndex((opt) => opt.value === currentValue)
+    )
   );
 
   const currentOption = $derived(options[currentIndex]);
@@ -102,27 +105,31 @@ Options: All → Non-Circular → Circular → specific CAP types
     if (currentValue === null) {
       // All - blue
       return {
-        color: "radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)",
+        color:
+          "radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)",
         shadowColor: "217deg 91% 60%",
       };
     }
     if (currentValue === "non_circular") {
       // Non-Circular - slate/neutral
       return {
-        color: "radial-gradient(ellipse at top left, #94a3b8 0%, #64748b 40%, #475569 100%)",
+        color:
+          "radial-gradient(ellipse at top left, #94a3b8 0%, #64748b 40%, #475569 100%)",
         shadowColor: "215deg 16% 47%",
       };
     }
     if (currentValue === "circular_untyped") {
       // Other Circular (untyped) - teal
       return {
-        color: "radial-gradient(ellipse at top left, #5eead4 0%, #14b8a6 40%, #0d9488 100%)",
+        color:
+          "radial-gradient(ellipse at top left, #5eead4 0%, #14b8a6 40%, #0d9488 100%)",
         shadowColor: "173deg 80% 40%",
       };
     }
     // Specific CAP type - purple (circular patterns)
     return {
-      color: "radial-gradient(ellipse at top left, #a78bfa 0%, #8b5cf6 40%, #6d28d9 100%)",
+      color:
+        "radial-gradient(ellipse at top left, #a78bfa 0%, #8b5cf6 40%, #6d28d9 100%)",
       shadowColor: "263deg 70% 50%",
     };
   });

@@ -33,10 +33,7 @@
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
 
   // Note: Library tab removed - now integrated into Gallery via scope toggle (Community / My Library)
-  type DiscoverModuleType =
-    | "sequences"
-    | "collections"
-    | "creators";
+  type DiscoverModuleType = "sequences" | "collections" | "creators";
 
   // ============================================================================
   // STATE MANAGEMENT (Shared Coordination)
@@ -147,7 +144,9 @@
     if (newTab !== activeTab && !discoverNavigationState.isNavigating) {
       // Map to the discover navigation tab format
       const discoverTab =
-        newTab === "sequences" ? "gallery" : (newTab as "collections" | "creators");
+        newTab === "sequences"
+          ? "gallery"
+          : (newTab as "collections" | "creators");
       discoverNavigationState.navigateTo({ tab: discoverTab, view: "list" });
     }
 
@@ -195,8 +194,7 @@
     if (!location) return;
 
     // Map the location tab to internal activeTab
-    const internalTab =
-      location.tab === "gallery" ? "sequences" : location.tab;
+    const internalTab = location.tab === "gallery" ? "sequences" : location.tab;
 
     // Update tab if needed (this will trigger bottom nav sync)
     if (internalTab !== activeTab) {
@@ -223,12 +221,13 @@
    */
   function handleHistoryNavigation(location: DiscoverLocation) {
     // Map gallery tab back to sequences for internal state
-    const internalTab =
-      location.tab === "gallery" ? "sequences" : location.tab;
+    const internalTab = location.tab === "gallery" ? "sequences" : location.tab;
 
     // Navigate to the tab via global navigation state
     if (internalTab !== activeTab) {
-      navigationState.setActiveTab(location.tab === "gallery" ? "sequences" : location.tab);
+      navigationState.setActiveTab(
+        location.tab === "gallery" ? "sequences" : location.tab
+      );
     }
 
     // Handle sub-view navigation
@@ -241,9 +240,15 @@
     }
 
     // Handle gallery detail view
-    if (location.tab === "gallery" && location.view === "detail" && location.contextId) {
+    if (
+      location.tab === "gallery" &&
+      location.view === "detail" &&
+      location.contextId
+    ) {
       // TODO: Re-open sequence detail panel with contextId
-      console.log(`[DiscoverModule] Would open sequence detail: ${location.contextId}`);
+      console.log(
+        `[DiscoverModule] Would open sequence detail: ${location.contextId}`
+      );
     }
   }
 
@@ -438,40 +443,40 @@
 
   <!-- Main layout - shows immediately with skeletons while data loads -->
   <div class="explore-content">
-  <!-- Tab Content - Bottom navigation controls the active tab -->
-  <!-- Note: We keep all tabs mounted but hidden to preserve state and avoid refetching -->
-  <div class="explore-tab-content">
-    <div class="tab-panel" class:hidden={activeTab !== "sequences"}>
-      <DiscoverSequencesTab
-        {isMobile}
-        {isUIVisible}
-        {showDesktopSidebar}
-        {drawerWidth}
-        {galleryState}
-        {error}
-        onSequenceAction={(action, sequence) =>
-          eventHandlerService?.handleSequenceAction(action, sequence) ??
-          Promise.resolve()}
-        onDetailPanelAction={(action, sequence) =>
-          eventHandlerService?.handleDetailPanelAction(action, sequence) ??
-          Promise.resolve()}
-        onCloseDetailPanel={() =>
-          eventHandlerService?.handleCloseDetailPanel()}
-        onContainerScroll={handleContainerScroll}
-      />
-    </div>
-    <div class="tab-panel" class:hidden={activeTab !== "collections"}>
-      <CollectionsDiscoverPanel />
-    </div>
-    <div class="tab-panel" class:hidden={activeTab !== "creators"}>
-      {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
-        <UserProfilePanel userId={creatorsViewState.viewingUserId} />
-      {:else}
-        <CreatorsPanel />
-      {/if}
+    <!-- Tab Content - Bottom navigation controls the active tab -->
+    <!-- Note: We keep all tabs mounted but hidden to preserve state and avoid refetching -->
+    <div class="explore-tab-content">
+      <div class="tab-panel" class:hidden={activeTab !== "sequences"}>
+        <DiscoverSequencesTab
+          {isMobile}
+          {isUIVisible}
+          {showDesktopSidebar}
+          {drawerWidth}
+          {galleryState}
+          {error}
+          onSequenceAction={(action, sequence) =>
+            eventHandlerService?.handleSequenceAction(action, sequence) ??
+            Promise.resolve()}
+          onDetailPanelAction={(action, sequence) =>
+            eventHandlerService?.handleDetailPanelAction(action, sequence) ??
+            Promise.resolve()}
+          onCloseDetailPanel={() =>
+            eventHandlerService?.handleCloseDetailPanel()}
+          onContainerScroll={handleContainerScroll}
+        />
+      </div>
+      <div class="tab-panel" class:hidden={activeTab !== "collections"}>
+        <CollectionsDiscoverPanel />
+      </div>
+      <div class="tab-panel" class:hidden={activeTab !== "creators"}>
+        {#if creatorsViewState.currentView === "user-profile" && creatorsViewState.viewingUserId}
+          <UserProfilePanel userId={creatorsViewState.viewingUserId} />
+        {:else}
+          <CreatorsPanel />
+        {/if}
+      </div>
     </div>
   </div>
-</div>
 {/if}
 
 <style>

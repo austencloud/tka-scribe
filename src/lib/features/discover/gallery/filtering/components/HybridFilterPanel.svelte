@@ -435,7 +435,11 @@
   }
 
   .filter-card.selected {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, var(--theme-card-bg, #252532));
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      var(--theme-card-bg, #252532)
+    );
     border-color: var(--semantic-info, #3b82f6);
     color: var(--theme-text, white);
   }
@@ -446,7 +450,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
     border-radius: clamp(8px, 2cqi, 12px);
     color: var(--semantic-info, #3b82f6);
     font-size: clamp(12px, 3cqi, 16px);
@@ -458,7 +466,11 @@
   }
 
   .card-icon.favorites {
-    background: color-mix(in srgb, var(--semantic-error, #ec4899) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ec4899) 15%,
+      transparent
+    );
     color: var(--semantic-error, #ec4899);
   }
 
@@ -476,9 +488,14 @@
   /* Drill-down */
   .drill-down {
     padding: clamp(12px, 3cqi, 16px);
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 5%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 5%,
+      transparent
+    );
     border-radius: clamp(10px, 2.5cqi, 14px);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
     animation: slideDown 0.2s ease;
   }
 
@@ -521,7 +538,8 @@
 
   .level-card.selected {
     border-color: var(--semantic-info, #3b82f6);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
   }
 
   .level-num {

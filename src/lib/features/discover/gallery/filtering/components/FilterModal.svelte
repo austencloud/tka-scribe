@@ -7,9 +7,9 @@ Provides filtering options in a modal dialog, triggered by filter button.
 Follows Svelte 5 runes + microservices architecture.
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 
@@ -370,7 +370,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .apply-button {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 20%,
+      transparent
+    );
     color: var(--semantic-info, #3b82f6);
     box-shadow:
       0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1)),
@@ -378,7 +382,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .apply-button:hover {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 30%,
+      transparent
+    );
     transform: translateY(-1px);
     box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
   }

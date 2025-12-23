@@ -146,7 +146,8 @@
   .follow-button:hover {
     filter: brightness(0.9);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
   }
 
   .follow-button.following {

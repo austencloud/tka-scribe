@@ -114,7 +114,10 @@ export class FavoritesService implements IFavoritesService {
 
   private loadFavoritesFromStorage(): void {
     try {
-      const favorites = storageService.safeSessionStorageGet<string[]>(this.STORAGE_KEY, []);
+      const favorites = storageService.safeSessionStorageGet<string[]>(
+        this.STORAGE_KEY,
+        []
+      );
       this.favoritesCache = new Set(favorites || []);
     } catch (error) {
       console.warn("Failed to load favorites from storage:", error);

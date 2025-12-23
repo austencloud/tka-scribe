@@ -145,7 +145,8 @@
   /* Firefox scrollbar */
   .display-content {
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) transparent;
+    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15))
+      transparent;
   }
 
   /* Error state */
@@ -166,7 +167,11 @@
 
   .error-state button {
     padding: var(--spacing-sm) var(--spacing-md);
-    background: color-mix(in srgb, var(--semantic-error, #ff6b6b) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ff6b6b) 20%,
+      transparent
+    );
     border: 1px solid var(--semantic-error, #ff6b6b);
     border-radius: 6px;
     color: var(--semantic-error, #ff6b6b);
@@ -175,7 +180,11 @@
   }
 
   .error-state button:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ff6b6b) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ff6b6b) 30%,
+      transparent
+    );
   }
 
   /* Empty state */

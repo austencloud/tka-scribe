@@ -117,21 +117,39 @@
   .fab-primary {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, var(--semantic-info, #3b82f6) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, black) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-info, #3b82f6) 0%,
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, black) 100%
+    );
     border-color: transparent;
   }
 
   .fab-primary:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-info, #3b82f6) 85%, black) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 70%, black) 100%);
-    box-shadow: 0 4px 24px color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 85%, black) 0%,
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 70%, black) 100%
+    );
+    box-shadow: 0 4px 24px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
   }
 
   .fab-primary.favorited {
-    background: linear-gradient(135deg, var(--semantic-error, #f87171) 0%, color-mix(in srgb, var(--semantic-error, #ef4444) 100%, transparent) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error, #f87171) 0%,
+      color-mix(in srgb, var(--semantic-error, #ef4444) 100%, transparent) 100%
+    );
   }
 
   .fab-primary.favorited:hover {
-    background: linear-gradient(135deg, var(--semantic-error, #ef4444) 0%, color-mix(in srgb, var(--semantic-error, #dc2626) 100%, transparent) 100%);
-    box-shadow: 0 4px 24px color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error, #ef4444) 0%,
+      color-mix(in srgb, var(--semantic-error, #dc2626) 100%, transparent) 100%
+    );
+    box-shadow: 0 4px 24px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
   }
 </style>

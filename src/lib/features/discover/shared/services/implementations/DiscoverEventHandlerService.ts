@@ -19,7 +19,9 @@ import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
 import type { ISheetRouterService } from "../../../../../shared/navigation/services/contracts/ISheetRouterService";
 import { handleModuleChange } from "../../../../../shared/navigation-coordinator/navigation-coordinator.svelte";
 @injectable()
-export class DiscoverEventHandlerService implements IDiscoverEventHandlerService {
+export class DiscoverEventHandlerService
+  implements IDiscoverEventHandlerService
+{
   private params: ExploreEventHandlerParams | null = null;
 
   constructor(
@@ -109,7 +111,8 @@ export class DiscoverEventHandlerService implements IDiscoverEventHandlerService
       if (!sequence.beats || sequence.beats.length === 0) {
         if (this.loaderService) {
           const sequenceName = sequence.word || sequence.id;
-          const loaded = await this.loaderService.loadFullSequenceData(sequenceName);
+          const loaded =
+            await this.loaderService.loadFullSequenceData(sequenceName);
           if (loaded) {
             fullSequence = loaded;
           }
@@ -184,14 +187,19 @@ export class DiscoverEventHandlerService implements IDiscoverEventHandlerService
     this.sheetRouterService?.openSpotlight(sequence.id);
   }
 
-  async handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null): Promise<void> {
+  async handleDeleteConfirm(
+    deleteConfirmationData: Record<string, unknown> | null
+  ): Promise<void> {
     this.ensureInitialized();
 
     if (!deleteConfirmationData?.sequence) return;
 
     try {
       // TODO: Implement actual delete logic
-      const sequence = deleteConfirmationData.sequence as Record<string, unknown>;
+      const sequence = deleteConfirmationData.sequence as Record<
+        string,
+        unknown
+      >;
       console.log("🗑️ Deleting sequence:", sequence.id);
       this.params!.setDeleteConfirmationData(null);
       // Refresh the sequence list

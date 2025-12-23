@@ -11,7 +11,7 @@ Features:
 - Responsive width on desktop (35%, 320-500px)
 -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceDetailContent from "./SequenceDetailContent.svelte";
   import MobileSequenceDetailSheet from "./mobile/MobileSequenceDetailSheet.svelte";
 

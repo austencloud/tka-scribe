@@ -23,11 +23,16 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // TKA Level colors matching the existing pattern
-  const levelConfig: Record<number, { name: string; gradient: string; shadowColor: string }> = {
+  const levelConfig: Record<
+    number,
+    { name: string; gradient: string; shadowColor: string }
+  > = {
     1: {
       name: "No Turns",
       gradient: `radial-gradient(ellipse at top left,
@@ -63,12 +68,20 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
   const defaultGradient = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
   const defaultShadowColor = "217deg 91% 60%";
 
-  const currentConfig = $derived(currentLevel ? levelConfig[currentLevel] : null);
+  const currentConfig = $derived(
+    currentLevel ? levelConfig[currentLevel] : null
+  );
   const gradient = $derived(currentConfig?.gradient ?? defaultGradient);
-  const shadowColor = $derived(currentConfig?.shadowColor ?? defaultShadowColor);
-  const displayValue = $derived(currentLevel ? `Level ${currentLevel}` : "All Levels");
+  const shadowColor = $derived(
+    currentConfig?.shadowColor ?? defaultShadowColor
+  );
+  const displayValue = $derived(
+    currentLevel ? `Level ${currentLevel}` : "All Levels"
+  );
   const description = $derived(currentConfig?.name ?? "Any difficulty");
-  const textColor = $derived(currentLevel === 1 || currentLevel === 3 ? "black" : "white");
+  const textColor = $derived(
+    currentLevel === 1 || currentLevel === 3 ? "black" : "white"
+  );
 
   function handleDecrement() {
     hapticService?.trigger("selection");
@@ -114,7 +127,12 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
       aria-label="Previous level"
       disabled={!canDecrement}
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
         <path d="M15 18l-6-6 6-6" />
       </svg>
     </button>
@@ -131,7 +149,12 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
       aria-label="Next level"
       disabled={!canIncrement}
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
         <path d="M9 18l6-6-6-6" />
       </svg>
     </button>

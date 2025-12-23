@@ -17,7 +17,9 @@ Click to open length selection sheet
     cardIndex?: number;
   }>();
 
-  const displayValue = $derived(currentLength ? `${currentLength} beats` : "Any");
+  const displayValue = $derived(
+    currentLength ? `${currentLength} beats` : "Any"
+  );
 </script>
 
 <FilterBaseCard

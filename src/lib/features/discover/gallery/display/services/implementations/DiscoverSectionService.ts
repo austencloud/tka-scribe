@@ -122,13 +122,13 @@ export class DiscoverSectionService implements IDiscoverSectionService {
         // Type 6 letters should be lowercase (α, β, γ, θ, ζ, η, τ, ⊕)
         const firstChar = sequence.word.charAt(0);
         const TYPE6_UPPERCASE_TO_LOWERCASE: { [key: string]: string } = {
-          "Α": "α",
-          "Β": "β",
-          "Γ": "γ",
-          "Θ": "θ",
-          "Ζ": "ζ",
-          "Η": "η",
-          "Τ": "τ",
+          Α: "α",
+          Β: "β",
+          Γ: "γ",
+          Θ: "θ",
+          Ζ: "ζ",
+          Η: "η",
+          Τ: "τ",
         };
         const TYPE6_LOWERCASE = ["α", "β", "γ", "θ", "ζ", "η", "τ", "⊕"];
 
@@ -324,18 +324,64 @@ export class DiscoverSectionService implements IDiscoverSectionService {
     // Kinetic alphabet order - Uppercase for Type 1-5, lowercase for Type 6
     const KINETIC_ALPHABET_ORDER = [
       // Type 1
-      "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-      "N", "O", "P", "Q", "R", "S", "T", "U", "V", "Γ",
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I",
+      "J",
+      "K",
+      "L",
+      "M",
+      "N",
+      "O",
+      "P",
+      "Q",
+      "R",
+      "S",
+      "T",
+      "U",
+      "V",
+      "Γ",
       // Type 2
-      "W", "X", "Y", "Z", "Σ", "Δ", "Ω", "Μ", "Ν",
+      "W",
+      "X",
+      "Y",
+      "Z",
+      "Σ",
+      "Δ",
+      "Ω",
+      "Μ",
+      "Ν",
       // Type 3
-      "W-", "X-", "Y-", "Z-", "Σ-", "Δ-", "Ω-",
+      "W-",
+      "X-",
+      "Y-",
+      "Z-",
+      "Σ-",
+      "Δ-",
+      "Ω-",
       // Type 4
-      "Φ", "Ψ", "Λ",
+      "Φ",
+      "Ψ",
+      "Λ",
       // Type 5
-      "Φ-", "Ψ-", "Λ-",
+      "Φ-",
+      "Ψ-",
+      "Λ-",
       // Type 6 (lowercase)
-      "α", "β", "γ", "θ", "ζ", "η", "τ", "⊕",
+      "α",
+      "β",
+      "γ",
+      "θ",
+      "ζ",
+      "η",
+      "τ",
+      "⊕",
     ];
 
     switch (groupBy) {
@@ -406,9 +452,7 @@ export class DiscoverSectionService implements IDiscoverSectionService {
     return this.organizeSections(sequences, config);
   }
 
-  getSectionConfig(
-    sortMethod: ExploreSortMethod
-  ): SectionConfig {
+  getSectionConfig(sortMethod: ExploreSortMethod): SectionConfig {
     // Return a basic configuration based on sort method
     return {
       groupBy: "letter" as const,

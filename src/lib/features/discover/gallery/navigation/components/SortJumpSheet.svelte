@@ -182,8 +182,16 @@ Touch-friendly interface for changing sort method and jumping to sections
   }
 
   .option-button.active {
-    background: color-mix(in srgb, var(--semantic-info, #667eea) 15%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #667eea) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #667eea) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #667eea) 40%,
+      transparent
+    );
   }
 
   .option-icon {
@@ -200,7 +208,11 @@ Touch-friendly interface for changing sort method and jumping to sections
   }
 
   .option-button.active .option-icon {
-    background: color-mix(in srgb, var(--semantic-info, #667eea) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #667eea) 30%,
+      transparent
+    );
     color: var(--semantic-info, #667eea);
   }
 

@@ -7,8 +7,8 @@ about the sequence being deleted and potential consequences.
 <script lang="ts">
   import { onMount } from "svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceDeleteConfirmationData } from "../domain/models/discover-models";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -266,7 +266,11 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .warning-details {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 15%,
+      transparent
+    );
     border: 1px solid var(--semantic-warning, #f59e0b);
     border-radius: 8px;
     padding: 16px;

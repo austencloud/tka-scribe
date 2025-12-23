@@ -202,7 +202,8 @@ export class DiscoverLoader implements IDiscoverLoader {
       const calculatedLevel = this.difficultyStringToLevel(difficultyLevel);
 
       // Extract start position (beat 0) from bundled metadata
-      const startPosition = this.parseStartPosition(sequence, gridMode) ?? undefined;
+      const startPosition =
+        this.parseStartPosition(sequence, gridMode) ?? undefined;
 
       return createSequenceData({
         id: word,
@@ -259,12 +260,17 @@ export class DiscoverLoader implements IDiscoverLoader {
 
     return beatItems.map((stepData, index) => {
       // Handle both camelCase (blueAttributes) and snake_case (blue_attributes)
-      const blueAttrs = (stepData["blueAttributes"] || stepData["blue_attributes"]) as Record<string, unknown> | undefined;
-      const redAttrs = (stepData["redAttributes"] || stepData["red_attributes"]) as Record<string, unknown> | undefined;
+      const blueAttrs = (stepData["blueAttributes"] ||
+        stepData["blue_attributes"]) as Record<string, unknown> | undefined;
+      const redAttrs = (stepData["redAttributes"] ||
+        stepData["red_attributes"]) as Record<string, unknown> | undefined;
 
       // Helper to get property value in either camelCase or snake_case
-      const getAttr = (attrs: Record<string, unknown> | undefined, camel: string, snake: string) =>
-        attrs?.[camel] ?? attrs?.[snake];
+      const getAttr = (
+        attrs: Record<string, unknown> | undefined,
+        camel: string,
+        snake: string
+      ) => attrs?.[camel] ?? attrs?.[snake];
 
       return {
         id: `beat-${index + 1}`,
@@ -275,32 +281,62 @@ export class DiscoverLoader implements IDiscoverLoader {
           [MotionColor.BLUE]: blueAttrs
             ? createMotionData({
                 color: MotionColor.BLUE,
-                motionType: this.parseMotionType(getAttr(blueAttrs, "motionType", "motion_type")),
-                startLocation: this.parseLocation(getAttr(blueAttrs, "startLoc", "start_loc")),
-                endLocation: this.parseLocation(getAttr(blueAttrs, "endLoc", "end_loc")),
-                startOrientation: this.parseOrientation(getAttr(blueAttrs, "startOri", "start_ori")),
-                endOrientation: this.parseOrientation(getAttr(blueAttrs, "endOri", "end_ori")),
-                rotationDirection: this.parseRotationDirection(getAttr(blueAttrs, "propRotDir", "prop_rot_dir")),
+                motionType: this.parseMotionType(
+                  getAttr(blueAttrs, "motionType", "motion_type")
+                ),
+                startLocation: this.parseLocation(
+                  getAttr(blueAttrs, "startLoc", "start_loc")
+                ),
+                endLocation: this.parseLocation(
+                  getAttr(blueAttrs, "endLoc", "end_loc")
+                ),
+                startOrientation: this.parseOrientation(
+                  getAttr(blueAttrs, "startOri", "start_ori")
+                ),
+                endOrientation: this.parseOrientation(
+                  getAttr(blueAttrs, "endOri", "end_ori")
+                ),
+                rotationDirection: this.parseRotationDirection(
+                  getAttr(blueAttrs, "propRotDir", "prop_rot_dir")
+                ),
                 turns: this.parseTurns(getAttr(blueAttrs, "turns", "turns")),
                 isVisible: true,
                 propType: PropType.STAFF,
-                arrowLocation: this.parseLocation(getAttr(blueAttrs, "startLoc", "start_loc")) || GridLocation.NORTH,
+                arrowLocation:
+                  this.parseLocation(
+                    getAttr(blueAttrs, "startLoc", "start_loc")
+                  ) || GridLocation.NORTH,
                 gridMode: GridMode.DIAMOND,
               })
             : undefined,
           [MotionColor.RED]: redAttrs
             ? createMotionData({
                 color: MotionColor.RED,
-                motionType: this.parseMotionType(getAttr(redAttrs, "motionType", "motion_type")),
-                startLocation: this.parseLocation(getAttr(redAttrs, "startLoc", "start_loc")),
-                endLocation: this.parseLocation(getAttr(redAttrs, "endLoc", "end_loc")),
-                startOrientation: this.parseOrientation(getAttr(redAttrs, "startOri", "start_ori")),
-                endOrientation: this.parseOrientation(getAttr(redAttrs, "endOri", "end_ori")),
-                rotationDirection: this.parseRotationDirection(getAttr(redAttrs, "propRotDir", "prop_rot_dir")),
+                motionType: this.parseMotionType(
+                  getAttr(redAttrs, "motionType", "motion_type")
+                ),
+                startLocation: this.parseLocation(
+                  getAttr(redAttrs, "startLoc", "start_loc")
+                ),
+                endLocation: this.parseLocation(
+                  getAttr(redAttrs, "endLoc", "end_loc")
+                ),
+                startOrientation: this.parseOrientation(
+                  getAttr(redAttrs, "startOri", "start_ori")
+                ),
+                endOrientation: this.parseOrientation(
+                  getAttr(redAttrs, "endOri", "end_ori")
+                ),
+                rotationDirection: this.parseRotationDirection(
+                  getAttr(redAttrs, "propRotDir", "prop_rot_dir")
+                ),
                 turns: this.parseTurns(getAttr(redAttrs, "turns", "turns")),
                 isVisible: true,
                 propType: PropType.STAFF,
-                arrowLocation: this.parseLocation(getAttr(redAttrs, "startLoc", "start_loc")) || GridLocation.SOUTH,
+                arrowLocation:
+                  this.parseLocation(
+                    getAttr(redAttrs, "startLoc", "start_loc")
+                  ) || GridLocation.SOUTH,
                 gridMode: GridMode.DIAMOND,
               })
             : undefined,
@@ -318,7 +354,10 @@ export class DiscoverLoader implements IDiscoverLoader {
    * Parse start position (beat 0) from bundled metadata
    * Returns a BeatData-like structure representing the initial prop positions
    */
-  private parseStartPosition(sequence: unknown[], gridMode: GridMode): BeatData | null {
+  private parseStartPosition(
+    sequence: unknown[],
+    gridMode: GridMode
+  ): BeatData | null {
     const beatObjects = sequence.filter(
       (item): item is Record<string, unknown> =>
         typeof item === "object" && item !== null
@@ -331,8 +370,12 @@ export class DiscoverLoader implements IDiscoverLoader {
 
     if (!startPosEntry) return null;
 
-    const blueAttrs = startPosEntry["blue_attributes"] as Record<string, unknown> | undefined;
-    const redAttrs = startPosEntry["red_attributes"] as Record<string, unknown> | undefined;
+    const blueAttrs = startPosEntry["blue_attributes"] as
+      | Record<string, unknown>
+      | undefined;
+    const redAttrs = startPosEntry["red_attributes"] as
+      | Record<string, unknown>
+      | undefined;
 
     return {
       id: "start-position",
@@ -348,11 +391,15 @@ export class DiscoverLoader implements IDiscoverLoader {
               endLocation: this.parseLocation(blueAttrs["end_loc"]),
               startOrientation: this.parseOrientation(blueAttrs["start_ori"]),
               endOrientation: this.parseOrientation(blueAttrs["end_ori"]),
-              rotationDirection: this.parseRotationDirection(blueAttrs["prop_rot_dir"]),
+              rotationDirection: this.parseRotationDirection(
+                blueAttrs["prop_rot_dir"]
+              ),
               turns: this.parseTurns(blueAttrs["turns"]),
               isVisible: true,
               propType: PropType.STAFF,
-              arrowLocation: this.parseLocation(blueAttrs["start_loc"]) || GridLocation.NORTH,
+              arrowLocation:
+                this.parseLocation(blueAttrs["start_loc"]) ||
+                GridLocation.NORTH,
               gridMode,
             })
           : undefined,
@@ -364,11 +411,14 @@ export class DiscoverLoader implements IDiscoverLoader {
               endLocation: this.parseLocation(redAttrs["end_loc"]),
               startOrientation: this.parseOrientation(redAttrs["start_ori"]),
               endOrientation: this.parseOrientation(redAttrs["end_ori"]),
-              rotationDirection: this.parseRotationDirection(redAttrs["prop_rot_dir"]),
+              rotationDirection: this.parseRotationDirection(
+                redAttrs["prop_rot_dir"]
+              ),
               turns: this.parseTurns(redAttrs["turns"]),
               isVisible: true,
               propType: PropType.STAFF,
-              arrowLocation: this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
+              arrowLocation:
+                this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
               gridMode,
             })
           : undefined,

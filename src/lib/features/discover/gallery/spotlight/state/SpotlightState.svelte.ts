@@ -192,7 +192,9 @@ export function createSpotlightState() {
       if (navigationState.canGoPrev) {
         const totalVariations = navigationState.totalVariations;
         // Circular navigation: wrap to last when on first
-        displayState.currentVariationIndex = (displayState.currentVariationIndex - 1 + totalVariations) % totalVariations;
+        displayState.currentVariationIndex =
+          (displayState.currentVariationIndex - 1 + totalVariations) %
+          totalVariations;
         resetImageState();
         updateNavigationState();
       }
@@ -202,7 +204,8 @@ export function createSpotlightState() {
       if (navigationState.canGoNext) {
         const totalVariations = navigationState.totalVariations;
         // Circular navigation: wrap to first when on last
-        displayState.currentVariationIndex = (displayState.currentVariationIndex + 1) % totalVariations;
+        displayState.currentVariationIndex =
+          (displayState.currentVariationIndex + 1) % totalVariations;
         resetImageState();
         updateNavigationState();
       }

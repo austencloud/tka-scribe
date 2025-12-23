@@ -4,10 +4,7 @@
  */
 
 // Note: "library" removed - now integrated into Gallery via scope toggle
-export type DiscoverModuleType =
-  | "gallery"
-  | "creators"
-  | "collections";
+export type DiscoverModuleType = "gallery" | "creators" | "collections";
 
 export interface DiscoverTabConfig {
   id: DiscoverModuleType;

@@ -330,8 +330,13 @@ Allows natural language queries to find sequences, users, and collections.
   .search-input:focus {
     outline: none;
     background: var(--theme-card-hover-bg);
-    border-color: color-mix(in srgb, var(--semantic-info, #007bff) 50%, transparent);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--semantic-info, #007bff) 10%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #007bff) 50%,
+      transparent
+    );
+    box-shadow: 0 0 0 4px
+      color-mix(in srgb, var(--semantic-info, #007bff) 10%, transparent);
   }
 
   .search-input::placeholder {
@@ -342,8 +347,13 @@ Allows natural language queries to find sequences, users, and collections.
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
     padding: 14px 20px;
-    background: color-mix(in srgb, var(--semantic-info, #007bff) 20%, transparent);
-    border: 2px solid color-mix(in srgb, var(--semantic-info, #007bff) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #007bff) 20%,
+      transparent
+    );
+    border: 2px solid
+      color-mix(in srgb, var(--semantic-info, #007bff) 40%, transparent);
     border-radius: 12px;
     color: var(--semantic-info, #4da3ff);
     font-size: 16px;
@@ -352,8 +362,16 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .search-button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-info, #007bff) 30%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #007bff) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #007bff) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #007bff) 60%,
+      transparent
+    );
     transform: translateX(2px);
   }
 
@@ -395,8 +413,16 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .filter-tab.active {
-    background: color-mix(in srgb, var(--semantic-info, #007bff) 20%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #007bff) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #007bff) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #007bff) 40%,
+      transparent
+    );
     color: var(--theme-text, white);
   }
 
@@ -605,7 +631,11 @@ Allows natural language queries to find sequences, users, and collections.
 
   .relevance-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--semantic-success, #00c853), var(--semantic-info, #4da3ff));
+    background: linear-gradient(
+      90deg,
+      var(--semantic-success, #00c853),
+      var(--semantic-info, #4da3ff)
+    );
     transition: width 0.3s ease;
   }
 

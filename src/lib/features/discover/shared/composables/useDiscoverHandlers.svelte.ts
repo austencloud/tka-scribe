@@ -78,7 +78,9 @@ export function useDiscoverHandlers({
       // Gallery sequences have empty beats - need to load full sequence data
       let fullSequence = sequence;
       if (!sequence.beats || sequence.beats.length === 0) {
-        const loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
+        const loaderService = tryResolve<IDiscoverLoader>(
+          TYPES.IDiscoverLoader
+        );
         if (loaderService) {
           const sequenceName = sequence.word || sequence.id;
           const loaded = await loaderService.loadFullSequenceData(sequenceName);
@@ -89,7 +91,10 @@ export function useDiscoverHandlers({
       }
 
       // Store the full sequence data in localStorage for the Create module to pick up
-      localStorage.setItem("tka-pending-edit-sequence", JSON.stringify(fullSequence));
+      localStorage.setItem(
+        "tka-pending-edit-sequence",
+        JSON.stringify(fullSequence)
+      );
 
       // Close the detail panel if open
       handleCloseDetailPanel();
@@ -150,12 +155,17 @@ export function useDiscoverHandlers({
     sheetRouterService?.openSpotlight(sequence.id);
   }
 
-  async function handleDeleteConfirm(deleteConfirmationData: Record<string, unknown> | null) {
+  async function handleDeleteConfirm(
+    deleteConfirmationData: Record<string, unknown> | null
+  ) {
     if (!deleteConfirmationData?.sequence) return;
 
     try {
       // TODO: Implement actual delete logic
-      const sequence = deleteConfirmationData.sequence as Record<string, unknown>;
+      const sequence = deleteConfirmationData.sequence as Record<
+        string,
+        unknown
+      >;
       console.log("🗑️ Deleting sequence:", sequence.id);
       setDeleteConfirmationData(null);
       // Refresh the sequence list

@@ -14,7 +14,10 @@
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import { generateSrcset, generateSizes } from "$lib/shared/components/thumbnail/srcset-utils";
+  import {
+    generateSrcset,
+    generateSizes,
+  } from "$lib/shared/components/thumbnail/srcset-utils";
   import InlineAnimationPlayer from "./InlineAnimationPlayer.svelte";
 
   type MediaType = "image" | "animation" | "video";
@@ -34,7 +37,9 @@
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // State
@@ -68,7 +73,8 @@
 
   // Current thumbnail URL
   const currentThumbnailUrl = $derived.by(() => {
-    if (!sequence?.thumbnails?.[currentImageIndex] || !thumbnailService) return undefined;
+    if (!sequence?.thumbnails?.[currentImageIndex] || !thumbnailService)
+      return undefined;
     try {
       const thumbnail = sequence.thumbnails[currentImageIndex];
       if (!thumbnail) return undefined;
@@ -154,21 +160,31 @@
           onclick={() => selectMediaType(mediaType)}
         >
           {#if mediaType === "image"}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
             </svg>
             <span>Image</span>
           {:else if mediaType === "animation"}
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M8 5v14l11-7z"/>
+              <path d="M8 5v14l11-7z" />
             </svg>
             <span>Animate</span>
           {:else if mediaType === "video"}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="23 7 16 12 23 17 23 7"/>
-              <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="23 7 16 12 23 17 23 7" />
+              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
             </svg>
             <span>Video</span>
           {/if}
@@ -181,7 +197,13 @@
   <div class="media-content">
     {#if activeMediaType === "image"}
       <!-- Image View -->
-      <div class="image-view" role="button" tabindex="0" onclick={handleImageClick} onkeypress={(e) => e.key === 'Enter' && handleImageClick()}>
+      <div
+        class="image-view"
+        role="button"
+        tabindex="0"
+        onclick={handleImageClick}
+        onkeypress={(e) => e.key === "Enter" && handleImageClick()}
+      >
         {#if currentImageUrl || previousImageUrl}
           <div class="image-crossfade-container">
             {#if isTransitioning && previousImageUrl}
@@ -212,7 +234,7 @@
             <div class="play-overlay">
               <div class="play-icon">
                 <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z"/>
+                  <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
               <span>Click to animate</span>
@@ -227,36 +249,39 @@
           <div class="image-nav">
             <button
               class="nav-arrow"
-              onclick={(e) => { e.stopPropagation(); prevImage(); }}
+              onclick={(e) => {
+                e.stopPropagation();
+                prevImage();
+              }}
               aria-label="Previous variation"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
               </svg>
             </button>
-            <span class="image-counter">{currentImageIndex + 1} / {totalImages}</span>
+            <span class="image-counter"
+              >{currentImageIndex + 1} / {totalImages}</span
+            >
             <button
               class="nav-arrow"
-              onclick={(e) => { e.stopPropagation(); nextImage(); }}
+              onclick={(e) => {
+                e.stopPropagation();
+                nextImage();
+              }}
               aria-label="Next variation"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
               </svg>
             </button>
           </div>
         {/if}
       </div>
-
     {:else if activeMediaType === "animation"}
       <!-- Animation View -->
       <div class="animation-view">
-        <InlineAnimationPlayer
-          {sequence}
-          autoPlay={true}
-        />
+        <InlineAnimationPlayer {sequence} autoPlay={true} />
       </div>
-
     {:else if activeMediaType === "video"}
       <!-- Video View -->
       <div class="video-view">
@@ -275,8 +300,17 @@
         {/if}
 
         <!-- Back to image button -->
-        <button class="back-btn" onclick={() => selectMediaType("image")} aria-label="Close video">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button
+          class="back-btn"
+          onclick={() => selectMediaType("image")}
+          aria-label="Close video"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -332,7 +366,11 @@
   }
 
   .media-tab.active {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 25%,
+      transparent
+    );
     color: var(--theme-text, white);
   }
 
@@ -381,13 +419,21 @@
   }
 
   @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Play overlay */
@@ -415,7 +461,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 90%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 90%,
+      transparent
+    );
     border-radius: 50%;
     color: var(--theme-text, white);
   }

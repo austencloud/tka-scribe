@@ -10,7 +10,10 @@
 
 import { injectable } from "inversify";
 import type { BeatData } from "../../../../../create/shared/domain/models/BeatData";
-import { Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  Orientation,
+  MotionColor,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { ISequenceDifficultyCalculator } from "../contracts/ISequenceDifficultyCalculator";
 
 @injectable()
@@ -76,7 +79,10 @@ export class SequenceDifficultyCalculator
   /**
    * Check if any motion has non-radial orientations (CLOCK or COUNTER)
    */
-  private hasNonRadialOrientation(blueMotion: unknown, redMotion: unknown): boolean {
+  private hasNonRadialOrientation(
+    blueMotion: unknown,
+    redMotion: unknown
+  ): boolean {
     const blueObj = blueMotion as Record<string, unknown> | undefined;
     const redObj = redMotion as Record<string, unknown> | undefined;
 

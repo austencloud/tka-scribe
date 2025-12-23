@@ -46,7 +46,9 @@ export function createExploreState() {
     TYPES.INavigationService
   );
   const sectionService = resolve<ISectionService>(TYPES.ISectionService);
-  const favoritesService = tryResolve<IFavoritesService>(TYPES.IFavoritesService);
+  const favoritesService = tryResolve<IFavoritesService>(
+    TYPES.IFavoritesService
+  );
 
   // Library service for "My Library" mode - lazily resolved
   let libraryService: ILibraryService | null = null;
@@ -284,9 +286,9 @@ export function createExploreState() {
       filteredSequences = filteredSequences.map(updateSequence);
 
       // Also update sections if they contain the sequence
-      sequenceSections = sequenceSections.map(section => ({
+      sequenceSections = sequenceSections.map((section) => ({
         ...section,
-        sequences: section.sequences.map(updateSequence)
+        sequences: section.sequences.map(updateSequence),
       }));
 
       // Update selected sequence if it's the one being toggled
@@ -295,7 +297,7 @@ export function createExploreState() {
       }
 
       // Update the active sequence in the panel manager (for detail panel)
-      const updatedSequence = allSequences.find(s => s.id === sequenceId);
+      const updatedSequence = allSequences.find((s) => s.id === sequenceId);
       if (updatedSequence) {
         galleryPanelManager.updateActiveSequence(updatedSequence);
       }

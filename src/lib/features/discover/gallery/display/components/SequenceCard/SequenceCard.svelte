@@ -92,12 +92,18 @@ Enhanced with Svelte 5 runes for reactive state management.
   }
 
   .sequence-card:focus {
-    outline: 2px solid color-mix(in srgb, var(--theme-text, white) 40%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     outline-offset: 2px;
   }
 
   .sequence-card.selected {
-    border-color: color-mix(in srgb, var(--semantic-info, #667eea) 80%, transparent);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--semantic-info, #667eea) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #667eea) 80%,
+      transparent
+    );
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--semantic-info, #667eea) 40%, transparent);
   }
 </style>

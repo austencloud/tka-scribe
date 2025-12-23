@@ -9,9 +9,17 @@ import type { BeatData } from "../../../../../create/shared/domain/models/BeatDa
 import type { StartPositionData } from "../../../../../create/shared/domain/models/StartPositionData";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { GridLocation, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  GridLocation,
+  GridPosition,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionColor, MotionType, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+  Orientation,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { UniversalMetadataExtractor } from "$lib/shared/services/UniversalMetadataExtractor";
@@ -147,7 +155,8 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
 
     // Check if first element is start position (has sequence_start_position field)
     const firstElement = sequence[0] as Record<string, unknown>;
-    const hasStartPosition = firstElement && "sequence_start_position" in firstElement;
+    const hasStartPosition =
+      firstElement && "sequence_start_position" in firstElement;
 
     // Skip first element if it's a start position, otherwise parse all elements
     const beatElements = hasStartPosition ? sequence.slice(1) : sequence;
@@ -161,7 +170,9 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
         // PictographData properties
         id: `beat-${sequenceName}-${index + 1}`,
         letter: String(stepData["letter"] || ""),
-        startPosition: this.parseGridPosition(stepData["start_pos"]) || this.parseGridPosition(stepData["sequence_start_position"]),
+        startPosition:
+          this.parseGridPosition(stepData["start_pos"]) ||
+          this.parseGridPosition(stepData["sequence_start_position"]),
         endPosition: this.parseGridPosition(stepData["end_pos"]),
         motions: {
           [MotionColor.BLUE]: blueAttrs
@@ -232,9 +243,14 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
       return undefined;
     }
 
-    const blueAttrs = firstElement["blue_attributes"] as Record<string, unknown>;
+    const blueAttrs = firstElement["blue_attributes"] as Record<
+      string,
+      unknown
+    >;
     const redAttrs = firstElement["red_attributes"] as Record<string, unknown>;
-    const gridPosition = this.parseGridPosition(firstElement["sequence_start_position"]);
+    const gridPosition = this.parseGridPosition(
+      firstElement["sequence_start_position"]
+    );
 
     return {
       id: `start-${sequenceName}`,
@@ -279,8 +295,7 @@ export class DiscoverMetadataExtractor implements IDiscoverMetadataExtractor {
               isVisible: true,
               propType: PropType.STAFF,
               arrowLocation:
-                this.parseLocation(redAttrs["start_loc"]) ||
-                GridLocation.SOUTH,
+                this.parseLocation(redAttrs["start_loc"]) || GridLocation.SOUTH,
               gridMode: GridMode.DIAMOND,
             })
           : undefined,

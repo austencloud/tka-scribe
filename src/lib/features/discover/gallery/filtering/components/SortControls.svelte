@@ -137,7 +137,8 @@ Follows Svelte 5 runes + microservices architecture.
   .filter-button:hover {
     background: color-mix(in srgb, var(--semantic-info, #007bff) 85%, #000);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px color-mix(in srgb, var(--semantic-info, #007bff) 30%, transparent);
+    box-shadow: 0 4px 8px
+      color-mix(in srgb, var(--semantic-info, #007bff) 30%, transparent);
   }
 
   .filter-icon {
@@ -183,7 +184,8 @@ Follows Svelte 5 runes + microservices architecture.
   select:focus {
     outline: none;
     border-color: var(--semantic-info, #007bff);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--semantic-info, #007bff) 20%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--semantic-info, #007bff) 20%, transparent);
   }
 
   .sort-direction-button {

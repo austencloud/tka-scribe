@@ -36,8 +36,12 @@ Provides consistent styling matching the Generate tab's card aesthetic
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    rippleService = tryResolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
+    rippleService = tryResolve<IRippleEffectService>(
+      TYPES.IRippleEffectService
+    );
 
     if (clickable && cardElement && rippleService) {
       return rippleService.attachRipple(cardElement, {
@@ -90,7 +94,12 @@ Provides consistent styling matching the Generate tab's card aesthetic
     {/if}
 
     <div class="click-indicator" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <path d="M9 18l6-6-6-6" />
       </svg>
     </div>

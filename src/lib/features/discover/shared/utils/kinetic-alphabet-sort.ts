@@ -90,13 +90,13 @@ function extractBaseLetter(word: string): string {
 
   const firstChar = word[0]!;
   const TYPE6_UPPERCASE_TO_LOWERCASE: { [key: string]: string } = {
-    "Α": "α",
-    "Β": "β",
-    "Γ": "γ",
-    "Θ": "θ",
-    "Ζ": "ζ",
-    "Η": "η",
-    "Τ": "τ",
+    Α: "α",
+    Β: "β",
+    Γ: "γ",
+    Θ: "θ",
+    Ζ: "ζ",
+    Η: "η",
+    Τ: "τ",
   };
   const TYPE6_LOWERCASE = ["α", "β", "γ", "θ", "ζ", "η", "τ", "⊕"];
 
@@ -127,7 +127,10 @@ function extractBaseLetter(word: string): string {
  * Compare two letters in kinetic alphabet order
  * Returns negative if a < b, positive if a > b, 0 if equal
  */
-export function compareKineticLetters(letterA: string, letterB: string): number {
+export function compareKineticLetters(
+  letterA: string,
+  letterB: string
+): number {
   const indexA = getLetterSortIndex(letterA);
   const indexB = getLetterSortIndex(letterB);
 
@@ -149,9 +152,9 @@ export function compareKineticLetters(letterA: string, letterB: string): number 
  * Sort sequences by their first letter in kinetic alphabet order
  * Then by word name for sequences with the same first letter
  */
-export function sortSequencesByKineticAlphabet<T extends { word: string; sequenceLength?: number }>(
-  sequences: T[]
-): T[] {
+export function sortSequencesByKineticAlphabet<
+  T extends { word: string; sequenceLength?: number },
+>(sequences: T[]): T[] {
   return [...sequences].sort((a, b) => {
     const letterA = extractBaseLetter(a.word);
     const letterB = extractBaseLetter(b.word);

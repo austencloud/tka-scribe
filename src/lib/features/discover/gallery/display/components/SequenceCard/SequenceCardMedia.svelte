@@ -8,7 +8,10 @@ Displays:
 Ultra-minimal design: Clean display with responsive images.
 -->
 <script lang="ts">
-  import { generateSrcset, generateSizes } from "$lib/shared/components/thumbnail/srcset-utils";
+  import {
+    generateSrcset,
+    generateSizes,
+  } from "$lib/shared/components/thumbnail/srcset-utils";
 
   const {
     coverUrl = undefined,
@@ -91,7 +94,11 @@ Ultra-minimal design: Clean display with responsive images.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--theme-card-hover-bg, #1f2937), var(--theme-panel-bg, #111827));
+    background: linear-gradient(
+      135deg,
+      var(--theme-card-hover-bg, #1f2937),
+      var(--theme-panel-bg, #111827)
+    );
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 4rem;
     font-weight: 700;

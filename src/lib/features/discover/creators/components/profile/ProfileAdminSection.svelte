@@ -9,7 +9,10 @@
   import { doc, updateDoc, writeBatch } from "firebase/firestore";
   import { getFirestoreInstance } from "$lib/shared/auth/firebase";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
-  import { ROLE_DISPLAY, ROLE_HIERARCHY } from "$lib/shared/auth/domain/models/UserRole";
+  import {
+    ROLE_DISPLAY,
+    ROLE_HIERARCHY,
+  } from "$lib/shared/auth/domain/models/UserRole";
   import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
 
   interface Props {
@@ -94,7 +97,10 @@
       batch.delete(xpRef);
 
       // Delete streak document
-      const streakRef = doc(firestore, `users/${userProfile.id}/streak/current`);
+      const streakRef = doc(
+        firestore,
+        `users/${userProfile.id}/streak/current`
+      );
       batch.delete(streakRef);
 
       await batch.commit();
@@ -179,7 +185,8 @@
           };
         }}
       >
-        <i class="fas {userProfile.isDisabled ? 'fa-check-circle' : 'fa-ban'}"></i>
+        <i class="fas {userProfile.isDisabled ? 'fa-check-circle' : 'fa-ban'}"
+        ></i>
         {userProfile.isDisabled ? "Enable Account" : "Disable Account"}
       </button>
 

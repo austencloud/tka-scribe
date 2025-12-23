@@ -32,7 +32,9 @@
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   // Sheet state: 'peek' (shows just word), 'expanded' (shows all info)
@@ -68,7 +70,12 @@
 
   <!-- Close button (top right) -->
   <button class="close-btn" onclick={onClose} aria-label="Close">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+    >
       <line x1="18" y1="6" x2="6" y2="18"></line>
       <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
@@ -77,7 +84,7 @@
   <!-- Bottom sheet with swipe-up for more -->
   <MobileDetailSheet
     {sequence}
-    sheetState={sheetState}
+    {sheetState}
     onStateChange={handleSheetStateChange}
     onAction={handleAction}
   />

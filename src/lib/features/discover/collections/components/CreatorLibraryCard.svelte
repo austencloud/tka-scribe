@@ -485,7 +485,10 @@ Displays:
     left: 0;
     right: 0;
     padding: 4px 6px;
-    background: linear-gradient(transparent, color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent));
+    background: linear-gradient(
+      transparent,
+      color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent)
+    );
     font-size: 10px;
     color: var(--theme-text, white);
     white-space: nowrap;
@@ -501,8 +504,13 @@ Displays:
     justify-content: center;
     gap: 4px;
     aspect-ratio: 1;
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 15%, transparent);
-    border: 1px dashed color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 15%,
+      transparent
+    );
+    border: 1px dashed
+      color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
     border-radius: 8px;
     color: var(--theme-accent, #a855f7);
     cursor: pointer;
@@ -510,8 +518,16 @@ Displays:
   }
 
   .see-all-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, #a855f7) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #a855f7) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #a855f7) 60%,
+      transparent
+    );
   }
 
   .see-all-count {

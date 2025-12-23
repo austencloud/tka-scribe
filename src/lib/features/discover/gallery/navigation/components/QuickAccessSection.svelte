@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   let hapticService: IHapticFeedbackService;
@@ -77,7 +77,8 @@ import { TYPES } from "$lib/shared/inversify/types";
     max-width: 400px;
 
     background: color-mix(in srgb, var(--theme-text, white) 12%, transparent);
-    border: 2px solid color-mix(in srgb, var(--theme-text, white) 40%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     border-radius: 14px;
     color: var(--theme-text, white);
     font-weight: bold;
@@ -91,7 +92,8 @@ import { TYPES } from "$lib/shared/inversify/types";
 
   .quick-button:hover {
     background: color-mix(in srgb, var(--theme-text, white) 15%, transparent);
-    border: 2px solid color-mix(in srgb, var(--theme-text, white) 50%, transparent);
+    border: 2px solid
+      color-mix(in srgb, var(--theme-text, white) 50%, transparent);
   }
 
   .quick-button:active {

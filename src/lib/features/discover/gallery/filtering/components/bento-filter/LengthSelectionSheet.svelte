@@ -23,7 +23,9 @@ Displays available lengths as pill buttons with clear option
   let hapticService: IHapticFeedbackService | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = tryResolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
   });
 
   function handleLengthClick(length: number) {
@@ -41,9 +43,7 @@ Displays available lengths as pill buttons with clear option
   <div class="sheet-header">
     <h3 class="sheet-title">Select Length</h3>
     {#if currentLength}
-      <button class="clear-btn" onclick={handleClear}>
-        Clear
-      </button>
+      <button class="clear-btn" onclick={handleClear}> Clear </button>
     {/if}
   </div>
 

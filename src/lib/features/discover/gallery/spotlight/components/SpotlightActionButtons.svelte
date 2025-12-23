@@ -1,10 +1,10 @@
 <!-- SpotlightActionButtons.svelte - Action buttons for fullscreen viewer (Refactored) -->
 <script lang="ts">
-import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onMount } from "svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { SPOTLIGHT_CONSTANTS } from "../domain/constants/spotlight-constants";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
@@ -119,26 +119,58 @@ import { TYPES } from "$lib/shared/inversify/types";
   }
 
   .action-button.edit:hover {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 50%,
+      transparent
+    );
     color: var(--semantic-info, #60a5fa);
   }
 
   .action-button.favorite:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 50%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
   }
 
   .action-button.favorite.favorited {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 20%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 40%,
+      transparent
+    );
     color: var(--semantic-error, #f87171);
   }
 
   .action-button.delete:hover {
-    background: color-mix(in srgb, var(--semantic-error, #dc2626) 30%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #dc2626) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #dc2626) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #dc2626) 50%,
+      transparent
+    );
     color: #fca5a5;
   }
 

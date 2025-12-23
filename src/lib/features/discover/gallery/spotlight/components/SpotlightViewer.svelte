@@ -33,13 +33,18 @@
   // Persist column preference to localStorage (device-specific)
   const COLUMN_STORAGE_KEY = "tka_spotlight_column_count";
   let manualColumnCount = $state<number | null>(
-    browser ? JSON.parse(localStorage.getItem(COLUMN_STORAGE_KEY) ?? "null") : null
+    browser
+      ? JSON.parse(localStorage.getItem(COLUMN_STORAGE_KEY) ?? "null")
+      : null
   );
 
   // Persist column changes
   $effect(() => {
     if (browser) {
-      localStorage.setItem(COLUMN_STORAGE_KEY, JSON.stringify(manualColumnCount));
+      localStorage.setItem(
+        COLUMN_STORAGE_KEY,
+        JSON.stringify(manualColumnCount)
+      );
     }
   });
 
@@ -70,7 +75,10 @@
           } else if (thumbnailService) {
             // Use thumbnail service to construct the URL
             try {
-              imageUrl = thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
+              imageUrl = thumbnailService.getThumbnailUrl(
+                sequence.id,
+                thumbnail
+              );
             } catch (error) {
               console.warn("Failed to resolve thumbnail via service", error);
               // Fallback: try using it as a relative path
@@ -207,7 +215,10 @@
 
   // Get suggested column options based on viewport width
   // Offers all viable options - user can choose what looks best for their sequence
-  function getColumnOptions(_beatCount: number, viewportWidth: number): number[] {
+  function getColumnOptions(
+    _beatCount: number,
+    viewportWidth: number
+  ): number[] {
     const options: number[] = [];
 
     // Minimum cell size to avoid cramped layouts
@@ -215,7 +226,8 @@
 
     // Calculate max viable columns based on screen width
     // Formula: (viewportWidth - padding) / (columns + 1 for start position) >= MIN_CELL_SIZE
-    const maxViableColumns = Math.floor((viewportWidth - 32) / MIN_CELL_SIZE) - 1;
+    const maxViableColumns =
+      Math.floor((viewportWidth - 32) / MIN_CELL_SIZE) - 1;
 
     // Offer all standard column options that fit the screen
     if (maxViableColumns >= 2) options.push(2);
@@ -227,7 +239,9 @@
   }
 
   const columnOptions = $derived(
-    sequence?.beats ? getColumnOptions(sequence.beats.length, window.innerWidth) : [4, 6, 8]
+    sequence?.beats
+      ? getColumnOptions(sequence.beats.length, window.innerWidth)
+      : [4, 6, 8]
   );
 
   // Calculate optimal column count that maximizes cell size while fitting in viewport
@@ -244,7 +258,9 @@
     const padding = 32; // Account for viewport padding
 
     // Test each viable column count and find which gives the largest cell size
-    const candidateColumns = [2, 4, 6, 8].filter(cols => cols <= beatCount + 1);
+    const candidateColumns = [2, 4, 6, 8].filter(
+      (cols) => cols <= beatCount + 1
+    );
 
     let bestColumns = 4;
     let bestCellSize = 0;
@@ -257,7 +273,8 @@
       const widthGaps = (totalColumns - 1) * gridGap;
       const heightGaps = (rows - 1) * gridGap;
 
-      const maxCellByWidth = (viewportWidth - padding - widthGaps) / totalColumns;
+      const maxCellByWidth =
+        (viewportWidth - padding - widthGaps) / totalColumns;
       const maxCellByHeight = (viewportHeight - padding - heightGaps) / rows;
 
       // Cell size is limited by the smaller dimension
@@ -282,7 +299,8 @@
     if (!manualColumnCount || !sequence?.beats) return false;
 
     const MIN_COMFORTABLE_CELL_SIZE = 80;
-    const estimatedCellWidth = (window.innerWidth - 32) / (manualColumnCount + 1);
+    const estimatedCellWidth =
+      (window.innerWidth - 32) / (manualColumnCount + 1);
 
     return estimatedCellWidth < MIN_COMFORTABLE_CELL_SIZE;
   });
@@ -356,7 +374,9 @@
       <div class="spotlight-beatgrid">
         <BeatGrid
           beats={sequence.beats ?? []}
-          startPosition={sequence.startPosition ?? sequence.startingPositionBeat ?? null}
+          startPosition={sequence.startPosition ??
+            sequence.startingPositionBeat ??
+            null}
           isSideBySideLayout={false}
           isSpotlightMode={true}
           manualColumnCount={effectiveColumnCount}
@@ -391,7 +411,14 @@
       <!-- Layout hint - show when cramped -->
       {#if isLayoutCramped && !showColumnPicker}
         <div class="layout-hint">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -614,7 +641,8 @@
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
     }
     50% {

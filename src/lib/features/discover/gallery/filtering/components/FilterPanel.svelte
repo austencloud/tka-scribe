@@ -380,7 +380,12 @@ Follows Svelte 5 runes + microservices architecture.
   .sort-select-container select:focus {
     outline: none;
     border-color: var(--theme-accent, var(--accent-color));
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent, var(--accent-color)) 20%, transparent);
+    box-shadow: 0 0 0 2px
+      color-mix(
+        in srgb,
+        var(--theme-accent, var(--accent-color)) 20%,
+        transparent
+      );
   }
 
   .sort-direction-button {

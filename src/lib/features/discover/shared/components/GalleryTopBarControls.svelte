@@ -243,8 +243,13 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     gap: 8px;
     padding: 0 12px 0 16px;
     min-height: var(--control-height);
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 100px;
     color: var(--semantic-info, #3b82f6);
     font-size: 13px;
@@ -255,7 +260,11 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   }
 
   .active-filter-chip:hover {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 25%,
+      transparent
+    );
   }
 
   .active-filter-chip i {
@@ -287,8 +296,16 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   }
 
   .filter-button.has-active {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 30%,
+      transparent
+    );
     color: var(--semantic-info, #3b82f6);
   }
 

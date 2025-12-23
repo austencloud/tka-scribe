@@ -89,7 +89,11 @@ function createDiscoverNavigationState() {
       if (!stored) return false;
 
       const data = JSON.parse(stored) as DiscoverNavigationStateData;
-      if (data.history && Array.isArray(data.history) && data.history.length > 0) {
+      if (
+        data.history &&
+        Array.isArray(data.history) &&
+        data.history.length > 0
+      ) {
         state.history = data.history;
         state.currentIndex = Math.min(
           data.currentIndex,

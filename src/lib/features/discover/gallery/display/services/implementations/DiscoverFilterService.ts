@@ -11,7 +11,10 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 import type { IDiscoverFilterService } from "../contracts/IDiscoverFilterService";
-import { CAPType, CAP_TYPE_LABELS } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import {
+  CAPType,
+  CAP_TYPE_LABELS,
+} from "$lib/features/create/generate/circular/domain/models/circular-models";
 
 // Constants
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
@@ -213,7 +216,7 @@ export class DiscoverFilterService implements IDiscoverFilterService {
       targetPosition = pictoData.startPosition?.toLowerCase() ?? null;
       console.log("🔍 Position filter - PictographData:", {
         startPosition: pictoData.startPosition,
-        targetPosition
+        targetPosition,
       });
     } else if (typeof filterValue === "string") {
       // Direct string value (e.g., "alpha1", "beta5")
@@ -228,21 +231,32 @@ export class DiscoverFilterService implements IDiscoverFilterService {
 
     // Extract position group (alpha, beta, gamma) for fallback matching
     const targetGroup = targetPosition.replace(/[0-9]/g, "");
-    console.log("🔍 Position filter - targetGroup:", targetGroup, "from", targetPosition);
-    console.log("🔍 Position filter - filtering", sequences.length, "sequences");
+    console.log(
+      "🔍 Position filter - targetGroup:",
+      targetGroup,
+      "from",
+      targetPosition
+    );
+    console.log(
+      "🔍 Position filter - filtering",
+      sequences.length,
+      "sequences"
+    );
 
     const results = sequences.filter((seq) => {
       // Try exact position match first
       const seqStartPos = seq.startPosition || seq.startingPositionBeat;
       if (seqStartPos) {
         // Check gridPosition field (StartPositionData)
-        const gridPos = (seqStartPos as { gridPosition?: string | null }).gridPosition;
+        const gridPos = (seqStartPos as { gridPosition?: string | null })
+          .gridPosition;
         if (gridPos?.toLowerCase() === targetPosition) {
           return true;
         }
 
         // Check startPosition field (PictographData/BeatData)
-        const startPos = (seqStartPos as { startPosition?: string | null }).startPosition;
+        const startPos = (seqStartPos as { startPosition?: string | null })
+          .startPosition;
         if (startPos?.toLowerCase() === targetPosition) {
           return true;
         }
@@ -260,7 +274,7 @@ export class DiscoverFilterService implements IDiscoverFilterService {
     console.log("🔍 Position filter - found", results.length, "matches");
     if (results.length === 0 && sequences.length > 0) {
       // Debug: show what position groups are available
-      const groups = new Set(sequences.map(s => s.startingPositionGroup));
+      const groups = new Set(sequences.map((s) => s.startingPositionGroup));
       console.log("🔍 Available position groups:", Array.from(groups));
     }
 
@@ -309,7 +323,8 @@ export class DiscoverFilterService implements IDiscoverFilterService {
       }
 
       // Check startPosition on last beat (some data might use this)
-      const startPos = (lastBeat as { startPosition?: string | null }).startPosition;
+      const startPos = (lastBeat as { startPosition?: string | null })
+        .startPosition;
       if (startPos?.toLowerCase() === targetPosition) {
         return true;
       }
@@ -475,9 +490,9 @@ export class DiscoverFilterService implements IDiscoverFilterService {
 
     // Map Greek letters to English names
     const greekMap: Record<string, string> = {
-      "α": "alpha",
-      "β": "beta",
-      "γ": "gamma",
+      α: "alpha",
+      β: "beta",
+      γ: "gamma",
     };
 
     if (greekMap[normalized]) {

@@ -321,7 +321,8 @@ Responsive behavior:
     gap: 8px;
     padding: 10px 16px;
     background: color-mix(in srgb, var(--theme-text, white) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-text, white) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-text, white) 30%, transparent);
     border-radius: 8px;
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-size: 0.95rem;
@@ -359,7 +360,11 @@ Responsive behavior:
     min-width: 280px;
     max-width: 360px;
     max-height: 500px;
-    background: color-mix(in srgb, var(--theme-panel-bg, #0a0a0f) 95%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #0a0a0f) 95%,
+      transparent
+    );
     backdrop-filter: blur(20px);
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 12px;
