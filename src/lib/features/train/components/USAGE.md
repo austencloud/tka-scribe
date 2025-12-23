@@ -14,15 +14,18 @@
 ## Features
 
 ### Responsive Layout
+
 - Desktop: Side-by-side camera view and info panel
 - Mobile: Stacked layout with camera on top
 
 ### State Management
+
 - Uses the existing train state management (`train-state.svelte.ts`)
 - Automatically initializes state context for child components
 - Follows Svelte 5 patterns with `$state`, `$props`, and `$effect` runes
 
 ### Detection Integration
+
 - Integrates with `MediaPipeDetectionService` for hand tracking
 - Real-time position detection and confidence tracking
 - Automatic error handling and recovery
@@ -41,15 +44,13 @@
   }
 </script>
 
-<TrainModePanel
-  sequence={currentSequence}
-  onBack={handleBack}
-/>
+<TrainModePanel sequence={currentSequence} onBack={handleBack} />
 ```
 
 ## Props
 
 ### `sequence?: SequenceData | null` (optional)
+
 The sequence to train with. Can be passed as a prop or set later through state.
 
 ```svelte
@@ -57,13 +58,14 @@ The sequence to train with. Can be passed as a prop or set later through state.
 ```
 
 ### `onBack?: () => void` (optional)
+
 Callback function triggered when the back button is clicked.
 
 ```svelte
 <TrainModePanel
   onBack={() => {
     // Navigate to sequence selection or main menu
-    goto('/train/select');
+    goto("/train/select");
   }}
 />
 ```
@@ -71,17 +73,20 @@ Callback function triggered when the back button is clicked.
 ## Component Lifecycle
 
 ### 1. Setup Mode (Initial State)
+
 - Camera initializes
 - Hand detection service loads
 - User can select a sequence (if not provided)
 - Shows "Start Training" button when ready
 
 ### 2. Countdown Mode
+
 - 3-2-1 countdown animation
 - Triggered by "Start Training" button
 - Automatically transitions to performing mode
 
 ### 3. Performing Mode
+
 - Real-time hand tracking
 - Position comparison with expected positions
 - Score and combo tracking
@@ -89,6 +94,7 @@ Callback function triggered when the back button is clicked.
 - Shows "Stop" button to exit early
 
 ### 4. Review Mode
+
 - Performance results displayed
 - Shows final score and stats
 - "Train Again" button to return to setup
@@ -125,14 +131,14 @@ SETUP
   }
 
   function handleBackToMenu() {
-    goto('/train');
+    goto("/train");
   }
 
   // Load sequence on mount if needed
-  import { onMount } from 'svelte';
+  import { onMount } from "svelte";
   onMount(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const sequenceId = urlParams.get('sequence');
+    const sequenceId = urlParams.get("sequence");
     if (sequenceId) {
       loadSequence(sequenceId);
     }
@@ -140,10 +146,7 @@ SETUP
 </script>
 
 <div class="train-page">
-  <TrainModePanel
-    sequence={selectedSequence}
-    onBack={handleBackToMenu}
-  />
+  <TrainModePanel sequence={selectedSequence} onBack={handleBackToMenu} />
 </div>
 
 <style>
@@ -158,9 +161,11 @@ SETUP
 ## Customization
 
 ### Camera Settings
+
 The camera preview is mirrored by default. This can be changed in the `CameraPreview` component props if needed.
 
 ### Detection Service
+
 Currently uses `MediaPipeDetectionService`. To use a different detection service:
 
 1. Implement the `IPositionDetectionService` interface
@@ -181,6 +186,7 @@ async function initDetection() {
 ```
 
 ### Styling
+
 The component uses CSS custom properties for theming:
 
 - `--background-primary`: Main background color (default: `#0f0f0f`)
@@ -207,12 +213,14 @@ Errors are displayed in a dismissible error card in the info panel.
 ## Dependencies
 
 ### Internal Dependencies
+
 - `CameraPreview.svelte`: Camera feed component
 - `GridOverlay.svelte`: Position visualization overlay
 - `MediaPipeDetectionService`: Hand detection implementation
 - `train-state.svelte.ts`: State management
 
 ### External Dependencies
+
 - Svelte 5
 - MediaPipe (via MediaPipeDetectionService)
 
@@ -244,11 +252,13 @@ src/lib/modules/train/
 ## Browser Compatibility
 
 Requires:
+
 - Modern browser with WebRTC support (camera access)
 - WebGL support (for MediaPipe)
 - ES2020+ JavaScript features
 
 Tested on:
+
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
@@ -256,17 +266,20 @@ Tested on:
 ## Troubleshooting
 
 ### Camera not starting
+
 1. Check browser permissions for camera access
 2. Ensure HTTPS (cameras require secure context)
 3. Check browser console for detailed error messages
 
 ### Hand tracking not working
+
 1. Ensure good lighting
 2. Keep hands visible in frame
 3. Check that MediaPipe models loaded successfully
 4. Review browser console for detection errors
 
 ### Performance issues
+
 1. Close other applications using camera
 2. Reduce browser tab count
 3. Check CPU/GPU usage

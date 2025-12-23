@@ -1,6 +1,6 @@
 /**
  * HandednessAnalyzer - Anatomical hand detection
- * 
+ *
  * Responsibility: Analyze hand landmarks to determine left vs right hand
  * using anatomical features (thumb position, palm orientation) rather than
  * relying solely on MediaPipe's handedness classification.
@@ -48,7 +48,10 @@ export class HandednessAnalyzer implements IHandednessAnalyzer {
    */
   analyzeHandedness(landmarks: HandLandmark[]): HandednessAnalysisResult {
     const palmOrientation = this.detectPalmOrientation(landmarks);
-    const anatomicalHandedness = this._detectHandednessFromAnatomy(landmarks, palmOrientation);
+    const anatomicalHandedness = this._detectHandednessFromAnatomy(
+      landmarks,
+      palmOrientation
+    );
 
     return {
       anatomicalHandedness,
@@ -69,8 +72,8 @@ export class HandednessAnalyzer implements IHandednessAnalyzer {
   ): AnatomicalHandedness {
     if (landmarks.length < 18) return null;
 
-    const thumbTip = landmarks[4];   // Thumb tip
-    const indexBase = landmarks[5];  // Index finger MCP
+    const thumbTip = landmarks[4]; // Thumb tip
+    const indexBase = landmarks[5]; // Index finger MCP
     const pinkyBase = landmarks[17]; // Pinky MCP
 
     if (!thumbTip || !indexBase || !pinkyBase) return null;
@@ -85,7 +88,8 @@ export class HandednessAnalyzer implements IHandednessAnalyzer {
     const pinkyToThumbY = thumbTip.y - pinkyBase.y;
 
     // Cross product (z-component)
-    const crossProduct = pinkyToIndexX * pinkyToThumbY - pinkyToIndexY * pinkyToThumbX;
+    const crossProduct =
+      pinkyToIndexX * pinkyToThumbY - pinkyToIndexY * pinkyToThumbX;
 
     // Interpret based on palm orientation
     let isLeftHand: boolean;

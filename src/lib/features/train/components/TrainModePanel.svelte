@@ -545,7 +545,6 @@
 </script>
 
 <div class="train-mode-panel">
-
   <!-- Unified Bento Layout - Everything in flow, no floaters! -->
   <div class="training-mode-body">
     <PracticeBentoLayout
@@ -586,7 +585,8 @@
       }}
       onGridScaleChange={(scale) => practiceState.setGridScale(scale)}
       onGridModeChange={(mode) => practiceState.setGridMode(mode)}
-      onPropsVisibilityChange={(visible) => practiceState.setPropsVisible(visible)}
+      onPropsVisibilityChange={(visible) =>
+        practiceState.setPropsVisible(visible)}
     />
 
     <!-- Results Screen Overlay -->
@@ -706,7 +706,8 @@
       color-mix(in srgb, var(--semantic-error, #ef4444) 98%, transparent) 0%,
       color-mix(in srgb, var(--semantic-error, #dc2626) 98%, transparent) 100%
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #f87171) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #f87171) 30%, transparent);
     border-radius: 12px;
     padding: 0.75rem 1rem;
     display: flex;
@@ -715,7 +716,8 @@
     gap: 0.75rem;
     z-index: 150;
     animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    box-shadow: 0 4px 20px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
   }
 
   @keyframes slideUp {

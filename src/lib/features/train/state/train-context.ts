@@ -11,7 +11,9 @@ export function getTrainState(): TrainState {
   return getContext(TRAIN_STATE_KEY);
 }
 
-export function initTrainState(config?: Parameters<typeof createTrainState>[0]) {
+export function initTrainState(
+  config?: Parameters<typeof createTrainState>[0]
+) {
   const state = createTrainState(config);
   setTrainState(state);
   return state;

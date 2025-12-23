@@ -618,11 +618,19 @@ Supports:
   }
 
   .hand-indicator.left {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 30%,
+      transparent
+    );
   }
 
   .hand-indicator.right {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
   }
 
   .direction-grid {
@@ -671,7 +679,11 @@ Supports:
   }
 
   .direction-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 50%,
+      transparent
+    );
     border-color: var(--theme-accent, #6366f1);
     transform: scale(1.05);
   }

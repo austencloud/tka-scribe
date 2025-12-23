@@ -90,7 +90,11 @@
       color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
       color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 25%,
+      transparent
+    );
     transform: translateY(-1px);
   }
 
@@ -113,7 +117,11 @@
       color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent) 0%,
       color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 25%,
+      transparent
+    );
   }
 
   .sequence-content {

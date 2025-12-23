@@ -9,56 +9,60 @@
 import type { TrainChallenge } from "../domain/models/TrainChallengeModels";
 
 function createActiveChallengeState() {
-	let activeChallenge = $state<TrainChallenge | null>(null);
+  let activeChallenge = $state<TrainChallenge | null>(null);
 
-	function setActiveChallenge(challenge: TrainChallenge | null) {
-		activeChallenge = challenge;
-	}
+  function setActiveChallenge(challenge: TrainChallenge | null) {
+    activeChallenge = challenge;
+  }
 
-	function clearActiveChallenge() {
-		activeChallenge = null;
-	}
+  function clearActiveChallenge() {
+    activeChallenge = null;
+  }
 
-	return {
-		get activeChallenge() {
-			return activeChallenge;
-		},
-		get hasActiveChallenge(): boolean {
-			return activeChallenge !== null;
-		},
-		setActiveChallenge,
-		clearActiveChallenge,
-	};
+  return {
+    get activeChallenge() {
+      return activeChallenge;
+    },
+    get hasActiveChallenge(): boolean {
+      return activeChallenge !== null;
+    },
+    setActiveChallenge,
+    clearActiveChallenge,
+  };
 }
 
 // Module singleton instance
-let activeChallengeInstance: ReturnType<typeof createActiveChallengeState> | null = null;
+let activeChallengeInstance: ReturnType<
+  typeof createActiveChallengeState
+> | null = null;
 
 /**
  * Get the active challenge state singleton
  */
 export function getActiveChallengeState() {
-	if (!activeChallengeInstance) {
-		activeChallengeInstance = createActiveChallengeState();
-	}
-	return activeChallengeInstance;
+  if (!activeChallengeInstance) {
+    activeChallengeInstance = createActiveChallengeState();
+  }
+  return activeChallengeInstance;
 }
 
 // For backward compatibility, export a proxy that delegates to the singleton
 // This allows existing code using `activeChallengeState.activeChallenge` to work
 export const activeChallengeState = {
-	get activeChallenge() {
-		return getActiveChallengeState().activeChallenge;
-	},
-	get hasActiveChallenge() {
-		return getActiveChallengeState().hasActiveChallenge;
-	},
-	setActiveChallenge(challenge: TrainChallenge | null) {
-		getActiveChallengeState().setActiveChallenge(challenge);
-	},
-	clearActiveChallenge() {
-		getActiveChallengeState().clearActiveChallenge();
-	},
+  get activeChallenge() {
+    return getActiveChallengeState().activeChallenge;
+  },
+  get hasActiveChallenge() {
+    return getActiveChallengeState().hasActiveChallenge;
+  },
+  setActiveChallenge(challenge: TrainChallenge | null) {
+    getActiveChallengeState().setActiveChallenge(challenge);
+  },
+  clearActiveChallenge() {
+    getActiveChallengeState().clearActiveChallenge();
+  },
 };
 
-export type ActiveChallengeState = ReturnType<typeof createActiveChallengeState>;
+export type ActiveChallengeState = ReturnType<
+  typeof createActiveChallengeState
+>;

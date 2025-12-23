@@ -329,7 +329,8 @@
     font-size: clamp(3rem, 15vw, 6rem);
     font-weight: bold;
     color: var(--theme-text, white);
-    text-shadow: 0 0 40px color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+    text-shadow: 0 0 40px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
     animation: pulse 1s ease-in-out infinite;
   }
 
@@ -398,12 +399,20 @@
   }
 
   .hit-indicator.hit {
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 90%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 90%,
+      transparent
+    );
     color: var(--theme-text, white);
   }
 
   .hit-indicator.miss {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 90%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 90%,
+      transparent
+    );
     color: var(--theme-text, white);
   }
 

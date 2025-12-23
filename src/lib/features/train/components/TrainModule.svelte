@@ -84,19 +84,19 @@
     />
   </div>
 {:else}
-<div class="train-module">
-  {#key activeSection}
-    <div class="section-panel">
-      {#if activeSection === "practice"}
-        <PracticePanel />
-      {:else if activeSection === "challenges"}
-        <ChallengesPanel />
-      {:else if activeSection === "progress"}
-        <ProgressPanel />
-      {/if}
-    </div>
-  {/key}
-</div>
+  <div class="train-module">
+    {#key activeSection}
+      <div class="section-panel">
+        {#if activeSection === "practice"}
+          <PracticePanel />
+        {:else if activeSection === "challenges"}
+          <ChallengesPanel />
+        {:else if activeSection === "progress"}
+          <ProgressPanel />
+        {/if}
+      </div>
+    {/key}
+  </div>
 {/if}
 
 <style>

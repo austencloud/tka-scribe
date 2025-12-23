@@ -13,6 +13,7 @@ The state follows the factory pattern with context-based dependency injection:
 ## State Structure
 
 ### Core State
+
 - `mode`: Current training mode (setup, countdown, performing, review)
 - `sequence`: Selected sequence for training
 - `bpm`: Beats per minute for playback
@@ -20,21 +21,25 @@ The state follows the factory pattern with context-based dependency injection:
 - `detectionMethod`: Hand tracking, color markers, or hybrid
 
 ### Detection State
+
 - `isDetectionActive`: Whether detection is running
 - `isCameraReady`: Camera initialization status
 - `currentFrame`: Latest detection frame data
 - `detectionConfidence`: Average detection confidence (0-1)
 
 ### Performance State
+
 - `currentBeatIndex`: Current beat being performed
 - `currentCombo`: Current combo streak
 - `currentScore`: Current accumulated score
 - `performanceStartTime`: Timestamp when performance started
 
 ### Results State
+
 - `lastPerformance`: Complete performance data for review
 
 ### Derived State
+
 - `isPerforming`: Whether currently in performing mode
 - `hasSequence`: Whether a sequence is loaded
 - `canStartPerformance`: Whether ready to start (has sequence + camera ready + in setup mode)
@@ -48,13 +53,13 @@ The state follows the factory pattern with context-based dependency injection:
 
 ```svelte
 <script lang="ts">
-  import { initTrainState } from '$lib/modules/train/state';
+  import { initTrainState } from "$lib/modules/train/state";
 
   // Initialize with custom config
   const trainState = initTrainState({
     defaultBpm: 120,
     defaultVisualization: VisualizationMode.TIMELINE,
-    defaultDetectionMethod: DetectionMethod.HAND_TRACKING
+    defaultDetectionMethod: DetectionMethod.HAND_TRACKING,
   });
 </script>
 ```
@@ -63,8 +68,8 @@ The state follows the factory pattern with context-based dependency injection:
 
 ```svelte
 <script lang="ts">
-  import { getTrainState } from '$lib/modules/train/state';
-  import { TrainMode } from '$lib/modules/train/domain/enums/TrainEnums';
+  import { getTrainState } from "$lib/modules/train/state";
+  import { TrainMode } from "$lib/modules/train/domain/enums/TrainEnums";
 
   const state = getTrainState();
 
@@ -81,9 +86,7 @@ The state follows the factory pattern with context-based dependency injection:
 
 <div>
   {#if state.mode === TrainMode.SETUP}
-    <button disabled={!canStart} onclick={handleStart}>
-      Start Training
-    </button>
+    <button disabled={!canStart} onclick={handleStart}> Start Training </button>
   {:else if state.mode === TrainMode.COUNTDOWN}
     <div class="countdown">{state.countdownValue}</div>
   {:else if state.mode === TrainMode.PERFORMING}
@@ -100,9 +103,7 @@ The state follows the factory pattern with context-based dependency injection:
         <div>Score: {state.lastPerformance.score.percentage}%</div>
         <div>Max Combo: {state.lastPerformance.score.maxCombo}</div>
       {/if}
-      <button onclick={() => state.resetToSetup()}>
-        Train Again
-      </button>
+      <button onclick={() => state.resetToSetup()}> Train Again </button>
     </div>
   {/if}
 </div>
@@ -111,10 +112,12 @@ The state follows the factory pattern with context-based dependency injection:
 ### Actions
 
 #### Sequence Management
+
 - `setSequence(sequence)`: Load a sequence for training
 - `clearSequence()`: Clear the current sequence
 
 #### Mode Control
+
 - `setMode(mode)`: Set the current mode directly
 - `startCountdown()`: Begin countdown sequence
 - `startPerformance()`: Start performance tracking
@@ -122,22 +125,26 @@ The state follows the factory pattern with context-based dependency injection:
 - `resetToSetup()`: Reset to setup mode
 
 #### Settings
+
 - `setBpm(bpm)`: Set playback BPM (30-200)
 - `setVisualizationMode(mode)`: Set visualization mode
 - `setDetectionMethod(method)`: Set detection method
 
 #### Detection
+
 - `setCameraReady(ready)`: Update camera status
 - `setDetectionActive(active)`: Toggle detection on/off
 - `updateDetectionFrame(frame)`: Update with latest detection data
 
 #### Performance Tracking
+
 - `advanceBeat()`: Move to next beat (or end if last)
 - `recordHit(isCorrect, points)`: Record a hit/miss and update score/combo
 - `updateCountdown(value)`: Update countdown value
 - `setLastPerformance(perf)`: Store completed performance data
 
 #### Error Handling
+
 - `setError(message)`: Set error message
 
 ## State Flow
@@ -157,10 +164,12 @@ SETUP
 ## Pattern Comparison
 
 This implementation follows similar patterns to:
+
 - `src/lib/features/compose/shared/state/compose-module-state.svelte.ts`
 - `src/lib/modules/word-card/state/word-card-state.svelte.ts`
 
 Key differences:
+
 - Uses factory function returning an object with getters (like compose state)
 - Includes configurable defaults (like compose state)
 - Uses Svelte context for DI (like both examples)

@@ -153,13 +153,15 @@
   .reversal.blue {
     background: color-mix(in srgb, var(--prop-blue, #3b82f6) 20%, transparent);
     color: var(--prop-blue, #3b82f6);
-    border: 1px solid color-mix(in srgb, var(--prop-blue, #3b82f6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--prop-blue, #3b82f6) 30%, transparent);
   }
 
   .reversal.red {
     background: color-mix(in srgb, var(--prop-red, #ef4444) 20%, transparent);
     color: var(--prop-red, #ef4444);
-    border: 1px solid color-mix(in srgb, var(--prop-red, #ef4444) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--prop-red, #ef4444) 30%, transparent);
   }
 
   .positions {

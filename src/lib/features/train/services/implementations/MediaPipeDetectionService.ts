@@ -1,13 +1,13 @@
 /**
  * MediaPipeDetectionService (Refactored) - Hand Detection Orchestrator
- * 
+ *
  * This service orchestrates multiple focused sub-services for hand detection:
  * - HandLandmarkerService: MediaPipe initialization and raw detection
  * - HandednessAnalyzer: Anatomical left/right hand detection
  * - HandStateAnalyzer: Open/closed/partial state detection
  * - HandTrackingStabilizer: Temporal smoothing and history
  * - HandAssignmentService: Blue/red slot assignment
- * 
+ *
  * This orchestrator maintains backward compatibility with IPositionDetectionService
  * while internally using decomposed, single-responsibility services.
  */
@@ -22,7 +22,10 @@ import type {
   DetectionFrame,
   DetectedPosition,
 } from "../../domain/models/DetectionFrame";
-import type { IHandLandmarkerService, HandLandmark } from "../contracts/IHandLandmarkerService";
+import type {
+  IHandLandmarkerService,
+  HandLandmark,
+} from "../contracts/IHandLandmarkerService";
 import type { IHandednessAnalyzer } from "../contracts/IHandednessAnalyzer";
 import type { IHandStateAnalyzer } from "../contracts/IHandStateAnalyzer";
 import type { IHandTrackingStabilizer } from "../contracts/IHandTrackingStabilizer";
@@ -122,7 +125,9 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     }
 
     if (this._videoElement.readyState < 2) {
-      this._animationFrameId = requestAnimationFrame(() => this._processVideoFrame());
+      this._animationFrameId = requestAnimationFrame(() =>
+        this._processVideoFrame()
+      );
       return;
     }
 
@@ -149,11 +154,16 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
       this._lastFpsUpdate = now;
     }
 
-    this._animationFrameId = requestAnimationFrame(() => this._processVideoFrame());
+    this._animationFrameId = requestAnimationFrame(() =>
+      this._processVideoFrame()
+    );
   }
 
   private _processResult(
-    result: { landmarks: HandLandmark[][]; handedness: Array<Array<{ categoryName: string; score: number }>> },
+    result: {
+      landmarks: HandLandmark[][];
+      handedness: Array<Array<{ categoryName: string; score: number }>>;
+    },
     timestamp: number
   ): DetectionFrame {
     let bluePosition: DetectedPosition | null = null;
@@ -175,16 +185,28 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
         const handState = stateResult.state;
 
         // Use HandStateAnalyzer to calculate palm center
-        const palmCenter = this._stateAnalyzer.calculatePalmCenter(landmarks, handState);
-        const referencePoint = this._stateAnalyzer.getReferencePoint(landmarks, handState);
+        const palmCenter = this._stateAnalyzer.calculatePalmCenter(
+          landmarks,
+          handState
+        );
+        const referencePoint = this._stateAnalyzer.getReferencePoint(
+          landmarks,
+          handState
+        );
 
         // Transform debug landmarks from full video space to crop space
-        const wristTransformed = this._transformCropCoordinates(wrist.x, wrist.y);
+        const wristTransformed = this._transformCropCoordinates(
+          wrist.x,
+          wrist.y
+        );
         const fingerTransformed = this._transformCropCoordinates(
           referencePoint?.x ?? wrist.x,
           referencePoint?.y ?? wrist.y
         );
-        const palmTransformed = this._transformCropCoordinates(palmCenter.x, palmCenter.y);
+        const palmTransformed = this._transformCropCoordinates(
+          palmCenter.x,
+          palmCenter.y
+        );
 
         // Create debug landmarks (apply mirroring AFTER crop transformation)
         const debugLandmarks = {
@@ -203,7 +225,8 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
         };
 
         // Use HandednessAnalyzer for anatomical detection
-        const handednessResult = this._handednessAnalyzer.analyzeHandedness(landmarks);
+        const handednessResult =
+          this._handednessAnalyzer.analyzeHandedness(landmarks);
         const anatomicalHandedness = handednessResult.anatomicalHandedness;
 
         // Determine final handedness
@@ -224,7 +247,12 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
         }
 
         // Create detected position
-        const position = this._createDetectedPosition(palmCenter, timestamp, debugLandmarks, handState);
+        const position = this._createDetectedPosition(
+          palmCenter,
+          timestamp,
+          debugLandmarks,
+          handState
+        );
 
         // Only add hand if position is valid for current grid mode
         if (position) {
@@ -292,10 +320,18 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
 
       // Apply smoothing
       if (bluePosition) {
-        bluePosition = this._applySmoothingToPosition(bluePosition, "blue", timestamp);
+        bluePosition = this._applySmoothingToPosition(
+          bluePosition,
+          "blue",
+          timestamp
+        );
       }
       if (redPosition) {
-        redPosition = this._applySmoothingToPosition(redPosition, "red", timestamp);
+        redPosition = this._applySmoothingToPosition(
+          redPosition,
+          "red",
+          timestamp
+        );
       }
     } else if (detectedHands.length === 1) {
       const hand = detectedHands[0];
@@ -329,20 +365,40 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
       const lastRed = this._stabilizer.getLastPosition("red");
 
       if (lastBlue && lastRed) {
-        const distToBlue = this._stabilizer.calculateDistance(handX, handY, lastBlue.x, lastBlue.y);
-        const distToRed = this._stabilizer.calculateDistance(handX, handY, lastRed.x, lastRed.y);
+        const distToBlue = this._stabilizer.calculateDistance(
+          handX,
+          handY,
+          lastBlue.x,
+          lastBlue.y
+        );
+        const distToRed = this._stabilizer.calculateDistance(
+          handX,
+          handY,
+          lastRed.x,
+          lastRed.y
+        );
         assignToBlue = distToBlue < distToRed;
       }
     } else if (hasBlueHistory) {
       const lastBlue = this._stabilizer.getLastPosition("blue");
       if (lastBlue) {
-        const distToBlue = this._stabilizer.calculateDistance(handX, handY, lastBlue.x, lastBlue.y);
+        const distToBlue = this._stabilizer.calculateDistance(
+          handX,
+          handY,
+          lastBlue.x,
+          lastBlue.y
+        );
         assignToBlue = distToBlue < 0.3;
       }
     } else if (hasRedHistory) {
       const lastRed = this._stabilizer.getLastPosition("red");
       if (lastRed) {
-        const distToRed = this._stabilizer.calculateDistance(handX, handY, lastRed.x, lastRed.y);
+        const distToRed = this._stabilizer.calculateDistance(
+          handX,
+          handY,
+          lastRed.x,
+          lastRed.y
+        );
         assignToBlue = distToRed >= 0.3;
       }
     } else {
@@ -350,11 +406,19 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     }
 
     if (assignToBlue) {
-      const smoothedPosition = this._applySmoothingToPosition(hand.position, "blue", timestamp);
+      const smoothedPosition = this._applySmoothingToPosition(
+        hand.position,
+        "blue",
+        timestamp
+      );
       this._stabilizer.setAssignedHand("blue", "left");
       return { blue: smoothedPosition, red: null };
     } else {
-      const smoothedPosition = this._applySmoothingToPosition(hand.position, "red", timestamp);
+      const smoothedPosition = this._applySmoothingToPosition(
+        hand.position,
+        "red",
+        timestamp
+      );
       this._stabilizer.setAssignedHand("red", "right");
       return { blue: null, red: smoothedPosition };
     }
@@ -396,7 +460,10 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     if (blue) {
       this._lastBluePosition = blue;
       this._blueFramesMissing = 0;
-    } else if (this._lastBluePosition && this._blueFramesMissing < HAND_PERSISTENCE_FRAMES) {
+    } else if (
+      this._lastBluePosition &&
+      this._blueFramesMissing < HAND_PERSISTENCE_FRAMES
+    ) {
       blue = this._lastBluePosition;
       this._blueFramesMissing++;
     } else {
@@ -407,7 +474,10 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     if (red) {
       this._lastRedPosition = red;
       this._redFramesMissing = 0;
-    } else if (this._lastRedPosition && this._redFramesMissing < HAND_PERSISTENCE_FRAMES) {
+    } else if (
+      this._lastRedPosition &&
+      this._redFramesMissing < HAND_PERSISTENCE_FRAMES
+    ) {
       red = this._lastRedPosition;
       this._redFramesMissing++;
     } else {
@@ -429,7 +499,10 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
    * - Visible x range: (1920-1080)/2 / 1920 = 0.219 to 0.781
    * - Transform: x_crop = (x - 0.219) / 0.562
    */
-  private _transformCropCoordinates(x: number, y: number): { x: number; y: number } {
+  private _transformCropCoordinates(
+    x: number,
+    y: number
+  ): { x: number; y: number } {
     if (!this._videoElement) {
       return { x, y };
     }
@@ -512,17 +585,23 @@ export class MediaPipeDetectionService implements IPositionDetectionService {
     };
   }
 
-  getPerformanceStats(): { fps: number; avgFrameTime: number; videoResolution: string } {
-    const avgTime = this._detectionTimes.length > 0
-      ? this._detectionTimes.reduce((a, b) => a + b, 0) / this._detectionTimes.length
-      : 0;
+  getPerformanceStats(): {
+    fps: number;
+    avgFrameTime: number;
+    videoResolution: string;
+  } {
+    const avgTime =
+      this._detectionTimes.length > 0
+        ? this._detectionTimes.reduce((a, b) => a + b, 0) /
+          this._detectionTimes.length
+        : 0;
     const resolution = this._videoElement
       ? `${this._videoElement.videoWidth}x${this._videoElement.videoHeight}`
-      : 'N/A';
+      : "N/A";
     return {
       fps: this._currentFps,
       avgFrameTime: avgTime,
-      videoResolution: resolution
+      videoResolution: resolution,
     };
   }
 

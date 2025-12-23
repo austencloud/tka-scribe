@@ -1,4 +1,7 @@
-import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  GridLocation,
+  GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export class QuadrantMapper {
   /**

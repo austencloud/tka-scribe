@@ -161,7 +161,11 @@
   }
 
   .toggle-option.active {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 20%,
+      transparent
+    );
     color: var(--semantic-info, #60a5fa);
   }
 
@@ -188,8 +192,16 @@
   }
 
   .scale-btn:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 40%,
+      transparent
+    );
     color: var(--semantic-info, #60a5fa);
   }
 
@@ -258,8 +270,16 @@
   }
 
   .visibility-toggle.active {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 30%,
+      transparent
+    );
     color: var(--semantic-info, #60a5fa);
   }
 
@@ -268,7 +288,8 @@
   .scale-btn:focus-visible,
   .reset-btn:focus-visible,
   .visibility-toggle:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 60%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 60%, transparent);
     outline-offset: 2px;
   }
 </style>

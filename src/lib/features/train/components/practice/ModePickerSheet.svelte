@@ -42,7 +42,8 @@
       label: "Adaptive",
       icon: "fa-brain",
       color: "#8b5cf6",
-      description: "Auto-advances when you match the position. Great for learning new sequences.",
+      description:
+        "Auto-advances when you match the position. Great for learning new sequences.",
     },
     {
       value: PracticeMode.STEP_BY_STEP,
@@ -56,7 +57,8 @@
       label: "Timed",
       icon: "fa-stopwatch",
       color: "#f59e0b",
-      description: "Follow the rhythm with scoring. Test your timing and accuracy.",
+      description:
+        "Follow the rhythm with scoring. Test your timing and accuracy.",
     },
   ];
 
@@ -92,11 +94,7 @@
         <h3 class="panel-title">Practice Mode</h3>
         <p class="panel-subtitle">Choose how you want to practice</p>
       </div>
-      <button
-        class="close-btn"
-        onclick={handleClose}
-        aria-label="Close"
-      >
+      <button class="close-btn" onclick={handleClose} aria-label="Close">
         <i class="fas fa-times"></i>
       </button>
     </header>
@@ -128,7 +126,11 @@
 
 <style>
   :global(.mode-picker-backdrop) {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--theme-shadow, #000) 70%,
+      transparent
+    ) !important;
   }
 
   :global(.mode-picker-sheet) {
@@ -171,8 +173,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #8b5cf6) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
   }
@@ -296,7 +303,8 @@
   /* Focus states */
   .close-btn:focus-visible,
   .mode-option:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
     outline-offset: 2px;
   }
 

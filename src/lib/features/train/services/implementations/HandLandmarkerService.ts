@@ -1,6 +1,6 @@
 /**
  * HandLandmarkerService - MediaPipe HandLandmarker wrapper
- * 
+ *
  * Responsibility: Initialize and manage MediaPipe HandLandmarker,
  * provide raw landmark detection for video frames and images.
  */
@@ -56,7 +56,10 @@ export class HandLandmarkerService implements IHandLandmarkerService {
     }
   }
 
-  detectForVideo(video: HTMLVideoElement, timestamp: number): HandLandmarkerResult {
+  detectForVideo(
+    video: HTMLVideoElement,
+    timestamp: number
+  ): HandLandmarkerResult {
     if (!this._isInitialized || !this._handLandmarker) {
       throw new Error("HandLandmarkerService not initialized");
     }

@@ -11,76 +11,76 @@ import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid
  * Stored performance record in database
  */
 export interface StoredPerformance {
-	id: string;
-	sequenceId: string;
-	sequenceName: string;
-	performedAt: Date;
-	detectionMethod: DetectionSource;
-	bpm: number;
+  id: string;
+  sequenceId: string;
+  sequenceName: string;
+  performedAt: Date;
+  detectionMethod: DetectionSource;
+  bpm: number;
 
-	// Stored as JSON for simplicity
-	beatResultsJson: string;
+  // Stored as JSON for simplicity
+  beatResultsJson: string;
 
-	// Score data (denormalized for queries)
-	score: {
-		percentage: number;
-		grade: PerformanceGrade;
-		perfectHits: number;
-		goodHits: number;
-		misses: number;
-		maxCombo: number;
-		xpEarned: number;
-	};
+  // Score data (denormalized for queries)
+  score: {
+    percentage: number;
+    grade: PerformanceGrade;
+    perfectHits: number;
+    goodHits: number;
+    misses: number;
+    maxCombo: number;
+    xpEarned: number;
+  };
 
-	// Optional metadata
-	metadata?: {
-		sessionDuration?: number; // Duration in milliseconds
-	};
+  // Optional metadata
+  metadata?: {
+    sessionDuration?: number; // Duration in milliseconds
+  };
 
-	// Optional video reference (stored in separate blob storage)
-	videoStorageKey?: string;
+  // Optional video reference (stored in separate blob storage)
+  videoStorageKey?: string;
 }
 
 /**
  * Stored beat result for detailed analysis
  */
 export interface StoredBeatResult {
-	beatNumber: number;
-	expected: { blue: GridLocation; red: GridLocation };
-	detected: { blue: GridLocation | null; red: GridLocation | null };
-	timing: TimingGrade;
-	timingDeltaMs: number;
-	positionCorrect: { blue: boolean; red: boolean };
+  beatNumber: number;
+  expected: { blue: GridLocation; red: GridLocation };
+  detected: { blue: GridLocation | null; red: GridLocation | null };
+  timing: TimingGrade;
+  timingDeltaMs: number;
+  positionCorrect: { blue: boolean; red: boolean };
 }
 
 /**
  * Color calibration profile for color marker detection
  */
 export interface StoredCalibrationProfile {
-	id: string;
-	name: string;
-	createdAt: Date;
-	isDefault: boolean;
+  id: string;
+  name: string;
+  createdAt: Date;
+  isDefault: boolean;
 
-	// HSV ranges for each marker color
-	colorRanges: {
-		endA: HSVRange;
-		endB: HSVRange;
-	};
+  // HSV ranges for each marker color
+  colorRanges: {
+    endA: HSVRange;
+    endB: HSVRange;
+  };
 
-	// Calibration metadata
-	lightingConditions?: "bright" | "dim" | "mixed";
-	cameraMirrored: boolean;
+  // Calibration metadata
+  lightingConditions?: "bright" | "dim" | "mixed";
+  cameraMirrored: boolean;
 }
 
 /**
  * HSV color range for color detection
  */
 export interface HSVRange {
-	hMin: number;
-	hMax: number;
-	sMin: number;
-	sMax: number;
-	vMin: number;
-	vMax: number;
+  hMin: number;
+  hMax: number;
+  sMin: number;
+  sMax: number;
+  vMin: number;
+  vMax: number;
 }

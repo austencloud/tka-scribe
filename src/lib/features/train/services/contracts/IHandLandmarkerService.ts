@@ -24,7 +24,10 @@ export interface IHandLandmarkerService {
   initialize(): Promise<void>;
 
   /** Detect hands in a video frame (VIDEO mode) */
-  detectForVideo(video: HTMLVideoElement, timestamp: number): HandLandmarkerResult;
+  detectForVideo(
+    video: HTMLVideoElement,
+    timestamp: number
+  ): HandLandmarkerResult;
 
   /** Detect hands in an image (IMAGE mode) */
   detect(image: OffscreenCanvas): HandLandmarkerResult;

@@ -36,9 +36,16 @@
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { DetectionFrame } from '../domain/models/DetectionFrame';
-import type { PerformanceData, PerformanceScore } from '../domain/models/PerformanceData';
-import { TrainMode, VisualizationMode, DetectionMethod } from "../domain/enums/TrainEnums";
+import type { DetectionFrame } from "../domain/models/DetectionFrame";
+import type {
+  PerformanceData,
+  PerformanceScore,
+} from "../domain/models/PerformanceData";
+import {
+  TrainMode,
+  VisualizationMode,
+  DetectionMethod,
+} from "../domain/enums/TrainEnums";
 import type { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface TrainStateConfig {
@@ -100,7 +107,11 @@ export function createTrainState(config: Partial<TrainStateConfig> = {}) {
 
   // Current expected positions (derived from sequence and beat index)
   const expectedPositions = $derived.by(() => {
-    if (!sequence || !sequence.beats || currentBeatIndex >= sequence.beats.length) {
+    if (
+      !sequence ||
+      !sequence.beats ||
+      currentBeatIndex >= sequence.beats.length
+    ) {
       return null;
     }
     const beat = sequence.beats[currentBeatIndex];
@@ -234,33 +245,83 @@ export function createTrainState(config: Partial<TrainStateConfig> = {}) {
 
   return {
     // State (getters)
-    get mode() { return mode; },
-    get sequence() { return sequence; },
-    get bpm() { return bpm; },
-    get visualizationMode() { return visualizationMode; },
-    get detectionMethod() { return detectionMethod; },
-    get isDetectionActive() { return isDetectionActive; },
-    get isCameraReady() { return isCameraReady; },
-    get currentFrame() { return currentFrame; },
-    get detectionConfidence() { return detectionConfidence; },
-    get currentBeatIndex() { return currentBeatIndex; },
-    get currentCombo() { return currentCombo; },
-    get currentScore() { return currentScore; },
-    get totalHits() { return totalHits; },
-    get totalMisses() { return totalMisses; },
-    get maxCombo() { return maxCombo; },
-    get performanceStartTime() { return performanceStartTime; },
-    get lastPerformance() { return lastPerformance; },
-    get countdownValue() { return countdownValue; },
-    get error() { return error; },
+    get mode() {
+      return mode;
+    },
+    get sequence() {
+      return sequence;
+    },
+    get bpm() {
+      return bpm;
+    },
+    get visualizationMode() {
+      return visualizationMode;
+    },
+    get detectionMethod() {
+      return detectionMethod;
+    },
+    get isDetectionActive() {
+      return isDetectionActive;
+    },
+    get isCameraReady() {
+      return isCameraReady;
+    },
+    get currentFrame() {
+      return currentFrame;
+    },
+    get detectionConfidence() {
+      return detectionConfidence;
+    },
+    get currentBeatIndex() {
+      return currentBeatIndex;
+    },
+    get currentCombo() {
+      return currentCombo;
+    },
+    get currentScore() {
+      return currentScore;
+    },
+    get totalHits() {
+      return totalHits;
+    },
+    get totalMisses() {
+      return totalMisses;
+    },
+    get maxCombo() {
+      return maxCombo;
+    },
+    get performanceStartTime() {
+      return performanceStartTime;
+    },
+    get lastPerformance() {
+      return lastPerformance;
+    },
+    get countdownValue() {
+      return countdownValue;
+    },
+    get error() {
+      return error;
+    },
 
     // Derived state
-    get isPerforming() { return isPerforming; },
-    get hasSequence() { return hasSequence; },
-    get canStartPerformance() { return canStartPerformance; },
-    get totalBeats() { return totalBeats; },
-    get progress() { return progress; },
-    get expectedPositions() { return expectedPositions; },
+    get isPerforming() {
+      return isPerforming;
+    },
+    get hasSequence() {
+      return hasSequence;
+    },
+    get canStartPerformance() {
+      return canStartPerformance;
+    },
+    get totalBeats() {
+      return totalBeats;
+    },
+    get progress() {
+      return progress;
+    },
+    get expectedPositions() {
+      return expectedPositions;
+    },
 
     // Actions
     setSequence,

@@ -28,7 +28,7 @@ export interface IHandAssignmentService {
    * Assign detected hands to blue/red slots
    * Uses spatial position when two hands are detected,
    * and proximity matching when only one hand is detected
-   * 
+   *
    * @param detectedHands - Array of detected hand data
    * @param isMirrored - Whether the video is mirrored
    * @param timestamp - Current frame timestamp
@@ -42,7 +42,7 @@ export interface IHandAssignmentService {
 
   /**
    * Handle hand persistence (showing hands briefly after they disappear)
-   * 
+   *
    * @param currentBlue - Currently detected blue position
    * @param currentRed - Currently detected red position
    * @returns Positions with persistence applied

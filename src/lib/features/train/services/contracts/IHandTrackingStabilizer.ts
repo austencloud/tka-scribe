@@ -27,7 +27,7 @@ export interface IHandTrackingStabilizer {
   /**
    * Add a position to tracking history and get smoothed result
    * Uses weighted average favoring recent frames
-   * 
+   *
    * @param handId - "blue" or "red"
    * @param x - X coordinate (0-1)
    * @param y - Y coordinate (0-1)
@@ -43,7 +43,7 @@ export interface IHandTrackingStabilizer {
 
   /**
    * Get the last known position for a hand
-   * 
+   *
    * @param handId - "blue" or "red"
    * @returns Last position or null if no history
    */
@@ -51,7 +51,7 @@ export interface IHandTrackingStabilizer {
 
   /**
    * Clear tracking history for a specific hand
-   * 
+   *
    * @param handId - "blue" or "red"
    */
   clearHistory(handId: "blue" | "red"): void;
@@ -63,7 +63,7 @@ export interface IHandTrackingStabilizer {
 
   /**
    * Get the current hand assignment
-   * 
+   *
    * @param handId - "blue" or "red"
    * @returns "left" or "right"
    */
@@ -71,7 +71,7 @@ export interface IHandTrackingStabilizer {
 
   /**
    * Update the hand assignment
-   * 
+   *
    * @param handId - "blue" or "red"
    * @param hand - "left" or "right"
    */
@@ -79,7 +79,7 @@ export interface IHandTrackingStabilizer {
 
   /**
    * Check if there's any position history for a hand
-   * 
+   *
    * @param handId - "blue" or "red"
    */
   hasHistory(handId: "blue" | "red"): boolean;

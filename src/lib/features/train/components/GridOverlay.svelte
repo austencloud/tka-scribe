@@ -37,13 +37,13 @@
   // Map GridLocation to SVG coordinates (matching the "normal" hand points in diamond_grid.svg)
   // These are the non-strict hand point positions on the 950x950 grid
   const locationCoords: Record<GridLocation, { x: number; y: number }> = {
-    [GridLocation.NORTH]: { x: 475, y: 331.9 },      // n_diamond_hand_point
+    [GridLocation.NORTH]: { x: 475, y: 331.9 }, // n_diamond_hand_point
     [GridLocation.NORTHEAST]: { x: 618.1, y: 331.9 }, // ne_diamond_layer2_point
-    [GridLocation.EAST]: { x: 618.1, y: 475 },       // e_diamond_hand_point
+    [GridLocation.EAST]: { x: 618.1, y: 475 }, // e_diamond_hand_point
     [GridLocation.SOUTHEAST]: { x: 618.1, y: 618.1 }, // se_diamond_layer2_point
-    [GridLocation.SOUTH]: { x: 475, y: 618.1 },      // s_diamond_hand_point
+    [GridLocation.SOUTH]: { x: 475, y: 618.1 }, // s_diamond_hand_point
     [GridLocation.SOUTHWEST]: { x: 331.9, y: 618.1 }, // sw_diamond_layer2_point
-    [GridLocation.WEST]: { x: 331.9, y: 475 },       // w_diamond_hand_point
+    [GridLocation.WEST]: { x: 331.9, y: 475 }, // w_diamond_hand_point
     [GridLocation.NORTHWEST]: { x: 331.9, y: 331.9 }, // nw_diamond_layer2_point
   };
 
@@ -123,7 +123,10 @@
         const progress = Math.min(elapsed / duration, 1.0);
 
         // Linear interpolation for consistent motion during performance
-        const delta = shortestAngleDelta(blueAnimStartAngle, blueAnimTargetAngle);
+        const delta = shortestAngleDelta(
+          blueAnimStartAngle,
+          blueAnimTargetAngle
+        );
         blueCurrentAngle = blueAnimStartAngle + delta * progress;
         animatedBluePos = angleToCoords(blueCurrentAngle);
 
@@ -237,13 +240,19 @@
   }
 
   // Check if detected matches expected
-  function isCorrect(detected: GridLocation | undefined, expected: GridLocation | null): boolean {
+  function isCorrect(
+    detected: GridLocation | undefined,
+    expected: GridLocation | null
+  ): boolean {
     if (!detected || !expected) return false;
     return detected === expected;
   }
 
   // Get status color based on correctness
-  function getStatusColor(detected: DetectedPosition | null, expected: GridLocation | null): string {
+  function getStatusColor(
+    detected: DetectedPosition | null,
+    expected: GridLocation | null
+  ): string {
     if (!detected) return "transparent";
     if (!expected || !showExpected) return "white"; // No expectation, just show detected
     return isCorrect(detected.quadrant, expected) ? "#22c55e" : "#ef4444"; // green or red
@@ -251,20 +260,24 @@
 
   // Derived correctness states
   const blueCorrect = $derived(
-    bluePosition && expectedBlue ? isCorrect(bluePosition.quadrant, expectedBlue) : null
+    bluePosition && expectedBlue
+      ? isCorrect(bluePosition.quadrant, expectedBlue)
+      : null
   );
   const redCorrect = $derived(
-    redPosition && expectedRed ? isCorrect(redPosition.quadrant, expectedRed) : null
+    redPosition && expectedRed
+      ? isCorrect(redPosition.quadrant, expectedRed)
+      : null
   );
 </script>
 
-<div class="grid-overlay-container" class:mode-diamond={gridMode === GridMode.DIAMOND} class:mode-box={gridMode === GridMode.BOX}>
+<div
+  class="grid-overlay-container"
+  class:mode-diamond={gridMode === GridMode.DIAMOND}
+  class:mode-box={gridMode === GridMode.BOX}
+>
   <!-- Debug overlay - matches camera coordinates exactly (0-100%) -->
-  <svg
-    class="debug-overlay"
-    viewBox="0 0 100 100"
-    preserveAspectRatio="none"
-  >
+  <svg class="debug-overlay" viewBox="0 0 100 100" preserveAspectRatio="none">
     <!-- Detected blue hand (left hand) debug landmarks -->
     {#if bluePosition?.debug}
       {@const wrist = bluePosition.debug.wrist}
@@ -272,19 +285,70 @@
       {@const palm = bluePosition.debug.palmCenter}
 
       <!-- Line connecting wrist to finger base -->
-      <line x1={wrist.x * 100} y1={wrist.y * 100} x2={finger.x * 100} y2={finger.y * 100} stroke="#3b82f6" stroke-width="0.3" stroke-dasharray="1,1" opacity="0.7" />
+      <line
+        x1={wrist.x * 100}
+        y1={wrist.y * 100}
+        x2={finger.x * 100}
+        y2={finger.y * 100}
+        stroke="#3b82f6"
+        stroke-width="0.3"
+        stroke-dasharray="1,1"
+        opacity="0.7"
+      />
 
       <!-- Wrist - Yellow circle -->
-      <circle cx={wrist.x * 100} cy={wrist.y * 100} r="1.5" fill="#fbbf24" stroke="#000" stroke-width="0.3" />
-      <text x={wrist.x * 100} y={wrist.y * 100 - 3} text-anchor="middle" fill="#fbbf24" font-size="2.5" font-weight="bold">W</text>
+      <circle
+        cx={wrist.x * 100}
+        cy={wrist.y * 100}
+        r="1.5"
+        fill="#fbbf24"
+        stroke="#000"
+        stroke-width="0.3"
+      />
+      <text
+        x={wrist.x * 100}
+        y={wrist.y * 100 - 3}
+        text-anchor="middle"
+        fill="#fbbf24"
+        font-size="2.5"
+        font-weight="bold">W</text
+      >
 
       <!-- Middle finger base - Green circle -->
-      <circle cx={finger.x * 100} cy={finger.y * 100} r="1.5" fill="#22c55e" stroke="#000" stroke-width="0.3" />
-      <text x={finger.x * 100} y={finger.y * 100 - 3} text-anchor="middle" fill="#22c55e" font-size="2.5" font-weight="bold">F</text>
+      <circle
+        cx={finger.x * 100}
+        cy={finger.y * 100}
+        r="1.5"
+        fill="#22c55e"
+        stroke="#000"
+        stroke-width="0.3"
+      />
+      <text
+        x={finger.x * 100}
+        y={finger.y * 100 - 3}
+        text-anchor="middle"
+        fill="#22c55e"
+        font-size="2.5"
+        font-weight="bold">F</text
+      >
 
       <!-- Palm center (calculated) - Blue circle -->
-      <circle cx={palm.x * 100} cy={palm.y * 100} r="2.5" fill="#3b82f6" stroke="white" stroke-width="0.4" />
-      <text x={palm.x * 100} y={palm.y * 100 - 4} text-anchor="middle" fill="#3b82f6" font-size="2.5" font-weight="bold">P</text>
+      <circle
+        cx={palm.x * 100}
+        cy={palm.y * 100}
+        r="2.5"
+        fill="#3b82f6"
+        stroke="white"
+        stroke-width="0.4"
+      />
+      <text
+        x={palm.x * 100}
+        y={palm.y * 100 - 4}
+        text-anchor="middle"
+        fill="#3b82f6"
+        font-size="2.5"
+        font-weight="bold">P</text
+      >
     {/if}
 
     <!-- Detected red hand (right hand) debug landmarks -->
@@ -294,19 +358,70 @@
       {@const palm = redPosition.debug.palmCenter}
 
       <!-- Line connecting wrist to finger base -->
-      <line x1={wrist.x * 100} y1={wrist.y * 100} x2={finger.x * 100} y2={finger.y * 100} stroke="#ef4444" stroke-width="0.3" stroke-dasharray="1,1" opacity="0.7" />
+      <line
+        x1={wrist.x * 100}
+        y1={wrist.y * 100}
+        x2={finger.x * 100}
+        y2={finger.y * 100}
+        stroke="#ef4444"
+        stroke-width="0.3"
+        stroke-dasharray="1,1"
+        opacity="0.7"
+      />
 
       <!-- Wrist - Yellow circle -->
-      <circle cx={wrist.x * 100} cy={wrist.y * 100} r="1.5" fill="#fbbf24" stroke="#000" stroke-width="0.3" />
-      <text x={wrist.x * 100} y={wrist.y * 100 - 3} text-anchor="middle" fill="#fbbf24" font-size="2.5" font-weight="bold">W</text>
+      <circle
+        cx={wrist.x * 100}
+        cy={wrist.y * 100}
+        r="1.5"
+        fill="#fbbf24"
+        stroke="#000"
+        stroke-width="0.3"
+      />
+      <text
+        x={wrist.x * 100}
+        y={wrist.y * 100 - 3}
+        text-anchor="middle"
+        fill="#fbbf24"
+        font-size="2.5"
+        font-weight="bold">W</text
+      >
 
       <!-- Middle finger base - Green circle -->
-      <circle cx={finger.x * 100} cy={finger.y * 100} r="1.5" fill="#22c55e" stroke="#000" stroke-width="0.3" />
-      <text x={finger.x * 100} y={finger.y * 100 - 3} text-anchor="middle" fill="#22c55e" font-size="2.5" font-weight="bold">F</text>
+      <circle
+        cx={finger.x * 100}
+        cy={finger.y * 100}
+        r="1.5"
+        fill="#22c55e"
+        stroke="#000"
+        stroke-width="0.3"
+      />
+      <text
+        x={finger.x * 100}
+        y={finger.y * 100 - 3}
+        text-anchor="middle"
+        fill="#22c55e"
+        font-size="2.5"
+        font-weight="bold">F</text
+      >
 
       <!-- Palm center (calculated) - Red circle -->
-      <circle cx={palm.x * 100} cy={palm.y * 100} r="2.5" fill="#ef4444" stroke="white" stroke-width="0.4" />
-      <text x={palm.x * 100} y={palm.y * 100 - 4} text-anchor="middle" fill="#ef4444" font-size="2.5" font-weight="bold">P</text>
+      <circle
+        cx={palm.x * 100}
+        cy={palm.y * 100}
+        r="2.5"
+        fill="#ef4444"
+        stroke="white"
+        stroke-width="0.4"
+      />
+      <text
+        x={palm.x * 100}
+        y={palm.y * 100 - 4}
+        text-anchor="middle"
+        fill="#ef4444"
+        font-size="2.5"
+        font-weight="bold">P</text
+      >
     {/if}
   </svg>
 
@@ -323,8 +438,14 @@
     <!-- Expected position indicators (dashed circles) - animated -->
     {#if showExpected}
       {#if animatedBluePos}
-        {@const strokeColor = blueCorrect === true ? "#22c55e" : blueCorrect === false ? "#ef4444" : "#3b82f6"}
-        {@const fillColor = blueCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
+        {@const strokeColor =
+          blueCorrect === true
+            ? "#22c55e"
+            : blueCorrect === false
+              ? "#ef4444"
+              : "#3b82f6"}
+        {@const fillColor =
+          blueCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
         <circle
           cx={animatedBluePos.x}
           cy={animatedBluePos.y}
@@ -338,8 +459,14 @@
         />
       {/if}
       {#if animatedRedPos}
-        {@const strokeColor = redCorrect === true ? "#22c55e" : redCorrect === false ? "#ef4444" : "#ef4444"}
-        {@const fillColor = redCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
+        {@const strokeColor =
+          redCorrect === true
+            ? "#22c55e"
+            : redCorrect === false
+              ? "#ef4444"
+              : "#ef4444"}
+        {@const fillColor =
+          redCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
         <circle
           cx={animatedRedPos.x}
           cy={animatedRedPos.y}
@@ -478,7 +605,8 @@
 
   /* Animation for correct position indicator */
   @keyframes pulse-success {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
       transform: scale(1);
     }
@@ -490,6 +618,10 @@
 
   .expected-indicator {
     /* Only transition color/opacity changes, not position (handled by JS animation) */
-    transition: fill 0.3s ease, stroke 0.3s ease, opacity 0.3s ease, stroke-dasharray 0.3s ease;
+    transition:
+      fill 0.3s ease,
+      stroke 0.3s ease,
+      opacity 0.3s ease,
+      stroke-dasharray 0.3s ease;
   }
 </style>

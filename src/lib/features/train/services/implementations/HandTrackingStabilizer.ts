@@ -1,6 +1,6 @@
 /**
  * HandTrackingStabilizer - Temporal smoothing and history tracking
- * 
+ *
  * Responsibility: Maintain position history for each hand,
  * apply temporal smoothing to reduce jitter, and track hand identity.
  */
@@ -93,7 +93,7 @@ export class HandTrackingStabilizer implements IHandTrackingStabilizer {
   getLastPosition(handId: "blue" | "red"): { x: number; y: number } | null {
     const history = this._getHistory(handId);
     if (history.positions.length === 0) return null;
-    
+
     const lastPos = history.positions[history.positions.length - 1];
     return lastPos ? { x: lastPos.x, y: lastPos.y } : null;
   }

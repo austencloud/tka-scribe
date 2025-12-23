@@ -386,7 +386,11 @@ Allows viewing, continuing, or deleting sessions.
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--semantic-success, #10b981), color-mix(in srgb, var(--semantic-success, #10b981) 80%, white));
+    background: linear-gradient(
+      90deg,
+      var(--semantic-success, #10b981),
+      color-mix(in srgb, var(--semantic-success, #10b981) 80%, white)
+    );
     border-radius: 3px;
     transition: width 0.3s ease;
   }
@@ -424,12 +428,20 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-delete {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 20%,
+      transparent
+    );
     color: var(--semantic-error, #ef4444);
   }
 
   .btn-delete:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
   }
 
   .delete-confirm {

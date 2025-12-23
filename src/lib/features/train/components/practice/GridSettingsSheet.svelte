@@ -92,8 +92,14 @@
     <div class="grid-sheet-body">
       <!-- Grid Mode Switcher -->
       <div class="setting-section">
-        <span class="section-label" id="detection-mode-label">Detection Mode</span>
-        <div class="mode-buttons" role="group" aria-labelledby="detection-mode-label">
+        <span class="section-label" id="detection-mode-label"
+          >Detection Mode</span
+        >
+        <div
+          class="mode-buttons"
+          role="group"
+          aria-labelledby="detection-mode-label"
+        >
           <button
             class="mode-btn"
             class:active={gridMode === GridMode.BOX}
@@ -150,7 +156,8 @@
       <!-- Prop Visibility Toggle -->
       {#if onPropsVisibilityChange}
         <div class="setting-section">
-          <span class="section-label" id="prop-display-label">Prop Display</span>
+          <span class="section-label" id="prop-display-label">Prop Display</span
+          >
           <button
             class="toggle-btn"
             class:active={propsVisible}
@@ -184,7 +191,11 @@
 <style>
   /* Backdrop styling */
   :global(.grid-settings-backdrop) {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent) !important;
+    background: color-mix(
+      in srgb,
+      var(--theme-shadow, #000) 70%,
+      transparent
+    ) !important;
   }
 
   /* Drawer content styling - content-aware sizing */
@@ -231,8 +242,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 15%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
   }
@@ -382,7 +398,11 @@
   .mode-hint {
     margin: 0;
     font-size: 0.7rem;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.45)) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.45)) 80%,
+      transparent
+    );
     line-height: 1.3;
     text-align: center;
   }
@@ -409,7 +429,11 @@
   }
 
   .scale-btn:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 20%,
+      transparent
+    );
     border-color: var(--semantic-info, #3b82f6);
     color: var(--semantic-info, #3b82f6);
   }
@@ -556,7 +580,8 @@
   .toggle-btn:focus-visible,
   .reset-btn:focus-visible,
   .scale-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+    outline: 2px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
     outline-offset: 2px;
   }
 

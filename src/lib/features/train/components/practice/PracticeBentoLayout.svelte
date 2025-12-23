@@ -170,12 +170,13 @@
     <section class="settings-cell" class:expanded={showGridSettings}>
       <button
         class="settings-toggle"
-        onclick={() => showGridSettings = !showGridSettings}
+        onclick={() => (showGridSettings = !showGridSettings)}
         aria-expanded={showGridSettings}
       >
         <i class="fas fa-sliders-h"></i>
         <span>Grid Settings</span>
-        <i class="fas fa-chevron-{showGridSettings ? 'up' : 'down'} toggle-icon"></i>
+        <i class="fas fa-chevron-{showGridSettings ? 'up' : 'down'} toggle-icon"
+        ></i>
       </button>
 
       {#if showGridSettings}
@@ -258,10 +259,13 @@
     gap: 10px;
     width: 100%;
     padding: 10px 14px;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent),
-      color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent));
-    border: 1px solid color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
+      color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent)
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
     border-radius: 10px;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     font-size: 0.85rem;
@@ -270,10 +274,16 @@
   }
 
   .sequence-info:hover {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--semantic-success, #22c55e) 18%, transparent),
-      color-mix(in srgb, var(--semantic-success, #10b981) 12%, transparent));
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+      color-mix(in srgb, var(--semantic-success, #10b981) 12%, transparent)
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 40%,
+      transparent
+    );
   }
 
   .seq-name {
@@ -292,7 +302,11 @@
 
   .sequence-info i {
     font-size: 0.8rem;
-    color: color-mix(in srgb, var(--semantic-success, #86efac) 80%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--semantic-success, #86efac) 80%,
+      transparent
+    );
   }
 
   .grid-cell {

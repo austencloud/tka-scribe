@@ -22,7 +22,7 @@ export interface IHandednessAnalyzer {
   /**
    * Analyze hand landmarks to determine left vs right hand
    * Uses anatomical features like thumb position and palm orientation
-   * 
+   *
    * @param landmarks - Array of 21 hand landmarks from MediaPipe
    * @returns Analysis result with handedness and palm orientation
    */
@@ -31,7 +31,7 @@ export interface IHandednessAnalyzer {
   /**
    * Detect if palm is facing the camera or facing away
    * Uses Z-coordinates to determine orientation
-   * 
+   *
    * @param landmarks - Array of hand landmarks
    * @returns Palm orientation
    */

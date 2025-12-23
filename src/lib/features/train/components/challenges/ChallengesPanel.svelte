@@ -490,7 +490,11 @@
       color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent),
       color-mix(in srgb, var(--semantic-error, #dc2626) 20%, transparent)
     );
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 40%,
+      transparent
+    );
     color: var(--theme-text, white);
   }
 

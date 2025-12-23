@@ -1,6 +1,6 @@
 /**
  * HandAssignmentService - Hand slot assignment logic
- * 
+ *
  * Responsibility: Assign detected hands to blue (left) and red (right) slots
  * using spatial position for two-hand detection and proximity matching for
  * single-hand detection. Also handles hand persistence.
@@ -53,7 +53,11 @@ export class HandAssignmentService implements IHandAssignmentService {
       redPosition = result.red;
     } else if (detectedHands.length === 1) {
       // Single hand - use proximity matching
-      const result = this._assignSingleHand(detectedHands[0]!, isMirrored, timestamp);
+      const result = this._assignSingleHand(
+        detectedHands[0]!,
+        isMirrored,
+        timestamp
+      );
       bluePosition = result.blue;
       redPosition = result.red;
     }
@@ -94,7 +98,7 @@ export class HandAssignmentService implements IHandAssignmentService {
     // When mirrored: left side of image = right side of screen = user's right hand
     // When mirrored: right side of image = left side of screen = user's left hand
     if (isMirrored) {
-      redPosition = hand0.position;  // Lower X = right side of screen = user's right hand
+      redPosition = hand0.position; // Lower X = right side of screen = user's right hand
       bluePosition = hand1.position; // Higher X = left side of screen = user's left hand
     } else {
       bluePosition = hand0.position;
@@ -102,7 +106,11 @@ export class HandAssignmentService implements IHandAssignmentService {
     }
 
     // Apply smoothing
-    bluePosition = this._applySmoothingToPosition(bluePosition, "blue", timestamp);
+    bluePosition = this._applySmoothingToPosition(
+      bluePosition,
+      "blue",
+      timestamp
+    );
     redPosition = this._applySmoothingToPosition(redPosition, "red", timestamp);
 
     return { blue: bluePosition, red: redPosition };
@@ -131,22 +139,42 @@ export class HandAssignmentService implements IHandAssignmentService {
       const lastRed = this._stabilizer.getLastPosition("red");
 
       if (lastBlue && lastRed) {
-        const distToBlue = this._calculateDistance(handX, handY, lastBlue.x, lastBlue.y);
-        const distToRed = this._calculateDistance(handX, handY, lastRed.x, lastRed.y);
+        const distToBlue = this._calculateDistance(
+          handX,
+          handY,
+          lastBlue.x,
+          lastBlue.y
+        );
+        const distToRed = this._calculateDistance(
+          handX,
+          handY,
+          lastRed.x,
+          lastRed.y
+        );
         assignToBlue = distToBlue < distToRed;
       }
     } else if (hasBlueHistory) {
       // Only blue history - check if close enough
       const lastBlue = this._stabilizer.getLastPosition("blue");
       if (lastBlue) {
-        const distToBlue = this._calculateDistance(handX, handY, lastBlue.x, lastBlue.y);
+        const distToBlue = this._calculateDistance(
+          handX,
+          handY,
+          lastBlue.x,
+          lastBlue.y
+        );
         assignToBlue = distToBlue < 0.3; // Within 30% of screen
       }
     } else if (hasRedHistory) {
       // Only red history - check if close enough
       const lastRed = this._stabilizer.getLastPosition("red");
       if (lastRed) {
-        const distToRed = this._calculateDistance(handX, handY, lastRed.x, lastRed.y);
+        const distToRed = this._calculateDistance(
+          handX,
+          handY,
+          lastRed.x,
+          lastRed.y
+        );
         assignToBlue = distToRed >= 0.3; // Too far from red, must be blue
       }
     } else {
@@ -156,11 +184,19 @@ export class HandAssignmentService implements IHandAssignmentService {
     }
 
     if (assignToBlue) {
-      const smoothedPosition = this._applySmoothingToPosition(hand.position, "blue", timestamp);
+      const smoothedPosition = this._applySmoothingToPosition(
+        hand.position,
+        "blue",
+        timestamp
+      );
       this._stabilizer.setAssignedHand("blue", "left");
       return { blue: smoothedPosition, red: null };
     } else {
-      const smoothedPosition = this._applySmoothingToPosition(hand.position, "red", timestamp);
+      const smoothedPosition = this._applySmoothingToPosition(
+        hand.position,
+        "red",
+        timestamp
+      );
       this._stabilizer.setAssignedHand("red", "right");
       return { blue: null, red: smoothedPosition };
     }
@@ -202,7 +238,10 @@ export class HandAssignmentService implements IHandAssignmentService {
     if (blue) {
       this._lastBluePosition = blue;
       this._blueFramesMissing = 0;
-    } else if (this._lastBluePosition && this._blueFramesMissing < HAND_PERSISTENCE_FRAMES) {
+    } else if (
+      this._lastBluePosition &&
+      this._blueFramesMissing < HAND_PERSISTENCE_FRAMES
+    ) {
       blue = this._lastBluePosition;
       this._blueFramesMissing++;
     } else {
@@ -213,7 +252,10 @@ export class HandAssignmentService implements IHandAssignmentService {
     if (red) {
       this._lastRedPosition = red;
       this._redFramesMissing = 0;
-    } else if (this._lastRedPosition && this._redFramesMissing < HAND_PERSISTENCE_FRAMES) {
+    } else if (
+      this._lastRedPosition &&
+      this._redFramesMissing < HAND_PERSISTENCE_FRAMES
+    ) {
       red = this._lastRedPosition;
       this._redFramesMissing++;
     } else {
@@ -237,7 +279,12 @@ export class HandAssignmentService implements IHandAssignmentService {
   /**
    * Calculate distance between two points
    */
-  private _calculateDistance(x1: number, y1: number, x2: number, y2: number): number {
+  private _calculateDistance(
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number
+  ): number {
     return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
   }
 }
