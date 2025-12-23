@@ -1,9 +1,10 @@
 <!--
   SubscriptionCard - Premium subscription management for ProfileTab
-  Single $10/mo tier for simplicity.
+  Single $10/mo tier
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
+  import { goto } from "$app/navigation";
   import { tryResolve, TYPES } from "../../../../inversify/di";
   import type { ISubscriptionService } from "../../../../subscription/services/contracts/ISubscriptionService";
   import type { SubscriptionInfo } from "../../../../subscription/services/contracts/ISubscriptionService";
@@ -22,20 +23,6 @@
   let subscriptionInfo = $state<SubscriptionInfo | null>(null);
   let isLoading = $state(false);
   let unsubscribeListener: (() => void) | null = null;
-
-  // Single price configuration
-  // TODO: Fix env var loading - hardcoded for now
-  const priceId =
-    import.meta.env.PUBLIC_STRIPE_PRICE_ID || "price_1SgbRTLZdzgHfpQbEp99bKp7";
-  const PREMIUM_COLOR = "#6366f1";
-
-  // Debug: log price ID on load
-  console.log(
-    "[SubscriptionCard] Price ID:",
-    priceId,
-    "| From env?",
-    !!import.meta.env.PUBLIC_STRIPE_PRICE_ID
-  );
 
   // Computed
   const isSubscribed = $derived(
@@ -73,21 +60,10 @@
     unsubscribeListener?.();
   });
 
-  async function handleSubscribe() {
-    if (!subscriptionService || isLoading || !priceId) return;
-
+  function handleLearnMore() {
     hapticService?.trigger("selection");
-    isLoading = true;
-
-    try {
-      const checkoutUrl =
-        await subscriptionService.createCheckoutSession(priceId);
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      console.error("Failed to create checkout session:", error);
-      hapticService?.trigger("error");
-      isLoading = false;
-    }
+    // Navigate to premium module using SvelteKit client-side routing
+    goto("/#premium");
   }
 
   async function handleManageSubscription() {
@@ -149,22 +125,13 @@
       </button>
     </div>
   {:else}
-    <!-- Not Subscribed - Show Subscribe Button -->
-    <button
-      class="subscribe-btn"
-      onclick={handleSubscribe}
-      disabled={isLoading || !priceId}
-    >
-      {#if isLoading}
-        <i class="fas fa-spinner fa-spin"></i>
-        <span>Loading...</span>
-      {:else}
-        <div class="subscribe-content">
-          <i class="fas fa-star"></i>
-          <span class="subscribe-text">Go Premium</span>
-          <span class="subscribe-price">$10/mo</span>
-        </div>
-      {/if}
+    <!-- Not Subscribed - Show Learn More Button -->
+    <button class="subscribe-btn" onclick={handleLearnMore}>
+      <div class="subscribe-content">
+        <i class="fas fa-crown"></i>
+        <span class="subscribe-text">Go Premium</span>
+        <span class="subscribe-price">$10/mo</span>
+      </div>
     </button>
   {/if}
 </div>
