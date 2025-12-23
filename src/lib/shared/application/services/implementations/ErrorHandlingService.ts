@@ -1,6 +1,10 @@
 import { injectable } from "inversify";
 import type { IErrorHandlingService } from "../contracts/IErrorHandlingService";
-import type { ShowErrorOptions, ErrorContext, AppError } from "$lib/shared/error/domain/error-models";
+import type {
+  ShowErrorOptions,
+  ErrorContext,
+  AppError,
+} from "$lib/shared/error/domain/error-models";
 import {
   showError as showErrorState,
   dismissError as dismissErrorState,
@@ -16,8 +20,13 @@ import {
  */
 @injectable()
 export class ErrorHandlingService implements IErrorHandlingService {
-  private errors: Array<{ error: Error; context?: string; timestamp: Date }> = [];
-  private criticalErrors: Array<{ error: Error; context?: string; timestamp: Date }> = [];
+  private errors: Array<{ error: Error; context?: string; timestamp: Date }> =
+    [];
+  private criticalErrors: Array<{
+    error: Error;
+    context?: string;
+    timestamp: Date;
+  }> = [];
 
   // ========================================
   // Internal Logging (existing functionality)
@@ -69,13 +78,20 @@ export class ErrorHandlingService implements IErrorHandlingService {
   showUserError(options: ShowErrorOptions): string {
     // Also log internally
     if (options.error) {
-      this.handleError(options.error, options.context?.action || options.context?.module);
+      this.handleError(
+        options.error,
+        options.context?.action || options.context?.module
+      );
     }
 
     return showErrorState(options);
   }
 
-  showError(message: string, error?: Error, context?: Partial<ErrorContext>): string {
+  showError(
+    message: string,
+    error?: Error,
+    context?: Partial<ErrorContext>
+  ): string {
     return this.showUserError({
       message,
       error,
@@ -101,13 +117,18 @@ export class ErrorHandlingService implements IErrorHandlingService {
   // Bug Reporting Integration
   // ========================================
 
-  async reportBug(errorId: string, additionalComment?: string): Promise<string | null> {
+  async reportBug(
+    errorId: string,
+    additionalComment?: string
+  ): Promise<string | null> {
     try {
       const errorHistory = getErrorHistory();
       const appError = errorHistory.find((e) => e.id === errorId);
 
       if (!appError) {
-        console.warn(`Cannot report bug: error ${errorId} not found in history`);
+        console.warn(
+          `Cannot report bug: error ${errorId} not found in history`
+        );
         return null;
       }
 
@@ -140,7 +161,10 @@ export class ErrorHandlingService implements IErrorHandlingService {
     }
   }
 
-  private buildErrorReport(appError: AppError, additionalComment?: string): string {
+  private buildErrorReport(
+    appError: AppError,
+    additionalComment?: string
+  ): string {
     const lines: string[] = [
       "## Auto-generated Bug Report",
       "",
@@ -148,7 +172,10 @@ export class ErrorHandlingService implements IErrorHandlingService {
       "",
     ];
 
-    if (appError.technicalDetails && appError.technicalDetails !== appError.message) {
+    if (
+      appError.technicalDetails &&
+      appError.technicalDetails !== appError.message
+    ) {
       lines.push(`**Technical Details:** ${appError.technicalDetails}`, "");
     }
 
@@ -165,7 +192,9 @@ export class ErrorHandlingService implements IErrorHandlingService {
     }
 
     lines.push(`- **Timestamp:** ${appError.timestamp.toISOString()}`);
-    lines.push(`- **URL:** ${typeof window !== "undefined" ? window.location.href : "N/A"}`);
+    lines.push(
+      `- **URL:** ${typeof window !== "undefined" ? window.location.href : "N/A"}`
+    );
     lines.push(
       `- **User Agent:** ${typeof navigator !== "undefined" ? navigator.userAgent : "N/A"}`
     );

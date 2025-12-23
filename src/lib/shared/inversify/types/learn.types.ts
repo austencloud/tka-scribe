@@ -9,7 +9,9 @@ export const LearnTypes = {
   ICodexService: Symbol.for("ICodexService"),
   ICodexPictographUpdater: Symbol.for("ICodexPictographUpdater"),
   ILetterQueryHandler: Symbol.for("ILetterQueryHandler"),
-  IPictographTransformationService: Symbol.for("IPictographTransformationService"),
+  IPictographTransformationService: Symbol.for(
+    "IPictographTransformationService"
+  ),
   ICodexLetterMappingRepo: Symbol.for("ICodexLetterMappingRepo"),
 
   // Quiz
@@ -20,5 +22,7 @@ export const LearnTypes = {
   // Motion & Letter
   IMotionQueryHandler: Symbol.for("IMotionQueryHandler"),
   ILetterDeriver: Symbol.for("ILetterDeriver"),
-  IMotionLetterIdentificationService: Symbol.for("IMotionLetterIdentificationService"),
+  IMotionLetterIdentificationService: Symbol.for(
+    "IMotionLetterIdentificationService"
+  ),
 } as const;

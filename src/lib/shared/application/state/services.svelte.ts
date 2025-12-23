@@ -1,5 +1,8 @@
 import type { IPersistenceService } from "../../persistence/services/contracts/IPersistenceService";
-import { ensureContainerInitialized, getContainerInstance } from "../../inversify/di";
+import {
+  ensureContainerInitialized,
+  getContainerInstance,
+} from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
 import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
 
@@ -46,7 +49,9 @@ export async function getSettingsService(): Promise<ISettingsState> {
 export async function getPersistenceService(): Promise<IPersistenceService> {
   if (!persistenceService) {
     const container = await getContainerInstance();
-    persistenceService = container.get<IPersistenceService>(TYPES.IPersistenceService);
+    persistenceService = container.get<IPersistenceService>(
+      TYPES.IPersistenceService
+    );
   }
   if (!persistenceService) {
     throw new Error("Persistence service is null after resolution");

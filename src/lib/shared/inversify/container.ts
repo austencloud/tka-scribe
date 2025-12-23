@@ -234,14 +234,14 @@ export async function loadCriticalModules(): Promise<void> {
       { dataModule },
       { keyboardModule },
       { analyticsModule },
-      { presenceModule }
+      { presenceModule },
     ] = await Promise.all([
       import("./modules/core.module"),
       import("./modules/navigation.module"),
       import("./modules/data.module"),
       import("./modules/keyboard.module"),
       import("./modules/analytics.module"),
-      import("./modules/presence.module")
+      import("./modules/presence.module"),
     ]);
 
     if (!coreModule) {
@@ -307,12 +307,12 @@ export async function loadSharedModules(): Promise<void> {
         { renderModule },
         { pictographModule },
         { adminModule },
-        { feedbackModule }
+        { feedbackModule },
       ] = await Promise.all([
         import("./modules/render.module"),
         import("./modules/pictograph.module"),
         import("./modules/admin.module"),
-        import("./modules/feedback.module")
+        import("./modules/feedback.module"),
       ]);
 
       await container.load(
@@ -391,7 +391,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("share", () => import("./modules/share.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),
-          loadIfNeeded("gamification", () => import("./modules/gamification.module"))
+          loadIfNeeded(
+            "gamification",
+            () => import("./modules/gamification.module")
+          ),
         ]);
         break;
 
@@ -399,7 +402,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         // Discover needs community module for CreatorsPanel (IUserService)
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("community", () => import("./modules/community.module"))
+          loadIfNeeded("community", () => import("./modules/community.module")),
         ]);
         break;
 
@@ -407,7 +410,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
-          loadIfNeeded("community", () => import("./modules/community.module"))
+          loadIfNeeded("community", () => import("./modules/community.module")),
         ]);
         break;
 
@@ -419,7 +422,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
           loadIfNeeded("train", () => import("./modules/train.module")),
-          loadIfNeeded("animator", () => import("./modules/animator.module"))
+          loadIfNeeded("animator", () => import("./modules/animator.module")),
         ]);
         break;
 
@@ -428,13 +431,16 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         // Compose/Animate needs discover (for sequence browser) and animator
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("animator", () => import("./modules/animator.module"))
+          loadIfNeeded("animator", () => import("./modules/animator.module")),
         ]);
         break;
 
       case "edit":
         // Edit uses discover services for sequence browser
-        await loadIfNeeded("discover", () => import("./modules/discover.module"));
+        await loadIfNeeded(
+          "discover",
+          () => import("./modules/discover.module")
+        );
         break;
 
       case "collect":
@@ -463,7 +469,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       case "word_card":
         await Promise.all([
           loadIfNeeded("word_card", () => import("./modules/word-card.module")),
-          loadIfNeeded("discover", () => import("./modules/discover.module"))
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
         ]);
         break;
 
@@ -476,7 +482,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await Promise.all([
           loadIfNeeded("library", () => import("./modules/library.module")),
           loadIfNeeded("train", () => import("./modules/train.module")),
-          loadIfNeeded("discover", () => import("./modules/discover.module"))
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
         ]);
         break;
 
@@ -485,11 +491,17 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "gamification":
-        await loadIfNeeded("gamification", () => import("./modules/gamification.module"));
+        await loadIfNeeded(
+          "gamification",
+          () => import("./modules/gamification.module")
+        );
         break;
 
       case "messaging":
-        await loadIfNeeded("messaging", () => import("./modules/messaging.module"));
+        await loadIfNeeded(
+          "messaging",
+          () => import("./modules/messaging.module")
+        );
         break;
 
       case "inbox":
@@ -499,7 +511,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "cap-labeler":
         // CAP labeler (test route) - load on-demand
-        await loadIfNeeded("cap-labeler", () => import("./modules/cap-labeler.module"));
+        await loadIfNeeded(
+          "cap-labeler",
+          () => import("./modules/cap-labeler.module")
+        );
         break;
 
       default:

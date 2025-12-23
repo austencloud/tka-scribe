@@ -154,7 +154,10 @@ export class SnapPoints {
       if (isDraggingToClose && this.currentIndex > 0) {
         // Snap to smaller size (or close)
         return Math.max(0, nearestIndex - 1);
-      } else if (!isDraggingToClose && this.currentIndex < this.snapPointsPx.length - 1) {
+      } else if (
+        !isDraggingToClose &&
+        this.currentIndex < this.snapPointsPx.length - 1
+      ) {
         // Snap to larger size
         return Math.min(this.snapPointsPx.length - 1, nearestIndex + 1);
       }
@@ -162,14 +165,18 @@ export class SnapPoints {
 
     // Check distance threshold
     const thresholdDistance = Math.abs(
-      (this.snapPointsPx[nearestIndex]! - (this.snapPointsPx[nearestIndex - 1] ?? 0)) *
+      (this.snapPointsPx[nearestIndex]! -
+        (this.snapPointsPx[nearestIndex - 1] ?? 0)) *
         distanceThreshold!
     );
 
     if (Math.abs(dragOffset) > thresholdDistance) {
       if (isDraggingToClose && nearestIndex > 0) {
         return nearestIndex - 1;
-      } else if (!isDraggingToClose && nearestIndex < this.snapPointsPx.length - 1) {
+      } else if (
+        !isDraggingToClose &&
+        nearestIndex < this.snapPointsPx.length - 1
+      ) {
         return nearestIndex + 1;
       }
     }
@@ -181,7 +188,10 @@ export class SnapPoints {
    * Set current snap point index
    */
   setSnapPoint(index: number) {
-    const clampedIndex = Math.max(0, Math.min(index, this.snapPointsPx.length - 1));
+    const clampedIndex = Math.max(
+      0,
+      Math.min(index, this.snapPointsPx.length - 1)
+    );
     if (clampedIndex !== this.currentIndex) {
       this.currentIndex = clampedIndex;
       this.options.onSnapPointChange?.(
@@ -194,8 +204,16 @@ export class SnapPoints {
   /**
    * Snap to closest point
    */
-  snapToClosest(dragOffset: number, velocity: number, duration: number): number {
-    const targetIndex = this.calculateTargetSnapPoint(dragOffset, velocity, duration);
+  snapToClosest(
+    dragOffset: number,
+    velocity: number,
+    duration: number
+  ): number {
+    const targetIndex = this.calculateTargetSnapPoint(
+      dragOffset,
+      velocity,
+      duration
+    );
     this.setSnapPoint(targetIndex);
     return targetIndex;
   }

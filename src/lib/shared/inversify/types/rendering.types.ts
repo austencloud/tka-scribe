@@ -42,7 +42,9 @@ export const RenderingTypes = {
   ITextRenderingService: Symbol.for("ITextRenderingService"),
   IGlyphCacheService: Symbol.for("IGlyphCacheService"),
   IReversalDetectionService: Symbol.for("IReversalDetectionService"),
-  IUltimatePictographRenderingService: Symbol.for("IUltimatePictographRenderingService"),
+  IUltimatePictographRenderingService: Symbol.for(
+    "IUltimatePictographRenderingService"
+  ),
 
   // CSV/Data Loading
   ICSVPictographLoader: Symbol.for("ICSVPictographLoader"),

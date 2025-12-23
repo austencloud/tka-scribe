@@ -26,18 +26,18 @@ export interface FocusTrapOptions {
 
 // Selector for all focusable elements
 const FOCUSABLE_SELECTOR = [
-  'a[href]',
-  'area[href]',
+  "a[href]",
+  "area[href]",
   'input:not([disabled]):not([type="hidden"])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  'button:not([disabled])',
-  'iframe',
-  'object',
-  'embed',
-  '[contenteditable]',
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "button:not([disabled])",
+  "iframe",
+  "object",
+  "embed",
+  "[contenteditable]",
   '[tabindex]:not([tabindex="-1"])',
-].join(',');
+].join(",");
 
 export class FocusTrap {
   private container: HTMLElement | null = null;
@@ -70,7 +70,7 @@ export class FocusTrap {
 
     // Set up keydown handler
     this.handleKeydownBound = this.handleKeydown.bind(this);
-    document.addEventListener('keydown', this.handleKeydownBound);
+    document.addEventListener("keydown", this.handleKeydownBound);
 
     // Mark siblings as inert
     if (this.options.setInertOnSiblings) {
@@ -91,7 +91,7 @@ export class FocusTrap {
 
     // Remove keydown handler
     if (this.handleKeydownBound) {
-      document.removeEventListener('keydown', this.handleKeydownBound);
+      document.removeEventListener("keydown", this.handleKeydownBound);
       this.handleKeydownBound = null;
     }
 
@@ -104,7 +104,10 @@ export class FocusTrap {
     if (this.options.returnFocusOnDeactivate && this.previouslyFocused) {
       // Use setTimeout to ensure focus restoration happens after any animations
       setTimeout(() => {
-        if (this.previouslyFocused && document.body.contains(this.previouslyFocused)) {
+        if (
+          this.previouslyFocused &&
+          document.body.contains(this.previouslyFocused)
+        ) {
           this.previouslyFocused.focus();
         }
       }, 0);
@@ -142,8 +145,8 @@ export class FocusTrap {
     return elements.filter((el) => {
       const style = window.getComputedStyle(el);
       return (
-        style.display !== 'none' &&
-        style.visibility !== 'hidden' &&
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
         el.offsetParent !== null
       );
     });
@@ -154,7 +157,10 @@ export class FocusTrap {
    */
   private focusInitialElement() {
     // If custom initial focus specified, use it
-    if (this.options.initialFocus && this.container?.contains(this.options.initialFocus)) {
+    if (
+      this.options.initialFocus &&
+      this.container?.contains(this.options.initialFocus)
+    ) {
       this.options.initialFocus.focus();
       return;
     }
@@ -165,8 +171,8 @@ export class FocusTrap {
       focusable[0]!.focus();
     } else if (this.container) {
       // If no focusable elements, make container focusable and focus it
-      if (!this.container.hasAttribute('tabindex')) {
-        this.container.setAttribute('tabindex', '-1');
+      if (!this.container.hasAttribute("tabindex")) {
+        this.container.setAttribute("tabindex", "-1");
       }
       this.container.focus();
     }
@@ -179,7 +185,7 @@ export class FocusTrap {
     if (!this.isActive || !this.container) return;
 
     // Only handle Tab key
-    if (event.key !== 'Tab') return;
+    if (event.key !== "Tab") return;
 
     const focusable = this.getFocusableElements();
     if (focusable.length === 0) {
@@ -194,13 +200,19 @@ export class FocusTrap {
 
     if (event.shiftKey) {
       // Shift+Tab: if on first element, wrap to last
-      if (activeElement === firstFocusable || !this.container.contains(activeElement)) {
+      if (
+        activeElement === firstFocusable ||
+        !this.container.contains(activeElement)
+      ) {
         event.preventDefault();
         lastFocusable.focus();
       }
     } else {
       // Tab: if on last element, wrap to first
-      if (activeElement === lastFocusable || !this.container.contains(activeElement)) {
+      if (
+        activeElement === lastFocusable ||
+        !this.container.contains(activeElement)
+      ) {
         event.preventDefault();
         firstFocusable.focus();
       }
@@ -227,21 +239,21 @@ export class FocusTrap {
             if (sibling !== currentElement && sibling instanceof HTMLElement) {
               // Skip the desktop navigation sidebar - it should remain interactive
               // even when drawers/modals are open, allowing users to navigate away
-              if (sibling.classList.contains('desktop-navigation-sidebar')) {
+              if (sibling.classList.contains("desktop-navigation-sidebar")) {
                 return;
               }
               // Skip the bottom navigation - it should remain interactive
               // when sequence detail panel is open, allowing users to navigate between modules
-              if (sibling.classList.contains('bottom-navigation')) {
+              if (sibling.classList.contains("bottom-navigation")) {
                 return;
               }
               // Skip the drawer overlay - it needs to remain clickable for backdrop dismiss
-              if (sibling.classList.contains('drawer-overlay')) {
+              if (sibling.classList.contains("drawer-overlay")) {
                 return;
               }
               // Don't set inert on elements that already have it
-              if (!sibling.hasAttribute('inert')) {
-                sibling.setAttribute('inert', '');
+              if (!sibling.hasAttribute("inert")) {
+                sibling.setAttribute("inert", "");
                 this.inertElements.push(sibling);
               }
             }
@@ -252,7 +264,7 @@ export class FocusTrap {
     } else {
       // Remove inert from elements we set it on
       this.inertElements.forEach((el) => {
-        el.removeAttribute('inert');
+        el.removeAttribute("inert");
       });
       this.inertElements = [];
     }

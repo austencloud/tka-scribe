@@ -1,6 +1,6 @@
 /**
  * Train Module - DI Container Module
- * 
+ *
  * Registers all hand detection and training services for the Train feature.
  */
 
@@ -24,29 +24,56 @@ export const trainModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === HAND DETECTION SERVICES ===
     // Core MediaPipe wrapper
-    options.bind(TYPES.IHandLandmarkerService).to(HandLandmarkerService).inSingletonScope();
+    options
+      .bind(TYPES.IHandLandmarkerService)
+      .to(HandLandmarkerService)
+      .inSingletonScope();
 
     // Analysis services
-    options.bind(TYPES.IHandednessAnalyzer).to(HandednessAnalyzer).inSingletonScope();
-    options.bind(TYPES.IHandStateAnalyzer).to(HandStateAnalyzer).inSingletonScope();
+    options
+      .bind(TYPES.IHandednessAnalyzer)
+      .to(HandednessAnalyzer)
+      .inSingletonScope();
+    options
+      .bind(TYPES.IHandStateAnalyzer)
+      .to(HandStateAnalyzer)
+      .inSingletonScope();
 
     // Tracking and assignment
-    options.bind(TYPES.IHandTrackingStabilizer).to(HandTrackingStabilizer).inSingletonScope();
-    options.bind(TYPES.IHandAssignmentService).to(HandAssignmentService).inSingletonScope();
+    options
+      .bind(TYPES.IHandTrackingStabilizer)
+      .to(HandTrackingStabilizer)
+      .inSingletonScope();
+    options
+      .bind(TYPES.IHandAssignmentService)
+      .to(HandAssignmentService)
+      .inSingletonScope();
 
     // Position detection orchestrator
-    options.bind(TYPES.IPositionDetectionService).to(MediaPipeDetectionService).inSingletonScope();
+    options
+      .bind(TYPES.IPositionDetectionService)
+      .to(MediaPipeDetectionService)
+      .inSingletonScope();
 
     // Camera service
     options.bind(TYPES.ICameraService).to(CameraService).inSingletonScope();
 
     // === PRACTICE SERVICES ===
-    options.bind(TYPES.IVoiceCommandService).to(VoiceCommandService).inSingletonScope();
+    options
+      .bind(TYPES.IVoiceCommandService)
+      .to(VoiceCommandService)
+      .inSingletonScope();
 
     // === CHALLENGES SERVICES ===
-    options.bind(TYPES.ITrainChallengeService).to(TrainChallengeService).inSingletonScope();
+    options
+      .bind(TYPES.ITrainChallengeService)
+      .to(TrainChallengeService)
+      .inSingletonScope();
 
     // === PROGRESS SERVICES ===
-    options.bind(TYPES.IPerformanceHistoryService).to(PerformanceHistoryService).inSingletonScope();
+    options
+      .bind(TYPES.IPerformanceHistoryService)
+      .to(PerformanceHistoryService)
+      .inSingletonScope();
   }
 );

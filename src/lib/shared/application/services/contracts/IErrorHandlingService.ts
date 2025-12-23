@@ -5,7 +5,10 @@
  * Provides both internal logging and user-facing error display.
  */
 
-import type { ShowErrorOptions, ErrorContext } from "$lib/shared/error/domain/error-models";
+import type {
+  ShowErrorOptions,
+  ErrorContext,
+} from "$lib/shared/error/domain/error-models";
 
 export interface IErrorHandlingService {
   /**
@@ -28,7 +31,11 @@ export interface IErrorHandlingService {
    * Show an error to the user with simplified API
    * Convenience method that wraps showUserError
    */
-  showError(message: string, error?: Error, context?: Partial<ErrorContext>): string;
+  showError(
+    message: string,
+    error?: Error,
+    context?: Partial<ErrorContext>
+  ): string;
 
   /**
    * Show a warning to the user (auto-dismisses)
@@ -44,7 +51,10 @@ export interface IErrorHandlingService {
    * Submit an error as a bug report
    * Returns the feedback ID if successful
    */
-  reportBug(errorId: string, additionalComment?: string): Promise<string | null>;
+  reportBug(
+    errorId: string,
+    additionalComment?: string
+  ): Promise<string | null>;
 
   /**
    * Get error statistics

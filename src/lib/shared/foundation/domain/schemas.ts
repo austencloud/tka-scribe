@@ -11,10 +11,13 @@
  */
 
 import { z } from "zod";
-import { GridMode, GridPositionGroup } from '../../pictograph/grid/domain/enums/grid-enums';
-import { PropType } from '../../pictograph/prop/domain/enums/PropType';
-import type { MotionDataSchema } from '../../pictograph/shared/domain/schemas/pictograph-schemas';
-import { PictographDataSchema } from '../../pictograph/shared/domain/schemas/pictograph-schemas';
+import {
+  GridMode,
+  GridPositionGroup,
+} from "../../pictograph/grid/domain/enums/grid-enums";
+import { PropType } from "../../pictograph/prop/domain/enums/PropType";
+import type { MotionDataSchema } from "../../pictograph/shared/domain/schemas/pictograph-schemas";
+import { PictographDataSchema } from "../../pictograph/shared/domain/schemas/pictograph-schemas";
 
 // ============================================================================
 // COORDINATE AND PLACEMENT SCHEMAS

@@ -9,7 +9,9 @@ export const BackgroundTypes = {
   IBackgroundManager: Symbol.for("IBackgroundManager"),
   IBackgroundRenderingService: Symbol.for("IBackgroundRenderingService"),
   IBackgroundPreloader: Symbol.for("IBackgroundPreloader"),
-  IBackgroundConfigurationService: Symbol.for("IBackgroundConfigurationService"),
+  IBackgroundConfigurationService: Symbol.for(
+    "IBackgroundConfigurationService"
+  ),
   IBackgroundSystem: Symbol.for("IBackgroundSystem"),
 
   // Night Sky

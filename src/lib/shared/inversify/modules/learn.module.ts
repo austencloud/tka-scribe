@@ -1,10 +1,10 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { CodexService } from '../../../features/learn/codex/services/implementations/CodexService';
-import { CodexLetterMappingRepo } from '../../../features/learn/codex/services/implementations/CodexLetterMappingRepo';
-import { CodexPictographUpdater } from '../../../features/learn/codex/services/implementations/CodexPictographUpdater';
-import { QuizRepoManager } from '../../../features/learn/quiz/services/implementations/QuizRepoManager';
-import { QuizSessionService } from '../../../features/learn/quiz/services/implementations/QuizSessionService';
+import { CodexService } from "../../../features/learn/codex/services/implementations/CodexService";
+import { CodexLetterMappingRepo } from "../../../features/learn/codex/services/implementations/CodexLetterMappingRepo";
+import { CodexPictographUpdater } from "../../../features/learn/codex/services/implementations/CodexPictographUpdater";
+import { QuizRepoManager } from "../../../features/learn/quiz/services/implementations/QuizRepoManager";
+import { QuizSessionService } from "../../../features/learn/quiz/services/implementations/QuizSessionService";
 import { QuizResultsAnalyzer } from "../../../features/learn/quiz/QuizResultsAnalyzer";
 import { TYPES } from "../types";
 

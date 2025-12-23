@@ -4,20 +4,23 @@
  * @param size - Size in pixels (default: 64)
  * @returns SVG data URL
  */
-export function generateAvatarUrl(name: string | undefined | null, size: number = 64): string {
+export function generateAvatarUrl(
+  name: string | undefined | null,
+  size: number = 64
+): string {
   // Handle undefined/null names
-  const displayName = name || 'Anonymous';
-  
+  const displayName = name || "Anonymous";
+
   // Extract initials (first letter of first two words)
   const initials = displayName
-    .split(' ')
+    .split(" ")
     .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase() || '')
-    .join('');
+    .map((word) => word[0]?.toUpperCase() || "")
+    .join("");
 
   // Generate consistent color from name
   const backgroundColor = generateColorFromString(displayName);
-  const textColor = '#ffffff';
+  const textColor = "#ffffff";
 
   // Create SVG
   const svg = `
@@ -102,7 +105,7 @@ function hslToHex(h: number, s: number, l: number): string {
 
   const toHex = (n: number) => {
     const hex = Math.round((n + m) * 255).toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
+    return hex.length === 1 ? "0" + hex : hex;
   };
 
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;

@@ -8,15 +8,21 @@ export const CreateTypes = {
   // Create Module Core
   ICreateModuleService: Symbol.for("ICreateModuleService"),
   ICreateModuleHandlers: Symbol.for("ICreateModuleHandlers"),
-  ICreateModuleInitializationService: Symbol.for("ICreateModuleInitializationService"),
+  ICreateModuleInitializationService: Symbol.for(
+    "ICreateModuleInitializationService"
+  ),
   ICreateModuleEffectCoordinator: Symbol.for("ICreateModuleEffectCoordinator"),
-  ICreationMethodPersistenceService: Symbol.for("ICreationMethodPersistenceService"),
+  ICreationMethodPersistenceService: Symbol.for(
+    "ICreationMethodPersistenceService"
+  ),
   IDeepLinkSequenceService: Symbol.for("IDeepLinkSequenceService"),
   ICreateModuleLayoutService: Symbol.for("ICreateModuleLayoutService"),
   IResponsiveLayoutService: Symbol.for("IResponsiveLayoutService"),
   INavigationSyncService: Symbol.for("INavigationSyncService"),
   IBeatOperationsService: Symbol.for("IBeatOperationsService"),
-  IKeyboardArrowAdjustmentService: Symbol.for("IKeyboardArrowAdjustmentService"),
+  IKeyboardArrowAdjustmentService: Symbol.for(
+    "IKeyboardArrowAdjustmentService"
+  ),
   IUndoService: Symbol.for("IUndoService"),
   ITurnControlService: Symbol.for("ITurnControlService"),
 
@@ -26,7 +32,9 @@ export const CreateTypes = {
 
   // Option Picker
   IOptionPickerSizingService: Symbol.for("IOptionPickerSizingService"),
-  IOptionPickerFilterPersistenceService: Symbol.for("IOptionPickerFilterPersistenceService"),
+  IOptionPickerFilterPersistenceService: Symbol.for(
+    "IOptionPickerFilterPersistenceService"
+  ),
   IReversalChecker: Symbol.for("IReversalChecker"),
   IPositionAnalyzer: Symbol.for("IPositionAnalyzer"),
   IOptionSorter: Symbol.for("IOptionSorter"),
@@ -36,6 +44,7 @@ export const CreateTypes = {
   ILayoutDetectionService: Symbol.for("ILayoutDetectionService"),
   IOptionTransitionCoordinator: Symbol.for("IOptionTransitionCoordinator"),
   ISectionTitleFormatter: Symbol.for("ISectionTitleFormatter"),
+  IPictographPreparer: Symbol.for("IPictographPreparer"),
 
   // Workbench
   IWorkbenchService: Symbol.for("IWorkbenchService"),

@@ -23,7 +23,9 @@ export const exploreModule = new ContainerModule(
     options
       .bind(TYPES.ISequenceDifficultyCalculator)
       .to(SequenceDifficultyCalculator);
-    options.bind(TYPES.IDiscoverMetadataExtractor).to(DiscoverMetadataExtractor);
+    options
+      .bind(TYPES.IDiscoverMetadataExtractor)
+      .to(DiscoverMetadataExtractor);
     options.bind(TYPES.IDiscoverCacheService).to(DiscoverCacheService);
     options.bind(TYPES.IDiscoverFilterService).to(DiscoverFilterService);
     options.bind(TYPES.IDiscoverSortService).to(DiscoverSortService);

@@ -32,35 +32,35 @@ import { CollectionService } from "../../../features/library/services/implementa
  * - ILibraryMigrationService: IndexedDB to Firestore migration (TODO)
  */
 export const libraryModule = new ContainerModule(
-	(options: ContainerModuleLoadOptions) => {
-		// Core Library Service
-		options
-			.bind<ILibraryService>(TYPES.ILibraryService)
-			.to(LibraryService)
-			.inSingletonScope();
+  (options: ContainerModuleLoadOptions) => {
+    // Core Library Service
+    options
+      .bind<ILibraryService>(TYPES.ILibraryService)
+      .to(LibraryService)
+      .inSingletonScope();
 
-		// Collection Service (includes system collections like Favorites)
-		options
-			.bind<ICollectionService>(TYPES.ICollectionService)
-			.to(CollectionService)
-			.inSingletonScope();
+    // Collection Service (includes system collections like Favorites)
+    options
+      .bind<ICollectionService>(TYPES.ICollectionService)
+      .to(CollectionService)
+      .inSingletonScope();
 
-		// Act Service (TODO: Implement)
-		// options
-		//   .bind<ILibraryActService>(TYPES.ILibraryActService)
-		//   .to(LibraryActService)
-		//   .inSingletonScope();
+    // Act Service (TODO: Implement)
+    // options
+    //   .bind<ILibraryActService>(TYPES.ILibraryActService)
+    //   .to(LibraryActService)
+    //   .inSingletonScope();
 
-		// Fork Service (TODO: Implement)
-		// options
-		//   .bind<IForkService>(TYPES.IForkService)
-		//   .to(ForkService)
-		//   .inSingletonScope();
+    // Fork Service (TODO: Implement)
+    // options
+    //   .bind<IForkService>(TYPES.IForkService)
+    //   .to(ForkService)
+    //   .inSingletonScope();
 
-		// Migration Service (TODO: Implement)
-		// options
-		//   .bind<ILibraryMigrationService>(TYPES.ILibraryMigrationService)
-		//   .to(LibraryMigrationService)
-		//   .inSingletonScope();
-	}
+    // Migration Service (TODO: Implement)
+    // options
+    //   .bind<ILibraryMigrationService>(TYPES.ILibraryMigrationService)
+    //   .to(LibraryMigrationService)
+    //   .inSingletonScope();
+  }
 );

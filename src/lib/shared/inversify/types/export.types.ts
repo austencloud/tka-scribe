@@ -32,15 +32,25 @@ export const ExportTypes = {
   IImagePreviewGenerator: Symbol.for("IImagePreviewGenerator"),
 
   // Word Card Export
-  IWordCardExportIntegrationService: Symbol.for("IWordCardExportIntegrationService"),
+  IWordCardExportIntegrationService: Symbol.for(
+    "IWordCardExportIntegrationService"
+  ),
   IWordCardExportOrchestrator: Symbol.for("IWordCardExportOrchestrator"),
-  IWordCardImageGenerationService: Symbol.for("IWordCardImageGenerationService"),
-  IWordCardImageConversionService: Symbol.for("IWordCardImageConversionService"),
-  IWordCardBatchProcessingService: Symbol.for("IWordCardBatchProcessingService"),
+  IWordCardImageGenerationService: Symbol.for(
+    "IWordCardImageGenerationService"
+  ),
+  IWordCardImageConversionService: Symbol.for(
+    "IWordCardImageConversionService"
+  ),
+  IWordCardBatchProcessingService: Symbol.for(
+    "IWordCardBatchProcessingService"
+  ),
   IWordCardExportProgressTracker: Symbol.for("IWordCardExportProgressTracker"),
   IWordCardCacheService: Symbol.for("IWordCardCacheService"),
   IWordCardSVGCompositionService: Symbol.for("IWordCardSVGCompositionService"),
-  IWordCardMetadataOverlayService: Symbol.for("IWordCardMetadataOverlayService"),
+  IWordCardMetadataOverlayService: Symbol.for(
+    "IWordCardMetadataOverlayService"
+  ),
 
   // Format Conversion
   IImageFormatConverterService: Symbol.for("IImageFormatConverterService"),

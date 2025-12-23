@@ -11,10 +11,8 @@ import { TYPES } from "../types";
 export const inboxModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === INBOX SERVICES ===
-
     // Inbox uses shared services from notifications and messaging modules
     // No inbox-specific services to register at this time
-
     // Future: Could bind inbox-specific orchestrators or managers here if needed
   }
 );

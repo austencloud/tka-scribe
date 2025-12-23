@@ -36,14 +36,8 @@ export const navigationModule = new ContainerModule(
       .bind(TYPES.ISequenceEncoderService)
       .to(SequenceEncoderService)
       .inSingletonScope();
-    options
-      .bind(TYPES.IURLSyncService)
-      .to(URLSyncService)
-      .inSingletonScope();
-    options
-      .bind(TYPES.IDeepLinkService)
-      .to(DeepLinkService)
-      .inSingletonScope();
+    options.bind(TYPES.IURLSyncService).to(URLSyncService).inSingletonScope();
+    options.bind(TYPES.IDeepLinkService).to(DeepLinkService).inSingletonScope();
     options
       .bind(TYPES.ILetterDeriverService)
       .to(LetterDeriverService)

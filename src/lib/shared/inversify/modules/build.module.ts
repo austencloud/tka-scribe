@@ -69,6 +69,7 @@ import { OptionOrganizer } from "../../../features/create/construct/option-picke
 import { OptionLoader } from "../../../features/create/construct/option-picker/services/implementations/OptionLoader";
 import { OptionTransitionCoordinator } from "../../../features/create/construct/option-picker/services/implementations/OptionTransitionCoordinator";
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
+import { PictographPreparerService } from "../../../features/create/construct/option-picker/services/implementations/PictographPreparerService";
 import { AutocompleteService } from "../../../features/create/shared/services/implementations/AutocompleteService";
 
 export const createModule = new ContainerModule(
@@ -118,6 +119,7 @@ export const createModule = new ContainerModule(
       .bind(TYPES.IOptionTransitionCoordinator)
       .to(OptionTransitionCoordinator);
     options.bind(TYPES.ISectionTitleFormatter).to(SectionTitleFormatter);
+    options.bind(TYPES.IPictographPreparer).to(PictographPreparerService);
 
     // === START POSITION SERVICES ===
     options

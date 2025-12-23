@@ -31,7 +31,10 @@ const FEEDBACK_PATTERNS: Record<
 };
 
 // iOS pulse counts for each feedback type
-const IOS_PULSE_COUNTS: Record<Exclude<HapticFeedbackType, "custom">, number> = {
+const IOS_PULSE_COUNTS: Record<
+  Exclude<HapticFeedbackType, "custom">,
+  number
+> = {
   selection: 1,
   success: 2,
   warning: 2,
@@ -82,8 +85,7 @@ export class HapticFeedbackService implements IHapticFeedbackService {
 
     // Android/Other: Use Vibration API
     if (this.supportsVibrationAPI) {
-      const pattern =
-        type === "custom" ? [] : FEEDBACK_PATTERNS[type];
+      const pattern = type === "custom" ? [] : FEEDBACK_PATTERNS[type];
       return this.vibrate(pattern);
     }
 
@@ -167,16 +169,13 @@ export class HapticFeedbackService implements IHapticFeedbackService {
     // Check standard Vibration API (Android Chrome, Firefox, etc.)
     try {
       this.supportsVibrationAPI =
-        "vibrate" in navigator &&
-        typeof navigator.vibrate === "function";
+        "vibrate" in navigator && typeof navigator.vibrate === "function";
     } catch {
       this.supportsVibrationAPI = false;
     }
 
     // Check iOS Safari 17.4+ support
     this.supportsIOSHaptic = this.detectIOSSafariSupport();
-
-
   }
 
   /**
@@ -288,7 +287,10 @@ export class HapticFeedbackService implements IHapticFeedbackService {
       document.body.appendChild(input);
       this.iosHapticInput = input;
     } catch (error) {
-      console.warn("[HapticFeedback] Failed to create iOS haptic element:", error);
+      console.warn(
+        "[HapticFeedback] Failed to create iOS haptic element:",
+        error
+      );
       this.supportsIOSHaptic = false;
     }
   }

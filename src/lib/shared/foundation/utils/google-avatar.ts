@@ -18,22 +18,25 @@
  * @returns A Google profile picture URL, or null if no googleId
  */
 export function constructGoogleAvatarUrl(
-	googleId: string | null | undefined,
-	size: number = 96
+  googleId: string | null | undefined,
+  size: number = 96
 ): string | null {
-	if (!googleId) return null;
+  if (!googleId) return null;
 
-	// Google People API public photo URL format
-	// This format is more stable than OAuth photoURL tokens
-	return `https://lh3.googleusercontent.com/a/${googleId}=s${size}-c`;
+  // Google People API public photo URL format
+  // This format is more stable than OAuth photoURL tokens
+  return `https://lh3.googleusercontent.com/a/${googleId}=s${size}-c`;
 }
 
 /**
  * Check if a URL is a Google avatar URL
  */
 export function isGoogleAvatarUrl(url: string | null | undefined): boolean {
-	if (!url) return false;
-	return url.includes('lh3.googleusercontent.com') || url.includes('googleusercontent.com/a/');
+  if (!url) return false;
+  return (
+    url.includes("lh3.googleusercontent.com") ||
+    url.includes("googleusercontent.com/a/")
+  );
 }
 
 /**
@@ -46,16 +49,18 @@ export function isGoogleAvatarUrl(url: string | null | undefined): boolean {
  * @param url - A Google avatar URL
  * @returns The extracted ID portion, or null if not extractable
  */
-export function extractGoogleIdFromUrl(url: string | null | undefined): string | null {
-	if (!url) return null;
+export function extractGoogleIdFromUrl(
+  url: string | null | undefined
+): string | null {
+  if (!url) return null;
 
-	// Match patterns like /a/ACg8ocJ... or /a-/ACg8ocJ...
-	const match = url.match(/\/a[-]?\/([^=?/]+)/);
-	if (match && match[1]) {
-		return match[1];
-	}
+  // Match patterns like /a/ACg8ocJ... or /a-/ACg8ocJ...
+  const match = url.match(/\/a[-]?\/([^=?/]+)/);
+  if (match && match[1]) {
+    return match[1];
+  }
 
-	return null;
+  return null;
 }
 
 /**
@@ -67,39 +72,39 @@ export function extractGoogleIdFromUrl(url: string | null | undefined): string |
  * @returns A potentially working URL
  */
 export function getGoogleAvatarWithSize(
-	originalUrl: string | null | undefined,
-	googleId?: string | null,
-	size: number = 96
+  originalUrl: string | null | undefined,
+  googleId?: string | null,
+  size: number = 96
 ): string | null {
-	// If we have a googleId, prefer constructing a fresh URL
-	if (googleId) {
-		return constructGoogleAvatarUrl(googleId, size);
-	}
+  // If we have a googleId, prefer constructing a fresh URL
+  if (googleId) {
+    return constructGoogleAvatarUrl(googleId, size);
+  }
 
-	// If we have an original URL, try to modify its size parameter
-	if (originalUrl && isGoogleAvatarUrl(originalUrl)) {
-		// Replace existing size parameter or add one
-		const sizeParam = `=s${size}-c`;
+  // If we have an original URL, try to modify its size parameter
+  if (originalUrl && isGoogleAvatarUrl(originalUrl)) {
+    // Replace existing size parameter or add one
+    const sizeParam = `=s${size}-c`;
 
-		// Remove existing size params and add new one
-		const baseUrl = originalUrl.replace(/=s\d+-c/, '').replace(/=s\d+/, '');
-		return baseUrl + sizeParam;
-	}
+    // Remove existing size params and add new one
+    const baseUrl = originalUrl.replace(/=s\d+-c/, "").replace(/=s\d+/, "");
+    return baseUrl + sizeParam;
+  }
 
-	return originalUrl || null;
+  return originalUrl || null;
 }
 
 /**
  * Validate that a URL is likely to work (basic format check)
  */
 export function isValidImageUrl(url: string | null | undefined): boolean {
-	if (!url) return false;
+  if (!url) return false;
 
-	try {
-		const parsed = new URL(url);
-		return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-	} catch {
-		// Check for data URLs
-		return url.startsWith('data:image/');
-	}
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    // Check for data URLs
+    return url.startsWith("data:image/");
+  }
 }

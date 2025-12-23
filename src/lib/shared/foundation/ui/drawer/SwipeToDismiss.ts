@@ -19,7 +19,11 @@ export interface SwipeToDismissOptions {
   dismissible: boolean;
   onDismiss: () => void;
   /** Called during drag with current state. isDragging=true on start/move, false on end */
-  onDragChange?: (offset: number, progress: number, isDragging: boolean) => void;
+  onDragChange?: (
+    offset: number,
+    progress: number,
+    isDragging: boolean
+  ) => void;
   /** Called when drag ends with offset, velocity (px/ms), and duration. Return true to prevent default dismiss. */
   onDragEnd?: (offset: number, velocity: number, duration: number) => boolean;
   /** Drawer ID for stack management - only top drawer responds to swipe */
@@ -53,7 +57,11 @@ export class SwipeToDismiss {
     while (current && current !== this.element) {
       // Skip form elements - they have overflow:auto by default but shouldn't block dismiss
       const tagName = current.tagName.toLowerCase();
-      if (tagName === 'textarea' || tagName === 'input' || tagName === 'select') {
+      if (
+        tagName === "textarea" ||
+        tagName === "input" ||
+        tagName === "select"
+      ) {
         current = current.parentElement;
         continue;
       }
@@ -63,8 +71,12 @@ export class SwipeToDismiss {
       const overflowX = style.overflowX;
 
       // Check if this element is scrollable
-      const isScrollableY = (overflowY === 'auto' || overflowY === 'scroll') && current.scrollHeight > current.clientHeight;
-      const isScrollableX = (overflowX === 'auto' || overflowX === 'scroll') && current.scrollWidth > current.clientWidth;
+      const isScrollableY =
+        (overflowY === "auto" || overflowY === "scroll") &&
+        current.scrollHeight > current.clientHeight;
+      const isScrollableX =
+        (overflowX === "auto" || overflowX === "scroll") &&
+        current.scrollWidth > current.clientWidth;
 
       if (isScrollableY || isScrollableX) {
         return current;
@@ -84,17 +96,17 @@ export class SwipeToDismiss {
   private isScrollAtDismissBoundary(container: HTMLElement): boolean {
     const { placement } = this.options;
 
-    if (placement === 'bottom') {
+    if (placement === "bottom") {
       // For bottom sheet, dismiss happens on swipe down, which conflicts with scrolling up
       // Only allow dismiss when already at the top (scrollTop === 0)
       return container.scrollTop <= 1; // Allow 1px tolerance
-    } else if (placement === 'top') {
+    } else if (placement === "top") {
       // For top sheet, dismiss happens on swipe up, which conflicts with scrolling down
       const maxScroll = container.scrollHeight - container.clientHeight;
       return container.scrollTop >= maxScroll - 1;
-    } else if (placement === 'right') {
+    } else if (placement === "right") {
       return container.scrollLeft <= 1;
-    } else if (placement === 'left') {
+    } else if (placement === "left") {
       const maxScroll = container.scrollWidth - container.clientWidth;
       return container.scrollLeft >= maxScroll - 1;
     }
@@ -108,7 +120,8 @@ export class SwipeToDismiss {
     this.detach(); // Clean up any previous listeners
     this.element = element;
 
-    const handleStart = (e: TouchEvent | MouseEvent) => this.handleTouchStart(e);
+    const handleStart = (e: TouchEvent | MouseEvent) =>
+      this.handleTouchStart(e);
     const handleMove = (e: TouchEvent | MouseEvent) => this.handleTouchMove(e);
     const handleEnd = (e: TouchEvent | MouseEvent) => this.handleTouchEnd(e);
     const handleClick = (e: MouseEvent) => this.handleClick(e);
@@ -295,7 +308,10 @@ export class SwipeToDismiss {
     // abort the drag to let native scroll take over.
     // This applies whether or not we detected a scrollable container,
     // since the detection can fail in complex flex layouts.
-    if (isSwipingInScrollDirection && (absDeltaY > movementThreshold || absDeltaX > movementThreshold)) {
+    if (
+      isSwipingInScrollDirection &&
+      (absDeltaY > movementThreshold || absDeltaX > movementThreshold)
+    ) {
       this.isDragging = false;
       this.options.onDragChange?.(0, 1, false);
       return; // Let native scroll handle it
@@ -303,9 +319,15 @@ export class SwipeToDismiss {
 
     // If there's a scrollable container and scroll is NOT at the dismiss boundary,
     // and user is swiping in the dismiss direction, abort the drag and let scroll happen
-    if (this.scrollableContainer && !this.scrollAtBoundary && isSwipingInDismissDirection) {
+    if (
+      this.scrollableContainer &&
+      !this.scrollAtBoundary &&
+      isSwipingInDismissDirection
+    ) {
       // Re-check boundary in case user scrolled to top during this gesture
-      this.scrollAtBoundary = this.isScrollAtDismissBoundary(this.scrollableContainer);
+      this.scrollAtBoundary = this.isScrollAtDismissBoundary(
+        this.scrollableContainer
+      );
 
       if (!this.scrollAtBoundary) {
         // Abort drag - let native scroll take over
@@ -324,7 +346,10 @@ export class SwipeToDismiss {
 
     // Prevent default for valid drag directions (only if scroll is at boundary OR no scrollable container)
     // AND only when swiping in dismiss direction
-    if ((this.scrollAtBoundary || !this.scrollableContainer) && isSwipingInDismissDirection) {
+    if (
+      (this.scrollAtBoundary || !this.scrollableContainer) &&
+      isSwipingInDismissDirection
+    ) {
       event.preventDefault();
     }
 
@@ -387,7 +412,9 @@ export class SwipeToDismiss {
     }
 
     // Debug logging
-    debug.log(`Swipe end: placement=${this.options.placement}, deltaX=${deltaX}, deltaY=${deltaY}, duration=${duration}ms, threshold=${wasAboveThreshold}`);
+    debug.log(
+      `Swipe end: placement=${this.options.placement}, deltaX=${deltaX}, deltaY=${deltaY}, duration=${duration}ms, threshold=${wasAboveThreshold}`
+    );
 
     this.startY = 0;
     this.currentY = 0;

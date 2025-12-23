@@ -39,15 +39,23 @@ export const GenerationTypes = {
   IMirroredRotatedCAPExecutor: Symbol.for("IMirroredRotatedCAPExecutor"),
 
   // CAP Executors - Triple/Quad Transform Combinations
-  IMirroredRotatedInvertedCAPExecutor: Symbol.for("IMirroredRotatedInvertedCAPExecutor"),
-  IMirroredSwappedInvertedCAPExecutor: Symbol.for("IMirroredSwappedInvertedCAPExecutor"),
-  IMirroredRotatedInvertedSwappedCAPExecutor: Symbol.for("IMirroredRotatedInvertedSwappedCAPExecutor"),
+  IMirroredRotatedInvertedCAPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedCAPExecutor"
+  ),
+  IMirroredSwappedInvertedCAPExecutor: Symbol.for(
+    "IMirroredSwappedInvertedCAPExecutor"
+  ),
+  IMirroredRotatedInvertedSwappedCAPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedSwappedCAPExecutor"
+  ),
 
   // Generation UI Services
   IResponsiveTypographyService: Symbol.for("IResponsiveTypographyService"),
   ICardConfigurationService: Symbol.for("ICardConfigurationService"),
   ICAPTypeService: Symbol.for("ICAPTypeService"),
-  IGenerationOrchestrationService: Symbol.for("IGenerationOrchestrationService"),
+  IGenerationOrchestrationService: Symbol.for(
+    "IGenerationOrchestrationService"
+  ),
   IPresetFormatterService: Symbol.for("IPresetFormatterService"),
 
   // CAP Detection (reverse of generation - detect CAP type from existing sequence)

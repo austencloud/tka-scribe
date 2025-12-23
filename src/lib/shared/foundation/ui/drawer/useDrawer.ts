@@ -1,4 +1,3 @@
-
 import { onMount, onDestroy, untrack } from "svelte";
 import { tryResolve, TYPES } from "../../../inversify/di";
 import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
@@ -14,8 +13,8 @@ import {
 } from "./DrawerStack";
 
 export function useDrawer(props: any) {
-  let {
-    isOpen,
+  let { isOpen, activeSnapPoint } = props;
+  const {
     closeOnBackdrop,
     closeOnEscape,
     dismissible,
@@ -32,7 +31,6 @@ export function useDrawer(props: any) {
     returnFocusOnClose,
     setInertOnSiblings,
     snapPoints,
-    activeSnapPoint,
     closeOnSnapToZero,
     springAnimation,
     scaleBackground,
@@ -62,7 +60,11 @@ export function useDrawer(props: any) {
   let dragOffsetY = $state(0);
 
   // Internal drag change handler that updates local state AND calls parent callback
-  function handleInternalDragChange(offset: number, progress: number, dragging: boolean) {
+  function handleInternalDragChange(
+    offset: number,
+    progress: number,
+    dragging: boolean
+  ) {
     isDragging = dragging;
     if (placement === "right" || placement === "left") {
       dragOffsetX = offset;
@@ -76,13 +78,21 @@ export function useDrawer(props: any) {
   }
 
   // Handle drag end for snap points - returns true if handled
-  function handleDragEnd(offset: number, velocity: number, duration: number): boolean {
+  function handleDragEnd(
+    offset: number,
+    velocity: number,
+    duration: number
+  ): boolean {
     if (!snapPointsInstance || !snapPoints || snapPoints.length === 0) {
       return false; // Let default dismiss logic handle it
     }
 
     // Calculate target snap point based on gesture
-    const targetIndex = snapPointsInstance.snapToClosest(offset, velocity, duration);
+    const targetIndex = snapPointsInstance.snapToClosest(
+      offset,
+      velocity,
+      duration
+    );
     snapPointOffset = snapPointsInstance.getTransformOffset();
 
     // If snapping to index 0 with closeOnSnapToZero, let dismiss handle it
@@ -252,7 +262,12 @@ export function useDrawer(props: any) {
 
   // Handle escape key - only close if this is the topmost drawer
   function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" && closeOnEscape && isOpen && isTopDrawer(drawerId)) {
+    if (
+      event.key === "Escape" &&
+      closeOnEscape &&
+      isOpen &&
+      isTopDrawer(drawerId)
+    ) {
       event.preventDefault();
       emitClose("escape");
       isOpen = false;
@@ -333,7 +348,6 @@ export function useDrawer(props: any) {
     });
   });
 
-
   // Clean up on component destroy
   onDestroy(() => {
     swipeToDismiss.detach();
@@ -342,29 +356,33 @@ export function useDrawer(props: any) {
     // Unregister from drawer stack
     unregisterDrawer(drawerId);
   });
-  
+
   return {
-      get drawerElement() { return drawerElement; },
-      set drawerElement(el: HTMLElement | null) { drawerElement = el; },
-      handleKeydown,
-      mounted,
-      shouldRender,
-      overlayClasses,
-      dataState,
-      handleBackdropClick,
-      stackZIndex,
-      contentClasses,
-      isDragging,
-      snapPoints,
-      currentSnapIndex,
-      drawerId,
-      role,
-      labelledBy,
-      ariaLabel,
-      computedTransform,
-      springAnimation,
-      showHandle,
-      children,
-      placement,
-  }
+    get drawerElement() {
+      return drawerElement;
+    },
+    set drawerElement(el: HTMLElement | null) {
+      drawerElement = el;
+    },
+    handleKeydown,
+    mounted,
+    shouldRender,
+    overlayClasses,
+    dataState,
+    handleBackdropClick,
+    stackZIndex,
+    contentClasses,
+    isDragging,
+    snapPoints,
+    currentSnapIndex,
+    drawerId,
+    role,
+    labelledBy,
+    ariaLabel,
+    computedTransform,
+    springAnimation,
+    showHandle,
+    children,
+    placement,
+  };
 }

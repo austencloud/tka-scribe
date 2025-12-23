@@ -11,14 +11,28 @@ import { BackgroundType } from "../../background/shared/domain/enums/background-
 import type { PerformanceSnapshot } from "../../foundation/ui/UITypes";
 import { GridMode } from "../../pictograph/grid/domain/enums/grid-enums";
 import type { AppSettings } from "../../settings/domain/AppSettings";
-import { getIsInitialized, getIsInitializing, getInitializationError, resetInitializationState } from "./initialization-state.svelte";
-import { areServicesInitialized, getSettingsServiceSync } from "./services.svelte";
-import { initializeModulePersistence, preloadCachedModuleServices } from "./ui/module-state";
-import { getShowSettings, getIsFullScreen, getIsTransitioning, resetUIState } from "./ui/ui-state.svelte";
+import {
+  getIsInitialized,
+  getIsInitializing,
+  getInitializationError,
+  resetInitializationState,
+} from "./initialization-state.svelte";
+import {
+  areServicesInitialized,
+  getSettingsServiceSync,
+} from "./services.svelte";
+import {
+  initializeModulePersistence,
+  preloadCachedModuleServices,
+} from "./ui/module-state";
+import {
+  getShowSettings,
+  getIsFullScreen,
+  getIsTransitioning,
+  resetUIState,
+} from "./ui/ui-state.svelte";
 
 // HMR Test Comment - This should trigger a full reload
-
-
 
 // ============================================================================
 // SETTINGS

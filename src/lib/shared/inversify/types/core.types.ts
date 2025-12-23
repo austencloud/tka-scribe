@@ -18,7 +18,9 @@ export const CoreTypes = {
 
   // Persistence Services
   IPersistenceService: Symbol.for("IPersistenceService"),
-  IPersistenceInitializationService: Symbol.for("IPersistenceInitializationService"),
+  IPersistenceInitializationService: Symbol.for(
+    "IPersistenceInitializationService"
+  ),
 
   // Settings Services
   ISettingsState: Symbol.for("ISettingsState"),

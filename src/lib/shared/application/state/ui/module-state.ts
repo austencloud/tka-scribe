@@ -8,7 +8,10 @@ import {
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
-import { loadFeatureModule, ensureContainerInitialized } from "../../../inversify/di";
+import {
+  loadFeatureModule,
+  ensureContainerInitialized,
+} from "../../../inversify/di";
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;
@@ -122,7 +125,10 @@ export async function revalidateCurrentModule(): Promise<void> {
       const currentSection = navigationState.activeTab;
 
       // Check if user has access to the current section via feature flags
-      if (currentSection && !featureFlagService.canAccessTab("create", currentSection)) {
+      if (
+        currentSection &&
+        !featureFlagService.canAccessTab("create", currentSection)
+      ) {
         console.warn(
           `⚠️ [module-state] User does not have access to ${currentSection} tab. Redirecting to constructor.`
         );
@@ -222,10 +228,7 @@ export async function switchModule(module: ModuleId): Promise<void> {
       );
     }
   } catch (_error) {
-    console.warn(
-      "⚠️ switchTab: Failed to save module to persistence:",
-      _error
-    );
+    console.warn("⚠️ switchTab: Failed to save module to persistence:", _error);
   }
 
   setTimeout(() => {
@@ -305,7 +308,10 @@ export async function initializeModulePersistence(): Promise<void> {
       // Sync BOTH ui state and navigation state to ensure nav bar matches content
       syncBothStateSystems("create");
     } catch (_fallbackError) {
-      console.error("❌ Failed to load fallback create module:", _fallbackError);
+      console.error(
+        "❌ Failed to load fallback create module:",
+        _fallbackError
+      );
     }
   }
 }

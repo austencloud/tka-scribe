@@ -480,7 +480,9 @@
   }
 
   @keyframes auth-spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Responsive adjustments */

@@ -6,7 +6,7 @@
 /* @import './styles/enhanced-panel-system.css'; */
 
 /* Panel Utilities - Unified theming patterns for containers and panels */
-@import './styles/panel-utilities.css';
+@import "./styles/panel-utilities.css";
 
 /* CSS Reset and Base Styles */
 *,
@@ -134,7 +134,8 @@ h6 {
 
   /* Border System */
   --glass-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-  --glass-border-hover: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+  --glass-border-hover: 1px solid
+    var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
 
   /* Touch Target - WCAG 2.5.5 AAA compliant (48px minimum) */
   --min-touch-target: 48px;
@@ -160,18 +161,18 @@ h6 {
      ============================================================================ */
 
   /* Duration Tiers - Progressively longer for different contexts */
-  --duration-instant: 100ms;    /* Micro-feedback (hover states, toggles) */
-  --duration-fast: 150ms;       /* Quick UI responses (buttons, inputs) */
-  --duration-normal: 200ms;     /* Standard transitions (panels, tabs) */
-  --duration-emphasis: 280ms;   /* Emphasized changes (module switches) */
-  --duration-dramatic: 350ms;   /* Major transitions (drawers, modals) */
+  --duration-instant: 100ms; /* Micro-feedback (hover states, toggles) */
+  --duration-fast: 150ms; /* Quick UI responses (buttons, inputs) */
+  --duration-normal: 200ms; /* Standard transitions (panels, tabs) */
+  --duration-emphasis: 280ms; /* Emphasized changes (module switches) */
+  --duration-dramatic: 350ms; /* Major transitions (drawers, modals) */
 
   /* Easing Curves - Physics-based for natural motion */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);           /* Decelerate (entering) */
-  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);            /* Accelerate (exiting) */
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);         /* Symmetric (standard) */
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);    /* Overshoot (playful) */
-  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);     /* Subtle (refined) */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* Decelerate (entering) */
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0); /* Accelerate (exiting) */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* Symmetric (standard) */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* Overshoot (playful) */
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1); /* Subtle (refined) */
 
   /* Composite Transitions - Ready-to-use presets */
   --transition-micro: var(--duration-instant) var(--ease-out);
@@ -182,17 +183,17 @@ h6 {
   --transition-dramatic: var(--duration-dramatic) var(--ease-out);
 
   /* Stagger Timing - Consistent delays for sequences */
-  --stagger-micro: 30ms;        /* Tight sequences (list items) */
-  --stagger-normal: 50ms;       /* Standard sequences (cards) */
-  --stagger-relaxed: 80ms;      /* Spread out (major sections) */
+  --stagger-micro: 30ms; /* Tight sequences (list items) */
+  --stagger-normal: 50ms; /* Standard sequences (cards) */
+  --stagger-relaxed: 80ms; /* Spread out (major sections) */
 
   /* Transform Values - Consistent motion distances */
-  --slide-distance-sm: 8px;     /* Subtle slides (tabs) */
-  --slide-distance-md: 12px;    /* Standard slides (cards, panels) */
-  --slide-distance-lg: 20px;    /* Prominent slides (modals) */
-  --scale-subtle: 0.98;         /* Barely noticeable */
-  --scale-normal: 0.95;         /* Standard pop effect */
-  --scale-dramatic: 0.85;       /* Major zoom transitions */
+  --slide-distance-sm: 8px; /* Subtle slides (tabs) */
+  --slide-distance-md: 12px; /* Standard slides (cards, panels) */
+  --slide-distance-lg: 20px; /* Prominent slides (modals) */
+  --scale-subtle: 0.98; /* Barely noticeable */
+  --scale-normal: 0.95; /* Standard pop effect */
+  --scale-dramatic: 0.85; /* Major zoom transitions */
 
   /* Legacy aliases for backwards compatibility */
   --transition-slow: var(--duration-dramatic) var(--ease-in-out);
@@ -204,18 +205,18 @@ h6 {
      ============================================================================ */
 
   /* Hover lifts - subtle, not dramatic */
-  --hover-lift-sm: -1px;        /* Cards, buttons - barely perceptible */
-  --hover-lift-md: -2px;        /* Interactive cards - slightly more */
-  --hover-lift-none: 0px;       /* Prefer border/color changes instead */
+  --hover-lift-sm: -1px; /* Cards, buttons - barely perceptible */
+  --hover-lift-md: -2px; /* Interactive cards - slightly more */
+  --hover-lift-none: 0px; /* Prefer border/color changes instead */
 
   /* Hover scales - very subtle */
-  --hover-scale-sm: 1.01;       /* Buttons - barely perceptible */
-  --hover-scale-md: 1.02;       /* Cards - subtle grow */
-  --hover-scale-lg: 1.03;       /* Featured items only */
+  --hover-scale-sm: 1.01; /* Buttons - barely perceptible */
+  --hover-scale-md: 1.02; /* Cards - subtle grow */
+  --hover-scale-lg: 1.03; /* Featured items only */
 
   /* Active states - press feedback */
-  --active-scale: 0.98;         /* Slight press-in feel */
-  --active-scale-sm: 0.99;      /* Very subtle press */
+  --active-scale: 0.98; /* Slight press-in feel */
+  --active-scale-sm: 0.99; /* Very subtle press */
 
   /* ============================================================================
      TYPOGRAPHY SCALE - Accessibility-First Design System
@@ -233,17 +234,17 @@ h6 {
      ============================================================================ */
 
   /* Semantic Typography Tokens - USE THESE */
-  --font-size-min: 0.875rem;      /* 14px - minimum for essential/body text */
-  --font-size-compact: 0.75rem;   /* 12px - minimum for supplementary text (nav labels, badges) */
+  --font-size-min: 0.875rem; /* 14px - minimum for essential/body text */
+  --font-size-compact: 0.75rem; /* 12px - minimum for supplementary text (nav labels, badges) */
 
   /* Scale Tokens - For general sizing */
-  --font-size-xs: 0.75rem;        /* 12px - alias for compact, supplementary only */
-  --font-size-sm: 0.875rem;       /* 14px - smallest for body text */
-  --font-size-base: 1rem;         /* 16px - default body text */
-  --font-size-lg: 1.125rem;       /* 18px */
-  --font-size-xl: 1.25rem;        /* 20px */
-  --font-size-2xl: 1.5rem;        /* 24px */
-  --font-size-3xl: 1.875rem;      /* 30px */
+  --font-size-xs: 0.75rem; /* 12px - alias for compact, supplementary only */
+  --font-size-sm: 0.875rem; /* 14px - smallest for body text */
+  --font-size-base: 1rem; /* 16px - default body text */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
 
   /* Spacing */
   --spacing-xs: 0.25rem;
@@ -254,7 +255,9 @@ h6 {
   --spacing-2xl: 3rem;
 
   /* Interactive Element Sizing */
-  --touch-target-min: var(--min-touch-target); /* Alias - use --min-touch-target as primary */
+  --touch-target-min: var(
+    --min-touch-target
+  ); /* Alias - use --min-touch-target as primary */
   --icon-size-sm: 16px;
   --icon-size-md: 20px;
   --icon-size-lg: 24px;
@@ -435,7 +438,7 @@ h6 {
   --sheet-bg-gradient: linear-gradient(
     135deg,
     rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.60) 100%
+    rgba(0, 0, 0, 0.6) 100%
   );
   /* Default sheet background used by Drawer.css */
   --sheet-bg: var(--sheet-bg-gradient);
@@ -467,9 +470,12 @@ h6 {
   --sheet-shadow-elevated: 0 -20px 60px rgba(0, 0, 0, 0.5);
 
   /* Sheet Borders */
-  --sheet-border-subtle: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-  --sheet-border-medium: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-  --sheet-border-strong: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+  --sheet-border-subtle: 1px solid
+    var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  --sheet-border-medium: 1px solid
+    var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+  --sheet-border-strong: 1px solid
+    var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
 
   /* Sheet Transitions */
   --sheet-transition-spring: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -478,7 +484,8 @@ h6 {
 
   /* Sheet Header Styles */
   --sheet-header-bg: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-  --sheet-header-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+  --sheet-header-border: 1px solid
+    var(--theme-stroke, rgba(255, 255, 255, 0.12));
 
   /* Close Button Styles */
   --sheet-close-bg: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
@@ -490,7 +497,11 @@ h6 {
   --sheet-handle-width: 48px;
   --sheet-handle-height: 5px;
   --sheet-handle-bg: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
-  --sheet-handle-bg-hover: color-mix(in srgb, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 85%, white);
+  --sheet-handle-bg-hover: color-mix(
+    in srgb,
+    var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 85%,
+    white
+  );
   --sheet-handle-radius: 999px;
   --sheet-handle-spacing: 12px;
 
@@ -512,7 +523,7 @@ h6 {
   /* Simplified Shadows - Single layer, not stacked */
   --shadow-2026-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-2026-md: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-2026-lg: 0 4px 16px rgba(0, 0, 0, 0.10);
+  --shadow-2026-lg: 0 4px 16px rgba(0, 0, 0, 0.1);
 
   /* Refined Border Radius - Slightly less rounded */
   --radius-2026-xs: 6px;
@@ -722,12 +733,14 @@ body.sakura-drift {
 .btn-primary {
   background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+  box-shadow: 0 4px 16px
+    color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+  box-shadow: 0 6px 20px
+    color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
 }
 
 .btn-glass {
@@ -829,7 +842,7 @@ body.sakura-drift {
 }
 
 .accessible-touch-target::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -907,7 +920,8 @@ body.sakura-drift {
 
 /* Slide RIGHT - Going to a module on the left */
 .module-slide-right::view-transition-old(root) {
-  animation: var(--duration-emphasis) var(--ease-out) both module-slide-out-right;
+  animation: var(--duration-emphasis) var(--ease-out) both
+    module-slide-out-right;
 }
 
 .module-slide-right::view-transition-new(root) {
@@ -986,23 +1000,47 @@ body.sakura-drift {
 
 /* Tab slide keyframes - gentle fade with subtle directional hint */
 @keyframes tab-slide-out-left {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(-20px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
 }
 
 @keyframes tab-slide-in-left {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes tab-slide-out-right {
-  from { opacity: 1; transform: translateX(0); }
-  to { opacity: 0; transform: translateX(20px); }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
 }
 
 @keyframes tab-slide-in-right {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Reduced motion - instant switch for tabs */

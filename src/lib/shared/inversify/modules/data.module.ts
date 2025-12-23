@@ -30,7 +30,10 @@ export const dataModule = new ContainerModule(
 
     // === PERSISTENCE SERVICES ===
     // DexiePersistenceService MUST be singleton - database connection and state must persist
-    options.bind(TYPES.IPersistenceService).to(DexiePersistenceService).inSingletonScope();
+    options
+      .bind(TYPES.IPersistenceService)
+      .to(DexiePersistenceService)
+      .inSingletonScope();
     options
       .bind(TYPES.IPersistenceInitializationService)
       .to(PersistenceInitializationService)
@@ -44,7 +47,9 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.IReversalDetectionService).to(ReversalDetectionService);
     options.bind(TYPES.ISequenceImportService).to(SequenceImportService);
     // ISequenceNormalizationService moved here - required by ISequenceService
-    options.bind(TYPES.ISequenceNormalizationService).to(SequenceNormalizationService);
+    options
+      .bind(TYPES.ISequenceNormalizationService)
+      .to(SequenceNormalizationService);
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundManager).to(BackgroundManager);

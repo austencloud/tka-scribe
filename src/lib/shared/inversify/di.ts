@@ -282,11 +282,13 @@ export async function loadFeatureModule(feature: string): Promise<void> {
  * @param feature - The feature module name to preload
  */
 export function preloadFeatureModule(feature: string): void {
-  import("./container").then(({ preloadFeatureModule: preload }) => {
-    preload(feature);
-  }).catch((error) => {
-    console.warn(`Failed to preload feature module '${feature}':`, error);
-  });
+  import("./container")
+    .then(({ preloadFeatureModule: preload }) => {
+      preload(feature);
+    })
+    .catch((error) => {
+      console.warn(`Failed to preload feature module '${feature}':`, error);
+    });
 }
 
 /**
@@ -327,7 +329,9 @@ export async function loadPixiModule(): Promise<void> {
  * Get the container instance. Use sparingly - prefer resolve() for service access.
  * This is provided for cases where direct container access is absolutely necessary.
  */
-export async function getContainerInstance(): Promise<typeof import("./container")["container"]> {
+export async function getContainerInstance(): Promise<
+  (typeof import("./container"))["container"]
+> {
   const { container } = await import("./container");
   return container;
 }
@@ -340,9 +344,11 @@ export const container = {
   },
   // Proxy other methods through resolve for backward compatibility
   isBound: (_serviceIdentifier: symbol): boolean => {
-    console.warn("container.isBound() called on lazy proxy - use tryResolve() instead");
+    console.warn(
+      "container.isBound() called on lazy proxy - use tryResolve() instead"
+    );
     return _cachedContainer !== null;
-  }
+  },
 };
 
 // Alias for convenience in components

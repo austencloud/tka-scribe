@@ -64,9 +64,7 @@ export const animatorModule = new ContainerModule(
       .to(TunnelModeSequenceManager);
 
     // === ANIMATION STORAGE ===
-    options
-      .bind(TYPES.IAnimationStorageService)
-      .to(AnimationStorageService);
+    options.bind(TYPES.IAnimationStorageService).to(AnimationStorageService);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

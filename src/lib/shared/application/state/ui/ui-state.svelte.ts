@@ -85,7 +85,9 @@ export function getShowSettings(): boolean {
 
 /** @deprecated Settings is now a module. This function will be removed. */
 export function getSettingsPanelMode(): "mobile" | "desktop" {
-  console.warn("getSettingsPanelMode() is deprecated. Settings is now a module.");
+  console.warn(
+    "getSettingsPanelMode() is deprecated. Settings is now a module."
+  );
   return uiState.settingsPanelMode;
 }
 
@@ -97,7 +99,9 @@ export function setShowSettings(show: boolean): void {
 
 /** @deprecated Settings is now a module. This function will be removed. */
 export function setSettingsPanelMode(mode: "mobile" | "desktop"): void {
-  console.warn("setSettingsPanelMode() is deprecated. Settings is now a module.");
+  console.warn(
+    "setSettingsPanelMode() is deprecated. Settings is now a module."
+  );
   uiState.settingsPanelMode = mode;
 }
 
@@ -109,7 +113,9 @@ export function toggleShowSettings(): void {
 
 /** @deprecated Settings is now a module. Use handleModuleChange("settings") instead */
 export function showSettingsDialog(mode?: "mobile" | "desktop"): void {
-  console.warn("showSettingsDialog() is deprecated. Settings is now a module. Use handleModuleChange('settings').");
+  console.warn(
+    "showSettingsDialog() is deprecated. Settings is now a module. Use handleModuleChange('settings')."
+  );
   if (mode) {
     setSettingsPanelMode(mode);
   }
@@ -124,7 +130,9 @@ export function hideSettingsDialog(): void {
 
 /** @deprecated Settings is now a module. Use navigation toggle instead */
 export function toggleSettingsDialog(mode?: "mobile" | "desktop"): void {
-  console.warn("toggleSettingsDialog() is deprecated. Settings is now a module.");
+  console.warn(
+    "toggleSettingsDialog() is deprecated. Settings is now a module."
+  );
   if (mode) {
     setSettingsPanelMode(mode);
   }
@@ -216,7 +224,10 @@ export function openSpotlightViewer(
  * Open spotlight viewer with a direct image URL (for Create module)
  * This bypasses the need for a thumbnailService by providing a pre-rendered image
  */
-export function openSpotlightWithImage(imageUrl: string, sequence?: SequenceData): void {
+export function openSpotlightWithImage(
+  imageUrl: string,
+  sequence?: SequenceData
+): void {
   uiState.spotlightImageUrl = imageUrl;
   uiState.spotlightSequence = sequence || null;
   uiState.spotlightThumbnailService = null;

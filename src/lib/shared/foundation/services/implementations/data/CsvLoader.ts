@@ -122,7 +122,10 @@ export class CsvLoader implements ICSVLoader {
 
   isDataCached(): boolean {
     // Check both module-level and instance cache
-    return (sharedIsLoaded && sharedCsvCache !== null) || (this.isLoaded && this.csvData !== null);
+    return (
+      (sharedIsLoaded && sharedCsvCache !== null) ||
+      (this.isLoaded && this.csvData !== null)
+    );
   }
   private static readonly CSV_FILES = {
     DIAMOND: "/data/pictographs/DiamondPictographDataframe.csv",

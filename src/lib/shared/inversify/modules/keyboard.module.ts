@@ -8,14 +8,14 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import { KeyboardShortcutService } from '../../keyboard/services/implementations/KeyboardShortcutService';
-import { ShortcutRegistryService } from '../../keyboard/services/implementations/ShortcutRegistryService';
-import { CommandPaletteService } from '../../keyboard/services/implementations/CommandPaletteService';
-import { ShortcutCustomizationService } from '../../keyboard/services/implementations/ShortcutCustomizationService';
-import type { IKeyboardShortcutService } from '../../keyboard/services/contracts/IKeyboardShortcutService';
-import type { IShortcutRegistryService } from '../../keyboard/services/contracts/IShortcutRegistryService';
-import type { ICommandPaletteService } from '../../keyboard/services/contracts/ICommandPaletteService';
-import type { IShortcutCustomizationService } from '../../keyboard/services/contracts/IShortcutCustomizationService';
+import { KeyboardShortcutService } from "../../keyboard/services/implementations/KeyboardShortcutService";
+import { ShortcutRegistryService } from "../../keyboard/services/implementations/ShortcutRegistryService";
+import { CommandPaletteService } from "../../keyboard/services/implementations/CommandPaletteService";
+import { ShortcutCustomizationService } from "../../keyboard/services/implementations/ShortcutCustomizationService";
+import type { IKeyboardShortcutService } from "../../keyboard/services/contracts/IKeyboardShortcutService";
+import type { IShortcutRegistryService } from "../../keyboard/services/contracts/IShortcutRegistryService";
+import type { ICommandPaletteService } from "../../keyboard/services/contracts/ICommandPaletteService";
+import type { IShortcutCustomizationService } from "../../keyboard/services/contracts/IShortcutCustomizationService";
 
 export const keyboardModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

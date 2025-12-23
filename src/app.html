@@ -6,7 +6,11 @@
 
     <!-- 🚀 GOLD STANDARD: Preconnect to external origins for faster requests -->
     <link rel="preconnect" href="https://firebaseapp.com" crossorigin />
-    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://firestore.googleapis.com"
+      crossorigin
+    />
     <link rel="preconnect" href="https://www.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://accounts.google.com" crossorigin />
     <link rel="preconnect" href="https://apis.google.com" crossorigin />
@@ -14,7 +18,10 @@
     <!-- DNS prefetch for additional Google services -->
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <link rel="dns-prefetch" href="https://firebaseinstallations.googleapis.com" />
+    <link
+      rel="dns-prefetch"
+      href="https://firebaseinstallations.googleapis.com"
+    />
 
     <!-- Viewport Configuration -->
     <meta
@@ -112,11 +119,11 @@
           // Clear specific cache keys to prevent quota issues
           // IMPORTANT: Be specific! Broad patterns like "options" will break user preferences
           const cacheKeyPatterns = [
-            "preloaded_options",        // Pictograph preload cache
-            "all_preloaded_options",    // Full preload cache
-            "preloaded_options_meta",   // Preload metadata
-            "_cache",                   // Keys ending in _cache
-            "-cache",                   // Keys with -cache
+            "preloaded_options", // Pictograph preload cache
+            "all_preloaded_options", // Full preload cache
+            "preloaded_options_meta", // Preload metadata
+            "_cache", // Keys ending in _cache
+            "-cache", // Keys with -cache
           ];
 
           const keysToRemove = [];
@@ -124,11 +131,12 @@
             const key = localStorage.key(i);
             if (key) {
               // Only clear if key matches a specific cache pattern
-              const isCache = cacheKeyPatterns.some(pattern =>
-                key === pattern ||
-                key.endsWith(pattern) ||
-                key.includes("_cache_") ||
-                key.includes("-cache-")
+              const isCache = cacheKeyPatterns.some(
+                (pattern) =>
+                  key === pattern ||
+                  key.endsWith(pattern) ||
+                  key.includes("_cache_") ||
+                  key.includes("-cache-")
               );
               if (isCache) {
                 keysToRemove.push(key);
@@ -420,7 +428,13 @@
     <link rel="manifest" href="%sveltekit.assets%/pwa/manifest.webmanifest" />
 
     <!-- Font Awesome CSS with preload for critical font -->
-    <link rel="preload" href="/fonts/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/webfonts/fa-solid-900.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="/fonts/css/all.min.css" />
 
     <!-- Google Identity Services -->

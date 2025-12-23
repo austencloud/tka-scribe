@@ -24,13 +24,17 @@ export const ArrowTypes = {
   ISpecialPlacementDataService: Symbol.for("ISpecialPlacementDataService"),
   ISpecialPlacementLookupService: Symbol.for("ISpecialPlacementLookupService"),
   IDefaultPlacementService: Symbol.for("IDefaultPlacementService"),
-  ISpecialPlacementOriKeyGenerator: Symbol.for("ISpecialPlacementOriKeyGenerator"),
+  ISpecialPlacementOriKeyGenerator: Symbol.for(
+    "ISpecialPlacementOriKeyGenerator"
+  ),
 
   // Key Generation
   ArrowPlacementKeyService: Symbol.for("ArrowPlacementKeyService"),
   ITurnsTupleKeyGenerator: Symbol.for("ITurnsTupleKeyGenerator"),
   IAttributeKeyGenerator: Symbol.for("IAttributeKeyGenerator"),
-  IRotationAngleOverrideKeyGenerator: Symbol.for("IRotationAngleOverrideKeyGenerator"),
+  IRotationAngleOverrideKeyGenerator: Symbol.for(
+    "IRotationAngleOverrideKeyGenerator"
+  ),
 
   // Tuple & Quadrant Calculation
   ILetterClassificationService: Symbol.for("ILetterClassificationService"),
