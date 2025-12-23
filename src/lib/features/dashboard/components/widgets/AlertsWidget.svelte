@@ -7,7 +7,12 @@
 
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import type { UserNotification, FeedbackNotification } from "$lib/features/feedback/domain/models/notification-models";
+  import type { Props } from "../Dashboard.svelte";
+
+  let { dashboardState } = $props<{
+    dashboardState: ReturnType<import("../../state/dashboard-state.svelte")["createDashboard"]>;
+  }>();
 
   // Filter out system announcements - those go in the banner
   const alertNotifications = $derived(
@@ -20,9 +25,34 @@
     inboxState.notifications.filter(n => !n.read && n.type !== "system-announcement").length
   );
 
-  function openNotification(notification: UserNotification) {
-    // Direct navigation to notification
+  async function openNotification(notification: UserNotification) {
+    // If it's a feedback notification, open the detail panel in dashboard
+    if (notification.type.startsWith("feedback-")) {
+      const feedbackNotif = notification as FeedbackNotification;
+      await loadAndOpenFeedback(feedbackNotif.feedbackId);
+      return;
+    }
+
+    // For other notifications, use existing behavior
     inboxState.openToNotification(notification.id);
+  }
+
+  async function loadAndOpenFeedback(feedbackId: string) {
+    try {
+      // Dynamically import feedback service to load the item
+      const { myFeedbackService } = await import(
+        "$lib/features/feedback/services/implementations/MyFeedbackService"
+      );
+      const userId = authState.effectiveUserId;
+      if (!userId) return;
+
+      const feedbackItem = await myFeedbackService.getMyFeedbackItem(userId, feedbackId);
+      if (feedbackItem) {
+        dashboardState.openFeedbackDetail(feedbackItem);
+      }
+    } catch (error) {
+      console.error("[AlertsWidget] Failed to load feedback item:", error);
+    }
   }
 
   function openAllAlerts() {

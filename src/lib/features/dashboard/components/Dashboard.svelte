@@ -26,7 +26,9 @@
   import CommunityFeedWidget from "./widgets/CommunityFeedWidget.svelte";
   import MessagesWidget from "./widgets/MessagesWidget.svelte";
   import AlertsWidget from "./widgets/AlertsWidget.svelte";
+  import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
+  import type { FeedbackItem, FeedbackType } from "$lib/features/feedback/domain/models/feedback-models";
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
@@ -100,6 +102,48 @@
     hapticService?.trigger("selection");
     await handleModuleChange("settings" as ModuleId);
   }
+
+  // Feedback detail handlers
+  async function handleFeedbackUpdate(
+    feedbackId: string,
+    updates: { type?: FeedbackType; description?: string },
+    appendMode?: boolean
+  ): Promise<FeedbackItem> {
+    // Dynamically import feedback service
+    const { myFeedbackService } = await import(
+      "$lib/features/feedback/services/implementations/MyFeedbackService"
+    );
+    const userId = authState.effectiveUserId;
+    if (!userId) throw new Error("User not authenticated");
+
+    const updatedItem = await myFeedbackService.updateMyFeedback(
+      userId,
+      feedbackId,
+      updates,
+      appendMode
+    );
+
+    // Update the detail panel with new data
+    if (dashboardState.feedbackDetailItem?.id === feedbackId) {
+      dashboardState.openFeedbackDetail(updatedItem);
+    }
+
+    return updatedItem;
+  }
+
+  async function handleFeedbackDelete(feedbackId: string): Promise<void> {
+    // Dynamically import feedback service
+    const { myFeedbackService } = await import(
+      "$lib/features/feedback/services/implementations/MyFeedbackService"
+    );
+    const userId = authState.effectiveUserId;
+    if (!userId) throw new Error("User not authenticated");
+
+    await myFeedbackService.deleteMyFeedback(userId, feedbackId);
+
+    // Close the detail panel after deletion
+    dashboardState.closeFeedbackDetail();
+  }
 </script>
 
 <div class="dashboard" class:visible={dashboardState.isVisible}>
@@ -171,7 +215,7 @@
           easing: cubicOut,
         }}
       >
-        <AlertsWidget />
+        <AlertsWidget {dashboardState} />
       </section>
     {/if}
   </div>
@@ -179,6 +223,15 @@
   <DashboardSignInToast
     message={dashboardState.signInToastMessage}
     visible={dashboardState.showSignInToast}
+  />
+
+  <!-- Feedback Detail Panel (rendered when feedback notification is clicked) -->
+  <MyFeedbackDetail
+    item={dashboardState.feedbackDetailItem}
+    isOpen={dashboardState.feedbackDetailOpen}
+    onClose={() => dashboardState.closeFeedbackDetail()}
+    onUpdate={handleFeedbackUpdate}
+    onDelete={handleFeedbackDelete}
   />
 </div>
 
