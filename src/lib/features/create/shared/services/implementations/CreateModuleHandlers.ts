@@ -68,6 +68,13 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
   }
 
   /**
+   * Handle share hub button click
+   */
+  handleOpenShareHubPanel(panelState: PanelCoordinationState): void {
+    panelState.openShareHubPanel();
+  }
+
+  /**
    * Handle creation method selection
    */
   handleCreationMethodSelected(

@@ -27,6 +27,7 @@
   import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
   import ImageExportButton from "./buttons/ImageExportButton.svelte";
   import RecordVideoButton from "./buttons/RecordVideoButton.svelte";
+  import ShareHubButton from "./buttons/ShareHubButton.svelte";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
   const { CreateModuleState, panelState } = getCreateModuleContext();
@@ -38,6 +39,7 @@
     onImageExport,
     onRecordVideo,
     onPlayAnimation,
+    onShareHub,
     visible = true,
   }: {
     onClearSequence?: () => void;
@@ -45,6 +47,7 @@
     onImageExport?: () => void;
     onRecordVideo?: () => void;
     onPlayAnimation?: () => void;
+    onShareHub?: () => void;
     visible?: boolean;
   } = $props();
 
@@ -56,14 +59,17 @@
   const showRecordVideoButton = $derived(
     CreateModuleState.canShowActionButtons()
   );
+  const showShareHubButton = $derived(
+    CreateModuleState.canShowActionButtons()
+  );
   const showSequenceActions = $derived(
     CreateModuleState.canShowSequenceActionsButton()
   );
   const canClearSequence = $derived(CreateModuleState.canClearSequence());
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isImageExportOpen = $derived(panelState.isSharePanelOpen);
-  // TODO: Video record panel not yet implemented in PanelCoordinationState
-  const isRecordVideoOpen = false;
+  const isRecordVideoOpen = $derived(panelState.isVideoRecordPanelOpen);
+  const isShareHubOpen = $derived(panelState.isShareHubPanelOpen);
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
   // Note: SequenceActions is now in left zone, not center
@@ -72,6 +78,7 @@
     if (showPlayButton) count++;
     if (showImageExportButton) count++;
     if (showRecordVideoButton) count++;
+    if (showShareHubButton) count++;
     return count;
   });
 
@@ -147,6 +154,13 @@
                 onclick={onRecordVideo}
                 isActive={isRecordVideoOpen}
               />
+            </div>
+          {/if}
+
+          <!-- Share Hub Button -->
+          {#if showShareHubButton && onShareHub}
+            <div>
+              <ShareHubButton onclick={onShareHub} isActive={isShareHubOpen} />
             </div>
           {/if}
         </div>

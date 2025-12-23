@@ -1,7 +1,7 @@
 <!--
   AutocompleteDrawer.svelte
 
-  Drawer for selecting a CAP (Circular Arrangement Pattern) to complete a sequence.
+  Drawer for selecting a CAP (Continuous Assembly Pattern) to complete a sequence.
   Shows available CAP options and allows user to select one to apply.
 -->
 <script lang="ts">

@@ -12,6 +12,7 @@
  * **PERSISTED PANEL STATES:**
  * - Sequence Actions Panel: open/closed state and mode (turns/transforms)
  * - Video Record Panel: open/closed state
+ * - Share Panel: open/closed state
  * Other panels reset on page refresh for predictable UX.
  *
  * Domain: Create module - Panel State Management for Sequence Construction
@@ -37,6 +38,16 @@ const sequenceActionsPanelPersistence = createPersistenceHelper({
 
 const videoRecordPanelPersistence = createPersistenceHelper({
   key: "tka_video_record_panel_open",
+  defaultValue: false,
+});
+
+const sharePanelPersistence = createPersistenceHelper({
+  key: "tka_share_panel_open",
+  defaultValue: false,
+});
+
+const shareHubPanelPersistence = createPersistenceHelper({
+  key: "tka_share_hub_panel_open",
   defaultValue: false,
 });
 
@@ -87,6 +98,12 @@ export interface PanelCoordinationState {
 
   openSharePanel(): void;
   closeSharePanel(): void;
+
+  // Share Hub Panel State (Multi-format sharing)
+  get isShareHubPanelOpen(): boolean;
+
+  openShareHubPanel(): void;
+  closeShareHubPanel(): void;
 
   // Save to Library Panel State
   get isSaveToLibraryPanelOpen(): boolean;
@@ -201,8 +218,11 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let shouldOrbitAroundCenter = $state(false);
   let orbitAnimationTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // Share panel state (Image Export)
-  let isSharePanelOpen = $state(false);
+  // Share panel state (Image Export - persisted)
+  let isSharePanelOpen = $state(sharePanelPersistence.load());
+
+  // Share Hub panel state (Multi-format sharing - persisted)
+  let isShareHubPanelOpen = $state(shareHubPanelPersistence.load());
 
   // Save to Library panel state
   let isSaveToLibraryPanelOpen = $state(false);
@@ -231,6 +251,16 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     $effect(() => {
       void isSequenceActionsPanelOpen;
       sequenceActionsPanelPersistence.setupAutoSave(isSequenceActionsPanelOpen);
+    });
+
+    $effect(() => {
+      void isSharePanelOpen;
+      sharePanelPersistence.setupAutoSave(isSharePanelOpen);
+    });
+
+    $effect(() => {
+      void isShareHubPanelOpen;
+      shareHubPanelPersistence.setupAutoSave(isShareHubPanelOpen);
     });
   });
 
@@ -284,6 +314,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     isAnimating = false;
 
     isSharePanelOpen = false;
+    isShareHubPanelOpen = false;
     isSaveToLibraryPanelOpen = false;
     isVideoRecordPanelOpen = false;
     isFilterPanelOpen = false;
@@ -416,6 +447,20 @@ export function createPanelCoordinationState(): PanelCoordinationState {
 
     closeSharePanel() {
       isSharePanelOpen = false;
+    },
+
+    // Share Hub Panel Getters
+    get isShareHubPanelOpen() {
+      return isShareHubPanelOpen;
+    },
+
+    openShareHubPanel() {
+      closeAllPanels();
+      isShareHubPanelOpen = true;
+    },
+
+    closeShareHubPanel() {
+      isShareHubPanelOpen = false;
     },
 
     // Save to Library Panel Getters
@@ -664,6 +709,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
         isEditPanelOpen ||
         isAnimationPanelOpen ||
         isSharePanelOpen ||
+        isShareHubPanelOpen ||
         isSaveToLibraryPanelOpen ||
         isVideoRecordPanelOpen ||
         isFilterPanelOpen ||

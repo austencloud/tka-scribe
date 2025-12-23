@@ -2,7 +2,7 @@
  * Autocomplete Service Implementation
  *
  * Detects when a sequence is in a completable state and generates completion beats
- * using the existing CAP (Circular Arrangement Pattern) executor infrastructure.
+ * using the existing CAP (Continuous Assembly Pattern) executor infrastructure.
  */
 
 import { injectable, inject } from "inversify";

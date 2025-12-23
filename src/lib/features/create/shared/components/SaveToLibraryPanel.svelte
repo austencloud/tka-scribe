@@ -17,6 +17,7 @@
 <script lang="ts">
   import CreatePanelDrawer from "./CreatePanelDrawer.svelte";
   import SheetDragHandle from "$lib/shared/foundation/ui/SheetDragHandle.svelte";
+  import TagAutocompleteInput from "$lib/features/library/components/tags/TagAutocompleteInput.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { getCreateModuleContext } from "../context/create-module-context";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
@@ -27,6 +28,8 @@
   import type { IFirebaseVideoUploadService } from "$lib/shared/share/services/contracts/IFirebaseVideoUploadService";
   import { DEFAULT_SHARE_OPTIONS } from "$lib/shared/share/domain/models/ShareOptions";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
+  import type { ITagService } from "$lib/features/library/services/contracts/ITagService";
+  import { TAG_COLORS } from "$lib/features/library/domain/models/Tag";
 
   interface Props {
     show: boolean;
@@ -52,13 +55,14 @@
   // Local state
   let isOpen = $state(show);
   let isSaving = $state(false);
-  let saveStep = $state(0); // 0 = not started, 1-4 = steps, 5 = complete
+  let saveStep = $state(0); // 0 = not started, 1-5 = steps, 6 = complete
   let renderProgress = $state({ current: 0, total: 0 }); // Granular progress for thumbnail creation
 
   // Save steps definition
   const saveSteps = [
     { icon: "fa-image", label: "Creating thumbnail" },
     { icon: "fa-cloud-upload-alt", label: "Uploading preview" },
+    { icon: "fa-tags", label: "Creating tags" },
     { icon: "fa-save", label: "Saving to library" },
     { icon: "fa-sync", label: "Syncing data" },
   ];
@@ -72,10 +76,10 @@
 
   // Form state
   let customDisplayName = $state(""); // User's optional custom name for the sequence
-  let tagInput = $state("");
   let tags = $state<string[]>([]);
   let notes = $state("");
   let isPublic = $state(true); // Default to public - sequences appear in gallery
+  let tagResetTrigger = $state(0); // Increment to reset pending tags in TagAutocompleteInput
 
   // Expandable sections (hidden by default)
   let showDisplayName = $state(false);
@@ -108,7 +112,6 @@
       // Pre-fill with existing displayName if editing a saved sequence
       customDisplayName = sequence.displayName || "";
       tags = [];
-      tagInput = "";
       notes = "";
       // Show sections if they have existing data
       showDisplayName = !!sequence.displayName;
@@ -117,23 +120,8 @@
     }
   });
 
-  function handleAddTag() {
-    const trimmedTag = tagInput.trim().toLowerCase();
-    if (trimmedTag && !tags.includes(trimmedTag)) {
-      tags = [...tags, trimmedTag];
-      tagInput = "";
-    }
-  }
-
-  function handleRemoveTag(tag: string) {
-    tags = tags.filter((t) => t !== tag);
-  }
-
-  function handleTagKeydown(event: KeyboardEvent) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      handleAddTag();
-    }
+  function handleTagsChange(newTags: string[]) {
+    tags = newTags;
   }
 
   async function handleSave() {
@@ -218,8 +206,32 @@
         );
       }
 
-      // Step 3: Save sequence to Firestore
+      // Step 3: Create any new tags
       saveStep = 3;
+      if (tags.length > 0) {
+        try {
+          const tagService = tryResolve<ITagService>(TYPES.ITagService);
+          if (tagService) {
+            for (const tagName of tags) {
+              const normalized = tagName.toLowerCase().trim();
+              const existing = await tagService.findTagByName(normalized);
+
+              if (!existing) {
+                // Create new tag with random color
+                const randomColor = TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];
+                await tagService.createTag(normalized, { color: randomColor });
+                logger.info(`Created new tag: ${normalized}`);
+              }
+            }
+          }
+        } catch (tagError) {
+          // Don't fail the save if tag creation fails
+          console.error("[SaveToLibraryPanel] ❌ Failed to create tags:", tagError);
+        }
+      }
+
+      // Step 4: Save sequence to Firestore
+      saveStep = 4;
       const sequenceId = await ctx.sequencePersistenceService.saveSequence(
         sequence,
         {
@@ -239,8 +251,8 @@
         await ctx.sessionManager.markAsSaved(sequenceId);
       }
 
-      // Step 4: Sync/refresh library
-      saveStep = 4;
+      // Step 5: Sync/refresh library
+      saveStep = 5;
       try {
         const { libraryState } = await import(
           "$lib/features/library/state/library-state.svelte"
@@ -252,8 +264,8 @@
         logger.warn("Could not refresh library state:", err);
       }
 
-      // Step 5: Complete!
-      saveStep = 5;
+      // Step 6: Complete!
+      saveStep = 6;
 
       // Brief pause to show success state
       await new Promise((resolve) => setTimeout(resolve, 800));
@@ -270,6 +282,8 @@
   }
 
   function handleClose() {
+    // Reset pending tags when closing without saving
+    tagResetTrigger++;
     isOpen = false;
     onClose?.();
   }
@@ -292,7 +306,7 @@
       <div class="save-progress-overlay">
         <div class="progress-content">
           <!-- Success State -->
-          {#if saveStep === 5}
+          {#if saveStep === 6}
             <div class="success-animation">
               <div class="success-circle">
                 <i class="fas fa-check"></i>
@@ -485,57 +499,27 @@
         {:else}
           <div class="expandable-field">
             <div class="field-header">
-              <label for="tag-input">Tags</label>
+              <label>Tags</label>
               <button
                 type="button"
                 class="collapse-btn"
                 onclick={() => {
                   showTags = false;
                   tags = [];
-                  tagInput = "";
+                  tagResetTrigger++; // Reset pending tags in TagAutocompleteInput
                 }}
                 aria-label="Remove tags"
               >
                 <i class="fas fa-times"></i>
               </button>
             </div>
-            <div class="tag-input-container">
-              <input
-                id="tag-input"
-                type="text"
-                bind:value={tagInput}
-                onkeydown={handleTagKeydown}
-                placeholder="Add tags (press Enter)"
-                class="input-field"
-                maxlength="50"
-              />
-              <button
-                type="button"
-                class="add-tag-button"
-                onclick={handleAddTag}
-                disabled={!tagInput.trim()}
-                aria-label="Add tag"
-              >
-                <i class="fas fa-plus"></i>
-              </button>
-            </div>
-            {#if tags.length > 0}
-              <div class="tags-list">
-                {#each tags as tag}
-                  <div class="tag-chip">
-                    <span class="tag-text">{tag}</span>
-                    <button
-                      type="button"
-                      class="tag-remove"
-                      onclick={() => handleRemoveTag(tag)}
-                      aria-label="Remove tag {tag}"
-                    >
-                      <i class="fas fa-times"></i>
-                    </button>
-                  </div>
-                {/each}
-              </div>
-            {/if}
+            <TagAutocompleteInput
+              selectedTags={tags}
+              onTagsChange={handleTagsChange}
+              placeholder="Search or create tags..."
+              maxTags={10}
+              resetTrigger={tagResetTrigger}
+            />
           </div>
         {/if}
 
@@ -1230,102 +1214,6 @@
     opacity: 0.6;
   }
 
-  /* Tag Input */
-  .tag-input-container {
-    display: flex;
-    gap: 8px;
-  }
-
-  .tag-input-container .input-field {
-    flex: 1;
-  }
-
-  .add-tag-button {
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
-    flex-shrink: 0;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
-    border-radius: 8px;
-    color: var(--theme-accent-strong, #8b5cf6);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .add-tag-button:hover:not(:disabled) {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #8b5cf6) 30%,
-      transparent
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #8b5cf6) 50%,
-      transparent
-    );
-  }
-
-  .add-tag-button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  /* Tags List */
-  .tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
-  }
-
-  .tag-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 5px 10px;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
-    border-radius: 16px;
-    color: var(--theme-accent-strong, #8b5cf6);
-    font-size: 12px;
-  }
-
-  .tag-text {
-    font-weight: 500;
-  }
-
-  .tag-remove {
-    width: 14px;
-    height: 14px;
-    padding: 0;
-    background: none;
-    border: none;
-    color: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-    font-size: 10px;
-  }
-
-  .tag-remove:hover {
-    opacity: 1;
-  }
 
   /* Footer */
   .panel-footer {

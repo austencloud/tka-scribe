@@ -46,6 +46,7 @@
   import BeatEditorCoordinator from "./coordinators/BeatEditorCoordinator.svelte";
   import ShareCoordinator from "./coordinators/ShareCoordinator.svelte";
   import VideoRecordCoordinator from "./coordinators/VideoRecordCoordinator.svelte";
+  import ShareHubCoordinator from "./coordinators/ShareHubCoordinator.svelte";
   import SaveToLibraryPanel from "./SaveToLibraryPanel.svelte";
   import { SessionManager } from "../services/SessionManager.svelte";
   import { AutosaveService } from "../services/AutosaveService";
@@ -773,6 +774,11 @@
     handlers.handleOpenVideoRecordPanel(panelState);
   }
 
+  function handleOpenShareHubPanel() {
+    if (!handlers) return;
+    handlers.handleOpenShareHubPanel(panelState);
+  }
+
   async function handleCreationMethodSelected(method: BuildModeId) {
     if (!handlers || !creationMethodPersistence) return;
 
@@ -932,6 +938,7 @@
             onClearSequence={handleClearSequence}
             onImageExport={handleOpenSharePanel}
             onRecordVideo={handleOpenVideoRecordPanel}
+            onShareHub={handleOpenShareHubPanel}
             onSequenceActionsClick={handleOpenSequenceActions}
             onOptionSelected={handleOptionSelected}
             onOpenFilters={handleOpenFilterPanel}
@@ -952,6 +959,9 @@
 
   <!-- Video Record Coordinator -->
   <VideoRecordCoordinator />
+
+  <!-- Share Hub Coordinator -->
+  <ShareHubCoordinator />
 
   <!-- Sequence Actions Coordinator -->
   <SequenceActionsCoordinator />

@@ -76,6 +76,7 @@
     onClearSequence,
     onImageExport,
     onRecordVideo = undefined,
+    onShareHub = undefined,
     onSequenceActionsClick,
     onOptionSelected,
     onOpenFilters,
@@ -93,6 +94,7 @@
     onClearSequence: () => void;
     onImageExport: () => void;
     onRecordVideo?: () => void;
+    onShareHub?: () => void;
     onSequenceActionsClick: () => void;
     onOptionSelected: (option: PictographData) => Promise<void>;
     onOpenFilters: () => void;
@@ -164,6 +166,7 @@
           {onClearSequence}
           {onImageExport}
           {onRecordVideo}
+          {onShareHub}
           {onSequenceActionsClick}
         />
       </div>

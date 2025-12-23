@@ -107,6 +107,10 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
       const sequence = JSON.parse(pendingData) as SequenceData;
       setSequence(sequence);
 
+      // Enrich sequence with derived positions/letters in background
+      // This is critical for imported sequences from Discover which have null positions
+      this.enrichSequenceAsync(sequence, setSequence);
+
       // Set session flag BEFORE clearing localStorage
       // This flag survives localStorage clearing and prevents persistence restoration
       // from overwriting the loaded sequence
