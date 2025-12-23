@@ -84,7 +84,9 @@ export class SequencePersistenceService implements ISequencePersistenceService {
         await this.persistenceService.loadCurrentSequenceState(targetMode);
       if (state) {
         // Type guard for activeBuildSection
-        const activeBuildSection = this.isActiveCreateModule(state.activeBuildSection)
+        const activeBuildSection = this.isActiveCreateModule(
+          state.activeBuildSection
+        )
           ? state.activeBuildSection
           : (targetMode as ActiveCreateModule);
 
@@ -111,7 +113,9 @@ export class SequencePersistenceService implements ISequencePersistenceService {
   private isActiveCreateModule(value: unknown): value is ActiveCreateModule {
     return (
       typeof value === "string" &&
-      (value === "constructor" || value === "generator" || value === "assembler")
+      (value === "constructor" ||
+        value === "generator" ||
+        value === "assembler")
     );
   }
 

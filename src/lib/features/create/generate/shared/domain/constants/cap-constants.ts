@@ -3,7 +3,7 @@
  * Defines the available CAP transformation types with their display metadata
  */
 
-import { CAPComponent, type CAPComponentInfo } from '../models/generate-models';
+import { CAPComponent, type CAPComponentInfo } from "../models/generate-models";
 
 /**
  * Complete list of CAP components with their display metadata

@@ -1,9 +1,17 @@
-import type { GridMode, GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type {
+  GridMode,
+  GridLocation,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, Orientation, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  MotionColor,
+  Orientation,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -23,9 +31,7 @@ export class StartPositionService implements IStartPositionService {
     return this.getDefaultStartPositions(gridMode);
   }
 
-  getDefaultStartPositions(
-    gridMode: GridMode
-  ): PictographData[] {
+  getDefaultStartPositions(gridMode: GridMode): PictographData[] {
     // Define start position locations based on grid mode
     const startPositionKeys =
       gridMode === "diamond"
@@ -43,9 +49,7 @@ export class StartPositionService implements IStartPositionService {
     return this.createPictographsFromPositions(startPositionKeys);
   }
 
-  getAllStartPositionVariations(
-    gridMode: GridMode
-  ): PictographData[] {
+  getAllStartPositionVariations(gridMode: GridMode): PictographData[] {
     // Get all 16 start position variations for the specified grid mode
     // Based on legacy advanced start position picker
     const allVariations =

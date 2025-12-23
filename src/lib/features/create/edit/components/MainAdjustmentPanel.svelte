@@ -18,7 +18,10 @@
     selectedBeatData: BeatData | null;
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
-    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
+    onRotationDirectionChanged?: (
+      color: string,
+      rotationDirection: string
+    ) => void;
     useSimplifiedLayout?: boolean;
   }>();
 

@@ -246,13 +246,21 @@
     min-height: auto;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color) 20%, transparent) 0%, color-mix(in srgb, var(--color) 8%, transparent) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color) 20%, transparent) 0%,
+      color-mix(in srgb, var(--color) 8%, transparent) 100%
+    );
     border: 1px solid color-mix(in srgb, var(--color) 35%, transparent);
     text-align: center;
   }
 
   .transform-action.desktop:not(.is-rotate):hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color) 30%, transparent) 0%, color-mix(in srgb, var(--color) 15%, transparent) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color) 30%, transparent) 0%,
+      color-mix(in srgb, var(--color) 15%, transparent) 100%
+    );
     border-color: color-mix(in srgb, var(--color) 50%, transparent);
     box-shadow: 0 4px 16px color-mix(in srgb, var(--color) 25%, transparent);
   }

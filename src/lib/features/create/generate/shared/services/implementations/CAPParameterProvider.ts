@@ -17,10 +17,11 @@ import { inject, injectable } from "inversify";
 import { getInvertedLetter } from "../../../circular/domain/constants/strict-cap-position-maps";
 import type {
   RotationDirections,
-  TurnAllocation} from "../../domain/models/generate-models";
+  TurnAllocation,
+} from "../../domain/models/generate-models";
 import {
   DifficultyLevel,
-  PropContinuity
+  PropContinuity,
 } from "../../domain/models/generate-models";
 import type { IPictographFilterService } from "../contracts/IPictographFilterService";
 import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
@@ -91,7 +92,9 @@ export class CAPParameterProvider implements ICAPParameterProvider {
    * @param propContinuity - Continuous or random prop continuity
    * @returns Rotation directions for blue and red props
    */
-  determineRotationDirections(propContinuity?: PropContinuity): RotationDirections {
+  determineRotationDirections(
+    propContinuity?: PropContinuity
+  ): RotationDirections {
     if (propContinuity === PropContinuity.CONTINUOUS) {
       return {
         blueRotationDirection: this.pictographFilterService.selectRandom([

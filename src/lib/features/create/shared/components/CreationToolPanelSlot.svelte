@@ -1,5 +1,5 @@
 <script lang="ts">
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   /**
    * Creation Tool Panel Slot
    *
@@ -58,7 +58,7 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   // Loading when either persistence isn't ready OR picker state is null (still determining)
   const isPickerStateLoading = $derived(
     !constructTabState?.isPersistenceInitialized ||
-    shouldShowStartPositionPicker === null
+      shouldShowStartPositionPicker === null
   );
 
   // Convert SequenceData to PictographData[] for OptionViewer
@@ -93,7 +93,6 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     onOpenFilters: () => void;
     onCloseFilters: () => void;
   } = $props();
-
 </script>
 
 <div class="tool-panel-wrapper">
@@ -111,10 +110,16 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
           {#if activeToolPanel === "assembler"}
             <!-- Assembler Mode - Simplified tap-based hand path builder -->
             {@const assemblerTabState = createModuleState.assemblerTabState}
-            {@const assemblerSeq = assemblerTabState?.sequenceState?.currentSequence}
-            {@const existingStartBeat = assemblerSeq?.startingPositionBeat || assemblerSeq?.startPosition || null}
+            {@const assemblerSeq =
+              assemblerTabState?.sequenceState?.currentSequence}
+            {@const existingStartBeat =
+              assemblerSeq?.startingPositionBeat ||
+              assemblerSeq?.startPosition ||
+              null}
             {@const existingBeatsArray = assemblerSeq?.beats || []}
-            {@const hasExistingAssemblerData = !!(existingStartBeat || existingBeatsArray.length > 0)}
+            {@const hasExistingAssemblerData = !!(
+              existingStartBeat || existingBeatsArray.length > 0
+            )}
             <AssemblerTab
               initialGridMode={assemblerTabState?.sequenceState?.gridMode}
               hasExistingSequence={hasExistingAssemblerData}
@@ -129,9 +134,12 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
                 // IMPORTANT: Use assemblerTabState.sequenceState directly, NOT getActiveTabSequenceState()
                 // getActiveTabSequenceState() returns state based on navigationState.activeTab at call time,
                 // which could be wrong if the user switches tabs before this callback completes.
-                const assemblerSequenceState = createModuleState.assemblerTabState?.sequenceState;
+                const assemblerSequenceState =
+                  createModuleState.assemblerTabState?.sequenceState;
                 if (!assemblerSequenceState) {
-                  console.warn("[CreationToolPanelSlot] Assembler tab state not initialized");
+                  console.warn(
+                    "[CreationToolPanelSlot] Assembler tab state not initialized"
+                  );
                   return;
                 }
 
@@ -184,9 +192,12 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
                 // IMPORTANT: Use assemblerTabState.sequenceState directly, NOT getActiveTabSequenceState()
                 // This ensures we always update the assembler's state, not whatever tab is currently active.
-                const assemblerSequenceState = createModuleState.assemblerTabState?.sequenceState;
+                const assemblerSequenceState =
+                  createModuleState.assemblerTabState?.sequenceState;
                 if (!assemblerSequenceState) {
-                  console.warn("[CreationToolPanelSlot] Assembler tab state not initialized");
+                  console.warn(
+                    "[CreationToolPanelSlot] Assembler tab state not initialized"
+                  );
                   return;
                 }
 
@@ -234,9 +245,12 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
                 // IMPORTANT: Use assemblerTabState.sequenceState directly, NOT getActiveTabSequenceState()
                 // This ensures we always update the assembler's state, not whatever tab is currently active.
-                const assemblerSequenceState = createModuleState.assemblerTabState?.sequenceState;
+                const assemblerSequenceState =
+                  createModuleState.assemblerTabState?.sequenceState;
                 if (!assemblerSequenceState) {
-                  console.warn("[CreationToolPanelSlot] Assembler tab state not initialized");
+                  console.warn(
+                    "[CreationToolPanelSlot] Assembler tab state not initialized"
+                  );
                   return;
                 }
                 const currentSeq = assemblerSequenceState.currentSequence;
@@ -341,7 +355,6 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
     height: 100%;
     overflow: hidden;
   }
-
 
   /* Loading states */
   .persistence-loading,

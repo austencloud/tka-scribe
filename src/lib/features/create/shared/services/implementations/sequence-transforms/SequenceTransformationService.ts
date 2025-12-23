@@ -15,60 +15,71 @@ import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/service
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 import {
-	clearSequence,
-	duplicateSequence,
-	mirrorSequence,
-	flipSequence,
-	rotateSequence,
-	colorSwapSequence,
-	invertSequence,
-	rewindSequence,
-	shiftStartPosition
+  clearSequence,
+  duplicateSequence,
+  mirrorSequence,
+  flipSequence,
+  rotateSequence,
+  colorSwapSequence,
+  invertSequence,
+  rewindSequence,
+  shiftStartPosition,
 } from "./sequence-transforms";
 
 @injectable()
-export class SequenceTransformationService implements ISequenceTransformationService {
-	constructor(
-		@inject(TYPES.IMotionQueryHandler)
-		private readonly motionQueryHandler: IMotionQueryHandler,
-		@inject(TYPES.IOrientationCalculator)
-		private readonly orientationCalculator: IOrientationCalculator
-	) {}
+export class SequenceTransformationService
+  implements ISequenceTransformationService
+{
+  constructor(
+    @inject(TYPES.IMotionQueryHandler)
+    private readonly motionQueryHandler: IMotionQueryHandler,
+    @inject(TYPES.IOrientationCalculator)
+    private readonly orientationCalculator: IOrientationCalculator
+  ) {}
 
-	clearSequence(sequence: SequenceData): SequenceData {
-		return clearSequence(sequence);
-	}
+  clearSequence(sequence: SequenceData): SequenceData {
+    return clearSequence(sequence);
+  }
 
-	duplicateSequence(sequence: SequenceData, newName?: string): SequenceData {
-		return duplicateSequence(sequence, newName);
-	}
+  duplicateSequence(sequence: SequenceData, newName?: string): SequenceData {
+    return duplicateSequence(sequence, newName);
+  }
 
-	mirrorSequence(sequence: SequenceData): SequenceData {
-		return mirrorSequence(sequence);
-	}
+  mirrorSequence(sequence: SequenceData): SequenceData {
+    return mirrorSequence(sequence);
+  }
 
-	flipSequence(sequence: SequenceData): SequenceData {
-		return flipSequence(sequence);
-	}
+  flipSequence(sequence: SequenceData): SequenceData {
+    return flipSequence(sequence);
+  }
 
-	swapColors(sequence: SequenceData): SequenceData {
-		return colorSwapSequence(sequence);
-	}
+  swapColors(sequence: SequenceData): SequenceData {
+    return colorSwapSequence(sequence);
+  }
 
-	rotateSequence(sequence: SequenceData, rotationAmount: number): SequenceData {
-		const positionDeriver = resolve<IGridPositionDeriver>(TYPES.IGridPositionDeriver);
-		return rotateSequence(sequence, rotationAmount, positionDeriver);
-	}
+  rotateSequence(sequence: SequenceData, rotationAmount: number): SequenceData {
+    const positionDeriver = resolve<IGridPositionDeriver>(
+      TYPES.IGridPositionDeriver
+    );
+    return rotateSequence(sequence, rotationAmount, positionDeriver);
+  }
 
-	async invertSequence(sequence: SequenceData): Promise<SequenceData> {
-		return invertSequence(sequence, this.motionQueryHandler, this.orientationCalculator);
-	}
+  async invertSequence(sequence: SequenceData): Promise<SequenceData> {
+    return invertSequence(
+      sequence,
+      this.motionQueryHandler,
+      this.orientationCalculator
+    );
+  }
 
-	async rewindSequence(sequence: SequenceData): Promise<SequenceData> {
-		return rewindSequence(sequence, this.motionQueryHandler);
-	}
+  async rewindSequence(sequence: SequenceData): Promise<SequenceData> {
+    return rewindSequence(sequence, this.motionQueryHandler);
+  }
 
-	shiftStartPosition(sequence: SequenceData, targetBeatNumber: number): SequenceData {
-		return shiftStartPosition(sequence, targetBeatNumber);
-	}
+  shiftStartPosition(
+    sequence: SequenceData,
+    targetBeatNumber: number
+  ): SequenceData {
+    return shiftStartPosition(sequence, targetBeatNumber);
+  }
 }

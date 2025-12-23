@@ -5,8 +5,14 @@
  * Critical for distinguishing PRO vs ANTI motions when rotation is applied.
  */
 
-import type { GridLocation, GridMode } from "../../../../../../shared/pictograph/grid/domain/enums/grid-enums";
-import type { HandMotionType, RotationDirection } from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
+import type {
+  GridLocation,
+  GridMode,
+} from "../../../../../../shared/pictograph/grid/domain/enums/grid-enums";
+import type {
+  HandMotionType,
+  RotationDirection,
+} from "../../../../../../shared/pictograph/shared/domain/enums/pictograph-enums";
 
 export interface IHandPathDirectionDetector {
   /**

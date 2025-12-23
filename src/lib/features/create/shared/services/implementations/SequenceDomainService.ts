@@ -78,7 +78,9 @@ export class SequenceDomainService {
     // Grid mode validation from desktop enums
     if (
       typedRequest.gridMode &&
-      ![GridMode.DIAMOND, GridMode.BOX].includes(typedRequest.gridMode as GridMode)
+      ![GridMode.DIAMOND, GridMode.BOX].includes(
+        typedRequest.gridMode as GridMode
+      )
     ) {
       errors.push({
         code: "INVALID_GRID_MODE",

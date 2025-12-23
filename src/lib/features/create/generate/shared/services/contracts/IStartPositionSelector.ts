@@ -13,5 +13,7 @@ export interface IStartPositionSelector {
    * @param gridMode - Grid mode (diamond/box)
    * @returns Promise resolving to StartPositionData (or BeatData for backward compatibility)
    */
-  selectStartPosition(gridMode: GridMode): Promise<StartPositionData | BeatData>;
+  selectStartPosition(
+    gridMode: GridMode
+  ): Promise<StartPositionData | BeatData>;
 }

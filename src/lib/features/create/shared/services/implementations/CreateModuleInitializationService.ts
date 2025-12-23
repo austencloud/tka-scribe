@@ -182,7 +182,8 @@ export class CreateModuleInitializationService
     initializePersistence: () => Promise<void>
   ): Promise<SequenceLoadResult> {
     // Try to load from deep link or pending edit
-    const loadResult = await this.deepLinkService.loadFromAnySource(setSequence);
+    const loadResult =
+      await this.deepLinkService.loadFromAnySource(setSequence);
 
     if (loadResult.loaded) {
       // Initialize persistence so the deep link sequence can be saved

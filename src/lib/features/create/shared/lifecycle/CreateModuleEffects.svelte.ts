@@ -5,7 +5,10 @@
 
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { LayoutConfiguration } from "../orchestration/types";
-import type { ICreateModuleState, IConstructTabState } from "../types/create-module-types";
+import type {
+  ICreateModuleState,
+  IConstructTabState,
+} from "../types/create-module-types";
 import type { IResponsiveLayoutService } from "../services/contracts/IResponsiveLayoutService";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 

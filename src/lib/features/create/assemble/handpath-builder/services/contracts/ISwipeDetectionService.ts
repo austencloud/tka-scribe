@@ -5,7 +5,7 @@
  * Converts raw pointer events into semantic swipe gestures between grid positions.
  */
 
-import type { GridMode} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { type GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { GridPositionPoint, SwipeGesture } from "../../domain/path-models";
 

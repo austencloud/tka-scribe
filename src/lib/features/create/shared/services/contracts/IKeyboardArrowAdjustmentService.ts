@@ -21,7 +21,11 @@ export interface IKeyboardArrowAdjustmentService {
   handleWASDMovement(
     key: "w" | "a" | "s" | "d",
     increment: number,
-    selectedArrow: { motionData: MotionData; color: string; pictographData: PictographData },
+    selectedArrow: {
+      motionData: MotionData;
+      color: string;
+      pictographData: PictographData;
+    },
     beatData: BeatData
   ): BeatData;
 

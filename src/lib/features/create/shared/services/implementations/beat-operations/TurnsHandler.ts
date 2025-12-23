@@ -7,12 +7,22 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { BeatData } from "../../../domain/models/BeatData";
 import type { ICreateModuleState } from "../../../types/create-module-types";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
-import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  createMotionData,
+  type MotionData,
+} from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { getBeatDataFromState, START_POSITION_BEAT_NUMBER } from "./beat-data-helpers";
+import {
+  getBeatDataFromState,
+  START_POSITION_BEAT_NUMBER,
+} from "./beat-data-helpers";
 import { calculatePropagatedBeats } from "./OrientationHandler";
 
 const logger = createComponentLogger("TurnsHandler");
@@ -34,7 +44,8 @@ export function updateBeatTurns(
     return;
   }
 
-  const currentMotion: MotionData | undefined = beatData.motions[color as MotionColor];
+  const currentMotion: MotionData | undefined =
+    beatData.motions[color as MotionColor];
   if (!currentMotion) {
     logger.warn(`No motion data for ${color}`);
     return;
@@ -50,7 +61,8 @@ export function updateBeatTurns(
   let updatedMotionType = currentMotion.motionType;
   let updatedRotationDirection = currentMotion.rotationDirection;
   let updatedPrefloatMotionType = currentMotion.prefloatMotionType;
-  let updatedPrefloatRotationDirection = currentMotion.prefloatRotationDirection;
+  let updatedPrefloatRotationDirection =
+    currentMotion.prefloatRotationDirection;
 
   // Handle float conversion
   if (isConvertingToFloat) {
@@ -75,7 +87,8 @@ export function updateBeatTurns(
     // CRITICAL: Auto-assign rotation direction for DASH/STATIC motions (legacy behavior)
     // This matches legacy json_turns_updater.py lines 43-47 and 67-70
     const isDashOrStatic =
-      updatedMotionType === MotionType.DASH || updatedMotionType === MotionType.STATIC;
+      updatedMotionType === MotionType.DASH ||
+      updatedMotionType === MotionType.STATIC;
 
     if (isDashOrStatic) {
       if (
@@ -126,7 +139,8 @@ export function updateBeatTurns(
   };
 
   // Get current sequence and start position for propagation calculation
-  const currentSequence: SequenceData | null = createModuleState.sequenceState.currentSequence;
+  const currentSequence: SequenceData | null =
+    createModuleState.sequenceState.currentSequence;
   const startPosition: BeatData | null = createModuleState.sequenceState
     .selectedStartPosition as unknown as BeatData | null;
 

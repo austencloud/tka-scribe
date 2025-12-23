@@ -42,7 +42,6 @@ Card-based architecture with integrated Generate button:
   const deviceState = createDeviceState();
   const customizeState = createCustomizeOptionsState();
 
-
   // ===== Device Service Integration =====
   onMount(() => {
     try {
@@ -68,7 +67,7 @@ Card-based architecture with integrated Generate button:
       updateConfig={configState.updateConfig}
       isGenerating={actionsState.isGenerating}
       onGenerateClicked={actionsState.onGenerateClicked}
-      customizeState={customizeState}
+      {customizeState}
     />
   </div>
 </div>
@@ -86,7 +85,6 @@ Card-based architecture with integrated Generate button:
     gap: 0;
   }
 
-
   .generate-panel-inner {
     flex: 1;
     display: flex;
@@ -102,8 +100,6 @@ Card-based architecture with integrated Generate button:
       justify-content: center;
     }
   }
-
-
 
   @container generate-panel (min-aspect-ratio: 1.5) and (min-width: 800px) {
     .generate-panel-inner {

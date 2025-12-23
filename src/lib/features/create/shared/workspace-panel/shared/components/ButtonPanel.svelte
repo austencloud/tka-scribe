@@ -50,7 +50,9 @@
 
   // Derive computed values from context
   const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
-  const showImageExportButton = $derived(CreateModuleState.canShowActionButtons());
+  const showImageExportButton = $derived(
+    CreateModuleState.canShowActionButtons()
+  );
   const showRecordVideoButton = $derived(
     CreateModuleState.canShowActionButtons()
   );
@@ -131,7 +133,10 @@
           <!-- Image Export Button -->
           {#if showImageExportButton && onImageExport}
             <div>
-              <ImageExportButton onclick={onImageExport} isActive={isImageExportOpen} />
+              <ImageExportButton
+                onclick={onImageExport}
+                isActive={isImageExportOpen}
+              />
             </div>
           {/if}
 

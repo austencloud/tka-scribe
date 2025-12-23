@@ -12,10 +12,8 @@ Positions are enabled/disabled based on grid mode:
 - Center (C) is always disabled for now (future feature)
 -->
 <script lang="ts">
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import {
-    GridLocation,
-  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import GridPositionButton from "./GridPositionButton.svelte";
 
   const { gridMode, currentPosition, onPositionSelect } = $props<{

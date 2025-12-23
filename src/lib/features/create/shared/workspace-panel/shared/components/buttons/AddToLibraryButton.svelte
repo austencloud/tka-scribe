@@ -87,14 +87,43 @@
   }
 
   .add-to-library-button {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, var(--theme-accent-strong, #4f46e5)) 100%);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #8b5cf6) 0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, #8b5cf6) 85%,
+          var(--theme-accent-strong, #4f46e5)
+        )
+        100%
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      transparent
+    );
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .add-to-library-button:hover:not(:disabled) {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, var(--theme-accent-strong, #4f46e5)) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 70%, var(--theme-accent-strong, #4f46e5)) 100%);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, #8b5cf6) 85%,
+          var(--theme-accent-strong, #4f46e5)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--theme-accent-strong, #8b5cf6) 70%,
+          var(--theme-accent-strong, #4f46e5)
+        )
+        100%
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */
@@ -108,7 +137,9 @@
 
   @media (max-width: 480px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }
@@ -125,7 +156,9 @@
   /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }

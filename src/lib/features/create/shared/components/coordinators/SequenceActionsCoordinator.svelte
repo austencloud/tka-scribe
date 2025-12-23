@@ -39,7 +39,4 @@
   });
 </script>
 
-<SequenceActionsPanel
-  show={isEditorOpen}
-  onClose={handleClose}
-/>
+<SequenceActionsPanel show={isEditorOpen} onClose={handleClose} />

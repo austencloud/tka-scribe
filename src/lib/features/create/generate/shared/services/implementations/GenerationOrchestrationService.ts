@@ -10,7 +10,10 @@ import type { ICAPExecutorSelector } from "../../../circular/services/contracts/
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";
 import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
 import type { GenerationOptions } from "../../domain/models/generate-models";
-import { GenerationMode, PropContinuity } from "../../domain/models/generate-models";
+import {
+  GenerationMode,
+  PropContinuity,
+} from "../../domain/models/generate-models";
 import type { IBeatGenerationOrchestrator } from "../contracts/IBeatGenerationOrchestrator";
 import type { BeatGenerationOptions } from "../contracts/IBeatGenerationOrchestrator";
 import type { IGenerationOrchestrationService } from "../contracts/IGenerationOrchestrationService";
@@ -81,7 +84,9 @@ export class GenerationOrchestrationService
     let startPosition: StartPositionData | BeatData;
     if (options.startPosition) {
       // Use the customized start position - convert PictographData to StartPositionData
-      startPosition = this.convertPictographToStartPosition(options.startPosition);
+      startPosition = this.convertPictographToStartPosition(
+        options.startPosition
+      );
     } else {
       // Fall back to random selection
       startPosition = await this.startPositionSelector.selectStartPosition(
@@ -91,10 +96,9 @@ export class GenerationOrchestrationService
     const sequence: (BeatData | StartPositionData)[] = [startPosition];
 
     // Step 2: Determine rotation directions
-    const rotationDirections =
-      this.capParams.determineRotationDirections(
-        options.propContinuity
-      );
+    const rotationDirections = this.capParams.determineRotationDirections(
+      options.propContinuity
+    );
 
     // Step 3: Calculate turn allocation
     const level = this.metadataService.mapDifficultyToLevel(options.difficulty);
@@ -124,11 +128,12 @@ export class GenerationOrchestrationService
     if (hasEndPositionConstraint && options.length > 0) {
       // Generate all beats except the last one
       if (options.length > 1) {
-        const allButLastBeats = await this.beatGenerationOrchestrator.generateBeats(
-          sequence,
-          options.length - 1,
-          beatGenOptions
-        );
+        const allButLastBeats =
+          await this.beatGenerationOrchestrator.generateBeats(
+            sequence,
+            options.length - 1,
+            beatGenOptions
+          );
         generatedBeats = allButLastBeats;
       } else {
         generatedBeats = [];
@@ -175,7 +180,9 @@ export class GenerationOrchestrationService
     });
 
     // Import shared utilities dynamically to avoid circular dependencies
-    const { createSequenceData } = await import("$lib/shared/foundation/domain/models/SequenceData");
+    const { createSequenceData } = await import(
+      "$lib/shared/foundation/domain/models/SequenceData"
+    );
 
     const sequenceData = createSequenceData({
       name: word || `Sequence ${Date.now()}`,
@@ -220,8 +227,10 @@ export class GenerationOrchestrationService
     const sliceSize = options.sliceSize || SliceSize.HALVED;
 
     // Determine start position - use customized if provided, otherwise random
-    const { GridPosition } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
-    type GridPositionType = typeof GridPosition[keyof typeof GridPosition];
+    const { GridPosition } = await import(
+      "$lib/shared/pictograph/grid/domain/enums/grid-enums"
+    );
+    type GridPositionType = (typeof GridPosition)[keyof typeof GridPosition];
 
     let startPos: GridPositionType | undefined;
 
@@ -276,7 +285,9 @@ export class GenerationOrchestrationService
       level: this.metadataService.mapDifficultyToLevel(options.difficulty),
     });
 
-    const { createSequenceData } = await import("$lib/shared/foundation/domain/models/SequenceData");
+    const { createSequenceData } = await import(
+      "$lib/shared/foundation/domain/models/SequenceData"
+    );
     const sequence = createSequenceData({
       name: `Circular ${word}`,
       word,
@@ -300,7 +311,9 @@ export class GenerationOrchestrationService
    * The PictographData from the position picker already has all the needed data,
    * we just add the isStartPosition flag to make it a valid StartPositionData.
    */
-  private convertPictographToStartPosition(pictograph: PictographData): StartPositionData {
+  private convertPictographToStartPosition(
+    pictograph: PictographData
+  ): StartPositionData {
     return {
       ...pictograph,
       isStartPosition: true as const,

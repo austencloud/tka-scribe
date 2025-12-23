@@ -20,8 +20,7 @@ import { createBeatData } from "../../domain/factories/createBeatData";
 @injectable()
 export class CreateModuleEventService implements ICreateModuleEventService {
   private constructCoordinator: IBuildConstructSectionCoordinator | null = null;
-  private orientationCalculationService: IOrientationCalculator | null =
-    null;
+  private orientationCalculationService: IOrientationCalculator | null = null;
   private initialized = false;
 
   // Callback to access current sequence from component state
@@ -52,10 +51,9 @@ export class CreateModuleEventService implements ICreateModuleEventService {
       this.constructCoordinator = resolve<IBuildConstructSectionCoordinator>(
         TYPES.IBuildConstructTabCoordinator
       );
-      this.orientationCalculationService =
-        resolve<IOrientationCalculator>(
-          TYPES.IOrientationCalculator
-        );
+      this.orientationCalculationService = resolve<IOrientationCalculator>(
+        TYPES.IOrientationCalculator
+      );
       this.initialized = true;
     } catch (error) {
       // This is expected during SSR - services will be resolved once client-side DI container is ready

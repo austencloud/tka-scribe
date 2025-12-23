@@ -23,8 +23,12 @@ export async function loadAllPictographs(): Promise<PictographData[]> {
 
   loadingPromise = (async () => {
     try {
-      const letterQueryHandler = resolve<ILetterQueryHandler>(TYPES.ILetterQueryHandler);
-      const pictographs = await letterQueryHandler.getAllPictographVariations(GridMode.DIAMOND);
+      const letterQueryHandler = resolve<ILetterQueryHandler>(
+        TYPES.ILetterQueryHandler
+      );
+      const pictographs = await letterQueryHandler.getAllPictographVariations(
+        GridMode.DIAMOND
+      );
       // Filter out any invalid pictographs
       cachedPictographs = pictographs.filter(
         (p: PictographData) => p.motions?.blue && p.motions?.red
@@ -54,7 +58,9 @@ export async function getRandomPictograph(): Promise<PictographData | null> {
 /**
  * Get multiple random pictographs (non-repeating)
  */
-export async function getRandomPictographs(count: number): Promise<PictographData[]> {
+export async function getRandomPictographs(
+  count: number
+): Promise<PictographData[]> {
   const pictographs = await loadAllPictographs();
   if (pictographs.length === 0) return [];
 

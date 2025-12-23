@@ -45,7 +45,9 @@ export function createGenerationActionsState(
         error instanceof Error ? error.message : "Unknown generation error";
 
       // Show user-facing error with bug report option
-      const errorService = tryResolve<IErrorHandlingService>(TYPES.IErrorHandlingService);
+      const errorService = tryResolve<IErrorHandlingService>(
+        TYPES.IErrorHandlingService
+      );
       if (errorService) {
         errorService.showUserError({
           message: "Sequence generation failed",

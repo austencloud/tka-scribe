@@ -76,7 +76,9 @@
   let creationMethodPersistence: ICreationMethodPersistenceService | null =
     $state(null);
   let effectCoordinator: ICreateModuleEffectCoordinator | null = $state(null);
-  let deepLinkService: import("../services/contracts/IDeepLinkSequenceService").IDeepLinkSequenceService | null = $state(null);
+  let deepLinkService:
+    | import("../services/contracts/IDeepLinkSequenceService").IDeepLinkSequenceService
+    | null = $state(null);
   let CreateModuleState: CreateModuleState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
 
@@ -376,7 +378,12 @@
     }
 
     // Check if services are ready
-    if (!deepLinkService || !CreateModuleState || !constructTabState || !servicesInitialized) {
+    if (
+      !deepLinkService ||
+      !CreateModuleState ||
+      !constructTabState ||
+      !servicesInitialized
+    ) {
       return;
     }
 
@@ -392,40 +399,38 @@
       // Mark as processed BEFORE loading to prevent double-processing
       pendingEditProcessed = true;
 
-      deepLinkService.loadFromPendingEdit(
-        (sequence) => {
-          // IMPORTANT: Set directly on constructor tab's sequence state, NOT through
-          // the getter which uses navigationState.activeTab. The view transition might
-          // not have completed setting activeTab to "constructor" yet, causing the
-          // sequence to be set on the wrong tab's state (or fallback state).
-          const constructorSequenceState = constructTabState?.sequenceState;
-          if (constructorSequenceState) {
-            constructorSequenceState.setCurrentSequence(sequence);
+      deepLinkService.loadFromPendingEdit((sequence) => {
+        // IMPORTANT: Set directly on constructor tab's sequence state, NOT through
+        // the getter which uses navigationState.activeTab. The view transition might
+        // not have completed setting activeTab to "constructor" yet, causing the
+        // sequence to be set on the wrong tab's state (or fallback state).
+        const constructorSequenceState = constructTabState?.sequenceState;
+        if (constructorSequenceState) {
+          constructorSequenceState.setCurrentSequence(sequence);
 
-            // Sync picker state with the newly loaded sequence
-            // This ensures hasStartPosition and getCurrentSequenceData() are properly evaluated
-            constructTabState.syncPickerStateWithSequence();
-          } else {
-            // Fallback to the getter-based approach if constructTabState isn't available
-            CreateModuleState!.sequenceState.setCurrentSequence(sequence);
-          }
-
-          // Mark creation method as selected since we're loading a sequence
-          if (!hasSelectedCreationMethod) {
-            hasSelectedCreationMethod = true;
-            creationMethodPersistence?.markMethodSelected();
-          }
-          // Explicitly hide the creation method selector - the visibility sync effect
-          // might not re-run in time due to Svelte 5's reactive tracking
-          navigationState.setCreationMethodSelectorVisible(false);
-
-          // Tell the construct tab to show the option viewer (not start position picker)
-          // since we're loading an existing sequence
-          if (constructTabState?.setShowStartPositionPicker) {
-            constructTabState.setShowStartPositionPicker(false);
-          }
+          // Sync picker state with the newly loaded sequence
+          // This ensures hasStartPosition and getCurrentSequenceData() are properly evaluated
+          constructTabState.syncPickerStateWithSequence();
+        } else {
+          // Fallback to the getter-based approach if constructTabState isn't available
+          CreateModuleState!.sequenceState.setCurrentSequence(sequence);
         }
-      );
+
+        // Mark creation method as selected since we're loading a sequence
+        if (!hasSelectedCreationMethod) {
+          hasSelectedCreationMethod = true;
+          creationMethodPersistence?.markMethodSelected();
+        }
+        // Explicitly hide the creation method selector - the visibility sync effect
+        // might not re-run in time due to Svelte 5's reactive tracking
+        navigationState.setCreationMethodSelectorVisible(false);
+
+        // Tell the construct tab to show the option viewer (not start position picker)
+        // since we're loading an existing sequence
+        if (constructTabState?.setShowStartPositionPicker) {
+          constructTabState.setShowStartPositionPicker(false);
+        }
+      });
     }
   });
 

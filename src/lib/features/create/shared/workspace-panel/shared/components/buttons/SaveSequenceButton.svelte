@@ -77,14 +77,28 @@
   }
 
   .save-button {
-    background: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #15803d) 100%);
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success, #22c55e) 0%,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #15803d) 100%
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 30%,
+      transparent
+    );
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
   }
 
   .save-button:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #15803d) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 60%, #15803d) 100%);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #15803d) 0%,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 60%, #15803d) 100%
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */
@@ -98,7 +112,9 @@
 
   @media (max-width: 480px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }
@@ -115,7 +131,9 @@
   /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }

@@ -38,7 +38,10 @@
     // Add keyboard event listener
     const handleKeyDown = (event: KeyboardEvent) => {
       // Ignore if user is typing in an input
-      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
         return;
       }
 
@@ -62,7 +65,10 @@
           // On choice step, navigate down in the list
           if (isOnChoiceStep) {
             event.preventDefault();
-            focusedChoiceIndex = Math.min(methods.length - 1, focusedChoiceIndex + 1);
+            focusedChoiceIndex = Math.min(
+              methods.length - 1,
+              focusedChoiceIndex + 1
+            );
           }
           break;
         case "Enter":
@@ -172,7 +178,8 @@
       icon: "fa-rocket",
       title: "Ready to Start!",
       subtitle: "Choose your creation method",
-      description: "You've seen all three methods. Pick the one that feels right for you. You can switch anytime using the tabs.",
+      description:
+        "You've seen all three methods. Pick the one that feels right for you. You can switch anytime using the tabs.",
       color: "linear-gradient(135deg, #10b981, #3b82f6)",
     },
   ];
@@ -271,7 +278,11 @@
   </div>
 
   <!-- Skip button -->
-  <button class="skip-button" onclick={skipTutorial} aria-label="Skip tutorial and start with Assemble mode">
+  <button
+    class="skip-button"
+    onclick={skipTutorial}
+    aria-label="Skip tutorial and start with Assemble mode"
+  >
     Skip <i class="fas fa-forward" aria-hidden="true"></i>
   </button>
 
@@ -287,7 +298,10 @@
           <div class="embla__slide">
             {#if stepItem.type === "welcome"}
               <div class="slide-content welcome-slide">
-                <div class="slide-icon welcome-icon" style="background: {stepItem.color}">
+                <div
+                  class="slide-icon welcome-icon"
+                  style="background: {stepItem.color}"
+                >
                   <i class="fas {stepItem.icon}" aria-hidden="true"></i>
                 </div>
                 <h1 class="slide-title">{stepItem.title}</h1>
@@ -296,21 +310,32 @@
                 <p class="swipe-hint">
                   <i class="fas fa-hand-pointer" aria-hidden="true"></i>
                   <span class="touch-hint">Swipe or tap Next to explore</span>
-                  <span class="keyboard-nav-hint">Use <kbd>←</kbd><kbd>→</kbd> arrow keys or click Next</span>
+                  <span class="keyboard-nav-hint"
+                    >Use <kbd>←</kbd><kbd>→</kbd> arrow keys or click Next</span
+                  >
                 </p>
               </div>
             {:else if stepItem.type === "method"}
               <div class="slide-content method-slide">
-                <div class="slide-icon" style="--method-color: {stepItem.color}">
+                <div
+                  class="slide-icon"
+                  style="--method-color: {stepItem.color}"
+                >
                   <i class="fas {stepItem.icon}" aria-hidden="true"></i>
                 </div>
                 <h1 class="slide-title">{stepItem.title}</h1>
                 <p class="slide-subtitle">{stepItem.subtitle}</p>
                 <p class="slide-description">{stepItem.description}</p>
 
-                <ul class="feature-list" aria-label="Features of {stepItem.title}">
+                <ul
+                  class="feature-list"
+                  aria-label="Features of {stepItem.title}"
+                >
                   {#each stepItem.features as feature}
-                    <li><i class="fas fa-check" aria-hidden="true"></i> {feature}</li>
+                    <li>
+                      <i class="fas fa-check" aria-hidden="true"></i>
+                      {feature}
+                    </li>
                   {/each}
                 </ul>
 
@@ -318,7 +343,10 @@
               </div>
             {:else if stepItem.type === "choice"}
               <div class="slide-content choice-slide">
-                <div class="slide-icon choice-icon" style="background: {stepItem.color}">
+                <div
+                  class="slide-icon choice-icon"
+                  style="background: {stepItem.color}"
+                >
                   <i class="fas {stepItem.icon}" aria-hidden="true"></i>
                 </div>
                 <h1 class="slide-title">{stepItem.title}</h1>
@@ -339,11 +367,12 @@
                       class:focused={focusedChoiceIndex === i}
                       style="--method-color: {method.color}; --button-index: {i}"
                       onclick={() => selectMethod(method.id)}
-                      onmouseenter={() => focusedChoiceIndex = i}
+                      onmouseenter={() => (focusedChoiceIndex = i)}
                       in:fly={{ y: 20, delay: 100 + i * 80, duration: 300 }}
                       role="option"
                       aria-selected={focusedChoiceIndex === i}
-                      aria-label="{method.title}: {method.subtitle}. Press {i + 1} for quick select."
+                      aria-label="{method.title}: {method.subtitle}. Press {i +
+                        1} for quick select."
                     >
                       <div class="choice-icon">
                         <i class="fas {method.icon}" aria-hidden="true"></i>
@@ -352,12 +381,16 @@
                         <span class="choice-name">{method.title}</span>
                         <span class="choice-hint">{method.subtitle}</span>
                       </div>
-                      <i class="fas fa-chevron-right choice-arrow" aria-hidden="true"></i>
+                      <i
+                        class="fas fa-chevron-right choice-arrow"
+                        aria-hidden="true"
+                      ></i>
                     </button>
                   {/each}
                 </div>
                 <p class="keyboard-hint" aria-live="polite">
-                  <kbd>↑</kbd><kbd>↓</kbd> to navigate · <kbd>Enter</kbd> to select · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> for quick pick
+                  <kbd>↑</kbd><kbd>↓</kbd> to navigate · <kbd>Enter</kbd> to
+                  select · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> for quick pick
                 </p>
               </div>
             {/if}
@@ -631,8 +664,13 @@
   }
 
   @keyframes swipeHint {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(8px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(8px);
+    }
   }
 
   .feature-list {
@@ -713,26 +751,35 @@
   }
 
   @keyframes buttonPulse {
-    0%, 100% {
+    0%,
+    100% {
       transform: scale(1);
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--method-color) 30%, transparent);
+      box-shadow: 0 0 0 0
+        color-mix(in srgb, var(--method-color) 30%, transparent);
     }
     50% {
       transform: scale(1.02);
-      box-shadow: 0 4px 20px color-mix(in srgb, var(--method-color) 25%, transparent);
+      box-shadow: 0 4px 20px
+        color-mix(in srgb, var(--method-color) 25%, transparent);
     }
   }
 
   @keyframes glowPulse {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
+    0%,
+    100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
   }
 
   /* Focused state - highlight but keep animating */
   .choice-button.focused {
     background: rgba(255, 255, 255, 0.06);
     border-color: var(--method-color);
-    box-shadow: 0 2px 16px color-mix(in srgb, var(--method-color) 25%, transparent);
+    box-shadow: 0 2px 16px
+      color-mix(in srgb, var(--method-color) 25%, transparent);
   }
 
   /* Hover state - stop animation and show full highlight */
@@ -741,7 +788,8 @@
     border-color: var(--method-color);
     transform: translateX(4px) scale(1.02);
     animation: none;
-    box-shadow: 0 4px 24px color-mix(in srgb, var(--method-color) 35%, transparent);
+    box-shadow: 0 4px 24px
+      color-mix(in srgb, var(--method-color) 35%, transparent);
   }
 
   .choice-button:hover::before {
@@ -802,8 +850,13 @@
   }
 
   @keyframes arrowBounce {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(6px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(6px);
+    }
   }
 
   .choice-button:hover .choice-arrow {

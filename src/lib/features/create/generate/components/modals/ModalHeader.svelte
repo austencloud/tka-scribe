@@ -66,8 +66,16 @@ Displays modal title and close button
   }
 
   .close-button:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 50%,
+      transparent
+    );
     transform: scale(1.05);
   }
 

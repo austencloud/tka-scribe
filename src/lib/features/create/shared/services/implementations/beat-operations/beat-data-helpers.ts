@@ -24,14 +24,17 @@ export function getBeatDataFromState(
   }
 
   const arrayIndex = beatNumber - 1;
-  const sequence: SequenceData | null = createModuleState.sequenceState.currentSequence;
+  const sequence: SequenceData | null =
+    createModuleState.sequenceState.currentSequence;
   return sequence?.beats[arrayIndex];
 }
 
 /**
  * Update the sequence word based on current beat letters
  */
-export function updateSequenceWord(createModuleState: ICreateModuleState): void {
+export function updateSequenceWord(
+  createModuleState: ICreateModuleState
+): void {
   const sequence = createModuleState.sequenceState.currentSequence;
   if (!sequence?.beats) return;
 

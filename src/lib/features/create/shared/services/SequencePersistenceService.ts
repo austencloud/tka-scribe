@@ -64,7 +64,7 @@ export class SequencePersistenceService {
       thumbnailUrl: metadata.thumbnailUrl,
       name: metadata.name,
     });
-    
+
     const user = auth.currentUser;
     if (!user) {
       console.error("[SequencePersistenceService] No authenticated user");
@@ -72,7 +72,10 @@ export class SequencePersistenceService {
     }
 
     const sequenceId = sequenceData.id || crypto.randomUUID();
-    console.log("[SequencePersistenceService] Generated sequence ID:", sequenceId);
+    console.log(
+      "[SequencePersistenceService] Generated sequence ID:",
+      sequenceId
+    );
 
     // Flatten structure to match LibrarySequence format
     // Store thumbnail in both thumbnails array (for SequenceData compatibility)
@@ -104,9 +107,15 @@ export class SequencePersistenceService {
     };
 
     const firestore = await getFirestoreInstance();
-    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
-    console.log("[SequencePersistenceService] Writing to Firestore path:", sequenceRef.path);
-    
+    const sequenceRef = doc(
+      firestore,
+      `users/${user.uid}/sequences/${sequenceId}`
+    );
+    console.log(
+      "[SequencePersistenceService] Writing to Firestore path:",
+      sequenceRef.path
+    );
+
     // Filter out undefined fields
     const sequenceToSave = Object.fromEntries(
       Object.entries({
@@ -115,10 +124,12 @@ export class SequencePersistenceService {
         updatedAt: serverTimestamp(),
       }).filter(([_, value]) => value !== undefined)
     );
-    
+
     await setDoc(sequenceRef, sequenceToSave);
 
-    console.log("[SequencePersistenceService] ✅ Sequence saved successfully to Firestore");
+    console.log(
+      "[SequencePersistenceService] ✅ Sequence saved successfully to Firestore"
+    );
     return sequenceId;
   }
 
@@ -136,26 +147,33 @@ export class SequencePersistenceService {
     }
 
     const firestore = await getFirestoreInstance();
-    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
-    
+    const sequenceRef = doc(
+      firestore,
+      `users/${user.uid}/sequences/${sequenceId}`
+    );
+
     // Flatten structure to match LibrarySequence format
     const updates: Record<string, unknown> = {
       updatedAt: serverTimestamp(),
     };
-    
+
     if (metadata.name !== undefined) updates.name = metadata.name;
-    if (metadata.displayName !== undefined) updates.displayName = metadata.displayName;
-    if (metadata.description !== undefined) updates.description = metadata.description;
-    if (metadata.visibility !== undefined) updates.visibility = metadata.visibility;
+    if (metadata.displayName !== undefined)
+      updates.displayName = metadata.displayName;
+    if (metadata.description !== undefined)
+      updates.description = metadata.description;
+    if (metadata.visibility !== undefined)
+      updates.visibility = metadata.visibility;
     if (metadata.tags !== undefined) updates.tags = metadata.tags;
-    if (metadata.thumbnailUrl !== undefined) updates.thumbnailUrl = metadata.thumbnailUrl;
+    if (metadata.thumbnailUrl !== undefined)
+      updates.thumbnailUrl = metadata.thumbnailUrl;
     if (metadata.videoUrl !== undefined) updates.videoUrl = metadata.videoUrl;
-    
+
     if (sequenceData) {
       updates.word = sequenceData.word;
       updates.beats = sequenceData.beats;
     }
-    
+
     await setDoc(sequenceRef, updates, { merge: true });
   }
 
@@ -167,7 +185,10 @@ export class SequencePersistenceService {
     if (!user) return null;
 
     const firestore = await getFirestoreInstance();
-    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
+    const sequenceRef = doc(
+      firestore,
+      `users/${user.uid}/sequences/${sequenceId}`
+    );
     const snapshot = await getDoc(sequenceRef);
 
     if (!snapshot.exists()) return null;
@@ -216,7 +237,10 @@ export class SequencePersistenceService {
     if (!user) return false;
 
     const firestore = await getFirestoreInstance();
-    const sequenceRef = doc(firestore, `users/${user.uid}/sequences/${sequenceId}`);
+    const sequenceRef = doc(
+      firestore,
+      `users/${user.uid}/sequences/${sequenceId}`
+    );
     const snapshot = await getDoc(sequenceRef);
 
     return snapshot.exists();

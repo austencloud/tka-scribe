@@ -7,9 +7,12 @@ Displays 4 position buttons in one of three layouts:
 - 1x4 row (for wide containers)
 -->
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import {
+    GridLocation,
+    GridMode,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import PositionButton from "./PositionButton.svelte";
 
   const { positions, locations, handColor, gridMode, onPositionSelect } =

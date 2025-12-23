@@ -89,7 +89,10 @@
 <DialogPrimitive.Root open={isOpen} onOpenChange={handleOpenChange}>
   <DialogPrimitive.Portal>
     <DialogPrimitive.Overlay class="preview-dialog-backdrop" />
-    <DialogPrimitive.Content class="preview-dialog-container" data-testid="sequence-preview-dialog">
+    <DialogPrimitive.Content
+      class="preview-dialog-container"
+      data-testid="sequence-preview-dialog"
+    >
       <!-- Header -->
       <div class="dialog-header">
         <span class="icon">⚠️</span>
@@ -104,14 +107,24 @@
         <div class="sequence-panel current" data-testid="current-sequence">
           <div class="panel-header">
             <span class="panel-label">Will be replaced</span>
-            <span class="beat-count" data-testid="current-beat-count">{currentBeatCount} beats</span>
+            <span class="beat-count" data-testid="current-beat-count"
+              >{currentBeatCount} beats</span
+            >
           </div>
-          <div class="sequence-name" data-testid="current-sequence-name">{currentName}</div>
+          <div class="sequence-name" data-testid="current-sequence-name">
+            {currentName}
+          </div>
           {#if currentSequence && (currentSequence.beats?.length > 0 || currentSequence.startPosition)}
-            <div class="beat-grid-preview" style:height="{currentPreviewHeight}px" data-testid="current-beat-grid">
+            <div
+              class="beat-grid-preview"
+              style:height="{currentPreviewHeight}px"
+              data-testid="current-beat-grid"
+            >
               <BeatGrid
                 beats={currentSequence.beats ?? []}
-                startPosition={currentSequence.startPosition ?? currentSequence.startingPositionBeat ?? null}
+                startPosition={currentSequence.startPosition ??
+                  currentSequence.startingPositionBeat ??
+                  null}
               />
             </div>
           {/if}
@@ -126,14 +139,24 @@
         <div class="sequence-panel incoming" data-testid="incoming-sequence">
           <div class="panel-header">
             <span class="panel-label">New sequence</span>
-            <span class="beat-count" data-testid="incoming-beat-count">{incomingBeatCount} beats</span>
+            <span class="beat-count" data-testid="incoming-beat-count"
+              >{incomingBeatCount} beats</span
+            >
           </div>
-          <div class="sequence-name" data-testid="incoming-sequence-name">{incomingName}</div>
+          <div class="sequence-name" data-testid="incoming-sequence-name">
+            {incomingName}
+          </div>
           {#if incomingSequence && (incomingSequence.beats?.length > 0 || incomingSequence.startPosition)}
-            <div class="beat-grid-preview" style:height="{incomingPreviewHeight}px" data-testid="incoming-beat-grid">
+            <div
+              class="beat-grid-preview"
+              style:height="{incomingPreviewHeight}px"
+              data-testid="incoming-beat-grid"
+            >
               <BeatGrid
                 beats={incomingSequence.beats ?? []}
-                startPosition={incomingSequence.startPosition ?? incomingSequence.startingPositionBeat ?? null}
+                startPosition={incomingSequence.startPosition ??
+                  incomingSequence.startingPositionBeat ??
+                  null}
               />
             </div>
           {/if}
@@ -147,10 +170,18 @@
 
       <!-- Actions -->
       <div class="dialog-actions">
-        <button class="dialog-button cancel-button" onclick={handleCancel} data-testid="cancel-replace">
+        <button
+          class="dialog-button cancel-button"
+          onclick={handleCancel}
+          data-testid="cancel-replace"
+        >
           Keep Current
         </button>
-        <button class="dialog-button confirm-button" onclick={handleConfirm} data-testid="confirm-replace">
+        <button
+          class="dialog-button confirm-button"
+          onclick={handleConfirm}
+          data-testid="confirm-replace"
+        >
           Replace & Edit
         </button>
       </div>
@@ -211,7 +242,13 @@
     font-size: 20px;
     font-weight: 600;
     color: var(--text-color, #ffffff);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Roboto,
+      sans-serif;
   }
 
   .sequences-comparison {

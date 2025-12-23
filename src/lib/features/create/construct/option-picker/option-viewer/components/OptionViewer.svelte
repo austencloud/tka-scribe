@@ -12,7 +12,7 @@ Orchestrates specialized components and services:
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import { fade } from "svelte/transition";
 
   import ConstructPickerHeader from "$lib/features/create/construct/shared/components/ConstructPickerHeader.svelte";
@@ -23,8 +23,18 @@ Orchestrates specialized components and services:
   import type { IOptionSizer } from "../services/contracts/IOptionSizer";
   import type { IOptionSorter } from "../services/contracts/IOptionSorter";
   import type { ISectionTitleFormatter } from "../services/contracts/ISectionTitleFormatter";
+  import type { IArrowLifecycleManager } from "$lib/shared/pictograph/arrow/orchestration/services/contracts/IArrowLifecycleManager";
+  import type { IPropSvgLoader } from "$lib/shared/pictograph/prop/services/contracts/IPropSvgLoader";
+  import type { IPropPlacementService } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacementService";
+  import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
   import { createContainerDimensionTracker } from "../state/container-dimension-tracker.svelte";
   import { createOptionPickerState } from "../state/option-picker-state.svelte";
+  import {
+    preparePictographBatch,
+    type PreparedPictographData,
+  } from "../utils/pictograph-batch-preparer";
+  import { stabilizePreparedOptions } from "../utils/prepared-pictograph-cache";
+  import { buildOptionViewerDebugText } from "../utils/option-viewer-debug";
   import OptionFilterPanel from "./OptionFilterPanel.svelte";
   import OptionViewerGridLayout from "./OptionViewerGridLayout.svelte";
   import OptionViewerSwipeLayout from "./OptionViewerSwipeLayout.svelte";
@@ -61,6 +71,12 @@ Orchestrates specialized components and services:
   let sectionTitleFormatter: ISectionTitleFormatter | null = null;
   let hapticService: IHapticFeedbackService | null = null;
 
+  // Services for batch preparation
+  let arrowLifecycleManager: IArrowLifecycleManager | null = null;
+  let propSvgLoader: IPropSvgLoader | null = null;
+  let propPlacementService: IPropPlacementService | null = null;
+  let gridModeDeriver: IGridModeDeriver | null = null;
+
   // ===== STATE =====
   let optionPickerState = $state<ReturnType<
     typeof createOptionPickerState
@@ -68,8 +84,14 @@ Orchestrates specialized components and services:
   let servicesReady = $state(false);
   let currentSectionTitle = $state<string>("Type 1");
   let isFadingOut = $state(false);
-  let isTransitioning = $state(false);
   let debugCopied = $state(false);
+
+  // Prepared pictograph data (with pre-calculated positions)
+  let preparedOptions = $state<PreparedPictographData[]>([]);
+  let isPreparingOptions = $state(false);
+
+  // Cache for stable object references - prevents component recreation
+  let preparedCache = new Map<string, PreparedPictographData>();
 
   const containerDimensions = createContainerDimensionTracker();
   let containerElement: HTMLElement;
@@ -96,12 +118,12 @@ Orchestrates specialized components and services:
 
   // ===== DERIVED - Organized pictographs =====
   const organizedPictographs = $derived(() => {
-    if (!optionPickerState?.filteredOptions.length || !optionOrganizerService) {
+    if (!preparedOptions.length || !optionOrganizerService) {
       return [];
     }
 
     const serviceResult = optionOrganizerService.organizePictographs(
-      optionPickerState.filteredOptions,
+      preparedOptions,
       "type"
     );
 
@@ -236,9 +258,6 @@ Orchestrates specialized components and services:
     });
   });
 
-  // Active transition timeouts for cleanup
-  let transitionTimeouts: Array<ReturnType<typeof setTimeout>> = [];
-
   // ===== EFFECTS - Overflow monitoring =====
   $effect(() => {
     if (!optionPickerSizingService) return;
@@ -257,7 +276,11 @@ Orchestrates specialized components and services:
 
   // ===== EFFECTS - Load options =====
   $effect(() => {
-    if (isTransitioning) return;
+    // Skip loading during fade transitions to prevent visual glitches
+    if (isFadingOut) {
+      console.log("🔒 [OptionViewer $effect] Skipped - isFadingOut=true");
+      return;
+    }
 
     if (
       optionPickerState &&
@@ -265,60 +288,33 @@ Orchestrates specialized components and services:
       currentSequence &&
       currentSequence.length > 0
     ) {
+      console.log("🔄 [OptionViewer $effect] Triggering loadOptions", {
+        sequenceLength: currentSequence.length,
+        gridMode: currentGridMode,
+        timestamp: Date.now(),
+      });
       optionPickerState.loadOptions(currentSequence, currentGridMode);
     } else if (
       optionPickerState &&
       servicesReady &&
       (!currentSequence || currentSequence.length === 0)
     ) {
+      console.log("🔄 [OptionViewer $effect] Resetting state - empty sequence");
       optionPickerState.reset();
     }
   });
 
   // ===== EFFECTS - Undo transitions =====
   $effect(() => {
-    if (isUndoingOption && optionPickerState && !isTransitioning) {
-      // Clear any existing timeouts
-      transitionTimeouts.forEach((timeout) => clearTimeout(timeout));
-      transitionTimeouts = [];
-
+    if (isUndoingOption && optionPickerState) {
       // Start fade-out
       isFadingOut = true;
-      isTransitioning = true;
 
-      // Start preloading options asynchronously IN PARALLEL with fade-out animation
-      const preloadPromise = (async () => {
-        if (
-          optionPickerState &&
-          currentSequence &&
-          currentSequence.length > 0
-        ) {
-          await optionPickerState.preloadOptions(
-            currentSequence,
-            currentGridMode
-          );
-        }
-      })();
-
-      // After fade-out completes: apply preloaded options and start fade-in
-      const fadeInTimeout = setTimeout(async () => {
-        // Ensure preload is complete before applying
-        await preloadPromise;
-
-        // Apply the preloaded options (UI updates with new options)
-        optionPickerState?.applyPreloadedOptions();
-
-        // Start fade-in with new options
+      // After fade-out completes, fade back in
+      // The $effect above will automatically reload options when isFadingOut becomes false
+      setTimeout(() => {
         isFadingOut = false;
       }, FADE_OUT_DURATION);
-      transitionTimeouts.push(fadeInTimeout);
-
-      // Complete transition
-      const completeTimeout = setTimeout(() => {
-        isTransitioning = false;
-        transitionTimeouts = [];
-      }, FADE_OUT_DURATION + FADE_IN_DURATION);
-      transitionTimeouts.push(completeTimeout);
     }
   });
 
@@ -332,73 +328,115 @@ Orchestrates specialized components and services:
     }
   });
 
+  // ===== EFFECTS - Prepare pictographs with positions =====
+  $effect(() => {
+    // Prepare options when filtered options change
+    const filtered = optionPickerState?.filteredOptions || [];
+
+    console.log("🔄 [Preparation Effect] Triggered", {
+      filteredCount: filtered.length,
+      firstOption: filtered[0]?.letter,
+      isFadingOut,
+    });
+
+    if (filtered.length === 0) {
+      preparedOptions = [];
+      isPreparingOptions = false;
+      isFadingOut = false;
+      return;
+    }
+
+    // Skip if services not ready
+    if (!servicesReady) {
+      return;
+    }
+
+    // Skip if services not initialized
+    if (
+      !arrowLifecycleManager ||
+      !propSvgLoader ||
+      !propPlacementService ||
+      !gridModeDeriver
+    ) {
+      return;
+    }
+
+    // Use untrack to prevent reactive re-runs during async operation
+    untrack(() => {
+      // Prepare all pictographs in batch
+      isPreparingOptions = true;
+
+      preparePictographBatch(
+        filtered,
+        arrowLifecycleManager!,
+        propSvgLoader!,
+        propPlacementService!,
+        gridModeDeriver!
+      )
+        .then((prepared) => {
+          console.log("✅ [Preparation Effect] Complete", {
+            preparedCount: prepared.length,
+            firstPrepared: prepared[0]?.letter,
+            hasPositions: !!prepared[0]?._prepared,
+          });
+
+          // Memoize: reuse existing objects if ID matches (prevents component recreation)
+          const stabilized = stabilizePreparedOptions(
+            prepared,
+            preparedCache
+          );
+
+          preparedOptions = stabilized;
+          isPreparingOptions = false;
+          // Re-enable buttons after content is ready
+          console.log(
+            "✨ [Preparation Effect] Setting isFadingOut = false, fade-in should start"
+          );
+          isFadingOut = false;
+        })
+        .catch((error) => {
+          console.error("Failed to prepare pictographs:", error);
+          // Fallback: use unprepared options
+          preparedOptions = filtered as PreparedPictographData[];
+          isPreparingOptions = false;
+          isFadingOut = false;
+        });
+    });
+  });
+
   // ===== HANDLERS =====
   async function handleOptionSelected(option: PictographData) {
-    if (!optionPickerState || isTransitioning) return;
-
-    try {
-      performance.mark("option-click-start");
-      hapticService?.trigger("selection");
-
-      // Instant feedback
-      onOptionSelected(option);
-      performance.mark("option-selected-callback-complete");
-
-      // Clear any existing timeouts
-      transitionTimeouts.forEach((timeout) => clearTimeout(timeout));
-      transitionTimeouts = [];
-
-      // Start fade-out
-      isFadingOut = true;
-      isTransitioning = true;
-
-      // Update state immediately (non-blocking)
-      optionPickerState.selectOption(option);
-
-      // Start preloading options asynchronously IN PARALLEL with fade-out animation
-      // This loads options without updating the UI (old options remain visible during fade-out)
-      const preloadPromise = (async () => {
-        if (
-          optionPickerState &&
-          currentSequence &&
-          currentSequence.length > 0
-        ) {
-          await optionPickerState.preloadOptions(
-            currentSequence,
-            currentGridMode
-          );
-          performance.mark("option-picker-preload-complete");
-        }
-      })();
-
-      // After fade-out completes: apply preloaded options and start fade-in
-      const fadeInTimeout = setTimeout(async () => {
-        // Ensure preload is complete before applying
-        await preloadPromise;
-
-        // Apply the preloaded options (UI updates with new options)
-        optionPickerState?.applyPreloadedOptions();
-        performance.mark("option-picker-state-complete");
-
-        // Start fade-in with new options
-        isFadingOut = false;
-      }, FADE_OUT_DURATION);
-      transitionTimeouts.push(fadeInTimeout);
-
-      // Complete transition after both animations complete
-      const completeTimeout = setTimeout(() => {
-        isTransitioning = false;
-        transitionTimeouts = [];
-        performance.mark("transition-complete");
-      }, FADE_OUT_DURATION + FADE_IN_DURATION);
-      transitionTimeouts.push(completeTimeout);
-    } catch (error) {
-      console.error("Failed to select option:", error);
-      isFadingOut = false;
-      isTransitioning = false;
-      transitionTimeouts.forEach((timeout) => clearTimeout(timeout));
-      transitionTimeouts = [];
+    if (!optionPickerState || isFadingOut) {
+      console.log(
+        "⛔ [handleOptionSelected] Blocked - already fading or no state"
+      );
+      return;
     }
+
+    console.log("🖱️ [handleOptionSelected] Starting fade-out");
+    hapticService?.trigger("selection");
+
+    // Step 1: Start fade-out, disable buttons
+    isFadingOut = true;
+    console.log(
+      "🌫️ [handleOptionSelected] isFadingOut = true, waiting for fade..."
+    );
+
+    // Step 2: Wait for fade-out to complete BEFORE updating data
+    // This ensures the user sees the current content fade out
+    await new Promise((resolve) => setTimeout(resolve, FADE_OUT_DURATION));
+
+    console.log("⏱️ [handleOptionSelected] Fade complete, updating data...");
+
+    // Step 3: Now update the data (while content is invisible)
+    onOptionSelected(option);
+    optionPickerState.selectOption(option);
+
+    console.log(
+      "📦 [handleOptionSelected] Data updated, waiting for preparation..."
+    );
+    // Note: isFadingOut will be set to false by the preparation effect
+    // when new content is ready, triggering fade-in
   }
 
   function handleSectionChange(sectionIndex: number) {
@@ -414,54 +452,12 @@ Orchestrates specialized components and services:
   async function copyDebugInfo() {
     if (!optionPickerState) return;
 
-    // Helper to extract motion debug data from prop sequence
-    const getMotionDebugData = (p: PictographData) => ({
-      hasBlueMotion: !!p.motions?.blue,
-      hasRedMotion: !!p.motions?.red,
-      blueMotion: p.motions?.blue
-        ? {
-            startLocation: p.motions.blue.startLocation,
-            endLocation: p.motions.blue.endLocation,
-            startOrientation: p.motions.blue.startOrientation,
-            endOrientation: p.motions.blue.endOrientation,
-            motionType: p.motions.blue.motionType,
-          }
-        : null,
-      redMotion: p.motions?.red
-        ? {
-            startLocation: p.motions.red.startLocation,
-            endLocation: p.motions.red.endLocation,
-            startOrientation: p.motions.red.startOrientation,
-            endOrientation: p.motions.red.endOrientation,
-            motionType: p.motions.red.motionType,
-          }
-        : null,
-    });
-
-    // Get last beat from prop for comparison
-    const lastPropBeat = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : null;
-    const lastPropBeatMotionData = lastPropBeat ? getMotionDebugData(lastPropBeat) : null;
-
-    const debugInfo = {
-      ...optionPickerState.getDebugInfo(),
-      // Additional context from component
-      componentContext: {
-        currentSequenceProp: currentSequence.map((p, i) => ({
-          index: i,
-          id: p.id,
-          letter: p.letter,
-          startPosition: p.startPosition,
-          endPosition: p.endPosition,
-          ...getMotionDebugData(p),
-        })),
-        currentSequencePropLength: currentSequence.length,
-        lastPropBeatHasMotions: lastPropBeatMotionData
-          ? lastPropBeatMotionData.hasBlueMotion && lastPropBeatMotionData.hasRedMotion
-          : false,
-        lastPropBeatMotionData,
+    const debugText = buildOptionViewerDebugText(
+      optionPickerState.getDebugInfo(),
+      {
+        currentSequence,
         currentGridMode,
         isUndoingOption,
-        isTransitioning,
         isFadingOut,
         servicesReady,
         containerDimensions: {
@@ -470,63 +466,8 @@ Orchestrates specialized components and services:
           isReady: containerDimensions.isReady,
         },
         organizedPictographsCount: organizedPictographs().length,
-      },
-    };
-
-    // Format motion data for readable output
-    const formatMotion = (motion: typeof debugInfo.lastBeatMotionData) => {
-      if (!motion) return "  No motion data";
-      return `  Has Blue: ${motion.hasBlueMotion}, Has Red: ${motion.hasRedMotion}
-  Blue: ${motion.blueMotion ? `${motion.blueMotion.startLocation} → ${motion.blueMotion.endLocation} (${motion.blueMotion.motionType})` : "MISSING"}
-  Red: ${motion.redMotion ? `${motion.redMotion.startLocation} → ${motion.redMotion.endLocation} (${motion.redMotion.motionType})` : "MISSING"}`;
-    };
-
-    const debugText = `=== OPTION VIEWER DEBUG INFO ===
-Timestamp: ${debugInfo.timestamp}
-Issue: "No options available" shown when sequence should have options
-
---- State ---
-State: ${debugInfo.state}
-Options loaded: ${debugInfo.optionsCount}
-Filtered options: ${debugInfo.filteredOptionsCount}
-Last sequence ID: ${debugInfo.lastSequenceId}
-Error: ${debugInfo.error || "none"}
-
---- CRITICAL: Last Beat Motion Data (STATE - used for option loading) ---
-Last beat has valid motions: ${debugInfo.lastBeatHasMotions ? "YES ✓" : "NO ✗ (This is likely the problem!)"}
-${formatMotion(debugInfo.lastBeatMotionData)}
-
---- Last Beat Motion Data (PROP - from component) ---
-Last prop beat has valid motions: ${debugInfo.componentContext.lastPropBeatHasMotions ? "YES ✓" : "NO ✗"}
-${formatMotion(debugInfo.componentContext.lastPropBeatMotionData)}
-
---- Sequence Info ---
-Current sequence length (state): ${debugInfo.currentSequenceLength}
-Current sequence length (prop): ${debugInfo.componentContext.currentSequencePropLength}
-Grid mode: ${debugInfo.componentContext.currentGridMode}
-
---- Sequence Details (state) - with motion data ---
-${JSON.stringify(debugInfo.currentSequence, null, 2)}
-
---- Sequence Details (prop) - with motion data ---
-${JSON.stringify(debugInfo.componentContext.currentSequenceProp, null, 2)}
-
---- Filter Settings ---
-Continuous only: ${debugInfo.isContinuousOnly}
-Sort method: ${debugInfo.sortMethod}
-
---- Component Context ---
-Services ready: ${debugInfo.componentContext.servicesReady}
-Is undoing: ${debugInfo.componentContext.isUndoingOption}
-Is transitioning: ${debugInfo.componentContext.isTransitioning}
-Is fading out: ${debugInfo.componentContext.isFadingOut}
-Container dimensions: ${debugInfo.componentContext.containerDimensions.width}x${debugInfo.componentContext.containerDimensions.height}
-Container ready: ${debugInfo.componentContext.containerDimensions.isReady}
-Organized sections: ${debugInfo.componentContext.organizedPictographsCount}
-
---- Full JSON ---
-${JSON.stringify(debugInfo, null, 2)}
-`;
+      }
+    );
 
     try {
       await navigator.clipboard.writeText(debugText);
@@ -561,6 +502,16 @@ ${JSON.stringify(debugInfo, null, 2)}
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
+
+      // Resolve batch preparation services
+      arrowLifecycleManager = resolve<IArrowLifecycleManager>(
+        TYPES.IArrowLifecycleManager
+      );
+      propSvgLoader = resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
+      propPlacementService = resolve<IPropPlacementService>(
+        TYPES.IPropPlacementService
+      );
+      gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
 
       // Create state
       optionPickerState = createOptionPickerState({
@@ -612,7 +563,8 @@ ${JSON.stringify(debugInfo, null, 2)}
         <div class="loading-state">
           <p>Initializing container...</p>
         </div>
-      {:else if optionPickerState.state === "loading"}
+      {:else if optionPickerState.state === "loading" && preparedOptions.length === 0}
+        <!-- Only show loading message on initial load, not during updates -->
         <div class="loading-state">
           <p>Loading options...</p>
         </div>
@@ -621,7 +573,7 @@ ${JSON.stringify(debugInfo, null, 2)}
           <p>Error loading options: {optionPickerState.error}</p>
           <button onclick={() => optionPickerState?.clearError()}>Retry</button>
         </div>
-      {:else if optionPickerState.filteredOptions.length === 0 && !isTransitioning}
+      {:else if preparedOptions.length === 0 && !isFadingOut}
         <div class="empty-state">
           <p>No options available for the current sequence.</p>
           <button class="debug-copy-btn" onclick={copyDebugInfo}>
@@ -633,27 +585,36 @@ ${JSON.stringify(debugInfo, null, 2)}
             >
           {/if}
         </div>
-      {:else if optionPickerState.filteredOptions.length > 0}
-        {#if shouldUseSwipeLayout()}
-          <OptionViewerSwipeLayout
-            organizedPictographs={organizedPictographs()}
-            onPictographSelected={handleOptionSelected}
-            onSectionChange={handleSectionChange}
-            layoutConfig={layoutConfig()}
-            {currentSequence}
-            isTransitioning={isTransitioning || isUndoingOption}
-            {isFadingOut}
-          />
-        {:else}
-          <OptionViewerGridLayout
-            organizedPictographs={organizedPictographs()}
-            onPictographSelected={handleOptionSelected}
-            layoutConfig={layoutConfig()}
-            {currentSequence}
-            {isFadingOut}
-            fitToViewport={shouldFitToViewport()}
-          />
-        {/if}
+      {:else if preparedOptions.length > 0}
+        <!-- Fade wrapper - inline style for reliable opacity transition -->
+        <div
+          class="fade-wrapper"
+          style="opacity: {isFadingOut
+            ? 0
+            : 1}; transition: opacity {isFadingOut
+            ? FADE_OUT_DURATION
+            : FADE_IN_DURATION}ms ease;"
+        >
+          {#if shouldUseSwipeLayout()}
+            <OptionViewerSwipeLayout
+              organizedPictographs={organizedPictographs()}
+              onPictographSelected={handleOptionSelected}
+              onSectionChange={handleSectionChange}
+              layoutConfig={layoutConfig()}
+              {currentSequence}
+              {isFadingOut}
+            />
+          {:else}
+            <OptionViewerGridLayout
+              organizedPictographs={organizedPictographs()}
+              onPictographSelected={handleOptionSelected}
+              layoutConfig={layoutConfig()}
+              {currentSequence}
+              {isFadingOut}
+              fitToViewport={shouldFitToViewport()}
+            />
+          {/if}
+        </div>
       {/if}
     </div>
 
@@ -733,5 +694,19 @@ ${JSON.stringify(debugInfo, null, 2)}
     margin-top: var(--spacing-sm);
     color: #4caf50;
     font-size: 0.8rem;
+  }
+
+  /* Fade wrapper for smooth transitions between option sets */
+  .fade-wrapper {
+    width: 100%;
+    height: 100%;
+    opacity: 1;
+    transition: opacity var(--fade-in-duration, 250ms) ease-in;
+  }
+
+  .fade-wrapper.fading-out {
+    opacity: 0;
+    transition: opacity var(--fade-duration, 250ms) ease-out;
+    pointer-events: none; /* Prevent clicks during fade-out */
   }
 </style>

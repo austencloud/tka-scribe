@@ -28,7 +28,9 @@ export interface GridSizingConfig {
   manualColumnCount?: number | null;
 }
 
-const DEFAULT_SIZING: Omit<Required<GridSizingConfig>, 'manualColumnCount'> & { manualColumnCount: number | null } = {
+const DEFAULT_SIZING: Omit<Required<GridSizingConfig>, "manualColumnCount"> & {
+  manualColumnCount: number | null;
+} = {
   minCellSize: 40, // Reduced from 50px to allow fitting more rows on small screens
   maxCellSize: 200,
   widthPaddingRatio: 0.95,
@@ -96,8 +98,14 @@ export function calculateGridLayout(
     const totalHeightGaps = (rows - 1) * gridGap;
 
     // Calculate max cell size after subtracting gap space AND container padding
-    const availableWidth = containerWidth * sizing.widthPaddingRatio - totalWidthGaps - scrollContainerPadding;
-    const availableHeight = containerHeight * sizing.heightPaddingRatio - totalHeightGaps - scrollContainerPadding;
+    const availableWidth =
+      containerWidth * sizing.widthPaddingRatio -
+      totalWidthGaps -
+      scrollContainerPadding;
+    const availableHeight =
+      containerHeight * sizing.heightPaddingRatio -
+      totalHeightGaps -
+      scrollContainerPadding;
 
     const maxCellWidth = availableWidth / totalColumns;
 

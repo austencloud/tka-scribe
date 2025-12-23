@@ -43,7 +43,7 @@ Shows contextual action buttons based on current phase:
   // Show undo only when there's something to undo
   const canUndo = $derived(
     (phase === "blue" && bluePathLength > 0) ||
-    (phase === "red" && redPathLength > 0)
+      (phase === "red" && redPathLength > 0)
   );
 
   function handleUndo() {
@@ -78,7 +78,13 @@ Shows contextual action buttons based on current phase:
         aria-label="Undo last position"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M4 8L8 4M4 8L8 12M4 8H14C15.1046 8 16 8.89543 16 10V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M4 8L8 4M4 8L8 12M4 8H14C15.1046 8 16 8.89543 16 10V14"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         <span>Undo</span>
       </button>
@@ -90,7 +96,13 @@ Shows contextual action buttons based on current phase:
       >
         <span>Next: Red Hand</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M8 4L14 10L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M8 4L14 10L8 16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
     </div>
@@ -98,7 +110,6 @@ Shows contextual action buttons based on current phase:
     {#if bluePathLength > 0 && bluePathLength < 2}
       <p class="hint-text">Add at least 2 positions to continue</p>
     {/if}
-
   {:else if phase === "red"}
     <!-- Red hand phase controls -->
     <div class="controls-row">
@@ -109,7 +120,13 @@ Shows contextual action buttons based on current phase:
         aria-label="Undo last position"
       >
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M4 8L8 4M4 8L8 12M4 8H14C15.1046 8 16 8.89543 16 10V14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M4 8L8 4M4 8L8 12M4 8H14C15.1046 8 16 8.89543 16 10V14"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         <span>Undo</span>
       </button>
@@ -121,24 +138,34 @@ Shows contextual action buttons based on current phase:
       >
         <span>Choose Rotation</span>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M8 4L14 10L8 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M8 4L14 10L8 16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
       </button>
     </div>
 
     {#if redPathLength < bluePathLength}
-      <p class="hint-text">Match blue hand length ({redPathLength}/{bluePathLength} positions)</p>
+      <p class="hint-text">
+        Match blue hand length ({redPathLength}/{bluePathLength} positions)
+      </p>
     {/if}
-
   {:else if phase === "complete"}
     <!-- Completion phase controls -->
     <div class="controls-row centered">
-      <button
-        class="control-button primary green"
-        onclick={handleReset}
-      >
+      <button class="control-button primary green" onclick={handleReset}>
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path d="M4 10C4 6.68629 6.68629 4 10 4C12.2208 4 14.1599 5.21171 15.1973 7M16 10C16 13.3137 13.3137 16 10 16C7.77915 16 5.84008 14.7883 4.80269 13M15 4V7H12M5 16V13H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path
+            d="M4 10C4 6.68629 6.68629 4 10 4C12.2208 4 14.1599 5.21171 15.1973 7M16 10C16 13.3137 13.3137 16 10 16C7.77915 16 5.84008 14.7883 4.80269 13M15 4V7H12M5 16V13H8"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
         </svg>
         <span>Build Another</span>
       </button>
@@ -153,7 +180,11 @@ Shows contextual action buttons based on current phase:
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: linear-gradient(to top, var(--theme-panel-bg, rgba(0, 0, 0, 0.4)), transparent);
+    background: linear-gradient(
+      to top,
+      var(--theme-panel-bg, rgba(0, 0, 0, 0.4)),
+      transparent
+    );
   }
 
   .controls-row {

@@ -73,7 +73,8 @@
         motions: beatData.motions,
       };
 
-      const calculated = await arrowOrchestrator.calculateAllArrowPoints(pictographData);
+      const calculated =
+        await arrowOrchestrator.calculateAllArrowPoints(pictographData);
 
       // Merge calculated motions back into beat data
       calculatedData = {
@@ -117,7 +118,10 @@
       // Calculate orientation key (uses blue motion by default)
       let oriKey = "unknown";
       if (blueMotion) {
-        oriKey = oriKeyGenerator.generateOrientationKey(blueMotion, pictographData);
+        oriKey = oriKeyGenerator.generateOrientationKey(
+          blueMotion,
+          pictographData
+        );
       }
 
       // Calculate turns tuple
@@ -130,20 +134,22 @@
       if (blueMotion) {
         const motionType = blueMotion.motionType?.toLowerCase();
         if (motionType === "static" || motionType === "dash") {
-          blueRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
-            blueMotion,
-            pictographData
-          );
+          blueRotationOverrideKey =
+            rotationKeyGenerator.generateRotationAngleOverrideKey(
+              blueMotion,
+              pictographData
+            );
         }
       }
 
       if (redMotion) {
         const motionType = redMotion.motionType?.toLowerCase();
         if (motionType === "static" || motionType === "dash") {
-          redRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
-            redMotion,
-            pictographData
-          );
+          redRotationOverrideKey =
+            rotationKeyGenerator.generateRotationAngleOverrideKey(
+              redMotion,
+              pictographData
+            );
         }
       }
 
@@ -178,11 +184,12 @@
             blueMotionData,
             pictographData
           );
-          const blueHasOverride = await specialPlacementService.hasRotationAngleOverride(
-            blueMotionData,
-            pictographData,
-            blueKey
-          );
+          const blueHasOverride =
+            await specialPlacementService.hasRotationAngleOverride(
+              blueMotionData,
+              pictographData,
+              blueKey
+            );
           blueRotationOverride = { hasOverride: blueHasOverride };
         } else {
           blueRotationOverride = null; // Pro/Anti/Float don't have overrides
@@ -198,11 +205,12 @@
             redMotionData,
             pictographData
           );
-          const redHasOverride = await specialPlacementService.hasRotationAngleOverride(
-            redMotionData,
-            pictographData,
-            redKey
-          );
+          const redHasOverride =
+            await specialPlacementService.hasRotationAngleOverride(
+              redMotionData,
+              pictographData,
+              redKey
+            );
           redRotationOverride = { hasOverride: redHasOverride };
         } else {
           redRotationOverride = null; // Pro/Anti/Float don't have overrides
@@ -221,7 +229,11 @@
   // Copy state for feedback
   let copiedSection = $state<string | null>(null);
 
-  function formatMotionText(motion: MotionData | undefined, color: string, rotationOverride: { hasOverride: boolean } | null): string {
+  function formatMotionText(
+    motion: MotionData | undefined,
+    color: string,
+    rotationOverride: { hasOverride: boolean } | null
+  ): string {
     if (!motion) return `${color.toUpperCase()} MOTION: None`;
 
     const arrow = motion.arrowPlacementData;
@@ -247,20 +259,26 @@
 
     // Arrow placement section
     lines.push(``, `  ARROW PLACEMENT:`);
-    lines.push(`    Position: (${arrow?.positionX?.toFixed(2) ?? "N/A"}, ${arrow?.positionY?.toFixed(2) ?? "N/A"})`);
+    lines.push(
+      `    Position: (${arrow?.positionX?.toFixed(2) ?? "N/A"}, ${arrow?.positionY?.toFixed(2) ?? "N/A"})`
+    );
     lines.push(`    Rotation: ${arrow?.rotationAngle?.toFixed(1) ?? "N/A"}°`);
     lines.push(`    SVG Mirrored: ${arrow?.svgMirrored ? "Yes" : "No"}`);
 
     // Rotation override info (only for STATIC/DASH)
     if (rotationOverride) {
-      lines.push(`    Rotation Override: ${rotationOverride.hasOverride ? "YES" : "No"}`);
+      lines.push(
+        `    Rotation Override: ${rotationOverride.hasOverride ? "YES" : "No"}`
+      );
     }
 
     if (arrow?.manualAdjustmentX || arrow?.manualAdjustmentY) {
-      lines.push(`    Manual Adjustment: (${arrow?.manualAdjustmentX?.toFixed(2) ?? 0}, ${arrow?.manualAdjustmentY?.toFixed(2) ?? 0})`);
+      lines.push(
+        `    Manual Adjustment: (${arrow?.manualAdjustmentX?.toFixed(2) ?? 0}, ${arrow?.manualAdjustmentY?.toFixed(2) ?? 0})`
+      );
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 
   function formatBasicInfo(): string {
@@ -330,9 +348,13 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
         <div class="header-left">
           <i class="fas fa-magnifying-glass"></i>
           <h2>Pictograph Inspector</h2>
-          <span class="beat-badge">Beat {displayData?.beatNumber ?? beatData.beatNumber}</span>
+          <span class="beat-badge"
+            >Beat {displayData?.beatNumber ?? beatData.beatNumber}</span
+          >
           {#if displayData?.letter ?? beatData.letter}
-            <span class="letter-badge">{displayData?.letter ?? beatData.letter}</span>
+            <span class="letter-badge"
+              >{displayData?.letter ?? beatData.letter}</span
+            >
           {/if}
           {#if isCalculating}
             <span class="calculating-badge">
@@ -351,7 +373,11 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
           </button>
           <button
             class="copy-json-btn"
-            onclick={() => copyToClipboard(JSON.stringify(displayData ?? beatData, null, 2), "json")}
+            onclick={() =>
+              copyToClipboard(
+                JSON.stringify(displayData ?? beatData, null, 2),
+                "json"
+              )}
             disabled={isCalculating}
           >
             <i class="fas fa-code"></i>
@@ -376,7 +402,9 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                 title="Copy Basic Info"
               >
                 <i class="fas fa-copy"></i>
-                {#if copiedSection === "basic"}<span class="copied-label">Copied!</span>{/if}
+                {#if copiedSection === "basic"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
               </button>
             </div>
             <div class="data-block">
@@ -386,15 +414,21 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
               </div>
               <div class="data-row">
                 <span class="key">Letter</span>
-                <span class="val highlight">{displayData?.letter ?? "None"}</span>
+                <span class="val highlight"
+                  >{displayData?.letter ?? "None"}</span
+                >
               </div>
               <div class="data-row">
                 <span class="key">Grid Mode</span>
-                <span class="val">{blueMotion?.gridMode ?? redMotion?.gridMode ?? "N/A"}</span>
+                <span class="val"
+                  >{blueMotion?.gridMode ?? redMotion?.gridMode ?? "N/A"}</span
+                >
               </div>
               <div class="data-row">
                 <span class="key">Prop Type</span>
-                <span class="val">{blueMotion?.propType ?? redMotion?.propType ?? "N/A"}</span>
+                <span class="val"
+                  >{blueMotion?.propType ?? redMotion?.propType ?? "N/A"}</span
+                >
               </div>
               <div class="data-row">
                 <span class="key">Start Pos</span>
@@ -428,14 +462,17 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                   </h4>
                   <button
                     class="copy-btn small"
-                    onclick={() => copyToClipboard(
-                      `Grid Mode: ${lookupKeys.gridMode}\nOri Key: ${lookupKeys.oriKey}\nTurns Tuple: ${lookupKeys.turnsTuple}\nBlue Rot Key: ${lookupKeys.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`,
-                      "keys"
-                    )}
+                    onclick={() =>
+                      copyToClipboard(
+                        `Grid Mode: ${lookupKeys.gridMode}\nOri Key: ${lookupKeys.oriKey}\nTurns Tuple: ${lookupKeys.turnsTuple}\nBlue Rot Key: ${lookupKeys.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`,
+                        "keys"
+                      )}
                     title="Copy Lookup Keys"
                   >
                     <i class="fas fa-copy"></i>
-                    {#if copiedSection === "keys"}<span class="copied-label">!</span>{/if}
+                    {#if copiedSection === "keys"}<span class="copied-label"
+                        >!</span
+                      >{/if}
                   </button>
                 </div>
                 <div class="data-block compact">
@@ -449,18 +486,23 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                   </div>
                   <div class="data-row key-row highlight-key">
                     <span class="key">Turns Tuple</span>
-                    <span class="val mono key-val">{lookupKeys.turnsTuple}</span>
+                    <span class="val mono key-val">{lookupKeys.turnsTuple}</span
+                    >
                   </div>
                   {#if lookupKeys.blueRotationOverrideKey}
                     <div class="data-row key-row blue-key">
                       <span class="key">Blue Rot Key</span>
-                      <span class="val mono key-val">{lookupKeys.blueRotationOverrideKey}</span>
+                      <span class="val mono key-val"
+                        >{lookupKeys.blueRotationOverrideKey}</span
+                      >
                     </div>
                   {/if}
                   {#if lookupKeys.redRotationOverrideKey}
                     <div class="data-row key-row red-key">
                       <span class="key">Red Rot Key</span>
-                      <span class="val mono key-val">{lookupKeys.redRotationOverrideKey}</span>
+                      <span class="val mono key-val"
+                        >{lookupKeys.redRotationOverrideKey}</span
+                      >
                     </div>
                   {/if}
                 </div>
@@ -474,11 +516,17 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
               <h3><span class="dot blue"></span> Blue Motion</h3>
               <button
                 class="copy-btn"
-                onclick={() => copyToClipboard(formatMotionText(blueMotion, "blue", blueRotationOverride), "blue")}
+                onclick={() =>
+                  copyToClipboard(
+                    formatMotionText(blueMotion, "blue", blueRotationOverride),
+                    "blue"
+                  )}
                 title="Copy Blue Motion"
               >
                 <i class="fas fa-copy"></i>
-                {#if copiedSection === "blue"}<span class="copied-label">Copied!</span>{/if}
+                {#if copiedSection === "blue"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
               </button>
             </div>
             {#if blueMotion}
@@ -489,7 +537,11 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                 </div>
                 <div class="data-row">
                   <span class="key">Turns</span>
-                  <span class="val">{blueMotion.turns === "fl" ? "float" : blueMotion.turns}</span>
+                  <span class="val"
+                    >{blueMotion.turns === "fl"
+                      ? "float"
+                      : blueMotion.turns}</span
+                  >
                 </div>
                 <div class="data-row">
                   <span class="key">Rotation</span>
@@ -527,32 +579,55 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                 <div class="data-block compact">
                   <div class="data-row">
                     <span class="key">Pos X</span>
-                    <span class="val mono">{blueMotion.arrowPlacementData?.positionX?.toFixed(2) ?? "N/A"}</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.positionX?.toFixed(2) ??
+                        "N/A"}</span
+                    >
                   </div>
                   <div class="data-row">
                     <span class="key">Pos Y</span>
-                    <span class="val mono">{blueMotion.arrowPlacementData?.positionY?.toFixed(2) ?? "N/A"}</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.positionY?.toFixed(2) ??
+                        "N/A"}</span
+                    >
                   </div>
                   <div class="data-row">
                     <span class="key">Rotation</span>
-                    <span class="val mono">{blueMotion.arrowPlacementData?.rotationAngle?.toFixed(1) ?? "N/A"}°</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.rotationAngle?.toFixed(
+                        1
+                      ) ?? "N/A"}°</span
+                    >
                   </div>
                   <div class="data-row">
                     <span class="key">Mirrored</span>
-                    <span class="val">{blueMotion.arrowPlacementData?.svgMirrored ? "Yes" : "No"}</span>
+                    <span class="val"
+                      >{blueMotion.arrowPlacementData?.svgMirrored
+                        ? "Yes"
+                        : "No"}</span
+                    >
                   </div>
                   {#if blueRotationOverride}
-                    <div class="data-row" class:override-active={blueRotationOverride.hasOverride}>
+                    <div
+                      class="data-row"
+                      class:override-active={blueRotationOverride.hasOverride}
+                    >
                       <span class="key">Rot Override</span>
-                      <span class="val">{blueRotationOverride.hasOverride ? "YES" : "No"}</span>
+                      <span class="val"
+                        >{blueRotationOverride.hasOverride ? "YES" : "No"}</span
+                      >
                     </div>
                   {/if}
                   {#if blueMotion.arrowPlacementData?.manualAdjustmentX || blueMotion.arrowPlacementData?.manualAdjustmentY}
                     <div class="data-row warn">
                       <span class="key">Manual</span>
                       <span class="val mono">
-                        ({blueMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(2) ?? 0},
-                        {blueMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(2) ?? 0})
+                        ({blueMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(
+                          2
+                        ) ?? 0},
+                        {blueMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(
+                          2
+                        ) ?? 0})
                       </span>
                     </div>
                   {/if}
@@ -569,11 +644,17 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
               <h3><span class="dot red"></span> Red Motion</h3>
               <button
                 class="copy-btn"
-                onclick={() => copyToClipboard(formatMotionText(redMotion, "red", redRotationOverride), "red")}
+                onclick={() =>
+                  copyToClipboard(
+                    formatMotionText(redMotion, "red", redRotationOverride),
+                    "red"
+                  )}
                 title="Copy Red Motion"
               >
                 <i class="fas fa-copy"></i>
-                {#if copiedSection === "red"}<span class="copied-label">Copied!</span>{/if}
+                {#if copiedSection === "red"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
               </button>
             </div>
             {#if redMotion}
@@ -584,7 +665,11 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                 </div>
                 <div class="data-row">
                   <span class="key">Turns</span>
-                  <span class="val">{redMotion.turns === "fl" ? "float" : redMotion.turns}</span>
+                  <span class="val"
+                    >{redMotion.turns === "fl"
+                      ? "float"
+                      : redMotion.turns}</span
+                  >
                 </div>
                 <div class="data-row">
                   <span class="key">Rotation</span>
@@ -622,32 +707,55 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                 <div class="data-block compact">
                   <div class="data-row">
                     <span class="key">Pos X</span>
-                    <span class="val mono">{redMotion.arrowPlacementData?.positionX?.toFixed(2) ?? "N/A"}</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.positionX?.toFixed(2) ??
+                        "N/A"}</span
+                    >
                   </div>
                   <div class="data-row">
                     <span class="key">Pos Y</span>
-                    <span class="val mono">{redMotion.arrowPlacementData?.positionY?.toFixed(2) ?? "N/A"}</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.positionY?.toFixed(2) ??
+                        "N/A"}</span
+                    >
                   </div>
                   <div class="data-row">
                     <span class="key">Rotation</span>
-                    <span class="val mono">{redMotion.arrowPlacementData?.rotationAngle?.toFixed(1) ?? "N/A"}°</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.rotationAngle?.toFixed(
+                        1
+                      ) ?? "N/A"}°</span
+                    >
                   </div>
                   <div class="data-row">
                     <span class="key">Mirrored</span>
-                    <span class="val">{redMotion.arrowPlacementData?.svgMirrored ? "Yes" : "No"}</span>
+                    <span class="val"
+                      >{redMotion.arrowPlacementData?.svgMirrored
+                        ? "Yes"
+                        : "No"}</span
+                    >
                   </div>
                   {#if redRotationOverride}
-                    <div class="data-row" class:override-active={redRotationOverride.hasOverride}>
+                    <div
+                      class="data-row"
+                      class:override-active={redRotationOverride.hasOverride}
+                    >
                       <span class="key">Rot Override</span>
-                      <span class="val">{redRotationOverride.hasOverride ? "YES" : "No"}</span>
+                      <span class="val"
+                        >{redRotationOverride.hasOverride ? "YES" : "No"}</span
+                      >
                     </div>
                   {/if}
                   {#if redMotion.arrowPlacementData?.manualAdjustmentX || redMotion.arrowPlacementData?.manualAdjustmentY}
                     <div class="data-row warn">
                       <span class="key">Manual</span>
                       <span class="val mono">
-                        ({redMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(2) ?? 0},
-                        {redMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(2) ?? 0})
+                        ({redMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(
+                          2
+                        ) ?? 0},
+                        {redMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(
+                          2
+                        ) ?? 0})
                       </span>
                     </div>
                   {/if}
@@ -678,7 +786,11 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
   }
 
   .modal-content {
-    background: linear-gradient(135deg, rgba(25, 30, 40, 0.98), rgba(15, 20, 30, 0.98));
+    background: linear-gradient(
+      135deg,
+      rgba(25, 30, 40, 0.98),
+      rgba(15, 20, 30, 0.98)
+    );
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
     width: 100%;
@@ -749,7 +861,8 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
     gap: 8px;
   }
 
-  .copy-all-btn, .copy-json-btn {
+  .copy-all-btn,
+  .copy-json-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1063,8 +1176,12 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes slideUp {

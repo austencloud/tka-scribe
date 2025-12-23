@@ -8,7 +8,10 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IAutocompleteService, AutocompleteAnalysis } from "../../services/contracts/IAutocompleteService";
+  import type {
+    IAutocompleteService,
+    AutocompleteAnalysis,
+  } from "../../services/contracts/IAutocompleteService";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
@@ -94,19 +97,25 @@
   });
 
   // Shift start availability - need at least 2 beats
-  const canShiftStart = $derived(sequence && sequence.beats && sequence.beats.length >= 2);
+  const canShiftStart = $derived(
+    sequence && sequence.beats && sequence.beats.length >= 2
+  );
 
   onMount(() => {
     try {
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
-    } catch { /* Optional service */ }
+    } catch {
+      /* Optional service */
+    }
     try {
       autocompleteService = resolve<IAutocompleteService>(
         TYPES.IAutocompleteService
       );
-    } catch { /* Optional service */ }
+    } catch {
+      /* Optional service */
+    }
   });
 
   // Transform handlers
@@ -204,7 +213,10 @@
     showTurnPatternDrawer = true;
   }
 
-  function handleTurnPatternApply(result: { sequence: any; warnings?: readonly string[] }) {
+  function handleTurnPatternApply(result: {
+    sequence: any;
+    warnings?: readonly string[];
+  }) {
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
 
@@ -221,13 +233,19 @@
     showRotationDirectionDrawer = true;
   }
 
-  function handleRotationDirectionApply(result: { sequence: any; warnings?: readonly string[] }) {
+  function handleRotationDirectionApply(result: {
+    sequence: any;
+    warnings?: readonly string[];
+  }) {
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
 
     // Log any warnings
     if (result.warnings && result.warnings.length > 0) {
-      console.log("[RotationDirection] Applied with warnings:", result.warnings);
+      console.log(
+        "[RotationDirection] Applied with warnings:",
+        result.warnings
+      );
     }
 
     hapticService?.trigger("success");
@@ -260,8 +278,14 @@
       console.log("[Autocomplete] Applying CAP:", capType);
       console.log("[Autocomplete] Before - beats:", sequence.beats?.length);
 
-      const completedSequence = await autocompleteService.autocompleteSequence(sequence, { capType });
-      console.log("[Autocomplete] After - beats:", completedSequence.beats?.length);
+      const completedSequence = await autocompleteService.autocompleteSequence(
+        sequence,
+        { capType }
+      );
+      console.log(
+        "[Autocomplete] After - beats:",
+        completedSequence.beats?.length
+      );
 
       if (completedSequence.beats?.length === sequence.beats?.length) {
         console.warn("[Autocomplete] No new beats were added!");
@@ -271,7 +295,9 @@
 
       activeSequenceState.setCurrentSequence(completedSequence);
       hapticService?.trigger("success");
-      toast.success(`Completed with ${capType.replace(/_/g, ' ')}! Added ${(completedSequence.beats?.length || 0) - (sequence.beats?.length || 0)} beats`);
+      toast.success(
+        `Completed with ${capType.replace(/_/g, " ")}! Added ${(completedSequence.beats?.length || 0) - (sequence.beats?.length || 0)} beats`
+      );
 
       // Close the drawer on success
       showAutocompleteDrawer = false;
@@ -292,7 +318,8 @@
     const constructTabState = ctx.constructTabState;
     if (!constructTabState?.sequenceState) return;
 
-    const currentConstructorSequence = constructTabState.sequenceState.currentSequence;
+    const currentConstructorSequence =
+      constructTabState.sequenceState.currentSequence;
 
     // Check if sequences are identical - if so, skip modal and just navigate
     if (areSequencesEqual(sequence, currentConstructorSequence)) {
@@ -401,7 +428,9 @@
       await activeSequenceState.shiftStartPosition(beatNumber);
       const beatsRemoved = sequence.isCircular ? 0 : beatNumber - 1;
       if (beatsRemoved > 0) {
-        toast.success(`Shifted start. Removed ${beatsRemoved} beat${beatsRemoved > 1 ? 's' : ''}.`);
+        toast.success(
+          `Shifted start. Removed ${beatsRemoved} beat${beatsRemoved > 1 ? "s" : ""}.`
+        );
       } else {
         toast.success(`Beat ${beatNumber} is now beat 1`);
       }
@@ -436,7 +465,9 @@
         isCircular: sequence.isCircular,
         gridMode: sequence.gridMode,
         propType: sequence.propType,
-        startPosition: minimalBeat(sequence.startPosition || sequence.startingPositionBeat),
+        startPosition: minimalBeat(
+          sequence.startPosition || sequence.startingPositionBeat
+        ),
         beats: sequence.beats.map(minimalBeat),
       };
 
@@ -522,7 +553,8 @@
         {#if isShiftStartMode}
           <div class="shift-mode-banner">
             <span>Tap the beat to play first — it becomes Beat 1</span>
-            <button class="cancel-btn" onclick={cancelShiftStart}>Cancel</button>
+            <button class="cancel-btn" onclick={cancelShiftStart}>Cancel</button
+            >
           </div>
         {/if}
         <BeatGrid
@@ -531,8 +563,10 @@
             sequence.startingPositionBeat ||
             null}
           {selectedBeatNumber}
-          onBeatClick={isShiftStartMode ? handleShiftStartBeatSelect : handleBeatSelect}
-          onStartClick={() => isShiftStartMode ? null : handleBeatSelect(0)}
+          onBeatClick={isShiftStartMode
+            ? handleShiftStartBeatSelect
+            : handleBeatSelect}
+          onStartClick={() => (isShiftStartMode ? null : handleBeatSelect(0))}
           onBeatLongPress={isShiftStartMode ? undefined : handlePreview}
         />
       </div>
@@ -615,7 +649,11 @@
     <div class="shift-confirm-dialog">
       <h3>Shift Start Position</h3>
       <p>
-        This will permanently remove beat{pendingShiftBeatNumber - 1 > 1 ? 's' : ''} 1{pendingShiftBeatNumber - 1 > 1 ? `-${pendingShiftBeatNumber - 1}` : ''}.
+        This will permanently remove beat{pendingShiftBeatNumber - 1 > 1
+          ? "s"
+          : ""} 1{pendingShiftBeatNumber - 1 > 1
+          ? `-${pendingShiftBeatNumber - 1}`
+          : ""}.
       </p>
       <div class="dialog-actions">
         <button class="dialog-btn cancel" onclick={cancelShiftStart}>

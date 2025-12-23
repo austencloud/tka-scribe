@@ -41,7 +41,8 @@
       {item}
       {isDesktopLayout}
       expanded={isExpanded(item.id)}
-      onToggle={() => handleToggle(item.id as "mirror" | "rotate" | "swap" | "rewind")}
+      onToggle={() =>
+        handleToggle(item.id as "mirror" | "rotate" | "swap" | "rewind")}
       onApply={() => {
         if (item.id === "rotate") {
           onApplyRotate?.("cw");

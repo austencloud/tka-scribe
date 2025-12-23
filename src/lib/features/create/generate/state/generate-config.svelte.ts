@@ -8,7 +8,10 @@
 
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { CAPType, SliceSize } from "../circular/domain/models/circular-models";
-import { GenerationMode, PropContinuity } from "../shared/domain/models/generate-models";
+import {
+  GenerationMode,
+  PropContinuity,
+} from "../shared/domain/models/generate-models";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";
 
 // Re-export for convenience

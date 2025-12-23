@@ -105,7 +105,9 @@
         widthPaddingRatio: isSpotlightMode ? 1.0 : undefined,
         heightPaddingRatio: isSpotlightMode ? 1.0 : undefined,
         // Always consider height in spotlight mode to prevent vertical overflow
-        heightSizingRowThreshold: isSpotlightMode ? 9999 : heightSizingRowThreshold,
+        heightSizingRowThreshold: isSpotlightMode
+          ? 9999
+          : heightSizingRowThreshold,
         // Manual column override
         manualColumnCount,
       }
@@ -345,7 +347,11 @@
     `${beat.id ?? "no-id"}-${beat.beatNumber ?? index}-${index}`;
 </script>
 
-<div class="beat-grid-container" class:spotlight-mode={isSpotlightMode} bind:this={containerRef}>
+<div
+  class="beat-grid-container"
+  class:spotlight-mode={isSpotlightMode}
+  bind:this={containerRef}
+>
   {#if beats.length === 0 && (!startPosition || startPosition.isBlank)}
     <!-- Empty grid state -->
     <div class="empty-grid-message">
@@ -361,77 +367,77 @@
       style:--grid-cols={gridLayout().totalColumns}
       style:--cell-size="{gridLayout().cellSize}px"
     >
-        <!-- Start Position - only show if it has content -->
-        {#if startPosition && !startPosition.isBlank}
-          <div
-            class="start-tile"
-            class:has-pictograph={true}
-            title="Start Position"
-            role="button"
-            tabindex="0"
-            style:grid-row="1"
-            style:grid-column="1"
-            onclick={handleStartClick}
-            onkeydown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                handleStartClick();
-              }
-            }}
-            aria-label="Start Position"
-          >
-            <BeatCell
-              beat={startPosition}
-              index={-1}
-              shouldAnimate={displayState.shouldAnimateStartPosition}
-              isSelected={selectedBeatNumber === 0}
-              {shouldOrbitAroundCenter}
-              isPracticeBeat={practiceBeatNumber === 0}
-              {activeMode}
-              onLongPress={onBeatLongPress}
-            />
-          </div>
-        {/if}
+      <!-- Start Position - only show if it has content -->
+      {#if startPosition && !startPosition.isBlank}
+        <div
+          class="start-tile"
+          class:has-pictograph={true}
+          title="Start Position"
+          role="button"
+          tabindex="0"
+          style:grid-row="1"
+          style:grid-column="1"
+          onclick={handleStartClick}
+          onkeydown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleStartClick();
+            }
+          }}
+          aria-label="Start Position"
+        >
+          <BeatCell
+            beat={startPosition}
+            index={-1}
+            shouldAnimate={displayState.shouldAnimateStartPosition}
+            isSelected={selectedBeatNumber === 0}
+            {shouldOrbitAroundCenter}
+            isPracticeBeat={practiceBeatNumber === 0}
+            {activeMode}
+            onLongPress={onBeatLongPress}
+          />
+        </div>
+      {/if}
 
-        <!-- Beat Grid -->
-        {#each beats as beat, index (getBeatKey(beat, index))}
-          {@const position = calculateBeatPosition(index, gridLayout().columns)}
-          {@const gridRow = position.row}
-          {@const gridCol = position.column}
-          {@const isDeleting = removingBeatIndices.has(index)}
-          {@const shouldSlide =
-            removingBeatIndex !== null &&
-            !isDeleting &&
-            index > removingBeatIndex}
-          {@const shouldAnimateBeat = displayState.shouldBeatAnimate(index)}
-          {@const shouldHideBeat = displayState.shouldBeatBeHidden(index)}
-          <div
-            class="beat-container"
-            class:deleting={isDeleting}
-            class:sliding={shouldSlide}
-            class:hidden-for-sequential={shouldHideBeat}
-            style:grid-row={gridRow}
-            style:grid-column={gridCol}
-            style:animation-delay={shouldSlide
-              ? `${Math.min(index - removingBeatIndex - 1, 5) * 50}ms`
-              : "0ms"}
-          >
-            <BeatCell
-              {beat}
-              {index}
-              onClick={() => handleBeatClick(beat.beatNumber)}
-              onDelete={() => onBeatDelete?.(beat.beatNumber)}
-              onLongPress={onBeatLongPress}
-              shouldAnimate={shouldAnimateBeat}
-              isSelected={selectedBeatNumber === beat.beatNumber}
-              {shouldOrbitAroundCenter}
-              isPracticeBeat={practiceBeatNumber === beat.beatNumber}
-              {activeMode}
-              highlightStyle={highlightedBeats?.get(beat.beatNumber) ?? null}
-            />
-          </div>
-        {/each}
-      </div>
+      <!-- Beat Grid -->
+      {#each beats as beat, index (getBeatKey(beat, index))}
+        {@const position = calculateBeatPosition(index, gridLayout().columns)}
+        {@const gridRow = position.row}
+        {@const gridCol = position.column}
+        {@const isDeleting = removingBeatIndices.has(index)}
+        {@const shouldSlide =
+          removingBeatIndex !== null &&
+          !isDeleting &&
+          index > removingBeatIndex}
+        {@const shouldAnimateBeat = displayState.shouldBeatAnimate(index)}
+        {@const shouldHideBeat = displayState.shouldBeatBeHidden(index)}
+        <div
+          class="beat-container"
+          class:deleting={isDeleting}
+          class:sliding={shouldSlide}
+          class:hidden-for-sequential={shouldHideBeat}
+          style:grid-row={gridRow}
+          style:grid-column={gridCol}
+          style:animation-delay={shouldSlide
+            ? `${Math.min(index - removingBeatIndex - 1, 5) * 50}ms`
+            : "0ms"}
+        >
+          <BeatCell
+            {beat}
+            {index}
+            onClick={() => handleBeatClick(beat.beatNumber)}
+            onDelete={() => onBeatDelete?.(beat.beatNumber)}
+            onLongPress={onBeatLongPress}
+            shouldAnimate={shouldAnimateBeat}
+            isSelected={selectedBeatNumber === beat.beatNumber}
+            {shouldOrbitAroundCenter}
+            isPracticeBeat={practiceBeatNumber === beat.beatNumber}
+            {activeMode}
+            highlightStyle={highlightedBeats?.get(beat.beatNumber) ?? null}
+          />
+        </div>
+      {/each}
+    </div>
   {:else}
     <!-- Workspace mode: render grid inside scroll wrapper -->
     <div

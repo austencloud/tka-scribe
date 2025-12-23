@@ -26,10 +26,7 @@ function isPathPoint(value: unknown): value is PathPoint {
     return false;
   }
   const point = value as Partial<PathPoint>;
-  return (
-    typeof point.x === "number" &&
-    typeof point.y === "number"
-  );
+  return typeof point.x === "number" && typeof point.y === "number";
 }
 
 @injectable()
@@ -140,7 +137,10 @@ export class ReversalChecker implements IReversalChecker {
    * Determine direction between two path points using a simple cross-product
    * style heuristic. Returns `cw`, `ccw`, or `null` if not enough movement.
    */
-  private determinePathDirection(from: PathPoint, to: PathPoint): "cw" | "ccw" | null {
+  private determinePathDirection(
+    from: PathPoint,
+    to: PathPoint
+  ): "cw" | "ccw" | null {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const magnitude = Math.sqrt(dx * dx + dy * dy);

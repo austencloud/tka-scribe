@@ -94,9 +94,7 @@ export class ConstructCoordinator implements IConstructCoordinator {
     }
   }
 
-  handleGenerationRequest(
-    config: Record<string, unknown>
-  ): void {
+  handleGenerationRequest(config: Record<string, unknown>): void {
     try {
       // Generation is handled by the generate module components
       // This coordinator just facilitates communication between components

@@ -10,9 +10,12 @@
  */
 
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { PropType} from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { PropType as PropTypeEnum } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import type { DifficultyLevel, GenerationOptions } from "../domain/models/generate-models";
+import type {
+  DifficultyLevel,
+  GenerationOptions,
+} from "../domain/models/generate-models";
 import { DifficultyLevel as DifficultyEnum } from "../domain/models/generate-models";
 import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
 

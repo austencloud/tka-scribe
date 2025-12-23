@@ -135,12 +135,16 @@ export function createCreateModulePersistenceController({
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
 
       // Also check for pending edit from Discover gallery (stored in localStorage)
-      hasPendingEdit = localStorage.getItem("tka-pending-edit-sequence") !== null;
+      hasPendingEdit =
+        localStorage.getItem("tka-pending-edit-sequence") !== null;
 
       // CRITICAL: Also check session flag - pending edit may have already been processed
       // (and localStorage cleared) by the $effect before this function runs
-      const deepLinkSequenceService = resolve<IDeepLinkSequenceService>(TYPES.IDeepLinkSequenceService);
-      pendingEditWasProcessed = deepLinkSequenceService.wasPendingEditProcessedThisSession();
+      const deepLinkSequenceService = resolve<IDeepLinkSequenceService>(
+        TYPES.IDeepLinkSequenceService
+      );
+      pendingEditWasProcessed =
+        deepLinkSequenceService.wasPendingEditProcessedThisSession();
     } catch {
       // Service not available - assume no deep link
       void 0; // Suppress unused catch binding warning

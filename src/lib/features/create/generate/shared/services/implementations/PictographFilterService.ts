@@ -173,7 +173,10 @@ export class PictographFilterService implements IPictographFilterService {
    *
    * This ensures Type 6 static pictographs are only used when they can have visual interest via turns.
    */
-  filterStaticType6(options: PictographData[], level: number): PictographData[] {
+  filterStaticType6(
+    options: PictographData[],
+    level: number
+  ): PictographData[] {
     const filtered = options.filter((option: PictographData) => {
       if (!option.letter) return true; // Keep if no letter specified
 

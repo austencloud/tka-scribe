@@ -10,7 +10,10 @@ Matches the desktop version exactly:
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import { Letter, getLetterType } from "$lib/shared/foundation/domain/models/Letter";
+  import {
+    Letter,
+    getLetterType,
+  } from "$lib/shared/foundation/domain/models/Letter";
   import type { IAnimationService } from "$lib/shared/application/services/contracts/IAnimationService";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";

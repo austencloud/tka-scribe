@@ -212,7 +212,8 @@
       rgba(118, 75, 162, 0.9) 100%
     );
     color: white;
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 30%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   /* Remove focus outline to prevent visual distraction on mobile */

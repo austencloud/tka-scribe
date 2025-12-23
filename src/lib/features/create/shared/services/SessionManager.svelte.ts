@@ -147,7 +147,7 @@ export class SessionManager {
 
     const snapshot = await getDocs(q);
     const sessions = snapshot.docs.map(
-      (doc) => ({ ...doc.data(), sessionId: doc.id } as SequenceSession)
+      (doc) => ({ ...doc.data(), sessionId: doc.id }) as SequenceSession
     );
 
     // Sort by lastModified descending
@@ -167,7 +167,10 @@ export class SessionManager {
     if (!user) return null;
 
     const firestore = await getFirestoreInstance();
-    const sessionRef = doc(firestore, `users/${user.uid}/sessions/${sessionId}`);
+    const sessionRef = doc(
+      firestore,
+      `users/${user.uid}/sessions/${sessionId}`
+    );
     const snapshot = await getDoc(sessionRef);
 
     if (!snapshot.exists()) return null;

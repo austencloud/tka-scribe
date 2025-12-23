@@ -109,13 +109,8 @@ export function createGeneratorTabState(
 
       isInitialized = true;
     } catch (error) {
-      console.error(
-        "❌ GeneratorTabState: Failed to initialize:",
-        error
-      );
-      setError(
-        error instanceof Error ? error.message : "Failed to initialize"
-      );
+      console.error("❌ GeneratorTabState: Failed to initialize:", error);
+      setError(error instanceof Error ? error.message : "Failed to initialize");
     }
   }
 
@@ -148,10 +143,7 @@ export function createGeneratorTabState(
         await sequenceState.clearSequenceCompletely();
       }
     } catch (error) {
-      console.error(
-        "❌ GeneratorTabState: Failed to clear sequence:",
-        error
-      );
+      console.error("❌ GeneratorTabState: Failed to clear sequence:", error);
       setError(
         error instanceof Error ? error.message : "Failed to clear sequence"
       );

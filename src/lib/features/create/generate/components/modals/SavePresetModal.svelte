@@ -24,7 +24,9 @@ Provides a beautiful, unified experience for creating new presets
 
   onMount(() => {
     // Service resolution
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Focus the modal for accessibility
     modalElement?.focus();
@@ -119,7 +121,11 @@ Provides a beautiful, unified experience for creating new presets
     height: 100vh;
     height: 100dvh;
     height: var(--actual-vh, 100vh);
-    background: color-mix(in srgb, var(--theme-panel-bg, #000) 85%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #000) 85%,
+      transparent
+    );
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -216,19 +222,24 @@ Provides a beautiful, unified experience for creating new presets
       color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
       color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     border-radius: 12px;
     color: color-mix(in srgb, var(--semantic-info, #3b82f6) 100%, #93c5fd);
     font-size: 14px;
     line-height: 1.5;
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent) inset;
+    box-shadow: 0 0 0 1px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent) inset;
   }
 
   .info-banner svg {
     width: 22px;
     height: 22px;
     flex-shrink: 0;
-    filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent));
+    filter: drop-shadow(
+      0 2px 4px
+        color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent)
+    );
   }
 
   @media (max-width: 640px) {

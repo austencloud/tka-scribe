@@ -308,7 +308,9 @@
   @media (max-width: 320px) {
     :global(.panel-header .action-button),
     .panel-header .close-button {
-      min-width: var(--min-touch-target); /* NEVER below 48px for accessibility */
+      min-width: var(
+        --min-touch-target
+      ); /* NEVER below 48px for accessibility */
       min-height: var(--min-touch-target);
       width: var(--min-touch-target);
       height: var(--min-touch-target);

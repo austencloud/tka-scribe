@@ -34,8 +34,10 @@ function saveOptions(options: CustomizeOptions): void {
     const serialized: SerializedOptions = {
       startPositionLetter: options.startPosition?.letter || undefined,
       endPositionLetter: options.endPosition?.letter || undefined,
-      mustContainLetters: options.mustContainLetters.map(l => l.toString()),
-      mustNotContainLetters: options.mustNotContainLetters.map(l => l.toString()),
+      mustContainLetters: options.mustContainLetters.map((l) => l.toString()),
+      mustNotContainLetters: options.mustNotContainLetters.map((l) =>
+        l.toString()
+      ),
       timestamp: Date.now(),
     };
 
@@ -116,9 +118,9 @@ export function createCustomizeOptionsState(
   // Derived values
   const hasAnyConstraints = $derived(
     options.startPosition !== null ||
-    options.endPosition !== null ||
-    options.mustContainLetters.length > 0 ||
-    options.mustNotContainLetters.length > 0
+      options.endPosition !== null ||
+      options.mustContainLetters.length > 0 ||
+      options.mustNotContainLetters.length > 0
   );
 
   const constraintsSummary = $derived.by(() => {
@@ -164,7 +166,8 @@ export function createCustomizeOptionsState(
   // Clear only position constraints (when grid mode changes)
   // Returns true if any positions were actually cleared
   function clearPositions(): boolean {
-    const hadPositions = options.startPosition !== null || options.endPosition !== null;
+    const hadPositions =
+      options.startPosition !== null || options.endPosition !== null;
     if (hadPositions) {
       updateOptions({ startPosition: null, endPosition: null });
     }
@@ -215,4 +218,6 @@ export function createCustomizeOptionsState(
   };
 }
 
-export type CustomizeOptionsState = ReturnType<typeof createCustomizeOptionsState>;
+export type CustomizeOptionsState = ReturnType<
+  typeof createCustomizeOptionsState
+>;

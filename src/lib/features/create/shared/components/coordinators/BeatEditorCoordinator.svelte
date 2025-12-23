@@ -36,24 +36,36 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
-    } catch { /* Optional service */ }
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+    } catch {
+      /* Optional service */
+    }
     try {
-      beatOperationsService = resolve<IBeatOperationsService>(TYPES.IBeatOperationsService);
-    } catch { /* Optional service */ }
+      beatOperationsService = resolve<IBeatOperationsService>(
+        TYPES.IBeatOperationsService
+      );
+    } catch {
+      /* Optional service */
+    }
   });
 
   // Panel state
   const isOpen = $derived(panelState.isBeatEditorPanelOpen);
 
   // Get active sequence state and selected beat data
-  const activeSequenceState = $derived(CreateModuleState.getActiveTabSequenceState());
+  const activeSequenceState = $derived(
+    CreateModuleState.getActiveTabSequenceState()
+  );
   const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
   const selectedBeatData = $derived(activeSequenceState.selectedBeatData);
   const sequence = $derived(activeSequenceState.currentSequence);
 
   // Animation state for deletion visualization
-  const removingBeatIndices = $derived(activeSequenceState.getRemovingBeatIndices());
+  const removingBeatIndices = $derived(
+    activeSequenceState.getRemovingBeatIndices()
+  );
 
   // Derived state for turns calculations
   const blueMotion = $derived(selectedBeatData?.motions?.[MotionColor.BLUE]);
@@ -77,9 +89,11 @@
     if (selectedBeatNumber === null || !beatOperationsService) return;
     hapticService?.trigger("selection");
 
-    const currentTurns = color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
+    const currentTurns =
+      color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
     const newNumericTurns = Math.min(3, Math.max(-0.5, currentTurns + delta));
-    const newTurns: number | "fl" = newNumericTurns === -0.5 ? "fl" : newNumericTurns;
+    const newTurns: number | "fl" =
+      newNumericTurns === -0.5 ? "fl" : newNumericTurns;
 
     beatOperationsService.updateBeatTurns(
       selectedBeatNumber,
@@ -90,11 +104,15 @@
     );
   }
 
-  function handleRotationChange(color: MotionColor, direction: RotationDirection) {
+  function handleRotationChange(
+    color: MotionColor,
+    direction: RotationDirection
+  ) {
     if (selectedBeatNumber === null || !beatOperationsService) return;
     hapticService?.trigger("selection");
 
-    const directionString = direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
+    const directionString =
+      direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
     beatOperationsService.updateRotationDirection(
       selectedBeatNumber,
       color,
@@ -143,7 +161,10 @@
 
   // Debug effect to track panel visibility
   $effect(() => {
-    logger.log("BeatEditorCoordinator panel state changed:", panelState.isBeatEditorPanelOpen);
+    logger.log(
+      "BeatEditorCoordinator panel state changed:",
+      panelState.isBeatEditorPanelOpen
+    );
   });
 </script>
 

@@ -116,7 +116,8 @@ export class SequenceService implements ISequenceService {
 
         // Normalize sequence data to ensure start position is separated from beats
         // This handles legacy data formats where beat 0 or startingPositionBeat was mixed into beats array
-        const normalized = this.normalizationService.separateBeatsFromStartPosition(sequence);
+        const normalized =
+          this.normalizationService.separateBeatsFromStartPosition(sequence);
         sequence = {
           ...sequence,
           beats: normalized.beats,
@@ -141,10 +142,12 @@ export class SequenceService implements ISequenceService {
       // Apply reversal detection and normalization to all sequences
       return sequences.map((sequence) => {
         // Apply reversal detection
-        let processed = this.reversalDetectionService.processReversals(sequence);
+        const processed =
+          this.reversalDetectionService.processReversals(sequence);
 
         // Normalize to separate start position from beats
-        const normalized = this.normalizationService.separateBeatsFromStartPosition(processed);
+        const normalized =
+          this.normalizationService.separateBeatsFromStartPosition(processed);
         return {
           ...processed,
           beats: normalized.beats,

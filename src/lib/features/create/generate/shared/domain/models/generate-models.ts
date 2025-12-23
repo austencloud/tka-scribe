@@ -8,7 +8,10 @@
 // GENERATION OPTIONS
 // ============================================================================
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import type { CAPType, SliceSize } from "../../../circular/domain/models/circular-models";
+import type {
+  CAPType,
+  SliceSize,
+} from "../../../circular/domain/models/circular-models";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";

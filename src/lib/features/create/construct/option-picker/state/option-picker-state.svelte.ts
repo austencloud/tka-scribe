@@ -83,7 +83,17 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
   // Actions
   async function loadOptions(sequence: PictographData[], gridMode: GridMode) {
+    console.log("📍 [option-picker-state.loadOptions] CALLED", {
+      sequenceLength: sequence.length,
+      gridMode,
+      currentState: state,
+      timestamp: Date.now(),
+    });
+
     if (state === "loading") {
+      console.log(
+        "⚠️ [option-picker-state.loadOptions] BLOCKED - already loading"
+      );
       return; // Prevent concurrent loads
     }
 
@@ -94,9 +104,19 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
         : `empty-${gridMode}`;
 
     if (lastSequenceId === sequenceId) {
+      console.log(
+        "⚠️ [option-picker-state.loadOptions] SKIPPED - same sequence",
+        {
+          sequenceId,
+          lastSequenceId,
+        }
+      );
       return; // Skip reload for same sequence
     }
 
+    console.log("🔄 [option-picker-state.loadOptions] Starting load", {
+      sequenceId,
+    });
     state = "loading";
     error = null;
     lastSequenceId = sequenceId;
@@ -104,11 +124,15 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     try {
       const newOptions = await optionLoader.loadOptions(sequence, gridMode);
+      console.log("✅ [option-picker-state.loadOptions] Load complete", {
+        optionsCount: newOptions.length,
+        sequenceId,
+      });
 
       options = newOptions;
       state = "ready";
     } catch (err) {
-      console.error("❌ Failed to load options:", err);
+      console.error("❌ [option-picker-state.loadOptions] Load failed:", err);
       error = err instanceof Error ? err.message : "Failed to load options";
       state = "error";
       options = [];

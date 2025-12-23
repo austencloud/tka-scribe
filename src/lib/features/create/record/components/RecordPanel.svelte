@@ -190,7 +190,10 @@ Combines video feed with playback controls for practicing sequences.
     flex-direction: column;
     height: 100%;
     padding: var(--spacing-sm, 24px);
-    background: var(--theme-panel-elevated-bg, var(--surface-glass, rgba(0, 0, 0, 0.3)));
+    background: var(
+      --theme-panel-elevated-bg,
+      var(--surface-glass, rgba(0, 0, 0, 0.3))
+    );
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius-lg, 12px);
     overflow-y: auto;
@@ -242,7 +245,10 @@ Combines video feed with playback controls for practicing sequences.
   .progress-text {
     text-align: center;
     font-size: var(--font-size-sm, 14px);
-    color: var(--theme-text-dim, var(--foreground-muted, rgba(255, 255, 255, 0.7)));
+    color: var(
+      --theme-text-dim,
+      var(--foreground-muted, rgba(255, 255, 255, 0.7))
+    );
     font-weight: 600;
   }
 
@@ -271,7 +277,10 @@ Combines video feed with playback controls for practicing sequences.
 
   .empty-state p {
     font-size: var(--font-size-md, 16px);
-    color: var(--theme-text-dim, var(--foreground-muted, rgba(255, 255, 255, 0.7)));
+    color: var(
+      --theme-text-dim,
+      var(--foreground-muted, rgba(255, 255, 255, 0.7))
+    );
     max-width: 500px;
     line-height: 1.6;
   }

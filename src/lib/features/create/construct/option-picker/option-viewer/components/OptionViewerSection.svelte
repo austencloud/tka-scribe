@@ -18,7 +18,8 @@ Renders a section with:
   import { onMount } from "svelte";
   import { LetterTypeTextPainter } from "../utils/letter-type-text-painter";
   import { getLetterBorderColors } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import OptionPictograph from "./OptionPictograph.svelte";
+  import type { PreparedPictographData } from "../utils/pictograph-batch-preparer";
 
   // Props
   const {
@@ -221,7 +222,11 @@ Renders a section with:
 
     // When fitToViewport is true (mobile + continuous filter), calculate size
     // to ensure all options fit within the container without scrolling
-    if (fitToViewport && layoutConfig?.containerHeight && layoutConfig?.containerWidth) {
+    if (
+      fitToViewport &&
+      layoutConfig?.containerHeight &&
+      layoutConfig?.containerWidth
+    ) {
       const containerWidth = layoutConfig.containerWidth;
       const containerHeight = layoutConfig.containerHeight;
 
@@ -235,11 +240,19 @@ Renders a section with:
       const totalWidthGapSpace = (columns - 1) * gridGapValue;
       const totalHeightGapSpace = (rows - 1) * gridGapValue;
 
-      const maxWidthBasedSize = Math.floor((effectiveWidth - totalWidthGapSpace) / columns);
-      const maxHeightBasedSize = Math.floor((effectiveHeight - totalHeightGapSpace) / rows);
+      const maxWidthBasedSize = Math.floor(
+        (effectiveWidth - totalWidthGapSpace) / columns
+      );
+      const maxHeightBasedSize = Math.floor(
+        (effectiveHeight - totalHeightGapSpace) / rows
+      );
 
       // Use the smaller of width/height constraints to ensure fit
-      const fitSize = Math.min(maxWidthBasedSize, maxHeightBasedSize, basePictographSize);
+      const fitSize = Math.min(
+        maxWidthBasedSize,
+        maxHeightBasedSize,
+        basePictographSize
+      );
       const finalSize = Math.max(fitSize, 40);
 
       return {
@@ -344,36 +357,36 @@ Renders a section with:
     </div>
   {/if}
 
-  <!-- Section Content -->
-  {#if pictographsWithReversals().length > 0}
-    <div
-      class="pictographs-grid"
-      style:grid-template-columns={optimalLayout().gridColumns}
-      style:gap={layoutConfig?.gridGap || "16px"}
-      style:opacity={isFadingOut ? "0" : "1"}
-      style:transition="opacity 250ms ease-out"
-    >
-      {#each pictographsWithReversals() as pictograph (pictograph.id || `${pictograph.letter}-${pictograph.startPosition}-${pictograph.endPosition}`)}
-        {@const borderColors = getLetterBorderColors(pictograph.letter)}
-        <button
-          class="pictograph-option"
-          onclick={() => handlePictographClick(pictograph)}
-          style:width="{optimalLayout().pictographSize}px"
-          style:height="{optimalLayout().pictographSize}px"
-          style:--border-primary={borderColors.primary}
-          style:--border-secondary={borderColors.secondary}
-          style:--pictograph-size="{optimalLayout().pictographSize}px"
-          data-testid="option-item"
-          data-letter={pictograph.letter}
-        >
-          <Pictograph
-            pictographData={pictograph}
-            disableContentTransitions={true}
-          />
-        </button>
-      {/each}
-    </div>
-  {/if}
+  <!-- Section Content - Simple keyed each for component reuse -->
+  <div
+    class="pictographs-grid"
+    style:grid-template-columns={optimalLayout().gridColumns}
+    style:gap={layoutConfig?.gridGap || "16px"}
+    style:opacity={isFadingOut ? 0 : 1}
+    style:transition="opacity 250ms ease-out"
+  >
+    {#each pictographsWithReversals() as pictograph (pictograph.id || `${pictograph.letter}-${pictograph.startPosition}-${pictograph.endPosition}`)}
+      {@const borderColors = getLetterBorderColors(pictograph.letter)}
+      <button
+        class="pictograph-option"
+        onclick={() => handlePictographClick(pictograph)}
+        disabled={isFadingOut}
+        style:width="{optimalLayout().pictographSize}px"
+        style:height="{optimalLayout().pictographSize}px"
+        style:--border-primary={borderColors.primary}
+        style:--border-secondary={borderColors.secondary}
+        style:--pictograph-size="{optimalLayout().pictographSize}px"
+        data-testid="option-item"
+        data-letter={pictograph.letter}
+      >
+        <OptionPictograph
+          pictographData={pictograph as PreparedPictographData}
+          blueReversal={pictograph.blueReversal || false}
+          redReversal={pictograph.redReversal || false}
+        />
+      </button>
+    {/each}
+  </div>
 </div>
 
 <style>
@@ -445,6 +458,7 @@ Renders a section with:
     display: grid;
     justify-content: center;
     justify-items: center;
+    width: 100%;
   }
 
   .pictograph-option {
@@ -469,6 +483,25 @@ Renders a section with:
     box-shadow:
       0 1px 2px rgba(0, 0, 0, 0.1),
       0 2px 4px rgba(0, 0, 0, 0.06);
+  }
+
+  .pictograph-option:disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  /* Reduce cascade pop-in effect by optimizing SVG rendering */
+  .pictograph-option :global(.pictograph) {
+    /* Force GPU acceleration for smoother rendering */
+    transform: translateZ(0);
+    will-change: transform;
+    /* Contain layout and paint to isolate rendering */
+    contain: layout paint;
+  }
+
+  .pictograph-option :global(.pictograph svg) {
+    /* Ensure SVG renders as a single unit */
+    will-change: contents;
   }
 
   /* Desktop hover - only on hover-capable devices */

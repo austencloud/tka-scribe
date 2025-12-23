@@ -60,14 +60,22 @@
     font-size: 18px;
     color: var(--theme-text, #ffffff);
 
-    background: linear-gradient(135deg, #22d3ee 0%, color-mix(in srgb, #22d3ee 85%, #06b6d4) 100%);
+    background: linear-gradient(
+      135deg,
+      #22d3ee 0%,
+      color-mix(in srgb, #22d3ee 85%, #06b6d4) 100%
+    );
     border: 1px solid color-mix(in srgb, #22d3ee 30%, transparent);
     box-shadow: 0 4px 12px color-mix(in srgb, #22d3ee 40%, transparent);
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
-    background: linear-gradient(135deg, color-mix(in srgb, #22d3ee 85%, #06b6d4) 0%, color-mix(in srgb, #22d3ee 70%, #06b6d4) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, #22d3ee 85%, #06b6d4) 0%,
+      color-mix(in srgb, #22d3ee 70%, #06b6d4) 100%
+    );
     box-shadow: 0 6px 16px color-mix(in srgb, #22d3ee 60%, transparent);
   }
 
@@ -119,7 +127,9 @@
 
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }

@@ -22,7 +22,10 @@
     showRedRotation: boolean;
     stacked?: boolean;
     onTurnsChange: (color: MotionColor, delta: number) => void;
-    onRotationChange: (color: MotionColor, direction: RotationDirection) => void;
+    onRotationChange: (
+      color: MotionColor,
+      direction: RotationDirection
+    ) => void;
   }
 
   let {

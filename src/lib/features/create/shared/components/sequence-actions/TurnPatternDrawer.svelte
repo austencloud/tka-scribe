@@ -26,7 +26,10 @@
     isOpen: boolean;
     sequence: SequenceData | null;
     onClose: () => void;
-    onApply: (result: { sequence: SequenceData; warnings?: readonly string[] }) => void;
+    onApply: (result: {
+      sequence: SequenceData;
+      warnings?: readonly string[];
+    }) => void;
   }
 
   let { isOpen = $bindable(), sequence, onClose, onApply }: Props = $props();
@@ -54,7 +57,8 @@
     errorMessage = null;
 
     // Auto-generate name if empty
-    const finalName = patternName.trim() || `Pattern ${new Date().toLocaleTimeString()}`;
+    const finalName =
+      patternName.trim() || `Pattern ${new Date().toLocaleTimeString()}`;
 
     turnPatternState
       .savePattern(finalName, authState.user.uid, sequence)
@@ -103,7 +107,12 @@
   }
 </script>
 
-<Drawer bind:isOpen placement="right" onclose={handleClose} class="turn-pattern-drawer">
+<Drawer
+  bind:isOpen
+  placement="right"
+  onclose={handleClose}
+  class="turn-pattern-drawer"
+>
   <div class="turn-pattern-drawer-content">
     <header class="drawer-header">
       <h2>Turn Patterns</h2>
@@ -201,9 +210,16 @@
               <p class="section-desc">Apply same turn value to all beats</p>
               <div class="uniform-buttons">
                 {#each [0, 1, 2, 3] as turnValue}
-                  {@const uniformTemplate = createUniformPattern(sequence.beats.length, turnValue)}
-                  {@const uniformPattern = authState.user ? templateToPattern(uniformTemplate, authState.user.uid) : null}
-                  {@const complexityInfo = getComplexityInfo(uniformTemplate.complexity)}
+                  {@const uniformTemplate = createUniformPattern(
+                    sequence.beats.length,
+                    turnValue
+                  )}
+                  {@const uniformPattern = authState.user
+                    ? templateToPattern(uniformTemplate, authState.user.uid)
+                    : null}
+                  {@const complexityInfo = getComplexityInfo(
+                    uniformTemplate.complexity
+                  )}
                   {#if uniformPattern}
                     <button
                       class="uniform-btn"
@@ -219,10 +235,13 @@
           {/if}
 
           <!-- Templates section -->
-          {@const allTemplates = sequence ? getTemplatesForBeatCount(sequence.beats.length) : []}
-          {@const filteredTemplates = complexityFilter === "all"
-            ? allTemplates
-            : allTemplates.filter(t => t.complexity === complexityFilter)}
+          {@const allTemplates = sequence
+            ? getTemplatesForBeatCount(sequence.beats.length)
+            : []}
+          {@const filteredTemplates =
+            complexityFilter === "all"
+              ? allTemplates
+              : allTemplates.filter((t) => t.complexity === complexityFilter)}
           {#if allTemplates.length > 0}
             <div class="templates-section">
               <div class="templates-header">
@@ -232,17 +251,23 @@
                   <button
                     class="filter-btn"
                     class:active={complexityFilter === "all"}
-                    onclick={() => complexityFilter = "all"}
-                  >All</button>
+                    onclick={() => (complexityFilter = "all")}>All</button
+                  >
                   {#each ["simple", "medium", "complex"] as level}
-                    {@const info = getComplexityInfo(level as PatternComplexity)}
+                    {@const info = getComplexityInfo(
+                      level as PatternComplexity
+                    )}
                     <button
                       class="filter-btn"
                       class:active={complexityFilter === level}
-                      onclick={() => complexityFilter = level as PatternComplexity}
+                      onclick={() =>
+                        (complexityFilter = level as PatternComplexity)}
                       style="--filter-color: {info.color}"
                     >
-                      <span class="complexity-dot" style="background: {info.color}"></span>
+                      <span
+                        class="complexity-dot"
+                        style="background: {info.color}"
+                      ></span>
                       {info.label}
                     </button>
                   {/each}
@@ -251,8 +276,12 @@
 
               <div class="patterns-list">
                 {#each filteredTemplates as template}
-                  {@const pattern = authState.user ? templateToPattern(template, authState.user.uid) : null}
-                  {@const complexityInfo = getComplexityInfo(template.complexity)}
+                  {@const pattern = authState.user
+                    ? templateToPattern(template, authState.user.uid)
+                    : null}
+                  {@const complexityInfo = getComplexityInfo(
+                    template.complexity
+                  )}
                   {#if pattern}
                     <div
                       class="pattern-item template complexity-{template.complexity}"
@@ -276,7 +305,9 @@
                 {/each}
 
                 {#if filteredTemplates.length === 0}
-                  <p class="empty-filter-message">No {complexityFilter} patterns available</p>
+                  <p class="empty-filter-message">
+                    No {complexityFilter} patterns available
+                  </p>
                 {/if}
               </div>
             </div>
@@ -285,14 +316,18 @@
           <!-- User's saved patterns -->
           {#if turnPatternState.patterns.length === 0}
             <p class="empty-message">
-              No saved patterns yet. Save a pattern from the current sequence or try a template above.
+              No saved patterns yet. Save a pattern from the current sequence or
+              try a template above.
             </p>
           {:else}
             <div class="saved-patterns-section">
               <h3>Your Patterns</h3>
               <div class="patterns-list">
                 {#each turnPatternState.patterns as pattern}
-                  {@const isDisabled = applyingPattern || !sequence || sequence.beats.length !== pattern.beatCount}
+                  {@const isDisabled =
+                    applyingPattern ||
+                    !sequence ||
+                    sequence.beats.length !== pattern.beatCount}
                   <div
                     class="pattern-item"
                     class:disabled={isDisabled}
@@ -305,13 +340,16 @@
                         handleApplyPattern(pattern);
                       }
                     }}
-                    title={sequence && sequence.beats.length !== pattern.beatCount
+                    title={sequence &&
+                    sequence.beats.length !== pattern.beatCount
                       ? `Requires ${pattern.beatCount} beats`
                       : "Apply pattern"}
                   >
                     <div class="pattern-info">
                       <span class="pattern-name">{pattern.name}</span>
-                      <span class="pattern-beats">{pattern.beatCount} beats</span>
+                      <span class="pattern-beats"
+                        >{pattern.beatCount} beats</span
+                      >
                     </div>
                     <div class="pattern-actions">
                       <button
@@ -706,7 +744,8 @@
   /* Pattern items with colored glass effect */
   .pattern-item.template {
     background: color-mix(in srgb, var(--glass-color, #fff) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
   }
 
   .pattern-item.template:hover {

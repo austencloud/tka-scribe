@@ -99,46 +99,48 @@ export const VERTICAL_MIRROR_LOCATION_MAP: Record<GridLocation, GridLocation> =
  * - ALPHA3 (W-E) → ALPHA3 (W-E) - horizontals stay same
  * - GAMMA1 (W-N) ↔ GAMMA13 (W-S) - north becomes south
  */
-export const HORIZONTAL_MIRROR_POSITION_MAP: Record<GridPosition, GridPosition> =
-  {
-    // Alpha group - horizontal axis symmetry
-    [GridPosition.ALPHA1]: GridPosition.ALPHA5, // S-N ↔ N-S
-    [GridPosition.ALPHA2]: GridPosition.ALPHA4, // SW-NE ↔ NW-SE
-    [GridPosition.ALPHA3]: GridPosition.ALPHA3, // W-E → W-E (on axis)
-    [GridPosition.ALPHA4]: GridPosition.ALPHA2, // NW-SE ↔ SW-NE
-    [GridPosition.ALPHA5]: GridPosition.ALPHA1, // N-S ↔ S-N
-    [GridPosition.ALPHA6]: GridPosition.ALPHA8, // NE-SW ↔ SE-NW
-    [GridPosition.ALPHA7]: GridPosition.ALPHA7, // E-W → E-W (on axis)
-    [GridPosition.ALPHA8]: GridPosition.ALPHA6, // SE-NW ↔ NE-SW
+export const HORIZONTAL_MIRROR_POSITION_MAP: Record<
+  GridPosition,
+  GridPosition
+> = {
+  // Alpha group - horizontal axis symmetry
+  [GridPosition.ALPHA1]: GridPosition.ALPHA5, // S-N ↔ N-S
+  [GridPosition.ALPHA2]: GridPosition.ALPHA4, // SW-NE ↔ NW-SE
+  [GridPosition.ALPHA3]: GridPosition.ALPHA3, // W-E → W-E (on axis)
+  [GridPosition.ALPHA4]: GridPosition.ALPHA2, // NW-SE ↔ SW-NE
+  [GridPosition.ALPHA5]: GridPosition.ALPHA1, // N-S ↔ S-N
+  [GridPosition.ALPHA6]: GridPosition.ALPHA8, // NE-SW ↔ SE-NW
+  [GridPosition.ALPHA7]: GridPosition.ALPHA7, // E-W → E-W (on axis)
+  [GridPosition.ALPHA8]: GridPosition.ALPHA6, // SE-NW ↔ NE-SW
 
-    // Beta group - north/south pairs swap
-    [GridPosition.BETA1]: GridPosition.BETA5, // N-N ↔ S-S
-    [GridPosition.BETA2]: GridPosition.BETA4, // NE-NE ↔ SE-SE
-    [GridPosition.BETA3]: GridPosition.BETA3, // E-E → E-E (on axis)
-    [GridPosition.BETA4]: GridPosition.BETA2, // SE-SE ↔ NE-NE
-    [GridPosition.BETA5]: GridPosition.BETA1, // S-S ↔ N-N
-    [GridPosition.BETA6]: GridPosition.BETA8, // SW-SW ↔ NW-NW
-    [GridPosition.BETA7]: GridPosition.BETA7, // W-W → W-W (on axis)
-    [GridPosition.BETA8]: GridPosition.BETA6, // NW-NW ↔ SW-SW
+  // Beta group - north/south pairs swap
+  [GridPosition.BETA1]: GridPosition.BETA5, // N-N ↔ S-S
+  [GridPosition.BETA2]: GridPosition.BETA4, // NE-NE ↔ SE-SE
+  [GridPosition.BETA3]: GridPosition.BETA3, // E-E → E-E (on axis)
+  [GridPosition.BETA4]: GridPosition.BETA2, // SE-SE ↔ NE-NE
+  [GridPosition.BETA5]: GridPosition.BETA1, // S-S ↔ N-N
+  [GridPosition.BETA6]: GridPosition.BETA8, // SW-SW ↔ NW-NW
+  [GridPosition.BETA7]: GridPosition.BETA7, // W-W → W-W (on axis)
+  [GridPosition.BETA8]: GridPosition.BETA6, // NW-NW ↔ SW-SW
 
-    // Gamma group - north/south flip pattern
-    [GridPosition.GAMMA1]: GridPosition.GAMMA13, // W-N ↔ W-S
-    [GridPosition.GAMMA2]: GridPosition.GAMMA12, // NW-NE ↔ SW-SE
-    [GridPosition.GAMMA3]: GridPosition.GAMMA11, // N-E ↔ S-E
-    [GridPosition.GAMMA4]: GridPosition.GAMMA10, // NE-SE ↔ SE-NE
-    [GridPosition.GAMMA5]: GridPosition.GAMMA9, // E-S ↔ E-N
-    [GridPosition.GAMMA6]: GridPosition.GAMMA16, // SE-SW ↔ NE-NW
-    [GridPosition.GAMMA7]: GridPosition.GAMMA15, // S-W ↔ N-W
-    [GridPosition.GAMMA8]: GridPosition.GAMMA14, // SW-NW ↔ NW-SW
-    [GridPosition.GAMMA9]: GridPosition.GAMMA5, // E-N ↔ E-S
-    [GridPosition.GAMMA10]: GridPosition.GAMMA4, // SE-NE ↔ NE-SE
-    [GridPosition.GAMMA11]: GridPosition.GAMMA3, // S-E ↔ N-E
-    [GridPosition.GAMMA12]: GridPosition.GAMMA2, // SW-SE ↔ NW-NE
-    [GridPosition.GAMMA13]: GridPosition.GAMMA1, // W-S ↔ W-N
-    [GridPosition.GAMMA14]: GridPosition.GAMMA8, // NW-SW ↔ SW-NW
-    [GridPosition.GAMMA15]: GridPosition.GAMMA7, // N-W ↔ S-W
-    [GridPosition.GAMMA16]: GridPosition.GAMMA6, // NE-NW ↔ SE-SW
-  };
+  // Gamma group - north/south flip pattern
+  [GridPosition.GAMMA1]: GridPosition.GAMMA13, // W-N ↔ W-S
+  [GridPosition.GAMMA2]: GridPosition.GAMMA12, // NW-NE ↔ SW-SE
+  [GridPosition.GAMMA3]: GridPosition.GAMMA11, // N-E ↔ S-E
+  [GridPosition.GAMMA4]: GridPosition.GAMMA10, // NE-SE ↔ SE-NE
+  [GridPosition.GAMMA5]: GridPosition.GAMMA9, // E-S ↔ E-N
+  [GridPosition.GAMMA6]: GridPosition.GAMMA16, // SE-SW ↔ NE-NW
+  [GridPosition.GAMMA7]: GridPosition.GAMMA15, // S-W ↔ N-W
+  [GridPosition.GAMMA8]: GridPosition.GAMMA14, // SW-NW ↔ NW-SW
+  [GridPosition.GAMMA9]: GridPosition.GAMMA5, // E-N ↔ E-S
+  [GridPosition.GAMMA10]: GridPosition.GAMMA4, // SE-NE ↔ NE-SE
+  [GridPosition.GAMMA11]: GridPosition.GAMMA3, // S-E ↔ N-E
+  [GridPosition.GAMMA12]: GridPosition.GAMMA2, // SW-SE ↔ NW-NE
+  [GridPosition.GAMMA13]: GridPosition.GAMMA1, // W-S ↔ W-N
+  [GridPosition.GAMMA14]: GridPosition.GAMMA8, // NW-SW ↔ SW-NW
+  [GridPosition.GAMMA15]: GridPosition.GAMMA7, // N-W ↔ S-W
+  [GridPosition.GAMMA16]: GridPosition.GAMMA6, // NE-NW ↔ SE-SW
+};
 
 /**
  * Horizontal Mirror Location Map
@@ -151,17 +153,19 @@ export const HORIZONTAL_MIRROR_POSITION_MAP: Record<GridPosition, GridPosition> 
  * - E (east) → E (stays on horizontal axis)
  * - W (west) → W (stays on horizontal axis)
  */
-export const HORIZONTAL_MIRROR_LOCATION_MAP: Record<GridLocation, GridLocation> =
-  {
-    [GridLocation.NORTH]: GridLocation.SOUTH, // Flip north/south
-    [GridLocation.SOUTH]: GridLocation.NORTH, // Flip south/north
-    [GridLocation.EAST]: GridLocation.EAST, // On axis - no change
-    [GridLocation.WEST]: GridLocation.WEST, // On axis - no change
-    [GridLocation.NORTHEAST]: GridLocation.SOUTHEAST, // Flip NE/SE
-    [GridLocation.SOUTHEAST]: GridLocation.NORTHEAST, // Flip SE/NE
-    [GridLocation.NORTHWEST]: GridLocation.SOUTHWEST, // Flip NW/SW
-    [GridLocation.SOUTHWEST]: GridLocation.NORTHWEST, // Flip SW/NW
-  };
+export const HORIZONTAL_MIRROR_LOCATION_MAP: Record<
+  GridLocation,
+  GridLocation
+> = {
+  [GridLocation.NORTH]: GridLocation.SOUTH, // Flip north/south
+  [GridLocation.SOUTH]: GridLocation.NORTH, // Flip south/north
+  [GridLocation.EAST]: GridLocation.EAST, // On axis - no change
+  [GridLocation.WEST]: GridLocation.WEST, // On axis - no change
+  [GridLocation.NORTHEAST]: GridLocation.SOUTHEAST, // Flip NE/SE
+  [GridLocation.SOUTHEAST]: GridLocation.NORTHEAST, // Flip SE/NE
+  [GridLocation.NORTHWEST]: GridLocation.SOUTHWEST, // Flip NW/SW
+  [GridLocation.SOUTHWEST]: GridLocation.NORTHWEST, // Flip SW/NW
+};
 
 /**
  * Swapped Position Map
@@ -286,9 +290,7 @@ export function getInvertedLetter(letter: string): string {
   const inverted = INVERTED_LETTER_MAP[letter];
 
   if (!inverted) {
-    throw new Error(
-      `No inverted letter mapping found for letter: ${letter}`
-    );
+    throw new Error(`No inverted letter mapping found for letter: ${letter}`);
   }
 
   return inverted;

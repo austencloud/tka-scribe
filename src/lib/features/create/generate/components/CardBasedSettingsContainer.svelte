@@ -123,8 +123,9 @@ Delegates ALL logic to services (SRP compliant)
     updateConfig({ gridMode });
 
     // Check if we have positions to clear
-    const hasPositions = customizeState?.options?.startPosition !== null ||
-                         customizeState?.options?.endPosition !== null;
+    const hasPositions =
+      customizeState?.options?.startPosition !== null ||
+      customizeState?.options?.endPosition !== null;
 
     if (hasPositions) {
       // Trigger animation FIRST

@@ -20,7 +20,10 @@ import type { BeatData } from "$lib/features/create/shared/domain/models/BeatDat
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
-import { MotionType, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  MotionColor,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
   GridLocation,
@@ -158,10 +161,9 @@ export class RotatedInvertedCAPExecutor {
     if (!previousMatchingBeat.letter) {
       throw new Error("Previous matching beat must have a letter");
     }
-    const invertedLetter =
-      this.capParams.getInvertedLetter(
-        previousMatchingBeat.letter as string
-      ) as Letter;
+    const invertedLetter = this.capParams.getInvertedLetter(
+      previousMatchingBeat.letter as string
+    ) as Letter;
 
     // Calculate the rotated end position
     const rotatedEndPosition = this._getRotatedEndPosition(

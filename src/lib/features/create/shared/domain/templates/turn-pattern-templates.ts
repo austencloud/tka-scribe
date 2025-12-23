@@ -10,7 +10,11 @@
  * - Complex: Higher turns, half-turns, high variance, floats - advanced
  */
 
-import type { TurnPattern, TurnPatternEntry, TurnValue } from "../models/TurnPatternData";
+import type {
+  TurnPattern,
+  TurnPatternEntry,
+  TurnValue,
+} from "../models/TurnPatternData";
 
 /**
  * Complexity level for pattern categorization
@@ -32,11 +36,17 @@ export interface TurnPatternTemplate {
  * Calculate complexity score for a pattern
  * Higher score = more complex
  */
-export function calculateComplexityScore(entries: readonly TurnPatternEntry[]): number {
+export function calculateComplexityScore(
+  entries: readonly TurnPatternEntry[]
+): number {
   let score = 0;
 
-  const allTurns = entries.flatMap((e) => [e.blue, e.red]).filter((t): t is TurnValue => t !== null);
-  const numericTurns = allTurns.filter((t): t is number => typeof t === "number");
+  const allTurns = entries
+    .flatMap((e) => [e.blue, e.red])
+    .filter((t): t is TurnValue => t !== null);
+  const numericTurns = allTurns.filter(
+    (t): t is number => typeof t === "number"
+  );
 
   if (numericTurns.length === 0) return 0;
 
@@ -85,7 +95,9 @@ export function getComplexityLevel(score: number): PatternComplexity {
 /**
  * Get complexity from pattern entries
  */
-export function getPatternComplexity(entries: readonly TurnPatternEntry[]): PatternComplexity {
+export function getPatternComplexity(
+  entries: readonly TurnPatternEntry[]
+): PatternComplexity {
   return getComplexityLevel(calculateComplexityScore(entries));
 }
 
@@ -463,12 +475,18 @@ export const SIXTEEN_BEAT_TEMPLATES: TurnPatternTemplate[] = [
  * Create a uniform pattern (same turn value for all beats)
  * This replaces individual "All Ones", "All Twos", "All Threes" templates
  */
-export function createUniformPattern(beatCount: number, turnValue: TurnValue): TurnPatternTemplate {
+export function createUniformPattern(
+  beatCount: number,
+  turnValue: TurnValue
+): TurnPatternTemplate {
   const complexity: PatternComplexity =
-    turnValue === 0 ? "simple" :
-    turnValue === 1 ? "simple" :
-    turnValue === 2 ? "medium" :
-    "complex";
+    turnValue === 0
+      ? "simple"
+      : turnValue === 1
+        ? "simple"
+        : turnValue === 2
+          ? "medium"
+          : "complex";
 
   const label = turnValue === "fl" ? "Float" : String(turnValue);
 
@@ -488,7 +506,9 @@ export function createUniformPattern(beatCount: number, turnValue: TurnValue): T
 /**
  * Get all templates for a given beat count
  */
-export function getTemplatesForBeatCount(beatCount: number): TurnPatternTemplate[] {
+export function getTemplatesForBeatCount(
+  beatCount: number
+): TurnPatternTemplate[] {
   if (beatCount === 8) return EIGHT_BEAT_TEMPLATES;
   if (beatCount === 16) return SIXTEEN_BEAT_TEMPLATES;
   return [];
@@ -501,7 +521,9 @@ export function getTemplatesByComplexity(
   beatCount: number,
   complexity: PatternComplexity
 ): TurnPatternTemplate[] {
-  return getTemplatesForBeatCount(beatCount).filter((t) => t.complexity === complexity);
+  return getTemplatesForBeatCount(beatCount).filter(
+    (t) => t.complexity === complexity
+  );
 }
 
 /**
@@ -525,7 +547,10 @@ export function getComplexityInfo(complexity: PatternComplexity): {
 /**
  * Convert a template to a TurnPattern (for UI display)
  */
-export function templateToPattern(template: TurnPatternTemplate, userId: string): TurnPattern {
+export function templateToPattern(
+  template: TurnPatternTemplate,
+  userId: string
+): TurnPattern {
   return {
     id: `template-${template.name.toLowerCase().replace(/\s+/g, "-")}`,
     name: template.name,

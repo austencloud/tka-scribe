@@ -9,7 +9,7 @@ LetterConstraintsSection.svelte - Re-exports from shared for backwards compatibi
     mustContainLetters,
     mustNotContainLetters,
     onMustContainChange,
-    onMustNotContainChange
+    onMustNotContainChange,
   } = $props<{
     mustContainLetters: Letter[];
     mustNotContainLetters: Letter[];

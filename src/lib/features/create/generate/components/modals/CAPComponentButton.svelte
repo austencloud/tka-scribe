@@ -73,7 +73,8 @@ Container-aware and aspect-ratio responsive
       rgba(0, 0, 0, 0.3) 100%
     );
     backdrop-filter: blur(10px);
-    border: 2px solid color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.2));
+    border: 2px solid
+      color-mix(in srgb, var(--component-color) 40%, rgba(255, 255, 255, 0.2));
     border-radius: 12px;
     cursor: pointer;
     text-align: center;
@@ -93,8 +94,18 @@ Container-aware and aspect-ratio responsive
   .cap-component-button:not(.multi-select):hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 35%, color-mix(in srgb, var(--theme-text, #fff) 20%, transparent)) 0%,
-      color-mix(in srgb, var(--component-color) 20%, var(--theme-shadow, rgba(0, 0, 0, 0.3))) 100%
+      color-mix(
+          in srgb,
+          var(--component-color) 35%,
+          color-mix(in srgb, var(--theme-text, #fff) 20%, transparent)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--component-color) 20%,
+          var(--theme-shadow, rgba(0, 0, 0, 0.3))
+        )
+        100%
     );
     border-color: var(--component-color);
     box-shadow:
@@ -116,10 +127,19 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.multi-select:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 25%, var(--theme-shadow, rgba(0, 0, 0, 0.4))) 0%,
+      color-mix(
+          in srgb,
+          var(--component-color) 25%,
+          var(--theme-shadow, rgba(0, 0, 0, 0.4))
+        )
+        0%,
       var(--theme-shadow, rgba(0, 0, 0, 0.35)) 100%
     );
-    border-color: color-mix(in srgb, var(--component-color) 60%, var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)));
+    border-color: color-mix(
+      in srgb,
+      var(--component-color) 60%,
+      var(--theme-stroke-strong, rgba(255, 255, 255, 0.3))
+    );
     box-shadow:
       0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
       0 0 24px color-mix(in srgb, var(--component-color) 25%, transparent);
@@ -129,8 +149,18 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.selected {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 40%, color-mix(in srgb, var(--theme-text, #fff) 15%, transparent)) 0%,
-      color-mix(in srgb, var(--component-color) 25%, var(--theme-shadow, rgba(0, 0, 0, 0.3))) 100%
+      color-mix(
+          in srgb,
+          var(--component-color) 40%,
+          color-mix(in srgb, var(--theme-text, #fff) 15%, transparent)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--component-color) 25%,
+          var(--theme-shadow, rgba(0, 0, 0, 0.3))
+        )
+        100%
     );
     border-color: var(--component-color);
     border-width: 3px;
@@ -143,8 +173,18 @@ Container-aware and aspect-ratio responsive
   .cap-component-button.selected:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--component-color) 50%, color-mix(in srgb, var(--theme-text, #fff) 20%, transparent)) 0%,
-      color-mix(in srgb, var(--component-color) 30%, var(--theme-shadow, rgba(0, 0, 0, 0.3))) 100%
+      color-mix(
+          in srgb,
+          var(--component-color) 50%,
+          color-mix(in srgb, var(--theme-text, #fff) 20%, transparent)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--component-color) 30%,
+          var(--theme-shadow, rgba(0, 0, 0, 0.3))
+        )
+        100%
     );
     box-shadow:
       0 6px 20px var(--theme-shadow, rgba(0, 0, 0, 0.4)),

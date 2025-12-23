@@ -134,10 +134,14 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     flex-direction: column;
     gap: var(--spacing-xs, --spacing-xs);
     padding: var(--spacing-xs, --spacing-xs);
-    background: var(--theme-panel-elevated-bg, var(--surface-glass, rgba(0, 0, 0, 0.5)));
+    background: var(
+      --theme-panel-elevated-bg,
+      var(--surface-glass, rgba(0, 0, 0, 0.5))
+    );
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius-lg, 12px);
-    border: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
+    border: 1px solid
+      var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
   }
 
   /* Main controls */
@@ -229,7 +233,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     justify-content: center;
     background: var(--theme-card-bg, var(--surface-light, #333));
     color: var(--theme-text, var(--foreground, #ffffff));
-    border: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
+    border: 1px solid
+      var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
     border-radius: var(--border-radius-md, 8px);
     font-size: var(--font-size-lg, 20px);
     cursor: pointer;
@@ -283,7 +288,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
   /* Metronome control */
   .metronome-control {
     padding-top: var(--spacing-md, 16px);
-    border-top: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
+    border-top: 1px solid
+      var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
   }
 
   .metronome-toggle {
@@ -299,7 +305,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     height: 24px;
     appearance: none;
     background: var(--theme-card-bg, var(--surface-light, #333));
-    border: 1px solid var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
+    border: 1px solid
+      var(--theme-stroke, var(--border-color, rgba(255, 255, 255, 0.1)));
     border-radius: 12px;
     position: relative;
     cursor: pointer;

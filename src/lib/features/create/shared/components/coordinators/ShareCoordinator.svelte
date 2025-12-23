@@ -8,10 +8,12 @@
    * Domain: Create module - Share Panel Coordination
    */
 
-import { resolve } from "$lib/shared/inversify/di";
+  import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import ImageShareDrawer, { type ViewMode } from "$lib/shared/share/components/ImageShareDrawer.svelte";
+  import ImageShareDrawer, {
+    type ViewMode,
+  } from "$lib/shared/share/components/ImageShareDrawer.svelte";
   import { createShareState } from "$lib/shared/share/state/share-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
@@ -78,20 +80,21 @@ import { resolve } from "$lib/shared/inversify/di";
     const legacyProp = settings.propType;
 
     // Debug: Check what prop types are actually in the sequence beats
-    const sequencePropTypes = sequence.beats?.length > 0 && sequence.beats[0]?.motions
-      ? {
-          blue: sequence.beats[0].motions.blue?.propType,
-          red: sequence.beats[0].motions.red?.propType
-        }
-      : null;
+    const sequencePropTypes =
+      sequence.beats?.length > 0 && sequence.beats[0]?.motions
+        ? {
+            blue: sequence.beats[0].motions.blue?.propType,
+            red: sequence.beats[0].motions.red?.propType,
+          }
+        : null;
 
-    logger.log('🔄 [ShareCoordinator] Effect running:', {
+    logger.log("🔄 [ShareCoordinator] Effect running:", {
       sequenceId: sequence.id,
       sequenceWord: sequence.word,
       settingsPropTypes: { blue: blueProp, red: redProp, legacy: legacyProp },
       sequencePropTypes,
       isPanelOpen,
-      optionsKeys: Object.keys(options)
+      optionsKeys: Object.keys(options),
     });
 
     // Clear any pending debounce timer
@@ -205,7 +208,9 @@ import { resolve } from "$lib/shared/inversify/di";
     // Resolve services
     try {
       urlSyncService = resolve<IURLSyncService>(TYPES.IURLSyncService);
-      letterDeriverService = resolve<ILetterDeriverService>(TYPES.ILetterDeriverService);
+      letterDeriverService = resolve<ILetterDeriverService>(
+        TYPES.ILetterDeriverService
+      );
       deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
     } catch (error) {
       logger.log("⚠️ Failed to resolve navigation services:", error);
@@ -234,12 +239,15 @@ import { resolve } from "$lib/shared/inversify/di";
         });
 
         // Load the sequence immediately (letters will be filled in later)
-        CreateModuleState.sequenceState.setCurrentSequence(deepLinkData.sequence);
+        CreateModuleState.sequenceState.setCurrentSequence(
+          deepLinkData.sequence
+        );
 
         // Derive letters from motion data (async but non-blocking)
         // This happens in the background after the pictograph module loads
         if (letterDeriverService) {
-          letterDeriverService.deriveLettersForSequence(deepLinkData.sequence)
+          letterDeriverService
+            .deriveLettersForSequence(deepLinkData.sequence)
             .then((sequenceWithLetters) => {
               // Create a fresh sequence object with a new timestamp to ensure reactivity
               const updatedSequence = {
@@ -247,7 +255,9 @@ import { resolve } from "$lib/shared/inversify/di";
                 // Add a timestamp to ensure this is seen as a new object
                 _updatedAt: Date.now(),
               };
-              CreateModuleState?.sequenceState.setCurrentSequence(updatedSequence);
+              CreateModuleState?.sequenceState.setCurrentSequence(
+                updatedSequence
+              );
               logger.log("✅ Letters derived and sequence updated");
             })
             .catch((err) => {
@@ -281,10 +291,10 @@ import { resolve } from "$lib/shared/inversify/di";
     // Debug: Expose cache clearing function globally
     if (browser && backgroundShareState) {
       (window as any).clearShareCache = () => {
-        logger.log('🗑️ Manually clearing share cache from console');
+        logger.log("🗑️ Manually clearing share cache from console");
         backgroundShareState?.clearCache();
       };
-      logger.log('💡 Debug: Type clearShareCache() in console to clear cache');
+      logger.log("💡 Debug: Type clearShareCache() in console to clear cache");
     }
 
     // Cleanup function - clear debounce timer on unmount

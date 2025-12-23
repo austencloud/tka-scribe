@@ -74,11 +74,15 @@ Shown when sequence is empty.
       <ol class="steps-list">
         <li>
           <span class="step-number blue">1</span>
-          <span class="step-text">Tap grid positions to trace the <strong>blue hand</strong> path</span>
+          <span class="step-text"
+            >Tap grid positions to trace the <strong>blue hand</strong> path</span
+          >
         </li>
         <li>
           <span class="step-number red">2</span>
-          <span class="step-text">Then trace the <strong>red hand</strong> path</span>
+          <span class="step-text"
+            >Then trace the <strong>red hand</strong> path</span
+          >
         </li>
         <li>
           <span class="step-number green">3</span>
@@ -142,7 +146,11 @@ Shown when sequence is empty.
   .welcome-icon {
     width: 80px;
     height: 80px;
-    color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 90%,
+      transparent
+    );
     margin-bottom: 8px;
   }
 
@@ -277,7 +285,11 @@ Shown when sequence is empty.
   }
 
   .mode-button.active {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
@@ -299,7 +311,11 @@ Shown when sequence is empty.
     width: 100%;
     max-width: 280px;
     padding: 16px 24px;
-    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6), var(--theme-accent-strong, #7c3aed));
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #8b5cf6),
+      var(--theme-accent-strong, #7c3aed)
+    );
     border: none;
     border-radius: 12px;
     color: white;
@@ -307,13 +323,15 @@ Shown when sequence is empty.
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     margin-top: 8px;
   }
 
   .start-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    box-shadow: 0 6px 20px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .start-button:active {

@@ -27,7 +27,10 @@
     isOpen: boolean;
     sequence: SequenceData | null;
     onClose: () => void;
-    onApply: (result: { sequence: SequenceData; warnings?: readonly string[] }) => void;
+    onApply: (result: {
+      sequence: SequenceData;
+      warnings?: readonly string[];
+    }) => void;
   }
 
   let { isOpen = $bindable(), sequence, onClose, onApply }: Props = $props();
@@ -43,7 +46,11 @@
 
   // Load patterns when drawer opens
   $effect(() => {
-    if (isOpen && authState.user?.uid && !rotationDirectionPatternState.initialized) {
+    if (
+      isOpen &&
+      authState.user?.uid &&
+      !rotationDirectionPatternState.initialized
+    ) {
       rotationDirectionPatternState.loadPatterns(authState.user.uid);
     }
   });
@@ -55,7 +62,8 @@
     errorMessage = null;
 
     // Auto-generate name if empty
-    const finalName = patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
+    const finalName =
+      patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
 
     rotationDirectionPatternState
       .savePattern(finalName, authState.user.uid, sequence)
@@ -64,7 +72,8 @@
           patternName = "";
           mode = "apply";
         } else {
-          errorMessage = rotationDirectionPatternState.error ?? "Failed to save pattern";
+          errorMessage =
+            rotationDirectionPatternState.error ?? "Failed to save pattern";
         }
       })
       .finally(() => {
@@ -79,7 +88,10 @@
     errorMessage = null;
 
     try {
-      const result = await rotationPatternService.applyPattern(pattern, sequence);
+      const result = await rotationPatternService.applyPattern(
+        pattern,
+        sequence
+      );
 
       if (result.success && result.sequence) {
         onApply({
@@ -91,7 +103,8 @@
         errorMessage = result.error ?? "Failed to apply pattern";
       }
     } catch (error) {
-      errorMessage = error instanceof Error ? error.message : "Failed to apply pattern";
+      errorMessage =
+        error instanceof Error ? error.message : "Failed to apply pattern";
     } finally {
       applyingPattern = false;
     }
@@ -111,7 +124,11 @@
   function handleApplyTemplate(template: RotationDirectionTemplateDefinition) {
     if (!sequence || !authState.user?.uid) return;
 
-    const pattern = templateToPattern(template, authState.user.uid, sequence.beats.length);
+    const pattern = templateToPattern(
+      template,
+      authState.user.uid,
+      sequence.beats.length
+    );
     handleApplyPattern(pattern);
   }
 
@@ -133,7 +150,12 @@
   }
 </script>
 
-<Drawer bind:isOpen placement="right" onclose={handleClose} class="rotation-direction-drawer">
+<Drawer
+  bind:isOpen
+  placement="right"
+  onclose={handleClose}
+  class="rotation-direction-drawer"
+>
   <div class="rotation-direction-drawer-content">
     <header class="drawer-header">
       <h2>Rotation Direction</h2>
@@ -178,23 +200,39 @@
             <div class="preview-grid">
               {#each sequence.beats as beat, i}
                 {@const blueRotation = formatRotationValue(
-                  beat.motions?.blue?.rotationDirection === "cw" ? "cw" :
-                  beat.motions?.blue?.rotationDirection === "ccw" ? "ccw" :
-                  beat.motions?.blue ? "none" : null
+                  beat.motions?.blue?.rotationDirection === "cw"
+                    ? "cw"
+                    : beat.motions?.blue?.rotationDirection === "ccw"
+                      ? "ccw"
+                      : beat.motions?.blue
+                        ? "none"
+                        : null
                 )}
                 {@const redRotation = formatRotationValue(
-                  beat.motions?.red?.rotationDirection === "cw" ? "cw" :
-                  beat.motions?.red?.rotationDirection === "ccw" ? "ccw" :
-                  beat.motions?.red ? "none" : null
+                  beat.motions?.red?.rotationDirection === "cw"
+                    ? "cw"
+                    : beat.motions?.red?.rotationDirection === "ccw"
+                      ? "ccw"
+                      : beat.motions?.red
+                        ? "none"
+                        : null
                 )}
                 <div class="preview-beat">
                   <span class="beat-num">{i + 1}</span>
                   <div class="rotation-pair">
-                    <span class="rotation-value {getRotationColorClass(blueRotation)} blue">
+                    <span
+                      class="rotation-value {getRotationColorClass(
+                        blueRotation
+                      )} blue"
+                    >
                       {blueRotation}
                     </span>
                     <span class="separator">|</span>
-                    <span class="rotation-value {getRotationColorClass(redRotation)} red">
+                    <span
+                      class="rotation-value {getRotationColorClass(
+                        redRotation
+                      )} red"
+                    >
                       {redRotation}
                     </span>
                   </div>
@@ -261,11 +299,18 @@
           {/if}
 
           <!-- Templates section -->
-          {@const allTemplates = sequence ? getTemplatesForBeatCount(sequence.beats.length) : []}
-          {@const nonUniformTemplates = allTemplates.filter(t => t.category !== "uniform")}
-          {@const filteredTemplates = categoryFilter === "all"
-            ? nonUniformTemplates
-            : nonUniformTemplates.filter(t => t.category === categoryFilter)}
+          {@const allTemplates = sequence
+            ? getTemplatesForBeatCount(sequence.beats.length)
+            : []}
+          {@const nonUniformTemplates = allTemplates.filter(
+            (t) => t.category !== "uniform"
+          )}
+          {@const filteredTemplates =
+            categoryFilter === "all"
+              ? nonUniformTemplates
+              : nonUniformTemplates.filter(
+                  (t) => t.category === categoryFilter
+                )}
 
           {#if nonUniformTemplates.length > 0}
             <div class="templates-section">
@@ -276,19 +321,27 @@
                   <button
                     class="filter-btn"
                     class:active={categoryFilter === "all"}
-                    onclick={() => categoryFilter = "all"}
-                  >All</button>
+                    onclick={() => (categoryFilter = "all")}>All</button
+                  >
                   {#each ["alternating", "split-hand", "split-half"] as category}
-                    {@const info = getCategoryInfo(category as TemplateCategory)}
-                    {@const hasTemplates = nonUniformTemplates.some(t => t.category === category)}
+                    {@const info = getCategoryInfo(
+                      category as TemplateCategory
+                    )}
+                    {@const hasTemplates = nonUniformTemplates.some(
+                      (t) => t.category === category
+                    )}
                     {#if hasTemplates}
                       <button
                         class="filter-btn"
                         class:active={categoryFilter === category}
-                        onclick={() => categoryFilter = category as TemplateCategory}
+                        onclick={() =>
+                          (categoryFilter = category as TemplateCategory)}
                         style="--filter-color: {info.color}"
                       >
-                        <span class="category-dot" style="background: {info.color}"></span>
+                        <span
+                          class="category-dot"
+                          style="background: {info.color}"
+                        ></span>
                         {info.label}
                       </button>
                     {/if}
@@ -320,7 +373,9 @@
                 {/each}
 
                 {#if filteredTemplates.length === 0}
-                  <p class="empty-filter-message">No {categoryFilter} patterns available</p>
+                  <p class="empty-filter-message">
+                    No {categoryFilter} patterns available
+                  </p>
                 {/if}
               </div>
             </div>
@@ -329,14 +384,18 @@
           <!-- User's saved patterns -->
           {#if rotationDirectionPatternState.patterns.length === 0}
             <p class="empty-message">
-              No saved patterns yet. Save a pattern from the current sequence or try a template above.
+              No saved patterns yet. Save a pattern from the current sequence or
+              try a template above.
             </p>
           {:else}
             <div class="saved-patterns-section">
               <h3>Your Patterns</h3>
               <div class="patterns-list">
                 {#each rotationDirectionPatternState.patterns as pattern}
-                  {@const isDisabled = applyingPattern || !sequence || sequence.beats.length !== pattern.beatCount}
+                  {@const isDisabled =
+                    applyingPattern ||
+                    !sequence ||
+                    sequence.beats.length !== pattern.beatCount}
                   <div
                     class="pattern-item"
                     class:disabled={isDisabled}
@@ -349,13 +408,16 @@
                         handleApplyPattern(pattern);
                       }
                     }}
-                    title={sequence && sequence.beats.length !== pattern.beatCount
+                    title={sequence &&
+                    sequence.beats.length !== pattern.beatCount
                       ? `Requires ${pattern.beatCount} beats`
                       : "Apply pattern"}
                   >
                     <div class="pattern-info">
                       <span class="pattern-name">{pattern.name}</span>
-                      <span class="pattern-beats">{pattern.beatCount} beats</span>
+                      <span class="pattern-beats"
+                        >{pattern.beatCount} beats</span
+                      >
                     </div>
                     <div class="pattern-actions">
                       <button
@@ -787,7 +849,8 @@
   /* Pattern items with colored glass effect */
   .pattern-item.template {
     background: color-mix(in srgb, var(--glass-color, #fff) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
   }
 
   .pattern-item.template:hover {

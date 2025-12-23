@@ -20,7 +20,10 @@ import {
   type Timestamp,
 } from "firebase/firestore";
 import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
-import { createDraftSequence, type DraftSequence } from "../domain/DraftSequence";
+import {
+  createDraftSequence,
+  type DraftSequence,
+} from "../domain/DraftSequence";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 export class AutosaveService {

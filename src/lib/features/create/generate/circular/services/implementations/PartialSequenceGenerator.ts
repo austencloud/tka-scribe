@@ -7,7 +7,10 @@
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type {
+  GridPosition,
+  GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { GenerationOptions } from "$lib/features/create/generate/shared/domain/models/generate-models";
@@ -61,17 +64,25 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   ): Promise<BeatData[]> {
     // Step 1: Create Type 6 static start position beat (beat 0)
     // Use the same approach as StartPositionService to create a proper Type 6 motion
-    const {
-      MotionType,
-      MotionColor,
-      Orientation,
-      RotationDirection,
-    } = await import("$lib/shared/pictograph/shared/domain/enums/pictograph-enums");
-    const { PropType } = await import("$lib/shared/pictograph/prop/domain/enums/PropType");
-    const { Letter } = await import("$lib/shared/foundation/domain/models/Letter");
-    const { GridPosition } = await import("$lib/shared/pictograph/grid/domain/enums/grid-enums");
-    const { createMotionData } = await import("$lib/shared/pictograph/shared/domain/models/MotionData");
-    const { createPictographData } = await import("$lib/shared/pictograph/shared/domain/factories/createPictographData");
+    const { MotionType, MotionColor, Orientation, RotationDirection } =
+      await import(
+        "$lib/shared/pictograph/shared/domain/enums/pictograph-enums"
+      );
+    const { PropType } = await import(
+      "$lib/shared/pictograph/prop/domain/enums/PropType"
+    );
+    const { Letter } = await import(
+      "$lib/shared/foundation/domain/models/Letter"
+    );
+    const { GridPosition } = await import(
+      "$lib/shared/pictograph/grid/domain/enums/grid-enums"
+    );
+    const { createMotionData } = await import(
+      "$lib/shared/pictograph/shared/domain/models/MotionData"
+    );
+    const { createPictographData } = await import(
+      "$lib/shared/pictograph/shared/domain/factories/createPictographData"
+    );
     const { SliceSize } = await import("../../domain/models/circular-models");
 
     // Get hand locations for this start position
@@ -80,7 +91,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Determine the letter based on the position prefix
     // All positions starting with "alpha" get Letter.ALPHA, etc.
-    let letter: typeof Letter[keyof typeof Letter];
+    let letter: (typeof Letter)[keyof typeof Letter];
     const positionName = startPos.toLowerCase();
     if (positionName.startsWith("alpha")) {
       letter = Letter.ALPHA;
@@ -302,7 +313,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       if (blueTurn === undefined || redTurn === undefined) {
         throw new Error(
           `Missing turn allocation at final index ${finalTurnIndex}. ` +
-          `beatsToGenerate=${beatsToGenerate}, turnAllocation.length=${turnAllocation.blue.length}`
+            `beatsToGenerate=${beatsToGenerate}, turnAllocation.length=${turnAllocation.blue.length}`
         );
       }
 
@@ -445,18 +456,26 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       console.error(`  RedRotationDir: ${redRotationDirection}`);
       console.error(`  AvoidEndPosition: ${avoidEndPosition ?? "none"}`);
       console.error(`  GridMode: ${gridMode}`);
-      console.error(`  Sequence so far: ${sequence.map(b => b.endPosition).join(" → ")}`);
+      console.error(
+        `  Sequence so far: ${sequence.map((b) => b.endPosition).join(" → ")}`
+      );
       console.error(`  Filter chain breakdown:`);
       console.error(`    Total loaded: ${filterCounts.total}`);
-      console.error(`    After continuity filter (start=${lastPos}): ${filterCounts.afterContinuity}`);
-      console.error(`    After Type6 filter (level=${level}): ${filterCounts.afterType6}`);
+      console.error(
+        `    After continuity filter (start=${lastPos}): ${filterCounts.afterContinuity}`
+      );
+      console.error(
+        `    After Type6 filter (level=${level}): ${filterCounts.afterType6}`
+      );
       console.error(`    After rotation filter: ${filterCounts.afterRotation}`);
-      console.error(`    After avoidPos filter (avoid=${avoidEndPosition}): ${filterCounts.afterAvoidPos}`);
+      console.error(
+        `    After avoidPos filter (avoid=${avoidEndPosition}): ${filterCounts.afterAvoidPos}`
+      );
 
       throw new Error(
         `No valid options available after filtering. ` +
-        `Position: ${lastPos}, Level: ${level}, Continuity: ${propContinuity}, ` +
-        `AvoidPos: ${avoidEndPosition ?? "none"}`
+          `Position: ${lastPos}, Level: ${level}, Continuity: ${propContinuity}, ` +
+          `AvoidPos: ${avoidEndPosition ?? "none"}`
       );
     }
 

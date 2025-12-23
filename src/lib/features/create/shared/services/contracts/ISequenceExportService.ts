@@ -22,7 +22,9 @@ export interface ISequenceExportService {
    * @param sequenceData - The full sequence data to condense
    * @returns Condensed sequence data suitable for sharing and debugging
    */
-  createCondensedSequence(sequenceData: ExportableSequenceData): CondensedSequenceData;
+  createCondensedSequence(
+    sequenceData: ExportableSequenceData
+  ): CondensedSequenceData;
 }
 
 /**

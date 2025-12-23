@@ -46,7 +46,11 @@
     /* Desktop: 48px, Mobile: 48px minimum (iOS/Android touch target guidelines) */
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: linear-gradient(135deg, #a78bfa 0%, color-mix(in srgb, #a78bfa 85%, #8b5cf6) 100%); /* Purple gradient */
+    background: linear-gradient(
+      135deg,
+      #a78bfa 0%,
+      color-mix(in srgb, #a78bfa 85%, #8b5cf6) 100%
+    ); /* Purple gradient */
     border: 1px solid color-mix(in srgb, #a78bfa 30%, transparent);
     backdrop-filter: blur(10px);
     border-radius: 50%;
@@ -57,7 +61,11 @@
   }
 
   .play-button:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, #a78bfa 85%, #8b5cf6) 0%, color-mix(in srgb, #a78bfa 70%, #8b5cf6) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, #a78bfa 85%, #8b5cf6) 0%,
+      color-mix(in srgb, #a78bfa 70%, #8b5cf6) 100%
+    );
     transform: scale(1.05);
     box-shadow: 0 6px 16px color-mix(in srgb, #a78bfa 60%, transparent);
   }
@@ -74,11 +82,19 @@
 
   /* Animating state - red/stop color */
   .play-button.is-animating {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent); /* Red tint when animating */
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 20%,
+      transparent
+    ); /* Red tint when animating */
   }
 
   .play-button.is-animating:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
   }
 
   .play-button i {
@@ -122,7 +138,9 @@
   /* Landscape mobile: Maintain 48px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .play-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
     }
 

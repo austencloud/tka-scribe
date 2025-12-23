@@ -214,7 +214,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   let isFilterPanelOpen = $state(false);
 
   // Sequence Actions panel state (persisted)
-  let isSequenceActionsPanelOpen = $state(sequenceActionsPanelPersistence.load());
+  let isSequenceActionsPanelOpen = $state(
+    sequenceActionsPanelPersistence.load()
+  );
 
   // Beat Editor panel state (non-modal - doesn't participate in closeAllPanels)
   let isBeatEditorPanelOpen = $state(false);
@@ -257,7 +259,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Customize options panel state
   let isCustomizePanelOpen = $state(false);
   let customizeOptions = $state<CustomizeOptions | null>(null);
-  let customizeOnChange = $state<((options: CustomizeOptions) => void) | null>(null);
+  let customizeOnChange = $state<((options: CustomizeOptions) => void) | null>(
+    null
+  );
   let customizeIsFreeformMode = $state(true); // Default to freeform (shows end position)
   let customizeGridMode = $state<GridMode>(GridMode.DIAMOND); // Grid mode for position picker
 
@@ -470,21 +474,32 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openSequenceActionsPanel() {
-      console.log(`[panel-coordination] openSequenceActionsPanel called, current state: ${isSequenceActionsPanelOpen}`);
+      console.log(
+        `[panel-coordination] openSequenceActionsPanel called, current state: ${isSequenceActionsPanelOpen}`
+      );
       // Only close other panels if this panel isn't already open
       // This prevents the panel from closing when beat operations update state
       if (!isSequenceActionsPanelOpen) {
-        console.log(`[panel-coordination] Panel not open, closing other panels`);
+        console.log(
+          `[panel-coordination] Panel not open, closing other panels`
+        );
         closeAllPanels();
       } else {
-        console.log(`[panel-coordination] Panel already open, skipping closeAllPanels`);
+        console.log(
+          `[panel-coordination] Panel already open, skipping closeAllPanels`
+        );
       }
       isSequenceActionsPanelOpen = true;
-      console.log(`[panel-coordination] Panel now open: ${isSequenceActionsPanelOpen}`);
+      console.log(
+        `[panel-coordination] Panel now open: ${isSequenceActionsPanelOpen}`
+      );
     },
 
     closeSequenceActionsPanel() {
-      console.log(`[panel-coordination] closeSequenceActionsPanel called, stack:`, new Error().stack);
+      console.log(
+        `[panel-coordination] closeSequenceActionsPanel called, stack:`,
+        new Error().stack
+      );
       isSequenceActionsPanelOpen = false;
     },
 

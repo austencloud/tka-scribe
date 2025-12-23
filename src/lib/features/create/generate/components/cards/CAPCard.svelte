@@ -5,7 +5,10 @@ Always opens selector panel when clicked
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
-  import { CAP_TYPE_LABELS, CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+  import {
+    CAP_TYPE_LABELS,
+    CAPType,
+  } from "$lib/features/create/generate/circular/domain/models/circular-models";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount, getContext } from "svelte";
@@ -166,7 +169,8 @@ Always opens selector panel when clicked
         0 2px 4px color-mix(in srgb, var(--theme-shadow, #000) 12%, transparent),
         0 4px 8px color-mix(in srgb, var(--theme-shadow, #000) 10%, transparent),
         0 8px 16px color-mix(in srgb, var(--theme-shadow, #000) 8%, transparent),
-        0 16px 24px color-mix(in srgb, var(--theme-shadow, #000) 6%, transparent),
+        0 16px 24px
+          color-mix(in srgb, var(--theme-shadow, #000) 6%, transparent),
         inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }

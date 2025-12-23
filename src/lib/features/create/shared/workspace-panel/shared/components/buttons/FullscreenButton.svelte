@@ -311,7 +311,9 @@
   /* 🎯 LANDSCAPE MOBILE: Compact buttons for Z Fold 5 horizontal (882x344) */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }

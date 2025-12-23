@@ -22,7 +22,9 @@ export class SequenceExportService implements ISequenceExportService {
    * Removes: IDs, placement data, metadata, redundant fields
    * Keeps: Essential motion data for reconstruction
    */
-  createCondensedSequence(sequenceData: ExportableSequenceData): CondensedSequenceData {
+  createCondensedSequence(
+    sequenceData: ExportableSequenceData
+  ): CondensedSequenceData {
     const condensed: CondensedSequenceData = {
       word: sequenceData.word,
       beats: [],
@@ -69,7 +71,9 @@ export class SequenceExportService implements ISequenceExportService {
   /**
    * Extract condensed start motion data (location and orientation only)
    */
-  private extractStartMotion(motion: MotionData | undefined): CondensedStartMotion {
+  private extractStartMotion(
+    motion: MotionData | undefined
+  ): CondensedStartMotion {
     if (!motion) {
       return {
         startLocation: "",
@@ -109,7 +113,9 @@ export class SequenceExportService implements ISequenceExportService {
   /**
    * Extract condensed motion data (essential fields only)
    */
-  private extractMotionData(motion: MotionData | undefined): CondensedMotionData {
+  private extractMotionData(
+    motion: MotionData | undefined
+  ): CondensedMotionData {
     if (!motion) {
       return {
         motionType: "",

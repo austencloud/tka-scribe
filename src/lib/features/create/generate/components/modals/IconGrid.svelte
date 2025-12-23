@@ -141,10 +141,16 @@ Provides a beautiful, consistent icon selection experience
       color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
       color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent)
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 60%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 60%,
+      transparent
+    );
     box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
-      0 4px 12px color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
+      0 0 0 3px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
   }
 
   .icon-button.selected:hover {
@@ -153,7 +159,11 @@ Provides a beautiful, consistent icon selection experience
       color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent),
       color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent)
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 70%,
+      transparent
+    );
   }
 
   .icon-emoji {

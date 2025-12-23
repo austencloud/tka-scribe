@@ -40,19 +40,30 @@
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 1px solid color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
-    background: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #16a34a) 100%);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success, #22c55e) 0%,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #16a34a) 100%
+    );
     border-radius: 50%;
     color: var(--theme-text, #ffffff);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
   }
 
   .sequence-actions-button:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #16a34a) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 70%, #16a34a) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #16a34a) 0%,
+      color-mix(in srgb, var(--semantic-success, #22c55e) 70%, #16a34a) 100%
+    );
     transform: scale(1.05);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
   }
 
   .sequence-actions-button:active {
@@ -97,7 +108,9 @@
   /* Landscape mobile: Maintain 48px minimum */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .sequence-actions-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
     }
 

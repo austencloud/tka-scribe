@@ -362,7 +362,8 @@ export async function copyBeatDebugDataToClipboard(
 
   try {
     await navigator.clipboard.writeText(jsonString);
-    const dataType = debugData.type === "start-position" ? "Start position" : "Beat";
+    const dataType =
+      debugData.type === "start-position" ? "Start position" : "Beat";
     console.log(`✅ ${dataType} debug data copied to clipboard`);
   } catch (error) {
     console.error("❌ Failed to copy to clipboard:", error);

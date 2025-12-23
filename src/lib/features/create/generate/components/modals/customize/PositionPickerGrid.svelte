@@ -17,8 +17,4 @@ PositionPickerGrid.svelte - Re-exports from shared for backwards compatibility
   }>();
 </script>
 
-<SharedPositionPickerGrid
-  {currentPosition}
-  {onPositionChange}
-  {gridMode}
-/>
+<SharedPositionPickerGrid {currentPosition} {onPositionChange} {gridMode} />

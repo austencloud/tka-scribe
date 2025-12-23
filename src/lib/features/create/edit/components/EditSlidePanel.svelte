@@ -11,10 +11,10 @@ Features:
 HMR Test: Nested component change test
 -->
 <script lang="ts">
-import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
   import PanelHeader from "$lib/features/create/shared/components/PanelHeader.svelte";
   import { onDestroy, onMount } from "svelte";
@@ -48,7 +48,10 @@ import { TYPES } from "$lib/shared/inversify/types";
     placement?: "bottom" | "right"; // Override for standalone use outside Create module
     onOrientationChanged: (color: string, orientation: string) => void;
     onTurnAmountChanged: (color: string, turnAmount: number) => void;
-    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
+    onRotationDirectionChanged?: (
+      color: string,
+      rotationDirection: string
+    ) => void;
     onBatchApply?: (changes: Partial<BeatData>) => void; // Batch mode
     onRemoveBeat?: (beatNumber: number) => void; // Remove beat callback
   }>();

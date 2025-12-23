@@ -66,7 +66,8 @@ Responsive design:
       icon: "fa-left-right",
       name: "Mirror",
       shortDesc: "Flip left & right",
-      fullDesc: "Creates a mirror image as if reflected in a vertical mirror. Clockwise spins become counter-clockwise.",
+      fullDesc:
+        "Creates a mirror image as if reflected in a vertical mirror. Clockwise spins become counter-clockwise.",
       color: "#a855f7",
       handler: onMirror,
     },
@@ -75,7 +76,8 @@ Responsive design:
       icon: "fa-arrows-rotate",
       name: "Swap Hands",
       shortDesc: "Switch hand movements",
-      fullDesc: "Your left hand's moves become your right hand's, and vice versa. Same sequence, opposite hands leading.",
+      fullDesc:
+        "Your left hand's moves become your right hand's, and vice versa. Same sequence, opposite hands leading.",
       color: "#10b981",
       handler: onSwapColors,
     },
@@ -84,16 +86,18 @@ Responsive design:
       icon: "fa-rotate-right",
       name: "Rotate",
       shortDesc: "Pivot 45°",
-      fullDesc: "Rotates the entire sequence 45° as if you turned your body. Repeat 4 times for a full 180° turn.",
+      fullDesc:
+        "Rotates the entire sequence 45° as if you turned your body. Repeat 4 times for a full 180° turn.",
       color: "#f59e0b",
       handler: onRotate,
     },
     {
       id: "reverse",
       icon: "fa-backward",
-      name: "Reverse", 
+      name: "Reverse",
       shortDesc: "Retrace to start",
-      fullDesc: "Creates a sequence that returns you to where you started. Each movement is inverted so you physically wind back.",
+      fullDesc:
+        "Creates a sequence that returns you to where you started. Each movement is inverted so you physically wind back.",
       color: "#f43f5e",
       handler: onRewind,
     },
@@ -184,7 +188,8 @@ Responsive design:
     );
     border-color: color-mix(in srgb, var(--action-color) 40%, transparent);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--action-color) 20%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--action-color) 20%, transparent);
   }
 
   .action-button:active:not(.disabled) {

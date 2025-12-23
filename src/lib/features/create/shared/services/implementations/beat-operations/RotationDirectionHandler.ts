@@ -16,12 +16,23 @@ import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/service
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  createMotionData,
+  type MotionData,
+} from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { getBeatDataFromState, START_POSITION_BEAT_NUMBER, updateSequenceWord } from "./beat-data-helpers";
+import {
+  getBeatDataFromState,
+  START_POSITION_BEAT_NUMBER,
+  updateSequenceWord,
+} from "./beat-data-helpers";
 import { calculatePropagatedBeats } from "./OrientationHandler";
 
 const logger = createComponentLogger("RotationDirectionHandler");
@@ -60,7 +71,9 @@ export function updateRotationDirection(
   // Block rotation direction change for float turns (they don't have rotation)
   const currentTurns = currentMotion.turns;
   if (currentTurns === "fl") {
-    logger.warn(`Cannot set rotation direction - float motions don't support rotation`);
+    logger.warn(
+      `Cannot set rotation direction - float motions don't support rotation`
+    );
     return;
   }
 
@@ -117,7 +130,8 @@ export function updateRotationDirection(
   };
 
   // Get current sequence and start position for propagation calculation
-  const currentSequence: SequenceData | null = createModuleState.sequenceState.currentSequence;
+  const currentSequence: SequenceData | null =
+    createModuleState.sequenceState.currentSequence;
   const startPosition: BeatData | null = createModuleState.sequenceState
     .selectedStartPosition as unknown as BeatData | null;
 
@@ -313,7 +327,9 @@ export async function recalculateLetterForBeat(
       gridMode
     )) as Letter | null;
 
-    console.log(`  Found letter: ${newLetter}, current letter: ${beatData.letter}`);
+    console.log(
+      `  Found letter: ${newLetter}, current letter: ${beatData.letter}`
+    );
 
     if (newLetter) {
       if (newLetter !== beatData.letter) {
@@ -331,12 +347,17 @@ export async function recalculateLetterForBeat(
           createModuleState.sequenceState.setStartPosition(updatedBeatData);
         } else {
           const arrayIndex = beatNumber - 1;
-          createModuleState.sequenceState.updateBeat(arrayIndex, updatedBeatData);
+          createModuleState.sequenceState.updateBeat(
+            arrayIndex,
+            updatedBeatData
+          );
         }
 
         updateSequenceWord(createModuleState);
       } else {
-        logger.log(`Letter unchanged: "${beatData.letter}" for beat ${beatNumber}`);
+        logger.log(
+          `Letter unchanged: "${beatData.letter}" for beat ${beatNumber}`
+        );
       }
     } else {
       logger.warn(

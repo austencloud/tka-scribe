@@ -3,10 +3,10 @@ BaseCard.svelte - Base component for all setting cards
 Provides consistent styling and interaction patterns for all generation setting cards
 -->
 <script lang="ts">
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import CardHeader from "./shared/CardHeader.svelte";
 
@@ -173,7 +173,8 @@ import { TYPES } from "$lib/shared/inversify/types";
       0 1px 2px hsl(var(--shadow-color) / 0.15),
       0 2px 4px hsl(var(--shadow-color) / 0.12),
       0 4px 8px hsl(var(--shadow-color) / 0.1),
-      /* Inner highlight for 3D effect */ inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.2));
+      /* Inner highlight for 3D effect */ inset 0 1px 0
+        var(--theme-stroke, rgba(255, 255, 255, 0.2));
 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: visible; /* Allow hover effects to overflow and pop over neighbors */

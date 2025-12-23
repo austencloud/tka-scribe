@@ -326,7 +326,8 @@ Displays a single preset with icon, name, summary, and action buttons
       color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
       color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
     color: color-mix(in srgb, var(--semantic-info, #3b82f6) 90%, white);
     cursor: pointer;
     padding: 10px;
@@ -346,10 +347,15 @@ Displays a single preset with icon, name, summary, and action buttons
       color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent),
       color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent)
     );
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-info, #3b82f6) 50%,
+      transparent
+    );
     color: var(--semantic-info, #3b82f6);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
   }
 
   .edit-button svg {
@@ -363,7 +369,8 @@ Displays a single preset with icon, name, summary, and action buttons
       color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent),
       color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent)
     );
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
     color: color-mix(in srgb, var(--semantic-error, #ef4444) 90%, white);
     cursor: pointer;
     padding: 10px;
@@ -383,10 +390,15 @@ Displays a single preset with icon, name, summary, and action buttons
       color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent),
       color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent)
     );
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 50%,
+      transparent
+    );
     color: var(--semantic-error, #ef4444);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    box-shadow: 0 2px 8px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
   }
 
   .delete-button svg {

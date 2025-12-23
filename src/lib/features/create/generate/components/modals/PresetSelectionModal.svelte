@@ -26,7 +26,9 @@ Displays user-saved presets with delete option and allows loading preset configu
 
   onMount(() => {
     // Service resolution
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Focus the modal for accessibility
     modalElement?.focus();
@@ -87,7 +89,11 @@ Displays user-saved presets with delete option and allows loading preset configu
     height: 100vh;
     height: 100dvh;
     height: var(--actual-vh, 100vh);
-    background: color-mix(in srgb, var(--theme-panel-bg, #000) 85%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #000) 85%,
+      transparent
+    );
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;

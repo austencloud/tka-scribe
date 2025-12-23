@@ -49,8 +49,10 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
   let currentPosition = $state<GridLocation | null>(
     // Set current position to last position in the active path
     config.initialPhase === "red"
-      ? (config.initialRedHandPath?.[config.initialRedHandPath.length - 1] ?? null)
-      : (config.initialBlueHandPath?.[config.initialBlueHandPath.length - 1] ?? null)
+      ? (config.initialRedHandPath?.[config.initialRedHandPath.length - 1] ??
+          null)
+      : (config.initialBlueHandPath?.[config.initialBlueHandPath.length - 1] ??
+          null)
   );
   let selectedRotation = $state<RotationDirection | null>(null);
   let gridMode = $state<GridMode>(config.gridMode);
@@ -169,7 +171,11 @@ export function createHandPathAssembleState(config: HandPathAssembleConfig) {
     );
 
     // Then apply user's selected prop types
-    return converter.applyUserPropTypes(handSequence, bluePropType, redPropType);
+    return converter.applyUserPropTypes(
+      handSequence,
+      bluePropType,
+      redPropType
+    );
   }
 
   /**

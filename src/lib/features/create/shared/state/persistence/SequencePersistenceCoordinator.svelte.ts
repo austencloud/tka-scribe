@@ -69,10 +69,7 @@ export function createSequencePersistenceCoordinator(
         // appears in Assembler's beat grid
         const savedState = await persistenceService.loadCurrentState(tabId);
 
-        if (
-          savedState?.currentSequence &&
-          applyReversalDetection
-        ) {
+        if (savedState?.currentSequence && applyReversalDetection) {
           savedState.currentSequence = applyReversalDetection(
             savedState.currentSequence
           );
@@ -133,12 +130,18 @@ export function createSequencePersistenceCoordinator(
         // Log sequence save for analytics (non-blocking)
         if (currentSequence) {
           try {
-            const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+            const activityService = tryResolve<IActivityLogService>(
+              TYPES.IActivityLogService
+            );
             if (activityService) {
-              void activityService.logSequenceAction("save", currentSequence.id, {
-                sequenceWord: currentSequence.word,
-                sequenceLength: currentSequence.beats.length,
-              });
+              void activityService.logSequenceAction(
+                "save",
+                currentSequence.id,
+                {
+                  sequenceWord: currentSequence.word,
+                  sequenceLength: currentSequence.beats.length,
+                }
+              );
             }
           } catch {
             // Silently fail - activity logging is non-critical

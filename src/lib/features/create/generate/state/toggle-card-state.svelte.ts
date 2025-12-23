@@ -40,7 +40,7 @@ export function createToggleCardState<T>(props: {
   let optionsAreSideBySide = $state(false); // Track if options are in horizontal layout
 
   // Touch tracking for lazy tap tolerance
-  let touchState = {
+  const touchState = {
     isTracking: false,
     startX: 0,
     startY: 0,

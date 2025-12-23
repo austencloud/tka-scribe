@@ -10,7 +10,10 @@
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { injectable, inject, optional } from "inversify";
 import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
-import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
+import type {
+  ICreateModuleState,
+  BatchEditChanges,
+} from "../../types/create-module-types";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -20,7 +23,10 @@ import { removeBeat } from "./beat-operations/BeatRemovalHandler";
 import { applyBatchChanges } from "./beat-operations/BatchEditHandler";
 import { updateBeatOrientation } from "./beat-operations/OrientationHandler";
 import { updateBeatTurns } from "./beat-operations/TurnsHandler";
-import { updateBeatPropType, bulkUpdatePropType } from "./beat-operations/PropTypeHandler";
+import {
+  updateBeatPropType,
+  bulkUpdatePropType,
+} from "./beat-operations/PropTypeHandler";
 import { updateRotationDirection } from "./beat-operations/RotationDirectionHandler";
 
 @injectable()
@@ -38,7 +44,10 @@ export class BeatOperationsService implements IBeatOperationsService {
     removeBeat(beatIndex, createModuleState);
   }
 
-  applyBatchChanges(changes: BatchEditChanges, createModuleState: ICreateModuleState): void {
+  applyBatchChanges(
+    changes: BatchEditChanges,
+    createModuleState: ICreateModuleState
+  ): void {
     applyBatchChanges(changes, createModuleState);
   }
 

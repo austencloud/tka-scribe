@@ -16,7 +16,11 @@
     onOrientationChange: (color: MotionColor, orientation: string) => void;
   }
 
-  let { startPositionData, stacked = false, onOrientationChange }: Props = $props();
+  let {
+    startPositionData,
+    stacked = false,
+    onOrientationChange,
+  }: Props = $props();
 
   // Get current orientations from the start position data
   const blueOrientation = $derived(
@@ -38,14 +42,16 @@
       <PropOrientationControl
         color="blue"
         orientation={blueOrientation}
-        onOrientationChange={(orientation) => onOrientationChange(MotionColor.BLUE, orientation)}
+        onOrientationChange={(orientation) =>
+          onOrientationChange(MotionColor.BLUE, orientation)}
       />
     {/snippet}
     {#snippet redContent()}
       <PropOrientationControl
         color="red"
         orientation={redOrientation}
-        onOrientationChange={(orientation) => onOrientationChange(MotionColor.RED, orientation)}
+        onOrientationChange={(orientation) =>
+          onOrientationChange(MotionColor.RED, orientation)}
       />
     {/snippet}
   </PropControlPair>

@@ -379,7 +379,11 @@ Allows user to set name, visibility, tags, collections, and notes.
 
   .input-field::placeholder,
   .textarea-field::placeholder {
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%,
+      transparent
+    );
   }
 
   .textarea-field {
@@ -423,8 +427,13 @@ Allows user to set name, visibility, tags, collections, and notes.
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     flex-shrink: 0;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 8px;
     color: var(--theme-accent-strong, #8b5cf6);
     cursor: pointer;
@@ -435,8 +444,16 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .add-tag-button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 50%,
+      transparent
+    );
   }
 
   .add-tag-button:disabled {
@@ -457,8 +474,13 @@ Allows user to set name, visibility, tags, collections, and notes.
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 16px;
     color: var(--theme-accent-strong, #8b5cf6);
     font-size: 13px;
@@ -493,10 +515,23 @@ Allows user to set name, visibility, tags, collections, and notes.
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
-    background: color-mix(in srgb, var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 45%, transparent);
-    border: 1px dashed color-mix(in srgb, var(--theme-stroke, rgba(255, 255, 255, 0.1)) 70%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 45%,
+      transparent
+    );
+    border: 1px dashed
+      color-mix(
+        in srgb,
+        var(--theme-stroke, rgba(255, 255, 255, 0.1)) 70%,
+        transparent
+      );
     border-radius: 8px;
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%,
+      transparent
+    );
     font-size: 13px;
     margin: 0;
   }
@@ -537,14 +572,24 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .button-primary {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, var(--theme-accent-strong, #7c3aed) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, #7c3aed) 100%
+    );
     color: white;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .button-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #7c3aed) 0%, var(--theme-accent-strong, #6d28d9) 100%);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #7c3aed) 0%,
+      var(--theme-accent-strong, #6d28d9) 100%
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
     transform: translateY(-1px);
   }
 

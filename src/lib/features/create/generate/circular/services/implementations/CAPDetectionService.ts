@@ -33,7 +33,10 @@ import {
   INVERTED_LETTER_MAP,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { MotionColor, MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
 @injectable()
 export class CAPDetectionService implements ICAPDetectionService {
@@ -108,7 +111,9 @@ export class CAPDetectionService implements ICAPDetectionService {
     return {
       isCircular: true,
       capType,
-      sliceSize: detectedComponents.has(CAPComponent.ROTATED) ? sliceSize : null,
+      sliceSize: detectedComponents.has(CAPComponent.ROTATED)
+        ? sliceSize
+        : null,
       confidence,
     };
   }
@@ -169,7 +174,10 @@ export class CAPDetectionService implements ICAPDetectionService {
   /**
    * Detect if sequence follows rotation transformation
    */
-  private detectsRotation(beats: readonly BeatData[], sliceSize: SliceSize): boolean {
+  private detectsRotation(
+    beats: readonly BeatData[],
+    sliceSize: SliceSize
+  ): boolean {
     const length = beats.length;
 
     if (sliceSize === SliceSize.HALVED && length >= 2 && length % 2 === 0) {
@@ -294,13 +302,20 @@ export class CAPDetectionService implements ICAPDetectionService {
       const secondRed = secondBeat.motions?.[MotionColor.RED];
 
       if (firstBlue && secondBlue) {
-        if (!this.isMotionTypeInverted(firstBlue.motionType, secondBlue.motionType)) {
+        if (
+          !this.isMotionTypeInverted(
+            firstBlue.motionType,
+            secondBlue.motionType
+          )
+        ) {
           return false;
         }
       }
 
       if (firstRed && secondRed) {
-        if (!this.isMotionTypeInverted(firstRed.motionType, secondRed.motionType)) {
+        if (
+          !this.isMotionTypeInverted(firstRed.motionType, secondRed.motionType)
+        ) {
           return false;
         }
       }
@@ -319,7 +334,9 @@ export class CAPDetectionService implements ICAPDetectionService {
 
     // STATIC, FLOAT, DASH are self-inverted
     if (type1 === type2) {
-      return [MotionType.STATIC, MotionType.FLOAT, MotionType.DASH].includes(type1);
+      return [MotionType.STATIC, MotionType.FLOAT, MotionType.DASH].includes(
+        type1
+      );
     }
 
     return false;

@@ -82,12 +82,20 @@
   }
 
   .new-sequence-button {
-    background: linear-gradient(135deg, var(--theme-accent, #667eea) 0%, color-mix(in srgb, var(--theme-accent, #667eea) 80%, #764ba2) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent, #667eea) 0%,
+      color-mix(in srgb, var(--theme-accent, #667eea) 80%, #764ba2) 100%
+    );
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
   }
 
   .new-sequence-button:hover:not(.disabled) {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent, #667eea) 90%, white) 0%, color-mix(in srgb, var(--theme-accent, #667eea) 70%, #764ba2) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent, #667eea) 90%, white) 0%,
+      color-mix(in srgb, var(--theme-accent, #667eea) 70%, #764ba2) 100%
+    );
   }
 
   .panel-button.disabled {

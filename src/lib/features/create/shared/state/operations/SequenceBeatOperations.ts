@@ -150,7 +150,8 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (reversalDetectionService) {
-          updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+          updatedSequence =
+            reversalDetectionService.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         coreState.clearError();
@@ -169,7 +170,8 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (reversalDetectionService) {
-          updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+          updatedSequence =
+            reversalDetectionService.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         selectionState.adjustSelectionForRemovedBeat(beatIndex);
@@ -198,7 +200,8 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
           );
           // Process reversals to ensure correct reversal indicators
           if (reversalDetectionService) {
-            updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+            updatedSequence =
+              reversalDetectionService.processReversals(updatedSequence);
           }
           coreState.setCurrentSequence(updatedSequence);
           selectionState.adjustSelectionForRemovedBeat(beatIndex);
@@ -229,7 +232,8 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (reversalDetectionService) {
-          updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+          updatedSequence =
+            reversalDetectionService.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         selectionState.clearSelection();
@@ -275,7 +279,8 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
           );
           // Process reversals to ensure correct reversal indicators
           if (reversalDetectionService) {
-            updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+            updatedSequence =
+              reversalDetectionService.processReversals(updatedSequence);
           }
           coreState.setCurrentSequence(updatedSequence);
           // NOTE: Don't clear selection here - the onComplete callback will select the appropriate next beat
@@ -304,7 +309,9 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
       if (!coreState.currentSequence) return;
 
       const currentSelectedBeat = selectionState.selectedBeatNumber;
-      console.log(`[SequenceBeatOperations.updateBeat] START - selectedBeatNumber=${currentSelectedBeat}, updating beatIndex=${beatIndex}`);
+      console.log(
+        `[SequenceBeatOperations.updateBeat] START - selectedBeatNumber=${currentSelectedBeat}, updating beatIndex=${beatIndex}`
+      );
 
       try {
         let updatedSequence = updateBeatInSequence(
@@ -314,13 +321,20 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (reversalDetectionService) {
-          updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+          updatedSequence =
+            reversalDetectionService.processReversals(updatedSequence);
         }
-        console.log(`[SequenceBeatOperations.updateBeat] Before setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`);
+        console.log(
+          `[SequenceBeatOperations.updateBeat] Before setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`
+        );
         coreState.setCurrentSequence(updatedSequence);
-        console.log(`[SequenceBeatOperations.updateBeat] After setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`);
+        console.log(
+          `[SequenceBeatOperations.updateBeat] After setCurrentSequence - selectedBeatNumber=${selectionState.selectedBeatNumber}`
+        );
         coreState.clearError();
-        console.log(`[SequenceBeatOperations.updateBeat] END - selectedBeatNumber=${selectionState.selectedBeatNumber}`);
+        console.log(
+          `[SequenceBeatOperations.updateBeat] END - selectedBeatNumber=${selectionState.selectedBeatNumber}`
+        );
       } catch (error) {
         handleError("Failed to update beat", error);
       }
@@ -337,7 +351,8 @@ export function createSequenceBeatOperations(config: BeatOperationsConfig) {
         );
         // Process reversals to ensure correct reversal indicators
         if (reversalDetectionService) {
-          updatedSequence = reversalDetectionService.processReversals(updatedSequence);
+          updatedSequence =
+            reversalDetectionService.processReversals(updatedSequence);
         }
         coreState.setCurrentSequence(updatedSequence);
         selectionState.adjustSelectionForInsertedBeat(beatIndex);

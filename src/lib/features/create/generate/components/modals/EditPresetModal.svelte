@@ -26,7 +26,9 @@ Provides a beautiful, unified experience for customizing presets
   let selectedIcon = $state(preset.icon || "⚙️");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
 
     // Focus the name input
     nameInput?.focus();
@@ -129,7 +131,11 @@ Provides a beautiful, unified experience for customizing presets
     height: 100vh;
     height: 100dvh;
     height: var(--actual-vh, 100vh);
-    background: color-mix(in srgb, var(--theme-panel-bg, #000) 85%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #000) 85%,
+      transparent
+    );
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -232,7 +238,8 @@ Provides a beautiful, unified experience for customizing presets
   .name-input {
     width: 100%;
     padding: 12px 16px;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent),
       color-mix(in srgb, var(--theme-shadow, #000) 30%, transparent)
     );
@@ -247,13 +254,19 @@ Provides a beautiful, unified experience for customizing presets
 
   .name-input:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--theme-accent, #3b82f6) 60%, transparent);
-    background: linear-gradient(135deg,
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 60%,
+      transparent
+    );
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent),
       color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent)
     );
     box-shadow:
-      0 0 0 3px color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
+      0 0 0 3px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
       0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2)) inset;
   }
 

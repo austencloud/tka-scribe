@@ -7,7 +7,10 @@
 
 import { untrack } from "svelte";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { GenerationMode, PropContinuity } from "../shared/domain/models/generate-models";
+import {
+  GenerationMode,
+  PropContinuity,
+} from "../shared/domain/models/generate-models";
 import { CAPType, SliceSize } from "../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";
 

@@ -12,8 +12,6 @@ import type { PictographData } from "../../../../../shared/pictograph/shared/dom
 import type { ISettingsState } from "../../../../../shared/settings/services/contracts/ISettingsState";
 import type { IStartPositionService } from "../services/contracts/IStartPositionService";
 
-
-
 export function createSimplifiedStartPositionState() {
   // Lazy service resolution to avoid effect_orphan error
   let startPositionService: IStartPositionService | null = null;
@@ -31,7 +29,9 @@ export function createSimplifiedStartPositionState() {
     if (!startPositionService) {
       const container = await ensureContainer();
       if (container) {
-        startPositionService = container.get<IStartPositionService>(TYPES.IStartPositionService);
+        startPositionService = container.get<IStartPositionService>(
+          TYPES.IStartPositionService
+        );
       }
     }
     return startPositionService!;
@@ -88,7 +88,9 @@ export function createSimplifiedStartPositionState() {
   // Useful when importing a sequence where we just need the mode to match
   function setGridMode(gridMode: GridMode) {
     if (currentGridMode !== gridMode) {
-      console.log(`🔄 StartPositionState: Setting grid mode directly - ${currentGridMode} → ${gridMode}`);
+      console.log(
+        `🔄 StartPositionState: Setting grid mode directly - ${currentGridMode} → ${gridMode}`
+      );
       currentGridMode = gridMode;
     }
   }

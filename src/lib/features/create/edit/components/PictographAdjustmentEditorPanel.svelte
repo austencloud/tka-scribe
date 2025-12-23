@@ -343,7 +343,10 @@ Features:
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg) var(--spacing-xl);
-    background: var(--sheet-header-bg, var(--theme-card-bg, var(--sheet-bg-solid)));
+    background: var(
+      --sheet-header-bg,
+      var(--theme-card-bg, var(--sheet-bg-solid))
+    );
     border-bottom: var(--sheet-header-border, var(--sheet-border-strong));
   }
 

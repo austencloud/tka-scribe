@@ -99,7 +99,10 @@
     }
   }
 
-  function handleRotationDirectionChange(color: string, rotationDirection: string) {
+  function handleRotationDirectionChange(
+    color: string,
+    rotationDirection: string
+  ) {
     const beatIndex = panelState.editPanelBeatIndex;
     if (beatIndex === null) {
       logger.warn("Cannot change rotation direction: no beat selected");
@@ -116,7 +119,9 @@
       );
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to update rotation direction";
+        err instanceof Error
+          ? err.message
+          : "Failed to update rotation direction";
       logger.error("Failed to update rotation direction", err);
       onError?.(errorMessage);
     }

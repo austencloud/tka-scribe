@@ -86,7 +86,7 @@
       const shouldLookAhead = fractionalPart >= GLYPH_LOOKAHEAD_THRESHOLD;
 
       const beatIndex = shouldLookAhead
-        ? Math.ceil(currentBeat)  // Next beat
+        ? Math.ceil(currentBeat) // Next beat
         : Math.floor(currentBeat); // Current beat
 
       const clampedIndex = Math.max(
@@ -127,7 +127,7 @@
       const shouldLookAhead = fractionalPart >= GLYPH_LOOKAHEAD_THRESHOLD;
 
       const beatIndex = shouldLookAhead
-        ? Math.ceil(currentBeat)  // Next beat
+        ? Math.ceil(currentBeat) // Next beat
         : Math.floor(currentBeat); // Current beat
 
       const clampedIndex = Math.max(
@@ -171,9 +171,14 @@
       );
 
       servicesReady = true;
-      console.log("✅ Animation services resolved, ready to initialize playback");
+      console.log(
+        "✅ Animation services resolved, ready to initialize playback"
+      );
     } catch (error) {
-      console.error("❌ Failed to load animator module or resolve services:", error);
+      console.error(
+        "❌ Failed to load animator module or resolve services:",
+        error
+      );
       animationPanelState.setError("Failed to initialize animation services");
     }
 
@@ -196,7 +201,9 @@
       sequenceWord: sequence?.word,
       sequenceName: sequence?.name,
       hasBeatData: sequence?.beats?.length ?? 0,
-      hasMotionData: sequence?.beats?.some(b => b?.motions?.blue && b?.motions?.red),
+      hasMotionData: sequence?.beats?.some(
+        (b) => b?.motions?.blue && b?.motions?.red
+      ),
       activeTab: navigationState.activeTab,
       currentSection: navigationState.currentSection,
       hasPlaybackController: !!playbackController,
@@ -204,7 +211,13 @@
     });
 
     // Wait for services to be ready AND panel to be open AND sequence to exist
-    if (isOpen && servicesReady && sequence && sequenceService && playbackController) {
+    if (
+      isOpen &&
+      servicesReady &&
+      sequence &&
+      sequenceService &&
+      playbackController
+    ) {
       console.log("✅ All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);
@@ -226,7 +239,9 @@
       word: sequence?.word,
       name: sequence?.name,
       beatCount: sequence?.beats?.length,
-      hasMotionData: sequence?.beats?.some((b: any) => b?.motions?.blue && b?.motions?.red),
+      hasMotionData: sequence?.beats?.some(
+        (b: any) => b?.motions?.blue && b?.motions?.red
+      ),
     });
 
     if (!sequenceService || !playbackController) {
@@ -249,7 +264,9 @@
         id: loadedSequence?.id,
         word: loadedSequence?.word,
         beatCount: loadedSequence?.beats?.length,
-        hasMotionData: loadedSequence?.beats?.some((b: any) => b?.motions?.blue && b?.motions?.red),
+        hasMotionData: loadedSequence?.beats?.some(
+          (b: any) => b?.motions?.blue && b?.motions?.red
+        ),
         hasStartPosition: !!loadedSequence?.startPosition,
       });
 
@@ -336,7 +353,10 @@
     // Load from database/gallery if needed (empty beats)
     else if (sequence.id && (!sequence.beats || sequence.beats.length === 0)) {
       const galleryId = getGalleryIdentifier(sequence);
-      console.log("🔍 Sequence has no beats, attempting gallery load:", galleryId);
+      console.log(
+        "🔍 Sequence has no beats, attempting gallery load:",
+        galleryId
+      );
       if (galleryId) {
         const loaded = await service.getSequence(galleryId);
         if (loaded) {
@@ -354,14 +374,20 @@
     // Hydrate if missing motion data (try gallery lookup)
     else if (fullSequence && !hasMotionData(fullSequence)) {
       const galleryId = getGalleryIdentifier(fullSequence);
-      console.log("🔍 Sequence missing motion data, attempting hydration:", galleryId);
+      console.log(
+        "🔍 Sequence missing motion data, attempting hydration:",
+        galleryId
+      );
       if (galleryId) {
         const hydrated = await service.getSequence(galleryId);
         if (hydrated && hasMotionData(hydrated)) {
           console.log("✅ Hydrated sequence from gallery:", galleryId);
           fullSequence = hydrated;
         } else {
-          console.warn("⚠️ Failed to hydrate sequence from gallery:", galleryId);
+          console.warn(
+            "⚠️ Failed to hydrate sequence from gallery:",
+            galleryId
+          );
         }
       }
     }
@@ -419,7 +445,10 @@
   function handlePlaybackToggle() {
     console.log("🎮 handlePlaybackToggle called");
     console.log("  playbackController:", playbackController);
-    console.log("  animationPanelState.isPlaying:", animationPanelState.isPlaying);
+    console.log(
+      "  animationPanelState.isPlaying:",
+      animationPanelState.isPlaying
+    );
 
     hapticService?.trigger("selection");
     playbackController?.togglePlayback();
@@ -479,7 +508,9 @@
           exportStage = progress.stage;
 
           if (progress.stage === "capturing" && progress.currentFrame) {
-            console.log(`📸 Capturing frame ${progress.currentFrame}/${progress.totalFrames}`);
+            console.log(
+              `📸 Capturing frame ${progress.currentFrame}/${progress.totalFrames}`
+            );
           } else if (progress.stage === "encoding") {
             console.log("🔄 Encoding MP4...");
           } else if (progress.stage === "complete") {
@@ -493,7 +524,8 @@
         }
       );
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       if (errorMessage === "Export cancelled") {
         console.log("🛑 Export cancelled by user");
         hapticService?.trigger("selection");
@@ -556,7 +588,8 @@
     try {
       isSharing = true;
 
-      const sequenceName = animationPanelState.sequenceData?.word ||
+      const sequenceName =
+        animationPanelState.sequenceData?.word ||
         animationPanelState.sequenceData?.name ||
         "animation";
 

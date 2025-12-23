@@ -225,10 +225,14 @@
     flex: 1 1 auto;
     min-height: 0;
     border-radius: 12px;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    transition:
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .beat-grid-wrapper.shift-mode {
-    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.2);
+    box-shadow:
+      0 0 0 2px rgba(6, 182, 212, 0.5),
+      0 0 20px rgba(6, 182, 212, 0.2);
   }
 </style>

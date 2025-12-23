@@ -344,7 +344,9 @@
   .beat-cell.long-pressing {
     transform: scale(0.95);
     opacity: 0.8;
-    transition: transform 0.15s ease-out, opacity 0.15s ease-out;
+    transition:
+      transform 0.15s ease-out,
+      opacity 0.15s ease-out;
   }
 
   /* Elevated Luxury - 2025/2026 Selection State */

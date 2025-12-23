@@ -72,7 +72,10 @@ Transform tools moved to edit tab.
     height: 100%; /* Take full height to enable centering */
 
     /* Glassmorphism panel styling with reduced opacity to avoid visual conflict */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04)); /* Reduced from 0.08 */
+    background: var(
+      --theme-card-bg,
+      rgba(255, 255, 255, 0.04)
+    ); /* Reduced from 0.08 */
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)); /* More subtle border */
     border-radius: 12px;
     box-shadow:

@@ -23,7 +23,8 @@ export function createScrollState() {
     // Only consider it "has scrollbar" if overflow exceeds threshold (e.g., at least 1 row of content)
     const overflowThreshold = 30; // pixels - enough to indicate real scrollable content
     const hasScrollbar =
-      scrollContainerRef.scrollHeight > scrollContainerRef.clientHeight + overflowThreshold;
+      scrollContainerRef.scrollHeight >
+      scrollContainerRef.clientHeight + overflowThreshold;
 
     if (hasScrollbar !== hasVerticalScrollbar) {
       hasVerticalScrollbar = hasScrollbar;

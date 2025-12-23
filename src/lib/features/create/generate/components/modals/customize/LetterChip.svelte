@@ -9,7 +9,7 @@ LetterChip.svelte - Re-exports from shared for backwards compatibility
     letter,
     isSelected = false,
     mode = "include",
-    onClick
+    onClick,
   } = $props<{
     letter: Letter;
     isSelected?: boolean;
@@ -18,9 +18,4 @@ LetterChip.svelte - Re-exports from shared for backwards compatibility
   }>();
 </script>
 
-<SharedLetterChip
-  {letter}
-  {isSelected}
-  {mode}
-  {onClick}
-/>
+<SharedLetterChip {letter} {isSelected} {mode} {onClick} />

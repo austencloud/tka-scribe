@@ -6,7 +6,10 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { GridPositionGroup, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type {
+  GridPositionGroup,
+  GridPosition,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 export interface IPositionAnalyzer {
   /**

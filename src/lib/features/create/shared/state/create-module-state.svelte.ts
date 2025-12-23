@@ -88,7 +88,9 @@ export function createCreateModuleState(
   function getSequenceStateForTab(tab: BuildModeId): SequenceState {
     switch (tab) {
       case "constructor": {
-        const ctor = _constructorTabState as { sequenceState?: SequenceState } | null;
+        const ctor = _constructorTabState as {
+          sequenceState?: SequenceState;
+        } | null;
         return ctor?.sequenceState || constructorFallbackState;
       }
       case "assembler": {
@@ -332,13 +334,13 @@ export function createCreateModuleState(
     getActiveTabSequenceState,
 
     // Tab states (will be attached by initialization service)
-  get constructorTabState() {
-    return _constructorTabState;
-  },
-  set constructorTabState(value: unknown) {
-    _constructorTabState = value;
-  },
-  constructTabState: null as any, // Legacy accessor - will be set by initializer
+    get constructorTabState() {
+      return _constructorTabState;
+    },
+    set constructorTabState(value: unknown) {
+      _constructorTabState = value;
+    },
+    constructTabState: null as any, // Legacy accessor - will be set by initializer
     get assemblerTabState() {
       return _assemblerTabState;
     },

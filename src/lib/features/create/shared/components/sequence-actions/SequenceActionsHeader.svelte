@@ -16,16 +16,28 @@
 </script>
 
 <div class="mode-toggle">
-  <button class="mode-btn" class:active={currentMode === "turns"} onclick={() => onModeChange("turns")}>
+  <button
+    class="mode-btn"
+    class:active={currentMode === "turns"}
+    onclick={() => onModeChange("turns")}
+  >
     <i class="fas fa-sliders-h"></i>
     Turns
   </button>
-  <button class="mode-btn" class:active={currentMode === "transforms"} onclick={() => onModeChange("transforms")}>
+  <button
+    class="mode-btn"
+    class:active={currentMode === "transforms"}
+    onclick={() => onModeChange("transforms")}
+  >
     <i class="fas fa-wand-magic-sparkles"></i>
     Transforms
   </button>
   {#if currentMode === "transforms"}
-    <button class="help-btn" onclick={onShowHelp} aria-label="Learn about transforms">
+    <button
+      class="help-btn"
+      onclick={onShowHelp}
+      aria-label="Learn about transforms"
+    >
       <i class="fas fa-circle-question"></i>
     </button>
   {/if}

@@ -18,7 +18,15 @@
     onShuffle: () => void;
   }
 
-  let { pictograph, color, isRotate = false, isLoading = false, onTransform, onRotate, onShuffle }: Props = $props();
+  let {
+    pictograph,
+    color,
+    isRotate = false,
+    isLoading = false,
+    onTransform,
+    onRotate,
+    onShuffle,
+  }: Props = $props();
 </script>
 
 <div class="example-section" style="--help-color: {color}">
@@ -181,7 +189,8 @@
 
   .transform-btn:hover:not(:disabled) {
     transform: scale(1.1);
-    box-shadow: 0 2px 12px color-mix(in srgb, var(--help-color) 50%, transparent);
+    box-shadow: 0 2px 12px
+      color-mix(in srgb, var(--help-color) 50%, transparent);
   }
 
   .transform-btn:active:not(:disabled) {

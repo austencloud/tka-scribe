@@ -86,7 +86,9 @@
   const tkaName = $derived(word || sequence?.word || "");
 
   // Visibility derived from toggle
-  const visibility = $derived<SequenceVisibility>(isPublic ? "public" : "private");
+  const visibility = $derived<SequenceVisibility>(
+    isPublic ? "public" : "private"
+  );
 
   // Derived state
   const currentUser = $derived(authState.user);
@@ -191,7 +193,10 @@
               thumbnailOptions,
               (progress) => {
                 // Update render progress for granular UI feedback
-                renderProgress = { current: progress.current, total: progress.total };
+                renderProgress = {
+                  current: progress.current,
+                  total: progress.total,
+                };
               }
             );
           }
@@ -207,7 +212,10 @@
         }
       } catch (thumbnailError) {
         // Don't fail the entire save if thumbnail generation fails
-        console.error("[SaveToLibraryPanel] ❌ Failed to generate/upload thumbnail:", thumbnailError);
+        console.error(
+          "[SaveToLibraryPanel] ❌ Failed to generate/upload thumbnail:",
+          thumbnailError
+        );
       }
 
       // Step 3: Save sequence to Firestore
@@ -248,7 +256,7 @@
       saveStep = 5;
 
       // Brief pause to show success state
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       onSaveComplete?.(sequenceId);
       handleClose();
@@ -297,9 +305,16 @@
             <div class="progress-header">
               <div class="progress-icon-wrapper">
                 <div class="progress-icon-ring"></div>
-                <i class="fas {saveSteps[saveStep - 1]?.icon || 'fa-spinner'} progress-icon"></i>
+                <i
+                  class="fas {saveSteps[saveStep - 1]?.icon ||
+                    'fa-spinner'} progress-icon"
+                ></i>
               </div>
-              <h3>{saveStep === 1 ? step1Label : (saveSteps[saveStep - 1]?.label || 'Preparing...')}</h3>
+              <h3>
+                {saveStep === 1
+                  ? step1Label
+                  : saveSteps[saveStep - 1]?.label || "Preparing..."}
+              </h3>
             </div>
 
             <!-- Granular beat progress during step 1 -->
@@ -308,11 +323,15 @@
                 <div class="beat-progress-bar">
                   <div
                     class="beat-progress-fill"
-                    style="width: {(renderProgress.current / renderProgress.total) * 100}%"
+                    style="width: {(renderProgress.current /
+                      renderProgress.total) *
+                      100}%"
                   ></div>
                 </div>
                 <span class="beat-progress-text">
-                  {Math.round((renderProgress.current / renderProgress.total) * 100)}%
+                  {Math.round(
+                    (renderProgress.current / renderProgress.total) * 100
+                  )}%
                 </span>
               </div>
             {/if}
@@ -334,7 +353,9 @@
                       <span class="step-number">{i + 1}</span>
                     {/if}
                   </div>
-                  <span class="step-label">{i === 0 ? step1Label : step.label}</span>
+                  <span class="step-label"
+                    >{i === 0 ? step1Label : step.label}</span
+                  >
                 </div>
               {/each}
             </div>
@@ -351,16 +372,19 @@
     {/if}
 
     <!-- Close button -->
-    <button class="close-button" onclick={handleClose} aria-label="Close panel" disabled={isSaving}>
+    <button
+      class="close-button"
+      onclick={handleClose}
+      aria-label="Close panel"
+      disabled={isSaving}
+    >
       <i class="fas fa-times"></i>
     </button>
 
     <!-- Header -->
     <div class="panel-header">
       <h2>Save to Library</h2>
-      <p class="subtitle">
-        Add this sequence to your personal library
-      </p>
+      <p class="subtitle">Add this sequence to your personal library</p>
     </div>
 
     <!-- Form -->
@@ -385,7 +409,7 @@
           type="button"
           class="visibility-toggle"
           class:public={isPublic}
-          onclick={() => isPublic = !isPublic}
+          onclick={() => (isPublic = !isPublic)}
           aria-pressed={isPublic}
         >
           {#if isPublic}
@@ -406,7 +430,8 @@
       {:else}
         <p class="visibility-hint">
           <i class="fas fa-info-circle"></i>
-          Only you can see this sequence. You can make it public later from your library.
+          Only you can see this sequence. You can make it public later from your
+          library.
         </p>
       {/if}
 
@@ -416,7 +441,7 @@
           <button
             type="button"
             class="expand-chip"
-            onclick={() => showDisplayName = true}
+            onclick={() => (showDisplayName = true)}
           >
             <i class="fas fa-plus"></i>
             Add Display Name
@@ -428,7 +453,10 @@
               <button
                 type="button"
                 class="collapse-btn"
-                onclick={() => { showDisplayName = false; customDisplayName = ""; }}
+                onclick={() => {
+                  showDisplayName = false;
+                  customDisplayName = "";
+                }}
                 aria-label="Remove display name"
               >
                 <i class="fas fa-times"></i>
@@ -449,7 +477,7 @@
           <button
             type="button"
             class="expand-chip"
-            onclick={() => showTags = true}
+            onclick={() => (showTags = true)}
           >
             <i class="fas fa-plus"></i>
             Add Tags
@@ -461,7 +489,11 @@
               <button
                 type="button"
                 class="collapse-btn"
-                onclick={() => { showTags = false; tags = []; tagInput = ""; }}
+                onclick={() => {
+                  showTags = false;
+                  tags = [];
+                  tagInput = "";
+                }}
                 aria-label="Remove tags"
               >
                 <i class="fas fa-times"></i>
@@ -511,7 +543,7 @@
           <button
             type="button"
             class="expand-chip"
-            onclick={() => showNotes = true}
+            onclick={() => (showNotes = true)}
           >
             <i class="fas fa-plus"></i>
             Add Notes
@@ -523,7 +555,10 @@
               <button
                 type="button"
                 class="collapse-btn"
-                onclick={() => { showNotes = false; notes = ""; }}
+                onclick={() => {
+                  showNotes = false;
+                  notes = "";
+                }}
                 aria-label="Remove notes"
               >
                 <i class="fas fa-times"></i>
@@ -628,8 +663,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   .progress-content {
@@ -669,7 +708,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .progress-icon {
@@ -679,8 +720,15 @@
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.1); }
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
   }
 
   .progress-header h3 {
@@ -756,8 +804,15 @@
   }
 
   @keyframes stepPulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.5); opacity: 0.5; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.5;
+    }
   }
 
   .step-number {
@@ -797,7 +852,11 @@
 
   .beat-progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--theme-accent-strong, #8b5cf6) 0%, #a78bfa 100%);
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent-strong, #8b5cf6) 0%,
+      #a78bfa 100%
+    );
     border-radius: 4px;
     transition: width 0.15s ease-out;
     box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
@@ -822,7 +881,11 @@
 
   .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--theme-accent-strong, #8b5cf6), var(--semantic-success, #22c55e));
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent-strong, #8b5cf6),
+      var(--semantic-success, #22c55e)
+    );
     border-radius: 2px;
     transition: width 0.5s ease;
   }
@@ -837,15 +900,27 @@
   }
 
   @keyframes successBounce {
-    0% { transform: scale(0.8); opacity: 0; }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 
   .success-circle {
     width: 72px;
     height: 72px;
-    background: linear-gradient(135deg, var(--semantic-success, #22c55e), #16a34a);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success, #22c55e),
+      #16a34a
+    );
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -860,9 +935,15 @@
   }
 
   @keyframes checkPop {
-    0% { transform: scale(0); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .success-animation h3 {
@@ -1055,7 +1136,11 @@
 
   .input-field::placeholder,
   .textarea-field::placeholder {
-    color: color-mix(in srgb, var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%, transparent);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%,
+      transparent
+    );
   }
 
   .textarea-field {
@@ -1105,13 +1190,25 @@
   }
 
   .visibility-toggle.public {
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 40%,
+      transparent
+    );
     color: var(--semantic-success, #22c55e);
   }
 
   .visibility-toggle.public:hover {
-    background: color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 25%,
+      transparent
+    );
   }
 
   .visibility-hint {
@@ -1147,8 +1244,13 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     flex-shrink: 0;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 8px;
     color: var(--theme-accent-strong, #8b5cf6);
     cursor: pointer;
@@ -1159,8 +1261,16 @@
   }
 
   .add-tag-button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 30%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 50%,
+      transparent
+    );
   }
 
   .add-tag-button:disabled {
@@ -1181,8 +1291,13 @@
     align-items: center;
     gap: 6px;
     padding: 5px 10px;
-    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 20%,
+      transparent
+    );
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
     border-radius: 16px;
     color: var(--theme-accent-strong, #8b5cf6);
     font-size: 12px;
@@ -1248,14 +1363,24 @@
   }
 
   .button-primary {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, var(--theme-accent-strong, #7c3aed) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, #7c3aed) 100%
+    );
     color: white;
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
   }
 
   .button-primary:hover:not(:disabled) {
-    background: linear-gradient(135deg, var(--theme-accent-strong, #7c3aed) 0%, var(--theme-accent-strong, #6d28d9) 100%);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--theme-accent-strong, #7c3aed) 0%,
+      var(--theme-accent-strong, #6d28d9) 100%
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
     transform: translateY(-1px);
   }
 

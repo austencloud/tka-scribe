@@ -9,7 +9,10 @@ import type { ICreateModuleState } from "../../../types/create-module-types";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { getBeatDataFromState, START_POSITION_BEAT_NUMBER } from "./beat-data-helpers";
+import {
+  getBeatDataFromState,
+  START_POSITION_BEAT_NUMBER,
+} from "./beat-data-helpers";
 
 const logger = createComponentLogger("PropTypeHandler");
 
@@ -35,7 +38,8 @@ export function updateBeatPropType(
     return;
   }
 
-  const currentMotion: MotionData | undefined = beatData.motions[color as MotionColor];
+  const currentMotion: MotionData | undefined =
+    beatData.motions[color as MotionColor];
   if (!currentMotion) {
     logger.warn(`No motion data for ${color}`);
     return;

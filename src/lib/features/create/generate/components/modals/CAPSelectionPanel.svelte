@@ -33,7 +33,9 @@ Refactored to use Drawer component for consistent behavior
 
   onMount(async () => {
     const container = await getContainerInstance();
-    hapticService = container.get<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = container.get<IHapticFeedbackService>(
+      TYPES.IHapticFeedbackService
+    );
     capTypeService = container.get<ICAPTypeService>(TYPES.ICAPTypeService);
   });
 
@@ -291,8 +293,13 @@ Refactored to use Drawer component for consistent behavior
   }
 
   .coming-soon-badge {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 20%, transparent);
-    border: 2px solid color-mix(in srgb, var(--semantic-warning, #f59e0b) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 20%,
+      transparent
+    );
+    border: 2px solid
+      color-mix(in srgb, var(--semantic-warning, #f59e0b) 60%, transparent);
     border-radius: 8px;
     padding: 8px 12px;
     color: var(--semantic-warning, #ffd54f);
@@ -366,14 +373,26 @@ Refactored to use Drawer component for consistent behavior
   }
 
   .confirm-button.coming-soon {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 25%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-warning, #f59e0b) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 60%,
+      transparent
+    );
     color: var(--semantic-warning, #ffd54f);
     cursor: pointer;
   }
 
   .confirm-button.coming-soon:hover {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 35%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-warning, #f59e0b) 35%,
+      transparent
+    );
     border-color: var(--semantic-warning, #ffd54f);
     transform: translateY(-2px) scale(1.02);
   }

@@ -53,7 +53,9 @@ export interface IConstructTabState {
   readonly isPersistenceInitialized: boolean;
 
   // Sequence state - each tab has its own independent sequence state
-  readonly sequenceState: import('../state/SequenceStateOrchestrator.svelte').SequenceState | null;
+  readonly sequenceState:
+    | import("../state/SequenceStateOrchestrator.svelte").SequenceState
+    | null;
 
   // Selection state
   readonly selectedStartPosition: PictographData | null;
@@ -151,4 +153,3 @@ export interface IToolPanelMethods {
  * Partial beat data changes that can be applied to multiple beats at once.
  */
 export type BatchEditChanges = Partial<BeatData>;
-

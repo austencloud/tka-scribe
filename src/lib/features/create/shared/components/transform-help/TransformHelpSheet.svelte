@@ -8,7 +8,12 @@
 <script lang="ts">
   import { transformHelpContent } from "../../domain/transforms/transform-help-content";
   import { getRandomPictograph } from "../../domain/transforms/pictograph-example-loader";
-  import { applyMirror, applyRotate, applySwap, applyRewind } from "../../domain/transforms/transform-functions";
+  import {
+    applyMirror,
+    applyRotate,
+    applySwap,
+    applyRewind,
+  } from "../../domain/transforms/transform-functions";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import PictographDisplay from "./PictographDisplay.svelte";
   import TransformDescriptionPanel from "./TransformDescriptionPanel.svelte";
@@ -54,7 +59,8 @@
       previouslyFocusedElement = document.activeElement as HTMLElement;
       // Focus the close button after render
       requestAnimationFrame(() => {
-        const closeBtn = sheetElement?.querySelector<HTMLButtonElement>('.help-close');
+        const closeBtn =
+          sheetElement?.querySelector<HTMLButtonElement>(".help-close");
         closeBtn?.focus();
       });
     } else if (previouslyFocusedElement) {
@@ -68,7 +74,9 @@
   let isLoading = $state(true);
 
   // Track which transform is expanded on mobile
-  let expandedTransformId = $state<"mirror" | "rotate" | "swap" | "rewind">("mirror");
+  let expandedTransformId = $state<"mirror" | "rotate" | "swap" | "rewind">(
+    "mirror"
+  );
 
   // Layout detection: desktop (side panel) vs mobile (bottom sheet)
   let viewportWidth = $state(window.innerWidth);
@@ -163,7 +171,8 @@
         <TransformDescriptionPanel
           {expandedTransformId}
           {isDesktopLayout}
-          onToggleExpand={(id: "mirror" | "rotate" | "swap" | "rewind") => (expandedTransformId = id)}
+          onToggleExpand={(id: "mirror" | "rotate" | "swap" | "rewind") =>
+            (expandedTransformId = id)}
           onApplyTransform={applyTransform}
           onApplyRotate={applyRotateTransform}
         />
@@ -187,8 +196,12 @@
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* ===== SHEET (Mobile: Bottom Sheet) ===== */
@@ -196,7 +209,11 @@
     width: 100%;
     max-width: 500px;
     max-height: 85vh;
-    background: linear-gradient(180deg, rgba(30, 34, 53, 0.98) 0%, rgba(20, 24, 40, 0.98) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(30, 34, 53, 0.98) 0%,
+      rgba(20, 24, 40, 0.98) 100%
+    );
     border-radius: 20px 20px 0 0; /* Mobile: rounded top only */
     display: flex;
     flex-direction: column;
@@ -205,8 +222,12 @@
   }
 
   @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 
   /* ===== DESKTOP: Centered Modal ===== */

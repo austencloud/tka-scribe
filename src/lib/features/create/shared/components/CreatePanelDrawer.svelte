@@ -264,9 +264,7 @@
    * Width is already set by base Drawer
    * Height is controlled by .create-drawer-body below
    */
-  :global(
-    .drawer-content[class*="-panel-container"][data-placement="bottom"]
-  ) {
+  :global(.drawer-content[class*="-panel-container"][data-placement="bottom"]) {
     /* Override the default 95vh max-height from base Drawer */
     max-height: 100dvh !important;
     /* When --panel-full-height is set, force full viewport height */

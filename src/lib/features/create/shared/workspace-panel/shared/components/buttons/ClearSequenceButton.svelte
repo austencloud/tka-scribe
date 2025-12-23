@@ -77,14 +77,28 @@
   }
 
   .clear-button {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 80%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 80%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 30%,
+      transparent
+    );
+    box-shadow: 0 4px 12px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
   }
 
   .clear-button:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 90%, transparent);
-    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ef4444) 90%,
+      transparent
+    );
+    box-shadow: 0 6px 16px
+      color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -115,7 +129,9 @@
   /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum for accessibility */
+      width: var(
+        --min-touch-target
+      ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
       font-size: 14px;
     }

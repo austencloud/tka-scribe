@@ -13,7 +13,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.MIRROR]: {
       type: ToolOperationType.MIRROR,
       name: "Mirror",
-      description: "Flip left and right — creates a mirror image as if reflected in a vertical mirror. Clockwise spins become counter-clockwise.",
+      description:
+        "Flip left and right — creates a mirror image as if reflected in a vertical mirror. Clockwise spins become counter-clockwise.",
       icon: "🪞",
       isDestructive: false,
       requiresConfirmation: false,
@@ -22,7 +23,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.FLIP]: {
       type: ToolOperationType.FLIP,
       name: "Flip",
-      description: "Flip up and down - creates a mirror image as if reflected in a horizontal mirror.",
+      description:
+        "Flip up and down - creates a mirror image as if reflected in a horizontal mirror.",
       icon: "??",
       isDestructive: false,
       requiresConfirmation: false,
@@ -31,7 +33,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.INVERT]: {
       type: ToolOperationType.INVERT,
       name: "Invert",
-      description: "Invert the sequence - swaps inside/outside orientations while preserving timing.",
+      description:
+        "Invert the sequence - swaps inside/outside orientations while preserving timing.",
       icon: "??",
       isDestructive: false,
       requiresConfirmation: false,
@@ -40,7 +43,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.ROTATE_CLOCKWISE]: {
       type: ToolOperationType.ROTATE_CLOCKWISE,
       name: "Rotate Clockwise",
-      description: "Rotate 45° clockwise — turns the entire sequence as if you pivoted your body to the right.",
+      description:
+        "Rotate 45° clockwise — turns the entire sequence as if you pivoted your body to the right.",
       icon: "🔄",
       isDestructive: false,
       requiresConfirmation: false,
@@ -49,7 +53,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.ROTATE_COUNTERCLOCKWISE]: {
       type: ToolOperationType.ROTATE_COUNTERCLOCKWISE,
       name: "Rotate Counterclockwise",
-      description: "Rotate 45° counter-clockwise — turns the entire sequence as if you pivoted your body to the left.",
+      description:
+        "Rotate 45° counter-clockwise — turns the entire sequence as if you pivoted your body to the left.",
       icon: "🔄",
       isDestructive: false,
       requiresConfirmation: false,
@@ -58,7 +63,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.SWAP_COLORS]: {
       type: ToolOperationType.SWAP_COLORS,
       name: "Swap Colors",
-      description: "Switch hands — your left hand's movements become your right hand's, and vice versa.",
+      description:
+        "Switch hands — your left hand's movements become your right hand's, and vice versa.",
       icon: "🎨",
       isDestructive: false,
       requiresConfirmation: false,
@@ -67,7 +73,8 @@ export const TOOL_OPERATIONS: Record<ToolOperationType, ToolOperationMetadata> =
     [ToolOperationType.REWIND]: {
       type: ToolOperationType.REWIND,
       name: "Rewind",
-      description: "Retrace your steps — creates a sequence that returns you to the starting position by inverting each movement.",
+      description:
+        "Retrace your steps — creates a sequence that returns you to the starting position by inverting each movement.",
       icon: "↩️",
       isDestructive: false,
       requiresConfirmation: false,

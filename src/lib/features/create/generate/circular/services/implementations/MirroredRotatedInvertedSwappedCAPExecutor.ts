@@ -36,9 +36,7 @@ import type { ICAPExecutor } from "../contracts/ICAPExecutor";
 import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
-export class MirroredRotatedInvertedSwappedCAPExecutor
-  implements ICAPExecutor
-{
+export class MirroredRotatedInvertedSwappedCAPExecutor implements ICAPExecutor {
   constructor(
     @inject(TYPES.IStrictRotatedCAPExecutor)
     private readonly strictRotatedExecutor: ICAPExecutor,
@@ -72,11 +70,10 @@ export class MirroredRotatedInvertedSwappedCAPExecutor
     // - Mirrors locations vertically
     // - **Rotation directions PRESERVED** (SWAP + INVERTED + MIRRORED together preserve rotation)
     // For example: 8 beats → 16 beats final
-    const finalSequence =
-      this.mirroredSwappedInvertedExecutor.executeCAP(
-        rotatedSequence,
-        SliceSize.HALVED // Not actually used by this executor, but passed for consistency
-      );
+    const finalSequence = this.mirroredSwappedInvertedExecutor.executeCAP(
+      rotatedSequence,
+      SliceSize.HALVED // Not actually used by this executor, but passed for consistency
+    );
 
     return finalSequence;
   }

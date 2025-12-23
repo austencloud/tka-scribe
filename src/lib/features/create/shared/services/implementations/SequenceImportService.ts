@@ -37,9 +37,8 @@ export class SequenceImportService implements ISequenceImportService {
       // Extract metadata from PNG file using the reliable extractor
       // NOTE: Don't uppercase the ID - Greek letters like θ would become Θ,
       // which won't match the filesystem directory names
-      const pngMetadata = await PngMetadataExtractor.extractSequenceMetadata(
-        id
-      );
+      const pngMetadata =
+        await PngMetadataExtractor.extractSequenceMetadata(id);
 
       if (pngMetadata.length === 0) {
         console.error(`No metadata found in PNG for sequence: ${id}`);
@@ -63,10 +62,7 @@ export class SequenceImportService implements ISequenceImportService {
    * Convert PNG metadata to SequenceData format - Now with bulletproof Zod validation!
    * Replaces 100+ lines of manual type assertions with validated parsing.
    */
-  convertPngMetadata(
-    id: string,
-    pngMetadata: unknown[]
-  ): SequenceData {
+  convertPngMetadata(id: string, pngMetadata: unknown[]): SequenceData {
     console.log(`🔄 Converting PNG metadata to web app format for ${id}`);
 
     // Validate PNG structure first - throws if malformed
@@ -95,29 +91,53 @@ export class SequenceImportService implements ISequenceImportService {
         motions: {
           blue: createMotionData({
             color: MotionColor.BLUE,
-            motionType: this.enumMapper.mapMotionType(blueAttrs?.motion_type ?? ""),
-            startLocation: this.enumMapper.mapLocation(blueAttrs?.start_loc ?? ""),
+            motionType: this.enumMapper.mapMotionType(
+              blueAttrs?.motion_type ?? ""
+            ),
+            startLocation: this.enumMapper.mapLocation(
+              blueAttrs?.start_loc ?? ""
+            ),
             endLocation: this.enumMapper.mapLocation(blueAttrs?.end_loc ?? ""),
-            startOrientation: this.enumMapper.mapOrientation(blueAttrs?.start_ori ?? ""),
-            endOrientation: this.enumMapper.mapOrientation(blueAttrs?.end_ori ?? ""),
-            rotationDirection: this.enumMapper.mapRotationDirection(blueAttrs?.prop_rot_dir ?? ""),
+            startOrientation: this.enumMapper.mapOrientation(
+              blueAttrs?.start_ori ?? ""
+            ),
+            endOrientation: this.enumMapper.mapOrientation(
+              blueAttrs?.end_ori ?? ""
+            ),
+            rotationDirection: this.enumMapper.mapRotationDirection(
+              blueAttrs?.prop_rot_dir ?? ""
+            ),
             turns: blueAttrs?.turns ?? 0,
             isVisible: true,
             propType: PropType.STAFF,
-            arrowLocation: this.enumMapper.mapLocation(blueAttrs?.start_loc ?? ""),
+            arrowLocation: this.enumMapper.mapLocation(
+              blueAttrs?.start_loc ?? ""
+            ),
           }),
           red: createMotionData({
             color: MotionColor.RED,
-            motionType: this.enumMapper.mapMotionType(redAttrs?.motion_type ?? ""),
-            startLocation: this.enumMapper.mapLocation(redAttrs?.start_loc ?? ""),
+            motionType: this.enumMapper.mapMotionType(
+              redAttrs?.motion_type ?? ""
+            ),
+            startLocation: this.enumMapper.mapLocation(
+              redAttrs?.start_loc ?? ""
+            ),
             endLocation: this.enumMapper.mapLocation(redAttrs?.end_loc ?? ""),
-            startOrientation: this.enumMapper.mapOrientation(redAttrs?.start_ori ?? ""),
-            endOrientation: this.enumMapper.mapOrientation(redAttrs?.end_ori ?? ""),
-            rotationDirection: this.enumMapper.mapRotationDirection(redAttrs?.prop_rot_dir ?? ""),
+            startOrientation: this.enumMapper.mapOrientation(
+              redAttrs?.start_ori ?? ""
+            ),
+            endOrientation: this.enumMapper.mapOrientation(
+              redAttrs?.end_ori ?? ""
+            ),
+            rotationDirection: this.enumMapper.mapRotationDirection(
+              redAttrs?.prop_rot_dir ?? ""
+            ),
             turns: redAttrs?.turns ?? 0,
             isVisible: true,
             propType: PropType.STAFF,
-            arrowLocation: this.enumMapper.mapLocation(redAttrs?.start_loc ?? ""),
+            arrowLocation: this.enumMapper.mapLocation(
+              redAttrs?.start_loc ?? ""
+            ),
           }),
         },
         letter: step.letter as Letter, // Guaranteed valid string

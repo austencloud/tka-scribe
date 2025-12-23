@@ -5,7 +5,7 @@
  * Extracted from OptionPickerService for better separation of concerns.
  */
 
-import type { Letter} from "$lib/shared/foundation/domain/models/Letter";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { getLetterType } from "$lib/shared/foundation/domain/models/Letter";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
@@ -91,7 +91,10 @@ export class OptionFilter implements IOptionFilter {
     sequence: PictographData[]
   ): PictographData[] {
     return options.filter((option) => {
-      const reversalCount = this.ReversalChecker.getReversalCount(option, sequence);
+      const reversalCount = this.ReversalChecker.getReversalCount(
+        option,
+        sequence
+      );
 
       switch (reversalCount) {
         case 0:
@@ -144,7 +147,9 @@ export class OptionFilter implements IOptionFilter {
    * Helper function to convert string letter to Letter enum and get type
    * Uses shared infrastructure instead of duplicated logic
    */
-  private getLetterTypeFromString(letter: string | null | undefined): LetterType {
+  private getLetterTypeFromString(
+    letter: string | null | undefined
+  ): LetterType {
     // Delegate to the main getLetterType method which now uses shared infrastructure
     return this.getLetterType(letter);
   }

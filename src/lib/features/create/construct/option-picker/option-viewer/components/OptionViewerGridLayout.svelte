@@ -12,7 +12,7 @@ Features:
 -->
 
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { OrganizedSection } from "../domain/option-picker-types";
   import OptionPicker456Group from "./OptionViewer456Group.svelte";
   import OptionViewerSection from "./OptionViewerSection.svelte";
@@ -63,7 +63,8 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     const gapSize = 4;
     const totalGaps = (sectionCount - 1) * gapSize;
     const paddingBlock = 8; // Minimal padding in fitToViewport mode
-    const availableHeight = layoutConfig.containerHeight - totalGaps - paddingBlock;
+    const availableHeight =
+      layoutConfig.containerHeight - totalGaps - paddingBlock;
 
     return Math.floor(availableHeight / sectionCount);
   });

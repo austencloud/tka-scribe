@@ -26,7 +26,10 @@ Integrates all Assembly components and manages state transitions.
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import { createPictographData } from "$lib/shared/pictograph/shared/domain/factories/createPictographData";
   import { getSettings } from "$lib/shared/application/state/app-state.svelte";
-  import { createHandPathAssembleState, type HandPathAssembleState } from "../state/handpath-assemble-state.svelte";
+  import {
+    createHandPathAssembleState,
+    type HandPathAssembleState,
+  } from "../state/handpath-assemble-state.svelte";
   import AssemblyWelcome from "./AssemblyWelcome.svelte";
   import AssemblyPhaseHeader from "./AssemblyPhaseHeader.svelte";
   import AssemblyControls from "./AssemblyControls.svelte";
@@ -62,7 +65,10 @@ Integrates all Assembly components and manages state transitions.
   let gridMode = $state(initialGridMode);
 
   // Extract GridLocation from a pictograph's blue motion
-  function extractBlueLocation(pictograph: PictographData | null | undefined, useEnd: boolean = false): GridLocation | null {
+  function extractBlueLocation(
+    pictograph: PictographData | null | undefined,
+    useEnd: boolean = false
+  ): GridLocation | null {
     if (!pictograph) return null;
 
     const blueMotion = pictograph.motions?.[MotionColor.BLUE];
@@ -97,14 +103,17 @@ Integrates all Assembly components and manages state transitions.
   }
 
   // Get initial blue hand path from existing data
-  const initialBlueHandPath = hasExistingSequence ? reconstructBlueHandPath() : [];
+  const initialBlueHandPath = hasExistingSequence
+    ? reconstructBlueHandPath()
+    : [];
 
   // Create state manager with restored state if available
   // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
   let assemblyState: HandPathAssembleState = $state(
     createHandPathAssembleState({
       gridMode: gridMode,
-      initialBlueHandPath: initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
+      initialBlueHandPath:
+        initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
     })
   );
 
@@ -161,7 +170,8 @@ Integrates all Assembly components and manages state transitions.
     try {
       // Check if this is the first position (start position)
       const isFirstPosition =
-        assemblyState.blueHandPath.length === 0 && assemblyState.currentPhase === "blue";
+        assemblyState.blueHandPath.length === 0 &&
+        assemblyState.currentPhase === "blue";
 
       assemblyState.addPosition(position);
 
@@ -247,11 +257,16 @@ Integrates all Assembly components and manages state transitions.
 
       // Get user's preferred prop types from settings
       const settings = getSettings();
-      const bluePropType = settings.bluePropType || settings.propType || PropType.STAFF;
-      const redPropType = settings.redPropType || settings.propType || PropType.STAFF;
+      const bluePropType =
+        settings.bluePropType || settings.propType || PropType.STAFF;
+      const redPropType =
+        settings.redPropType || settings.propType || PropType.STAFF;
 
       // Get final merged sequence with user's prop types applied
-      const finalSequence = assemblyState.getFinalSequence(bluePropType, redPropType);
+      const finalSequence = assemblyState.getFinalSequence(
+        bluePropType,
+        redPropType
+      );
 
       // Notify parent
       onSequenceComplete?.(finalSequence);
@@ -326,7 +341,8 @@ Integrates all Assembly components and manages state transitions.
                     <span class="path-dot" title={pos}>{i + 1}</span>
                   {/each}
                   {#if bluePathLength === 0}
-                    <span class="path-placeholder">Tap a position to start</span>
+                    <span class="path-placeholder">Tap a position to start</span
+                    >
                   {/if}
                 </div>
               {:else}
@@ -335,7 +351,8 @@ Integrates all Assembly components and manages state transitions.
                     <span class="path-dot" title={pos}>{i + 1}</span>
                   {/each}
                   {#if redPathLength === 0}
-                    <span class="path-placeholder">Tap a position to start</span>
+                    <span class="path-placeholder">Tap a position to start</span
+                    >
                   {/if}
                 </div>
               {/if}

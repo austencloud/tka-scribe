@@ -18,7 +18,10 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionType,
+  MotionColor,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
   GridLocation,
@@ -139,10 +142,9 @@ export class MirroredInvertedCAPExecutor {
     if (!previousMatchingBeat.letter) {
       throw new Error("Previous matching beat must have a letter");
     }
-    const invertedLetter =
-      this.capParams.getInvertedLetter(
-        previousMatchingBeat.letter as string
-      ) as Letter;
+    const invertedLetter = this.capParams.getInvertedLetter(
+      previousMatchingBeat.letter as string
+    ) as Letter;
 
     // Get the mirrored end position (MIRRORED effect)
     const mirroredEndPosition = this._getMirroredPosition(previousMatchingBeat);

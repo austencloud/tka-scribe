@@ -49,7 +49,8 @@ export const BUTTON_STYLES = {
 
     // Edit/Create - modification actions
     edit: {
-      background: "linear-gradient(135deg, #8b5cf6 0%, var(--theme-accent, #6366f1) 100%)",
+      background:
+        "linear-gradient(135deg, #8b5cf6 0%, var(--theme-accent, #6366f1) 100%)",
       border: "1px solid rgba(139, 92, 246, 0.3)",
       boxShadow: "0 4px 12px rgba(139, 92, 246, 0.4)",
       hover: {

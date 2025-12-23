@@ -89,12 +89,17 @@
   }
 
   .back-button:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 95%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, #3b82f6) 95%,
+      transparent
+    );
     border-color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     transform: translateX(-2px) scale(1.05);
     box-shadow:
       0 0 0 2px var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)),
-      0 6px 16px color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
+      0 6px 16px
+        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
       0 4px 12px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }

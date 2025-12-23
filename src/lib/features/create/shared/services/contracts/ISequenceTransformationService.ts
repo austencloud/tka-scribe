@@ -65,5 +65,8 @@ export interface ISequenceTransformationService {
    * - For circular: rotates beats so target beat's end becomes new start
    * - For non-circular: truncates beats before target
    */
-  shiftStartPosition(sequence: SequenceData, targetBeatNumber: number): SequenceData;
+  shiftStartPosition(
+    sequence: SequenceData,
+    targetBeatNumber: number
+  ): SequenceData;
 }

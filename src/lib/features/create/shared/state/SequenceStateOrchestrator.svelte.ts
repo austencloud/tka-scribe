@@ -122,7 +122,8 @@ export function createSequenceState(services: SequenceStateServices) {
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
 
       // Also check for pending edit from Discover gallery (stored in localStorage)
-      hasPendingEdit = localStorage.getItem("tka-pending-edit-sequence") !== null;
+      hasPendingEdit =
+        localStorage.getItem("tka-pending-edit-sequence") !== null;
     } catch {
       // Service not available - assume no deep link
       void 0; // Suppress unused catch binding warning
@@ -206,7 +207,9 @@ export function createSequenceState(services: SequenceStateServices) {
 
       // Log sequence creation for analytics
       try {
-        const activityService = tryResolve<IActivityLogService>(TYPES.IActivityLogService);
+        const activityService = tryResolve<IActivityLogService>(
+          TYPES.IActivityLogService
+        );
         if (activityService) {
           void activityService.logSequenceAction("create", sequence.id, {
             sequenceWord: sequence.word,
@@ -281,7 +284,8 @@ export function createSequenceState(services: SequenceStateServices) {
     // Update start position from sequence
     // Check both startingPositionBeat (full beat format) and startPosition (raw position data)
     // Sequences from Discover gallery may only have startPosition
-    const startPosBeat = sequence?.startingPositionBeat || sequence?.startPosition;
+    const startPosBeat =
+      sequence?.startingPositionBeat || sequence?.startPosition;
     if (startPosBeat) {
       selectionState.setStartPosition(startPosBeat);
     } else {

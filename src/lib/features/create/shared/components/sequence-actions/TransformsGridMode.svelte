@@ -107,14 +107,22 @@
   <section class="section patterns-section">
     <span class="section-label">Patterns</span>
     <div class="section-grid">
-      <button class="grid-btn turn-pattern" onclick={onTurnPattern} disabled={!hasSequence}>
+      <button
+        class="grid-btn turn-pattern"
+        onclick={onTurnPattern}
+        disabled={!hasSequence}
+      >
         <div class="btn-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
         <div class="btn-text">
           <span class="btn-label">Turn Pattern</span>
           <span class="btn-desc">Apply patterns</span>
         </div>
       </button>
-      <button class="grid-btn direction" onclick={onRotationDirection} disabled={!hasSequence}>
+      <button
+        class="grid-btn direction"
+        onclick={onRotationDirection}
+        disabled={!hasSequence}
+      >
         <div class="btn-icon"><i class="fas fa-compass"></i></div>
         <div class="btn-text">
           <span class="btn-label">Direction</span>
@@ -136,7 +144,9 @@
             {/if}
           </div>
           <div class="btn-text">
-            <span class="btn-label">{isAutocompleting ? "..." : "Autocomplete"}</span>
+            <span class="btn-label"
+              >{isAutocompleting ? "..." : "Autocomplete"}</span
+            >
             <span class="btn-desc">Complete to start</span>
           </div>
         </button>
@@ -180,11 +190,18 @@
         <div class="btn-icon"><i class="fas fa-sliders-h"></i></div>
         <div class="btn-text">
           <span class="btn-label">Edit Turns</span>
-          <span class="btn-desc">{hasSelection ? "Adjust rotation" : "Select beat first"}</span>
+          <span class="btn-desc"
+            >{hasSelection ? "Adjust rotation" : "Select beat first"}</span
+          >
         </div>
       </button>
       {#if showEditInConstructor}
-        <button class="grid-btn constructor" onclick={onEditInConstructor} disabled={!hasSequence} data-testid="edit-in-constructor">
+        <button
+          class="grid-btn constructor"
+          onclick={onEditInConstructor}
+          disabled={!hasSequence}
+          data-testid="edit-in-constructor"
+        >
           <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
           <div class="btn-text">
             <span class="btn-label">Constructor</span>
@@ -220,9 +237,15 @@
   }
 
   /* Proportional flex values based on button count */
-  .transform-section { flex: 3; } /* 6 buttons = 3 rows (desktop) or 2 rows (mobile) */
-  .patterns-section { flex: 2; }  /* 5 buttons = 2 rows */
-  .edit-section { flex: 1; }      /* 2 buttons = 1 row */
+  .transform-section {
+    flex: 3;
+  } /* 6 buttons = 3 rows (desktop) or 2 rows (mobile) */
+  .patterns-section {
+    flex: 2;
+  } /* 5 buttons = 2 rows */
+  .edit-section {
+    flex: 1;
+  } /* 2 buttons = 1 row */
 
   .section-label {
     font-size: 9px;
@@ -352,189 +375,343 @@
 
   /* Mirror - Purple */
   .grid-btn.mirror {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.15),
+      rgba(139, 92, 246, 0.05)
+    );
     border: 1px solid rgba(139, 92, 246, 0.3);
   }
   .grid-btn.mirror:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(139, 92, 246, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(139, 92, 246, 0.25),
+      rgba(139, 92, 246, 0.1)
+    );
     border-color: rgba(139, 92, 246, 0.5);
     box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
   }
-  .grid-btn.mirror .btn-icon { background: #8b5cf6; }
+  .grid-btn.mirror .btn-icon {
+    background: #8b5cf6;
+  }
 
   /* Flip - Indigo */
   .grid-btn.flip {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.15),
+      rgba(99, 102, 241, 0.05)
+    );
     border: 1px solid rgba(99, 102, 241, 0.3);
   }
   .grid-btn.flip:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(99, 102, 241, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(99, 102, 241, 0.25),
+      rgba(99, 102, 241, 0.1)
+    );
     border-color: rgba(99, 102, 241, 0.5);
     box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
   }
-  .grid-btn.flip .btn-icon { background: #6366f1; }
+  .grid-btn.flip .btn-icon {
+    background: #6366f1;
+  }
 
   /* Swap - Emerald */
   .grid-btn.swap {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.15),
+      rgba(16, 185, 129, 0.05)
+    );
     border: 1px solid rgba(16, 185, 129, 0.3);
   }
   .grid-btn.swap:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(16, 185, 129, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(16, 185, 129, 0.25),
+      rgba(16, 185, 129, 0.1)
+    );
     border-color: rgba(16, 185, 129, 0.5);
     box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
   }
-  .grid-btn.swap .btn-icon { background: #10b981; }
+  .grid-btn.swap .btn-icon {
+    background: #10b981;
+  }
 
   /* Invert - Amber */
   .grid-btn.invert {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.15),
+      rgba(245, 158, 11, 0.05)
+    );
     border: 1px solid rgba(245, 158, 11, 0.3);
   }
   .grid-btn.invert:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(245, 158, 11, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.25),
+      rgba(245, 158, 11, 0.1)
+    );
     border-color: rgba(245, 158, 11, 0.5);
     box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
   }
-  .grid-btn.invert .btn-icon { background: #f59e0b; }
+  .grid-btn.invert .btn-icon {
+    background: #f59e0b;
+  }
 
   /* Rotate CCW - Orange */
   .grid-btn.rotate-ccw {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.15),
+      rgba(249, 115, 22, 0.05)
+    );
     border: 1px solid rgba(249, 115, 22, 0.3);
   }
   .grid-btn.rotate-ccw:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(249, 115, 22, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.25),
+      rgba(249, 115, 22, 0.1)
+    );
     border-color: rgba(249, 115, 22, 0.5);
     box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
   }
-  .grid-btn.rotate-ccw .btn-icon { background: #f97316; }
+  .grid-btn.rotate-ccw .btn-icon {
+    background: #f97316;
+  }
 
   /* Rotate CW - Orange (same as CCW) */
   .grid-btn.rotate-cw {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(249, 115, 22, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.15),
+      rgba(249, 115, 22, 0.05)
+    );
     border: 1px solid rgba(249, 115, 22, 0.3);
   }
   .grid-btn.rotate-cw:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.25), rgba(249, 115, 22, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.25),
+      rgba(249, 115, 22, 0.1)
+    );
     border-color: rgba(249, 115, 22, 0.5);
     box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
   }
-  .grid-btn.rotate-cw .btn-icon { background: #f97316; }
+  .grid-btn.rotate-cw .btn-icon {
+    background: #f97316;
+  }
 
   /* Rewind - Rose */
   .grid-btn.rewind {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.15), rgba(244, 63, 94, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(244, 63, 94, 0.15),
+      rgba(244, 63, 94, 0.05)
+    );
     border: 1px solid rgba(244, 63, 94, 0.3);
   }
   .grid-btn.rewind:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(244, 63, 94, 0.25), rgba(244, 63, 94, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(244, 63, 94, 0.25),
+      rgba(244, 63, 94, 0.1)
+    );
     border-color: rgba(244, 63, 94, 0.5);
     box-shadow: 0 4px 16px rgba(244, 63, 94, 0.2);
   }
-  .grid-btn.rewind .btn-icon { background: #f43f5e; }
+  .grid-btn.rewind .btn-icon {
+    background: #f43f5e;
+  }
 
   /* Turn Pattern - Teal */
   .grid-btn.turn-pattern {
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(20, 184, 166, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.15),
+      rgba(20, 184, 166, 0.05)
+    );
     border: 1px solid rgba(20, 184, 166, 0.3);
   }
   .grid-btn.turn-pattern:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(20, 184, 166, 0.25), rgba(20, 184, 166, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(20, 184, 166, 0.25),
+      rgba(20, 184, 166, 0.1)
+    );
     border-color: rgba(20, 184, 166, 0.5);
     box-shadow: 0 4px 16px rgba(20, 184, 166, 0.2);
   }
-  .grid-btn.turn-pattern .btn-icon { background: #14b8a6; }
+  .grid-btn.turn-pattern .btn-icon {
+    background: #14b8a6;
+  }
 
   /* Direction - Sky */
   .grid-btn.direction {
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(14, 165, 233, 0.15),
+      rgba(14, 165, 233, 0.05)
+    );
     border: 1px solid rgba(14, 165, 233, 0.3);
   }
   .grid-btn.direction:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(14, 165, 233, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(14, 165, 233, 0.25),
+      rgba(14, 165, 233, 0.1)
+    );
     border-color: rgba(14, 165, 233, 0.5);
     box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2);
   }
-  .grid-btn.direction .btn-icon { background: #0ea5e9; }
+  .grid-btn.direction .btn-icon {
+    background: #0ea5e9;
+  }
 
   /* Autocomplete - Green */
   .grid-btn.autocomplete {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.15),
+      rgba(34, 197, 94, 0.05)
+    );
     border: 1px solid rgba(34, 197, 94, 0.3);
   }
   .grid-btn.autocomplete:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(34, 197, 94, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(34, 197, 94, 0.25),
+      rgba(34, 197, 94, 0.1)
+    );
     border-color: rgba(34, 197, 94, 0.5);
     box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
   }
-  .grid-btn.autocomplete .btn-icon { background: #22c55e; }
+  .grid-btn.autocomplete .btn-icon {
+    background: #22c55e;
+  }
 
   /* Autocomplete unavailable state */
   .grid-btn.autocomplete.unavailable {
-    background: linear-gradient(135deg, rgba(100, 100, 100, 0.1), rgba(100, 100, 100, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(100, 100, 100, 0.1),
+      rgba(100, 100, 100, 0.05)
+    );
     border-color: rgba(100, 100, 100, 0.2);
     opacity: 0.5;
   }
-  .grid-btn.autocomplete.unavailable .btn-icon { background: rgba(100, 100, 100, 0.4); }
+  .grid-btn.autocomplete.unavailable .btn-icon {
+    background: rgba(100, 100, 100, 0.4);
+  }
 
   /* Shift Start - Cyan */
   .grid-btn.shift-start {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(6, 182, 212, 0.15),
+      rgba(6, 182, 212, 0.05)
+    );
     border: 1px solid rgba(6, 182, 212, 0.3);
   }
   .grid-btn.shift-start:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(6, 182, 212, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(6, 182, 212, 0.25),
+      rgba(6, 182, 212, 0.1)
+    );
     border-color: rgba(6, 182, 212, 0.5);
     box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
   }
-  .grid-btn.shift-start .btn-icon { background: #06b6d4; }
+  .grid-btn.shift-start .btn-icon {
+    background: #06b6d4;
+  }
 
   /* Shift Start unavailable state */
   .grid-btn.shift-start.unavailable {
-    background: linear-gradient(135deg, rgba(100, 100, 100, 0.1), rgba(100, 100, 100, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(100, 100, 100, 0.1),
+      rgba(100, 100, 100, 0.05)
+    );
     border-color: rgba(100, 100, 100, 0.2);
     opacity: 0.5;
   }
-  .grid-btn.shift-start.unavailable .btn-icon { background: rgba(100, 100, 100, 0.4); }
+  .grid-btn.shift-start.unavailable .btn-icon {
+    background: rgba(100, 100, 100, 0.4);
+  }
 
   /* Edit Turns - Blue */
   .grid-btn.edit-turns {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.15),
+      rgba(59, 130, 246, 0.05)
+    );
     border: 1px solid rgba(59, 130, 246, 0.3);
   }
   .grid-btn.edit-turns:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25),
+      rgba(59, 130, 246, 0.1)
+    );
     border-color: rgba(59, 130, 246, 0.5);
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
   }
-  .grid-btn.edit-turns .btn-icon { background: #3b82f6; }
+  .grid-btn.edit-turns .btn-icon {
+    background: #3b82f6;
+  }
 
   /* Edit Turns highlighted state (beat selected) */
   .grid-btn.edit-turns.highlighted {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.25), rgba(59, 130, 246, 0.12));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.25),
+      rgba(59, 130, 246, 0.12)
+    );
     border: 2px solid rgba(59, 130, 246, 0.6);
     box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
   }
   .grid-btn.edit-turns.highlighted:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0.18));
+    background: linear-gradient(
+      135deg,
+      rgba(59, 130, 246, 0.35),
+      rgba(59, 130, 246, 0.18)
+    );
     border-color: rgba(59, 130, 246, 0.8);
   }
 
   /* Constructor - Violet */
   .grid-btn.constructor {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(124, 58, 237, 0.05));
+    background: linear-gradient(
+      135deg,
+      rgba(124, 58, 237, 0.15),
+      rgba(124, 58, 237, 0.05)
+    );
     border: 1px solid rgba(124, 58, 237, 0.3);
   }
   .grid-btn.constructor:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(124, 58, 237, 0.1));
+    background: linear-gradient(
+      135deg,
+      rgba(124, 58, 237, 0.25),
+      rgba(124, 58, 237, 0.1)
+    );
     border-color: rgba(124, 58, 237, 0.5);
     box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
   }
-  .grid-btn.constructor .btn-icon { background: #7c3aed; }
+  .grid-btn.constructor .btn-icon {
+    background: #7c3aed;
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    .grid-btn { transition: none; }
-    .grid-btn:active:not(:disabled) { transform: none; }
+    .grid-btn {
+      transition: none;
+    }
+    .grid-btn:active:not(:disabled) {
+      transform: none;
+    }
   }
 </style>

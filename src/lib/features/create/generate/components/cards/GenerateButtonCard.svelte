@@ -3,9 +3,9 @@ GenerateButtonCard.svelte - Generate button as a card in the grid
 Integrates the "Generate New" button into the card grid layout so it scales with other cards
 -->
 <script lang="ts">
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
-import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   import { onMount } from "svelte";
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
   import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
@@ -13,7 +13,12 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { uiConfigToGenerationOptions } from "$lib/features/create/generate/shared/utils/config-mapper";
 
-  let { isGenerating, onGenerateClicked, config, customizeOptions = null } = $props<{
+  let {
+    isGenerating,
+    onGenerateClicked,
+    config,
+    customizeOptions = null,
+  } = $props<{
     isGenerating: boolean;
     onGenerateClicked: (options: any) => Promise<void>;
     config: UIGenerationConfig;
@@ -31,7 +36,11 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   async function handleClick() {
     hapticService?.trigger("selection");
     // Pass customize options to include start/end position and letter constraints
-    const generationOptions = uiConfigToGenerationOptions(config, PropType.FAN, customizeOptions);
+    const generationOptions = uiConfigToGenerationOptions(
+      config,
+      PropType.FAN,
+      customizeOptions
+    );
     await onGenerateClicked(generationOptions);
   }
 </script>
@@ -60,9 +69,12 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
       135deg,
       color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 0%,
       /* Deep green */ var(--semantic-success, #22c55e) 25%,
-      /* Main green */ color-mix(in srgb, var(--semantic-success, #22c55e) 100%, #a7f3d0) 50%,
+      /* Main green */
+        color-mix(in srgb, var(--semantic-success, #22c55e) 100%, #a7f3d0) 50%,
       /* Bright green */ var(--semantic-success, #22c55e) 75%,
-      /* Main green */ color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 100% /* Deep green */
+      /* Main green */
+        color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 100%
+        /* Deep green */
     );
 
     /* Flowing gradient animation + subtle pulse (NO glow animation to prevent overlay) */
@@ -88,7 +100,8 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
     /* 🔥 CONTAINED glow - stays within button boundaries */
     box-shadow:
-      0 4px 12px color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent),
       0 2px 6px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)),
       inset 0 -1px 0 rgba(0, 0, 0, 0.2);
@@ -109,7 +122,8 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
     /* 🌟 ENHANCED but CONTAINED glow - no overlay on other cards */
     box-shadow:
-      0 8px 20px color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent),
+      0 8px 20px
+        color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent),
       0 4px 12px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.4)),
       inset 0 -1px 0 rgba(0, 0, 0, 0.3);

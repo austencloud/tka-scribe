@@ -294,7 +294,11 @@
   .turn-panel.red {
     border-color: var(--prop-red, #ef4444);
     border-style: solid;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--prop-red, #ef4444) 5%, transparent) 0%, var(--theme-panel-bg, white) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--prop-red, #ef4444) 5%, transparent) 0%,
+      var(--theme-panel-bg, white) 100%
+    );
   }
 
   @keyframes expandIn {
@@ -601,13 +605,15 @@
     background: var(--prop-blue, #3b82f6);
     border-color: var(--prop-blue, #3b82f6);
     color: var(--theme-text, white);
-    box-shadow: 0 3px 10px color-mix(in srgb, var(--prop-blue, #3b82f6) 50%, transparent);
+    box-shadow: 0 3px 10px
+      color-mix(in srgb, var(--prop-blue, #3b82f6) 50%, transparent);
   }
 
   .turn-panel.red .rotation-btn.active {
     background: var(--prop-red, #ef4444);
     border-color: var(--prop-red, #ef4444);
     color: var(--theme-text, white);
-    box-shadow: 0 3px 10px color-mix(in srgb, var(--prop-red, #ef4444) 50%, transparent);
+    box-shadow: 0 3px 10px
+      color-mix(in srgb, var(--prop-red, #ef4444) 50%, transparent);
   }
 </style>

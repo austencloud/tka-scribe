@@ -204,7 +204,9 @@ export class TurnPatternService implements ITurnPatternService {
       beats: updatedBeats,
     };
 
-    logger.log(`Applied pattern "${pattern.name}" - modified ${modifiedBeats} beats with propagation`);
+    logger.log(
+      `Applied pattern "${pattern.name}" - modified ${modifiedBeats} beats with propagation`
+    );
 
     return {
       success: true,
@@ -258,7 +260,9 @@ export class TurnPatternService implements ITurnPatternService {
     // Edge case: Float cannot be applied to STATIC or DASH
     if (turnValue === "fl") {
       if (motionType === MotionType.STATIC || motionType === MotionType.DASH) {
-        logger.log(`Float cannot be applied to ${motionType}, applying 0 turns`);
+        logger.log(
+          `Float cannot be applied to ${motionType}, applying 0 turns`
+        );
         return {
           motion: this.createUpdatedMotion(currentMotion, 0, color),
           warning: `Float converted to 0 (${motionType} cannot float)`,
@@ -308,8 +312,13 @@ export class TurnPatternService implements ITurnPatternService {
       if (!beat) continue;
 
       const motion = beat.motions?.[color];
-      if (motion && motion.rotationDirection !== RotationDirection.NO_ROTATION) {
-        logger.log(`Found backward rotation context at beat ${i + 1}: ${motion.rotationDirection}`);
+      if (
+        motion &&
+        motion.rotationDirection !== RotationDirection.NO_ROTATION
+      ) {
+        logger.log(
+          `Found backward rotation context at beat ${i + 1}: ${motion.rotationDirection}`
+        );
         return motion.rotationDirection;
       }
     }
@@ -320,14 +329,21 @@ export class TurnPatternService implements ITurnPatternService {
       if (!beat) continue;
 
       const motion = beat.motions?.[color];
-      if (motion && motion.rotationDirection !== RotationDirection.NO_ROTATION) {
-        logger.log(`Found forward rotation context at beat ${i + 1}: ${motion.rotationDirection}`);
+      if (
+        motion &&
+        motion.rotationDirection !== RotationDirection.NO_ROTATION
+      ) {
+        logger.log(
+          `Found forward rotation context at beat ${i + 1}: ${motion.rotationDirection}`
+        );
         return motion.rotationDirection;
       }
     }
 
     // Step 3: Default to clockwise only if no context found in either direction
-    logger.log(`No rotation context found for ${color}, defaulting to CLOCKWISE`);
+    logger.log(
+      `No rotation context found for ${color}, defaulting to CLOCKWISE`
+    );
     return RotationDirection.CLOCKWISE;
   }
 
@@ -348,7 +364,8 @@ export class TurnPatternService implements ITurnPatternService {
     let updatedRotationDirection =
       rotationDirection ?? currentMotion.rotationDirection;
     let updatedPrefloatMotionType = currentMotion.prefloatMotionType;
-    let updatedPrefloatRotationDirection = currentMotion.prefloatRotationDirection;
+    let updatedPrefloatRotationDirection =
+      currentMotion.prefloatRotationDirection;
 
     // Handle float conversion
     if (isConvertingToFloat) {
@@ -473,7 +490,13 @@ export class TurnPatternService implements ITurnPatternService {
    */
   async deletePattern(patternId: string, userId: string): Promise<void> {
     const firestore = await getFirestoreInstance();
-    const patternRef = doc(firestore, "users", userId, "turnPatterns", patternId);
+    const patternRef = doc(
+      firestore,
+      "users",
+      userId,
+      "turnPatterns",
+      patternId
+    );
     await deleteDoc(patternRef);
     logger.log(`Deleted pattern ${patternId}`);
   }

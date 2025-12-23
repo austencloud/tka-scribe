@@ -40,7 +40,11 @@
   }
 </script>
 
-<div class="turns-controls" class:blue={color === "blue"} class:red={color === "red"}>
+<div
+  class="turns-controls"
+  class:blue={color === "blue"}
+  class:red={color === "red"}
+>
   <div class="turns-row">
     <button
       class="ctrl-btn"
@@ -62,7 +66,8 @@
   <div class="rotation-row">
     <button
       class="rot-btn"
-      class:active={showRotation && rotationDirection === RotationDirection.CLOCKWISE}
+      class:active={showRotation &&
+        rotationDirection === RotationDirection.CLOCKWISE}
       aria-label="Rotate {color} clockwise"
       onclick={(e) => handleRotationClick(e, RotationDirection.CLOCKWISE)}
       disabled={!showRotation}
@@ -71,9 +76,11 @@
     </button>
     <button
       class="rot-btn"
-      class:active={showRotation && rotationDirection === RotationDirection.COUNTER_CLOCKWISE}
+      class:active={showRotation &&
+        rotationDirection === RotationDirection.COUNTER_CLOCKWISE}
       aria-label="Rotate {color} counter clockwise"
-      onclick={(e) => handleRotationClick(e, RotationDirection.COUNTER_CLOCKWISE)}
+      onclick={(e) =>
+        handleRotationClick(e, RotationDirection.COUNTER_CLOCKWISE)}
       disabled={!showRotation}
     >
       <i class="fas fa-rotate-left"></i>

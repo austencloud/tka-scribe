@@ -42,7 +42,10 @@ Displays all available CAP transformations in a responsive 2x2 grid
 
     /* 2x2 grid layout with constrained button size */
     grid-template-columns: repeat(2, minmax(120px, 180px));
-    grid-auto-rows: minmax(120px, 160px); /* Buttons stay within reasonable size */
+    grid-auto-rows: minmax(
+      120px,
+      160px
+    ); /* Buttons stay within reasonable size */
     justify-content: center;
   }
 

@@ -31,7 +31,11 @@
 
 {#if isMobile}
   <!-- Mobile: Bottom Sheet -->
-  <Drawer {isOpen} onclose={handleCancel} ariaLabel="Replace Constructor Content?">
+  <Drawer
+    {isOpen}
+    onclose={handleCancel}
+    ariaLabel="Replace Constructor Content?"
+  >
     {#snippet children()}
       <div class="transfer-confirmation-content">
         <h3 class="confirmation-title">Replace Constructor Content?</h3>

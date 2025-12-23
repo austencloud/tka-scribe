@@ -210,7 +210,11 @@ export class RotationDirectionPatternService
 
     // Step 3: Look up correct letters for all modified beats
     const gridMode = sequence.gridMode ?? GridMode.DIAMOND;
-    await this.recalculateLettersForBeats(updatedBeats, modifiedBeatIndices, gridMode);
+    await this.recalculateLettersForBeats(
+      updatedBeats,
+      modifiedBeatIndices,
+      gridMode
+    );
 
     // Create updated sequence
     const updatedSequence: SequenceData = {
@@ -240,9 +244,13 @@ export class RotationDirectionPatternService
   ): Promise<void> {
     let motionQueryHandler: IMotionQueryHandler | null = null;
     try {
-      motionQueryHandler = resolve<IMotionQueryHandler>(TYPES.IMotionQueryHandler);
+      motionQueryHandler = resolve<IMotionQueryHandler>(
+        TYPES.IMotionQueryHandler
+      );
     } catch (e) {
-      logger.warn("Could not resolve IMotionQueryHandler - letters will not be updated");
+      logger.warn(
+        "Could not resolve IMotionQueryHandler - letters will not be updated"
+      );
       return;
     }
 
@@ -256,11 +264,12 @@ export class RotationDirectionPatternService
       if (!blueMotion || !redMotion) continue;
 
       try {
-        const foundLetter = await motionQueryHandler.findLetterByMotionConfiguration(
-          blueMotion,
-          redMotion,
-          gridMode
-        );
+        const foundLetter =
+          await motionQueryHandler.findLetterByMotionConfiguration(
+            blueMotion,
+            redMotion,
+            gridMode
+          );
 
         if (foundLetter) {
           const newLetter = foundLetter as Letter;
@@ -279,10 +288,7 @@ export class RotationDirectionPatternService
           );
         }
       } catch (error) {
-        logger.warn(
-          `Beat ${beatIndex + 1}: Error looking up letter:`,
-          error
-        );
+        logger.warn(`Beat ${beatIndex + 1}: Error looking up letter:`, error);
       }
     }
   }
@@ -528,7 +534,9 @@ export class RotationDirectionPatternService
       });
     });
 
-    logger.log(`Loaded ${patterns.length} rotation patterns for user ${userId}`);
+    logger.log(
+      `Loaded ${patterns.length} rotation patterns for user ${userId}`
+    );
     return patterns;
   }
 

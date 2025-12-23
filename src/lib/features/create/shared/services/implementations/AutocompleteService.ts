@@ -9,7 +9,10 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import { GridPosition, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  GridPosition,
+  GridMode,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type {
   IAutocompleteService,
@@ -26,12 +29,19 @@ import {
   HALVED_CAPS,
   QUARTERED_CAPS,
 } from "$lib/features/create/generate/circular/domain/constants/circular-position-maps";
-import { CAPType, CAP_TYPE_LABELS, SliceSize } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import {
+  CAPType,
+  CAP_TYPE_LABELS,
+  SliceSize,
+} from "$lib/features/create/generate/circular/domain/models/circular-models";
 
 /**
  * CAP options with icons and descriptions for UI display
  */
-const CAP_OPTION_CONFIG: Record<CAPType, { icon: string; description: string }> = {
+const CAP_OPTION_CONFIG: Record<
+  CAPType,
+  { icon: string; description: string }
+> = {
   [CAPType.STRICT_ROTATED]: {
     icon: "fa-rotate",
     description: "Rotates positions around the grid",
@@ -242,9 +252,10 @@ export class AutocompleteService implements IAutocompleteService {
     }
 
     const { capType } = options;
-    const sliceSize = analysis.completionType === "quarter_rotation"
-      ? SliceSize.QUARTERED
-      : SliceSize.HALVED;
+    const sliceSize =
+      analysis.completionType === "quarter_rotation"
+        ? SliceSize.QUARTERED
+        : SliceSize.HALVED;
 
     console.log("[Autocomplete] Generating completion with CAP:", {
       capType,
@@ -272,7 +283,15 @@ export class AutocompleteService implements IAutocompleteService {
     // Return only the new beats (after the original sequence)
     const newBeats = completedBeats.slice(originalLength);
 
-    console.log("[Autocomplete] Generated", newBeats.length, "completion beats (original:", originalLength, ", completed:", completedBeats.length, ")");
+    console.log(
+      "[Autocomplete] Generated",
+      newBeats.length,
+      "completion beats (original:",
+      originalLength,
+      ", completed:",
+      completedBeats.length,
+      ")"
+    );
 
     return newBeats;
   }
@@ -284,12 +303,23 @@ export class AutocompleteService implements IAutocompleteService {
     sequence: SequenceData,
     options: AutocompleteOptions
   ): Promise<SequenceData> {
-    console.log("[Autocomplete] Starting autocomplete for sequence:", sequence.name);
-    const completionBeats = await this.generateCompletionBeats(sequence, options);
-    console.log("[Autocomplete] Generated completion beats:", completionBeats.length);
+    console.log(
+      "[Autocomplete] Starting autocomplete for sequence:",
+      sequence.name
+    );
+    const completionBeats = await this.generateCompletionBeats(
+      sequence,
+      options
+    );
+    console.log(
+      "[Autocomplete] Generated completion beats:",
+      completionBeats.length
+    );
 
     if (completionBeats.length === 0) {
-      console.log("[Autocomplete] No completion beats generated - returning original sequence");
+      console.log(
+        "[Autocomplete] No completion beats generated - returning original sequence"
+      );
       return sequence;
     }
 
@@ -303,7 +333,13 @@ export class AutocompleteService implements IAutocompleteService {
     // Combine existing beats with completion beats
     const newBeats = [...(sequence.beats || []), ...renumberedBeats];
 
-    console.log("[Autocomplete] Returning completed sequence with", newBeats.length, "beats (was", sequence.beats?.length || 0, ")");
+    console.log(
+      "[Autocomplete] Returning completed sequence with",
+      newBeats.length,
+      "beats (was",
+      sequence.beats?.length || 0,
+      ")"
+    );
 
     return {
       ...sequence,
@@ -319,14 +355,14 @@ export class AutocompleteService implements IAutocompleteService {
     // Check for explicit start position data object
     if (sequence.startPosition) {
       const startPosData = sequence.startPosition;
-      if ('startPosition' in startPosData && startPosData.startPosition) {
+      if ("startPosition" in startPosData && startPosData.startPosition) {
         return startPosData.startPosition as GridPosition;
       }
     }
 
     // Check for startingPositionBeat (legacy field)
     const startBeat = sequence.startingPositionBeat;
-    if (startBeat && 'startPosition' in startBeat && startBeat.startPosition) {
+    if (startBeat && "startPosition" in startBeat && startBeat.startPosition) {
       return startBeat.startPosition as GridPosition;
     }
 
@@ -346,7 +382,8 @@ export class AutocompleteService implements IAutocompleteService {
 
     // Find the last actual beat (not the start position beat 0)
     const sortedBeats = [...beats].sort((a, b) => b.beatNumber - a.beatNumber);
-    const lastBeat = sortedBeats.find((b) => b.beatNumber > 0) || sortedBeats[0];
+    const lastBeat =
+      sortedBeats.find((b) => b.beatNumber > 0) || sortedBeats[0];
 
     if (lastBeat?.endPosition) {
       return lastBeat.endPosition as GridPosition;
@@ -395,7 +432,8 @@ export class AutocompleteService implements IAutocompleteService {
     }
 
     // Beat 0 not in array - need to create it from startPosition/startingPositionBeat
-    const startPosData = sequence.startPosition || sequence.startingPositionBeat;
+    const startPosData =
+      sequence.startPosition || sequence.startingPositionBeat;
 
     if (startPosData) {
       const startPos = this.getStartPosition(sequence);

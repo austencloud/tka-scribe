@@ -8,7 +8,10 @@
  * Extracted from CreateModule.svelte to achieve Single Responsibility Principle.
  */
 
-import type { ICreateModuleState, BatchEditChanges } from "../../types/create-module-types";
+import type {
+  ICreateModuleState,
+  BatchEditChanges,
+} from "../../types/create-module-types";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
 export interface IBeatOperationsService {
@@ -29,7 +32,10 @@ export interface IBeatOperationsService {
    * @param changes Partial beat data to apply to all selected beats
    * @param CreateModuleState Create Module State for sequence operations
    */
-  applyBatchChanges(changes: BatchEditChanges, CreateModuleState: ICreateModuleState): void;
+  applyBatchChanges(
+    changes: BatchEditChanges,
+    CreateModuleState: ICreateModuleState
+  ): void;
 
   /**
    * Update orientation for a specific prop color in a beat

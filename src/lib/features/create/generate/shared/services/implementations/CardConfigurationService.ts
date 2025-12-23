@@ -1,6 +1,6 @@
 import { CAPType } from "../../../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
-import { DifficultyLevel } from '../../domain/models/generate-models';
+import { DifficultyLevel } from "../../domain/models/generate-models";
 import type {
   CardDescriptor,
   CardHandlers,
@@ -141,7 +141,8 @@ export class CardConfigurationService implements ICardConfigurationService {
     // Customize Options Card - for advanced constraints
     // In circular mode: Add to row 3 with CAP/SliceSize
     // In freeform mode: Add to final row with Generate button
-    const hasCustomizeCard = handlers.handleCustomizeChange && handlers.customizeOptions;
+    const hasCustomizeCard =
+      handlers.handleCustomizeChange && handlers.customizeOptions;
 
     // Conditional: CAP Type (only in Circular mode)
     // Row 3 layout depends on whether slice size and customize are shown:
@@ -213,7 +214,7 @@ export class CardConfigurationService implements ICardConfigurationService {
     // In freeform mode with Customize: 4 cols (shares row with Customize)
     // Otherwise: 6 cols (full width)
     if (handlers.handleGenerateClick) {
-      const generateColumnSpan = (isFreeformMode && hasCustomizeCard) ? 4 : 6;
+      const generateColumnSpan = isFreeformMode && hasCustomizeCard ? 4 : 6;
       cardList.push({
         id: "generate-button",
         props: {

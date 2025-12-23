@@ -21,12 +21,13 @@
 
   // Use pending options if available, otherwise use the original
   const displayOptions = $derived(
-    pendingOptions || panelState.customizeOptions || {
-      startPosition: null,
-      endPosition: null,
-      mustContainLetters: [],
-      mustNotContainLetters: [],
-    }
+    pendingOptions ||
+      panelState.customizeOptions || {
+        startPosition: null,
+        endPosition: null,
+        mustContainLetters: [],
+        mustNotContainLetters: [],
+      }
   );
 
   function handleChange(options: CustomizeOptions) {

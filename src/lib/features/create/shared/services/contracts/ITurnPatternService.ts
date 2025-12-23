@@ -84,7 +84,10 @@ export interface ITurnPatternService {
    * const saved = await service.savePattern(patternData, userId);
    * console.log(`Saved pattern: ${saved.id}`);
    */
-  savePattern(data: TurnPatternCreateData, userId: string): Promise<TurnPattern>;
+  savePattern(
+    data: TurnPatternCreateData,
+    userId: string
+  ): Promise<TurnPattern>;
 
   /**
    * Load all turn patterns for a user

@@ -1,9 +1,9 @@
 <!-- TurnControlPanel.svelte - Wrapper for blue/red TurnPanel components -->
 <script lang="ts">
-import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import { resolve } from "$lib/shared/inversify/di";
-import { TYPES } from "$lib/shared/inversify/types";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
+  import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import TurnPanel from "./TurnPanel.svelte";
 
   // Props
@@ -16,7 +16,10 @@ import { TYPES } from "$lib/shared/inversify/types";
   } = $props<{
     currentBeatData: BeatData | null;
     onTurnAmountChanged: (color: string, turnAmount: number | "fl") => void;
-    onRotationDirectionChanged?: (color: string, rotationDirection: string) => void;
+    onRotationDirectionChanged?: (
+      color: string,
+      rotationDirection: string
+    ) => void;
     onEditTurnsRequested: () => void;
     useSimplifiedLayout?: boolean;
   }>();

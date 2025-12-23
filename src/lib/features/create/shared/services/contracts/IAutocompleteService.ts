@@ -15,7 +15,7 @@ import type { CAPType } from "$lib/features/create/generate/circular/domain/mode
  */
 export type CompletionType =
   | "already_complete" // End position equals start position
-  | "half_rotation"    // End position is 180° rotation of start (4 positions away)
+  | "half_rotation" // End position is 180° rotation of start (4 positions away)
   | "quarter_rotation" // End position is 90° rotation of start (2 positions away)
   | "not_completable"; // End position is not a rotation of start
 

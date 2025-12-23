@@ -28,7 +28,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   // Core reactive state
   let state = $state<OptionPickerState>("ready");
   let options = $state<PictographData[]>([]);
-  let preloadedOptions = $state<PictographData[] | null>(null); // Temporary storage for preloaded options
   let error = $state<string | null>(null);
   let sortMethod = $state<SortMethod>("type");
   let lastSequenceId = $state<string | null>(null); // Track last loaded sequence
@@ -58,8 +57,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     let filteredResults = [...options];
 
-
-
     // Apply continuity filter if enabled
     // Only apply when we have at least 2 beats (start position + 1 actual beat)
     // With just a start position, there's no rotation context to compare against
@@ -74,7 +71,7 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
         continuousFilter,
         currentSequence
       );
-    } 
+    }
     // Apply sorting
     if (sortMethod) {
       filteredResults = optionSorter.applySorting(filteredResults, sortMethod);
@@ -85,7 +82,17 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
   // Actions
   async function loadOptions(sequence: PictographData[], gridMode: GridMode) {
+    console.log("📍 [option-viewer-state.loadOptions] CALLED", {
+      sequenceLength: sequence.length,
+      gridMode,
+      currentState: state,
+      timestamp: Date.now(),
+    });
+
     if (state === "loading") {
+      console.log(
+        "⚠️ [option-viewer-state.loadOptions] BLOCKED - already loading"
+      );
       return; // Prevent concurrent loads
     }
 
@@ -96,9 +103,19 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
         : `empty-${gridMode}`;
 
     if (lastSequenceId === sequenceId) {
+      console.log(
+        "⚠️ [option-viewer-state.loadOptions] SKIPPED - same sequence",
+        {
+          sequenceId,
+          lastSequenceId,
+        }
+      );
       return; // Skip reload for same sequence
     }
 
+    console.log("🔄 [option-viewer-state.loadOptions] Starting load", {
+      sequenceId,
+    });
     state = "loading";
     error = null;
     lastSequenceId = sequenceId;
@@ -106,56 +123,18 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     try {
       const newOptions = await optionLoader.loadOptions(sequence, gridMode);
+      console.log("✅ [option-viewer-state.loadOptions] Load complete", {
+        optionsCount: newOptions.length,
+        sequenceId,
+      });
 
       options = newOptions;
       state = "ready";
     } catch (err) {
-      console.error("❌ Failed to load options:", err);
+      console.error("❌ [option-viewer-state.loadOptions] Load failed:", err);
       error = err instanceof Error ? err.message : "Failed to load options";
       state = "error";
       options = [];
-    }
-  }
-
-  /**
-   * Preload options without applying them to the UI
-   * This allows loading options in parallel with animations
-   */
-  async function preloadOptions(
-    sequence: PictographData[],
-    gridMode: GridMode
-  ): Promise<void> {
-    // Create a simple sequence ID to prevent reloading the same sequence
-    const sequenceId =
-      sequence.length > 0
-        ? `${sequence.length}-${sequence[sequence.length - 1]?.id || "empty"}-${gridMode}`
-        : `empty-${gridMode}`;
-
-    if (lastSequenceId === sequenceId) {
-      return; // Skip reload for same sequence
-    }
-
-    try {
-      const newOptions = await optionLoader.loadOptions(sequence, gridMode);
-      preloadedOptions = newOptions;
-      lastSequenceId = sequenceId;
-    } catch (err) {
-      console.error("❌ Failed to preload options:", err);
-      error = err instanceof Error ? err.message : "Failed to preload options";
-      preloadedOptions = [];
-    }
-  }
-
-  /**
-   * Apply preloaded options to the UI
-   * Call this after fade-out completes to show new options during fade-in
-   */
-  function applyPreloadedOptions(): void {
-    if (preloadedOptions !== null) {
-      options = preloadedOptions;
-      preloadedOptions = null;
-      state = "ready";
-      error = null;
     }
   }
 
@@ -223,7 +202,10 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     });
 
     // Get last beat's motion data separately for quick diagnosis
-    const lastBeat = currentSequence.length > 0 ? currentSequence[currentSequence.length - 1] : null;
+    const lastBeat =
+      currentSequence.length > 0
+        ? currentSequence[currentSequence.length - 1]
+        : null;
     const lastBeatMotionData = lastBeat ? getMotionDebugData(lastBeat) : null;
 
     return {
@@ -250,7 +232,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
       isContinuousOnly,
       sortMethod,
       error,
-      preloadedOptionsCount: preloadedOptions?.length ?? null,
     };
   }
 
@@ -298,8 +279,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
 
     // Actions
     loadOptions,
-    preloadOptions,
-    applyPreloadedOptions,
     setSortMethod,
     setContinuousOnly,
     selectOption,

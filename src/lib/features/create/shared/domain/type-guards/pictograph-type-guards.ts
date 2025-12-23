@@ -63,7 +63,11 @@ export function isBeat(
 
   // Fallback check: Legacy beatNumber >= 1 pattern
   // This supports old data before migration is complete
-  if ("beatNumber" in obj && typeof obj.beatNumber === "number" && obj.beatNumber >= 1) {
+  if (
+    "beatNumber" in obj &&
+    typeof obj.beatNumber === "number" &&
+    obj.beatNumber >= 1
+  ) {
     return true;
   }
 

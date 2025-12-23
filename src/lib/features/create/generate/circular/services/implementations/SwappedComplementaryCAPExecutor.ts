@@ -18,7 +18,11 @@
 
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionType, MotionColor, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums"
+import {
+  MotionType,
+  MotionColor,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -129,8 +133,7 @@ export class SwappedInvertedCAPExecutor {
     );
 
     // Get inverted letter
-    const invertedLetter =
-      this._getInvertedLetter(previousMatchingBeat);
+    const invertedLetter = this._getInvertedLetter(previousMatchingBeat);
 
     // Create the new beat with swapped and inverted attributes
     // KEY: Blue gets attributes from Red's matching beat (SWAP)
@@ -228,9 +231,7 @@ export class SwappedInvertedCAPExecutor {
       throw new Error("Previous matching beat must have a letter");
     }
 
-    const invertedLetter = getInvertedLetter(
-      letter as string
-    ) as Letter;
+    const invertedLetter = getInvertedLetter(letter as string) as Letter;
 
     return invertedLetter;
   }

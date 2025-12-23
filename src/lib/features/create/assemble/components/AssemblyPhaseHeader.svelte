@@ -9,12 +9,7 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
-  const {
-    phase,
-    bluePathLength,
-    redPathLength,
-    onBack,
-  } = $props<{
+  const { phase, bluePathLength, redPathLength, onBack } = $props<{
     phase: HandPathPhase;
     bluePathLength: number;
     redPathLength: number;
@@ -37,18 +32,20 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
       case "blue":
         return {
           title: "Blue Hand",
-          subtitle: bluePathLength === 0
-            ? "Tap your starting position"
-            : `${bluePathLength} position${bluePathLength !== 1 ? 's' : ''} • Tap to add more`,
+          subtitle:
+            bluePathLength === 0
+              ? "Tap your starting position"
+              : `${bluePathLength} position${bluePathLength !== 1 ? "s" : ""} • Tap to add more`,
           color: "#3b82f6",
           step: 1,
         };
       case "red":
         return {
           title: "Red Hand",
-          subtitle: redPathLength === 0
-            ? "Tap your starting position"
-            : `${redPathLength} of ${bluePathLength} positions`,
+          subtitle:
+            redPathLength === 0
+              ? "Tap your starting position"
+              : `${redPathLength} of ${bluePathLength} positions`,
           color: "#ef4444",
           step: 2,
         };
@@ -81,7 +78,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     if (phase === "blue") {
       return bluePathLength > 0 ? 25 : 0;
     } else if (phase === "red") {
-      const redProgress = bluePathLength > 0 ? (redPathLength / bluePathLength) * 50 : 0;
+      const redProgress =
+        bluePathLength > 0 ? (redPathLength / bluePathLength) * 50 : 0;
       return 25 + redProgress;
     } else if (phase === "rotation-selection") {
       return 85;
@@ -97,7 +95,13 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   {#if onBack && phase !== "blue"}
     <button class="back-button" onclick={handleBack} aria-label="Go back">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path
+          d="M12 4L6 10L12 16"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     </button>
   {:else}

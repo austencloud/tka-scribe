@@ -34,7 +34,10 @@
     removingBeatIndices?: Set<number>;
     onClose: () => void;
     onTurnsChange: (color: MotionColor, delta: number) => void;
-    onRotationChange: (color: MotionColor, direction: RotationDirection) => void;
+    onRotationChange: (
+      color: MotionColor,
+      direction: RotationDirection
+    ) => void;
     onOrientationChange: (color: MotionColor, orientation: string) => void;
     onBeatSelect?: (beatNumber: number) => void;
     onDelete?: () => void;
@@ -187,8 +190,12 @@
           <button
             class="icon-btn delete"
             onclick={onDelete}
-            aria-label={isStartPositionSelected ? "Delete start position" : "Delete beat"}
-            title={isStartPositionSelected ? "Delete start position" : "Delete this beat"}
+            aria-label={isStartPositionSelected
+              ? "Delete start position"
+              : "Delete beat"}
+            title={isStartPositionSelected
+              ? "Delete start position"
+              : "Delete this beat"}
           >
             <i class="fa-solid fa-trash"></i>
           </button>
@@ -204,7 +211,9 @@
       <div class="beat-grid-section">
         <BeatGrid
           beats={sequence.beats ?? []}
-          startPosition={sequence.startPosition || sequence.startingPositionBeat || null}
+          startPosition={sequence.startPosition ||
+            sequence.startingPositionBeat ||
+            null}
           {selectedBeatNumber}
           {removingBeatIndices}
           onBeatClick={handleBeatClick}
@@ -218,7 +227,10 @@
     {#if isSideBySideLayout && hasSelection && selectedBeatData}
       <div class="preview-section">
         <div class="pictograph-container">
-          <Pictograph pictographData={selectedBeatData} disableContentTransitions={true} />
+          <Pictograph
+            pictographData={selectedBeatData}
+            disableContentTransitions={true}
+          />
         </div>
       </div>
     {/if}
@@ -365,23 +377,43 @@
   }
 
   .icon-btn.delete {
-    background: linear-gradient(135deg, var(--semantic-warning, #ff9800) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%);
-    border-color: color-mix(in srgb, var(--semantic-warning, #ff9800) 30%, transparent);
+    background: linear-gradient(
+      135deg,
+      var(--semantic-warning, #ff9800) 0%,
+      color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-warning, #ff9800) 30%,
+      transparent
+    );
     color: white;
   }
 
   .icon-btn.delete:hover {
-    background: linear-gradient(135deg, color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%, color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%,
+      color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%
+    );
     transform: scale(1.05);
   }
 
   .icon-btn.close {
-    background: linear-gradient(135deg, rgba(100, 100, 120, 0.85), rgba(70, 70, 90, 0.85));
+    background: linear-gradient(
+      135deg,
+      rgba(100, 100, 120, 0.85),
+      rgba(70, 70, 90, 0.85)
+    );
     color: white;
   }
 
   .icon-btn.close:hover {
-    background: linear-gradient(135deg, rgba(120, 120, 140, 0.95), rgba(90, 90, 110, 0.95));
+    background: linear-gradient(
+      135deg,
+      rgba(120, 120, 140, 0.95),
+      rgba(90, 90, 110, 0.95)
+    );
   }
 
   /* ============================================================================

@@ -6,7 +6,10 @@
 -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import type { CAPOption, AutocompleteAnalysis } from "../../services/contracts/IAutocompleteService";
+  import type {
+    CAPOption,
+    AutocompleteAnalysis,
+  } from "../../services/contracts/IAutocompleteService";
   import { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
   interface Props {
@@ -17,18 +20,24 @@
     onApply: (capType: CAPType) => void;
   }
 
-  let { isOpen = $bindable(), analysis, isApplying, onClose, onApply }: Props = $props();
+  let {
+    isOpen = $bindable(),
+    analysis,
+    isApplying,
+    onClose,
+    onApply,
+  }: Props = $props();
 
   // Group CAP options by category
   const strictOptions = $derived(
-    analysis?.availableCAPOptions.filter(opt =>
+    analysis?.availableCAPOptions.filter((opt) =>
       opt.capType.startsWith("strict_")
     ) ?? []
   );
 
   const combinedOptions = $derived(
-    analysis?.availableCAPOptions.filter(opt =>
-      !opt.capType.startsWith("strict_")
+    analysis?.availableCAPOptions.filter(
+      (opt) => !opt.capType.startsWith("strict_")
     ) ?? []
   );
 
@@ -52,7 +61,12 @@
   }
 </script>
 
-<Drawer bind:isOpen placement="right" onclose={handleClose} class="autocomplete-drawer">
+<Drawer
+  bind:isOpen
+  placement="right"
+  onclose={handleClose}
+  class="autocomplete-drawer"
+>
   <div class="autocomplete-drawer-content">
     <header class="drawer-header">
       <div class="header-info">

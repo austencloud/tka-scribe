@@ -27,8 +27,7 @@ export class CAPTypeService implements ICAPTypeService {
     if (capType.includes("rotated")) components.add(CAPComponent.ROTATED);
     if (capType.includes("mirrored")) components.add(CAPComponent.MIRRORED);
     if (capType.includes("swapped")) components.add(CAPComponent.SWAPPED);
-    if (capType.includes("inverted"))
-      components.add(CAPComponent.INVERTED);
+    if (capType.includes("inverted")) components.add(CAPComponent.INVERTED);
 
     return components;
   }
@@ -108,20 +107,11 @@ export class CAPTypeService implements ICAPTypeService {
     // Two components
     if (sorted.length === 2) {
       const [first, second] = sorted;
-      if (
-        first === CAPComponent.INVERTED &&
-        second === CAPComponent.MIRRORED
-      )
+      if (first === CAPComponent.INVERTED && second === CAPComponent.MIRRORED)
         return CAPType.MIRRORED_INVERTED;
-      if (
-        first === CAPComponent.INVERTED &&
-        second === CAPComponent.ROTATED
-      )
+      if (first === CAPComponent.INVERTED && second === CAPComponent.ROTATED)
         return CAPType.ROTATED_INVERTED;
-      if (
-        first === CAPComponent.INVERTED &&
-        second === CAPComponent.SWAPPED
-      )
+      if (first === CAPComponent.INVERTED && second === CAPComponent.SWAPPED)
         return CAPType.SWAPPED_INVERTED;
       if (first === CAPComponent.MIRRORED && second === CAPComponent.ROTATED)
         return CAPType.MIRRORED_ROTATED;

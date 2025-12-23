@@ -16,7 +16,10 @@
  */
 
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import { RotationDirection, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  RotationDirection,
+  MotionColor,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
   GridPosition,

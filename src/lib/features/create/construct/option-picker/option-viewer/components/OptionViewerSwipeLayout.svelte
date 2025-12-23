@@ -12,7 +12,7 @@ Features:
 -->
 
 <script lang="ts">
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import HorizontalSwipeContainer from "$lib/shared/foundation/ui/HorizontalSwipeContainer.svelte";
   import type { OrganizedSection } from "../domain/option-picker-types";
   import OptionPicker456Group from "./OptionViewer456Group.svelte";
@@ -25,7 +25,6 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     onSectionChange = () => {},
     layoutConfig,
     currentSequence = [],
-    isTransitioning = false,
     isFadingOut = false,
   } = $props<{
     organizedPictographs?: OrganizedSection[];
@@ -41,7 +40,6 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
       gridGap: string;
     };
     currentSequence?: PictographData[];
-    isTransitioning?: boolean;
     isFadingOut?: boolean;
   }>();
 
@@ -104,7 +102,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
     {initialPanelIndex}
     onPanelChange={handlePanelChange}
     onContentAreaChange={handleContentAreaChange}
-    freezeNavigation={isTransitioning}
+    freezeNavigation={isFadingOut}
     loop={true}
     height="100%"
     width="100%"

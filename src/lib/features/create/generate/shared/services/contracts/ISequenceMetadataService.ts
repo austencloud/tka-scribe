@@ -1,5 +1,8 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { GenerationOptions, DifficultyLevel } from "../../domain/models/generate-models";
+import type {
+  GenerationOptions,
+  DifficultyLevel,
+} from "../../domain/models/generate-models";
 
 export interface ISequenceMetadataService {
   generateSequenceName(options: GenerationOptions): string;

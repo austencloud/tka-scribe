@@ -159,7 +159,9 @@ export class DeepLinkSequenceService implements IDeepLinkSequenceService {
   ): void {
     // If services aren't available, skip enrichment
     if (!this.positionDeriverService || !this.letterDeriverService) {
-      console.warn("Deriver services not available - sequence will not be enriched");
+      console.warn(
+        "Deriver services not available - sequence will not be enriched"
+      );
       return;
     }
 

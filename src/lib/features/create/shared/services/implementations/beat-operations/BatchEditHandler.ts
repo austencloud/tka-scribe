@@ -3,7 +3,10 @@
  * Handles applying changes to multiple selected beats at once.
  */
 
-import type { ICreateModuleState, BatchEditChanges } from "../../../types/create-module-types";
+import type {
+  ICreateModuleState,
+  BatchEditChanges,
+} from "../../../types/create-module-types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const logger = createComponentLogger("BatchEdit");
@@ -15,7 +18,8 @@ export function applyBatchChanges(
   changes: BatchEditChanges,
   createModuleState: ICreateModuleState
 ): void {
-  const selectedBeatNumbers = createModuleState.sequenceState.selectedBeatNumbers;
+  const selectedBeatNumbers =
+    createModuleState.sequenceState.selectedBeatNumbers;
 
   if (selectedBeatNumbers.size === 0) {
     logger.warn("No beats selected for batch edit");
@@ -60,7 +64,5 @@ export function applyBatchChanges(
     beats: updatedBeats,
   });
 
-  logger.success(
-    `Applied batch changes to ${selectedBeatNumbers.size} beats`
-  );
+  logger.success(`Applied batch changes to ${selectedBeatNumbers.size} beats`);
 }

@@ -100,7 +100,10 @@
       // Orientation key
       let oriKey = "unknown";
       if (blueMotion) {
-        oriKey = oriKeyGenerator.generateOrientationKey(blueMotion, pictographData);
+        oriKey = oriKeyGenerator.generateOrientationKey(
+          blueMotion,
+          pictographData
+        );
       }
 
       // Turns tuple
@@ -113,20 +116,22 @@
       if (blueMotion) {
         const motionType = blueMotion.motionType?.toLowerCase();
         if (motionType === "static" || motionType === "dash") {
-          blueRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
-            blueMotion,
-            pictographData
-          );
+          blueRotationOverrideKey =
+            rotationKeyGenerator.generateRotationAngleOverrideKey(
+              blueMotion,
+              pictographData
+            );
         }
       }
 
       if (redMotion) {
         const motionType = redMotion.motionType?.toLowerCase();
         if (motionType === "static" || motionType === "dash") {
-          redRotationOverrideKey = rotationKeyGenerator.generateRotationAngleOverrideKey(
-            redMotion,
-            pictographData
-          );
+          redRotationOverrideKey =
+            rotationKeyGenerator.generateRotationAngleOverrideKey(
+              redMotion,
+              pictographData
+            );
         }
       }
 
@@ -173,11 +178,18 @@
   }
 
   function handleWASDMovement(key: "w" | "a" | "s" | "d") {
-    if (!selectedArrowState.selectedArrow || !beatData || !keyboardAdjustmentService) {
+    if (
+      !selectedArrowState.selectedArrow ||
+      !beatData ||
+      !keyboardAdjustmentService
+    ) {
       return;
     }
 
-    const adjustment = keyboardAdjustmentService.calculateAdjustment(key, currentIncrement);
+    const adjustment = keyboardAdjustmentService.calculateAdjustment(
+      key,
+      currentIncrement
+    );
     lastAdjustment = adjustment;
 
     const updatedBeatData = keyboardAdjustmentService.handleWASDMovement(
@@ -209,7 +221,9 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+      hapticService = resolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
       keyboardAdjustmentService = resolve<IKeyboardArrowAdjustmentService>(
         TYPES.IKeyboardArrowAdjustmentService
       );
@@ -277,7 +291,11 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
             <div class="info-grid">
               <div class="info-item">
                 <span class="label">Color</span>
-                <span class="value" class:blue={selectedArrow.color === "blue"} class:red={selectedArrow.color === "red"}>
+                <span
+                  class="value"
+                  class:blue={selectedArrow.color === "blue"}
+                  class:red={selectedArrow.color === "red"}
+                >
                   {selectedArrow.color}
                 </span>
               </div>
@@ -288,7 +306,10 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
               <div class="info-item">
                 <span class="label">Last Move</span>
                 <span class="value mono">
-                  ({lastAdjustment.x > 0 ? "+" : ""}{lastAdjustment.x}, {lastAdjustment.y > 0 ? "+" : ""}{lastAdjustment.y})
+                  ({lastAdjustment.x > 0 ? "+" : ""}{lastAdjustment.x}, {lastAdjustment.y >
+                  0
+                    ? "+"
+                    : ""}{lastAdjustment.y})
                 </span>
               </div>
             </div>
@@ -319,8 +340,8 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
           <div class="control-section">
             <h3>Rotation Override</h3>
             <div class="override-buttons">
-              <RotationOverrideButton beatData={beatData} arrowColor="blue" />
-              <RotationOverrideButton beatData={beatData} arrowColor="red" />
+              <RotationOverrideButton {beatData} arrowColor="blue" />
+              <RotationOverrideButton {beatData} arrowColor="red" />
             </div>
           </div>
         {/if}
@@ -330,7 +351,11 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
           <div class="control-section lookup-section">
             <div class="section-header">
               <h3><i class="fas fa-key"></i> Lookup Keys</h3>
-              <button class="copy-btn" onclick={copyLookupKeys} title="Copy keys">
+              <button
+                class="copy-btn"
+                onclick={copyLookupKeys}
+                title="Copy keys"
+              >
                 <i class="fas fa-copy"></i>
               </button>
             </div>
@@ -368,7 +393,9 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
           <h3>Keyboard</h3>
           <div class="keyboard-grid">
             <div class="key-hint">
-              <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
+              <div class="keys">
+                <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+              </div>
               <span>Move arrow</span>
             </div>
             <div class="key-hint">

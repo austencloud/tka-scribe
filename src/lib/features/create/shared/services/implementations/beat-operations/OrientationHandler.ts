@@ -7,12 +7,18 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { BeatData } from "../../../domain/models/BeatData";
 import type { ICreateModuleState } from "../../../types/create-module-types";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
-import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
+import {
+  createMotionData,
+  type MotionData,
+} from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { getBeatDataFromState, START_POSITION_BEAT_NUMBER } from "./beat-data-helpers";
+import {
+  getBeatDataFromState,
+  START_POSITION_BEAT_NUMBER,
+} from "./beat-data-helpers";
 
 const logger = createComponentLogger("OrientationHandler");
 
@@ -75,7 +81,8 @@ export function updateBeatOrientation(
   };
 
   // Get current sequence and start position for propagation calculation
-  const currentSequence: SequenceData | null = createModuleState.sequenceState.currentSequence;
+  const currentSequence: SequenceData | null =
+    createModuleState.sequenceState.currentSequence;
   const startPosition: BeatData | null = createModuleState.sequenceState
     .selectedStartPosition as unknown as BeatData | null;
 
@@ -158,16 +165,19 @@ export function calculatePropagatedBeats(
 
   if (startingBeatNumber === START_POSITION_BEAT_NUMBER) {
     if (startPosition?.motions) {
-      const motion: MotionData | undefined = startPosition.motions[color as MotionColor];
+      const motion: MotionData | undefined =
+        startPosition.motions[color as MotionColor];
       if (motion) {
         previousEndOrientation = motion.endOrientation;
       }
     }
   } else {
     const arrayIndex = startingBeatNumber - 1;
-    const startingBeat: BeatData | undefined = currentSequence.beats[arrayIndex];
+    const startingBeat: BeatData | undefined =
+      currentSequence.beats[arrayIndex];
     if (startingBeat?.motions) {
-      const motion: MotionData | undefined = startingBeat.motions[color as MotionColor];
+      const motion: MotionData | undefined =
+        startingBeat.motions[color as MotionColor];
       if (motion) {
         previousEndOrientation = motion.endOrientation;
       }
@@ -184,9 +194,7 @@ export function calculatePropagatedBeats(
   // Propagate through subsequent beats
   const updatedBeats: BeatData[] = [...currentSequence.beats];
   const propagationStartIndex =
-    startingBeatNumber === START_POSITION_BEAT_NUMBER
-      ? 0
-      : startingBeatNumber;
+    startingBeatNumber === START_POSITION_BEAT_NUMBER ? 0 : startingBeatNumber;
 
   logger.log(
     `🔄 Propagating ${color} orientations starting from beat ${startingBeatNumber} (endOrientation: ${previousEndOrientation})`
@@ -203,9 +211,12 @@ export function calculatePropagatedBeats(
       break;
     }
 
-    const beatMotion: MotionData | undefined = beat.motions[color as MotionColor];
+    const beatMotion: MotionData | undefined =
+      beat.motions[color as MotionColor];
     if (!beatMotion) {
-      logger.warn(`No motion data for ${color} at beat ${i + 1}, stopping propagation`);
+      logger.warn(
+        `No motion data for ${color} at beat ${i + 1}, stopping propagation`
+      );
       break;
     }
 

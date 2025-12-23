@@ -92,8 +92,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "Clockwise for all beats",
     category: "uniform",
     minBeats: 1,
-    generator: (beatCount) =>
-      generateUniformPattern(beatCount, "cw", "cw"),
+    generator: (beatCount) => generateUniformPattern(beatCount, "cw", "cw"),
   },
   {
     id: "all-ccw",
@@ -101,8 +100,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "Counter-clockwise for all beats",
     category: "uniform",
     minBeats: 1,
-    generator: (beatCount) =>
-      generateUniformPattern(beatCount, "ccw", "ccw"),
+    generator: (beatCount) => generateUniformPattern(beatCount, "ccw", "ccw"),
   },
 
   // ===== ALTERNATING =====
@@ -112,8 +110,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "CW, CCW, CW, CCW...",
     category: "alternating",
     minBeats: 2,
-    generator: (beatCount) =>
-      generateAlternatingPattern(beatCount, "cw"),
+    generator: (beatCount) => generateAlternatingPattern(beatCount, "cw"),
   },
   {
     id: "alternating-ccw-first",
@@ -121,8 +118,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "CCW, CW, CCW, CW...",
     category: "alternating",
     minBeats: 2,
-    generator: (beatCount) =>
-      generateAlternatingPattern(beatCount, "ccw"),
+    generator: (beatCount) => generateAlternatingPattern(beatCount, "ccw"),
   },
 
   // ===== SPLIT BY HAND =====
@@ -132,8 +128,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "Blue hand clockwise, red counter-clockwise",
     category: "split-hand",
     minBeats: 1,
-    generator: (beatCount) =>
-      generateUniformPattern(beatCount, "cw", "ccw"),
+    generator: (beatCount) => generateUniformPattern(beatCount, "cw", "ccw"),
   },
   {
     id: "blue-ccw-red-cw",
@@ -141,8 +136,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "Blue hand counter-clockwise, red clockwise",
     category: "split-hand",
     minBeats: 1,
-    generator: (beatCount) =>
-      generateUniformPattern(beatCount, "ccw", "cw"),
+    generator: (beatCount) => generateUniformPattern(beatCount, "ccw", "cw"),
   },
 
   // ===== SPLIT BY HALF =====
@@ -152,8 +146,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "First half CW, second half CCW",
     category: "split-half",
     minBeats: 4,
-    generator: (beatCount) =>
-      generateSplitHalfPattern(beatCount, "cw"),
+    generator: (beatCount) => generateSplitHalfPattern(beatCount, "cw"),
   },
   {
     id: "first-half-ccw",
@@ -161,8 +154,7 @@ const TEMPLATE_DEFINITIONS: readonly RotationDirectionTemplateDefinition[] = [
     description: "First half CCW, second half CW",
     category: "split-half",
     minBeats: 4,
-    generator: (beatCount) =>
-      generateSplitHalfPattern(beatCount, "ccw"),
+    generator: (beatCount) => generateSplitHalfPattern(beatCount, "ccw"),
   },
 ];
 
@@ -271,9 +263,7 @@ export function templateToPattern(
 /**
  * Get all unique categories from available templates
  */
-export function getAvailableCategories(
-  beatCount: number
-): TemplateCategory[] {
+export function getAvailableCategories(beatCount: number): TemplateCategory[] {
   const templates = getTemplatesForBeatCount(beatCount);
   const categories = new Set(templates.map((t) => t.category));
   return Array.from(categories);
