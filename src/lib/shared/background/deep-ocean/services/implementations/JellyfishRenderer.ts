@@ -4,7 +4,10 @@ import type { IJellyfishRenderer } from "../contracts/IJellyfishRenderer";
 
 @injectable()
 export class JellyfishRenderer implements IJellyfishRenderer {
-  drawJellyfish(ctx: CanvasRenderingContext2D, jellyfish: JellyfishMarineLife[]): void {
+  drawJellyfish(
+    ctx: CanvasRenderingContext2D,
+    jellyfish: JellyfishMarineLife[]
+  ): void {
     ctx.save();
     for (const jelly of jellyfish) {
       this.drawSingleJellyfish(ctx, jelly);
@@ -12,7 +15,10 @@ export class JellyfishRenderer implements IJellyfishRenderer {
     ctx.restore();
   }
 
-  private drawSingleJellyfish(ctx: CanvasRenderingContext2D, jelly: JellyfishMarineLife): void {
+  private drawSingleJellyfish(
+    ctx: CanvasRenderingContext2D,
+    jelly: JellyfishMarineLife
+  ): void {
     ctx.save();
     ctx.globalAlpha = jelly.opacity;
     ctx.translate(jelly.x, jelly.y);
@@ -59,9 +65,11 @@ export class JellyfishRenderer implements IJellyfishRenderer {
         jelly.tentacleSeeds.length === 1
           ? 0
           : index / (jelly.tentacleSeeds.length - 1) - 0.5;
-      const sway = Math.sin(jelly.animationPhase + seed) * jelly.waveAmplitude * 0.6;
+      const sway =
+        Math.sin(jelly.animationPhase + seed) * jelly.waveAmplitude * 0.6;
       const startX = offset * bellRadius * 0.9;
-      const length = jelly.size * (1.2 + Math.sin(jelly.animationPhase + seed) * 0.15);
+      const length =
+        jelly.size * (1.2 + Math.sin(jelly.animationPhase + seed) * 0.15);
 
       ctx.beginPath();
       ctx.moveTo(startX, tentacleOriginY);

@@ -27,7 +27,10 @@ export class JellyfishAnimator implements IJellyfishAnimator {
     private fishSpriteManager: IFishSpriteManager
   ) {}
 
-  initializeJellyfish(dimensions: Dimensions, count: number): JellyfishMarineLife[] {
+  initializeJellyfish(
+    dimensions: Dimensions,
+    count: number
+  ): JellyfishMarineLife[] {
     const jellyfish: JellyfishMarineLife[] = [];
     for (let i = 0; i < count; i++) {
       jellyfish.push(this.createJellyfish(dimensions));
@@ -36,29 +39,59 @@ export class JellyfishAnimator implements IJellyfishAnimator {
   }
 
   createJellyfish(dimensions: Dimensions): JellyfishMarineLife {
-    const size = this.randomInRange(JELLYFISH_CONFIG.size.min, JELLYFISH_CONFIG.size.max);
+    const size = this.randomInRange(
+      JELLYFISH_CONFIG.size.min,
+      JELLYFISH_CONFIG.size.max
+    );
     const baseY =
       dimensions.height * JELLYFISH_CONFIG.verticalBand.min +
-      Math.random() * dimensions.height * (JELLYFISH_CONFIG.verticalBand.max - JELLYFISH_CONFIG.verticalBand.min);
+      Math.random() *
+        dimensions.height *
+        (JELLYFISH_CONFIG.verticalBand.max - JELLYFISH_CONFIG.verticalBand.min);
 
-    const tentacleCount = JELLYFISH_CONFIG.tentacles.min +
-      Math.floor(Math.random() * (JELLYFISH_CONFIG.tentacles.max - JELLYFISH_CONFIG.tentacles.min + 1));
-    const tentacleSeeds = Array.from({ length: tentacleCount }, () => Math.random() * Math.PI * 2);
+    const tentacleCount =
+      JELLYFISH_CONFIG.tentacles.min +
+      Math.floor(
+        Math.random() *
+          (JELLYFISH_CONFIG.tentacles.max - JELLYFISH_CONFIG.tentacles.min + 1)
+      );
+    const tentacleSeeds = Array.from(
+      { length: tentacleCount },
+      () => Math.random() * Math.PI * 2
+    );
 
     return {
       type: "jellyfish",
       size,
       color: this.fishSpriteManager.getMarineLifeColor("jellyfish"),
-      horizontalSpeed: (Math.random() - 0.5) * JELLYFISH_CONFIG.horizontalSpeed * 2,
-      verticalSpeed: this.randomInRange(JELLYFISH_CONFIG.verticalSpeed.min, JELLYFISH_CONFIG.verticalSpeed.max),
-      waveAmplitude: this.randomInRange(JELLYFISH_CONFIG.waveAmplitude.min, JELLYFISH_CONFIG.waveAmplitude.max),
-      waveFrequency: this.randomInRange(JELLYFISH_CONFIG.waveFrequency.min, JELLYFISH_CONFIG.waveFrequency.max),
-      glowIntensity: this.randomInRange(JELLYFISH_CONFIG.glowIntensity.min, JELLYFISH_CONFIG.glowIntensity.max),
+      horizontalSpeed:
+        (Math.random() - 0.5) * JELLYFISH_CONFIG.horizontalSpeed * 2,
+      verticalSpeed: this.randomInRange(
+        JELLYFISH_CONFIG.verticalSpeed.min,
+        JELLYFISH_CONFIG.verticalSpeed.max
+      ),
+      waveAmplitude: this.randomInRange(
+        JELLYFISH_CONFIG.waveAmplitude.min,
+        JELLYFISH_CONFIG.waveAmplitude.max
+      ),
+      waveFrequency: this.randomInRange(
+        JELLYFISH_CONFIG.waveFrequency.min,
+        JELLYFISH_CONFIG.waveFrequency.max
+      ),
+      glowIntensity: this.randomInRange(
+        JELLYFISH_CONFIG.glowIntensity.min,
+        JELLYFISH_CONFIG.glowIntensity.max
+      ),
       tentacleSeeds,
       baseY,
-      x: JELLYFISH_CONFIG.spawnMargin + Math.random() * (dimensions.width - JELLYFISH_CONFIG.spawnMargin * 2),
+      x:
+        JELLYFISH_CONFIG.spawnMargin +
+        Math.random() * (dimensions.width - JELLYFISH_CONFIG.spawnMargin * 2),
       y: baseY,
-      opacity: this.randomInRange(JELLYFISH_CONFIG.opacity.min, JELLYFISH_CONFIG.opacity.max),
+      opacity: this.randomInRange(
+        JELLYFISH_CONFIG.opacity.min,
+        JELLYFISH_CONFIG.opacity.max
+      ),
       animationPhase: Math.random() * Math.PI * 2,
     };
   }
@@ -75,7 +108,8 @@ export class JellyfishAnimator implements IJellyfishAnimator {
       jelly.animationPhase += jelly.waveFrequency * frameMultiplier;
       jelly.x += jelly.horizontalSpeed * deltaSeconds;
       jelly.baseY += jelly.verticalSpeed * deltaSeconds;
-      jelly.y = jelly.baseY + Math.sin(jelly.animationPhase) * jelly.waveAmplitude;
+      jelly.y =
+        jelly.baseY + Math.sin(jelly.animationPhase) * jelly.waveAmplitude;
 
       const offScreen =
         jelly.x < -jelly.size ||

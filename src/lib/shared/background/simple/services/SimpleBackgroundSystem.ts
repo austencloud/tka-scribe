@@ -6,7 +6,10 @@
  */
 
 import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
-import type { Dimensions, QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
+import type {
+  Dimensions,
+  QualityLevel,
+} from "$lib/shared/background/shared/domain/types/background-types";
 import type { IBackgroundSystem } from "$lib/shared/background/shared/services/contracts/IBackgroundSystem";
 
 export interface SimpleBackgroundConfig {

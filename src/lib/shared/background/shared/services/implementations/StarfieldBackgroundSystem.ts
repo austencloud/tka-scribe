@@ -1,6 +1,10 @@
 import type { AccessibilitySettings } from "../../domain/models/background-models";
-import type { Dimensions, PerformanceMetrics, QualityLevel } from "../../domain/types/background-types";
-import type { IBackgroundSystem } from '../contracts/IBackgroundSystem';
+import type {
+  Dimensions,
+  PerformanceMetrics,
+  QualityLevel,
+} from "../../domain/types/background-types";
+import type { IBackgroundSystem } from "../contracts/IBackgroundSystem";
 
 interface Star {
   x: number;

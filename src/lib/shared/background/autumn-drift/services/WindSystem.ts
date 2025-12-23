@@ -38,21 +38,24 @@ export function createWindSystem(): WindSystem {
   function getNextGustInterval(): number {
     return (
       AUTUMN_WIND.gustIntervalMin +
-      Math.random() * (AUTUMN_WIND.gustIntervalMax - AUTUMN_WIND.gustIntervalMin)
+      Math.random() *
+        (AUTUMN_WIND.gustIntervalMax - AUTUMN_WIND.gustIntervalMin)
     );
   }
 
   function getGustDuration(): number {
     return (
       AUTUMN_WIND.gustDurationMin +
-      Math.random() * (AUTUMN_WIND.gustDurationMax - AUTUMN_WIND.gustDurationMin)
+      Math.random() *
+        (AUTUMN_WIND.gustDurationMax - AUTUMN_WIND.gustDurationMin)
     );
   }
 
   function getGustStrength(): number {
     const magnitude =
       AUTUMN_WIND.gustStrengthMin +
-      Math.random() * (AUTUMN_WIND.gustStrengthMax - AUTUMN_WIND.gustStrengthMin);
+      Math.random() *
+        (AUTUMN_WIND.gustStrengthMax - AUTUMN_WIND.gustStrengthMin);
     // Random direction
     return Math.random() < 0.5 ? magnitude : -magnitude;
   }
@@ -78,7 +81,8 @@ export function createWindSystem(): WindSystem {
         state.gust.currentStrength = state.gust.strength * (progress / 0.2);
       } else if (progress > 0.7) {
         // Ease out
-        state.gust.currentStrength = state.gust.strength * ((1 - progress) / 0.3);
+        state.gust.currentStrength =
+          state.gust.strength * ((1 - progress) / 0.3);
       } else {
         // Full strength
         state.gust.currentStrength = state.gust.strength;

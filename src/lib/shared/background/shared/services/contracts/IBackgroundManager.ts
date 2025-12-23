@@ -5,7 +5,10 @@
  * Handles canvas initialization, animation loops, performance tracking, and cleanup.
  */
 
-import type { Dimensions, PerformanceMetrics } from "../../domain/types/background-types";
+import type {
+  Dimensions,
+  PerformanceMetrics,
+} from "../../domain/types/background-types";
 
 export interface IBackgroundManager {
   /**

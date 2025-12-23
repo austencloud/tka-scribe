@@ -1,7 +1,11 @@
 // LeafSystem.ts - Autumn leaf particle management and rendering
 // Handles creation, animation, and drawing of falling leaves
 
-import type { Leaf, LeafType, LeafSystemConfig } from "../domain/models/autumn-models";
+import type {
+  Leaf,
+  LeafType,
+  LeafSystemConfig,
+} from "../domain/models/autumn-models";
 import {
   AUTUMN_COLORS,
   AUTUMN_LEAF_SIZES,
@@ -32,7 +36,8 @@ export function createLeafSystem(): LeafSystem {
   function getLeafType(): LeafType {
     const rand = Math.random();
     if (rand < AUTUMN_LEAF_DISTRIBUTION.maple) return "maple";
-    if (rand < AUTUMN_LEAF_DISTRIBUTION.maple + AUTUMN_LEAF_DISTRIBUTION.oak) return "oak";
+    if (rand < AUTUMN_LEAF_DISTRIBUTION.maple + AUTUMN_LEAF_DISTRIBUTION.oak)
+      return "oak";
     return "oval";
   }
 
@@ -52,7 +57,10 @@ export function createLeafSystem(): LeafSystem {
       colors = AUTUMN_COLORS.greens;
     }
 
-    return colors[Math.floor(Math.random() * colors.length)] ?? AUTUMN_COLORS.golds[0];
+    return (
+      colors[Math.floor(Math.random() * colors.length)] ??
+      AUTUMN_COLORS.golds[0]
+    );
   }
 
   function getLeafSize(type: LeafType): number {
@@ -66,7 +74,9 @@ export function createLeafSystem(): LeafSystem {
     const depth = Math.random();
 
     // Position
-    const x = Math.random() * (canvasWidth + AUTUMN_BOUNDS.wrapMargin * 2) - AUTUMN_BOUNDS.wrapMargin;
+    const x =
+      Math.random() * (canvasWidth + AUTUMN_BOUNDS.wrapMargin * 2) -
+      AUTUMN_BOUNDS.wrapMargin;
     const y = atTop
       ? -AUTUMN_BOUNDS.respawnBuffer - Math.random() * 50
       : Math.random() * canvasHeight;
@@ -85,14 +95,19 @@ export function createLeafSystem(): LeafSystem {
     const rotationSpeed =
       (Math.random() < 0.5 ? 1 : -1) *
       (AUTUMN_PHYSICS.rotationSpeed.min +
-        Math.random() * (AUTUMN_PHYSICS.rotationSpeed.max - AUTUMN_PHYSICS.rotationSpeed.min));
+        Math.random() *
+          (AUTUMN_PHYSICS.rotationSpeed.max -
+            AUTUMN_PHYSICS.rotationSpeed.min));
 
     const tumbleSpeed =
       AUTUMN_PHYSICS.tumbleSpeed.min +
-      Math.random() * (AUTUMN_PHYSICS.tumbleSpeed.max - AUTUMN_PHYSICS.tumbleSpeed.min);
+      Math.random() *
+        (AUTUMN_PHYSICS.tumbleSpeed.max - AUTUMN_PHYSICS.tumbleSpeed.min);
 
     // Opacity based on depth
-    const baseOpacity = AUTUMN_OPACITY.min + Math.random() * (AUTUMN_OPACITY.max - AUTUMN_OPACITY.min);
+    const baseOpacity =
+      AUTUMN_OPACITY.min +
+      Math.random() * (AUTUMN_OPACITY.max - AUTUMN_OPACITY.min);
     const opacity = baseOpacity - depth * AUTUMN_OPACITY.depthFactor;
 
     // Spiral descent
@@ -139,7 +154,8 @@ export function createLeafSystem(): LeafSystem {
       // Apply spiral motion if active
       if (leaf.spiralActive && leaf.spiralPhase !== undefined) {
         leaf.spiralPhase += AUTUMN_PHYSICS.spiralSpeed * frameMultiplier;
-        const spiralX = Math.sin(leaf.spiralPhase) * AUTUMN_PHYSICS.spiralRadius * leaf.size;
+        const spiralX =
+          Math.sin(leaf.spiralPhase) * AUTUMN_PHYSICS.spiralRadius * leaf.size;
         leaf.x += spiralX * 0.1 * frameMultiplier;
       }
 
@@ -247,7 +263,12 @@ export function createLeafSystem(): LeafSystem {
       const lobeDepth = halfWidth * (0.7 + 0.3 * Math.sin(t * Math.PI));
       const insetDepth = halfWidth * 0.5;
 
-      path.quadraticCurveTo(lobeDepth, (y1 + y2) / 2 - halfHeight * 0.1, insetDepth, y2);
+      path.quadraticCurveTo(
+        lobeDepth,
+        (y1 + y2) / 2 - halfHeight * 0.1,
+        insetDepth,
+        y2
+      );
     }
 
     // Bottom point

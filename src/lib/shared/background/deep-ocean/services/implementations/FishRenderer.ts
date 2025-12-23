@@ -18,7 +18,10 @@ export class FishRenderer implements IFishRenderer {
     ctx.restore();
   }
 
-  private drawSingleFish(ctx: CanvasRenderingContext2D, fish: FishMarineLife): void {
+  private drawSingleFish(
+    ctx: CanvasRenderingContext2D,
+    fish: FishMarineLife
+  ): void {
     ctx.save();
     ctx.globalAlpha = fish.opacity;
     ctx.translate(fish.x, fish.y);
@@ -50,7 +53,10 @@ export class FishRenderer implements IFishRenderer {
     ctx.restore();
   }
 
-  private drawFallbackFish(ctx: CanvasRenderingContext2D, fish: FishMarineLife): void {
+  private drawFallbackFish(
+    ctx: CanvasRenderingContext2D,
+    fish: FishMarineLife
+  ): void {
     const w = fish.width;
     const h = fish.height * 0.6;
 

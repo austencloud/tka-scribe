@@ -6,7 +6,11 @@
  */
 
 import type { AccessibilitySettings } from "../../domain/models/background-models";
-import type { Dimensions, QualityLevel, PerformanceMetrics } from "../../domain/types/background-types";
+import type {
+  Dimensions,
+  QualityLevel,
+  PerformanceMetrics,
+} from "../../domain/types/background-types";
 
 export interface IBackgroundSystem {
   /**

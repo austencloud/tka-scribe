@@ -7,5 +7,8 @@ export interface IJellyfishRenderer {
   /**
    * Draw all jellyfish with glow effects
    */
-  drawJellyfish(ctx: CanvasRenderingContext2D, jellyfish: JellyfishMarineLife[]): void;
+  drawJellyfish(
+    ctx: CanvasRenderingContext2D,
+    jellyfish: JellyfishMarineLife[]
+  ): void;
 }

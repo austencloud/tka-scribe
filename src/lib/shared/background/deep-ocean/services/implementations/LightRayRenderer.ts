@@ -19,7 +19,12 @@ export class LightRayRenderer implements ILightRayRenderer {
       ctx.translate(ray.x, 0);
       ctx.rotate((ray.angle * Math.PI) / 180);
 
-      const gradient = ctx.createLinearGradient(0, 0, 0, dimensions.height * 0.6);
+      const gradient = ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        dimensions.height * 0.6
+      );
       gradient.addColorStop(0, `rgba(135, 206, 250, ${ray.opacity})`);
       gradient.addColorStop(0.4, `rgba(100, 149, 237, ${ray.opacity * 0.7})`);
       gradient.addColorStop(1, `rgba(70, 130, 180, 0)`);

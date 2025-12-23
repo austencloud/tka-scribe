@@ -8,7 +8,10 @@ export interface IFishAnimator {
   /**
    * Initialize fish population
    */
-  initializeFish(dimensions: Dimensions, count: number): Promise<FishMarineLife[]>;
+  initializeFish(
+    dimensions: Dimensions,
+    count: number
+  ): Promise<FishMarineLife[]>;
 
   /**
    * Create a single fish with behavior properties
@@ -38,5 +41,8 @@ export interface IFishAnimator {
   /**
    * Process pending spawns and return new fish
    */
-  processPendingSpawns(dimensions: Dimensions, currentTime: number): FishMarineLife[];
+  processPendingSpawns(
+    dimensions: Dimensions,
+    currentTime: number
+  ): FishMarineLife[];
 }

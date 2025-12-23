@@ -1,6 +1,9 @@
 import { injectable } from "inversify";
 import type { FishSprite } from "../../domain/models/DeepOceanModels";
-import type { IFishSpriteManager, PreRenderedSprite } from "../contracts/IFishSpriteManager";
+import type {
+  IFishSpriteManager,
+  PreRenderedSprite,
+} from "../contracts/IFishSpriteManager";
 
 /** Color variant definition for pre-rendering */
 interface ColorVariant {
@@ -16,7 +19,10 @@ export class FishSpriteManager implements IFishSpriteManager {
     { name: "Blue", path: "/assets/background/fish/kenney/fish_blue.png" },
     { name: "Orange", path: "/assets/background/fish/kenney/fish_orange.png" },
     { name: "Green", path: "/assets/background/fish/kenney/fish_green.png" },
-    { name: "Grey Long", path: "/assets/background/fish/kenney/fish_grey_long_a.png" },
+    {
+      name: "Grey Long",
+      path: "/assets/background/fish/kenney/fish_grey_long_a.png",
+    },
   ];
 
   // Color variants (pre-rendered at load time, not runtime)
@@ -112,13 +118,19 @@ export class FishSpriteManager implements IFishSpriteManager {
    * Create a pre-rendered canvas with hue rotation applied once.
    * Uses OffscreenCanvas when available for better performance.
    */
-  private createPreRenderedCanvas(image: HTMLImageElement, hueRotate: number): HTMLCanvasElement | OffscreenCanvas {
+  private createPreRenderedCanvas(
+    image: HTMLImageElement,
+    hueRotate: number
+  ): HTMLCanvasElement | OffscreenCanvas {
     const width = image.naturalWidth;
     const height = image.naturalHeight;
 
     // Prefer OffscreenCanvas for better memory management
     let canvas: HTMLCanvasElement | OffscreenCanvas;
-    let ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D | null;
+    let ctx:
+      | CanvasRenderingContext2D
+      | OffscreenCanvasRenderingContext2D
+      | null;
 
     if (typeof OffscreenCanvas !== "undefined") {
       canvas = new OffscreenCanvas(width, height);
@@ -167,12 +179,26 @@ export class FishSpriteManager implements IFishSpriteManager {
 
   getMarineLifeColor(type: "fish" | "jellyfish"): string {
     if (type === "fish") {
-      const colors = ["#3d7a8c", "#4a8fa3", "#548da0", "#4b8599", "#5a9cb5", "#6ba8c2"];
+      const colors = [
+        "#3d7a8c",
+        "#4a8fa3",
+        "#548da0",
+        "#4b8599",
+        "#5a9cb5",
+        "#6ba8c2",
+      ];
       return colors[Math.floor(Math.random() * colors.length)] || "#3d7a8c";
     }
 
     // Jellyfish in soft purples, pinks, and blues
-    const colors = ["#7d5a7a", "#8b6d88", "#946f91", "#866783", "#6b7a9d", "#8a7db5"];
+    const colors = [
+      "#7d5a7a",
+      "#8b6d88",
+      "#946f91",
+      "#866783",
+      "#6b7a9d",
+      "#8a7db5",
+    ];
     return colors[Math.floor(Math.random() * colors.length)] || "#7d5a7a";
   }
 

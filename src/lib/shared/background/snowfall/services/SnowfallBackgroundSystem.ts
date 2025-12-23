@@ -94,11 +94,7 @@ export class SnowfallBackgroundSystem implements IBackgroundSystem {
       ...config.core.background.gradientStops,
     ] as GradientStop[];
 
-    this.renderingService.drawGradient(
-      ctx,
-      dimensions,
-      gradientStops
-    );
+    this.renderingService.drawGradient(ctx, dimensions, gradientStops);
 
     if (this.isInitialized) {
       this.snowflakeSystem.draw(this.snowflakes, ctx, dimensions);

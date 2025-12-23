@@ -1,6 +1,6 @@
 /**
  * Ember Glow Configuration Constants
- * 
+ *
  * Centralized configuration for ember particle behavior, colors, and physics.
  * Extracted for easy tuning and AI-friendly selective reading.
  */
@@ -96,8 +96,8 @@ export const EMBER_BOUNDS = {
 
 /** Dark amber background gradient */
 export const EMBER_BACKGROUND_GRADIENT = [
-  { position: 0, color: "#1a0a0a" },      // Very dark brown-red
-  { position: 0.3, color: "#2d1410" },    // Dark burgundy
-  { position: 0.6, color: "#4a1f1a" },    // Dark amber
-  { position: 1, color: "#3d1814" },      // Dark rust
+  { position: 0, color: "#1a0a0a" }, // Very dark brown-red
+  { position: 0.3, color: "#2d1410" }, // Dark burgundy
+  { position: 0.6, color: "#4a1f1a" }, // Dark amber
+  { position: 1, color: "#3d1814" }, // Dark rust
 ] as const;

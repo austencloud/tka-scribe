@@ -9,7 +9,7 @@ import { EMBER_BACKGROUND_GRADIENT } from "../domain/constants/ember-constants";
 
 /**
  * Ember Glow Background System
- * 
+ *
  * Renders a dark amber background with rising, glowing embers
  * Embers flicker and drift as they rise, creating a warm, cozy atmosphere
  */
@@ -40,13 +40,22 @@ export class EmberGlowBackgroundSystem implements IBackgroundSystem {
     }
 
     if (this.isInitialized) {
-      this.embers = this.emberSystem.update(this.embers, dimensions, frameMultiplier);
+      this.embers = this.emberSystem.update(
+        this.embers,
+        dimensions,
+        frameMultiplier
+      );
     }
   }
 
   public draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
     // Draw dark amber gradient background
-    const gradient = ctx.createLinearGradient(0, 0, dimensions.width, dimensions.height);
+    const gradient = ctx.createLinearGradient(
+      0,
+      0,
+      dimensions.width,
+      dimensions.height
+    );
     this.gradientStops.forEach(({ position, color }) => {
       gradient.addColorStop(position, color);
     });
@@ -67,7 +76,11 @@ export class EmberGlowBackgroundSystem implements IBackgroundSystem {
         width: this.embers[0]?.x || 1920,
         height: this.embers[0]?.y || 1080,
       };
-      this.embers = this.emberSystem.setQuality(this.embers, dimensions, quality);
+      this.embers = this.emberSystem.setQuality(
+        this.embers,
+        dimensions,
+        quality
+      );
     }
   }
 
@@ -78,7 +91,10 @@ export class EmberGlowBackgroundSystem implements IBackgroundSystem {
     // Could implement motion reduction or contrast adjustments
   }
 
-  public handleResize(oldDimensions: Dimensions, newDimensions: Dimensions): void {
+  public handleResize(
+    oldDimensions: Dimensions,
+    newDimensions: Dimensions
+  ): void {
     if (this.isInitialized) {
       this.embers = this.emberSystem.adjustToResize(
         this.embers,

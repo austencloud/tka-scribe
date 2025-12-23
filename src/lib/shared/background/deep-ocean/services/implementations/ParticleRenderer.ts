@@ -4,7 +4,10 @@ import type { IParticleRenderer } from "../contracts/IParticleRenderer";
 
 @injectable()
 export class ParticleRenderer implements IParticleRenderer {
-  drawParticles(ctx: CanvasRenderingContext2D, particles: OceanParticle[]): void {
+  drawParticles(
+    ctx: CanvasRenderingContext2D,
+    particles: OceanParticle[]
+  ): void {
     ctx.save();
     for (const particle of particles) {
       ctx.globalAlpha = particle.opacity;

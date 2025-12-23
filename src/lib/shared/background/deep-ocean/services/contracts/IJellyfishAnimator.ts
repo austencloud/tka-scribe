@@ -8,7 +8,10 @@ export interface IJellyfishAnimator {
   /**
    * Initialize jellyfish population
    */
-  initializeJellyfish(dimensions: Dimensions, count: number): JellyfishMarineLife[];
+  initializeJellyfish(
+    dimensions: Dimensions,
+    count: number
+  ): JellyfishMarineLife[];
 
   /**
    * Create a single jellyfish

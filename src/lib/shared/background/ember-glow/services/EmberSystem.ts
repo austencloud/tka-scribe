@@ -1,4 +1,7 @@
-import type { Dimensions, QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
+import type {
+  Dimensions,
+  QualityLevel,
+} from "$lib/shared/background/shared/domain/types/background-types";
 import type { Ember } from "../domain/models/ember-models";
 import {
   EMBER_COUNTS,
@@ -47,7 +50,10 @@ export function createEmberSystem() {
   /**
    * Create a single ember particle
    */
-  function createEmber(dimensions: Dimensions, randomizeY: boolean = false): Ember {
+  function createEmber(
+    dimensions: Dimensions,
+    randomizeY: boolean = false
+  ): Ember {
     const x = Math.random() * dimensions.width;
     const y = randomizeY
       ? Math.random() * dimensions.height
@@ -57,7 +63,12 @@ export function createEmberSystem() {
     const size = EMBER_SIZE.MIN + Math.random() * EMBER_SIZE.RANGE;
 
     // Rising speed - slower for larger embers (parallax effect)
-    const vy = -(EMBER_PHYSICS.RISING_SPEED_BASE + Math.random() * EMBER_PHYSICS.RISING_SPEED_RANGE) * (1 / size);
+    const vy =
+      -(
+        EMBER_PHYSICS.RISING_SPEED_BASE +
+        Math.random() * EMBER_PHYSICS.RISING_SPEED_RANGE
+      ) *
+      (1 / size);
 
     // Gentle horizontal drift
     const vx = (Math.random() - 0.5) * EMBER_PHYSICS.DRIFT_AMPLITUDE;
@@ -65,22 +76,50 @@ export function createEmberSystem() {
     // Color variation - brighter amber to deep orange
     const colorVariant = Math.random();
     let r: number, g: number, b: number;
-    
+
     if (colorVariant < EMBER_COLORS.ORANGE_RED.probability) {
       // Bright orange-red
       r = EMBER_COLORS.ORANGE_RED.r;
-      g = EMBER_COLORS.ORANGE_RED.gMin + Math.floor(Math.random() * (EMBER_COLORS.ORANGE_RED.gMax - EMBER_COLORS.ORANGE_RED.gMin));
-      b = EMBER_COLORS.ORANGE_RED.bMin + Math.floor(Math.random() * (EMBER_COLORS.ORANGE_RED.bMax - EMBER_COLORS.ORANGE_RED.bMin));
+      g =
+        EMBER_COLORS.ORANGE_RED.gMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.ORANGE_RED.gMax - EMBER_COLORS.ORANGE_RED.gMin)
+        );
+      b =
+        EMBER_COLORS.ORANGE_RED.bMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.ORANGE_RED.bMax - EMBER_COLORS.ORANGE_RED.bMin)
+        );
     } else if (colorVariant < EMBER_COLORS.AMBER.probability) {
       // Bright amber/orange
       r = EMBER_COLORS.AMBER.r;
-      g = EMBER_COLORS.AMBER.gMin + Math.floor(Math.random() * (EMBER_COLORS.AMBER.gMax - EMBER_COLORS.AMBER.gMin));
-      b = EMBER_COLORS.AMBER.bMin + Math.floor(Math.random() * (EMBER_COLORS.AMBER.bMax - EMBER_COLORS.AMBER.bMin));
+      g =
+        EMBER_COLORS.AMBER.gMin +
+        Math.floor(
+          Math.random() * (EMBER_COLORS.AMBER.gMax - EMBER_COLORS.AMBER.gMin)
+        );
+      b =
+        EMBER_COLORS.AMBER.bMin +
+        Math.floor(
+          Math.random() * (EMBER_COLORS.AMBER.bMax - EMBER_COLORS.AMBER.bMin)
+        );
     } else {
       // Very bright amber (almost white-hot)
       r = EMBER_COLORS.WHITE_HOT.r;
-      g = EMBER_COLORS.WHITE_HOT.gMin + Math.floor(Math.random() * (EMBER_COLORS.WHITE_HOT.gMax - EMBER_COLORS.WHITE_HOT.gMin));
-      b = EMBER_COLORS.WHITE_HOT.bMin + Math.floor(Math.random() * (EMBER_COLORS.WHITE_HOT.bMax - EMBER_COLORS.WHITE_HOT.bMin));
+      g =
+        EMBER_COLORS.WHITE_HOT.gMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.WHITE_HOT.gMax - EMBER_COLORS.WHITE_HOT.gMin)
+        );
+      b =
+        EMBER_COLORS.WHITE_HOT.bMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.WHITE_HOT.bMax - EMBER_COLORS.WHITE_HOT.bMin)
+        );
     }
 
     return {
@@ -110,9 +149,15 @@ export function createEmberSystem() {
       const newY = ember.y + ember.vy * frameMultiplier;
 
       // More dramatic flicker animation
-      const flickerOffset = ember.flickerOffset + EMBER_PHYSICS.FLICKER_SPEED * frameMultiplier;
-      const flickerFactor = EMBER_PHYSICS.FLICKER_BASE + Math.sin(flickerOffset) * EMBER_PHYSICS.FLICKER_AMPLITUDE;
-      const newOpacity = Math.max(EMBER_PHYSICS.FLICKER_MIN_OPACITY, ember.opacity * flickerFactor);
+      const flickerOffset =
+        ember.flickerOffset + EMBER_PHYSICS.FLICKER_SPEED * frameMultiplier;
+      const flickerFactor =
+        EMBER_PHYSICS.FLICKER_BASE +
+        Math.sin(flickerOffset) * EMBER_PHYSICS.FLICKER_AMPLITUDE;
+      const newOpacity = Math.max(
+        EMBER_PHYSICS.FLICKER_MIN_OPACITY,
+        ember.opacity * flickerFactor
+      );
 
       // Respawn if ember has risen above the viewport
       if (newY < -EMBER_BOUNDS.RESPAWN_BUFFER) {
@@ -148,7 +193,12 @@ export function createEmberSystem() {
       const { x, y, size, opacity, glowRadius, color } = ember;
 
       // Skip if any values are non-finite (NaN or Infinity)
-      if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(glowRadius) || glowRadius <= 0) {
+      if (
+        !Number.isFinite(x) ||
+        !Number.isFinite(y) ||
+        !Number.isFinite(glowRadius) ||
+        glowRadius <= 0
+      ) {
         return;
       }
 
@@ -165,7 +215,12 @@ export function createEmberSystem() {
       gradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(x - glowRadius, y - glowRadius, glowRadius * 2, glowRadius * 2);
+      ctx.fillRect(
+        x - glowRadius,
+        y - glowRadius,
+        glowRadius * 2,
+        glowRadius * 2
+      );
 
       // Draw solid ember core
       ctx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity * EMBER_OPACITY.CORE_MULTIPLIER})`;

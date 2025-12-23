@@ -6,9 +6,12 @@
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-import type { Dimensions, QualityLevel } from "$lib/shared/background/shared/domain/types/background-types";
-import { resolve } from "../../../inversify/di";
-import { TYPES } from "../../../inversify/types";
+  import type {
+    Dimensions,
+    QualityLevel,
+  } from "$lib/shared/background/shared/domain/types/background-types";
+  import { resolve } from "../../../inversify/di";
+  import { TYPES } from "../../../inversify/types";
   import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 
   // Props
@@ -34,7 +37,9 @@ import { TYPES } from "../../../inversify/types";
   onMount(async () => {
     try {
       // Resolve the new orchestrator service
-      backgroundSystem = await resolve<IBackgroundSystem>(TYPES.IBackgroundSystem);
+      backgroundSystem = await resolve<IBackgroundSystem>(
+        TYPES.IBackgroundSystem
+      );
 
       // Initialize canvas context
       ctx = canvas.getContext("2d");

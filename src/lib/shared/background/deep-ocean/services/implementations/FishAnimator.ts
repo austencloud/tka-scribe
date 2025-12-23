@@ -31,7 +31,10 @@ export class FishAnimator implements IFishAnimator {
     private fishSpriteManager: IFishSpriteManager
   ) {}
 
-  async initializeFish(dimensions: Dimensions, count: number): Promise<FishMarineLife[]> {
+  async initializeFish(
+    dimensions: Dimensions,
+    count: number
+  ): Promise<FishMarineLife[]> {
     await this.fishSpriteManager.preloadSprites();
 
     const fish: FishMarineLife[] = [];
@@ -73,9 +76,11 @@ export class FishAnimator implements IFishAnimator {
       direction === 1
         ? -width - Math.random() * maxOffset
         : dimensions.width + width + Math.random() * maxOffset;
-    const baseY = depthBand.min + Math.random() * (depthBand.max - depthBand.min);
+    const baseY =
+      depthBand.min + Math.random() * (depthBand.max - depthBand.min);
 
-    const baseSpeed = this.randomInRange(FISH_MOVEMENT.baseSpeed) * config.speedMultiplier;
+    const baseSpeed =
+      this.randomInRange(FISH_MOVEMENT.baseSpeed) * config.speedMultiplier;
     const opacity = this.randomInRange(config.opacity);
 
     const fish: FishMarineLife = {
@@ -107,7 +112,9 @@ export class FishAnimator implements IFishAnimator {
     if (canvas) {
       fish.canvas = canvas;
     } else {
-      (fish as FishMarineLife & { _needsSpriteUpdate?: boolean })._needsSpriteUpdate = true;
+      (
+        fish as FishMarineLife & { _needsSpriteUpdate?: boolean }
+      )._needsSpriteUpdate = true;
     }
 
     return fish;
@@ -141,7 +148,9 @@ export class FishAnimator implements IFishAnimator {
       this.updateVisuals(f, frameMultiplier);
 
       if (this.isOffScreen(f, dimensions)) {
-        this.scheduleSpawn(animationTime + this.randomInRange(SPAWN_CONFIG.respawnDelay));
+        this.scheduleSpawn(
+          animationTime + this.randomInRange(SPAWN_CONFIG.respawnDelay)
+        );
       } else {
         updatedFish.push(f);
       }
@@ -154,8 +163,13 @@ export class FishAnimator implements IFishAnimator {
   // FLOCKING BEHAVIOR (Boids Algorithm)
   // ===========================================================================
 
-  private applyFlockingForces(fish: FishMarineLife[], deltaSeconds: number): void {
-    const schoolingFish = fish.filter((f) => f.behavior === "schooling" && f.schoolId !== undefined);
+  private applyFlockingForces(
+    fish: FishMarineLife[],
+    deltaSeconds: number
+  ): void {
+    const schoolingFish = fish.filter(
+      (f) => f.behavior === "schooling" && f.schoolId !== undefined
+    );
     if (schoolingFish.length < 2) return;
 
     // Group by school
@@ -181,9 +195,15 @@ export class FishAnimator implements IFishAnimator {
     fish: FishMarineLife,
     schoolmates: FishMarineLife[]
   ): { x: number; y: number } {
-    let separationX = 0, separationY = 0, separationCount = 0;
-    let alignmentX = 0, alignmentY = 0, alignmentCount = 0;
-    let cohesionX = 0, cohesionY = 0, cohesionCount = 0;
+    let separationX = 0,
+      separationY = 0,
+      separationCount = 0;
+    let alignmentX = 0,
+      alignmentY = 0,
+      alignmentCount = 0;
+    let cohesionX = 0,
+      cohesionY = 0,
+      cohesionCount = 0;
 
     for (const other of schoolmates) {
       if (other === fish) continue;
@@ -214,18 +234,25 @@ export class FishAnimator implements IFishAnimator {
       }
     }
 
-    let forceX = 0, forceY = 0;
+    let forceX = 0,
+      forceY = 0;
 
     if (separationCount > 0) {
-      forceX += (separationX / separationCount) * FLOCKING_CONFIG.separation.weight;
-      forceY += (separationY / separationCount) * FLOCKING_CONFIG.separation.weight;
+      forceX +=
+        (separationX / separationCount) * FLOCKING_CONFIG.separation.weight;
+      forceY +=
+        (separationY / separationCount) * FLOCKING_CONFIG.separation.weight;
     }
 
     if (alignmentCount > 0) {
       const avgVx = alignmentX / alignmentCount;
       const avgVy = alignmentY / alignmentCount;
-      forceX += (avgVx - fish.direction * fish.speed) * FLOCKING_CONFIG.alignment.weight * 0.01;
-      forceY += (avgVy - fish.verticalDrift) * FLOCKING_CONFIG.alignment.weight * 0.1;
+      forceX +=
+        (avgVx - fish.direction * fish.speed) *
+        FLOCKING_CONFIG.alignment.weight *
+        0.01;
+      forceY +=
+        (avgVy - fish.verticalDrift) * FLOCKING_CONFIG.alignment.weight * 0.1;
     }
 
     if (cohesionCount > 0) {
@@ -253,8 +280,10 @@ export class FishAnimator implements IFishAnimator {
 
     // Apply to vertical drift (horizontal direction is more stable)
     fish.verticalDrift += force.y * deltaSeconds * 60;
-    fish.verticalDrift = Math.max(-FISH_MOVEMENT.verticalDrift,
-                                   Math.min(FISH_MOVEMENT.verticalDrift, fish.verticalDrift));
+    fish.verticalDrift = Math.max(
+      -FISH_MOVEMENT.verticalDrift,
+      Math.min(FISH_MOVEMENT.verticalDrift, fish.verticalDrift)
+    );
   }
 
   // ===========================================================================
@@ -281,10 +310,17 @@ export class FishAnimator implements IFishAnimator {
     }
 
     // Clamp to depth band
-    fish.baseY = Math.max(fish.depthBand.min, Math.min(fish.depthBand.max, fish.baseY));
+    fish.baseY = Math.max(
+      fish.depthBand.min,
+      Math.min(fish.depthBand.max, fish.baseY)
+    );
   }
 
-  private applyCruising(fish: FishMarineLife, deltaSeconds: number, frameMultiplier: number): void {
+  private applyCruising(
+    fish: FishMarineLife,
+    deltaSeconds: number,
+    frameMultiplier: number
+  ): void {
     fish.animationPhase += fish.bobSpeed * frameMultiplier;
     fish.x += fish.direction * fish.speed * deltaSeconds;
     fish.baseY += fish.verticalDrift * deltaSeconds;
@@ -297,24 +333,36 @@ export class FishAnimator implements IFishAnimator {
     fish.speed = fish.baseSpeed * BEHAVIOR_CONFIG.turning.speedMultiplier;
     fish.x += fish.direction * fish.speed * deltaSeconds;
 
-    const turnProgress = 1 - fish.behaviorTimer / BEHAVIOR_CONFIG.turning.duration;
-    fish.rotation = fish.direction * Math.sin(turnProgress * Math.PI) * BEHAVIOR_CONFIG.turning.maxRotation;
+    const turnProgress =
+      1 - fish.behaviorTimer / BEHAVIOR_CONFIG.turning.duration;
+    fish.rotation =
+      fish.direction *
+      Math.sin(turnProgress * Math.PI) *
+      BEHAVIOR_CONFIG.turning.maxRotation;
   }
 
   private applyDarting(fish: FishMarineLife, deltaSeconds: number): void {
-    fish.speed = fish.dartSpeed ?? fish.baseSpeed * BEHAVIOR_CONFIG.darting.speedMultiplier[0];
+    fish.speed =
+      fish.dartSpeed ??
+      fish.baseSpeed * BEHAVIOR_CONFIG.darting.speedMultiplier[0];
     fish.x += fish.direction * fish.speed * deltaSeconds;
     fish.y += (Math.random() - 0.5) * 2; // Slight vertical jitter
   }
 
-  private transitionBehavior(fish: FishMarineLife, dimensions: Dimensions): void {
+  private transitionBehavior(
+    fish: FishMarineLife,
+    dimensions: Dimensions
+  ): void {
     const current = fish.behavior;
 
     // Complete turning: flip direction
     if (current === "turning") {
-      fish.direction = fish.targetDirection ?? ((fish.direction * -1) as 1 | -1);
+      fish.direction =
+        fish.targetDirection ?? ((fish.direction * -1) as 1 | -1);
       fish.behavior = "cruising";
-      fish.behaviorTimer = this.randomInRange(BEHAVIOR_CONFIG.cruising.duration);
+      fish.behaviorTimer = this.randomInRange(
+        BEHAVIOR_CONFIG.cruising.duration
+      );
       fish.rotation = 0;
       fish.speed = fish.baseSpeed;
       return;
@@ -323,7 +371,9 @@ export class FishAnimator implements IFishAnimator {
     // Complete darting: return to cruise
     if (current === "darting") {
       fish.behavior = "cruising";
-      fish.behaviorTimer = this.randomInRange(BEHAVIOR_CONFIG.cruising.duration);
+      fish.behaviorTimer = this.randomInRange(
+        BEHAVIOR_CONFIG.cruising.duration
+      );
       fish.speed = fish.baseSpeed;
       return;
     }
@@ -345,15 +395,22 @@ export class FishAnimator implements IFishAnimator {
       // Dart (startled)
       fish.behavior = "darting";
       fish.behaviorTimer = BEHAVIOR_CONFIG.darting.duration;
-      fish.dartSpeed = fish.baseSpeed * this.randomInRange(BEHAVIOR_CONFIG.darting.speedMultiplier);
+      fish.dartSpeed =
+        fish.baseSpeed *
+        this.randomInRange(BEHAVIOR_CONFIG.darting.speedMultiplier);
     } else {
       // Continue cruising
       fish.behavior = fish.schoolId !== undefined ? "schooling" : "cruising";
-      fish.behaviorTimer = this.randomInRange(BEHAVIOR_CONFIG.cruising.duration);
+      fish.behaviorTimer = this.randomInRange(
+        BEHAVIOR_CONFIG.cruising.duration
+      );
     }
   }
 
-  private getEdgeProximity(fish: FishMarineLife, dimensions: Dimensions): number {
+  private getEdgeProximity(
+    fish: FishMarineLife,
+    dimensions: Dimensions
+  ): number {
     const warningZone = dimensions.width * EDGE_AWARENESS.warningZone;
 
     if (fish.direction === 1) {
@@ -367,7 +424,10 @@ export class FishAnimator implements IFishAnimator {
     return 0;
   }
 
-  private getTurnDirection(fish: FishMarineLife, dimensions: Dimensions): 1 | -1 {
+  private getTurnDirection(
+    fish: FishMarineLife,
+    dimensions: Dimensions
+  ): 1 | -1 {
     // Turn away from nearest edge
     const distToRight = dimensions.width - fish.x;
     const distToLeft = fish.x;
@@ -380,13 +440,16 @@ export class FishAnimator implements IFishAnimator {
 
   private updateVisuals(fish: FishMarineLife, frameMultiplier: number): void {
     // Tail wiggle speed proportional to movement speed
-    const tailSpeed = FISH_VISUALS.tailWiggleSpeed * (fish.speed / fish.baseSpeed);
+    const tailSpeed =
+      FISH_VISUALS.tailWiggleSpeed * (fish.speed / fish.baseSpeed);
     fish.tailPhase += tailSpeed * frameMultiplier;
 
     // Rotation based on vertical drift
     if (fish.behavior === "cruising" || fish.behavior === "schooling") {
-      const targetRotation = fish.verticalDrift * FISH_VISUALS.driftRotationFactor * fish.direction;
-      fish.rotation += (targetRotation - fish.rotation) * FISH_VISUALS.rotationSmoothing;
+      const targetRotation =
+        fish.verticalDrift * FISH_VISUALS.driftRotationFactor * fish.direction;
+      fish.rotation +=
+        (targetRotation - fish.rotation) * FISH_VISUALS.rotationSmoothing;
     }
   }
 
@@ -402,7 +465,8 @@ export class FishAnimator implements IFishAnimator {
     let schooledCount = 0;
 
     while (schooledCount < targetSchoolingCount) {
-      const schoolSize = minSize + Math.floor(Math.random() * (maxSize - minSize + 1));
+      const schoolSize =
+        minSize + Math.floor(Math.random() * (maxSize - minSize + 1));
       const available = fish.filter((f) => f.schoolId === undefined);
 
       if (available.length < schoolSize) break;
@@ -411,7 +475,9 @@ export class FishAnimator implements IFishAnimator {
       const leader = available[Math.floor(Math.random() * available.length)]!;
       leader.schoolId = schoolId;
       leader.behavior = "schooling";
-      leader.behaviorTimer = this.randomInRange(BEHAVIOR_CONFIG.schooling.duration);
+      leader.behaviorTimer = this.randomInRange(
+        BEHAVIOR_CONFIG.schooling.duration
+      );
 
       // Add followers with matching direction
       const followers = available
@@ -421,7 +487,9 @@ export class FishAnimator implements IFishAnimator {
       for (const follower of followers) {
         follower.schoolId = schoolId;
         follower.behavior = "schooling";
-        follower.behaviorTimer = this.randomInRange(BEHAVIOR_CONFIG.schooling.duration);
+        follower.behaviorTimer = this.randomInRange(
+          BEHAVIOR_CONFIG.schooling.duration
+        );
         follower.direction = leader.direction;
         // Position followers near leader
         follower.x = leader.x + (Math.random() - 0.5) * 80;
@@ -437,7 +505,9 @@ export class FishAnimator implements IFishAnimator {
   // UTILITY METHODS
   // ===========================================================================
 
-  private updateSpriteIfNeeded(fish: FishMarineLife & { _needsSpriteUpdate?: boolean }): void {
+  private updateSpriteIfNeeded(
+    fish: FishMarineLife & { _needsSpriteUpdate?: boolean }
+  ): void {
     if (!fish._needsSpriteUpdate) return;
 
     const entry = this.fishSpriteManager.getAnyLoadedSpriteEntry();
@@ -457,7 +527,9 @@ export class FishAnimator implements IFishAnimator {
     return "near";
   }
 
-  private randomInRange(range: [number, number] | readonly [number, number]): number {
+  private randomInRange(
+    range: [number, number] | readonly [number, number]
+  ): number {
     return range[0] + Math.random() * (range[1] - range[0]);
   }
 
@@ -474,7 +546,10 @@ export class FishAnimator implements IFishAnimator {
     this.pendingSpawns.push(spawnTime);
   }
 
-  processPendingSpawns(dimensions: Dimensions, currentTime: number): FishMarineLife[] {
+  processPendingSpawns(
+    dimensions: Dimensions,
+    currentTime: number
+  ): FishMarineLife[] {
     const newFish: FishMarineLife[] = [];
 
     for (let i = this.pendingSpawns.length - 1; i >= 0; i--) {

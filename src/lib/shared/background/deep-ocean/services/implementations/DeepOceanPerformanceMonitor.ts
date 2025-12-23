@@ -13,7 +13,11 @@ export interface PerformanceMetrics {
 export interface IDeepOceanPerformanceMonitor {
   startFrame(): void;
   endUpdate(): void;
-  endRender(fishCount: number, jellyfishCount: number, bubbleCount: number): void;
+  endRender(
+    fishCount: number,
+    jellyfishCount: number,
+    bubbleCount: number
+  ): void;
   getMetrics(): PerformanceMetrics;
   isEnabled(): boolean;
   setEnabled(enabled: boolean): void;
@@ -25,7 +29,9 @@ export interface IDeepOceanPerformanceMonitor {
  * Disabled by default - enable via console or dev tools.
  */
 @injectable()
-export class DeepOceanPerformanceMonitor implements IDeepOceanPerformanceMonitor {
+export class DeepOceanPerformanceMonitor
+  implements IDeepOceanPerformanceMonitor
+{
   private enabled = false;
   private frameStart = 0;
   private updateEnd = 0;
@@ -66,7 +72,11 @@ export class DeepOceanPerformanceMonitor implements IDeepOceanPerformanceMonitor
     }
   }
 
-  endRender(fishCount: number, jellyfishCount: number, bubbleCount: number): void {
+  endRender(
+    fishCount: number,
+    jellyfishCount: number,
+    bubbleCount: number
+  ): void {
     if (!this.enabled) return;
 
     const now = performance.now();
@@ -86,7 +96,9 @@ export class DeepOceanPerformanceMonitor implements IDeepOceanPerformanceMonitor
     // Update FPS counter
     this.frameCount++;
     if (now - this.lastFpsUpdate >= this.fpsUpdateInterval) {
-      this.currentFps = Math.round((this.frameCount * 1000) / (now - this.lastFpsUpdate));
+      this.currentFps = Math.round(
+        (this.frameCount * 1000) / (now - this.lastFpsUpdate)
+      );
       this.frameCount = 0;
       this.lastFpsUpdate = now;
     }
@@ -116,7 +128,9 @@ export class DeepOceanPerformanceMonitor implements IDeepOceanPerformanceMonitor
   setEnabled(enabled: boolean): void {
     this.enabled = enabled;
     if (enabled) {
-      console.log("[DeepOcean Perf] Monitoring enabled. Call getDeepOceanMetrics() to see stats.");
+      console.log(
+        "[DeepOcean Perf] Monitoring enabled. Call getDeepOceanMetrics() to see stats."
+      );
       this.reset();
     } else {
       console.log("[DeepOcean Perf] Monitoring disabled.");
@@ -154,7 +168,7 @@ export function setMonitorInstance(monitor: DeepOceanPerformanceMonitor): void {
     (window as any).getDeepOceanMetrics = () => {
       const m = monitor.getMetrics();
       console.table({
-        "FPS": m.fps,
+        FPS: m.fps,
         "Frame Time (ms)": m.frameTime.toFixed(2),
         "Update Time (ms)": m.updateTime.toFixed(2),
         "Render Time (ms)": m.renderTime.toFixed(2),

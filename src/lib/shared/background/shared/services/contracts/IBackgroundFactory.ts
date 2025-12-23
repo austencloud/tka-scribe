@@ -21,7 +21,9 @@ export interface IBackgroundFactory {
   /**
    * Create a background system with the specified parameters
    */
-  createBackgroundSystem(options: BackgroundFactoryParams): Promise<BackgroundSystem>;
+  createBackgroundSystem(
+    options: BackgroundFactoryParams
+  ): Promise<BackgroundSystem>;
 
   /**
    * Create an optimal background system with auto-detected quality

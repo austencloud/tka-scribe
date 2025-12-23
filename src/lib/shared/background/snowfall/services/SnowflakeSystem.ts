@@ -71,10 +71,10 @@ export const createSnowflakeSystem = () => {
       x: Math.random() * width,
       y: Math.random() * height,
       speed:
-        ((Math.random() *
+        (Math.random() *
           (config.snowflake.maxSpeed - config.snowflake.minSpeed) +
           config.snowflake.minSpeed) *
-          (0.5 + depth * 0.5)), // Vary speed by depth
+        (0.5 + depth * 0.5), // Vary speed by depth
       size: size * (0.4 + depth * 0.6), // Smaller flakes appear further away
       sway: (Math.random() * 1 - 0.5) * (1 + depth),
       opacity: (Math.random() * 0.6 + 0.3) * (0.6 + depth * 0.4),

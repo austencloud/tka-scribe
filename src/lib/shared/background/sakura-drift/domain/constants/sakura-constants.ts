@@ -1,6 +1,6 @@
 /**
  * Sakura Drift Configuration Constants
- * 
+ *
  * Centralized configuration for cherry blossom behavior, colors, and physics.
  * Extracted for easy tuning and AI-friendly selective reading.
  */
@@ -184,8 +184,8 @@ export const SAKURA_BOUNDS = {
 
 /** Soft twilight background gradient */
 export const SAKURA_BACKGROUND_GRADIENT = [
-  { position: 0, color: "#2a1f2e" },      // Dark purple
-  { position: 0.3, color: "#3d2f42" },    // Medium purple
-  { position: 0.6, color: "#4a3d52" },    // Soft lavender
-  { position: 1, color: "#362d40" },      // Dark lavender
+  { position: 0, color: "#2a1f2e" }, // Dark purple
+  { position: 0.3, color: "#3d2f42" }, // Medium purple
+  { position: 0.6, color: "#4a3d52" }, // Soft lavender
+  { position: 1, color: "#362d40" }, // Dark lavender
 ] as const;

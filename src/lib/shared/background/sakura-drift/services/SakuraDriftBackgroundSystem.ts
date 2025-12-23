@@ -9,7 +9,7 @@ import { SAKURA_BACKGROUND_GRADIENT } from "../domain/constants/sakura-constants
 
 /**
  * Sakura Drift Background System
- * 
+ *
  * Renders a soft twilight background with gently falling cherry blossom petals
  * Petals drift and rotate as they fall, creating a serene, peaceful atmosphere
  */
@@ -40,13 +40,22 @@ export class SakuraDriftBackgroundSystem implements IBackgroundSystem {
     }
 
     if (this.isInitialized) {
-      this.petals = this.sakuraSystem.update(this.petals, dimensions, frameMultiplier);
+      this.petals = this.sakuraSystem.update(
+        this.petals,
+        dimensions,
+        frameMultiplier
+      );
     }
   }
 
   public draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
     // Draw soft twilight gradient background
-    const gradient = ctx.createLinearGradient(0, 0, dimensions.width, dimensions.height);
+    const gradient = ctx.createLinearGradient(
+      0,
+      0,
+      dimensions.width,
+      dimensions.height
+    );
     this.gradientStops.forEach(({ position, color }) => {
       gradient.addColorStop(position, color);
     });
@@ -67,7 +76,11 @@ export class SakuraDriftBackgroundSystem implements IBackgroundSystem {
         width: this.petals[0]?.x || 1920,
         height: this.petals[0]?.y || 1080,
       };
-      this.petals = this.sakuraSystem.setQuality(this.petals, dimensions, quality);
+      this.petals = this.sakuraSystem.setQuality(
+        this.petals,
+        dimensions,
+        quality
+      );
     }
   }
 
@@ -78,7 +91,10 @@ export class SakuraDriftBackgroundSystem implements IBackgroundSystem {
     // Could implement motion reduction or contrast adjustments
   }
 
-  public handleResize(oldDimensions: Dimensions, newDimensions: Dimensions): void {
+  public handleResize(
+    oldDimensions: Dimensions,
+    newDimensions: Dimensions
+  ): void {
     if (this.isInitialized) {
       this.petals = this.sakuraSystem.adjustToResize(
         this.petals,

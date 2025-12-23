@@ -7,7 +7,11 @@ import type {
 } from "../../shared/domain/types/background-types";
 import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
 import { TYPES } from "../../../inversify/types";
-import type { DeepOceanState, FishMarineLife, JellyfishMarineLife } from "../domain/models/DeepOceanModels";
+import type {
+  DeepOceanState,
+  FishMarineLife,
+  JellyfishMarineLife,
+} from "../domain/models/DeepOceanModels";
 
 // Physics & Animation contracts
 import type { IBubblePhysics } from "./contracts/IBubblePhysics";
@@ -52,19 +56,25 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
     // Physics services
     @inject(TYPES.IBubblePhysics) private bubblePhysics: IBubblePhysics,
     @inject(TYPES.IParticleSystem) private particleSystem: IParticleSystem,
-    @inject(TYPES.ILightRayCalculator) private lightRayCalculator: ILightRayCalculator,
+    @inject(TYPES.ILightRayCalculator)
+    private lightRayCalculator: ILightRayCalculator,
 
     // Animator services
     @inject(TYPES.IFishAnimator) private fishAnimator: IFishAnimator,
-    @inject(TYPES.IJellyfishAnimator) private jellyfishAnimator: IJellyfishAnimator,
+    @inject(TYPES.IJellyfishAnimator)
+    private jellyfishAnimator: IJellyfishAnimator,
 
     // Renderer services
-    @inject(TYPES.IGradientRenderer) private gradientRenderer: IGradientRenderer,
-    @inject(TYPES.ILightRayRenderer) private lightRayRenderer: ILightRayRenderer,
+    @inject(TYPES.IGradientRenderer)
+    private gradientRenderer: IGradientRenderer,
+    @inject(TYPES.ILightRayRenderer)
+    private lightRayRenderer: ILightRayRenderer,
     @inject(TYPES.IBubbleRenderer) private bubbleRenderer: IBubbleRenderer,
-    @inject(TYPES.IParticleRenderer) private particleRenderer: IParticleRenderer,
+    @inject(TYPES.IParticleRenderer)
+    private particleRenderer: IParticleRenderer,
     @inject(TYPES.IFishRenderer) private fishRenderer: IFishRenderer,
-    @inject(TYPES.IJellyfishRenderer) private jellyfishRenderer: IJellyfishRenderer
+    @inject(TYPES.IJellyfishRenderer)
+    private jellyfishRenderer: IJellyfishRenderer
   ) {
     this.state = this.createEmptyState();
 
@@ -85,29 +95,47 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
     };
   }
 
-  async initialize(dimensions: Dimensions, quality: QualityLevel): Promise<void> {
+  async initialize(
+    dimensions: Dimensions,
+    quality: QualityLevel
+  ): Promise<void> {
     this.quality = quality;
     this.animationTime = 0;
 
     // Initialize bubbles
     const bubbleCount = this.bubblePhysics.getBubbleCount(quality);
-    this.state.bubbles = this.bubblePhysics.initializeBubbles(dimensions, bubbleCount);
+    this.state.bubbles = this.bubblePhysics.initializeBubbles(
+      dimensions,
+      bubbleCount
+    );
 
     // Initialize fish (async for sprite loading)
     const fishCount = this.fishAnimator.getFishCount(quality);
-    this.state.fish = await this.fishAnimator.initializeFish(dimensions, fishCount);
+    this.state.fish = await this.fishAnimator.initializeFish(
+      dimensions,
+      fishCount
+    );
 
     // Initialize jellyfish
     const jellyfishCount = this.jellyfishAnimator.getJellyfishCount(quality);
-    this.state.jellyfish = this.jellyfishAnimator.initializeJellyfish(dimensions, jellyfishCount);
+    this.state.jellyfish = this.jellyfishAnimator.initializeJellyfish(
+      dimensions,
+      jellyfishCount
+    );
 
     // Initialize particles
     const particleCount = this.particleSystem.getParticleCount(quality);
-    this.state.particles = this.particleSystem.initializeParticles(dimensions, particleCount);
+    this.state.particles = this.particleSystem.initializeParticles(
+      dimensions,
+      particleCount
+    );
 
     // Initialize light rays
     const lightRayCount = this.lightRayCalculator.getLightRayCount(quality);
-    this.state.lightRays = this.lightRayCalculator.initializeLightRays(dimensions, lightRayCount);
+    this.state.lightRays = this.lightRayCalculator.initializeLightRays(
+      dimensions,
+      lightRayCount
+    );
 
     // Pre-populate for smooth initial animation
     this.prePopulateElements(dimensions);
@@ -135,7 +163,9 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
   update(dimensions: Dimensions, frameMultiplier: number = 1.0): void {
     this.perfMonitor.startFrame();
 
-    const accessibilityMultiplier = this.accessibility.reducedMotion ? 0.3 : 1.0;
+    const accessibilityMultiplier = this.accessibility.reducedMotion
+      ? 0.3
+      : 1.0;
     const effectiveMultiplier = frameMultiplier * accessibilityMultiplier;
 
     this.animationTime += 0.016 * effectiveMultiplier;
@@ -174,7 +204,10 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
     );
 
     // Process pending fish spawns
-    const newFish = this.fishAnimator.processPendingSpawns(dimensions, this.animationTime);
+    const newFish = this.fishAnimator.processPendingSpawns(
+      dimensions,
+      this.animationTime
+    );
     this.state.fish.push(...newFish);
 
     this.perfMonitor.endUpdate();
@@ -183,7 +216,12 @@ export class DeepOceanBackgroundOrchestrator implements IBackgroundSystem {
   draw(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void {
     // Layer order: gradient -> rays -> far particles -> far fish -> bubbles -> mid fish -> near fish -> jellyfish
     this.gradientRenderer.drawOceanGradient(ctx, dimensions);
-    this.lightRayRenderer.drawLightRays(ctx, dimensions, this.state.lightRays, this.quality);
+    this.lightRayRenderer.drawLightRays(
+      ctx,
+      dimensions,
+      this.state.lightRays,
+      this.quality
+    );
 
     // Draw particles (background layer)
     this.particleRenderer.drawParticles(ctx, this.state.particles);

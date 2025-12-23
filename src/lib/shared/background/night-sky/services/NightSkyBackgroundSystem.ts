@@ -1,6 +1,9 @@
 import { resolve } from "../../../inversify/di";
 import { TYPES } from "../../../inversify/types";
-import type { AccessibilitySettings, QualitySettings } from "../../shared/domain/models/background-models";
+import type {
+  AccessibilitySettings,
+  QualitySettings,
+} from "../../shared/domain/models/background-models";
 import type {
   Dimensions,
   QualityLevel,
@@ -169,7 +172,11 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
 
   /* DRAW */
   public draw(ctx: CanvasRenderingContext2D, dim: Dimensions) {
-    this.renderingService.drawGradient(ctx, dim, this.cfg.background.gradientStops);
+    this.renderingService.drawGradient(
+      ctx,
+      dim,
+      this.cfg.background.gradientStops
+    );
 
     // Only draw other elements if properly initialized
     if (this.isInitialized) {

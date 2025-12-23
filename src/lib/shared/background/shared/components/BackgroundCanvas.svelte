@@ -218,7 +218,8 @@ backgrounds are visible simultaneously during the transition.
 
     // OPTIMIZATION: Skip animation loop for static backgrounds (solid color/gradient)
     // These backgrounds don't animate, so we just render once and exit
-    const isStaticBackground = backgroundType === "solid-color" || backgroundType === "linear-gradient";
+    const isStaticBackground =
+      backgroundType === "solid-color" || backgroundType === "linear-gradient";
     if (isStaticBackground) {
       // Render once and skip the animation loop
       const dimensions = { width: canvas.width, height: canvas.height };

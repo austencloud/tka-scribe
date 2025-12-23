@@ -7,5 +7,8 @@ export interface IGradientRenderer {
   /**
    * Draw the ocean gradient background
    */
-  drawOceanGradient(ctx: CanvasRenderingContext2D, dimensions: Dimensions): void;
+  drawOceanGradient(
+    ctx: CanvasRenderingContext2D,
+    dimensions: Dimensions
+  ): void;
 }

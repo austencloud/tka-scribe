@@ -82,21 +82,24 @@ export function updateBodyBackground(
   try {
     // Determine the gradient to apply
     let newGradient: string;
-    
+
     if (backgroundType === BackgroundType.SOLID_COLOR && customOptions?.color) {
       newGradient = customOptions.color;
-    } else if (backgroundType === BackgroundType.LINEAR_GRADIENT && customOptions?.colors) {
+    } else if (
+      backgroundType === BackgroundType.LINEAR_GRADIENT &&
+      customOptions?.colors
+    ) {
       newGradient = buildGradientString(customOptions);
     } else {
       // Predefined background type
       newGradient = BACKGROUND_GRADIENTS[backgroundType];
     }
-    
+
     if (!newGradient) {
       console.warn("Empty gradient for background type:", backgroundType);
       return;
     }
-    
+
     const newAnimation = BACKGROUND_ANIMATIONS[backgroundType];
     applyBackground(newGradient, newAnimation);
   } catch (error) {
@@ -118,7 +121,9 @@ export function preloadBackgroundFromStorage(): void {
     const stored = localStorage.getItem(settingsKey);
 
     if (stored) {
-      const settings = JSON.parse(stored) as { backgroundType?: BackgroundType };
+      const settings = JSON.parse(stored) as {
+        backgroundType?: BackgroundType;
+      };
       const backgroundType = (settings.backgroundType ??
         BackgroundType.NIGHT_SKY) as BackgroundType;
       updateBodyBackground(backgroundType);

@@ -93,12 +93,7 @@ export class AutumnDriftBackgroundSystem implements IBackgroundSystem {
     ctx: CanvasRenderingContext2D,
     dimensions: Dimensions
   ): void {
-    const gradient = ctx.createLinearGradient(
-      0,
-      0,
-      0,
-      dimensions.height
-    );
+    const gradient = ctx.createLinearGradient(0, 0, 0, dimensions.height);
 
     for (const stop of AUTUMN_BACKGROUND.gradient) {
       gradient.addColorStop(stop.stop, stop.color);
@@ -120,7 +115,8 @@ export class AutumnDriftBackgroundSystem implements IBackgroundSystem {
   }
 
   private getParticleCount(): number {
-    const baseCount = AUTUMN_PARTICLE_COUNTS[this.quality] || AUTUMN_PARTICLE_COUNTS.medium;
+    const baseCount =
+      AUTUMN_PARTICLE_COUNTS[this.quality] || AUTUMN_PARTICLE_COUNTS.medium;
 
     // Thumbnail mode uses fewer particles but they're more visible
     if (this.thumbnailMode) {

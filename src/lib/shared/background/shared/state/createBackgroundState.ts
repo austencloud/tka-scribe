@@ -5,7 +5,6 @@ import { BackgroundType } from "../domain/enums/background-enums";
 import { BackgroundFactory } from "../services/implementations/BackgroundFactory";
 
 export function createBackgroundState() {
-
   // Runes-based reactive state
   let backgroundType = $state<BackgroundType>(BackgroundType.NIGHT_SKY);
   let quality = $state<QualityLevel>("medium");

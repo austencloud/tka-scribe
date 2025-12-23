@@ -1,7 +1,10 @@
 // src/lib/services/implementations/background/BackgroundFactory.ts
 // Background Factory - Creates background animation systems with LAZY LOADING
 
-import type { AccessibilitySettings, BackgroundSystem } from "../../domain/models/background-models";
+import type {
+  AccessibilitySettings,
+  BackgroundSystem,
+} from "../../domain/models/background-models";
 import type { QualityLevel } from "../../domain/types/background-types";
 import { BackgroundType } from "../../domain/enums/background-enums";
 import { getContainerInstance } from "../../../../inversify/di";
@@ -30,12 +33,18 @@ function detectAppropriateQuality(): QualityLevel {
 const backgroundLoaders = {
   aurora: () => import("../../../aurora/services/AuroraBackgroundSystem"),
   snowfall: () => import("../../../snowfall/services/SnowfallBackgroundSystem"),
-  nightSky: () => import("../../../night-sky/services/NightSkyBackgroundSystem"),
-  deepOcean: () => import("../../../deep-ocean/services/DeepOceanBackgroundOrchestrator"),
-  emberGlow: () => import("../../../ember-glow/services/EmberGlowBackgroundSystem"),
-  sakuraDrift: () => import("../../../sakura-drift/services/SakuraDriftBackgroundSystem"),
-  fireflyForest: () => import("../../../firefly-forest/services/FireflyForestBackgroundSystem"),
-  autumnDrift: () => import("../../../autumn-drift/services/AutumnDriftBackgroundSystem"),
+  nightSky: () =>
+    import("../../../night-sky/services/NightSkyBackgroundSystem"),
+  deepOcean: () =>
+    import("../../../deep-ocean/services/DeepOceanBackgroundOrchestrator"),
+  emberGlow: () =>
+    import("../../../ember-glow/services/EmberGlowBackgroundSystem"),
+  sakuraDrift: () =>
+    import("../../../sakura-drift/services/SakuraDriftBackgroundSystem"),
+  fireflyForest: () =>
+    import("../../../firefly-forest/services/FireflyForestBackgroundSystem"),
+  autumnDrift: () =>
+    import("../../../autumn-drift/services/AutumnDriftBackgroundSystem"),
   simple: () => import("../../../simple/services/SimpleBackgroundSystem"),
 };
 
@@ -61,7 +70,9 @@ export class BackgroundFactory {
       return; // Already loaded
     }
 
-    const { nightSkyBackgroundModule } = await import("../../../night-sky/inversify/NightSkyModule");
+    const { nightSkyBackgroundModule } = await import(
+      "../../../night-sky/inversify/NightSkyModule"
+    );
     await container.load(nightSkyBackgroundModule);
     nightSkyModuleLoaded = true;
   }
@@ -74,7 +85,9 @@ export class BackgroundFactory {
     // Use container.isBound() as the source of truth (survives code-splitting)
     const container = await getContainerInstance();
     if (!container.isBound(TYPES.IBubblePhysics)) {
-      const { deepOceanBackgroundModule } = await import("../../../deep-ocean/inversify/DeepOceanModule");
+      const { deepOceanBackgroundModule } = await import(
+        "../../../deep-ocean/inversify/DeepOceanModule"
+      );
       await container.load(deepOceanBackgroundModule);
       deepOceanModuleLoaded = true;
     }
@@ -133,7 +146,8 @@ export class BackgroundFactory {
         // Load Deep Ocean DI module on-demand (services only loaded when needed)
         const container = await this.loadDeepOceanModule();
 
-        const { DeepOceanBackgroundOrchestrator } = await backgroundLoaders.deepOcean();
+        const { DeepOceanBackgroundOrchestrator } =
+          await backgroundLoaders.deepOcean();
         // Use the refactored orchestrator with all split services from container
         backgroundSystem = new DeepOceanBackgroundOrchestrator(
           // Physics services
@@ -154,22 +168,26 @@ export class BackgroundFactory {
         break;
       }
       case BackgroundType.EMBER_GLOW: {
-        const { EmberGlowBackgroundSystem } = await backgroundLoaders.emberGlow();
+        const { EmberGlowBackgroundSystem } =
+          await backgroundLoaders.emberGlow();
         backgroundSystem = new EmberGlowBackgroundSystem();
         break;
       }
       case BackgroundType.SAKURA_DRIFT: {
-        const { SakuraDriftBackgroundSystem } = await backgroundLoaders.sakuraDrift();
+        const { SakuraDriftBackgroundSystem } =
+          await backgroundLoaders.sakuraDrift();
         backgroundSystem = new SakuraDriftBackgroundSystem();
         break;
       }
       case BackgroundType.FIREFLY_FOREST: {
-        const { FireflyForestBackgroundSystem } = await backgroundLoaders.fireflyForest();
+        const { FireflyForestBackgroundSystem } =
+          await backgroundLoaders.fireflyForest();
         backgroundSystem = new FireflyForestBackgroundSystem();
         break;
       }
       case BackgroundType.AUTUMN_DRIFT: {
-        const { AutumnDriftBackgroundSystem } = await backgroundLoaders.autumnDrift();
+        const { AutumnDriftBackgroundSystem } =
+          await backgroundLoaders.autumnDrift();
         backgroundSystem = new AutumnDriftBackgroundSystem();
         break;
       }
@@ -206,7 +224,9 @@ export class BackgroundFactory {
 
     // Apply thumbnail mode if specified and supported
     if (options.thumbnailMode && "setThumbnailMode" in backgroundSystem) {
-      (backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }).setThumbnailMode(true);
+      (
+        backgroundSystem as { setThumbnailMode: (enabled: boolean) => void }
+      ).setThumbnailMode(true);
     }
 
     // Set initial quality

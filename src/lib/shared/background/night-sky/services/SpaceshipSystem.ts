@@ -1,7 +1,13 @@
 // Removed resolve import - calculation service now injected via constructor
 import type { AccessibilitySettings } from "../../shared/domain/models/background-models";
-import type { Dimensions, QualityLevel } from "../../shared/domain/types/background-types";
-import type { EasterEggState, Spaceship } from "../domain/models/night-sky-models";
+import type {
+  Dimensions,
+  QualityLevel,
+} from "../../shared/domain/types/background-types";
+import type {
+  EasterEggState,
+  Spaceship,
+} from "../domain/models/night-sky-models";
 import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
 export interface SpaceshipConfig {

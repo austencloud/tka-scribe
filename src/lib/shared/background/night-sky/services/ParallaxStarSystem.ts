@@ -1,6 +1,14 @@
-import type { AccessibilitySettings, QualitySettings } from "$lib/shared/background/shared/domain/models/background-models";
+import type {
+  AccessibilitySettings,
+  QualitySettings,
+} from "$lib/shared/background/shared/domain/models/background-models";
 import type { Dimensions } from "$lib/shared/background/shared/domain/types/background-types";
-import type { ParallaxConfig, ParallaxLayer, Star, StarConfig } from "../domain/models/night-sky-models";
+import type {
+  ParallaxConfig,
+  ParallaxLayer,
+  Star,
+  StarConfig,
+} from "../domain/models/night-sky-models";
 // Removed resolve import - calculation service now injected via constructor
 import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
 
@@ -267,9 +275,7 @@ export class ParallaxStarSystem {
 
         // Calculate optimal star count for new dimensions
         const density = pCfg.density * this.qualitySettings.densityMultiplier;
-        const optimalCount = Math.floor(
-          newDim.width * newDim.height * density
-        );
+        const optimalCount = Math.floor(newDim.width * newDim.height * density);
         const currentCount = layer.stars.length;
 
         // Adjust star count based on new viewport area
