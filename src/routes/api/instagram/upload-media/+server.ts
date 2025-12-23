@@ -132,7 +132,7 @@ export const POST: RequestHandler = async ({ request }) => {
  */
 export const DELETE: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json() as { path?: unknown };
+    const body = (await request.json()) as { path?: unknown };
     const { path } = body;
 
     if (!path || typeof path !== "string") {

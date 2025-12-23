@@ -136,8 +136,7 @@ describe("Notification Models", () => {
     });
 
     it("should not have preferences for removed notification types", () => {
-      const defaultPrefs =
-        DEFAULT_NOTIFICATION_PREFERENCES as any;
+      const defaultPrefs = DEFAULT_NOTIFICATION_PREFERENCES as any;
       expect(defaultPrefs.sequenceSaved).toBeUndefined();
       expect(defaultPrefs.sequenceVideoSubmitted).toBeUndefined();
       expect(defaultPrefs.sequenceCommented).toBeUndefined();

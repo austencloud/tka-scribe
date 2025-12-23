@@ -22,7 +22,8 @@ export const GET: RequestHandler = async () => {
     usage: {
       body: {
         sequence: "SequenceData object (required)",
-        propType: "PropType enum value (optional) - e.g., 'staff', 'fan', 'hoop'",
+        propType:
+          "PropType enum value (optional) - e.g., 'staff', 'fan', 'hoop'",
         beatSize: "number (optional, default: 120)",
         format: "PNG | JPEG | WebP (optional, default: WebP)",
         quality: "number 0-1 (optional, default: 0.9)",
@@ -54,7 +55,13 @@ export const POST: RequestHandler = async ({ request }) => {
       quality?: number;
     };
 
-    const { sequence, propType, beatSize = 120, format = "WebP", quality = 0.9 } = body;
+    const {
+      sequence,
+      propType,
+      beatSize = 120,
+      format = "WebP",
+      quality = 0.9,
+    } = body;
 
     if (!sequence || !sequence.beats || sequence.beats.length === 0) {
       return json({ error: "Invalid sequence data" }, { status: 400 });
@@ -100,8 +107,8 @@ export const POST: RequestHandler = async ({ request }) => {
       format === "PNG"
         ? "image/png"
         : format === "JPEG"
-        ? "image/jpeg"
-        : "image/webp";
+          ? "image/jpeg"
+          : "image/webp";
 
     return new Response(buffer, {
       status: 200,

@@ -1,8 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { FishAnimator } from "../../../src/lib/shared/background/deep-ocean/services/implementations/FishAnimator";
-import type { IFishSpriteManager, PreRenderedSprite } from "../../../src/lib/shared/background/deep-ocean/services/contracts/IFishSpriteManager";
+import type {
+  IFishSpriteManager,
+  PreRenderedSprite,
+} from "../../../src/lib/shared/background/deep-ocean/services/contracts/IFishSpriteManager";
 import type { FishMarineLife } from "../../../src/lib/shared/background/deep-ocean/domain/models/DeepOceanModels";
-import { EDGE_AWARENESS, BEHAVIOR_CONFIG } from "../../../src/lib/shared/background/deep-ocean/domain/constants/fish-constants";
+import {
+  EDGE_AWARENESS,
+  BEHAVIOR_CONFIG,
+} from "../../../src/lib/shared/background/deep-ocean/domain/constants/fish-constants";
 
 // Mock sprite manager - returns deterministic test data
 function createMockSpriteManager(): IFishSpriteManager {
@@ -40,7 +46,12 @@ function runFrames(
   let currentFish = fish;
   for (let i = 0; i < frameCount; i++) {
     const animationTime = i * 0.016; // ~60fps
-    currentFish = animator.updateFish(currentFish, dimensions, frameMultiplier, animationTime);
+    currentFish = animator.updateFish(
+      currentFish,
+      dimensions,
+      frameMultiplier,
+      animationTime
+    );
     // Process any pending spawns
     const newFish = animator.processPendingSpawns(dimensions, animationTime);
     currentFish = [...currentFish, ...newFish];
@@ -122,7 +133,10 @@ describe("FishAnimator", () => {
         edgeFish.behaviorTimer = 0.001;
 
         const edgeResult = runFrames(animator, [edgeFish], dimensions, 5);
-        if (edgeResult[0]?.behavior === "turning" || edgeResult[0]?.direction === -1) {
+        if (
+          edgeResult[0]?.behavior === "turning" ||
+          edgeResult[0]?.direction === -1
+        ) {
           turnsNearEdge++;
         }
 
@@ -193,7 +207,12 @@ describe("FishAnimator", () => {
       let currentFish = [fish];
 
       for (let i = 0; i < 120; i++) {
-        currentFish = animator.updateFish(currentFish, dimensions, 1, i * 0.016);
+        currentFish = animator.updateFish(
+          currentFish,
+          dimensions,
+          1,
+          i * 0.016
+        );
         if (currentFish[0]) {
           yPositions.push(currentFish[0].y);
         }

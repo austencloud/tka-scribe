@@ -11,9 +11,13 @@ async function deleteCollection(
   ref: admin.firestore.CollectionReference,
   batchSize = 400
 ) {
-  while (true) {
+  let hasMore = true;
+  while (hasMore) {
     const snap = await ref.limit(batchSize).get();
-    if (snap.empty) return;
+    if (snap.empty) {
+      hasMore = false;
+      continue;
+    }
     const batch = ref.firestore.batch();
     snap.docs.forEach((d) => batch.delete(d.ref));
     await batch.commit();
@@ -23,7 +27,10 @@ async function deleteCollection(
 export const POST: RequestHandler = async (event) => {
   try {
     const user = await requireFirebaseUser(event);
-    requireStepUpOrRecentAuth(event, { uid: user.uid, authTime: user.authTime });
+    requireStepUpOrRecentAuth(event, {
+      uid: user.uid,
+      authTime: user.authTime,
+    });
 
     const db = getAdminDb();
     const auth = getAdminAuth();
@@ -50,7 +57,8 @@ export const POST: RequestHandler = async (event) => {
       typeof err === "object" && err && "code" in err
         ? String((err as { code: unknown }).code)
         : "internal_error";
-    const message = err instanceof Error ? err.message : "Failed to delete account";
+    const message =
+      err instanceof Error ? err.message : "Failed to delete account";
     return json({ error: message, code }, { status });
   }
 };

@@ -3,7 +3,10 @@ import { json } from "@sveltejs/kit";
 import { generateRegistrationOptions } from "@simplewebauthn/server";
 import { requireFirebaseUser } from "$lib/server/auth/requireFirebaseUser";
 import { getWebAuthnRP } from "$lib/server/webauthn/webauthnConfig";
-import { listPasskeys, storedPasskeyToAllowCredential } from "$lib/server/webauthn/passkeysStore";
+import {
+  listPasskeys,
+  storedPasskeyToAllowCredential,
+} from "$lib/server/webauthn/passkeysStore";
 
 const CHALLENGE_COOKIE = "tka_webauthn_reg_challenge";
 
@@ -26,7 +29,9 @@ export const POST: RequestHandler = async (event) => {
         residentKey: "preferred",
         userVerification: "preferred",
       },
-      excludeCredentials: existing.map((p) => storedPasskeyToAllowCredential(p)),
+      excludeCredentials: existing.map((p) =>
+        storedPasskeyToAllowCredential(p)
+      ),
     });
 
     event.cookies.set(CHALLENGE_COOKIE, options.challenge, {
@@ -48,7 +53,9 @@ export const POST: RequestHandler = async (event) => {
         ? String((err as { code: unknown }).code)
         : "internal_error";
     const message =
-      err instanceof Error ? err.message : "Failed to create registration options";
+      err instanceof Error
+        ? err.message
+        : "Failed to create registration options";
     return json({ error: message, code }, { status });
   }
 };

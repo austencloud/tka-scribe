@@ -3,7 +3,10 @@ import { json } from "@sveltejs/kit";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import { requireFirebaseUser } from "$lib/server/auth/requireFirebaseUser";
 import { getWebAuthnRP } from "$lib/server/webauthn/webauthnConfig";
-import { listPasskeys, storedPasskeyToAllowCredential } from "$lib/server/webauthn/passkeysStore";
+import {
+  listPasskeys,
+  storedPasskeyToAllowCredential,
+} from "$lib/server/webauthn/passkeysStore";
 
 const CHALLENGE_COOKIE = "tka_webauthn_auth_challenge";
 
@@ -46,7 +49,9 @@ export const POST: RequestHandler = async (event) => {
         ? String((err as { code: unknown }).code)
         : "internal_error";
     const message =
-      err instanceof Error ? err.message : "Failed to create authentication options";
+      err instanceof Error
+        ? err.message
+        : "Failed to create authentication options";
     return json({ error: message, code }, { status });
   }
 };

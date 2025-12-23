@@ -9,7 +9,10 @@ const STEP_UP_COOKIE = "tka_step_up";
 export const POST: RequestHandler = async (event) => {
   try {
     const user = await requireFirebaseUser(event);
-    requireStepUpOrRecentAuth(event, { uid: user.uid, authTime: user.authTime });
+    requireStepUpOrRecentAuth(event, {
+      uid: user.uid,
+      authTime: user.authTime,
+    });
 
     const body = (await event.request.json()) as { newPassword?: unknown };
     const newPassword =
@@ -17,7 +20,10 @@ export const POST: RequestHandler = async (event) => {
 
     if (newPassword.length < 8) {
       return json(
-        { error: "Password must be at least 8 characters", code: "weak_password" },
+        {
+          error: "Password must be at least 8 characters",
+          code: "weak_password",
+        },
         { status: 400 }
       );
     }

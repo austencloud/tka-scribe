@@ -2,8 +2,9 @@ import type { Meta, StoryObj } from "@storybook/svelte";
 import type { ComponentProps } from "svelte";
 import MobileFullscreenPrompt from "$lib/shared/mobile/components/MobileFullscreenPrompt.svelte";
 
-type MobileFullscreenPromptProps =
-  ComponentProps<typeof MobileFullscreenPrompt>;
+type MobileFullscreenPromptProps = ComponentProps<
+  typeof MobileFullscreenPrompt
+>;
 
 const meta = {
   title: "PWA/MobileFullscreenPrompt",

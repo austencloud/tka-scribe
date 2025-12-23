@@ -121,38 +121,88 @@ describe("timeline-types - pixelsToTime", () => {
 
 describe("timeline-types - clipsOverlap", () => {
   it("should detect overlapping clips on same track", () => {
-    const clipA = createMockClip({ id: "a", trackId: "t1", startTime: 0, duration: 5 }); // 0-5
-    const clipB = createMockClip({ id: "b", trackId: "t1", startTime: 3, duration: 4 }); // 3-7
+    const clipA = createMockClip({
+      id: "a",
+      trackId: "t1",
+      startTime: 0,
+      duration: 5,
+    }); // 0-5
+    const clipB = createMockClip({
+      id: "b",
+      trackId: "t1",
+      startTime: 3,
+      duration: 4,
+    }); // 3-7
 
     expect(clipsOverlap(clipA, clipB)).toBe(true);
     expect(clipsOverlap(clipB, clipA)).toBe(true); // Symmetric
   });
 
   it("should NOT detect overlap for clips on different tracks", () => {
-    const clipA = createMockClip({ id: "a", trackId: "track-1", startTime: 0, duration: 5 });
-    const clipB = createMockClip({ id: "b", trackId: "track-2", startTime: 0, duration: 5 }); // Same time, different track
+    const clipA = createMockClip({
+      id: "a",
+      trackId: "track-1",
+      startTime: 0,
+      duration: 5,
+    });
+    const clipB = createMockClip({
+      id: "b",
+      trackId: "track-2",
+      startTime: 0,
+      duration: 5,
+    }); // Same time, different track
 
     expect(clipsOverlap(clipA, clipB)).toBe(false);
   });
 
   it("should NOT detect overlap for adjacent clips (touching but not overlapping)", () => {
-    const clipA = createMockClip({ id: "a", trackId: "t1", startTime: 0, duration: 5 }); // 0-5
-    const clipB = createMockClip({ id: "b", trackId: "t1", startTime: 5, duration: 3 }); // 5-8
+    const clipA = createMockClip({
+      id: "a",
+      trackId: "t1",
+      startTime: 0,
+      duration: 5,
+    }); // 0-5
+    const clipB = createMockClip({
+      id: "b",
+      trackId: "t1",
+      startTime: 5,
+      duration: 3,
+    }); // 5-8
 
     // Clip B starts exactly where Clip A ends - should NOT overlap
     expect(clipsOverlap(clipA, clipB)).toBe(false);
   });
 
   it("should NOT detect overlap for separated clips", () => {
-    const clipA = createMockClip({ id: "a", trackId: "t1", startTime: 0, duration: 3 }); // 0-3
-    const clipB = createMockClip({ id: "b", trackId: "t1", startTime: 5, duration: 2 }); // 5-7
+    const clipA = createMockClip({
+      id: "a",
+      trackId: "t1",
+      startTime: 0,
+      duration: 3,
+    }); // 0-3
+    const clipB = createMockClip({
+      id: "b",
+      trackId: "t1",
+      startTime: 5,
+      duration: 2,
+    }); // 5-7
 
     expect(clipsOverlap(clipA, clipB)).toBe(false);
   });
 
   it("should detect when one clip is completely inside another", () => {
-    const outer = createMockClip({ id: "outer", trackId: "t1", startTime: 0, duration: 10 }); // 0-10
-    const inner = createMockClip({ id: "inner", trackId: "t1", startTime: 3, duration: 2 }); // 3-5
+    const outer = createMockClip({
+      id: "outer",
+      trackId: "t1",
+      startTime: 0,
+      duration: 10,
+    }); // 0-10
+    const inner = createMockClip({
+      id: "inner",
+      trackId: "t1",
+      startTime: 3,
+      duration: 2,
+    }); // 3-5
 
     expect(clipsOverlap(outer, inner)).toBe(true);
     expect(clipsOverlap(inner, outer)).toBe(true);
@@ -160,8 +210,18 @@ describe("timeline-types - clipsOverlap", () => {
 
   it("should handle zero-duration clips", () => {
     // A zero-duration clip is a point in time - shouldn't overlap with normal clips
-    const normal = createMockClip({ id: "normal", trackId: "t1", startTime: 5, duration: 3 });
-    const zero = createMockClip({ id: "zero", trackId: "t1", startTime: 6, duration: 0 });
+    const normal = createMockClip({
+      id: "normal",
+      trackId: "t1",
+      startTime: 5,
+      duration: 3,
+    });
+    const zero = createMockClip({
+      id: "zero",
+      trackId: "t1",
+      startTime: 6,
+      duration: 0,
+    });
 
     // Zero-duration clip at t=6, normal clip from 5-8
     // The overlap check: a.start < b.end && a.end > b.start
@@ -284,7 +344,12 @@ describe("timeline-types - factory functions", () => {
     });
 
     it("should allow overriding defaults", () => {
-      const sequence = { id: "seq-1", name: "Test", beats: [], metadata: {} } as any;
+      const sequence = {
+        id: "seq-1",
+        name: "Test",
+        beats: [],
+        metadata: {},
+      } as any;
 
       const clip = createClip(sequence, "track-1", 0, {
         duration: 10,
@@ -298,7 +363,12 @@ describe("timeline-types - factory functions", () => {
     });
 
     it("should generate unique IDs", () => {
-      const sequence = { id: "seq-1", name: "Test", beats: [], metadata: {} } as any;
+      const sequence = {
+        id: "seq-1",
+        name: "Test",
+        beats: [],
+        metadata: {},
+      } as any;
 
       const clip1 = createClip(sequence, "track-1", 0);
       const clip2 = createClip(sequence, "track-1", 0);

@@ -17,7 +17,10 @@ import { SpecialPlacementLookupService } from "$lib/shared/pictograph/arrow/posi
 import { AttributeKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/AttributeKeyGenerator";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import { GridLocation, MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  GridLocation,
+  MotionType,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 describe("Special Placement Attribute Key Integration", () => {

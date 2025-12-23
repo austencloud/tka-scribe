@@ -15,7 +15,11 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridPosition } from "$lib/shared/pictograph/grid/domain/models/GridPosition";
-import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SliceSize } from "../../../../src/lib/features/create/generate/circular/domain";
 import { StrictInvertedCAPExecutor } from "../../../../src/lib/features/create/generate/circular/services/implementations";
@@ -567,12 +571,12 @@ describe("StrictInvertedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       const invertedBeat = result[2];
-      expect(
-        invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection
-      ).toBe(RotationDirection.COUNTER_CLOCKWISE);
-      expect(
-        invertedBeat!.motions[MotionColor.RED]!.rotationDirection
-      ).toBe(RotationDirection.COUNTER_CLOCKWISE);
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+        RotationDirection.COUNTER_CLOCKWISE
+      );
+      expect(invertedBeat!.motions[MotionColor.RED]!.rotationDirection).toBe(
+        RotationDirection.COUNTER_CLOCKWISE
+      );
     });
 
     it("should flip COUNTER_CLOCKWISE to CLOCKWISE", () => {
@@ -611,9 +615,9 @@ describe("StrictInvertedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       const invertedBeat = result[2];
-      expect(
-        invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection
-      ).toBe(RotationDirection.CLOCKWISE);
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+        RotationDirection.CLOCKWISE
+      );
     });
 
     it("should keep NO_ROTATION unchanged", () => {
@@ -652,9 +656,9 @@ describe("StrictInvertedCAPExecutor", () => {
       const result = executor.executeCAP(sequence, SliceSize.HALVED);
 
       const invertedBeat = result[2];
-      expect(
-        invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection
-      ).toBe(RotationDirection.NO_ROTATION);
+      expect(invertedBeat!.motions[MotionColor.BLUE]!.rotationDirection).toBe(
+        RotationDirection.NO_ROTATION
+      );
     });
   });
 

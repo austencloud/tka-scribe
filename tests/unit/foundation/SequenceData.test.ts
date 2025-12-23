@@ -19,9 +19,13 @@ describe("createSequenceData", () => {
     });
 
     expect(result.performanceVideoUrl).toBe("https://example.com/video.mp4");
-    expect(result.performanceVideoPath).toBe("users/123/recordings/seq/123.mp4");
+    expect(result.performanceVideoPath).toBe(
+      "users/123/recordings/seq/123.mp4"
+    );
     expect(result.animatedSequenceUrl).toBe("https://example.com/anim.webp");
-    expect(result.animatedSequencePath).toBe("users/123/animations/seq/sequence.webp");
+    expect(result.animatedSequencePath).toBe(
+      "users/123/animations/seq/sequence.webp"
+    );
     expect(result.animationFormat).toBe("webp");
   });
 

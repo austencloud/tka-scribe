@@ -12,10 +12,34 @@
   }
 
   const actions: TransformAction[] = [
-    { id: "mirror", icon: "fa-left-right", name: "Mirror", shortDesc: "Flip left & right", color: "#a855f7" },
-    { id: "rotate", icon: "fa-rotate-right", name: "Rotate", shortDesc: "Pivot 45°", color: "#f59e0b" },
-    { id: "swap", icon: "fa-arrows-rotate", name: "Swap Hands", shortDesc: "Switch movements", color: "#10b981" },
-    { id: "reverse", icon: "fa-backward", name: "Reverse", shortDesc: "Retrace to start", color: "#f43f5e" },
+    {
+      id: "mirror",
+      icon: "fa-left-right",
+      name: "Mirror",
+      shortDesc: "Flip left & right",
+      color: "#a855f7",
+    },
+    {
+      id: "rotate",
+      icon: "fa-rotate-right",
+      name: "Rotate",
+      shortDesc: "Pivot 45°",
+      color: "#f59e0b",
+    },
+    {
+      id: "swap",
+      icon: "fa-arrows-rotate",
+      name: "Swap Hands",
+      shortDesc: "Switch movements",
+      color: "#10b981",
+    },
+    {
+      id: "reverse",
+      icon: "fa-backward",
+      name: "Reverse",
+      shortDesc: "Retrace to start",
+      color: "#f43f5e",
+    },
   ];
 
   let selectedStyle = $state<string | null>(null);
@@ -28,7 +52,10 @@
   <div class="styles-grid">
     <!-- Style 1: Soft Gradient Fill -->
     <div class="style-panel" class:selected={selectedStyle === "gradient-soft"}>
-      <button class="select-btn" onclick={() => selectedStyle = "gradient-soft"}>
+      <button
+        class="select-btn"
+        onclick={() => (selectedStyle = "gradient-soft")}
+      >
         {selectedStyle === "gradient-soft" ? "✓ Selected" : "Select"}
       </button>
       <h2>1. Soft Gradient Fill</h2>
@@ -49,7 +76,10 @@
 
     <!-- Style 2: Colored Left Accent -->
     <div class="style-panel" class:selected={selectedStyle === "left-accent"}>
-      <button class="select-btn" onclick={() => selectedStyle = "left-accent"}>
+      <button
+        class="select-btn"
+        onclick={() => (selectedStyle = "left-accent")}
+      >
         {selectedStyle === "left-accent" ? "✓ Selected" : "Select"}
       </button>
       <h2>2. Colored Left Accent</h2>
@@ -70,7 +100,7 @@
 
     <!-- Style 3: Glassmorphism -->
     <div class="style-panel" class:selected={selectedStyle === "glass"}>
-      <button class="select-btn" onclick={() => selectedStyle = "glass"}>
+      <button class="select-btn" onclick={() => (selectedStyle = "glass")}>
         {selectedStyle === "glass" ? "✓ Selected" : "Select"}
       </button>
       <h2>3. Glassmorphism</h2>
@@ -91,7 +121,7 @@
 
     <!-- Style 4: Full Color Cards -->
     <div class="style-panel" class:selected={selectedStyle === "full-color"}>
-      <button class="select-btn" onclick={() => selectedStyle = "full-color"}>
+      <button class="select-btn" onclick={() => (selectedStyle = "full-color")}>
         {selectedStyle === "full-color" ? "✓ Selected" : "Select"}
       </button>
       <h2>4. Full Color Cards</h2>
@@ -112,7 +142,7 @@
 
     <!-- Style 5: Outlined Pills -->
     <div class="style-panel" class:selected={selectedStyle === "outlined"}>
-      <button class="select-btn" onclick={() => selectedStyle = "outlined"}>
+      <button class="select-btn" onclick={() => (selectedStyle = "outlined")}>
         {selectedStyle === "outlined" ? "✓ Selected" : "Select"}
       </button>
       <h2>5. Outlined Pills</h2>
@@ -133,7 +163,7 @@
 
     <!-- Style 6: Compact Chips -->
     <div class="style-panel" class:selected={selectedStyle === "chips"}>
-      <button class="select-btn" onclick={() => selectedStyle = "chips"}>
+      <button class="select-btn" onclick={() => (selectedStyle = "chips")}>
         {selectedStyle === "chips" ? "✓ Selected" : "Select"}
       </button>
       <h2>6. Compact Chips</h2>
@@ -149,7 +179,7 @@
 
     <!-- Style 7: Neumorphic -->
     <div class="style-panel" class:selected={selectedStyle === "neumorphic"}>
-      <button class="select-btn" onclick={() => selectedStyle = "neumorphic"}>
+      <button class="select-btn" onclick={() => (selectedStyle = "neumorphic")}>
         {selectedStyle === "neumorphic" ? "✓ Selected" : "Select"}
       </button>
       <h2>7. Neumorphic Soft</h2>
@@ -169,8 +199,14 @@
     </div>
 
     <!-- Style 8: Gradient Border -->
-    <div class="style-panel" class:selected={selectedStyle === "gradient-border"}>
-      <button class="select-btn" onclick={() => selectedStyle = "gradient-border"}>
+    <div
+      class="style-panel"
+      class:selected={selectedStyle === "gradient-border"}
+    >
+      <button
+        class="select-btn"
+        onclick={() => (selectedStyle = "gradient-border")}
+      >
         {selectedStyle === "gradient-border" ? "✓ Selected" : "Select"}
       </button>
       <h2>8. Gradient Border</h2>
@@ -215,7 +251,7 @@
 
   .subtitle {
     text-align: center;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.6);
     margin: 0 0 40px;
   }
 
@@ -229,15 +265,15 @@
 
   .style-panel {
     position: relative;
-    background: rgba(255,255,255,0.03);
-    border: 2px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     padding: 20px;
     transition: all 0.2s ease;
   }
 
   .style-panel:hover {
-    border-color: rgba(255,255,255,0.2);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .style-panel.selected {
@@ -250,8 +286,8 @@
     top: 12px;
     right: 12px;
     padding: 6px 12px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
     color: white;
     font-size: 0.75rem;
@@ -268,7 +304,7 @@
     margin: 0 0 16px;
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .demo-container {
@@ -283,7 +319,8 @@
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--action-color) 15%, transparent) 0%,
       color-mix(in srgb, var(--action-color) 8%, transparent) 100%
     );
@@ -294,7 +331,8 @@
   }
 
   .style-gradient-soft .action-btn:hover {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--action-color) 25%, transparent) 0%,
       color-mix(in srgb, var(--action-color) 15%, transparent) 100%
     );
@@ -327,7 +365,7 @@
 
   .style-gradient-soft .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   /* ========== Style 2: Colored Left Accent ========== */
@@ -336,7 +374,7 @@
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
-    background: rgba(255,255,255,0.04);
+    background: rgba(255, 255, 255, 0.04);
     border: none;
     border-left: 4px solid var(--action-color);
     border-radius: 0 12px 12px 0;
@@ -345,7 +383,7 @@
   }
 
   .style-left-accent .action-btn:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .style-left-accent .icon-box {
@@ -374,7 +412,7 @@
 
   .style-left-accent .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   /* ========== Style 3: Glassmorphism ========== */
@@ -383,16 +421,16 @@
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .style-glass .action-btn:hover {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     border-color: var(--action-color);
   }
 
@@ -422,7 +460,7 @@
 
   .style-glass .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   /* ========== Style 4: Full Color Cards ========== */
@@ -431,7 +469,11 @@
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
-    background: linear-gradient(135deg, var(--action-color) 0%, color-mix(in srgb, var(--action-color) 70%, black) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--action-color) 0%,
+      color-mix(in srgb, var(--action-color) 70%, black) 100%
+    );
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -440,7 +482,8 @@
 
   .style-full-color .action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 20px color-mix(in srgb, var(--action-color) 40%, transparent);
+    box-shadow: 0 4px 20px
+      color-mix(in srgb, var(--action-color) 40%, transparent);
   }
 
   .style-full-color .icon-box {
@@ -449,7 +492,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     color: white;
     font-size: 14px;
@@ -469,7 +512,7 @@
 
   .style-full-color .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255, 255, 255, 0.8);
   }
 
   /* ========== Style 5: Outlined Pills ========== */
@@ -513,7 +556,7 @@
 
   .style-outlined .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
   }
 
   /* ========== Style 6: Compact Chips ========== */
@@ -563,15 +606,15 @@
     border-radius: 12px;
     cursor: pointer;
     box-shadow:
-      6px 6px 12px rgba(0,0,0,0.3),
-      -6px -6px 12px rgba(255,255,255,0.05);
+      6px 6px 12px rgba(0, 0, 0, 0.3),
+      -6px -6px 12px rgba(255, 255, 255, 0.05);
     transition: all 0.15s ease;
   }
 
   .style-neumorphic .action-btn:hover {
     box-shadow:
-      4px 4px 8px rgba(0,0,0,0.4),
-      -4px -4px 8px rgba(255,255,255,0.06);
+      4px 4px 8px rgba(0, 0, 0, 0.4),
+      -4px -4px 8px rgba(255, 255, 255, 0.06);
   }
 
   .style-neumorphic .icon-box {
@@ -600,14 +643,18 @@
 
   .style-neumorphic .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
   }
 
   /* ========== Style 8: Gradient Border ========== */
   .style-gradient-border .action-btn {
     position: relative;
     padding: 2px;
-    background: linear-gradient(135deg, var(--action-color), color-mix(in srgb, var(--action-color) 50%, white));
+    background: linear-gradient(
+      135deg,
+      var(--action-color),
+      color-mix(in srgb, var(--action-color) 50%, white)
+    );
     border: none;
     border-radius: 14px;
     cursor: pointer;
@@ -616,7 +663,8 @@
 
   .style-gradient-border .action-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px color-mix(in srgb, var(--action-color) 30%, transparent);
+    box-shadow: 0 4px 15px
+      color-mix(in srgb, var(--action-color) 30%, transparent);
   }
 
   .style-gradient-border .inner {
@@ -652,7 +700,7 @@
 
   .style-gradient-border .desc {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.6);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   /* Selection Banner */

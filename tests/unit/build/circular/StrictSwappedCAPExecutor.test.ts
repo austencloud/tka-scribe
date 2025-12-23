@@ -16,7 +16,11 @@ import type { BeatData } from "$lib/features/create/shared/domain/models/BeatDat
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { GridPosition } from "$lib/shared/pictograph/grid/domain/models/GridPosition";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import { MotionColor, MotionType, RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+  RotationDirection,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { SliceSize } from "../../../../src/lib/features/create/generate/circular/domain";
 import { StrictSwappedCAPExecutor } from "../../../../src/lib/features/create/generate/circular/services/implementations";

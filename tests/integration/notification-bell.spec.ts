@@ -5,17 +5,20 @@ import NotificationBell from "$lib/features/feedback/components/notifications/No
 import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
 
 // Mock the notification service
-vi.mock("$lib/features/feedback/services/implementations/NotificationService", () => ({
-  notificationService: {
-    subscribeToNotifications: vi.fn((userId: string, callback) => {
-      // Mock subscription - call with empty array initially
-      callback([]);
-      return vi.fn(); // Return unsubscribe function
-    }),
-    markAsRead: vi.fn(() => Promise.resolve()),
-    markAllAsRead: vi.fn(() => Promise.resolve()),
-  },
-}));
+vi.mock(
+  "$lib/features/feedback/services/implementations/NotificationService",
+  () => ({
+    notificationService: {
+      subscribeToNotifications: vi.fn((userId: string, callback) => {
+        // Mock subscription - call with empty array initially
+        callback([]);
+        return vi.fn(); // Return unsubscribe function
+      }),
+      markAsRead: vi.fn(() => Promise.resolve()),
+      markAllAsRead: vi.fn(() => Promise.resolve()),
+    },
+  })
+);
 
 // Mock the navigation coordinator
 vi.mock(

@@ -51,24 +51,30 @@ test.describe("Sequence Transfer to Constructor", () => {
     // Now wait for the actual tab controls in the workspace header
     // These appear after selecting a creation method
     try {
-      await page.waitForSelector('[data-testid="tab-constructor"], [data-testid="tab-generator"]', {
-        timeout: 30000,
-        state: "visible",
-      });
+      await page.waitForSelector(
+        '[data-testid="tab-constructor"], [data-testid="tab-generator"]',
+        {
+          timeout: 30000,
+          state: "visible",
+        }
+      );
     } catch {
       // If tabs aren't visible after selecting method, try to dismiss any error overlay
       // and take a screenshot for debugging
-      const errorOverlay = await page.$('[data-error-overlay]');
+      const errorOverlay = await page.$("[data-error-overlay]");
       if (errorOverlay) {
-        await page.keyboard.press('Escape');
+        await page.keyboard.press("Escape");
         await page.waitForTimeout(500);
       }
 
       // Try again after dismissing
-      await page.waitForSelector('[data-testid="tab-constructor"], [data-testid="tab-generator"]', {
-        timeout: 10000,
-        state: "visible",
-      });
+      await page.waitForSelector(
+        '[data-testid="tab-constructor"], [data-testid="tab-generator"]',
+        {
+          timeout: 10000,
+          state: "visible",
+        }
+      );
     }
   });
 
@@ -107,12 +113,16 @@ test.describe("Sequence Transfer to Constructor", () => {
       // Check it has a grid-mode attribute (either "box" or "diamond")
       const gridMode = await optionPicker.getAttribute("data-grid-mode");
       expect(gridMode).toBeTruthy();
-      expect(["box", "diamond", "BOX", "DIAMOND"]).toContain(gridMode?.toUpperCase());
+      expect(["box", "diamond", "BOX", "DIAMOND"]).toContain(
+        gridMode?.toUpperCase()
+      );
     });
   });
 
   test.describe("Confirmation Dialog", () => {
-    test("dialog should have correct test IDs when opened", async ({ page }) => {
+    test("dialog should have correct test IDs when opened", async ({
+      page,
+    }) => {
       // This test verifies the dialog structure when it appears
       // In real use, this would be triggered by the Edit in Constructor button
 

@@ -113,7 +113,10 @@ describe("playhead-actions - setPlayheadPosition", () => {
 
 describe("playhead-actions - play/pause/stop", () => {
   it("should set isPlaying true and direction forward on play()", () => {
-    const { context, getState } = createTestContext({ isPlaying: false, direction: -1 });
+    const { context, getState } = createTestContext({
+      isPlaying: false,
+      direction: -1,
+    });
     const actions = createPlayheadActions(context);
 
     actions.play();
@@ -123,7 +126,10 @@ describe("playhead-actions - play/pause/stop", () => {
   });
 
   it("should set isPlaying false on pause()", () => {
-    const { context, getState } = createTestContext({ isPlaying: true, position: 30 });
+    const { context, getState } = createTestContext({
+      isPlaying: true,
+      position: 30,
+    });
     const actions = createPlayheadActions(context);
 
     actions.pause();
@@ -133,7 +139,10 @@ describe("playhead-actions - play/pause/stop", () => {
   });
 
   it("should set isPlaying false and reset position on stop()", () => {
-    const { context, getState } = createTestContext({ isPlaying: true, position: 30 });
+    const { context, getState } = createTestContext({
+      isPlaying: true,
+      position: 30,
+    });
     const actions = createPlayheadActions(context);
 
     actions.stop();
@@ -188,7 +197,11 @@ describe("playhead-actions - shuttle control", () => {
   });
 
   it("should cap shuttle speed at 8x", () => {
-    const { context, getState } = createTestContext({ isPlaying: true, direction: 1, shuttleSpeed: 8 });
+    const { context, getState } = createTestContext({
+      isPlaying: true,
+      direction: 1,
+      shuttleSpeed: 8,
+    });
     const actions = createPlayheadActions(context);
 
     actions.shuttleForward();
@@ -197,7 +210,11 @@ describe("playhead-actions - shuttle control", () => {
   });
 
   it("should reset to 1x when changing shuttle direction", () => {
-    const { context, getState } = createTestContext({ isPlaying: true, direction: 1, shuttleSpeed: 4 });
+    const { context, getState } = createTestContext({
+      isPlaying: true,
+      direction: 1,
+      shuttleSpeed: 4,
+    });
     const actions = createPlayheadActions(context);
 
     actions.shuttleReverse(); // Change direction
@@ -207,7 +224,10 @@ describe("playhead-actions - shuttle control", () => {
   });
 
   it("should stop playback and reset speed on shuttleStop()", () => {
-    const { context, getState } = createTestContext({ isPlaying: true, shuttleSpeed: 4 });
+    const { context, getState } = createTestContext({
+      isPlaying: true,
+      shuttleSpeed: 4,
+    });
     const actions = createPlayheadActions(context);
 
     actions.shuttleStop();
@@ -267,7 +287,11 @@ describe("playhead-actions - frame stepping", () => {
   });
 
   it("should clamp forward step at duration boundary", () => {
-    const { context, getState } = createTestContext({ position: 59.99 }, 60, 30);
+    const { context, getState } = createTestContext(
+      { position: 59.99 },
+      60,
+      30
+    );
     const actions = createPlayheadActions(context);
 
     actions.stepForward(30); // 30 frames = 1 second, would go past 60
@@ -331,7 +355,10 @@ describe("playhead-actions - loop regions", () => {
   });
 
   it("should clear loop region", () => {
-    const { context, getState } = createTestContext({ loopStart: 10, loopEnd: 20 });
+    const { context, getState } = createTestContext({
+      loopStart: 10,
+      loopEnd: 20,
+    });
     const actions = createPlayheadActions(context);
 
     actions.clearLoopRegion();
@@ -404,12 +431,12 @@ describe("playhead-actions - edge cases", () => {
     const actions = createPlayheadActions(context);
 
     // Rapid sequence of operations
-    actions.play();                  // isPlaying=true, direction=1, shuttleSpeed=1
+    actions.play(); // isPlaying=true, direction=1, shuttleSpeed=1
     actions.setPlayheadPosition(10); // position=10
-    actions.shuttleForward();        // Already playing forward: shuttleSpeed 1->2
-    actions.shuttleForward();        // Still playing forward: shuttleSpeed 2->4
-    actions.pause();                 // isPlaying=false (shuttleSpeed preserved at 4)
-    actions.stepForward(5);          // position += 5 frames
+    actions.shuttleForward(); // Already playing forward: shuttleSpeed 1->2
+    actions.shuttleForward(); // Still playing forward: shuttleSpeed 2->4
+    actions.pause(); // isPlaying=false (shuttleSpeed preserved at 4)
+    actions.stepForward(5); // position += 5 frames
 
     // Final state should be consistent
     expect(getState().isPlaying).toBe(false);

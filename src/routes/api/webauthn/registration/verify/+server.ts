@@ -8,7 +8,10 @@ import type { RegistrationResponseJSON } from "@simplewebauthn/types";
 import admin from "firebase-admin";
 import { requireFirebaseUser } from "$lib/server/auth/requireFirebaseUser";
 import { getWebAuthnRP } from "$lib/server/webauthn/webauthnConfig";
-import { toStoredPasskey, upsertPasskey } from "$lib/server/webauthn/passkeysStore";
+import {
+  toStoredPasskey,
+  upsertPasskey,
+} from "$lib/server/webauthn/passkeysStore";
 
 const CHALLENGE_COOKIE = "tka_webauthn_reg_challenge";
 
@@ -28,13 +31,14 @@ export const POST: RequestHandler = async (event) => {
       name?: string;
     };
 
-    const verification: VerifiedRegistrationResponse = await verifyRegistrationResponse({
-      response: body,
-      expectedChallenge,
-      expectedOrigin: origin,
-      expectedRPID: rpID,
-      requireUserVerification: false,
-    });
+    const verification: VerifiedRegistrationResponse =
+      await verifyRegistrationResponse({
+        response: body,
+        expectedChallenge,
+        expectedOrigin: origin,
+        expectedRPID: rpID,
+        requireUserVerification: false,
+      });
 
     if (!verification.verified || !verification.registrationInfo) {
       return json(
@@ -50,7 +54,8 @@ export const POST: RequestHandler = async (event) => {
       publicKey: credential.publicKey,
       counter: credential.counter,
       transports: body.response.transports,
-      name: typeof body.name === "string" ? body.name.trim().slice(0, 64) : null,
+      name:
+        typeof body.name === "string" ? body.name.trim().slice(0, 64) : null,
     });
 
     await upsertPasskey(user.uid, {

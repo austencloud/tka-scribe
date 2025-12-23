@@ -10,7 +10,9 @@
   import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
   import { onMount } from "svelte";
 
-  let status = $state<"idle" | "analyzing" | "migrating" | "complete" | "error">("idle");
+  let status = $state<
+    "idle" | "analyzing" | "migrating" | "complete" | "error"
+  >("idle");
   let totalSequences = $state(0);
   let needsMigrationCount = $state(0);
   let alreadyCleanCount = $state(0);
@@ -18,7 +20,9 @@
   let errorCount = $state(0);
   let currentSequence = $state("");
   let errors = $state<string[]>([]);
-  let migrationLog = $state<Array<{ id: string; word: string; before: number; after: number }>>([]);
+  let migrationLog = $state<
+    Array<{ id: string; word: string; before: number; after: number }>
+  >([]);
   let userId = $state<string | null>(null);
 
   /**
@@ -36,7 +40,10 @@
 
     if (sequence.startingPositionBeat) {
       const beats = Array.isArray(sequence.beats)
-        ? sequence.beats.filter((beat: any) => beat && beat.beatNumber !== 0 && !beat.isStartPosition)
+        ? sequence.beats.filter(
+            (beat: any) =>
+              beat && beat.beatNumber !== 0 && !beat.isStartPosition
+          )
         : [];
       return { beats, startPosition: sequence.startingPositionBeat };
     }
@@ -53,13 +60,18 @@
       }
     }
 
-    return { beats: sequence.beats || [], startPosition: sequence.startPosition || null };
+    return {
+      beats: sequence.beats || [],
+      startPosition: sequence.startPosition || null,
+    };
   }
 
   function needsMigration(sequence: any): boolean {
     if (sequence.startingPositionBeat) return true;
     if (Array.isArray(sequence.beats)) {
-      return sequence.beats.some((beat: any) => beat?.beatNumber === 0 || beat?.isStartPosition === true);
+      return sequence.beats.some(
+        (beat: any) => beat?.beatNumber === 0 || beat?.isStartPosition === true
+      );
     }
     return false;
   }
@@ -81,7 +93,9 @@
 
     try {
       const firestore = await getFirestoreInstance();
-      console.log(`🔍 Fetching sequences from Firestore for user ${user.uid}...`);
+      console.log(
+        `🔍 Fetching sequences from Firestore for user ${user.uid}...`
+      );
       const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
       const snapshot = await getDocs(sequencesRef);
 
@@ -105,7 +119,9 @@
       }
 
       status = "idle";
-      console.log(`✅ Analysis complete: ${needsMigrationCount} need migration, ${alreadyCleanCount} already clean`);
+      console.log(
+        `✅ Analysis complete: ${needsMigrationCount} need migration, ${alreadyCleanCount} already clean`
+      );
     } catch (error: any) {
       status = "error";
       errors.push(`Analysis failed: ${error.message}`);
@@ -139,7 +155,10 @@
 
           try {
             const normalized = separateBeatsFromStartPosition(sequence);
-            const docRef = doc(firestore, `users/${user.uid}/sequences/${docSnapshot.id}`);
+            const docRef = doc(
+              firestore,
+              `users/${user.uid}/sequences/${docSnapshot.id}`
+            );
 
             await updateDoc(docRef, {
               beats: normalized.beats,
@@ -151,14 +170,18 @@
             console.log(`✅ Migrated: ${currentSequence}`);
           } catch (error: any) {
             errorCount++;
-            errors.push(`Failed to migrate ${docSnapshot.id}: ${error.message}`);
+            errors.push(
+              `Failed to migrate ${docSnapshot.id}: ${error.message}`
+            );
             console.error(`❌ Migration error for ${docSnapshot.id}:`, error);
           }
         }
       }
 
       status = "complete";
-      console.log(`✅ Migration complete: ${migratedCount} migrated, ${errorCount} errors`);
+      console.log(
+        `✅ Migration complete: ${migratedCount} migrated, ${errorCount} errors`
+      );
     } catch (error: any) {
       status = "error";
       errors.push(`Migration failed: ${error.message}`);
@@ -211,7 +234,7 @@
         </div>
       </div>
     {:else if status === "migrating"}
-      <p class="migrating">✍️  Migrating: {currentSequence}...</p>
+      <p class="migrating">✍️ Migrating: {currentSequence}...</p>
       <p>Progress: {migratedCount} / {needsMigrationCount}</p>
     {:else if status === "complete"}
       <div class="stats success">
@@ -239,7 +262,9 @@
         {#each migrationLog.slice(0, 50) as item}
           <div class="sequence-item">
             <span class="word">{item.word}</span>
-            <span class="change">{item.before} items → {item.after} beats + start</span>
+            <span class="change"
+              >{item.before} items → {item.after} beats + start</span
+            >
           </div>
         {/each}
         {#if migrationLog.length > 50}
@@ -276,7 +301,7 @@
         disabled={status !== "idle"}
         class="migrate-btn"
       >
-        ✍️  Run Migration ({needsMigrationCount} sequences)
+        ✍️ Run Migration ({needsMigrationCount} sequences)
       </button>
     {/if}
   </section>
@@ -286,7 +311,9 @@
     <ul>
       <li>Migrates sequences in Firebase Firestore (not IndexedDB)</li>
       <li>Separates start position from beats array</li>
-      <li>Converts <code>startingPositionBeat</code> → <code>startPosition</code></li>
+      <li>
+        Converts <code>startingPositionBeat</code> → <code>startPosition</code>
+      </li>
       <li>Removes beat 0 from beats array</li>
       <li>Updates at <code>users/{"{uid}"}/sequences</code></li>
     </ul>
@@ -298,7 +325,10 @@
     max-width: 900px;
     margin: 2rem auto;
     padding: 2rem;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 
   header {
@@ -486,7 +516,7 @@
     background: white;
     padding: 0.2rem 0.4rem;
     border-radius: 3px;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     color: #e83e8c;
   }
 

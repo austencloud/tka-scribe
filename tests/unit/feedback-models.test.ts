@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { isFeedbackStatus, isFeedbackType } from "$lib/features/feedback/domain/models/feedback-models";
+import {
+  isFeedbackStatus,
+  isFeedbackType,
+} from "$lib/features/feedback/domain/models/feedback-models";
 
 describe("feedback-models guards", () => {
   it("accepts valid feedback types", () => {
@@ -32,4 +35,3 @@ describe("feedback-models guards", () => {
     expect(isFeedbackStatus(null)).toBe(false);
   });
 });
-

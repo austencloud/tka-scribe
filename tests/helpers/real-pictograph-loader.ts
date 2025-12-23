@@ -13,7 +13,10 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { CsvLoader } from "$lib/shared/foundation/services/implementations/data/CsvLoader";
-import { container, initializeContainer } from "$lib/shared/inversify/container";
+import {
+  container,
+  initializeContainer,
+} from "$lib/shared/inversify/container";
 import { TYPES } from "$lib/shared/inversify/types";
 
 /**

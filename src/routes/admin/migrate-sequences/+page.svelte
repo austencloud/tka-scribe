@@ -13,7 +13,9 @@
   console.log("🔍 Database version:", db.verno);
   console.log("🔍 Database name:", db.name);
 
-  let status = $state<"idle" | "analyzing" | "migrating" | "complete" | "error">("idle");
+  let status = $state<
+    "idle" | "analyzing" | "migrating" | "complete" | "error"
+  >("idle");
   let totalSequences = $state(0);
   let needsMigrationCount = $state(0);
   let alreadyCleanCount = $state(0);
@@ -21,7 +23,9 @@
   let errorCount = $state(0);
   let currentSequence = $state("");
   let errors = $state<string[]>([]);
-  let migrationLog = $state<Array<{ id: string; word: string; before: number; after: number }>>([]);
+  let migrationLog = $state<
+    Array<{ id: string; word: string; before: number; after: number }>
+  >([]);
 
   /**
    * Normalize sequence data - same logic as SequenceNormalizationService
@@ -45,7 +49,8 @@
     if (sequence.startingPositionBeat) {
       const beats = Array.isArray(sequence.beats)
         ? sequence.beats.filter(
-            (beat: any) => beat && beat.beatNumber !== 0 && !beat.isStartPosition
+            (beat: any) =>
+              beat && beat.beatNumber !== 0 && !beat.isStartPosition
           )
         : [];
 
@@ -213,7 +218,7 @@
         </div>
       </div>
     {:else if status === "migrating"}
-      <p class="migrating">✍️  Migrating: {currentSequence}...</p>
+      <p class="migrating">✍️ Migrating: {currentSequence}...</p>
       <p>Progress: {migratedCount} / {needsMigrationCount}</p>
     {:else if status === "complete"}
       <div class="stats success">
@@ -239,7 +244,9 @@
         {#each migrationLog as item}
           <div class="sequence-item">
             <span class="word">{item.word}</span>
-            <span class="change">{item.before} items → {item.after} beats + start position</span>
+            <span class="change"
+              >{item.before} items → {item.after} beats + start position</span
+            >
           </div>
         {/each}
       </div>
@@ -270,7 +277,7 @@
         disabled={status !== "idle"}
         class="migrate-btn"
       >
-        ✍️  Run Migration ({needsMigrationCount} sequences)
+        ✍️ Run Migration ({needsMigrationCount} sequences)
       </button>
     {/if}
   </section>
@@ -279,7 +286,9 @@
     <h3>What this does:</h3>
     <ul>
       <li>Separates start position from beats array</li>
-      <li>Converts <code>startingPositionBeat</code> → <code>startPosition</code></li>
+      <li>
+        Converts <code>startingPositionBeat</code> → <code>startPosition</code>
+      </li>
       <li>Removes beat 0 from beats array</li>
       <li>Preserves all other sequence data</li>
     </ul>
@@ -291,7 +300,10 @@
     max-width: 800px;
     margin: 2rem auto;
     padding: 2rem;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 
   header {

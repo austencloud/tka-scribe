@@ -14,10 +14,14 @@ function isEmailLike(input: string): boolean {
 export const POST: RequestHandler = async (event) => {
   try {
     const user = await requireFirebaseUser(event);
-    requireStepUpOrRecentAuth(event, { uid: user.uid, authTime: user.authTime });
+    requireStepUpOrRecentAuth(event, {
+      uid: user.uid,
+      authTime: user.authTime,
+    });
 
     const body = (await event.request.json()) as { newEmail?: unknown };
-    const newEmail = typeof body.newEmail === "string" ? body.newEmail.trim() : "";
+    const newEmail =
+      typeof body.newEmail === "string" ? body.newEmail.trim() : "";
     if (!isEmailLike(newEmail)) {
       return json(
         { error: "Invalid email address", code: "invalid_email" },
@@ -49,7 +53,8 @@ export const POST: RequestHandler = async (event) => {
       typeof err === "object" && err && "code" in err
         ? String((err as { code: unknown }).code)
         : "internal_error";
-    const message = err instanceof Error ? err.message : "Failed to update email";
+    const message =
+      err instanceof Error ? err.message : "Failed to update email";
     return json({ error: message, code }, { status });
   }
 };

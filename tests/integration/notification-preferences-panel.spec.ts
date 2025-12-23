@@ -113,9 +113,9 @@ describe("NotificationPreferencesPanel - Dynamic Settings", () => {
       });
 
       // Count active types in config (excluding system-announcement)
-      const activeConfigTypes = Object.keys(NOTIFICATION_TYPE_CONFIG)
-        .filter((type) => type !== "system-announcement")
-        .length;
+      const activeConfigTypes = Object.keys(NOTIFICATION_TYPE_CONFIG).filter(
+        (type) => type !== "system-announcement"
+      ).length;
 
       // The UI should render toggles for all active types
       // (This is a conceptual check - actual count would depend on implementation)
@@ -129,12 +129,15 @@ describe("NotificationPreferencesPanel - Dynamic Settings", () => {
       render(NotificationPreferencesPanel);
 
       await waitFor(() => {
-        expect(screen.queryByText(/when your feedback is marked as resolved/i))
-          .toBeTruthy();
-        expect(screen.queryByText(/when work starts on your feedback/i))
-          .toBeTruthy();
-        expect(screen.queryByText(/when admin needs more details/i))
-          .toBeTruthy();
+        expect(
+          screen.queryByText(/when your feedback is marked as resolved/i)
+        ).toBeTruthy();
+        expect(
+          screen.queryByText(/when work starts on your feedback/i)
+        ).toBeTruthy();
+        expect(
+          screen.queryByText(/when admin needs more details/i)
+        ).toBeTruthy();
       });
     });
 
@@ -146,12 +149,15 @@ describe("NotificationPreferencesPanel - Dynamic Settings", () => {
         expect(
           screen.queryByText(/when your feedback is marked as resolved/i)
         ).toBeTruthy();
-        expect(screen.queryByText(/when work starts on your feedback/i))
-          .toBeTruthy();
-        expect(screen.queryByText(/when admin needs more details/i))
-          .toBeTruthy();
-        expect(screen.queryByText(/when admin sends you a message/i))
-          .toBeTruthy();
+        expect(
+          screen.queryByText(/when work starts on your feedback/i)
+        ).toBeTruthy();
+        expect(
+          screen.queryByText(/when admin needs more details/i)
+        ).toBeTruthy();
+        expect(
+          screen.queryByText(/when admin sends you a message/i)
+        ).toBeTruthy();
       });
     });
   });

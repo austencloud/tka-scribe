@@ -206,7 +206,10 @@
   .profile-container {
     min-height: 100vh;
     padding: 2rem 1rem;
-    background: var(--gradient-cosmic, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
+    background: var(
+      --gradient-cosmic,
+      linear-gradient(135deg, #667eea 0%, #764ba2 100%)
+    );
   }
 
   .profile-card {
@@ -234,7 +237,8 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    border: 4px solid color-mix(in srgb, var(--theme-text, white) 90%, transparent);
+    border: 4px solid
+      color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     object-fit: cover;
     margin-bottom: 1rem;
   }
@@ -243,7 +247,8 @@
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    border: 4px solid color-mix(in srgb, var(--theme-text, white) 90%, transparent);
+    border: 4px solid
+      color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     background: color-mix(in srgb, var(--theme-text, white) 20%, transparent);
     display: flex;
     align-items: center;
@@ -403,5 +408,4 @@
       text-align: left;
     }
   }
-
 </style>

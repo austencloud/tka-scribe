@@ -2,7 +2,9 @@ import type { Meta, StoryObj } from "@storybook/svelte";
 import type { ComponentProps } from "svelte";
 import EnhancedPWAInstallGuide from "$lib/shared/mobile/components/EnhancedPWAInstallGuide.svelte";
 
-type EnhancedPWAInstallGuideProps = ComponentProps<typeof EnhancedPWAInstallGuide>;
+type EnhancedPWAInstallGuideProps = ComponentProps<
+  typeof EnhancedPWAInstallGuide
+>;
 
 const meta = {
   title: "PWA/EnhancedPWAInstallGuide",

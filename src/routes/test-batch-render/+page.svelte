@@ -3,7 +3,11 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { loadSharedModules, loadFeatureModule, resolveAsync } from "$lib/shared/inversify/container";
+  import {
+    loadSharedModules,
+    loadFeatureModule,
+    resolveAsync,
+  } from "$lib/shared/inversify/container";
   import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
@@ -56,7 +60,21 @@
     "Triad Family": ["triad", "bigtriad"],
     "Hoop Family": ["minihoop", "bighoop"],
     "Buugeng Family": ["buugeng", "bigbuugeng", "fractalgeng"],
-    "Other": ["hand", "triquetra", "triquetra2", "sword", "chicken", "bigchicken", "guitar", "ukulele", "doublestar", "bigdoublestar", "eightrings", "bigeightrings", "quiad"]
+    Other: [
+      "hand",
+      "triquetra",
+      "triquetra2",
+      "sword",
+      "chicken",
+      "bigchicken",
+      "guitar",
+      "ukulele",
+      "doublestar",
+      "bigdoublestar",
+      "eightrings",
+      "bigeightrings",
+      "quiad",
+    ],
   };
 
   // Load sequences and initialize services
@@ -66,9 +84,18 @@
       console.log("🔵 Loading shared modules...");
       await loadSharedModules();
       await loadFeatureModule("discover");
-      renderService = await resolveAsync<ISequenceRenderService>(TYPES.ISequenceRenderService);
-      discoverLoader = await resolveAsync<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      console.log("🔵 Services loaded - render:", !!renderService, "discover:", !!discoverLoader);
+      renderService = await resolveAsync<ISequenceRenderService>(
+        TYPES.ISequenceRenderService
+      );
+      discoverLoader = await resolveAsync<IDiscoverLoader>(
+        TYPES.IDiscoverLoader
+      );
+      console.log(
+        "🔵 Services loaded - render:",
+        !!renderService,
+        "discover:",
+        !!discoverLoader
+      );
     } catch (err) {
       console.error("❌ Failed to load services:", err);
     }
@@ -115,12 +142,19 @@
 
     try {
       // Load full sequence data with beats (gallery only loads lightweight metadata)
-      const fullSequence = await discoverLoader.loadFullSequenceData(selectedSequence.word || selectedSequence.id);
+      const fullSequence = await discoverLoader.loadFullSequenceData(
+        selectedSequence.word || selectedSequence.id
+      );
       if (!fullSequence) {
         throw new Error("Failed to load full sequence data");
       }
 
-      console.log("🔵 Full sequence loaded:", fullSequence.word, "beats:", fullSequence.beats?.length);
+      console.log(
+        "🔵 Full sequence loaded:",
+        fullSequence.word,
+        "beats:",
+        fullSequence.beats?.length
+      );
 
       // Render all size presets
       for (let i = 0; i < exportPresets.length; i++) {
@@ -150,13 +184,16 @@
           propTypeOverride: selectedPropType as PropType,
         });
 
-        renderedImages = [...renderedImages, {
-          name: preset.name,
-          suffix: preset.suffix,
-          scale: preset.scale,
-          url: URL.createObjectURL(blob),
-          blob,
-        }];
+        renderedImages = [
+          ...renderedImages,
+          {
+            name: preset.name,
+            suffix: preset.suffix,
+            scale: preset.scale,
+            url: URL.createObjectURL(blob),
+            blob,
+          },
+        ];
       }
 
       renderProgress = "";
@@ -182,7 +219,7 @@
     // Download each size with a small delay to avoid browser blocking
     for (const image of renderedImages) {
       downloadImage(image);
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
     }
   }
 
@@ -201,7 +238,9 @@
 <div class="test-page">
   <header>
     <h1>🎨 Batch Render Test</h1>
-    <p class="subtitle">Test prop type override rendering • Word + difficulty baked into images</p>
+    <p class="subtitle">
+      Test prop type override rendering • Word + difficulty baked into images
+    </p>
   </header>
 
   <div class="layout">
@@ -231,13 +270,16 @@
         <div class="empty-state">
           <p>No sequences found</p>
           {#if searchQuery}
-            <button onclick={() => searchQuery = ""}>Clear search</button>
+            <button onclick={() => (searchQuery = "")}>Clear search</button>
           {/if}
         </div>
       {:else}
         <div class="sequence-grid">
           {#each filteredSequences as seq (seq.id)}
-            <div class="card-wrapper" class:selected={selectedSequenceId === seq.id}>
+            <div
+              class="card-wrapper"
+              class:selected={selectedSequenceId === seq.id}
+            >
               <SequenceCard
                 sequence={seq}
                 coverUrl={getCoverUrl(seq)}
@@ -262,9 +304,9 @@
               <button
                 class="prop-chip"
                 class:selected={selectedPropType === propType}
-                onclick={() => selectedPropType = propType}
+                onclick={() => (selectedPropType = propType)}
               >
-                {propType.replace(/_/g, ' ')}
+                {propType.replace(/_/g, " ")}
               </button>
             {/each}
           </div>
@@ -310,7 +352,9 @@
         </button>
       </div>
       <p class="result-info">
-        ✅ Rendered <strong>{selectedSequence?.word}</strong> with <strong>{selectedPropType}</strong> in {renderedImages.length} sizes
+        ✅ Rendered <strong>{selectedSequence?.word}</strong> with
+        <strong>{selectedPropType}</strong>
+        in {renderedImages.length} sizes
       </p>
 
       <div class="sizes-grid">
@@ -338,7 +382,10 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 
   header {
@@ -567,7 +614,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .result {

@@ -30,7 +30,9 @@ function initAdmin() {
   adminInitialized = true;
 }
 
-function formatTimestamp(ts: admin.firestore.Timestamp | Date | string | null | undefined): string | null {
+function formatTimestamp(
+  ts: admin.firestore.Timestamp | Date | string | null | undefined
+): string | null {
   if (!ts) return null;
   if (typeof ts === "string") return ts;
   if (ts instanceof Date) return ts.toISOString();
@@ -65,29 +67,53 @@ export const GET: RequestHandler = async ({ url }) => {
 
     // If multiple sections are specified (e.g., "profile,gamification"), only fetch those
     if (sections) {
-      const requestedSections = sections.split(",").map(s => s.trim());
+      const requestedSections = sections.split(",").map((s) => s.trim());
       const result: Record<string, unknown> = {};
 
       // Fetch requested sections in parallel
       const promises: Promise<void>[] = [];
 
       if (requestedSections.includes("profile")) {
-        promises.push(fetchProfile(db, userId).then(data => { result.profile = data; }));
+        promises.push(
+          fetchProfile(db, userId).then((data) => {
+            result.profile = data;
+          })
+        );
       }
       if (requestedSections.includes("gamification")) {
-        promises.push(fetchGamification(db, userId).then(data => { result.gamification = data; }));
+        promises.push(
+          fetchGamification(db, userId).then((data) => {
+            result.gamification = data;
+          })
+        );
       }
       if (requestedSections.includes("sequences")) {
-        promises.push(fetchSequences(db, userId).then(data => { result.sequences = data; }));
+        promises.push(
+          fetchSequences(db, userId).then((data) => {
+            result.sequences = data;
+          })
+        );
       }
       if (requestedSections.includes("collections")) {
-        promises.push(fetchCollections(db, userId).then(data => { result.collections = data; }));
+        promises.push(
+          fetchCollections(db, userId).then((data) => {
+            result.collections = data;
+          })
+        );
       }
       if (requestedSections.includes("achievements")) {
-        promises.push(fetchAchievements(db, userId).then(data => { result.achievements = data; }));
+        promises.push(
+          fetchAchievements(db, userId).then((data) => {
+            result.achievements = data;
+          })
+        );
       }
       if (requestedSections.includes("notifications")) {
-        promises.push(fetchNotifications(db, userId).then(data => { result.notifications = data; }));
+        promises.push(
+          fetchNotifications(db, userId).then((data) => {
+            result.notifications = data;
+          })
+        );
       }
 
       await Promise.all(promises);
@@ -95,15 +121,21 @@ export const GET: RequestHandler = async ({ url }) => {
     }
 
     // Default: fetch all data in parallel
-    const [profile, gamification, sequences, collections, achievements, notifications] =
-      await Promise.all([
-        fetchProfile(db, userId),
-        fetchGamification(db, userId),
-        fetchSequences(db, userId),
-        fetchCollections(db, userId),
-        fetchAchievements(db, userId),
-        fetchNotifications(db, userId),
-      ]);
+    const [
+      profile,
+      gamification,
+      sequences,
+      collections,
+      achievements,
+      notifications,
+    ] = await Promise.all([
+      fetchProfile(db, userId),
+      fetchGamification(db, userId),
+      fetchSequences(db, userId),
+      fetchCollections(db, userId),
+      fetchAchievements(db, userId),
+      fetchNotifications(db, userId),
+    ]);
 
     return json({
       profile,
@@ -114,7 +146,8 @@ export const GET: RequestHandler = async ({ url }) => {
       notifications,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to fetch user preview";
+    const message =
+      err instanceof Error ? err.message : "Failed to fetch user preview";
     console.error("Preview user API error:", message);
     return new Response(message, { status: 500 });
   }
@@ -175,7 +208,10 @@ async function fetchProfile(db: admin.firestore.Firestore, userId: string) {
   }
 }
 
-async function fetchGamification(db: admin.firestore.Firestore, userId: string) {
+async function fetchGamification(
+  db: admin.firestore.Firestore,
+  userId: string
+) {
   try {
     const userDoc = await db.collection("users").doc(userId).get();
 
@@ -251,7 +287,10 @@ async function fetchCollections(db: admin.firestore.Firestore, userId: string) {
   }
 }
 
-async function fetchAchievements(db: admin.firestore.Firestore, userId: string) {
+async function fetchAchievements(
+  db: admin.firestore.Firestore,
+  userId: string
+) {
   try {
     const snap = await db
       .collection("users")
@@ -277,7 +316,10 @@ async function fetchAchievements(db: admin.firestore.Firestore, userId: string) 
   }
 }
 
-async function fetchNotifications(db: admin.firestore.Firestore, userId: string) {
+async function fetchNotifications(
+  db: admin.firestore.Firestore,
+  userId: string
+) {
   try {
     const snap = await db
       .collection("users")

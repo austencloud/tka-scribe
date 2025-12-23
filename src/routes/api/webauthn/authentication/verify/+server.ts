@@ -25,7 +25,10 @@ export const POST: RequestHandler = async (event) => {
     const expectedChallenge = event.cookies.get(CHALLENGE_COOKIE);
     if (!expectedChallenge) {
       return json(
-        { error: "Missing authentication challenge", code: "missing_challenge" },
+        {
+          error: "Missing authentication challenge",
+          code: "missing_challenge",
+        },
         { status: 400 }
       );
     }

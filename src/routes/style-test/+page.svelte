@@ -5,32 +5,47 @@
   const approaches = [
     {
       name: "Subtle Gradients",
-      description: "Solid backgrounds with gentle color shifts for depth"
+      description: "Solid backgrounds with gentle color shifts for depth",
     },
     {
       name: "Bold Borders",
-      description: "Vibrant borders with strong accent colors"
+      description: "Vibrant borders with strong accent colors",
     },
     {
       name: "Rich Colors",
-      description: "Saturated, vibrant backgrounds with deep hues"
+      description: "Saturated, vibrant backgrounds with deep hues",
     },
     {
       name: "Dramatic Shadows",
-      description: "Solid bases with layered shadow depth"
+      description: "Solid bases with layered shadow depth",
     },
     {
       name: "Mixed Approach",
-      description: "Best of all worlds - gradients + borders + shadows"
-    }
+      description: "Best of all worlds - gradients + borders + shadows",
+    },
   ];
 
   const statuses = [
-    { label: "All", color: "var(--theme-accent, #3b82f6)", icon: "fa-list", count: 24 },
-    { label: "New", color: "var(--theme-accent, #3b82f6)", icon: "fa-inbox", count: 8 },
+    {
+      label: "All",
+      color: "var(--theme-accent, #3b82f6)",
+      icon: "fa-list",
+      count: 24,
+    },
+    {
+      label: "New",
+      color: "var(--theme-accent, #3b82f6)",
+      icon: "fa-inbox",
+      count: 8,
+    },
     { label: "In Progress", color: "#f59e0b", icon: "fa-spinner", count: 6 },
-    { label: "In Review", color: "var(--theme-accent-strong, #8b5cf6)", icon: "fa-eye", count: 5 },
-    { label: "Completed", color: "#10b981", icon: "fa-check-circle", count: 5 }
+    {
+      label: "In Review",
+      color: "var(--theme-accent-strong, #8b5cf6)",
+      icon: "fa-eye",
+      count: 5,
+    },
+    { label: "Completed", color: "#10b981", icon: "fa-check-circle", count: 5 },
   ];
 </script>
 
@@ -82,7 +97,8 @@
                 </span>
               </div>
               <p class="card-description">
-                When playing sequences with more than 20 beats, there's noticeable lag...
+                When playing sequences with more than 20 beats, there's
+                noticeable lag...
               </p>
             </div>
           </div>
@@ -176,7 +192,11 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(40, 40, 50, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.95) 0%,
+      rgba(40, 40, 50, 0.95) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     color: rgba(255, 255, 255, 0.7);
@@ -187,12 +207,20 @@
   }
 
   .approach-1 .filter-chip:hover {
-    background: linear-gradient(135deg, rgba(40, 40, 50, 0.98) 0%, rgba(50, 50, 60, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(40, 40, 50, 0.98) 0%,
+      rgba(50, 50, 60, 0.98) 100%
+    );
     border-color: rgba(255, 255, 255, 0.25);
   }
 
   .approach-1 .filter-chip.active {
-    background: linear-gradient(135deg, var(--status-color) 0%, color-mix(in srgb, var(--status-color) 80%, black) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--status-color) 0%,
+      color-mix(in srgb, var(--status-color) 80%, black) 100%
+    );
     border-color: var(--status-color);
     color: white;
   }
@@ -202,7 +230,11 @@
     display: flex;
     gap: 12px;
     padding: 14px;
-    background: linear-gradient(135deg, rgba(25, 25, 35, 0.95) 0%, rgba(30, 30, 40, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(25, 25, 35, 0.95) 0%,
+      rgba(30, 30, 40, 0.95) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     cursor: pointer;
@@ -210,18 +242,24 @@
   }
 
   .approach-1 .feedback-card:hover {
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.98) 0%, rgba(35, 35, 45, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.98) 0%,
+      rgba(35, 35, 45, 0.98) 100%
+    );
   }
 
   .approach-1 .card-type {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--type-color) 30%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--type-color) 20%, rgba(15, 15, 20, 0.9))
     );
   }
 
   .approach-1 .status-badge {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--badge-color) 35%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--badge-color) 25%, rgba(15, 15, 20, 0.9))
     );
@@ -254,7 +292,8 @@
     background: rgba(20, 20, 25, 0.98);
     border: 2px solid var(--status-color);
     color: var(--status-color);
-    box-shadow: 0 0 16px color-mix(in srgb, var(--status-color) 30%, transparent);
+    box-shadow: 0 0 16px
+      color-mix(in srgb, var(--status-color) 30%, transparent);
   }
 
   .approach-2 .feedback-card {
@@ -294,7 +333,8 @@
     gap: 6px;
     padding: 6px 12px;
     background: rgba(30, 35, 50, 0.95);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
     border-radius: 20px;
     color: rgba(200, 210, 255, 0.9);
     font-size: 0.8125rem;
@@ -305,7 +345,11 @@
 
   .approach-3 .filter-chip:hover {
     background: rgba(40, 45, 65, 0.98);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 40%,
+      transparent
+    );
   }
 
   .approach-3 .filter-chip.active {
@@ -320,7 +364,8 @@
     gap: 12px;
     padding: 14px;
     background: rgba(25, 30, 45, 0.95);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    border: 1px solid
+      color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -328,15 +373,27 @@
 
   .approach-3 .feedback-card:hover {
     background: rgba(30, 35, 55, 0.98);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, #6366f1) 40%,
+      transparent
+    );
   }
 
   .approach-3 .card-type {
-    background: color-mix(in srgb, var(--type-color) 40%, rgba(15, 20, 30, 0.95));
+    background: color-mix(
+      in srgb,
+      var(--type-color) 40%,
+      rgba(15, 20, 30, 0.95)
+    );
   }
 
   .approach-3 .status-badge {
-    background: color-mix(in srgb, var(--badge-color) 50%, rgba(15, 20, 30, 0.95));
+    background: color-mix(
+      in srgb,
+      var(--badge-color) 50%,
+      rgba(15, 20, 30, 0.95)
+    );
   }
 
   /* ============================================================================
@@ -400,16 +457,23 @@
   }
 
   .approach-4 .card-type {
-    background: color-mix(in srgb, var(--type-color) 25%, rgba(20, 20, 25, 0.9));
+    background: color-mix(
+      in srgb,
+      var(--type-color) 25%,
+      rgba(20, 20, 25, 0.9)
+    );
     box-shadow:
       0 4px 12px color-mix(in srgb, var(--type-color) 30%, black),
       0 2px 6px rgba(0, 0, 0, 0.3);
   }
 
   .approach-4 .status-badge {
-    background: color-mix(in srgb, var(--badge-color) 30%, rgba(20, 20, 25, 0.9));
-    box-shadow:
-      0 2px 8px color-mix(in srgb, var(--badge-color) 20%, black);
+    background: color-mix(
+      in srgb,
+      var(--badge-color) 30%,
+      rgba(20, 20, 25, 0.9)
+    );
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--badge-color) 20%, black);
   }
 
   /* ============================================================================
@@ -420,7 +484,11 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(35, 35, 45, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.95) 0%,
+      rgba(35, 35, 45, 0.95) 100%
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     color: rgba(255, 255, 255, 0.7);
@@ -432,14 +500,22 @@
   }
 
   .approach-5 .filter-chip:hover {
-    background: linear-gradient(135deg, rgba(40, 40, 50, 0.98) 0%, rgba(45, 45, 55, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(40, 40, 50, 0.98) 0%,
+      rgba(45, 45, 55, 0.98) 100%
+    );
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     transform: translateY(-1px);
   }
 
   .approach-5 .filter-chip.active {
-    background: linear-gradient(135deg, var(--status-color) 0%, color-mix(in srgb, var(--status-color) 80%, black) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--status-color) 0%,
+      color-mix(in srgb, var(--status-color) 80%, black) 100%
+    );
     border: 1.5px solid color-mix(in srgb, var(--status-color) 120%, white);
     color: white;
     box-shadow:
@@ -453,7 +529,11 @@
     display: flex;
     gap: 12px;
     padding: 14px;
-    background: linear-gradient(135deg, rgba(25, 25, 35, 0.95) 0%, rgba(30, 30, 40, 0.95) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(25, 25, 35, 0.95) 0%,
+      rgba(30, 30, 40, 0.95) 100%
+    );
     border: 1.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 10px;
     cursor: pointer;
@@ -462,14 +542,19 @@
   }
 
   .approach-5 .feedback-card:hover {
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.98) 0%, rgba(35, 35, 45, 0.98) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(30, 30, 40, 0.98) 0%,
+      rgba(35, 35, 45, 0.98) 100%
+    );
     border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
     transform: translateY(-1px);
   }
 
   .approach-5 .card-type {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--type-color) 35%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--type-color) 20%, rgba(15, 15, 20, 0.9))
     );
@@ -478,7 +563,8 @@
   }
 
   .approach-5 .status-badge {
-    background: linear-gradient(135deg,
+    background: linear-gradient(
+      135deg,
       color-mix(in srgb, var(--badge-color) 40%, rgba(20, 20, 25, 0.9)),
       color-mix(in srgb, var(--badge-color) 25%, rgba(15, 15, 20, 0.9))
     );

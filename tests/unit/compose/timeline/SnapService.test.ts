@@ -18,7 +18,10 @@ import {
   type SnapContext,
   type SnapPoint,
 } from "$lib/features/compose/timeline/services/SnapService";
-import type { TimelineClip, SnapSettings } from "$lib/features/compose/timeline/domain/timeline-types";
+import type {
+  TimelineClip,
+  SnapSettings,
+} from "$lib/features/compose/timeline/domain/timeline-types";
 
 // ============================================================================
 // Test Fixtures
@@ -47,7 +50,9 @@ function createMockClip(overrides: Partial<TimelineClip> = {}): TimelineClip {
   };
 }
 
-function createDefaultSettings(overrides: Partial<SnapSettings> = {}): SnapSettings {
+function createDefaultSettings(
+  overrides: Partial<SnapSettings> = {}
+): SnapSettings {
   return {
     enabled: true,
     snapToBeats: true,
@@ -180,7 +185,11 @@ describe("SnapService - calculateSnapPoints", () => {
     const context = createContext({
       audioBpm: 60, // 1 beat per second
       audioDuration: 5,
-      settings: createDefaultSettings({ snapToBeats: true, snapToClips: false, snapToPlayhead: false }),
+      settings: createDefaultSettings({
+        snapToBeats: true,
+        snapToClips: false,
+        snapToPlayhead: false,
+      }),
     });
 
     const points = calculateSnapPoints(context);
@@ -211,27 +220,51 @@ describe("SnapService - calculateSnapPoints", () => {
     const context = createContext({
       clips: [clip1, clip2],
       audioBpm: null,
-      settings: createDefaultSettings({ snapToClips: true, snapToBeats: false, snapToPlayhead: false }),
+      settings: createDefaultSettings({
+        snapToClips: true,
+        snapToBeats: false,
+        snapToPlayhead: false,
+      }),
     });
 
     const points = calculateSnapPoints(context);
 
     // Should have start and end for each clip
-    expect(points).toContainEqual({ time: 2, type: "clip-start", label: "Test" });
+    expect(points).toContainEqual({
+      time: 2,
+      type: "clip-start",
+      label: "Test",
+    });
     expect(points).toContainEqual({ time: 5, type: "clip-end", label: "Test" });
-    expect(points).toContainEqual({ time: 7, type: "clip-start", label: "Test" });
+    expect(points).toContainEqual({
+      time: 7,
+      type: "clip-start",
+      label: "Test",
+    });
     expect(points).toContainEqual({ time: 9, type: "clip-end", label: "Test" });
   });
 
   it("should EXCLUDE clips in excludeClipIds (critical for dragging)", () => {
-    const draggedClip = createMockClip({ id: "dragged", startTime: 0, duration: 2 });
-    const otherClip = createMockClip({ id: "other", startTime: 5, duration: 2 });
+    const draggedClip = createMockClip({
+      id: "dragged",
+      startTime: 0,
+      duration: 2,
+    });
+    const otherClip = createMockClip({
+      id: "other",
+      startTime: 5,
+      duration: 2,
+    });
 
     const context = createContext({
       clips: [draggedClip, otherClip],
       excludeClipIds: ["dragged"], // The clip being dragged should not be a snap target
       audioBpm: null,
-      settings: createDefaultSettings({ snapToClips: true, snapToBeats: false, snapToPlayhead: false }),
+      settings: createDefaultSettings({
+        snapToClips: true,
+        snapToBeats: false,
+        snapToPlayhead: false,
+      }),
     });
 
     const points = calculateSnapPoints(context);
@@ -241,7 +274,11 @@ describe("SnapService - calculateSnapPoints", () => {
     expect(points.find((p) => p.time === 2)).toBeUndefined();
 
     // Should include the other clip's edges
-    expect(points).toContainEqual({ time: 5, type: "clip-start", label: "Test" });
+    expect(points).toContainEqual({
+      time: 5,
+      type: "clip-start",
+      label: "Test",
+    });
     expect(points).toContainEqual({ time: 7, type: "clip-end", label: "Test" });
   });
 
@@ -250,12 +287,20 @@ describe("SnapService - calculateSnapPoints", () => {
       playheadPosition: 3.5,
       audioBpm: null,
       clips: [],
-      settings: createDefaultSettings({ snapToPlayhead: true, snapToBeats: false, snapToClips: false }),
+      settings: createDefaultSettings({
+        snapToPlayhead: true,
+        snapToBeats: false,
+        snapToClips: false,
+      }),
     });
 
     const points = calculateSnapPoints(context);
 
-    expect(points).toContainEqual({ time: 3.5, type: "playhead", label: "Playhead" });
+    expect(points).toContainEqual({
+      time: 3.5,
+      type: "playhead",
+      label: "Playhead",
+    });
   });
 
   it("should generate grid intervals when enabled", () => {
@@ -372,7 +417,11 @@ describe("SnapService - getSnapPointsInRange", () => {
       audioBpm: 60, // Beats at 0, 1, 2, 3...
       audioDuration: 100,
       clips: [],
-      settings: createDefaultSettings({ snapToBeats: true, snapToClips: false, snapToPlayhead: false }),
+      settings: createDefaultSettings({
+        snapToBeats: true,
+        snapToClips: false,
+        snapToPlayhead: false,
+      }),
     });
 
     const visiblePoints = getSnapPointsInRange(context, 5, 8);
@@ -387,7 +436,11 @@ describe("SnapService - getSnapPointsInRange", () => {
       audioBpm: 60,
       audioDuration: 10, // Beats only go up to 10
       clips: [],
-      settings: createDefaultSettings({ snapToBeats: true, snapToClips: false, snapToPlayhead: false }),
+      settings: createDefaultSettings({
+        snapToBeats: true,
+        snapToClips: false,
+        snapToPlayhead: false,
+      }),
     });
 
     const visiblePoints = getSnapPointsInRange(context, 100, 200);

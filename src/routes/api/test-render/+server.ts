@@ -7,7 +7,7 @@ import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json() as { beatSize?: unknown };
+    const body = (await request.json()) as { beatSize?: unknown };
     const beatSizeValue = body.beatSize;
 
     // Resolve services
@@ -26,9 +26,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Render with specified beatSize
     const beatSize =
-      typeof beatSizeValue === "string" ? parseInt(beatSizeValue, 10) :
-      typeof beatSizeValue === "number" ? beatSizeValue :
-      144;
+      typeof beatSizeValue === "string"
+        ? parseInt(beatSizeValue, 10)
+        : typeof beatSizeValue === "number"
+          ? beatSizeValue
+          : 144;
 
     const blob = await renderService.renderSequenceToBlob(
       state.currentSequence,

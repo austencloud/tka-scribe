@@ -10,12 +10,27 @@
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
-  import { MotionType, RotationDirection, Orientation, MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import { GridLocation, GridMode, GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import {
+    MotionType,
+    RotationDirection,
+    Orientation,
+    MotionColor,
+  } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import {
+    GridLocation,
+    GridMode,
+    GridPosition,
+  } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-  import { createSequenceData, type SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import {
+    createSequenceData,
+    type SequenceData,
+  } from "$lib/shared/foundation/domain/models/SequenceData";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { loadSharedModules, resolveAsync } from "$lib/shared/inversify/container";
+  import {
+    loadSharedModules,
+    resolveAsync,
+  } from "$lib/shared/inversify/container";
   import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
 
   // Legacy data types from meta.json files
@@ -137,7 +152,8 @@
   ) {
     return createMotionData({
       motionType: MOTION_TYPE_MAP[attrs.motion_type] ?? MotionType.STATIC,
-      rotationDirection: ROTATION_MAP[attrs.prop_rot_dir] ?? RotationDirection.NO_ROTATION,
+      rotationDirection:
+        ROTATION_MAP[attrs.prop_rot_dir] ?? RotationDirection.NO_ROTATION,
       startLocation: LOCATION_MAP[attrs.start_loc] ?? GridLocation.NORTH,
       endLocation: LOCATION_MAP[attrs.end_loc] ?? GridLocation.NORTH,
       turns: attrs.turns ?? 0,
@@ -158,11 +174,21 @@
     return {
       id: `beat-${legacy.beat}`,
       letter: legacy.letter as any,
-      startPosition: POSITION_MAP[legacy.start_pos ?? ''] ?? null,
-      endPosition: POSITION_MAP[legacy.end_pos ?? ''] ?? null,
+      startPosition: POSITION_MAP[legacy.start_pos ?? ""] ?? null,
+      endPosition: POSITION_MAP[legacy.end_pos ?? ""] ?? null,
       motions: {
-        [MotionColor.BLUE]: transformLegacyMotion(legacy.blue_attributes, MotionColor.BLUE, propType, gridMode),
-        [MotionColor.RED]: transformLegacyMotion(legacy.red_attributes, MotionColor.RED, propType, gridMode),
+        [MotionColor.BLUE]: transformLegacyMotion(
+          legacy.blue_attributes,
+          MotionColor.BLUE,
+          propType,
+          gridMode
+        ),
+        [MotionColor.RED]: transformLegacyMotion(
+          legacy.red_attributes,
+          MotionColor.RED,
+          propType,
+          gridMode
+        ),
       },
       beatNumber: legacy.beat,
       duration: 1,
@@ -181,17 +207,21 @@
     redProp: PropType
   ): SequenceData {
     // Clone beats with new prop types
-    const newBeats: BeatData[] = baseSequence.beats.map(beat => ({
+    const newBeats: BeatData[] = baseSequence.beats.map((beat) => ({
       ...beat,
       motions: {
-        [MotionColor.BLUE]: beat.motions.blue ? {
-          ...beat.motions.blue,
-          propType: blueProp,
-        } : beat.motions.blue,
-        [MotionColor.RED]: beat.motions.red ? {
-          ...beat.motions.red,
-          propType: redProp,
-        } : beat.motions.red,
+        [MotionColor.BLUE]: beat.motions.blue
+          ? {
+              ...beat.motions.blue,
+              propType: blueProp,
+            }
+          : beat.motions.blue,
+        [MotionColor.RED]: beat.motions.red
+          ? {
+              ...beat.motions.red,
+              propType: redProp,
+            }
+          : beat.motions.red,
       },
     }));
 
@@ -201,14 +231,18 @@
       newStartPosition = {
         ...newStartPosition,
         motions: {
-          [MotionColor.BLUE]: newStartPosition.motions.blue ? {
-            ...newStartPosition.motions.blue,
-            propType: blueProp,
-          } : newStartPosition.motions.blue,
-          [MotionColor.RED]: newStartPosition.motions.red ? {
-            ...newStartPosition.motions.red,
-            propType: redProp,
-          } : newStartPosition.motions.red,
+          [MotionColor.BLUE]: newStartPosition.motions.blue
+            ? {
+                ...newStartPosition.motions.blue,
+                propType: blueProp,
+              }
+            : newStartPosition.motions.blue,
+          [MotionColor.RED]: newStartPosition.motions.red
+            ? {
+                ...newStartPosition.motions.red,
+                propType: redProp,
+              }
+            : newStartPosition.motions.red,
         },
       };
     }
@@ -251,8 +285,10 @@
   let avgTimePerImage = $state(0);
   let startTime = $state(0);
   const estimatedRemaining = $derived(() => {
-    if (avgTimePerImage === 0 || completedCombinations === 0) return "Calculating...";
-    const remaining = (totalCombinations - completedCombinations) * avgTimePerImage;
+    if (avgTimePerImage === 0 || completedCombinations === 0)
+      return "Calculating...";
+    const remaining =
+      (totalCombinations - completedCombinations) * avgTimePerImage;
     const minutes = Math.floor(remaining / 60000);
     const seconds = Math.floor((remaining % 60000) / 1000);
     return `${minutes}m ${seconds}s`;
@@ -267,7 +303,9 @@
     try {
       console.log("Loading render service...");
       await loadSharedModules();
-      renderService = await resolveAsync<ISequenceRenderService>(TYPES.ISequenceRenderService);
+      renderService = await resolveAsync<ISequenceRenderService>(
+        TYPES.ISequenceRenderService
+      );
       console.log("Render service loaded:", !!renderService);
     } catch (error) {
       console.error("Failed to load render service:", error);
@@ -282,12 +320,14 @@
       console.log("Loading sequences from static gallery meta.json files...");
 
       // For testing, use a few sequences. In production, load from manifest.
-      const testSequences = ['A', 'AB', 'ABC', 'B', 'C', 'D', 'E', 'F'];
+      const testSequences = ["A", "AB", "ABC", "B", "C", "D", "E", "F"];
       const loadedSequences: SequenceData[] = [];
 
       for (const word of testSequences) {
         try {
-          const response = await fetch(`/gallery/${word}/${word}_ver1.meta.json`);
+          const response = await fetch(
+            `/gallery/${word}/${word}_ver1.meta.json`
+          );
           if (!response.ok) {
             console.warn(`No meta.json found for ${word}`);
             continue;
@@ -296,14 +336,18 @@
           const metaData: LegacySequenceMetadata = await response.json();
           console.log(`Loaded meta.json for ${word}`);
 
-          if (!metaData.metadata?.sequence || metaData.metadata.sequence.length < 2) {
+          if (
+            !metaData.metadata?.sequence ||
+            metaData.metadata.sequence.length < 2
+          ) {
             console.warn(`Invalid sequence data for ${word}`);
             continue;
           }
 
           const sequenceArray = metaData.metadata.sequence;
           const seqMeta = sequenceArray[0] as Record<string, unknown>;
-          const gridMode = seqMeta.grid_mode === 'box' ? GridMode.BOX : GridMode.DIAMOND;
+          const gridMode =
+            seqMeta.grid_mode === "box" ? GridMode.BOX : GridMode.DIAMOND;
 
           // Transform beats (skip first item: metadata)
           const beats: BeatData[] = [];
@@ -314,13 +358,23 @@
             if (item.beat === 0) {
               // Start position
               startPosition = {
-                id: 'start-position',
+                id: "start-position",
                 letter: item.letter as any,
-                startPosition: POSITION_MAP[item.end_pos ?? ''] ?? null,
-                endPosition: POSITION_MAP[item.end_pos ?? ''] ?? null,
+                startPosition: POSITION_MAP[item.end_pos ?? ""] ?? null,
+                endPosition: POSITION_MAP[item.end_pos ?? ""] ?? null,
                 motions: {
-                  [MotionColor.BLUE]: transformLegacyMotion(item.blue_attributes, MotionColor.BLUE, PropType.STAFF, gridMode),
-                  [MotionColor.RED]: transformLegacyMotion(item.red_attributes, MotionColor.RED, PropType.STAFF, gridMode),
+                  [MotionColor.BLUE]: transformLegacyMotion(
+                    item.blue_attributes,
+                    MotionColor.BLUE,
+                    PropType.STAFF,
+                    gridMode
+                  ),
+                  [MotionColor.RED]: transformLegacyMotion(
+                    item.red_attributes,
+                    MotionColor.RED,
+                    PropType.STAFF,
+                    gridMode
+                  ),
                 },
                 isStartPosition: true,
               };
@@ -356,7 +410,8 @@
       }
 
       // Calculate total combinations
-      totalCombinations = sequences.length * CORE_PROPS.length * CORE_PROPS.length;
+      totalCombinations =
+        sequences.length * CORE_PROPS.length * CORE_PROPS.length;
 
       console.log(`Loaded ${sequences.length} sequences`);
       console.log(`Total combinations to generate: ${totalCombinations}`);
@@ -390,7 +445,9 @@
       currentSequenceIndex = seqIdx;
       const seq = sequences[seqIdx];
       if (!seq) continue;
-      console.log(`Processing sequence ${seqIdx + 1}/${sequences.length}: ${seq.word}`);
+      console.log(
+        `Processing sequence ${seqIdx + 1}/${sequences.length}: ${seq.word}`
+      );
 
       for (const blueProp of CORE_PROPS) {
         if (isPaused) break;
@@ -403,18 +460,25 @@
 
           try {
             // Clone sequence with the specific prop types
-            const proppedSequence = cloneSequenceWithProps(seq, blueProp, redProp);
+            const proppedSequence = cloneSequenceWithProps(
+              seq,
+              blueProp,
+              redProp
+            );
 
             // Render using the full compositor
-            const blob = await renderService!.renderSequenceToBlob(proppedSequence, {
-              includeStartPosition: true,
-              addBeatNumbers: true,
-              addWord: true,
-              addUserInfo: false, // No user info for gallery thumbnails
-              addDifficultyLevel: true,
-              addReversalSymbols: true,
-              beatScale: 0.8, // Slightly smaller for thumbnails
-            });
+            const blob = await renderService!.renderSequenceToBlob(
+              proppedSequence,
+              {
+                includeStartPosition: true,
+                addBeatNumbers: true,
+                addWord: true,
+                addUserInfo: false, // No user info for gallery thumbnails
+                addDifficultyLevel: true,
+                addReversalSymbols: true,
+                beatScale: 0.8, // Slightly smaller for thumbnails
+              }
+            );
 
             // Convert to data URL for preview
             const dataUrl = await blobToDataUrl(blob);
@@ -426,12 +490,17 @@
             // Store for download/preview (keep last 10)
             generatedImages = [
               { name: fileName, dataUrl },
-              ...generatedImages.slice(0, 9)
+              ...generatedImages.slice(0, 9),
             ];
 
-            console.log(`Generated: ${fileName} (${Math.round(blob.size / 1024)}KB)`);
+            console.log(
+              `Generated: ${fileName} (${Math.round(blob.size / 1024)}KB)`
+            );
           } catch (error) {
-            console.error(`Failed to render ${seq.word} with ${blueProp}/${redProp}:`, error);
+            console.error(
+              `Failed to render ${seq.word} with ${blueProp}/${redProp}:`,
+              error
+            );
           }
 
           completedCombinations++;
@@ -441,7 +510,7 @@
           avgTimePerImage = elapsed / completedCombinations;
 
           // Small delay to allow UI to update
-          await new Promise(r => setTimeout(r, 50));
+          await new Promise((r) => setTimeout(r, 50));
         }
       }
     }
@@ -476,7 +545,9 @@
 <div class="generator-page">
   <header class="header">
     <h1>Thumbnail Generator</h1>
-    <p class="subtitle">Generate prop-specific thumbnails using full compositor</p>
+    <p class="subtitle">
+      Generate prop-specific thumbnails using full compositor
+    </p>
   </header>
 
   {#if isLoading}
@@ -509,13 +580,15 @@
 
     <div class="controls">
       {#if !isGenerating}
-        <button class="btn primary" onclick={startGeneration} disabled={!renderService}>
+        <button
+          class="btn primary"
+          onclick={startGeneration}
+          disabled={!renderService}
+        >
           Start Generation
         </button>
       {:else}
-        <button class="btn danger" onclick={pauseGeneration}>
-          Pause
-        </button>
+        <button class="btn danger" onclick={pauseGeneration}> Pause </button>
       {/if}
 
       {#if generatedImages.length > 0}
@@ -531,7 +604,9 @@
           <div class="progress-fill" style="width: {progressPercent}%"></div>
         </div>
         <div class="progress-stats">
-          <span>{completedCombinations.toLocaleString()} / {totalCombinations.toLocaleString()}</span>
+          <span
+            >{completedCombinations.toLocaleString()} / {totalCombinations.toLocaleString()}</span
+          >
           <span>{progressPercent}%</span>
           <span>ETA: {estimatedRemaining()}</span>
         </div>
@@ -549,7 +624,11 @@
           </div>
           <div class="render-container">
             {#if currentPreviewUrl}
-              <img src={currentPreviewUrl} alt="Current render preview" class="preview-image" />
+              <img
+                src={currentPreviewUrl}
+                alt="Current render preview"
+                class="preview-image"
+              />
             {:else}
               <div class="no-preview">Waiting for first render...</div>
             {/if}
@@ -672,7 +751,9 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition:
+      transform 0.15s,
+      box-shadow 0.15s;
   }
 
   .btn:hover:not(:disabled) {
@@ -734,13 +815,15 @@
     margin: 0 auto;
   }
 
-  .render-panel, .captures-panel {
+  .render-panel,
+  .captures-panel {
     background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
     padding: 1.5rem;
   }
 
-  .render-panel h2, .captures-panel h2 {
+  .render-panel h2,
+  .captures-panel h2 {
     margin: 0 0 1rem;
     font-size: 1.25rem;
     color: rgba(255, 255, 255, 0.9);
@@ -780,7 +863,9 @@
     border-radius: 4px;
   }
 
-  .no-sequence, .no-captures, .no-preview {
+  .no-sequence,
+  .no-captures,
+  .no-preview {
     text-align: center;
     padding: 2rem;
     color: rgba(255, 255, 255, 0.4);

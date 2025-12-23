@@ -26,8 +26,8 @@ export const GET: RequestHandler = async (event) => {
       typeof err === "object" && err && "code" in err
         ? String((err as { code: unknown }).code)
         : "internal_error";
-    const message = err instanceof Error ? err.message : "Failed to list passkeys";
+    const message =
+      err instanceof Error ? err.message : "Failed to list passkeys";
     return json({ error: message, code }, { status });
   }
 };
-

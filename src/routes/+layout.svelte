@@ -71,7 +71,9 @@
     // This prevents race conditions when services try to use Firestore
     (async () => {
       try {
-        const { getFirestoreInstance } = await import("$lib/shared/auth/firebase");
+        const { getFirestoreInstance } = await import(
+          "$lib/shared/auth/firebase"
+        );
         await getFirestoreInstance();
       } catch (error) {
         console.error("❌ [App Init] Firestore initialization failed:", error);
