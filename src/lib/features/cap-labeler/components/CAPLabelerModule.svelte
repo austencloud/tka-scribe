@@ -86,17 +86,35 @@
   // Compute detection using stored service reference
   const currentComputedDetection = $derived.by(() => {
     const seq = currentSequence;
-    if (!isReady || !seq || !detectionService) return null;
+
+    console.log("[CAPLabelerModule] Detection $derived running:", {
+      isReady,
+      hasSequence: !!seq,
+      hasService: !!detectionService,
+      seqWord: seq?.word,
+    });
+
+    if (!isReady || !seq || !detectionService) {
+      console.log("[CAPLabelerModule] Detection skipped - missing dependencies");
+      return null;
+    }
 
     // Check cache first
     const cacheKey = seq.id;
     if (detectionCache.has(cacheKey)) {
+      console.log("[CAPLabelerModule] Returning cached detection for:", seq.word);
       return detectionCache.get(cacheKey)!;
     }
 
     console.log("[CAPLabelerModule] Computing detection for sequence:", seq.word);
     const detection = detectionService.detectCAP(seq);
-    console.log("[CAPLabelerModule] Detection result:", detection.candidateDesignations.length, "candidates");
+    console.log("[CAPLabelerModule] Detection result:", {
+      capType: detection.capType,
+      isCircular: detection.isCircular,
+      isFreeform: detection.isFreeform,
+      candidateCount: detection.candidateDesignations.length,
+      candidates: detection.candidateDesignations.map(c => c.label),
+    });
 
     // Cache the result (need to create new Map for reactivity)
     detectionCache = new Map(detectionCache).set(cacheKey, detection);
@@ -144,6 +162,18 @@
 
   const parsedBeats = $derived(parsedData.beats);
   const startPosition = $derived(parsedData.startPosition);
+
+  // Debug: Track when detection should update
+  $effect(() => {
+    console.log("[CAPLabelerModule] Detection dependencies changed:", {
+      isReady,
+      hasSequence: !!currentSequence,
+      seqWord: currentSequence?.word,
+      hasService: !!detectionService,
+      hasDetectionResult: !!currentComputedDetection,
+      candidateCount: currentComputedDetection?.candidateDesignations?.length ?? 0,
+    });
+  });
 
   // Load saved sections/beatpairs when sequence changes AND clear current selection
   $effect(() => {

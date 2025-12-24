@@ -24,7 +24,8 @@ export const OUTER_POINT_SIZE = 6;
 export type GridMode = "diamond" | "box";
 
 /**
- * Diamond mode: Cardinals (N/E/S/W) are hand points, diagonals are layer2
+ * Diamond mode: Cardinals (N/E/S/W) are hand points
+ * Outer points are also on cardinals, just further out
  */
 export const DIAMOND_HAND_POINTS = [
   GridLocation.NORTH,
@@ -33,15 +34,16 @@ export const DIAMOND_HAND_POINTS = [
   GridLocation.WEST,
 ] as const;
 
-export const DIAMOND_LAYER2_POINTS = [
-  GridLocation.NORTHEAST,
-  GridLocation.SOUTHEAST,
-  GridLocation.SOUTHWEST,
-  GridLocation.NORTHWEST,
+export const DIAMOND_OUTER_POINTS = [
+  GridLocation.NORTH,
+  GridLocation.EAST,
+  GridLocation.SOUTH,
+  GridLocation.WEST,
 ] as const;
 
 /**
- * Box mode: Diagonals (NE/SE/SW/NW) are hand points, cardinals are layer2
+ * Box mode: Diagonals (NE/SE/SW/NW) are hand points
+ * Outer points are also on diagonals, just further out
  */
 export const BOX_HAND_POINTS = [
   GridLocation.NORTHEAST,
@@ -50,11 +52,11 @@ export const BOX_HAND_POINTS = [
   GridLocation.NORTHWEST,
 ] as const;
 
-export const BOX_LAYER2_POINTS = [
-  GridLocation.NORTH,
-  GridLocation.EAST,
-  GridLocation.SOUTH,
-  GridLocation.WEST,
+export const BOX_OUTER_POINTS = [
+  GridLocation.NORTHEAST,
+  GridLocation.SOUTHEAST,
+  GridLocation.SOUTHWEST,
+  GridLocation.NORTHWEST,
 ] as const;
 
 /**
@@ -65,10 +67,10 @@ export function getHandPoints(mode: GridMode): readonly GridLocation[] {
 }
 
 /**
- * Get layer2/outer points for a grid mode
+ * Get outer points for a grid mode (same directions as hand points, further radius)
  */
 export function getOuterPoints(mode: GridMode): readonly GridLocation[] {
-  return mode === "diamond" ? DIAMOND_LAYER2_POINTS : BOX_LAYER2_POINTS;
+  return mode === "diamond" ? DIAMOND_OUTER_POINTS : BOX_OUTER_POINTS;
 }
 
 /**

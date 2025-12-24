@@ -42,7 +42,7 @@
     color = "#8b5cf6",
     opacity = 0.15,
     showLabels = true,
-    size = 300,
+    size = OUTER_POINT_RADIUS + 50, // Ensure plane contains outer points with padding
     gridMode = "diamond",
   }: Props = $props();
 

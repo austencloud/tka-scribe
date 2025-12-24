@@ -673,7 +673,14 @@ export class CAPDetectionService implements ICAPDetectionService {
     const circular = this.isCircular(sequence);
     const beats = extractBeats(sequence);
 
-    console.log("[CAPDetectionService] isCircular:", circular, "beats:", beats.length);
+    console.log("[CAPDetectionService] Initial analysis:", {
+      word: sequence.word,
+      isCircular: circular,
+      beatCount: beats.length,
+      hasFullMetadata: !!sequence.fullMetadata,
+      hasSequenceData: !!sequence.fullMetadata?.sequence,
+      rawSequenceLength: sequence.fullMetadata?.sequence?.length,
+    });
 
     // Non-circular or too short
     if (!circular || beats.length < 2) {
@@ -721,6 +728,11 @@ export class CAPDetectionService implements ICAPDetectionService {
     if (beats.length >= 4 && beats.length % 4 === 0) {
       const quarteredBeatPairs = generateQuarteredBeatPairs(beats);
       const allQuarteredCommon = findAllCommonTransformations(quarteredBeatPairs);
+
+      console.log("[CAPDetectionService] Quartered analysis:", {
+        beatPairCount: quarteredBeatPairs.length,
+        commonTransformations: allQuarteredCommon,
+      });
 
       // Filter to only 90° rotation patterns
       const rotation90Patterns = allQuarteredCommon.filter((t) =>
@@ -779,6 +791,12 @@ export class CAPDetectionService implements ICAPDetectionService {
     // PRIORITY 1: Find COMMON transformation across ALL beat pairs (halved)
     // ============================================================
     const allHalvedCommon = findAllCommonTransformations(halvedBeatPairs);
+
+    console.log("[CAPDetectionService] Halved analysis:", {
+      beatPairCount: halvedBeatPairs.length,
+      commonTransformations: allHalvedCommon,
+      firstPairTransformations: halvedBeatPairs[0]?.rawTransformations,
+    });
 
     if (allHalvedCommon.length > 0) {
       const candidateInfos = buildCandidateDesignations(allHalvedCommon, "halved", rotationDirection);

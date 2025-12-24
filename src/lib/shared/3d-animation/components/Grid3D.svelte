@@ -10,6 +10,7 @@
   import GridPlane from "./GridPlane.svelte";
   import { Plane, PLANE_COLORS } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
+  import { OUTER_POINT_RADIUS } from "../domain/constants/grid-layout";
 
   interface Props {
     /** Which planes to show */
@@ -26,7 +27,7 @@
 
   let {
     visiblePlanes = new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]),
-    size = 300,
+    size = OUTER_POINT_RADIUS + 50,
     showLabels = true,
     planeOpacity = 0.15,
     gridMode = "diamond",
