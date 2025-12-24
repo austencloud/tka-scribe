@@ -9,4 +9,6 @@ export const CAPLabelerTypes = {
   ICAPLabelsFirebaseService: Symbol.for("ICAPLabelsFirebaseService"),
   ISequenceLoadingService: Symbol.for("ISequenceLoadingService"),
   INavigationService: Symbol.for("ICAPLabelerNavigationService"),
+  ISequenceFeatureExtractor: Symbol.for("ISequenceFeatureExtractor"),
+  IRuleBasedTagger: Symbol.for("IRuleBasedTagger"),
 } as const;

@@ -58,11 +58,42 @@ export interface CAPDesignation {
   sectionGrouping?: SectionGrouping;
 }
 
+/**
+ * Candidate Designation - an auto-detected designation that can be confirmed or denied
+ * Multiple candidates may exist when a sequence satisfies multiple valid patterns
+ */
+export interface CandidateDesignation extends CAPDesignation {
+  /** Short label (e.g., "rotated+swapped (CCW) @¼") */
+  label: string;
+
+  /** Human-readable description (e.g., "90° CCW rotation + color swap") */
+  description: string;
+
+  /** Rotation direction if applicable (cw or ccw) */
+  rotationDirection?: "cw" | "ccw" | null;
+
+  /** Has the user confirmed this designation? */
+  confirmed: boolean;
+
+  /** Has the user explicitly denied this designation? */
+  denied?: boolean;
+}
+
+/**
+ * Beat-pair grouping by transformation pattern
+ * Maps pattern name to array of key beat numbers
+ * Example: { "FLIPPED": [1, 2], "ROTATED_180 + INVERTED": [3, 4, 5, 6] }
+ */
+export type BeatPairGroups = Record<string, number[]>;
+
 export interface LabeledSequence {
   word: string;
-  designations: CAPDesignation[]; // Multiple valid designations (whole sequence)
+  designations: CAPDesignation[]; // Confirmed designations (whole sequence)
+  candidateDesignations?: CandidateDesignation[]; // Auto-detected candidates to confirm/deny
+  hasMultipleCandidates?: boolean; // Convenience flag for multiple valid patterns
   sections?: SectionDesignation[]; // Section-based designations
   beatPairs?: BeatPairRelationship[]; // Beat-pair relationships
+  beatPairGroups?: BeatPairGroups; // Grouped by transformation pattern
   isFreeform: boolean; // Circular but no recognizable pattern
   isUnknown?: boolean; // Needs further analysis/review
   needsVerification?: boolean; // Auto-labeled, needs human verification

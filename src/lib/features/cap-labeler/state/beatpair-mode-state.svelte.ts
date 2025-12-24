@@ -174,7 +174,11 @@ export function createBeatPairModeState(): BeatPairModeState {
     },
 
     loadSavedBeatPairs(label: LabeledSequence | null) {
-      savedBeatPairs = label?.beatPairs ?? [];
+      // Only load beat pairs that have been explicitly confirmed by the user
+      // Auto-detected beat pairs (those without confirmedTransformation) are
+      // displayed separately in the BeatPairAnalysisDisplay component
+      const allBeatPairs = label?.beatPairs ?? [];
+      savedBeatPairs = allBeatPairs.filter((bp) => bp.confirmedTransformation);
     },
   };
 

@@ -4,8 +4,13 @@
    *
    * Unified display for all designation types (whole, section, beat pair).
    * This is the "what you're building" panel - the single source of truth.
+   * Supports multiple candidate designations with individual confirm/deny.
    */
-  import type { CAPDesignation } from "../../domain/models/label-models";
+  import type {
+    CAPDesignation,
+    CandidateDesignation,
+    BeatPairGroups,
+  } from "../../domain/models/label-models";
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
   import {
@@ -13,6 +18,7 @@
     formatSectionBeats,
   } from "../../utils/formatting";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
+  import BeatPairAnalysisDisplay from "../shared/BeatPairAnalysisDisplay.svelte";
 
   interface Props {
     wholeDesignations: CAPDesignation[];
@@ -21,6 +27,9 @@
     isFreeform: boolean;
     needsVerification?: boolean;
     autoDetectedDesignations?: CAPDesignation[];
+    candidateDesignations?: CandidateDesignation[];
+    autoDetectedBeatPairs?: BeatPairRelationship[];
+    autoDetectedBeatPairGroups?: BeatPairGroups;
     onRemoveWholeDesignation: (index: number) => void;
     onRemoveSectionDesignation: (index: number) => void;
     onRemoveBeatPairDesignation: (index: number) => void;
@@ -28,6 +37,8 @@
     onMarkUnknown: () => void;
     onSaveAndNext: () => void;
     onConfirmAutoLabel?: () => void;
+    onConfirmCandidate?: (index: number) => void;
+    onDenyCandidate?: (index: number) => void;
     canSave: boolean;
   }
 
@@ -38,6 +49,9 @@
     isFreeform,
     needsVerification = false,
     autoDetectedDesignations = [],
+    candidateDesignations = [],
+    autoDetectedBeatPairs = [],
+    autoDetectedBeatPairGroups = {},
     onRemoveWholeDesignation,
     onRemoveSectionDesignation,
     onRemoveBeatPairDesignation,
@@ -45,6 +59,8 @@
     onMarkUnknown,
     onSaveAndNext,
     onConfirmAutoLabel,
+    onConfirmCandidate,
+    onDenyCandidate,
     canSave,
   }: Props = $props();
 
@@ -70,6 +86,14 @@
       beatPairDesignations.length
   );
 
+  // Check if there are multiple unconfirmed candidates
+  const hasMultipleCandidates = $derived(candidateDesignations.length > 1);
+
+  // Filter to show only pending candidates (not yet confirmed or denied)
+  const pendingCandidates = $derived(
+    candidateDesignations.filter((c) => !c.confirmed && !c.denied)
+  );
+
   function formatBeatPair(bp: BeatPairRelationship): string {
     const transformation = bp.confirmedTransformation || "Unknown";
     return `Beat ${bp.keyBeat} ↔ ${bp.correspondingBeat}: ${transformation}`;
@@ -85,7 +109,64 @@
 <div class="designations-panel">
   <h3 class="panel-title">Designations</h3>
 
-  {#if needsVerification && autoDetectedDesignations.length > 0}
+  <!-- Multiple Candidate Designations -->
+  {#if needsVerification && pendingCandidates.length > 0}
+    <div class="candidates-section">
+      <div class="candidates-header">
+        <FontAwesomeIcon icon="robot" size="1em" />
+        <span>
+          {#if hasMultipleCandidates}
+            {pendingCandidates.length} equally valid designations detected
+          {:else}
+            Auto-detected designation
+          {/if}
+        </span>
+      </div>
+
+      <div class="candidates-list">
+        {#each candidateDesignations as candidate, i}
+          {#if !candidate.confirmed && !candidate.denied}
+            <div class="candidate-card">
+              <div class="candidate-content">
+                <span class="candidate-description">{candidate.description}</span>
+                <span class="candidate-label">{candidate.label}</span>
+              </div>
+              <div class="candidate-actions">
+                {#if onConfirmCandidate}
+                  <button
+                    class="candidate-btn confirm"
+                    onclick={() => onConfirmCandidate(i)}
+                    title="Confirm this designation"
+                  >
+                    <FontAwesomeIcon icon="check" size="0.85em" />
+                  </button>
+                {/if}
+                {#if onDenyCandidate}
+                  <button
+                    class="candidate-btn deny"
+                    onclick={() => onDenyCandidate(i)}
+                    title="Deny this designation"
+                  >
+                    <FontAwesomeIcon icon="xmark" size="0.85em" />
+                  </button>
+                {/if}
+              </div>
+            </div>
+          {/if}
+        {/each}
+      </div>
+
+      {#if !hasMultipleCandidates && onConfirmAutoLabel}
+        <button class="confirm-all-btn" onclick={onConfirmAutoLabel}>
+          <FontAwesomeIcon icon="check" size="0.9em" />
+          Confirm
+        </button>
+      {/if}
+    </div>
+  {/if}
+
+  <!-- Legacy: Single auto-detected designation (fallback) -->
+  {#if needsVerification && autoDetectedDesignations.length > 0 && candidateDesignations.length === 0}
     <div class="auto-detected-banner">
       <div class="banner-content">
         <div class="banner-header">
@@ -103,6 +184,15 @@
         </button>
       {/if}
     </div>
+  {/if}
+
+  <!-- Auto-detected beat-pair analysis -->
+  {#if autoDetectedBeatPairs.length > 0}
+    <BeatPairAnalysisDisplay
+      beatPairs={autoDetectedBeatPairs}
+      beatPairGroups={autoDetectedBeatPairGroups}
+      collapsed={false}
+    />
   {/if}
 
   <div class="designations-list">
@@ -231,7 +321,130 @@
     margin-top: 2px;
   }
 
-  /* Auto-detected banner */
+  /* Candidate Designations Section */
+  .candidates-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(234, 179, 8, 0.06) 100%);
+    border: 1px solid rgba(234, 179, 8, 0.25);
+    border-radius: 10px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .candidates-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: #eab308;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+
+  .candidates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .candidate-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: var(--transition-micro);
+  }
+
+  .candidate-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .candidate-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .candidate-description {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .candidate-label {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    font-family: var(--font-mono, monospace);
+  }
+
+  .candidate-actions {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .candidate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition-micro);
+  }
+
+  .candidate-btn.confirm {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+  }
+
+  .candidate-btn.confirm:hover {
+    background: rgba(34, 197, 94, 0.35);
+    transform: scale(1.05);
+  }
+
+  .candidate-btn.deny {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .candidate-btn.deny:hover {
+    background: rgba(239, 68, 68, 0.3);
+    transform: scale(1.05);
+  }
+
+  .confirm-all-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    border-radius: 8px;
+    color: #22c55e;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .confirm-all-btn:hover {
+    background: rgba(34, 197, 94, 0.3);
+    border-color: rgba(34, 197, 94, 0.6);
+  }
+
+  /* Auto-detected banner (legacy fallback) */
   .auto-detected-banner {
     display: flex;
     align-items: center;

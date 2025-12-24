@@ -8,6 +8,8 @@ import { CAPDesignationService } from "$lib/features/cap-labeler/services/implem
 import { CAPLabelsFirebaseService } from "$lib/features/cap-labeler/services/implementations/CAPLabelsFirebaseService";
 import { SequenceLoadingService } from "$lib/features/cap-labeler/services/implementations/SequenceLoadingService";
 import { NavigationService } from "$lib/features/cap-labeler/services/implementations/NavigationService";
+import { SequenceFeatureExtractor } from "$lib/features/cap-labeler/services/implementations/SequenceFeatureExtractor";
+import { RuleBasedTagger } from "$lib/features/cap-labeler/services/implementations/RuleBasedTagger";
 import { CAPLabelerTypes } from "../types/cap-labeler.types";
 
 export const capLabelerModule = new ContainerModule(
@@ -41,6 +43,16 @@ export const capLabelerModule = new ContainerModule(
     options
       .bind(CAPLabelerTypes.INavigationService)
       .to(NavigationService)
+      .inSingletonScope();
+
+    options
+      .bind(CAPLabelerTypes.ISequenceFeatureExtractor)
+      .to(SequenceFeatureExtractor)
+      .inSingletonScope();
+
+    options
+      .bind(CAPLabelerTypes.IRuleBasedTagger)
+      .to(RuleBasedTagger)
       .inSingletonScope();
   }
 );

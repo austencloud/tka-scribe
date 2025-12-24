@@ -313,7 +313,72 @@
     };
 
     await capLabelerState.saveLabel(confirmedLabel);
-    capLabelerState.nextSequence();
+    // NOTE: Do NOT call nextSequence() here!
+    // When in "Needs Review" filter, the confirmed item is removed from the list,
+    // so the selection naturally moves to the next item. Calling nextSequence()
+    // would skip one item.
+  }
+
+  /**
+   * Confirm a specific candidate designation (add to confirmed designations)
+   */
+  async function handleConfirmCandidate(index: number) {
+    if (!currentSequence || !currentLabel || !currentLabel.candidateDesignations) return;
+
+    const candidates = [...currentLabel.candidateDesignations];
+    if (index < 0 || index >= candidates.length) return;
+
+    // Mark this candidate as confirmed
+    candidates[index] = { ...candidates[index], confirmed: true };
+
+    // Also add to the main designations array
+    const confirmedDesignation = candidates[index];
+    const updatedDesignations = [
+      ...(currentLabel.designations || []),
+      {
+        components: confirmedDesignation.components,
+        capType: confirmedDesignation.capType,
+        transformationIntervals: confirmedDesignation.transformationIntervals,
+      },
+    ];
+
+    // Check if all candidates have been processed
+    const allProcessed = candidates.every((c) => c.confirmed || c.denied);
+
+    const updatedLabel = {
+      ...currentLabel,
+      candidateDesignations: candidates,
+      designations: updatedDesignations,
+      needsVerification: !allProcessed, // Remove verification flag if all processed
+      labeledAt: new Date().toISOString(),
+    };
+
+    await capLabelerState.saveLabel(updatedLabel);
+  }
+
+  /**
+   * Deny a specific candidate designation (mark as not applicable)
+   */
+  async function handleDenyCandidate(index: number) {
+    if (!currentSequence || !currentLabel || !currentLabel.candidateDesignations) return;
+
+    const candidates = [...currentLabel.candidateDesignations];
+    if (index < 0 || index >= candidates.length) return;
+
+    // Mark this candidate as denied
+    candidates[index] = { ...candidates[index], denied: true };
+
+    // Check if all candidates have been processed
+    const allProcessed = candidates.every((c) => c.confirmed || c.denied);
+
+    const updatedLabel = {
+      ...currentLabel,
+      candidateDesignations: candidates,
+      needsVerification: !allProcessed, // Remove verification flag if all processed
+      labeledAt: new Date().toISOString(),
+    };
+
+    await capLabelerState.saveLabel(updatedLabel);
   }
 
   // Keyboard event handling (shift key for section selection)
@@ -413,6 +478,9 @@
           isFreeform={wholeState?.isFreeform ?? false}
           needsVerification={currentLabel?.needsVerification ?? false}
           autoDetectedDesignations={currentLabel?.designations ?? []}
+          candidateDesignations={currentLabel?.candidateDesignations ?? []}
+          autoDetectedBeatPairs={currentLabel?.beatPairs ?? []}
+          autoDetectedBeatPairGroups={currentLabel?.beatPairGroups ?? {}}
           onRemoveWholeDesignation={handleRemoveDesignation}
           onRemoveSectionDesignation={handleRemoveSection}
           onRemoveBeatPairDesignation={handleRemoveBeatPair}
@@ -421,6 +489,8 @@
           onMarkUnknown={handleMarkUnknown}
           onSaveAndNext={handleSaveAndNext}
           onConfirmAutoLabel={handleConfirmAutoLabel}
+          onConfirmCandidate={handleConfirmCandidate}
+          onDenyCandidate={handleDenyCandidate}
           canSave={(wholeState?.pendingDesignations.length ?? 0) > 0 ||
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||

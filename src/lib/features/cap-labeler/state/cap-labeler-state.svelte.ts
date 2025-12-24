@@ -50,16 +50,20 @@ class CAPLabelerStateManager {
   // PERSISTENCE
   // ============================================================
 
-  private loadPersistedState(): Partial<CAPLabelerStateData> | null {
+  private loadPersistedState(): Partial<CAPLabelerStateData> & { lastSequenceId?: string } | null {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
+      console.log("[CAPLabelerState] Raw localStorage:", stored);
       if (!stored) return null;
 
       const parsed = JSON.parse(stored);
+      console.log("[CAPLabelerState] Loaded persisted state:", parsed);
       return {
         filterMode: parsed.filterMode || "needsVerification",
         showStartPosition: parsed.showStartPosition ?? true,
         manualColumnCount: parsed.manualColumnCount ?? null,
+        labelingMode: parsed.labelingMode || "whole",
+        lastSequenceId: parsed.lastSequenceId || null,
       };
     } catch (error) {
       console.warn("[CAPLabelerState] Failed to load persisted state:", error);
@@ -69,11 +73,17 @@ class CAPLabelerStateManager {
 
   private persistState(): void {
     try {
+      // Get current sequence ID if available
+      const currentSeqId = this.currentSequence?.id || null;
+
       const stateToPersist = {
         filterMode: this.state.filterMode,
         showStartPosition: this.state.showStartPosition,
         manualColumnCount: this.state.manualColumnCount,
+        labelingMode: this.state.labelingMode,
+        lastSequenceId: currentSeqId,
       };
+      console.log("[CAPLabelerState] Persisting state:", stateToPersist);
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(stateToPersist));
     } catch (error) {
       console.warn("[CAPLabelerState] Failed to persist state:", error);
@@ -101,7 +111,7 @@ class CAPLabelerStateManager {
       filterMode: persisted?.filterMode || "needsVerification",
       notes: "",
       syncStatus: "idle",
-      labelingMode: "whole",
+      labelingMode: (persisted?.labelingMode as LabelingMode) || "whole",
       showExport: false,
       showStartPosition: persisted?.showStartPosition ?? true,
       manualColumnCount: persisted?.manualColumnCount ?? null,
@@ -109,6 +119,9 @@ class CAPLabelerStateManager {
       popstateHandler: null,
     };
   }
+
+  // Store the last sequence ID to restore after initialization
+  private lastSequenceIdToRestore: string | null = null;
 
   // ============================================================
   // GETTERS
@@ -224,48 +237,107 @@ class CAPLabelerStateManager {
     }
 
     try {
+      // Load persisted state to get last sequence ID
+      const persisted = this.loadPersistedState();
+      const lastSequenceId = persisted?.lastSequenceId;
+      const navigationService = this.getNavigationService();
+      const urlSeqId = navigationService?.getSequenceFromUrl();
+
+      // Store for deferred restoration after labels load
+      this.lastSequenceIdToRestore = urlSeqId || lastSequenceId || null;
+
       // Load sequences
       this.state.sequences = await sequenceService.loadSequences();
 
-      // Subscribe to labels from Firebase
+      // localStorage is the source of truth for filterMode (already loaded in getInitialState)
+      // Only use URL filter if localStorage didn't have one
+      if (!persisted?.filterMode) {
+        const urlFilter = navigationService?.getFilterFromUrl();
+        if (
+          urlFilter &&
+          ["all", "labeled", "unlabeled", "unknown", "needsVerification", "verified"].includes(urlFilter)
+        ) {
+          this.state.filterMode = urlFilter as FilterMode;
+          console.log(`[CAPLabelerState] Using URL filter (no localStorage): ${urlFilter}`);
+        }
+      } else {
+        console.log(`[CAPLabelerState] Using localStorage filter: ${persisted.filterMode}`);
+      }
+
+      // Subscribe to labels from Firebase - sequence restoration happens in callback
+      // because filteredSequences depends on labels being loaded
+      let isInitialLoad = true;
       this.state.unsubscribe = labelsService.subscribeToLabels((labels) => {
         this.state.labels = labels;
+        console.log(`[CAPLabelerState] Labels loaded: ${labels.size} labels`);
+
+        // Only restore sequence position on initial load, not on subsequent updates
+        if (isInitialLoad) {
+          isInitialLoad = false;
+          this.restoreSequencePosition(this.lastSequenceIdToRestore, urlSeqId !== null);
+        }
       });
-
-      // Handle URL navigation if present
-      const navigationService = this.getNavigationService();
-
-      // Restore filter mode from URL first (takes priority over localStorage)
-      const urlFilter = navigationService?.getFilterFromUrl();
-      if (
-        urlFilter &&
-        ["all", "labeled", "unlabeled", "unknown", "needsVerification"].includes(urlFilter)
-      ) {
-        this.state.filterMode = urlFilter as FilterMode;
-      }
-
-      // Then navigate to sequence if specified
-      const urlSeqId = navigationService?.getSequenceFromUrl();
-      if (urlSeqId && this.state.sequences.length > 0) {
-        this.navigateToSequenceId(urlSeqId);
-      }
-
-      // Update URL with current state (don't add to history on initial load)
-      if (navigationService && this.currentSequence) {
-        navigationService.updateUrlWithSequence(
-          this.currentSequence.id,
-          this.state.filterMode,
-          false // Don't add initial state to history
-        );
-      }
 
       // Set up popstate listener for browser back/forward navigation
       this.setupPopstateListener();
     } catch (error) {
       console.error("[CAPLabelerState] Failed to initialize:", error);
-    } finally {
       this.state.loading = false;
     }
+  }
+
+  /**
+   * Restore sequence position after labels are loaded
+   * Called from the labels subscription callback
+   */
+  private restoreSequencePosition(sequenceId: string | null, isFromUrl: boolean) {
+    const navigationService = this.getNavigationService();
+
+    if (sequenceId && this.state.sequences.length > 0) {
+      const targetSeq = this.circularSequences.find((s) => s.id === sequenceId);
+
+      if (targetSeq) {
+        const label = this.state.labels.get(targetSeq.word);
+        const needsVerification = label?.needsVerification === true;
+        const isVerified = label && !label.needsVerification;
+
+        // If from URL, adjust filter to show the sequence
+        // If from localStorage, only restore if sequence is in current filter
+        if (isFromUrl) {
+          // URL takes priority - adjust filter if needed
+          if (this.state.filterMode === "needsVerification" && !needsVerification) {
+            this.state.filterMode = "verified";
+          } else if (this.state.filterMode === "verified" && !isVerified) {
+            this.state.filterMode = "needsVerification";
+          }
+        }
+
+        const targetIndex = this.filteredSequences.findIndex((s) => s.id === sequenceId);
+        if (targetIndex >= 0) {
+          this.state.currentIndex = targetIndex;
+          console.log(`[CAPLabelerState] Restored sequence: ${sequenceId} (index ${targetIndex})`);
+        } else if (!isFromUrl) {
+          // localStorage sequence not in current filter - stay on first item
+          console.log(`[CAPLabelerState] Last sequence ${sequenceId} not in current filter (${this.state.filterMode}), staying on first item`);
+        }
+      }
+    }
+
+    // Update URL to match current state (don't add to history on initial load)
+    if (navigationService) {
+      navigationService.updateUrlWithSequence(
+        this.currentSequence?.id ?? null,
+        this.state.filterMode,
+        false // Don't add initial state to history
+      );
+      console.log(`[CAPLabelerState] Synced URL to filter: ${this.state.filterMode}, seq: ${this.currentSequence?.id}`);
+    }
+
+    // Clear the restore target
+    this.lastSequenceIdToRestore = null;
+
+    // Done loading
+    this.state.loading = false;
   }
 
   private setupPopstateListener() {
@@ -365,6 +437,7 @@ class CAPLabelerStateManager {
         this.currentSequence.id,
         this.state.filterMode
       );
+      this.persistState(); // Persist current sequence
     }
   }
 
@@ -381,6 +454,7 @@ class CAPLabelerStateManager {
         this.currentSequence.id,
         this.state.filterMode
       );
+      this.persistState(); // Persist current sequence
     }
   }
 
@@ -423,6 +497,8 @@ class CAPLabelerStateManager {
           this.state.filterMode
         );
       }
+      // Persist state with new sequence
+      this.persistState();
       console.log(
         `Navigated to sequence "${sequenceId}" (index ${targetIndex}, filter: ${this.state.filterMode})`
       );
@@ -441,6 +517,7 @@ class CAPLabelerStateManager {
   // ============================================================
 
   setFilterMode(mode: FilterMode) {
+    console.log(`[CAPLabelerState] setFilterMode called with: ${mode}`);
     this.state.filterMode = mode;
     this.state.currentIndex = 0; // Reset to first in filtered list
     this.persistState();
@@ -459,6 +536,7 @@ class CAPLabelerStateManager {
 
   setLabelingMode(mode: LabelingMode) {
     this.state.labelingMode = mode;
+    this.persistState();
   }
 
   setShowExport(show: boolean) {
