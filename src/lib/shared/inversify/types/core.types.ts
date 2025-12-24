@@ -51,6 +51,9 @@ export const CoreTypes = {
   IMainTabState: Symbol.for("IMainTabState"),
   IPerformanceMetricsState: Symbol.for("IPerformanceMetricsState"),
 
+  // Dashboard
+  IFollowingFeedService: Symbol.for("IFollowingFeedService"),
+
   // Library Services
   ITagService: Symbol.for("ITagService"),
 

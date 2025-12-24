@@ -187,13 +187,15 @@ export function tryResolve<T>(serviceIdentifier: symbol): T | null {
   }
 
   if (!_cachedContainer) {
+    console.warn("[tryResolve] No container available for", serviceIdentifier?.toString());
     return null;
   }
 
   try {
     return _cachedContainer.get<T>(serviceIdentifier);
-  } catch {
-    // Silent - no logging for optional services
+  } catch (error) {
+    // Log the actual error for debugging while still returning null
+    console.warn("[tryResolve] Failed to resolve:", serviceIdentifier?.toString(), error);
     return null;
   }
 }

@@ -435,78 +435,114 @@ export function getModuleDefinitions() {
 
 type HistoryState = { moduleId: ModuleId; sectionId?: string };
 
-function buildHash(moduleId: ModuleId, sectionId?: string) {
-  return sectionId ? `${moduleId}/${sectionId}` : moduleId;
+function buildPath(moduleId: ModuleId, sectionId?: string) {
+  return sectionId ? `/${moduleId}/${sectionId}` : `/${moduleId}`;
 }
 
 function replaceHistoryState(moduleId: ModuleId, sectionId?: string) {
   if (typeof window === "undefined") return;
   const url = new URL(window.location.href);
-  url.hash = buildHash(moduleId, sectionId);
+  url.pathname = buildPath(moduleId, sectionId);
+  // Clear any legacy hash fragments
+  url.hash = "";
   window.history.replaceState({ moduleId, sectionId }, "", url);
 }
 
 function pushHistoryState(moduleId: ModuleId, sectionId?: string) {
   if (typeof window === "undefined") return;
   const url = new URL(window.location.href);
-  url.hash = buildHash(moduleId, sectionId);
+  url.pathname = buildPath(moduleId, sectionId);
+  // Clear any legacy hash fragments
+  url.hash = "";
   window.history.pushState({ moduleId, sectionId }, "", url);
 }
 
 let historyInitialized = false;
 
 /**
- * Parse the URL hash and extract module/section IDs
- * Expected format: #moduleId or #moduleId/sectionId
+ * Parse the URL pathname and extract module/section IDs
+ * Expected format: /moduleId or /moduleId/sectionId
+ * Also handles legacy hash format for backwards compatibility
  */
-function parseHashNavigation(): {
+function parsePathNavigation(): {
   moduleId: ModuleId;
   sectionId?: string;
 } | null {
   if (typeof window === "undefined") return null;
 
-  const hash = window.location.hash;
-  if (!hash || hash === "#") return null;
+  // First try pathname (new format: /create/constructor)
+  const pathname = window.location.pathname;
+  if (pathname && pathname !== "/") {
+    // Remove leading slash and split by /
+    const parts = pathname.substring(1).split("/").filter(Boolean);
+    const moduleId = parts[0] as ModuleId;
+    const sectionId = parts[1];
 
-  // Remove leading # and split by /
-  const parts = hash.substring(1).split("/");
-  const moduleId = parts[0] as ModuleId;
-  const sectionId = parts[1];
-
-  // Validate module exists
-  const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
-  if (!moduleDefinition) return null;
-
-  // If section is provided, validate it exists for this module
-  if (sectionId) {
-    const validSection = moduleDefinition.sections.some(
-      (s) => s.id === sectionId
-    );
-    if (!validSection) {
-      // Module is valid but section isn't - return module only
+    // Validate module exists
+    const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
+    if (moduleDefinition) {
+      // If section is provided, validate it exists for this module
+      if (sectionId) {
+        const validSection = moduleDefinition.sections.some(
+          (s) => s.id === sectionId
+        );
+        if (!validSection) {
+          // Module is valid but section isn't - return module only
+          return { moduleId };
+        }
+        return { moduleId, sectionId };
+      }
       return { moduleId };
     }
-    return { moduleId, sectionId };
   }
 
-  return { moduleId };
+  // Fallback: check for legacy hash format (#create/constructor)
+  // This provides backwards compatibility for existing bookmarks
+  const hash = window.location.hash;
+  if (hash && hash !== "#") {
+    const parts = hash.substring(1).split("/");
+    const moduleId = parts[0] as ModuleId;
+    const sectionId = parts[1];
+
+    const moduleDefinition = MODULE_DEFINITIONS.find((m) => m.id === moduleId);
+    if (moduleDefinition) {
+      if (sectionId) {
+        const validSection = moduleDefinition.sections.some(
+          (s) => s.id === sectionId
+        );
+        if (!validSection) {
+          return { moduleId };
+        }
+        return { moduleId, sectionId };
+      }
+      return { moduleId };
+    }
+  }
+
+  return null;
 }
 
 export function initializeNavigationHistory() {
   if (historyInitialized || typeof window === "undefined") return;
   historyInitialized = true;
 
-  // First, parse the URL hash to see if user navigated directly to a specific module/tab
-  const hashNav = parseHashNavigation();
-  if (hashNav) {
+  // First, parse the URL pathname to see if user navigated directly to a specific module/tab
+  // Also handles legacy hash URLs for backwards compatibility
+  const pathNav = parsePathNavigation();
+  if (pathNav) {
     // URL has a valid module/section - navigate to it (overrides localStorage)
-    if (hashNav.moduleId !== navigationState.currentModule) {
-      navigationState.setCurrentModule(hashNav.moduleId, hashNav.sectionId);
+    if (pathNav.moduleId !== navigationState.currentModule) {
+      navigationState.setCurrentModule(pathNav.moduleId, pathNav.sectionId);
     } else if (
-      hashNav.sectionId &&
-      hashNav.sectionId !== navigationState.activeTab
+      pathNav.sectionId &&
+      pathNav.sectionId !== navigationState.activeTab
     ) {
-      navigationState.setActiveTab(hashNav.sectionId);
+      navigationState.setActiveTab(pathNav.sectionId);
+    }
+
+    // If user came from legacy hash URL, update to new path format
+    if (window.location.hash && window.location.hash !== "#") {
+      replaceHistoryState(pathNav.moduleId, pathNav.sectionId);
     }
   }
 

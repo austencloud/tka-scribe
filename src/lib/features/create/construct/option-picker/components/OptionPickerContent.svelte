@@ -45,9 +45,9 @@ Uses organizer and sizer services for section grouping and sizing.
   let sizingStable = $state(false);
 
   // Layout thresholds
-  // Wide layout (>= 900px): 8-column grouped vertical layout
-  // Narrow layout (< 900px): Horizontal swipe layout between type sections
-  const WIDE_LAYOUT_THRESHOLD = 900;
+  // Wide layout (>= 750px): 8-column grouped vertical layout
+  // Narrow layout (< 750px): Horizontal swipe layout between type sections
+  const WIDE_LAYOUT_THRESHOLD = 750;
   const shouldUseWideLayout = $derived(containerWidth >= WIDE_LAYOUT_THRESHOLD);
 
   // Column count: 8 for wide, 4 for narrow/swipe
@@ -89,7 +89,7 @@ Uses organizer and sizer services for section grouping and sizing.
   const isMobileStackedLayout = $derived(() => !isSideBySideLayout());
 
   // ==================== NARROW LAYOUT DECISIONS ====================
-  // These are evaluated when container is narrow (< 900px) OR in mobile stacked layout
+  // These are evaluated when container is narrow (< 750px) OR in mobile stacked layout
 
   // Use compact 4x4 grid for continuous mode when in mobile/narrow layout
   // Continuous options are typically 16 or fewer, fits nicely in 4x4
@@ -103,7 +103,7 @@ Uses organizer and sizer services for section grouping and sizing.
     const sections = organizedSections();
     // Use swipe when:
     // - In mobile stacked layout (always use swipe for mobile)
-    // - OR not using wide layout (container < 900px)
+    // - OR not using wide layout (container < 750px)
     // - AND not using compact 4x4 (continuous mode)
     // - AND have multiple sections to swipe between
     const shouldSwipe = isMobileStackedLayout() || !shouldUseWideLayout;
@@ -293,7 +293,7 @@ Uses organizer and sizer services for section grouping and sizing.
     </div>
   {:else if shouldUseWideLayout && !isMobileStackedLayout()}
     <!-- ==================== WIDE DESKTOP LAYOUT ==================== -->
-    <!-- Wide container (>= 900px): 8-column grouped vertical layout -->
+    <!-- Wide container (>= 750px): 8-column grouped vertical layout -->
     <div class="sections-container">
       <!-- Types 1-3: Individual vertical sections -->
       {#each types123Sections() as section (section.title)}

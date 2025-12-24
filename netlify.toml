@@ -187,4 +187,152 @@
   [headers.values]
     Cache-Control = "public, max-age=86400"
 
-# Note: Redirects handled by SvelteKit adapter - use static/_redirects if needed
+# ============================================================================
+# SPA ROUTING - Rewrite module paths to index.html for client-side routing
+# ============================================================================
+# These rewrites (200 status) serve the SPA for module paths while preserving the URL.
+# Order matters: More specific routes should come before catch-all patterns.
+
+# Module paths without tabs
+[[redirects]]
+  from = "/dashboard"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/create"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/discover"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/learn"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/compose"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/train"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/feedback"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/settings"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/library"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/collect"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3d-viewer"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cap-labeler"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tag-reviewer"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ml-training"
+  to = "/index.html"
+  status = 200
+
+# Module paths with tabs (e.g., /create/constructor, /discover/gallery)
+[[redirects]]
+  from = "/dashboard/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/create/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/discover/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/learn/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/compose/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/train/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/feedback/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/settings/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/library/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/collect/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/3d-viewer/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cap-labeler/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tag-reviewer/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ml-training/*"
+  to = "/index.html"
+  status = 200
+
+# Note: /admin, /sequence, /profile, /auth routes are handled by SvelteKit file-based routing

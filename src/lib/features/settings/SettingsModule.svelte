@@ -362,13 +362,13 @@
   }
 
   .settings-module-body {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    overflow: hidden; /* Let children handle their own scrolling */
     padding: clamp(8px, 2vw, 16px);
     min-height: 0;
-    container-type: size;
-    container-name: settings-module-body;
   }
 
   .settings-module-body::-webkit-scrollbar {
@@ -388,16 +388,19 @@
     border-radius: 3px;
   }
 
-  /* Panel - content card */
+  /* Panel - content card - fills available space, allows internal scrolling */
   .panel {
     border-radius: 16px;
     /* Reduced padding to maximize grid space */
     padding: clamp(6px, 1.5vw, 12px);
     min-width: 0;
-    /* Must have height for child tabs to use height: 100% */
-    height: 100%;
+    width: 100%;
+    /* Flex to fill available height, min-height: 0 allows shrinking */
+    flex: 1 1 0%;
+    min-height: 0;
     display: flex;
     flex-direction: column;
+    align-items: stretch;
   }
 
   /* Loading state */

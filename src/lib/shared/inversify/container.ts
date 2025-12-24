@@ -49,6 +49,9 @@ if (import.meta.hot) {
           "render",
           "pictograph",
           "admin",
+          "feedback",
+          "share",
+          "community",
         ].includes(module)
     );
 
@@ -286,7 +289,7 @@ export async function loadCriticalModules(): Promise<void> {
 }
 
 /**
- * TIER 2: Load shared service modules (rendering, pictographs, admin)
+ * TIER 2: Load shared service modules (rendering, pictographs, admin, share)
  * ⏱️ Non-blocking - Loads in background while user reads content
  * Only truly shared modules that are needed across ALL features
  */
@@ -303,29 +306,40 @@ export async function loadSharedModules(): Promise<void> {
   tier2Promise = (async () => {
     try {
       // Only load modules that are truly needed everywhere
+      // NOTE: shareModule is included because CreateModuleInitializationService
+      // (in build.module) depends on IShareService - must be available for HMR recovery
+      // NOTE: communityModule is included because Dashboard's FollowingFeedWidget needs it
       const [
         { renderModule },
         { pictographModule },
         { adminModule },
         { feedbackModule },
+        { shareModule },
+        { communityModule },
       ] = await Promise.all([
         import("./modules/render.module"),
         import("./modules/pictograph.module"),
         import("./modules/admin.module"),
         import("./modules/feedback.module"),
+        import("./modules/share.module"),
+        import("./modules/community.module"),
       ]);
 
       await container.load(
         renderModule,
         pictographModule,
         adminModule,
-        feedbackModule
+        feedbackModule,
+        shareModule,
+        communityModule
       );
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
       loadedModules.add("admin");
       loadedModules.add("feedback");
+      loadedModules.add("share");
+      loadedModules.add("community");
       tier2Loaded = true;
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
@@ -386,10 +400,12 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     // Load only the modules needed for each feature
     switch (feature) {
       case "create":
-        // Create needs build (create), share, animator, and gamification
-        // IMPORTANT: share must load BEFORE build because CreateModuleInitializationService
-        // (in build.module) depends on IShareService (in share.module)
-        await loadIfNeeded("share", () => import("./modules/share.module"));
+        // Create needs build (create), animator, and gamification
+        // NOTE: share is loaded in Tier 2, so we must wait for Tier 2 to complete
+        // before loading build.module (which depends on IShareService)
+        if (tier2Promise) {
+          await tier2Promise;
+        }
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),
@@ -468,7 +484,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "about":
       case "dashboard":
-        // These modules use no additional DI services
+        // About and Dashboard use no additional DI services beyond Tier 2
+        // (community module is loaded in Tier 2 for Dashboard's FollowingFeedWidget)
         break;
 
       case "feedback":
@@ -501,7 +518,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "share":
-        await loadIfNeeded("share", () => import("./modules/share.module"));
+        // Share is now loaded in Tier 2, just wait for it to complete
+        if (tier2Promise) {
+          await tier2Promise;
+        }
         break;
 
       case "gamification":
@@ -530,6 +550,17 @@ export async function loadFeatureModule(feature: string): Promise<void> {
           "cap-labeler",
           () => import("./modules/cap-labeler.module")
         );
+        break;
+
+      case "3d-viewer":
+        // 3D viewer needs discover (for sequence browser) and animation-3d services
+        await Promise.all([
+          loadIfNeeded("discover", () => import("./modules/discover.module")),
+          loadIfNeeded(
+            "animation-3d",
+            () => import("../../shared/3d-animation/inversify/animation-3d.module")
+          ),
+        ]);
         break;
 
       default:

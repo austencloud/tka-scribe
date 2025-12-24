@@ -77,6 +77,9 @@ export interface AppSettings {
     turnNumbers?: boolean;
     nonRadialPoints?: boolean;
   };
+
+  // Community/Privacy Settings
+  favoritesPublic?: boolean; // Whether favorites are visible to followers (default: true)
 }
 
 /**

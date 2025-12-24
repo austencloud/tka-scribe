@@ -46,6 +46,8 @@ export type ActivityEventType =
   | "user_unfollow"
   | "sequence_like"
   | "sequence_unlike"
+  | "sequence_favorite"
+  | "sequence_unfavorite"
   // Learn events
   | "lesson_start"
   | "lesson_complete"

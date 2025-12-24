@@ -295,7 +295,8 @@ export function createTagReviewerState() {
 		const existingTag = review.suggestedTags[tagIndex];
 		if (!existingTag) return;
 
-		review.suggestedTags[tagIndex] = {
+		// Create new tag with updated state
+		const updatedTag: ReviewableTag = {
 			tag: existingTag.tag,
 			category: existingTag.category,
 			confidence: existingTag.confidence,
@@ -306,9 +307,19 @@ export function createTagReviewerState() {
 			reviewedAt: new Date().toISOString(),
 		};
 
-		updateReviewStatus(review);
-		// Trigger Svelte reactivity by reassigning the Map
-		reviews = new Map(reviews);
+		// Create a NEW review object (not mutate) for proper reactivity
+		const updatedReview: SequenceTagReview = {
+			...review,
+			suggestedTags: review.suggestedTags.map((t, i) =>
+				i === tagIndex ? updatedTag : t
+			),
+		};
+
+		updateReviewStatus(updatedReview);
+		// Set the new review object in a new Map for full reactivity
+		const newReviews = new Map(reviews);
+		newReviews.set(currentSequence.word, updatedReview);
+		reviews = newReviews;
 	}
 
 	function rejectTag(tagIndex: number, reason?: string) {
@@ -320,7 +331,8 @@ export function createTagReviewerState() {
 		const existingTag = review.suggestedTags[tagIndex];
 		if (!existingTag) return;
 
-		review.suggestedTags[tagIndex] = {
+		// Create new tag with updated state
+		const updatedTag: ReviewableTag = {
 			tag: existingTag.tag,
 			category: existingTag.category,
 			confidence: existingTag.confidence,
@@ -332,9 +344,19 @@ export function createTagReviewerState() {
 			reviewNote: reason,
 		};
 
-		updateReviewStatus(review);
-		// Trigger Svelte reactivity by reassigning the Map
-		reviews = new Map(reviews);
+		// Create a NEW review object (not mutate) for proper reactivity
+		const updatedReview: SequenceTagReview = {
+			...review,
+			suggestedTags: review.suggestedTags.map((t, i) =>
+				i === tagIndex ? updatedTag : t
+			),
+		};
+
+		updateReviewStatus(updatedReview);
+		// Set the new review object in a new Map for full reactivity
+		const newReviews = new Map(reviews);
+		newReviews.set(currentSequence.word, updatedReview);
+		reviews = newReviews;
 	}
 
 	function resetTag(tagIndex: number) {
@@ -346,7 +368,8 @@ export function createTagReviewerState() {
 		const existingTag = review.suggestedTags[tagIndex];
 		if (!existingTag) return;
 
-		review.suggestedTags[tagIndex] = {
+		// Create new tag with reset state
+		const updatedTag: ReviewableTag = {
 			tag: existingTag.tag,
 			category: existingTag.category,
 			confidence: existingTag.confidence,
@@ -358,30 +381,47 @@ export function createTagReviewerState() {
 			reviewNote: undefined,
 		};
 
-		updateReviewStatus(review);
-		// Trigger Svelte reactivity by reassigning the Map
-		reviews = new Map(reviews);
+		// Create a NEW review object (not mutate) for proper reactivity
+		const updatedReview: SequenceTagReview = {
+			...review,
+			suggestedTags: review.suggestedTags.map((t, i) =>
+				i === tagIndex ? updatedTag : t
+			),
+		};
+
+		updateReviewStatus(updatedReview);
+		// Set the new review object in a new Map for full reactivity
+		const newReviews = new Map(reviews);
+		newReviews.set(currentSequence.word, updatedReview);
+		reviews = newReviews;
 	}
 
 	function addCustomTag(tag: string, category: string) {
 		if (!currentSequence) return;
 
-		let review = reviews.get(currentSequence.word);
-		if (!review) {
-			review = {
-				word: currentSequence.word,
-				suggestedTags: [],
-				customTags: [],
-				reviewedAt: new Date().toISOString(),
-				isFullyReviewed: false,
-			};
-			reviews.set(currentSequence.word, review);
-		}
+		const existingReview = reviews.get(currentSequence.word);
 
-		if (!review.customTags.includes(tag)) {
-			review.customTags.push(tag);
-			// Trigger Svelte reactivity by reassigning the Map
-			reviews = new Map(reviews);
+		// Create a NEW review object with the added tag
+		const updatedReview: SequenceTagReview = existingReview
+			? {
+					...existingReview,
+					customTags: existingReview.customTags.includes(tag)
+						? existingReview.customTags
+						: [...existingReview.customTags, tag],
+			  }
+			: {
+					word: currentSequence.word,
+					suggestedTags: [],
+					customTags: [tag],
+					reviewedAt: new Date().toISOString(),
+					isFullyReviewed: false,
+			  };
+
+		// Only update if tag was actually added
+		if (!existingReview?.customTags.includes(tag)) {
+			const newReviews = new Map(reviews);
+			newReviews.set(currentSequence.word, updatedReview);
+			reviews = newReviews;
 		}
 	}
 
@@ -391,9 +431,15 @@ export function createTagReviewerState() {
 		const review = reviews.get(currentSequence.word);
 		if (!review) return;
 
-		review.customTags = review.customTags.filter((t) => t !== tag);
-		// Trigger Svelte reactivity by reassigning the Map
-		reviews = new Map(reviews);
+		// Create a NEW review object without the tag
+		const updatedReview: SequenceTagReview = {
+			...review,
+			customTags: review.customTags.filter((t) => t !== tag),
+		};
+
+		const newReviews = new Map(reviews);
+		newReviews.set(currentSequence.word, updatedReview);
+		reviews = newReviews;
 	}
 
 	function confirmAllTags() {
@@ -402,15 +448,20 @@ export function createTagReviewerState() {
 		const review = reviews.get(currentSequence.word);
 		if (!review) return;
 
-		review.suggestedTags = review.suggestedTags.map((tag) => ({
-			...tag,
-			reviewState: "confirmed" as const,
-			reviewedAt: new Date().toISOString(),
-		}));
+		// Create a NEW review object with all tags confirmed
+		const updatedReview: SequenceTagReview = {
+			...review,
+			suggestedTags: review.suggestedTags.map((tag) => ({
+				...tag,
+				reviewState: "confirmed" as const,
+				reviewedAt: new Date().toISOString(),
+			})),
+		};
 
-		updateReviewStatus(review);
-		// Trigger Svelte reactivity by reassigning the Map
-		reviews = new Map(reviews);
+		updateReviewStatus(updatedReview);
+		const newReviews = new Map(reviews);
+		newReviews.set(currentSequence.word, updatedReview);
+		reviews = newReviews;
 	}
 
 	function updateReviewStatus(review: SequenceTagReview) {
