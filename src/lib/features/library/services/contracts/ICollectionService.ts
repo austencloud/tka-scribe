@@ -225,4 +225,17 @@ export interface ICollectionService {
     userId: string,
     collectionId: string
   ): Promise<LibrarySequence[]>;
+
+  // ============================================================
+  // PUBLIC FAVORITES (for Following Feed)
+  // ============================================================
+
+  /**
+   * Get another user's favorite sequence IDs if their favorites are public
+   * Used by the Following Feed to show what people you follow have favorited
+   * Respects the user's favoritesPublic privacy setting
+   * @param userId The user whose favorites to fetch
+   * @returns Array of sequence IDs, or empty array if favorites are private
+   */
+  getUserPublicFavoriteIds(userId: string): Promise<string[]>;
 }

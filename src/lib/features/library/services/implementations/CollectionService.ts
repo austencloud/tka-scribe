@@ -26,6 +26,8 @@ import {
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
+import { tryResolve, TYPES } from "$lib/shared/inversify/di";
+import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
 import type { ICollectionService } from "../contracts/ICollectionService";
 import type {
   LibraryCollection,
@@ -551,10 +553,30 @@ export class CollectionService implements ICollectionService {
         favoritesCollection.id,
         sequenceId
       );
+      // Log unfavorite event
+      this.logFavoriteAction(sequenceId, false);
       return false;
     } else {
       await this.addSequenceToCollection(favoritesCollection.id, sequenceId);
+      // Log favorite event
+      this.logFavoriteAction(sequenceId, true);
       return true;
+    }
+  }
+
+  /**
+   * Log a favorite/unfavorite action to the activity log
+   */
+  private logFavoriteAction(sequenceId: string, isFavorite: boolean): void {
+    const activityService = tryResolve<IActivityLogService>(
+      TYPES.IActivityLogService
+    );
+    if (activityService) {
+      activityService.log(
+        isFavorite ? "sequence_favorite" : "sequence_unfavorite",
+        "social",
+        { sequenceId }
+      );
     }
   }
 
@@ -643,5 +665,45 @@ export class CollectionService implements ICollectionService {
     }
 
     return sequences;
+  }
+
+  // ============================================================
+  // PUBLIC FAVORITES (for Following Feed)
+  // ============================================================
+
+  /**
+   * Get another user's favorite sequence IDs if their favorites are public
+   * Used by the Following Feed to show what people you follow have favorited
+   * @param userId - The user whose favorites to fetch
+   * @returns Array of sequence IDs, or empty array if favorites are private
+   */
+  async getUserPublicFavoriteIds(userId: string): Promise<string[]> {
+    const firestore = await getFirestoreInstance();
+
+    // Check if user has public favorites enabled
+    const settingsRef = doc(firestore, `users/${userId}/settings/preferences`);
+    const settingsSnap = await getDoc(settingsRef);
+
+    // Default to true if setting doesn't exist (opt-out privacy model)
+    const settings = settingsSnap.exists() ? settingsSnap.data() : {};
+    const favoritesPublic = settings["favoritesPublic"] ?? true;
+
+    if (!favoritesPublic) {
+      return [];
+    }
+
+    // Get the favorites collection
+    const favoritesId = SYSTEM_COLLECTION_IDS["favorites"];
+    const favoritesRef = doc(
+      firestore,
+      getUserCollectionPath(userId, favoritesId)
+    );
+    const favoritesSnap = await getDoc(favoritesRef);
+
+    if (!favoritesSnap.exists()) {
+      return [];
+    }
+
+    return favoritesSnap.data()["sequenceIds"] ?? [];
   }
 }
