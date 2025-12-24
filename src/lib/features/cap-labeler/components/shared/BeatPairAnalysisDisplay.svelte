@@ -94,6 +94,8 @@
         <h4 class="section-title">Detailed Pairs</h4>
         <div class="pairs-list">
           {#each beatPairs as pair}
+            {@const primaryTransform = pair.detectedTransformations[0] || "UNKNOWN"}
+            {@const alternatives = (pair.allValidTransformations || []).filter(t => t !== primaryTransform)}
             <div class="pair-row">
               <div class="pair-beats">
                 <span class="beat-num">{pair.keyBeat}</span>
@@ -101,16 +103,25 @@
                 <span class="beat-num">{pair.correspondingBeat}</span>
               </div>
               <div class="pair-transforms">
-                {#each pair.detectedTransformations as transform, i}
-                  <span
-                    class="transform-tag"
-                    class:primary={i === 0}
-                    class:alternative={i > 0}
-                    style="--tag-color: {getColorForPattern(transform)}"
-                  >
-                    {transform}
-                  </span>
-                {/each}
+                <!-- Primary transformation -->
+                <span
+                  class="transform-tag primary"
+                  style="--tag-color: {getColorForPattern(primaryTransform)}"
+                >
+                  {primaryTransform}
+                </span>
+                <!-- Alternative transformations (also valid) -->
+                {#if alternatives.length > 0}
+                  <span class="also-label">also:</span>
+                  {#each alternatives as alt}
+                    <span
+                      class="transform-tag alternative"
+                      style="--tag-color: {getColorForPattern(alt)}"
+                    >
+                      {alt}
+                    </span>
+                  {/each}
+                {/if}
               </div>
             </div>
           {/each}
@@ -280,5 +291,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--muted-foreground);
     font-style: italic;
+  }
+
+  .also-label {
+    font-size: 9px;
+    color: var(--muted-foreground);
+    font-style: italic;
+    opacity: 0.7;
+    margin-left: 4px;
   }
 </style>

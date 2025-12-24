@@ -6,7 +6,10 @@ import type { BeatData } from "$lib/features/create/shared/domain/models/BeatDat
 export interface BeatPairRelationship {
   keyBeat: number;
   correspondingBeat: number;
-  detectedTransformations: string[]; // e.g., ["FLIPPED", "ROTATED + SWAPPED"]
+  /** Primary transformation (contextual, after priority filtering) */
+  detectedTransformations: string[]; // e.g., ["ROTATED 180+SWAPPED"]
+  /** All valid transformations this pair satisfies (before filtering) */
+  allValidTransformations?: string[]; // e.g., ["ROTATED 180+SWAPPED", "MIRRORED+INVERTED"]
   confirmedTransformation?: string; // User-selected interpretation
 }
 

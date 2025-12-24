@@ -119,6 +119,7 @@ interface InternalBeatPair {
   correspondingBeat: number;
   rawTransformations: string[];
   detectedTransformations: string[];
+  allValidTransformations: string[]; // All formatted transformations before priority filtering
 }
 
 interface CandidateInfo {
@@ -511,13 +512,14 @@ function generateHalvedBeatPairs(beats: ExtractedBeat[]): InternalBeatPair[] {
     const beat1 = beats[i]!;
     const beat2 = beats[halfLength + i]!;
     const rawTransformations = compareBeatPair(beat1, beat2);
-    const formattedTransformations = formatBeatPairTransformations(rawTransformations);
+    const { primary, all } = formatBeatPairTransformations(rawTransformations);
 
     beatPairs.push({
       keyBeat: beat1.beatNumber,
       correspondingBeat: beat2.beatNumber,
       rawTransformations,
-      detectedTransformations: formattedTransformations.length > 0 ? formattedTransformations : ["UNKNOWN"],
+      detectedTransformations: primary.length > 0 ? primary : ["UNKNOWN"],
+      allValidTransformations: all.length > 0 ? all : ["UNKNOWN"],
     });
   }
 
@@ -537,13 +539,14 @@ function generateQuarteredBeatPairs(beats: ExtractedBeat[]): InternalBeatPair[] 
     const beat1 = beats[i]!;
     const beat2 = beats[(i + quarterLength) % beats.length]!;
     const rawTransformations = compareBeatPair(beat1, beat2);
-    const formattedTransformations = formatBeatPairTransformations(rawTransformations);
+    const { primary, all } = formatBeatPairTransformations(rawTransformations);
 
     beatPairs.push({
       keyBeat: beat1.beatNumber,
       correspondingBeat: beat2.beatNumber,
       rawTransformations,
-      detectedTransformations: formattedTransformations.length > 0 ? formattedTransformations : ["UNKNOWN"],
+      detectedTransformations: primary.length > 0 ? primary : ["UNKNOWN"],
+      allValidTransformations: all.length > 0 ? all : ["UNKNOWN"],
     });
   }
 
@@ -572,15 +575,47 @@ function findAllCommonTransformations(beatPairs: InternalBeatPair[]): string[] {
 }
 
 /**
+ * Format a single raw transformation into human-readable string
+ */
+function formatSingleTransformation(raw: string): string {
+  let formatted = raw.toUpperCase();
+  // Format compound transformations
+  formatted = formatted.replace(/ROTATED_90_CCW_SWAPPED_INVERTED/, "ROTATED_90_CCW+SWAPPED+INVERTED");
+  formatted = formatted.replace(/ROTATED_90_CW_SWAPPED_INVERTED/, "ROTATED_90_CW+SWAPPED+INVERTED");
+  formatted = formatted.replace(/ROTATED_180_SWAPPED_INVERTED/, "ROTATED_180+SWAPPED+INVERTED");
+  formatted = formatted.replace(/ROTATED_90_CCW_INVERTED/, "ROTATED_90_CCW+INVERTED");
+  formatted = formatted.replace(/ROTATED_90_CW_INVERTED/, "ROTATED_90_CW+INVERTED");
+  formatted = formatted.replace(/ROTATED_180_INVERTED/, "ROTATED_180+INVERTED");
+  formatted = formatted.replace(/ROTATED_90_CCW_SWAPPED/, "ROTATED_90_CCW+SWAPPED");
+  formatted = formatted.replace(/ROTATED_90_CW_SWAPPED/, "ROTATED_90_CW+SWAPPED");
+  formatted = formatted.replace(/ROTATED_180_SWAPPED/, "ROTATED_180+SWAPPED");
+  formatted = formatted.replace(/FLIPPED_INVERTED/, "FLIPPED+INVERTED");
+  formatted = formatted.replace(/MIRRORED_INVERTED/, "MIRRORED+INVERTED");
+  formatted = formatted.replace(/MIRRORED_SWAPPED/, "MIRRORED+SWAPPED");
+  formatted = formatted.replace(/_/g, " ");
+  return formatted;
+}
+
+/**
  * Format raw transformations into human-readable strings.
+ * Returns both:
+ * - primary: The highest-priority transformation after filtering
+ * - all: All valid transformations (formatted) before priority filtering
  *
  * When both a base transformation and its inverted variant are present
- * (e.g., "rotated_180" and "rotated_180_inverted"), prefer the inverted one.
- * This happens when noRotation→noRotation, where both are equally valid
- * (inversion of 0 turns = 0 turns), but inverted is more specific.
+ * (e.g., "rotated_180" and "rotated_180_inverted"), prefer the inverted one
+ * for the primary, but include both in all.
  */
-function formatBeatPairTransformations(rawTransformations: string[]): string[] {
-  if (rawTransformations.length === 0) return [];
+function formatBeatPairTransformations(rawTransformations: string[]): { primary: string[]; all: string[] } {
+  if (rawTransformations.length === 0) return { primary: [], all: [] };
+
+  // Format ALL transformations first (before any filtering)
+  const allFormatted = rawTransformations
+    .filter((t) => t !== "repeated") // Exclude "repeated" from display
+    .map(formatSingleTransformation);
+
+  // Remove duplicates from all
+  const allUnique = [...new Set(allFormatted)];
 
   // When both base and inverted variants are present, prefer inverted (more specific)
   // This handles noRotation cases where both are equally valid
@@ -593,7 +628,7 @@ function formatBeatPairTransformations(rawTransformations: string[]): string[] {
     { base: "mirrored", inverted: "mirrored_inverted" },
   ];
 
-  // Remove base variants when inverted variant is also present
+  // Remove base variants when inverted variant is also present (for primary only)
   const filtered = rawTransformations.filter((t) => {
     for (const pair of preferInverted) {
       if (t === pair.base && transformationSet.has(pair.inverted)) {
@@ -610,25 +645,11 @@ function formatBeatPairTransformations(rawTransformations: string[]): string[] {
   });
 
   const first = sorted[0];
-  if (!first) return [];
+  if (!first) return { primary: [], all: allUnique };
 
-  let primary = first.toUpperCase();
-  // Format compound transformations
-  primary = primary.replace(/ROTATED_90_CCW_SWAPPED_INVERTED/, "ROTATED_90_CCW+SWAPPED+INVERTED");
-  primary = primary.replace(/ROTATED_90_CW_SWAPPED_INVERTED/, "ROTATED_90_CW+SWAPPED+INVERTED");
-  primary = primary.replace(/ROTATED_180_SWAPPED_INVERTED/, "ROTATED_180+SWAPPED+INVERTED");
-  primary = primary.replace(/ROTATED_90_CCW_INVERTED/, "ROTATED_90_CCW+INVERTED");
-  primary = primary.replace(/ROTATED_90_CW_INVERTED/, "ROTATED_90_CW+INVERTED");
-  primary = primary.replace(/ROTATED_180_INVERTED/, "ROTATED_180+INVERTED");
-  primary = primary.replace(/ROTATED_90_CCW_SWAPPED/, "ROTATED_90_CCW+SWAPPED");
-  primary = primary.replace(/ROTATED_90_CW_SWAPPED/, "ROTATED_90_CW+SWAPPED");
-  primary = primary.replace(/ROTATED_180_SWAPPED/, "ROTATED_180+SWAPPED");
-  primary = primary.replace(/FLIPPED_INVERTED/, "FLIPPED+INVERTED");
-  primary = primary.replace(/MIRRORED_INVERTED/, "MIRRORED+INVERTED");
-  primary = primary.replace(/MIRRORED_SWAPPED/, "MIRRORED+SWAPPED");
-  primary = primary.replace(/_/g, " ");
+  const primary = formatSingleTransformation(first);
 
-  return [primary];
+  return { primary: [primary], all: allUnique };
 }
 
 /**
@@ -826,6 +847,34 @@ function groupBeatPairsByPattern(beatPairs: InternalBeatPair[]): BeatPairGroups 
 }
 
 /**
+ * Re-prioritize beat pairs based on common transformations.
+ * If a transformation is shared by ALL pairs, it should be the primary for all.
+ * This ensures consistency: if the whole sequence is "rotated_180_swapped",
+ * each pair should show that as primary, even if other transformations are also valid.
+ */
+function reprioritizeBeatPairs(beatPairs: InternalBeatPair[]): void {
+  if (beatPairs.length === 0) return;
+
+  // Find transformations common to ALL pairs (using raw transformations)
+  const commonRaw = findAllCommonTransformations(beatPairs);
+  if (commonRaw.length === 0) return;
+
+  // Get the highest-priority common transformation
+  const primaryCommon = commonRaw[0];
+  if (!primaryCommon || primaryCommon === "repeated") return;
+
+  const formattedCommon = formatSingleTransformation(primaryCommon);
+
+  // Update each pair: if it has this common transformation, make it the primary
+  for (const pair of beatPairs) {
+    // Check if this pair has the common transformation in its valid list
+    if (pair.allValidTransformations.includes(formattedCommon)) {
+      pair.detectedTransformations = [formattedCommon];
+    }
+  }
+}
+
+/**
  * Convert internal beat pairs to the public interface
  */
 function toPublicBeatPairs(internal: InternalBeatPair[]): BeatPairRelationship[] {
@@ -833,6 +882,7 @@ function toPublicBeatPairs(internal: InternalBeatPair[]): BeatPairRelationship[]
     keyBeat: p.keyBeat,
     correspondingBeat: p.correspondingBeat,
     detectedTransformations: p.detectedTransformations,
+    allValidTransformations: p.allValidTransformations,
   }));
 }
 
@@ -920,6 +970,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 
     // Generate halved beat pairs (always needed)
     const halvedBeatPairs = generateHalvedBeatPairs(beats);
+    // Re-prioritize based on common transformations (whole-sequence context)
+    reprioritizeBeatPairs(halvedBeatPairs);
     const halvedBeatPairGroups = groupBeatPairsByPattern(halvedBeatPairs);
 
     // Detect rotation direction for quartered sequences
@@ -933,6 +985,8 @@ export class CAPDetectionService implements ICAPDetectionService {
     // ============================================================
     if (beats.length >= 4 && beats.length % 4 === 0) {
       const quarteredBeatPairs = generateQuarteredBeatPairs(beats);
+      // Re-prioritize based on common transformations (whole-sequence context)
+      reprioritizeBeatPairs(quarteredBeatPairs);
       const allQuarteredCommon = findAllCommonTransformations(quarteredBeatPairs);
 
       console.log("[CAPDetectionService] Quartered analysis:", {
