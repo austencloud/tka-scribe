@@ -39,6 +39,7 @@
     onConfirmAutoLabel?: () => void;
     onConfirmCandidate?: (index: number) => void;
     onDenyCandidate?: (index: number) => void;
+    onConfirmAllCandidates?: () => void;
     canSave: boolean;
   }
 
@@ -61,6 +62,7 @@
     onConfirmAutoLabel,
     onConfirmCandidate,
     onDenyCandidate,
+    onConfirmAllCandidates,
     canSave,
   }: Props = $props();
 
@@ -93,6 +95,16 @@
   const pendingCandidates = $derived(
     candidateDesignations.filter((c) => !c.confirmed && !c.denied)
   );
+
+  // Debug logging
+  $effect(() => {
+    console.log("[DesignationsPanel] Props update:", {
+      needsVerification,
+      candidateCount: candidateDesignations.length,
+      pendingCount: pendingCandidates.length,
+      candidates: candidateDesignations.map(c => c.label),
+    });
+  });
 
   function formatBeatPair(bp: BeatPairRelationship): string {
     const transformation = bp.confirmedTransformation || "Unknown";
@@ -156,11 +168,19 @@
         {/each}
       </div>
 
-      {#if !hasMultipleCandidates && onConfirmAutoLabel}
-        <button class="confirm-all-btn" onclick={onConfirmAutoLabel}>
-          <FontAwesomeIcon icon="check" size="0.9em" />
-          Confirm
-        </button>
+      <!-- Confirm button(s) at bottom -->
+      {#if pendingCandidates.length > 0}
+        {#if hasMultipleCandidates && onConfirmAllCandidates}
+          <button class="confirm-all-btn" onclick={onConfirmAllCandidates}>
+            <FontAwesomeIcon icon="check-double" size="0.9em" />
+            Confirm All ({pendingCandidates.length})
+          </button>
+        {:else if onConfirmAutoLabel}
+          <button class="confirm-all-btn" onclick={onConfirmAutoLabel}>
+            <FontAwesomeIcon icon="check" size="0.9em" />
+            Confirm
+          </button>
+        {/if}
       {/if}
     </div>
   {/if}

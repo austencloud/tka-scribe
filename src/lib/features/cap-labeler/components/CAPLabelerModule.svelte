@@ -9,10 +9,11 @@
   import {
     ensureContainerInitialized,
     loadFeatureModule,
-  } from "$lib/shared/inversify/container";
-  import { tryResolve } from "$lib/shared/inversify/di";
+    tryResolve,
+  } from "$lib/shared/inversify/di";
   import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
   import type { IBeatDataConversionService } from "../services/contracts/IBeatDataConversionService";
+  import type { ICAPDetectionService, CAPDetectionResult } from "../services/contracts/ICAPDetectionService";
   import { capLabelerState } from "../state/cap-labeler-state.svelte";
   import { createSectionModeState } from "../state/section-mode-state.svelte";
   import { createBeatPairModeState } from "../state/beatpair-mode-state.svelte";
@@ -65,10 +66,45 @@
   });
 
   // Derived state from main state
-  const filteredSequences = $derived(capLabelerState.filteredSequences);
-  const currentSequence = $derived(capLabelerState.currentSequence);
-  const currentLabel = $derived(capLabelerState.currentLabel);
-  const stats = $derived(capLabelerState.stats);
+  // Guard service-dependent getters with isReady to prevent early access
+  const filteredSequences = $derived(isReady ? capLabelerState.filteredSequences : []);
+  const currentSequence = $derived(isReady ? capLabelerState.currentSequence : null);
+  const currentLabel = $derived(isReady ? capLabelerState.currentLabel : null);
+
+  // Detection cache (component-level since service resolution needs isReady)
+  let detectionCache = $state(new Map<string, CAPDetectionResult>());
+
+  // Compute detection directly in component where DI is guaranteed to be ready
+  const currentComputedDetection = $derived.by(() => {
+    const seq = currentSequence;
+    if (!isReady || !seq) return null;
+
+    // Check cache first
+    const cacheKey = seq.id;
+    if (detectionCache.has(cacheKey)) {
+      return detectionCache.get(cacheKey)!;
+    }
+
+    // Resolve detection service (guaranteed to be available since isReady=true)
+    const detectionService = tryResolve<ICAPDetectionService>(
+      CAPLabelerTypes.ICAPDetectionService
+    );
+
+    if (!detectionService) {
+      console.warn("[CAPLabelerModule] Detection service not available");
+      return null;
+    }
+
+    console.log("[CAPLabelerModule] Computing detection for sequence:", seq.word);
+    const detection = detectionService.detectCAP(seq);
+    console.log("[CAPLabelerModule] Detection result:", detection.candidateDesignations.length, "candidates");
+
+    // Cache the result (need to create new Map for reactivity)
+    detectionCache = new Map(detectionCache).set(cacheKey, detection);
+
+    return detection;
+  });
+  const stats = $derived(isReady ? capLabelerState.stats : { total: 0, labeled: 0, needsWork: 0, verified: 0, pending: 0 });
   const filterMode = $derived(capLabelerState.filterMode);
   const labelingMode = $derived(capLabelerState.labelingMode);
   const showExport = $derived(capLabelerState.showExport);
@@ -77,6 +113,9 @@
   const showStartPosition = $derived(capLabelerState.showStartPosition);
   const manualColumnCount = $derived(capLabelerState.manualColumnCount);
   const loading = $derived(capLabelerState.loading);
+
+  // Computed: whether current sequence is verified (from Firebase metadata)
+  const isVerified = $derived(!currentLabel?.needsVerification && currentLabel !== null);
 
   // Parse beats for current sequence
   const parsedData = $derived.by(() => {
@@ -301,84 +340,64 @@
     await capLabelerState.deleteLabel(currentSequence.word);
   }
 
-  async function handleConfirmAutoLabel() {
-    if (!currentSequence || !currentLabel) return;
+  /**
+   * Verify the computed designations for this sequence
+   * With on-the-fly detection, this just marks as "verified" - no need to store designations
+   */
+  async function handleVerify() {
+    if (!currentSequence) return;
 
-    // Confirm the auto-label by removing the verification flag
-    const confirmedLabel = {
-      ...currentLabel,
-      needsVerification: false,
-      autoLabeled: true, // Keep this for tracking
+    // Create or update the label with verified status
+    const updatedLabel = {
+      word: currentSequence.word,
+      // Don't store designations - they're computed on-the-fly
+      designations: [],
+      isFreeform: currentComputedDetection?.isFreeform ?? false,
+      needsVerification: false, // Mark as verified
       labeledAt: new Date().toISOString(),
+      notes: currentLabel?.notes || "",
+      // Preserve any manual section/beatpair annotations
+      sections: currentLabel?.sections || [],
+      beatPairs: currentLabel?.beatPairs || [],
     };
 
-    await capLabelerState.saveLabel(confirmedLabel);
+    await capLabelerState.saveLabel(updatedLabel);
     // NOTE: Do NOT call nextSequence() here!
-    // When in "Needs Review" filter, the confirmed item is removed from the list,
-    // so the selection naturally moves to the next item. Calling nextSequence()
-    // would skip one item.
+    // When in "Needs Review" filter, the verified item is removed from the list,
+    // so the selection naturally moves to the next item.
   }
 
   /**
-   * Confirm a specific candidate designation (add to confirmed designations)
+   * Legacy handler for backward compatibility
+   * @deprecated Use handleVerify instead
    */
-  async function handleConfirmCandidate(index: number) {
-    if (!currentSequence || !currentLabel || !currentLabel.candidateDesignations) return;
-
-    const candidates = [...currentLabel.candidateDesignations];
-    if (index < 0 || index >= candidates.length) return;
-
-    // Mark this candidate as confirmed
-    candidates[index] = { ...candidates[index], confirmed: true };
-
-    // Also add to the main designations array
-    const confirmedDesignation = candidates[index];
-    const updatedDesignations = [
-      ...(currentLabel.designations || []),
-      {
-        components: confirmedDesignation.components,
-        capType: confirmedDesignation.capType,
-        transformationIntervals: confirmedDesignation.transformationIntervals,
-      },
-    ];
-
-    // Check if all candidates have been processed
-    const allProcessed = candidates.every((c) => c.confirmed || c.denied);
-
-    const updatedLabel = {
-      ...currentLabel,
-      candidateDesignations: candidates,
-      designations: updatedDesignations,
-      needsVerification: !allProcessed, // Remove verification flag if all processed
-      labeledAt: new Date().toISOString(),
-    };
-
-    await capLabelerState.saveLabel(updatedLabel);
+  async function handleConfirmAutoLabel() {
+    await handleVerify();
   }
 
   /**
-   * Deny a specific candidate designation (mark as not applicable)
+   * Legacy handler - now just verifies the sequence
+   * @deprecated Use handleVerify instead
    */
-  async function handleDenyCandidate(index: number) {
-    if (!currentSequence || !currentLabel || !currentLabel.candidateDesignations) return;
+  async function handleConfirmAllCandidates() {
+    await handleVerify();
+  }
 
-    const candidates = [...currentLabel.candidateDesignations];
-    if (index < 0 || index >= candidates.length) return;
+  /**
+   * Individual candidate confirmation is no longer needed with on-the-fly detection
+   * Kept for interface compatibility but just verifies the whole thing
+   */
+  function handleConfirmCandidate(_index: number) {
+    // No-op - individual confirmations not needed with computed designations
+    console.log("[CAPLabeler] Individual candidate confirmation deprecated - use Verify button");
+  }
 
-    // Mark this candidate as denied
-    candidates[index] = { ...candidates[index], denied: true };
-
-    // Check if all candidates have been processed
-    const allProcessed = candidates.every((c) => c.confirmed || c.denied);
-
-    const updatedLabel = {
-      ...currentLabel,
-      candidateDesignations: candidates,
-      needsVerification: !allProcessed, // Remove verification flag if all processed
-      labeledAt: new Date().toISOString(),
-    };
-
-    await capLabelerState.saveLabel(updatedLabel);
+  /**
+   * Individual candidate denial is no longer needed with on-the-fly detection
+   */
+  function handleDenyCandidate(_index: number) {
+    // No-op - individual denials not needed with computed designations
+    console.log("[CAPLabeler] Individual candidate denial deprecated - use Verify button");
   }
 
   // Keyboard event handling (shift key for section selection)
@@ -454,7 +473,8 @@
         sequence={currentSequence}
         {parsedBeats}
         {startPosition}
-        {currentLabel}
+        currentLabel={currentLabel}
+        computedDetection={currentComputedDetection}
         {showStartPosition}
         {manualColumnCount}
         onShowStartPositionChange={(val) =>
@@ -475,12 +495,12 @@
           wholeDesignations={wholeState?.pendingDesignations ?? []}
           sectionDesignations={sectionState?.savedSections ?? []}
           beatPairDesignations={beatPairState?.savedBeatPairs ?? []}
-          isFreeform={wholeState?.isFreeform ?? false}
-          needsVerification={currentLabel?.needsVerification ?? false}
-          autoDetectedDesignations={currentLabel?.designations ?? []}
-          candidateDesignations={currentLabel?.candidateDesignations ?? []}
-          autoDetectedBeatPairs={currentLabel?.beatPairs ?? []}
-          autoDetectedBeatPairGroups={currentLabel?.beatPairGroups ?? {}}
+          isFreeform={currentComputedDetection?.isFreeform ?? false}
+          needsVerification={!isVerified}
+          autoDetectedDesignations={[]}
+          candidateDesignations={currentComputedDetection?.candidateDesignations ?? []}
+          autoDetectedBeatPairs={currentComputedDetection?.beatPairs ?? []}
+          autoDetectedBeatPairGroups={currentComputedDetection?.beatPairGroups ?? {}}
           onRemoveWholeDesignation={handleRemoveDesignation}
           onRemoveSectionDesignation={handleRemoveSection}
           onRemoveBeatPairDesignation={handleRemoveBeatPair}
@@ -488,9 +508,10 @@
             wholeState?.actions.setFreeform(!wholeState?.isFreeform)}
           onMarkUnknown={handleMarkUnknown}
           onSaveAndNext={handleSaveAndNext}
-          onConfirmAutoLabel={handleConfirmAutoLabel}
+          onConfirmAutoLabel={handleVerify}
           onConfirmCandidate={handleConfirmCandidate}
           onDenyCandidate={handleDenyCandidate}
+          onConfirmAllCandidates={handleVerify}
           canSave={(wholeState?.pendingDesignations.length ?? 0) > 0 ||
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||

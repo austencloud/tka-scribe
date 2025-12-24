@@ -8,7 +8,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { ISequenceAnalysisService } from "$lib/features/create/shared/services/contracts/ISequenceAnalysisService";
+import type { ISequenceAnalysisService, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalysisService";
 import type { ISequenceFeatureExtractor } from "../contracts/ISequenceFeatureExtractor";
 import type {
 	SequenceFeatures,
@@ -49,8 +49,10 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 		// Use existing SequenceAnalysisService for circularity
 		const circularity =
 			this.sequenceAnalysisService.analyzeCircularity(sequence);
-		const detectedCapTypes =
-			this.sequenceAnalysisService.detectCompletedCapTypes(sequence);
+
+		// Use existing capType from sequence if available (authoritative label from CAP labeler)
+		// Only fall back to detection if no capType exists
+		const detectedCapTypes = this.getDetectedCapTypes(sequence);
 
 		return {
 			beatCount: validBeats.length,
@@ -64,6 +66,65 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 			usesBothHands: this.usesBothHands(sequence),
 			hasConsistentMotions: this.hasConsistentMotions(sequence),
 		};
+	}
+
+	/**
+	 * Get detected CAP types, preferring existing capType from sequence data
+	 *
+	 * The capType field is the authoritative label set by the CAP labeler.
+	 * We parse it to extract the base StrictCapType(s) for tagging.
+	 */
+	private getDetectedCapTypes(sequence: SequenceData): readonly StrictCapType[] {
+		// If sequence has an authoritative capType, parse it
+		if (sequence.capType) {
+			return this.parseCapTypeToStrictTypes(sequence.capType);
+		}
+
+		// Fall back to detection (may have bugs, but better than nothing)
+		return this.sequenceAnalysisService.detectCompletedCapTypes(sequence);
+	}
+
+	/**
+	 * Parse a CAPType string to extract base StrictCapType(s)
+	 *
+	 * CAPType values like "strict_rotated_quartered", "strict_mirrored",
+	 * "mirrored_swapped", etc. are parsed to extract the base transformations.
+	 */
+	private parseCapTypeToStrictTypes(capType: string): readonly StrictCapType[] {
+		const capTypeLower = capType.toLowerCase();
+		const types: StrictCapType[] = [];
+
+		// Check for rotated (covers "strict_rotated", "strict_rotated_quartered", "rotated_*", etc.)
+		if (capTypeLower.includes("rotated") || capTypeLower.includes("rotation")) {
+			types.push("rotated");
+		}
+
+		// Check for mirrored (covers "strict_mirrored", "mirrored_*", etc.)
+		if (capTypeLower.includes("mirrored") || capTypeLower.includes("mirror")) {
+			types.push("mirrored");
+		}
+
+		// Check for static patterns (inverted without rotation/mirroring, or swapped alone)
+		if (
+			(capTypeLower.includes("inverted") || capTypeLower.includes("swapped")) &&
+			!types.includes("rotated") &&
+			!types.includes("mirrored")
+		) {
+			types.push("static");
+		}
+
+		// If we found both rotated and mirrored, also add the combined type
+		if (types.includes("rotated") && types.includes("mirrored")) {
+			// Replace with the combined type
+			return ["rotated-mirrored"] as const;
+		}
+
+		// If nothing matched but it's a CAP type, default to static
+		if (types.length === 0 && capTypeLower.includes("strict")) {
+			types.push("static");
+		}
+
+		return types;
 	}
 
 	/**

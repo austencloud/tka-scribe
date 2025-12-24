@@ -5,6 +5,7 @@ import { ContainerModule } from "inversify";
 import { BeatDataConversionService } from "$lib/features/cap-labeler/services/implementations/BeatDataConversionService";
 import { BeatPairAnalysisService } from "$lib/features/cap-labeler/services/implementations/BeatPairAnalysisService";
 import { CAPDesignationService } from "$lib/features/cap-labeler/services/implementations/CAPDesignationService";
+import { CAPDetectionService } from "$lib/features/cap-labeler/services/implementations/CAPDetectionService";
 import { CAPLabelsFirebaseService } from "$lib/features/cap-labeler/services/implementations/CAPLabelsFirebaseService";
 import { SequenceLoadingService } from "$lib/features/cap-labeler/services/implementations/SequenceLoadingService";
 import { NavigationService } from "$lib/features/cap-labeler/services/implementations/NavigationService";
@@ -28,6 +29,11 @@ export const capLabelerModule = new ContainerModule(
     options
       .bind(CAPLabelerTypes.ICAPDesignationService)
       .to(CAPDesignationService)
+      .inSingletonScope();
+
+    options
+      .bind(CAPLabelerTypes.ICAPDetectionService)
+      .to(CAPDetectionService)
       .inSingletonScope();
 
     options

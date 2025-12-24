@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { SequenceEntry } from "../../domain/models/sequence-models";
   import type { LabeledSequence } from "../../domain/models/label-models";
+  import type { CAPDetectionResult } from "../../services/contracts/ICAPDetectionService";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
@@ -12,6 +13,7 @@
     parsedBeats: BeatData[];
     startPosition: StartPositionData | null;
     currentLabel: LabeledSequence | null;
+    computedDetection?: CAPDetectionResult | null;
     showStartPosition: boolean;
     manualColumnCount: number | null;
     onShowStartPositionChange: (value: boolean) => void;
@@ -31,6 +33,7 @@
     parsedBeats,
     startPosition,
     currentLabel,
+    computedDetection,
     showStartPosition,
     manualColumnCount,
     onShowStartPositionChange,
@@ -60,40 +63,50 @@
     return options.filter((col) => col <= length);
   });
 
+  // Helper to extract intervals from a designation/candidate
+  function getIntervalTypes(designation: { transformationIntervals?: { rotation?: string; swap?: string; mirror?: string; flip?: string; invert?: string } } | null): string[] {
+    if (!designation?.transformationIntervals) return [];
+    const intervals = designation.transformationIntervals;
+    return [
+      intervals.rotation,
+      intervals.swap,
+      intervals.mirror,
+      intervals.flip,
+      intervals.invert,
+    ].filter(Boolean) as string[];
+  }
+
   // Smart default column count based on CAP detection
   const smartDefaultColumns = $derived(() => {
     if (!sequence) return null;
     const length = sequence.sequenceLength;
 
-    // 1. Try to use current label's designation intervals
-    if (currentLabel?.designations?.length) {
-      const designation = currentLabel.designations[0];
-      const intervals = designation?.transformationIntervals;
+    // 1. Use computed detection candidates (on-the-fly detection)
+    const allDesignations = computedDetection?.candidateDesignations || [];
 
-      if (intervals) {
-        // Check all interval types for halved/quartered
-        const allIntervals = [
-          intervals.rotation,
-          intervals.swap,
-          intervals.mirror,
-          intervals.flip,
-          intervals.invert,
-        ].filter(Boolean);
+    // 2. Check if ANY designation has quartered interval (prefer 90° over 180°)
+    const hasQuartered = allDesignations.some((d) => {
+      const intervals = getIntervalTypes(d);
+      return intervals.includes("quartered");
+    });
 
-        // If any are quartered, use length/4
-        if (allIntervals.includes("quartered")) {
-          const cols = length / 4;
-          if (Number.isInteger(cols) && cols >= 2) return cols;
-        }
-        // If any are halved, use length/2
-        if (allIntervals.includes("halved")) {
-          const cols = length / 2;
-          if (Number.isInteger(cols) && cols >= 2) return cols;
-        }
-      }
+    if (hasQuartered) {
+      const cols = length / 4;
+      if (Number.isInteger(cols) && cols >= 2) return cols;
     }
 
-    // 2. Try auto-detected capType from sequence metadata
+    // 3. Only if no quartered, check for halved (180°)
+    const hasHalved = allDesignations.some((d) => {
+      const intervals = getIntervalTypes(d);
+      return intervals.includes("halved");
+    });
+
+    if (hasHalved) {
+      const cols = length / 2;
+      if (Number.isInteger(cols) && cols >= 2) return cols;
+    }
+
+    // 4. Try auto-detected capType from sequence metadata
     const capType = sequence.capType;
     if (capType) {
       const capTypeLower = capType.toLowerCase();
@@ -107,7 +120,7 @@
       }
     }
 
-    // 3. Intelligent fallback based on sequence length factors
+    // 5. Intelligent fallback based on sequence length factors
     // Prefer 4-column layout for common lengths
     if (length === 16) return 4;
     if (length === 12) return 4;

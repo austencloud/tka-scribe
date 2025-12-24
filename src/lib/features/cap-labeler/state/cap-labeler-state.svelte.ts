@@ -10,6 +10,7 @@ import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
 import type { ISequenceLoadingService } from "../services/contracts/ISequenceLoadingService";
 import type { ICAPLabelsFirebaseService } from "../services/contracts/ICAPLabelsFirebaseService";
 import type { INavigationService } from "../services/contracts/INavigationService";
+import type { ICAPDetectionService, CAPDetectionResult } from "../services/contracts/ICAPDetectionService";
 import type { SequenceEntry } from "../domain/models/sequence-models";
 import type {
   LabeledSequence,
@@ -197,10 +198,53 @@ class CAPLabelerStateManager {
     return this.filteredSequences[this.state.currentIndex] ?? null;
   }
 
-  // Derived: current label
+  // Derived: current label (from Firebase - just metadata now)
   get currentLabel(): LabeledSequence | null {
     if (!this.currentSequence) return null;
     return this.state.labels.get(this.currentSequence.word) ?? null;
+  }
+
+  // Cache for computed detections (keyed by sequence id)
+  private detectionCache = new Map<string, CAPDetectionResult>();
+
+  /**
+   * Get computed CAP detection for the current sequence
+   * Designations are computed on-the-fly, not stored in Firebase
+   */
+  get currentComputedDetection(): CAPDetectionResult | null {
+    if (!this.currentSequence) {
+      console.log("[CAPLabelerState] currentComputedDetection: no current sequence");
+      return null;
+    }
+
+    const cacheKey = this.currentSequence.id;
+
+    // Check cache first
+    if (this.detectionCache.has(cacheKey)) {
+      console.log("[CAPLabelerState] currentComputedDetection: returning cached for", cacheKey);
+      return this.detectionCache.get(cacheKey)!;
+    }
+
+    // Compute detection
+    const detectionService = this.getDetectionService();
+    if (!detectionService) {
+      console.warn("[CAPLabelerState] currentComputedDetection: detection service not available");
+      return null;
+    }
+
+    console.log("[CAPLabelerState] currentComputedDetection: computing for", cacheKey);
+    const detection = detectionService.detectCAP(this.currentSequence);
+    console.log("[CAPLabelerState] currentComputedDetection: result has", detection.candidateDesignations.length, "candidates");
+    this.detectionCache.set(cacheKey, detection);
+
+    return detection;
+  }
+
+  /**
+   * Clear detection cache (call when detection algorithm changes)
+   */
+  clearDetectionCache() {
+    this.detectionCache.clear();
   }
 
   // Derived: stats
@@ -692,6 +736,16 @@ class CAPLabelerStateManager {
     );
     if (!service) {
       console.warn("[CAPLabelerState] NavigationService not available");
+    }
+    return service;
+  }
+
+  private getDetectionService(): ICAPDetectionService | null {
+    const service = tryResolve<ICAPDetectionService>(
+      CAPLabelerTypes.ICAPDetectionService
+    );
+    if (!service) {
+      console.warn("[CAPLabelerState] CAPDetectionService not available");
     }
     return service;
   }
