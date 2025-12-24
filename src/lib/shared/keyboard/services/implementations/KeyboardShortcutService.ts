@@ -67,10 +67,14 @@ export class KeyboardShortcutService implements IKeyboardShortcutService {
       throw new Error("Shortcut action is required");
     }
 
-    // Check if already registered
+    // Check if already registered - update the action if so
     if (this.registry.has(options.id)) {
-      console.warn(`Shortcut with ID "${options.id}" is already registered`);
-      return () => this.unregister(options.id);
+      const existing = this.registry.get(options.id);
+      if (existing) {
+        // Update the action handler (for dynamic binding)
+        existing.action = options.action;
+      }
+      return () => {}; // Don't unregister when updating
     }
 
     // Create shortcut with defaults

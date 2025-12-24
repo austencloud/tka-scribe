@@ -1,0 +1,179 @@
+/**
+ * Register 3D Viewer Shortcuts (Static)
+ *
+ * Registers 3D viewer shortcuts at app startup for display in Settings.
+ * Actual handlers are bound dynamically when the viewer mounts.
+ */
+
+import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+import type { ShortcutRegistrationOptions } from "../domain/types/keyboard-types";
+
+/**
+ * 3D Viewer shortcut definitions for static registration
+ * Actions are no-ops - the actual handlers are bound by Keyboard3DCoordinator
+ */
+const VIEWER_3D_SHORTCUTS: Omit<ShortcutRegistrationOptions, "action">[] = [
+  // === PLAYBACK ===
+  {
+    id: "3d-viewer.play-pause",
+    label: "Play / Pause",
+    description: "Toggle animation playback",
+    key: "Space",
+    scope: "playback",
+    context: "3d-viewer",
+    priority: "high",
+  },
+  {
+    id: "3d-viewer.reset",
+    label: "Reset",
+    description: "Reset to beginning of current beat",
+    key: "r",
+    scope: "playback",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.toggle-loop",
+    label: "Toggle Loop",
+    description: "Enable/disable looping",
+    key: "l",
+    scope: "playback",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.speed-up",
+    label: "Speed Up",
+    description: "Increase playback speed",
+    key: "=",
+    scope: "playback",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.speed-down",
+    label: "Speed Down",
+    description: "Decrease playback speed",
+    key: "-",
+    scope: "playback",
+    context: "3d-viewer",
+  },
+
+  // === BEAT NAVIGATION ===
+  {
+    id: "3d-viewer.prev-beat",
+    label: "Previous Beat",
+    description: "Go to previous beat in sequence",
+    key: "ArrowLeft",
+    scope: "navigation",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.next-beat",
+    label: "Next Beat",
+    description: "Go to next beat in sequence",
+    key: "ArrowRight",
+    scope: "navigation",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.first-beat",
+    label: "First Beat",
+    description: "Jump to first beat",
+    key: "Home",
+    scope: "navigation",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.last-beat",
+    label: "Last Beat",
+    description: "Jump to last beat",
+    key: "End",
+    scope: "navigation",
+    context: "3d-viewer",
+  },
+
+  // === CAMERA PRESETS ===
+  {
+    id: "3d-viewer.camera-front",
+    label: "Back View",
+    description: "View from back (Wall plane)",
+    key: "b",
+    scope: "view",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.camera-top",
+    label: "Top View",
+    description: "View from above (Floor plane)",
+    key: "t",
+    scope: "view",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.camera-side",
+    label: "Side View",
+    description: "View from side (Wheel plane)",
+    key: "s",
+    scope: "view",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.camera-perspective",
+    label: "Perspective View",
+    description: "Angled 3D view",
+    key: "v",
+    scope: "view",
+    context: "3d-viewer",
+  },
+
+  // === UI TOGGLES ===
+  {
+    id: "3d-viewer.toggle-grid",
+    label: "Toggle Grid",
+    description: "Show/hide grid planes",
+    key: "g",
+    scope: "view",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.toggle-panel",
+    label: "Toggle Panel",
+    description: "Show/hide side panel",
+    key: "p",
+    scope: "panel",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.open-browser",
+    label: "Open Sequence Browser",
+    description: "Open the sequence browser",
+    key: "o",
+    scope: "action",
+    context: "3d-viewer",
+  },
+  {
+    id: "3d-viewer.show-help",
+    label: "Keyboard Shortcuts",
+    description: "Show keyboard shortcuts help",
+    key: "h",
+    scope: "help",
+    context: "3d-viewer",
+  },
+];
+
+/**
+ * Register 3D viewer shortcuts for Settings display
+ * These are placeholder registrations - actual handlers bound by Keyboard3DCoordinator
+ */
+export function register3DViewerShortcuts(
+  shortcutService: IKeyboardShortcutService
+): void {
+  const noop = () => {
+    // Placeholder action - real action bound dynamically by Keyboard3DCoordinator
+  };
+
+  for (const shortcut of VIEWER_3D_SHORTCUTS) {
+    shortcutService.register({
+      ...shortcut,
+      action: noop,
+    });
+  }
+}

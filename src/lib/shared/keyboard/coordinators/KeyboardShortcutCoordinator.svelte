@@ -18,6 +18,7 @@
   import { registerGlobalShortcuts } from "../utils/register-global-shortcuts";
   import { registerCommandPaletteCommands } from "../utils/register-commands";
   import { registerCreateShortcuts } from "../utils/register-create-shortcuts";
+  import { register3DViewerShortcuts } from "../utils/register-3d-viewer-shortcuts";
 
   // Services
   let shortcutService: IKeyboardShortcutService | null = null;
@@ -49,6 +50,9 @@
 
         // Register CREATE module shortcuts
         registerCreateShortcuts(shortcutService, keyboardShortcutState);
+
+        // Register 3D Viewer shortcuts (static, handlers bound dynamically)
+        register3DViewerShortcuts(shortcutService);
       } catch (error) {
         console.error("❌ Failed to initialize keyboard shortcuts:", error);
       }

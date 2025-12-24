@@ -139,18 +139,35 @@
     return descriptions[scope] || "";
   }
 
-  // Sort scopes in a logical order
+  // Sort scopes in a logical order, including all that have shortcuts
   let sortedScopes = $derived.by(() => {
     const order: ShortcutScope[] = [
-      "help",
+      "playback",
+      "view",
       "navigation",
       "action",
       "editing",
       "panel",
+      "animation",
+      "workspace",
+      "sequence-management",
+      "selection",
       "focus",
+      "help",
+      "special",
+      "admin",
     ];
 
-    return order.filter((scope) => shortcutsByScope.has(scope));
+    // Get all scopes that have shortcuts
+    const scopesWithShortcuts = Array.from(shortcutsByScope.keys());
+
+    // Return ordered scopes first, then any remaining
+    const orderedScopes = order.filter((scope) => shortcutsByScope.has(scope));
+    const remainingScopes = scopesWithShortcuts.filter(
+      (scope) => !order.includes(scope)
+    );
+
+    return [...orderedScopes, ...remainingScopes];
   });
 </script>
 
@@ -195,50 +212,36 @@
         {#if sortedScopes.length === 0}
           <div class="shortcuts-help__empty">No shortcuts available</div>
         {:else}
-          {#each sortedScopes as scope}
-            {@const shortcuts = shortcutsByScope.get(scope) ?? []}
-            {#if shortcuts.length > 0}
-              <section class="shortcuts-help__section">
-                <h3 class="shortcuts-help__section-title">
-                  {getScopeLabel(scope)}
-                </h3>
-                {#if getScopeDescription(scope)}
-                  <p class="shortcuts-help__section-description">
-                    {getScopeDescription(scope)}
-                  </p>
-                {/if}
-                <div class="shortcuts-help__list">
-                  {#each shortcuts as shortcut}
-                    <div class="shortcuts-help__item">
-                      <div class="shortcuts-help__item-info">
-                        <div class="shortcuts-help__item-label">
+          <div class="shortcuts-help__grid">
+            {#each sortedScopes as scope}
+              {@const shortcuts = shortcutsByScope.get(scope) ?? []}
+              {#if shortcuts.length > 0}
+                <section class="shortcuts-help__section">
+                  <h3 class="shortcuts-help__section-title">
+                    {getScopeLabel(scope)}
+                  </h3>
+                  <div class="shortcuts-help__list">
+                    {#each shortcuts as shortcut}
+                      <div class="shortcuts-help__item">
+                        <span class="shortcuts-help__item-label">
                           {shortcut.label}
-                        </div>
-                        {#if shortcut.description}
-                          <div class="shortcuts-help__item-description">
-                            {shortcut.description}
-                          </div>
-                        {/if}
+                        </span>
+                        <kbd class="shortcuts-help__item-keys">
+                          {formatShortcut(shortcut)}
+                        </kbd>
                       </div>
-                      <kbd class="shortcuts-help__item-keys">
-                        {formatShortcut(shortcut)}
-                      </kbd>
-                    </div>
-                  {/each}
-                </div>
-              </section>
-            {/if}
-          {/each}
+                    {/each}
+                  </div>
+                </section>
+              {/if}
+            {/each}
+          </div>
         {/if}
       </div>
 
       <!-- Footer -->
       <div class="shortcuts-help__footer">
-        <span>
-          Press
-          <kbd>{keyboardShortcutState.isMac ? "⌘/" : "Ctrl+/"}</kbd>
-          to toggle this dialog
-        </span>
+        <span> Press H to toggle this dialog </span>
       </div>
     </div>
   </div>
@@ -322,72 +325,64 @@
   .shortcuts-help__content {
     flex: 1;
     overflow-y: auto;
-    padding: 1.5rem;
+    padding: 1.25rem;
+  }
+
+  .shortcuts-help__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
   }
 
   .shortcuts-help__section {
-    margin-bottom: 2rem;
-  }
-
-  .shortcuts-help__section:last-child {
-    margin-bottom: 0;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-radius: 12px;
+    padding: 1rem;
   }
 
   .shortcuts-help__section-title {
-    margin: 0 0 0.5rem;
-    font-size: 1.125rem;
+    margin: 0 0 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-  }
-
-  .shortcuts-help__section-description {
-    margin: 0 0 1rem;
-    font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--theme-accent-strong, #a78bfa);
   }
 
   .shortcuts-help__list {
-    display: grid;
-    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
   }
 
   .shortcuts-help__item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 0.625rem;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
-    border-radius: 10px;
-    gap: 1rem;
-    transition: all 0.15s ease;
+    border-radius: 6px;
+    gap: 0.75rem;
+    transition: background 0.15s ease;
   }
 
   .shortcuts-help__item:hover {
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-  }
-
-  .shortcuts-help__item-info {
-    flex: 1;
-    min-width: 0;
   }
 
   .shortcuts-help__item-label {
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    margin-bottom: 0.125rem;
-    font-size: 13px;
-  }
-
-  .shortcuts-help__item-description {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .shortcuts-help__item-keys {
-    font-size: 12px;
-    padding: 6px 12px;
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
     background: color-mix(
       in srgb,
       var(--theme-accent-strong, #8b5cf6) 15%,
@@ -395,11 +390,12 @@
     );
     border: 1px solid
       color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
-    border-radius: 6px;
+    border-radius: 4px;
     color: var(--theme-accent-strong, #a78bfa);
     font-family: ui-monospace, "SF Mono", monospace;
     white-space: nowrap;
     font-weight: 600;
+    flex-shrink: 0;
   }
 
   .shortcuts-help__empty {
@@ -461,12 +457,16 @@
     }
 
     .shortcuts-help__content {
-      padding: 1rem;
+      padding: 0.75rem;
     }
 
-    .shortcuts-help__item {
-      flex-direction: column;
-      align-items: flex-start;
+    .shortcuts-help__grid {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .shortcuts-help__section {
+      padding: 0.75rem;
     }
   }
 

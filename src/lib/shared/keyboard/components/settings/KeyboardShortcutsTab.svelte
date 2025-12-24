@@ -1,13 +1,12 @@
 <!--
   KeyboardShortcutsTab.svelte
 
-  Main Settings tab for managing keyboard shortcuts.
-  Features search, context filtering, scope grouping, and inline editing.
+  Settings tab for managing keyboard shortcuts.
+  Organized by WHERE shortcuts work (context), not what they do.
+  2026 design: clean, scannable, zero friction.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { fly } from "svelte/transition";
-  import { cubicOut } from "svelte/easing";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
@@ -15,55 +14,53 @@
     ShortcutWithBinding,
   } from "../../services/contracts/IShortcutCustomizationService";
   import type {
-    ShortcutScope,
+    ShortcutContext,
     ShortcutConflict,
   } from "../../domain/types/keyboard-types";
-  import ShortcutSearchBar from "./ShortcutSearchBar.svelte";
-  import ShortcutScopeSection from "./ShortcutScopeSection.svelte";
+  import ShortcutContextSection from "./ShortcutContextSection.svelte";
   import ShortcutKeyCapture from "./ShortcutKeyCapture.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   // Services
   let customizationService: IShortcutCustomizationService | null = $state(null);
 
-  // Local state
+  // State
   let searchQuery = $state("");
   let allShortcuts = $state<ShortcutWithBinding[]>([]);
-  let expandedScopes = $state<Set<ShortcutScope>>(
-    new Set(["navigation", "action", "editing"])
-  );
+  let expandedContexts = $state<Set<string>>(new Set(["global"]));
 
   // Edit modal state
   let editingItem = $state<ShortcutWithBinding | null>(null);
   let isEditModalOpen = $state(false);
 
-  // Detect mobile
+  // Mobile detection
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
-  // Check if user is admin (for showing admin shortcuts section)
+  // Admin check
   const isAdmin = $derived(authState.isAdmin);
 
-  // Scope labels and order - admin section only shown to admins
-  const scopeConfig = $derived(() => {
-    const baseScopes: Array<{ scope: ShortcutScope; label: string }> = [
-      { scope: "navigation", label: "Navigation" },
-      { scope: "action", label: "Actions" },
-      { scope: "editing", label: "Editing" },
-      { scope: "playback", label: "Playback" },
-      { scope: "animation", label: "Animation" },
-      { scope: "view", label: "View" },
-      { scope: "selection", label: "Selection" },
-      { scope: "special", label: "Special" },
-      { scope: "help", label: "Help" },
-    ];
+  // Context configuration - ordered by frequency of use
+  // "global" always first, then module-specific contexts
+  const contextConfig: Array<{
+    context: ShortcutContext | "all";
+    label: string;
+    icon: string;
+    adminOnly?: boolean;
+  }> = [
+    { context: "global", label: "Global", icon: "fa-globe" },
+    { context: "create", label: "Create", icon: "fa-plus-circle" },
+    { context: "edit-panel", label: "Edit Panel", icon: "fa-pen" },
+    { context: "discover", label: "Discover", icon: "fa-compass" },
+    { context: "compose", label: "Compose", icon: "fa-music" },
+    { context: "learn", label: "Learn", icon: "fa-graduation-cap" },
+    { context: "3d-viewer", label: "3D Viewer", icon: "fa-cube" },
+    { context: "admin", label: "Admin", icon: "fa-crown", adminOnly: true },
+  ];
 
-    // Add admin section only for admins
-    if (isAdmin) {
-      baseScopes.push({ scope: "admin", label: "Admin Tools" });
-    }
-
-    return baseScopes;
-  });
+  // Filter contexts based on admin status
+  const visibleContexts = $derived(
+    contextConfig.filter((c) => !c.adminOnly || isAdmin)
+  );
 
   onMount(() => {
     try {
@@ -81,7 +78,7 @@
     allShortcuts = customizationService.getAllShortcutsWithBindings();
   }
 
-  // Filter shortcuts by search
+  // Filter by search
   const filteredShortcuts = $derived(() => {
     if (!searchQuery.trim()) return allShortcuts;
 
@@ -94,22 +91,32 @@
     );
   });
 
-  // Group filtered shortcuts by scope
-  const groupedByScope = $derived(() => {
-    const groups = new Map<ShortcutScope, ShortcutWithBinding[]>();
+  // Group shortcuts by their PRIMARY context
+  // A shortcut with context: ["create", "edit-panel"] goes in "create"
+  // A shortcut with context: "global" goes in "global"
+  const groupedByContext = $derived(() => {
+    const groups = new Map<string, ShortcutWithBinding[]>();
 
     for (const item of filteredShortcuts()) {
-      const scope = item.shortcut.scope || "action";
-      if (!groups.has(scope)) {
-        groups.set(scope, []);
+      const contexts = Array.isArray(item.shortcut.context)
+        ? item.shortcut.context
+        : [item.shortcut.context];
+
+      // Use the first context as primary (or "global" if it's there)
+      const primaryContext = contexts.includes("global")
+        ? "global"
+        : contexts[0] || "global";
+
+      if (!groups.has(primaryContext)) {
+        groups.set(primaryContext, []);
       }
-      groups.get(scope)!.push(item);
+      groups.get(primaryContext)!.push(item);
     }
 
     return groups;
   });
 
-  // Count customized shortcuts
+  // Customization count - use function to avoid TypeScript narrowing issues
   function getCustomizedCount(): number {
     return customizationService?.getCustomizedCount() ?? 0;
   }
@@ -150,32 +157,55 @@
 
   function detectConflict(keyCombo: string): ShortcutConflict | null {
     if (!customizationService || !editingItem) return null;
-    return customizationService.detectConflict(
-      editingItem.shortcut.id,
-      keyCombo
-    );
+    return customizationService.detectConflict(editingItem.shortcut.id, keyCombo);
   }
 
-  function toggleScope(scope: ShortcutScope) {
-    const newSet = new Set(expandedScopes);
-    if (newSet.has(scope)) {
-      newSet.delete(scope);
+  function toggleContext(context: string) {
+    const newSet = new Set(expandedContexts);
+    if (newSet.has(context)) {
+      newSet.delete(context);
     } else {
-      newSet.add(scope);
+      newSet.add(context);
     }
-    expandedScopes = newSet;
+    expandedContexts = newSet;
+  }
+
+  function clearSearch() {
+    searchQuery = "";
   }
 </script>
 
-<div class="keyboard-shortcuts-tab">
-  <!-- Search Bar -->
-  <ShortcutSearchBar
-    bind:query={searchQuery}
-    {customizedCount}
-    onResetAll={handleResetAll}
-  />
+<div class="keyboard-tab">
+  <!-- Search -->
+  <div class="search-section">
+    <div class="search-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search shortcuts..."
+        bind:value={searchQuery}
+      />
+      {#if searchQuery}
+        <button
+          type="button"
+          class="clear-btn"
+          onclick={clearSearch}
+          aria-label="Clear search"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      {/if}
+    </div>
 
-  <!-- Shortcuts List -->
+    {#if customizedCount > 0}
+      <button type="button" class="reset-all-btn" onclick={handleResetAll}>
+        Reset all ({customizedCount})
+      </button>
+    {/if}
+  </div>
+
+  <!-- Shortcuts list -->
   <div class="shortcuts-list">
     {#if filteredShortcuts().length === 0}
       <div class="empty-state">
@@ -186,113 +216,204 @@
         {/if}
       </div>
     {:else}
-      {#each scopeConfig() as { scope, label }, scopeIndex}
-        {#if groupedByScope().has(scope)}
-          {@const shortcuts = groupedByScope().get(scope)!}
-          <div
-            class="scope-section-wrapper"
-            in:fly={{
-              y: 16,
-              duration: 250,
-              delay: scopeIndex * 50,
-              easing: cubicOut,
-            }}
-          >
-            <ShortcutScopeSection
-              {scope}
-              {label}
-              {shortcuts}
-              isExpanded={expandedScopes.has(scope)}
-              onEditShortcut={handleEditShortcut}
-              onResetShortcut={handleResetShortcut}
-            />
-          </div>
+      {#each visibleContexts as { context, label, icon }}
+        {#if groupedByContext().has(context)}
+          {@const shortcuts = groupedByContext().get(context)!}
+          <ShortcutContextSection
+            {context}
+            {label}
+            {icon}
+            {shortcuts}
+            isExpanded={expandedContexts.has(context)}
+            onEditShortcut={handleEditShortcut}
+            onResetShortcut={handleResetShortcut}
+          />
         {/if}
       {/each}
     {/if}
   </div>
-
-  <!-- Key Capture Modal/Sheet -->
-  <ShortcutKeyCapture
-    bind:isOpen={isEditModalOpen}
-    item={editingItem}
-    {isMobile}
-    onSave={handleSaveBinding}
-    onCancel={() => (isEditModalOpen = false)}
-    onClear={handleClearBinding}
-    {detectConflict}
-  />
 </div>
 
+<!-- Key capture modal -->
+<ShortcutKeyCapture
+  bind:isOpen={isEditModalOpen}
+  item={editingItem}
+  {isMobile}
+  onSave={handleSaveBinding}
+  onCancel={() => (isEditModalOpen = false)}
+  onClear={handleClearBinding}
+  {detectConflict}
+/>
+
 <style>
-  .keyboard-shortcuts-tab {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-    background: transparent;
-    max-width: 1200px;
-    margin: 0 auto;
+  .keyboard-tab {
+    flex: 1 1 0%;
+    min-height: 0;
     width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 12px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Scroll the entire tab content */
   }
 
-  /* Shortcuts List */
-  .shortcuts-list {
+  /* Subtle scrollbar */
+  .keyboard-tab::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .keyboard-tab::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .keyboard-tab::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+  }
+
+  /* Search section - prominent header */
+  .search-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 12px;
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+  }
+
+  .search-wrapper {
     flex: 1;
-    overflow-y: auto;
-    padding: 12px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    font-size: 14px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 44px 0 42px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    font-size: 15px;
+    outline: none;
+    transition: all 0.15s ease;
+  }
+
+  .search-input::placeholder {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+  }
+
+  .search-input:focus {
+    border-color: var(--theme-accent, #6366f1);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+
+  .clear-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .reset-all-btn {
+    flex-shrink: 0;
+    padding: 12px 18px;
+    height: 48px;
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--semantic-error, #f87171);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .reset-all-btn:hover {
+    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 45%, transparent);
+    transform: translateY(-1px);
+  }
+
+  /* Shortcuts list - container for sections, expands naturally */
+  .shortcuts-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding-bottom: 24px;
   }
 
-  /* Empty State */
+  /* Empty state */
   .empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     padding: 40px 20px;
     text-align: center;
   }
 
   .empty-state i {
-    font-size: 36px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: 32px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.25));
   }
 
   .empty-state p {
     margin: 0;
     font-size: 14px;
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
   .empty-state span {
-    font-size: 12px;
+    font-size: 13px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
-  /* Mobile Adjustments */
-  @media (max-width: 768px) {
-    .shortcuts-list {
-      padding: 14px;
-      gap: 12px;
+  /* Mobile */
+  @media (max-width: 480px) {
+    .search-section {
+      flex-wrap: wrap;
     }
-  }
 
-  /* Scope section animation wrapper */
-  .scope-section-wrapper {
-    /* Container for animation */
-    display: contents;
-  }
+    .search-wrapper {
+      width: 100%;
+    }
 
-  /* Reduced Motion */
-  @media (prefers-reduced-motion: reduce) {
-    .scope-section-wrapper {
-      animation: none !important;
-      transition: none !important;
+    .reset-all-btn {
+      width: 100%;
     }
   }
 </style>

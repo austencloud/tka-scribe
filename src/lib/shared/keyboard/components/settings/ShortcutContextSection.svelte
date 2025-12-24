@@ -1,0 +1,190 @@
+<!--
+  ShortcutContextSection.svelte
+
+  Collapsible section grouping shortcuts by WHERE they work (context).
+  Clean accordion with minimal visual noise.
+-->
+<script lang="ts">
+  import { slide } from "svelte/transition";
+  import ShortcutRow from "./ShortcutRow.svelte";
+  import type { ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizationService";
+  import type { ShortcutContext } from "../../domain/types/keyboard-types";
+
+  let {
+    context,
+    label,
+    icon,
+    shortcuts,
+    isExpanded = $bindable(false),
+    onEditShortcut = () => {},
+    onResetShortcut = () => {},
+  }: {
+    context: ShortcutContext | "all";
+    label: string;
+    icon: string;
+    shortcuts: ShortcutWithBinding[];
+    isExpanded?: boolean;
+    onEditShortcut?: (item: ShortcutWithBinding) => void;
+    onResetShortcut?: (item: ShortcutWithBinding) => void;
+  } = $props();
+
+  const customizedCount = $derived(
+    shortcuts.filter((s) => s.isCustomized).length
+  );
+
+  function toggle() {
+    isExpanded = !isExpanded;
+  }
+</script>
+
+<section class="context-section">
+  <button
+    type="button"
+    class="section-header"
+    class:expanded={isExpanded}
+    onclick={toggle}
+    aria-expanded={isExpanded}
+  >
+    <i class="fas {icon} section-icon"></i>
+    <span class="section-label">{label}</span>
+
+    <div class="section-meta">
+      {#if customizedCount > 0}
+        <span class="custom-count">{customizedCount} custom</span>
+      {/if}
+      <span class="count">{shortcuts.length}</span>
+    </div>
+
+    <i class="fas fa-chevron-right chevron"></i>
+  </button>
+
+  {#if isExpanded}
+    <div class="section-content" transition:slide={{ duration: 150 }}>
+      {#each shortcuts as item (item.shortcut.id)}
+        <ShortcutRow
+          {item}
+          onEdit={onEditShortcut}
+          onReset={onResetShortcut}
+        />
+      {/each}
+    </div>
+  {/if}
+</section>
+
+<style>
+  .context-section {
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .section-header:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+    color: var(--theme-accent, #a78bfa);
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    border-radius: 10px;
+  }
+
+  .section-label {
+    flex: 1;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+  }
+
+  .section-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .custom-count {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 18%, transparent);
+    color: var(--theme-accent, #a78bfa);
+  }
+
+  .count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .chevron {
+    font-size: 14px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    transition: transform 0.2s ease;
+  }
+
+  .section-header.expanded .chevron {
+    transform: rotate(90deg);
+  }
+
+  .section-content {
+    padding: 10px 12px 14px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Two columns on wider screens */
+  @media (min-width: 700px) {
+    .section-content {
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 20px;
+    }
+  }
+
+  /* Focus state */
+  .section-header:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: -2px;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .chevron {
+      transition: none;
+    }
+  }
+</style>
