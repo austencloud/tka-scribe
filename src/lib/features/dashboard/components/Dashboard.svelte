@@ -8,8 +8,9 @@
   import { onMount } from "svelte";
   import { fly } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { resolve, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import type { IFollowingFeedService } from "../services/contracts/IFollowingFeedService";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
@@ -24,6 +25,7 @@
   import AnnouncementBanner from "./AnnouncementBanner.svelte";
   import TodayChallengeWidget from "./widgets/TodayChallengeWidget.svelte";
   import CommunityFeedWidget from "./widgets/CommunityFeedWidget.svelte";
+  import FollowingFeedWidget from "./widgets/FollowingFeedWidget.svelte";
   import MessagesWidget from "./widgets/MessagesWidget.svelte";
   import AlertsWidget from "./widgets/AlertsWidget.svelte";
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
@@ -43,6 +45,7 @@
   let messagesDrawerOpen = $state(false);
   let notificationsDrawerOpen = $state(false);
   let pendingConversationId = $state("");
+  let hasFollowing = $state(false);
 
   // Preview-aware derived values (directly in component for proper reactivity)
   const isPreviewActive = $derived(userPreviewState.isActive);
@@ -94,6 +97,9 @@
       console.warn("Dashboard: Failed to resolve DeviceDetector", error);
     }
 
+    // Check if user follows anyone (for showing Following vs Community feed)
+    checkHasFollowing();
+
     setTimeout(() => {
       dashboardState.isVisible = true;
     }, 30);
@@ -103,6 +109,27 @@
       dashboardState.clearToast();
     };
   });
+
+  async function checkHasFollowing() {
+    if (!authState.isAuthenticated) {
+      console.log("[Dashboard] Not authenticated, skipping following check");
+      return;
+    }
+
+    try {
+      const feedService = tryResolve<IFollowingFeedService>(
+        TYPES.IFollowingFeedService
+      );
+      if (feedService) {
+        hasFollowing = await feedService.hasFollowing();
+        console.log("[Dashboard] hasFollowing:", hasFollowing);
+      } else {
+        console.warn("[Dashboard] FollowingFeedService not available");
+      }
+    } catch (error) {
+      console.warn("Dashboard: Failed to check following status", error);
+    }
+  }
 
   async function openSettings() {
     hapticService?.trigger("selection");
@@ -175,7 +202,7 @@
       </section>
     {/if}
 
-    <!-- Community Feed - Recent sequences from others -->
+    <!-- Community/Following Feed - Show Following if user has following, else Community -->
     {#if dashboardState.isVisible}
       <section
         class="widget-community"
@@ -186,7 +213,11 @@
           easing: cubicOut,
         }}
       >
-        <CommunityFeedWidget />
+        {#if hasFollowing}
+          <FollowingFeedWidget />
+        {:else}
+          <CommunityFeedWidget />
+        {/if}
       </section>
     {/if}
 
