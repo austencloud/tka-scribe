@@ -116,6 +116,7 @@ export const PRODUCTION_MODULES: Record<ModuleId, boolean> = {
   create: true,
   discover: true,
   feedback: true,
+  premium: true, // Premium upsell shown to non-premium users
   // inbox module retired - messages/notifications accessible via Dashboard widget drawer
   // Unreleased modules
   learn: false,
@@ -125,4 +126,5 @@ export const PRODUCTION_MODULES: Record<ModuleId, boolean> = {
   "ml-training": false,
   admin: false,
   settings: true, // Settings always available
+  "3d-viewer": false, // Admin-only (Level 6 feature)
 };

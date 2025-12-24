@@ -28,6 +28,7 @@ export type ModuleId =
   | "create"
   | "discover"
   | "learn"
+  | "premium"
   | "compose"
   | "train"
   | "library"

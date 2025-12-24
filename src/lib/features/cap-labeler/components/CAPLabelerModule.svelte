@@ -164,6 +164,17 @@
   // Computed: whether current sequence is verified (from Firebase metadata)
   const isVerified = $derived(!currentLabel?.needsVerification && currentLabel !== null);
 
+  // Edit mode - defaults to false for verified sequences, true for unverified
+  let isEditMode = $state(false);
+
+  // Reset edit mode when sequence changes
+  $effect(() => {
+    // When sequence changes, exit edit mode (will show view-only for verified)
+    if (currentSequence) {
+      isEditMode = false;
+    }
+  });
+
   // Parse beats for current sequence
   const parsedData = $derived.by(() => {
     if (!currentSequence?.fullMetadata?.sequence) {
@@ -602,48 +613,59 @@
             (currentComputedDetection?.isModular ?? false)}
         />
 
-        <!-- Mode Toggle -->
-        <ComponentSelectionPanel
-          {labelingMode}
-          onLabelingModeChange={(mode) => capLabelerState.setLabelingMode(mode)}
-        />
+        <!-- Show editing UI only for unverified sequences OR when in edit mode -->
+        {#if !isVerified || isEditMode}
+          <!-- Mode Toggle -->
+          <ComponentSelectionPanel
+            {labelingMode}
+            onLabelingModeChange={(mode) => capLabelerState.setLabelingMode(mode)}
+          />
 
-        <!-- Mode-specific builder panels -->
-        {#if labelingMode === "section" && sectionState}
-          <SectionModePanel
-            selectedBeats={sectionState.selectedBeats}
-            selectedComponents={sectionState.selectedComponents}
-            savedSections={sectionState.savedSections}
-            selectedBaseWord={sectionState.selectedBaseWord}
-            onBaseWordChange={(bw) => sectionState!.actions.setBaseWord(bw)}
-            onAddSection={handleAddSection}
-            onRemoveSection={handleRemoveSection}
-            onMarkUnknown={handleMarkUnknown}
-            onNext={() => capLabelerState.nextSequence()}
-            canProceed={sectionState.selectedBeats.size === 0 &&
-              sectionState.selectedComponents.size === 0}
-          />
-        {:else if labelingMode === "beatpair" && beatPairState}
-          <BeatPairModePanel
-            firstBeat={beatPairState.firstBeat}
-            secondBeat={beatPairState.secondBeat}
-            selectedComponents={beatPairState.selectedComponents}
-            transformationIntervals={beatPairState.transformationIntervals}
-            onClearSelection={() => beatPairState!.actions.clearSelection()}
-            onToggleComponent={(c) => beatPairState!.actions.toggleComponent(c)}
-            onSetInterval={(key, val) =>
-              beatPairState!.actions.setTransformationInterval(key, val)}
-            onAddBeatPair={() => beatPairState!.actions.addBeatPair()}
-          />
-        {:else if labelingMode === "whole" && wholeState}
-          <WholeModePanel
-            selectedComponents={wholeState.selectedComponents}
-            transformationIntervals={wholeState.transformationIntervals}
-            onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
-            onSetInterval={(key, val) =>
-              wholeState!.actions.setTransformationInterval(key, val)}
-            onAddDesignation={handleAddDesignation}
-          />
+          <!-- Mode-specific builder panels -->
+          {#if labelingMode === "section" && sectionState}
+            <SectionModePanel
+              selectedBeats={sectionState.selectedBeats}
+              selectedComponents={sectionState.selectedComponents}
+              savedSections={sectionState.savedSections}
+              selectedBaseWord={sectionState.selectedBaseWord}
+              onBaseWordChange={(bw) => sectionState!.actions.setBaseWord(bw)}
+              onAddSection={handleAddSection}
+              onRemoveSection={handleRemoveSection}
+              onMarkUnknown={handleMarkUnknown}
+              onNext={() => capLabelerState.nextSequence()}
+              canProceed={sectionState.selectedBeats.size === 0 &&
+                sectionState.selectedComponents.size === 0}
+            />
+          {:else if labelingMode === "beatpair" && beatPairState}
+            <BeatPairModePanel
+              firstBeat={beatPairState.firstBeat}
+              secondBeat={beatPairState.secondBeat}
+              selectedComponents={beatPairState.selectedComponents}
+              transformationIntervals={beatPairState.transformationIntervals}
+              onClearSelection={() => beatPairState!.actions.clearSelection()}
+              onToggleComponent={(c) => beatPairState!.actions.toggleComponent(c)}
+              onSetInterval={(key, val) =>
+                beatPairState!.actions.setTransformationInterval(key, val)}
+              onAddBeatPair={() => beatPairState!.actions.addBeatPair()}
+            />
+          {:else if labelingMode === "whole" && wholeState}
+            <WholeModePanel
+              selectedComponents={wholeState.selectedComponents}
+              transformationIntervals={wholeState.transformationIntervals}
+              onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
+              onSetInterval={(key, val) =>
+                wholeState!.actions.setTransformationInterval(key, val)}
+              onAddDesignation={handleAddDesignation}
+            />
+          {/if}
+        {:else}
+          <!-- View-only mode for verified sequences -->
+          <div class="view-only-notice">
+            <span class="verified-badge">Verified</span>
+            <button class="edit-button" onclick={() => (isEditMode = true)}>
+              Edit Label
+            </button>
+          </div>
         {/if}
 
         <NotesInput
@@ -837,5 +859,46 @@
     .labeling-panel {
       max-height: 400px;
     }
+  }
+
+  /* View-only mode for verified sequences */
+  .view-only-notice {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md);
+    background: var(--surface-dark, rgba(0, 0, 0, 0.3));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+  }
+
+  .verified-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    border-radius: 8px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: #22c55e;
+  }
+
+  .edit-button {
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: transparent;
+    color: var(--muted-foreground);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 8px;
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .edit-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: var(--foreground);
   }
 </style>

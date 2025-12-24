@@ -70,6 +70,8 @@
     compose: () => import("../../features/compose/ComposeModule.svelte"),
     // settings module - accessed via gear icon in sidebar footer
     settings: () => import("../../features/settings/SettingsModule.svelte"),
+    // 3D viewer module - admin-only for exploring sequences in 3D space
+    "3d-viewer": () => import("../3d-animation/Viewer3DModule.svelte"),
   };
 
   // Load module with caching
