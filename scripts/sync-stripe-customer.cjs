@@ -11,10 +11,14 @@ const serviceAccount = require("../serviceAccountKey.json");
 admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 const db = admin.firestore();
 
-// Initialize Stripe with test secret key
-const stripe = new Stripe(
-  "sk_test_51SgbOFLZdzgHfpQbjHNOJRE4TRoDspBjrywJEQI4kSIBGIFa2hGFcGVeigKbjgEmNheUrfpWVp0oOLrdModDFnGU00B2RcQklw"
-);
+// Initialize Stripe - key must be provided via environment variable
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) {
+  console.error("Error: STRIPE_SECRET_KEY environment variable is required");
+  console.error("Usage: STRIPE_SECRET_KEY=sk_test_xxx node scripts/sync-stripe-customer.cjs");
+  process.exit(1);
+}
+const stripe = new Stripe(stripeKey);
 
 async function syncCustomer(uid) {
   const customerRef = db.collection("customers").doc(uid);
