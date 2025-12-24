@@ -27,6 +27,9 @@
   import MessagesWidget from "./widgets/MessagesWidget.svelte";
   import AlertsWidget from "./widgets/AlertsWidget.svelte";
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
+  import DashboardFloatingActions from "./mobile/DashboardFloatingActions.svelte";
+  import MessagesDrawer from "./drawers/MessagesDrawer.svelte";
+  import NotificationsDrawer from "./drawers/NotificationsDrawer.svelte";
   import { createDashboard } from "../state/dashboard-state.svelte";
   import type { FeedbackItem, FeedbackType } from "$lib/features/feedback/domain/models/feedback-models";
 
@@ -37,6 +40,9 @@
 
   // State
   const dashboardState = createDashboard();
+  let messagesDrawerOpen = $state(false);
+  let notificationsDrawerOpen = $state(false);
+  let pendingConversationId = $state("");
 
   // Preview-aware derived values (directly in component for proper reactivity)
   const isPreviewActive = $derived(userPreviewState.isActive);
@@ -110,14 +116,11 @@
     appendMode?: boolean
   ): Promise<FeedbackItem> {
     // Dynamically import feedback service
-    const { myFeedbackService } = await import(
-      "$lib/features/feedback/services/implementations/MyFeedbackService"
+    const { feedbackService } = await import(
+      "$lib/features/feedback/services/implementations/FeedbackService"
     );
-    const userId = authState.effectiveUserId;
-    if (!userId) throw new Error("User not authenticated");
 
-    const updatedItem = await myFeedbackService.updateMyFeedback(
-      userId,
+    const updatedItem = await feedbackService.updateUserFeedback(
       feedbackId,
       updates,
       appendMode
@@ -133,13 +136,11 @@
 
   async function handleFeedbackDelete(feedbackId: string): Promise<void> {
     // Dynamically import feedback service
-    const { myFeedbackService } = await import(
-      "$lib/features/feedback/services/implementations/MyFeedbackService"
+    const { feedbackService } = await import(
+      "$lib/features/feedback/services/implementations/FeedbackService"
     );
-    const userId = authState.effectiveUserId;
-    if (!userId) throw new Error("User not authenticated");
 
-    await myFeedbackService.deleteMyFeedback(userId, feedbackId);
+    await feedbackService.deleteUserFeedback(feedbackId);
 
     // Close the detail panel after deletion
     dashboardState.closeFeedbackDetail();
@@ -200,7 +201,13 @@
           easing: cubicOut,
         }}
       >
-        <MessagesWidget />
+        <MessagesWidget
+          onOpenMessages={() => (messagesDrawerOpen = true)}
+          onOpenConversation={(conversationId) => {
+            pendingConversationId = conversationId;
+            messagesDrawerOpen = true;
+          }}
+        />
       </section>
     {/if}
 
@@ -215,7 +222,10 @@
           easing: cubicOut,
         }}
       >
-        <AlertsWidget {dashboardState} />
+        <AlertsWidget
+          {dashboardState}
+          onOpenNotifications={() => (notificationsDrawerOpen = true)}
+        />
       </section>
     {/if}
   </div>
@@ -233,6 +243,20 @@
     onUpdate={handleFeedbackUpdate}
     onDelete={handleFeedbackDelete}
   />
+
+  <!-- Mobile-only floating action buttons -->
+  {#if isMobile}
+    <DashboardFloatingActions
+      onMessagesClick={() => (messagesDrawerOpen = true)}
+      onNotificationsClick={() => (notificationsDrawerOpen = true)}
+    />
+  {/if}
+
+  <!-- Messages Drawer -->
+  <MessagesDrawer bind:isOpen={messagesDrawerOpen} bind:pendingConversationId />
+
+  <!-- Notifications Drawer -->
+  <NotificationsDrawer bind:isOpen={notificationsDrawerOpen} />
 </div>
 
 <style>
@@ -411,6 +435,12 @@
   .community-grid.mobile .widget-messages,
   .community-grid.mobile .widget-alerts {
     grid-column: 1;
+  }
+
+  /* Hide Messages/Alerts widgets on mobile (replaced by floating buttons) */
+  .community-grid.mobile .widget-messages,
+  .community-grid.mobile .widget-alerts {
+    display: none;
   }
 
   /* ========================================

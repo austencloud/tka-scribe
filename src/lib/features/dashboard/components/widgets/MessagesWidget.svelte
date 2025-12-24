@@ -9,17 +9,32 @@
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
   import type { ConversationPreview } from "$lib/shared/messaging/domain/models/conversation-models";
 
+  // Props
+  let { onOpenMessages, onOpenConversation } = $props<{
+    onOpenMessages?: () => void;
+    onOpenConversation?: (conversationId: string) => void;
+  }>();
+
   // Derived state from inbox
   const conversations = $derived(inboxState.conversations.slice(0, 4));
   const unreadCount = $derived(inboxState.unreadMessageCount);
 
   function openConversation(conversation: ConversationPreview) {
-    // Direct navigation - opens straight to the thread
-    inboxState.openToConversationById(conversation.id);
+    // Use prop if provided, otherwise use default behavior
+    if (onOpenConversation) {
+      onOpenConversation(conversation.id);
+    } else {
+      inboxState.openToConversationById(conversation.id);
+    }
   }
 
   function openAllMessages() {
-    inboxState.open("messages");
+    // Use prop if provided, otherwise use default behavior
+    if (onOpenMessages) {
+      onOpenMessages();
+    } else {
+      inboxState.open("messages");
+    }
   }
 
   function formatTimeAgo(date: Date | string): string {

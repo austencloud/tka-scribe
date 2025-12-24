@@ -10,8 +10,9 @@
   import type { UserNotification, FeedbackNotification } from "$lib/features/feedback/domain/models/notification-models";
   import type { Props } from "../Dashboard.svelte";
 
-  let { dashboardState } = $props<{
+  let { dashboardState, onOpenNotifications } = $props<{
     dashboardState: ReturnType<import("../../state/dashboard-state.svelte")["createDashboard"]>;
+    onOpenNotifications?: () => void;
   }>();
 
   // Filter out system announcements - those go in the banner
@@ -33,20 +34,22 @@
       return;
     }
 
-    // For other notifications, use existing behavior
-    inboxState.openToNotification(notification.id);
+    // For other notifications, use prop if provided, otherwise use default behavior
+    if (onOpenNotifications) {
+      onOpenNotifications();
+    } else {
+      inboxState.openToNotification(notification.id);
+    }
   }
 
   async function loadAndOpenFeedback(feedbackId: string) {
     try {
       // Dynamically import feedback service to load the item
-      const { myFeedbackService } = await import(
-        "$lib/features/feedback/services/implementations/MyFeedbackService"
+      const { feedbackService } = await import(
+        "$lib/features/feedback/services/implementations/FeedbackService"
       );
-      const userId = authState.effectiveUserId;
-      if (!userId) return;
 
-      const feedbackItem = await myFeedbackService.getMyFeedbackItem(userId, feedbackId);
+      const feedbackItem = await feedbackService.getFeedback(feedbackId);
       if (feedbackItem) {
         dashboardState.openFeedbackDetail(feedbackItem);
       }
@@ -56,7 +59,12 @@
   }
 
   function openAllAlerts() {
-    inboxState.open("notifications");
+    // Use prop if provided, otherwise use default behavior
+    if (onOpenNotifications) {
+      onOpenNotifications();
+    } else {
+      inboxState.open("notifications");
+    }
   }
 
   function getNotificationIcon(type: UserNotification["type"]): string {
