@@ -45,6 +45,37 @@ Uses organizer and sizer services for section grouping and sizing.
   const isMobile = $derived(containerWidth < 768);
   const columns = $derived(isMobile ? 4 : 8);
 
+  // Continuous mode on mobile: use compact 4x4 grid (16 options fit perfectly)
+  const shouldUseCompact4x4 = $derived(() => {
+    return isMobile && isContinuousOnly && options.length <= 16 && options.length > 0;
+  });
+
+  // Calculate optimal card size for 4x4 grid
+  const compact4x4Sizing = $derived(() => {
+    if (!shouldUseCompact4x4()) return null;
+
+    const gap = 6;
+    const padding = 8;
+    const headerHeight = 28; // filter toggle
+
+    // Available dimensions
+    const availableWidth = containerWidth - (padding * 2);
+    const availableHeight = containerHeight - headerHeight - (padding * 2);
+
+    // Calculate card size to fit 4x4 with gaps
+    const cardWidth = (availableWidth - (gap * 3)) / 4;
+    const cardHeight = (availableHeight - (gap * 3)) / 4;
+
+    // Use the smaller dimension to keep cards square, with min/max bounds
+    const cardSize = Math.max(60, Math.min(100, Math.floor(Math.min(cardWidth, cardHeight))));
+
+    return {
+      cardSize,
+      gap: `${gap}px`,
+      columns: 4
+    };
+  });
+
   // Organize options into sections
   const organizedSections = $derived(() => {
     if (!organizerService || options.length === 0) {
@@ -193,6 +224,30 @@ Uses organizer and sizer services for section grouping and sizing.
     <div class="empty-state">
       <p>No options available</p>
     </div>
+  {:else if shouldUseCompact4x4()}
+    <!-- Mobile Continuous: Compact 4x4 grid showing all 16 options -->
+    {@const sizing4x4 = compact4x4Sizing()}
+    <div
+      class="compact-4x4-grid"
+      style:opacity={isFading ? 0 : 1}
+      style:--card-size="{sizing4x4?.cardSize ?? 75}px"
+      style:--grid-gap={sizing4x4?.gap ?? '6px'}
+    >
+      {#each options as option (option.id || `${option.letter}-${option.startPosition}-${option.endPosition}`)}
+        <button
+          class="compact-option-card"
+          class:disabled={isFading}
+          onclick={() => !isFading && onSelect(option)}
+          disabled={isFading}
+        >
+          <img
+            src={option.thumbnailUrl || option.imageUrl}
+            alt={option.letter || 'Option'}
+            loading="eager"
+          />
+        </button>
+      {/each}
+    </div>
   {:else if shouldUseSwipeLayout()}
     <!-- Mobile: Swipe between sections (Types 4-6 combined into one panel) -->
     <div class="swipe-container" style:opacity={isFading ? 0 : 1}>
@@ -330,6 +385,54 @@ Uses organizer and sizer services for section grouping and sizing.
     width: 100%;
     min-height: 0;
     transition: opacity 250ms ease-out;
+  }
+
+  /* Compact 4x4 grid for continuous mode on mobile */
+  .compact-4x4-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, var(--card-size));
+    grid-template-rows: repeat(4, var(--card-size));
+    gap: var(--grid-gap);
+    justify-content: center;
+    align-content: center;
+    padding: 8px;
+    transition: opacity 250ms ease-out;
+  }
+
+  .compact-option-card {
+    width: var(--card-size);
+    height: var(--card-size);
+    padding: 0;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .compact-option-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+  }
+
+  .compact-option-card:active {
+    transform: scale(0.96);
+    border-color: rgba(59, 130, 246, 0.6);
+  }
+
+  .compact-option-card.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .compact-option-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
   }
 
   .empty-state {

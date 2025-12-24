@@ -7,6 +7,7 @@
 import type { MotionConfig3D } from "../domain/models/MotionData3D";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { Plane } from "../domain/enums/Plane";
+import type { GridMode } from "../domain/constants/grid-layout";
 
 const STORAGE_KEY = "tka-3d-animator-state";
 
@@ -15,6 +16,7 @@ export interface Animation3DPersistedState {
   visiblePlanes: string[]; // Plane enum values
   showGrid: boolean;
   showLabels: boolean;
+  gridMode: GridMode;
   cameraPreset: "front" | "top" | "side" | "perspective";
 
   // Custom camera position (from orbit controls)

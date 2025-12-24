@@ -9,6 +9,7 @@
   import { T } from "@threlte/core";
   import GridPlane from "./GridPlane.svelte";
   import { Plane, PLANE_COLORS } from "../domain/enums/Plane";
+  import type { GridMode } from "../domain/constants/grid-layout";
 
   interface Props {
     /** Which planes to show */
@@ -19,6 +20,8 @@
     showLabels?: boolean;
     /** Opacity for plane surfaces */
     planeOpacity?: number;
+    /** Grid mode: diamond or box */
+    gridMode?: GridMode;
   }
 
   let {
@@ -26,6 +29,7 @@
     size = 300,
     showLabels = true,
     planeOpacity = 0.15,
+    gridMode = "diamond",
   }: Props = $props();
 </script>
 
@@ -38,6 +42,7 @@
       opacity={planeOpacity}
       {showLabels}
       {size}
+      {gridMode}
     />
   {/if}
 
@@ -49,6 +54,7 @@
       opacity={planeOpacity}
       {showLabels}
       {size}
+      {gridMode}
     />
   {/if}
 
@@ -60,6 +66,7 @@
       opacity={planeOpacity}
       {showLabels}
       {size}
+      {gridMode}
     />
   {/if}
 

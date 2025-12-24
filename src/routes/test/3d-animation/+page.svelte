@@ -12,6 +12,7 @@
   import Staff3D from "$lib/shared/3d-animation/components/Staff3D.svelte";
   import PropConfigCard from "$lib/shared/3d-animation/components/controls/PropConfigCard.svelte";
   import { Plane, PLANE_LABELS, PLANE_COLORS } from "$lib/shared/3d-animation/domain/enums/Plane";
+  import type { GridMode } from "$lib/shared/3d-animation/domain/constants/grid-layout";
   import { createAnimation3DState } from "$lib/shared/3d-animation/state/animation-3d-state.svelte";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import { saveState, loadState, parsePlanes } from "$lib/shared/3d-animation/utils/persistence";
@@ -25,6 +26,7 @@
   let visiblePlanes = $state(new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]));
   let showGrid = $state(true);
   let showLabels = $state(true);
+  let gridMode = $state<GridMode>("diamond");
   let cameraPreset = $state<"front" | "top" | "side" | "perspective">("perspective");
   let activeTab = $state<"blue" | "red">("blue");
   let panelOpen = $state(true);
@@ -58,6 +60,7 @@
     if (saved.visiblePlanes) visiblePlanes = parsePlanes(saved.visiblePlanes);
     if (saved.showGrid !== undefined) showGrid = saved.showGrid;
     if (saved.showLabels !== undefined) showLabels = saved.showLabels;
+    if (saved.gridMode) gridMode = saved.gridMode;
     if (saved.cameraPreset) cameraPreset = saved.cameraPreset;
     if (saved.activeTab) activeTab = saved.activeTab;
     if (saved.panelOpen !== undefined) panelOpen = saved.panelOpen;
@@ -99,6 +102,7 @@
       visiblePlanes: Array.from(visiblePlanes),
       showGrid,
       showLabels,
+      gridMode,
       cameraPreset,
       activeTab,
       panelOpen,
@@ -192,6 +196,7 @@
       {visiblePlanes}
       {showGrid}
       {showLabels}
+      {gridMode}
       {cameraPreset}
       {customCameraPosition}
       {customCameraTarget}

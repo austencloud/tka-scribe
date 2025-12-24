@@ -15,6 +15,7 @@
   import { OrbitControls } from "@threlte/extras";
   import Grid3D from "./Grid3D.svelte";
   import { Plane } from "../domain/enums/Plane";
+  import type { GridMode } from "../domain/constants/grid-layout";
 
   import type { Snippet } from "svelte";
 
@@ -30,6 +31,8 @@
     showGrid?: boolean;
     /** Whether to show grid point labels */
     showLabels?: boolean;
+    /** Grid mode: diamond or box */
+    gridMode?: GridMode;
     /** Camera position preset */
     cameraPreset?: "front" | "top" | "side" | "perspective";
     /** Custom camera position (overrides preset) */
@@ -46,6 +49,7 @@
     visiblePlanes = new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]),
     showGrid = true,
     showLabels = true,
+    gridMode = "diamond",
     cameraPreset = "perspective",
     customCameraPosition = null,
     customCameraTarget = null,
@@ -135,7 +139,7 @@
 
     <!-- Grid planes -->
     {#if showGrid}
-      <Grid3D {visiblePlanes} {showLabels} />
+      <Grid3D {visiblePlanes} {showLabels} {gridMode} />
     {/if}
 
     <!-- Children content (props, etc.) -->

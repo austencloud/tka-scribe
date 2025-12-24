@@ -31,13 +31,9 @@ Delegates all rendering to child components.
     currentGridMode: GridMode;
     onOptionSelected: (option: PictographData) => void | Promise<void>;
     isContinuousOnly?: boolean;
-    // Compatibility props (can be used for future enhancements)
+    onToggleContinuous?: (value: boolean) => void;
     isSideBySideLayout?: () => boolean;
     isUndoingOption?: boolean;
-    onOpenFilters?: () => void;
-    onCloseFilters?: () => void;
-    isFilterPanelOpen?: boolean;
-    onToggleContinuous?: (value: boolean) => void;
   }
 
   const {
@@ -45,12 +41,9 @@ Delegates all rendering to child components.
     currentGridMode,
     onOptionSelected,
     isContinuousOnly = false,
+    onToggleContinuous,
     isSideBySideLayout = () => false,
     isUndoingOption = false,
-    onOpenFilters,
-    onCloseFilters,
-    isFilterPanelOpen = false,
-    onToggleContinuous,
   }: Props = $props();
 
   // State
@@ -163,9 +156,6 @@ Delegates all rendering to child components.
     {sizerService}
     isFading={fadeState.isFading}
     onSelect={handleSelect}
-    {isFilterPanelOpen}
-    {onOpenFilters}
-    {onCloseFilters}
     {isContinuousOnly}
     {onToggleContinuous}
     {isSideBySideLayout}

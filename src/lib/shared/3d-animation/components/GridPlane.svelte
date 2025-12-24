@@ -4,8 +4,9 @@
    *
    * Renders a single grid plane with:
    * - Semi-transparent plane surface
-   * - 8 grid point markers (N, NE, E, SE, S, SW, W, NW)
-   * - Center point marker
+   * - Center point (largest, white)
+   * - Hand points (medium, plane color)
+   * - Outer points (smallest, dimmer)
    */
 
   import { T } from "@threlte/core";
@@ -14,10 +15,17 @@
   import { Plane, PLANE_LABELS } from "../domain/enums/Plane";
   import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { LOCATION_ANGLES } from "$lib/features/compose/shared/domain/math-constants";
+  import { planeAngleToWorldPosition } from "../domain/constants/plane-transforms";
   import {
-    GRID_RADIUS_3D,
-    planeAngleToWorldPosition,
-  } from "../domain/constants/plane-transforms";
+    HAND_POINT_RADIUS,
+    OUTER_POINT_RADIUS,
+    CENTER_POINT_SIZE,
+    HAND_POINT_SIZE,
+    OUTER_POINT_SIZE,
+    type GridMode,
+    getHandPoints,
+    getOuterPoints,
+  } from "../domain/constants/grid-layout";
 
   interface Props {
     plane: Plane;
@@ -25,6 +33,8 @@
     opacity?: number;
     showLabels?: boolean;
     size?: number;
+    /** Grid mode: diamond (N/E/S/W as hands) or box (NE/SE/SW/NW as hands) */
+    gridMode?: GridMode;
   }
 
   let {
@@ -33,24 +43,20 @@
     opacity = 0.15,
     showLabels = true,
     size = 300,
+    gridMode = "diamond",
   }: Props = $props();
 
-  // Grid point locations
-  const gridLocations = [
-    GridLocation.NORTH,
-    GridLocation.NORTHEAST,
-    GridLocation.EAST,
-    GridLocation.SOUTHEAST,
-    GridLocation.SOUTH,
-    GridLocation.SOUTHWEST,
-    GridLocation.WEST,
-    GridLocation.NORTHWEST,
-  ];
+  // Get points based on current mode
+  const handPoints = $derived(getHandPoints(gridMode));
+  const outerPoints = $derived(getOuterPoints(gridMode));
 
-  // Get position for a grid location on this plane
-  function getGridPointPosition(location: GridLocation): [number, number, number] {
+  // Get position for a grid location on this plane at a given radius
+  function getGridPointPosition(
+    location: GridLocation,
+    radius: number
+  ): [number, number, number] {
     const angle = LOCATION_ANGLES[location];
-    const pos = planeAngleToWorldPosition(plane, angle, GRID_RADIUS_3D);
+    const pos = planeAngleToWorldPosition(plane, angle, radius);
     return [pos.x, pos.y, pos.z];
   }
 
@@ -109,38 +115,69 @@
     />
   </T.Mesh>
 
-  <!-- Grid circle outline using RingGeometry -->
+  <!-- Hand point circle (inner ring) -->
   <T.Mesh position={[0, 0, 0.5]}>
-    <T.RingGeometry args={[GRID_RADIUS_3D - 2, GRID_RADIUS_3D + 2, 64]} />
+    <T.RingGeometry args={[HAND_POINT_RADIUS - 1.5, HAND_POINT_RADIUS + 1.5, 64]} />
     <T.MeshBasicMaterial
       {color}
-      opacity={0.4}
+      opacity={0.5}
       transparent={true}
       side={DoubleSide}
     />
   </T.Mesh>
 
-  <!-- Center point -->
+  <!-- Outer point circle -->
+  <T.Mesh position={[0, 0, 0.3]}>
+    <T.RingGeometry args={[OUTER_POINT_RADIUS - 1, OUTER_POINT_RADIUS + 1, 64]} />
+    <T.MeshBasicMaterial
+      {color}
+      opacity={0.25}
+      transparent={true}
+      side={DoubleSide}
+    />
+  </T.Mesh>
+
+  <!-- Center point (largest, white/gold) -->
   <T.Mesh position={[0, 0, 1]}>
-    <T.SphereGeometry args={[5, 16, 16]} />
-    <T.MeshBasicMaterial color="white" />
+    <T.SphereGeometry args={[CENTER_POINT_SIZE, 16, 16]} />
+    <T.MeshBasicMaterial color="#fbbf24" />
   </T.Mesh>
 </T.Group>
 
-<!-- Grid point markers (in world space for proper 3D positioning) -->
-{#each gridLocations as location}
-  {@const pos = getGridPointPosition(location)}
+<!-- Hand point markers (medium size, at hand radius) -->
+{#each handPoints as location}
+  {@const pos = getGridPointPosition(location, HAND_POINT_RADIUS)}
   <T.Mesh position={pos}>
-    <T.SphereGeometry args={[6, 16, 16]} />
+    <T.SphereGeometry args={[HAND_POINT_SIZE, 16, 16]} />
     <T.MeshBasicMaterial {color} />
   </T.Mesh>
 
   {#if showLabels}
     <Text
       text={locationLabels[location]}
-      position={[pos[0] * 1.15, pos[1] * 1.15, pos[2] * 1.15]}
-      fontSize={12}
+      position={[pos[0] * 1.12, pos[1] * 1.12, pos[2] * 1.12]}
+      fontSize={14}
       color="white"
+      anchorX="center"
+      anchorY="middle"
+    />
+  {/if}
+{/each}
+
+<!-- Outer point markers (smaller, at outer radius) -->
+{#each outerPoints as location}
+  {@const pos = getGridPointPosition(location, OUTER_POINT_RADIUS)}
+  <T.Mesh position={pos}>
+    <T.SphereGeometry args={[OUTER_POINT_SIZE, 12, 12]} />
+    <T.MeshBasicMaterial color={color} opacity={0.6} transparent />
+  </T.Mesh>
+
+  {#if showLabels}
+    <Text
+      text={locationLabels[location]}
+      position={[pos[0] * 1.08, pos[1] * 1.08, pos[2] * 1.08]}
+      fontSize={11}
+      color="rgba(255,255,255,0.6)"
       anchorX="center"
       anchorY="middle"
     />
