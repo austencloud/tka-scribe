@@ -3,7 +3,7 @@
    * Beat-Pair Analysis Display
    *
    * Shows detected beat-pair relationships and their groupings.
-   * Used to visualize modular patterns and transformation groups.
+   * Simplified view for single-pattern sequences, detailed view for modular.
    */
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
   import type { BeatPairGroups } from "../../domain/models/label-models";
@@ -35,17 +35,34 @@
   };
 
   function getColorForPattern(pattern: string): string {
-    // Check each known transformation in the pattern
     for (const [key, color] of Object.entries(transformationColors)) {
       if (pattern.toUpperCase().includes(key)) {
         return color;
       }
     }
-    return "#6b7280"; // default gray
+    return "#6b7280";
   }
 
   const groupCount = $derived(Object.keys(beatPairGroups || {}).length);
   const isModular = $derived(groupCount > 1);
+
+  // For single-pattern sequences, get the unified pattern
+  const unifiedPattern = $derived.by(() => {
+    if (isModular || groupCount === 0) return null;
+    const patterns = Object.keys(beatPairGroups || {});
+    return patterns[0] || null;
+  });
+
+  // Find pairs that have alternative interpretations worth showing
+  const pairsWithAlternatives = $derived.by(() => {
+    return beatPairs.filter((pair) => {
+      const primary = pair.detectedTransformations[0] || "UNKNOWN";
+      const alternatives = (pair.allValidTransformations || []).filter(
+        (t) => t !== primary
+      );
+      return alternatives.length > 0;
+    });
+  });
 </script>
 
 {#if beatPairs.length > 0}
@@ -69,12 +86,12 @@
     </button>
 
     {#if isExpanded}
-      <!-- Groups Summary -->
-      {#if beatPairGroups && groupCount > 0}
+      {#if isModular}
+        <!-- MODULAR: Show full breakdown with groups -->
         <div class="groups-section">
           <h4 class="section-title">Transformation Groups</h4>
           <div class="groups-grid">
-            {#each Object.entries(beatPairGroups) as [pattern, beats]}
+            {#each Object.entries(beatPairGroups || {}) as [pattern, beats]}
               <div
                 class="group-card"
                 style="--group-color: {getColorForPattern(pattern)}"
@@ -87,46 +104,94 @@
             {/each}
           </div>
         </div>
-      {/if}
 
-      <!-- Detailed Pairs -->
-      <div class="pairs-section">
-        <h4 class="section-title">Detailed Pairs</h4>
-        <div class="pairs-list">
-          {#each beatPairs as pair}
-            {@const primaryTransform = pair.detectedTransformations[0] || "UNKNOWN"}
-            {@const alternatives = (pair.allValidTransformations || []).filter(t => t !== primaryTransform)}
-            <div class="pair-row">
-              <div class="pair-beats">
-                <span class="beat-num">{pair.keyBeat}</span>
-                <span class="arrow">↔</span>
-                <span class="beat-num">{pair.correspondingBeat}</span>
+        <!-- Full detailed pairs for modular -->
+        <div class="pairs-section">
+          <h4 class="section-title">Detailed Pairs</h4>
+          <div class="pairs-list">
+            {#each beatPairs as pair}
+              {@const primaryTransform =
+                pair.detectedTransformations[0] || "UNKNOWN"}
+              {@const alternatives = (pair.allValidTransformations || []).filter(
+                (t) => t !== primaryTransform
+              )}
+              <div class="pair-row">
+                <div class="pair-beats">
+                  <span class="beat-num">{pair.keyBeat}</span>
+                  <span class="arrow">↔</span>
+                  <span class="beat-num">{pair.correspondingBeat}</span>
+                </div>
+                <div class="pair-transforms">
+                  <span
+                    class="transform-tag primary"
+                    style="--tag-color: {getColorForPattern(primaryTransform)}"
+                  >
+                    {primaryTransform}
+                  </span>
+                  {#if alternatives.length > 0}
+                    <span class="also-label">also:</span>
+                    {#each alternatives as alt}
+                      <span
+                        class="transform-tag alternative"
+                        style="--tag-color: {getColorForPattern(alt)}"
+                      >
+                        {alt}
+                      </span>
+                    {/each}
+                  {/if}
+                </div>
               </div>
-              <div class="pair-transforms">
-                <!-- Primary transformation -->
-                <span
-                  class="transform-tag primary"
-                  style="--tag-color: {getColorForPattern(primaryTransform)}"
-                >
-                  {primaryTransform}
-                </span>
-                <!-- Alternative transformations (also valid) -->
-                {#if alternatives.length > 0}
-                  <span class="also-label">also:</span>
-                  {#each alternatives as alt}
-                    <span
-                      class="transform-tag alternative"
-                      style="--tag-color: {getColorForPattern(alt)}"
+            {/each}
+          </div>
+        </div>
+      {:else if unifiedPattern}
+        <!-- SINGLE PATTERN: Simplified view -->
+        <div class="unified-section">
+          <div class="unified-summary">
+            <span class="unified-label">All {beatPairs.length} pairs:</span>
+            <span
+              class="transform-tag primary"
+              style="--tag-color: {getColorForPattern(unifiedPattern)}"
+            >
+              {unifiedPattern}
+            </span>
+          </div>
+
+          <!-- Only show pairs with alternatives -->
+          {#if pairsWithAlternatives.length > 0}
+            <div class="alternatives-note">
+              <span class="note-label"
+                >{pairsWithAlternatives.length} pair{pairsWithAlternatives.length >
+                1
+                  ? "s"
+                  : ""} also match:</span
+              >
+              <div class="alternatives-list">
+                {#each pairsWithAlternatives as pair}
+                  {@const primary =
+                    pair.detectedTransformations[0] || "UNKNOWN"}
+                  {@const alternatives = (
+                    pair.allValidTransformations || []
+                  ).filter((t) => t !== primary)}
+                  <div class="alt-pair-row">
+                    <span class="alt-pair-nums"
+                      >{pair.keyBeat}↔{pair.correspondingBeat}:</span
                     >
-                      {alt}
-                    </span>
-                  {/each}
-                {/if}
+                    {#each alternatives as alt}
+                      <span
+                        class="transform-tag alternative"
+                        style="--tag-color: {getColorForPattern(alt)}"
+                      >
+                        {alt}
+                      </span>
+                    {/each}
+                  </div>
+                {/each}
               </div>
             </div>
-          {/each}
+          {/if}
         </div>
-      </div>
+      {/if}
     {/if}
   </div>
 {/if}
@@ -182,7 +247,7 @@
     color: var(--muted-foreground);
   }
 
-  /* Groups Section */
+  /* Groups Section (modular only) */
   .groups-section,
   .pairs-section {
     padding: var(--spacing-sm) var(--spacing-md);
@@ -225,7 +290,55 @@
     color: var(--muted-foreground);
   }
 
-  /* Pairs List */
+  /* Unified Section (single pattern) */
+  .unified-section {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .unified-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+
+  .unified-label {
+    font-size: var(--font-size-sm);
+    color: var(--muted-foreground);
+  }
+
+  .alternatives-note {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .note-label {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .alternatives-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .alt-pair-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+  }
+
+  .alt-pair-nums {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    min-width: 40px;
+  }
+
+  /* Pairs List (modular only) */
   .pairs-list {
     display: flex;
     flex-direction: column;

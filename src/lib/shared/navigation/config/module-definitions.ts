@@ -127,6 +127,15 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
     sections: ADMIN_TABS,
   },
   {
+    id: "3d-viewer",
+    label: "3D Viewer",
+    icon: '<i class="fas fa-cube" style="color: #06b6d4;"></i>',
+    color: "#06b6d4", // Cyan - 3D/spatial
+    description: "Explore sequences in 3D space",
+    isMain: true, // Visibility controlled by feature flags (admin-only)
+    sections: [], // No sub-tabs for now
+  },
+  {
     id: "settings",
     label: "Settings",
     icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',

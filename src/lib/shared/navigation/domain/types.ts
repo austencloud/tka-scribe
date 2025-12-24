@@ -34,7 +34,8 @@ export type ModuleId =
   | "feedback"
   | "ml-training"
   | "admin"
-  | "settings";
+  | "settings"
+  | "3d-viewer";
 
 /**
  * Module Definition

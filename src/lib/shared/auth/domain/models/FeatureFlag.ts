@@ -83,6 +83,7 @@ const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
   "module:library": "admin", // Not ready for testers yet
   "module:ml-training": "admin", // Admin-only feature
   "module:admin": "admin",
+  "module:3d-viewer": "admin", // Level 6 feature - admin-only for now
 
   // Modules - Tester access
   "module:feedback": "tester", // Feedback requires sign-in (tester access)
