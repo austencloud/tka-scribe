@@ -18,6 +18,15 @@ export function normalizeAngle(angle: number): number {
 }
 
 /**
+ * Normalize angle to signed range (-π, π]
+ * Used for calculating shortest path differences
+ */
+export function normalizeAngleSigned(angle: number): number {
+  const norm = normalizeAngle(angle);
+  return norm > PI ? norm - TWO_PI : norm;
+}
+
+/**
  * Linear interpolation between two values
  */
 export function lerp(a: number, b: number, t: number): number {

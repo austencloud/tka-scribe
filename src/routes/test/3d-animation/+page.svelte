@@ -3,26 +3,145 @@
    * 3D Animation Test Page
    *
    * Sandboxed development environment for the 3D animation system.
-   * Responsive layout with tabbed prop configuration.
+   * Supports both manual configuration and loading sequences from gallery.
+   * Full localStorage persistence for seamless dev experience.
    */
 
-  import { onDestroy } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import Scene3D from "$lib/shared/3d-animation/components/Scene3D.svelte";
   import Prop3D from "$lib/shared/3d-animation/components/Prop3D.svelte";
   import PropConfigCard from "$lib/shared/3d-animation/components/controls/PropConfigCard.svelte";
   import { Plane, PLANE_LABELS, PLANE_COLORS } from "$lib/shared/3d-animation/domain/enums/Plane";
   import { createAnimation3DState } from "$lib/shared/3d-animation/state/animation-3d-state.svelte";
+  import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
+  import { saveState, loadState, parsePlanes } from "$lib/shared/3d-animation/utils/persistence";
+  import type { CameraState } from "$lib/shared/3d-animation/components/Scene3D.svelte";
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   // Animation state
   const animState = createAnimation3DState();
 
-  // UI state
+  // UI state - will be restored from localStorage
   let visiblePlanes = $state(new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]));
   let showGrid = $state(true);
   let showLabels = $state(true);
   let cameraPreset = $state<"front" | "top" | "side" | "perspective">("perspective");
   let activeTab = $state<"blue" | "red">("blue");
   let panelOpen = $state(true);
+  let browserOpen = $state(false);
+
+  // Camera position from orbit controls (persisted)
+  let customCameraPosition = $state<[number, number, number] | null>(null);
+  let customCameraTarget = $state<[number, number, number] | null>(null);
+
+  // Track if initial load is complete (to avoid saving during hydration)
+  let initialized = $state(false);
+
+  // Handle camera changes from orbit controls
+  function handleCameraChange(state: CameraState) {
+    customCameraPosition = state.position;
+    customCameraTarget = state.target;
+  }
+
+  // Reset custom camera when preset button is clicked
+  function setCameraPreset(preset: typeof cameraPreset) {
+    cameraPreset = preset;
+    customCameraPosition = null;
+    customCameraTarget = null;
+  }
+
+  // Load persisted state on mount
+  onMount(() => {
+    const saved = loadState();
+
+    // Restore UI state
+    if (saved.visiblePlanes) visiblePlanes = parsePlanes(saved.visiblePlanes);
+    if (saved.showGrid !== undefined) showGrid = saved.showGrid;
+    if (saved.showLabels !== undefined) showLabels = saved.showLabels;
+    if (saved.cameraPreset) cameraPreset = saved.cameraPreset;
+    if (saved.activeTab) activeTab = saved.activeTab;
+    if (saved.panelOpen !== undefined) panelOpen = saved.panelOpen;
+    if (saved.speedIndex !== undefined) speedIndex = saved.speedIndex;
+
+    // Restore camera position
+    if (saved.cameraPosition) customCameraPosition = saved.cameraPosition;
+    if (saved.cameraTarget) customCameraTarget = saved.cameraTarget;
+
+    // Restore playback settings
+    if (saved.loop !== undefined) animState.loop = saved.loop;
+
+    // Restore prop visibility
+    if (saved.showBlue !== undefined) animState.showBlue = saved.showBlue;
+    if (saved.showRed !== undefined) animState.showRed = saved.showRed;
+
+    // Restore manual configs
+    if (saved.blueConfig) animState.blueConfig = saved.blueConfig;
+    if (saved.redConfig) animState.redConfig = saved.redConfig;
+
+    // Restore sequence (if one was loaded)
+    if (saved.loadedSequence) {
+      animState.loadSequence(saved.loadedSequence);
+      if (saved.currentBeatIndex !== undefined) {
+        animState.goToBeat(saved.currentBeatIndex);
+      }
+    }
+
+    // Mark as initialized after a tick to allow state to settle
+    setTimeout(() => {
+      initialized = true;
+    }, 50);
+  });
+
+  // Persist UI state changes
+  $effect(() => {
+    if (!initialized) return;
+    saveState({
+      visiblePlanes: Array.from(visiblePlanes),
+      showGrid,
+      showLabels,
+      cameraPreset,
+      activeTab,
+      panelOpen,
+      speedIndex,
+    });
+  });
+
+  // Persist camera position (debounced via the change handler)
+  $effect(() => {
+    if (!initialized) return;
+    saveState({
+      cameraPosition: customCameraPosition,
+      cameraTarget: customCameraTarget,
+    });
+  });
+
+  // Persist playback/animation state changes
+  $effect(() => {
+    if (!initialized) return;
+    saveState({
+      loop: animState.loop,
+      showBlue: animState.showBlue,
+      showRed: animState.showRed,
+    });
+  });
+
+  // Persist manual configs (only in manual mode)
+  $effect(() => {
+    if (!initialized || animState.mode !== "manual") return;
+    saveState({
+      blueConfig: animState.blueConfig,
+      redConfig: animState.redConfig,
+    });
+  });
+
+  // Persist sequence state (full sequence data for instant restore)
+  $effect(() => {
+    if (!initialized) return;
+    saveState({
+      loadedSequence: animState.loadedSequence ?? null,
+      currentBeatIndex: animState.currentBeatIndex,
+    });
+  });
 
   function togglePlane(plane: Plane) {
     const newSet = new Set(visiblePlanes);
@@ -51,6 +170,12 @@
     animState.speed = speeds[speedIndex];
   });
 
+  // Handle sequence selection from browser
+  function handleSequenceSelect(sequence: SequenceData) {
+    animState.loadSequence(sequence);
+    browserOpen = false;
+  }
+
   onDestroy(() => animState.destroy());
 
   const progressPercent = $derived(Math.round(animState.progress * 100));
@@ -63,7 +188,15 @@
 <div class="layout">
   <!-- Scene Area -->
   <main class="scene-area">
-    <Scene3D {visiblePlanes} {showGrid} {showLabels} {cameraPreset}>
+    <Scene3D
+      {visiblePlanes}
+      {showGrid}
+      {showLabels}
+      {cameraPreset}
+      {customCameraPosition}
+      {customCameraTarget}
+      onCameraChange={handleCameraChange}
+    >
       {#if animState.showBlue}
         <Prop3D propState={animState.bluePropState} color="blue" />
       {/if}
@@ -80,8 +213,8 @@
           {#each cameraOptions as opt}
             <button
               class="ctrl-btn"
-              class:active={cameraPreset === opt.value}
-              onclick={() => (cameraPreset = opt.value)}
+              class:active={cameraPreset === opt.value && !customCameraPosition}
+              onclick={() => setCameraPreset(opt.value)}
             >
               {opt.label}
             </button>
@@ -101,8 +234,43 @@
         </div>
       </div>
 
+      <!-- Sequence Info (when loaded) -->
+      {#if animState.mode === "sequence" && animState.loadedSequence}
+        <div class="sequence-info">
+          <span class="sequence-name">{animState.loadedSequence.word || animState.loadedSequence.name}</span>
+          <button class="clear-btn" onclick={() => animState.clearSequence()}>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      {/if}
+
       <!-- Bottom: Playback -->
       <div class="playback-controls">
+        <!-- Beat navigation (sequence mode) -->
+        {#if animState.mode === "sequence" && animState.totalBeats > 0}
+          <button
+            class="play-btn"
+            onclick={() => animState.prevBeat()}
+            disabled={animState.currentBeatIndex === 0}
+          >
+            <i class="fas fa-step-backward"></i>
+          </button>
+
+          <span class="beat-indicator">
+            {animState.currentBeatIndex + 1} / {animState.totalBeats}
+          </span>
+
+          <button
+            class="play-btn"
+            onclick={() => animState.nextBeat()}
+            disabled={animState.currentBeatIndex >= animState.totalBeats - 1}
+          >
+            <i class="fas fa-step-forward"></i>
+          </button>
+
+          <div class="divider"></div>
+        {/if}
+
         <button class="play-btn" onclick={() => animState.reset()}>
           <i class="fas fa-undo"></i>
         </button>
@@ -143,63 +311,109 @@
 
   <!-- Side Panel -->
   <aside class="side-panel" class:collapsed={!panelOpen}>
-    <!-- Prop Tabs -->
-    <div class="prop-tabs">
-      <button
-        class="prop-tab blue"
-        class:active={activeTab === "blue"}
-        onclick={() => (activeTab = "blue")}
-      >
-        <span class="dot"></span>
-        Blue
-        <span
-          class="vis-btn"
-          role="button"
-          tabindex="0"
-          onclick={(e) => { e.stopPropagation(); animState.showBlue = !animState.showBlue; }}
-          onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); animState.showBlue = !animState.showBlue; } }}
-        >
-          <i class="fas" class:fa-eye={animState.showBlue} class:fa-eye-slash={!animState.showBlue}></i>
-        </span>
-      </button>
-
-      <button
-        class="prop-tab red"
-        class:active={activeTab === "red"}
-        onclick={() => (activeTab = "red")}
-      >
-        <span class="dot"></span>
-        Red
-        <span
-          class="vis-btn"
-          role="button"
-          tabindex="0"
-          onclick={(e) => { e.stopPropagation(); animState.showRed = !animState.showRed; }}
-          onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); animState.showRed = !animState.showRed; } }}
-        >
-          <i class="fas" class:fa-eye={animState.showRed} class:fa-eye-slash={!animState.showRed}></i>
-        </span>
+    <!-- Load Sequence Button -->
+    <div class="load-section">
+      <button class="load-btn" onclick={() => (browserOpen = true)}>
+        <i class="fas fa-folder-open"></i>
+        Load Sequence
       </button>
     </div>
 
+    <!-- Prop Tabs (manual mode) -->
+    {#if animState.mode === "manual"}
+      <div class="prop-tabs">
+        <button
+          class="prop-tab blue"
+          class:active={activeTab === "blue"}
+          onclick={() => (activeTab = "blue")}
+        >
+          <span class="dot"></span>
+          Blue
+          <span
+            class="vis-btn"
+            role="button"
+            tabindex="0"
+            onclick={(e) => { e.stopPropagation(); animState.showBlue = !animState.showBlue; }}
+            onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); animState.showBlue = !animState.showBlue; } }}
+          >
+            <i class="fas" class:fa-eye={animState.showBlue} class:fa-eye-slash={!animState.showBlue}></i>
+          </span>
+        </button>
+
+        <button
+          class="prop-tab red"
+          class:active={activeTab === "red"}
+          onclick={() => (activeTab = "red")}
+        >
+          <span class="dot"></span>
+          Red
+          <span
+            class="vis-btn"
+            role="button"
+            tabindex="0"
+            onclick={(e) => { e.stopPropagation(); animState.showRed = !animState.showRed; }}
+            onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); animState.showRed = !animState.showRed; } }}
+          >
+            <i class="fas" class:fa-eye={animState.showRed} class:fa-eye-slash={!animState.showRed}></i>
+          </span>
+        </button>
+      </div>
+    {:else}
+      <!-- Sequence mode: show beat info -->
+      <div class="sequence-header">
+        <span class="mode-label">Sequence Mode</span>
+        <span class="beat-label">Beat {animState.currentBeatIndex + 1}</span>
+      </div>
+    {/if}
+
     <!-- Active Config -->
     <div class="config-scroll">
-      {#if activeTab === "blue"}
-        <PropConfigCard
-          color="blue"
-          config={animState.blueConfig}
-          visible={animState.showBlue}
-          onConfigChange={(c) => (animState.blueConfig = c)}
-          onVisibilityChange={(v) => (animState.showBlue = v)}
-        />
+      {#if animState.mode === "manual"}
+        {#if activeTab === "blue"}
+          <PropConfigCard
+            color="blue"
+            config={animState.blueConfig}
+            visible={animState.showBlue}
+            onConfigChange={(c) => (animState.blueConfig = c)}
+            onVisibilityChange={(v) => (animState.showBlue = v)}
+          />
+        {:else}
+          <PropConfigCard
+            color="red"
+            config={animState.redConfig}
+            visible={animState.showRed}
+            onConfigChange={(c) => (animState.redConfig = c)}
+            onVisibilityChange={(v) => (animState.showRed = v)}
+          />
+        {/if}
       {:else}
-        <PropConfigCard
-          color="red"
-          config={animState.redConfig}
-          visible={animState.showRed}
-          onConfigChange={(c) => (animState.redConfig = c)}
-          onVisibilityChange={(v) => (animState.showRed = v)}
-        />
+        <!-- Sequence mode: show read-only config display -->
+        {#if animState.showBlue && animState.activeBlueConfig}
+          <div class="config-readonly">
+            <div class="config-header blue">
+              <span class="dot"></span>
+              <span>Blue</span>
+            </div>
+            <div class="config-details">
+              <span>{animState.activeBlueConfig.startLocation} → {animState.activeBlueConfig.endLocation}</span>
+              <span>{animState.activeBlueConfig.motionType}</span>
+              <span>{animState.activeBlueConfig.turns} turns</span>
+            </div>
+          </div>
+        {/if}
+        {#if animState.showRed && animState.activeRedConfig}
+          <div class="config-readonly">
+            <div class="config-header red">
+              <span class="dot"></span>
+              <span>Red</span>
+            </div>
+            <div class="config-details">
+              <span>{animState.activeRedConfig.startLocation} → {animState.activeRedConfig.endLocation}</span>
+              <span>{animState.activeRedConfig.motionType}</span>
+              <span>{animState.activeRedConfig.turns} turns</span>
+            </div>
+          </div>
+        {/if}
       {/if}
 
       <!-- Grid Planes -->
@@ -222,6 +436,14 @@
     </div>
   </aside>
 </div>
+
+<!-- Sequence Browser Panel -->
+<SequenceBrowserPanel
+  mode="primary"
+  show={browserOpen}
+  onSelect={handleSequenceSelect}
+  onClose={() => (browserOpen = false)}
+/>
 
 <style>
   .layout {
@@ -265,8 +487,8 @@
 
   .control-group {
     display: flex;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
     padding: 4px;
     backdrop-filter: blur(8px);
@@ -279,21 +501,59 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm, 0.875rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .ctrl-btn:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--theme-text, white);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
   }
 
   .ctrl-btn.active {
     color: white;
-    background: rgba(139, 92, 246, 0.5);
+    background: var(--theme-accent, rgba(139, 92, 246, 0.5));
+  }
+
+  /* Sequence Info */
+  .sequence-info {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .sequence-name {
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .clear-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .clear-btn:hover {
+    background: var(--semantic-error, #ef4444);
+    color: white;
   }
 
   /* Playback Controls */
@@ -301,13 +561,31 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 16px;
     padding: 0.5rem;
     backdrop-filter: blur(8px);
     align-self: center;
     max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .beat-indicator {
+    min-width: 4rem;
+    text-align: center;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--theme-accent, #8b5cf6);
+  }
+
+  .divider {
+    width: 1px;
+    height: 32px;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    margin: 0 0.25rem;
   }
 
   .play-btn {
@@ -317,24 +595,29 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border: none;
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.8);
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
-  .play-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
+  .play-btn:hover:not(:disabled) {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
     color: white;
+  }
+
+  .play-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
   }
 
   .play-btn.primary {
     width: 56px;
     height: 56px;
-    background: #8b5cf6;
+    background: var(--theme-accent, #8b5cf6);
     color: white;
     border-radius: 50%;
   }
@@ -353,14 +636,14 @@
     min-width: 80px;
     max-width: 200px;
     height: 48px;
-    accent-color: #8b5cf6;
+    accent-color: var(--theme-accent, #8b5cf6);
   }
 
   .progress-label {
     min-width: 3rem;
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm, 0.875rem);
     font-variant-numeric: tabular-nums;
-    opacity: 0.6;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-align: center;
   }
 
@@ -374,8 +657,8 @@
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.02);
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.02));
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     transition: width 0.3s ease, opacity 0.3s ease;
   }
 
@@ -385,10 +668,65 @@
     overflow: hidden;
   }
 
+  /* Load Section */
+  .load-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .load-btn {
+    width: 100%;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: var(--theme-accent, #8b5cf6);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .load-btn:hover {
+    background: #7c3aed;
+    transform: translateY(-1px);
+  }
+
+  .load-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Sequence Header */
+  .sequence-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .mode-label {
+    font-size: var(--font-size-compact, 0.75rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
+
+  .beat-label {
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 600;
+    color: var(--theme-accent, #8b5cf6);
+  }
+
   /* Prop Tabs */
   .prop-tabs {
     display: flex;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .prop-tab {
@@ -400,8 +738,8 @@
     gap: 0.5rem;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.875rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm, 0.875rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
@@ -421,16 +759,16 @@
   }
 
   .prop-tab.blue.active::after {
-    background: #3b82f6;
+    background: var(--prop-blue, #3b82f6);
   }
 
   .prop-tab.red.active::after {
-    background: #ef4444;
+    background: var(--prop-red, #ef4444);
   }
 
   .prop-tab.active {
-    color: white;
-    background: rgba(255, 255, 255, 0.03);
+    color: var(--theme-text, white);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
   }
 
   .prop-tab .dot {
@@ -440,11 +778,11 @@
   }
 
   .prop-tab.blue .dot {
-    background: #3b82f6;
+    background: var(--prop-blue, #3b82f6);
   }
 
   .prop-tab.red .dot {
-    background: #ef4444;
+    background: var(--prop-red, #ef4444);
   }
 
   .vis-btn {
@@ -453,7 +791,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border: none;
     border-radius: 8px;
     color: inherit;
@@ -462,7 +800,7 @@
   }
 
   .vis-btn:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
   }
 
   /* Config Scroll */
@@ -475,21 +813,77 @@
     gap: 1rem;
   }
 
+  /* Config Readonly (sequence mode) */
+  .config-readonly {
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .config-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
+    font-weight: 600;
+    font-size: var(--font-size-sm, 0.875rem);
+  }
+
+  .config-header.blue {
+    border-left: 3px solid var(--prop-blue, #2e3192);
+  }
+
+  .config-header.red {
+    border-left: 3px solid var(--prop-red, #ed1c24);
+  }
+
+  .config-header .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .config-header.blue .dot {
+    background: var(--prop-blue, #2e3192);
+  }
+
+  .config-header.red .dot {
+    background: var(--prop-red, #ed1c24);
+  }
+
+  .config-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .config-details span {
+    padding: 0.25rem 0.5rem;
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border-radius: 6px;
+    font-size: var(--font-size-compact, 0.75rem);
+    text-transform: uppercase;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+  }
+
   /* Planes Section */
   .planes-section {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
   }
 
   .planes-section h3 {
     margin: 0 0 0.75rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-compact, 0.75rem);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    opacity: 0.5;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .plane-btns {
@@ -504,25 +898,25 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm, 0.8rem);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .plane-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
   }
 
   .plane-btn.active {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border-color: var(--color);
-    color: white;
+    color: var(--theme-text, white);
   }
 
   .plane-btn .indicator {
@@ -570,7 +964,7 @@
       width: 100%;
       max-height: 50vh;
       border-left: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     }
 
     .side-panel.collapsed {
@@ -589,7 +983,7 @@
     .ctrl-btn {
       min-width: 44px;
       padding: 0 0.5rem;
-      font-size: 0.75rem;
+      font-size: var(--font-size-compact, 0.75rem);
     }
 
     .playback-controls {

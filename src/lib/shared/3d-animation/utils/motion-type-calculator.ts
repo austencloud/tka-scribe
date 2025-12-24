@@ -2,6 +2,7 @@
  * Motion Type Calculator
  *
  * Calculates target staff angle based on motion type (PRO, ANTI, STATIC, DASH, FLOAT).
+ * Matches the 2D EndpointCalculator logic for consistency.
  */
 
 import {
@@ -10,11 +11,16 @@ import {
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { MotionConfig3D } from "../domain/models/MotionData3D";
 import { mapOrientationToAngle } from "./orientation-mapper";
+import { normalizeAngleSigned } from "./angle-math";
 
 const PI = Math.PI;
 
 /**
  * Calculate target staff angle based on motion type
+ *
+ * IMPORTANT: This must match the 2D EndpointCalculator logic:
+ * - dir = CCW ? -1 : 1 (not inverted!)
+ * - centerMovement uses normalizeAngleSigned for shortest path
  */
 export function calculateTargetStaffAngle(
   config: MotionConfig3D,
@@ -22,31 +28,39 @@ export function calculateTargetStaffAngle(
   startCenterAngle: number,
   endCenterAngle: number
 ): number {
-  const centerMovement = endCenterAngle - startCenterAngle;
-  const turnRotation =
-    config.turns *
-    PI *
-    (config.rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? 1 : -1);
+  // Normalize center movement to signed range for shortest path (matches 2D)
+  const centerMovement = normalizeAngleSigned(endCenterAngle - startCenterAngle);
+
+  // Calculate prop rotation from turns
+  // CRITICAL: Sign convention matches 2D EndpointCalculator:
+  // - CCW = -1 (counter-clockwise is negative in canvas coords)
+  // - CW = +1 (clockwise is positive)
+  const dir = config.rotationDirection === RotationDirection.COUNTER_CLOCKWISE ? -1 : 1;
+  const propRotation = dir * config.turns * PI;
 
   switch (config.motionType) {
     case MotionType.PRO:
-      // PRO: staff moves WITH grid + prop rotation
-      return startStaffAngle + centerMovement + turnRotation;
+      // PRO: staff moves WITH grid movement + prop rotation
+      // staffMovement = centerMovement (same direction)
+      return startStaffAngle + centerMovement + propRotation;
 
     case MotionType.ANTI:
-      // ANTI: staff moves OPPOSITE to grid + prop rotation
-      return startStaffAngle - centerMovement + turnRotation;
+      // ANTI: staff moves OPPOSITE to grid movement + prop rotation
+      // staffMovement = -centerMovement (opposite direction)
+      return startStaffAngle - centerMovement + propRotation;
 
     case MotionType.STATIC:
-      // STATIC: staff points to end orientation
+      // STATIC with turns: rotation only from turns
+      // STATIC without turns: use end orientation
       return config.turns > 0
-        ? startStaffAngle + turnRotation
+        ? startStaffAngle + propRotation
         : mapOrientationToAngle(config.endOrientation, endCenterAngle);
 
     case MotionType.DASH:
-      // DASH: similar to STATIC
+      // DASH with turns: rotation only from turns
+      // DASH without turns: use end orientation
       return config.turns > 0
-        ? startStaffAngle + turnRotation
+        ? startStaffAngle + propRotation
         : mapOrientationToAngle(config.endOrientation, endCenterAngle);
 
     case MotionType.FLOAT:

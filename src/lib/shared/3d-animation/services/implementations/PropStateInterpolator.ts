@@ -14,13 +14,17 @@ import {
   calculatePropQuaternion,
   GRID_RADIUS_3D,
 } from "../../domain/constants/plane-transforms";
-import { normalizeAngle, lerp } from "../../utils/angle-math";
+import { normalizeAngle, lerp, lerpAngle } from "../../utils/angle-math";
 import { lerpAngleDirectional } from "../../utils/directional-lerp";
 import { mapOrientationToAngle } from "../../utils/orientation-mapper";
 import { calculateTargetStaffAngle } from "../../utils/motion-type-calculator";
 
 /**
  * Interpolate center path angle based on motion type
+ *
+ * IMPORTANT: Center path (position on grid) ALWAYS uses shortest path interpolation!
+ * The rotation direction only affects STAFF rotation, not position movement.
+ * This matches the 2D animator behavior.
  */
 function interpolateCenterPath(
   config: MotionConfig3D,
@@ -29,7 +33,7 @@ function interpolateCenterPath(
   progress: number
 ): number {
   if (config.motionType === MotionType.DASH) {
-    // DASH: interpolate in Cartesian space (straight line)
+    // DASH: interpolate in Cartesian space (straight line through center)
     const startX = Math.cos(startAngle);
     const startY = Math.sin(startAngle);
     const endX = Math.cos(endAngle);
@@ -39,13 +43,9 @@ function interpolateCenterPath(
     return Math.atan2(currentY, currentX);
   }
 
-  // All other motions: interpolate along circular path
-  return lerpAngleDirectional(
-    startAngle,
-    endAngle,
-    config.rotationDirection,
-    progress
-  );
+  // All other motions: interpolate along circular path using SHORTEST PATH
+  // This is critical - center path movement is always shortest path, like 2D animator
+  return lerpAngle(startAngle, endAngle, progress);
 }
 
 /**
