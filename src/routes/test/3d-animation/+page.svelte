@@ -9,7 +9,7 @@
 
   import { onMount, onDestroy } from "svelte";
   import Scene3D from "$lib/shared/3d-animation/components/Scene3D.svelte";
-  import Prop3D from "$lib/shared/3d-animation/components/Prop3D.svelte";
+  import Staff3D from "$lib/shared/3d-animation/components/Staff3D.svelte";
   import PropConfigCard from "$lib/shared/3d-animation/components/controls/PropConfigCard.svelte";
   import { Plane, PLANE_LABELS, PLANE_COLORS } from "$lib/shared/3d-animation/domain/enums/Plane";
   import { createAnimation3DState } from "$lib/shared/3d-animation/state/animation-3d-state.svelte";
@@ -198,10 +198,10 @@
       onCameraChange={handleCameraChange}
     >
       {#if animState.showBlue}
-        <Prop3D propState={animState.bluePropState} color="blue" />
+        <Staff3D propState={animState.bluePropState} color="blue" />
       {/if}
       {#if animState.showRed}
-        <Prop3D propState={animState.redPropState} color="red" />
+        <Staff3D propState={animState.redPropState} color="red" />
       {/if}
     </Scene3D>
 
