@@ -10,16 +10,6 @@ import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType
 import type { CircularityAnalysis, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalysisService";
 
 /**
- * Motion complexity levels
- *
- * - static: No motion types present (just positions)
- * - simple: Basic motion types (pro/anti-spin, linear)
- * - moderate: Mixed motion types with some reversals
- * - complex: Multiple motion types, reversals, and varied patterns
- */
-export type MotionComplexity = "static" | "simple" | "moderate" | "complex";
-
-/**
  * Position group dominance analysis
  *
  * Indicates which position groups are most used in the sequence.
@@ -99,15 +89,26 @@ export interface SequenceFeatures {
 	// === Position Dominance ===
 	readonly positionDominance: PositionDominance;
 
-	// === Motion Complexity ===
-	readonly motionComplexity: MotionComplexity;
+	// === Position Types Present ===
+	/** Which position groups appear in the sequence */
+	readonly hasAlphaPositions: boolean;
+	readonly hasBetaPositions: boolean;
+	readonly hasGammaPositions: boolean;
 
-	// === Additional Flags ===
-	/** True if sequence uses both hands throughout */
-	readonly usesBothHands: boolean;
+	// === Turn Analysis ===
+	/** True if sequence has any turns (pro or anti spin) */
+	readonly hasTurns: boolean;
 
-	/** True if sequence has consistent motion types */
-	readonly hasConsistentMotions: boolean;
+	/** Number of beats with turns (pro or anti motion) */
+	readonly turnBeatCount: number;
+
+	// === Motion Types Present ===
+	/** Which motion types appear in the sequence */
+	readonly hasProMotion: boolean;
+	readonly hasAntiMotion: boolean;
+	readonly hasFloatMotion: boolean;
+	readonly hasDashMotion: boolean;
+	readonly hasStaticMotion: boolean;
 }
 
 /**
@@ -148,8 +149,15 @@ export function createDefaultSequenceFeatures(): SequenceFeatures {
 			isGammaHeavy: false,
 			isBalanced: true,
 		},
-		motionComplexity: "static",
-		usesBothHands: false,
-		hasConsistentMotions: true,
+		hasAlphaPositions: false,
+		hasBetaPositions: false,
+		hasGammaPositions: false,
+		hasTurns: false,
+		turnBeatCount: 0,
+		hasProMotion: false,
+		hasAntiMotion: false,
+		hasFloatMotion: false,
+		hasDashMotion: false,
+		hasStaticMotion: false,
 	};
 }

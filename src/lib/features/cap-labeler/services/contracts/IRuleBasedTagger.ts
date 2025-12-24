@@ -27,36 +27,4 @@ export interface IRuleBasedTagger {
 	 * @returns Grouped tag suggestions with analysis
 	 */
 	suggestTagsGrouped(features: SequenceFeatures): TagSuggestionResult;
-
-	/**
-	 * Get difficulty tag based on beat count
-	 *
-	 * @param beatCount - Number of beats in sequence
-	 * @returns Difficulty-related tags
-	 */
-	getDifficultyTags(beatCount: number): SuggestedTag[];
-
-	/**
-	 * Get structure tags based on circularity analysis
-	 *
-	 * @param features - Sequence features containing circularity info
-	 * @returns Structure-related tags (circular, CAP types, etc.)
-	 */
-	getStructureTags(features: SequenceFeatures): SuggestedTag[];
-
-	/**
-	 * Get motion tags based on reversal and complexity analysis
-	 *
-	 * @param features - Sequence features containing motion info
-	 * @returns Motion-related tags (reversals, complexity, etc.)
-	 */
-	getMotionTags(features: SequenceFeatures): SuggestedTag[];
-
-	/**
-	 * Get position-based tags
-	 *
-	 * @param features - Sequence features containing position dominance
-	 * @returns Position-related tags (alpha-based, beta-based, etc.)
-	 */
-	getPositionTags(features: SequenceFeatures): SuggestedTag[];
 }

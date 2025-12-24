@@ -8,7 +8,6 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
 	SequenceFeatures,
-	MotionComplexity,
 	PositionDominance,
 	ReversalAnalysis,
 } from "../../domain/models/sequence-features";
@@ -51,31 +50,4 @@ export interface ISequenceFeatureExtractor {
 	 * @returns Position dominance analysis with percentages and flags
 	 */
 	calculatePositionDominance(sequence: SequenceData): PositionDominance;
-
-	/**
-	 * Assess motion complexity
-	 *
-	 * Categorizes the sequence's motion patterns as static, simple,
-	 * moderate, or complex based on motion types and reversals.
-	 *
-	 * @param sequence - The sequence to analyze
-	 * @returns Motion complexity level
-	 */
-	assessMotionComplexity(sequence: SequenceData): MotionComplexity;
-
-	/**
-	 * Check if sequence uses both hands consistently
-	 *
-	 * @param sequence - The sequence to analyze
-	 * @returns True if both blue and red hands are used throughout
-	 */
-	usesBothHands(sequence: SequenceData): boolean;
-
-	/**
-	 * Check if sequence has consistent motion types
-	 *
-	 * @param sequence - The sequence to analyze
-	 * @returns True if motion types are consistent across beats
-	 */
-	hasConsistentMotions(sequence: SequenceData): boolean;
 }

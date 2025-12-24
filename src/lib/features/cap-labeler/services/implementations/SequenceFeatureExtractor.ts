@@ -12,7 +12,6 @@ import type { ISequenceAnalysisService, StrictCapType } from "$lib/features/crea
 import type { ISequenceFeatureExtractor } from "../contracts/ISequenceFeatureExtractor";
 import type {
 	SequenceFeatures,
-	MotionComplexity,
 	PositionDominance,
 	ReversalAnalysis,
 } from "../../domain/models/sequence-features";
@@ -54,6 +53,16 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 		// Only fall back to detection if no capType exists
 		const detectedCapTypes = this.getDetectedCapTypes(sequence);
 
+		// Analyze turns (pro/anti spin)
+		const turnAnalysis = this.analyzeTurns(validBeats);
+
+		// Collect which motion types are present
+		const motionTypes = this.collectMotionTypes(validBeats);
+
+		// Analyze positions
+		const positionDominance = this.calculatePositionDominance(sequence);
+		const positionPresence = this.analyzePositionPresence(validBeats);
+
 		return {
 			beatCount: validBeats.length,
 			propType: sequence.propType ?? null,
@@ -61,10 +70,17 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 			circularity,
 			detectedCapTypes,
 			reversals: this.analyzeReversals(sequence),
-			positionDominance: this.calculatePositionDominance(sequence),
-			motionComplexity: this.assessMotionComplexity(sequence),
-			usesBothHands: this.usesBothHands(sequence),
-			hasConsistentMotions: this.hasConsistentMotions(sequence),
+			positionDominance,
+			hasAlphaPositions: positionPresence.hasAlpha,
+			hasBetaPositions: positionPresence.hasBeta,
+			hasGammaPositions: positionPresence.hasGamma,
+			hasTurns: turnAnalysis.hasTurns,
+			turnBeatCount: turnAnalysis.turnBeatCount,
+			hasProMotion: motionTypes.has(MotionType.PRO),
+			hasAntiMotion: motionTypes.has(MotionType.ANTI),
+			hasFloatMotion: motionTypes.has(MotionType.FLOAT),
+			hasDashMotion: motionTypes.has(MotionType.DASH),
+			hasStaticMotion: motionTypes.has(MotionType.STATIC),
 		};
 	}
 
@@ -253,85 +269,66 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 	}
 
 	/**
-	 * Assess motion complexity
+	 * Analyze which position groups are present in the sequence
 	 */
-	assessMotionComplexity(sequence: SequenceData): MotionComplexity {
-		const validBeats = this.getValidBeats(sequence);
+	analyzePositionPresence(beats: BeatData[]): { hasAlpha: boolean; hasBeta: boolean; hasGamma: boolean } {
+		let hasAlpha = false;
+		let hasBeta = false;
+		let hasGamma = false;
 
-		if (validBeats.length === 0) {
-			return "static";
+		for (const beat of beats) {
+			if (beat.startPosition) {
+				const group = this.getPositionGroup(beat.startPosition);
+				if (group === GridPositionGroup.ALPHA) hasAlpha = true;
+				if (group === GridPositionGroup.BETA) hasBeta = true;
+				if (group === GridPositionGroup.GAMMA) hasGamma = true;
+			}
+			if (beat.endPosition) {
+				const group = this.getPositionGroup(beat.endPosition);
+				if (group === GridPositionGroup.ALPHA) hasAlpha = true;
+				if (group === GridPositionGroup.BETA) hasBeta = true;
+				if (group === GridPositionGroup.GAMMA) hasGamma = true;
+			}
+
+			// Early exit if all found
+			if (hasAlpha && hasBeta && hasGamma) break;
 		}
 
-		const reversals = this.analyzeReversals(sequence);
-		const motionTypes = this.collectMotionTypes(validBeats);
-
-		// Static: only static motion type or no motions
-		if (motionTypes.size === 0 || (motionTypes.size === 1 && motionTypes.has(MotionType.STATIC))) {
-			return "static";
-		}
-
-		// Complex: multiple motion types AND reversals, or many different motion types
-		if (motionTypes.size >= 3 || (motionTypes.size >= 2 && reversals.totalReversals > 2)) {
-			return "complex";
-		}
-
-		// Moderate: some reversals or multiple motion types
-		if (reversals.hasReversals || motionTypes.size >= 2) {
-			return "moderate";
-		}
-
-		// Simple: single non-static motion type, no reversals
-		return "simple";
+		return { hasAlpha, hasBeta, hasGamma };
 	}
 
 	/**
-	 * Check if sequence uses both hands consistently
+	 * Analyze turns (prop rotations) in a sequence
+	 *
+	 * Turns are PRO or ANTI motion types where the prop actually rotates.
+	 * FLOAT, DASH, and STATIC don't count as turns.
 	 */
-	usesBothHands(sequence: SequenceData): boolean {
-		const validBeats = this.getValidBeats(sequence);
+	analyzeTurns(beats: BeatData[]): { hasTurns: boolean; turnBeatCount: number } {
+		let turnBeatCount = 0;
 
-		if (validBeats.length === 0) {
-			return false;
-		}
-
-		let hasBlue = false;
-		let hasRed = false;
-
-		for (const beat of validBeats) {
+		for (const beat of beats) {
 			if (beat.motions) {
-				if (beat.motions[MotionColor.BLUE]) {
-					hasBlue = true;
-				}
-				if (beat.motions[MotionColor.RED]) {
-					hasRed = true;
-				}
-			}
+				const blueMotion = beat.motions[MotionColor.BLUE];
+				const redMotion = beat.motions[MotionColor.RED];
 
-			if (hasBlue && hasRed) {
-				return true;
+				// Check if either hand has a turn (pro or anti)
+				const blueHasTurn =
+					blueMotion?.motionType === MotionType.PRO ||
+					blueMotion?.motionType === MotionType.ANTI;
+				const redHasTurn =
+					redMotion?.motionType === MotionType.PRO ||
+					redMotion?.motionType === MotionType.ANTI;
+
+				if (blueHasTurn || redHasTurn) {
+					turnBeatCount++;
+				}
 			}
 		}
 
-		return hasBlue && hasRed;
-	}
-
-	/**
-	 * Check if sequence has consistent motion types
-	 */
-	hasConsistentMotions(sequence: SequenceData): boolean {
-		const validBeats = this.getValidBeats(sequence);
-
-		if (validBeats.length === 0) {
-			return true;
-		}
-
-		const motionTypes = this.collectMotionTypes(validBeats);
-
-		// Consistent if only one motion type (excluding static)
-		const nonStaticTypes = new Set(motionTypes);
-		nonStaticTypes.delete(MotionType.STATIC);
-
-		return nonStaticTypes.size <= 1;
+		return {
+			hasTurns: turnBeatCount > 0,
+			turnBeatCount,
+		};
 	}
 
 	// === Private Helpers ===

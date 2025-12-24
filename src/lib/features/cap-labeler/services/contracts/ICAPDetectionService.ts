@@ -2,6 +2,7 @@ import type { SequenceEntry } from "../../domain/models/sequence-models";
 import type { CandidateDesignation, BeatPairGroups, TransformationIntervals } from "../../domain/models/label-models";
 import type { BeatPairRelationship } from "./IBeatPairAnalysisService";
 import type { ComponentId } from "../../domain/constants/cap-components";
+import type { PolyrhythmicCAPResult } from "./IPolyrhythmicDetectionService";
 
 /**
  * Result of CAP detection on a sequence
@@ -36,6 +37,14 @@ export interface CAPDetectionResult {
 
   /** Is this a modular pattern (multiple different but recognizable transformations)? */
   isModular: boolean;
+
+  // === POLYRHYTHMIC DETECTION (runs alongside beat-pair detection) ===
+
+  /** Polyrhythmic analysis result */
+  polyrhythmic: PolyrhythmicCAPResult | null;
+
+  /** Is this a polyrhythmic pattern? */
+  isPolyrhythmic: boolean;
 }
 
 /**

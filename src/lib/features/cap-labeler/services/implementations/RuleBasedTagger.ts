@@ -13,17 +13,8 @@ import {
 	createSuggestedTag,
 	groupByConfidenceLevel,
 } from "../../domain/models/suggested-tag";
-import { GridMode, GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-
-// === Difficulty Thresholds ===
-const BEGINNER_MAX_BEATS = 8;
-const INTERMEDIATE_MAX_BEATS = 16;
-// Anything above is advanced
-
-// === Position Dominance Thresholds ===
-const HEAVY_THRESHOLD = 50; // >50% = "heavy"
-const STRONG_THRESHOLD = 65; // >65% = high confidence
 
 @injectable()
 export class RuleBasedTagger implements IRuleBasedTagger {
@@ -33,16 +24,10 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 	suggestTags(features: SequenceFeatures): SuggestedTag[] {
 		const tags: SuggestedTag[] = [];
 
-		// Difficulty tags
-		tags.push(...this.getDifficultyTags(features.beatCount));
-
-		// Structure tags (circularity, CAP)
-		tags.push(...this.getStructureTags(features));
-
 		// Prop type tags
 		tags.push(...this.getPropTags(features));
 
-		// Motion tags (reversals, complexity)
+		// Motion tags
 		tags.push(...this.getMotionTags(features));
 
 		// Grid mode tags
@@ -60,115 +45,6 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 	suggestTagsGrouped(features: SequenceFeatures): TagSuggestionResult {
 		const tags = this.suggestTags(features);
 		return groupByConfidenceLevel(tags);
-	}
-
-	/**
-	 * Get difficulty tags based on beat count
-	 */
-	getDifficultyTags(beatCount: number): SuggestedTag[] {
-		const tags: SuggestedTag[] = [];
-
-		if (beatCount === 0) {
-			return tags;
-		}
-
-		if (beatCount <= BEGINNER_MAX_BEATS) {
-			// Short sequences are beginner-friendly
-			const confidence = beatCount <= 4 ? 1.0 : 0.9;
-			tags.push(
-				createSuggestedTag(
-					"beginner",
-					"difficulty",
-					confidence,
-					`${beatCount} beats is suitable for beginners`,
-					["intermediate", "advanced"]
-				)
-			);
-		} else if (beatCount <= INTERMEDIATE_MAX_BEATS) {
-			// Medium sequences are intermediate
-			const confidence = 0.85;
-			tags.push(
-				createSuggestedTag(
-					"intermediate",
-					"difficulty",
-					confidence,
-					`${beatCount} beats requires some experience`,
-					["beginner", "advanced"]
-				)
-			);
-		} else {
-			// Long sequences are advanced
-			const confidence = beatCount >= 24 ? 1.0 : 0.85;
-			tags.push(
-				createSuggestedTag(
-					"advanced",
-					"difficulty",
-					confidence,
-					`${beatCount} beats is a longer sequence`,
-					["beginner", "intermediate"]
-				)
-			);
-		}
-
-		return tags;
-	}
-
-	/**
-	 * Get structure tags based on circularity analysis
-	 */
-	getStructureTags(features: SequenceFeatures): SuggestedTag[] {
-		const tags: SuggestedTag[] = [];
-		const { circularity, detectedCapTypes } = features;
-
-		// Circular tag
-		if (circularity.isCircular) {
-			tags.push(
-				createSuggestedTag(
-					"circular",
-					"structure",
-					1.0,
-					"Sequence returns to starting position"
-				)
-			);
-
-			// Add detected CAP types
-			for (const capType of detectedCapTypes) {
-				tags.push(
-					createSuggestedTag(
-						capType.toLowerCase(),
-						"structure",
-						0.95,
-						`Detected ${capType} circular pattern`
-					)
-				);
-			}
-
-			// If circular but no specific CAP type detected
-			if (detectedCapTypes.length === 0 && circularity.possibleCapTypes.length > 0) {
-				// Add possible CAP types with lower confidence
-				for (const possibleType of circularity.possibleCapTypes) {
-					tags.push(
-						createSuggestedTag(
-							possibleType.toLowerCase(),
-							"structure",
-							0.6,
-							`Possible ${possibleType} pattern (needs verification)`
-						)
-					);
-				}
-			}
-		} else {
-			tags.push(
-				createSuggestedTag(
-					"linear",
-					"structure",
-					0.9,
-					"Sequence does not return to starting position"
-				)
-			);
-		}
-
-		return tags;
 	}
 
 	/**
@@ -193,11 +69,52 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 	}
 
 	/**
-	 * Get motion tags based on reversal and complexity analysis
+	 * Get motion tags based on which motion types are present
+	 *
+	 * Tags are declarative - just describe what's in the sequence.
+	 * Queries can filter for "only-pro" by checking for pro without others.
 	 */
 	getMotionTags(features: SequenceFeatures): SuggestedTag[] {
 		const tags: SuggestedTag[] = [];
-		const { reversals, motionComplexity, hasConsistentMotions } = features;
+		const { reversals, hasProMotion, hasAntiMotion, hasFloatMotion, hasDashMotion, hasStaticMotion } = features;
+
+		// Motion type tags - declarative, just tag what's present
+		if (hasProMotion) {
+			tags.push(
+				createSuggestedTag("pro", "motion", 1.0, "Contains pro-spin motions")
+			);
+		}
+
+		if (hasAntiMotion) {
+			tags.push(
+				createSuggestedTag("anti", "motion", 1.0, "Contains anti-spin motions")
+			);
+		}
+
+		if (hasFloatMotion) {
+			tags.push(
+				createSuggestedTag("float", "motion", 1.0, "Contains float motions")
+			);
+		}
+
+		if (hasDashMotion) {
+			tags.push(
+				createSuggestedTag("dash", "motion", 1.0, "Contains dash motions")
+			);
+		}
+
+		if (hasStaticMotion) {
+			tags.push(
+				createSuggestedTag("static", "motion", 1.0, "Contains static motions")
+			);
+		}
+
+		// No-turns tag (sequence has no pro or anti spin)
+		if (!features.hasTurns) {
+			tags.push(
+				createSuggestedTag("no-turns", "motion", 1.0, "Sequence contains no prop rotations")
+			);
+		}
 
 		// Reversal tags
 		if (reversals.hasReversals) {
@@ -210,29 +127,6 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 				)
 			);
 
-			// Specific reversal types
-			if (reversals.blueReversalCount > 0) {
-				tags.push(
-					createSuggestedTag(
-						"blue-reversals",
-						"motion",
-						0.95,
-						`${reversals.blueReversalCount} blue hand reversal(s)`
-					)
-				);
-			}
-
-			if (reversals.redReversalCount > 0) {
-				tags.push(
-					createSuggestedTag(
-						"red-reversals",
-						"motion",
-						0.95,
-						`${reversals.redReversalCount} red hand reversal(s)`
-					)
-				);
-			}
-
 			if (reversals.synchronizedReversals) {
 				tags.push(
 					createSuggestedTag(
@@ -243,40 +137,6 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 					)
 				);
 			}
-		}
-
-		// Motion complexity tags
-		tags.push(
-			createSuggestedTag(
-				`${motionComplexity}-motion`,
-				"motion",
-				0.85,
-				`Motion complexity is ${motionComplexity}`
-			)
-		);
-
-		// Consistent motions tag
-		if (hasConsistentMotions) {
-			tags.push(
-				createSuggestedTag(
-					"consistent-motion",
-					"motion",
-					0.8,
-					"Uses consistent motion types throughout"
-				)
-			);
-		}
-
-		// Two-handed tag
-		if (features.usesBothHands) {
-			tags.push(
-				createSuggestedTag(
-					"two-handed",
-					"motion",
-					0.9,
-					"Uses both hands throughout"
-				)
-			);
 		}
 
 		return tags;
@@ -305,87 +165,30 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 
 	/**
 	 * Get position-based tags
+	 *
+	 * Tags are declarative - just describe which position groups are present.
+	 * Queries can filter for "only-alpha" by checking for alpha without others.
 	 */
 	getPositionTags(features: SequenceFeatures): SuggestedTag[] {
 		const tags: SuggestedTag[] = [];
-		const { positionDominance } = features;
+		const { hasAlphaPositions, hasBetaPositions, hasGammaPositions } = features;
 
-		if (positionDominance.isBalanced) {
+		if (hasAlphaPositions) {
 			tags.push(
-				createSuggestedTag(
-					"balanced-positions",
-					"position",
-					0.85,
-					"Uses positions from multiple groups evenly"
-				)
+				createSuggestedTag("alpha", "position", 1.0, "Contains alpha positions")
 			);
-		} else {
-			// Add dominance tags
-			if (positionDominance.isAlphaHeavy) {
-				const confidence =
-					positionDominance.alphaPercent >= STRONG_THRESHOLD ? 0.95 : 0.8;
-				tags.push(
-					createSuggestedTag(
-						"alpha-based",
-						"position",
-						confidence,
-						`${positionDominance.alphaPercent}% of positions are alpha`,
-						["beta-based", "gamma-based"]
-					)
-				);
-			}
-
-			if (positionDominance.isBetaHeavy) {
-				const confidence =
-					positionDominance.betaPercent >= STRONG_THRESHOLD ? 0.95 : 0.8;
-				tags.push(
-					createSuggestedTag(
-						"beta-based",
-						"position",
-						confidence,
-						`${positionDominance.betaPercent}% of positions are beta`,
-						["alpha-based", "gamma-based"]
-					)
-				);
-			}
-
-			if (positionDominance.isGammaHeavy) {
-				const confidence =
-					positionDominance.gammaPercent >= STRONG_THRESHOLD ? 0.95 : 0.8;
-				tags.push(
-					createSuggestedTag(
-						"gamma-based",
-						"position",
-						confidence,
-						`${positionDominance.gammaPercent}% of positions are gamma`,
-						["alpha-based", "beta-based"]
-					)
-				);
-			}
 		}
 
-		// Primary group tag (even if not "heavy")
-		if (positionDominance.primaryGroup && !positionDominance.isBalanced) {
-			const groupName = this.getGroupName(positionDominance.primaryGroup);
-			// Only add if we haven't already added a *-based tag for this group
-			const alreadyTagged =
-				(positionDominance.primaryGroup === GridPositionGroup.ALPHA &&
-					positionDominance.isAlphaHeavy) ||
-				(positionDominance.primaryGroup === GridPositionGroup.BETA &&
-					positionDominance.isBetaHeavy) ||
-				(positionDominance.primaryGroup === GridPositionGroup.GAMMA &&
-					positionDominance.isGammaHeavy);
+		if (hasBetaPositions) {
+			tags.push(
+				createSuggestedTag("beta", "position", 1.0, "Contains beta positions")
+			);
+		}
 
-			if (!alreadyTagged) {
-				tags.push(
-					createSuggestedTag(
-						`${groupName}-leaning`,
-						"position",
-						0.6,
-						`Most positions are ${groupName} (but not dominant)`
-					)
-				);
-			}
+		if (hasGammaPositions) {
+			tags.push(
+				createSuggestedTag("gamma", "position", 1.0, "Contains gamma positions")
+			);
 		}
 
 		return tags;
@@ -445,24 +248,11 @@ export class RuleBasedTagger implements IRuleBasedTagger {
 	private getGridName(gridMode: GridMode): string {
 		switch (gridMode) {
 			case GridMode.DIAMOND:
-				return "diamond-grid";
+				return "diamond";
 			case GridMode.BOX:
-				return "box-grid";
+				return "box";
 			default:
 				return "unknown-grid";
-		}
-	}
-
-	private getGroupName(group: GridPositionGroup): string {
-		switch (group) {
-			case GridPositionGroup.ALPHA:
-				return "alpha";
-			case GridPositionGroup.BETA:
-				return "beta";
-			case GridPositionGroup.GAMMA:
-				return "gamma";
-			default:
-				return "unknown";
 		}
 	}
 }

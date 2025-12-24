@@ -5,7 +5,7 @@
  * Manages sequences, labels, filtering, and Firebase synchronization.
  */
 
-import { tryResolve } from "$lib/shared/inversify/di";
+import { tryResolve, loadFeatureModule, ensureContainerInitialized } from "$lib/shared/inversify/di";
 import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
 import type { ISequenceLoadingService } from "../services/contracts/ISequenceLoadingService";
 import type { ICAPLabelsFirebaseService } from "../services/contracts/ICAPLabelsFirebaseService";
@@ -72,22 +72,47 @@ class CAPLabelerStateManager {
     }
   }
 
+  /**
+   * Persist general state (sequence, display settings) - called during navigation.
+   * Does NOT persist filterMode to avoid saving auto-adjusted filters.
+   */
   private persistState(): void {
     try {
       // Get current sequence ID if available
       const currentSeqId = this.currentSequence?.id || null;
 
+      // Load existing state to preserve filterMode
+      const existing = this.loadPersistedState();
+
       const stateToPersist = {
-        filterMode: this.state.filterMode,
+        // Preserve the user-selected filterMode (don't overwrite with auto-adjusted)
+        filterMode: existing?.filterMode || this.state.filterMode,
         showStartPosition: this.state.showStartPosition,
         manualColumnCount: this.state.manualColumnCount,
         labelingMode: this.state.labelingMode,
         lastSequenceId: currentSeqId,
       };
-      console.log("[CAPLabelerState] Persisting state:", stateToPersist);
+      console.log("[CAPLabelerState] Persisting state (preserving filterMode):", stateToPersist);
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(stateToPersist));
     } catch (error) {
       console.warn("[CAPLabelerState] Failed to persist state:", error);
+    }
+  }
+
+  /**
+   * Persist filterMode - only called when user explicitly changes the filter.
+   */
+  private persistFilterMode(): void {
+    try {
+      const existing = this.loadPersistedState();
+      const stateToPersist = {
+        ...existing,
+        filterMode: this.state.filterMode,
+      };
+      console.log("[CAPLabelerState] Persisting filterMode:", this.state.filterMode);
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(stateToPersist));
+    } catch (error) {
+      console.warn("[CAPLabelerState] Failed to persist filterMode:", error);
     }
   }
 
@@ -311,6 +336,9 @@ class CAPLabelerStateManager {
       // Subscribe to labels from Firebase - sequence restoration happens in callback
       // because filteredSequences depends on labels being loaded
       let isInitialLoad = true;
+      // Only treat as "from URL" if URL has a DIFFERENT sequence than localStorage
+      // (meaning someone shared a link, not just our own persisted URL)
+      const isExternalUrl = urlSeqId !== null && urlSeqId !== lastSequenceId;
       this.state.unsubscribe = labelsService.subscribeToLabels((labels) => {
         this.state.labels = labels;
         console.log(`[CAPLabelerState] Labels loaded: ${labels.size} labels`);
@@ -318,7 +346,7 @@ class CAPLabelerStateManager {
         // Only restore sequence position on initial load, not on subsequent updates
         if (isInitialLoad) {
           isInitialLoad = false;
-          this.restoreSequencePosition(this.lastSequenceIdToRestore, urlSeqId !== null);
+          this.restoreSequencePosition(this.lastSequenceIdToRestore, isExternalUrl);
         }
       });
 
@@ -564,7 +592,8 @@ class CAPLabelerStateManager {
     console.log(`[CAPLabelerState] setFilterMode called with: ${mode}`);
     this.state.filterMode = mode;
     this.state.currentIndex = 0; // Reset to first in filtered list
-    this.persistState();
+    // Use persistFilterMode since user explicitly changed filter
+    this.persistFilterMode();
 
     // Update URL with new filter and first sequence in filtered list
     const navigationService = this.getNavigationService();
@@ -711,47 +740,113 @@ class CAPLabelerStateManager {
   // ============================================================
 
   private getSequenceService(): ISequenceLoadingService | null {
+    // Return cached service if available
+    if (this.cachedSequenceService) {
+      return this.cachedSequenceService;
+    }
+
     const service = tryResolve<ISequenceLoadingService>(
       CAPLabelerTypes.ISequenceLoadingService
     );
     if (!service) {
       console.warn("[CAPLabelerState] SequenceLoadingService not available");
+    } else {
+      // Cache for future use
+      this.cachedSequenceService = service;
     }
     return service;
   }
 
+  // Cache service instances to survive container issues
+  private cachedLabelsService: ICAPLabelsFirebaseService | null = null;
+  private cachedSequenceService: ISequenceLoadingService | null = null;
+  private cachedNavigationService: INavigationService | null = null;
+  private cachedDetectionService: ICAPDetectionService | null = null;
+
   private getLabelsService(): ICAPLabelsFirebaseService | null {
-    const service = tryResolve<ICAPLabelsFirebaseService>(
-      CAPLabelerTypes.ICAPLabelsFirebaseService
-    );
-    if (!service) {
-      console.warn("[CAPLabelerState] CAPLabelsFirebaseService not available");
+    // Return cached service if available (survives container issues)
+    if (this.cachedLabelsService) {
+      return this.cachedLabelsService;
     }
-    return service;
+
+    try {
+      const service = tryResolve<ICAPLabelsFirebaseService>(
+        CAPLabelerTypes.ICAPLabelsFirebaseService
+      );
+      if (!service) {
+        console.warn("[CAPLabelerState] CAPLabelsFirebaseService not available - tryResolve returned null");
+
+        // Try to reload the module asynchronously for future calls
+        console.log("[CAPLabelerState] Attempting to reload cap-labeler module for future calls...");
+        ensureContainerInitialized().then(() => {
+          return loadFeatureModule("cap-labeler");
+        }).then(() => {
+          // Try to get the service again and cache it
+          const reloadedService = tryResolve<ICAPLabelsFirebaseService>(
+            CAPLabelerTypes.ICAPLabelsFirebaseService
+          );
+          if (reloadedService) {
+            this.cachedLabelsService = reloadedService;
+            console.log("[CAPLabelerState] Module reloaded, service now cached for future calls");
+          }
+        }).catch((err) => {
+          console.error("[CAPLabelerState] Failed to reload module:", err);
+        });
+        return null;
+      }
+
+      // Cache the service for future use
+      this.cachedLabelsService = service;
+      return service;
+    } catch (err) {
+      console.error("[CAPLabelerState] Error resolving CAPLabelsFirebaseService:", err);
+      return null;
+    }
   }
 
   private getNavigationService(): INavigationService | null {
+    // Return cached service if available
+    if (this.cachedNavigationService) {
+      return this.cachedNavigationService;
+    }
+
     const service = tryResolve<INavigationService>(
       CAPLabelerTypes.INavigationService
     );
     if (!service) {
       console.warn("[CAPLabelerState] NavigationService not available");
+    } else {
+      // Cache for future use
+      this.cachedNavigationService = service;
     }
     return service;
   }
 
   private getDetectionService(): ICAPDetectionService | null {
+    // Return cached service if available
+    if (this.cachedDetectionService) {
+      return this.cachedDetectionService;
+    }
+
     const service = tryResolve<ICAPDetectionService>(
-      CAPLabelerTypes.ICAPDetectionService
+      CAPLabelerTypes.ICAPLabelerDetectionService
     );
     if (!service) {
       console.warn("[CAPLabelerState] CAPDetectionService not available");
+    } else {
+      // Cache for future use
+      this.cachedDetectionService = service;
     }
     return service;
   }
 
   reset() {
     this.dispose();
+    // Clear cached services
+    this.cachedLabelsService = null;
+    this.cachedSequenceService = null;
+    this.cachedNavigationService = null;
+    this.cachedDetectionService = null;
     this.state = {
       sequences: [],
       labels: new Map(),
@@ -767,6 +862,22 @@ class CAPLabelerStateManager {
       unsubscribe: null,
       popstateHandler: null,
     };
+  }
+
+  /**
+   * Pre-cache all services (call after DI module is loaded)
+   */
+  cacheServices() {
+    this.getSequenceService();
+    this.getLabelsService();
+    this.getNavigationService();
+    this.getDetectionService();
+    console.log("[CAPLabelerState] Services cached:", {
+      sequence: !!this.cachedSequenceService,
+      labels: !!this.cachedLabelsService,
+      navigation: !!this.cachedNavigationService,
+      detection: !!this.cachedDetectionService,
+    });
   }
 }
 

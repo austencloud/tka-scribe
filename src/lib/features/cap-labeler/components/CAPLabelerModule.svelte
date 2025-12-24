@@ -39,8 +39,9 @@
   let copiedToast = $state(false);
   let showBrowserDrawer = $state(false);
 
-  // Store detection service reference after loading (to avoid resolving in $derived)
+  // Store service references after loading (to avoid resolving in $derived)
   let detectionService = $state<ICAPDetectionService | null>(null);
+  let conversionService = $state<IBeatDataConversionService | null>(null);
 
   // Create mode-specific state managers (after module loads)
   let sectionState = $state<ReturnType<typeof createSectionModeState>>();
@@ -59,12 +60,12 @@
       // Store reference to detection service AFTER module is loaded
       // Use verbose resolution to see any errors
       console.log("[CAPLabelerModule] Attempting to resolve ICAPDetectionService...");
-      console.log("[CAPLabelerModule] Symbol:", CAPLabelerTypes.ICAPDetectionService);
+      console.log("[CAPLabelerModule] Symbol:", CAPLabelerTypes.ICAPLabelerDetectionService);
 
       let resolvedService: ICAPDetectionService | null = null;
       try {
         resolvedService = tryResolve<ICAPDetectionService>(
-          CAPLabelerTypes.ICAPDetectionService
+          CAPLabelerTypes.ICAPLabelerDetectionService
         );
       } catch (err) {
         console.error("[CAPLabelerModule] Error resolving service:", err);
@@ -77,7 +78,10 @@
         console.warn("[CAPLabelerModule] Service not in DI container, trying direct import...");
         try {
           const { CAPDetectionService } = await import("../services/implementations/CAPDetectionService");
-          resolvedService = new CAPDetectionService();
+          const { PolyrhythmicDetectionService } = await import("../services/implementations/PolyrhythmicDetectionService");
+          // Create polyrhythmic service first, then pass to detection service
+          const polyrhythmicService = new PolyrhythmicDetectionService();
+          resolvedService = new CAPDetectionService(polyrhythmicService);
           console.log("[CAPLabelerModule] Direct instantiation succeeded:", !!resolvedService);
         } catch (importErr) {
           console.error("[CAPLabelerModule] Direct import failed:", importErr);
@@ -86,6 +90,15 @@
 
       detectionService = resolvedService;
       console.log("[CAPLabelerModule] detectionService set to:", !!detectionService);
+
+      // Also cache the conversion service for beat parsing
+      conversionService = tryResolve<IBeatDataConversionService>(
+        CAPLabelerTypes.IBeatDataConversionService
+      );
+      console.log("[CAPLabelerModule] conversionService set to:", !!conversionService);
+
+      // Pre-cache all services to ensure they're available for subsequent operations
+      capLabelerState.cacheServices();
 
       // Create mode states AFTER services are registered
       sectionState = createSectionModeState();
@@ -142,6 +155,8 @@
       capType: detection.capType,
       isCircular: detection.isCircular,
       isFreeform: detection.isFreeform,
+      isPolyrhythmic: detection.isPolyrhythmic,
+      polyrhythm: detection.polyrhythmic?.polyrhythm,
       candidateCount: detection.candidateDesignations.length,
       candidates: detection.candidateDesignations.map(c => c.label),
     });
@@ -175,19 +190,16 @@
     }
   });
 
-  // Parse beats for current sequence
+  // Parse beats for current sequence (uses cached conversionService)
   const parsedData = $derived.by(() => {
     if (!currentSequence?.fullMetadata?.sequence) {
       return { beats: [], startPosition: null };
     }
 
-    const conversionService = tryResolve<IBeatDataConversionService>(
-      CAPLabelerTypes.IBeatDataConversionService
-    );
-
+    // Use the cached conversion service instead of resolving each time
     if (!conversionService) {
       console.warn(
-        "[CAPLabelerModule] BeatDataConversionService not available"
+        "[CAPLabelerModule] BeatDataConversionService not available (not cached)"
       );
       return { beats: [], startPosition: null };
     }
@@ -418,7 +430,22 @@
 
   function handleCopyJson() {
     if (!currentSequence) return;
-    const json = JSON.stringify(currentSequence, null, 2);
+
+    // Include detection results with sequence data
+    const exportData = {
+      ...currentSequence,
+      _detection: currentComputedDetection ? {
+        capType: currentComputedDetection.capType,
+        isCircular: currentComputedDetection.isCircular,
+        isFreeform: currentComputedDetection.isFreeform,
+        isModular: currentComputedDetection.isModular,
+        candidateDesignations: currentComputedDetection.candidateDesignations,
+        beatPairs: currentComputedDetection.beatPairs,
+        beatPairGroups: currentComputedDetection.beatPairGroups,
+      } : null,
+    };
+
+    const json = JSON.stringify(exportData, null, 2);
     navigator.clipboard.writeText(json).then(() => {
       copiedToast = true;
       setTimeout(() => {
@@ -590,6 +617,8 @@
           beatPairDesignations={beatPairState?.savedBeatPairs ?? []}
           isFreeform={currentComputedDetection?.isFreeform ?? false}
           isModular={currentComputedDetection?.isModular ?? false}
+          isPolyrhythmic={currentComputedDetection?.isPolyrhythmic ?? false}
+          polyrhythmic={currentComputedDetection?.polyrhythmic ?? null}
           needsVerification={!isVerified}
           autoDetectedDesignations={[]}
           candidateDesignations={currentComputedDetection?.candidateDesignations ?? []}

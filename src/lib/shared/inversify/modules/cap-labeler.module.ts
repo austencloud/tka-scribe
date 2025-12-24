@@ -11,6 +11,7 @@ import { SequenceLoadingService } from "$lib/features/cap-labeler/services/imple
 import { NavigationService } from "$lib/features/cap-labeler/services/implementations/NavigationService";
 import { SequenceFeatureExtractor } from "$lib/features/cap-labeler/services/implementations/SequenceFeatureExtractor";
 import { RuleBasedTagger } from "$lib/features/cap-labeler/services/implementations/RuleBasedTagger";
+import { PolyrhythmicDetectionService } from "$lib/features/cap-labeler/services/implementations/PolyrhythmicDetectionService";
 import { CAPLabelerTypes } from "../types/cap-labeler.types";
 
 export const capLabelerModule = new ContainerModule(
@@ -31,8 +32,15 @@ export const capLabelerModule = new ContainerModule(
       .to(CAPDesignationService)
       .inSingletonScope();
 
+    // PolyrhythmicDetectionService must be registered BEFORE CAPDetectionService
+    // since CAPDetectionService depends on it
     options
-      .bind(CAPLabelerTypes.ICAPDetectionService)
+      .bind(CAPLabelerTypes.IPolyrhythmicDetectionService)
+      .to(PolyrhythmicDetectionService)
+      .inSingletonScope();
+
+    options
+      .bind(CAPLabelerTypes.ICAPLabelerDetectionService)
       .to(CAPDetectionService)
       .inSingletonScope();
 

@@ -13,6 +13,7 @@
   } from "../../domain/models/label-models";
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
+  import type { PolyrhythmicCAPResult } from "../../services/contracts/IPolyrhythmicDetectionService";
   import {
     formatDesignation,
     formatSectionBeats,
@@ -26,6 +27,8 @@
     beatPairDesignations: BeatPairRelationship[];
     isFreeform: boolean;
     isModular?: boolean;
+    isPolyrhythmic?: boolean;
+    polyrhythmic?: PolyrhythmicCAPResult | null;
     needsVerification?: boolean;
     autoDetectedDesignations?: CAPDesignation[];
     candidateDesignations?: CandidateDesignation[];
@@ -50,6 +53,8 @@
     beatPairDesignations,
     isFreeform,
     isModular = false,
+    isPolyrhythmic = false,
+    polyrhythmic = null,
     needsVerification = false,
     autoDetectedDesignations = [],
     candidateDesignations = [],
@@ -102,6 +107,8 @@
   $effect(() => {
     console.log("[DesignationsPanel] Props update:", {
       needsVerification,
+      isPolyrhythmic,
+      polyrhythmValue: polyrhythmic?.polyrhythm,
       candidateCount: candidateDesignations.length,
       pendingCount: pendingCandidates.length,
       candidates: candidateDesignations.map(c => c.label),
@@ -215,6 +222,38 @@
       beatPairGroups={autoDetectedBeatPairGroups}
       collapsed={false}
     />
+  {/if}
+
+  <!-- Polyrhythmic detection results (runs alongside beat-pair) -->
+  {#if isPolyrhythmic && polyrhythmic}
+    <div class="polyrhythmic-section">
+      <div class="polyrhythmic-header">
+        <FontAwesomeIcon icon="wave-square" size="1em" />
+        <span>Polyrhythmic Pattern: <strong>{polyrhythmic.polyrhythm}</strong></span>
+      </div>
+      <div class="polyrhythmic-description">
+        {polyrhythmic.description}
+      </div>
+      {#if polyrhythmic.motionPeriod}
+        <div class="period-info">
+          <span class="period-label">Motion Period:</span>
+          <span class="period-value">{polyrhythmic.motionPeriod.period}</span>
+        </div>
+      {/if}
+      {#if polyrhythmic.spatialPeriod}
+        <div class="period-info">
+          <span class="period-label">Spatial Period:</span>
+          <span class="period-value">{polyrhythmic.spatialPeriod.period}</span>
+        </div>
+      {/if}
+      <div class="confidence-bar">
+        <span class="confidence-label">Confidence:</span>
+        <div class="confidence-track">
+          <div class="confidence-fill" style="width: {polyrhythmic.confidence * 100}%"></div>
+        </div>
+        <span class="confidence-value">{Math.round(polyrhythmic.confidence * 100)}%</span>
+      </div>
+    </div>
   {/if}
 
   <div class="designations-list">
@@ -694,5 +733,89 @@
     opacity: 0.3;
     cursor: not-allowed;
     box-shadow: none;
+  }
+
+  /* Polyrhythmic Detection Section */
+  .polyrhythmic-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 10px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .polyrhythmic-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: #a855f7;
+    font-size: var(--font-size-sm);
+  }
+
+  .polyrhythmic-header strong {
+    color: #c4b5fd;
+    font-weight: 700;
+  }
+
+  .polyrhythmic-description {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    line-height: 1.4;
+    padding-left: 1.5em;
+  }
+
+  .period-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-left: 1.5em;
+    font-size: var(--font-size-xs);
+  }
+
+  .period-label {
+    color: var(--muted-foreground);
+  }
+
+  .period-value {
+    color: var(--foreground);
+    font-weight: 600;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .confidence-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding-left: 1.5em;
+    font-size: var(--font-size-xs);
+  }
+
+  .confidence-label {
+    color: var(--muted-foreground);
+  }
+
+  .confidence-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #a855f7, #c4b5fd);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .confidence-value {
+    color: var(--foreground);
+    font-weight: 600;
+    min-width: 3em;
+    text-align: right;
   }
 </style>
