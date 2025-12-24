@@ -1,0 +1,96 @@
+<!--
+  CompositeView.svelte
+
+  Container for Composite mode in Share Hub.
+  Displays dual preview, composite controls, and export button.
+
+  Features:
+  - Dual preview showing both media pieces
+  - Composite controls (orientation toggle, layout options)
+  - Primary export button at bottom
+  - Clean vertical layout
+
+  Domain: Share Hub - Composite Mode Container
+-->
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+  import { getShareHubState } from '../../state/share-hub-state.svelte';
+  import ExportButton from '../shared/ExportButton.svelte';
+  import DualPreview from './DualPreview.svelte';
+  import CompositeControls from './CompositeControls.svelte';
+
+  let {
+    onExport,
+  }: {
+    onExport?: () => void;
+  } = $props();
+
+  const state = getShareHubState();
+  let exporting = $state(false);
+
+  async function handleExport() {
+    if (exporting) return;
+    exporting = true;
+    try {
+      await onExport?.();
+    } finally {
+      exporting = false;
+    }
+  }
+</script>
+
+<div class="composite-view">
+  <!-- Composite Controls -->
+  <div class="controls-container">
+    <CompositeControls />
+  </div>
+
+  <!-- Dual Preview -->
+  <div class="preview-area">
+    <DualPreview />
+  </div>
+
+  <!-- Export Button -->
+  <div class="export-container">
+    <ExportButton
+      label="Export Composite"
+      loading={exporting}
+      onclick={handleExport}
+    />
+  </div>
+</div>
+
+<style>
+  .composite-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .controls-container {
+    flex-shrink: 0;
+  }
+
+  .preview-area {
+    flex: 1;
+    min-height: 0; /* Allow flex child to shrink */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .export-container {
+    flex-shrink: 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+  }
+
+  /* Mobile optimization */
+  @media (max-width: 600px) {
+    .composite-view {
+      padding: 16px;
+      gap: 16px;
+    }
+  }
+</style>

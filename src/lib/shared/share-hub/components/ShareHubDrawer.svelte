@@ -1,26 +1,28 @@
 <!--
   ShareHubDrawer.svelte
 
-  Drawer wrapper for Share Hub, used across multiple modules (Discover, Create, Library).
+  Drawer wrapper for unified Share Hub panel, used across multiple modules (Discover, Create, Library).
   Simpler than CreatePanelDrawer since it doesn't depend on Create module context.
 
   - Mobile: Bottom drawer, 85vh height
   - Desktop: Right drawer, full height
+  - Updated to use ShareHubPanel (unified Single Media | Composite architecture)
 -->
 <script lang="ts">
   import Drawer from '$lib/shared/foundation/ui/Drawer.svelte';
-  import ShareHub from './ShareHub.svelte';
+  import ShareHubPanel from './ShareHubPanel.svelte';
   import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-  import type { Snippet } from 'svelte';
 
   let {
     isOpen = $bindable(false),
     sequence,
     onClose,
+    onExport,
   }: {
     isOpen?: boolean;
     sequence: SequenceData;
     onClose?: () => void;
+    onExport?: (mode: 'single' | 'composite', format?: string) => Promise<void>;
   } = $props();
 
   // Detect viewport width for placement (simple media query approach)
@@ -59,7 +61,7 @@
   preventScroll={true}
 >
   <div class="share-hub-content">
-    <ShareHub {sequence} />
+    <ShareHubPanel {onExport} />
   </div>
 </Drawer>
 

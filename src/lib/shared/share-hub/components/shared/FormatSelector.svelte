@@ -1,0 +1,145 @@
+<!--
+  FormatSelector.svelte
+
+  Horizontal selector for choosing media format in Single Media mode.
+  Displays three options: Animation, Static, Performance.
+
+  Design:
+  - Horizontal chip/pill layout
+  - Active format highlighted
+  - Icons + labels
+  - Theme-based colors
+  - Keyboard accessible
+
+  Domain: Share Hub - Single Media Format Selection
+-->
+<script lang="ts">
+  import type { MediaFormat } from '../../domain/models/MediaFormat';
+
+  let {
+    selectedFormat = 'animation',
+    onFormatSelect,
+  }: {
+    selectedFormat?: MediaFormat;
+    onFormatSelect?: (format: MediaFormat) => void;
+  } = $props();
+
+  const formats: Array<{ id: MediaFormat; label: string; icon: string }> = [
+    { id: 'animation', label: 'Animation', icon: 'fa-play-circle' },
+    { id: 'static', label: 'Static', icon: 'fa-image' },
+    { id: 'performance', label: 'Performance', icon: 'fa-video' },
+  ];
+
+  function handleFormatSelect(format: MediaFormat) {
+    onFormatSelect?.(format);
+  }
+
+  function handleKeydown(event: KeyboardEvent, format: MediaFormat) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleFormatSelect(format);
+    }
+  }
+</script>
+
+<div class="format-selector" role="radiogroup" aria-label="Media format selection">
+  {#each formats as format}
+    <button
+      class="format-chip"
+      class:active={selectedFormat === format.id}
+      role="radio"
+      aria-checked={selectedFormat === format.id}
+      tabindex={selectedFormat === format.id ? 0 : -1}
+      onclick={() => handleFormatSelect(format.id)}
+      onkeydown={(e) => handleKeydown(e, format.id)}
+    >
+      <i class="fas {format.icon}"></i>
+      <span>{format.label}</span>
+    </button>
+  {/each}
+</div>
+
+<style>
+  .format-selector {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 16px 0;
+  }
+
+  .format-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-radius: 24px;
+    font-size: var(--font-size-min, 14px);
+    font-weight: 500;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .format-chip i {
+    font-size: 16px;
+  }
+
+  .format-chip:hover {
+    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    transform: translateY(-1px);
+  }
+
+  .format-chip:focus-visible {
+    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline-offset: 2px;
+  }
+
+  .format-chip.active {
+    background: var(--theme-accent, #4a9eff);
+    border-color: var(--theme-accent, #4a9eff);
+    color: white;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 0 0 1px var(--theme-accent-glow, rgba(74, 158, 255, 0.3));
+  }
+
+  .format-chip.active:hover {
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  /* Mobile optimization */
+  @media (max-width: 600px) {
+    .format-selector {
+      gap: 8px;
+      padding: 12px 0;
+    }
+
+    .format-chip {
+      flex: 1;
+      justify-content: center;
+      padding: 8px 16px;
+      font-size: var(--font-size-compact, 12px);
+    }
+
+    .format-chip i {
+      font-size: 14px;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .format-chip {
+      transition: none;
+    }
+
+    .format-chip:hover,
+    .format-chip.active:hover {
+      transform: none;
+    }
+  }
+</style>

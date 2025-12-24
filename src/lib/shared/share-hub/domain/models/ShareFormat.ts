@@ -4,7 +4,7 @@
  * Defines the available sharing formats in the Share Hub.
  */
 
-export type ShareFormat = 'image' | 'animation' | 'video' | 'composite';
+export type ShareFormat = 'image' | 'video' | 'composite';
 
 export interface FormatMetadata {
   id: ShareFormat;

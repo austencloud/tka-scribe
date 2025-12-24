@@ -1,0 +1,14 @@
+/**
+ * MediaFormat.ts
+ *
+ * Defines the available media formats for Single Media mode.
+ * Each format has its own preview component and settings panel.
+ *
+ * - animation: Animated sequence export (MP4 video with motion)
+ * - static: Static image export (PNG with full sequence grid)
+ * - performance: Performance video export (user-recorded or uploaded video)
+ *
+ * Domain: Share Hub - Single Media Format Selection
+ */
+
+export type MediaFormat = 'animation' | 'static' | 'performance';
