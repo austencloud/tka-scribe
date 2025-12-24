@@ -387,9 +387,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
     switch (feature) {
       case "create":
         // Create needs build (create), share, animator, and gamification
+        // IMPORTANT: share must load BEFORE build because CreateModuleInitializationService
+        // (in build.module) depends on IShareService (in share.module)
+        await loadIfNeeded("share", () => import("./modules/share.module"));
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
-          loadIfNeeded("share", () => import("./modules/share.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),
           loadIfNeeded(
             "gamification",
@@ -407,7 +409,9 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "community":
+        // Library needs create module for OrientationCycleDetector (used by LibraryService)
         await Promise.all([
+          loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("discover", () => import("./modules/discover.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
           loadIfNeeded("community", () => import("./modules/community.module")),
@@ -445,13 +449,21 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "collect":
       case "library":
-        await loadIfNeeded("library", () => import("./modules/library.module"));
+        // Library needs create module for OrientationCycleDetector (used by LibraryService)
+        await Promise.all([
+          loadIfNeeded("create", () => import("./modules/build.module")),
+          loadIfNeeded("library", () => import("./modules/library.module")),
+        ]);
         break;
 
       case "account":
       case "settings":
         // Account/Settings uses library services for user stats
-        await loadIfNeeded("library", () => import("./modules/library.module"));
+        // Library needs create module for OrientationCycleDetector (used by LibraryService)
+        await Promise.all([
+          loadIfNeeded("create", () => import("./modules/build.module")),
+          loadIfNeeded("library", () => import("./modules/library.module")),
+        ]);
         break;
 
       case "about":
@@ -479,7 +491,9 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "admin":
         // Admin module is loaded in Tier 2, only load its dependencies here
+        // Library needs create module for OrientationCycleDetector (used by LibraryService)
         await Promise.all([
+          loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
           loadIfNeeded("train", () => import("./modules/train.module")),
           loadIfNeeded("discover", () => import("./modules/discover.module")),
@@ -510,7 +524,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "cap-labeler":
-        // CAP labeler (test route) - load on-demand
+        // CAP labeler needs ISequenceAnalysisService from build.module
+        await loadIfNeeded("create", () => import("./modules/build.module"));
         await loadIfNeeded(
           "cap-labeler",
           () => import("./modules/cap-labeler.module")

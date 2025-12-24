@@ -29,6 +29,7 @@ import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
 import type { ITagService } from "../contracts/ITagService";
+import type { IOrientationCycleDetector } from "../../../create/generate/circular/services/contracts/IOrientationCycleDetector";
 import { migrateSequenceTags } from "../migrations/tag-migration";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
@@ -75,7 +76,7 @@ export class LibraryService implements ILibraryService {
     @inject(TYPES.ITagService)
     private tagService: ITagService,
     @inject(TYPES.IOrientationCycleDetector)
-    private orientationCycleDetector: import("../../../../create/generate/circular/services/contracts/IOrientationCycleDetector").IOrientationCycleDetector
+    private orientationCycleDetector: IOrientationCycleDetector
   ) {}
 
   /**

@@ -13,6 +13,8 @@ Navigation via bottom tabs (mobile-first UX pattern)
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount, untrack } from "svelte";
+  import { fly } from "svelte/transition";
+  import { cubicOut } from "svelte/easing";
   import ConceptPathView from "./components/ConceptPathView.svelte";
   import ConceptDetailView from "./components/ConceptDetailView.svelte";
   import CodexTab from "./codex/components/CodexTab.svelte";
@@ -26,6 +28,9 @@ Navigation via bottom tabs (mobile-first UX pattern)
   } from "$lib/shared/onboarding/config/storage-keys";
 
   type LearnMode = "concepts" | "play" | "codex";
+
+  // Tab order for determining slide direction
+  const TAB_ORDER: LearnMode[] = ["concepts", "play", "codex"];
 
   // ============================================================================
   // ONBOARDING STATE
@@ -78,6 +83,14 @@ Navigation via bottom tabs (mobile-first UX pattern)
   // Active mode synced with navigation state
   let activeMode = $state<LearnMode>("concepts");
 
+  // Slide direction for tab transitions (1 = right, -1 = left)
+  let slideDirection = $state<1 | -1>(1);
+  let previousMode = $state<LearnMode | null>(null);
+
+  // Transition configuration
+  const SLIDE_DISTANCE = 30; // pixels
+  const SLIDE_DURATION = 200; // ms
+
   // Concept detail view state
   let selectedConcept = $state<LearnConcept | null>(null);
   let conceptOpenCount = $state(0); // Increments each open to force remount
@@ -87,26 +100,36 @@ Navigation via bottom tabs (mobile-first UX pattern)
     const navMode = navigationState.currentLearnMode;
 
     // Map navigation modes to active mode
+    let newMode: LearnMode = "concepts";
     if (navMode === "concepts") {
-      activeMode = "concepts";
+      newMode = "concepts";
     } else if (
       navMode === "quiz" ||
       navMode === "drills" ||
       navMode === "play"
     ) {
-      activeMode = "play";
+      newMode = "play";
     } else if (navMode === "codex") {
-      activeMode = "codex";
+      newMode = "codex";
     }
+
+    // Calculate slide direction based on tab order
+    if (previousMode !== null && newMode !== previousMode) {
+      const oldIndex = TAB_ORDER.indexOf(previousMode);
+      const newIndex = TAB_ORDER.indexOf(newMode);
+      slideDirection = newIndex > oldIndex ? 1 : -1;
+    }
+
+    previousMode = activeMode;
+    activeMode = newMode;
   });
 
   // Reset states when switching modes
-  let prevMode: LearnMode | undefined;
   $effect(() => {
     const mode = activeMode;
+    const prev = previousMode;
     // Only reset when mode actually changes
-    if (mode !== prevMode) {
-      prevMode = mode;
+    if (mode !== prev && prev !== null) {
       untrack(() => {
         selectedConcept = null;
       });
@@ -178,10 +201,14 @@ Navigation via bottom tabs (mobile-first UX pattern)
   </div>
 {:else}
   <div class="learn-tab">
-    <!-- Content area - instant tab switching -->
+    <!-- Content area - tab switching with slide transitions -->
     <div class="content-container">
       {#key activeMode}
-        <div class="mode-panel">
+        <div
+          class="mode-panel"
+          in:fly={{ x: slideDirection * SLIDE_DISTANCE, duration: SLIDE_DURATION, easing: cubicOut }}
+          out:fly={{ x: -slideDirection * SLIDE_DISTANCE, duration: SLIDE_DURATION, easing: cubicOut }}
+        >
           {#if isModeActive("concepts")}
             {#if selectedConcept}
               <!-- Key by openCount to force remount on each open -->

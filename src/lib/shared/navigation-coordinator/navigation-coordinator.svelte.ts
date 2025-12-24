@@ -405,15 +405,14 @@ export function getModuleDefinitions() {
       return false;
     }
 
-    // Premium module is ONLY shown to non-premium users (inverse visibility)
-    // Exception: Admins can always access it for testing/preview
+    // Premium module is admin-only (features not ready for public release)
     if (module.id === "premium") {
       // Hide if auth not initialized (prevents flash of premium module)
       if (!isAuthInitialized || !isFeatureFlagsInitialized) {
         return false;
       }
-      // Show if user is NOT premium, OR if user is admin (for testing)
-      return !_isPremium || _isAdmin;
+      // Admin-only access for testing/preview until premium features are built
+      return _isAdmin;
     }
 
     // If auth/feature flags not initialized, show core modules optimistically

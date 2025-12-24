@@ -76,7 +76,7 @@
   );
 
   // Arrow dimensions for content area calculation
-  const DEFAULT_ARROW_WIDTH = 40; // Fallback when buttons have not rendered yet
+  const DEFAULT_ARROW_WIDTH = 44; // Matches CSS button size
   const ARROW_SPACING = 0; // Additional spacing buffer if needed
 
   let measuredArrowWidth = $state(DEFAULT_ARROW_WIDTH);
@@ -350,8 +350,8 @@
     flex: 0 0 100%; /* Each panel takes full width */
     min-width: 0;
     /* Add padding to each panel that matches the rendered arrow size */
-    padding-left: var(--nav-padding, 40px);
-    padding-right: var(--nav-padding, 40px);
+    padding-left: var(--nav-padding, 44px);
+    padding-right: var(--nav-padding, 44px);
     box-sizing: border-box;
   }
 
@@ -368,20 +368,22 @@
     border: none;
     padding: 0;
     margin: 0;
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
+    /* Secondary navigation - 44px is WCAG AA compliant, smaller to maximize content area */
+    width: 44px;
+    height: 44px;
     z-index: 1;
     border-radius: 50%;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 
-    /* Modern glassmorphism styling matching app buttons */
-    background: rgba(100, 116, 139, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(148, 163, 184, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    color: #ffffff;
+    /* Subtle frosted glass - less prominent since swiping is primary */
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.8);
 
     /* Smooth transitions matching app design system */
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
@@ -391,10 +393,11 @@
   }
 
   .embla__button:hover:not(:disabled) {
-    background: rgba(100, 116, 139, 0.9);
-    border-color: rgba(148, 163, 184, 0.4);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.25);
     transform: translateY(-50%) scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    color: rgba(255, 255, 255, 0.95);
   }
 
   .embla__button:active:not(:disabled) {
@@ -426,11 +429,11 @@
     height: 40%;
   }
 
-  /* Mobile responsive - maintain 50px minimum per iOS/Android guidelines */
+  /* Mobile: same 44px - swiping is primary, arrows are secondary */
   @media (max-width: 768px) {
     .embla__button {
-      width: var(--min-touch-target);
-      height: var(--min-touch-target);
+      width: 44px;
+      height: 44px;
     }
   }
 
