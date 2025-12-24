@@ -10,7 +10,6 @@ Uses organizer and sizer services for section grouping and sizing.
   import type { IOptionSizer } from '../services/contracts/IOptionSizer';
   import OptionSection from './OptionSection.svelte';
   import Option456Row from './Option456Row.svelte';
-  import OptionFilterPanel from '../option-viewer/components/OptionFilterPanel.svelte';
   import OptionViewerSwipeLayout from '../option-viewer/components/OptionViewerSwipeLayout.svelte';
 
   interface Props {
@@ -20,9 +19,6 @@ Uses organizer and sizer services for section grouping and sizing.
     isFading?: boolean;
     onSelect: (option: PreparedPictographData) => void;
     // Filter props
-    isFilterPanelOpen?: boolean;
-    onOpenFilters?: () => void;
-    onCloseFilters?: () => void;
     isContinuousOnly?: boolean;
     onToggleContinuous?: (value: boolean) => void;
     isSideBySideLayout?: () => boolean;
@@ -34,9 +30,6 @@ Uses organizer and sizer services for section grouping and sizing.
     sizerService,
     isFading = false,
     onSelect,
-    isFilterPanelOpen = false,
-    onOpenFilters,
-    onCloseFilters,
     isContinuousOnly = false,
     onToggleContinuous,
     isSideBySideLayout = () => false,
@@ -181,25 +174,19 @@ Uses organizer and sizer services for section grouping and sizing.
 </script>
 
 <div class="option-picker-content" bind:this={containerElement}>
-  <!-- Filter header - compact on mobile swipe, full on desktop -->
+  <!-- Filter toggle chip -->
   <div class="filter-header" class:mobile={shouldUseSwipeLayout()}>
     <button
-      class="filter-button"
+      class="filter-toggle"
       class:mobile={shouldUseSwipeLayout()}
-      onclick={onOpenFilters}
-      aria-label={isContinuousOnly ? "Filter: Continuous Only" : "Filter: All Options"}
-      aria-expanded={isFilterPanelOpen}
+      class:continuous={isContinuousOnly}
+      onclick={() => onToggleContinuous?.(!isContinuousOnly)}
+      aria-label={isContinuousOnly ? "Showing continuous only - click for all" : "Showing all - click for continuous only"}
+      aria-pressed={isContinuousOnly}
     >
+      <i class="fas" class:fa-link={isContinuousOnly} class:fa-th={!isContinuousOnly}></i>
       <span class="filter-label">{isContinuousOnly ? "Continuous" : "All"}</span>
-      <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen}></i>
     </button>
-
-    <OptionFilterPanel
-      isOpen={isFilterPanelOpen}
-      {isContinuousOnly}
-      onClose={onCloseFilters}
-      {onToggleContinuous}
-    />
   </div>
 
   {#if options.length === 0}
@@ -270,14 +257,14 @@ Uses organizer and sizer services for section grouping and sizing.
     position: relative;
   }
 
-  .filter-button {
+  .filter-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     padding: 6px 14px;
     background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 16px;
     color: rgba(255, 255, 255, 0.85);
     font-size: 13px;
@@ -288,31 +275,41 @@ Uses organizer and sizer services for section grouping and sizing.
     -webkit-tap-highlight-color: transparent;
   }
 
-  .filter-button:active {
-    transform: scale(0.97);
+  .filter-toggle:hover {
     background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  .filter-button .chevron {
-    font-size: 9px;
-    opacity: 0.6;
-    transition: transform 0.2s ease;
+  .filter-toggle:active {
+    transform: scale(0.97);
   }
 
-  .filter-button .chevron.open {
-    transform: rotate(180deg);
+  /* Continuous state - highlighted */
+  .filter-toggle.continuous {
+    background: rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
+    color: rgba(147, 197, 253, 1);
   }
 
-  /* Mobile: Even more compact */
-  .filter-header.mobile .filter-button {
+  .filter-toggle.continuous:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.5);
+  }
+
+  .filter-toggle i {
+    font-size: 11px;
+  }
+
+  /* Mobile: More compact */
+  .filter-toggle.mobile {
     padding: 4px 10px;
     font-size: 11px;
     margin: 2px 0;
     border-radius: 12px;
   }
 
-  .filter-header.mobile .filter-button .chevron {
-    font-size: 8px;
+  .filter-toggle.mobile i {
+    font-size: 9px;
   }
 
   .sections-container {

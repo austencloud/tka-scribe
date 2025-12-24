@@ -39,6 +39,9 @@
   let copiedToast = $state(false);
   let showBrowserDrawer = $state(false);
 
+  // Store detection service reference after loading (to avoid resolving in $derived)
+  let detectionService = $state<ICAPDetectionService | null>(null);
+
   // Create mode-specific state managers (after module loads)
   let sectionState = $state<ReturnType<typeof createSectionModeState>>();
   let beatPairState = $state<ReturnType<typeof createBeatPairModeState>>();
@@ -49,6 +52,12 @@
     (async () => {
       await ensureContainerInitialized();
       await loadFeatureModule("cap-labeler");
+
+      // Store reference to detection service AFTER module is loaded
+      detectionService = tryResolve<ICAPDetectionService>(
+        CAPLabelerTypes.ICAPDetectionService
+      );
+      console.log("[CAPLabelerModule] Detection service resolved:", !!detectionService);
 
       // Create mode states AFTER services are registered
       sectionState = createSectionModeState();
@@ -74,25 +83,15 @@
   // Detection cache (component-level since service resolution needs isReady)
   let detectionCache = $state(new Map<string, CAPDetectionResult>());
 
-  // Compute detection directly in component where DI is guaranteed to be ready
+  // Compute detection using stored service reference
   const currentComputedDetection = $derived.by(() => {
     const seq = currentSequence;
-    if (!isReady || !seq) return null;
+    if (!isReady || !seq || !detectionService) return null;
 
     // Check cache first
     const cacheKey = seq.id;
     if (detectionCache.has(cacheKey)) {
       return detectionCache.get(cacheKey)!;
-    }
-
-    // Resolve detection service (guaranteed to be available since isReady=true)
-    const detectionService = tryResolve<ICAPDetectionService>(
-      CAPLabelerTypes.ICAPDetectionService
-    );
-
-    if (!detectionService) {
-      console.warn("[CAPLabelerModule] Detection service not available");
-      return null;
     }
 
     console.log("[CAPLabelerModule] Computing detection for sequence:", seq.word);

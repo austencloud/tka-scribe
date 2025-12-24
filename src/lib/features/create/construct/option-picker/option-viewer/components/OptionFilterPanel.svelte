@@ -108,17 +108,20 @@ Provides a dedicated UI for filtering option viewer content:
     role="presentation"
   ></div>
 
-  <!-- Dropdown Panel -->
+  <!-- Bottom Sheet Panel -->
   <div
     bind:this={panelElement}
     class="filter-panel"
     class:compact={isCompact}
     class:extra-compact={isExtraCompact}
-    transition:fly={{ y: -20, duration: 300, easing: cubicOut }}
+    transition:fly={{ y: 300, duration: 300, easing: cubicOut }}
     role="dialog"
     aria-labelledby="filter-panel-title"
     aria-modal="true"
   >
+    <!-- Drag handle indicator -->
+    <div class="drag-handle"></div>
+
     <div class="filter-panel-header">
       <h2 id="filter-panel-title" class="filter-panel-title">
         <i class="fas fa-filter"></i>
@@ -186,52 +189,74 @@ Provides a dedicated UI for filtering option viewer content:
     z-index: 999;
   }
 
-  /* Dropdown panel */
+  /* Bottom sheet panel */
   .filter-panel {
-    position: absolute;
-    top: 0;
+    position: fixed;
+    bottom: 0;
     left: 0;
     right: 0;
-    /* Use container query units for responsive height */
-    max-height: min(400px, 70cqh);
-    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-    border-radius: 0 0 16px 16px;
+    /* Use viewport height for responsive sizing */
+    max-height: min(400px, 70vh);
+    background: linear-gradient(180deg, #16213e 0%, #1a1a2e 100%);
+    border-radius: 16px 16px 0 0;
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.4),
-      0 4px 16px rgba(0, 0, 0, 0.3);
+      0 -8px 32px rgba(0, 0, 0, 0.4),
+      0 -4px 16px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     overflow: hidden;
     z-index: 1000;
   }
 
-  /* Compact mode for smaller containers */
+  /* Compact mode for smaller viewports */
   .filter-panel.compact {
-    max-height: min(352px, 60cqh);
-    border-radius: 0 0 12px 12px;
+    max-height: min(352px, 60vh);
+    border-radius: 12px 12px 0 0;
   }
 
-  /* Extra compact mode for very small containers */
+  /* Extra compact mode for very small viewports */
   .filter-panel.extra-compact {
-    max-height: min(280px, 50cqh);
-    border-radius: 0 0 8px 8px;
+    max-height: min(280px, 50vh);
+    border-radius: 8px 8px 0 0;
+  }
+
+  /* Drag handle indicator */
+  .drag-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    margin: 12px auto 0;
+    flex-shrink: 0;
+  }
+
+  .filter-panel.compact .drag-handle {
+    width: 32px;
+    height: 3px;
+    margin: 10px auto 0;
+  }
+
+  .filter-panel.extra-compact .drag-handle {
+    width: 28px;
+    height: 3px;
+    margin: 8px auto 0;
   }
 
   .filter-panel-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 24px 16px;
+    padding: 12px 24px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.03);
   }
 
   .filter-panel.compact .filter-panel-header {
-    padding: 16px 20px 12px;
+    padding: 10px 20px 12px;
   }
 
   .filter-panel.extra-compact .filter-panel-header {
-    padding: 12px 16px 10px;
+    padding: 8px 16px 10px;
   }
 
   .filter-panel-title {
