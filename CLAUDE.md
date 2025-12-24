@@ -226,6 +226,37 @@ When running `/fb`, you MUST start your response with the raw feedback details i
   - `/release` - Ship completed items as a version
 - Remember: `completed` means "ready to ship", not "shipped" (that's `archived`)
 
+### /release command behavior (CRITICAL)
+
+**A release is NOT complete until the GitHub Release is created.**
+
+When executing a release, you MUST complete ALL of these steps:
+
+1. **Preview** - Run `node scripts/release.js -p` to see what's staged
+2. **Commit** - Ensure all changes are committed
+3. **Execute** - Run `node scripts/release.js --version X.Y.Z --confirm`
+4. **Push tag** - `git push origin main && git push origin vX.Y.Z`
+5. **Create GitHub Release** - **MANDATORY, DO NOT SKIP**:
+   ```bash
+   gh release create vX.Y.Z --title "vX.Y.Z" --notes "$(cat <<'EOF'
+   ## What's New
+
+   ### 🐛 Fixed
+   - [user-friendly descriptions]
+
+   ### ✨ Added
+   - [user-friendly descriptions]
+
+   ### 🔧 Improved
+   - [user-friendly descriptions]
+   EOF
+   )"
+   ```
+6. **Archive feedback** - Run `node scripts/archive-feedback.js X.Y.Z`
+7. **Sync develop** - `git checkout develop && git merge main && git push origin develop`
+
+**The GitHub Release is what users see.** Pushing tags alone is not enough - users won't see the release notes without `gh release create`.
+
 ### What Goes in Release Notes (Critical!)
 
 **Release notes are for FLOW ARTISTS, not developers.** Think like a user who creates choreography, doesn't code, and just wants to know what's better for them.
@@ -301,7 +332,7 @@ When `/done` is called and there's no matching feedback item for the work just c
 
 ---
 
-_Last updated: 2025-12-15_
+_Last updated: 2025-12-24_
 
 ## Context Management
 
