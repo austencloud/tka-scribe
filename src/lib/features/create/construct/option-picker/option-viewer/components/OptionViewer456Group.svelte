@@ -440,7 +440,7 @@ Matches the desktop version exactly:
               {isFadingOut}
               {contentAreaBounds}
               {forcedPictographSize}
-              showHeader={false}
+              showHeader={true}
               {fitToViewport}
             />
           </div>

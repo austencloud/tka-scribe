@@ -90,6 +90,9 @@ Orchestrates specialized components and services:
   let preparedOptions = $state<PreparedPictographData[]>([]);
   let isPreparingOptions = $state(false);
 
+  // Fade coordination: prevents premature fade-in during option loading
+  let pendingFadeIn = $state(false);
+
   // Cache for stable object references - prevents component recreation
   let preparedCache = new Map<string, PreparedPictographData>();
 
@@ -337,12 +340,16 @@ Orchestrates specialized components and services:
       filteredCount: filtered.length,
       firstOption: filtered[0]?.letter,
       isFadingOut,
+      pendingFadeIn,
     });
 
     if (filtered.length === 0) {
       preparedOptions = [];
       isPreparingOptions = false;
-      isFadingOut = false;
+      // Only reset fade state if NOT waiting for new options (prevents premature fade-in)
+      if (!pendingFadeIn) {
+        isFadingOut = false;
+      }
       return;
     }
 
@@ -378,6 +385,7 @@ Orchestrates specialized components and services:
             preparedCount: prepared.length,
             firstPrepared: prepared[0]?.letter,
             hasPositions: !!prepared[0]?._prepared,
+            pendingFadeIn,
           });
 
           // Memoize: reuse existing objects if ID matches (prevents component recreation)
@@ -388,17 +396,25 @@ Orchestrates specialized components and services:
 
           preparedOptions = stabilized;
           isPreparingOptions = false;
-          // Re-enable buttons after content is ready
-          console.log(
-            "✨ [Preparation Effect] Setting isFadingOut = false, fade-in should start"
-          );
-          isFadingOut = false;
+
+          // Fade in after new options are ready (coordinated with pendingFadeIn)
+          if (pendingFadeIn) {
+            console.log(
+              "✨ [Preparation Effect] pendingFadeIn=true, triggering fade-in"
+            );
+            pendingFadeIn = false;
+            isFadingOut = false;
+          } else {
+            // Not waiting for fade-in, just ensure visible
+            isFadingOut = false;
+          }
         })
         .catch((error) => {
           console.error("Failed to prepare pictographs:", error);
           // Fallback: use unprepared options
           preparedOptions = filtered as PreparedPictographData[];
           isPreparingOptions = false;
+          pendingFadeIn = false;
           isFadingOut = false;
         });
     });
@@ -416,19 +432,22 @@ Orchestrates specialized components and services:
     console.log("🖱️ [handleOptionSelected] Starting fade-out");
     hapticService?.trigger("selection");
 
-    // Step 1: Start fade-out, disable buttons
+    // Step 1: Mark that we need to fade in after new options load
+    pendingFadeIn = true;
+
+    // Step 2: Start fade-out, disable buttons
     isFadingOut = true;
     console.log(
-      "🌫️ [handleOptionSelected] isFadingOut = true, waiting for fade..."
+      "🌫️ [handleOptionSelected] isFadingOut = true, pendingFadeIn = true, waiting for fade..."
     );
 
-    // Step 2: Wait for fade-out to complete BEFORE updating data
+    // Step 3: Wait for fade-out to complete BEFORE updating data
     // This ensures the user sees the current content fade out
     await new Promise((resolve) => setTimeout(resolve, FADE_OUT_DURATION));
 
     console.log("⏱️ [handleOptionSelected] Fade complete, updating data...");
 
-    // Step 3: Now update the data (while content is invisible)
+    // Step 4: Now update the data (while content is invisible)
     onOptionSelected(option);
     optionPickerState.selectOption(option);
 
@@ -436,7 +455,7 @@ Orchestrates specialized components and services:
       "📦 [handleOptionSelected] Data updated, waiting for preparation..."
     );
     // Note: isFadingOut will be set to false by the preparation effect
-    // when new content is ready, triggering fade-in
+    // when new content is ready AND pendingFadeIn is true, triggering fade-in
   }
 
   function handleSectionChange(sectionIndex: number) {

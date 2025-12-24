@@ -45,13 +45,12 @@ Delegates all rendering to child components.
     currentGridMode,
     onOptionSelected,
     isContinuousOnly = false,
-    // These are accepted but not yet used - for future filter UI
-    isSideBySideLayout: _isSideBySideLayout,
-    isUndoingOption: _isUndoingOption,
-    onOpenFilters: _onOpenFilters,
-    onCloseFilters: _onCloseFilters,
-    isFilterPanelOpen: _isFilterPanelOpen,
-    onToggleContinuous: _onToggleContinuous,
+    isSideBySideLayout = () => false,
+    isUndoingOption = false,
+    onOpenFilters,
+    onCloseFilters,
+    isFilterPanelOpen = false,
+    onToggleContinuous,
   }: Props = $props();
 
   // State
@@ -164,6 +163,12 @@ Delegates all rendering to child components.
     {sizerService}
     isFading={fadeState.isFading}
     onSelect={handleSelect}
+    {isFilterPanelOpen}
+    {onOpenFilters}
+    {onCloseFilters}
+    {isContinuousOnly}
+    {onToggleContinuous}
+    {isSideBySideLayout}
   />
 {/if}
 

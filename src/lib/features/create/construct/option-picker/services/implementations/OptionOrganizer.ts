@@ -52,32 +52,19 @@ export class OptionOrganizer implements IOptionOrganizer {
       }
     }
 
-    // Create sections for Types 1-3 (individual sections)
+    // Create individual sections for all Types 1-6
     const sections: OrganizedSection[] = [];
-    const individualTypes = ["Type1", "Type2", "Type3"];
-    const groupedTypes = ["Type4", "Type5", "Type6"];
-    const groupedPictographs: PictographData[] = [];
 
-    // Add individual sections (Types 1-3) - always create even if empty
-    individualTypes.forEach((type) => {
-      sections.push({
-        title: type,
-        pictographs: groups.get(type) ?? [],
-        type: "section" as const,
-      });
-    });
-
-    // Collect Types 4-6 for grouping
-    groupedTypes.forEach((type) => {
+    // Add sections for each type (only if not empty)
+    allTypes.forEach((type) => {
       const typePictographs = groups.get(type) ?? [];
-      groupedPictographs.push(...typePictographs);
-    });
-
-    // Always add grouped section for Types 4-6 (even if empty)
-    sections.push({
-      title: "Types 4-6",
-      pictographs: groupedPictographs,
-      type: "grouped" as const,
+      if (typePictographs.length > 0) {
+        sections.push({
+          title: type,
+          pictographs: typePictographs,
+          type: "section" as const,
+        });
+      }
     });
 
     return sections;

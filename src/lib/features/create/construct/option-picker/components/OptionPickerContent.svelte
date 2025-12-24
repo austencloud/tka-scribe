@@ -9,6 +9,9 @@ Uses organizer and sizer services for section grouping and sizing.
   import type { IOptionOrganizer } from '../services/contracts/IOptionOrganizer';
   import type { IOptionSizer } from '../services/contracts/IOptionSizer';
   import OptionSection from './OptionSection.svelte';
+  import Option456Row from './Option456Row.svelte';
+  import OptionFilterPanel from '../option-viewer/components/OptionFilterPanel.svelte';
+  import OptionViewerSwipeLayout from '../option-viewer/components/OptionViewerSwipeLayout.svelte';
 
   interface Props {
     options: PreparedPictographData[];
@@ -16,6 +19,13 @@ Uses organizer and sizer services for section grouping and sizing.
     sizerService: IOptionSizer | null;
     isFading?: boolean;
     onSelect: (option: PreparedPictographData) => void;
+    // Filter props
+    isFilterPanelOpen?: boolean;
+    onOpenFilters?: () => void;
+    onCloseFilters?: () => void;
+    isContinuousOnly?: boolean;
+    onToggleContinuous?: (value: boolean) => void;
+    isSideBySideLayout?: () => boolean;
   }
 
   const {
@@ -23,7 +33,13 @@ Uses organizer and sizer services for section grouping and sizing.
     organizerService,
     sizerService,
     isFading = false,
-    onSelect
+    onSelect,
+    isFilterPanelOpen = false,
+    onOpenFilters,
+    onCloseFilters,
+    isContinuousOnly = false,
+    onToggleContinuous,
+    isSideBySideLayout = () => false,
   }: Props = $props();
 
   // Track container dimensions with simple resize observer
@@ -42,6 +58,51 @@ Uses organizer and sizer services for section grouping and sizing.
       return [];
     }
     return organizerService.organizePictographs(options, 'type');
+  });
+
+  // Separate Types 1-3 (individual sections) from Types 4-6 (horizontal row)
+  const types123Sections = $derived(() => {
+    return organizedSections().filter(s =>
+      s.title === 'Type1' || s.title === 'Type2' || s.title === 'Type3'
+    );
+  });
+
+  const types456Sections = $derived(() => {
+    return organizedSections().filter(s =>
+      s.title === 'Type4' || s.title === 'Type5' || s.title === 'Type6'
+    );
+  });
+
+  // Use swipe layout on mobile when NOT in side-by-side mode
+  const shouldUseSwipeLayout = $derived(() => {
+    const sections = organizedSections();
+    // Only use swipe when:
+    // - On mobile (stacked layout)
+    // - Not in side-by-side layout
+    // - Have multiple sections to swipe between
+    return isMobile && !isSideBySideLayout() && sections.length > 1;
+  });
+
+  // For swipe layout: combine Types 4-6 into a single grouped panel
+  const swipeSections = $derived(() => {
+    const sections123 = types123Sections();
+    const sections456 = types456Sections();
+
+    // Combine all Types 4-6 pictographs into one grouped section
+    const grouped456Pictographs = sections456.flatMap(s => s.pictographs);
+
+    if (grouped456Pictographs.length === 0) {
+      return sections123;
+    }
+
+    return [
+      ...sections123,
+      {
+        title: 'Types 4-6',
+        pictographs: grouped456Pictographs,
+        type: 'grouped' as const
+      }
+    ];
   });
 
   // Calculate sizing - use stable values
@@ -69,6 +130,17 @@ Uses organizer and sizer services for section grouping and sizing.
       return { cardSize: 80, columns: columns, gap: '8px' };
     }
   });
+
+  // Layout config for swipe layout component
+  const layoutConfig = $derived(() => ({
+    optionsPerRow: columns,
+    pictographSize: sizing().cardSize,
+    spacing: parseInt(sizing().gap) || 8,
+    containerWidth: containerWidth,
+    containerHeight: containerHeight,
+    gridColumns: `repeat(${columns}, ${sizing().cardSize}px)`,
+    gridGap: sizing().gap,
+  }));
 
   // Simple resize observer - only update after stable
   $effect(() => {
@@ -109,13 +181,46 @@ Uses organizer and sizer services for section grouping and sizing.
 </script>
 
 <div class="option-picker-content" bind:this={containerElement}>
+  <!-- Filter header - compact on mobile swipe, full on desktop -->
+  <div class="filter-header" class:mobile={shouldUseSwipeLayout()}>
+    <button
+      class="filter-button"
+      class:mobile={shouldUseSwipeLayout()}
+      onclick={onOpenFilters}
+      aria-label={isContinuousOnly ? "Filter: Continuous Only" : "Filter: All Options"}
+      aria-expanded={isFilterPanelOpen}
+    >
+      <span class="filter-label">{isContinuousOnly ? "Continuous" : "All"}</span>
+      <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen}></i>
+    </button>
+
+    <OptionFilterPanel
+      isOpen={isFilterPanelOpen}
+      {isContinuousOnly}
+      onClose={onCloseFilters}
+      {onToggleContinuous}
+    />
+  </div>
+
   {#if options.length === 0}
     <div class="empty-state">
       <p>No options available</p>
     </div>
+  {:else if shouldUseSwipeLayout()}
+    <!-- Mobile: Swipe between sections (Types 4-6 combined into one panel) -->
+    <div class="swipe-container" style:opacity={isFading ? 0 : 1}>
+      <OptionViewerSwipeLayout
+        organizedPictographs={swipeSections()}
+        onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
+        layoutConfig={layoutConfig()}
+        isFadingOut={isFading}
+      />
+    </div>
   {:else}
+    <!-- Desktop: Grid layout with Types 4-6 in horizontal row -->
     <div class="sections-container">
-      {#each organizedSections() as section (section.title)}
+      <!-- Types 1-3: Individual vertical sections -->
+      {#each types123Sections() as section (section.title)}
         <OptionSection
           letterType={section.title}
           options={section.pictographs}
@@ -127,29 +232,107 @@ Uses organizer and sizer services for section grouping and sizing.
           {onSelect}
         />
       {/each}
+
+      <!-- Types 4-6: Horizontal row -->
+      {#if types456Sections().length > 0}
+        <Option456Row
+          sections={types456Sections()}
+          cardSize={sizing().cardSize}
+          columns={sizing().columns}
+          gap={sizing().gap}
+          {isFading}
+          {onSelect}
+        />
+      {/if}
     </div>
   {/if}
 </div>
 
 <style>
   .option-picker-content {
+    position: relative;
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     container-type: size;
   }
 
-  .sections-container {
+  /* Filter header - inline, minimal */
+  .filter-header {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .filter-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 4px 0;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .filter-button:active {
+    transform: scale(0.97);
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .filter-button .chevron {
+    font-size: 9px;
+    opacity: 0.6;
+    transition: transform 0.2s ease;
+  }
+
+  .filter-button .chevron.open {
+    transform: rotate(180deg);
+  }
+
+  /* Mobile: Even more compact */
+  .filter-header.mobile .filter-button {
+    padding: 4px 10px;
+    font-size: 11px;
+    margin: 2px 0;
+    border-radius: 12px;
+  }
+
+  .filter-header.mobile .filter-button .chevron {
+    font-size: 8px;
+  }
+
+  .sections-container {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 16px;
     padding: 8px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  .swipe-container {
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    transition: opacity 250ms ease-out;
   }
 
   .empty-state {

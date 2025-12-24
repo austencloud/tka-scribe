@@ -21,18 +21,15 @@ Handles fade transitions via CSS opacity.
   const {
     options,
     cardSize,
-    columns,
+    columns: _columns, // kept for API compatibility
     gap = "8px",
     isFading = false,
     onSelect,
   }: Props = $props();
-
-  const gridColumns = $derived(`repeat(${columns}, ${cardSize}px)`);
 </script>
 
 <div
   class="option-grid"
-  style:grid-template-columns={gridColumns}
   style:gap
   style:opacity={isFading ? 0 : 1}
 >
@@ -50,9 +47,10 @@ Handles fade transitions via CSS opacity.
 
 <style>
   .option-grid {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    justify-items: center;
+    align-items: flex-start;
     width: 100%;
     transition: opacity 250ms ease-out;
   }
