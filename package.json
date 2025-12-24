@@ -89,6 +89,7 @@
     "@types/jszip": "^3.4.0",
     "@types/node": "^24.10.1",
     "@types/qrcode": "^1.5.6",
+    "@types/three": "^0.170.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitest/browser": "3.2.4",
@@ -178,6 +179,8 @@
     }
   ],
   "dependencies": {
+    "@threlte/core": "^8.0.0",
+    "@threlte/extras": "^9.0.0",
     "@formkit/auto-animate": "^0.9.0",
     "@fortawesome/fontawesome-free": "^7.1.0",
     "@jdfranel/snowflake-generator": "^1.0.1",
@@ -214,6 +217,7 @@
     "wavesurfer.js": "^7.12.1",
     "webp-encoder": "^2.1.2",
     "xstate": "^5.24.0",
+    "three": "^0.170.0",
     "zod": "^3.25.76"
   }
 }

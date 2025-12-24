@@ -1,0 +1,166 @@
+/**
+ * Plane Transform Constants
+ *
+ * Defines the mathematical transformations for converting 2D angles
+ * to 3D world coordinates based on plane context.
+ *
+ * Uses Three.js Y-up convention:
+ * - X = performer's right (positive)
+ * - Y = sky (positive)
+ * - Z = toward audience (positive)
+ */
+
+import { Vector3, Euler, Quaternion } from "three";
+import { Plane } from "../enums/Plane";
+
+/**
+ * Default grid radius in 3D world units.
+ * This determines the distance from center to hand points.
+ */
+export const GRID_RADIUS_3D = 150;
+
+/**
+ * Conversion factor from 2D canvas (950x950) to 3D units
+ */
+export const CANVAS_TO_3D_SCALE = GRID_RADIUS_3D / 143; // ~143px is 2D hand point radius
+
+/**
+ * Convert a 2D path angle to a 3D world position on the specified plane.
+ *
+ * The angle follows the existing 2D convention:
+ * - E = 0, S = π/2, W = π, N = -π/2 (canvas Y-down)
+ *
+ * This function maps those angles to 3D positions where:
+ * - Each plane interprets N/E/S/W relative to its canonical viewpoint
+ * - Y-axis inversion is applied (canvas Y-down → Three.js Y-up)
+ *
+ * @param plane - Which plane the position is on
+ * @param angle - Path angle in radians (uses LOCATION_ANGLES convention)
+ * @param radius - Distance from center (default: GRID_RADIUS_3D)
+ * @returns Vector3 world position
+ */
+export function planeAngleToWorldPosition(
+  plane: Plane,
+  angle: number,
+  radius: number = GRID_RADIUS_3D
+): Vector3 {
+  const cos_a = Math.cos(angle);
+  const sin_a = Math.sin(angle);
+
+  switch (plane) {
+    case Plane.WALL:
+      // XY plane: X=right, Y=up, Z=0 (toward audience)
+      // Apply Y inversion: canvas -sin becomes +Y (up)
+      return new Vector3(cos_a * radius, -sin_a * radius, 0);
+
+    case Plane.WHEEL:
+      // YZ plane: X=0, Y=up, Z=toward audience
+      // E (angle=0) should point toward audience (+Z in our convention)
+      // But we use -Z so E points toward audience when viewed from stage right
+      return new Vector3(0, -sin_a * radius, -cos_a * radius);
+
+    case Plane.FLOOR:
+      // XZ plane: X=right, Y=0, Z=toward audience
+      // N (angle=-π/2) should point toward audience (+Z? or -Z?)
+      // Using +sin_a for Z so N points forward
+      return new Vector3(cos_a * radius, 0, sin_a * radius);
+
+    default:
+      return new Vector3(cos_a * radius, -sin_a * radius, 0);
+  }
+}
+
+/**
+ * Get the normal vector for a plane (points toward canonical viewer)
+ */
+export function getPlaneNormal(plane: Plane): Vector3 {
+  switch (plane) {
+    case Plane.WALL:
+      return new Vector3(0, 0, 1); // Points toward audience
+    case Plane.WHEEL:
+      return new Vector3(1, 0, 0); // Points toward performer's right
+    case Plane.FLOOR:
+      return new Vector3(0, 1, 0); // Points up
+    default:
+      return new Vector3(0, 0, 1);
+  }
+}
+
+/**
+ * Get the "up" direction within a plane (what direction is "N")
+ */
+export function getPlaneUp(plane: Plane): Vector3 {
+  switch (plane) {
+    case Plane.WALL:
+      return new Vector3(0, 1, 0); // N = up
+    case Plane.WHEEL:
+      return new Vector3(0, 1, 0); // N = up
+    case Plane.FLOOR:
+      return new Vector3(0, 0, -1); // N = toward audience (but -Z in floor coords)
+    default:
+      return new Vector3(0, 1, 0);
+  }
+}
+
+/**
+ * Get the "right" direction within a plane (what direction is "E")
+ */
+export function getPlaneRight(plane: Plane): Vector3 {
+  switch (plane) {
+    case Plane.WALL:
+      return new Vector3(1, 0, 0); // E = performer's right
+    case Plane.WHEEL:
+      return new Vector3(0, 0, -1); // E = toward audience
+    case Plane.FLOOR:
+      return new Vector3(1, 0, 0); // E = performer's right
+    default:
+      return new Vector3(1, 0, 0);
+  }
+}
+
+/**
+ * Get the Euler rotation to orient an object to lie flat on a plane
+ */
+export function getPlaneRotation(plane: Plane): Euler {
+  switch (plane) {
+    case Plane.WALL:
+      return new Euler(0, 0, 0);
+    case Plane.WHEEL:
+      return new Euler(0, Math.PI / 2, 0);
+    case Plane.FLOOR:
+      return new Euler(-Math.PI / 2, 0, 0);
+    default:
+      return new Euler(0, 0, 0);
+  }
+}
+
+/**
+ * Get the quaternion to orient an object to lie flat on a plane
+ */
+export function getPlaneQuaternion(plane: Plane): Quaternion {
+  const euler = getPlaneRotation(plane);
+  return new Quaternion().setFromEuler(euler);
+}
+
+/**
+ * Calculate prop/staff rotation quaternion.
+ * Combines plane orientation with staff angle rotation.
+ *
+ * @param plane - The plane the prop is on
+ * @param staffAngle - Staff rotation angle in radians
+ * @returns Quaternion for prop orientation
+ */
+export function calculatePropQuaternion(
+  plane: Plane,
+  staffAngle: number
+): Quaternion {
+  // Start with plane base orientation
+  const planeQuat = getPlaneQuaternion(plane);
+
+  // Add staff rotation around the plane's normal
+  const normal = getPlaneNormal(plane);
+  const staffQuat = new Quaternion().setFromAxisAngle(normal, staffAngle);
+
+  // Combine: plane orientation first, then staff rotation
+  return planeQuat.clone().multiply(staffQuat);
+}
