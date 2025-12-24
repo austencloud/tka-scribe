@@ -50,14 +50,42 @@
   onMount(() => {
     // Load CAP labeler DI module and initialize
     (async () => {
+      console.log("[CAPLabelerModule] onMount starting...");
       await ensureContainerInitialized();
+      console.log("[CAPLabelerModule] Container initialized");
       await loadFeatureModule("cap-labeler");
+      console.log("[CAPLabelerModule] cap-labeler module loaded");
 
       // Store reference to detection service AFTER module is loaded
-      detectionService = tryResolve<ICAPDetectionService>(
-        CAPLabelerTypes.ICAPDetectionService
-      );
-      console.log("[CAPLabelerModule] Detection service resolved:", !!detectionService);
+      // Use verbose resolution to see any errors
+      console.log("[CAPLabelerModule] Attempting to resolve ICAPDetectionService...");
+      console.log("[CAPLabelerModule] Symbol:", CAPLabelerTypes.ICAPDetectionService);
+
+      let resolvedService: ICAPDetectionService | null = null;
+      try {
+        resolvedService = tryResolve<ICAPDetectionService>(
+          CAPLabelerTypes.ICAPDetectionService
+        );
+      } catch (err) {
+        console.error("[CAPLabelerModule] Error resolving service:", err);
+      }
+
+      console.log("[CAPLabelerModule] tryResolve returned:", resolvedService);
+
+      // If tryResolve failed, try importing and instantiating directly
+      if (!resolvedService) {
+        console.warn("[CAPLabelerModule] Service not in DI container, trying direct import...");
+        try {
+          const { CAPDetectionService } = await import("../services/implementations/CAPDetectionService");
+          resolvedService = new CAPDetectionService();
+          console.log("[CAPLabelerModule] Direct instantiation succeeded:", !!resolvedService);
+        } catch (importErr) {
+          console.error("[CAPLabelerModule] Direct import failed:", importErr);
+        }
+      }
+
+      detectionService = resolvedService;
+      console.log("[CAPLabelerModule] detectionService set to:", !!detectionService);
 
       // Create mode states AFTER services are registered
       sectionState = createSectionModeState();
@@ -80,8 +108,9 @@
   const currentSequence = $derived(isReady ? capLabelerState.currentSequence : null);
   const currentLabel = $derived(isReady ? capLabelerState.currentLabel : null);
 
-  // Detection cache (component-level since service resolution needs isReady)
-  let detectionCache = $state(new Map<string, CAPDetectionResult>());
+  // Detection cache - use a plain object to avoid reactivity issues
+  // We use WeakMap-like pattern with sequence ID as key
+  const detectionCacheRef: { current: Map<string, CAPDetectionResult> } = { current: new Map() };
 
   // Compute detection using stored service reference
   const currentComputedDetection = $derived.by(() => {
@@ -99,11 +128,12 @@
       return null;
     }
 
-    // Check cache first
+    // Check cache first (using ref to avoid state mutation in derived)
     const cacheKey = seq.id;
-    if (detectionCache.has(cacheKey)) {
+    const cached = detectionCacheRef.current.get(cacheKey);
+    if (cached) {
       console.log("[CAPLabelerModule] Returning cached detection for:", seq.word);
-      return detectionCache.get(cacheKey)!;
+      return cached;
     }
 
     console.log("[CAPLabelerModule] Computing detection for sequence:", seq.word);
@@ -116,8 +146,8 @@
       candidates: detection.candidateDesignations.map(c => c.label),
     });
 
-    // Cache the result (need to create new Map for reactivity)
-    detectionCache = new Map(detectionCache).set(cacheKey, detection);
+    // Cache the result (mutating ref, not reactive state)
+    detectionCacheRef.current.set(cacheKey, detection);
 
     return detection;
   });
@@ -334,7 +364,29 @@
   }
 
   async function handleSaveAndNext() {
-    if (!currentSequence || !wholeState) return;
+    if (!currentSequence) return;
+
+    // If detection found a modular pattern, save it directly
+    if (currentComputedDetection?.isModular) {
+      const updatedLabel = {
+        word: currentSequence.word,
+        designations: [],
+        isFreeform: false,
+        isModular: true,
+        needsVerification: false,
+        labeledAt: new Date().toISOString(),
+        notes: notes || "",
+        sections: currentLabel?.sections || [],
+        beatPairs: currentLabel?.beatPairs || [],
+        beatPairGroups: currentComputedDetection.beatPairGroups,
+      };
+      await capLabelerState.saveLabel(updatedLabel);
+      capLabelerState.nextSequence();
+      return;
+    }
+
+    // Otherwise use the whole state labeling flow
+    if (!wholeState) return;
     await wholeState.actions.labelSequence(
       currentSequence.word,
       notes,
@@ -382,6 +434,7 @@
       // Don't store designations - they're computed on-the-fly
       designations: [],
       isFreeform: currentComputedDetection?.isFreeform ?? false,
+      isModular: currentComputedDetection?.isModular ?? false,
       needsVerification: false, // Mark as verified
       labeledAt: new Date().toISOString(),
       notes: currentLabel?.notes || "",
@@ -525,6 +578,7 @@
           sectionDesignations={sectionState?.savedSections ?? []}
           beatPairDesignations={beatPairState?.savedBeatPairs ?? []}
           isFreeform={currentComputedDetection?.isFreeform ?? false}
+          isModular={currentComputedDetection?.isModular ?? false}
           needsVerification={!isVerified}
           autoDetectedDesignations={[]}
           candidateDesignations={currentComputedDetection?.candidateDesignations ?? []}
@@ -544,7 +598,8 @@
           canSave={(wholeState?.pendingDesignations.length ?? 0) > 0 ||
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||
-            (wholeState?.isFreeform ?? false)}
+            (wholeState?.isFreeform ?? false) ||
+            (currentComputedDetection?.isModular ?? false)}
         />
 
         <!-- Mode Toggle -->

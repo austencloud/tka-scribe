@@ -16,6 +16,7 @@ import { Plane } from "../enums/Plane";
 /**
  * Default grid radius in 3D world units.
  * This determines the distance from center to hand points.
+ * Staff length = 2× this value, so staff spans from center to outer.
  */
 export const GRID_RADIUS_3D = 150;
 
@@ -146,8 +147,12 @@ export function getPlaneQuaternion(plane: Plane): Quaternion {
  * Calculate prop/staff rotation quaternion.
  * Combines plane orientation with staff angle rotation.
  *
+ * IMPORTANT: Staff angles use 2D canvas convention (Y-down, CW = positive).
+ * Three.js uses Y-up convention where positive rotation = CCW.
+ * We negate the angle to convert from canvas to Three.js convention.
+ *
  * @param plane - The plane the prop is on
- * @param staffAngle - Staff rotation angle in radians
+ * @param staffAngle - Staff rotation angle in radians (canvas convention)
  * @returns Quaternion for prop orientation
  */
 export function calculatePropQuaternion(
@@ -158,8 +163,11 @@ export function calculatePropQuaternion(
   const planeQuat = getPlaneQuaternion(plane);
 
   // Add staff rotation around the plane's normal
+  // CRITICAL: Negate angle to convert from canvas (Y-down) to Three.js (Y-up)
+  // In canvas: positive angle = clockwise
+  // In Three.js: positive angle = counter-clockwise
   const normal = getPlaneNormal(plane);
-  const staffQuat = new Quaternion().setFromAxisAngle(normal, staffAngle);
+  const staffQuat = new Quaternion().setFromAxisAngle(normal, -staffAngle);
 
   // Combine: plane orientation first, then staff rotation
   return planeQuat.clone().multiply(staffQuat);

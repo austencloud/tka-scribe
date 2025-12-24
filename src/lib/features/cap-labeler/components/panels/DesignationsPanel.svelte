@@ -25,6 +25,7 @@
     sectionDesignations: SectionDesignation[];
     beatPairDesignations: BeatPairRelationship[];
     isFreeform: boolean;
+    isModular?: boolean;
     needsVerification?: boolean;
     autoDetectedDesignations?: CAPDesignation[];
     candidateDesignations?: CandidateDesignation[];
@@ -48,6 +49,7 @@
     sectionDesignations,
     beatPairDesignations,
     isFreeform,
+    isModular = false,
     needsVerification = false,
     autoDetectedDesignations = [],
     candidateDesignations = [],
@@ -267,8 +269,14 @@
         </div>
       {/each}
 
-      <!-- Freeform indicator -->
-      {#if isFreeform}
+      <!-- Modular indicator (multiple recognizable patterns) -->
+      {#if isModular}
+        <div class="designation-item modular">
+          <span class="designation-badge">M</span>
+          <span class="designation-label">Modular (multiple patterns)</span>
+        </div>
+      <!-- Freeform indicator (no recognizable patterns) -->
+      {:else if isFreeform}
         <div class="designation-item freeform">
           <span class="designation-badge">F</span>
           <span class="designation-label">Freeform (no recognizable pattern)</span>
@@ -548,6 +556,11 @@
     border-color: rgba(239, 68, 68, 0.25);
   }
 
+  .designation-item.modular {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.12) 0%, rgba(202, 138, 4, 0.08) 100%);
+    border-color: rgba(234, 179, 8, 0.25);
+  }
+
   .designation-badge {
     display: flex;
     align-items: center;
@@ -578,6 +591,11 @@
   .freeform .designation-badge {
     background: rgba(239, 68, 68, 0.3);
     color: #fca5a5;
+  }
+
+  .modular .designation-badge {
+    background: rgba(234, 179, 8, 0.3);
+    color: #fde047;
   }
 
   .designation-label {

@@ -45,8 +45,10 @@ export interface AutocompleteAnalysis {
   startPosition: GridPosition | null;
   /** Current end position of the sequence */
   currentEndPosition: GridPosition | null;
-  /** Available CAP options for completion */
+  /** Available CAP options for completion (will actually work) */
   availableCAPOptions: CAPOption[];
+  /** Unavailable CAP options (exist but won't work for this sequence) */
+  unavailableCAPOptions: CAPOption[];
   /** Human-readable description of the completion */
   description: string;
 }

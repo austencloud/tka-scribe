@@ -2,77 +2,81 @@
  * Animation 3D State
  *
  * Composes playback state with motion configuration and prop state calculation.
- * Supports both manual configuration and sequence-based animation.
+ * Designed for sequence-based animation - load sequences from the library.
  */
 
 import type { PropState3D } from "../domain/models/PropState3D";
 import type { MotionConfig3D } from "../domain/models/MotionData3D";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { Plane } from "../domain/enums/Plane";
-import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import {
-  MotionType,
-  RotationDirection,
-  Orientation,
-} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { createPlaybackState } from "./playback-state.svelte";
 import { calculatePropState } from "../services/implementations/PropStateInterpolator";
 import {
   sequenceToMotionConfigs,
-  createDefaultConfig,
   type BeatMotionConfigs,
 } from "../utils/sequence-converter";
-
-/**
- * Default motion config for blue prop
- */
-const DEFAULT_BLUE_CONFIG: MotionConfig3D = {
-  plane: Plane.WALL,
-  startLocation: GridLocation.NORTH,
-  endLocation: GridLocation.SOUTH,
-  motionType: MotionType.PRO,
-  rotationDirection: RotationDirection.CLOCKWISE,
-  turns: 1,
-  startOrientation: Orientation.IN,
-  endOrientation: Orientation.OUT,
-};
-
-/**
- * Default motion config for red prop
- */
-const DEFAULT_RED_CONFIG: MotionConfig3D = {
-  plane: Plane.WALL,
-  startLocation: GridLocation.SOUTH,
-  endLocation: GridLocation.NORTH,
-  motionType: MotionType.ANTI,
-  rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
-  turns: 1,
-  startOrientation: Orientation.OUT,
-  endOrientation: Orientation.IN,
-};
 
 /**
  * Create Animation 3D State
  */
 export function createAnimation3DState() {
-  // Compose playback state
-  const playback = createPlaybackState();
-
-  // Motion configurations (manual mode)
-  let blueConfig = $state<MotionConfig3D>({ ...DEFAULT_BLUE_CONFIG });
-  let redConfig = $state<MotionConfig3D>({ ...DEFAULT_RED_CONFIG });
-
-  // Visibility
-  let showBlue = $state(true);
-  let showRed = $state(true);
+  // Visibility - start hidden until a sequence is loaded
+  let showBlue = $state(false);
+  let showRed = $state(false);
 
   // Sequence mode state
   let loadedSequence = $state<SequenceData | null>(null);
   let beatConfigs = $state<BeatMotionConfigs[]>([]);
   let currentBeatIndex = $state(0);
 
-  // Mode: "manual" (user controls) or "sequence" (loaded from gallery)
-  let mode = $derived<"manual" | "sequence">(loadedSequence ? "sequence" : "manual");
+  // Create playback first so we can reference it
+  const playback = createPlaybackState({
+    onCycleComplete: () => handleCycleComplete(),
+  });
+
+  /**
+   * Handle beat cycle completion - advances to next beat or loops
+   * Returns true to continue playing, false to pause
+   */
+  function handleCycleComplete(): boolean {
+    // No sequence loaded - nothing to do
+    if (!loadedSequence || beatConfigs.length === 0) {
+      return false;
+    }
+
+    // Check if there are more beats
+    if (currentBeatIndex < beatConfigs.length - 1) {
+      // Advance to next beat
+      currentBeatIndex++;
+
+      // Update visibility based on new beat
+      const beat = beatConfigs[currentBeatIndex];
+      if (beat) {
+        showBlue = beat.blue !== null;
+        showRed = beat.red !== null;
+      }
+
+      return true; // Continue playing
+    } else if (playback.loop) {
+      // Loop back to first beat
+      currentBeatIndex = 0;
+
+      // Update visibility based on first beat
+      const beat = beatConfigs[0];
+      if (beat) {
+        showBlue = beat.blue !== null;
+        showRed = beat.red !== null;
+      }
+
+      return true; // Continue playing
+    } else {
+      // Stop at end of sequence
+      return false;
+    }
+  }
+
+  // Whether a sequence is loaded
+  let hasSequence = $derived(loadedSequence !== null);
 
   // Current beat info for display
   let currentBeat = $derived<BeatMotionConfigs | null>(
@@ -80,18 +84,22 @@ export function createAnimation3DState() {
   );
   let totalBeats = $derived(beatConfigs.length);
 
-  // Active configs (either manual or from current beat)
-  let activeBlueConfig = $derived<MotionConfig3D>(
-    mode === "sequence" && currentBeat?.blue ? currentBeat.blue : blueConfig
+  // Active configs from current beat (null if no sequence)
+  let activeBlueConfig = $derived<MotionConfig3D | null>(
+    currentBeat?.blue ?? null
   );
 
-  let activeRedConfig = $derived<MotionConfig3D>(
-    mode === "sequence" && currentBeat?.red ? currentBeat.red : redConfig
+  let activeRedConfig = $derived<MotionConfig3D | null>(
+    currentBeat?.red ?? null
   );
 
-  // Computed prop states (derived from active config + playback progress)
-  let bluePropState = $derived(calculatePropState(activeBlueConfig, playback.progress));
-  let redPropState = $derived(calculatePropState(activeRedConfig, playback.progress));
+  // Computed prop states (only valid when config exists)
+  let bluePropState = $derived(
+    activeBlueConfig ? calculatePropState(activeBlueConfig, playback.progress) : null
+  );
+  let redPropState = $derived(
+    activeRedConfig ? calculatePropState(activeRedConfig, playback.progress) : null
+  );
 
   /**
    * Load a sequence for animation
@@ -111,16 +119,14 @@ export function createAnimation3DState() {
   }
 
   /**
-   * Clear loaded sequence, return to manual mode
+   * Clear loaded sequence - hides props and resets state
    */
   function clearSequence() {
     loadedSequence = null;
     beatConfigs = [];
     currentBeatIndex = 0;
-    blueConfig = { ...DEFAULT_BLUE_CONFIG };
-    redConfig = { ...DEFAULT_RED_CONFIG };
-    showBlue = true;
-    showRed = true;
+    showBlue = false;
+    showRed = false;
     playback.reset();
   }
 
@@ -173,8 +179,8 @@ export function createAnimation3DState() {
   }
 
   return {
-    // Mode
-    get mode() { return mode; },
+    // Sequence loaded state
+    get hasSequence() { return hasSequence; },
 
     // Playback (delegate to playback state)
     get isPlaying() { return playback.isPlaying; },
@@ -184,23 +190,15 @@ export function createAnimation3DState() {
     get loop() { return playback.loop; },
     set loop(value: boolean) { playback.loop = value; },
 
-    // Motion configs (for manual mode editing)
-    get blueConfig() { return blueConfig; },
-    set blueConfig(value: MotionConfig3D) { blueConfig = value; },
-    get redConfig() { return redConfig; },
-    set redConfig(value: MotionConfig3D) { redConfig = value; },
-
-    // Active configs (read-only, for display)
+    // Active configs (read-only, from current beat)
     get activeBlueConfig() { return activeBlueConfig; },
     get activeRedConfig() { return activeRedConfig; },
 
     // Visibility
     get showBlue() { return showBlue; },
-    set showBlue(value: boolean) { showBlue = value; },
     get showRed() { return showRed; },
-    set showRed(value: boolean) { showRed = value; },
 
-    // Computed states
+    // Computed states (null when no sequence)
     get bluePropState() { return bluePropState; },
     get redPropState() { return redPropState; },
 

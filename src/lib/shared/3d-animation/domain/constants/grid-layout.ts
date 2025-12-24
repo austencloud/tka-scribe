@@ -8,15 +8,19 @@
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 // Base radius for hand points (matches GRID_RADIUS_3D)
+// From 2D grid: hand point at radius 150, matching strict mode coordinates
 export const HAND_POINT_RADIUS = 150;
 
-// Outer points are ~2.1x the hand point radius (from 2D grid proportions)
-export const OUTER_POINT_RADIUS = 315;
+// Outer points at 2x hand radius (from 2D grid: center=0, hand=150, outer=300)
+// Staff spans from center to outer when grip is at hand point
+export const OUTER_POINT_RADIUS = 300;
 
-// Point sizes
-export const CENTER_POINT_SIZE = 10;
-export const HAND_POINT_SIZE = 8;
-export const OUTER_POINT_SIZE = 6;
+// Point sizes - exact match to 2D grid SVG (diamond_grid.svg)
+// The 2D grid uses viewBox 950×950 with center-to-outer = 300px
+// These sizes match the SVG directly since our 3D uses same scale
+export const CENTER_POINT_SIZE = 12;  // From SVG: r=12
+export const HAND_POINT_SIZE = 8;     // From SVG: r=8
+export const OUTER_POINT_SIZE = 25;   // From SVG: r=25
 
 /**
  * Grid mode - determines which locations are hand points vs layer2 points

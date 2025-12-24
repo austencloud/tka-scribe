@@ -9,6 +9,7 @@
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import {
     ensureContainerInitialized,
+    loadFeatureModule,
     resolve,
     TYPES,
   } from "$lib/shared/inversify/di";
@@ -550,6 +551,9 @@
       let hasDeepLink = false;
 
       try {
+        // Load the create feature module before resolving its services
+        await loadFeatureModule("create");
+
         const initService = resolve<ICreateModuleInitializationService>(
           TYPES.ICreateModuleInitializationService
         );

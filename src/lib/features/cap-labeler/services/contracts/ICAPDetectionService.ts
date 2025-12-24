@@ -33,6 +33,9 @@ export interface CAPDetectionResult {
 
   /** Is this a freeform pattern (circular but no recognized CAP)? */
   isFreeform: boolean;
+
+  /** Is this a modular pattern (multiple different but recognizable transformations)? */
+  isModular: boolean;
 }
 
 /**

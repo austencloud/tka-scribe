@@ -3,14 +3,13 @@
    * 3D Animation Test Page
    *
    * Sandboxed development environment for the 3D animation system.
-   * Supports both manual configuration and loading sequences from gallery.
+   * Load sequences from the library to view them in 3D.
    * Full localStorage persistence for seamless dev experience.
    */
 
   import { onMount, onDestroy } from "svelte";
   import Scene3D from "$lib/shared/3d-animation/components/Scene3D.svelte";
   import Staff3D from "$lib/shared/3d-animation/components/Staff3D.svelte";
-  import PropConfigCard from "$lib/shared/3d-animation/components/controls/PropConfigCard.svelte";
   import { Plane, PLANE_LABELS, PLANE_COLORS } from "$lib/shared/3d-animation/domain/enums/Plane";
   import type { GridMode } from "$lib/shared/3d-animation/domain/constants/grid-layout";
   import { createAnimation3DState } from "$lib/shared/3d-animation/state/animation-3d-state.svelte";
@@ -28,7 +27,6 @@
   let showLabels = $state(true);
   let gridMode = $state<GridMode>("diamond");
   let cameraPreset = $state<"front" | "top" | "side" | "perspective">("perspective");
-  let activeTab = $state<"blue" | "red">("blue");
   let panelOpen = $state(true);
   let browserOpen = $state(false);
 
@@ -62,7 +60,6 @@
     if (saved.showLabels !== undefined) showLabels = saved.showLabels;
     if (saved.gridMode) gridMode = saved.gridMode;
     if (saved.cameraPreset) cameraPreset = saved.cameraPreset;
-    if (saved.activeTab) activeTab = saved.activeTab;
     if (saved.panelOpen !== undefined) panelOpen = saved.panelOpen;
     if (saved.speedIndex !== undefined) speedIndex = saved.speedIndex;
 
@@ -72,14 +69,6 @@
 
     // Restore playback settings
     if (saved.loop !== undefined) animState.loop = saved.loop;
-
-    // Restore prop visibility
-    if (saved.showBlue !== undefined) animState.showBlue = saved.showBlue;
-    if (saved.showRed !== undefined) animState.showRed = saved.showRed;
-
-    // Restore manual configs
-    if (saved.blueConfig) animState.blueConfig = saved.blueConfig;
-    if (saved.redConfig) animState.redConfig = saved.redConfig;
 
     // Restore sequence (if one was loaded)
     if (saved.loadedSequence) {
@@ -104,7 +93,6 @@
       showLabels,
       gridMode,
       cameraPreset,
-      activeTab,
       panelOpen,
       speedIndex,
     });
@@ -119,22 +107,11 @@
     });
   });
 
-  // Persist playback/animation state changes
+  // Persist playback settings
   $effect(() => {
     if (!initialized) return;
     saveState({
       loop: animState.loop,
-      showBlue: animState.showBlue,
-      showRed: animState.showRed,
-    });
-  });
-
-  // Persist manual configs (only in manual mode)
-  $effect(() => {
-    if (!initialized || animState.mode !== "manual") return;
-    saveState({
-      blueConfig: animState.blueConfig,
-      redConfig: animState.redConfig,
     });
   });
 
@@ -202,17 +179,17 @@
       {customCameraTarget}
       onCameraChange={handleCameraChange}
     >
-      {#if animState.showBlue}
+      {#if animState.showBlue && animState.bluePropState}
         <Staff3D propState={animState.bluePropState} color="blue" />
       {/if}
-      {#if animState.showRed}
+      {#if animState.showRed && animState.redPropState}
         <Staff3D propState={animState.redPropState} color="red" />
       {/if}
     </Scene3D>
 
     <!-- Overlay Controls -->
     <div class="scene-controls">
-      <!-- Top row: Camera + Speed -->
+      <!-- Top row: Camera + Sequence Name + Speed -->
       <div class="top-controls">
         <div class="control-group">
           {#each cameraOptions as opt}
@@ -225,6 +202,16 @@
             </button>
           {/each}
         </div>
+
+        <!-- Sequence Info (when loaded) -->
+        {#if animState.hasSequence && animState.loadedSequence}
+          <div class="sequence-info">
+            <span class="sequence-name">{animState.loadedSequence.word || animState.loadedSequence.name}</span>
+            <button class="clear-btn" onclick={() => animState.clearSequence()}>
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        {/if}
 
         <div class="control-group">
           {#each speeds as spd, i}
@@ -239,20 +226,10 @@
         </div>
       </div>
 
-      <!-- Sequence Info (when loaded) -->
-      {#if animState.mode === "sequence" && animState.loadedSequence}
-        <div class="sequence-info">
-          <span class="sequence-name">{animState.loadedSequence.word || animState.loadedSequence.name}</span>
-          <button class="clear-btn" onclick={() => animState.clearSequence()}>
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      {/if}
-
       <!-- Bottom: Playback -->
       <div class="playback-controls">
-        <!-- Beat navigation (sequence mode) -->
-        {#if animState.mode === "sequence" && animState.totalBeats > 0}
+        <!-- Beat navigation (when sequence loaded) -->
+        {#if animState.hasSequence && animState.totalBeats > 0}
           <button
             class="play-btn"
             onclick={() => animState.prevBeat()}
@@ -324,75 +301,22 @@
       </button>
     </div>
 
-    <!-- Prop Tabs (manual mode) -->
-    {#if animState.mode === "manual"}
-      <div class="prop-tabs">
-        <button
-          class="prop-tab blue"
-          class:active={activeTab === "blue"}
-          onclick={() => (activeTab = "blue")}
-        >
-          <span class="dot"></span>
-          Blue
-          <span
-            class="vis-btn"
-            role="button"
-            tabindex="0"
-            onclick={(e) => { e.stopPropagation(); animState.showBlue = !animState.showBlue; }}
-            onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); animState.showBlue = !animState.showBlue; } }}
-          >
-            <i class="fas" class:fa-eye={animState.showBlue} class:fa-eye-slash={!animState.showBlue}></i>
-          </span>
-        </button>
-
-        <button
-          class="prop-tab red"
-          class:active={activeTab === "red"}
-          onclick={() => (activeTab = "red")}
-        >
-          <span class="dot"></span>
-          Red
-          <span
-            class="vis-btn"
-            role="button"
-            tabindex="0"
-            onclick={(e) => { e.stopPropagation(); animState.showRed = !animState.showRed; }}
-            onkeydown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); animState.showRed = !animState.showRed; } }}
-          >
-            <i class="fas" class:fa-eye={animState.showRed} class:fa-eye-slash={!animState.showRed}></i>
-          </span>
-        </button>
+    <!-- Sequence Info -->
+    {#if animState.hasSequence}
+      <div class="sequence-header">
+        <span class="mode-label">Beat {animState.currentBeatIndex + 1} of {animState.totalBeats}</span>
       </div>
     {:else}
-      <!-- Sequence mode: show beat info -->
-      <div class="sequence-header">
-        <span class="mode-label">Sequence Mode</span>
-        <span class="beat-label">Beat {animState.currentBeatIndex + 1}</span>
+      <div class="empty-state">
+        <i class="fas fa-film"></i>
+        <p>Load a sequence to begin</p>
       </div>
     {/if}
 
     <!-- Active Config -->
     <div class="config-scroll">
-      {#if animState.mode === "manual"}
-        {#if activeTab === "blue"}
-          <PropConfigCard
-            color="blue"
-            config={animState.blueConfig}
-            visible={animState.showBlue}
-            onConfigChange={(c) => (animState.blueConfig = c)}
-            onVisibilityChange={(v) => (animState.showBlue = v)}
-          />
-        {:else}
-          <PropConfigCard
-            color="red"
-            config={animState.redConfig}
-            visible={animState.showRed}
-            onConfigChange={(c) => (animState.redConfig = c)}
-            onVisibilityChange={(v) => (animState.showRed = v)}
-          />
-        {/if}
-      {:else}
-        <!-- Sequence mode: show read-only config display -->
+      {#if animState.hasSequence}
+        <!-- Show current beat motion info -->
         {#if animState.showBlue && animState.activeBlueConfig}
           <div class="config-readonly">
             <div class="config-header blue">
@@ -547,26 +471,29 @@
 
   /* Sequence Info */
   .sequence-info {
-    align-self: center;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    padding: 0.5rem 1rem;
+    padding: 4px 4px 4px 12px;
     backdrop-filter: blur(8px);
   }
 
   .sequence-name {
-    font-size: var(--font-size-lg, 1.125rem);
+    font-size: var(--font-size-sm, 0.875rem);
     font-weight: 600;
     text-transform: capitalize;
+    white-space: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .clear-btn {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -576,6 +503,7 @@
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     cursor: pointer;
     transition: all 0.15s;
+    flex-shrink: 0;
   }
 
   .clear-btn:hover {
@@ -748,6 +676,28 @@
     font-size: var(--font-size-sm, 0.875rem);
     font-weight: 600;
     color: var(--theme-accent, #8b5cf6);
+  }
+
+  /* Empty State */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    text-align: center;
+  }
+
+  .empty-state i {
+    font-size: 2rem;
+    opacity: 0.5;
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: var(--font-size-sm, 0.875rem);
   }
 
   /* Prop Tabs */

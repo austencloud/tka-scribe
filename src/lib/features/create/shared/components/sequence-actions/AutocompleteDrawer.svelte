@@ -28,18 +28,24 @@
     onApply,
   }: Props = $props();
 
-  // Group CAP options by category
-  const strictOptions = $derived(
+  // Group available CAP options by category
+  const availableStrictOptions = $derived(
     analysis?.availableCAPOptions.filter((opt) =>
       opt.capType.startsWith("strict_")
     ) ?? []
   );
 
-  const combinedOptions = $derived(
+  const availableCombinedOptions = $derived(
     analysis?.availableCAPOptions.filter(
       (opt) => !opt.capType.startsWith("strict_")
     ) ?? []
   );
+
+  // Get unavailable options (grayed out)
+  const unavailableOptions = $derived(analysis?.unavailableCAPOptions ?? []);
+
+  // Check if we have any unavailable options to show
+  const hasUnavailableOptions = $derived(unavailableOptions.length > 0);
 
   function handleSelect(capType: CAPType) {
     if (isApplying) return;
@@ -107,12 +113,12 @@
           </div>
         </div>
 
-        <!-- Strict CAP Options -->
-        {#if strictOptions.length > 0}
+        <!-- Available Basic Patterns -->
+        {#if availableStrictOptions.length > 0}
           <section class="options-section">
             <h3>Basic Patterns</h3>
             <div class="options-grid">
-              {#each strictOptions as option}
+              {#each availableStrictOptions as option}
                 <button
                   class="cap-option"
                   class:applying={isApplying}
@@ -132,12 +138,12 @@
           </section>
         {/if}
 
-        <!-- Combined CAP Options -->
-        {#if combinedOptions.length > 0}
+        <!-- Available Combined Patterns -->
+        {#if availableCombinedOptions.length > 0}
           <section class="options-section">
             <h3>Combined Patterns</h3>
             <div class="options-grid">
-              {#each combinedOptions as option}
+              {#each availableCombinedOptions as option}
                 <button
                   class="cap-option combined"
                   class:applying={isApplying}
@@ -152,6 +158,32 @@
                     <span class="option-desc">{option.description}</span>
                   </div>
                 </button>
+              {/each}
+            </div>
+          </section>
+        {/if}
+
+        <!-- Unavailable Patterns (grayed out) -->
+        {#if hasUnavailableOptions}
+          <section class="options-section unavailable-section">
+            <h3>
+              <i class="fas fa-lock"></i>
+              Other Patterns
+              <span class="unavailable-hint"
+                >(requires different position)</span
+              >
+            </h3>
+            <div class="options-grid">
+              {#each unavailableOptions as option}
+                <div class="cap-option unavailable">
+                  <div class="option-icon">
+                    <i class={getIconClass(option.icon)}></i>
+                  </div>
+                  <div class="option-info">
+                    <span class="option-name">{option.name}</span>
+                    <span class="option-desc">{option.description}</span>
+                  </div>
+                </div>
               {/each}
             </div>
           </section>
@@ -381,5 +413,52 @@
 
   .applying-overlay i {
     font-size: 1.5rem;
+  }
+
+  /* Unavailable section styles */
+  .unavailable-section {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .unavailable-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .unavailable-section h3 i {
+    font-size: 0.7rem;
+    opacity: 0.7;
+  }
+
+  .unavailable-hint {
+    font-weight: 400;
+    font-size: 0.65rem;
+    text-transform: none;
+    letter-spacing: normal;
+    opacity: 0.7;
+  }
+
+  .cap-option.unavailable {
+    cursor: not-allowed;
+    opacity: 0.4;
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .cap-option.unavailable .option-icon {
+    background: rgba(100, 100, 100, 0.2);
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .cap-option.unavailable .option-name {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .cap-option.unavailable .option-desc {
+    color: rgba(255, 255, 255, 0.25);
   }
 </style>

@@ -5,10 +5,15 @@
  * Pure playback logic with no knowledge of what's being animated.
  */
 
+export interface PlaybackOptions {
+  /** Called when progress completes a cycle (reaches 1) */
+  onCycleComplete?: () => boolean; // Return true to continue playing, false to pause
+}
+
 /**
  * Create playback state for animation timing
  */
-export function createPlaybackState() {
+export function createPlaybackState(options: PlaybackOptions = {}) {
   let isPlaying = $state(false);
   let progress = $state(0);
   let speed = $state(1); // Units per second
@@ -35,7 +40,17 @@ export function createPlaybackState() {
     let newProgress = progress + deltaProgress;
 
     if (newProgress >= 1) {
-      if (loop) {
+      // Check if there's a cycle complete handler
+      if (options.onCycleComplete) {
+        progress = 0; // Reset progress first
+        const shouldContinue = options.onCycleComplete();
+        if (!shouldContinue) {
+          isPlaying = false;
+          animationFrameId = requestAnimationFrame(animate);
+          return;
+        }
+        newProgress = newProgress % 1;
+      } else if (loop) {
         newProgress = newProgress % 1;
       } else {
         newProgress = 1;

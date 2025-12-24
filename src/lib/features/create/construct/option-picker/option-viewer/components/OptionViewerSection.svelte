@@ -23,7 +23,7 @@ Renders a section with:
 
   // Props
   const {
-    letterType,
+    letterType = "mixed",
     pictographs = [],
     onPictographSelected = () => {},
     layoutConfig,
@@ -34,7 +34,7 @@ Renders a section with:
     showHeader = true,
     fitToViewport = false,
   } = $props<{
-    letterType: string;
+    letterType?: string;
     pictographs?: PictographData[];
     onPictographSelected?: (pictograph: PictographData) => void;
     layoutConfig?: {
@@ -72,12 +72,14 @@ Renders a section with:
       Type4: { description: "Dash", typeName: "Type 4" },
       Type5: { description: "Dual-Dash", typeName: "Type 5" },
       Type6: { description: "Static", typeName: "Type 6" },
+      mixed: { description: "All Types", typeName: "Options" },
+      "Types 4-6": { description: "Dash Types", typeName: "Types 4-6" },
     };
     const result = typeDescriptions[
       letterType as keyof typeof typeDescriptions
     ] || {
-      description: "Unknown",
-      typeName: "Type ?",
+      description: "All Types",
+      typeName: "Options",
     };
     return result;
   });

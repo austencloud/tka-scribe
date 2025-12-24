@@ -54,6 +54,9 @@ Delegates all rendering to child components.
   let preparedOptions = $state<PreparedPictographData[]>([]);
   let isReady = $state(false);
 
+  // Internal continuous filter state (initialized from prop)
+  let internalContinuousOnly = $state(isContinuousOnly);
+
   // Services
   let preparer: IPictographPreparer | null = null;
   let hapticService: IHapticFeedbackService | null = null;
@@ -62,6 +65,15 @@ Delegates all rendering to child components.
 
   // Track if we're waiting for new options after a selection
   let pendingFadeIn = $state(false);
+
+  // Handle continuous toggle - updates internal state and notifies parent
+  function handleToggleContinuous(value: boolean) {
+    internalContinuousOnly = value;
+    if (pickerState) {
+      pickerState.setContinuousOnly(value);
+    }
+    onToggleContinuous?.(value);
+  }
 
   // Load options when sequence changes (don't block on fade)
   $effect(() => {
@@ -74,9 +86,12 @@ Delegates all rendering to child components.
     }
   });
 
-  // Prepare options when filtered options change
+  // Prepare options when filtered options change OR continuous filter changes
   $effect(() => {
+    // Explicitly track continuous state to ensure effect re-runs on toggle
+    const _continuousFilter = internalContinuousOnly;
     const filtered = pickerState?.filteredOptions || [];
+
     if (filtered.length === 0 || !preparer) {
       preparedOptions = [];
       return;
@@ -92,10 +107,13 @@ Delegates all rendering to child components.
     });
   });
 
-  // Sync continuous filter state
+  // Sync internal state when prop changes from parent
   $effect(() => {
-    if (pickerState && pickerState.isContinuousOnly !== isContinuousOnly) {
-      pickerState.setContinuousOnly(isContinuousOnly);
+    if (isContinuousOnly !== internalContinuousOnly) {
+      internalContinuousOnly = isContinuousOnly;
+      if (pickerState) {
+        pickerState.setContinuousOnly(isContinuousOnly);
+      }
     }
   });
 
@@ -156,8 +174,8 @@ Delegates all rendering to child components.
     {sizerService}
     isFading={fadeState.isFading}
     onSelect={handleSelect}
-    {isContinuousOnly}
-    {onToggleContinuous}
+    isContinuousOnly={internalContinuousOnly}
+    onToggleContinuous={handleToggleContinuous}
     {isSideBySideLayout}
   />
 {/if}

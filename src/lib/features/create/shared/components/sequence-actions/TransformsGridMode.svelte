@@ -129,12 +129,11 @@
           <span class="btn-desc">CW/CCW patterns</span>
         </div>
       </button>
-      {#if onAutocomplete}
+      {#if onAutocomplete && canAutocomplete}
         <button
           class="grid-btn autocomplete"
-          class:unavailable={!canAutocomplete}
           onclick={onAutocomplete}
-          disabled={!hasSequence || isAutocompleting || !canAutocomplete}
+          disabled={!hasSequence || isAutocompleting}
         >
           <div class="btn-icon">
             {#if isAutocompleting}

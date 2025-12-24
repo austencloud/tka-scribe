@@ -36,12 +36,13 @@ with individual headers for each type.
 <div class="option-456-row">
   {#each sections as section (section.title)}
     {#if section.pictographs.length > 0}
+      {@const sectionColumns = Math.min(section.pictographs.length, 4)}
       <div class="type-column">
         <OptionSectionHeader letterType={section.title} />
         <OptionGrid
           options={section.pictographs}
           {cardSize}
-          {columns}
+          columns={sectionColumns}
           {gap}
           {isFading}
           {onSelect}

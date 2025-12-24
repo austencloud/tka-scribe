@@ -2,8 +2,12 @@
   /**
    * Staff3D Component
    *
-   * Renders a 3D staff/tube that properly rotates in 3D space.
-   * Uses cylinder geometry with spherical end caps.
+   * Renders a 3D staff that matches the 2D SVG design:
+   * - Main cylindrical body
+   * - T-bar at the thumb end (the tracked end)
+   * - Rounded cap at the other end
+   * - Center grip ring
+   *
    * No billboarding - actual 3D rotation based on plane and staff angle.
    */
 
@@ -29,9 +33,15 @@
     propState,
     color,
     visible = true,
-    length = GRID_RADIUS_3D * 2, // Full diameter: one end at center, other end extends outward
-    thickness = 8,
+    length = GRID_RADIUS_3D * 2, // Staff spans from center to outer (2× hand radius = 300)
+    thickness = 15, // Dialed down from exact SVG proportions for cleaner 3D look
   }: Props = $props();
+
+  // T-bar dimensions - proportional to staff
+  // T-bar length (perpendicular extent) from SVG ratio: 57.6/252.8 = 22.8%
+  const tBarLength = $derived(length * 0.228); // ~68 for length 300
+  // T-bar thickness should match shaft thickness (in SVG they're nearly equal: 18.2 vs 17)
+  const tBarThickness = $derived(thickness); // Slightly thinner than main shaft
 
   // Color values
   const colors = {
@@ -71,7 +81,8 @@
 
 {#if visible}
   <T.Group {position} rotation={rotation}>
-    <!-- Main staff body - cylinder along Y axis (gets rotated horizontally) -->
+    <!-- Staff CENTER (grip) is at the hand/grid point -->
+    <!-- Main staff body - cylinder along Y axis -->
     <T.Mesh>
       <T.CylinderGeometry args={[thickness, thickness, length, 16, 1]} />
       <T.MeshStandardMaterial
@@ -81,17 +92,38 @@
       />
     </T.Mesh>
 
-    <!-- Top end cap (becomes one end when rotated) -->
-    <T.Mesh position={[0, halfLength, 0]}>
-      <T.SphereGeometry args={[thickness, 16, 16]} />
-      <T.MeshStandardMaterial
-        color={palette.dark}
-        roughness={0.3}
-        metalness={0.2}
-      />
-    </T.Mesh>
+    <!-- T-bar at thumb end - PERPENDICULAR crossbar like in 2D SVG -->
+    <T.Group position={[0, halfLength, 0]}>
+      <!-- Perpendicular crossbar - rotated 90° around Z to cross the shaft -->
+      <T.Mesh rotation={[0, 0, Math.PI / 2]}>
+        <T.CylinderGeometry args={[tBarThickness, tBarThickness, tBarLength, 12, 1]} />
+        <T.MeshStandardMaterial
+          color={palette.main}
+          roughness={0.3}
+          metalness={0.2}
+        />
+      </T.Mesh>
+      <!-- Left cap of T-bar -->
+      <T.Mesh position={[-tBarLength / 2, 0, 0]}>
+        <T.SphereGeometry args={[tBarThickness, 12, 12]} />
+        <T.MeshStandardMaterial
+          color={palette.dark}
+          roughness={0.3}
+          metalness={0.2}
+        />
+      </T.Mesh>
+      <!-- Right cap of T-bar -->
+      <T.Mesh position={[tBarLength / 2, 0, 0]}>
+        <T.SphereGeometry args={[tBarThickness, 12, 12]} />
+        <T.MeshStandardMaterial
+          color={palette.dark}
+          roughness={0.3}
+          metalness={0.2}
+        />
+      </T.Mesh>
+    </T.Group>
 
-    <!-- Bottom end cap (becomes other end when rotated) -->
+    <!-- Rounded cap at other end -->
     <T.Mesh position={[0, -halfLength, 0]}>
       <T.SphereGeometry args={[thickness, 16, 16]} />
       <T.MeshStandardMaterial
@@ -101,9 +133,9 @@
       />
     </T.Mesh>
 
-    <!-- Center grip ring -->
+    <!-- Center grip ring (white, at the hand point) -->
     <T.Mesh>
-      <T.TorusGeometry args={[thickness + 2, 2, 8, 16]} />
+      <T.TorusGeometry args={[thickness * 1.15, thickness * 0.15, 12, 24]} />
       <T.MeshStandardMaterial
         color="white"
         roughness={0.4}
@@ -114,7 +146,7 @@
 
   <!-- Trail indicator (small sphere at prop position for path visualization) -->
   <T.Mesh position={position}>
-    <T.SphereGeometry args={[3, 8, 8]} />
-    <T.MeshBasicMaterial color={palette.main} opacity={0.4} transparent />
+    <T.SphereGeometry args={[2, 8, 8]} />
+    <T.MeshBasicMaterial color={palette.main} opacity={0.3} transparent />
   </T.Mesh>
 {/if}

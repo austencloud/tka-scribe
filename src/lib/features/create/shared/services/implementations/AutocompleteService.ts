@@ -30,6 +30,13 @@ import {
   QUARTERED_CAPS,
 } from "$lib/features/create/generate/circular/domain/constants/circular-position-maps";
 import {
+  MIRRORED_CAP_VALIDATION_SET,
+  SWAPPED_CAP_VALIDATION_SET,
+  INVERTED_CAP_VALIDATION_SET,
+  MIRRORED_SWAPPED_VALIDATION_SET,
+  MIRRORED_INVERTED_VALIDATION_SET,
+} from "$lib/features/create/generate/circular/domain/constants/strict-cap-position-maps";
+import {
   CAPType,
   CAP_TYPE_LABELS,
   SliceSize,
@@ -112,6 +119,7 @@ export class AutocompleteService implements IAutocompleteService {
         startPosition: null,
         currentEndPosition: null,
         availableCAPOptions: [],
+        unavailableCAPOptions: [],
         description: "No start position defined",
       };
     }
@@ -125,84 +133,169 @@ export class AutocompleteService implements IAutocompleteService {
         startPosition,
         currentEndPosition: null,
         availableCAPOptions: [],
+        unavailableCAPOptions: [],
         description: "No beats in sequence",
       };
     }
 
-    // Check if already complete (end equals start)
-    // Even when complete, CAPs can still be applied to extend the pattern
-    if (currentEndPosition === startPosition) {
-      const capOptions = this.getAvailableCAPOptions(SliceSize.HALVED);
-      return {
-        canComplete: true,
-        completionType: "already_complete",
-        startPosition,
-        currentEndPosition,
-        availableCAPOptions: capOptions,
-        description: `Sequence is complete - ${capOptions.length} CAP patterns available to extend`,
-      };
-    }
-
-    // Check for half rotation (180°)
+    // Check position relationships
     const positionPair = `${startPosition},${currentEndPosition}`;
     const isHalvedValid = HALVED_CAPS.has(positionPair);
     const isQuarteredValid = QUARTERED_CAPS.has(positionPair);
+    const isAlreadyComplete = currentEndPosition === startPosition;
 
-    if (isHalvedValid) {
-      const capOptions = this.getAvailableCAPOptions(SliceSize.HALVED);
-      return {
-        canComplete: true,
-        completionType: "half_rotation",
-        startPosition,
-        currentEndPosition,
-        availableCAPOptions: capOptions,
-        description: `Can complete with ${capOptions.length} CAP patterns (180° rotation)`,
-      };
+    // Determine completion type
+    let completionType: CompletionType = "not_completable";
+    let sliceSize = SliceSize.HALVED;
+
+    if (isAlreadyComplete) {
+      completionType = "already_complete";
+    } else if (isHalvedValid) {
+      completionType = "half_rotation";
+    } else if (isQuarteredValid) {
+      completionType = "quarter_rotation";
+      sliceSize = SliceSize.QUARTERED;
     }
 
-    if (isQuarteredValid) {
-      const capOptions = this.getAvailableCAPOptions(SliceSize.QUARTERED);
-      return {
-        canComplete: true,
-        completionType: "quarter_rotation",
-        startPosition,
-        currentEndPosition,
-        availableCAPOptions: capOptions,
-        description: `Can complete with ${capOptions.length} CAP patterns (90° rotation)`,
-      };
-    }
-
-    // Not a direct rotation - check if any completion path exists
-    const canFindPath = this.canFindCompletionPath(
+    // Get CAP options filtered by validity for this position pair
+    const { available, unavailable } = this.getCAPOptionsForPositionPair(
+      startPosition,
       currentEndPosition,
-      startPosition
+      sliceSize
     );
 
-    if (canFindPath) {
-      // Default to halved options for indirect paths
-      const capOptions = this.getAvailableCAPOptions(SliceSize.HALVED);
+    // Can complete if any CAP options are available
+    const canComplete = available.length > 0;
+
+    if (!canComplete) {
       return {
-        canComplete: true,
-        completionType: "half_rotation",
+        canComplete: false,
+        completionType: "not_completable",
         startPosition,
         currentEndPosition,
-        availableCAPOptions: capOptions,
-        description: "Can complete via intermediate positions",
+        availableCAPOptions: [],
+        unavailableCAPOptions: unavailable,
+        description: "No completion patterns available for this position pair",
       };
+    }
+
+    let description = "";
+    if (isAlreadyComplete) {
+      description = `Sequence is complete - ${available.length} CAP patterns available to extend`;
+    } else if (isHalvedValid) {
+      description = `${available.length} patterns available (180° rotation)`;
+    } else if (isQuarteredValid) {
+      description = `${available.length} patterns available (90° rotation)`;
     }
 
     return {
-      canComplete: false,
-      completionType: "not_completable",
+      canComplete: true,
+      completionType,
       startPosition,
       currentEndPosition,
-      availableCAPOptions: [],
-      description: "No completion path found from current position",
+      availableCAPOptions: available,
+      unavailableCAPOptions: unavailable,
+      description,
     };
   }
 
   /**
-   * Get available CAP options for a given slice size
+   * Get CAP options filtered by validity for a position pair
+   */
+  private getCAPOptionsForPositionPair(
+    startPosition: GridPosition,
+    endPosition: GridPosition,
+    sliceSize: SliceSize
+  ): { available: CAPOption[]; unavailable: CAPOption[] } {
+    const available: CAPOption[] = [];
+    const unavailable: CAPOption[] = [];
+    const positionPair = `${startPosition},${endPosition}`;
+
+    // All supported CAP types
+    const supportedTypes = [
+      CAPType.STRICT_ROTATED,
+      CAPType.STRICT_MIRRORED,
+      CAPType.STRICT_SWAPPED,
+      CAPType.STRICT_INVERTED,
+      CAPType.SWAPPED_INVERTED,
+      CAPType.ROTATED_INVERTED,
+      CAPType.MIRRORED_SWAPPED,
+      CAPType.MIRRORED_INVERTED,
+      CAPType.ROTATED_SWAPPED,
+      CAPType.MIRRORED_ROTATED,
+      CAPType.MIRRORED_INVERTED_ROTATED,
+      CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED,
+    ];
+
+    for (const capType of supportedTypes) {
+      if (!this.capExecutorSelector.isSupported(capType)) {
+        continue;
+      }
+
+      const config = CAP_OPTION_CONFIG[capType];
+      const option: CAPOption = {
+        capType,
+        name: CAP_TYPE_LABELS[capType],
+        description: config.description,
+        icon: config.icon,
+      };
+
+      // Check if this CAP type is valid for the position pair
+      if (this.isCAPValidForPositionPair(capType, positionPair, sliceSize)) {
+        available.push(option);
+      } else {
+        unavailable.push(option);
+      }
+    }
+
+    return { available, unavailable };
+  }
+
+  /**
+   * Check if a CAP type is valid for a given position pair
+   */
+  private isCAPValidForPositionPair(
+    capType: CAPType,
+    positionPair: string,
+    sliceSize: SliceSize
+  ): boolean {
+    // Rotated CAPs use rotation-based validation
+    const rotationSet =
+      sliceSize === SliceSize.QUARTERED ? QUARTERED_CAPS : HALVED_CAPS;
+
+    switch (capType) {
+      // Rotation-based CAPs
+      case CAPType.STRICT_ROTATED:
+      case CAPType.ROTATED_INVERTED:
+      case CAPType.ROTATED_SWAPPED:
+        return rotationSet.has(positionPair);
+
+      // Mirror-based CAPs
+      case CAPType.STRICT_MIRRORED:
+      case CAPType.MIRRORED_SWAPPED:
+      case CAPType.MIRRORED_INVERTED:
+      case CAPType.MIRRORED_ROTATED:
+      case CAPType.MIRRORED_INVERTED_ROTATED:
+      case CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED:
+        return MIRRORED_CAP_VALIDATION_SET.has(positionPair);
+
+      // Swap-based CAPs
+      case CAPType.STRICT_SWAPPED:
+      case CAPType.SWAPPED_INVERTED:
+        return SWAPPED_CAP_VALIDATION_SET.has(positionPair);
+
+      // Invert-only CAP (needs same start/end position)
+      case CAPType.STRICT_INVERTED:
+        return INVERTED_CAP_VALIDATION_SET.has(positionPair);
+
+      default:
+        // Unknown CAP type - assume not valid
+        return false;
+    }
+  }
+
+  /**
+   * Get available CAP options for a given slice size (legacy - kept for compatibility)
    */
   private getAvailableCAPOptions(sliceSize: SliceSize): CAPOption[] {
     const options: CAPOption[] = [];
@@ -354,23 +447,53 @@ export class AutocompleteService implements IAutocompleteService {
   private getStartPosition(sequence: SequenceData): GridPosition | null {
     // Check for explicit start position data object
     if (sequence.startPosition) {
-      const startPosData = sequence.startPosition;
+      const startPosData = sequence.startPosition as unknown as Record<
+        string,
+        unknown
+      >;
+
+      // Internal format: startPosition field
       if ("startPosition" in startPosData && startPosData.startPosition) {
         return startPosData.startPosition as GridPosition;
+      }
+      // External/JSON format: start field
+      if ("start" in startPosData && startPosData.start) {
+        return startPosData.start as GridPosition;
+      }
+      // gridPosition field (StartPositionData format)
+      if ("gridPosition" in startPosData && startPosData.gridPosition) {
+        return startPosData.gridPosition as GridPosition;
       }
     }
 
     // Check for startingPositionBeat (legacy field)
-    const startBeat = sequence.startingPositionBeat;
-    if (startBeat && "startPosition" in startBeat && startBeat.startPosition) {
-      return startBeat.startPosition as GridPosition;
+    const startBeat = sequence.startingPositionBeat as
+      | Record<string, unknown>
+      | undefined;
+    if (startBeat) {
+      if ("startPosition" in startBeat && startBeat.startPosition) {
+        return startBeat.startPosition as GridPosition;
+      }
+      if ("start" in startBeat && startBeat.start) {
+        return startBeat.start as GridPosition;
+      }
     }
 
     // Check first beat (beat 0) if it's the start position
     const beats = sequence.beats || [];
-    const firstBeat = beats.find((b) => b.beatNumber === 0);
-    if (firstBeat?.startPosition) {
-      return firstBeat.startPosition as GridPosition;
+    const firstBeat = beats.find(
+      (b) =>
+        b.beatNumber === 0 ||
+        (b as unknown as Record<string, unknown>).beat === 0
+    );
+    if (firstBeat) {
+      const beatData = firstBeat as unknown as Record<string, unknown>;
+      if (beatData.startPosition) {
+        return beatData.startPosition as GridPosition;
+      }
+      if (beatData.start) {
+        return beatData.start as GridPosition;
+      }
     }
 
     return null;
@@ -380,13 +503,33 @@ export class AutocompleteService implements IAutocompleteService {
     const beats = sequence.beats || [];
     if (beats.length === 0) return null;
 
-    // Find the last actual beat (not the start position beat 0)
-    const sortedBeats = [...beats].sort((a, b) => b.beatNumber - a.beatNumber);
-    const lastBeat =
-      sortedBeats.find((b) => b.beatNumber > 0) || sortedBeats[0];
+    // Helper to get beat number from either format
+    const getBeatNumber = (beat: Record<string, unknown>): number => {
+      if (typeof beat.beatNumber === "number") return beat.beatNumber;
+      if (typeof beat.beat === "number") return beat.beat;
+      return 0;
+    };
 
-    if (lastBeat?.endPosition) {
-      return lastBeat.endPosition as GridPosition;
+    // Helper to get end position from either format
+    const getEndPosition = (beat: Record<string, unknown>): string | null => {
+      if (beat.endPosition) return beat.endPosition as string;
+      if (beat.end) return beat.end as string;
+      return null;
+    };
+
+    // Find the last actual beat (not the start position beat 0)
+    const beatsAsRecords = beats as unknown as Record<string, unknown>[];
+    const sortedBeats = [...beatsAsRecords].sort(
+      (a, b) => getBeatNumber(b) - getBeatNumber(a)
+    );
+    const lastBeat =
+      sortedBeats.find((b) => getBeatNumber(b) > 0) || sortedBeats[0];
+
+    if (lastBeat) {
+      const endPos = getEndPosition(lastBeat);
+      if (endPos) {
+        return endPos as GridPosition;
+      }
     }
 
     return null;

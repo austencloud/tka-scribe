@@ -34,24 +34,6 @@ For full-featured pictographs (animation, editing, etc), use Pictograph.svelte
     redReversal?: boolean;
   }>();
 
-  // Debug: Log when component mounts/updates
-  onMount(() => {
-    console.log(
-      `🎨 [OptionPictograph] MOUNTED ${pictographData.letter || "no-letter"} (id: ${pictographData.id})`
-    );
-    return () => {
-      console.log(
-        `💀 [OptionPictograph] UNMOUNTED ${pictographData.letter || "no-letter"} (id: ${pictographData.id})`
-      );
-    };
-  });
-
-  $effect(() => {
-    console.log(
-      `♻️ [OptionPictograph] UPDATED ${pictographData.letter || "no-letter"} (id: ${pictographData.id})`
-    );
-  });
-
   // Derive grid mode from motions
   const gridMode = $derived(
     (() => {
