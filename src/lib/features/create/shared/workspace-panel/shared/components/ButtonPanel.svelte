@@ -6,7 +6,7 @@
 
   Layout:
   - LEFT ZONE: Sequence Actions (tools menu)
-  - CENTER ZONE: Play (Animation), Image Export, Record Video (3 media type actions)
+  - CENTER ZONE: Play (Animation), Share Hub (2 main actions)
   - RIGHT ZONE: Clear Sequence
 
   Note: Undo button moved to workspace top-left (near WordLabel) for better UX.
@@ -25,8 +25,6 @@
   import ClearSequencePanelButton from "./buttons/ClearSequenceButton.svelte";
   import PlayButton from "./buttons/PlayButton.svelte";
   import SequenceActionsButton from "./buttons/SequenceActionsButton.svelte";
-  import ImageExportButton from "./buttons/ImageExportButton.svelte";
-  import RecordVideoButton from "./buttons/RecordVideoButton.svelte";
   import ShareHubButton from "./buttons/ShareHubButton.svelte";
 
   // Get context - ButtonPanel is ONLY used inside CreateModule, so context is always available
@@ -36,16 +34,12 @@
   const {
     onClearSequence,
     onSequenceActionsClick,
-    onImageExport,
-    onRecordVideo,
     onPlayAnimation,
     onShareHub,
     visible = true,
   }: {
     onClearSequence?: () => void;
     onSequenceActionsClick?: () => void;
-    onImageExport?: () => void;
-    onRecordVideo?: () => void;
     onPlayAnimation?: () => void;
     onShareHub?: () => void;
     visible?: boolean;
@@ -53,12 +47,6 @@
 
   // Derive computed values from context
   const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
-  const showImageExportButton = $derived(
-    CreateModuleState.canShowActionButtons()
-  );
-  const showRecordVideoButton = $derived(
-    CreateModuleState.canShowActionButtons()
-  );
   const showShareHubButton = $derived(
     CreateModuleState.canShowActionButtons()
   );
@@ -67,8 +55,6 @@
   );
   const canClearSequence = $derived(CreateModuleState.canClearSequence());
   const isAnimating = $derived(panelState.isAnimationPanelOpen);
-  const isImageExportOpen = $derived(panelState.isSharePanelOpen);
-  const isRecordVideoOpen = $derived(panelState.isVideoRecordPanelOpen);
   const isShareHubOpen = $derived(panelState.isShareHubPanelOpen);
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
@@ -76,8 +62,6 @@
   const centerZoneButtonCount = $derived(() => {
     let count = 0;
     if (showPlayButton) count++;
-    if (showImageExportButton) count++;
-    if (showRecordVideoButton) count++;
     if (showShareHubButton) count++;
     return count;
   });
@@ -121,7 +105,7 @@
       {/if}
     </div>
 
-    <!-- CENTER ZONE: Main action buttons (Play, Share, Record Video) -->
+    <!-- CENTER ZONE: Main action buttons (Play, Share Hub) -->
     <!-- Wrapper maintains layout space during transitions -->
     <div class="center-zone-wrapper">
       {#key centerZoneButtonCount()}
@@ -134,26 +118,6 @@
           {#if showPlayButton && onPlayAnimation}
             <div>
               <PlayButton onclick={onPlayAnimation} {isAnimating} />
-            </div>
-          {/if}
-
-          <!-- Image Export Button -->
-          {#if showImageExportButton && onImageExport}
-            <div>
-              <ImageExportButton
-                onclick={onImageExport}
-                isActive={isImageExportOpen}
-              />
-            </div>
-          {/if}
-
-          <!-- Record Video Button -->
-          {#if showRecordVideoButton && onRecordVideo}
-            <div>
-              <RecordVideoButton
-                onclick={onRecordVideo}
-                isActive={isRecordVideoOpen}
-              />
             </div>
           {/if}
 

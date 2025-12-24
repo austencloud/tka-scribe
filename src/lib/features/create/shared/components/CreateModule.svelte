@@ -764,16 +764,6 @@
     handlers.handlePlayAnimation(panelState);
   }
 
-  function handleOpenSharePanel() {
-    if (!handlers) return;
-    handlers.handleOpenSharePanel(panelState);
-  }
-
-  function handleOpenVideoRecordPanel() {
-    if (!handlers) return;
-    handlers.handleOpenVideoRecordPanel(panelState);
-  }
-
   function handleOpenShareHubPanel() {
     if (!handlers) return;
     handlers.handleOpenShareHubPanel(panelState);
@@ -936,8 +926,6 @@
             bind:toolPanelElement
             onPlayAnimation={handlePlayAnimation}
             onClearSequence={handleClearSequence}
-            onImageExport={handleOpenSharePanel}
-            onRecordVideo={handleOpenVideoRecordPanel}
             onShareHub={handleOpenShareHubPanel}
             onSequenceActionsClick={handleOpenSequenceActions}
             onOptionSelected={handleOptionSelected}
