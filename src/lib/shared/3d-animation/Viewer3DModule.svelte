@@ -13,17 +13,35 @@
   import Staff3D from "./components/Staff3D.svelte";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
+  import Keyboard3DCoordinator from "./keyboard/Keyboard3DCoordinator.svelte";
   import type { CameraPreset } from "./components/controls/CameraPresetBar.svelte";
   import { Plane } from "./domain/enums/Plane";
   import type { GridMode } from "./domain/constants/grid-layout";
   import { createAnimation3DState } from "./state/animation-3d-state.svelte";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
-  import { saveState, loadState, parsePlanes } from "./utils/persistence";
+  import ShortcutsHelp from "$lib/shared/keyboard/components/ShortcutsHelp.svelte";
+  import { keyboardShortcutState } from "$lib/shared/keyboard/state/keyboard-shortcut-state.svelte";
   import type { CameraState } from "./components/Scene3D.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { container } from "$lib/shared/inversify/container";
+  import { ANIMATION_3D_TYPES } from "./inversify/animation-3d.types";
+  import type { IPropStateInterpolatorService } from "./services/contracts/IPropStateInterpolatorService";
+  import type { ISequenceConverterService } from "./services/contracts/ISequenceConverterService";
+  import type { IAnimation3DPersistenceService } from "./services/contracts/IAnimation3DPersistenceService";
 
-  // Animation state
-  const animState = createAnimation3DState();
+  // Get services from container
+  const propInterpolator = container.get<IPropStateInterpolatorService>(
+    ANIMATION_3D_TYPES.IPropStateInterpolatorService
+  );
+  const sequenceConverter = container.get<ISequenceConverterService>(
+    ANIMATION_3D_TYPES.ISequenceConverterService
+  );
+  const persistenceService = container.get<IAnimation3DPersistenceService>(
+    ANIMATION_3D_TYPES.IAnimation3DPersistenceService
+  );
+
+  // Animation state (now with injected services)
+  const animState = createAnimation3DState({ propInterpolator, sequenceConverter });
 
   // UI state
   let visiblePlanes = $state(new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]));
@@ -78,9 +96,9 @@
 
   // Persistence
   onMount(() => {
-    const saved = loadState();
+    const saved = persistenceService.loadState();
 
-    if (saved.visiblePlanes) visiblePlanes = parsePlanes(saved.visiblePlanes);
+    if (saved.visiblePlanes) visiblePlanes = persistenceService.parsePlanes(saved.visiblePlanes);
     if (saved.showGrid !== undefined) showGrid = saved.showGrid;
     if (saved.showLabels !== undefined) showLabels = saved.showLabels;
     if (saved.gridMode) gridMode = saved.gridMode;
@@ -109,7 +127,7 @@
   // Persist state changes
   $effect(() => {
     if (!initialized) return;
-    saveState({
+    persistenceService.saveState({
       visiblePlanes: Array.from(visiblePlanes),
       showGrid,
       showLabels,
@@ -171,6 +189,7 @@
       onLoopChange={(v) => (animState.loop = v)}
       onPrevBeat={() => animState.prevBeat()}
       onNextBeat={() => animState.nextBeat()}
+      onShowHelp={() => keyboardShortcutState.openHelp()}
     >
       {#snippet trailing()}
         <button
@@ -207,6 +226,32 @@
   onSelect={handleSequenceSelect}
   onClose={() => (browserOpen = false)}
 />
+
+<!-- Keyboard Shortcuts -->
+<Keyboard3DCoordinator
+  isPlaying={animState.isPlaying}
+  togglePlay={() => animState.togglePlay()}
+  reset={() => animState.reset()}
+  loop={animState.loop}
+  setLoop={(v) => (animState.loop = v)}
+  {speed}
+  setSpeed={(s) => (speed = s)}
+  hasSequence={animState.hasSequence}
+  currentBeatIndex={animState.currentBeatIndex}
+  totalBeats={animState.totalBeats}
+  prevBeat={() => animState.prevBeat()}
+  nextBeat={() => animState.nextBeat()}
+  goToBeat={(i) => animState.goToBeat(i)}
+  setCameraPreset={setCameraPreset}
+  {showGrid}
+  setShowGrid={(v) => (showGrid = v)}
+  {panelOpen}
+  setPanelOpen={(v) => (panelOpen = v)}
+  setBrowserOpen={(v) => (browserOpen = v)}
+/>
+
+<!-- Shortcuts Help Modal -->
+<ShortcutsHelp />
 
 <style>
   .viewer-3d-module {

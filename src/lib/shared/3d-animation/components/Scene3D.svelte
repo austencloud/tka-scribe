@@ -58,11 +58,12 @@
   }: Props = $props();
 
   // Camera position based on preset
+  // Grid radius is ~300, so camera at ~800 gives good overview with padding
   const cameraPositions = {
-    front: [0, 0, 500] as [number, number, number], // Looking at Wall plane
-    top: [0, 500, 0] as [number, number, number], // Looking at Floor plane
-    side: [500, 0, 0] as [number, number, number], // Looking at Wheel plane
-    perspective: [350, 280, 350] as [number, number, number], // Angled view
+    front: [0, 0, 800] as [number, number, number], // Looking at Wall plane
+    top: [0, 800, 0] as [number, number, number], // Looking at Floor plane
+    side: [800, 0, 0] as [number, number, number], // Looking at Wheel plane
+    perspective: [550, 450, 550] as [number, number, number], // Angled view
   };
 
   // Use custom position if provided, otherwise use preset
@@ -106,15 +107,15 @@
       position={cameraPosition}
       fov={50}
       near={1}
-      far={2000}
+      far={3000}
     >
       <!-- Orbit controls attached to camera -->
       <OrbitControls
         bind:ref={controlsRef}
         enableDamping
         dampingFactor={0.05}
-        minDistance={100}
-        maxDistance={1000}
+        minDistance={200}
+        maxDistance={1500}
         target={cameraTarget}
         onchange={handleCameraChange}
       />

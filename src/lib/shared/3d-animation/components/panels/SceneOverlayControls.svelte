@@ -43,6 +43,9 @@
     onPrevBeat?: () => void;
     onNextBeat?: () => void;
 
+    /** Callback to show keyboard shortcuts help */
+    onShowHelp?: () => void;
+
     /** Optional trailing content (e.g., panel toggle) */
     trailing?: Snippet;
   }
@@ -69,6 +72,7 @@
     onLoopChange,
     onPrevBeat,
     onNextBeat,
+    onShowHelp,
     trailing,
   }: Props = $props();
 </script>
@@ -90,6 +94,17 @@
     {/if}
 
     <SpeedControlBar value={speed} onchange={onSpeedChange} />
+
+    {#if onShowHelp}
+      <button
+        class="help-btn"
+        onclick={onShowHelp}
+        aria-label="Keyboard shortcuts"
+        title="Keyboard shortcuts (Shift+?)"
+      >
+        <i class="fas fa-keyboard"></i>
+      </button>
+    {/if}
   </div>
 
   <!-- Bottom Row -->
@@ -147,6 +162,26 @@
     gap: 0.5rem;
   }
 
+  .help-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .help-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
   @media (max-width: 600px) {
     .scene-overlay {
       padding: 0.5rem;
@@ -154,6 +189,11 @@
 
     .top-row {
       gap: 0.25rem;
+    }
+
+    .help-btn {
+      width: 32px;
+      height: 32px;
     }
   }
 </style>

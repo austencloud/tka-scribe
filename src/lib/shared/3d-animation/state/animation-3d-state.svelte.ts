@@ -10,16 +10,26 @@ import type { MotionConfig3D } from "../domain/models/MotionData3D";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { Plane } from "../domain/enums/Plane";
 import { createPlaybackState } from "./playback-state.svelte";
-import { calculatePropState } from "../services/implementations/PropStateInterpolator";
-import {
-  sequenceToMotionConfigs,
-  type BeatMotionConfigs,
-} from "../utils/sequence-converter";
+import type { IPropStateInterpolatorService } from "../services/contracts/IPropStateInterpolatorService";
+import type {
+  ISequenceConverterService,
+  BeatMotionConfigs,
+} from "../services/contracts/ISequenceConverterService";
+
+/**
+ * Dependencies for Animation 3D State
+ */
+export interface Animation3DStateDeps {
+  propInterpolator: IPropStateInterpolatorService;
+  sequenceConverter: ISequenceConverterService;
+}
 
 /**
  * Create Animation 3D State
  */
-export function createAnimation3DState() {
+export function createAnimation3DState(deps: Animation3DStateDeps) {
+  const { propInterpolator, sequenceConverter } = deps;
+
   // Visibility - start hidden until a sequence is loaded
   let showBlue = $state(false);
   let showRed = $state(false);
@@ -35,6 +45,16 @@ export function createAnimation3DState() {
   });
 
   /**
+   * Update visibility based on a beat's motion configs
+   */
+  function updateVisibilityFromBeat(beat: BeatMotionConfigs | undefined) {
+    if (beat) {
+      showBlue = beat.blue !== null;
+      showRed = beat.red !== null;
+    }
+  }
+
+  /**
    * Handle beat cycle completion - advances to next beat or loops
    * Returns true to continue playing, false to pause
    */
@@ -48,26 +68,12 @@ export function createAnimation3DState() {
     if (currentBeatIndex < beatConfigs.length - 1) {
       // Advance to next beat
       currentBeatIndex++;
-
-      // Update visibility based on new beat
-      const beat = beatConfigs[currentBeatIndex];
-      if (beat) {
-        showBlue = beat.blue !== null;
-        showRed = beat.red !== null;
-      }
-
+      updateVisibilityFromBeat(beatConfigs[currentBeatIndex]);
       return true; // Continue playing
     } else if (playback.loop) {
       // Loop back to first beat
       currentBeatIndex = 0;
-
-      // Update visibility based on first beat
-      const beat = beatConfigs[0];
-      if (beat) {
-        showBlue = beat.blue !== null;
-        showRed = beat.red !== null;
-      }
-
+      updateVisibilityFromBeat(beatConfigs[0]);
       return true; // Continue playing
     } else {
       // Stop at end of sequence
@@ -95,10 +101,14 @@ export function createAnimation3DState() {
 
   // Computed prop states (only valid when config exists)
   let bluePropState = $derived(
-    activeBlueConfig ? calculatePropState(activeBlueConfig, playback.progress) : null
+    activeBlueConfig
+      ? propInterpolator.calculatePropState(activeBlueConfig, playback.progress)
+      : null
   );
   let redPropState = $derived(
-    activeRedConfig ? calculatePropState(activeRedConfig, playback.progress) : null
+    activeRedConfig
+      ? propInterpolator.calculatePropState(activeRedConfig, playback.progress)
+      : null
   );
 
   /**
@@ -106,16 +116,10 @@ export function createAnimation3DState() {
    */
   function loadSequence(sequence: SequenceData) {
     loadedSequence = sequence;
-    beatConfigs = sequenceToMotionConfigs(sequence, Plane.WALL);
+    beatConfigs = sequenceConverter.sequenceToMotionConfigs(sequence, Plane.WALL);
     currentBeatIndex = 0;
     playback.reset();
-
-    // Update visibility based on what motions exist in first beat
-    if (beatConfigs.length > 0) {
-      const firstBeat = beatConfigs[0];
-      showBlue = firstBeat?.blue !== null;
-      showRed = firstBeat?.red !== null;
-    }
+    updateVisibilityFromBeat(beatConfigs[0]);
   }
 
   /**
@@ -137,13 +141,7 @@ export function createAnimation3DState() {
     if (beatConfigs.length === 0) return;
     currentBeatIndex = Math.min(currentBeatIndex + 1, beatConfigs.length - 1);
     playback.reset();
-
-    // Update visibility based on current beat
-    const beat = beatConfigs[currentBeatIndex];
-    if (beat) {
-      showBlue = beat.blue !== null;
-      showRed = beat.red !== null;
-    }
+    updateVisibilityFromBeat(beatConfigs[currentBeatIndex]);
   }
 
   /**
@@ -153,13 +151,7 @@ export function createAnimation3DState() {
     if (beatConfigs.length === 0) return;
     currentBeatIndex = Math.max(currentBeatIndex - 1, 0);
     playback.reset();
-
-    // Update visibility based on current beat
-    const beat = beatConfigs[currentBeatIndex];
-    if (beat) {
-      showBlue = beat.blue !== null;
-      showRed = beat.red !== null;
-    }
+    updateVisibilityFromBeat(beatConfigs[currentBeatIndex]);
   }
 
   /**
@@ -169,13 +161,7 @@ export function createAnimation3DState() {
     if (beatConfigs.length === 0) return;
     currentBeatIndex = Math.max(0, Math.min(index, beatConfigs.length - 1));
     playback.reset();
-
-    // Update visibility based on current beat
-    const beat = beatConfigs[currentBeatIndex];
-    if (beat) {
-      showBlue = beat.blue !== null;
-      showRed = beat.red !== null;
-    }
+    updateVisibilityFromBeat(beatConfigs[currentBeatIndex]);
   }
 
   return {
