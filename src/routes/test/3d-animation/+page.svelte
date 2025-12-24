@@ -421,9 +421,31 @@
         {/if}
       {/if}
 
-      <!-- Grid Planes -->
+      <!-- Grid Settings -->
       <section class="planes-section">
-        <h3>Planes</h3>
+        <h3>Grid</h3>
+
+        <!-- Grid Mode Toggle -->
+        <div class="mode-toggle">
+          <button
+            class="mode-btn"
+            class:active={gridMode === "diamond"}
+            onclick={() => (gridMode = "diamond")}
+          >
+            <i class="fas fa-diamond"></i>
+            Diamond
+          </button>
+          <button
+            class="mode-btn"
+            class:active={gridMode === "box"}
+            onclick={() => (gridMode = "box")}
+          >
+            <i class="fas fa-square"></i>
+            Box
+          </button>
+        </div>
+
+        <!-- Plane Visibility -->
         <div class="plane-btns">
           {#each allPlanes as plane}
             <button
@@ -874,7 +896,7 @@
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
   }
 
-  /* Planes Section */
+  /* Grid Section */
   .planes-section {
     padding: 1rem;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
@@ -889,6 +911,45 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
+
+  /* Grid Mode Toggle */
+  .mode-toggle {
+    display: flex;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 0.75rem;
+  }
+
+  .mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 40px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm, 0.875rem);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .mode-btn:hover {
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+  }
+
+  .mode-btn.active {
+    background: var(--theme-accent, rgba(139, 92, 246, 0.5));
+    color: white;
+  }
+
+  .mode-btn i {
+    font-size: 0.75rem;
   }
 
   .plane-btns {

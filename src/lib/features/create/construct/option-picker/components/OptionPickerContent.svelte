@@ -10,6 +10,7 @@ Uses organizer and sizer services for section grouping and sizing.
   import type { IOptionSizer } from '../services/contracts/IOptionSizer';
   import OptionSection from './OptionSection.svelte';
   import Option456Row from './Option456Row.svelte';
+  import OptionGrid from './OptionGrid.svelte';
   import OptionViewerSwipeLayout from '../option-viewer/components/OptionViewerSwipeLayout.svelte';
 
   interface Props {
@@ -233,20 +234,14 @@ Uses organizer and sizer services for section grouping and sizing.
       style:--card-size="{sizing4x4?.cardSize ?? 75}px"
       style:--grid-gap={sizing4x4?.gap ?? '6px'}
     >
-      {#each options as option (option.id || `${option.letter}-${option.startPosition}-${option.endPosition}`)}
-        <button
-          class="compact-option-card"
-          class:disabled={isFading}
-          onclick={() => !isFading && onSelect(option)}
-          disabled={isFading}
-        >
-          <img
-            src={option.thumbnailUrl || option.imageUrl}
-            alt={option.letter || 'Option'}
-            loading="eager"
-          />
-        </button>
-      {/each}
+      <OptionGrid
+        {options}
+        cardSize={sizing4x4?.cardSize ?? 75}
+        columns={4}
+        gap={sizing4x4?.gap ?? '6px'}
+        {isFading}
+        {onSelect}
+      />
     </div>
   {:else if shouldUseSwipeLayout()}
     <!-- Mobile: Swipe between sections (Types 4-6 combined into one panel) -->
@@ -390,49 +385,11 @@ Uses organizer and sizer services for section grouping and sizing.
   /* Compact 4x4 grid for continuous mode on mobile */
   .compact-4x4-grid {
     flex: 1;
-    display: grid;
-    grid-template-columns: repeat(4, var(--card-size));
-    grid-template-rows: repeat(4, var(--card-size));
-    gap: var(--grid-gap);
+    display: flex;
+    align-items: center;
     justify-content: center;
-    align-content: center;
     padding: 8px;
     transition: opacity 250ms ease-out;
-  }
-
-  .compact-option-card {
-    width: var(--card-size);
-    height: var(--card-size);
-    padding: 0;
-    border: 2px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    cursor: pointer;
-    overflow: hidden;
-    transition: all 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .compact-option-card:hover {
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.02);
-  }
-
-  .compact-option-card:active {
-    transform: scale(0.96);
-    border-color: rgba(59, 130, 246, 0.6);
-  }
-
-  .compact-option-card.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  .compact-option-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    pointer-events: none;
   }
 
   .empty-state {
