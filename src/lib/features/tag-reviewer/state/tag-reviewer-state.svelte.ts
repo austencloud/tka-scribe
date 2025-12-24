@@ -249,14 +249,25 @@ export function createTagReviewerState() {
 	 * Call this from the component when the sequence changes.
 	 */
 	function ensureTagsGenerated() {
-		if (!currentSequence) return;
-		if (reviews.has(currentSequence.word)) return;
+		if (!currentSequence) {
+			console.log("[TagReviewerState] ensureTagsGenerated: no currentSequence");
+			return;
+		}
+		if (reviews.has(currentSequence.word)) {
+			console.log(`[TagReviewerState] ensureTagsGenerated: already have review for ${currentSequence.word}`);
+			return;
+		}
+
+		console.log(`[TagReviewerState] ensureTagsGenerated: generating for ${currentSequence.word}`);
+		console.log(`[TagReviewerState] Services available: featureExtractor=${!!featureExtractor}, tagger=${!!tagger}, conversionService=${!!conversionService}`);
 
 		const generated = generateTagsForSequence(currentSequence);
 		if (generated) {
 			reviews.set(currentSequence.word, generated);
 			reviews = new Map(reviews);
-			console.log(`[TagReviewerState] Generated tags for ${currentSequence.word}`);
+			console.log(`[TagReviewerState] Generated ${generated.suggestedTags.length} tags for ${currentSequence.word}`);
+		} else {
+			console.warn(`[TagReviewerState] Failed to generate tags for ${currentSequence.word}`);
 		}
 	}
 

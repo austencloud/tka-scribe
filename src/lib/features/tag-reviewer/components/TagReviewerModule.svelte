@@ -9,8 +9,8 @@
 	import {
 		ensureContainerInitialized,
 		loadFeatureModule,
-	} from "$lib/shared/inversify/container";
-	import { tryResolve } from "$lib/shared/inversify/di";
+		tryResolve,
+	} from "$lib/shared/inversify/di";
 	import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
 	import type { IBeatDataConversionService } from "$lib/features/cap-labeler/services/contracts/IBeatDataConversionService";
 	import { tagReviewerState } from "../state/tag-reviewer-state.svelte";
