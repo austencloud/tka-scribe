@@ -18,14 +18,14 @@ import { QuizConfigurator } from "./QuizConfigurator";
 
 @injectable()
 export class QuizSessionService implements IQuizSessionService {
-  private static activeSessions: Map<string, QuizSession> = new Map();
-  private static timers: Map<string, NodeJS.Timeout> = new Map();
+  private activeSessions: Map<string, QuizSession> = new Map();
+  private timers: Map<string, NodeJS.Timeout> = new Map();
   private currentSessionId: string | null = null;
 
   /**
    * Create a new quiz session.
    */
-  static createSession(lessonType: QuizType, quizMode: QuizMode): string {
+  createSession(lessonType: QuizType, quizMode: QuizMode): string {
     const sessionId = this.generateSessionId();
     const totalQuestions = QuizConfigurator.getTotalQuestions(quizMode);
     const quizTime = QuizConfigurator.getQuizTime(quizMode);
@@ -53,14 +53,14 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Get an active session.
    */
-  static getSession(sessionId: string): QuizSession | null {
+  getSession(sessionId: string): QuizSession | null {
     return this.activeSessions.get(sessionId) || null;
   }
 
   /**
    * Update session progress.
    */
-  static updateSessionProgress(
+  updateSessionProgress(
     sessionId: string,
     isCorrect: boolean,
     timeElapsed?: number
@@ -98,7 +98,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Check if session should be completed.
    */
-  private static checkSessionCompletion(sessionId: string): void {
+  private checkSessionCompletion(sessionId: string): void {
     const session = this.getSession(sessionId);
     if (!session) return;
 
@@ -120,7 +120,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Complete a quiz session.
    */
-  static completeSession(sessionId: string): QuizResults | null {
+  completeSession(sessionId: string): QuizResults | null {
     const session = this.getSession(sessionId);
     if (!session) return null;
 
@@ -142,7 +142,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Calculate lesson results from session.
    */
-  private static calculateResults(session: QuizSession): QuizResults {
+  private calculateResults(session: QuizSession): QuizResults {
     if (!session.lessonType || !session.quizMode) {
       throw new Error(
         "Session must have lessonType and quizMode to calculate results"
@@ -179,7 +179,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Get current lesson progress.
    */
-  static getLessonProgress(sessionId: string): QuizProgress | null {
+  getLessonProgress(sessionId: string): QuizProgress | null {
     const session = this.getSession(sessionId);
     if (!session) return null;
 
@@ -201,7 +201,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Start countdown timer for a session.
    */
-  static startTimer(
+  startTimer(
     sessionId: string,
     onTick?: (timeRemaining: number) => void
   ): void {
@@ -232,7 +232,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Stop timer for a session.
    */
-  static stopTimer(sessionId: string): void {
+  stopTimer(sessionId: string): void {
     const timer = this.timers.get(sessionId);
     if (timer) {
       clearInterval(timer);
@@ -243,14 +243,14 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Pause/resume timer for a session.
    */
-  static pauseTimer(sessionId: string): void {
+  pauseTimer(sessionId: string): void {
     this.stopTimer(sessionId);
   }
 
   /**
    * Get timer state for a session.
    */
-  static getTimerState(sessionId: string): QuizTimerState | null {
+  getTimerState(sessionId: string): QuizTimerState | null {
     const session = this.getSession(sessionId);
     if (!session?.quizMode) return null;
 
@@ -268,7 +268,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Abandon a session.
    */
-  static abandonSession(sessionId: string): void {
+  abandonSession(sessionId: string): void {
     this.stopTimer(sessionId);
     this.activeSessions.delete(sessionId);
   }
@@ -276,14 +276,14 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Get all active sessions.
    */
-  static getActiveSessions(): QuizSession[] {
+  getActiveSessions(): QuizSession[] {
     return Array.from(this.activeSessions.values());
   }
 
   /**
    * Clean up expired sessions.
    */
-  static cleanupExpiredSessions(maxAgeMinutes: number = 30): void {
+  cleanupExpiredSessions(maxAgeMinutes: number = 30): void {
     const now = new Date();
     const maxAge = maxAgeMinutes * 60 * 1000;
 
@@ -298,14 +298,14 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Generate unique session ID.
    */
-  private static generateSessionId(): string {
+  private generateSessionId(): string {
     return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
    * Format time for display (MM:SS).
    */
-  static formatTime(seconds: number): string {
+  formatTime(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
@@ -314,7 +314,7 @@ export class QuizSessionService implements IQuizSessionService {
   /**
    * Get session statistics.
    */
-  static getSessionStats(): {
+  getSessionStats(): {
     totalSessions: number;
     activeSessions: number;
     completedSessions: number;
@@ -330,17 +330,13 @@ export class QuizSessionService implements IQuizSessionService {
     };
   }
 
-  // ============================================================================
-  // INSTANCE METHODS (Interface Implementation)
-  // ============================================================================
-
   /**
    * Start a new quiz session
    */
   startQuiz(lessonId: string): void {
     // For now, create a simple session - in a real implementation,
     // you'd load lesson config and set up properly
-    this.currentSessionId = QuizSessionService.createSession(
+    this.currentSessionId = this.createSession(
       lessonId as QuizType,
       QuizMode.FIXED_QUESTION
     );
@@ -351,7 +347,7 @@ export class QuizSessionService implements IQuizSessionService {
    */
   getCurrentSession(): QuizSession | null {
     if (!this.currentSessionId) return null;
-    return QuizSessionService.getSession(this.currentSessionId);
+    return this.getSession(this.currentSessionId);
   }
 
   /**
@@ -364,7 +360,7 @@ export class QuizSessionService implements IQuizSessionService {
     // In a real implementation, you'd validate against the correct answer
     const isCorrect = Math.random() > 0.5;
 
-    QuizSessionService.updateSessionProgress(this.currentSessionId, isCorrect);
+    this.updateSessionProgress(this.currentSessionId, isCorrect);
     return isCorrect;
   }
 
@@ -374,7 +370,7 @@ export class QuizSessionService implements IQuizSessionService {
   completeQuiz(): QuizResults | null {
     if (!this.currentSessionId) return null;
 
-    const results = QuizSessionService.completeSession(this.currentSessionId);
+    const results = this.completeSession(this.currentSessionId);
     this.currentSessionId = null;
     return results;
   }
@@ -384,12 +380,12 @@ export class QuizSessionService implements IQuizSessionService {
    */
   restartQuiz(): void {
     if (this.currentSessionId) {
-      QuizSessionService.abandonSession(this.currentSessionId);
+      this.abandonSession(this.currentSessionId);
     }
 
     // Create a new session with the same parameters
     // In a real implementation, you'd preserve the lesson type and mode
-    this.currentSessionId = QuizSessionService.createSession(
+    this.currentSessionId = this.createSession(
       QuizType.PICTOGRAPH_TO_LETTER,
       QuizMode.FIXED_QUESTION
     );
@@ -400,37 +396,8 @@ export class QuizSessionService implements IQuizSessionService {
    */
   cleanup(): void {
     if (this.currentSessionId) {
-      QuizSessionService.abandonSession(this.currentSessionId);
+      this.abandonSession(this.currentSessionId);
       this.currentSessionId = null;
     }
-  }
-
-  // Delegate instance methods to static methods for compatibility
-  createSession(lessonType: QuizType, quizMode: QuizMode): string {
-    return QuizSessionService.createSession(lessonType, quizMode);
-  }
-
-  getSession(sessionId: string): QuizSession | null {
-    return QuizSessionService.getSession(sessionId);
-  }
-
-  updateSessionProgress(
-    sessionId: string,
-    isCorrect: boolean,
-    timeElapsed?: number
-  ): QuizSession | null {
-    return QuizSessionService.updateSessionProgress(
-      sessionId,
-      isCorrect,
-      timeElapsed
-    );
-  }
-
-  completeSession(sessionId: string): QuizResults | null {
-    return QuizSessionService.completeSession(sessionId);
-  }
-
-  abandonSession(sessionId: string): void {
-    QuizSessionService.abandonSession(sessionId);
   }
 }

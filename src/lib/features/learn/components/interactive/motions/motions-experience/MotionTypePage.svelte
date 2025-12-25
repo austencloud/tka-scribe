@@ -1,0 +1,190 @@
+<!--
+MotionTypePage - Displays a single motion type with visualizer
+-->
+<script lang="ts">
+  import MotionVisualizer from "../MotionVisualizer.svelte";
+  import MotionTypeHeader from "./MotionTypeHeader.svelte";
+  import MotionKeyPoint from "./MotionKeyPoint.svelte";
+  import MotionTypeSummary from "./MotionTypeSummary.svelte";
+  import type { MotionExample, MotionInfo } from "../../../../domain/constants/motion-experience-data";
+
+  let {
+    typeNum,
+    info,
+    example,
+    showSummary,
+    onCycleExample,
+    onNext,
+    isLastType,
+  }: {
+    typeNum: number;
+    info: MotionInfo;
+    example: MotionExample;
+    showSummary: boolean;
+    onCycleExample: () => void;
+    onNext: () => void;
+    isLastType: boolean;
+  } = $props();
+</script>
+
+<div class="page">
+  <h2 style="--type-color: {info.color}">
+    Type {typeNum}: {info.name}
+  </h2>
+
+  <MotionTypeHeader {info} />
+
+  <div class="visualizer-section">
+    <MotionVisualizer
+      leftStart={example.leftStart}
+      leftEnd={example.leftEnd}
+      rightStart={example.rightStart}
+      rightEnd={example.rightEnd}
+      leftMotion={example.leftMotion}
+      rightMotion={example.rightMotion}
+      motionType={typeNum as 1 | 2 | 3 | 4 | 5 | 6}
+      showLabels={true}
+      showMotionType={false}
+    />
+    <button class="cycle-button" onclick={onCycleExample}>
+      <i class="fa-solid fa-shuffle"></i>
+      Show Another Example
+    </button>
+  </div>
+
+  <MotionKeyPoint text={info.key} color={info.color} />
+
+  {#if showSummary}
+    <MotionTypeSummary />
+  {/if}
+
+  <button class="next-button" onclick={onNext}>
+    {#if isLastType}
+      <i class="fa-solid fa-graduation-cap"></i>
+      Take the Quiz
+    {:else}
+      Next: Type {typeNum + 1}
+      <i class="fa-solid fa-arrow-right"></i>
+    {/if}
+  </button>
+</div>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+    animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-align: center;
+    background: linear-gradient(
+      135deg,
+      var(--type-color, #22d3ee) 0%,
+      color-mix(in srgb, var(--type-color, #22d3ee) 70%, #06b6d4) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .visualizer-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .cycle-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .cycle-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .next-button {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.3) 0%,
+      rgba(6, 182, 212, 0.3) 100%
+    );
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(34, 211, 238, 0.5);
+    border-radius: 12px;
+    color: white;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-height: 54px;
+    margin-top: 0.5rem;
+  }
+
+  .next-button:hover {
+    background: linear-gradient(
+      135deg,
+      rgba(34, 211, 238, 0.4) 0%,
+      rgba(6, 182, 212, 0.4) 100%
+    );
+    border-color: rgba(34, 211, 238, 0.8);
+    transform: translateY(-2px);
+  }
+
+  .next-button i {
+    font-size: 0.9375rem;
+  }
+
+  @media (max-width: 600px) {
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    .next-button {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page {
+      animation: none;
+    }
+  }
+</style>

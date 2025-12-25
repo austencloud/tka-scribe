@@ -19,6 +19,9 @@ export const LearnTypes = {
   IQuizResultsAnalyzer: Symbol.for("IQuizResultsAnalyzer"),
   IQuizRepoManager: Symbol.for("IQuizRepoManager"),
 
+  // Concept Progress
+  IConceptProgressService: Symbol.for("IConceptProgressService"),
+
   // Motion & Letter
   IMotionQueryHandler: Symbol.for("IMotionQueryHandler"),
   ILetterDeriver: Symbol.for("ILetterDeriver"),

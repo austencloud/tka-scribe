@@ -1,0 +1,98 @@
+/**
+ * Type 1 Letter Questions - Motion pattern data for Type 1 (Dual-Shift) letters
+ */
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+
+export type MotionPattern = "pro-pro" | "anti-anti" | "hybrid";
+
+export interface Type1LetterQuestion {
+  letter: Letter;
+  pattern: MotionPattern;
+  blueMotion: MotionType;
+  redMotion: MotionType;
+}
+
+export interface PatternInfo {
+  icon: string;
+  label: string;
+  color: string;
+  description: string;
+}
+
+/**
+ * All Type 1 letters with their motion patterns
+ */
+export const TYPE1_LETTERS: Type1LetterQuestion[] = [
+  // Pro-Pro (7 letters)
+  { letter: Letter.A, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  { letter: Letter.D, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  { letter: Letter.G, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  { letter: Letter.J, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  { letter: Letter.M, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  { letter: Letter.P, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+  { letter: Letter.S, pattern: "pro-pro", blueMotion: MotionType.PRO, redMotion: MotionType.PRO },
+
+  // Anti-Anti (7 letters)
+  { letter: Letter.B, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  { letter: Letter.E, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  { letter: Letter.H, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  { letter: Letter.K, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  { letter: Letter.N, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  { letter: Letter.Q, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+  { letter: Letter.T, pattern: "anti-anti", blueMotion: MotionType.ANTI, redMotion: MotionType.ANTI },
+
+  // Hybrid (8 letters)
+  { letter: Letter.C, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.F, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.I, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.L, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.O, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.R, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.U, pattern: "hybrid", blueMotion: MotionType.ANTI, redMotion: MotionType.PRO },
+  { letter: Letter.V, pattern: "hybrid", blueMotion: MotionType.PRO, redMotion: MotionType.ANTI },
+] as const;
+
+/**
+ * Pattern display configuration
+ */
+export const PATTERN_INFO: Record<MotionPattern, PatternInfo> = {
+  "pro-pro": {
+    icon: "fa-rotate-right",
+    label: "Pro-Pro",
+    color: "#22D3EE",
+    description: "Both hands prospin",
+  },
+  "anti-anti": {
+    icon: "fa-rotate-left",
+    label: "Anti-Anti",
+    color: "#A855F7",
+    description: "Both hands antispin",
+  },
+  hybrid: {
+    icon: "fa-shuffle",
+    label: "Hybrid",
+    color: "#F59E0B",
+    description: "Different motions",
+  },
+} as const;
+
+/**
+ * Generate quiz questions by selecting 4 from each pattern
+ */
+export function generateType1Questions(): Type1LetterQuestion[] {
+  const proProLetters = TYPE1_LETTERS.filter((q) => q.pattern === "pro-pro");
+  const antiAntiLetters = TYPE1_LETTERS.filter((q) => q.pattern === "anti-anti");
+  const hybridLetters = TYPE1_LETTERS.filter((q) => q.pattern === "hybrid");
+
+  const shuffledProPro = [...proProLetters].sort(() => Math.random() - 0.5);
+  const shuffledAntiAnti = [...antiAntiLetters].sort(() => Math.random() - 0.5);
+  const shuffledHybrid = [...hybridLetters].sort(() => Math.random() - 0.5);
+
+  const selected: Type1LetterQuestion[] = [];
+  selected.push(...shuffledProPro.slice(0, 4));
+  selected.push(...shuffledAntiAnti.slice(0, 4));
+  selected.push(...shuffledHybrid.slice(0, 4));
+
+  return selected.sort(() => Math.random() - 0.5);
+}

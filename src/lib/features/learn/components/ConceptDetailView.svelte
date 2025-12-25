@@ -7,7 +7,7 @@ ConceptDetailView - Direct view of concept content
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import type { LearnConcept, ConceptProgress } from "../domain/types";
-  import { conceptProgressService } from "../services/ConceptProgressService";
+  import type { IConceptProgressService } from "../services/contracts/IConceptProgressService";
   import GridConceptExperience from "./interactive/GridConceptExperience.svelte";
   import Type1ConceptExperience from "./interactive/letters/type1/Type1ConceptExperience.svelte";
   import MotionsConceptExperience from "./interactive/motions/MotionsConceptExperience.svelte";
@@ -23,6 +23,9 @@ ConceptDetailView - Direct view of concept content
 
   const hapticService = resolve<IHapticFeedbackService>(
     TYPES.IHapticFeedbackService
+  );
+  const conceptProgressService = resolve<IConceptProgressService>(
+    TYPES.IConceptProgressService
   );
 
   let progress = $state<ConceptProgress>(

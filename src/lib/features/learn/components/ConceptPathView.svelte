@@ -10,6 +10,8 @@ Shows:
 <script lang="ts">
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import {
     TKA_CONCEPTS,
     getConceptsByCategory,
@@ -17,7 +19,7 @@ Shows:
     getPreviousConcept,
   } from "../domain/concepts";
   import type { LearnConcept, ConceptCategory } from "../domain/types";
-  import { conceptProgressService } from "../services/ConceptProgressService";
+  import type { IConceptProgressService } from "../services/contracts/IConceptProgressService";
   import ProgressMiniMap from "./ProgressMiniMap.svelte";
   import HeroConceptCard from "./HeroConceptCard.svelte";
   import ConceptContext from "./ConceptContext.svelte";
@@ -26,6 +28,11 @@ Shows:
 
   let { onConceptClick }: { onConceptClick?: (concept: LearnConcept) => void } =
     $props();
+
+  // Resolve service via DI
+  const conceptProgressService = resolve<IConceptProgressService>(
+    TYPES.IConceptProgressService
+  );
 
   // Progress state
   let progress = $state(conceptProgressService.getProgress());

@@ -6,7 +6,6 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  // Import quiz services
 
   import LetterToPictographQuiz from "./LetterToPictographQuiz.svelte";
   import PictographToLetterQuiz from "./PictographToLetterQuiz.svelte";
@@ -15,7 +14,7 @@
   import type { QuizLayoutMode } from "../domain/enums/quiz-enums";
   import type { QuizResults, QuizProgress } from "../domain/models/quiz-models";
   import { QuizConfigurator } from "../services/implementations/QuizConfigurator";
-  import { QuizSessionService } from "../services/implementations/QuizSessionService";
+  import type { IQuizSessionService } from "../services/contracts/IQuizSessionService";
 
   // Props
   let {
@@ -51,14 +50,12 @@
   let timerComponent = $state<QuizTimer>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
-
-  // Initialize haptic service
-  onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
-  });
+  const hapticService = resolve<IHapticFeedbackService>(
+    TYPES.IHapticFeedbackService
+  );
+  const quizSessionService = resolve<IQuizSessionService>(
+    TYPES.IQuizSessionService
+  );
 
   // Derived state
   const isCountdownMode = $derived(quizMode === QuizMode.COUNTDOWN);
@@ -72,10 +69,9 @@
   });
 
   onDestroy(() => {
-    // TODO: Re-enable when services are fixed
-    // if (sessionId) {
-    //   QuizSessionService.abandonSession(sessionId);
-    // }
+    if (sessionId) {
+      quizSessionService.abandonSession(sessionId);
+    }
   });
 
   // Methods
@@ -85,7 +81,7 @@
     isLoading = true;
 
     // Create quiz session
-    sessionId = QuizSessionService.createSession(quizType, quizMode);
+    sessionId = quizSessionService.createSession(quizType, quizMode);
 
     // Set up timer for countdown mode
     if (isCountdownMode) {
@@ -111,7 +107,7 @@
     }
 
     if (sessionId) {
-      QuizSessionService.updateSessionProgress(sessionId, isCorrect, 0);
+      quizSessionService.updateSessionProgress(sessionId, isCorrect, 0);
       updateProgress();
     }
 
@@ -129,7 +125,7 @@
   function shouldContinueQuiz(): boolean {
     if (!sessionId) return false;
 
-    const session = QuizSessionService.getSession(sessionId);
+    const session = quizSessionService.getSession(sessionId);
     if (!session || !session.isActive) return false;
 
     if (isFixedQuestionMode) {
@@ -143,7 +139,7 @@
 
   function updateProgress() {
     if (!sessionId) return;
-    const session = QuizSessionService.getSession(sessionId);
+    const session = quizSessionService.getSession(sessionId);
     if (session) {
       progress = {
         questionsAnswered: session.questionsAnswered,
@@ -169,7 +165,7 @@
   function completeQuiz() {
     if (!sessionId) return;
 
-    const results = QuizSessionService.completeSession(sessionId);
+    const results = quizSessionService.completeSession(sessionId);
     if (results) {
       onQuizComplete?.(results);
     }
@@ -180,7 +176,7 @@
     hapticService?.trigger("selection");
 
     if (sessionId) {
-      QuizSessionService.abandonSession(sessionId);
+      quizSessionService.abandonSession(sessionId);
     }
     onBackToSelector?.();
   }
@@ -211,7 +207,7 @@
     hapticService?.trigger("selection");
 
     if (sessionId) {
-      QuizSessionService.abandonSession(sessionId);
+      quizSessionService.abandonSession(sessionId);
     }
     // Restart the quiz
     startQuiz();

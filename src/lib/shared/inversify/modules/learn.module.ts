@@ -6,6 +6,7 @@ import { CodexPictographUpdater } from "../../../features/learn/codex/services/i
 import { QuizRepoManager } from "../../../features/learn/quiz/services/implementations/QuizRepoManager";
 import { QuizSessionService } from "../../../features/learn/quiz/services/implementations/QuizSessionService";
 import { QuizResultsAnalyzer } from "../../../features/learn/quiz/QuizResultsAnalyzer";
+import { ConceptProgressService } from "../../../features/learn/services/implementations/ConceptProgressService";
 import { TYPES } from "../types";
 
 export const learnModule = new ContainerModule(
@@ -19,7 +20,16 @@ export const learnModule = new ContainerModule(
 
     // === QUIZ SERVICES ===
     options.bind(TYPES.IQuizRepoManager).to(QuizRepoManager);
-    options.bind(TYPES.IQuizSessionService).to(QuizSessionService);
+    options
+      .bind(TYPES.IQuizSessionService)
+      .to(QuizSessionService)
+      .inSingletonScope();
     options.bind(TYPES.IQuizResultsAnalyzer).to(QuizResultsAnalyzer);
+
+    // === CONCEPT PROGRESS ===
+    options
+      .bind(TYPES.IConceptProgressService)
+      .to(ConceptProgressService)
+      .inSingletonScope();
   }
 );
