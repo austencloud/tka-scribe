@@ -5,6 +5,61 @@ import type { ComponentId } from "../../domain/constants/cap-components";
 import type { PolyrhythmicCAPResult } from "./IPolyrhythmicDetectionService";
 
 /**
+ * Describes a compound CAP pattern with multiple transformations at different intervals
+ * e.g., 90° rotation (quartered) + swap (halved)
+ */
+export interface CompoundPattern {
+  /** Whether this is a compound pattern (multiple intervals) */
+  isCompound: true;
+  /** Transformations at quartered interval (90°) */
+  quarteredTransformations: string[];
+  /** Transformations at halved interval (180°) */
+  halvedTransformations: string[];
+  /** Combined human-readable description like "90° CCW Rotated (quartered) + Swapped (halved)" */
+  description: string;
+}
+
+/**
+ * Describes an axis-alternating CAP pattern where transformations
+ * from related families (e.g., FLIPPED + MIRRORED) follow a structured positional pattern
+ */
+export interface AxisAlternatingPattern {
+  /** Whether this is an axis-alternating pattern */
+  isAxisAlternating: true;
+  /** The related transformation families used (e.g., ["FLIPPED", "MIRRORED"]) */
+  transformationFamily: string[];
+  /** The meta-pattern type (e.g., "palindromic", "alternating", "symmetric") */
+  metaPatternType: "palindromic" | "alternating" | "symmetric" | "structured";
+  /** The actual pattern sequence (e.g., ["FLIPPED", "MIRRORED", "MIRRORED", "FLIPPED"]) */
+  patternSequence: string[];
+  /** Human-readable description */
+  description: string;
+}
+
+/**
+ * Swap rhythm pattern within each cycle.
+ * Examples: "1-2-2-1" = NO_SWAP, SWAP, SWAP, NO_SWAP (outer pure, inner swapped)
+ */
+export type SwapRhythm = '1-2-2-1' | '1-2-1-2' | '1-1-2-2' | '2-1-1-2' | '2-1-2-1' | '2-2-1-1' | 'uniform' | 'unknown';
+
+/**
+ * Describes a modular CAP pattern where different columns (positions within cycle)
+ * have different transformation behaviors
+ */
+export interface ModularPattern {
+  /** Whether this is a modular pattern */
+  isModular: true;
+  /** Base transformation shared across columns (e.g., "rotated_90_ccw") */
+  baseTransformation: string | null;
+  /** Swap rhythm pattern (e.g., "1-2-2-1" = outer pure, inner swapped) */
+  swapRhythm: SwapRhythm;
+  /** Positions (1-based) that are swapped */
+  swappedPositions: number[];
+  /** Human-readable description */
+  description: string;
+}
+
+/**
  * Result of CAP detection on a sequence
  */
 export interface CAPDetectionResult {
@@ -45,6 +100,24 @@ export interface CAPDetectionResult {
 
   /** Is this a polyrhythmic pattern? */
   isPolyrhythmic: boolean;
+
+  // === COMPOUND PATTERN DETECTION ===
+
+  /** Compound pattern when transformations occur at different intervals */
+  compoundPattern?: CompoundPattern;
+
+  // === AXIS-ALTERNATING PATTERN DETECTION ===
+
+  /** Axis-alternating pattern when related transformations follow a positional meta-pattern */
+  axisAlternatingPattern?: AxisAlternatingPattern;
+
+  /** Is this an axis-alternating pattern? */
+  isAxisAlternating: boolean;
+
+  // === MODULAR PATTERN DETECTION ===
+
+  /** Modular pattern when different columns have different transformation behaviors */
+  modularPattern?: ModularPattern;
 }
 
 /**

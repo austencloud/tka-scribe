@@ -4,9 +4,14 @@
   import type { CAPDetectionResult } from "../../services/contracts/ICAPDetectionService";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
+  import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { MotionColor, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
 
   interface Props {
     sequence: SequenceEntry | null;
@@ -135,6 +140,105 @@
   const effectiveColumnCount = $derived(
     manualColumnCount ?? smartDefaultColumns()
   );
+
+  // Zero Turns toggle - temporary view that removes all turns
+  let showZeroTurns = $state(false);
+
+  // Lazy-load orientation calculator to avoid SSR issues
+  let orientationCalculator: IOrientationCalculator | null = null;
+  function getOrientationCalculator(): IOrientationCalculator {
+    if (!orientationCalculator) {
+      orientationCalculator = resolve<IOrientationCalculator>(TYPES.IOrientationCalculator);
+    }
+    return orientationCalculator;
+  }
+
+  /**
+   * Create a zero-turns version of beats with proper orientation propagation.
+   * Uses the existing OrientationCalculator service which correctly handles:
+   * - PRO/STATIC with 0 turns: orientation unchanged
+   * - ANTI/DASH with 0 turns: orientation FLIPS
+   * - FLOAT: special handpath-based calculation
+   *
+   * This is VIEW-ONLY for analyzing CAP patterns without turn confusion.
+   */
+  function createZeroTurnsBeats(
+    beats: BeatData[],
+    startPos: StartPositionData | null
+  ): BeatData[] {
+    if (!startPos) return beats;
+
+    const calculator = getOrientationCalculator();
+
+    // Get initial orientations from start position
+    let blueOrientation =
+      startPos.motions[MotionColor.BLUE]?.endOrientation ?? Orientation.IN;
+    let redOrientation =
+      startPos.motions[MotionColor.RED]?.endOrientation ?? Orientation.IN;
+
+    return beats.map((beat) => {
+      const newMotions: Record<MotionColor, MotionData> = {} as Record<
+        MotionColor,
+        MotionData
+      >;
+
+      // Process blue motion
+      const blueMotion = beat.motions[MotionColor.BLUE];
+      if (blueMotion) {
+        // Create a temporary motion with 0 turns and current start orientation
+        const tempMotion = createMotionData({
+          ...blueMotion,
+          turns: 0,
+          startOrientation: blueOrientation,
+        });
+        // Use the canonical orientation calculator
+        const endOri = calculator.calculateEndOrientation(tempMotion, MotionColor.BLUE);
+
+        const zeroTurnMotion: MotionData = {
+          ...blueMotion,
+          turns: 0,
+          startOrientation: blueOrientation,
+          endOrientation: endOri,
+        };
+        newMotions[MotionColor.BLUE] = zeroTurnMotion;
+        blueOrientation = endOri; // Propagate for next beat
+      }
+
+      // Process red motion
+      const redMotion = beat.motions[MotionColor.RED];
+      if (redMotion) {
+        // Create a temporary motion with 0 turns and current start orientation
+        const tempMotion = createMotionData({
+          ...redMotion,
+          turns: 0,
+          startOrientation: redOrientation,
+        });
+        // Use the canonical orientation calculator
+        const endOri = calculator.calculateEndOrientation(tempMotion, MotionColor.RED);
+
+        const zeroTurnMotion: MotionData = {
+          ...redMotion,
+          turns: 0,
+          startOrientation: redOrientation,
+          endOrientation: endOri,
+        };
+        newMotions[MotionColor.RED] = zeroTurnMotion;
+        redOrientation = endOri; // Propagate for next beat
+      }
+
+      return {
+        ...beat,
+        motions: newMotions,
+      };
+    });
+  }
+
+  // The beats to display (either original or zero-turns version)
+  const displayBeats = $derived(
+    showZeroTurns && startPosition
+      ? createZeroTurnsBeats(parsedBeats, startPosition)
+      : parsedBeats
+  );
 </script>
 
 <div class="sequence-preview">
@@ -187,6 +291,14 @@
         >
           Start Pos
         </button>
+        <button
+          class="control-chip zero-turns"
+          class:active={showZeroTurns}
+          onclick={() => (showZeroTurns = !showZeroTurns)}
+          title="View sequence with all turns set to 0"
+        >
+          0T
+        </button>
         <span class="control-divider"></span>
         <span class="control-label">Columns:</span>
         <div class="chip-group">
@@ -216,7 +328,7 @@
         class:interactive={labelingMode !== "whole"}
       >
         <BeatGrid
-          beats={parsedBeats}
+          beats={displayBeats}
           startPosition={showStartPosition ? startPosition : null}
           {onBeatClick}
           selectedBeatNumber={labelingMode === "whole"
@@ -385,6 +497,17 @@
     background: rgba(99, 102, 241, 0.25);
     border-color: var(--primary-color);
     color: var(--foreground);
+  }
+
+  .control-chip.zero-turns {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .control-chip.zero-turns.active {
+    background: rgba(251, 191, 36, 0.25);
+    border-color: #fbbf24;
+    color: #fde047;
   }
 
   .beat-grid-wrapper {

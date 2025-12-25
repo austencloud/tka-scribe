@@ -8,6 +8,11 @@
  */
 
 import { injectable } from "inversify";
+import {
+  analyzeZoneCoverage,
+  type ZoneCoverageAnalysis,
+} from "$lib/features/create/generate/circular/domain/constants/circular-position-maps";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 // ============================================================================
 // TYPES
@@ -52,6 +57,7 @@ export interface PolyrhythmicCAPResult {
   spatialPeriod: PeriodAnalysis | null; // period that controls spatial position
   description: string;
   confidence: number; // 0-1 score
+  zoneCoverage?: ZoneCoverageAnalysis; // positional zone coverage analysis
 }
 
 // ============================================================================
@@ -154,9 +160,19 @@ export class PolyrhythmicDetectionService {
    */
   detectPolyrhythmic(rawSequence: Record<string, unknown>[]): PolyrhythmicCAPResult {
     // Filter to actual beats (exclude metadata at index 0)
-    const beats = rawSequence
-      .filter((item) => typeof item.beat === "number" && item.beat > 0)
-      .map(extractBeatProperties);
+    const beatRecords = rawSequence.filter(
+      (item) => typeof item.beat === "number" && item.beat > 0
+    );
+    const beats = beatRecords.map(extractBeatProperties);
+
+    // Extract end positions for zone coverage analysis
+    // The field is 'endPos' (string like "alpha1", "gamma12") which matches GridPosition enum values
+    const endPositions = beatRecords.map((item) => {
+      const endPos = item.endPos as string | undefined;
+      if (!endPos) return null;
+      // The JSON strings match GridPosition enum values directly
+      return endPos as GridPosition;
+    });
 
     const length = beats.length;
 
@@ -196,12 +212,46 @@ export class PolyrhythmicDetectionService {
     // A valid pair has LCM(p1, p2) = sequence length
     const validPairs: Array<{ p1: PeriodAnalysis; p2: PeriodAnalysis; lcmValue: number }> = [];
 
+    // IMPORTANT: Standard CAP intervals (halved/quartered) should NOT be considered
+    // for polyrhythmic detection - those are handled by beat-pair analysis
+    const halvedPeriod = length / 2;  // period that would indicate halved CAP
+    const quarteredPeriod = length / 4;  // period that would indicate quartered CAP
+    const isStandardCAPInterval = (period: number): boolean => {
+      return period === halvedPeriod || period === quarteredPeriod;
+    };
+
     for (let i = 0; i < analyses.length; i++) {
       for (let j = i + 1; j < analyses.length; j++) {
         const p1 = analyses[i];
         const p2 = analyses[j];
+        if (!p1 || !p2) continue;
         const lcmValue = lcm(p1.period, p2.period);
         if (lcmValue === length) {
+          // Skip pairs where BOTH periods are standard CAP intervals
+          // (this would just be a halved or quartered CAP, not polyrhythmic)
+          const p1IsStandard = isStandardCAPInterval(p1.period);
+          const p2IsStandard = isStandardCAPInterval(p2.period);
+
+          if (p1IsStandard && p2IsStandard) {
+            console.log("[PolyrhythmicDetection] Skipping pair - both are standard CAP intervals:", {
+              p1Period: p1.period,
+              p2Period: p2.period,
+              halvedPeriod,
+              quarteredPeriod,
+            });
+            continue;
+          }
+
+          // Also skip if EITHER period is halved - halved patterns are definitively CAPs
+          if (p1.period === halvedPeriod || p2.period === halvedPeriod) {
+            console.log("[PolyrhythmicDetection] Skipping pair - contains halved period:", {
+              p1Period: p1.period,
+              p2Period: p2.period,
+              halvedPeriod,
+            });
+            continue;
+          }
+
           validPairs.push({ p1, p2, lcmValue });
         }
       }
@@ -284,6 +334,10 @@ export class PolyrhythmicDetectionService {
         spatialPeriod: spatialPeriod.period,
       });
 
+      // Compute zone coverage for the sequence
+      const zoneCoverage = analyzeZoneCoverage(endPositions);
+      console.log("[PolyrhythmicDetection] Zone coverage:", zoneCoverage.summary);
+
       return {
         isPolyrhythmic: true,
         polyrhythm: `${smaller}:${larger}`,
@@ -292,6 +346,7 @@ export class PolyrhythmicDetectionService {
         spatialPeriod,
         description: this.generateDescription(motionPeriod, spatialPeriod, length),
         confidence: this.calculateConfidence(motionPeriod, spatialPeriod),
+        zoneCoverage,
       };
     }
 

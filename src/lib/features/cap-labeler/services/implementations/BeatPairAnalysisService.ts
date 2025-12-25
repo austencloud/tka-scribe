@@ -4,7 +4,13 @@ import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograp
 import type {
   IBeatPairAnalysisService,
   BeatPairRelationship,
+  LetterRelationshipInfo,
 } from "../contracts/IBeatPairAnalysisService";
+import {
+  INVERTED_LETTER_MAP,
+  COMPOUND_LETTER_MAP,
+  ALPHA_BETA_COUNTERPART_LETTER_MAP,
+} from "$lib/features/create/generate/circular/domain/constants/strict-cap-position-maps";
 
 /**
  * Service for analyzing relationships between beat pairs
@@ -62,11 +68,58 @@ export class BeatPairAnalysisService implements IBeatPairAnalysisService {
       transformations.push("FLIPPED + SWAPPED");
     }
 
+    // Analyze letter relationship
+    const letterRelationship = this.analyzeLetterRelationship(beat1, beat2);
+
     return {
       keyBeat: beat1.beatNumber,
       correspondingBeat: beat2.beatNumber,
       detectedTransformations:
         transformations.length > 0 ? transformations : ["UNKNOWN/COMPLEX"],
+      letterRelationship,
+    };
+  }
+
+  /**
+   * Analyze the letter-based relationship between two beats
+   */
+  private analyzeLetterRelationship(
+    beat1: BeatData,
+    beat2: BeatData
+  ): LetterRelationshipInfo | undefined {
+    const letter1 = beat1.letter;
+    const letter2 = beat2.letter;
+
+    if (!letter1 || !letter2) {
+      return undefined;
+    }
+
+    // Check each type of letter relationship
+    const isInverted = INVERTED_LETTER_MAP[letter1] === letter2;
+    const isCompound = COMPOUND_LETTER_MAP[letter1] === letter2;
+    const isAlphaBetaCounterpart =
+      ALPHA_BETA_COUNTERPART_LETTER_MAP[letter1] === letter2;
+
+    // Build summary
+    const relationshipNames: string[] = [];
+    if (isInverted) relationshipNames.push("Inverted");
+    if (isCompound) relationshipNames.push("Compound");
+    if (isAlphaBetaCounterpart) relationshipNames.push("α↔β Counterpart");
+
+    const summary =
+      relationshipNames.length > 0
+        ? `${letter1}↔${letter2}: ${relationshipNames.join(", ")}`
+        : `${letter1}↔${letter2}: No formal relationship`;
+
+    return {
+      letter1,
+      letter2,
+      relationships: {
+        isInverted,
+        isCompound,
+        isAlphaBetaCounterpart,
+      },
+      summary,
     };
   }
 

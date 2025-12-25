@@ -8,7 +8,7 @@
   import type { SequenceEntry } from "../../domain/models/sequence-models";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
-  type FilterMode = "needsVerification" | "verified";
+  type FilterMode = "all" | "needsVerification" | "verified";
   type SyncStatus = "idle" | "syncing" | "synced" | "error";
 
   interface Stats {

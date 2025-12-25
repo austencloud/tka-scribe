@@ -14,6 +14,7 @@
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
   import type { PolyrhythmicCAPResult } from "../../services/contracts/IPolyrhythmicDetectionService";
+  import type { CompoundPattern, AxisAlternatingPattern } from "../../services/contracts/ICAPDetectionService";
   import {
     formatDesignation,
     formatSectionBeats,
@@ -29,6 +30,9 @@
     isModular?: boolean;
     isPolyrhythmic?: boolean;
     polyrhythmic?: PolyrhythmicCAPResult | null;
+    compoundPattern?: CompoundPattern | null;
+    isAxisAlternating?: boolean;
+    axisAlternatingPattern?: AxisAlternatingPattern | null;
     needsVerification?: boolean;
     autoDetectedDesignations?: CAPDesignation[];
     candidateDesignations?: CandidateDesignation[];
@@ -55,6 +59,9 @@
     isModular = false,
     isPolyrhythmic = false,
     polyrhythmic = null,
+    compoundPattern = null,
+    isAxisAlternating = false,
+    axisAlternatingPattern = null,
     needsVerification = false,
     autoDetectedDesignations = [],
     candidateDesignations = [],
@@ -72,6 +79,34 @@
     onConfirmAllCandidates,
     canSave,
   }: Props = $props();
+
+  // Copy detection info to clipboard for debugging
+  let copySuccess = $state(false);
+
+  async function copyDetectionInfo() {
+    const detectionInfo = {
+      candidateDesignations,
+      autoDetectedDesignations,
+      beatPairs: autoDetectedBeatPairs,
+      beatPairGroups: autoDetectedBeatPairGroups,
+      isFreeform,
+      isModular,
+      isPolyrhythmic,
+      polyrhythmic,
+      compoundPattern,
+      wholeDesignations,
+      sectionDesignations,
+      beatPairDesignations,
+    };
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(detectionInfo, null, 2));
+      copySuccess = true;
+      setTimeout(() => { copySuccess = false; }, 2000);
+    } catch (err) {
+      console.error("Failed to copy detection info:", err);
+    }
+  }
 
   // Format intervals for display
   function formatIntervals(d: CAPDesignation): string {
@@ -128,7 +163,17 @@
 </script>
 
 <div class="designations-panel">
-  <h3 class="panel-title">Designations</h3>
+  <div class="panel-header">
+    <h3 class="panel-title">Designations</h3>
+    <button
+      class="copy-btn"
+      class:success={copySuccess}
+      onclick={copyDetectionInfo}
+      title="Copy detection info to clipboard"
+    >
+      <FontAwesomeIcon icon={copySuccess ? "check" : "copy"} size="0.85em" />
+    </button>
+  </div>
 
   <!-- Multiple Candidate Designations -->
   {#if needsVerification && pendingCandidates.length > 0}
@@ -215,37 +260,116 @@
     </div>
   {/if}
 
-  <!-- Auto-detected beat-pair analysis -->
-  {#if autoDetectedBeatPairs.length > 0}
+  <!-- Auto-detected beat-pair analysis (hide for polyrhythmic - spatial transforms don't apply) -->
+  {#if autoDetectedBeatPairs.length > 0 && !isPolyrhythmic}
     <BeatPairAnalysisDisplay
       beatPairs={autoDetectedBeatPairs}
       beatPairGroups={autoDetectedBeatPairGroups}
       collapsed={false}
+      {isAxisAlternating}
+      {axisAlternatingPattern}
     />
   {/if}
 
-  <!-- Polyrhythmic detection results (runs alongside beat-pair) -->
+  <!-- Compound pattern display -->
+  {#if compoundPattern}
+    <div class="compound-section">
+      <div class="compound-header">
+        <FontAwesomeIcon icon="layer-group" size="1em" />
+        <span>Compound Pattern</span>
+      </div>
+      <div class="compound-description">{compoundPattern.description}</div>
+      <div class="compound-details">
+        <div class="interval-row">
+          <span class="interval-badge quartered">¼</span>
+          <span class="interval-label">{compoundPattern.quarteredTransformations.join(" + ")}</span>
+        </div>
+        <div class="interval-row">
+          <span class="interval-badge halved">½</span>
+          <span class="interval-label">{compoundPattern.halvedTransformations.join(" + ")}</span>
+        </div>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Polyrhythmic detection results -->
   {#if isPolyrhythmic && polyrhythmic}
     <div class="polyrhythmic-section">
       <div class="polyrhythmic-header">
         <FontAwesomeIcon icon="wave-square" size="1em" />
         <span>Polyrhythmic Pattern: <strong>{polyrhythmic.polyrhythm}</strong></span>
       </div>
-      <div class="polyrhythmic-description">
-        {polyrhythmic.description}
+
+      <div class="polyrhythmic-details">
+        {#if polyrhythmic.motionPeriod}
+          <div class="period-row">
+            <span class="period-name">Motion Period</span>
+            <span class="period-num">{polyrhythmic.motionPeriod.period}</span>
+            <span class="period-desc">controls rotation direction</span>
+          </div>
+        {/if}
+        {#if polyrhythmic.spatialPeriod}
+          <div class="period-row">
+            <span class="period-name">Spatial Period</span>
+            <span class="period-num">{polyrhythmic.spatialPeriod.period}</span>
+            <span class="period-desc">controls position</span>
+          </div>
+        {/if}
       </div>
-      {#if polyrhythmic.motionPeriod}
-        <div class="period-info">
-          <span class="period-label">Motion Period:</span>
-          <span class="period-value">{polyrhythmic.motionPeriod.period}</span>
+
+      <!-- Zone coverage analysis -->
+      {#if polyrhythmic.zoneCoverage}
+        {@const zc = polyrhythmic.zoneCoverage}
+        <div class="zone-coverage">
+          <div class="zone-header">
+            <span class="zone-title">Zone Coverage</span>
+            {#if zc.summary.isComplete}
+              <span class="zone-badge complete">Complete</span>
+            {:else}
+              <span class="zone-badge partial">{zc.summary.totalZonesCovered}/4</span>
+            {/if}
+          </div>
+          <div class="zone-grid">
+            <div class="zone-row" class:active={zc.summary.alphaCount > 0}>
+              <span class="zone-label">α</span>
+              <div class="zone-dots">
+                {#each Array(8) as _, i}
+                  <span class="zone-dot" class:filled={i < zc.summary.alphaCount}></span>
+                {/each}
+              </div>
+              <span class="zone-count">{zc.summary.alphaCount}</span>
+            </div>
+            <div class="zone-row" class:active={zc.summary.betaCount > 0}>
+              <span class="zone-label">β</span>
+              <div class="zone-dots">
+                {#each Array(8) as _, i}
+                  <span class="zone-dot" class:filled={i < zc.summary.betaCount}></span>
+                {/each}
+              </div>
+              <span class="zone-count">{zc.summary.betaCount}</span>
+            </div>
+            <div class="zone-row" class:active={zc.summary.gamma1to8Count > 0}>
+              <span class="zone-label">γ₁₋₈</span>
+              <div class="zone-dots">
+                {#each Array(8) as _, i}
+                  <span class="zone-dot" class:filled={i < zc.summary.gamma1to8Count}></span>
+                {/each}
+              </div>
+              <span class="zone-count">{zc.summary.gamma1to8Count}</span>
+            </div>
+            <div class="zone-row" class:active={zc.summary.gamma9to16Count > 0}>
+              <span class="zone-label">γ₉₋₁₆</span>
+              <div class="zone-dots">
+                {#each Array(8) as _, i}
+                  <span class="zone-dot" class:filled={i < zc.summary.gamma9to16Count}></span>
+                {/each}
+              </div>
+              <span class="zone-count">{zc.summary.gamma9to16Count}</span>
+            </div>
+          </div>
         </div>
       {/if}
-      {#if polyrhythmic.spatialPeriod}
-        <div class="period-info">
-          <span class="period-label">Spatial Period:</span>
-          <span class="period-value">{polyrhythmic.spatialPeriod.period}</span>
-        </div>
-      {/if}
+
       <div class="confidence-bar">
         <span class="confidence-label">Confidence:</span>
         <div class="confidence-track">
@@ -308,8 +432,14 @@
         </div>
       {/each}
 
+      <!-- Axis-Alternating indicator (structured multi-axis pattern) -->
+      {#if isAxisAlternating && axisAlternatingPattern}
+        <div class="designation-item axis-alternating">
+          <span class="designation-badge">A</span>
+          <span class="designation-label">{axisAlternatingPattern.description}</span>
+        </div>
       <!-- Modular indicator (multiple recognizable patterns) -->
-      {#if isModular}
+      {:else if isModular}
         <div class="designation-item modular">
           <span class="designation-badge">M</span>
           <span class="designation-label">Modular (multiple patterns)</span>
@@ -355,6 +485,13 @@
     border-radius: 12px;
   }
 
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+  }
+
   .panel-title {
     margin: 0;
     font-size: var(--font-size-xs);
@@ -362,6 +499,32 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--muted-foreground);
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: var(--transition-micro);
+  }
+
+  .copy-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--foreground);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .copy-btn.success {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #22c55e;
   }
 
   .designations-list {
@@ -600,6 +763,11 @@
     border-color: rgba(234, 179, 8, 0.25);
   }
 
+  .designation-item.axis-alternating {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(168, 85, 247, 0.12) 100%);
+    border-color: rgba(20, 184, 166, 0.35);
+  }
+
   .designation-badge {
     display: flex;
     align-items: center;
@@ -635,6 +803,11 @@
   .modular .designation-badge {
     background: rgba(234, 179, 8, 0.3);
     color: #fde047;
+  }
+
+  .axis-alternating .designation-badge {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%);
+    color: #5eead4;
   }
 
   .designation-label {
@@ -735,6 +908,77 @@
     box-shadow: none;
   }
 
+  /* Compound Pattern Section */
+  .compound-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(99, 102, 241, 0.06) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    border-radius: 10px;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .compound-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: #3b82f6;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+
+  .compound-description {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--foreground);
+    padding-left: 1.5em;
+  }
+
+  .compound-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 1.5em;
+  }
+
+  .interval-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+  }
+
+  .interval-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .interval-badge.quartered {
+    background: rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+  }
+
+  .interval-badge.halved {
+    background: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+  }
+
+  .interval-label {
+    font-size: var(--font-size-sm);
+    color: var(--foreground);
+    text-transform: capitalize;
+  }
+
   /* Polyrhythmic Detection Section */
   .polyrhythmic-section {
     display: flex;
@@ -760,29 +1004,141 @@
     font-weight: 700;
   }
 
-  .polyrhythmic-description {
-    font-size: var(--font-size-xs);
-    color: var(--muted-foreground);
-    line-height: 1.4;
-    padding-left: 1.5em;
+  .polyrhythmic-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
-  .period-info {
+  .period-row {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    padding-left: 1.5em;
-    font-size: var(--font-size-xs);
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    font-size: var(--font-size-sm);
   }
 
-  .period-label {
+  .period-name {
     color: var(--muted-foreground);
+    font-weight: 500;
+    min-width: 100px;
   }
 
-  .period-value {
-    color: var(--foreground);
-    font-weight: 600;
+  .period-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(168, 85, 247, 0.3);
+    border-radius: 6px;
+    color: #c4b5fd;
+    font-weight: 700;
     font-family: var(--font-mono, monospace);
+  }
+
+  .period-desc {
+    color: var(--muted-foreground);
+    font-size: var(--font-size-xs);
+    font-style: italic;
+  }
+
+  /* Zone coverage display */
+  .zone-coverage {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+  }
+
+  .zone-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .zone-title {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .zone-badge {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .zone-badge.complete {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+  }
+
+  .zone-badge.partial {
+    background: rgba(234, 179, 8, 0.2);
+    color: #eab308;
+    border: 1px solid rgba(234, 179, 8, 0.4);
+  }
+
+  .zone-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .zone-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 4px 6px;
+    border-radius: 4px;
+    opacity: 0.5;
+    transition: opacity 0.15s ease;
+  }
+
+  .zone-row.active {
+    opacity: 1;
+    background: rgba(168, 85, 247, 0.1);
+  }
+
+  .zone-label {
+    width: 32px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #c4b5fd;
+  }
+
+  .zone-dots {
+    display: flex;
+    gap: 3px;
+    flex: 1;
+  }
+
+  .zone-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.15s ease;
+  }
+
+  .zone-dot.filled {
+    background: #a855f7;
+  }
+
+  .zone-count {
+    width: 16px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    text-align: right;
   }
 
   .confidence-bar {

@@ -103,7 +103,7 @@ export interface LabeledSequence {
   notes: string;
 }
 
-export type FilterMode = "needsVerification" | "verified";
+export type FilterMode = "all" | "needsVerification" | "verified";
 
 /**
  * Helper: Get human-readable description of transformation intervals

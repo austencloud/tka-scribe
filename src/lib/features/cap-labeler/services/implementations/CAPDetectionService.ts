@@ -1,1294 +1,618 @@
-import { injectable, inject, optional } from "inversify";
-import type { SequenceEntry } from "../../domain/models/sequence-models";
+import { injectable, inject, optional } from 'inversify';
+import type { SequenceEntry } from '../../domain/models/sequence-models';
 import type {
-  ICAPDetectionService,
-  CAPDetectionResult,
-} from "../contracts/ICAPDetectionService";
+	ICAPDetectionService,
+	CAPDetectionResult,
+	CompoundPattern,
+	ModularPattern
+} from '../contracts/ICAPDetectionService';
+import type { TransformationIntervals } from '../../domain/models/label-models';
+import type { IBeatComparisonOrchestrator } from '../contracts/IBeatComparisonOrchestrator';
+import type { ITransformationAnalysisService } from '../contracts/ITransformationAnalysisService';
+import type { ICandidateFormattingService } from '../contracts/ICandidateFormattingService';
 import type {
-  CandidateDesignation,
-  BeatPairGroups,
-  TransformationIntervals,
-} from "../../domain/models/label-models";
-import type { BeatPairRelationship } from "../contracts/IBeatPairAnalysisService";
-import type { ComponentId } from "../../domain/constants/cap-components";
-import type { IPolyrhythmicDetectionService, PolyrhythmicCAPResult } from "../contracts/IPolyrhythmicDetectionService";
-import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-
-// ============================================================================
-// Position Transformation Maps
-// ============================================================================
-
-const ROTATE_180: Record<string, string> = {
-  n: "s", s: "n", e: "w", w: "e",
-  ne: "sw", sw: "ne", nw: "se", se: "nw",
-};
-
-const ROTATE_90_CCW: Record<string, string> = {
-  n: "w", w: "s", s: "e", e: "n",
-  ne: "nw", nw: "sw", sw: "se", se: "ne",
-};
-
-const ROTATE_90_CW: Record<string, string> = {
-  n: "e", e: "s", s: "w", w: "n",
-  ne: "se", se: "sw", sw: "nw", nw: "ne",
-};
-
-const MIRROR_VERTICAL: Record<string, string> = {
-  n: "n", s: "s", e: "w", w: "e",
-  ne: "nw", nw: "ne", se: "sw", sw: "se",
-};
-
-const FLIP_HORIZONTAL: Record<string, string> = {
-  n: "s", s: "n", e: "e", w: "w",
-  ne: "se", se: "ne", nw: "sw", sw: "nw",
-};
-
-// ============================================================================
-// Transformation Priority (simpler explanations first)
-// ============================================================================
-
-const TRANSFORMATION_PRIORITY = [
-  // ==============================================
-  // IDENTITY (highest priority - simplest explanation)
-  // ==============================================
-  "repeated", // Literally the same motion repeated, no transformation
-
-  // ==============================================
-  // SAME-COLOR TRANSFORMATIONS (high priority)
-  // These are simpler explanations - both props do the same thing
-  // ==============================================
-
-  // Pure rotations (same colors)
-  "rotated_90_cw",
-  "rotated_90_ccw",
-  "rotated_180",
-  // Rotation + inversion (same colors)
-  "rotated_90_cw_inverted",
-  "rotated_90_ccw_inverted",
-  "rotated_180_inverted",
-  // Flip/mirror (same colors)
-  "flipped",
-  "flipped_inverted",
-  "mirrored",
-  "mirrored_inverted",
-  // Pure inversion (same colors, same positions)
-  "inverted",
-
-  // ==============================================
-  // SWAPPED TRANSFORMATIONS (lower priority)
-  // More complex - props swap roles
-  // ==============================================
-
-  // Rotation + swap
-  "rotated_90_cw_swapped",
-  "rotated_90_ccw_swapped",
-  "rotated_180_swapped",
-  // Triple compound (rotation + swap + invert)
-  "rotated_90_cw_swapped_inverted",
-  "rotated_90_ccw_swapped_inverted",
-  "rotated_180_swapped_inverted",
-  // Mirror + swap
-  "mirrored_swapped",
-  "mirrored_swapped_inverted",
-  // Pure swap + inversion
-  "swapped_inverted",
-  // Pure swap
-  "swapped",
-];
-
-// ============================================================================
-// Internal Types
-// ============================================================================
-
-interface ExtractedBeat {
-  beatNumber: number;
-  letter: string;
-  startPos: string;
-  endPos: string;
-  blue: {
-    startLoc: string;
-    endLoc: string;
-    motionType: string;
-    propRotDir: string;
-  };
-  red: {
-    startLoc: string;
-    endLoc: string;
-    motionType: string;
-    propRotDir: string;
-  };
-}
-
-interface InternalBeatPair {
-  keyBeat: number;
-  correspondingBeat: number;
-  rawTransformations: string[];
-  detectedTransformations: string[];
-  allValidTransformations: string[]; // All formatted transformations before priority filtering
-}
-
-interface CandidateInfo {
-  transformation: string;
-  components: ComponentId[];
-  intervals: TransformationIntervals;
-  rotationDirection: "cw" | "ccw" | null;
-  label: string;
-  description: string;
-}
-
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
-function invertMotionType(type: string): string {
-  if (type === "pro") return "anti";
-  if (type === "anti") return "pro";
-  return type;
-}
+	IPolyrhythmicDetectionService,
+	PolyrhythmicCAPResult
+} from '../contracts/IPolyrhythmicDetectionService';
+import type { InternalBeatPair, CandidateInfo } from '../../domain/models/internal-beat-models';
+import type { ComponentId } from '../../domain/constants/cap-components';
+import { CAPLabelerTypes } from '$lib/shared/inversify/types/cap-labeler.types';
 
 /**
- * Invert rotation direction (cw ↔ ccw)
- * "Inverted" in CAP terminology means the rotation direction is flipped
+ * Service for detecting Circular Alternating Patterns (CAPs) in sequences.
+ * Orchestrates the detection process using specialized services.
  */
-function invertRotDir(dir: string): string {
-  if (dir === "cw") return "ccw";
-  if (dir === "ccw") return "cw";
-  return dir; // noRotation stays the same
-}
-
-/**
- * Check if rotation directions indicate an "inversion" for ROTATION transformations.
- * For rotations (90°, 180°), rotation direction should naturally STAY THE SAME.
- * Returns true if rotation direction changed (unexpected = inverted).
- */
-function areRotDirsInvertedForRotation(
-  b1BluePropRotDir: string,
-  b1RedPropRotDir: string,
-  b2BluePropRotDir: string,
-  b2RedPropRotDir: string
-): boolean {
-  const b1BlueHasRot = b1BluePropRotDir && b1BluePropRotDir !== "norotation";
-  const b1RedHasRot = b1RedPropRotDir && b1RedPropRotDir !== "norotation";
-  const b2BlueHasRot = b2BluePropRotDir && b2BluePropRotDir !== "norotation";
-  const b2RedHasRot = b2RedPropRotDir && b2RedPropRotDir !== "norotation";
-
-  // For rotations: "inverted" means rotation direction CHANGED (when it should stay same)
-  let blueInverted = false;
-  let redInverted = false;
-
-  if (b1BlueHasRot && b2BlueHasRot) {
-    // For rotation, same rot dir is expected. Different = inverted.
-    blueInverted = b1BluePropRotDir !== b2BluePropRotDir;
-  }
-  if (b1RedHasRot && b2RedHasRot) {
-    redInverted = b1RedPropRotDir !== b2RedPropRotDir;
-  }
-
-  // Consider inverted if at least one color shows inversion
-  if (blueInverted && redInverted) return true;
-  if (blueInverted && !b1RedHasRot && !b2RedHasRot) return true;
-  if (redInverted && !b1BlueHasRot && !b2BlueHasRot) return true;
-
-  return false;
-}
-
-/**
- * Check if rotation directions indicate an "inversion" for MIRROR/FLIP transformations.
- * For mirror/flip, rotation direction should naturally FLIP (cw↔ccw) due to reflection.
- * Returns true if rotation direction stayed the SAME (unexpected = inverted).
- */
-function areRotDirsInvertedForMirrorFlip(
-  b1BluePropRotDir: string,
-  b1RedPropRotDir: string,
-  b2BluePropRotDir: string,
-  b2RedPropRotDir: string
-): boolean {
-  const b1BlueHasRot = b1BluePropRotDir && b1BluePropRotDir !== "norotation";
-  const b1RedHasRot = b1RedPropRotDir && b1RedPropRotDir !== "norotation";
-  const b2BlueHasRot = b2BluePropRotDir && b2BluePropRotDir !== "norotation";
-  const b2RedHasRot = b2RedPropRotDir && b2RedPropRotDir !== "norotation";
-
-  // For mirror/flip: rotation direction should naturally flip.
-  // "Inverted" means it STAYED THE SAME (someone counteracted the natural flip)
-  let blueInverted = false;
-  let redInverted = false;
-
-  if (b1BlueHasRot && b2BlueHasRot) {
-    // For mirror/flip, different rot dir is expected. Same = inverted.
-    blueInverted = b1BluePropRotDir === b2BluePropRotDir;
-  }
-  if (b1RedHasRot && b2RedHasRot) {
-    redInverted = b1RedPropRotDir === b2RedPropRotDir;
-  }
-
-  // Consider inverted if at least one color shows unexpected same direction
-  if (blueInverted && redInverted) return true;
-  if (blueInverted && !b1RedHasRot && !b2RedHasRot) return true;
-  if (redInverted && !b1BlueHasRot && !b2BlueHasRot) return true;
-
-  return false;
-}
-
-/**
- * Check if a beat pair has rotation data that can be used to determine inversion.
- * Returns true if at least one color in both beats has rotation direction.
- */
-function hasRotationData(
-  b1BluePropRotDir: string,
-  b1RedPropRotDir: string,
-  b2BluePropRotDir: string,
-  b2RedPropRotDir: string
-): boolean {
-  const b1BlueHasRot = Boolean(b1BluePropRotDir && b1BluePropRotDir !== "norotation");
-  const b1RedHasRot = Boolean(b1RedPropRotDir && b1RedPropRotDir !== "norotation");
-  const b2BlueHasRot = Boolean(b2BluePropRotDir && b2BluePropRotDir !== "norotation");
-  const b2RedHasRot = Boolean(b2RedPropRotDir && b2RedPropRotDir !== "norotation");
-
-  // Has rotation data if at least one color has rotation in BOTH beats
-  return (b1BlueHasRot && b2BlueHasRot) || (b1RedHasRot && b2RedHasRot);
-}
-
-function extractBeats(sequence: SequenceEntry): ExtractedBeat[] {
-  const raw = sequence.fullMetadata?.sequence;
-  if (!raw) return [];
-
-  return raw
-    .filter((b): b is typeof b & { beat: number } => typeof b.beat === "number" && b.beat >= 1)
-    .map((b) => ({
-      beatNumber: b.beat,
-      letter: b.letter || "",
-      startPos: b.startPos || "",
-      endPos: b.endPos || "",
-      blue: {
-        startLoc: b.blueAttributes?.startLoc?.toLowerCase() || "",
-        endLoc: b.blueAttributes?.endLoc?.toLowerCase() || "",
-        motionType: b.blueAttributes?.motionType?.toLowerCase() || "",
-        propRotDir: b.blueAttributes?.propRotDir?.toLowerCase() || "",
-      },
-      red: {
-        startLoc: b.redAttributes?.startLoc?.toLowerCase() || "",
-        endLoc: b.redAttributes?.endLoc?.toLowerCase() || "",
-        motionType: b.redAttributes?.motionType?.toLowerCase() || "",
-        propRotDir: b.redAttributes?.propRotDir?.toLowerCase() || "",
-      },
-    }));
-}
-
-/**
- * Compare two beats and identify ALL transformations between them
- */
-function compareBeatPair(beat1: ExtractedBeat, beat2: ExtractedBeat): string[] {
-  const b1Blue = beat1.blue, b1Red = beat1.red;
-  const b2Blue = beat2.blue, b2Red = beat2.red;
-
-  if (!b1Blue?.startLoc || !b2Blue?.startLoc || !b1Red?.startLoc || !b2Red?.startLoc) {
-    return [];
-  }
-
-  const transformations: string[] = [];
-
-  // Check if beats are identical (repeated)
-  const isRepeated =
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
-    b1Blue.motionType === b2Blue.motionType &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc &&
-    b1Red.motionType === b2Red.motionType;
-
-  if (isRepeated) {
-    transformations.push("repeated");
-  }
-
-  // Position checks for swapped colors
-  const positions180Swapped =
-    ROTATE_180[b1Red.startLoc] === b2Blue.startLoc &&
-    ROTATE_180[b1Red.endLoc] === b2Blue.endLoc &&
-    ROTATE_180[b1Blue.startLoc] === b2Red.startLoc &&
-    ROTATE_180[b1Blue.endLoc] === b2Red.endLoc;
-
-  const positions90CCWSwapped =
-    ROTATE_90_CCW[b1Red.startLoc] === b2Blue.startLoc &&
-    ROTATE_90_CCW[b1Red.endLoc] === b2Blue.endLoc &&
-    ROTATE_90_CCW[b1Blue.startLoc] === b2Red.startLoc &&
-    ROTATE_90_CCW[b1Blue.endLoc] === b2Red.endLoc;
-
-  const positions90CWSwapped =
-    ROTATE_90_CW[b1Red.startLoc] === b2Blue.startLoc &&
-    ROTATE_90_CW[b1Red.endLoc] === b2Blue.endLoc &&
-    ROTATE_90_CW[b1Blue.startLoc] === b2Red.startLoc &&
-    ROTATE_90_CW[b1Blue.endLoc] === b2Red.endLoc;
-
-  // Rotation direction checks for swapped colors
-  // For ROTATIONS: same rot dir is expected, different = inverted
-  const rotDirSameSwapped =
-    b1Red.propRotDir === b2Blue.propRotDir &&
-    b1Blue.propRotDir === b2Red.propRotDir;
-
-  const rotDirInvertedSwappedForRotation = areRotDirsInvertedForRotation(
-    b1Red.propRotDir, b1Blue.propRotDir,  // swapped: red→blue, blue→red
-    b2Blue.propRotDir, b2Red.propRotDir
-  );
-
-  // Compound: rotation + swap (rotation expects same rot dir)
-  if (positions180Swapped && rotDirSameSwapped) {
-    transformations.push("rotated_180_swapped");
-  }
-  if (positions180Swapped && rotDirInvertedSwappedForRotation) {
-    transformations.push("rotated_180_swapped_inverted");
-  }
-  if (positions90CCWSwapped && rotDirSameSwapped) {
-    transformations.push("rotated_90_ccw_swapped");
-  }
-  if (positions90CCWSwapped && rotDirInvertedSwappedForRotation) {
-    transformations.push("rotated_90_ccw_swapped_inverted");
-  }
-  if (positions90CWSwapped && rotDirSameSwapped) {
-    transformations.push("rotated_90_cw_swapped");
-  }
-  if (positions90CWSwapped && rotDirInvertedSwappedForRotation) {
-    transformations.push("rotated_90_cw_swapped_inverted");
-  }
-
-  // Mirrored + swapped (positions check - separate from motion type)
-  const positionsMirroredSwappedOnly =
-    MIRROR_VERTICAL[b1Red.startLoc] === b2Blue.startLoc &&
-    MIRROR_VERTICAL[b1Red.endLoc] === b2Blue.endLoc &&
-    MIRROR_VERTICAL[b1Blue.startLoc] === b2Red.startLoc &&
-    MIRROR_VERTICAL[b1Blue.endLoc] === b2Red.endLoc;
-
-  // Motion type checks for swapped colors
-  const motionTypesSameSwapped =
-    b1Red.motionType === b2Blue.motionType &&
-    b1Blue.motionType === b2Red.motionType;
-
-  // Check if motion types are actually invertible (pro/anti only)
-  const hasInvertibleMotionTypes =
-    (b1Red.motionType === "pro" || b1Red.motionType === "anti") &&
-    (b1Blue.motionType === "pro" || b1Blue.motionType === "anti") &&
-    (b2Blue.motionType === "pro" || b2Blue.motionType === "anti") &&
-    (b2Red.motionType === "pro" || b2Red.motionType === "anti");
-
-  // Only check motion type inversion if types are invertible (pro/anti)
-  const motionTypesInvertedSwapped = hasInvertibleMotionTypes &&
-    invertMotionType(b1Red.motionType) === b2Blue.motionType &&
-    invertMotionType(b1Blue.motionType) === b2Red.motionType;
-
-  // For mirror+swap: rotation direction should FLIP (due to mirror) across swapped colors
-  // "Inverted" means: motion types inverted (pro↔anti) OR rot dirs stayed same (when should flip)
-  if (positionsMirroredSwappedOnly) {
-    // Check rotation directions for swapped colors under mirror
-    const canDetermineRotInversion = hasRotationData(
-      b1Red.propRotDir, b1Blue.propRotDir,
-      b2Blue.propRotDir, b2Red.propRotDir
-    );
-
-    // For mirror+swap: inverted means rot dirs stayed SAME (when they should flip)
-    const rotDirInvertedForMirrorSwap = canDetermineRotInversion && areRotDirsInvertedForMirrorFlip(
-      b1Red.propRotDir, b1Blue.propRotDir, // swapped: red→blue, blue→red
-      b2Blue.propRotDir, b2Red.propRotDir
-    );
-
-    // Determine if this is inverted based on motion types OR rotation direction
-    // Motion type inversion (pro↔anti) is a strong indicator of "inverted"
-    if (motionTypesInvertedSwapped) {
-      // Motion types are inverted (pro↔anti) - this is mirrored_swapped_inverted
-      transformations.push("mirrored_swapped_inverted");
-    } else if (motionTypesSameSwapped) {
-      // Motion types same - check rotation direction for inversion
-      if (!canDetermineRotInversion) {
-        // Can't determine from rotation - push both
-        transformations.push("mirrored_swapped");
-        transformations.push("mirrored_swapped_inverted");
-      } else if (rotDirInvertedForMirrorSwap) {
-        transformations.push("mirrored_swapped_inverted");
-      } else {
-        transformations.push("mirrored_swapped");
-      }
-    } else if (!hasInvertibleMotionTypes && (
-      // For static/dash motion types, check if they match after swap (regardless of inversion)
-      b1Red.motionType === b2Blue.motionType &&
-      b1Blue.motionType === b2Red.motionType
-    )) {
-      // Non-invertible motion types (static/dash) - use rotation direction only
-      if (!canDetermineRotInversion) {
-        transformations.push("mirrored_swapped");
-        transformations.push("mirrored_swapped_inverted");
-      } else if (rotDirInvertedForMirrorSwap) {
-        transformations.push("mirrored_swapped_inverted");
-      } else {
-        transformations.push("mirrored_swapped");
-      }
-    }
-    // If motion types don't match at all, positions match but it's not a valid mirror+swap
-  }
-
-  // Position checks for same colors
-  const positions90CCW =
-    ROTATE_90_CCW[b1Blue.startLoc] === b2Blue.startLoc &&
-    ROTATE_90_CCW[b1Blue.endLoc] === b2Blue.endLoc &&
-    ROTATE_90_CCW[b1Red.startLoc] === b2Red.startLoc &&
-    ROTATE_90_CCW[b1Red.endLoc] === b2Red.endLoc;
-
-  const positions180 =
-    ROTATE_180[b1Blue.startLoc] === b2Blue.startLoc &&
-    ROTATE_180[b1Blue.endLoc] === b2Blue.endLoc &&
-    ROTATE_180[b1Red.startLoc] === b2Red.startLoc &&
-    ROTATE_180[b1Red.endLoc] === b2Red.endLoc;
-
-  const positions90CW =
-    ROTATE_90_CW[b1Blue.startLoc] === b2Blue.startLoc &&
-    ROTATE_90_CW[b1Blue.endLoc] === b2Blue.endLoc &&
-    ROTATE_90_CW[b1Red.startLoc] === b2Red.startLoc &&
-    ROTATE_90_CW[b1Red.endLoc] === b2Red.endLoc;
-
-  // Rotation direction checks for same colors
-  // For ROTATIONS: same rot dir is expected, different = inverted
-  const rotDirSameColors =
-    b1Blue.propRotDir === b2Blue.propRotDir &&
-    b1Red.propRotDir === b2Red.propRotDir;
-
-  const rotDirInvertedForRotation = areRotDirsInvertedForRotation(
-    b1Blue.propRotDir, b1Red.propRotDir,
-    b2Blue.propRotDir, b2Red.propRotDir
-  );
-
-  // Check if we have rotation data to determine inversion
-  const canDetermineInversion = hasRotationData(
-    b1Blue.propRotDir, b1Red.propRotDir,
-    b2Blue.propRotDir, b2Red.propRotDir
-  );
-
-  // Pure rotations (rotation expects same rot dir)
-  // When we can't determine inversion (noRotation), push BOTH variants
-  // so this beat pair is compatible with either in contextual grouping
-  if (positions90CCW) {
-    if (!canDetermineInversion) {
-      // Can't determine inversion - compatible with both
-      transformations.push("rotated_90_ccw");
-      transformations.push("rotated_90_ccw_inverted");
-    } else if (rotDirSameColors) {
-      transformations.push("rotated_90_ccw");
-    } else if (rotDirInvertedForRotation) {
-      transformations.push("rotated_90_ccw_inverted");
-    }
-  }
-  if (positions180) {
-    if (!canDetermineInversion) {
-      // Can't determine inversion - compatible with both
-      transformations.push("rotated_180");
-      transformations.push("rotated_180_inverted");
-    } else if (rotDirSameColors) {
-      transformations.push("rotated_180");
-    } else if (rotDirInvertedForRotation) {
-      transformations.push("rotated_180_inverted");
-    }
-  }
-  if (positions90CW) {
-    if (!canDetermineInversion) {
-      // Can't determine inversion - compatible with both
-      transformations.push("rotated_90_cw");
-      transformations.push("rotated_90_cw_inverted");
-    } else if (rotDirSameColors) {
-      transformations.push("rotated_90_cw");
-    } else if (rotDirInvertedForRotation) {
-      transformations.push("rotated_90_cw_inverted");
-    }
-  }
-
-  // Mirror (same colors)
-  const positionsMirrored =
-    MIRROR_VERTICAL[b1Blue.startLoc] === b2Blue.startLoc &&
-    MIRROR_VERTICAL[b1Blue.endLoc] === b2Blue.endLoc &&
-    MIRROR_VERTICAL[b1Red.startLoc] === b2Red.startLoc &&
-    MIRROR_VERTICAL[b1Red.endLoc] === b2Red.endLoc;
-
-  // For MIRROR/FLIP: rotation direction naturally FLIPS due to reflection.
-  // "Inverted" means rot dir stayed SAME (someone counteracted the natural flip)
-  const rotDirInvertedForMirrorFlip = areRotDirsInvertedForMirrorFlip(
-    b1Blue.propRotDir, b1Red.propRotDir,
-    b2Blue.propRotDir, b2Red.propRotDir
-  );
-
-  // Mirror: rot dir DIFFERENT is expected (plain mirrored), SAME is inverted
-  // When we can't determine (noRotation), push both for contextual grouping
-  if (positionsMirrored) {
-    if (!canDetermineInversion) {
-      transformations.push("mirrored");
-      transformations.push("mirrored_inverted");
-    } else if (!rotDirInvertedForMirrorFlip) {
-      transformations.push("mirrored");
-    } else {
-      transformations.push("mirrored_inverted");
-    }
-  }
-
-  // Flip
-  const positionsFlipped =
-    FLIP_HORIZONTAL[b1Blue.startLoc] === b2Blue.startLoc &&
-    FLIP_HORIZONTAL[b1Blue.endLoc] === b2Blue.endLoc &&
-    FLIP_HORIZONTAL[b1Red.startLoc] === b2Red.startLoc &&
-    FLIP_HORIZONTAL[b1Red.endLoc] === b2Red.endLoc;
-
-  // Flip: rot dir DIFFERENT is expected (plain flipped), SAME is inverted
-  // When we can't determine (noRotation), push both for contextual grouping
-  if (positionsFlipped) {
-    if (!canDetermineInversion) {
-      transformations.push("flipped");
-      transformations.push("flipped_inverted");
-    } else if (!rotDirInvertedForMirrorFlip) {
-      transformations.push("flipped");
-    } else {
-      transformations.push("flipped_inverted");
-    }
-  }
-
-  // Swapped only (no position change)
-  const colorsSwapped =
-    b1Blue.startLoc === b2Red.startLoc && b1Blue.endLoc === b2Red.endLoc &&
-    b1Red.startLoc === b2Blue.startLoc && b1Red.endLoc === b2Blue.endLoc;
-
-  // For pure swaps, check rotation direction: same = "swapped", different = "swapped_inverted"
-  if (colorsSwapped) {
-    if (rotDirSameSwapped && !transformations.includes("swapped")) {
-      transformations.push("swapped");
-    }
-    if (rotDirInvertedSwappedForRotation && !transformations.includes("swapped_inverted")) {
-      transformations.push("swapped_inverted");
-    }
-  }
-
-  // Inverted only (same positions, rotation direction changed)
-  // This follows rotation logic: same rot dir is expected for same positions,
-  // so different rot dir = inverted
-  const positionsSame =
-    b1Blue.startLoc === b2Blue.startLoc && b1Blue.endLoc === b2Blue.endLoc &&
-    b1Red.startLoc === b2Red.startLoc && b1Red.endLoc === b2Red.endLoc;
-
-  if (positionsSame && rotDirInvertedForRotation) {
-    transformations.push("inverted");
-  }
-
-  return transformations;
-}
-
-/**
- * Generate beat-pair relationships for halved sequences
- */
-function generateHalvedBeatPairs(beats: ExtractedBeat[]): InternalBeatPair[] {
-  if (beats.length < 2 || beats.length % 2 !== 0) return [];
-
-  const halfLength = beats.length / 2;
-  const beatPairs: InternalBeatPair[] = [];
-
-  for (let i = 0; i < halfLength; i++) {
-    const beat1 = beats[i]!;
-    const beat2 = beats[halfLength + i]!;
-    const rawTransformations = compareBeatPair(beat1, beat2);
-    const { primary, all } = formatBeatPairTransformations(rawTransformations);
-
-    beatPairs.push({
-      keyBeat: beat1.beatNumber,
-      correspondingBeat: beat2.beatNumber,
-      rawTransformations,
-      detectedTransformations: primary.length > 0 ? primary : ["UNKNOWN"],
-      allValidTransformations: all.length > 0 ? all : ["UNKNOWN"],
-    });
-  }
-
-  return beatPairs;
-}
-
-/**
- * Generate beat-pair relationships for quartered sequences.
- * Compares each beat to the one quarterLength away, INCLUDING the wrap-around
- * (e.g., for 4 beats: 1↔2, 2↔3, 3↔4, 4↔1 completing the circle)
- */
-function generateQuarteredBeatPairs(beats: ExtractedBeat[]): InternalBeatPair[] {
-  if (beats.length < 4 || beats.length % 4 !== 0) return [];
-
-  const quarterLength = beats.length / 4;
-  const beatPairs: InternalBeatPair[] = [];
-
-  // Loop through ALL beats to include wrap-around (4↔1 for 4-beat sequences)
-  for (let i = 0; i < beats.length; i++) {
-    const beat1 = beats[i]!;
-    const beat2 = beats[(i + quarterLength) % beats.length]!;
-    const rawTransformations = compareBeatPair(beat1, beat2);
-    const { primary, all } = formatBeatPairTransformations(rawTransformations);
-
-    beatPairs.push({
-      keyBeat: beat1.beatNumber,
-      correspondingBeat: beat2.beatNumber,
-      rawTransformations,
-      detectedTransformations: primary.length > 0 ? primary : ["UNKNOWN"],
-      allValidTransformations: all.length > 0 ? all : ["UNKNOWN"],
-    });
-  }
-
-  return beatPairs;
-}
-
-/**
- * Transformation families - base patterns and their inverted variants
- * If all pairs match members of the same family, we can report the base pattern
- */
-const TRANSFORMATION_FAMILIES: { base: string; members: string[] }[] = [
-  { base: "mirrored_swapped", members: ["mirrored_swapped", "mirrored_swapped_inverted"] },
-  { base: "rotated_180_swapped", members: ["rotated_180_swapped", "rotated_180_swapped_inverted"] },
-  { base: "rotated_90_cw_swapped", members: ["rotated_90_cw_swapped", "rotated_90_cw_swapped_inverted"] },
-  { base: "rotated_90_ccw_swapped", members: ["rotated_90_ccw_swapped", "rotated_90_ccw_swapped_inverted"] },
-  { base: "mirrored", members: ["mirrored", "mirrored_inverted"] },
-  { base: "flipped", members: ["flipped", "flipped_inverted"] },
-  { base: "rotated_180", members: ["rotated_180", "rotated_180_inverted"] },
-  { base: "rotated_90_cw", members: ["rotated_90_cw", "rotated_90_cw_inverted"] },
-  { base: "rotated_90_ccw", members: ["rotated_90_ccw", "rotated_90_ccw_inverted"] },
-  { base: "swapped", members: ["swapped", "swapped_inverted"] },
-];
-
-/**
- * Find all common transformations shared by ALL beat pairs
- */
-function findAllCommonTransformations(beatPairs: InternalBeatPair[]): string[] {
-  if (beatPairs.length === 0) return [];
-
-  const allTransformations = beatPairs.map((pair) => new Set(pair.rawTransformations || []));
-  const firstSet = allTransformations[0];
-  if (!firstSet) return [];
-
-  // First, look for exact common transformations
-  const exactCommon = [...firstSet].filter((t) =>
-    allTransformations.every((set) => set.has(t))
-  );
-
-  if (exactCommon.length > 0) {
-    return exactCommon.sort((a, b) => {
-      const priorityA = TRANSFORMATION_PRIORITY.indexOf(a);
-      const priorityB = TRANSFORMATION_PRIORITY.indexOf(b);
-      return (priorityA === -1 ? 999 : priorityA) - (priorityB === -1 ? 999 : priorityB);
-    });
-  }
-
-  // No exact common - check for family matches
-  // A family matches if ALL pairs have at least one member of that family
-  for (const family of TRANSFORMATION_FAMILIES) {
-    const allPairsMatchFamily = allTransformations.every((set) =>
-      family.members.some((member) => set.has(member))
-    );
-
-    if (allPairsMatchFamily) {
-      // Return the base pattern of the family
-      return [family.base];
-    }
-  }
-
-  return [];
-}
-
-/**
- * Format a single raw transformation into human-readable string
- */
-function formatSingleTransformation(raw: string): string {
-  let formatted = raw.toUpperCase();
-  // Format compound transformations
-  formatted = formatted.replace(/ROTATED_90_CCW_SWAPPED_INVERTED/, "ROTATED_90_CCW+SWAPPED+INVERTED");
-  formatted = formatted.replace(/ROTATED_90_CW_SWAPPED_INVERTED/, "ROTATED_90_CW+SWAPPED+INVERTED");
-  formatted = formatted.replace(/ROTATED_180_SWAPPED_INVERTED/, "ROTATED_180+SWAPPED+INVERTED");
-  formatted = formatted.replace(/ROTATED_90_CCW_INVERTED/, "ROTATED_90_CCW+INVERTED");
-  formatted = formatted.replace(/ROTATED_90_CW_INVERTED/, "ROTATED_90_CW+INVERTED");
-  formatted = formatted.replace(/ROTATED_180_INVERTED/, "ROTATED_180+INVERTED");
-  formatted = formatted.replace(/ROTATED_90_CCW_SWAPPED/, "ROTATED_90_CCW+SWAPPED");
-  formatted = formatted.replace(/ROTATED_90_CW_SWAPPED/, "ROTATED_90_CW+SWAPPED");
-  formatted = formatted.replace(/ROTATED_180_SWAPPED/, "ROTATED_180+SWAPPED");
-  formatted = formatted.replace(/FLIPPED_INVERTED/, "FLIPPED+INVERTED");
-  formatted = formatted.replace(/MIRRORED_INVERTED/, "MIRRORED+INVERTED");
-  formatted = formatted.replace(/MIRRORED_SWAPPED_INVERTED/, "MIRRORED+SWAPPED+INVERTED");
-  formatted = formatted.replace(/MIRRORED_SWAPPED/, "MIRRORED+SWAPPED");
-  formatted = formatted.replace(/SWAPPED_INVERTED/, "SWAPPED+INVERTED");
-  formatted = formatted.replace(/_/g, " ");
-  return formatted;
-}
-
-/**
- * Format raw transformations into human-readable strings.
- * Returns both:
- * - primary: The highest-priority transformation after filtering
- * - all: All valid transformations (formatted) before priority filtering
- *
- * When both a base transformation and its inverted variant are present
- * (e.g., "rotated_180" and "rotated_180_inverted"), prefer the inverted one
- * for the primary, but include both in all.
- */
-function formatBeatPairTransformations(rawTransformations: string[]): { primary: string[]; all: string[] } {
-  if (rawTransformations.length === 0) return { primary: [], all: [] };
-
-  // Format ALL transformations first (before any filtering)
-  const allFormatted = rawTransformations.map(formatSingleTransformation);
-
-  // Remove duplicates from all
-  const allUnique = [...new Set(allFormatted)];
-
-  // When both base and inverted variants are present, prefer inverted (more specific)
-  // This handles noRotation cases where both are equally valid
-  const transformationSet = new Set(rawTransformations);
-  const preferInverted = [
-    { base: "rotated_180", inverted: "rotated_180_inverted" },
-    { base: "rotated_90_cw", inverted: "rotated_90_cw_inverted" },
-    { base: "rotated_90_ccw", inverted: "rotated_90_ccw_inverted" },
-    { base: "flipped", inverted: "flipped_inverted" },
-    { base: "mirrored", inverted: "mirrored_inverted" },
-    { base: "mirrored_swapped", inverted: "mirrored_swapped_inverted" },
-  ];
-
-  // Remove base variants when inverted variant is also present (for primary only)
-  const filtered = rawTransformations.filter((t) => {
-    for (const pair of preferInverted) {
-      if (t === pair.base && transformationSet.has(pair.inverted)) {
-        return false; // Remove base, keep inverted
-      }
-    }
-    return true;
-  });
-
-  const sorted = [...filtered].sort((a, b) => {
-    const priorityA = TRANSFORMATION_PRIORITY.indexOf(a);
-    const priorityB = TRANSFORMATION_PRIORITY.indexOf(b);
-    return (priorityA === -1 ? 999 : priorityA) - (priorityB === -1 ? 999 : priorityB);
-  });
-
-  const first = sorted[0];
-  if (!first) return { primary: [], all: allUnique };
-
-  const primary = formatSingleTransformation(first);
-
-  return { primary: [primary], all: allUnique };
-}
-
-/**
- * Derive components from a transformation pattern
- */
-function deriveComponentsFromPattern(pattern: string): ComponentId[] {
-  const components: ComponentId[] = [];
-  const upper = pattern.toUpperCase();
-
-  if (upper.includes("INVERTED") || upper.includes("INV")) {
-    components.push("inverted");
-  }
-  if (upper.includes("ROTATED") || upper.includes("ROT")) {
-    components.push("rotated");
-  }
-  if (upper.includes("SWAPPED") || upper.includes("SWAP") || upper.match(/\bSW\b/)) {
-    components.push("swapped");
-  }
-  if (upper.includes("MIRRORED") || upper.includes("MIRROR")) {
-    components.push("mirrored");
-  }
-  if (upper.includes("FLIPPED") || upper.includes("FLIP")) {
-    components.push("flipped");
-  }
-  if (upper.includes("REPEATED") || upper === "SAME") {
-    components.push("repeated");
-  }
-
-  return components;
-}
-
-/**
- * Extract rotation direction from a transformation pattern
- */
-function extractRotationDirection(pattern: string): "cw" | "ccw" | null {
-  const upper = pattern.toUpperCase();
-  if (upper.includes("CCW")) return "ccw";
-  if (upper.includes("CW")) return "cw";
-  return null;
-}
-
-/**
- * Detect rotation direction for quartered sequences
- */
-function detectRotationDirection(beats: ExtractedBeat[]): "cw" | "ccw" | null {
-  if (beats.length < 4 || beats.length % 4 !== 0) return null;
-
-  const quarterLength = beats.length / 4;
-  const b0 = beats[0];
-  const b1 = beats[quarterLength];
-  const b2 = beats[quarterLength * 2];
-  const b3 = beats[quarterLength * 3];
-
-  if (!b0 || !b1 || !b2 || !b3) return null;
-
-  const quarterBeats = [b0, b1, b2, b3];
-  const blueStartLocs = quarterBeats.map((b) => b.blue?.startLoc);
-
-  let ccwMatches = 0;
-  let cwMatches = 0;
-
-  for (let i = 0; i < 4; i++) {
-    const current = blueStartLocs[i];
-    const next = blueStartLocs[(i + 1) % 4];
-    if (!current || !next) continue;
-
-    if (ROTATE_90_CCW[current] === next) ccwMatches++;
-    if (ROTATE_90_CW[current] === next) cwMatches++;
-  }
-
-  if (ccwMatches > cwMatches && ccwMatches >= 2) return "ccw";
-  if (cwMatches > ccwMatches && cwMatches >= 2) return "cw";
-
-  return null;
-}
-
-/**
- * Format a human-readable description for a candidate designation
- */
-function formatCandidateDescription(transformation: string, _direction: "cw" | "ccw" | null): string {
-  const upper = transformation.toUpperCase();
-
-  // Triple compound
-  if (upper.includes("ROTATED_90") && upper.includes("SWAPPED") && upper.includes("INVERTED")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
-    return `Rotated 90° ${dir} + Swapped + Inverted`;
-  }
-  if (upper.includes("ROTATED_180") && upper.includes("SWAPPED") && upper.includes("INVERTED")) {
-    return "Rotated 180° + Swapped + Inverted";
-  }
-
-  // Double compound: rotation + invert
-  if (upper.includes("ROTATED_90") && upper.includes("INVERTED") && !upper.includes("SWAPPED")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
-    return `Rotated 90° ${dir} + Inverted`;
-  }
-  if (upper.includes("ROTATED_180") && upper.includes("INVERTED") && !upper.includes("SWAPPED")) {
-    return "Rotated 180° + Inverted";
-  }
-
-  // Double compound: rotation + swap
-  if (upper.includes("ROTATED_90") && upper.includes("SWAPPED")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
-    return `Rotated 90° ${dir} + Swapped`;
-  }
-  if (upper.includes("ROTATED_180") && upper.includes("SWAPPED")) {
-    return "Rotated 180° + Swapped";
-  }
-
-  // Pure rotations
-  if (upper.includes("ROTATED_90")) {
-    const dir = upper.includes("CCW") ? "CCW" : upper.includes("CW") ? "CW" : "";
-    return `Rotated 90° ${dir}`;
-  }
-  if (upper.includes("ROTATED_180")) {
-    return "Rotated 180°";
-  }
-
-  // Other
-  if (upper.includes("MIRRORED") && upper.includes("SWAPPED") && upper.includes("INVERTED")) return "Mirrored + Swapped + Inverted";
-  if (upper.includes("MIRRORED") && upper.includes("SWAPPED")) return "Mirrored + Swapped";
-  if (upper.includes("MIRRORED") && upper.includes("INVERTED")) return "Mirrored + Inverted";
-  if (upper.includes("MIRRORED")) return "Mirrored";
-  if (upper.includes("FLIPPED") && upper.includes("INVERTED")) return "Flipped + Inverted";
-  if (upper.includes("FLIPPED")) return "Flipped";
-  if (upper.includes("SWAPPED") && upper.includes("INVERTED")) return "Swapped + Inverted";
-  if (upper.includes("SWAPPED")) return "Swapped";
-  if (upper.includes("INVERTED")) return "Inverted";
-  if (upper.includes("REPEATED") || upper === "SAME") return "Repeated";
-
-  return transformation.replace(/_/g, " ");
-}
-
-/**
- * Build candidate designations from common transformations
- */
-function buildCandidateDesignations(
-  allCommon: string[],
-  interval: "halved" | "quartered",
-  rotationDirection: "cw" | "ccw" | null
-): CandidateInfo[] {
-  const candidates: CandidateInfo[] = [];
-  const seen = new Set<string>();
-
-  for (const transformation of allCommon) {
-    const components = deriveComponentsFromPattern(transformation);
-    if (components.length === 0) continue;
-
-    const direction = extractRotationDirection(transformation) || rotationDirection;
-    const key = components.sort().join("+") + "|" + (direction || "none");
-    if (seen.has(key)) continue;
-    seen.add(key);
-
-    const intervals: TransformationIntervals = {};
-    if (components.includes("rotated")) intervals.rotation = interval;
-    if (components.includes("swapped")) intervals.swap = interval;
-    if (components.includes("mirrored")) intervals.mirror = interval;
-    if (components.includes("inverted")) intervals.invert = interval;
-
-    // For "repeated", use a special label
-    if (components.includes("repeated") && components.length === 1) {
-      candidates.push({
-        transformation,
-        components: components as ComponentId[],
-        intervals: {}, // No transformation intervals for repeated
-        rotationDirection: null,
-        label: `repeated @${interval === "halved" ? "1/2" : "1/4"}`,
-        description: "Repeated (same motion)",
-      });
-      continue;
-    }
-
-    let label = components.join("+");
-    // Only show rotation direction for 90° rotations (quartered) - 180° direction is meaningless
-    if (direction && interval === "quartered") label += ` (${direction.toUpperCase()})`;
-    if (interval === "quartered") label += " @1/4";
-    else if (interval === "halved") label += " @1/2";
-
-    // Only set rotation direction for quartered (90°) - 180° direction is meaningless
-    const effectiveDirection = interval === "quartered" ? direction : null;
-
-    candidates.push({
-      transformation,
-      components,
-      intervals,
-      rotationDirection: effectiveDirection,
-      label,
-      description: formatCandidateDescription(transformation, effectiveDirection),
-    });
-  }
-
-  return candidates;
-}
-
-/**
- * Group beat pairs by their primary displayed transformation.
- *
- * Since formatBeatPairTransformations already handles preferring inverted variants
- * when both base and inverted are present (noRotation cases), the grouping is simple.
- */
-function groupBeatPairsByPattern(beatPairs: InternalBeatPair[]): BeatPairGroups {
-  const groups: BeatPairGroups = {};
-
-  for (const pair of beatPairs) {
-    const primaryPattern = pair.detectedTransformations[0] || "UNKNOWN";
-    if (!groups[primaryPattern]) {
-      groups[primaryPattern] = [];
-    }
-    groups[primaryPattern].push(pair.keyBeat);
-  }
-
-  return groups;
-}
-
-/**
- * Re-prioritize beat pairs based on common transformations.
- * If a transformation is shared by ALL pairs, it should be the primary for all.
- * This ensures consistency: if the whole sequence is "rotated_180_swapped",
- * each pair should show that as primary, even if other transformations are also valid.
- */
-function reprioritizeBeatPairs(beatPairs: InternalBeatPair[]): void {
-  if (beatPairs.length === 0) return;
-
-  // Find transformations common to ALL pairs (using raw transformations)
-  const commonRaw = findAllCommonTransformations(beatPairs);
-  if (commonRaw.length === 0) return;
-
-  // Get the highest-priority common transformation
-  const primaryCommon = commonRaw[0];
-  if (!primaryCommon) return;
-
-  // Find the family for this common transformation (if any)
-  const family = TRANSFORMATION_FAMILIES.find((f) =>
-    f.base === primaryCommon || f.members.includes(primaryCommon)
-  );
-
-  // Update each pair: set the appropriate family member as primary
-  for (const pair of beatPairs) {
-    if (family) {
-      // For family matches, find which member this pair has and use it
-      const matchingMember = family.members.find((member) =>
-        pair.rawTransformations.includes(member)
-      );
-      if (matchingMember) {
-        pair.detectedTransformations = [formatSingleTransformation(matchingMember)];
-        continue;
-      }
-    }
-
-    // Exact match case
-    const formattedCommon = formatSingleTransformation(primaryCommon);
-    if (pair.allValidTransformations.includes(formattedCommon)) {
-      pair.detectedTransformations = [formattedCommon];
-    }
-  }
-}
-
-/**
- * Convert internal beat pairs to the public interface
- */
-function toPublicBeatPairs(internal: InternalBeatPair[]): BeatPairRelationship[] {
-  return internal.map((p) => ({
-    keyBeat: p.keyBeat,
-    correspondingBeat: p.correspondingBeat,
-    detectedTransformations: p.detectedTransformations,
-    allValidTransformations: p.allValidTransformations,
-  }));
-}
-
-/**
- * Convert CandidateInfo to CandidateDesignation
- */
-function toCandidateDesignation(info: CandidateInfo): CandidateDesignation {
-  return {
-    components: info.components,
-    capType: info.components.sort().join("_"),
-    transformationIntervals: info.intervals,
-    label: info.label,
-    description: info.description,
-    rotationDirection: info.rotationDirection,
-    confirmed: false,
-    denied: false,
-  };
-}
-
-// ============================================================================
-// Main Service Implementation
-// ============================================================================
-
 @injectable()
 export class CAPDetectionService implements ICAPDetectionService {
-  private polyrhythmicService: IPolyrhythmicDetectionService | null = null;
+	constructor(
+		@inject(CAPLabelerTypes.IBeatComparisonOrchestrator)
+		private comparisonOrchestrator: IBeatComparisonOrchestrator,
+		@inject(CAPLabelerTypes.ITransformationAnalysisService)
+		private analysisService: ITransformationAnalysisService,
+		@inject(CAPLabelerTypes.ICandidateFormattingService)
+		private formattingService: ICandidateFormattingService,
+		@inject(CAPLabelerTypes.IPolyrhythmicDetectionService)
+		@optional()
+		private polyrhythmicService?: IPolyrhythmicDetectionService
+	) {
+		console.log(
+			'[CAPDetectionService] Constructed with polyrhythmic service:',
+			!!polyrhythmicService
+		);
+	}
 
-  constructor(
-    @inject(CAPLabelerTypes.IPolyrhythmicDetectionService)
-    @optional()
-    polyrhythmicService?: IPolyrhythmicDetectionService
-  ) {
-    this.polyrhythmicService = polyrhythmicService ?? null;
-    console.log("[CAPDetectionService] Constructed with polyrhythmic service:", !!polyrhythmicService);
-  }
+	isCircular(sequence: SequenceEntry): boolean {
+		const beats = sequence.fullMetadata?.sequence?.filter(
+			(b) => typeof b.beat === 'number' && b.beat >= 1
+		);
+		if (!beats || beats.length < 2) return false;
 
-  isCircular(sequence: SequenceEntry): boolean {
-    const beats = sequence.fullMetadata?.sequence?.filter((b) => typeof b.beat === "number" && b.beat >= 1);
-    if (!beats || beats.length < 2) return false;
+		const startPosition = sequence.fullMetadata?.sequence?.find((b) => b.beat === 0);
+		const lastBeat = beats[beats.length - 1];
+		if (!startPosition || !lastBeat) return false;
 
-    const startPosition = sequence.fullMetadata?.sequence?.find((b) => b.beat === 0);
-    const lastBeat = beats[beats.length - 1];
-    if (!startPosition || !lastBeat) return false;
+		const startPos = startPosition.endPos || startPosition.sequenceStartPosition;
+		const endPos = lastBeat.endPos;
+		return startPos === endPos;
+	}
 
-    const startPos = startPosition.endPos || startPosition.sequenceStartPosition;
-    const endPos = lastBeat.endPos;
-    return startPos === endPos;
-  }
+	detectCAP(sequence: SequenceEntry): CAPDetectionResult {
+		console.log('[CAPDetectionService] detectCAP called for:', sequence.word);
 
-  detectCAP(sequence: SequenceEntry): CAPDetectionResult {
-    console.log("[CAPDetectionService] detectCAP called for:", sequence.word);
+		const circular = this.isCircular(sequence);
+		const beats = this.comparisonOrchestrator.extractBeats(sequence);
 
-    const circular = this.isCircular(sequence);
-    const beats = extractBeats(sequence);
+		// Run polyrhythmic detection
+		const rawSequence = (sequence.fullMetadata?.sequence || []) as Record<string, unknown>[];
+		const polyrhythmic: PolyrhythmicCAPResult = this.polyrhythmicService?.detectPolyrhythmic(
+			rawSequence
+		) ?? {
+			isPolyrhythmic: false,
+			polyrhythm: null,
+			periods: [],
+			motionPeriod: null,
+			spatialPeriod: null,
+			description: 'Polyrhythmic detection not available',
+			confidence: 0
+		};
 
-    // Run polyrhythmic detection alongside beat-pair detection (if service available)
-    const rawSequence = (sequence.fullMetadata?.sequence || []) as Record<string, unknown>[];
-    const polyrhythmic = this.polyrhythmicService?.detectPolyrhythmic(rawSequence) ?? {
-      isPolyrhythmic: false,
-      polyrhythm: null,
-      periods: [],
-      motionPeriod: null,
-      spatialPeriod: null,
-      description: "Polyrhythmic detection not available",
-      confidence: 0,
-    };
+		console.log('[CAPDetectionService] Initial analysis:', {
+			word: sequence.word,
+			isCircular: circular,
+			beatCount: beats.length,
+			polyrhythmic: polyrhythmic.isPolyrhythmic ? polyrhythmic.polyrhythm : 'none'
+		});
 
-    console.log("[CAPDetectionService] Initial analysis:", {
-      word: sequence.word,
-      isCircular: circular,
-      beatCount: beats.length,
-      hasFullMetadata: !!sequence.fullMetadata,
-      hasSequenceData: !!sequence.fullMetadata?.sequence,
-      rawSequenceLength: sequence.fullMetadata?.sequence?.length,
-      polyrhythmic: polyrhythmic.isPolyrhythmic ? polyrhythmic.polyrhythm : "none",
-    });
+		// Non-circular or too short
+		if (!circular || beats.length < 2) {
+			return this.buildEmptyResult(circular, polyrhythmic);
+		}
 
-    // Non-circular or too short
-    if (!circular || beats.length < 2) {
-      return {
-        capType: null,
-        components: [],
-        transformationIntervals: {},
-        rotationDirection: null,
-        candidateDesignations: [],
-        beatPairs: [],
-        beatPairGroups: {},
-        isCircular: circular,
-        isFreeform: false,
-        isModular: false,
-        polyrhythmic,
-        isPolyrhythmic: polyrhythmic.isPolyrhythmic,
-      };
-    }
+		// Must have even number of beats
+		if (beats.length % 2 !== 0) {
+			return this.buildFreeformResult(polyrhythmic);
+		}
 
-    // Must have even number of beats
-    if (beats.length % 2 !== 0) {
-      return {
-        capType: null,
-        components: [],
-        transformationIntervals: {},
-        rotationDirection: null,
-        candidateDesignations: [],
-        beatPairs: [],
-        beatPairGroups: {},
-        isCircular: true,
-        isFreeform: true,
-        isModular: false,
-        polyrhythmic,
-        isPolyrhythmic: polyrhythmic.isPolyrhythmic,
-      };
-    }
+		// Generate halved beat pairs (always needed)
+		const halvedBeatPairs = this.comparisonOrchestrator.generateHalvedBeatPairs(beats);
+		this.analysisService.reprioritizeBeatPairs(halvedBeatPairs);
+		const halvedBeatPairGroups = this.analysisService.groupBeatPairsByPattern(halvedBeatPairs);
 
-    // Generate halved beat pairs (always needed)
-    const halvedBeatPairs = generateHalvedBeatPairs(beats);
-    // Re-prioritize based on common transformations (whole-sequence context)
-    reprioritizeBeatPairs(halvedBeatPairs);
-    const halvedBeatPairGroups = groupBeatPairsByPattern(halvedBeatPairs);
+		// Detect rotation direction for quartered sequences
+		let rotationDirection: 'cw' | 'ccw' | null = null;
+		if (beats.length >= 4 && beats.length % 4 === 0) {
+			rotationDirection = this.comparisonOrchestrator.detectRotationDirection(beats);
+		}
 
-    // Detect rotation direction for quartered sequences
-    let rotationDirection: "cw" | "ccw" | null = null;
-    if (beats.length >= 4 && beats.length % 4 === 0) {
-      rotationDirection = detectRotationDirection(beats);
-    }
+		// Try quartered detection first (90° rotations)
+		if (beats.length >= 4 && beats.length % 4 === 0) {
+			const quarteredResult = this.detectQuarteredPattern(
+				beats,
+				halvedBeatPairs,
+				rotationDirection,
+				polyrhythmic
+			);
+			if (quarteredResult) {
+				return quarteredResult;
+			}
+		}
 
-    // ============================================================
-    // PRIORITY 0: Check for QUARTERED patterns (90° rotations)
-    // ============================================================
-    if (beats.length >= 4 && beats.length % 4 === 0) {
-      const quarteredBeatPairs = generateQuarteredBeatPairs(beats);
-      // Re-prioritize based on common transformations (whole-sequence context)
-      reprioritizeBeatPairs(quarteredBeatPairs);
-      const allQuarteredCommon = findAllCommonTransformations(quarteredBeatPairs);
+		// Try halved detection (180° transformations)
+		const halvedResult = this.detectHalvedPattern(
+			halvedBeatPairs,
+			halvedBeatPairGroups,
+			rotationDirection,
+			polyrhythmic
+		);
+		if (halvedResult) {
+			return halvedResult;
+		}
 
-      console.log("[CAPDetectionService] Quartered analysis:", {
-        beatPairCount: quarteredBeatPairs.length,
-        commonTransformations: allQuarteredCommon,
-      });
+		// Fallback: modular or freeform
+		return this.buildFallbackResult(halvedBeatPairs, halvedBeatPairGroups, polyrhythmic);
+	}
 
-      // Filter to only 90° rotation patterns
-      const rotation90Patterns = allQuarteredCommon.filter((t) =>
-        t.includes("rotated_90") || t.includes("90_ccw") || t.includes("90_cw")
-      );
+	private detectQuarteredPattern(
+		beats: ReturnType<IBeatComparisonOrchestrator['extractBeats']>,
+		halvedBeatPairs: InternalBeatPair[],
+		rotationDirection: 'cw' | 'ccw' | null,
+		polyrhythmic: PolyrhythmicCAPResult
+	): CAPDetectionResult | null {
+		const quarteredBeatPairs = this.comparisonOrchestrator.generateQuarteredBeatPairs(beats);
+		this.analysisService.reprioritizeBeatPairs(quarteredBeatPairs);
+		const allQuarteredCommon =
+			this.analysisService.findAllCommonTransformations(quarteredBeatPairs);
 
-      if (rotation90Patterns.length > 0) {
-        // Build quartered candidates only - 90° rotation is more specific than 180°
-        // If something rotates 90° consistently, it automatically satisfies 180° too,
-        // so showing both would be redundant. Only show the more specific 90° pattern.
-        const quarteredCandidates = buildCandidateDesignations(
-          rotation90Patterns,
-          "quartered",
-          rotationDirection
-        );
+		// Filter to only 90° rotation patterns
+		let rotation90Patterns = allQuarteredCommon.filter(
+			(t) => t.includes('rotated_90') || t.includes('90_ccw') || t.includes('90_cw')
+		);
 
-        // Don't include 180° candidates - they're implied by the 90° pattern
-        const allCandidates = quarteredCandidates;
+		// Check for compound patterns if no common 90° pattern found
+		let compoundPattern: CompoundPattern | undefined;
+		const halvedOnlyTransformations: string[] = [];
 
-        // Use 90° as primary for capType (more specific)
-        const primaryPattern = rotation90Patterns[0] ?? "";
-        const derivedComponents = deriveComponentsFromPattern(primaryPattern);
-        const derivedDirection = extractRotationDirection(primaryPattern) || rotationDirection;
+		if (rotation90Patterns.length === 0) {
+			const compoundResult = this.detectCompoundPattern(
+				quarteredBeatPairs,
+				halvedBeatPairs,
+				rotationDirection
+			);
+			if (compoundResult) {
+				rotation90Patterns = compoundResult.rotation90Patterns;
+				compoundPattern = compoundResult.compoundPattern;
+				halvedOnlyTransformations.push(...compoundResult.halvedOnlyTransformations);
+			}
+		}
 
-        if (derivedComponents.length > 0) {
-          const derivedIntervals: TransformationIntervals = {};
-          if (derivedComponents.includes("rotated")) derivedIntervals.rotation = "quartered";
-          if (derivedComponents.includes("swapped")) derivedIntervals.swap = "quartered";
-          if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = "quartered";
-          if (derivedComponents.includes("inverted")) derivedIntervals.invert = "quartered";
+		// Try modular detection if no uniform pattern found
+		if (rotation90Patterns.length === 0) {
+			const modularResult = this.detectModularQuarteredPattern(
+				quarteredBeatPairs,
+				rotationDirection,
+				polyrhythmic
+			);
+			if (modularResult) {
+				return modularResult;
+			}
+			return null;
+		}
 
-          return {
-            capType: derivedComponents.sort().join("_") + "_quartered",
-            components: derivedComponents,
-            transformationIntervals: derivedIntervals,
-            rotationDirection: derivedDirection,
-            candidateDesignations: allCandidates.map(toCandidateDesignation),
-            beatPairs: toPublicBeatPairs(quarteredBeatPairs),
-            beatPairGroups: groupBeatPairsByPattern(quarteredBeatPairs),
-            isCircular: true,
-            isFreeform: false,
-            isModular: false,
-            polyrhythmic,
-            isPolyrhythmic: polyrhythmic.isPolyrhythmic,
-          };
-        }
-      }
-    }
+		// Build candidates
+		const allCandidates = compoundPattern
+			? this.buildCompoundCandidates(compoundPattern, halvedOnlyTransformations, rotationDirection)
+			: this.formattingService.buildCandidateDesignations(
+					rotation90Patterns,
+					'quartered',
+					rotationDirection
+				);
 
-    // ============================================================
-    // PRIORITY 1: Find COMMON transformation across ALL beat pairs (halved)
-    // ============================================================
-    const allHalvedCommon = findAllCommonTransformations(halvedBeatPairs);
+		const primaryPattern = rotation90Patterns[0] ?? '';
+		const derivedComponents = this.formattingService.deriveComponentsFromPattern(primaryPattern);
 
-    console.log("[CAPDetectionService] Halved analysis:", {
-      beatPairCount: halvedBeatPairs.length,
-      commonTransformations: allHalvedCommon,
-      firstPairTransformations: halvedBeatPairs[0]?.rawTransformations,
-    });
+		// Add halved-only components for compound patterns
+		if (compoundPattern) {
+			halvedOnlyTransformations.forEach((c) => {
+				if (!derivedComponents.includes(c as ComponentId)) {
+					derivedComponents.push(c as ComponentId);
+				}
+			});
+		}
 
-    if (allHalvedCommon.length > 0) {
-      const candidateInfos = buildCandidateDesignations(allHalvedCommon, "halved", rotationDirection);
-      const commonTransformation = allHalvedCommon[0]!;
-      const derivedComponents = deriveComponentsFromPattern(commonTransformation);
+		if (derivedComponents.length === 0) {
+			return null;
+		}
 
-      if (derivedComponents.length > 0) {
-        const derivedIntervals: TransformationIntervals = {};
-        if (derivedComponents.includes("inverted")) derivedIntervals.invert = "halved";
-        if (derivedComponents.includes("rotated")) derivedIntervals.rotation = "halved";
-        if (derivedComponents.includes("swapped")) derivedIntervals.swap = "halved";
-        if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = "halved";
-        if (derivedComponents.includes("flipped")) derivedIntervals.flip = "halved";
+		const derivedDirection =
+			this.formattingService.extractRotationDirection(primaryPattern) || rotationDirection;
+		const derivedIntervals = this.buildQuarteredIntervals(
+			derivedComponents,
+			compoundPattern?.halvedTransformations
+		);
 
-        return {
-          capType: derivedComponents.sort().join("_"),
-          components: derivedComponents,
-          transformationIntervals: derivedIntervals,
-          rotationDirection,
-          candidateDesignations: candidateInfos.map(toCandidateDesignation),
-          beatPairs: toPublicBeatPairs(halvedBeatPairs),
-          beatPairGroups: halvedBeatPairGroups,
-          isCircular: true,
-          isFreeform: false,
-          isModular: false,
-          polyrhythmic,
-          isPolyrhythmic: polyrhythmic.isPolyrhythmic,
-        };
-      }
-    }
+		// Build capType
+		const capType = compoundPattern
+			? this.buildCompoundCapType(derivedDirection, compoundPattern.halvedTransformations)
+			: derivedComponents.sort().join('_') + '_90';
 
-    // ============================================================
-    // Fallback: Check if modular or truly freeform
-    // ============================================================
+		// Combine beat pairs for compound patterns
+		const combinedBeatPairs = compoundPattern
+			? [
+					...this.formattingService.toPublicBeatPairs(quarteredBeatPairs),
+					...this.formattingService.toPublicBeatPairs(halvedBeatPairs)
+				]
+			: this.formattingService.toPublicBeatPairs(quarteredBeatPairs);
 
-    // Count pattern groups and check for UNKNOWN
-    const patternGroups = Object.keys(halvedBeatPairGroups);
-    const hasUnknown = patternGroups.some((p) => p === "UNKNOWN");
-    const recognizedPatterns = patternGroups.filter((p) => p !== "UNKNOWN");
+		const combinedGroups = compoundPattern
+			? {
+					...this.analysisService.groupBeatPairsByPattern(quarteredBeatPairs),
+					'HALVED (180°)': halvedBeatPairs.map((p) => p.keyBeat)
+				}
+			: this.analysisService.groupBeatPairsByPattern(quarteredBeatPairs);
 
-    // Modular: Multiple different but recognizable transformations (no UNKNOWN)
-    // Freeform: Has UNKNOWN transformations (can't identify the relationship)
-    const isModular = !hasUnknown && recognizedPatterns.length > 1;
-    const isFreeform = hasUnknown || recognizedPatterns.length === 0;
+		return {
+			capType,
+			components: derivedComponents,
+			transformationIntervals: derivedIntervals,
+			rotationDirection: derivedDirection,
+			candidateDesignations: allCandidates.map((c) =>
+				this.formattingService.toCandidateDesignation(c)
+			),
+			beatPairs: combinedBeatPairs,
+			beatPairGroups: combinedGroups,
+			isCircular: true,
+			isFreeform: false,
+			isModular: false,
+			polyrhythmic,
+			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
+			compoundPattern,
+			isAxisAlternating: false
+		};
+	}
 
-    console.log("[CAPDetectionService] Fallback analysis:", {
-      patternGroups,
-      hasUnknown,
-      recognizedPatterns,
-      isModular,
-      isFreeform,
-    });
+	private detectCompoundPattern(
+		quarteredBeatPairs: InternalBeatPair[],
+		halvedBeatPairs: InternalBeatPair[],
+		rotationDirection: 'cw' | 'ccw' | null
+	): {
+		rotation90Patterns: string[];
+		compoundPattern: CompoundPattern;
+		halvedOnlyTransformations: string[];
+	} | null {
+		// Check if ALL quartered pairs have some form of 90° rotation
+		const pairsWithRotation = quarteredBeatPairs.filter((pair) =>
+			pair.rawTransformations.some(
+				(t) => t.includes('rotated_90') || t.includes('90_ccw') || t.includes('90_cw')
+			)
+		);
 
-    return {
-      capType: null,
-      components: [],
-      transformationIntervals: {},
-      rotationDirection: null,
-      candidateDesignations: [],
-      beatPairs: toPublicBeatPairs(halvedBeatPairs),
-      beatPairGroups: halvedBeatPairGroups,
-      isCircular: true,
-      isFreeform,
-      isModular,
-      polyrhythmic,
-      isPolyrhythmic: polyrhythmic.isPolyrhythmic,
-    };
-  }
+		if (pairsWithRotation.length !== quarteredBeatPairs.length) {
+			return null;
+		}
+
+		// CRITICAL: Check if ALL pairs have the SAME primary transformation
+		// If different pairs have different patterns (e.g., some swapped, some not),
+		// this is NOT a compound pattern - it's a MODULAR pattern
+		const primaryPatterns = quarteredBeatPairs.map((pair) => pair.detectedTransformations[0] || '');
+		const uniquePrimaries = [...new Set(primaryPatterns)];
+
+		// If we have more than 2 distinct patterns among quartered pairs, it's modular, not compound
+		// (Allow 2 for cases where some pairs are ambiguous between base and inverted)
+		if (uniquePrimaries.length > 2) {
+			return null;
+		}
+
+		// Check if the patterns differ by swap status - if so, it's modular
+		const hasSwappedPairs = primaryPatterns.some((p) => p.toLowerCase().includes('swapped'));
+		const hasNonSwappedPairs = primaryPatterns.some((p) =>
+			p.toLowerCase().includes('rotated') && !p.toLowerCase().includes('swapped')
+		);
+
+		if (hasSwappedPairs && hasNonSwappedPairs) {
+			// Different swap status among quartered pairs = MODULAR, not compound
+			return null;
+		}
+
+		// Check if halved pairs have swap
+		const halvedHasSwap =
+			halvedBeatPairs.length > 0 &&
+			halvedBeatPairs.every((pair) => pair.rawTransformations.some((t) => t.includes('swapped')));
+
+		if (!halvedHasSwap) {
+			return null;
+		}
+
+		// Extract rotation patterns
+		const anyPair = quarteredBeatPairs[0];
+		if (!anyPair) return null;
+
+		const rotationTransforms = anyPair.rawTransformations.filter(
+			(t) => t.includes('rotated_90') || t.includes('90_ccw') || t.includes('90_cw')
+		);
+
+		const rotation90Patterns = [
+			...new Set(
+				rotationTransforms.map((t) =>
+					t.replace(/_swapped$/, '').replace(/_swapped_inverted$/, '_inverted')
+				)
+			)
+		];
+
+		const halvedOnlyTransformations = ['swapped'];
+		const rotationDesc =
+			rotationDirection === 'ccw'
+				? '90° CCW Rotated'
+				: rotationDirection === 'cw'
+					? '90° CW Rotated'
+					: '90° Rotated';
+
+		const compoundPattern: CompoundPattern = {
+			isCompound: true,
+			quarteredTransformations: ['rotated'],
+			halvedTransformations: halvedOnlyTransformations,
+			description: `${rotationDesc} + Swapped (180°)`
+		};
+
+		return { rotation90Patterns, compoundPattern, halvedOnlyTransformations };
+	}
+
+	private detectHalvedPattern(
+		halvedBeatPairs: InternalBeatPair[],
+		halvedBeatPairGroups: Record<string, number[]>,
+		rotationDirection: 'cw' | 'ccw' | null,
+		polyrhythmic: PolyrhythmicCAPResult
+	): CAPDetectionResult | null {
+		const allHalvedCommon = this.analysisService.findAllCommonTransformations(halvedBeatPairs);
+
+		if (allHalvedCommon.length === 0) {
+			return null;
+		}
+
+		const candidateInfos = this.formattingService.buildCandidateDesignations(
+			allHalvedCommon,
+			'halved',
+			rotationDirection
+		);
+		const commonTransformation = allHalvedCommon[0]!;
+		const derivedComponents =
+			this.formattingService.deriveComponentsFromPattern(commonTransformation);
+
+		if (derivedComponents.length === 0) {
+			return null;
+		}
+
+		const derivedIntervals: TransformationIntervals = {};
+		if (derivedComponents.includes('inverted')) derivedIntervals.invert = 'halved';
+		if (derivedComponents.includes('rotated')) derivedIntervals.rotation = 'halved';
+		if (derivedComponents.includes('swapped')) derivedIntervals.swap = 'halved';
+		if (derivedComponents.includes('mirrored')) derivedIntervals.mirror = 'halved';
+		if (derivedComponents.includes('flipped')) derivedIntervals.flip = 'halved';
+
+		return {
+			capType: derivedComponents.sort().join('_'),
+			components: derivedComponents,
+			transformationIntervals: derivedIntervals,
+			rotationDirection,
+			candidateDesignations: candidateInfos.map((c) =>
+				this.formattingService.toCandidateDesignation(c)
+			),
+			beatPairs: this.formattingService.toPublicBeatPairs(halvedBeatPairs),
+			beatPairGroups: halvedBeatPairGroups,
+			isCircular: true,
+			isFreeform: false,
+			isModular: false,
+			polyrhythmic,
+			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
+			isAxisAlternating: false
+		};
+	}
+
+	private buildFallbackResult(
+		halvedBeatPairs: InternalBeatPair[],
+		halvedBeatPairGroups: Record<string, number[]>,
+		polyrhythmic: PolyrhythmicCAPResult
+	): CAPDetectionResult {
+		const patternGroups = Object.keys(halvedBeatPairGroups);
+		const hasUnknown = patternGroups.some((p) => p === 'UNKNOWN');
+		const recognizedPatterns = patternGroups.filter((p) => p !== 'UNKNOWN');
+
+		const isModular = !hasUnknown && recognizedPatterns.length > 1;
+		const isFreeform = hasUnknown || recognizedPatterns.length === 0;
+
+		// Check for axis-alternating pattern when modular
+		const axisAlternating = isModular
+			? this.analysisService.detectAxisAlternatingPattern(halvedBeatPairs, halvedBeatPairGroups)
+			: null;
+
+		return {
+			capType: null,
+			components: [],
+			transformationIntervals: {},
+			rotationDirection: null,
+			candidateDesignations: [],
+			beatPairs: this.formattingService.toPublicBeatPairs(halvedBeatPairs),
+			beatPairGroups: halvedBeatPairGroups,
+			isCircular: true,
+			isFreeform,
+			isModular,
+			polyrhythmic,
+			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
+			isAxisAlternating: axisAlternating !== null,
+			axisAlternatingPattern: axisAlternating
+				? {
+						isAxisAlternating: true,
+						transformationFamily: axisAlternating.transformationFamily,
+						metaPatternType: axisAlternating.metaPatternType,
+						patternSequence: axisAlternating.patternSequence,
+						description: axisAlternating.description
+					}
+				: undefined
+		};
+	}
+
+	private buildEmptyResult(
+		isCircular: boolean,
+		polyrhythmic: PolyrhythmicCAPResult
+	): CAPDetectionResult {
+		return {
+			capType: null,
+			components: [],
+			transformationIntervals: {},
+			rotationDirection: null,
+			candidateDesignations: [],
+			beatPairs: [],
+			beatPairGroups: {},
+			isCircular,
+			isFreeform: false,
+			isModular: false,
+			polyrhythmic,
+			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
+			isAxisAlternating: false
+		};
+	}
+
+	private buildFreeformResult(polyrhythmic: PolyrhythmicCAPResult): CAPDetectionResult {
+		return {
+			capType: null,
+			components: [],
+			transformationIntervals: {},
+			rotationDirection: null,
+			candidateDesignations: [],
+			beatPairs: [],
+			beatPairGroups: {},
+			isCircular: true,
+			isFreeform: true,
+			isModular: false,
+			polyrhythmic,
+			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
+			isAxisAlternating: false
+		};
+	}
+
+	private buildCompoundCandidates(
+		compoundPattern: CompoundPattern,
+		halvedOnlyTransformations: string[],
+		rotationDirection: 'cw' | 'ccw' | null
+	): CandidateInfo[] {
+		const compoundIntervals: TransformationIntervals = {
+			rotation: 'quartered'
+		};
+		if (halvedOnlyTransformations.includes('swapped')) compoundIntervals.swap = 'halved';
+		if (halvedOnlyTransformations.includes('inverted')) compoundIntervals.invert = 'halved';
+
+		const rotDir = rotationDirection === 'ccw' ? '_ccw' : rotationDirection === 'cw' ? '_cw' : '';
+		const halvedPart = halvedOnlyTransformations.map((t) => `${t}_180`).join('_');
+		const capTypeLabel = `rotated_90${rotDir}_${halvedPart}`.toUpperCase();
+
+		return [
+			{
+				transformation: 'compound',
+				description: compoundPattern.description,
+				components: [
+					...compoundPattern.quarteredTransformations,
+					...halvedOnlyTransformations
+				] as ComponentId[],
+				intervals: compoundIntervals,
+				rotationDirection,
+				label: capTypeLabel
+			}
+		];
+	}
+
+	private buildQuarteredIntervals(
+		components: ComponentId[],
+		halvedTransformations?: string[]
+	): TransformationIntervals {
+		const intervals: TransformationIntervals = {};
+		if (components.includes('rotated')) intervals.rotation = 'quartered';
+
+		if (halvedTransformations?.includes('swapped')) {
+			intervals.swap = 'halved';
+		} else if (components.includes('swapped')) {
+			intervals.swap = 'quartered';
+		}
+
+		if (halvedTransformations?.includes('inverted')) {
+			intervals.invert = 'halved';
+		} else if (components.includes('inverted')) {
+			intervals.invert = 'quartered';
+		}
+
+		if (components.includes('mirrored')) intervals.mirror = 'quartered';
+		return intervals;
+	}
+
+	private buildCompoundCapType(
+		direction: 'cw' | 'ccw' | null,
+		halvedTransformations: string[]
+	): string {
+		const rotDir = direction === 'ccw' ? '_ccw' : direction === 'cw' ? '_cw' : '';
+		const halvedPart = halvedTransformations.map((t) => `${t}_180`).join('_');
+		return `rotated_90${rotDir}_${halvedPart}`;
+	}
+
+	private detectModularQuarteredPattern(
+		quarteredBeatPairs: InternalBeatPair[],
+		rotationDirection: 'cw' | 'ccw' | null,
+		polyrhythmic: PolyrhythmicCAPResult
+	): CAPDetectionResult | null {
+		// Use 4 columns for quartered patterns (positions 1,2,3,4 within each quarter)
+		const modularAnalysis = this.analysisService.detectModularPattern(quarteredBeatPairs, 4);
+
+		if (!modularAnalysis || !modularAnalysis.isModular) {
+			return null;
+		}
+
+		// Build modular pattern description
+		const modularPattern: ModularPattern = {
+			isModular: true,
+			baseTransformation: modularAnalysis.baseTransformation,
+			swapRhythm: modularAnalysis.swapRhythm,
+			swappedPositions: modularAnalysis.swappedPositions,
+			description: modularAnalysis.description
+		};
+
+		// Derive components from the base transformation and swap info
+		const components: ComponentId[] = [];
+		if (modularAnalysis.baseTransformation) {
+			const baseComponents = this.formattingService.deriveComponentsFromPattern(
+				modularAnalysis.baseTransformation
+			);
+			components.push(...baseComponents);
+		}
+		if (modularAnalysis.swappedPositions.length > 0 && !components.includes('swapped')) {
+			components.push('swapped');
+		}
+
+		// Build intervals - base is quartered, swap is positional
+		const intervals: TransformationIntervals = {};
+		if (components.includes('rotated')) intervals.rotation = 'quartered';
+		if (components.includes('swapped')) {
+			// Use the swap rhythm as the interval description
+			intervals.swap = `positional:${modularAnalysis.swapRhythm}`;
+		}
+
+		// Build capType
+		const rotDir = rotationDirection === 'ccw' ? '_ccw' : rotationDirection === 'cw' ? '_cw' : '';
+		const capType = modularAnalysis.swapRhythm !== 'uniform'
+			? `modular_rotated_90${rotDir}_swap_${modularAnalysis.swapRhythm}`
+			: `modular_rotated_90${rotDir}`;
+
+		// Build candidate designation with binary swap pattern
+		const binarySwapPattern = modularAnalysis.columnBehaviors
+			.map((c) => (c.isSwapped ? '1' : '0'))
+			.join('');
+
+		const candidateLabel = modularAnalysis.swappedPositions.length > 0
+			? `MODULAR: Rotated 90° ${rotationDirection?.toUpperCase() || ''} + SWAPPED (${binarySwapPattern})`
+			: `MODULAR: Rotated 90° ${rotationDirection?.toUpperCase() || ''}`;
+
+		const quarteredGroups = this.analysisService.groupBeatPairsByPattern(quarteredBeatPairs);
+
+		return {
+			capType,
+			components,
+			transformationIntervals: intervals,
+			rotationDirection,
+			candidateDesignations: [{
+				components,
+				capType,
+				transformationIntervals: intervals,
+				label: candidateLabel,
+				description: modularAnalysis.description,
+				rotationDirection,
+				confirmed: false,
+				denied: false
+			}],
+			beatPairs: this.formattingService.toPublicBeatPairs(quarteredBeatPairs),
+			beatPairGroups: quarteredGroups,
+			isCircular: true,
+			isFreeform: false,
+			isModular: true,
+			polyrhythmic,
+			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
+			isAxisAlternating: false,
+			modularPattern
+		};
+	}
 }

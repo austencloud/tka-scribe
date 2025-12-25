@@ -5,6 +5,8 @@
  * where different periods control different aspects of the motion.
  */
 
+import type { ZoneCoverageAnalysis } from "$lib/features/create/generate/circular/domain/constants/circular-position-maps";
+
 export interface BeatProperties {
   beat: number;
   blueMotionType: string;
@@ -61,6 +63,8 @@ export interface PolyrhythmicCAPResult {
   description: string;
   /** Confidence score from 0-1 */
   confidence: number;
+  /** Zone coverage analysis for end positions */
+  zoneCoverage?: ZoneCoverageAnalysis;
 }
 
 export interface IPolyrhythmicDetectionService {

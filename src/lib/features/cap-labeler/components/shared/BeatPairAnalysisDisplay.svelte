@@ -4,18 +4,22 @@
    *
    * Shows detected beat-pair relationships and their groupings.
    * Simplified view for single-pattern sequences, detailed view for modular.
+   * Shows axis-alternating pattern info when detected.
    */
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
   import type { BeatPairGroups } from "../../domain/models/label-models";
+  import type { AxisAlternatingPattern } from "../../services/contracts/ICAPDetectionService";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
     beatPairs: BeatPairRelationship[];
     beatPairGroups?: BeatPairGroups;
     collapsed?: boolean;
+    isAxisAlternating?: boolean;
+    axisAlternatingPattern?: AxisAlternatingPattern | null;
   }
 
-  let { beatPairs, beatPairGroups, collapsed = false }: Props = $props();
+  let { beatPairs, beatPairGroups, collapsed = false, isAxisAlternating = false, axisAlternatingPattern = null }: Props = $props();
 
   let isExpanded = $state(!collapsed);
 
@@ -32,6 +36,15 @@
     MIRRORED: "#a855f7",
     REPEATED: "#6b7280",
     UNKNOWN: "#ef4444",
+    SAME: "#6b7280",
+    ROTATED: "#36c3ff",
+  };
+
+  // Color coding for letter relationships
+  const letterRelationshipColors: Record<string, string> = {
+    inverted: "#eb7d00",
+    compound: "#22c55e",
+    alpha_beta_counterpart: "#a855f7",
   };
 
   function getColorForPattern(pattern: string): string {
@@ -41,6 +54,36 @@
       }
     }
     return "#6b7280";
+  }
+
+  /**
+   * Get the primary letter relationship type for color coding
+   */
+  function getLetterRelationshipColor(
+    rel: BeatPairRelationship["letterRelationship"]
+  ): string {
+    const defaultColor = "#6b7280";
+    if (!rel) return defaultColor;
+    if (rel.relationships.isCompound) return letterRelationshipColors.compound ?? defaultColor;
+    if (rel.relationships.isAlphaBetaCounterpart)
+      return letterRelationshipColors.alpha_beta_counterpart ?? defaultColor;
+    if (rel.relationships.isInverted) return letterRelationshipColors.inverted ?? defaultColor;
+    return defaultColor;
+  }
+
+  /**
+   * Format letter relationship as a concise display string
+   */
+  function formatLetterRelationship(
+    rel: BeatPairRelationship["letterRelationship"]
+  ): string | null {
+    if (!rel) return null;
+    const types: string[] = [];
+    if (rel.relationships.isCompound) types.push("Compound");
+    if (rel.relationships.isAlphaBetaCounterpart) types.push("α↔β");
+    if (rel.relationships.isInverted) types.push("Inverted");
+    if (types.length === 0) return null;
+    return `${rel.letter1}↔${rel.letter2}`;
   }
 
   const groupCount = $derived(Object.keys(beatPairGroups || {}).length);
@@ -63,6 +106,17 @@
       return alternatives.length > 0;
     });
   });
+
+  // Check if any beat pairs have letter relationships worth showing
+  const hasLetterRelationships = $derived(
+    beatPairs.some(
+      (p) =>
+        p.letterRelationship &&
+        (p.letterRelationship.relationships.isCompound ||
+          p.letterRelationship.relationships.isAlphaBetaCounterpart ||
+          p.letterRelationship.relationships.isInverted)
+    )
+  );
 </script>
 
 {#if beatPairs.length > 0}
@@ -78,7 +132,9 @@
           size="0.8em"
         />
         <span class="title">Beat-Pair Analysis</span>
-        {#if isModular}
+        {#if isAxisAlternating && axisAlternatingPattern}
+          <span class="axis-alternating-badge">{axisAlternatingPattern.metaPatternType}</span>
+        {:else if isModular}
           <span class="modular-badge">Modular ({groupCount} patterns)</span>
         {/if}
       </div>
@@ -121,23 +177,41 @@
                   <span class="arrow">↔</span>
                   <span class="beat-num">{pair.correspondingBeat}</span>
                 </div>
-                <div class="pair-transforms">
-                  <span
-                    class="transform-tag primary"
-                    style="--tag-color: {getColorForPattern(primaryTransform)}"
-                  >
-                    {primaryTransform}
-                  </span>
-                  {#if alternatives.length > 0}
-                    <span class="also-label">also:</span>
-                    {#each alternatives as alt}
+                <div class="pair-info">
+                  <div class="pair-transforms">
+                    <span
+                      class="transform-tag primary"
+                      style="--tag-color: {getColorForPattern(primaryTransform)}"
+                    >
+                      {primaryTransform}
+                    </span>
+                    {#if alternatives.length > 0}
+                      <span class="also-label">also:</span>
+                      {#each alternatives as alt}
+                        <span
+                          class="transform-tag alternative"
+                          style="--tag-color: {getColorForPattern(alt)}"
+                        >
+                          {alt}
+                        </span>
+                      {/each}
+                    {/if}
+                  </div>
+                  {#if pair.letterRelationship}
+                    {@const letterDisplay = formatLetterRelationship(
+                      pair.letterRelationship
+                    )}
+                    {#if letterDisplay}
                       <span
-                        class="transform-tag alternative"
-                        style="--tag-color: {getColorForPattern(alt)}"
+                        class="letter-tag"
+                        style="--letter-color: {getLetterRelationshipColor(
+                          pair.letterRelationship
+                        )}"
+                        title={pair.letterRelationship.summary}
                       >
-                        {alt}
+                        {letterDisplay}
                       </span>
-                    {/each}
+                    {/if}
                   {/if}
                 </div>
               </div>
@@ -156,6 +230,33 @@
               {unifiedPattern}
             </span>
           </div>
+
+          <!-- Show letter relationships for each pair -->
+          {#if hasLetterRelationships}
+            <div class="letter-relationships">
+              <span class="letter-label">Letter relationships:</span>
+              <div class="letter-pairs-list">
+                {#each beatPairs as pair}
+                  {#if pair.letterRelationship}
+                    {@const letterDisplay = formatLetterRelationship(
+                      pair.letterRelationship
+                    )}
+                    {#if letterDisplay}
+                      <span
+                        class="letter-tag"
+                        style="--letter-color: {getLetterRelationshipColor(
+                          pair.letterRelationship
+                        )}"
+                        title={pair.letterRelationship.summary}
+                      >
+                        {letterDisplay}
+                      </span>
+                    {/if}
+                  {/if}
+                {/each}
+              </div>
+            </div>
+          {/if}
 
           <!-- Only show pairs with alternatives -->
           {#if pairsWithAlternatives.length > 0}
@@ -242,6 +343,17 @@
     font-weight: 500;
   }
 
+  .axis-alternating-badge {
+    padding: 2px 8px;
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+    border: 1px solid rgba(20, 184, 166, 0.4);
+    border-radius: 12px;
+    font-size: var(--font-size-xs);
+    color: #5eead4;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
   .pair-count {
     font-size: var(--font-size-xs);
     color: var(--muted-foreground);
@@ -298,7 +410,8 @@
 
   .unified-summary {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: var(--spacing-sm);
   }
 
@@ -328,7 +441,8 @@
 
   .alt-pair-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
     gap: var(--spacing-xs);
   }
 
@@ -347,7 +461,7 @@
 
   .pair-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: var(--spacing-md);
     padding: var(--spacing-xs) var(--spacing-sm);
     background: rgba(255, 255, 255, 0.02);
@@ -412,5 +526,46 @@
     font-style: italic;
     opacity: 0.7;
     margin-left: 4px;
+  }
+
+  /* Letter relationship display */
+  .letter-relationships {
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .letter-label {
+    font-size: var(--font-size-xs);
+    color: var(--muted-foreground);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+  }
+
+  .letter-pairs-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .letter-tag {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: color-mix(in srgb, var(--letter-color) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--letter-color) 50%, transparent);
+    color: var(--letter-color);
+    cursor: help;
+  }
+
+  .pair-info {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    flex: 1;
+    min-width: 0;
   }
 </style>

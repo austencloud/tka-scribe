@@ -12,6 +12,17 @@ import { NavigationService } from "$lib/features/cap-labeler/services/implementa
 import { SequenceFeatureExtractor } from "$lib/features/cap-labeler/services/implementations/SequenceFeatureExtractor";
 import { RuleBasedTagger } from "$lib/features/cap-labeler/services/implementations/RuleBasedTagger";
 import { PolyrhythmicDetectionService } from "$lib/features/cap-labeler/services/implementations/PolyrhythmicDetectionService";
+
+// Comparison services
+import { RotationComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/RotationComparisonService";
+import { ReflectionComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/ReflectionComparisonService";
+import { SwapInvertComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/SwapInvertComparisonService";
+import { BeatComparisonOrchestrator } from "$lib/features/cap-labeler/services/implementations/comparison/BeatComparisonOrchestrator";
+
+// Analysis and formatting services
+import { TransformationAnalysisService } from "$lib/features/cap-labeler/services/implementations/TransformationAnalysisService";
+import { CandidateFormattingService } from "$lib/features/cap-labeler/services/implementations/CandidateFormattingService";
+
 import { CAPLabelerTypes } from "../types/cap-labeler.types";
 
 export const capLabelerModule = new ContainerModule(
@@ -39,6 +50,43 @@ export const capLabelerModule = new ContainerModule(
       .to(PolyrhythmicDetectionService)
       .inSingletonScope();
 
+    // === COMPARISON SERVICES ===
+    // These must be registered BEFORE CAPDetectionService
+    // CandidateFormattingService has no dependencies - register first
+    options
+      .bind(CAPLabelerTypes.ICandidateFormattingService)
+      .to(CandidateFormattingService)
+      .inSingletonScope();
+
+    // Individual comparison services (no dependencies)
+    options
+      .bind(CAPLabelerTypes.IRotationComparisonService)
+      .to(RotationComparisonService)
+      .inSingletonScope();
+
+    options
+      .bind(CAPLabelerTypes.IReflectionComparisonService)
+      .to(ReflectionComparisonService)
+      .inSingletonScope();
+
+    options
+      .bind(CAPLabelerTypes.ISwapInvertComparisonService)
+      .to(SwapInvertComparisonService)
+      .inSingletonScope();
+
+    // BeatComparisonOrchestrator depends on individual comparison services + formatting
+    options
+      .bind(CAPLabelerTypes.IBeatComparisonOrchestrator)
+      .to(BeatComparisonOrchestrator)
+      .inSingletonScope();
+
+    // TransformationAnalysisService depends on CandidateFormattingService
+    options
+      .bind(CAPLabelerTypes.ITransformationAnalysisService)
+      .to(TransformationAnalysisService)
+      .inSingletonScope();
+
+    // CAPDetectionService depends on all above + PolyrhythmicDetectionService
     options
       .bind(CAPLabelerTypes.ICAPLabelerDetectionService)
       .to(CAPDetectionService)

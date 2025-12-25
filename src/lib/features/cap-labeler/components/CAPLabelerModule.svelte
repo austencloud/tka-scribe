@@ -38,6 +38,7 @@
   let isReady = $state(false);
   let copiedToast = $state(false);
   let showBrowserDrawer = $state(false);
+  let showManualBuilder = $state(false); // Hide manual designation tools behind toggle
 
   // Store service references after loading (to avoid resolving in $derived)
   let detectionService = $state<ICAPDetectionService | null>(null);
@@ -51,51 +52,40 @@
   onMount(() => {
     // Load CAP labeler DI module and initialize
     (async () => {
-      console.log("[CAPLabelerModule] onMount starting...");
+      // Check if state already has data (from HMR or previous session)
+      const hasExistingData = capLabelerState.hasData;
+
       await ensureContainerInitialized();
-      console.log("[CAPLabelerModule] Container initialized");
       await loadFeatureModule("cap-labeler");
-      console.log("[CAPLabelerModule] cap-labeler module loaded");
 
       // Store reference to detection service AFTER module is loaded
-      // Use verbose resolution to see any errors
-      console.log("[CAPLabelerModule] Attempting to resolve ICAPDetectionService...");
-      console.log("[CAPLabelerModule] Symbol:", CAPLabelerTypes.ICAPLabelerDetectionService);
-
       let resolvedService: ICAPDetectionService | null = null;
       try {
         resolvedService = tryResolve<ICAPDetectionService>(
           CAPLabelerTypes.ICAPLabelerDetectionService
         );
       } catch (err) {
-        console.error("[CAPLabelerModule] Error resolving service:", err);
+        // Silent - will try direct import
       }
-
-      console.log("[CAPLabelerModule] tryResolve returned:", resolvedService);
 
       // If tryResolve failed, try importing and instantiating directly
       if (!resolvedService) {
-        console.warn("[CAPLabelerModule] Service not in DI container, trying direct import...");
         try {
           const { CAPDetectionService } = await import("../services/implementations/CAPDetectionService");
           const { PolyrhythmicDetectionService } = await import("../services/implementations/PolyrhythmicDetectionService");
-          // Create polyrhythmic service first, then pass to detection service
           const polyrhythmicService = new PolyrhythmicDetectionService();
           resolvedService = new CAPDetectionService(polyrhythmicService);
-          console.log("[CAPLabelerModule] Direct instantiation succeeded:", !!resolvedService);
         } catch (importErr) {
-          console.error("[CAPLabelerModule] Direct import failed:", importErr);
+          console.error("[CAPLabelerModule] Failed to create detection service:", importErr);
         }
       }
 
       detectionService = resolvedService;
-      console.log("[CAPLabelerModule] detectionService set to:", !!detectionService);
 
       // Also cache the conversion service for beat parsing
       conversionService = tryResolve<IBeatDataConversionService>(
         CAPLabelerTypes.IBeatDataConversionService
       );
-      console.log("[CAPLabelerModule] conversionService set to:", !!conversionService);
 
       // Pre-cache all services to ensure they're available for subsequent operations
       capLabelerState.cacheServices();
@@ -105,7 +95,15 @@
       beatPairState = createBeatPairModeState();
       wholeState = createWholeModeState();
 
-      await capLabelerState.initialize();
+      // Only run full initialization if we don't have existing data
+      // This prevents re-loading when HMR preserves state
+      if (!hasExistingData) {
+        await capLabelerState.initialize();
+      } else {
+        // Just ensure loading is false since we have data
+        capLabelerState.setLoading(false);
+      }
+
       isReady = true;
     })();
 
@@ -129,15 +127,7 @@
   const currentComputedDetection = $derived.by(() => {
     const seq = currentSequence;
 
-    console.log("[CAPLabelerModule] Detection $derived running:", {
-      isReady,
-      hasSequence: !!seq,
-      hasService: !!detectionService,
-      seqWord: seq?.word,
-    });
-
     if (!isReady || !seq || !detectionService) {
-      console.log("[CAPLabelerModule] Detection skipped - missing dependencies");
       return null;
     }
 
@@ -145,28 +135,17 @@
     const cacheKey = seq.id;
     const cached = detectionCacheRef.current.get(cacheKey);
     if (cached) {
-      console.log("[CAPLabelerModule] Returning cached detection for:", seq.word);
       return cached;
     }
 
-    console.log("[CAPLabelerModule] Computing detection for sequence:", seq.word);
     const detection = detectionService.detectCAP(seq);
-    console.log("[CAPLabelerModule] Detection result:", {
-      capType: detection.capType,
-      isCircular: detection.isCircular,
-      isFreeform: detection.isFreeform,
-      isPolyrhythmic: detection.isPolyrhythmic,
-      polyrhythm: detection.polyrhythmic?.polyrhythm,
-      candidateCount: detection.candidateDesignations.length,
-      candidates: detection.candidateDesignations.map(c => c.label),
-    });
 
     // Cache the result (mutating ref, not reactive state)
     detectionCacheRef.current.set(cacheKey, detection);
 
     return detection;
   });
-  const stats = $derived(isReady ? capLabelerState.stats : { total: 0, labeled: 0, needsWork: 0, verified: 0, pending: 0 });
+  const stats = $derived(isReady ? capLabelerState.stats : { total: 0, needsVerification: 0, verified: 0 });
   const filterMode = $derived(capLabelerState.filterMode);
   const labelingMode = $derived(capLabelerState.labelingMode);
   const showExport = $derived(capLabelerState.showExport);
@@ -215,18 +194,6 @@
 
   const parsedBeats = $derived(parsedData.beats);
   const startPosition = $derived(parsedData.startPosition);
-
-  // Debug: Track when detection should update
-  $effect(() => {
-    console.log("[CAPLabelerModule] Detection dependencies changed:", {
-      isReady,
-      hasSequence: !!currentSequence,
-      seqWord: currentSequence?.word,
-      hasService: !!detectionService,
-      hasDetectionResult: !!currentComputedDetection,
-      candidateCount: currentComputedDetection?.candidateDesignations?.length ?? 0,
-    });
-  });
 
   // Load saved sections/beatpairs when sequence changes AND clear current selection
   $effect(() => {
@@ -615,10 +582,18 @@
           wholeDesignations={wholeState?.pendingDesignations ?? []}
           sectionDesignations={sectionState?.savedSections ?? []}
           beatPairDesignations={beatPairState?.savedBeatPairs ?? []}
-          isFreeform={currentComputedDetection?.isFreeform ?? false}
+          isFreeform={
+            // Freeform should be false if polyrhythmic is detected - polyrhythmic IS a pattern
+            (currentComputedDetection?.isPolyrhythmic ?? false)
+              ? false
+              : (currentComputedDetection?.isFreeform ?? false)
+          }
           isModular={currentComputedDetection?.isModular ?? false}
           isPolyrhythmic={currentComputedDetection?.isPolyrhythmic ?? false}
           polyrhythmic={currentComputedDetection?.polyrhythmic ?? null}
+          compoundPattern={currentComputedDetection?.compoundPattern ?? null}
+          isAxisAlternating={currentComputedDetection?.isAxisAlternating ?? false}
+          axisAlternatingPattern={currentComputedDetection?.axisAlternatingPattern ?? null}
           needsVerification={!isVerified}
           autoDetectedDesignations={[]}
           candidateDesignations={currentComputedDetection?.candidateDesignations ?? []}
@@ -639,53 +614,74 @@
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||
             (wholeState?.isFreeform ?? false) ||
-            (currentComputedDetection?.isModular ?? false)}
+            (currentComputedDetection?.isModular ?? false) ||
+            (currentComputedDetection?.isPolyrhythmic ?? false)}
         />
 
-        <!-- Show editing UI only for unverified sequences OR when in edit mode -->
+        <!-- Manual designation builder - hidden behind toggle -->
         {#if !isVerified || isEditMode}
-          <!-- Mode Toggle -->
-          <ComponentSelectionPanel
-            {labelingMode}
-            onLabelingModeChange={(mode) => capLabelerState.setLabelingMode(mode)}
-          />
+          {#if showManualBuilder}
+            <div class="manual-builder-section">
+              <button
+                class="collapse-builder-btn"
+                onclick={() => (showManualBuilder = false)}
+              >
+                <span>Hide Manual Builder</span>
+                <span class="chevron">▲</span>
+              </button>
 
-          <!-- Mode-specific builder panels -->
-          {#if labelingMode === "section" && sectionState}
-            <SectionModePanel
-              selectedBeats={sectionState.selectedBeats}
-              selectedComponents={sectionState.selectedComponents}
-              savedSections={sectionState.savedSections}
-              selectedBaseWord={sectionState.selectedBaseWord}
-              onBaseWordChange={(bw) => sectionState!.actions.setBaseWord(bw)}
-              onAddSection={handleAddSection}
-              onRemoveSection={handleRemoveSection}
-              onMarkUnknown={handleMarkUnknown}
-              onNext={() => capLabelerState.nextSequence()}
-              canProceed={sectionState.selectedBeats.size === 0 &&
-                sectionState.selectedComponents.size === 0}
-            />
-          {:else if labelingMode === "beatpair" && beatPairState}
-            <BeatPairModePanel
-              firstBeat={beatPairState.firstBeat}
-              secondBeat={beatPairState.secondBeat}
-              selectedComponents={beatPairState.selectedComponents}
-              transformationIntervals={beatPairState.transformationIntervals}
-              onClearSelection={() => beatPairState!.actions.clearSelection()}
-              onToggleComponent={(c) => beatPairState!.actions.toggleComponent(c)}
-              onSetInterval={(key, val) =>
-                beatPairState!.actions.setTransformationInterval(key, val)}
-              onAddBeatPair={() => beatPairState!.actions.addBeatPair()}
-            />
-          {:else if labelingMode === "whole" && wholeState}
-            <WholeModePanel
-              selectedComponents={wholeState.selectedComponents}
-              transformationIntervals={wholeState.transformationIntervals}
-              onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
-              onSetInterval={(key, val) =>
-                wholeState!.actions.setTransformationInterval(key, val)}
-              onAddDesignation={handleAddDesignation}
-            />
+              <!-- Mode Toggle -->
+              <ComponentSelectionPanel
+                {labelingMode}
+                onLabelingModeChange={(mode) => capLabelerState.setLabelingMode(mode)}
+              />
+
+              <!-- Mode-specific builder panels -->
+              {#if labelingMode === "section" && sectionState}
+                <SectionModePanel
+                  selectedBeats={sectionState.selectedBeats}
+                  selectedComponents={sectionState.selectedComponents}
+                  savedSections={sectionState.savedSections}
+                  selectedBaseWord={sectionState.selectedBaseWord}
+                  onBaseWordChange={(bw) => sectionState!.actions.setBaseWord(bw)}
+                  onAddSection={handleAddSection}
+                  onRemoveSection={handleRemoveSection}
+                  onMarkUnknown={handleMarkUnknown}
+                  onNext={() => capLabelerState.nextSequence()}
+                  canProceed={sectionState.selectedBeats.size === 0 &&
+                    sectionState.selectedComponents.size === 0}
+                />
+              {:else if labelingMode === "beatpair" && beatPairState}
+                <BeatPairModePanel
+                  firstBeat={beatPairState.firstBeat}
+                  secondBeat={beatPairState.secondBeat}
+                  selectedComponents={beatPairState.selectedComponents}
+                  transformationIntervals={beatPairState.transformationIntervals}
+                  onClearSelection={() => beatPairState!.actions.clearSelection()}
+                  onToggleComponent={(c) => beatPairState!.actions.toggleComponent(c)}
+                  onSetInterval={(key, val) =>
+                    beatPairState!.actions.setTransformationInterval(key, val)}
+                  onAddBeatPair={() => beatPairState!.actions.addBeatPair()}
+                />
+              {:else if labelingMode === "whole" && wholeState}
+                <WholeModePanel
+                  selectedComponents={wholeState.selectedComponents}
+                  transformationIntervals={wholeState.transformationIntervals}
+                  onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
+                  onSetInterval={(key, val) =>
+                    wholeState!.actions.setTransformationInterval(key, val)}
+                  onAddDesignation={handleAddDesignation}
+                />
+              {/if}
+            </div>
+          {:else}
+            <button
+              class="show-builder-btn"
+              onclick={() => (showManualBuilder = true)}
+            >
+              <span>+ Add Manual Designation</span>
+              <span class="chevron">▼</span>
+            </button>
           {/if}
         {:else}
           <!-- View-only mode for verified sequences -->
@@ -739,7 +735,7 @@
 
   .layout-container {
     display: grid;
-    grid-template-columns: 1fr 1400px;
+    grid-template-columns: 1fr 3fr;
     flex: 1;
     overflow: hidden;
     width: 100%;
@@ -929,5 +925,51 @@
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.25);
     color: var(--foreground);
+  }
+
+  /* Manual builder toggle */
+  .show-builder-btn,
+  .collapse-builder-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 10px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .show-builder-btn:hover,
+  .collapse-builder-btn:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: var(--foreground);
+  }
+
+  .collapse-builder-btn {
+    background: rgba(99, 102, 241, 0.08);
+    border-style: solid;
+    border-color: rgba(99, 102, 241, 0.3);
+    color: var(--foreground);
+  }
+
+  .chevron {
+    font-size: 0.75em;
+    opacity: 0.6;
+  }
+
+  .manual-builder-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
   }
 </style>

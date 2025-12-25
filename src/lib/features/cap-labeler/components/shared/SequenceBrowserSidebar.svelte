@@ -14,9 +14,9 @@
     sequences: SequenceEntry[];
     labels: Map<string, LabeledSequence>;
     currentSequenceId: string | null;
-    filterMode: "needsVerification" | "verified";
+    filterMode: "all" | "needsVerification" | "verified";
     onSelectSequence: (id: string) => void;
-    onFilterChange: (mode: "needsVerification" | "verified") => void;
+    onFilterChange: (mode: "all" | "needsVerification" | "verified") => void;
   }
 
   let {
@@ -33,7 +33,9 @@
     return sequences.filter((seq) => {
       const label = labels.get(seq.word);
 
-      if (filterMode === "needsVerification") {
+      if (filterMode === "all") {
+        return true;
+      } else if (filterMode === "needsVerification") {
         return label?.needsVerification === true;
       } else {
         return label && !label.needsVerification;

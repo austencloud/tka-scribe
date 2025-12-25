@@ -1,6 +1,22 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 
 /**
+ * Letter relationship types detected between beat pairs
+ */
+export interface LetterRelationshipInfo {
+  letter1: string;
+  letter2: string;
+  /** Formal letter transformation relationships */
+  relationships: {
+    isInverted: boolean; // Pro ↔ Anti (A↔B, Σ↔Δ)
+    isCompound: boolean; // Section transition pairs (D↔J, M↔P)
+    isAlphaBetaCounterpart: boolean; // Gamma endpoint sharing (Σ↔θ, W↔Y)
+  };
+  /** Human-readable summary of the relationship */
+  summary: string;
+}
+
+/**
  * Relationship between two beats in a sequence
  */
 export interface BeatPairRelationship {
@@ -11,6 +27,8 @@ export interface BeatPairRelationship {
   /** All valid transformations this pair satisfies (before filtering) */
   allValidTransformations?: string[]; // e.g., ["ROTATED 180+SWAPPED", "MIRRORED+INVERTED"]
   confirmedTransformation?: string; // User-selected interpretation
+  /** Letter-based relationship analysis */
+  letterRelationship?: LetterRelationshipInfo;
 }
 
 /**

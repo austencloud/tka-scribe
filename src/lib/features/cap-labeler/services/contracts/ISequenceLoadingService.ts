@@ -4,7 +4,7 @@ import type { LabeledSequence } from "./ICAPLabelsFirebaseService";
 /**
  * Filter mode for sequences
  */
-export type FilterMode = "needsVerification" | "verified";
+export type FilterMode = "all" | "needsVerification" | "verified";
 
 /**
  * Sequence statistics
