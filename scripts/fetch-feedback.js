@@ -203,8 +203,8 @@ async function listAllFeedback() {
       console.log("\n  📦 ARCHIVED:\n");
       archivedItems.slice(0, 5).forEach((item) => {
         const title = (item.title || "No title").substring(0, 50);
-        const note = item.adminNotes
-          ? ` - ${item.adminNotes.substring(0, 30)}${item.adminNotes.length > 30 ? "..." : ""}`
+        const note = item.resolutionNotes
+          ? ` - ${item.resolutionNotes.substring(0, 30)}${item.resolutionNotes.length > 30 ? "..." : ""}`
           : "";
         console.log(
           `     ${item.id.substring(0, 8)}... | ${item.type || "N/A"} | ${title}${item.title?.length > 50 ? "..." : ""}${note}`
@@ -356,9 +356,9 @@ async function claimNextFeedback(priorityFilter = null) {
     console.log("─".repeat(70));
     console.log(`  Module: ${itemToClaim.capturedModule || "Unknown"}`);
     console.log(`  Tab: ${itemToClaim.capturedTab || "Unknown"}`);
-    if (itemToClaim.adminNotes) {
+    if (itemToClaim.resolutionNotes) {
       console.log("─".repeat(70));
-      console.log(`  Previous Notes: ${itemToClaim.adminNotes}`);
+      console.log(`  Previous Notes: ${itemToClaim.resolutionNotes}`);
     }
 
     // Show subtasks if they exist
@@ -502,7 +502,7 @@ async function updateResolutionNotes(docId, notes) {
 /**
  * Update feedback status by Firestore document ID
  */
-async function updateFeedbackById(docId, status, adminNotes) {
+async function updateFeedbackById(docId, status, resolutionNotes) {
   try {
     const docRef = db.collection("feedback").doc(docId);
     const doc = await docRef.get();
@@ -519,7 +519,7 @@ async function updateFeedbackById(docId, status, adminNotes) {
       inprogress: "in-progress",
       inreview: "in-review",
       resolved: "archived", // resolved is now archived
-      deferred: "archived", // deferred is now archived (use adminNotes to explain)
+      deferred: "archived", // deferred is now archived (use resolutionNotes to explain)
     };
     const normalizedStatus = statusMap[status] || status;
 
@@ -551,8 +551,8 @@ async function updateFeedbackById(docId, status, adminNotes) {
       updateData.resolvedAt = admin.firestore.FieldValue.serverTimestamp();
     }
 
-    if (adminNotes) {
-      updateData.adminNotes = adminNotes;
+    if (resolutionNotes) {
+      updateData.resolutionNotes = resolutionNotes;
     }
 
     await docRef.update(updateData);
@@ -564,8 +564,8 @@ async function updateFeedbackById(docId, status, adminNotes) {
     console.log(`  ID: ${docId}`);
     console.log(`  Title: ${item.title || "No title"}`);
     console.log(`  New Status: ${normalizedStatus}`);
-    if (adminNotes) {
-      console.log(`  Admin Notes: ${adminNotes}`);
+    if (resolutionNotes) {
+      console.log(`  Resolution: ${resolutionNotes}`);
     }
 
     // Send notification to user when marking as completed
@@ -575,7 +575,7 @@ async function updateFeedbackById(docId, status, adminNotes) {
         item.userId,
         docId,
         item.title,
-        adminNotes ||
+        resolutionNotes ||
           "Your feedback has been addressed and is ready for the next release!"
       );
     }
@@ -822,13 +822,9 @@ async function getFeedbackById(docId) {
     console.log("─".repeat(70));
     console.log(`  Module: ${item.capturedModule || "Unknown"}`);
     console.log(`  Tab: ${item.capturedTab || "Unknown"}`);
-    if (item.adminNotes) {
-      console.log("─".repeat(70));
-      console.log(`  Admin Notes: ${item.adminNotes}`);
-    }
     if (item.resolutionNotes) {
       console.log("─".repeat(70));
-      console.log(`  Resolution Notes: ${item.resolutionNotes}`);
+      console.log(`  Resolution: ${item.resolutionNotes}`);
     }
 
     // Show subtasks if they exist
@@ -915,7 +911,7 @@ async function deferFeedback(docId, deferUntilDate, reason) {
     await feedbackRef.update({
       status: "archived",
       deferredUntil: admin.firestore.Timestamp.fromDate(parsedDate),
-      adminNotes: reason || `Deferred until ${deferUntilDate}`,
+      resolutionNotes: reason || `Deferred until ${deferUntilDate}`,
       archivedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
@@ -1377,14 +1373,14 @@ async function claimSpecificFeedback(docId) {
     console.log(`  Module: ${item.capturedModule || "Unknown"}`);
     console.log(`  Tab: ${item.capturedTab || "Unknown"}`);
 
-    if (item.adminNotes) {
+    if (item.resolutionNotes) {
       console.log("─".repeat(70));
-      console.log(`  Previous Notes: ${item.adminNotes}`);
+      console.log(`  Previous Notes: ${item.resolutionNotes}`);
     }
 
     console.log("\n" + "=".repeat(70));
     console.log(
-      `\n  To resolve: node scripts/fetch-feedback.js.js ${docId} in-review "Your notes here"\n`
+      `\n  To resolve: node scripts/fetch-feedback.js ${docId} in-review "Your resolution notes"\n`
     );
 
     return { id: docId, ...item };
@@ -1415,12 +1411,12 @@ async function searchFeedback(query) {
       .filter((item) => {
         const title = (item.title || "").toLowerCase();
         const desc = (item.description || "").toLowerCase();
-        const notes = (item.adminNotes || "").toLowerCase();
+        const resolution = (item.resolutionNotes || "").toLowerCase();
         const module = (item.capturedModule || "").toLowerCase();
         return (
           title.includes(queryLower) ||
           desc.includes(queryLower) ||
-          notes.includes(queryLower) ||
+          resolution.includes(queryLower) ||
           module.includes(queryLower)
         );
       });

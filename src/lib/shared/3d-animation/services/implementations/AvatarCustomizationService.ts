@@ -147,11 +147,15 @@ export class AvatarCustomizationService implements IAvatarCustomizationService {
     @inject(ANIMATION_3D_TYPES.IAnimation3DPersistenceService)
     private persistence: IAnimation3DPersistenceService
   ) {
+    // Get Austen preset (index 2)
+    const austenPreset = PROPORTION_PRESETS.find((p) => p.id === "tall-male");
+    const defaultProportions = austenPreset?.proportions ?? deriveProportionsInternal(178, "masculine");
+
     // Initialize with defaults
     this.state = {
       bodyType: "masculine",
       skinTone: "#d4a574",
-      proportions: PROPORTION_PRESETS[2].proportions, // Austen preset
+      proportions: defaultProportions,
       visible: true,
     };
 
@@ -246,9 +250,13 @@ export class AvatarCustomizationService implements IAvatarCustomizationService {
 
   save(): void {
     const saved = this.persistence.loadState();
+    // Only persist masculine/feminine (persistence doesn't support androgynous)
+    const persistBodyType: "masculine" | "feminine" =
+      this.state.bodyType === "androgynous" ? "masculine" : this.state.bodyType;
+
     this.persistence.saveState({
       ...saved,
-      bodyType: this.state.bodyType,
+      bodyType: persistBodyType,
       skinTone: this.state.skinTone,
       avatarProportions: this.state.proportions,
       showFigure: this.state.visible,

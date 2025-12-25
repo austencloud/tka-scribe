@@ -113,10 +113,10 @@ Last audit: 2025-12-20
   // Initialize from manager to avoid flash of incorrect state
   const visibilityManager = getAnimationVisibilityManager();
   let visibilityState = $state<AnimationVisibilityState>({
-    grid: visibilityManager.getVisibility("grid"),
+    grid: visibilityManager.getGridMode() !== "none",
     beatNumbers: visibilityManager.getVisibility("beatNumbers"),
     props: visibilityManager.getVisibility("props"),
-    trails: visibilityManager.getVisibility("trails"),
+    trails: visibilityManager.getTrailStyle() !== "off",
     tkaGlyph: visibilityManager.getVisibility("tkaGlyph"),
     turnNumbers: visibilityManager.getVisibility("turnNumbers"),
     blueMotion: visibilityManager.getVisibility("blueMotion"),

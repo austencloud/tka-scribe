@@ -180,22 +180,21 @@ export function resolveHMRSafe<T>(serviceIdentifier: symbol): T | null {
 }
 
 // Silent resolve - returns null if service not found, no error logging
-// Useful for optional dependencies
+// Useful for optional dependencies during HMR or when services may not be bound
 export function tryResolve<T>(serviceIdentifier: symbol): T | null {
   if (!_cachedContainer) {
     _cachedContainer = getGlobalContainer();
   }
 
   if (!_cachedContainer) {
-    console.warn("[tryResolve] No container available for", serviceIdentifier?.toString());
+    // Silently return null - this is expected during HMR or early initialization
     return null;
   }
 
   try {
     return _cachedContainer.get<T>(serviceIdentifier);
-  } catch (error) {
-    // Log the actual error for debugging while still returning null
-    console.warn("[tryResolve] Failed to resolve:", serviceIdentifier?.toString(), error);
+  } catch {
+    // Silently return null - the caller expects this for optional dependencies
     return null;
   }
 }

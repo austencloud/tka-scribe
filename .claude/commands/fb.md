@@ -487,7 +487,7 @@ If a feedback item has been "in-progress" for over 2 hours, it's considered stal
 - `new` - Unclaimed, ready to be picked up
 - `in-progress` - Being worked on
 - `in-review` - Done, waiting for tester confirmation
-- `archived` - Closed (use adminNotes to explain: fixed, declined, deferred, etc.)
+- `archived` - Closed (use resolutionNotes to explain: fixed, declined, deferred, etc.)
 
 ---
 

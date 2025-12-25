@@ -352,15 +352,30 @@ export class TransformationAnalysisService implements ITransformationAnalysisSer
 	}
 
 	private isColumnSwapped(pairs: InternalBeatPair[]): boolean {
-		// Check if the majority of pairs have "swapped" in their transformations
-		let swappedCount = 0;
+		// Check if this column has swap behavior
+		// Strategy: Look for definitive SWAPPED (not just SWAPPED+INVERTED ambiguous)
+		// If ANY pair in the column has a clean SWAPPED transformation, consider it swapped
+
 		for (const pair of pairs) {
-			const hasSwap = (pair.rawTransformations || []).some((t) =>
-				t.toLowerCase().includes('swapped')
-			);
-			if (hasSwap) swappedCount++;
+			// Check primary detected transformation
+			const primary = pair.detectedTransformations[0] || '';
+
+			// Clean swap = has "swapped" but NOT "inverted"
+			const hasCleanSwap = primary.toLowerCase().includes('swapped') &&
+				!primary.toLowerCase().includes('inverted');
+
+			if (hasCleanSwap) return true;
+
+			// Also check raw transformations for definitive swapped
+			const rawHasCleanSwap = (pair.rawTransformations || []).some((t) => {
+				const lower = t.toLowerCase();
+				return lower.includes('swapped') && !lower.includes('inverted');
+			});
+
+			if (rawHasCleanSwap) return true;
 		}
-		return swappedCount > pairs.length / 2;
+
+		return false;
 	}
 
 	private getColumnBaseTransformation(pairs: InternalBeatPair[]): string {

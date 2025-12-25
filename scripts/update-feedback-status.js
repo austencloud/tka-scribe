@@ -55,14 +55,14 @@ async function updateFeedbackStatus() {
   };
 
   if (notes) {
-    updateData.adminNotes = notes;
+    updateData.resolutionNotes = notes;
   }
 
   await ref.update(updateData);
 
   console.log(`✓ Updated feedback ${feedbackId} to ${status}`);
   if (notes) {
-    console.log(`✓ Added notes: ${notes}`);
+    console.log(`✓ Added resolution notes: ${notes}`);
   }
 }
 

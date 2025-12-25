@@ -17,11 +17,12 @@ let initializationPromise: Promise<void> | null = null;
 let isHMRRecovering = false; // Track HMR recovery state
 
 // Track loaded modules to prevent duplicate loading
-const loadedModules = new Set<string>();
+// Use HMR data to persist across module reloads, otherwise use fresh set
+const loadedModules: Set<string> = import.meta.hot?.data?.loadedModules ?? new Set<string>();
 // Track modules currently being loaded to prevent race conditions
 const pendingModules = new Map<string, Promise<void>>();
-let tier1Loaded = false;
-let tier2Loaded = false;
+let tier1Loaded = import.meta.hot?.data?.tier1Loaded ?? false;
+let tier2Loaded = import.meta.hot?.data?.tier2Loaded ?? false;
 let tier2Promise: Promise<void> | null = null;
 
 // Browser detection utility
@@ -33,8 +34,8 @@ if (import.meta.hot) {
     console.log("🔄 HMR: Rebuilding InversifyJS container...");
     isHMRRecovering = true;
 
-    // Save the list of loaded feature modules BEFORE clearing
-    // Tier 1 + Tier 2 modules are automatically reloaded, only save Tier 3 feature modules
+    // loadedModules is already restored from HMR data (see line 21)
+    // Extract feature modules (non-tier1/tier2) that need to be re-registered
     const featureModulesToRestore = Array.from(loadedModules).filter(
       (module) =>
         ![
@@ -63,9 +64,8 @@ if (import.meta.hot) {
       isInitialized = false;
       initializationPromise = null;
 
-      // Reset tier loading flags to prevent duplicate loading
-      tier1Loaded = false;
-      tier2Loaded = false;
+      // Clear the module tracking - they'll be re-added as modules load
+      // (tier1Loaded/tier2Loaded are already set from HMR data if available)
       tier2Promise = null;
       loadedModules.clear();
       pendingModules.clear();
@@ -75,7 +75,7 @@ if (import.meta.hot) {
         .then(async () => {
           // Restore previously loaded feature modules
           console.log(
-            `🔄 HMR: Restoring feature modules: ${featureModulesToRestore.join(", ")}`
+            `🔄 HMR: Restoring feature modules: ${featureModulesToRestore.join(", ") || "(none)"}`
           );
           for (const module of featureModulesToRestore) {
             try {
@@ -102,9 +102,15 @@ if (import.meta.hot) {
     }
   });
 
-  // Clean up on module disposal
-  import.meta.hot.dispose(() => {
+  // Clean up on module disposal - preserve loaded modules state for next version
+  import.meta.hot.dispose((data) => {
     console.log("🧹 HMR: Disposing container...");
+
+    // Save loaded modules to HMR data so next version can restore them
+    data.loadedModules = new Set(loadedModules);
+    data.tier1Loaded = tier1Loaded;
+    data.tier2Loaded = tier2Loaded;
+
     try {
       void container.unbindAll();
     } catch (error) {
@@ -112,10 +118,7 @@ if (import.meta.hot) {
     }
     isInitialized = false;
     initializationPromise = null;
-    tier1Loaded = false;
-    tier2Loaded = false;
     tier2Promise = null;
-    loadedModules.clear();
     pendingModules.clear();
   });
 }
@@ -188,7 +191,10 @@ export function tryResolve<T>(serviceType: symbol): T | null {
   try {
     return container.get<T>(serviceType);
   } catch (error) {
-    console.warn(`Failed to resolve ${String(serviceType)}:`, error);
+    // Suppress warnings during HMR recovery - they're expected
+    if (!isHMRRecovering) {
+      console.warn(`[tryResolve] Failed to resolve: ${String(serviceType)}`, error);
+    }
     return null;
   }
 }
@@ -418,19 +424,23 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "discover":
         // Discover needs community module for CreatorsPanel (IUserService)
-        await Promise.all([
-          loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded("community", () => import("./modules/community.module")),
-        ]);
+        // Community module is loaded in Tier 2, wait for it
+        if (tier2Promise) {
+          await tier2Promise;
+        }
+        await loadIfNeeded("discover", () => import("./modules/discover.module"));
         break;
 
       case "community":
         // Library needs create module for OrientationCycleDetector (used by LibraryService)
+        // Community module is loaded in Tier 2, wait for it
+        if (tier2Promise) {
+          await tier2Promise;
+        }
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("discover", () => import("./modules/discover.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
-          loadIfNeeded("community", () => import("./modules/community.module")),
         ]);
         break;
 

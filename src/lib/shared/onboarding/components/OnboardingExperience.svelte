@@ -19,7 +19,7 @@
     onSkip?: () => void;
   }
 
-  const { onComplete, onSkip } = $props<Props>();
+  const { onComplete, onSkip }: Props = $props();
 
   let hapticService: IHapticFeedbackService | null = null;
 

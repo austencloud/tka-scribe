@@ -1,11 +1,32 @@
 <!-- Sidebar Footer Component -->
 <!-- Footer with settings gear/back button -->
 <script lang="ts">
+  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import { tryResolve } from "../../../inversify/container";
+  import { TYPES } from "../../../inversify/types";
+  import { releaseNotesDrawerState } from "../../../settings/state/release-notes-drawer-state.svelte";
+
+
   let { isCollapsed, isSettingsActive, onSettingsClick } = $props<{
     isCollapsed: boolean;
     isSettingsActive: boolean;
     onSettingsClick?: () => void;
   }>();
+
+  function handleVersionClick() {
+    // Haptic feedback
+    try {
+      const hapticService = tryResolve<IHapticFeedbackService>(
+        TYPES.IHapticFeedbackService
+      );
+      hapticService?.trigger("selection");
+    } catch {
+      // Ignore if not available
+    }
+
+    // Open the release notes drawer
+    releaseNotesDrawerState.open();
+  }
 </script>
 
 <!-- Footer with settings -->
@@ -31,13 +52,18 @@
   </button>
 
   <!-- Version Number (below settings) -->
-  <div class="version-badge" class:collapsed={isCollapsed}>
+  <button
+    class="version-badge"
+    class:collapsed={isCollapsed}
+    onclick={handleVersionClick}
+    aria-label="View Release Notes"
+  >
     {#if isCollapsed}
       <span class="version-number">v{__APP_VERSION__}</span>
     {:else}
       <span class="version-label">Version {__APP_VERSION__}</span>
     {/if}
-  </div>
+  </button>
 </div>
 
 <style>
@@ -175,17 +201,31 @@
   .version-badge {
     display: flex;
     justify-content: center;
+    align-items: center;
+    text-align: center;
     padding: 4px 8px;
     font-size: 11px;
     font-weight: 500;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     letter-spacing: 0.3px;
     opacity: 0.7;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    width: 100%;
   }
 
   .version-badge:hover {
     opacity: 1;
+    color: var(--theme-accent, #a78bfa);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+  }
+
+  .version-badge:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 70%, transparent);
+    outline-offset: 2px;
   }
 
   .version-badge.collapsed {

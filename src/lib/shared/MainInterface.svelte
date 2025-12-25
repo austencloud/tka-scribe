@@ -66,6 +66,7 @@
   import { userPreviewState } from "./debug/state/user-preview-state.svelte";
   import { featureFlagService } from "./auth/services/FeatureFlagService.svelte";
   import ToastContainer from "./toast/components/ToastContainer.svelte";
+  import ReleaseNotesDrawer from "./settings/components/ReleaseNotesDrawer.svelte";
 
   // Toast notifications
 
@@ -273,6 +274,8 @@
   <RoleSwitcherDebugPanel />
   <!-- Toast Notifications -->
   <ToastContainer />
+  <!-- Release Notes Drawer -->
+  <ReleaseNotesDrawer />
 </div>
 
 <style>

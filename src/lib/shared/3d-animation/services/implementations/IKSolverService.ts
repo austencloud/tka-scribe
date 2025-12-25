@@ -25,9 +25,6 @@ export class IKSolverService implements IIKSolverService {
 
   // Pre-allocated vectors for performance
   private readonly tempVec = new Vector3();
-  private readonly tempVec2 = new Vector3();
-  private readonly tempQuat = new Quaternion();
-  private readonly tempMat = new Matrix4();
 
   solve(
     chain: BoneChain,
@@ -53,9 +50,12 @@ export class IKSolverService implements IIKSolverService {
     constraints?: JointConstraints[]
   ): void {
     const solution = this.solve(chain, target, "analytic", constraints);
-    if (solution.success && solution.rotations.length >= 2) {
-      chain.root.quaternion.copy(solution.rotations[0]);
-      chain.middle.quaternion.copy(solution.rotations[1]);
+    const rootRotation = solution.rotations[0];
+    const middleRotation = solution.rotations[1];
+
+    if (solution.success && rootRotation && middleRotation) {
+      chain.root.quaternion.copy(rootRotation);
+      chain.middle.quaternion.copy(middleRotation);
 
       // Update matrices
       chain.root.updateMatrixWorld(true);
@@ -171,7 +171,7 @@ export class IKSolverService implements IIKSolverService {
     target: IKTarget,
     constraints?: JointConstraints[]
   ): IKSolution {
-    const bones = [chain.root, chain.middle, chain.effector];
+    const bones: Bone[] = [chain.root, chain.middle, chain.effector];
     const rotations: Quaternion[] = bones.map((b) => b.quaternion.clone());
 
     let iterations = 0;
@@ -183,6 +183,8 @@ export class IKSolverService implements IIKSolverService {
       // Iterate from end effector back to root
       for (let i = bones.length - 2; i >= 0; i--) {
         const bone = bones[i];
+        if (!bone) continue;
+
         const effector = chain.effector;
 
         // Get current positions
@@ -202,8 +204,9 @@ export class IKSolverService implements IIKSolverService {
         bone.quaternion.premultiply(rotation);
 
         // Apply constraints if provided
-        if (constraints && constraints[i]) {
-          this.applyConstraints(bone, constraints[i]);
+        const constraint = constraints?.[i];
+        if (constraint) {
+          this.applyConstraints(bone, constraint);
         }
 
         // Update matrices
@@ -221,7 +224,9 @@ export class IKSolverService implements IIKSolverService {
 
     // Collect final rotations
     bones.forEach((bone, i) => {
-      rotations[i] = bone.quaternion.clone();
+      if (bone && rotations[i]) {
+        rotations[i] = bone.quaternion.clone();
+      }
     });
 
     return {
@@ -239,18 +244,18 @@ export class IKSolverService implements IIKSolverService {
    * Better for longer chains and smoother results.
    */
   private solveFABRIK(chain: BoneChain, target: IKTarget): IKSolution {
-    // Get initial positions
-    const positions = [
-      new Vector3(),
-      new Vector3(),
-      new Vector3(),
-    ];
-    chain.root.getWorldPosition(positions[0]);
-    chain.middle.getWorldPosition(positions[1]);
-    chain.effector.getWorldPosition(positions[2]);
+    // Get initial positions - use fixed-size array
+    const pos0 = new Vector3();
+    const pos1 = new Vector3();
+    const pos2 = new Vector3();
 
-    const lengths = [chain.upperLength, chain.lowerLength];
-    const rootPos = positions[0].clone();
+    chain.root.getWorldPosition(pos0);
+    chain.middle.getWorldPosition(pos1);
+    chain.effector.getWorldPosition(pos2);
+
+    const upperLen = chain.upperLength;
+    const lowerLen = chain.lowerLength;
+    const rootPos = pos0.clone();
 
     let iterations = 0;
     let error = Infinity;
@@ -259,28 +264,36 @@ export class IKSolverService implements IIKSolverService {
       iterations++;
 
       // Forward pass: move effector to target, work backwards
-      positions[2].copy(target.position);
-      for (let i = 1; i >= 0; i--) {
-        const direction = positions[i].clone().sub(positions[i + 1]).normalize();
-        positions[i].copy(positions[i + 1]).add(direction.multiplyScalar(lengths[i]));
-      }
+      pos2.copy(target.position);
+
+      // Position 1 relative to position 2
+      const dir1to2 = pos1.clone().sub(pos2).normalize();
+      pos1.copy(pos2).add(dir1to2.multiplyScalar(lowerLen));
+
+      // Position 0 relative to position 1
+      const dir0to1 = pos0.clone().sub(pos1).normalize();
+      pos0.copy(pos1).add(dir0to1.multiplyScalar(upperLen));
 
       // Backward pass: move root back to original, work forwards
-      positions[0].copy(rootPos);
-      for (let i = 0; i < 2; i++) {
-        const direction = positions[i + 1].clone().sub(positions[i]).normalize();
-        positions[i + 1].copy(positions[i]).add(direction.multiplyScalar(lengths[i]));
-      }
+      pos0.copy(rootPos);
+
+      // Position 1 relative to position 0
+      const dir1from0 = pos1.clone().sub(pos0).normalize();
+      pos1.copy(pos0).add(dir1from0.multiplyScalar(upperLen));
+
+      // Position 2 relative to position 1
+      const dir2from1 = pos2.clone().sub(pos1).normalize();
+      pos2.copy(pos1).add(dir2from1.multiplyScalar(lowerLen));
 
       // Check convergence
-      error = positions[2].distanceTo(target.position);
+      error = pos2.distanceTo(target.position);
       if (error < this.convergenceThreshold) {
         break;
       }
     }
 
     // Convert positions back to rotations
-    const rotations = this.positionsToRotations(chain, positions);
+    const rotations = this.positionsToRotations(pos0, pos1, pos2);
 
     return {
       success: error < this.convergenceThreshold * 10,
@@ -291,13 +304,14 @@ export class IKSolverService implements IIKSolverService {
   }
 
   private positionsToRotations(
-    chain: BoneChain,
-    positions: Vector3[]
+    pos0: Vector3,
+    pos1: Vector3,
+    pos2: Vector3
   ): Quaternion[] {
     const rotations: Quaternion[] = [];
 
     // Shoulder rotation
-    const shoulderDir = positions[1].clone().sub(positions[0]).normalize();
+    const shoulderDir = pos1.clone().sub(pos0).normalize();
     const shoulderQuat = new Quaternion().setFromUnitVectors(
       new Vector3(1, 0, 0),
       shoulderDir
@@ -305,7 +319,7 @@ export class IKSolverService implements IIKSolverService {
     rotations.push(shoulderQuat);
 
     // Elbow rotation
-    const elbowDir = positions[2].clone().sub(positions[1]).normalize();
+    const elbowDir = pos2.clone().sub(pos1).normalize();
     const elbowQuat = new Quaternion().setFromUnitVectors(
       shoulderDir,
       elbowDir

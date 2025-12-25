@@ -28,10 +28,10 @@ The command expects the document ID and admin notes:
 ## What happens
 
 1. Moves the feedback item from any status → `completed`
-2. Updates `adminNotes` with your summary
+2. Updates `resolutionNotes` with your summary
 3. The item is now staged for the next release
 
-## Admin notes guidelines
+## Resolution notes guidelines
 
 - **Brief summary** of what was fixed (1 line, ~5-10 words)
 - Focus on **WHAT** was addressed, not HOW

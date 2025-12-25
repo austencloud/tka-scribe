@@ -1,3 +1,13 @@
+<script lang="ts" module>
+  import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
+
+  export interface FilterState {
+    readStatus: "all" | "unread" | "read";
+    type: UserNotification["type"] | "all";
+    searchQuery: string;
+  }
+</script>
+
 <script lang="ts">
   /**
    * NotificationFilter - Modern chip-based filter controls
@@ -11,12 +21,6 @@
   }
 
   let { onFilterChange }: Props = $props();
-
-  export interface FilterState {
-    readStatus: "all" | "unread" | "read";
-    type: UserNotification["type"] | "all";
-    searchQuery: string;
-  }
 
   let filters = $state<FilterState>({
     readStatus: "all", // Always "all" now - no read/unread filtering

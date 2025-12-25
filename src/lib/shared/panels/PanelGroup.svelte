@@ -93,14 +93,19 @@
     // Get constraints
     const panel1 = panels[index];
     const panel2 = panels[index + 1];
+    const startSize1 = dragStartSizes[index];
+    const startSize2 = dragStartSizes[index + 1];
+
+    if (!panel1 || !panel2 || startSize1 === undefined || startSize2 === undefined) return;
+
     const minFlex1 = panel1.minSize ? panel1.minSize / pixelsPerFlex : 0.1;
     const minFlex2 = panel2.minSize ? panel2.minSize / pixelsPerFlex : 0.1;
     const maxFlex1 = panel1.maxSize ? panel1.maxSize / pixelsPerFlex : Infinity;
     const maxFlex2 = panel2.maxSize ? panel2.maxSize / pixelsPerFlex : Infinity;
 
     // Calculate new sizes with constraints
-    let newSize1 = dragStartSizes[index] + deltaFlex;
-    let newSize2 = dragStartSizes[index + 1] - deltaFlex;
+    let newSize1 = startSize1 + deltaFlex;
+    let newSize2 = startSize2 - deltaFlex;
 
     // Apply min constraints
     if (newSize1 < minFlex1) {

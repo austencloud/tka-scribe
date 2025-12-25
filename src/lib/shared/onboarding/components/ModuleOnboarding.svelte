@@ -53,7 +53,7 @@
     onTabSelected,
     onSkip,
     onChoiceStepReached,
-  } = $props<Props>();
+  }: Props = $props();
 
   // Services
   let hapticService: IHapticFeedbackService | null = $state(null);
@@ -100,9 +100,10 @@
           break;
         case "Enter":
         case " ":
-          if (isOnChoiceStep && tabs[focusedChoiceIndex]) {
+          const focusedTab = tabs[focusedChoiceIndex];
+          if (isOnChoiceStep && focusedTab) {
             event.preventDefault();
-            selectTab(tabs[focusedChoiceIndex].id);
+            selectTab(focusedTab.id);
           }
           break;
         case "Home":
@@ -116,9 +117,10 @@
         default:
           // Number keys for quick selection
           const num = parseInt(event.key);
-          if (isOnChoiceStep && num >= 1 && num <= tabs.length) {
+          const numTab = tabs[num - 1];
+          if (isOnChoiceStep && num >= 1 && num <= tabs.length && numTab) {
             event.preventDefault();
-            selectTab(tabs[num - 1].id);
+            selectTab(numTab.id);
           }
       }
     };
@@ -137,7 +139,7 @@
       description: welcomeDescription,
       color: moduleColor,
     },
-    ...tabs.map((tab) => ({
+    ...tabs.map((tab: TabInfo) => ({
       type: "tab" as const,
       id: tab.id,
       icon: tab.icon,
@@ -178,17 +180,17 @@
   }
 
   function scrollPrev() {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     emblaApi?.scrollPrev();
   }
 
   function scrollNext() {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     emblaApi?.scrollNext();
   }
 
   function goToStep(index: number) {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     emblaApi?.scrollTo(index);
   }
 
@@ -198,7 +200,7 @@
   }
 
   function handleSkip() {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     // Skip defaults to first tab
     onSkip?.() ?? onTabSelected(tabs[0]?.id ?? "");
   }
@@ -249,7 +251,7 @@
   <div class="carousel-layout">
     <div
       class="embla"
-      use:emblaCarouselSvelte={{ options: { loop: false } }}
+      use:emblaCarouselSvelte={{ options: { loop: false }, plugins: [] }}
       onemblaInit={onEmblaInit}
     >
       <div class="embla__container">

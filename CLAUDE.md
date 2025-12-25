@@ -115,6 +115,51 @@ See `src/lib/shared/settings/utils/background-theme-calculator.ts` for implement
 
 **Legacy (`--*-current`)**: Still used by 30+ components. Migration ongoing.
 
+### Testing Philosophy: "Earned Tests"
+
+**Core principle:** Tests are earned, not given. Code must prove it deserves a test.
+
+**Why this approach:**
+
+- Most tests die - they get written, code changes, they're deleted
+- Tests are insurance - only pay for expensive risks
+- Production is the first test - real users find real bugs
+- Zero fluff tolerance - if it doesn't provide measurable value, delete it
+
+**When to write tests:**
+
+| Scenario | Write Test? | Why |
+|----------|-------------|-----|
+| Pure algorithm/calculation | ✅ Yes | Math is stable, bugs are subtle |
+| Silent data corruption risk | ✅ Yes | You won't notice until it's too late |
+| Bug that regressed twice | ✅ Yes | Proven problem worth preventing |
+| New feature, still evolving | ❌ No | Will change, test will die |
+| UI component | ❌ No | You'll see if it's broken |
+| Glue code / wiring | ❌ No | Obvious when broken |
+| Something you'd notice immediately | ❌ No | Your eyes are the test |
+
+**The "silent bug" test:** Ask yourself: "If this breaks, will I notice immediately, or will it silently produce wrong output?" Only test the silent ones.
+
+**When to delete tests:**
+
+- Code changed so much the test is meaningless
+- Test requires complex mocking that breaks constantly
+- You can't remember why the test exists
+- Test is for something you'd notice immediately if broken
+
+**Current test files (as of Dec 2024):**
+
+Tests live in `tests/unit/` and cover core algorithms where bugs would be subtle:
+
+- `DimensionCalculationService.test.ts` - Export dimension math
+- `GridPositionDeriver.test.ts` - Grid position calculations
+- `ReversalDetectionService.test.ts` - Prop reversal detection
+- `DataTransformer.test.ts` - Pictograph data transforms
+
+Run tests: `npm test`
+
+---
+
 ### Typography System (Accessibility-First)
 
 Defined in `src/app.css`. Two-tier minimum font size system:
@@ -330,9 +375,25 @@ When `/done` is called and there's no matching feedback item for the work just c
 4. **Do NOT ask** for confirmation - just do it automatically
 5. Report what was created so the user knows it's tracked
 
+**Feedback item format (IMPORTANT):**
+
+- **Title**: Phrase as a user request or bug report, as if user submitted feedback
+  - Example: "Continuous filter toggle doesn't work" or "Add gap between 4x4 grid items"
+  - NOT: "Fixed continuous filter and updated gap spacing"
+- **Description**: Describe the problem or request from the user's perspective
+  - What was broken, missing, or needed improvement?
+  - What did the user want to achieve?
+- **Resolution Notes**: Describe the solution that was implemented
+  - Brief summary of what was changed to fix the issue
+  - Focus on WHAT was done, not detailed HOW
+
+This format makes it easier to understand feedback items later - the title tells you what the problem/request was, and the resolution tells you how it was solved.
+
 ---
 
 _Last updated: 2025-12-24_
+
+---
 
 ## Context Management
 
