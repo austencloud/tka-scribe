@@ -16,20 +16,21 @@
 <script lang="ts">
   import { getShareHubState } from '../../state/share-hub-state.svelte';
 
-  const state = getShareHubState();
+  // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
+  const hubState = getShareHubState();
 
   function toggleOrientation() {
     const newOrientation =
-      state.compositeLayout.orientation === 'horizontal' ? 'vertical' : 'horizontal';
-    state.compositeLayout.orientation = newOrientation;
+      hubState.compositeLayout.orientation === 'horizontal' ? 'vertical' : 'horizontal';
+    hubState.compositeLayout.orientation = newOrientation;
   }
 
   function handlePiece1Change(format: 'animation' | 'static') {
-    state.compositeLayout.piece1 = format;
+    hubState.compositeLayout.piece1 = format;
   }
 
   function handlePiece2Change(format: 'grid' | 'performance') {
-    state.compositeLayout.piece2 = format;
+    hubState.compositeLayout.piece2 = format;
   }
 </script>
 
@@ -41,7 +42,7 @@
       Layout
     </label>
     <button class="orientation-toggle" onclick={toggleOrientation} aria-label="Toggle orientation">
-      {#if state.compositeLayout.orientation === 'horizontal'}
+      {#if hubState.compositeLayout.orientation === 'horizontal'}
         <i class="fas fa-grip-horizontal"></i>
         <span>Horizontal</span>
       {:else}
@@ -60,7 +61,7 @@
     <div class="piece-selector">
       <button
         class="piece-option"
-        class:active={state.compositeLayout.piece1 === 'animation'}
+        class:active={hubState.compositeLayout.piece1 === 'animation'}
         onclick={() => handlePiece1Change('animation')}
       >
         <i class="fas fa-play-circle"></i>
@@ -68,7 +69,7 @@
       </button>
       <button
         class="piece-option"
-        class:active={state.compositeLayout.piece1 === 'static'}
+        class:active={hubState.compositeLayout.piece1 === 'static'}
         onclick={() => handlePiece1Change('static')}
       >
         <i class="fas fa-image"></i>
@@ -86,7 +87,7 @@
     <div class="piece-selector">
       <button
         class="piece-option"
-        class:active={state.compositeLayout.piece2 === 'grid'}
+        class:active={hubState.compositeLayout.piece2 === 'grid'}
         onclick={() => handlePiece2Change('grid')}
       >
         <i class="fas fa-th"></i>
@@ -94,7 +95,7 @@
       </button>
       <button
         class="piece-option"
-        class:active={state.compositeLayout.piece2 === 'performance'}
+        class:active={hubState.compositeLayout.piece2 === 'performance'}
         onclick={() => handlePiece2Change('performance')}
       >
         <i class="fas fa-video"></i>

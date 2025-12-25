@@ -1,73 +1,206 @@
 <!--
   StaticPreview.svelte
 
-  Static image format preview with inline controls.
-  Displays static image canvas and settings gear icon.
+  Static image format preview using the actual ImageCompositionService.
+  Shows a real preview of what the exported image will look like.
 
   Features:
-  - Static image preview canvas
-  - Dimension display
-  - Quality indicator
-  - Settings button (opens StaticSettings panel)
-  - Background preview
+  - Uses saved visibility settings from ImageCompositionManager
+  - Quick-access toggle chips for common settings
+  - White background always
+  - High quality export
 
   Domain: Share Hub - Single Media - Static Image Format
 -->
 <script lang="ts">
   import { getShareHubState } from '../../state/share-hub-state.svelte';
+  import { loadSharedModules, tryResolve } from '$lib/shared/inversify/di';
+  import { TYPES } from '$lib/shared/inversify/types';
+  import type { ISequenceRenderService } from '$lib/shared/render/services/contracts/ISequenceRenderService';
+  import { getImageCompositionManager } from '$lib/shared/share/state/image-composition-state.svelte';
+  import { onMount } from 'svelte';
 
-  const state = getShareHubState();
+  const hubState = getShareHubState();
+  const imageSettings = getImageCompositionManager();
 
-  const dimensionText = $derived(
-    `${state.staticSettings.width} × ${state.staticSettings.height}`
-  );
+  // Preview state
+  let previewDataUrl = $state<string | null>(null);
+  let isLoading = $state(false);
+  let previewError = $state<string | null>(null);
+  let renderService = $state<ISequenceRenderService | null>(null);
+  let renderVersion = $state(0); // Increment to trigger re-render
 
-  const qualityText = $derived(`${state.staticSettings.quality}%`);
+  // Local reactive copies of settings (for UI)
+  let addWord = $state(imageSettings.addWord);
+  let addBeatNumbers = $state(imageSettings.addBeatNumbers);
+  let includeStartPosition = $state(imageSettings.includeStartPosition);
+  let addDifficultyLevel = $state(imageSettings.addDifficultyLevel);
+  let addUserInfo = $state(imageSettings.addUserInfo);
 
-  function handleSettingsClick() {
-    state.settingsPanelOpen = true;
-    state.settingsContext = { format: 'static' };
+  // Load render service on mount
+  $effect(() => {
+    loadSharedModules().then(() => {
+      renderService = tryResolve<ISequenceRenderService>(TYPES.ISequenceRenderService);
+      if (!renderService) {
+        console.warn('⚠️ ISequenceRenderService not available after loading shared modules');
+      }
+    }).catch((error) => {
+      console.error('Failed to load shared modules:', error);
+    });
+  });
+
+  // Sync settings from manager and listen for changes
+  onMount(() => {
+    const updateFromManager = () => {
+      addWord = imageSettings.addWord;
+      addBeatNumbers = imageSettings.addBeatNumbers;
+      includeStartPosition = imageSettings.includeStartPosition;
+      addDifficultyLevel = imageSettings.addDifficultyLevel;
+      addUserInfo = imageSettings.addUserInfo;
+      renderVersion++; // Trigger re-render
+    };
+
+    imageSettings.registerObserver(updateFromManager);
+    return () => imageSettings.unregisterObserver(updateFromManager);
+  });
+
+  // Generate preview when sequence, settings, or render service changes
+  $effect(() => {
+    const sequence = hubState.sequence;
+    const service = renderService;
+    // Track all settings for reactivity
+    const _word = addWord;
+    const _beats = addBeatNumbers;
+    const _start = includeStartPosition;
+    const _diff = addDifficultyLevel;
+    const _user = addUserInfo;
+    const _version = renderVersion;
+
+    if (!sequence || !service) {
+      previewDataUrl = null;
+      return;
+    }
+
+    // Generate preview with user's saved settings
+    isLoading = true;
+    previewError = null;
+
+    service.generatePreview(sequence, {
+      backgroundColor: '#FFFFFF',
+      quality: 1.0,
+      beatScale: 1.0,
+      includeStartPosition: _start,
+      addBeatNumbers: _beats,
+      addWord: _word,
+      addUserInfo: _user,
+      addDifficultyLevel: _diff,
+    })
+    .then((dataUrl) => {
+      previewDataUrl = dataUrl;
+      isLoading = false;
+    })
+    .catch((error) => {
+      console.error('Preview generation failed:', error);
+      previewError = error instanceof Error ? error.message : 'Preview failed';
+      isLoading = false;
+    });
+  });
+
+  // Toggle handlers - update manager (which persists to localStorage)
+  function toggleWord() {
+    imageSettings.toggle('addWord');
+  }
+
+  function toggleBeatNumbers() {
+    imageSettings.toggle('addBeatNumbers');
+  }
+
+  function toggleStartPosition() {
+    imageSettings.toggle('includeStartPosition');
+  }
+
+  function toggleDifficulty() {
+    imageSettings.toggle('addDifficultyLevel');
+  }
+
+  function toggleUserInfo() {
+    imageSettings.toggle('addUserInfo');
   }
 </script>
 
 <div class="static-preview">
   <!-- Preview Canvas -->
   <div class="preview-canvas">
-    <!-- TODO: Integrate ImageCompositionService for static rendering -->
-    <div class="placeholder-canvas">
-      <i class="fas fa-image"></i>
-      <p>Static Image Preview</p>
-      <span class="background-indicator">
-        Background: {state.staticSettings.background}
-      </span>
-    </div>
+    {#if !hubState.sequence}
+      <div class="empty-state">
+        <i class="fas fa-image"></i>
+        <p>No sequence loaded</p>
+      </div>
+    {:else if isLoading || !renderService}
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Generating preview...</p>
+      </div>
+    {:else if previewError}
+      <div class="error-state">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>{previewError}</p>
+      </div>
+    {:else if previewDataUrl}
+      <img
+        src={previewDataUrl}
+        alt="Sequence preview"
+        class="preview-image"
+      />
+    {:else}
+      <div class="empty-state">
+        <i class="fas fa-image"></i>
+        <p>No preview available</p>
+      </div>
+    {/if}
   </div>
 
-  <!-- Inline Controls -->
-  <div class="inline-controls">
-    <div class="control-group">
-      <i class="fas fa-expand-arrows-alt"></i>
-      <span>{dimensionText}</span>
-    </div>
-
-    <div class="control-group">
-      <i class="fas fa-sliders-h"></i>
-      <span>Quality: {qualityText}</span>
-    </div>
-
-    <div class="control-group">
-      <i class="fas fa-palette"></i>
-      <span class="background-chip" data-background={state.staticSettings.background}>
-        {state.staticSettings.background}
-      </span>
-    </div>
-
+  <!-- Quick Settings Chips -->
+  <div class="settings-chips">
     <button
-      class="control-button settings-button"
-      onclick={handleSettingsClick}
-      aria-label="Static image settings"
+      class="chip"
+      class:active={addWord}
+      onclick={toggleWord}
+      aria-pressed={addWord}
     >
-      <i class="fas fa-cog"></i>
+      Word
+    </button>
+    <button
+      class="chip"
+      class:active={addBeatNumbers}
+      onclick={toggleBeatNumbers}
+      aria-pressed={addBeatNumbers}
+    >
+      Beat #s
+    </button>
+    <button
+      class="chip"
+      class:active={includeStartPosition}
+      onclick={toggleStartPosition}
+      aria-pressed={includeStartPosition}
+    >
+      Start Pos
+    </button>
+    <button
+      class="chip"
+      class:active={addDifficultyLevel}
+      onclick={toggleDifficulty}
+      aria-pressed={addDifficultyLevel}
+    >
+      Difficulty
+    </button>
+    <button
+      class="chip"
+      class:active={addUserInfo}
+      onclick={toggleUserInfo}
+      aria-pressed={addUserInfo}
+    >
+      User Info
     </button>
   </div>
 </div>
@@ -77,22 +210,33 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    gap: 16px;
+    gap: 12px;
   }
 
   .preview-canvas {
     flex: 1;
     min-height: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 12px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 12px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
   }
 
-  .placeholder-canvas {
+  .preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .empty-state,
+  .loading-state,
+  .error-state {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -100,126 +244,98 @@
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
-  .placeholder-canvas i {
+  .empty-state i,
+  .loading-state i,
+  .error-state i {
     font-size: 48px;
     opacity: 0.3;
   }
 
-  .placeholder-canvas p {
+  .error-state i {
+    color: var(--semantic-error, #ef4444);
+    opacity: 0.7;
+  }
+
+  .empty-state p,
+  .loading-state p,
+  .error-state p {
     font-size: var(--font-size-min, 14px);
     margin: 0;
+    text-align: center;
   }
 
-  .background-indicator {
-    font-size: var(--font-size-compact, 12px);
-    padding: 4px 12px;
-    background: var(--theme-accent, rgba(74, 158, 255, 0.2));
-    border-radius: 12px;
-    text-transform: capitalize;
-  }
-
-  .inline-controls {
+  /* Settings Chips */
+  .settings-chips {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
     padding: 12px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 12px;
-    flex-wrap: wrap;
   }
 
-  .control-group {
-    display: flex;
+  .chip {
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-  }
-
-  .control-group i {
-    font-size: 14px;
-    opacity: 0.7;
-  }
-
-  .background-chip {
-    text-transform: capitalize;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: var(--font-size-compact, 12px);
-    font-weight: 500;
-  }
-
-  .background-chip[data-background='transparent'] {
-    background: repeating-linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.1) 10px,
-      rgba(0, 0, 0, 0.1) 10px,
-      rgba(0, 0, 0, 0.1) 20px
-    );
-    color: var(--theme-text, white);
-  }
-
-  .background-chip[data-background='white'] {
-    background: white;
-    color: black;
-  }
-
-  .background-chip[data-background='black'] {
-    background: black;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  .control-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
+    justify-content: center;
+    padding: 12px 16px;
+    min-height: 48px; /* WCAG 2.1 AA touch target minimum */
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    border-radius: 8px;
+    border-radius: 24px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: var(--font-size-min, 14px);
     font-weight: 500;
-    color: var(--theme-text, white);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .control-button i {
-    font-size: 16px;
-  }
-
-  .control-button:hover {
+  .chip:hover {
     background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text, white);
   }
 
-  .control-button:focus-visible {
+  .chip.active {
+    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, #4a9eff) 50%, transparent);
+    color: white;
+  }
+
+  .chip.active:hover {
+    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 35%, transparent);
+    border-color: var(--theme-accent, #4a9eff);
+  }
+
+  .chip:focus-visible {
     outline: 2px solid var(--theme-accent, #4a9eff);
     outline-offset: 2px;
   }
 
-  .settings-button {
-    margin-left: auto;
-  }
-
-  /* Mobile optimization */
+  /* Mobile: horizontal scroll if needed, but maintain touch targets */
   @media (max-width: 600px) {
-    .inline-controls {
+    .settings-chips {
+      padding: 10px;
       gap: 8px;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .control-group {
-      font-size: var(--font-size-compact, 12px);
+    .chip {
+      padding: 10px 14px;
+      min-height: 48px; /* Maintain WCAG touch target on mobile */
+      white-space: nowrap;
+      flex-shrink: 0;
     }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .control-button {
+    .chip {
       transition: none;
     }
   }

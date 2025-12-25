@@ -25,40 +25,66 @@
   import CompositeView from './composite/CompositeView.svelte';
   import SettingsPanel from './settings/SettingsPanel.svelte';
   import AnimationSettings from './settings/AnimationSettings.svelte';
-  import StaticSettings from './settings/StaticSettings.svelte';
-  import PerformanceSettings from './settings/PerformanceSettings.svelte';
+  import StaticSettingsPanel from './settings/StaticSettings.svelte';
+  import PerformanceSettingsPanel from './settings/PerformanceSettings.svelte';
+  import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+
+  import type { ExportSettings } from '../domain/models/ExportSettings';
 
   let {
+    sequence,
+    isSequenceSaved = true,
     onExport,
   }: {
-    onExport?: (mode: 'single' | 'composite', format?: string) => Promise<void>;
+    sequence?: SequenceData | null;
+    /** Whether the sequence has been saved to the library */
+    isSequenceSaved?: boolean;
+    onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
   } = $props();
 
-  // Create unified state
-  const state = createShareHubState();
+  // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
+  const hubState = createShareHubState();
+
+  // Sync sequence to state when it changes
+  $effect(() => {
+    if (sequence !== undefined) {
+      hubState.setSequence(sequence ?? null);
+    }
+  });
 
   // Settings panel title based on context
   const settingsTitle = $derived(
-    state.settingsContext
-      ? `${state.settingsContext.format.charAt(0).toUpperCase() + state.settingsContext.format.slice(1)} Settings${
-          state.settingsContext.pieceIndex ? ` (Piece ${state.settingsContext.pieceIndex})` : ''
+    hubState.settingsContext
+      ? `${hubState.settingsContext.format.charAt(0).toUpperCase() + hubState.settingsContext.format.slice(1)} Settings${
+          hubState.settingsContext.pieceIndex ? ` (Piece ${hubState.settingsContext.pieceIndex})` : ''
         }`
       : 'Settings'
   );
 
-  // Handle export
+  // Handle export - passes current settings to parent
   async function handleExport() {
-    const format = state.mode === 'single' ? state.selectedFormat : undefined;
-    await onExport?.(state.mode, format);
+    if (hubState.mode === 'single') {
+      const format = hubState.selectedFormat;
+      const exportSettings: ExportSettings = {
+        format,
+        staticSettings: format === 'static' ? { ...hubState.staticSettings } : undefined,
+        animationSettings: format === 'animation' ? { ...hubState.animationSettings } : undefined,
+        performanceSettings: format === 'performance' ? { ...hubState.performanceSettings } : undefined,
+      };
+      await onExport?.(hubState.mode, exportSettings);
+    } else {
+      // Composite mode - TODO: pass composite settings
+      await onExport?.(hubState.mode, undefined);
+    }
   }
 
   // Handle mode change
   function handleModeChange(mode: 'single' | 'composite') {
-    state.mode = mode;
+    hubState.mode = mode;
     // Close settings panel when switching modes
-    if (state.settingsPanelOpen) {
-      state.settingsPanelOpen = false;
-      state.settingsContext = null;
+    if (hubState.settingsPanelOpen) {
+      hubState.settingsPanelOpen = false;
+      hubState.settingsContext = null;
     }
   }
 </script>
@@ -66,34 +92,34 @@
 <div class="share-hub-panel">
   <!-- Mode Toggle (Top Control) -->
   <div class="mode-toggle-container">
-    <ModeToggle mode={state.mode} onModeChange={handleModeChange} />
+    <ModeToggle mode={hubState.mode} onModeChange={handleModeChange} />
   </div>
 
   <!-- Conditional Content (Single Media or Composite) -->
   <div class="content-area">
-    {#if state.mode === 'single'}
-      <SingleMediaView onExport={handleExport} />
+    {#if hubState.mode === 'single'}
+      <SingleMediaView {isSequenceSaved} onExport={handleExport} />
     {:else}
-      <CompositeView onExport={handleExport} />
+      <CompositeView {isSequenceSaved} onExport={handleExport} />
     {/if}
   </div>
 
   <!-- Settings Panel Overlay -->
-  {#if state.settingsPanelOpen && state.settingsContext}
+  {#if hubState.settingsPanelOpen && hubState.settingsContext}
     <SettingsPanel
-      isOpen={state.settingsPanelOpen}
+      isOpen={hubState.settingsPanelOpen}
       title={settingsTitle}
       onClose={() => {
-        state.settingsPanelOpen = false;
-        state.settingsContext = null;
+        hubState.settingsPanelOpen = false;
+        hubState.settingsContext = null;
       }}
     >
-      {#if state.settingsContext.format === 'animation'}
+      {#if hubState.settingsContext.format === 'animation'}
         <AnimationSettings />
-      {:else if state.settingsContext.format === 'static'}
-        <StaticSettings />
-      {:else if state.settingsContext.format === 'performance'}
-        <PerformanceSettings />
+      {:else if hubState.settingsContext.format === 'static'}
+        <StaticSettingsPanel />
+      {:else if hubState.settingsContext.format === 'performance'}
+        <PerformanceSettingsPanel />
       {/if}
     </SettingsPanel>
   {/if}

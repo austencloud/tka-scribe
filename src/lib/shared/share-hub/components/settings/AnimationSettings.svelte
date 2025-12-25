@@ -15,20 +15,21 @@
 <script lang="ts">
   import { getShareHubState } from '../../state/share-hub-state.svelte';
 
-  const state = getShareHubState();
+  // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
+  const hubState = getShareHubState();
 
   function handleFpsChange(event: Event) {
     const value = parseInt((event.target as HTMLInputElement).value);
-    state.animationSettings = { ...state.animationSettings, fps: value };
+    hubState.animationSettings = { ...hubState.animationSettings, fps: value };
   }
 
   function handleLoopCountChange(event: Event) {
     const value = parseInt((event.target as HTMLInputElement).value);
-    state.animationSettings = { ...state.animationSettings, loopCount: value };
+    hubState.animationSettings = { ...hubState.animationSettings, loopCount: value };
   }
 
   function handleOverlaysToggle() {
-    state.animationSettings = { ...state.animationSettings, showOverlays: !state.animationSettings.showOverlays };
+    hubState.animationSettings = { ...hubState.animationSettings, showOverlays: !hubState.animationSettings.showOverlays };
   }
 </script>
 
@@ -40,7 +41,7 @@
         <i class="fas fa-tachometer-alt"></i>
         Frame Rate
       </label>
-      <span class="setting-value">{state.animationSettings.fps} FPS</span>
+      <span class="setting-value">{hubState.animationSettings.fps} FPS</span>
     </div>
     <input
       id="fps-slider"
@@ -48,7 +49,7 @@
       min="15"
       max="60"
       step="5"
-      value={state.animationSettings.fps}
+      value={hubState.animationSettings.fps}
       oninput={handleFpsChange}
       class="slider"
     />
@@ -65,7 +66,7 @@
         <i class="fas fa-redo"></i>
         Loop Count
       </label>
-      <span class="setting-value">{state.animationSettings.loopCount}x</span>
+      <span class="setting-value">{hubState.animationSettings.loopCount}x</span>
     </div>
     <input
       id="loop-slider"
@@ -73,7 +74,7 @@
       min="1"
       max="10"
       step="1"
-      value={state.animationSettings.loopCount}
+      value={hubState.animationSettings.loopCount}
       oninput={handleLoopCountChange}
       class="slider"
     />
@@ -95,10 +96,10 @@
       </div>
       <button
         class="toggle-button"
-        class:active={state.animationSettings.showOverlays}
+        class:active={hubState.animationSettings.showOverlays}
         onclick={handleOverlaysToggle}
         role="switch"
-        aria-checked={state.animationSettings.showOverlays}
+        aria-checked={hubState.animationSettings.showOverlays}
       >
         <span class="toggle-thumb"></span>
       </button>

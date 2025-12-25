@@ -13,7 +13,6 @@
   Domain: Share Hub - Single Media Mode Container
 -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import type { MediaFormat } from '../../domain/models/MediaFormat';
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import FormatSelector from '../shared/FormatSelector.svelte';
@@ -23,16 +22,29 @@
   import PerformancePreview from './PerformancePreview.svelte';
 
   let {
+    isSequenceSaved = true,
     onExport,
   }: {
+    /** Whether the sequence has been saved to the library */
+    isSequenceSaved?: boolean;
     onExport?: () => void;
   } = $props();
 
-  const state = getShareHubState();
+  // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
+  const hubState = getShareHubState();
   let exporting = $state(false);
 
+  // Dynamic button label based on save state and format
+  const formatLabel = $derived(
+    hubState.selectedFormat === 'animation' ? 'Animation' :
+    hubState.selectedFormat === 'static' ? 'Image' : 'Video'
+  );
+  const buttonLabel = $derived(
+    isSequenceSaved ? `Export ${formatLabel}` : `Save & Export ${formatLabel}`
+  );
+
   function handleFormatSelect(format: MediaFormat) {
-    state.selectedFormat = format;
+    hubState.selectedFormat = format;
   }
 
   async function handleExport() {
@@ -50,18 +62,18 @@
   <!-- Format Selector -->
   <div class="format-selector-container">
     <FormatSelector
-      selectedFormat={state.selectedFormat}
+      selectedFormat={hubState.selectedFormat}
       onFormatSelect={handleFormatSelect}
     />
   </div>
 
   <!-- Preview Area (conditional based on selected format) -->
   <div class="preview-area">
-    {#if state.selectedFormat === 'animation'}
+    {#if hubState.selectedFormat === 'animation'}
       <AnimationPreview />
-    {:else if state.selectedFormat === 'static'}
+    {:else if hubState.selectedFormat === 'static'}
       <StaticPreview />
-    {:else if state.selectedFormat === 'performance'}
+    {:else if hubState.selectedFormat === 'performance'}
       <PerformancePreview />
     {/if}
   </div>
@@ -69,7 +81,7 @@
   <!-- Export Button -->
   <div class="export-container">
     <ExportButton
-      label="Export {state.selectedFormat === 'animation' ? 'Animation' : state.selectedFormat === 'static' ? 'Image' : 'Video'}"
+      label={buttonLabel}
       loading={exporting}
       onclick={handleExport}
     />

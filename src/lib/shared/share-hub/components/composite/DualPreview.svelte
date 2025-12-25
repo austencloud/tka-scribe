@@ -17,8 +17,9 @@
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import MediaPieceCard from './MediaPieceCard.svelte';
 
-  const state = getShareHubState();
-  const isHorizontal = $derived(state.compositeLayout.orientation === 'horizontal');
+  // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
+  const hubState = getShareHubState();
+  const isHorizontal = $derived(hubState.compositeLayout.orientation === 'horizontal');
 </script>
 
 <div class="dual-preview" class:horizontal={isHorizontal} class:vertical={!isHorizontal}>
@@ -26,7 +27,7 @@
   <div class="piece-container piece-1">
     <MediaPieceCard
       pieceIndex={1}
-      format={state.compositeLayout.piece1}
+      format={hubState.compositeLayout.piece1}
       label="Piece 1"
     />
   </div>
@@ -35,7 +36,7 @@
   <div class="piece-container piece-2">
     <MediaPieceCard
       pieceIndex={2}
-      format={state.compositeLayout.piece2}
+      format={hubState.compositeLayout.piece2}
       label="Piece 2"
     />
   </div>

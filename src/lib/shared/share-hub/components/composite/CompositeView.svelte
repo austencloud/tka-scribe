@@ -13,20 +13,28 @@
   Domain: Share Hub - Composite Mode Container
 -->
 <script lang="ts">
-  import type { Snippet } from 'svelte';
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import ExportButton from '../shared/ExportButton.svelte';
   import DualPreview from './DualPreview.svelte';
   import CompositeControls from './CompositeControls.svelte';
 
   let {
+    isSequenceSaved = true,
     onExport,
   }: {
+    /** Whether the sequence has been saved to the library */
+    isSequenceSaved?: boolean;
     onExport?: () => void;
   } = $props();
 
-  const state = getShareHubState();
+  // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
+  const hubState = getShareHubState();
   let exporting = $state(false);
+
+  // Dynamic button label based on save state
+  const buttonLabel = $derived(
+    isSequenceSaved ? 'Export Composite' : 'Save & Export Composite'
+  );
 
   async function handleExport() {
     if (exporting) return;
@@ -53,7 +61,7 @@
   <!-- Export Button -->
   <div class="export-container">
     <ExportButton
-      label="Export Composite"
+      label={buttonLabel}
       loading={exporting}
       onclick={handleExport}
     />

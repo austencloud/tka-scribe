@@ -18,6 +18,7 @@ import type { ShareMode } from '../domain/models/ShareMode';
 import type { MediaFormat } from '../domain/models/MediaFormat';
 import type { CompositeLayout } from '../domain/models/CompositeLayout';
 import { DEFAULT_COMPOSITE_LAYOUT } from '../domain/models/CompositeLayout';
+import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
 
 /** Settings for animation export */
 export interface AnimationSettings {
@@ -50,6 +51,13 @@ export interface SettingsContext {
 
 /** Complete Share Hub state */
 export interface ShareHubState {
+  // Sequence data (passed from parent)
+  sequence: SequenceData | null;
+
+  // Playback state (for animation preview)
+  isPlaying: boolean;
+  currentBeat: number;
+
   // Core mode
   mode: ShareMode;
 
@@ -67,6 +75,9 @@ export interface ShareHubState {
   animationSettings: AnimationSettings;
   staticSettings: StaticSettings;
   performanceSettings: PerformanceSettings;
+
+  // Methods
+  setSequence(sequence: SequenceData | null): void;
 }
 
 /** Default animation settings */
@@ -97,29 +108,53 @@ import { getContext, setContext } from 'svelte';
 const SHARE_HUB_STATE_KEY = Symbol('ShareHubState');
 
 /**
+ * Internal state holder class.
+ * Uses a class to avoid the $state proxy being confused with a Svelte store.
+ */
+class ShareHubStateHolder implements ShareHubState {
+  // Sequence data
+  sequence: SequenceData | null = $state(null);
+
+  // Playback state
+  isPlaying: boolean = $state(false);
+  currentBeat: number = $state(0);
+
+  // Mode state
+  mode: ShareMode = $state('single');
+  selectedFormat: MediaFormat = $state('animation');
+  compositeLayout: CompositeLayout = $state({ ...DEFAULT_COMPOSITE_LAYOUT });
+  settingsPanelOpen: boolean = $state(false);
+  settingsContext: SettingsContext | null = $state(null);
+  animationSettings: AnimationSettings = $state({ ...DEFAULT_ANIMATION_SETTINGS });
+  staticSettings: StaticSettings = $state({ ...DEFAULT_STATIC_SETTINGS });
+  performanceSettings: PerformanceSettings = $state({ ...DEFAULT_PERFORMANCE_SETTINGS });
+
+  setSequence(sequence: SequenceData | null): void {
+    this.sequence = sequence;
+    this.currentBeat = 0;
+    this.isPlaying = false;
+  }
+}
+
+/**
  * Creates and sets the unified Share Hub state in context.
  * Call this in the parent component (ShareHubPanel).
  */
-export function createShareHubState() {
-  let state = $state<ShareHubState>({
-    mode: 'single',
-    selectedFormat: 'animation',
-    compositeLayout: { ...DEFAULT_COMPOSITE_LAYOUT },
-    settingsPanelOpen: false,
-    settingsContext: null,
-    animationSettings: { ...DEFAULT_ANIMATION_SETTINGS },
-    staticSettings: { ...DEFAULT_STATIC_SETTINGS },
-    performanceSettings: { ...DEFAULT_PERFORMANCE_SETTINGS },
-  });
-
-  setContext(SHARE_HUB_STATE_KEY, state);
-  return state;
+export function createShareHubState(): ShareHubState {
+  const stateHolder = new ShareHubStateHolder();
+  setContext(SHARE_HUB_STATE_KEY, stateHolder);
+  return stateHolder;
 }
 
 /**
  * Retrieves the Share Hub state from context.
  * Call this in child components.
+ * Throws an error if context is not available (helps debug missing parent).
  */
 export function getShareHubState(): ShareHubState {
-  return getContext(SHARE_HUB_STATE_KEY);
+  const state = getContext<ShareHubState | undefined>(SHARE_HUB_STATE_KEY);
+  if (!state) {
+    throw new Error('ShareHubState not found in context. Ensure ShareHubPanel is a parent component.');
+  }
+  return state;
 }

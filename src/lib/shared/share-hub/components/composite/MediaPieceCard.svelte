@@ -5,17 +5,17 @@
   Displays preview of animation, static, grid, or performance video with gear settings overlay.
 
   Features:
-  - Conditional rendering based on format (animation/static/grid/performance)
+  - Renders actual content based on format (animation/static/grid/performance)
   - Gear icon overlay (top-right corner)
   - Format label (bottom-left corner)
   - Hover state reveals controls
-  - Click gear → opens settings for that piece
 
   Domain: Share Hub - Composite Mode - Media Piece
 -->
 <script lang="ts">
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import type { MediaFormat } from '../../domain/models/MediaFormat';
+  import Pictograph from '$lib/shared/pictograph/shared/components/Pictograph.svelte';
 
   let {
     pieceIndex,
@@ -27,7 +27,7 @@
     label: string;
   } = $props();
 
-  const state = getShareHubState();
+  const hubState = getShareHubState();
   let isHovered = $state(false);
 
   // Map format to icon
@@ -46,9 +46,16 @@
     format === 'grid' ? ('static' as MediaFormat) : (format as MediaFormat)
   );
 
+  // Get beats for static/grid preview (limit based on format)
+  const previewBeats = $derived.by(() => {
+    if (!hubState.sequence?.beats) return [];
+    const limit = format === 'grid' ? 4 : 1;
+    return hubState.sequence.beats.slice(0, limit);
+  });
+
   function handleSettingsClick() {
-    state.settingsPanelOpen = true;
-    state.settingsContext = { format: settingsFormat, pieceIndex };
+    hubState.settingsPanelOpen = true;
+    hubState.settingsContext = { format: settingsFormat, pieceIndex };
   }
 </script>
 
@@ -59,26 +66,65 @@
 >
   <!-- Preview Content -->
   <div class="preview-content">
-    {#if format === 'animation'}
-      <!-- TODO: Integrate actual animation canvas -->
+    {#if !hubState.sequence}
       <div class="placeholder-preview">
-        <i class="fas fa-play-circle"></i>
-        <p>Animation</p>
+        <i class="fas {formatIcon}"></i>
+        <p>No sequence</p>
       </div>
+    {:else if format === 'animation'}
+      <!-- Animation: show single pictograph preview -->
+      {#if previewBeats.length > 0}
+        <div class="animation-preview-mini">
+          <Pictograph
+            pictographData={previewBeats[0]}
+            disableContentTransitions={true}
+          />
+          <div class="play-overlay">
+            <i class="fas fa-play"></i>
+          </div>
+        </div>
+      {:else}
+        <div class="placeholder-preview">
+          <i class="fas fa-play-circle"></i>
+          <p>No beats</p>
+        </div>
+      {/if}
     {:else if format === 'static'}
-      <!-- TODO: Integrate static image canvas -->
-      <div class="placeholder-preview">
-        <i class="fas fa-image"></i>
-        <p>Static Image</p>
-      </div>
+      <!-- Static: show first pictograph -->
+      {#if previewBeats.length > 0}
+        <div class="static-preview-mini">
+          <Pictograph
+            pictographData={previewBeats[0]}
+            disableContentTransitions={true}
+          />
+        </div>
+      {:else}
+        <div class="placeholder-preview">
+          <i class="fas fa-image"></i>
+          <p>No beats</p>
+        </div>
+      {/if}
     {:else if format === 'grid'}
-      <!-- TODO: Integrate grid canvas -->
-      <div class="placeholder-preview">
-        <i class="fas fa-th"></i>
-        <p>Grid Layout</p>
-      </div>
+      <!-- Grid: show 2x2 mini grid -->
+      {#if previewBeats.length > 0}
+        <div class="grid-preview-mini">
+          {#each previewBeats as beat, index (beat.id ?? index)}
+            <div class="grid-cell">
+              <Pictograph
+                pictographData={beat}
+                disableContentTransitions={true}
+              />
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="placeholder-preview">
+          <i class="fas fa-th"></i>
+          <p>No beats</p>
+        </div>
+      {/if}
     {:else if format === 'performance'}
-      <!-- TODO: Integrate performance video preview -->
+      <!-- Performance: camera/video placeholder -->
       <div class="placeholder-preview">
         <i class="fas fa-video"></i>
         <p>Performance</p>
@@ -125,57 +171,113 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 8px;
   }
 
   .placeholder-preview {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .placeholder-preview i {
-    font-size: 48px;
+    font-size: 32px;
     opacity: 0.3;
   }
 
   .placeholder-preview p {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-compact, 12px);
     margin: 0;
-    font-weight: 500;
+  }
+
+  /* Animation preview with play overlay */
+  .animation-preview-mini {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .animation-preview-mini:hover .play-overlay {
+    opacity: 1;
+  }
+
+  .play-overlay i {
+    font-size: 24px;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Static preview */
+  .static-preview-mini {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* Grid preview */
+  .grid-preview-mini {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .grid-cell {
+    aspect-ratio: 1 / 1;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
   }
 
   .format-label {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
+    bottom: 8px;
+    left: 8px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
+    gap: 4px;
+    padding: 4px 10px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    border-radius: 20px;
+    border-radius: 16px;
     font-size: var(--font-size-compact, 12px);
     font-weight: 600;
     color: white;
   }
 
   .format-label i {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .settings-gear {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 8px;
+    right: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
@@ -206,7 +308,7 @@
   }
 
   .settings-gear i {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   /* Mobile - always show settings gear */
@@ -220,7 +322,8 @@
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .media-piece-card,
-    .settings-gear {
+    .settings-gear,
+    .play-overlay {
       transition: none;
     }
 

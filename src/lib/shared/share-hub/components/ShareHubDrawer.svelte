@@ -11,18 +11,22 @@
 <script lang="ts">
   import Drawer from '$lib/shared/foundation/ui/Drawer.svelte';
   import ShareHubPanel from './ShareHubPanel.svelte';
+  import type { ExportSettings } from '../domain/models/ExportSettings';
   import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
 
   let {
     isOpen = $bindable(false),
     sequence,
+    isSequenceSaved = true,
     onClose,
     onExport,
   }: {
     isOpen?: boolean;
-    sequence: SequenceData;
+    sequence: SequenceData | null;
+    /** Whether the sequence has been saved to the library */
+    isSequenceSaved?: boolean;
     onClose?: () => void;
-    onExport?: (mode: 'single' | 'composite', format?: string) => Promise<void>;
+    onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
   } = $props();
 
   // Detect viewport width for placement (simple media query approach)
@@ -61,7 +65,7 @@
   preventScroll={true}
 >
   <div class="share-hub-content">
-    <ShareHubPanel {onExport} />
+    <ShareHubPanel {sequence} {isSequenceSaved} {onExport} />
   </div>
 </Drawer>
 
@@ -83,11 +87,15 @@
     z-index: 150 !important;
   }
 
-  /* Desktop (right placement) */
+  /* Desktop (right placement) - match Create module panel width */
   :global(.drawer-content.share-hub-drawer[data-placement="right"]) {
-    width: clamp(400px, 45vw, 900px);
+    /* Match CreatePanelDrawer width: clamp(360px, 44.44vw, 900px) */
+    width: clamp(360px, 44.44vw, 900px);
     max-width: 100vw;
     height: 100dvh;
+    /* Align with Create module positioning */
+    top: var(--create-panel-top, 64px);
+    bottom: var(--create-panel-bottom, 0);
   }
 
   /* Mobile (bottom placement) */
