@@ -167,7 +167,7 @@
   ondblclick={handleDoubleClick}
   oncontextmenu={handleContextMenu}
   onkeydown={handleKeyDown}
-  role="listitem"
+  role="option"
   aria-label="{displayName} clip"
   aria-selected={selected}
   tabindex="0"

@@ -13,7 +13,12 @@
 	const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') onClose();
+		if (e.key === 'Escape') {
+			onClose();
+		} else if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			onClose();
+		}
 	}
 </script>
 
@@ -24,10 +29,10 @@
 	role="button"
 	tabindex="0"
 >
-	<div class="letter-sheet" onclick={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
+	<div class="letter-sheet" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
 		<div class="sheet-header">
 			<span>Starting Letter</span>
-			<button class="close-btn" onclick={onClose}>
+			<button class="close-btn" onclick={onClose} aria-label="Close letter picker">
 				<i class="fas fa-times"></i>
 			</button>
 		</div>

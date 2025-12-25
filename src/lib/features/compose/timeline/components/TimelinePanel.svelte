@@ -517,7 +517,7 @@
     <div class="timeline-body">
       <div class="track-headers" style="width: {HEADER_WIDTH}px">
         <div class="header-spacer">
-          <button class="add-track-btn" onclick={() => getState().addTrack()} title="Add Track">
+          <button class="add-track-btn" onclick={() => getState().addTrack()} title="Add Track" aria-label="Add track">
             <i class="fa-solid fa-plus"></i>
           </button>
         </div>
@@ -539,6 +539,12 @@
           use:trackWidth
           onscroll={handleTracksScroll}
           onclick={handleTimelineClick}
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleTimelineClick(e as any);
+            }
+          }}
           role="application"
           aria-label="Timeline tracks"
         >
@@ -566,6 +572,8 @@
   </div>
 {/snippet}
 
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="timeline-panel"
   bind:this={panelElement}
@@ -586,6 +594,7 @@
         class:active={showMediaBrowser}
         onclick={toggleMediaBrowser}
         title={showMediaBrowser ? "Hide media browser" : "Show media browser"}
+        aria-label={showMediaBrowser ? "Hide media browser" : "Show media browser"}
       >
         <i class="fas fa-photo-film"></i>
       </button>
@@ -594,6 +603,7 @@
         class:active={showPreview}
         onclick={() => showPreview = !showPreview}
         title={showPreview ? "Hide monitors" : "Show monitors"}
+        aria-label={showPreview ? "Hide monitors" : "Show monitors"}
       >
         <i class="fa-solid fa-tv"></i>
       </button>

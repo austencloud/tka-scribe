@@ -43,6 +43,7 @@
 		class:active={showFilters}
 		onclick={onToggleFilters}
 		title="Advanced filters"
+		aria-label="Toggle advanced filters"
 	>
 		<i class="fas fa-sliders-h"></i>
 	</button>
