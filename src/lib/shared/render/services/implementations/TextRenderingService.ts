@@ -425,15 +425,12 @@ export class TextRenderingService implements ITextRenderingService {
 
   /**
    * Render user information at the bottom of the canvas
-   * Matches legacy desktop layout exactly:
-   * - Username (bottom-left) - Georgia Bold (NOT italic)
-   * - Notes (bottom-center) - Georgia Normal (NOT italic)
-   * - Date (bottom-right) - Georgia Normal (NOT italic)
+   * Layout:
+   * - Username (bottom-left) - Georgia Bold
+   * - Notes (bottom-center) - Georgia Normal
+   * - Date (bottom-right) - Georgia Normal
    *
-   * Legacy font sizing (base 50pt Georgia):
-   * - 1 beat: 50/2.3 ≈ 22pt, margin = 50/3 ≈ 17
-   * - 2 beats: 50/1.5 ≈ 33pt, margin = 50/2 = 25
-   * - 3+ beats: 50pt, margin = 50
+   * Font sizing is now based on footer height to ensure text fits properly.
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
@@ -445,7 +442,6 @@ export class TextRenderingService implements ITextRenderingService {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const beatScale = options.beatScale || 1;
     const footerTop = canvas.height - footerHeight;
 
     // Draw gray background matching header style
@@ -460,48 +456,34 @@ export class TextRenderingService implements ITextRenderingService {
     ctx.lineTo(canvas.width, footerTop + 0.5);
     ctx.stroke();
 
-    // Calculate font size matching legacy desktop (base 50pt)
-    // Legacy: 1 beat = 50/2.3, 2 beats = 50/1.5, 3+ beats = 50
-    let baseFontSize: number;
-    let baseMargin: number;
-    if (beatCount <= 1) {
-      baseFontSize = 50 / 2.3; // ~22pt
-      baseMargin = 50 / 3; // ~17
-    } else if (beatCount === 2) {
-      baseFontSize = 50 / 1.5; // ~33pt
-      baseMargin = 50 / 2; // 25
-    } else {
-      baseFontSize = 50; // 50pt
-      baseMargin = 50;
-    }
+    // Calculate font size based on footer height (50% of footer height)
+    // This ensures text always fits within the footer regardless of scale
+    const fontSize = Math.max(10, Math.floor(footerHeight * 0.55));
+    const margin = Math.max(8, Math.floor(footerHeight * 0.3));
 
-    // Apply beat scale - ensure minimum readable size
-    const fontSize = Math.max(14, Math.floor(baseFontSize * beatScale));
-    const margin = Math.max(10, Math.floor(baseMargin * beatScale));
+    // Position text lower in footer (65% down) to create space from pictographs above
+    const yPosition = footerTop + footerHeight * 0.55;
 
-    // Position text at bottom of footer area (matching legacy y = image.height() - margin)
-    const yPosition = canvas.height - margin;
+    ctx.fillStyle = "black";
+    ctx.textBaseline = "middle"; // Vertically center text
 
-    ctx.fillStyle = "black"; // Legacy uses black text
-    ctx.textBaseline = "alphabetic"; // Match legacy text positioning
-
-    // Username (bottom-left) - Georgia Bold, NOT italic (matching legacy)
+    // Username (bottom-left) - Georgia Bold
     if (userInfo.userName && userInfo.userName.trim() !== "") {
       ctx.font = `bold ${fontSize}px Georgia, serif`;
       ctx.textAlign = "left";
       ctx.fillText(userInfo.userName, margin, yPosition);
     }
 
-    // Notes (bottom-center) - Georgia Normal weight, NOT italic (matching legacy)
+    // Notes (bottom-center) - Georgia Normal weight
     const notes =
       userInfo.notes && userInfo.notes.trim() !== ""
         ? userInfo.notes
-        : "Created using The Kinetic Alphabet";
+        : "Created using TKA Scribe";
     ctx.font = `${fontSize}px Georgia, serif`;
     ctx.textAlign = "center";
     ctx.fillText(notes, canvas.width / 2, yPosition);
 
-    // Date (bottom-right) - Georgia Normal, format: M-D-YYYY (no leading zeros, matching legacy)
+    // Date (bottom-right) - Georgia Normal, format: M-D-YYYY
     const now = new Date();
     const dateStr = `${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()}`;
     ctx.textAlign = "right";

@@ -2,8 +2,8 @@ import type { SequenceData } from "../../../foundation/domain/models/SequenceDat
 import type {
   CompositionOptions,
   LayoutData,
+  SequenceExportOptions,
 } from "../../domain/models/SequenceExportOptions";
-import type { ImageRenderOptions } from "./IDimensionCalculationService";
 
 /**
  * Progress callback for tracking image composition
@@ -25,7 +25,7 @@ export interface IImageCompositionService {
    */
   composeSequenceImage(
     sequence: SequenceData,
-    options: ImageRenderOptions,
+    options: Partial<SequenceExportOptions>,
     onProgress?: CompositionProgressCallback
   ): Promise<HTMLCanvasElement>;
 

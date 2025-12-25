@@ -47,6 +47,12 @@ export async function renderPictographToSVG(
   beatNumber?: number,
   visibilityOptions?: PictographVisibilityOptions
 ): Promise<string> {
+  // Debug: Log visibility options being passed
+  if (beatNumber === 1 || beatNumber === 0) {
+    // Only log for first beat to avoid spam
+    console.log("📸 renderPictographToSVG: Visibility options received:", visibilityOptions);
+  }
+
   // Create hidden container
   const container = document.createElement("div");
   container.style.position = "absolute";
@@ -68,23 +74,27 @@ export async function renderPictographToSVG(
         ? { ...pictographData, beatNumber }
         : { ...pictographData, beatNumber: undefined };
 
+    // Build props object explicitly (not using spread) to ensure visibility settings are passed
+    const componentProps: Record<string, unknown> = {
+      pictographData: dataWithBeatNumber,
+      disableContentTransitions: true, // Disable animations for export
+    };
+
+    // Add visibility settings explicitly if provided
+    if (visibilityOptions) {
+      componentProps.showTKA = visibilityOptions.showTKA;
+      componentProps.showVTG = visibilityOptions.showVTG;
+      componentProps.showElemental = visibilityOptions.showElemental;
+      componentProps.showPositions = visibilityOptions.showPositions;
+      componentProps.showReversals = visibilityOptions.showReversals;
+      componentProps.showNonRadialPoints = visibilityOptions.showNonRadialPoints;
+      componentProps.showTurnNumbers = visibilityOptions.showTurnNumbers;
+    }
+
     // Mount Pictograph component with explicit visibility settings
     const component = mount(Pictograph, {
       target: container,
-      props: {
-        pictographData: dataWithBeatNumber,
-        disableContentTransitions: true, // Disable animations for export
-        // Pass visibility settings explicitly to avoid relying on global state timing
-        ...(visibilityOptions && {
-          showTKA: visibilityOptions.showTKA,
-          showVTG: visibilityOptions.showVTG,
-          showElemental: visibilityOptions.showElemental,
-          showPositions: visibilityOptions.showPositions,
-          showReversals: visibilityOptions.showReversals,
-          showNonRadialPoints: visibilityOptions.showNonRadialPoints,
-          showTurnNumbers: visibilityOptions.showTurnNumbers,
-        }),
-      },
+      props: componentProps,
     });
 
     // Wait for component to fully render

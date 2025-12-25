@@ -138,6 +138,9 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
 
       // Initialize composite renderer if in composite mode
       if (isCompositeMode) {
+        if (!panelState.sequenceData) {
+          throw new Error('Sequence data is required for composite mode');
+        }
         console.log(`🎨 Composite mode enabled: ${options.compositeMode}`);
         await this.compositeRenderer.initialize(panelState.sequenceData, {
           orientation: options.compositeMode as 'horizontal' | 'vertical',

@@ -52,10 +52,18 @@ export class ImageCompositionService implements IImageCompositionService {
   /**
    * Get current visibility settings from global visibility manager
    * These are passed to each pictograph during export to ensure consistency
+   *
+   * NOTE: This is async to ensure settings have been loaded from persistence
+   * before reading values. The VisibilityStateManager loads settings
+   * asynchronously on construction, so we need to await that load.
    */
-  private getCurrentVisibilitySettings(): PictographVisibilityOptions {
+  private async getCurrentVisibilitySettings(): Promise<PictographVisibilityOptions> {
     const visibilityManager = getVisibilityStateManager();
-    return {
+
+    // Wait for settings to be loaded from persistence
+    await visibilityManager.ensureSettingsLoaded();
+
+    const settings: PictographVisibilityOptions = {
       showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"),
       showVTG: visibilityManager.getGlyphVisibility("vtgGlyph"),
       showElemental: visibilityManager.getGlyphVisibility("elementalGlyph"),
@@ -64,6 +72,8 @@ export class ImageCompositionService implements IImageCompositionService {
       showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
       showTurnNumbers: visibilityManager.getGlyphVisibility("turnNumbers"),
     };
+
+    return settings;
   }
 
   /**
@@ -81,7 +91,8 @@ export class ImageCompositionService implements IImageCompositionService {
 
     // Get visibility settings ONCE at the start of composition
     // This ensures all pictographs use the same settings
-    const visibilitySettings = this.getCurrentVisibilitySettings();
+    // NOTE: await ensures settings are loaded from persistence before reading
+    const visibilitySettings = await this.getCurrentVisibilitySettings();
 
     // Step 1: Calculate layout using LayoutCalculationService
     // This service has the proper lookup tables matching the desktop application

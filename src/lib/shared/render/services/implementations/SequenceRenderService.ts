@@ -124,11 +124,11 @@ export class SequenceRenderService implements ISequenceRenderService {
     }
 
     try {
-      // Create preview options (smaller scale for faster rendering)
+      // Create preview options - use passed values or fall back to preview defaults
       const previewOptions = this.mergeWithDefaults({
-        ...options,
-        beatScale: 0.5, // Smaller scale for preview instead of fixed dimensions
-        quality: 0.8,
+        beatScale: options.beatScale ?? 0.5, // Default to smaller scale, but allow override
+        quality: options.quality ?? 0.8, // Default to decent quality, but allow override
+        ...options, // Spread AFTER defaults so explicit options take precedence
       });
 
       // Render to canvas
