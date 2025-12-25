@@ -9,6 +9,8 @@
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
   import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
@@ -54,6 +56,7 @@
   let libraryService: ILibraryService;
   let hapticService: IHapticFeedbackService;
   let leaderboardService: ILeaderboardService;
+  let thumbnailService: IDiscoverThumbnailService;
 
   // Personal rankings state (only for own profile)
   interface UserRanks {
@@ -111,6 +114,9 @@
       );
       leaderboardService = resolve<ILeaderboardService>(
         TYPES.ILeaderboardService
+      );
+      thumbnailService = resolve<IDiscoverThumbnailService>(
+        TYPES.IDiscoverThumbnailService
       );
 
       // Load user profile with current user context for follow status
@@ -207,8 +213,10 @@
 
   function handleSequenceClick(sequence: LibrarySequence) {
     hapticService?.trigger("selection");
-    console.log("Open sequence:", sequence.id);
-    // TODO: Navigate to sequence detail/animator view
+    // Open spotlight viewer with the sequence
+    if (thumbnailService) {
+      openSpotlightViewer(sequence, thumbnailService);
+    }
   }
 
   async function loadFollowingUsers() {

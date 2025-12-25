@@ -1,3 +1,10 @@
+<script module lang="ts">
+  export interface CameraState {
+    position: [number, number, number];
+    target: [number, number, number];
+  }
+</script>
+
 <script lang="ts">
   /**
    * Scene3D Component
@@ -18,11 +25,6 @@
   import type { GridMode } from "../domain/constants/grid-layout";
 
   import type { Snippet } from "svelte";
-
-  export interface CameraState {
-    position: [number, number, number];
-    target: [number, number, number];
-  }
 
   interface Props {
     /** Which planes to show */

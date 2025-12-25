@@ -91,9 +91,9 @@
 
         {#if version.changelogEntries && version.changelogEntries.length > 0}
           {#each [
-            { key: "added", label: "Added", icon: "fa-plus", color: "#22c55e" },
-            { key: "improved", label: "Improved", icon: "fa-arrow-up", color: "#3b82f6" },
-            { key: "fixed", label: "Fixed", icon: "fa-wrench", color: "#f59e0b" }
+            { key: "added" as const, label: "Added", icon: "fa-plus", color: "#22c55e" },
+            { key: "improved" as const, label: "Improved", icon: "fa-arrow-up", color: "#3b82f6" },
+            { key: "fixed" as const, label: "Fixed", icon: "fa-wrench", color: "#f59e0b" }
           ] as cat}
             {#if groupedChangelog[cat.key].length > 0}
               <section class="changelog-section">

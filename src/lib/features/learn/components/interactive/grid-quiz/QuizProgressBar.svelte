@@ -49,21 +49,21 @@ QuizProgressBar - Progress indicator for grid quiz
 
   .progress-bar {
     height: 6px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 3px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4a9eff, #a855f7);
+    background: linear-gradient(90deg, var(--theme-accent, #4a9eff), #a855f7);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
 
   .progress-text {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     text-align: center;
   }
 

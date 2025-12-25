@@ -1,0 +1,4473 @@
+
+====================================
+Loading svelte-check in workspace: f:\_THE KINETIC ALPHABET\_TKA-SCRIBE
+Getting Svelte diagnostics...
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\TransformsGridMode.svelte[39m:275:5
+[33mWarn[39m: Unused CSS selector ".grid-btn.full-width"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m    }
+    [35m.grid-btn.full-width[36m {
+      grid-column: span 3;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\TransformsGridMode.svelte[39m:280:3
+[33mWarn[39m: Unused CSS selector ".grid-btn.full-width"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.grid-btn.full-width[36m {
+    grid-column: span 2;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\TransformsGridMode.svelte[39m:596:3
+[33mWarn[39m: Unused CSS selector ".grid-btn.autocomplete.unavailable"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  /* Autocomplete unavailable state */
+  [35m.grid-btn.autocomplete.unavailable[36m {
+    background: linear-gradient(
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\TransformsGridMode.svelte[39m:605:3
+[33mWarn[39m: Unused CSS selector ".grid-btn.autocomplete.unavailable .btn-icon"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  }
+  [35m.grid-btn.autocomplete.unavailable .btn-icon[36m {
+    background: rgba(100, 100, 100, 0.4);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\TurnPatternDrawer.svelte[39m:119:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <h2>Turn Patterns</h2>
+      [35m<button class="close-btn" onclick={handleClose}>
+        <i class="fas fa-times"></i>
+      </button>[36m
+    </header>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\TurnPatternDrawer.svelte[39m:355:23
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m                    <div class="pattern-actions">
+                      [35m<button
+                        class="delete-btn"
+                        onclick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePattern(pattern);
+                        }}
+                        title="Delete pattern"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>[36m
+                    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\RotationDirectionDrawer.svelte[39m:162:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <h2>Rotation Direction</h2>
+      [35m<button class="close-btn" onclick={handleClose}>
+        <i class="fas fa-times"></i>
+      </button>[36m
+    </header>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\RotationDirectionDrawer.svelte[39m:423:23
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m                    <div class="pattern-actions">
+                      [35m<button
+                        class="delete-btn"
+                        onclick={(e) => {
+                          e.stopPropagation();
+                          handleDeletePattern(pattern);
+                        }}
+                        title="Delete pattern"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>[36m
+                    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\RotationDirectionDrawer.svelte[39m:597:3
+[33mWarn[39m: Do not use empty rulesets (css)
+[36m
+  [35m.rotation-value.blue[36m {
+    /* Additional blue tint for blue hand */
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\RotationDirectionDrawer.svelte[39m:601:3
+[33mWarn[39m: Do not use empty rulesets (css)
+[36m
+  [35m.rotation-value.red[36m {
+    /* Additional red tint for red hand */
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\AutocompleteDrawer.svelte[39m:92:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </div>
+      [35m<button class="close-btn" onclick={handleClose} disabled={isApplying}>
+        <i class="fas fa-times"></i>
+      </button>[36m
+    </header>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:270:3
+[33mWarn[39m: Unused CSS selector ".filter-chips"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chips[36m {
+    display: flex;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:276:3
+[33mWarn[39m: Unused CSS selector ".filter-chip"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chip[36m {
+    padding: var(--spacing-sm) var(--spacing-md);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:288:3
+[33mWarn[39m: Unused CSS selector ".filter-chip:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chip:hover[36m {
+    background: var(--surface-hover);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:292:3
+[33mWarn[39m: Unused CSS selector ".filter-chip.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chip.active[36m {
+    background: rgba(99, 102, 241, 0.25);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:298:3
+[33mWarn[39m: Unused CSS selector ".filter-chip.verify"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chip.verify[36m {
+    border-color: rgba(234, 179, 8, 0.4);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:303:3
+[33mWarn[39m: Unused CSS selector ".filter-chip.verify:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chip.verify:hover[36m {
+    background: rgba(234, 179, 8, 0.15);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\shared\CAPLabelerHeader.svelte[39m:307:3
+[33mWarn[39m: Unused CSS selector ".filter-chip.verify.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.filter-chip.verify.active[36m {
+    background: rgba(234, 179, 8, 0.25);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\cap-labeler\components\panels\SequencePreviewPanel.svelte[39m:421:3
+[33mWarn[39m: Unused CSS selector ".meta-item.id"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.meta-item.id[36m {
+    font-family: monospace;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformMinimap.svelte[39m:174:1
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m
+[35m<div
+  class="waveform-minimap"
+  bind:this={minimapEl}
+  onclick={handleClick}
+  ontouchend={handleTouchTap}
+  role="slider"
+  aria-label="Song overview - click to seek"
+  aria-valuemin={0}
+  aria-valuemax={duration}
+  aria-valuenow={currentTime}
+  tabindex="0"
+>
+  <!-- Track background with gradient -->
+  <div class="minimap-track">
+    <!-- Simple waveform representation -->
+    <div class="minimap-waveform"></div>
+
+    <!-- Viewport indicator (what's currently visible) -->
+    <div
+      class="viewport-indicator"
+      class:dragging={isDragging}
+      style="left: {viewportStartPercent}%; width: {viewportWidthPercent()}%;"
+      onmousedown={handleViewportMouseDown}
+      ontouchstart={handleViewportTouchStart}
+      role="button"
+      aria-label="Visible region - drag to scroll"
+      tabindex="-1"
+    >
+      <!-- Left edge handle -->
+      <div class="viewport-edge left"></div>
+      <!-- Right edge handle -->
+      <div class="viewport-edge right"></div>
+    </div>
+
+    <!-- Playhead -->
+    <div class="minimap-playhead" style="left: {playheadPercent}%;"></div>
+  </div>
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:1:9
+[33mWarn[39m: `context="module"` is deprecated, use the `module` attribute instead
+https://svelte.dev/e/script_context_deprecated (svelte)
+[36m<script [35mcontext="module"[36m lang="ts">
+  function formatTime(seconds: number): string {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:320:3
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+[36m
+  [35m<div
+    class="waveform-timeline"
+    class:focused={isFocused}
+    onfocus={() => (isFocused = true)}
+    onblur={() => (isFocused = false)}
+    onwheel={handleWheel}
+    tabindex="0"
+    role="application"
+    aria-label="Audio waveform timeline"
+  >
+    <!-- Wavesurfer container - wavesurfer handles its own scroll via Shadow DOM -->
+    <div class="waveform-container" bind:this={containerEl}></div>
+
+    {#if !isReady}
+      <div class="loading-overlay">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Loading waveform...</span>
+      </div>
+    {/if}
+
+    <!-- Controls bar -->
+    <div class="controls-bar">
+      <!-- Playback controls -->
+      <div class="playback-controls">
+        <button
+          class="control-btn"
+          onclick={() => wavesurfer?.playPause()}
+          disabled={!isReady}
+          title={isPlaying ? "Pause (Space)" : "Play (Space)"}
+        >
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        </button>
+        <button
+          class="control-btn"
+          onclick={() => wavesurfer?.stop()}
+          disabled={!isReady}
+          title="Stop"
+        >
+          <i class="fas fa-stop"></i>
+        </button>
+      </div>
+
+      <!-- Time display -->
+      <div class="time-display">
+        <span class="current">{formatTime(internalTime)}</span>
+        <span class="separator">/</span>
+        <span class="total">{formatTime(duration)}</span>
+      </div>
+
+      <!-- Zoom controls -->
+      <div class="zoom-controls">
+        <button
+          class="control-btn small"
+          onclick={() => {
+            zoomLevel = Math.max(MIN_ZOOM, zoomLevel - 20);
+            applyZoom(zoomLevel);
+          }}
+          disabled={!isReady || zoomLevel <= MIN_ZOOM}
+          title="Zoom out"
+        >
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <input
+          type="range"
+          class="zoom-slider"
+          min={MIN_ZOOM}
+          max={MAX_ZOOM}
+          value={zoomLevel}
+          oninput={handleZoomChange}
+          disabled={!isReady}
+          title="Zoom level: {zoomLevel}px/s"
+        />
+        <button
+          class="control-btn small"
+          onclick={() => {
+            zoomLevel = Math.min(MAX_ZOOM, zoomLevel + 20);
+            applyZoom(zoomLevel);
+          }}
+          disabled={!isReady || zoomLevel >= MAX_ZOOM}
+          title="Zoom in"
+        >
+          <i class="fas fa-search-plus"></i>
+        </button>
+        <button
+          class="control-btn small"
+          onclick={resetZoom}
+          disabled={!isReady || zoomLevel === DEFAULT_ZOOM}
+          title="Reset zoom"
+        >
+          <i class="fas fa-compress-arrows-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Keyboard hints (shown when focused) -->
+    {#if isFocused && isReady}
+      <div class="keyboard-hints">
+        <span><kbd>Space</kbd> Play/Pause</span>
+        <span><kbd>←</kbd><kbd>→</kbd> Seek ±5s</span>
+        <span><kbd>Ctrl</kbd>+<kbd>Scroll</kbd> Zoom</span>
+      </div>
+    {/if}
+  </div>[36m
+</div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:344:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <div class="playback-controls">
+        [35m<button
+          class="control-btn"
+          onclick={() => wavesurfer?.playPause()}
+          disabled={!isReady}
+          title={isPlaying ? "Pause (Space)" : "Play (Space)"}
+        >
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        </button>[36m
+        <button
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:352:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        </button>
+        [35m<button
+          class="control-btn"
+          onclick={() => wavesurfer?.stop()}
+          disabled={!isReady}
+          title="Stop"
+        >
+          <i class="fas fa-stop"></i>
+        </button>[36m
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:371:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <div class="zoom-controls">
+        [35m<button
+          class="control-btn small"
+          onclick={() => {
+            zoomLevel = Math.max(MIN_ZOOM, zoomLevel - 20);
+            applyZoom(zoomLevel);
+          }}
+          disabled={!isReady || zoomLevel <= MIN_ZOOM}
+          title="Zoom out"
+        >
+          <i class="fas fa-search-minus"></i>
+        </button>[36m
+        <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:392:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        />
+        [35m<button
+          class="control-btn small"
+          onclick={() => {
+            zoomLevel = Math.min(MAX_ZOOM, zoomLevel + 20);
+            applyZoom(zoomLevel);
+          }}
+          disabled={!isReady || zoomLevel >= MAX_ZOOM}
+          title="Zoom in"
+        >
+          <i class="fas fa-search-plus"></i>
+        </button>[36m
+        <button
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:403:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        </button>
+        [35m<button
+          class="control-btn small"
+          onclick={resetZoom}
+          disabled={!isReady || zoomLevel === DEFAULT_ZOOM}
+          title="Reset zoom"
+        >
+          <i class="fas fa-compress-arrows-alt"></i>
+        </button>[36m
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:464:3
+[33mWarn[39m: Unused CSS selector ".waveform-container ::part(scroll)"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  /* Hide wavesurfer's internal scrollbar via ::part selector */
+  [35m.waveform-container ::part(scroll)[36m {
+    scrollbar-width: none;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\WaveformTimeline.svelte[39m:469:3
+[33mWarn[39m: Unused CSS selector ".waveform-container ::part(scroll)::-webkit-scrollbar"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.waveform-container ::part(scroll)::-webkit-scrollbar[36m {
+    display: none;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\BeatMarkerTrack.svelte[39m:130:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        {#each beatMarkers as marker}
+          [35m<button
+            class="custom-marker"
+            style="left: {getPositionPercent(marker.time)}%"
+            onclick={() => onRemoveMarker?.(marker.id)}
+            title="Custom marker at {marker.time.toFixed(1)}s - click to remove"
+          >
+            <i class="fas fa-flag"></i>
+          </button>[36m
+        {/each}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\TempoRegionTrack.svelte[39m:167:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        {#if !isEditing}
+          [35m<button
+            class="region-delete"
+            onclick={(e) => {
+              e.stopPropagation();
+              onRemoveRegion?.(region.id);
+            }}
+            title="Remove region"
+          >
+            <i class="fas fa-times"></i>
+          </button>[36m
+        {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\TempoRegionTrack.svelte[39m:167:11
+[33mWarn[39m: `<button>` cannot be a child of `<button>`. When rendering this component on the server, the resulting HTML will be modified by the browser (by moving, removing, or inserting elements), likely resulting in a `hydration_mismatch` warning
+https://svelte.dev/e/node_invalid_placement_ssr (svelte)
+[36m        {#if !isEditing}
+          [35m<button
+            class="region-delete"
+            onclick={(e) => {
+              e.stopPropagation();
+              onRemoveRegion?.(region.id);
+            }}
+            title="Remove region"
+          >
+            <i class="fas fa-times"></i>
+          </button>[36m
+        {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\ManualBeatTapper.svelte[39m:175:15
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m            <div class="recent-actions">
+              [35m<button
+                class="action-btn"
+                onclick={removeLast}
+                title="Remove last tap"
+              >
+                <i class="fas fa-undo"></i>
+              </button>[36m
+              <button
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\ManualBeatTapper.svelte[39m:182:15
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m              </button>
+              [35m<button
+                class="action-btn danger"
+                onclick={clearAllTaps}
+                title="Clear all taps"
+              >
+                <i class="fas fa-trash"></i>
+              </button>[36m
+            </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\ManualBeatTapper.svelte[39m:198:17
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m                <span class="tap-time">{formatTime(marker.time)}</span>
+                [35m<button
+                  class="tap-remove"
+                  onclick={() => onRemoveMarker?.(marker.id)}
+                  title="Remove this tap"
+                >
+                  <i class="fas fa-times"></i>
+                </button>[36m
+              </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\library\components\AudioLibraryPanel.svelte[39m:170:5
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    <h2>Audio Library</h2>
+    [35m<button class="close-btn" onclick={onClose}>
+      <i class="fas fa-times"></i>
+    </button>[36m
+  </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:60:7
+[33mWarn[39m: `fileInput` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m  let isDragging = $state(false);
+  let [35m[36mfileInput: HTMLInputElement;
+  let bpmAnalysisProgress = $state(0);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:603:3
+[33mWarn[39m: Unused CSS selector ".waveform-placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  /* Waveform Placeholder */
+  [35m.waveform-placeholder[36m {
+    flex: 1;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:614:3
+[33mWarn[39m: Unused CSS selector ".placeholder-content"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.placeholder-content[36m {
+    text-align: center;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:619:3
+[33mWarn[39m: Unused CSS selector ".placeholder-content i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.placeholder-content i[36m {
+    font-size: 2rem;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:625:3
+[33mWarn[39m: Unused CSS selector ".placeholder-content p"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.placeholder-content p[36m {
+    margin: 0;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:630:3
+[33mWarn[39m: Unused CSS selector ".placeholder-content .hint"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.placeholder-content .hint[36m {
+    margin-top: 0.25rem;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:653:3
+[33mWarn[39m: Unused CSS selector ".bpm-controls .detected"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.bpm-controls .detected[36m {
+    font-weight: 600;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:667:3
+[33mWarn[39m: Unused CSS selector ".bpm-controls .not-detected"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.bpm-controls .not-detected[36m {
+    color: rgba(255, 255, 255, 0.4);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:710:3
+[33mWarn[39m: Unused CSS selector ".retry-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.retry-btn[36m {
+    display: flex;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\audio\AudioPhase.svelte[39m:724:3
+[33mWarn[39m: Unused CSS selector ".retry-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.retry-btn:hover[36m {
+    background: rgba(139, 92, 246, 0.25);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\export\ExportPhase.svelte[39m:180:13
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m          <div class="loop-control">
+            [35m<button
+              class="loop-btn"
+              onclick={() => (loopCount = Math.max(1, loopCount - 1))}
+              disabled={loopCount <= 1}
+            >
+              <i class="fas fa-minus"></i>
+            </button>[36m
+            <span class="loop-count">{loopCount}x</span>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\phases\export\ExportPhase.svelte[39m:188:13
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m            <span class="loop-count">{loopCount}x</span>
+            [35m<button
+              class="loop-btn"
+              onclick={() => (loopCount = Math.min(10, loopCount + 1))}
+              disabled={loopCount >= 10}
+            >
+              <i class="fas fa-plus"></i>
+            </button>[36m
+          </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\compose\CompositionBuilder.svelte[39m:151:11
+[33mWarn[39m: `<div>` with a click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m          <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+          [35m<div class="canvas-area" onclick={handleCanvasClick}>
+            <CompositionCanvas
+              {composition}
+              {isPlaying}
+              {isPreviewing}
+              {selectedCellId}
+              onCellClick={handleCellClick}
+            />
+
+            <!-- Fullscreen exit hint -->
+            {#if isFullscreen}
+              <div class="fullscreen-hint">
+                <span>Tap to exit fullscreen</span>
+              </div>
+            {/if}
+          </div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:154:1
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+[36m
+[35m<div
+  class="timeline-clip"
+  class:selected
+  class:muted={clip.muted}
+  class:locked={clip.locked}
+  class:looping={clip.loop}
+  class:dragging={isDragging}
+  class:move-dragging={isMoveDragging}
+  class:changing-track={isChangingTrack}
+  class:trimming={isTrimming}
+  class:resizing={isResizing}
+  style="left: {left}px; width: {width}px; --clip-color: {clip.color};"
+  onclick={handleClick}
+  ondblclick={handleDoubleClick}
+  oncontextmenu={handleContextMenu}
+  onkeydown={handleKeyDown}
+  role="listitem"
+  aria-label="{displayName} clip"
+  aria-selected={selected}
+  tabindex="0"
+>
+  <!-- Trim handle: left (in-point) -->
+  <div
+    class="trim-handle left"
+    onmousedown={handleTrimLeftStart}
+    role="slider"
+    aria-label="Trim start"
+    title="Drag to trim start"
+  >
+    <div class="handle-grip"></div>
+  </div>
+
+  <!-- Main clip body -->
+  <div class="clip-body" onmousedown={handleMoveStart}>
+    <div class="clip-preview">
+      {#if clip.sequence.thumbnails?.[0]}
+        <img src={clip.sequence.thumbnails[0]} alt="" draggable="false" />
+      {:else}
+        <div class="preview-pattern"></div>
+      {/if}
+
+      {#if clip.inPoint > 0}
+        <div
+          class="trim-indicator left"
+          style="width: {clip.inPoint * 100}%"
+        ></div>
+      {/if}
+      {#if clip.outPoint < 1}
+        <div
+          class="trim-indicator right"
+          style="width: {(1 - clip.outPoint) * 100}%"
+        ></div>
+      {/if}
+    </div>
+
+    <div class="clip-info">
+      <span class="clip-name">{displayName}</span>
+      <div class="clip-badges">
+        {#if speedLabel}<span class="badge speed">{speedLabel}</span>{/if}
+        {#if trimLabel}<span class="badge trim">{trimLabel}</span>{/if}
+        {#if clip.loop}<span class="badge loop" title="Looping"
+            ><i class="fa-solid fa-repeat"></i></span
+          >{/if}
+      </div>
+    </div>
+  </div>
+
+  <!-- Trim handle: right (out-point) -->
+  <div
+    class="trim-handle right"
+    onmousedown={handleTrimRightStart}
+    role="slider"
+    aria-label="Trim end"
+    title="Drag to trim end"
+  >
+    <div class="handle-grip"></div>
+  </div>
+
+  <!-- Resize handle -->
+  <div
+    class="resize-handle right"
+    onmousedown={handleResizeStart}
+    role="slider"
+    aria-label="Resize clip"
+    title="Drag to resize"
+  >
+    <div class="resize-grip"></div>
+  </div>
+
+  <ClipStatusOverlays muted={clip.muted} locked={clip.locked} />
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:172:3
+[33mWarn[39m: The attribute 'aria-selected' is not supported by the role 'listitem'
+https://svelte.dev/e/a11y_role_supports_aria_props (svelte)
+[36m  aria-label="{displayName} clip"
+  [35maria-selected={selected}[36m
+  tabindex="0"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:154:1
+[33mWarn[39m: Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions (svelte)
+[36m
+[35m<div
+  class="timeline-clip"
+  class:selected
+  class:muted={clip.muted}
+  class:locked={clip.locked}
+  class:looping={clip.loop}
+  class:dragging={isDragging}
+  class:move-dragging={isMoveDragging}
+  class:changing-track={isChangingTrack}
+  class:trimming={isTrimming}
+  class:resizing={isResizing}
+  style="left: {left}px; width: {width}px; --clip-color: {clip.color};"
+  onclick={handleClick}
+  ondblclick={handleDoubleClick}
+  oncontextmenu={handleContextMenu}
+  onkeydown={handleKeyDown}
+  role="listitem"
+  aria-label="{displayName} clip"
+  aria-selected={selected}
+  tabindex="0"
+>
+  <!-- Trim handle: left (in-point) -->
+  <div
+    class="trim-handle left"
+    onmousedown={handleTrimLeftStart}
+    role="slider"
+    aria-label="Trim start"
+    title="Drag to trim start"
+  >
+    <div class="handle-grip"></div>
+  </div>
+
+  <!-- Main clip body -->
+  <div class="clip-body" onmousedown={handleMoveStart}>
+    <div class="clip-preview">
+      {#if clip.sequence.thumbnails?.[0]}
+        <img src={clip.sequence.thumbnails[0]} alt="" draggable="false" />
+      {:else}
+        <div class="preview-pattern"></div>
+      {/if}
+
+      {#if clip.inPoint > 0}
+        <div
+          class="trim-indicator left"
+          style="width: {clip.inPoint * 100}%"
+        ></div>
+      {/if}
+      {#if clip.outPoint < 1}
+        <div
+          class="trim-indicator right"
+          style="width: {(1 - clip.outPoint) * 100}%"
+        ></div>
+      {/if}
+    </div>
+
+    <div class="clip-info">
+      <span class="clip-name">{displayName}</span>
+      <div class="clip-badges">
+        {#if speedLabel}<span class="badge speed">{speedLabel}</span>{/if}
+        {#if trimLabel}<span class="badge trim">{trimLabel}</span>{/if}
+        {#if clip.loop}<span class="badge loop" title="Looping"
+            ><i class="fa-solid fa-repeat"></i></span
+          >{/if}
+      </div>
+    </div>
+  </div>
+
+  <!-- Trim handle: right (out-point) -->
+  <div
+    class="trim-handle right"
+    onmousedown={handleTrimRightStart}
+    role="slider"
+    aria-label="Trim end"
+    title="Drag to trim end"
+  >
+    <div class="handle-grip"></div>
+  </div>
+
+  <!-- Resize handle -->
+  <div
+    class="resize-handle right"
+    onmousedown={handleResizeStart}
+    role="slider"
+    aria-label="Resize clip"
+    title="Drag to resize"
+  >
+    <div class="resize-grip"></div>
+  </div>
+
+  <ClipStatusOverlays muted={clip.muted} locked={clip.locked} />
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:179:5
+[33mWarn[39m: Elements with the ARIA role "slider" must have the following attributes defined: "aria-valuenow"
+https://svelte.dev/e/a11y_role_has_required_aria_props (svelte)
+[36m    onmousedown={handleTrimLeftStart}
+    [35mrole="slider"[36m
+    aria-label="Trim start"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:176:3
+[33mWarn[39m: Elements with the 'slider' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m  <!-- Trim handle: left (in-point) -->
+  [35m<div
+    class="trim-handle left"
+    onmousedown={handleTrimLeftStart}
+    role="slider"
+    aria-label="Trim start"
+    title="Drag to trim start"
+  >
+    <div class="handle-grip"></div>
+  </div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:187:3
+[33mWarn[39m: `<div>` with a mousedown handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m  <!-- Main clip body -->
+  [35m<div class="clip-body" onmousedown={handleMoveStart}>
+    <div class="clip-preview">
+      {#if clip.sequence.thumbnails?.[0]}
+        <img src={clip.sequence.thumbnails[0]} alt="" draggable="false" />
+      {:else}
+        <div class="preview-pattern"></div>
+      {/if}
+
+      {#if clip.inPoint > 0}
+        <div
+          class="trim-indicator left"
+          style="width: {clip.inPoint * 100}%"
+        ></div>
+      {/if}
+      {#if clip.outPoint < 1}
+        <div
+          class="trim-indicator right"
+          style="width: {(1 - clip.outPoint) * 100}%"
+        ></div>
+      {/if}
+    </div>
+
+    <div class="clip-info">
+      <span class="clip-name">{displayName}</span>
+      <div class="clip-badges">
+        {#if speedLabel}<span class="badge speed">{speedLabel}</span>{/if}
+        {#if trimLabel}<span class="badge trim">{trimLabel}</span>{/if}
+        {#if clip.loop}<span class="badge loop" title="Looping"
+            ><i class="fa-solid fa-repeat"></i></span
+          >{/if}
+      </div>
+    </div>
+  </div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:225:5
+[33mWarn[39m: Elements with the ARIA role "slider" must have the following attributes defined: "aria-valuenow"
+https://svelte.dev/e/a11y_role_has_required_aria_props (svelte)
+[36m    onmousedown={handleTrimRightStart}
+    [35mrole="slider"[36m
+    aria-label="Trim end"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:222:3
+[33mWarn[39m: Elements with the 'slider' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m  <!-- Trim handle: right (out-point) -->
+  [35m<div
+    class="trim-handle right"
+    onmousedown={handleTrimRightStart}
+    role="slider"
+    aria-label="Trim end"
+    title="Drag to trim end"
+  >
+    <div class="handle-grip"></div>
+  </div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:236:5
+[33mWarn[39m: Elements with the ARIA role "slider" must have the following attributes defined: "aria-valuenow"
+https://svelte.dev/e/a11y_role_has_required_aria_props (svelte)
+[36m    onmousedown={handleResizeStart}
+    [35mrole="slider"[36m
+    aria-label="Resize clip"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineClip.svelte[39m:233:3
+[33mWarn[39m: Elements with the 'slider' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m  <!-- Resize handle -->
+  [35m<div
+    class="resize-handle right"
+    onmousedown={handleResizeStart}
+    role="slider"
+    aria-label="Resize clip"
+    title="Drag to resize"
+  >
+    <div class="resize-grip"></div>
+  </div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TrackHeader.svelte[39m:99:3
+[33mWarn[39m: `<div>` with a dblclick handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m  <!-- Track name -->
+  [35m<div class="track-name" ondblclick={startEdit}>
+    {#if isEditing}
+      <input
+        type="text"
+        class="name-input"
+        bind:value={editValue}
+        onblur={confirmEdit}
+        onkeydown={handleKeyDown}
+        autofocus
+      />
+    {:else}
+      <span class="name-text">{track.name}</span>
+    {/if}
+  </div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TrackHeader.svelte[39m:107:9
+[33mWarn[39m: Avoid using autofocus
+https://svelte.dev/e/a11y_autofocus (svelte)
+[36m        onkeydown={handleKeyDown}
+        [35mautofocus[36m
+      />
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SnapControls.svelte[39m:168:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <h2 id="snap-settings-title">Snap Settings</h2>
+      [35m<button class="close-btn" onclick={() => (showAdvancedSheet = false)}>
+        <i class="fa-solid fa-xmark"></i>
+      </button>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineControls.svelte[39m:199:3
+[33mWarn[39m: Unused CSS selector ".control-btn.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.control-btn.active[36m {
+    background: color-mix(
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineControls.svelte[39m:211:3
+[33mWarn[39m: Unused CSS selector ".control-btn.play-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.control-btn.play-btn[36m {
+    width: 40px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineControls.svelte[39m:218:3
+[33mWarn[39m: Unused CSS selector ".control-btn.play-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.control-btn.play-btn:hover[36m {
+    box-shadow:
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineControls.svelte[39m:224:3
+[33mWarn[39m: Unused CSS selector ".control-btn.play-btn.playing"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.control-btn.play-btn.playing[36m {
+    background: var(--theme-accent, #4a9eff);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineAudioTrack.svelte[39m:274:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        <!-- Remove audio -->
+        [35m<button
+          class="icon-btn danger"
+          onclick={removeAudio}
+          title="Remove audio"
+        >
+          <i class="fa-solid fa-trash"></i>
+        </button>[36m
+      {:else}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineAudioTrack.svelte[39m:30:7
+[33mWarn[39m: `waveformContainer` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m
+  let [35m[36mwaveformContainer: HTMLDivElement;
+  let wavesurfer: WaveSurfer | null = null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:50:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="field">
+    [35m<label class="field-label">Label</label>[36m
+    <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".field-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".input-group"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".number-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".number-input.wide"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".range-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".range-input::-webkit-slider-thumb"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".toggle-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".toggle-row input[type="checkbox"]"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".action-buttons"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".action-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".action-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".action-btn.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".action-btn.danger:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".action-btn i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipInfoSection.svelte[39m:61:8
+[33mWarn[39m: Unused CSS selector ".value-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:43:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="field">
+    [35m<label class="field-label">Custom Speed</label>[36m
+    <div class="input-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".field-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".text-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:78:1
+[33mWarn[39m: Unused CSS selector ".text-input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  }
+[35m[36m
+  .preset-btn {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:94:1
+[33mWarn[39m: Unused CSS selector ".number-input.wide"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  }
+[35m[36m
+  .preset-btn.active {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".toggle-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".toggle-row input[type="checkbox"]"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".action-buttons"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".action-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".action-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".action-btn.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".action-btn.danger:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".action-btn i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipSpeedSection.svelte[39m:69:8
+[33mWarn[39m: Unused CSS selector ".value-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:50:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="field">
+      [35m<label class="field-label">In Point</label>[36m
+      <div class="input-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:66:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="field">
+      [35m<label class="field-label">Out Point</label>[36m
+      <div class="input-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".text-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".text-input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".number-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:94:1
+[33mWarn[39m: Unused CSS selector ".number-input.wide"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m    height: 32px;
+[35m[36m    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border-radius: 4px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:119:1
+[33mWarn[39m: Unused CSS selector ".toggle-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m    width: 2px;
+[35m[36m    height: 60%;
+    background: var(--theme-text-muted, rgba(255, 255, 255, 0.3));
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".toggle-row input[type="checkbox"]"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".action-buttons"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".action-btn.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipTrimSection.svelte[39m:88:8
+[33mWarn[39m: Unused CSS selector ".action-btn.danger:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:33:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="field">
+      [35m<label class="field-label">Loop Count (0 = infinite)</label>[36m
+      <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".field-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".input-group"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".text-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".text-input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".range-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".range-input::-webkit-slider-thumb"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".action-buttons"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".action-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".action-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".action-btn.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".action-btn.danger:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".action-btn i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipLoopSection.svelte[39m:47:8
+[33mWarn[39m: Unused CSS selector ".value-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:43:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="field">
+    [35m<label class="field-label">Clip Color</label>[36m
+    <div class="color-presets">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:58:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="field">
+    [35m<label class="field-label">Rotation ({rotation}°)</label>[36m
+    <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:72:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="field">
+    [35m<label class="field-label">Opacity ({Math.round(opacity * 100)}%)</label>[36m
+    <input
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".field-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".input-group"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".text-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".text-input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".number-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:94:1
+[33mWarn[39m: Unused CSS selector ".number-input.wide"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  }
+[35m[36m
+  .color-swatch {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".toggle-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".toggle-row input[type="checkbox"]"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".action-buttons"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".action-btn"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".action-btn:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".action-btn.active"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".action-btn.danger:hover"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".action-btn i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipAppearanceSection.svelte[39m:86:8
+[33mWarn[39m: Unused CSS selector ".value-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".field"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".field-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".field-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:58:1
+[33mWarn[39m: Unused CSS selector ".input-group"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  @import "./inspector-styles.css";
+[35m[36m</style>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".text-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".text-input:focus"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".number-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".number-input.wide"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".range-input"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".range-input::-webkit-slider-thumb"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".toggle-row"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".toggle-row input[type="checkbox"]"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\inspector\ClipActionsSection.svelte[39m:56:8
+[33mWarn[39m: Unused CSS selector ".value-label"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+<style>[35m[36m
+  @import "./inspector-styles.css";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\ClipInspector.svelte[39m:132:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </div>
+      [35m<button
+        class="close-btn"
+        onclick={() => getState().closeClipInspector()}
+        title="Close inspector"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineEmptyState.svelte[39m:17:1
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m<!-- Stop propagation to prevent clicks triggering playhead movement -->
+[35m<div class="empty-state" onclick={(e) => e.stopPropagation()}>
+  <div class="empty-icon">
+    <i class="fa-solid fa-film"></i>
+  </div>
+
+  <h3 class="empty-title">No sequences on timeline</h3>
+
+  <p class="empty-description">
+    Add sequences from your library to start composing your animation.
+  </p>
+
+  <div class="empty-actions">
+    {#if onBrowseLibrary}
+      <button
+        class="action-btn primary"
+        onclick={(e) => {
+          e.stopPropagation();
+          onBrowseLibrary();
+        }}
+      >
+        <i class="fa-solid fa-folder-open"></i>
+        Browse Library
+      </button>
+    {/if}
+  </div>
+
+  <div class="empty-hints">
+    <div class="hint">
+      <i class="fa-solid fa-lightbulb"></i>
+      <span>Drag sequences from the Library to add them here</span>
+    </div>
+    <div class="hint">
+      <i class="fa-solid fa-keyboard"></i>
+      <span>Press <kbd>Space</kbd> to play/pause</span>
+    </div>
+  </div>
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineEmptyState.svelte[39m:17:1
+[33mWarn[39m: `<div>` with a click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m<!-- Stop propagation to prevent clicks triggering playhead movement -->
+[35m<div class="empty-state" onclick={(e) => e.stopPropagation()}>
+  <div class="empty-icon">
+    <i class="fa-solid fa-film"></i>
+  </div>
+
+  <h3 class="empty-title">No sequences on timeline</h3>
+
+  <p class="empty-description">
+    Add sequences from your library to start composing your animation.
+  </p>
+
+  <div class="empty-actions">
+    {#if onBrowseLibrary}
+      <button
+        class="action-btn primary"
+        onclick={(e) => {
+          e.stopPropagation();
+          onBrowseLibrary();
+        }}
+      >
+        <i class="fa-solid fa-folder-open"></i>
+        Browse Library
+      </button>
+    {/if}
+  </div>
+
+  <div class="empty-hints">
+    <div class="hint">
+      <i class="fa-solid fa-lightbulb"></i>
+      <span>Drag sequences from the Library to add them here</span>
+    </div>
+    <div class="hint">
+      <i class="fa-solid fa-keyboard"></i>
+      <span>Press <kbd>Space</kbd> to play/pause</span>
+    </div>
+  </div>
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelineMinimap.svelte[39m:122:1
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m
+[35m<div
+  class="timeline-minimap"
+  bind:this={minimapEl}
+  onclick={handleClick}
+  role="slider"
+  aria-label="Timeline overview - click to seek"
+  aria-valuemin={0}
+  aria-valuemax={totalDuration}
+  aria-valuenow={playheadPosition}
+  tabindex="0"
+>
+  <div class="minimap-track">
+    <!-- Clip indicators (simplified view - muted uniform color) -->
+    <div class="clip-indicators">
+      {#each clips as clip (clip.id)}
+        {@const startPercent = (clip.startTime / totalDuration) * 100}
+        {@const endPercent = (getClipEndTime(clip) / totalDuration) * 100}
+        <div
+          class="clip-indicator"
+          style="left: {startPercent}%; width: {endPercent - startPercent}%;"
+        ></div>
+      {/each}
+    </div>
+
+    <!-- Viewport indicator -->
+    <div
+      class="viewport-indicator"
+      class:dragging={isDragging}
+      style="left: {viewportStartPercent}%; width: {viewportWidthPercent}%;"
+      onmousedown={handleViewportMouseDown}
+      role="button"
+      aria-label="Visible region - drag to scroll"
+      tabindex="-1"
+    >
+      <div class="viewport-edge left"></div>
+      <div class="viewport-edge right"></div>
+    </div>
+
+    <!-- Playhead -->
+    <div class="minimap-playhead" style="left: {playheadPercent}%;"></div>
+  </div>
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:351:5
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    />
+    [35m<button
+      class="favorites-btn"
+      class:active={isFavoritesActive}
+      onclick={() => handleFavoritesToggle(!isFavoritesActive)}
+      title="Favorites"
+    >
+      <i class="fas fa-heart"></i>
+    </button>[36m
+    {#if searchQuery}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:360:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    {#if searchQuery}
+      [35m<button class="clear-btn" onclick={() => searchQuery = ""}>
+        <i class="fas fa-times"></i>
+      </button>[36m
+    {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:384:5
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    <!-- Advanced Filters Toggle -->
+    [35m<button
+      class="advanced-toggle"
+      class:active={showFilters}
+      onclick={() => showFilters = !showFilters}
+      title="Advanced filters"
+    >
+      <i class="fas fa-sliders-h"></i>
+    </button>[36m
+  </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:435:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m          </button>
+          [35m<button
+            class="stepper-btn"
+            onclick={() => currentLength && handleLengthChange(currentLength - 1)}
+            disabled={!currentLength || currentLength <= 1}
+          >
+            <i class="fas fa-minus"></i>
+          </button>[36m
+          <span class="length-display">{currentLength ?? '–'}</span>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:443:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m          <span class="length-display">{currentLength ?? '–'}</span>
+          [35m<button
+            class="stepper-btn"
+            onclick={() => handleLengthChange((currentLength ?? 0) + 1)}
+          >
+            <i class="fas fa-plus"></i>
+          </button>[36m
+        </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:479:7
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m    <div class="letter-sheet-overlay" onclick={() => showLetterSheet = false} role="button" tabindex="0" onkeydown={(e) => e.key === 'Escape' && (showLetterSheet = false)}>
+      [35m<div class="letter-sheet" onclick={(e) => e.stopPropagation()} role="dialog">
+        <div class="sheet-header">
+          <span>Starting Letter</span>
+          <button class="close-btn" onclick={() => showLetterSheet = false}>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="letter-grid">
+          <button
+            class="letter-btn"
+            class:active={currentLetter === null}
+            onclick={() => handleLetterChange(null)}
+          >
+            All
+          </button>
+          {#each 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('') as letter}
+            <button
+              class="letter-btn"
+              class:active={currentLetter === letter}
+              onclick={() => handleLetterChange(letter)}
+            >
+              {letter}
+            </button>
+          {/each}
+        </div>
+      </div>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:479:7
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m    <div class="letter-sheet-overlay" onclick={() => showLetterSheet = false} role="button" tabindex="0" onkeydown={(e) => e.key === 'Escape' && (showLetterSheet = false)}>
+      [35m<div class="letter-sheet" onclick={(e) => e.stopPropagation()} role="dialog">
+        <div class="sheet-header">
+          <span>Starting Letter</span>
+          <button class="close-btn" onclick={() => showLetterSheet = false}>
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="letter-grid">
+          <button
+            class="letter-btn"
+            class:active={currentLetter === null}
+            onclick={() => handleLetterChange(null)}
+          >
+            All
+          </button>
+          {#each 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('') as letter}
+            <button
+              class="letter-btn"
+              class:active={currentLetter === letter}
+              onclick={() => handleLetterChange(letter)}
+            >
+              {letter}
+            </button>
+          {/each}
+        </div>
+      </div>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:482:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m          <span>Starting Letter</span>
+          [35m<button class="close-btn" onclick={() => showLetterSheet = false}>
+            <i class="fas fa-times"></i>
+          </button>[36m
+        </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:758:3
+[33mWarn[39m: Unused CSS selector ".sort-btn span"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.sort-btn span[36m {
+    flex: 1;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:763:3
+[33mWarn[39m: Unused CSS selector ".sort-btn i:last-child"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.sort-btn i:last-child[36m {
+    font-size: 9px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\MediaBrowserPanel.svelte[39m:904:3
+[33mWarn[39m: Unused CSS selector ".chip i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.chip i[36m {
+    font-size: 10px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePreview.svelte[39m:335:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    <div class="control-buttons">
+      [35m<button class="transport-btn" onclick={() => getPlayback().goToStart()} title="Go to start (Home)">
+        <i class="fas fa-backward-fast"></i>
+      </button>[36m
+      <button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePreview.svelte[39m:338:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </button>
+      [35m<button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)">
+        <i class="fas fa-backward-step"></i>
+      </button>[36m
+      <button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePreview.svelte[39m:341:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </button>
+      [35m<button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"}>
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+      </button>[36m
+      <button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePreview.svelte[39m:344:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </button>
+      [35m<button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)">
+        <i class="fas fa-forward-step"></i>
+      </button>[36m
+      <button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePreview.svelte[39m:347:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </button>
+      [35m<button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)">
+        <i class="fas fa-forward-fast"></i>
+      </button>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SourcePreview.svelte[39m:295:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <div class="control-buttons">
+        [35m<button class="transport-btn" onclick={goToStart} title="Go to start" disabled={!sequence}>
+          <i class="fas fa-backward-fast"></i>
+        </button>[36m
+        <button class="transport-btn" onclick={stepBackward} title="Previous beat" disabled={!sequence}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SourcePreview.svelte[39m:298:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        </button>
+        [35m<button class="transport-btn" onclick={stepBackward} title="Previous beat" disabled={!sequence}>
+          <i class="fas fa-backward-step"></i>
+        </button>[36m
+        <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SourcePreview.svelte[39m:301:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        </button>
+        [35m<button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        </button>[36m
+        <button class="transport-btn" onclick={stepForward} title="Next beat" disabled={!sequence}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SourcePreview.svelte[39m:304:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        </button>
+        [35m<button class="transport-btn" onclick={stepForward} title="Next beat" disabled={!sequence}>
+          <i class="fas fa-forward-step"></i>
+        </button>[36m
+        <button class="transport-btn" onclick={goToEnd} title="Go to end" disabled={!sequence}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SourcePreview.svelte[39m:307:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        </button>
+        [35m<button class="transport-btn" onclick={goToEnd} title="Go to end" disabled={!sequence}>
+          <i class="fas fa-forward-fast"></i>
+        </button>[36m
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\panels\ResizeHandle.svelte[39m:83:1
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+[36m
+[35m<div
+  class="resize-handle"
+  class:horizontal={direction === "horizontal"}
+  class:vertical={direction === "vertical"}
+  class:dragging={isDragging}
+  class:disabled
+  style:--handle-size="{size}px"
+  onpointerdown={handlePointerDown}
+  onpointermove={handlePointerMove}
+  onpointerup={handlePointerUp}
+  onpointercancel={handlePointerUp}
+  role="separator"
+  aria-orientation={direction}
+  aria-disabled={disabled}
+  tabindex={disabled ? -1 : 0}
+>
+  <div class="handle-visual"></div>
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:520:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        <div class="header-spacer">
+          [35m<button class="add-track-btn" onclick={() => getState().addTrack()} title="Add Track">
+            <i class="fa-solid fa-plus"></i>
+          </button>[36m
+        </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:536:9
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m
+        [35m<div
+          class="tracks-container"
+          bind:this={tracksContainer}
+          use:trackWidth
+          onscroll={handleTracksScroll}
+          onclick={handleTimelineClick}
+          role="application"
+          aria-label="Timeline tracks"
+        >
+          <div class="tracks-scroll-content" style="width: {timelineWidth}px">
+            <SnapGuides activeSnapTime={getSnap().activeSnapTime} height={tracks.length * 80 + 60} />
+            <Playhead position={playheadPosition} {pixelsPerSecond} height={tracks.length * 80} />
+
+            {#each tracks as track (track.id)}
+              <TrackLane {track} {pixelsPerSecond} />
+            {/each}
+
+            {#if !hasClips}
+              <TimelineEmptyState onBrowseLibrary={toggleMediaBrowser} />
+            {:else}
+              <div class="drop-zone">
+                <span class="drop-hint">Drag sequences here to add clips</span>
+              </div>
+            {/if}
+          </div>
+        </div>[36m
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:536:9
+[33mWarn[39m: Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions (svelte)
+[36m
+        [35m<div
+          class="tracks-container"
+          bind:this={tracksContainer}
+          use:trackWidth
+          onscroll={handleTracksScroll}
+          onclick={handleTimelineClick}
+          role="application"
+          aria-label="Timeline tracks"
+        >
+          <div class="tracks-scroll-content" style="width: {timelineWidth}px">
+            <SnapGuides activeSnapTime={getSnap().activeSnapTime} height={tracks.length * 80 + 60} />
+            <Playhead position={playheadPosition} {pixelsPerSecond} height={tracks.length * 80} />
+
+            {#each tracks as track (track.id)}
+              <TrackLane {track} {pixelsPerSecond} />
+            {/each}
+
+            {#if !hasClips}
+              <TimelineEmptyState onBrowseLibrary={toggleMediaBrowser} />
+            {:else}
+              <div class="drop-zone">
+                <span class="drop-hint">Drag sequences here to add clips</span>
+              </div>
+            {/if}
+          </div>
+        </div>[36m
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:569:1
+[33mWarn[39m: noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex (svelte)
+[36m
+[35m<div
+  class="timeline-panel"
+  bind:this={panelElement}
+  onkeydown={handleKeyDown}
+  onwheel={handleWheel}
+  tabindex="0"
+  role="application"
+  aria-label="Timeline editor"
+>
+  <!-- Top Controls Bar -->
+  <div class="controls-bar">
+    <TimelineControls onOpenMediaBrowser={toggleMediaBrowser} />
+
+    <!-- Layout Toggles -->
+    <div class="layout-toggles">
+      <button
+        class="toggle-btn"
+        class:active={showMediaBrowser}
+        onclick={toggleMediaBrowser}
+        title={showMediaBrowser ? "Hide media browser" : "Show media browser"}
+      >
+        <i class="fas fa-photo-film"></i>
+      </button>
+      <button
+        class="toggle-btn"
+        class:active={showPreview}
+        onclick={() => showPreview = !showPreview}
+        title={showPreview ? "Hide monitors" : "Show monitors"}
+      >
+        <i class="fa-solid fa-tv"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    {#if showMediaBrowser}
+      <PanelGroup
+        direction="horizontal"
+        panels={mainPanels}
+        bind:sizes={mainSizes}
+      />
+    {:else}
+      {@render leftSideContent()}
+    {/if}
+  </div>
+
+  <!-- Clip Inspector Panel (right sidebar) -->
+  <ClipInspector />
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:569:1
+[33mWarn[39m: Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions (svelte)
+[36m
+[35m<div
+  class="timeline-panel"
+  bind:this={panelElement}
+  onkeydown={handleKeyDown}
+  onwheel={handleWheel}
+  tabindex="0"
+  role="application"
+  aria-label="Timeline editor"
+>
+  <!-- Top Controls Bar -->
+  <div class="controls-bar">
+    <TimelineControls onOpenMediaBrowser={toggleMediaBrowser} />
+
+    <!-- Layout Toggles -->
+    <div class="layout-toggles">
+      <button
+        class="toggle-btn"
+        class:active={showMediaBrowser}
+        onclick={toggleMediaBrowser}
+        title={showMediaBrowser ? "Hide media browser" : "Show media browser"}
+      >
+        <i class="fas fa-photo-film"></i>
+      </button>
+      <button
+        class="toggle-btn"
+        class:active={showPreview}
+        onclick={() => showPreview = !showPreview}
+        title={showPreview ? "Hide monitors" : "Show monitors"}
+      >
+        <i class="fa-solid fa-tv"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    {#if showMediaBrowser}
+      <PanelGroup
+        direction="horizontal"
+        panels={mainPanels}
+        bind:sizes={mainSizes}
+      />
+    {:else}
+      {@render leftSideContent()}
+    {/if}
+  </div>
+
+  <!-- Clip Inspector Panel (right sidebar) -->
+  <ClipInspector />
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:584:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    <div class="layout-toggles">
+      [35m<button
+        class="toggle-btn"
+        class:active={showMediaBrowser}
+        onclick={toggleMediaBrowser}
+        title={showMediaBrowser ? "Hide media browser" : "Show media browser"}
+      >
+        <i class="fas fa-photo-film"></i>
+      </button>[36m
+      <button
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\TimelinePanel.svelte[39m:592:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </button>
+      [35m<button
+        class="toggle-btn"
+        class:active={showPreview}
+        onclick={() => showPreview = !showPreview}
+        title={showPreview ? "Hide monitors" : "Show monitors"}
+      >
+        <i class="fa-solid fa-tv"></i>
+      </button>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SpeedCurveEditor.svelte[39m:273:5
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    </div>
+    [35m<button class="close-btn" onclick={onClose}>
+      <i class="fa-solid fa-xmark"></i>
+    </button>[36m
+  </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\compose\timeline\components\SpeedCurveEditor.svelte[39m:92:7
+[33mWarn[39m: `canvasEl` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m  // Canvas for curve preview
+  let [35m[36mcanvasEl: HTMLCanvasElement;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\assemble\components\HandPathOrchestrator.svelte[39m:114:7
+[33mWarn[39m: This reference only captures the initial value of `gridMode`. Did you mean to reference it inside a derived instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+[36m    createHandPathAssembleState({
+      [35m[36mgridMode: gridMode,
+      initialBlueHandPath:
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\construct\option-picker\components\OptionPicker.svelte[39m:63:7
+[33mWarn[39m: `sizerService` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m  let hapticService: IHapticFeedbackService | null = null;
+  let [35m[36msizerService: IOptionSizer | null = null;
+  let organizerService: IOptionOrganizer | null = null;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\construct\option-picker\components\OptionPicker.svelte[39m:64:7
+[33mWarn[39m: `organizerService` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m  let sizerService: IOptionSizer | null = null;
+  let [35m[36morganizerService: IOptionOrganizer | null = null;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\construct\option-picker\option-viewer\components\OptionViewer.svelte[39m:726:3
+[33mWarn[39m: Unused CSS selector ".fade-wrapper.fading-out"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.fade-wrapper.fading-out[36m {
+    opacity: 0;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\workspace-panel\components\CreationMethodSelector.svelte[39m:362:19
+[33mWarn[39m: An element with an aria-activedescendant attribute should have a tabindex value
+https://svelte.dev/e/a11y_aria_activedescendant_has_tabindex (svelte)
+[36m                  aria-label="Choose a creation method"
+                  [35maria-activedescendant="choice-{focusedChoiceIndex}"[36m
+                >
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\PictographInspectModal.svelte[39m:339:3
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m{#if show && beatData}
+  [35m<div
+    class="modal-backdrop"
+    onclick={handleBackdropClick}
+    role="dialog"
+    aria-modal="true"
+    aria-label="Pictograph Inspector"
+  >
+    <div class="modal-content">
+      <header class="modal-header">
+        <div class="header-left">
+          <i class="fas fa-magnifying-glass"></i>
+          <h2>Pictograph Inspector</h2>
+          <span class="beat-badge"
+            >Beat {displayData?.beatNumber ?? beatData.beatNumber}</span
+          >
+          {#if displayData?.letter ?? beatData.letter}
+            <span class="letter-badge"
+              >{displayData?.letter ?? beatData.letter}</span
+            >
+          {/if}
+          {#if isCalculating}
+            <span class="calculating-badge">
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+          {/if}
+        </div>
+        <div class="header-actions">
+          <button
+            class="copy-all-btn"
+            onclick={() => copyToClipboard(formatAllForAI(), "all")}
+            disabled={isCalculating}
+          >
+            <i class="fas fa-copy"></i>
+            {copiedSection === "all" ? "Copied!" : "Copy All for AI"}
+          </button>
+          <button
+            class="copy-json-btn"
+            onclick={() =>
+              copyToClipboard(
+                JSON.stringify(displayData ?? beatData, null, 2),
+                "json"
+              )}
+            disabled={isCalculating}
+          >
+            <i class="fas fa-code"></i>
+            {copiedSection === "json" ? "Copied!" : "Copy JSON"}
+          </button>
+          <button class="close-btn" onclick={onClose} aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="modal-body">
+        <!-- Three-column layout -->
+        <div class="columns">
+          <!-- Basic Info Column -->
+          <section class="column basic-column">
+            <div class="column-header">
+              <h3>Basic Info</h3>
+              <button
+                class="copy-btn"
+                onclick={() => copyToClipboard(formatBasicInfo(), "basic")}
+                title="Copy Basic Info"
+              >
+                <i class="fas fa-copy"></i>
+                {#if copiedSection === "basic"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
+              </button>
+            </div>
+            <div class="data-block">
+              <div class="data-row">
+                <span class="key">Beat #</span>
+                <span class="val">{displayData?.beatNumber ?? "—"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">Letter</span>
+                <span class="val highlight"
+                  >{displayData?.letter ?? "None"}</span
+                >
+              </div>
+              <div class="data-row">
+                <span class="key">Grid Mode</span>
+                <span class="val"
+                  >{blueMotion?.gridMode ?? redMotion?.gridMode ?? "N/A"}</span
+                >
+              </div>
+              <div class="data-row">
+                <span class="key">Prop Type</span>
+                <span class="val"
+                  >{blueMotion?.propType ?? redMotion?.propType ?? "N/A"}</span
+                >
+              </div>
+              <div class="data-row">
+                <span class="key">Start Pos</span>
+                <span class="val">{displayData?.startPosition ?? "N/A"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">End Pos</span>
+                <span class="val">{displayData?.endPosition ?? "N/A"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">Blue Rev</span>
+                <span class="val">{displayData?.blueReversal ?? "—"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">Red Rev</span>
+                <span class="val">{displayData?.redReversal ?? "—"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">ID</span>
+                <span class="val mono small">{displayData?.id ?? "—"}</span>
+              </div>
+            </div>
+
+            <!-- Lookup Keys Section -->
+            {#if lookupKeys}
+              <div class="subsection lookup-keys-section">
+                <div class="subsection-header">
+                  <h4>
+                    <i class="fas fa-key"></i>
+                    Lookup Keys
+                  </h4>
+                  <button
+                    class="copy-btn small"
+                    onclick={() =>
+                      copyToClipboard(
+                        `Grid Mode: ${lookupKeys?.gridMode ?? "N/A"}\nOri Key: ${lookupKeys?.oriKey ?? "N/A"}\nTurns Tuple: ${lookupKeys?.turnsTuple ?? "N/A"}\nBlue Rot Key: ${lookupKeys?.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys?.redRotationOverrideKey ?? "N/A"}`,
+                        "keys"
+                      )}
+                    title="Copy Lookup Keys"
+                  >
+                    <i class="fas fa-copy"></i>
+                    {#if copiedSection === "keys"}<span class="copied-label"
+                        >!</span
+                      >{/if}
+                  </button>
+                </div>
+                <div class="data-block compact">
+                  <div class="data-row key-row">
+                    <span class="key">Grid Mode</span>
+                    <span class="val mono key-val">{lookupKeys.gridMode}</span>
+                  </div>
+                  <div class="data-row key-row">
+                    <span class="key">Ori Key</span>
+                    <span class="val mono key-val">{lookupKeys.oriKey}</span>
+                  </div>
+                  <div class="data-row key-row highlight-key">
+                    <span class="key">Turns Tuple</span>
+                    <span class="val mono key-val">{lookupKeys.turnsTuple}</span
+                    >
+                  </div>
+                  {#if lookupKeys.blueRotationOverrideKey}
+                    <div class="data-row key-row blue-key">
+                      <span class="key">Blue Rot Key</span>
+                      <span class="val mono key-val"
+                        >{lookupKeys.blueRotationOverrideKey}</span
+                      >
+                    </div>
+                  {/if}
+                  {#if lookupKeys.redRotationOverrideKey}
+                    <div class="data-row key-row red-key">
+                      <span class="key">Red Rot Key</span>
+                      <span class="val mono key-val"
+                        >{lookupKeys.redRotationOverrideKey}</span
+                      >
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {/if}
+          </section>
+
+          <!-- Blue Motion Column -->
+          <section class="column blue-column">
+            <div class="column-header">
+              <h3><span class="dot blue"></span> Blue Motion</h3>
+              <button
+                class="copy-btn"
+                onclick={() =>
+                  copyToClipboard(
+                    formatMotionText(blueMotion, "blue", blueRotationOverride),
+                    "blue"
+                  )}
+                title="Copy Blue Motion"
+              >
+                <i class="fas fa-copy"></i>
+                {#if copiedSection === "blue"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
+              </button>
+            </div>
+            {#if blueMotion}
+              <div class="data-block">
+                <div class="data-row">
+                  <span class="key">Type</span>
+                  <span class="val">{blueMotion.motionType}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Turns</span>
+                  <span class="val"
+                    >{blueMotion.turns === "fl"
+                      ? "float"
+                      : blueMotion.turns}</span
+                  >
+                </div>
+                <div class="data-row">
+                  <span class="key">Rotation</span>
+                  <span class="val">{blueMotion.rotationDirection}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Loc</span>
+                  <span class="val">{blueMotion.startLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Loc</span>
+                  <span class="val">{blueMotion.endLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Arrow Loc</span>
+                  <span class="val">{blueMotion.arrowLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Ori</span>
+                  <span class="val">{blueMotion.startOrientation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Ori</span>
+                  <span class="val">{blueMotion.endOrientation}</span>
+                </div>
+                {#if blueMotion.prefloatMotionType}
+                  <div class="data-row warn">
+                    <span class="key">Prefloat</span>
+                    <span class="val">{blueMotion.prefloatMotionType}</span>
+                  </div>
+                {/if}
+              </div>
+              <div class="subsection">
+                <h4>Arrow Placement</h4>
+                <div class="data-block compact">
+                  <div class="data-row">
+                    <span class="key">Pos X</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.positionX?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Pos Y</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.positionY?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Rotation</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.rotationAngle?.toFixed(
+                        1
+                      ) ?? "N/A"}°</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Mirrored</span>
+                    <span class="val"
+                      >{blueMotion.arrowPlacementData?.svgMirrored
+                        ? "Yes"
+                        : "No"}</span
+                    >
+                  </div>
+                  {#if blueRotationOverride}
+                    <div
+                      class="data-row"
+                      class:override-active={blueRotationOverride.hasOverride}
+                    >
+                      <span class="key">Rot Override</span>
+                      <span class="val"
+                        >{blueRotationOverride.hasOverride ? "YES" : "No"}</span
+                      >
+                    </div>
+                  {/if}
+                  {#if blueMotion.arrowPlacementData?.manualAdjustmentX || blueMotion.arrowPlacementData?.manualAdjustmentY}
+                    <div class="data-row warn">
+                      <span class="key">Manual</span>
+                      <span class="val mono">
+                        ({blueMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(
+                          2
+                        ) ?? 0},
+                        {blueMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(
+                          2
+                        ) ?? 0})
+                      </span>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {:else}
+              <div class="empty-state">No blue motion</div>
+            {/if}
+          </section>
+
+          <!-- Red Motion Column -->
+          <section class="column red-column">
+            <div class="column-header">
+              <h3><span class="dot red"></span> Red Motion</h3>
+              <button
+                class="copy-btn"
+                onclick={() =>
+                  copyToClipboard(
+                    formatMotionText(redMotion, "red", redRotationOverride),
+                    "red"
+                  )}
+                title="Copy Red Motion"
+              >
+                <i class="fas fa-copy"></i>
+                {#if copiedSection === "red"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
+              </button>
+            </div>
+            {#if redMotion}
+              <div class="data-block">
+                <div class="data-row">
+                  <span class="key">Type</span>
+                  <span class="val">{redMotion.motionType}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Turns</span>
+                  <span class="val"
+                    >{redMotion.turns === "fl"
+                      ? "float"
+                      : redMotion.turns}</span
+                  >
+                </div>
+                <div class="data-row">
+                  <span class="key">Rotation</span>
+                  <span class="val">{redMotion.rotationDirection}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Loc</span>
+                  <span class="val">{redMotion.startLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Loc</span>
+                  <span class="val">{redMotion.endLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Arrow Loc</span>
+                  <span class="val">{redMotion.arrowLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Ori</span>
+                  <span class="val">{redMotion.startOrientation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Ori</span>
+                  <span class="val">{redMotion.endOrientation}</span>
+                </div>
+                {#if redMotion.prefloatMotionType}
+                  <div class="data-row warn">
+                    <span class="key">Prefloat</span>
+                    <span class="val">{redMotion.prefloatMotionType}</span>
+                  </div>
+                {/if}
+              </div>
+              <div class="subsection">
+                <h4>Arrow Placement</h4>
+                <div class="data-block compact">
+                  <div class="data-row">
+                    <span class="key">Pos X</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.positionX?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Pos Y</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.positionY?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Rotation</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.rotationAngle?.toFixed(
+                        1
+                      ) ?? "N/A"}°</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Mirrored</span>
+                    <span class="val"
+                      >{redMotion.arrowPlacementData?.svgMirrored
+                        ? "Yes"
+                        : "No"}</span
+                    >
+                  </div>
+                  {#if redRotationOverride}
+                    <div
+                      class="data-row"
+                      class:override-active={redRotationOverride.hasOverride}
+                    >
+                      <span class="key">Rot Override</span>
+                      <span class="val"
+                        >{redRotationOverride.hasOverride ? "YES" : "No"}</span
+                      >
+                    </div>
+                  {/if}
+                  {#if redMotion.arrowPlacementData?.manualAdjustmentX || redMotion.arrowPlacementData?.manualAdjustmentY}
+                    <div class="data-row warn">
+                      <span class="key">Manual</span>
+                      <span class="val mono">
+                        ({redMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(
+                          2
+                        ) ?? 0},
+                        {redMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(
+                          2
+                        ) ?? 0})
+                      </span>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {:else}
+              <div class="empty-state">No red motion</div>
+            {/if}
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>[36m
+{/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\PictographInspectModal.svelte[39m:339:3
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m{#if show && beatData}
+  [35m<div
+    class="modal-backdrop"
+    onclick={handleBackdropClick}
+    role="dialog"
+    aria-modal="true"
+    aria-label="Pictograph Inspector"
+  >
+    <div class="modal-content">
+      <header class="modal-header">
+        <div class="header-left">
+          <i class="fas fa-magnifying-glass"></i>
+          <h2>Pictograph Inspector</h2>
+          <span class="beat-badge"
+            >Beat {displayData?.beatNumber ?? beatData.beatNumber}</span
+          >
+          {#if displayData?.letter ?? beatData.letter}
+            <span class="letter-badge"
+              >{displayData?.letter ?? beatData.letter}</span
+            >
+          {/if}
+          {#if isCalculating}
+            <span class="calculating-badge">
+              <i class="fas fa-spinner fa-spin"></i>
+            </span>
+          {/if}
+        </div>
+        <div class="header-actions">
+          <button
+            class="copy-all-btn"
+            onclick={() => copyToClipboard(formatAllForAI(), "all")}
+            disabled={isCalculating}
+          >
+            <i class="fas fa-copy"></i>
+            {copiedSection === "all" ? "Copied!" : "Copy All for AI"}
+          </button>
+          <button
+            class="copy-json-btn"
+            onclick={() =>
+              copyToClipboard(
+                JSON.stringify(displayData ?? beatData, null, 2),
+                "json"
+              )}
+            disabled={isCalculating}
+          >
+            <i class="fas fa-code"></i>
+            {copiedSection === "json" ? "Copied!" : "Copy JSON"}
+          </button>
+          <button class="close-btn" onclick={onClose} aria-label="Close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="modal-body">
+        <!-- Three-column layout -->
+        <div class="columns">
+          <!-- Basic Info Column -->
+          <section class="column basic-column">
+            <div class="column-header">
+              <h3>Basic Info</h3>
+              <button
+                class="copy-btn"
+                onclick={() => copyToClipboard(formatBasicInfo(), "basic")}
+                title="Copy Basic Info"
+              >
+                <i class="fas fa-copy"></i>
+                {#if copiedSection === "basic"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
+              </button>
+            </div>
+            <div class="data-block">
+              <div class="data-row">
+                <span class="key">Beat #</span>
+                <span class="val">{displayData?.beatNumber ?? "—"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">Letter</span>
+                <span class="val highlight"
+                  >{displayData?.letter ?? "None"}</span
+                >
+              </div>
+              <div class="data-row">
+                <span class="key">Grid Mode</span>
+                <span class="val"
+                  >{blueMotion?.gridMode ?? redMotion?.gridMode ?? "N/A"}</span
+                >
+              </div>
+              <div class="data-row">
+                <span class="key">Prop Type</span>
+                <span class="val"
+                  >{blueMotion?.propType ?? redMotion?.propType ?? "N/A"}</span
+                >
+              </div>
+              <div class="data-row">
+                <span class="key">Start Pos</span>
+                <span class="val">{displayData?.startPosition ?? "N/A"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">End Pos</span>
+                <span class="val">{displayData?.endPosition ?? "N/A"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">Blue Rev</span>
+                <span class="val">{displayData?.blueReversal ?? "—"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">Red Rev</span>
+                <span class="val">{displayData?.redReversal ?? "—"}</span>
+              </div>
+              <div class="data-row">
+                <span class="key">ID</span>
+                <span class="val mono small">{displayData?.id ?? "—"}</span>
+              </div>
+            </div>
+
+            <!-- Lookup Keys Section -->
+            {#if lookupKeys}
+              <div class="subsection lookup-keys-section">
+                <div class="subsection-header">
+                  <h4>
+                    <i class="fas fa-key"></i>
+                    Lookup Keys
+                  </h4>
+                  <button
+                    class="copy-btn small"
+                    onclick={() =>
+                      copyToClipboard(
+                        `Grid Mode: ${lookupKeys?.gridMode ?? "N/A"}\nOri Key: ${lookupKeys?.oriKey ?? "N/A"}\nTurns Tuple: ${lookupKeys?.turnsTuple ?? "N/A"}\nBlue Rot Key: ${lookupKeys?.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys?.redRotationOverrideKey ?? "N/A"}`,
+                        "keys"
+                      )}
+                    title="Copy Lookup Keys"
+                  >
+                    <i class="fas fa-copy"></i>
+                    {#if copiedSection === "keys"}<span class="copied-label"
+                        >!</span
+                      >{/if}
+                  </button>
+                </div>
+                <div class="data-block compact">
+                  <div class="data-row key-row">
+                    <span class="key">Grid Mode</span>
+                    <span class="val mono key-val">{lookupKeys.gridMode}</span>
+                  </div>
+                  <div class="data-row key-row">
+                    <span class="key">Ori Key</span>
+                    <span class="val mono key-val">{lookupKeys.oriKey}</span>
+                  </div>
+                  <div class="data-row key-row highlight-key">
+                    <span class="key">Turns Tuple</span>
+                    <span class="val mono key-val">{lookupKeys.turnsTuple}</span
+                    >
+                  </div>
+                  {#if lookupKeys.blueRotationOverrideKey}
+                    <div class="data-row key-row blue-key">
+                      <span class="key">Blue Rot Key</span>
+                      <span class="val mono key-val"
+                        >{lookupKeys.blueRotationOverrideKey}</span
+                      >
+                    </div>
+                  {/if}
+                  {#if lookupKeys.redRotationOverrideKey}
+                    <div class="data-row key-row red-key">
+                      <span class="key">Red Rot Key</span>
+                      <span class="val mono key-val"
+                        >{lookupKeys.redRotationOverrideKey}</span
+                      >
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {/if}
+          </section>
+
+          <!-- Blue Motion Column -->
+          <section class="column blue-column">
+            <div class="column-header">
+              <h3><span class="dot blue"></span> Blue Motion</h3>
+              <button
+                class="copy-btn"
+                onclick={() =>
+                  copyToClipboard(
+                    formatMotionText(blueMotion, "blue", blueRotationOverride),
+                    "blue"
+                  )}
+                title="Copy Blue Motion"
+              >
+                <i class="fas fa-copy"></i>
+                {#if copiedSection === "blue"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
+              </button>
+            </div>
+            {#if blueMotion}
+              <div class="data-block">
+                <div class="data-row">
+                  <span class="key">Type</span>
+                  <span class="val">{blueMotion.motionType}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Turns</span>
+                  <span class="val"
+                    >{blueMotion.turns === "fl"
+                      ? "float"
+                      : blueMotion.turns}</span
+                  >
+                </div>
+                <div class="data-row">
+                  <span class="key">Rotation</span>
+                  <span class="val">{blueMotion.rotationDirection}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Loc</span>
+                  <span class="val">{blueMotion.startLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Loc</span>
+                  <span class="val">{blueMotion.endLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Arrow Loc</span>
+                  <span class="val">{blueMotion.arrowLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Ori</span>
+                  <span class="val">{blueMotion.startOrientation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Ori</span>
+                  <span class="val">{blueMotion.endOrientation}</span>
+                </div>
+                {#if blueMotion.prefloatMotionType}
+                  <div class="data-row warn">
+                    <span class="key">Prefloat</span>
+                    <span class="val">{blueMotion.prefloatMotionType}</span>
+                  </div>
+                {/if}
+              </div>
+              <div class="subsection">
+                <h4>Arrow Placement</h4>
+                <div class="data-block compact">
+                  <div class="data-row">
+                    <span class="key">Pos X</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.positionX?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Pos Y</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.positionY?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Rotation</span>
+                    <span class="val mono"
+                      >{blueMotion.arrowPlacementData?.rotationAngle?.toFixed(
+                        1
+                      ) ?? "N/A"}°</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Mirrored</span>
+                    <span class="val"
+                      >{blueMotion.arrowPlacementData?.svgMirrored
+                        ? "Yes"
+                        : "No"}</span
+                    >
+                  </div>
+                  {#if blueRotationOverride}
+                    <div
+                      class="data-row"
+                      class:override-active={blueRotationOverride.hasOverride}
+                    >
+                      <span class="key">Rot Override</span>
+                      <span class="val"
+                        >{blueRotationOverride.hasOverride ? "YES" : "No"}</span
+                      >
+                    </div>
+                  {/if}
+                  {#if blueMotion.arrowPlacementData?.manualAdjustmentX || blueMotion.arrowPlacementData?.manualAdjustmentY}
+                    <div class="data-row warn">
+                      <span class="key">Manual</span>
+                      <span class="val mono">
+                        ({blueMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(
+                          2
+                        ) ?? 0},
+                        {blueMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(
+                          2
+                        ) ?? 0})
+                      </span>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {:else}
+              <div class="empty-state">No blue motion</div>
+            {/if}
+          </section>
+
+          <!-- Red Motion Column -->
+          <section class="column red-column">
+            <div class="column-header">
+              <h3><span class="dot red"></span> Red Motion</h3>
+              <button
+                class="copy-btn"
+                onclick={() =>
+                  copyToClipboard(
+                    formatMotionText(redMotion, "red", redRotationOverride),
+                    "red"
+                  )}
+                title="Copy Red Motion"
+              >
+                <i class="fas fa-copy"></i>
+                {#if copiedSection === "red"}<span class="copied-label"
+                    >Copied!</span
+                  >{/if}
+              </button>
+            </div>
+            {#if redMotion}
+              <div class="data-block">
+                <div class="data-row">
+                  <span class="key">Type</span>
+                  <span class="val">{redMotion.motionType}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Turns</span>
+                  <span class="val"
+                    >{redMotion.turns === "fl"
+                      ? "float"
+                      : redMotion.turns}</span
+                  >
+                </div>
+                <div class="data-row">
+                  <span class="key">Rotation</span>
+                  <span class="val">{redMotion.rotationDirection}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Loc</span>
+                  <span class="val">{redMotion.startLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Loc</span>
+                  <span class="val">{redMotion.endLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Arrow Loc</span>
+                  <span class="val">{redMotion.arrowLocation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">Start Ori</span>
+                  <span class="val">{redMotion.startOrientation}</span>
+                </div>
+                <div class="data-row">
+                  <span class="key">End Ori</span>
+                  <span class="val">{redMotion.endOrientation}</span>
+                </div>
+                {#if redMotion.prefloatMotionType}
+                  <div class="data-row warn">
+                    <span class="key">Prefloat</span>
+                    <span class="val">{redMotion.prefloatMotionType}</span>
+                  </div>
+                {/if}
+              </div>
+              <div class="subsection">
+                <h4>Arrow Placement</h4>
+                <div class="data-block compact">
+                  <div class="data-row">
+                    <span class="key">Pos X</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.positionX?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Pos Y</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.positionY?.toFixed(2) ??
+                        "N/A"}</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Rotation</span>
+                    <span class="val mono"
+                      >{redMotion.arrowPlacementData?.rotationAngle?.toFixed(
+                        1
+                      ) ?? "N/A"}°</span
+                    >
+                  </div>
+                  <div class="data-row">
+                    <span class="key">Mirrored</span>
+                    <span class="val"
+                      >{redMotion.arrowPlacementData?.svgMirrored
+                        ? "Yes"
+                        : "No"}</span
+                    >
+                  </div>
+                  {#if redRotationOverride}
+                    <div
+                      class="data-row"
+                      class:override-active={redRotationOverride.hasOverride}
+                    >
+                      <span class="key">Rot Override</span>
+                      <span class="val"
+                        >{redRotationOverride.hasOverride ? "YES" : "No"}</span
+                      >
+                    </div>
+                  {/if}
+                  {#if redMotion.arrowPlacementData?.manualAdjustmentX || redMotion.arrowPlacementData?.manualAdjustmentY}
+                    <div class="data-row warn">
+                      <span class="key">Manual</span>
+                      <span class="val mono">
+                        ({redMotion.arrowPlacementData?.manualAdjustmentX?.toFixed(
+                          2
+                        ) ?? 0},
+                        {redMotion.arrowPlacementData?.manualAdjustmentY?.toFixed(
+                          2
+                        ) ?? 0})
+                      </span>
+                    </div>
+                  {/if}
+                </div>
+              </div>
+            {:else}
+              <div class="empty-state">No red motion</div>
+            {/if}
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>[36m
+{/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\PictographEditorSheet.svelte[39m:354:15
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m              <h3><i class="fas fa-key"></i> Lookup Keys</h3>
+              [35m<button
+                class="copy-btn"
+                onclick={copyLookupKeys}
+                title="Copy keys"
+              >
+                <i class="fas fa-copy"></i>
+              </button>[36m
+            </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\sequence-actions\BeatEditorPanel.svelte[39m:203:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m        {/if}
+        [35m<button class="icon-btn close" onclick={handleClose}>
+          <i class="fas fa-times"></i>
+        </button>[36m
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\single-media\AnimationPreview.svelte[39m:248:3
+[33mWarn[39m: Unused CSS selector ".loading-state i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.loading-state i[36m,
+  .error-state i,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\single-media\PerformancePreview.svelte[39m:340:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m          </span>
+          [35m<button class="control-button stop-button" onclick={stopRecording}>
+            <i class="fas fa-stop"></i>
+          </button>[36m
+          <button class="control-button cancel-button" onclick={cancelRecording}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\single-media\PerformancePreview.svelte[39m:343:11
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m          </button>
+          [35m<button class="control-button cancel-button" onclick={cancelRecording}>
+            <i class="fas fa-times"></i>
+          </button>[36m
+        </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\composite\MediaPieceCard.svelte[39m:62:1
+[33mWarn[39m: `<div>` with a mouseenter or mouseleave handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions (svelte)
+[36m
+[35m<div
+  class="media-piece-card"
+  onmouseenter={() => (isHovered = true)}
+  onmouseleave={() => (isHovered = false)}
+>
+  <!-- Preview Content -->
+  <div class="preview-content">
+    {#if !hubState.sequence}
+      <div class="placeholder-preview">
+        <i class="fas {formatIcon}"></i>
+        <p>No sequence</p>
+      </div>
+    {:else if format === 'animation'}
+      <!-- Animation: show single pictograph preview -->
+      {#if previewBeats.length > 0}
+        <div class="animation-preview-mini">
+          <Pictograph
+            pictographData={previewBeats[0]}
+            disableContentTransitions={true}
+          />
+          <div class="play-overlay">
+            <i class="fas fa-play"></i>
+          </div>
+        </div>
+      {:else}
+        <div class="placeholder-preview">
+          <i class="fas fa-play-circle"></i>
+          <p>No beats</p>
+        </div>
+      {/if}
+    {:else if format === 'static'}
+      <!-- Static: show first pictograph -->
+      {#if previewBeats.length > 0}
+        <div class="static-preview-mini">
+          <Pictograph
+            pictographData={previewBeats[0]}
+            disableContentTransitions={true}
+          />
+        </div>
+      {:else}
+        <div class="placeholder-preview">
+          <i class="fas fa-image"></i>
+          <p>No beats</p>
+        </div>
+      {/if}
+    {:else if format === 'grid'}
+      <!-- Grid: show 2x2 mini grid -->
+      {#if previewBeats.length > 0}
+        <div class="grid-preview-mini">
+          {#each previewBeats as beat, index (beat.id ?? index)}
+            <div class="grid-cell">
+              <Pictograph
+                pictographData={beat}
+                disableContentTransitions={true}
+              />
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="placeholder-preview">
+          <i class="fas fa-th"></i>
+          <p>No beats</p>
+        </div>
+      {/if}
+    {:else if format === 'performance'}
+      <!-- Performance: camera/video placeholder -->
+      <div class="placeholder-preview">
+        <i class="fas fa-video"></i>
+        <p>Performance</p>
+      </div>
+    {/if}
+  </div>
+
+  <!-- Format Label (bottom-left) -->
+  <div class="format-label">
+    <i class="fas {formatIcon}"></i>
+    <span>{label}</span>
+  </div>
+
+  <!-- Settings Gear (top-right) -->
+  <button
+    class="settings-gear"
+    class:visible={isHovered}
+    onclick={handleSettingsClick}
+    aria-label="Settings for {label}"
+  >
+    <i class="fas fa-cog"></i>
+  </button>
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\composite\CompositeControls.svelte[39m:40:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="control-group">
+    [35m<label class="control-label">
+      <i class="fas fa-arrows-alt"></i>
+      Layout
+    </label>[36m
+    <button class="orientation-toggle" onclick={toggleOrientation} aria-label="Toggle orientation">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\composite\CompositeControls.svelte[39m:57:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="control-group">
+    [35m<label class="control-label">
+      <i class="fas fa-play-circle"></i>
+      Piece 1
+    </label>[36m
+    <div class="piece-selector">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\composite\CompositeControls.svelte[39m:83:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="control-group">
+    [35m<label class="control-label">
+      <i class="fas fa-th"></i>
+      Piece 2
+    </label>[36m
+    <div class="piece-selector">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\settings\SettingsPanel.svelte[39m:60:3
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m{#if isOpen}
+  [35m<div
+    class="settings-backdrop"
+    onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="settings-title"
+  >
+    <div class="settings-panel" bind:this={panelElement}>
+      <!-- Header -->
+      <div class="settings-header">
+        <h2 id="settings-title" class="settings-title">{title}</h2>
+        <button
+          class="close-button"
+          bind:this={closeButtonElement}
+          onclick={onClose}
+          aria-label="Close settings"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Content (slotted) -->
+      <div class="settings-content">
+        {#if children}
+          {@render children()}
+        {/if}
+      </div>
+    </div>
+  </div>[36m
+{/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\settings\AnimationSettings.svelte[39m:97:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      </div>
+      [35m<button
+        class="toggle-button"
+        class:active={hubState.animationSettings.showOverlays}
+        onclick={handleOverlaysToggle}
+        role="switch"
+        aria-checked={hubState.animationSettings.showOverlays}
+      >
+        <span class="toggle-thumb"></span>
+      </button>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\share-hub\components\settings\PerformanceSettings.svelte[39m:71:7
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m    <div class="setting-header">
+      [35m<label>
+        <i class="fas fa-video"></i>
+        Video Source
+      </label>[36m
+    </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\library\components\tags\TagAutocompleteInput.svelte[39m:214:13
+[33mWarn[39m: Avoid using autofocus
+https://svelte.dev/e/a11y_autofocus (svelte)
+[36m            maxlength="50"
+            [35mautofocus[36m
+          />
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\SaveToLibraryPanel.svelte[39m:408:9
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m      <div class="form-group">
+        [35m<label>TKA Name</label>[36m
+        <div class="tka-name-display">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\create\shared\components\SaveToLibraryPanel.svelte[39m:502:15
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m            <div class="field-header">
+              [35m<label>Tags</label>[36m
+              <button
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\dashboard\components\widgets\AlertsWidget.svelte[39m:56:24
+[31mError[39m: Property 'openFeedbackDetail' does not exist on type 'DashboardState'. (ts)
+[36m      if (feedbackItem) {
+        dashboardState.[35mopenFeedbackDetail[36m(feedbackItem);
+      }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\feedback\components\my-feedback\ImageViewerModal.svelte[39m:62:5
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m    <!-- svelte-ignore a11y_no_static_element_interactions a11y_click_events_have_key_events -->
+    [35m<div class="viewer-container" onclick={(e) => e.stopPropagation()}>
+      <!-- Close button -->
+      <button
+        class="close-btn"
+        onclick={onClose}
+        type="button"
+        aria-label="Close"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- Image counter -->
+      {#if images.length > 1}
+        <div class="counter">
+          {currentIndex + 1} / {images.length}
+        </div>
+      {/if}
+
+      <!-- Main image -->
+      <div class="image-wrapper">
+        <img
+          src={images[currentIndex]}
+          alt="Screenshot {currentIndex + 1}"
+          class="full-image"
+        />
+      </div>
+
+      <!-- Navigation arrows -->
+      {#if images.length > 1}
+        <button
+          class="nav-btn prev"
+          onclick={handlePrev}
+          type="button"
+          aria-label="Previous"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button
+          class="nav-btn next"
+          onclick={handleNext}
+          type="button"
+          aria-label="Next"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      {/if}
+
+      <!-- Thumbnail strip -->
+      {#if images.length > 1}
+        <div class="thumbnail-strip">
+          {#each images as img, i}
+            <button
+              class="thumbnail"
+              class:active={i === currentIndex}
+              onclick={() => (currentIndex = i)}
+              type="button"
+              aria-label="View image {i + 1}"
+            >
+              <img src={img} alt="Thumbnail {i + 1}" />
+            </button>
+          {/each}
+        </div>
+      {/if}
+    </div>[36m
+  {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\notifications\NotificationFilter.svelte[39m:144:5
+[33mWarn[39m: Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m  >
+    [35m<div
+      class="sheet"
+      onclick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-label="Select notification type"
+    >
+      <div class="sheet-header">
+        <h3>Notification Type</h3>
+        <button
+          class="close-btn"
+          onclick={() => (isTypeSheetOpen = false)}
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="sheet-content">
+        {#each notificationTypes as type}
+          <button
+            class="type-option"
+            class:active={filters.type === type.value}
+            onclick={() => {
+              filters.type = type.value;
+              isTypeSheetOpen = false;
+            }}
+          >
+            {type.label}
+            {#if filters.type === type.value}
+              <i class="fas fa-check" aria-hidden="true"></i>
+            {/if}
+          </button>
+        {/each}
+      </div>
+    </div>[36m
+  </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\notifications\NotificationFilter.svelte[39m:144:5
+[33mWarn[39m: Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events (svelte)
+[36m  >
+    [35m<div
+      class="sheet"
+      onclick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-label="Select notification type"
+    >
+      <div class="sheet-header">
+        <h3>Notification Type</h3>
+        <button
+          class="close-btn"
+          onclick={() => (isTypeSheetOpen = false)}
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="sheet-content">
+        {#each notificationTypes as type}
+          <button
+            class="type-option"
+            class:active={filters.type === type.value}
+            onclick={() => {
+              filters.type = type.value;
+              isTypeSheetOpen = false;
+            }}
+          >
+            {type.label}
+            {#if filters.type === type.value}
+              <i class="fas fa-check" aria-hidden="true"></i>
+            {/if}
+          </button>
+        {/each}
+      </div>
+    </div>[36m
+  </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\notifications\NotificationFilter.svelte[39m:289:3
+[33mWarn[39m: Unused CSS selector ".chip i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.chip i[36m {
+    font-size: 12px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\notifications\NotificationFilter.svelte[39m:2:17
+[31mError[39m: Duplicate identifier 'UserNotification'. (ts)
+[36m<script lang="ts" module>
+  import type { [35mUserNotification[36m } from "$lib/features/feedback/domain/models/notification-models";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\notifications\NotificationFilter.svelte[39m:17:17
+[31mError[39m: Duplicate identifier 'UserNotification'. (ts)
+[36m  import { slide } from "svelte/transition";
+  import type { [35mUserNotification[36m } from "$lib/features/feedback/domain/models/notification-models";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\dashboard\components\Dashboard.svelte[39m:504:5
+[33mWarn[39m: Unused CSS selector ".widget-notifications"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m    .widget-community,
+    [35m.widget-notifications[36m {
+      min-height: 240px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\dashboard\components\Dashboard.svelte[39m:256:12
+[31mError[39m: Property 'signInToastTimeout' is missing in type '{ challengeDrawerOpen: boolean; readonly signInToastMessage: string; readonly showSignInToast: boolean; isVisible: boolean; readonly feedbackDetailItem: FeedbackItem | null; ... 13 more ...; closeFeedbackDetail: () => void; }' but required in type 'DashboardState'. (ts)
+[36m        <AlertsWidget
+          {[35mdashboardState[36m}
+          onOpenNotifications={() => (notificationsDrawerOpen = true)}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\video-collaboration\components\InviteCollaboratorsPanel.svelte[39m:78:63
+[31mError[39m: 'selectedMessage' is possibly 'undefined'. (ts)
+[36m  function currentMessage(): string | undefined {
+    const message = useCustomMessage ? customMessage.trim() : [35mselectedMessage[36m.trim();
+    return message.length > 0 ? message : undefined;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\edit\components\EditWorkspace.svelte[39m:154:9
+[31mError[39m: Type '(beatNumber: number) => void' is not assignable to type '() => void'.
+  Target signature provides too few arguments. Expected 1 or more, but got 0. (ts)
+[36m        onStartClick={handleStartClick}
+        [35monBeatLongPress[36m={handleBeatLongPress}
+        onStartLongPress={handleStartLongPress}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\feedback\components\manage\detail\FeedbackStatusSelector.svelte[39m:43:36
+[31mError[39m: Argument of type 'FeedbackStatus | undefined' is not assignable to parameter of type 'FeedbackStatus'.
+  Type 'undefined' is not assignable to type 'FeedbackStatus'. (ts)
+[36m        : Math.max(currentStatusIndex - 1, 0);
+    detailState.handleStatusChange([35mstatusOrder[newIndex][36m);
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\grid-quiz\PointQuizSection.svelte[39m:29:9
+[31mError[39m: 'pointInfo' is possibly 'undefined'. (ts)
+[36m    <span class="direction-hint">
+      ({[35mpointInfo[36m.mode === "diamond"
+        ? "Diamond grid"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\grid-quiz\PointQuizSection.svelte[39m:31:11
+[31mError[39m: 'pointInfo' is possibly 'undefined'. (ts)
+[36m        ? "Diamond grid"
+        : [35mpointInfo[36m.mode === "box"
+          ? "Box grid"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\grid-quiz\PointQuizSection.svelte[39m:82:52
+[31mError[39m: This comparison appears to be unintentional because the types '"correct" | "incorrect"' and '"idle"' have no overlap. (ts)
+[36m            <!-- Label on reveal -->
+            {#if (showCorrect || revealCorrect) && [35manswerState !== "idle"[36m}
+              <text
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:52:53
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m	const leftCurrentPos = $derived.by(() => {
+		if (!animating || animationProgress === 0) return [35mGRID_POINTS_4[leftStart][36m;
+		if (animationProgress >= 1) return GRID_POINTS_4[leftEnd];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:53:38
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m		if (!animating || animationProgress === 0) return GRID_POINTS_4[leftStart];
+		if (animationProgress >= 1) return [35mGRID_POINTS_4[leftEnd][36m;
+		const start = GRID_POINTS_4[leftStart];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:54:17
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m		if (animationProgress >= 1) return GRID_POINTS_4[leftEnd];
+		const start = [35mGRID_POINTS_4[leftStart][36m;
+		const end = GRID_POINTS_4[leftEnd];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:55:15
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m		const start = GRID_POINTS_4[leftStart];
+		const end = [35mGRID_POINTS_4[leftEnd][36m;
+		return { x: lerp(start.x, end.x, animationProgress), y: lerp(start.y, end.y, animationProgress) };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:60:53
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m	const rightCurrentPos = $derived.by(() => {
+		if (!animating || animationProgress === 0) return [35mGRID_POINTS_4[rightStart][36m;
+		if (animationProgress >= 1) return GRID_POINTS_4[rightEnd];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:61:38
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m		if (!animating || animationProgress === 0) return GRID_POINTS_4[rightStart];
+		if (animationProgress >= 1) return [35mGRID_POINTS_4[rightEnd][36m;
+		const start = GRID_POINTS_4[rightStart];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:62:17
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m		if (animationProgress >= 1) return GRID_POINTS_4[rightEnd];
+		const start = [35mGRID_POINTS_4[rightStart][36m;
+		const end = GRID_POINTS_4[rightEnd];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionVisualizer.svelte[39m:63:15
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<HandPosition4, GridPoint4>'. (ts)
+[36m		const start = GRID_POINTS_4[rightStart];
+		const end = [35mGRID_POINTS_4[rightEnd][36m;
+		return { x: lerp(start.x, end.x, animationProgress), y: lerp(start.y, end.y, animationProgress) };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\motions-experience\MotionTypeSummary.svelte[39m:13:55
+[31mError[39m: 'info' is possibly 'undefined'. (ts)
+[36m      {@const info = MOTION_INFO[t]}
+      <div class="summary-item" style="--type-color: {[35minfo[36m.color}">
+        <span class="summary-num">{t}</span>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\motions-experience\MotionTypeSummary.svelte[39m:15:37
+[31mError[39m: 'info' is possibly 'undefined'. (ts)
+[36m        <span class="summary-num">{t}</span>
+        <span class="summary-name">{[35minfo[36m.name}</span>
+      </div>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\motions\MotionsConceptExperience.svelte[39m:61:8
+[31mError[39m: Type 'MotionInfo | undefined' is not assignable to type 'MotionInfo'.
+  Type 'undefined' is not assignable to type 'MotionInfo'. (ts)
+[36m      {typeNum}
+      {[35minfo[36m}
+      {example}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\staff\StaffConceptExperience.svelte[39m:51:49
+[31mError[39m: Type 'IHapticFeedbackService' is not assignable to type '{ trigger: (type: string) => void; }'.
+  Types of property 'trigger' are incompatible.
+    Type '(type: HapticFeedbackType) => boolean' is not assignable to type '(type: string) => void'.
+      Types of parameters 'type' and 'type' are incompatible.
+        Type 'string' is not assignable to type 'HapticFeedbackType'. (ts)
+[36m  {:else if currentPage === 2}
+    <ThumbOrientationsPage onNext={handleNext} {[35mhapticService[36m} />
+  {:else if currentPage === 3}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\staff\StaffConceptExperience.svelte[39m:53:39
+[31mError[39m: Type 'IHapticFeedbackService' is not assignable to type '{ trigger: (type: string) => void; }'.
+  Types of property 'trigger' are incompatible.
+    Type '(type: HapticFeedbackType) => boolean' is not assignable to type '(type: string) => void'.
+      Types of parameters 'type' and 'type' are incompatible.
+        Type 'string' is not assignable to type 'HapticFeedbackType'. (ts)
+[36m  {:else if currentPage === 3}
+    <ProspinPage onNext={handleNext} {[35mhapticService[36m} />
+  {:else if currentPage === 4}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\learn\components\interactive\staff\StaffConceptExperience.svelte[39m:55:40
+[31mError[39m: Type 'IHapticFeedbackService' is not assignable to type '{ trigger: (type: string) => void; }'.
+  Types of property 'trigger' are incompatible.
+    Type '(type: HapticFeedbackType) => boolean' is not assignable to type '(type: string) => void'.
+      Types of parameters 'type' and 'type' are incompatible.
+        Type 'string' is not assignable to type 'HapticFeedbackType'. (ts)
+[36m  {:else if currentPage === 4}
+    <AntispinPage onNext={handleNext} {[35mhapticService[36m} />
+  {:else if currentPage === 5}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\premium\components\InfoCard.svelte[39m:9:16
+[31mError[39m: Property 'children' does not exist on type 'Props'. (ts)
+[36m
+  let { title, [35mchildren[36m }: Props = $props();
+</script>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\premium\components\PremiumShowcase.svelte[39m:134:21
+[31mError[39m: Object literal may only specify known properties, and 'children' does not exist in type 'Props'. (ts)
+[36m  <section class="about-section">
+    <InfoCard title=[35m[36m"About TKA">
+      <p>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\premium\PremiumModule.svelte[39m:12:7
+[33mWarn[39m: `hapticService` is updated, but is not declared with `$state(...)`. Changing its value will not correctly trigger updates
+https://svelte.dev/e/non_reactive_update (svelte)
+[36m
+  let [35m[36mhapticService: IHapticFeedbackService | null = null;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\notifications\NotificationsHero.svelte[39m:27:3
+[33mWarn[39m: Unused CSS selector ".hero .lede"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.hero .lede[36m {
+    margin: 0;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\visibility\ImageExportPreview.svelte[39m:9:33
+[31mError[39m: Cannot find module '$lib/shared/foundation/domain/models/BeatData' or its corresponding type declarations. (ts)
+[36m  import { onMount } from "svelte";
+  import type { BeatData } from [35m"$lib/shared/foundation/domain/models/BeatData"[36m;
+  import { resolve } from "$lib/shared/inversify/di";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\visibility\ImageExportPreview.svelte[39m:12:49
+[31mError[39m: Cannot find module '$lib/shared/share/services/contracts/IImageCompositionService' or its corresponding type declarations. (ts)
+[36m  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IImageCompositionService } from [35m"$lib/shared/share/services/contracts/IImageCompositionService"[36m;
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\visibility\ImageExportPreview.svelte[39m:46:24
+[31mError[39m: Parameter 'b' implicitly has an 'any' type. (ts)
+[36m      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(([35mb[36m) => {
+          if (b) resolve(b);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:952:3
+[33mWarn[39m: Unused CSS selector ".animation-placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  /* Animation placeholder */
+  [35m.animation-placeholder[36m {
+    display: flex;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:961:3
+[33mWarn[39m: Unused CSS selector ".animation-placeholder i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.animation-placeholder i[36m {
+    font-size: 36px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:968:3
+[33mWarn[39m: Unused CSS selector ".animation-placeholder span"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.animation-placeholder span[36m {
+    font-size: 13px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:974:3
+[33mWarn[39m: Unused CSS selector ".image-placeholder"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m  /* Image export placeholder */
+  [35m.image-placeholder[36m {
+    display: flex;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:983:3
+[33mWarn[39m: Unused CSS selector ".image-placeholder i"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.image-placeholder i[36m {
+    font-size: 36px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:990:3
+[33mWarn[39m: Unused CSS selector ".image-placeholder span"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.image-placeholder span[36m {
+    font-size: 13px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:156:7
+[31mError[39m: Type '{ beatNumber: number; id: string; letter: Letter; startPosition: GridPosition; endPosition: GridPosition; gridMode: GridMode; blueReversal: boolean; redReversal: boolean; motions: { ...; }; }' is missing the following properties from type 'BeatData': duration, isBlank (ts)
+[36m    beats: [
+      [35m{
+        ...examplePictographData,
+        beatNumber: 1,
+      }[36m,
+    ],
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\tabs\VisibilityTab.svelte[39m:513:11
+[31mError[39m: Object literal may only specify known properties, and '"autoPlay"' does not exist in type '$$ComponentProps'. (ts)
+[36m          sequenceData={exampleSequenceData}
+          [35mautoPlay[36m={true}
+          loop={true}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\keyboard\components\settings\ShortcutRow.svelte[39m:58:7
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m    {#if item.isCustomized}
+      [35m<button
+        type="button"
+        class="reset-btn"
+        onclick={handleReset}
+        title="Reset to default"
+      >
+        <i class="fas fa-undo"></i>
+      </button>[36m
+    {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\keyboard\components\settings\ShortcutRow.svelte[39m:58:7
+[33mWarn[39m: `<button>` cannot be a descendant of `<button>`. When rendering this component on the server, the resulting HTML will be modified by the browser (by moving, removing, or inserting elements), likely resulting in a `hydration_mismatch` warning
+https://svelte.dev/e/node_invalid_placement_ssr (svelte)
+[36m    {#if item.isCustomized}
+      [35m<button
+        type="button"
+        class="reset-btn"
+        onclick={handleReset}
+        title="Reset to default"
+      >
+        <i class="fas fa-undo"></i>
+      </button>[36m
+    {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\tag-reviewer\components\TagReviewerModule.svelte[39m:224:6
+[31mError[39m: Type '(seq: TaggedSequenceEntry) => ReviewStatus' is not assignable to type '(seq: BaseSequenceEntry) => ReviewStatus'.
+  Types of parameters 'seq' and 'seq' are incompatible.
+    Property 'capType' is missing in type 'BaseSequenceEntry' but required in type 'TaggedSequenceEntry'. (ts)
+[36m				onFilterChange={(mode) => tagReviewerState.setFilterMode(mode as any)}
+				{[35mgetStatus[36m}
+				{getSecondaryLabel}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\features\tag-reviewer\components\TagReviewerModule.svelte[39m:225:6
+[31mError[39m: Type '(seq: TaggedSequenceEntry) => string' is not assignable to type '(seq: BaseSequenceEntry) => string'.
+  Types of parameters 'seq' and 'seq' are incompatible.
+    Property 'capType' is missing in type 'BaseSequenceEntry' but required in type 'TaggedSequenceEntry'. (ts)
+[36m				{getStatus}
+				{[35mgetSecondaryLabel[36m}
+				title="Tag Review"
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\navigation\components\TabOverflowSelector.svelte[39m:239:3
+[33mWarn[39m: Unknown at rule @starting-style (css)
+[36m  /* Starting style for smooth open animation - @starting-style is valid CSS */
+  [35m@starting-style[36m {
+    :global(#tab-overflow-popover:popover-open) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\navigation\components\TabOverflowSelector.svelte[39m:394:5
+[33mWarn[39m: Unknown at rule @starting-style (css)
+[36m    /* @starting-style is valid CSS for entry animations */
+    [35m@starting-style[36m {
+      .tab-overflow-popover:popover-open {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\navigation\components\desktop-sidebar\SectionsList.svelte[39m:67:3
+[33mWarn[39m: Do not use empty rulesets (css)
+[36m
+  [35m.section-item[36m {
+    /* Normal appearance */
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\navigation\components\desktop-sidebar\ModuleGroup.svelte[39m:98:7
+[31mError[39m: Type '{ notifications?: undefined; messages?: undefined; } | { notifications: number; messages: number; }' is not assignable to type 'Record<string, number> | undefined'.
+  Type '{ notifications?: undefined; messages?: undefined; }' is not assignable to type 'Record<string, number>'.
+    Property 'notifications' is incompatible with index signature.
+      Type 'undefined' is not assignable to type 'number'. (ts)
+[36m      {celebrateAppearance}
+      [35mbadgeCounts[36m={inboxBadgeCounts}
+    />
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\Scene3D.svelte[39m:22:3
+[31mError[39m: Modifiers cannot appear here.
+If this is a declare statement, move it into <script context="module">..</script> (ts)
+[36m
+  [35mexport[36m interface CameraState {
+    position: [number, number, number];
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:187:23
+[33mWarn[39m: This reference only captures the initial value of `leftThighY`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+[36m  const leftThighY = $derived((props.hipY + props.kneeY) / 2);
+  const rightThighY = [35m[36mleftThighY;
+  const leftShinY = $derived((props.kneeY + props.ankleY) / 2);
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:189:22
+[33mWarn[39m: This reference only captures the initial value of `leftShinY`. Did you mean to reference it inside a closure instead?
+https://svelte.dev/e/state_referenced_locally (svelte)
+[36m  const leftShinY = $derived((props.kneeY + props.ankleY) / 2);
+  const rightShinY = [35m[36mleftShinY;
+</script>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:21:3
+[31mError[39m: Modifiers cannot appear here.
+If this is a declare statement, move it into <script context="module">..</script> (ts)
+[36m
+  [35mexport[36m type BodyType = "masculine" | "feminine";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:36:5
+[31mError[39m: 'bodyType' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer. (ts)
+[36m    visible = true,
+    [35mbodyType[36m = "masculine",
+    skinTone = "#d4a574",
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:38:5
+[31mError[39m: 'measurements' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer. (ts)
+[36m    skinTone = "#d4a574",
+    [35mmeasurements[36m = AUSTEN_MEASUREMENTS,
+  }: Props = $props();
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:39:14
+[31mError[39m: Block-scoped variable '$props' used before its declaration. (ts)
+[36m    measurements = AUSTEN_MEASUREMENTS,
+  }: Props = [35m$props[36m();
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\IKFigure3D.svelte[39m:42:9
+[31mError[39m: 'props' implicitly has type 'any' because it does not have a type annotation and is referenced directly or indirectly in its own initializer. (ts)
+[36m  // Derive proportions from real measurements
+  const [35mprops[36m = $derived(deriveSceneProportions(measurements, bodyType));
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\controls\CameraPresetBar.svelte[39m:8:3
+[31mError[39m: Modifiers cannot appear here.
+If this is a declare statement, move it into <script context="module">..</script> (ts)
+[36m
+  [35mexport[36m type CameraPreset = "front" | "top" | "side" | "perspective";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\panels\SceneOverlayControls.svelte[39m:11:34
+[31mError[39m: Module '"../controls/CameraPresetBar.svelte"' has no exported member 'CameraPreset'. Did you mean to use 'import CameraPreset from "../controls/CameraPresetBar.svelte"' instead? (ts)
+[36m  import type { Snippet } from "svelte";
+  import CameraPresetBar, { type [35mCameraPreset[36m } from "../controls/CameraPresetBar.svelte";
+  import SpeedControlBar from "../controls/SpeedControlBar.svelte";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\panels\AvatarCustomizer.svelte[39m:37:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="control-group">
+    [35m<label class="control-label">Body Type</label>[36m
+    <div class="toggle-group">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\panels\AvatarCustomizer.svelte[39m:62:5
+[33mWarn[39m: A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control (svelte)
+[36m  <div class="control-group">
+    [35m<label class="control-label">Skin Tone</label>[36m
+    <div class="skin-tone-grid">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\controls\AvatarToggleButton.svelte[39m:49:11
+[31mError[39m: Not all code paths return a value. (ts)
+[36m
+  $effect([35m() => {[36m
+    if (popoverOpen) {
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\keyboard\Keyboard3DCoordinator.svelte[39m:20:17
+[31mError[39m: Module '"../components/controls/CameraPresetBar.svelte"' has no exported member 'CameraPreset'. Did you mean to use 'import CameraPreset from "../components/controls/CameraPresetBar.svelte"' instead? (ts)
+[36m  } from "./viewer-3d-shortcuts";
+  import type { [35mCameraPreset[36m } from "../components/controls/CameraPresetBar.svelte";
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\keyboard\components\ShortcutsHelp.svelte[39m:415:3
+[33mWarn[39m: Unused CSS selector ".shortcuts-help__footer kbd"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.shortcuts-help__footer kbd[36m {
+    padding: 4px 8px;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\Viewer3DModule.svelte[39m:20:17
+[31mError[39m: Module '"./components/controls/CameraPresetBar.svelte"' has no exported member 'CameraPreset'. Did you mean to use 'import CameraPreset from "./components/controls/CameraPresetBar.svelte"' instead? (ts)
+[36m  import Keyboard3DCoordinator from "./keyboard/Keyboard3DCoordinator.svelte";
+  import type { [35mCameraPreset[36m } from "./components/controls/CameraPresetBar.svelte";
+  import { Plane } from "./domain/enums/Plane";
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\Viewer3DModule.svelte[39m:71:16
+[31mError[39m: Property 'loadedSequence' does not exist on type 'never'. (ts)
+[36m  const sequenceName = $derived(
+    animState?.[35mloadedSequence[36m?.word || animState?.loadedSequence?.name || null
+  );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\Viewer3DModule.svelte[39m:71:51
+[31mError[39m: Property 'loadedSequence' does not exist on type 'never'. (ts)
+[36m  const sequenceName = $derived(
+    animState?.loadedSequence?.word || animState?.[35mloadedSequence[36m?.name || null
+  );
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\Viewer3DModule.svelte[39m:170:7
+[31mError[39m: Type 'BodyType' is not assignable to type '"masculine" | "feminine" | undefined'.
+  Type '"androgynous"' is not assignable to type '"masculine" | "feminine" | undefined'. (ts)
+[36m      currentBeatIndex: animState.currentBeatIndex,
+      [35mbodyType[36m,
+      skinTone,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\debug\components\NotificationTrigger.svelte[39m:131:42
+[31mError[39m: Expected 6 arguments, but got 5. (ts)
+[36m      } else if (selectedType === "message-received") {
+        await notificationTriggerService.[35mcreateMessageNotification[36m(
+          user.uid,
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\ReleaseNotesDrawer.svelte[39m:98:18
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ fixed: ChangelogEntry[]; added: ChangelogEntry[]; improved: ChangelogEntry[]; }'.
+  No index signature with a parameter of type 'string' was found on type '{ fixed: ChangelogEntry[]; added: ChangelogEntry[]; improved: ChangelogEntry[]; }'. (ts)
+[36m          ] as cat}
+            {#if [35mgroupedChangelog[cat.key][36m.length > 0}
+              <section class="changelog-section">
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\ReleaseNotesDrawer.svelte[39m:105:26
+[31mError[39m: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ fixed: ChangelogEntry[]; added: ChangelogEntry[]; improved: ChangelogEntry[]; }'.
+  No index signature with a parameter of type 'string' was found on type '{ fixed: ChangelogEntry[]; added: ChangelogEntry[]; improved: ChangelogEntry[]; }'. (ts)
+[36m                <ul>
+                  {#each [35mgroupedChangelog[cat.key][36m as entry}
+                    <li>{entry.text}</li>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\controls\GridPointSelector.svelte[39m:132:5
+[33mWarn[39m: Unknown property: 'r' (css)
+[36m    fill: var(--theme-text, rgba(255, 255, 255, 0.92));
+    [35mr[36m: 8;
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\controls\GridPointSelector.svelte[39m:137:5
+[33mWarn[39m: Unknown property: 'r' (css)
+[36m    fill: var(--prop-blue, #2e3192);
+    [35mr[36m: 9;
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\controls\GridPointSelector.svelte[39m:142:5
+[33mWarn[39m: Unknown property: 'r' (css)
+[36m    fill: var(--prop-red, #ed1c24);
+    [35mr[36m: 9;
+  }
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\3d-animation\components\controls\GridPointSelector.svelte[39m:149:5
+[33mWarn[39m: Unknown property: 'dominant-baseline' (css)
+[36m    text-anchor: middle;
+    [35mdominant-baseline[36m: central;
+    pointer-events: none;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\migration\components\MigrationBanner.svelte[39m:98:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      {#if remindersRemaining > 0}
+        [35m<button
+          class="dismiss-button"
+          onclick={handleDismiss}
+          title="Remind me later ({remindersRemaining} left)"
+        >
+          <i class="fas fa-times"></i>
+        </button>[36m
+      {/if}
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\InboxTabs.svelte[39m:109:1
+[33mWarn[39m: Elements with the 'tablist' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus (svelte)
+[36m
+[35m<div
+  class="inbox-tabs {className}"
+  role="tablist"
+  aria-label="Inbox tabs"
+  onkeydown={handleKeydown}
+>
+  <!-- Sliding indicator -->
+  <div
+    class="tab-indicator"
+    style="--active-index: {activeIndex}; --tab-count: {tabs.length}"
+  ></div>
+
+  {#each tabs as tab, index}
+    {@const unreadCount =
+      tab.id === "messages"
+        ? inboxState.unreadMessageCount
+        : inboxState.unreadNotificationCount}
+    <button
+      class="tab"
+      class:active={inboxState.activeTab === tab.id}
+      onclick={() => handleTabClick(tab.id)}
+      role="tab"
+      aria-selected={inboxState.activeTab === tab.id}
+      aria-controls="{tab.id}-panel"
+      tabindex={inboxState.activeTab === tab.id ? 0 : -1}
+    >
+      <i class="fas {tab.icon}" aria-hidden="true"></i>
+      <span>{tab.label}</span>
+      {#if unreadCount > 0}
+        <span class="badge" aria-label="{unreadCount} unread">
+          {unreadCount > 99 ? "99+" : unreadCount}
+        </span>
+      {/if}
+    </button>
+  {/each}
+</div>[36m
+
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\inbox\components\InboxDrawer.svelte[39m:433:3
+[33mWarn[39m: Unused CSS selector ".inbox-bottom-nav"
+https://svelte.dev/e/css_unused_selector (svelte)
+[36m
+  [35m.inbox-bottom-nav[36m {
+    flex-shrink: 0;
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\onboarding\components\OnboardingExperience.svelte[39m:194:9
+[33mWarn[39m: Buttons and links should either contain text or have an `aria-label` or `aria-labelledby` attribute
+https://svelte.dev/e/a11y_consider_explicit_label (svelte)
+[36m      <div class="nav-buttons anim-item" style="--anim-order: 3">
+        [35m<button class="back-button" onclick={handleBack}>
+          <i class="fas fa-arrow-left"></i>
+        </button>[36m
+        <button class="next-button" onclick={handleNext}>
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\lib\shared\settings\components\SettingsTabContent.svelte[39m:32:30
+[31mError[39m: Cannot find module './tabs/ActivityTab.svelte' or its corresponding type declarations. (ts)
+[36m        ),
+      Activity: () => import([35m"./tabs/ActivityTab.svelte"[36m),
+    };
+[39m
+
+f:\_THE KINETIC ALPHABET\_TKA-SCRIBE\[32msrc\routes\test\learn-quizzes\+page.svelte[39m:100:6
+[33mWarn[39m: `<svelte:component>` is deprecated in runes mode — components are dynamic by default
+https://svelte.dev/e/svelte_component_deprecated (svelte)
+[36m				<div class="quiz-wrapper">
+					[35m<svelte:component
+						this={selectedQuiz.component}
+						onComplete={handleComplete}
+						onBack={handleBack}
+					/>[36m
+				</div>
+[39m
+
+====================================
+[31msvelte-check found 52 errors and 243 warnings in 92 files
+[39m

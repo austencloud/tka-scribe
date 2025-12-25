@@ -14,6 +14,7 @@ Shows:
   import { TYPES } from "$lib/shared/inversify/types";
   import {
     TKA_CONCEPTS,
+    CONCEPT_CATEGORIES,
     getConceptsByCategory,
     getNextConcept,
     getPreviousConcept,
@@ -173,30 +174,15 @@ Shows:
             totalCount={categoryProgress.total}
           />
           <div class="concept-list">
-            {#each concepts as concept, i (concept.id)}
+            {#each concepts as concept (concept.id)}
               {@const status = conceptProgressService.getConceptStatus(
                 concept.id
               )}
-              <div class="concept-item">
-                {#if i > 0}
-                  <div
-                    class="connector-line"
-                    class:completed={status === "completed"}
-                  ></div>
-                {/if}
-                <ConceptCard {concept} {status} onClick={onConceptClick} />
-              </div>
+              <ConceptCard {concept} {status} onClick={onConceptClick} />
             {/each}
           </div>
         </section>
 
-        {#if categoryIndex < categories.length - 1}
-          <div class="category-connector">
-            <div class="connector-arrow">
-              <i class="fa-solid fa-chevron-down"></i>
-            </div>
-          </div>
-        {/if}
       {/each}
     </div>
   {/if}
@@ -211,15 +197,41 @@ Shows:
     padding-bottom: 5rem;
     min-height: 100%;
     overflow-y: auto;
-    max-width: 600px;
+    max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+
+    /* Elegant thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  }
+
+  /* Webkit scrollbar styling */
+  .concept-path::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .concept-path::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .concept-path::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+  }
+
+  .concept-path::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .main-content {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   /* Completion celebration */
@@ -294,21 +306,24 @@ Shows:
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.875rem 1rem;
+    padding: 0.875rem 1.5rem;
     min-height: var(--min-touch-target);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
+    max-width: 300px;
+    margin: 0 auto;
+    width: fit-content;
   }
 
   .view-all-toggle:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.8);
+    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
+    color: var(--theme-text, rgba(255, 255, 255, 0.92));
   }
 
   .view-all-toggle i {
@@ -320,61 +335,29 @@ Shows:
   .all-concepts {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    gap: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
+  /* Bento-style category container using theme system */
   .category-section {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
   }
 
   .concept-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    padding-left: 1rem;
-  }
-
-  .concept-item {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .connector-line {
-    position: relative;
-    width: 2px;
-    height: 12px;
-    margin-left: 17px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 1px;
-  }
-
-  .connector-line.completed {
-    background: rgba(80, 200, 120, 0.4);
-  }
-
-  /* Connector between categories */
-  .category-connector {
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem 0;
-  }
-
-  .connector-arrow {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.625rem;
+    padding: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {

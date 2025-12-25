@@ -29,7 +29,6 @@
         import(
           "$lib/shared/keyboard/components/settings/KeyboardShortcutsTab.svelte"
         ),
-      Activity: () => import("./tabs/ActivityTab.svelte"),
     };
 
   // Cache for loaded tab components
@@ -73,8 +72,6 @@
         <LoadedTab currentSettings={settings} {onSettingUpdate} />
       {:else if activeTab === "Keyboard"}
         <LoadedTab currentSettings={settings} {onSettingUpdate} />
-      {:else if activeTab === "Activity"}
-        <LoadedTab />
       {/if}
     {/if}
   {:catch}

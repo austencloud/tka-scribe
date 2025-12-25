@@ -183,13 +183,13 @@ Shows:
   .progress-value {
     font-size: 2rem;
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, #ffffff);
     line-height: 1;
   }
 
   .progress-label {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
   }
 
   /* Position the SVG container relatively */
@@ -229,7 +229,7 @@ Shows:
 
   .legend-count {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     font-weight: 500;
   }
 

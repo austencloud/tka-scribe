@@ -34,11 +34,14 @@
   let {
     sequence,
     isSequenceSaved = true,
+    isMobile = false,
     onExport,
   }: {
     sequence?: SequenceData | null;
     /** Whether the sequence has been saved to the library */
     isSequenceSaved?: boolean;
+    /** Whether we're on a mobile device (affects button label) */
+    isMobile?: boolean;
     onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
   } = $props();
 
@@ -98,9 +101,9 @@
   <!-- Conditional Content (Single Media or Composite) -->
   <div class="content-area">
     {#if hubState.mode === 'single'}
-      <SingleMediaView {isSequenceSaved} onExport={handleExport} />
+      <SingleMediaView {isSequenceSaved} {isMobile} onExport={handleExport} />
     {:else}
-      <CompositeView {isSequenceSaved} onExport={handleExport} />
+      <CompositeView {isSequenceSaved} {isMobile} onExport={handleExport} />
     {/if}
   </div>
 

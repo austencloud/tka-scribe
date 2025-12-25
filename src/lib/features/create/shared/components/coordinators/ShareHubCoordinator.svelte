@@ -19,6 +19,7 @@
   import SaveToLibraryPanel from "../SaveToLibraryPanel.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
+  import type { IPlatformDetectionService } from "$lib/shared/mobile/services/contracts/IPlatformDetectionService";
   import type { ShareOptions } from "$lib/shared/share/domain/models/ShareOptions";
   import { DEFAULT_SHARE_OPTIONS } from "$lib/shared/share/domain/models/ShareOptions";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
@@ -26,6 +27,7 @@
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { showToast } from "$lib/shared/toast/state/toast-state.svelte";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   // Get context
   const ctx = getCreateModuleContext();
@@ -34,6 +36,7 @@
   // Services
   let hapticService: IHapticFeedbackService | null = null;
   let shareService: IShareService | null = null;
+  let platformService: IPlatformDetectionService | null = null;
 
   // Resolve services
   try {
@@ -49,6 +52,18 @@
   } catch (error) {
     console.warn("⚠️ Failed to resolve share service:", error);
   }
+
+  try {
+    platformService = resolve<IPlatformDetectionService>(
+      TYPES.IPlatformDetectionService
+    );
+  } catch (error) {
+    console.warn("⚠️ Failed to resolve platform detection service:", error);
+  }
+
+  // Detect if we're on mobile (for share vs download behavior)
+  const platform = platformService?.detectPlatform() ?? 'desktop';
+  const isMobile = platform === 'ios' || platform === 'android';
 
   // State
   let showSaveToLibrary = $state(false);
@@ -160,12 +175,17 @@
       addWord: compositionSettings.addWord,
       addUserInfo: compositionSettings.addUserInfo,
       addDifficultyLevel: compositionSettings.addDifficultyLevel,
+      userName: authState.user?.displayName ?? '',
     };
 
-    console.log("📱 ShareHubCoordinator: Exporting with options", shareOptions);
+    console.log("📱 ShareHubCoordinator: Exporting with options", { shareOptions, isMobile });
 
-    // Use ShareService to download image
-    await shareService.downloadImage(currentSequence, shareOptions);
+    // Use native share on mobile, download on desktop
+    if (isMobile) {
+      await shareService.shareViaDevice(currentSequence, shareOptions);
+    } else {
+      await shareService.downloadImage(currentSequence, shareOptions);
+    }
   }
 
   async function exportAnimation(settings: ExportSettings) {
@@ -216,6 +236,7 @@
   isOpen={panelState.isShareHubPanelOpen}
   sequence={currentSequence}
   isSequenceSaved={isSequenceSaved}
+  {isMobile}
   onClose={handleClose}
   onExport={handleExport}
 />

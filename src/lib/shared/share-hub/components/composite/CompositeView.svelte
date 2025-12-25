@@ -20,10 +20,13 @@
 
   let {
     isSequenceSaved = true,
+    isMobile = false,
     onExport,
   }: {
     /** Whether the sequence has been saved to the library */
     isSequenceSaved?: boolean;
+    /** Whether we're on a mobile device (affects button label) */
+    isMobile?: boolean;
     onExport?: () => void;
   } = $props();
 
@@ -31,9 +34,10 @@
   const hubState = getShareHubState();
   let exporting = $state(false);
 
-  // Dynamic button label based on save state
+  // Dynamic button label based on save state and platform
+  const actionVerb = $derived(isMobile ? 'Share' : 'Save');
   const buttonLabel = $derived(
-    isSequenceSaved ? 'Export Composite' : 'Save & Export Composite'
+    isSequenceSaved ? `${actionVerb} Composite` : `Save & ${actionVerb} Composite`
   );
 
   async function handleExport() {

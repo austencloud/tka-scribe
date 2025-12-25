@@ -19,18 +19,7 @@ Shows shift (adjacent), dash (opposite), and static (stay) motions with animated
 	import MotionPlayButton from "./motion-visualizer/MotionPlayButton.svelte";
 	import MotionGridSvg from "./motion-visualizer/MotionGridSvg.svelte";
 
-	let {
-		leftStart = "N" as HandPosition4,
-		leftEnd = "E" as HandPosition4,
-		rightStart = "S" as HandPosition4,
-		rightEnd = "W" as HandPosition4,
-		leftMotion = "shift" as MotionType,
-		rightMotion = "shift" as MotionType,
-		motionType = 1 as MotionTypeNumber,
-		autoPlay = false,
-		showLabels = true,
-		showMotionType = true
-	} = $props<{
+	interface Props {
 		leftStart?: HandPosition4;
 		leftEnd?: HandPosition4;
 		rightStart?: HandPosition4;
@@ -41,7 +30,20 @@ Shows shift (adjacent), dash (opposite), and static (stay) motions with animated
 		autoPlay?: boolean;
 		showLabels?: boolean;
 		showMotionType?: boolean;
-	}>();
+	}
+
+	const {
+		leftStart = "N",
+		leftEnd = "E",
+		rightStart = "S",
+		rightEnd = "W",
+		leftMotion = "shift",
+		rightMotion = "shift",
+		motionType = 1,
+		autoPlay = false,
+		showLabels = true,
+		showMotionType = true
+	}: Props = $props();
 
 	const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
 

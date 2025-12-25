@@ -56,15 +56,17 @@ Pages 1: Intro, Pages 2-7: Motion types, Page 8: Quiz
     {@const info = MOTION_INFO[typeNum]}
     {@const example = getCurrentExample(typeNum)}
 
-    <MotionTypePage
-      {typeNum}
-      {info}
-      {example}
-      showSummary={currentPage === 7}
-      onCycleExample={() => cycleExample(typeNum)}
-      onNext={handleNext}
-      isLastType={currentPage === 7}
-    />
+    {#if info}
+      <MotionTypePage
+        {typeNum}
+        {info}
+        {example}
+        showSummary={currentPage === 7}
+        onCycleExample={() => cycleExample(typeNum)}
+        onNext={handleNext}
+        isLastType={currentPage === 7}
+      />
+    {/if}
   {:else if currentPage === 8}
     <MotionsQuizPage onComplete={handleQuizComplete} />
   {/if}

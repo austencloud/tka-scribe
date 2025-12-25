@@ -23,10 +23,13 @@
 
   let {
     isSequenceSaved = true,
+    isMobile = false,
     onExport,
   }: {
     /** Whether the sequence has been saved to the library */
     isSequenceSaved?: boolean;
+    /** Whether we're on a mobile device (affects button label) */
+    isMobile?: boolean;
     onExport?: () => void;
   } = $props();
 
@@ -34,13 +37,15 @@
   const hubState = getShareHubState();
   let exporting = $state(false);
 
-  // Dynamic button label based on save state and format
+  // Dynamic button label based on save state, format, and platform
   const formatLabel = $derived(
     hubState.selectedFormat === 'animation' ? 'Animation' :
     hubState.selectedFormat === 'static' ? 'Image' : 'Video'
   );
+  // Mobile: "Share" action, Desktop: "Save" action
+  const actionVerb = $derived(isMobile ? 'Share' : 'Save');
   const buttonLabel = $derived(
-    isSequenceSaved ? `Export ${formatLabel}` : `Save & Export ${formatLabel}`
+    isSequenceSaved ? `${actionVerb} ${formatLabel}` : `Save & ${actionVerb} ${formatLabel}`
   );
 
   function handleFormatSelect(format: MediaFormat) {

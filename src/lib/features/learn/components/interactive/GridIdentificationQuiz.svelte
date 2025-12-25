@@ -164,8 +164,8 @@ Two phases:
     flex-direction: column;
     gap: 1.5rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
   }
 

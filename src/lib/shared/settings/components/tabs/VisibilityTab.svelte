@@ -41,6 +41,7 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import ImageExportPreview from "./visibility/ImageExportPreview.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 
   interface Props {
     currentSettings: unknown;
@@ -147,17 +148,20 @@
     },
   };
 
+  // Example beat data with all required BeatData properties
+  const exampleBeatData: BeatData = {
+    ...examplePictographData,
+    beatNumber: 1,
+    duration: 1,
+    isBlank: false,
+  };
+
   // Example sequence data for animation preview (matches pictograph)
   const exampleSequenceData: SequenceData = {
     id: "visibility-preview-seq",
     name: "Preview",
     word: "A",
-    beats: [
-      {
-        ...examplePictographData,
-        beatNumber: 1,
-      },
-    ],
+    beats: [exampleBeatData],
   };
 
   onMount(() => {
@@ -510,10 +514,9 @@
       <div class="preview-frame animation-preview">
         <AnimatorCanvas
           sequenceData={exampleSequenceData}
-          autoPlay={true}
-          loop={true}
-          showControls={false}
-          visibilityManager={animationVisibilityManager}
+          isPlaying={true}
+          blueProp={null}
+          redProp={null}
         />
       </div>
 
@@ -586,7 +589,7 @@
 
       <!-- Export Preview -->
       <div class="preview-frame image-preview">
-        <ImageExportPreview beatData={examplePictographData} />
+        <ImageExportPreview beatData={exampleBeatData} />
       </div>
 
       <div class="panel-controls">

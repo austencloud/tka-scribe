@@ -43,8 +43,8 @@
   const showActiveStyle = $derived(hasSections || forceActiveStyle);
 
   // Badge counts for inbox sections
-  const inboxBadgeCounts = $derived.by(() => {
-    if (module.id !== "inbox") return {};
+  const inboxBadgeCounts = $derived.by((): Record<string, number> | undefined => {
+    if (module.id !== "inbox") return undefined;
     return {
       notifications: inboxState.unreadNotificationCount,
       messages: inboxState.unreadMessageCount,

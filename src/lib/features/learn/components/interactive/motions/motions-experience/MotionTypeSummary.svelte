@@ -10,10 +10,12 @@ MotionTypeSummary - Summary grid of all motion types
   <div class="summary-grid">
     {#each [1, 2, 3, 4, 5, 6] as t}
       {@const info = MOTION_INFO[t]}
-      <div class="summary-item" style="--type-color: {info.color}">
-        <span class="summary-num">{t}</span>
-        <span class="summary-name">{info.name}</span>
-      </div>
+      {#if info}
+        <div class="summary-item" style="--type-color: {info.color}">
+          <span class="summary-num">{t}</span>
+          <span class="summary-name">{info.name}</span>
+        </div>
+      {/if}
     {/each}
   </div>
 </div>

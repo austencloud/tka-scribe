@@ -63,6 +63,8 @@ Displays:
   class="concept-card"
   class:locked={status === "locked"}
   class:completed={status === "completed"}
+  class:available={status === "available"}
+  class:in-progress={status === "in-progress"}
   style="--status-color: {statusColor}; --category-color: {categoryColor}"
   onclick={handleClick}
   onkeydown={handleKeydown}
@@ -70,10 +72,10 @@ Displays:
   aria-label="{concept.name} - {status}"
   tabindex={isClickable ? 0 : -1}
 >
-  <div class="accent"></div>
-  <span class="icon"><i class="fa-solid {concept.icon}"></i></span>
-  <span class="name">{concept.shortName}</span>
-  <span class="time">{concept.estimatedMinutes}m</span>
+  <div class="card-content">
+    <span class="icon"><i class="fa-solid {concept.icon}"></i></span>
+    <span class="name">{concept.shortName}</span>
+  </div>
   {#if status === "completed"}
     <span class="check"><i class="fa-solid fa-check"></i></span>
   {/if}
@@ -82,97 +84,91 @@ Displays:
 <style>
   .concept-card {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    min-height: var(--min-touch-target);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.75rem;
+    min-height: 80px;
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-radius: 10px;
     position: relative;
     overflow: hidden;
     transition: all 0.2s ease;
     width: 100%;
-    text-align: left;
+    text-align: center;
     cursor: pointer;
   }
 
-  .accent {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--status-color);
-    border-radius: 0 4px 4px 0;
+  .card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+    flex: 1;
   }
 
   .concept-card:hover:not(.locked) {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: var(--status-color);
-    transform: translateX(4px);
+    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    transform: translateY(-2px);
   }
 
   .concept-card.locked {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: not-allowed;
   }
 
+  .concept-card.available {
+    border-color: color-mix(in srgb, var(--status-color) 30%, transparent);
+  }
+
+  .concept-card.in-progress {
+    background: color-mix(in srgb, var(--status-color) 10%, rgba(0, 0, 0, 0.2));
+    border-color: color-mix(in srgb, var(--status-color) 40%, transparent);
+  }
+
   .concept-card.completed {
-    background: rgba(80, 200, 120, 0.06);
-    border-color: rgba(80, 200, 120, 0.15);
+    background: rgba(80, 200, 120, 0.08);
+    border-color: rgba(80, 200, 120, 0.2);
   }
 
   .icon {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    background: color-mix(in srgb, var(--category-color) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--category-color) 20%, transparent);
-    border-radius: 10px;
-    flex-shrink: 0;
+    font-size: 1rem;
     color: var(--category-color);
-    text-shadow: 0 0 12px
-      color-mix(in srgb, var(--category-color) 30%, transparent);
+    opacity: 0.9;
   }
 
   .name {
-    flex: 1;
-    font-size: 0.9375rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.95);
-    text-align: left;
+    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     letter-spacing: -0.01em;
-  }
-
-  .time {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.35);
-    flex-shrink: 0;
-    padding: 4px 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
+    width: 100%;
   }
 
   .check {
-    width: 22px;
-    height: 22px;
+    position: absolute;
+    top: 0.375rem;
+    right: 0.375rem;
+    width: 16px;
+    height: 16px;
     background: var(--status-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7rem;
+    font-size: 0.5rem;
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 0 12px
-      color-mix(in srgb, var(--status-color) 50%, transparent);
   }
 
   /* Focus state */

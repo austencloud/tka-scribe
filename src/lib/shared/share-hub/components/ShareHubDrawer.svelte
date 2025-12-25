@@ -18,6 +18,7 @@
     isOpen = $bindable(false),
     sequence,
     isSequenceSaved = true,
+    isMobile = false,
     onClose,
     onExport,
   }: {
@@ -25,6 +26,8 @@
     sequence: SequenceData | null;
     /** Whether the sequence has been saved to the library */
     isSequenceSaved?: boolean;
+    /** Whether we're on a mobile device (affects button label) */
+    isMobile?: boolean;
     onClose?: () => void;
     onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
   } = $props();
@@ -65,7 +68,7 @@
   preventScroll={true}
 >
   <div class="share-hub-content">
-    <ShareHubPanel {sequence} {isSequenceSaved} {onExport} />
+    <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
   </div>
 </Drawer>
 

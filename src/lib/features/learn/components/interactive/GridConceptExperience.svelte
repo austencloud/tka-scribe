@@ -26,15 +26,11 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   // Animation state - triggers CSS animations
   let animateIn = $state(false);
 
-  // Point types for step 1
+  // Point types from PDF page 7
   const pointTypes = [
-    { name: "Center Point", description: "The origin of all movement" },
-    { name: "Hand Points", description: "Where your hands can be positioned" },
-    { name: "Outer Points", description: "The four cardinal directions" },
-    {
-      name: "Layer 2 Points",
-      description: "Diagonal positions between outer points",
-    },
+    { name: "Center Point", description: "The hub of all movement" },
+    { name: "Hand Points", description: "4 points halfway between center and outer" },
+    { name: "Outer Points", description: "4 points at the outer edges of the grid" },
   ];
 
   onMount(() => {
@@ -77,7 +73,7 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
 
 <div class="grid-experience" class:animate-in={animateIn}>
   {#if step === 0}
-    <!-- Step 0: Introduction - Centered layout -->
+    <!-- Step 0: Introduction - 4-point grid -->
     <div class="step-content step-intro">
       <h1 class="title anim-item" style="--anim-order: 0">The Grid</h1>
 
@@ -98,17 +94,90 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
       </button>
     </div>
   {:else if step === 1}
-    <!-- Step 1: Point Types - Side-by-side layout -->
+    <!-- Step 1: Diamond Mode -->
+    <div class="step-content step-intro">
+      <h1 class="title anim-item" style="--anim-order: 0">Diamond Mode</h1>
+
+      <p class="description anim-item" style="--anim-order: 1">
+        In <strong>diamond mode</strong>, the 4 outer points are the cardinal directions.
+      </p>
+
+      <div class="grid-container anim-item" style="--anim-order: 2">
+        <LessonGridDisplay type="diamond" size="large" showLabels={true} />
+      </div>
+
+      <p class="description secondary anim-item" style="--anim-order: 3">
+        North, East, South, and West
+      </p>
+
+      <button
+        class="next-button anim-item"
+        style="--anim-order: 4"
+        onclick={handleNext}
+      >
+        Next
+      </button>
+    </div>
+  {:else if step === 2}
+    <!-- Step 2: Box Mode -->
+    <div class="step-content step-intro">
+      <h1 class="title anim-item" style="--anim-order: 0">Box Mode</h1>
+
+      <p class="description anim-item" style="--anim-order: 1">
+        In <strong>box mode</strong>, the 4 outer points are the intercardinal directions.
+      </p>
+
+      <div class="grid-container anim-item" style="--anim-order: 2">
+        <LessonGridDisplay type="box" size="large" showLabels={true} />
+      </div>
+
+      <p class="description secondary anim-item" style="--anim-order: 3">
+        Northeast, Southeast, Southwest, and Northwest
+      </p>
+
+      <button
+        class="next-button anim-item"
+        style="--anim-order: 4"
+        onclick={handleNext}
+      >
+        Next
+      </button>
+    </div>
+  {:else if step === 3}
+    <!-- Step 3: 8-Point Combined Grid -->
+    <div class="step-content step-intro">
+      <h1 class="title anim-item" style="--anim-order: 0">The 8-Point Grid</h1>
+
+      <p class="description anim-item" style="--anim-order: 1">
+        <strong>Diamond + Box</strong> creates the full 8-point grid.
+      </p>
+
+      <div class="grid-container anim-item" style="--anim-order: 2">
+        <LessonGridDisplay type="merged" size="large" />
+      </div>
+
+      <p class="description secondary anim-item" style="--anim-order: 3">
+        We'll use diamond mode to learn each concept.
+      </p>
+
+      <button
+        class="next-button anim-item"
+        style="--anim-order: 4"
+        onclick={handleNext}
+      >
+        Next
+      </button>
+    </div>
+  {:else if step === 4}
+    <!-- Step 4: Point Types -->
     <div class="step-content step-points">
-      <h1 class="title anim-item" style="--anim-order: 0">The Grid</h1>
+      <h1 class="title anim-item" style="--anim-order: 0">Point Types</h1>
 
       <div class="split-layout">
         <!-- Left side: Text content -->
         <div class="points-explanation">
           <p class="description anim-item" style="--anim-order: 1">
-            The grid is composed of <strong
-              >four different types of points</strong
-            >:
+            The grid has <strong>three types of points</strong>:
           </p>
 
           <ul class="point-types-list">
@@ -125,14 +194,14 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
 
           <button
             class="next-button anim-item"
-            style="--anim-order: 6"
+            style="--anim-order: 5"
             onclick={handleNext}
           >
             Next
           </button>
         </div>
 
-        <!-- Right side: Grid (larger) -->
+        <!-- Right side: Grid -->
         <div
           class="grid-container grid-side anim-item anim-slide-right"
           style="--anim-order: 0"
@@ -141,8 +210,8 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
         </div>
       </div>
     </div>
-  {:else if step === 2}
-    <!-- Step 2: Quiz -->
+  {:else if step === 5}
+    <!-- Step 5: Quiz -->
     <div class="step-content step-quiz">
       <h1 class="title anim-item" style="--anim-order: 0">Test Your Knowledge</h1>
       <div class="quiz-container anim-item" style="--anim-order: 1">
@@ -222,7 +291,7 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   .title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: white;
+    color: var(--theme-text, #ffffff);
     margin: 0 0 var(--spacing-lg, 1.5rem) 0;
     text-align: center;
     letter-spacing: -0.02em;
@@ -300,34 +369,40 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     flex-direction: column;
     gap: 0.25rem;
     padding: var(--spacing-md, 1rem);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .point-name {
     font-size: 1.1rem;
     font-weight: 700;
-    color: white;
+    color: var(--theme-text, #ffffff);
   }
 
   .point-desc {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
   }
 
   /* Description text */
   .description {
     font-size: 1.25rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.85);
+    color: var(--theme-text, rgba(255, 255, 255, 0.92));
     margin: 0;
     text-align: center;
   }
 
   .description strong {
-    color: white;
+    color: var(--theme-text, #ffffff);
     font-weight: 700;
+  }
+
+  .description.secondary {
+    font-size: 1.1rem;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    font-style: italic;
   }
 
   /* Grid container - base */

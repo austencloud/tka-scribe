@@ -60,7 +60,7 @@ Displays:
   .count {
     font-size: 0.875rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
   }
 
   .line {

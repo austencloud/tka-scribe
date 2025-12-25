@@ -6,10 +6,10 @@
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { BeatData } from "$lib/shared/foundation/domain/models/BeatData";
+  import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IImageCompositionService } from "$lib/shared/share/services/contracts/IImageCompositionService";
+  import type { IImageCompositionService } from "$lib/shared/render/services/contracts/IImageCompositionService";
 
   interface Props {
     beatData: BeatData;
@@ -43,7 +43,7 @@
 
       // Convert canvas to blob
       const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob((b) => {
+        canvas.toBlob((b: Blob | null) => {
           if (b) resolve(b);
           else reject(new Error("Failed to convert canvas to blob"));
         }, "image/png");

@@ -1,11 +1,13 @@
+<script module lang="ts">
+  export type CameraPreset = "front" | "top" | "side" | "perspective";
+</script>
+
 <script lang="ts">
   /**
    * CameraPresetBar - Camera view preset buttons
    *
    * Quick access to standard viewing angles: 3D, Wall, Floor, Wheel.
    */
-
-  export type CameraPreset = "front" | "top" | "side" | "perspective";
 
   interface Props {
     /** Currently active preset */

@@ -2,8 +2,11 @@
   InfoCard - Simple card for displaying information sections
 -->
 <script lang="ts">
+  import type { Snippet } from "svelte";
+
   interface Props {
     title?: string;
+    children?: Snippet;
   }
 
   let { title, children }: Props = $props();
