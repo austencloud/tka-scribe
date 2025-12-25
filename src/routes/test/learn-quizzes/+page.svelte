@@ -96,9 +96,9 @@
 					</button>
 				</div>
 			{:else}
+				{@const QuizComponent = selectedQuiz.component}
 				<div class="quiz-wrapper">
-					<svelte:component
-						this={selectedQuiz.component}
+					<QuizComponent
 						onComplete={handleComplete}
 						onBack={handleBack}
 					/>

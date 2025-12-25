@@ -51,6 +51,7 @@
       document.addEventListener("click", handleOutsideClick);
       return () => document.removeEventListener("click", handleOutsideClick);
     }
+    return undefined;
   });
 </script>
 

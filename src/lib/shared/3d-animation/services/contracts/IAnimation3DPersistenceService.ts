@@ -48,7 +48,7 @@ export interface Animation3DPersistedState {
   speed: number;
 
   // Avatar customization
-  bodyType: "masculine" | "feminine";
+  bodyType: "masculine" | "feminine" | "androgynous";
   skinTone: string;
   showFigure: boolean;
   avatarProportions: AvatarProportions;

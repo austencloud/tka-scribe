@@ -34,8 +34,8 @@
 
   <!-- Body Type Toggle -->
   <div class="control-group">
-    <label class="control-label">Body Type</label>
-    <div class="toggle-group">
+    <span class="control-label">Body Type</span>
+    <div class="toggle-group" role="group" aria-label="Body type">
       <button
         class="toggle-btn"
         class:active={bodyType === "masculine"}
@@ -59,8 +59,8 @@
 
   <!-- Skin Tone Selector -->
   <div class="control-group">
-    <label class="control-label">Skin Tone</label>
-    <div class="skin-tone-grid">
+    <span class="control-label">Skin Tone</span>
+    <div class="skin-tone-grid" role="group" aria-label="Skin tone">
       {#each SKIN_TONES as tone}
         <button
           class="skin-swatch"

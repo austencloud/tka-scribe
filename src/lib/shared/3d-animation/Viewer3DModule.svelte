@@ -66,10 +66,11 @@
   // Hydration flag
   let initialized = $state(false);
 
-  // Derived
-  const sequenceName = $derived(
-    animState?.loadedSequence?.word || animState?.loadedSequence?.name || null
-  );
+  // Derived - use function to avoid TypeScript narrowing issues with $state(null)
+  const sequenceName = $derived.by(() => {
+    if (!animState) return null;
+    return animState.loadedSequence?.word || animState.loadedSequence?.name || null;
+  });
 
   // Camera handlers
   function handleCameraChange(state: CameraState) {

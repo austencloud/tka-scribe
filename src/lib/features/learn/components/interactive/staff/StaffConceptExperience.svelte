@@ -22,15 +22,20 @@ Manages navigation through 5 pages:
     onComplete?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(
+  const hapticServiceRaw = resolve<IHapticFeedbackService>(
     TYPES.IHapticFeedbackService
   );
+
+  // Wrap the haptic service to match the simpler interface expected by child components
+  const hapticService = hapticServiceRaw ? {
+    trigger: (type: string) => hapticServiceRaw.trigger(type as any)
+  } : undefined;
 
   let currentPage = $state(1);
   const totalPages = 5;
 
   function handleNext() {
-    hapticService?.trigger("selection");
+    hapticServiceRaw?.trigger("selection");
     if (currentPage < totalPages) {
       currentPage++;
     } else {
@@ -39,7 +44,7 @@ Manages navigation through 5 pages:
   }
 
   function handleQuizComplete() {
-    hapticService?.trigger("success");
+    hapticServiceRaw?.trigger("success");
     onComplete?.();
   }
 </script>
