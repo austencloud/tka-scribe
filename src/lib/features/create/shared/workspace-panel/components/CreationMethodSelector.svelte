@@ -360,6 +360,7 @@
                   role="listbox"
                   aria-label="Choose a creation method"
                   aria-activedescendant="choice-{focusedChoiceIndex}"
+                  tabindex="0"
                 >
                   {#each methods as method, i}
                     <button

@@ -200,7 +200,7 @@
             <i class="fa-solid fa-trash"></i>
           </button>
         {/if}
-        <button class="icon-btn close" onclick={handleClose}>
+        <button class="icon-btn close" onclick={handleClose} aria-label="Close beat editor">
           <i class="fas fa-times"></i>
         </button>
       </div>
