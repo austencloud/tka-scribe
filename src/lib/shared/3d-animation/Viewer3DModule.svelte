@@ -11,7 +11,8 @@
   import { onMount, onDestroy } from "svelte";
   import Scene3D from "./components/Scene3D.svelte";
   import Staff3D from "./components/Staff3D.svelte";
-  import IKFigure3D, { type BodyType } from "./components/IKFigure3D.svelte";
+  import Avatar3D from "./components/Avatar3D.svelte";
+  import type { BodyType } from "./services/contracts/IAvatarCustomizationService";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
   import AvatarToggleButton from "./components/controls/AvatarToggleButton.svelte";
@@ -55,6 +56,8 @@
   let showFigure = $state(true);
   let bodyType = $state<BodyType>("masculine");
   let skinTone = $state("#d4a574");
+
+  // Avatar model is now determined by bodyType in Avatar3D component
 
   // Camera position from orbit controls
   let customCameraPosition = $state<[number, number, number] | null>(null);
@@ -198,7 +201,7 @@
           <Staff3D propState={animState.redPropState} color="red" />
         {/if}
         {#if showFigure}
-          <IKFigure3D
+          <Avatar3D
             bluePropState={animState.bluePropState}
             redPropState={animState.redPropState}
             {bodyType}

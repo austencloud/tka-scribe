@@ -44,6 +44,9 @@ export class IKSolverService implements IIKSolverService {
     }
   }
 
+  // Debug counter
+  private debugCounter = 0;
+
   solveAndApply(
     chain: BoneChain,
     target: IKTarget,
@@ -53,12 +56,45 @@ export class IKSolverService implements IIKSolverService {
     const rootRotation = solution.rotations[0];
     const middleRotation = solution.rotations[1];
 
-    if (solution.success && rootRotation && middleRotation) {
+    // Debug: Always log occasionally to diagnose failures
+    this.debugCounter++;
+    const shouldDebug = this.debugCounter % 180 === 1;
+
+    if (shouldDebug && !solution.success) {
+      const shoulderPos = new Vector3();
+      chain.root.getWorldPosition(shoulderPos);
+      const dist = shoulderPos.distanceTo(target.position);
+      console.log(`[IK] ${chain.root.name} UNREACHABLE:`);
+      console.log(`     Shoulder: (${shoulderPos.x.toFixed(0)}, ${shoulderPos.y.toFixed(0)}, ${shoulderPos.z.toFixed(0)})`);
+      console.log(`     Target:   (${target.position.x.toFixed(0)}, ${target.position.y.toFixed(0)}, ${target.position.z.toFixed(0)})`);
+      console.log(`     Distance: ${dist.toFixed(1)} | Arm reach: ${chain.totalLength.toFixed(1)}`);
+    }
+
+    // Apply rotations even if target is unreachable - we still point toward it
+    if (rootRotation && middleRotation) {
       chain.root.quaternion.copy(rootRotation);
       chain.middle.quaternion.copy(middleRotation);
 
-      // Update matrices
+      // Update matrices from root down
       chain.root.updateMatrixWorld(true);
+
+      // Debug logging
+      if (shouldDebug) {
+        const effectorPos = new Vector3();
+        chain.effector.getWorldPosition(effectorPos);
+
+        // Calculate actual error
+        const actualError = effectorPos.distanceTo(target.position);
+
+        console.log(`[IK] ${chain.root.name}:`);
+        console.log(`     Target:   (${target.position.x.toFixed(0)}, ${target.position.y.toFixed(0)}, ${target.position.z.toFixed(0)})`);
+        console.log(`     Effector: (${effectorPos.x.toFixed(0)}, ${effectorPos.y.toFixed(0)}, ${effectorPos.z.toFixed(0)})`);
+        console.log(`     Error: ${actualError.toFixed(1)} | Reachable: ${solution.success}`);
+        console.log(`     Shoulder rot: (${rootRotation.x.toFixed(2)}, ${rootRotation.y.toFixed(2)}, ${rootRotation.z.toFixed(2)}, ${rootRotation.w.toFixed(2)})`);
+        console.log(`     Elbow rot: (${middleRotation.x.toFixed(2)}, ${middleRotation.y.toFixed(2)}, ${middleRotation.z.toFixed(2)}, ${middleRotation.w.toFixed(2)})`);
+      }
+    } else if (shouldDebug) {
+      console.log(`[IK] ${chain.root.name} FAILED - rotations array incomplete`);
     }
   }
 
@@ -67,6 +103,9 @@ export class IKSolverService implements IIKSolverService {
    *
    * Uses the law of cosines to find the exact elbow position.
    * This is the fastest and most stable method for 2-bone chains.
+   *
+   * Key insight: We calculate everything analytically from the geometry,
+   * then compute local rotations relative to the bone's rest direction.
    */
   solveTwoBone(
     chain: BoneChain,
@@ -75,7 +114,7 @@ export class IKSolverService implements IIKSolverService {
   ): IKSolution {
     const rotations: Quaternion[] = [];
 
-    // Get world positions
+    // Get world position of the shoulder (root of chain)
     const shoulderWorld = new Vector3();
     chain.root.getWorldPosition(shoulderWorld);
 
@@ -96,7 +135,12 @@ export class IKSolverService implements IIKSolverService {
       reachable = false;
     }
 
-    // Law of cosines: find angle at shoulder
+    // Adjust target to clamped distance
+    const clampedTarget = shoulderWorld.clone().add(
+      toTarget.clone().normalize().multiplyScalar(dist)
+    );
+
+    // Law of cosines: find angle at shoulder (angle between upper arm and line to target)
     const cosShoulderAngle =
       (chain.upperLength * chain.upperLength +
         dist * dist -
@@ -104,53 +148,78 @@ export class IKSolverService implements IIKSolverService {
       (2 * chain.upperLength * dist);
     const shoulderAngle = Math.acos(Math.max(-1, Math.min(1, cosShoulderAngle)));
 
-    // Find angle at elbow
-    const cosElbowAngle =
-      (chain.upperLength * chain.upperLength +
-        chain.lowerLength * chain.lowerLength -
-        dist * dist) /
-      (2 * chain.upperLength * chain.lowerLength);
-    const elbowAngle = Math.acos(Math.max(-1, Math.min(1, cosElbowAngle)));
+    // Direction from shoulder to target (world space)
+    const targetDir = clampedTarget.clone().sub(shoulderWorld).normalize();
 
-    // Direction to target
-    const dir = toTarget.normalize();
-
-    // Find perpendicular axis for rotation using pole hint
-    let perp = new Vector3().crossVectors(dir, poleHint);
-    if (perp.lengthSq() < 0.0001) {
-      perp = new Vector3().crossVectors(dir, new Vector3(0, 1, 0));
-      if (perp.lengthSq() < 0.0001) {
-        perp.set(1, 0, 0);
+    // Find perpendicular axis for the elbow bend plane using pole hint
+    let bendAxis = new Vector3().crossVectors(targetDir, poleHint);
+    if (bendAxis.lengthSq() < 0.0001) {
+      // Pole hint is parallel to target direction, use a fallback
+      bendAxis = new Vector3().crossVectors(targetDir, new Vector3(0, 1, 0));
+      if (bendAxis.lengthSq() < 0.0001) {
+        bendAxis.set(1, 0, 0);
       }
     }
-    perp.normalize();
+    bendAxis.normalize();
 
-    // Calculate shoulder rotation
-    // First, rotate to point at target, then adjust by shoulder angle
-    const elbowDir = dir.clone().applyAxisAngle(perp, shoulderAngle);
+    // Calculate upper arm direction (world space)
+    // Rotate target direction by shoulder angle around the bend axis
+    const upperArmDir = targetDir.clone().applyAxisAngle(bendAxis, shoulderAngle);
 
-    // Convert to local rotation for shoulder bone
-    const shoulderQuat = new Quaternion();
+    // Calculate elbow position analytically (world space)
+    const elbowWorld = shoulderWorld.clone().add(
+      upperArmDir.clone().multiplyScalar(chain.upperLength)
+    );
+
+    // Calculate forearm direction (world space) - from elbow to target
+    const forearmDir = clampedTarget.clone().sub(elbowWorld).normalize();
+
+    // === SHOULDER ROTATION ===
+    // Convert upper arm direction to shoulder's local space
     const shoulderParentInverse = new Matrix4();
     if (chain.root.parent) {
       chain.root.parent.updateWorldMatrix(true, false);
       shoulderParentInverse.copy(chain.root.parent.matrixWorld).invert();
     }
+    const localUpperArmDir = upperArmDir.clone().transformDirection(shoulderParentInverse);
 
-    // Get the local direction we need to rotate to
-    const localElbowDir = elbowDir.clone().transformDirection(shoulderParentInverse);
-
-    // Calculate the rotation needed
-    const restDir = new Vector3(1, 0, 0); // Default bone direction (may vary by model)
-    shoulderQuat.setFromUnitVectors(restDir, localElbowDir);
+    // Rotate from rest direction to target direction
+    const shoulderQuat = new Quaternion();
+    shoulderQuat.setFromUnitVectors(chain.rootRestDir.clone(), localUpperArmDir);
     rotations.push(shoulderQuat);
 
-    // Calculate elbow rotation
+    // === ELBOW ROTATION ===
+    // The elbow needs to rotate from pointing in the same direction as upper arm
+    // to pointing at the target (in the forearm direction)
+    //
+    // After the shoulder rotation, the forearm's rest direction (in world space)
+    // would be the upper arm direction. We need to rotate it to the forearm direction.
+    //
+    // Convert forearm direction to elbow's local space
+    // Note: We need to account for the NEW shoulder rotation we just calculated
+    //
+    // Build the transformation: elbow's local space = parent's world * shoulder rotation
+    const shoulderWorldMatrix = chain.root.parent
+      ? chain.root.parent.matrixWorld.clone()
+      : new Matrix4();
+
+    // Apply the new shoulder rotation
+    const shoulderRotMatrix = new Matrix4().makeRotationFromQuaternion(shoulderQuat);
+    const elbowParentMatrix = shoulderWorldMatrix.multiply(shoulderRotMatrix);
+    const elbowParentInverse = elbowParentMatrix.clone().invert();
+
+    const localForearmDir = forearmDir.clone().transformDirection(elbowParentInverse);
+
+    // The elbow's rest direction is relative to its own local space
+    // After the shoulder rotates, the forearm's "rest" direction in elbow local space
+    // is still the middleRestDir
     const elbowQuat = new Quaternion();
-    elbowQuat.setFromAxisAngle(new Vector3(0, 0, 1), -(Math.PI - elbowAngle));
+    elbowQuat.setFromUnitVectors(chain.middleRestDir.clone(), localForearmDir);
     rotations.push(elbowQuat);
 
-    const error = target.distanceTo(shoulderWorld.add(toTarget.multiplyScalar(dist)));
+    // Calculate error
+    const handWorld = elbowWorld.clone().add(forearmDir.multiplyScalar(chain.lowerLength));
+    const error = target.distanceTo(handWorld);
 
     return {
       success: reachable,

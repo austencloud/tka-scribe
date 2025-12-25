@@ -6,7 +6,7 @@
  * and providing access to the skeleton hierarchy.
  */
 
-import type { Bone, SkinnedMesh, Object3D } from "three";
+import type { Bone, SkinnedMesh, Object3D, Vector3 } from "three";
 
 /**
  * Standard bone names following Mixamo/humanoid conventions
@@ -49,6 +49,10 @@ export interface BoneChain {
   upperLength: number;
   /** Length of second segment */
   lowerLength: number;
+  /** Rest direction of root bone (local space, normalized) */
+  rootRestDir: Vector3;
+  /** Rest direction of middle bone (local space, normalized) */
+  middleRestDir: Vector3;
 }
 
 /**

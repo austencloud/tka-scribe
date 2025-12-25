@@ -115,10 +115,31 @@ export class AvatarSkeletonService implements IAvatarSkeletonService {
   private mapBone(bone: Bone): void {
     const boneName = bone.name.toLowerCase();
 
+    // Skip finger bones - they contain hand name but aren't the hand
+    if (boneName.includes('thumb') || boneName.includes('index') ||
+        boneName.includes('middle') || boneName.includes('ring') ||
+        boneName.includes('pinky')) {
+      return; // Don't map finger bones
+    }
+
     for (const [standardName, aliases] of Object.entries(BONE_NAME_ALIASES)) {
       for (const alias of aliases) {
-        if (boneName === alias.toLowerCase() || boneName.includes(alias.toLowerCase())) {
+        // Use exact match first, then contains as fallback
+        if (boneName === alias.toLowerCase()) {
           this.state.bones.set(standardName as BoneName, bone);
+          console.log(`[Skeleton] Mapped bone "${bone.name}" to ${standardName} (exact)`);
+          return;
+        }
+      }
+    }
+
+    // Fallback: check contains (but only if not already mapped)
+    for (const [standardName, aliases] of Object.entries(BONE_NAME_ALIASES)) {
+      if (this.state.bones.has(standardName as BoneName)) continue; // Skip if already mapped
+      for (const alias of aliases) {
+        if (boneName.includes(alias.toLowerCase())) {
+          this.state.bones.set(standardName as BoneName, bone);
+          console.log(`[Skeleton] Mapped bone "${bone.name}" to ${standardName} (contains)`);
           return;
         }
       }
@@ -135,6 +156,13 @@ export class AvatarSkeletonService implements IAvatarSkeletonService {
       const upperLen = this.getBoneLength(leftShoulder, leftElbow);
       const lowerLen = this.getBoneLength(leftElbow, leftHand);
 
+      // Compute rest directions in local space (direction bone points in T-pose)
+      const rootRestDir = this.computeRestDirection(leftShoulder, leftElbow);
+      const middleRestDir = this.computeRestDirection(leftElbow, leftHand);
+
+      console.log(`[Skeleton] Left arm root rest dir: (${rootRestDir.x.toFixed(2)}, ${rootRestDir.y.toFixed(2)}, ${rootRestDir.z.toFixed(2)})`);
+      console.log(`[Skeleton] Left arm middle rest dir: (${middleRestDir.x.toFixed(2)}, ${middleRestDir.y.toFixed(2)}, ${middleRestDir.z.toFixed(2)})`);
+
       this.state.leftArmChain = {
         root: leftShoulder,
         middle: leftElbow,
@@ -142,6 +170,8 @@ export class AvatarSkeletonService implements IAvatarSkeletonService {
         totalLength: upperLen + lowerLen,
         upperLength: upperLen,
         lowerLength: lowerLen,
+        rootRestDir,
+        middleRestDir,
       };
     }
 
@@ -154,6 +184,13 @@ export class AvatarSkeletonService implements IAvatarSkeletonService {
       const upperLen = this.getBoneLength(rightShoulder, rightElbow);
       const lowerLen = this.getBoneLength(rightElbow, rightHand);
 
+      // Compute rest directions in local space
+      const rootRestDir = this.computeRestDirection(rightShoulder, rightElbow);
+      const middleRestDir = this.computeRestDirection(rightElbow, rightHand);
+
+      console.log(`[Skeleton] Right arm root rest dir: (${rootRestDir.x.toFixed(2)}, ${rootRestDir.y.toFixed(2)}, ${rootRestDir.z.toFixed(2)})`);
+      console.log(`[Skeleton] Right arm middle rest dir: (${middleRestDir.x.toFixed(2)}, ${middleRestDir.y.toFixed(2)}, ${middleRestDir.z.toFixed(2)})`);
+
       this.state.rightArmChain = {
         root: rightShoulder,
         middle: rightElbow,
@@ -161,8 +198,34 @@ export class AvatarSkeletonService implements IAvatarSkeletonService {
         totalLength: upperLen + lowerLen,
         upperLength: upperLen,
         lowerLength: lowerLen,
+        rootRestDir,
+        middleRestDir,
       };
     }
+  }
+
+  /**
+   * Compute the rest direction of a bone (direction to child in bind pose)
+   * Returns the direction in the bone's LOCAL space
+   */
+  private computeRestDirection(parent: Bone, child: Bone): Vector3 {
+    // Get world positions
+    const parentWorld = new Vector3();
+    const childWorld = new Vector3();
+    parent.getWorldPosition(parentWorld);
+    child.getWorldPosition(childWorld);
+
+    // Direction in world space
+    const worldDir = childWorld.clone().sub(parentWorld).normalize();
+
+    // Transform to parent's local space
+    // Get the parent's world matrix inverse to transform world to local
+    const parentMatrixInverse = parent.matrixWorld.clone().invert();
+
+    // Transform direction (not point) - use transformDirection
+    const localDir = worldDir.clone().transformDirection(parentMatrixInverse);
+
+    return localDir.normalize();
   }
 
   private getBoneLength(parent: Bone, child: Bone): number {

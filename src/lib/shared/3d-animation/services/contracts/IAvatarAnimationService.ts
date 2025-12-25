@@ -67,10 +67,13 @@ export interface IAvatarAnimationService {
   /**
    * Set the hand targets from prop states
    * This is the main integration point with TKA motion data
+   *
+   * Blue prop = performer's left hand = skeleton's LeftHand
+   * Red prop = performer's right hand = skeleton's RightHand
    */
   setHandTargetsFromProps(
-    leftProp: PropState3D | null,
-    rightProp: PropState3D | null
+    blueProp: PropState3D | null,
+    redProp: PropState3D | null
   ): void;
 
   /**

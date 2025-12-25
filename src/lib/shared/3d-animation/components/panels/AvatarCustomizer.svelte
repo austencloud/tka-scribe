@@ -7,7 +7,7 @@
    * - Skin tone selection (preset colors)
    */
 
-  import type { BodyType } from "../IKFigure3D.svelte";
+  import type { BodyType } from "../../services/contracts/IAvatarCustomizationService";
 
   interface Props {
     bodyType: BodyType;

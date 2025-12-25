@@ -12,6 +12,23 @@ export const CM_TO_UNITS = 2; // 1 cm = 2 units, so 1 unit = 0.5 cm
 export const INCHES_TO_CM = 2.54;
 
 /**
+ * Height configurations for different body types
+ * Heights are in cm, converted to scene units (1 unit = 0.5 cm)
+ */
+export const BODY_TYPE_HEIGHTS = {
+  masculine: 188, // 6'2" = 188 cm = 376 units
+  feminine: 178, // 5'10" = 178 cm = 356 units
+  androgynous: 183, // 6'0" = 183 cm = 366 units (average)
+} as const;
+
+/**
+ * Get height in scene units for a body type
+ */
+export function getHeightForBodyType(bodyType: keyof typeof BODY_TYPE_HEIGHTS): number {
+  return cmToUnits(BODY_TYPE_HEIGHTS[bodyType]);
+}
+
+/**
  * Convert inches to scene units
  */
 export function inchesToUnits(inches: number): number {

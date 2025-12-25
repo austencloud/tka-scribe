@@ -63,20 +63,24 @@ export class AvatarAnimationService implements IAvatarAnimationService {
   }
 
   setHandTargetsFromProps(
-    leftProp: PropState3D | null,
-    rightProp: PropState3D | null
+    blueProp: PropState3D | null,
+    redProp: PropState3D | null
   ): void {
-    // IMPORTANT: Screen left (-X) = performer's RIGHT = red prop
-    //            Screen right (+X) = performer's LEFT = blue prop
-    // The props passed here are already from the performer's perspective
+    // Hand mapping:
+    // - Blue prop = performer's LEFT hand = skeleton's LeftHand bone
+    // - Red prop = performer's RIGHT hand = skeleton's RightHand bone
+    //
+    // From viewer's perspective (looking at performer facing us):
+    // - Skeleton's LeftHand appears on screen RIGHT (+X)
+    // - Skeleton's RightHand appears on screen LEFT (-X)
 
-    if (rightProp) {
-      // Right prop controls screen-left hand (performer's right)
+    if (blueProp) {
+      // Blue prop → performer's left hand → skeleton's LeftHand
       this.targetPose.leftHand = {
         targetPosition: new Vector3(
-          rightProp.worldPosition.x,
-          rightProp.worldPosition.y,
-          rightProp.worldPosition.z
+          blueProp.worldPosition.x,
+          blueProp.worldPosition.y,
+          blueProp.worldPosition.z
         ),
         weight: 1,
       };
@@ -84,13 +88,13 @@ export class AvatarAnimationService implements IAvatarAnimationService {
       this.targetPose.leftHand = { ...this.idlePose.leftHand };
     }
 
-    if (leftProp) {
-      // Left prop controls screen-right hand (performer's left)
+    if (redProp) {
+      // Red prop → performer's right hand → skeleton's RightHand
       this.targetPose.rightHand = {
         targetPosition: new Vector3(
-          leftProp.worldPosition.x,
-          leftProp.worldPosition.y,
-          leftProp.worldPosition.z
+          redProp.worldPosition.x,
+          redProp.worldPosition.y,
+          redProp.worldPosition.z
         ),
         weight: 1,
       };
