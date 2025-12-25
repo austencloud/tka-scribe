@@ -1,61 +1,6 @@
 import "@testing-library/jest-dom";
-import { readFileSync } from "fs";
 import { Container } from "inversify";
-import { resolve } from "path";
 import { afterEach, beforeEach, vi } from "vitest";
-
-// Preload CSV data into window for tests
-// This allows CsvLoader to use window.csvData instead of trying to fetch files
-const diamondCsvPath = resolve(
-  __dirname,
-  "../../static/DiamondPictographDataframe.csv"
-);
-const boxCsvPath = resolve(
-  __dirname,
-  "../../static/BoxPictographDataframe.csv"
-);
-const letterMappingsPath = resolve(
-  __dirname,
-  "../../static/data/learn/letter-mappings.json"
-);
-
-try {
-  const diamondData = readFileSync(diamondCsvPath, "utf-8");
-  const boxData = readFileSync(boxCsvPath, "utf-8");
-  const letterMappingsData = readFileSync(letterMappingsPath, "utf-8");
-
-  // Inject CSV data into window for test environment
-  (globalThis as any).window = (globalThis as any).window || {};
-  (globalThis as any).window.csvData = {
-    diamondData,
-    boxData,
-  };
-
-  // Mock fetch for static files
-  const originalFetch = globalThis.fetch;
-  globalThis.fetch = vi.fn(
-    (url: string | URL | Request, init?: RequestInit) => {
-      const urlStr = typeof url === "string" ? url : url.toString();
-
-      // Handle letter-mappings.json
-      if (urlStr.includes("letter-mappings.json")) {
-        return Promise.resolve(
-          new Response(letterMappingsData, {
-            status: 200,
-            headers: { "Content-Type": "application/json" },
-          })
-        );
-      }
-
-      // Fall back to original fetch for other URLs
-      return originalFetch(url, init);
-    }
-  ) as any;
-
-  console.log("✅ Preloaded CSV data and mocked fetch for tests");
-} catch (error) {
-  console.warn("⚠️ Failed to preload test data:", error);
-}
 
 // Use vi.hoisted to ensure critical modules are imported and initialized BEFORE any service classes
 // This prevents "Cannot read properties of undefined" errors with InversifyJS decorators and enums
@@ -148,27 +93,11 @@ beforeEach(() => {
   // Initialize a fresh Inversify container for each test
   try {
     testContainer = new Container();
-    // Note: Services will need to be registered manually in individual tests
-    // as they require the new Inversify configuration
   } catch (error) {
     console.warn(
       "Failed to initialize Inversify container in test setup:",
       error
     );
-  }
-
-  // Ensure CSV data is available in window for tests (optional - some tests don't need it)
-  if (typeof window !== "undefined" && !window.csvData) {
-    try {
-      const diamondData = readFileSync(diamondCsvPath, "utf-8");
-      const boxData = readFileSync(boxCsvPath, "utf-8");
-      (window as any).csvData = {
-        diamondData,
-        boxData,
-      };
-    } catch {
-      // CSV files not available - tests that need them will fail individually
-    }
   }
 });
 
