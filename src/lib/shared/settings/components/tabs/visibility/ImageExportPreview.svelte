@@ -27,9 +27,21 @@
         TYPES.IImageCompositionService
       );
 
-      // Generate canvas from beat data
+      // Generate canvas from beat data using a minimal SequenceData object
+      const sequenceData = {
+        id: "preview-temp",
+        name: "Preview",
+        word: "",
+        beats: [beatData],
+        startPosition: undefined,
+        thumbnails: [],
+        isFavorite: false,
+        isCircular: false,
+        tags: [],
+        metadata: {},
+      };
       const canvas = await compositionService.composeSequenceImage(
-        { beats: [beatData], word: "", startPosition: null },
+        sequenceData,
         {
           beatSize: 300,
           beatScale: 1,
