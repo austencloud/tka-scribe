@@ -152,7 +152,6 @@ export class FollowingFeedService implements IFollowingFeedService {
         authState.user.uid,
         1
       );
-      console.log("[FollowingFeedService] Following count:", followedUsers.length);
       return followedUsers.length;
     } catch (error) {
       console.error("[FollowingFeedService] Error getting following count:", error);

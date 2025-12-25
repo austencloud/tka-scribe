@@ -8,12 +8,14 @@
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { UserNotification, FeedbackNotification } from "$lib/features/feedback/domain/models/notification-models";
-  import type { Props } from "../Dashboard.svelte";
+  import type { DashboardState } from "../../state/dashboard-state.svelte";
 
-  let { dashboardState, onOpenNotifications } = $props<{
-    dashboardState: ReturnType<import("../../state/dashboard-state.svelte")["createDashboard"]>;
+  interface Props {
+    dashboardState: DashboardState;
     onOpenNotifications?: () => void;
-  }>();
+  }
+
+  let { dashboardState, onOpenNotifications }: Props = $props();
 
   // Filter out system announcements - those go in the banner
   const alertNotifications = $derived(

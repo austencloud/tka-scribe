@@ -13,7 +13,7 @@ import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.sve
 import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
 
-interface DashboardState {
+export interface DashboardState {
   challengeDrawerOpen: boolean;
   signInToastMessage: string;
   showSignInToast: boolean;

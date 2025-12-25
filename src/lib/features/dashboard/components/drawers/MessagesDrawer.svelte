@@ -23,7 +23,12 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
 
   // Props
-  let { isOpen = $bindable(false), pendingConversationId = $bindable("") } = $props();
+  interface Props {
+    isOpen?: boolean;
+    pendingConversationId?: string;
+  }
+
+  let { isOpen = $bindable(false), pendingConversationId = $bindable("") }: Props = $props();
 
   // Responsive placement
   let isMobile = $state(false);

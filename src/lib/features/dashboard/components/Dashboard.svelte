@@ -110,9 +110,8 @@
     };
   });
 
-  async function checkHasFollowing() {
+  async function checkHasFollowing(retryCount = 0) {
     if (!authState.isAuthenticated) {
-      console.log("[Dashboard] Not authenticated, skipping following check");
       return;
     }
 
@@ -122,9 +121,9 @@
       );
       if (feedService) {
         hasFollowing = await feedService.hasFollowing();
-        console.log("[Dashboard] hasFollowing:", hasFollowing);
-      } else {
-        console.warn("[Dashboard] FollowingFeedService not available");
+      } else if (retryCount < 3) {
+        // Service not available yet (Tier 2 still loading), retry after delay
+        setTimeout(() => checkHasFollowing(retryCount + 1), 500);
       }
     } catch (error) {
       console.warn("Dashboard: Failed to check following status", error);
