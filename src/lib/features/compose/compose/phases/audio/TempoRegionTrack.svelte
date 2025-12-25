@@ -149,7 +149,7 @@
     <!-- Tempo regions -->
     {#each tempoRegions as region}
       {@const isEditing = editingRegionId === region.id}
-      <button
+      <div
         class="tempo-region"
         class:editing={isEditing}
         style="
@@ -158,6 +158,14 @@
           background: {getBpmColor(region.bpm)};
         "
         onclick={() => startEditing(region)}
+        onkeydown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            startEditing(region);
+          }
+        }}
+        role="button"
+        tabindex="0"
         title="{region.bpm} BPM ({region.startTime.toFixed(
           1
         )}s - {region.endTime.toFixed(1)}s)"
@@ -171,11 +179,12 @@
               onRemoveRegion?.(region.id);
             }}
             title="Remove region"
+            aria-label="Remove region"
           >
             <i class="fas fa-times"></i>
           </button>
         {/if}
-      </button>
+      </div>
     {/each}
 
     <!-- Playhead -->

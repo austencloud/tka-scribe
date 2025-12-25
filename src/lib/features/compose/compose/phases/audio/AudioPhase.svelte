@@ -57,7 +57,7 @@
 
   let isDesktop = $state(false);
   let isDragging = $state(false);
-  let fileInput: HTMLInputElement;
+  let fileInput = $state<HTMLInputElement>();
   let bpmAnalysisProgress = $state(0);
   let bpmError = $state<string | null>(null);
   let bpmIsUncertain = $state(false);
@@ -599,40 +599,6 @@
     border-color: rgba(239, 68, 68, 0.3);
   }
 
-  /* Waveform Placeholder */
-  .waveform-placeholder {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-  }
-
-  .placeholder-content {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  .placeholder-content i {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-    display: block;
-  }
-
-  .placeholder-content p {
-    margin: 0;
-    font-size: 0.9rem;
-  }
-
-  .placeholder-content .hint {
-    margin-top: 0.25rem;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.3);
-  }
-
   /* BPM Controls */
   .bpm-controls {
     display: flex;
@@ -650,11 +616,6 @@
     font-weight: 500;
   }
 
-  .bpm-controls .detected {
-    font-weight: 600;
-    color: rgba(167, 139, 250, 1);
-  }
-
   .bpm-controls .source {
     color: rgba(255, 255, 255, 0.4);
     font-size: 0.8rem;
@@ -662,10 +623,6 @@
 
   .bpm-controls .analyzing {
     color: rgba(251, 191, 36, 0.9);
-  }
-
-  .bpm-controls .not-detected {
-    color: rgba(255, 255, 255, 0.4);
   }
 
   /* Analyzing Container */
@@ -705,25 +662,6 @@
     gap: 0.5rem;
     color: rgba(248, 113, 113, 0.9);
     font-size: 0.85rem;
-  }
-
-  .retry-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.75rem;
-    background: rgba(139, 92, 246, 0.15);
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    border-radius: 6px;
-    color: rgba(167, 139, 250, 0.9);
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .retry-btn:hover {
-    background: rgba(139, 92, 246, 0.25);
-    border-color: rgba(139, 92, 246, 0.4);
   }
 
   /* BPM Display with input */

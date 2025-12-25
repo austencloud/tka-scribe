@@ -176,6 +176,7 @@
                 class="action-btn"
                 onclick={removeLast}
                 title="Remove last tap"
+                aria-label="Remove last tap"
               >
                 <i class="fas fa-undo"></i>
               </button>
@@ -183,6 +184,7 @@
                 class="action-btn danger"
                 onclick={clearAllTaps}
                 title="Clear all taps"
+                aria-label="Clear all taps"
               >
                 <i class="fas fa-trash"></i>
               </button>
@@ -199,6 +201,7 @@
                   class="tap-remove"
                   onclick={() => onRemoveMarker?.(marker.id)}
                   title="Remove this tap"
+                  aria-label="Remove this tap"
                 >
                   <i class="fas fa-times"></i>
                 </button>

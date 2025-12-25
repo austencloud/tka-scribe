@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+<script module lang="ts">
   function formatTime(seconds: number): string {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -346,6 +346,7 @@
           onclick={() => wavesurfer?.playPause()}
           disabled={!isReady}
           title={isPlaying ? "Pause (Space)" : "Play (Space)"}
+          aria-label={isPlaying ? "Pause" : "Play"}
         >
           <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
         </button>
@@ -354,6 +355,7 @@
           onclick={() => wavesurfer?.stop()}
           disabled={!isReady}
           title="Stop"
+          aria-label="Stop"
         >
           <i class="fas fa-stop"></i>
         </button>
@@ -376,6 +378,7 @@
           }}
           disabled={!isReady || zoomLevel <= MIN_ZOOM}
           title="Zoom out"
+          aria-label="Zoom out"
         >
           <i class="fas fa-search-minus"></i>
         </button>
@@ -397,6 +400,7 @@
           }}
           disabled={!isReady || zoomLevel >= MAX_ZOOM}
           title="Zoom in"
+          aria-label="Zoom in"
         >
           <i class="fas fa-search-plus"></i>
         </button>
@@ -405,6 +409,7 @@
           onclick={resetZoom}
           disabled={!isReady || zoomLevel === DEFAULT_ZOOM}
           title="Reset zoom"
+          aria-label="Reset zoom"
         >
           <i class="fas fa-compress-arrows-alt"></i>
         </button>
@@ -458,16 +463,6 @@
 
   .waveform-container::-webkit-scrollbar {
     display: none; /* Chrome/Safari/Opera */
-  }
-
-  /* Hide wavesurfer's internal scrollbar via ::part selector */
-  .waveform-container ::part(scroll) {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .waveform-container ::part(scroll)::-webkit-scrollbar {
-    display: none;
   }
 
   .loading-overlay {

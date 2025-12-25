@@ -167,7 +167,7 @@
 <div class="library-panel">
   <div class="panel-header">
     <h2>Audio Library</h2>
-    <button class="close-btn" onclick={onClose}>
+    <button class="close-btn" onclick={onClose} aria-label="Close">
       <i class="fas fa-times"></i>
     </button>
   </div>

@@ -132,6 +132,7 @@
             style="left: {getPositionPercent(marker.time)}%"
             onclick={() => onRemoveMarker?.(marker.id)}
             title="Custom marker at {marker.time.toFixed(1)}s - click to remove"
+            aria-label="Remove custom marker"
           >
             <i class="fas fa-flag"></i>
           </button>
