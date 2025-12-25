@@ -1,0 +1,268 @@
+/**
+ * media-browser-state.svelte.ts
+ * Centralized state management for the MediaBrowserPanel
+ */
+
+import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+import type { IDiscoverLoader } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader';
+import type { IDiscoverThumbnailService } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService';
+import type { IDiscoverFilterService } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverFilterService';
+import type { IDiscoverSortService } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverSortService';
+import type { ExploreFilterType } from '$lib/shared/persistence/domain/enums/FilteringEnums';
+import type { ExploreFilterValue } from '$lib/shared/persistence/domain/types/FilteringTypes';
+import type { DifficultyLevel } from '$lib/shared/domain/models/sequence-parameters';
+import { ExploreSortMethod } from '$lib/features/discover/shared/domain/enums/discover-enums';
+import { tryResolve, loadFeatureModule } from '$lib/shared/inversify/di';
+import { TYPES } from '$lib/shared/inversify/types';
+
+const BATCH_SIZE = 24;
+
+export interface MediaFilter {
+	type: string;
+	value: ExploreFilterValue;
+}
+
+export function createMediaBrowserState() {
+	// Services
+	let loaderService = $state<IDiscoverLoader | null>(null);
+	let thumbnailService = $state<IDiscoverThumbnailService | null>(null);
+	let filterService = $state<IDiscoverFilterService | null>(null);
+	let sortService = $state<IDiscoverSortService | null>(null);
+	let servicesReady = $state(false);
+
+	// Core state
+	let allSequences = $state<SequenceData[]>([]);
+	let isLoading = $state(true);
+	let error = $state<string | null>(null);
+	let searchQuery = $state('');
+	let loadingSequenceId = $state<string | null>(null);
+
+	// Pagination
+	let displayedCount = $state(BATCH_SIZE);
+
+	// Filter state
+	let currentFilter = $state<MediaFilter>({ type: 'all', value: null });
+
+	// Sort state
+	let currentSortMethod = $state<ExploreSortMethod>(ExploreSortMethod.ALPHABETICAL);
+	let sortDirection = $state<'asc' | 'desc'>('asc');
+
+	// UI state
+	let showFilters = $state(false);
+	let showLetterSheet = $state(false);
+
+	// Derived filter values
+	const currentLevel = $derived(
+		currentFilter.type === 'difficulty' ? (currentFilter.value as DifficultyLevel) : null
+	);
+	const currentLength = $derived(
+		currentFilter.type === 'length' ? (currentFilter.value as number) : null
+	);
+	const currentLetter = $derived(
+		currentFilter.type === 'startingLetter' ? (currentFilter.value as string) : null
+	);
+	const isFavoritesActive = $derived(currentFilter.type === 'favorites');
+	const hasActiveFilter = $derived(currentFilter.type !== 'all' || searchQuery.trim() !== '');
+
+	// Filtered and sorted sequences
+	const allFilteredSequences = $derived.by(() => {
+		let filtered = allSequences;
+
+		if (filterService && currentFilter.type !== 'all') {
+			filtered = filterService.applyFilter(
+				allSequences,
+				currentFilter.type as ExploreFilterType,
+				currentFilter.value
+			);
+		}
+
+		if (searchQuery.trim()) {
+			const query = searchQuery.toLowerCase();
+			filtered = filtered.filter(
+				(seq) =>
+					seq.word?.toLowerCase().includes(query) ||
+					seq.name?.toLowerCase().includes(query) ||
+					seq.author?.toLowerCase().includes(query)
+			);
+		}
+
+		if (sortService) {
+			filtered = sortService.sortSequences(filtered, currentSortMethod);
+			if (sortDirection === 'desc') {
+				filtered = [...filtered].reverse();
+			}
+		}
+
+		return filtered;
+	});
+
+	const filteredSequences = $derived(allFilteredSequences.slice(0, displayedCount));
+	const hasMore = $derived(displayedCount < allFilteredSequences.length);
+
+	// Initialize services
+	async function initializeServices(): Promise<boolean> {
+		try {
+			await loadFeatureModule('discover');
+			loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
+			thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
+			filterService = tryResolve<IDiscoverFilterService>(TYPES.IDiscoverFilterService);
+			sortService = tryResolve<IDiscoverSortService>(TYPES.IDiscoverSortService);
+			servicesReady = !!(loaderService && thumbnailService);
+			return servicesReady;
+		} catch (err) {
+			console.error('MediaBrowserState: Failed to init services:', err);
+			error = 'Failed to initialize';
+			return false;
+		}
+	}
+
+	// Load sequences
+	async function loadSequences(): Promise<void> {
+		if (!loaderService) {
+			error = 'Loader service not available';
+			isLoading = false;
+			return;
+		}
+
+		try {
+			isLoading = true;
+			error = null;
+			const loaded = await loaderService.loadSequenceMetadata();
+			allSequences = loaded;
+		} catch (err) {
+			console.error('MediaBrowserState: Failed to load:', err);
+			error = err instanceof Error ? err.message : 'Failed to load';
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	// Load full sequence data
+	async function loadFullSequence(sequence: SequenceData): Promise<SequenceData | null> {
+		if (!loaderService) return null;
+
+		try {
+			const fullSequence = await loaderService.loadFullSequenceData(
+				sequence.word || sequence.name || sequence.id
+			);
+			return fullSequence;
+		} catch (err) {
+			console.error('MediaBrowserState: Failed to load full sequence:', err);
+			return null;
+		}
+	}
+
+	// Get thumbnail URL
+	function getThumbnailUrl(sequence: SequenceData): string | undefined {
+		if (!thumbnailService) return undefined;
+		const first = sequence.thumbnails?.[0];
+		if (!first) return undefined;
+		try {
+			return thumbnailService.getThumbnailUrl(sequence.id, first);
+		} catch {
+			return undefined;
+		}
+	}
+
+	// Filter handlers
+	function setLevelFilter(level: DifficultyLevel | null): void {
+		currentFilter = level === null ? { type: 'all', value: null } : { type: 'difficulty', value: level };
+		resetPagination();
+	}
+
+	function setFavoritesFilter(active: boolean): void {
+		currentFilter = active ? { type: 'favorites', value: null } : { type: 'all', value: null };
+		resetPagination();
+	}
+
+	function setLengthFilter(length: number | null): void {
+		currentFilter = length === null ? { type: 'all', value: null } : { type: 'length', value: length };
+		resetPagination();
+	}
+
+	function setLetterFilter(letter: string | null): void {
+		currentFilter = letter === null ? { type: 'all', value: null } : { type: 'startingLetter', value: letter };
+		showLetterSheet = false;
+		resetPagination();
+	}
+
+	function setSearchQuery(query: string): void {
+		searchQuery = query;
+		resetPagination();
+	}
+
+	// Sort handler
+	function setSortMethod(method: ExploreSortMethod): void {
+		if (currentSortMethod === method) {
+			sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+		} else {
+			currentSortMethod = method;
+			sortDirection = 'asc';
+		}
+		resetPagination();
+	}
+
+	function clearFilters(): void {
+		currentFilter = { type: 'all', value: null };
+		searchQuery = '';
+		resetPagination();
+	}
+
+	// Pagination
+	function resetPagination(): void {
+		displayedCount = BATCH_SIZE;
+	}
+
+	function loadMore(): void {
+		if (hasMore) {
+			displayedCount = Math.min(displayedCount + BATCH_SIZE, allFilteredSequences.length);
+		}
+	}
+
+	// Loading state management
+	function setLoadingSequence(id: string | null): void {
+		loadingSequenceId = id;
+	}
+
+	return {
+		// Getters (reactive)
+		get isLoading() { return isLoading; },
+		get error() { return error; },
+		get searchQuery() { return searchQuery; },
+		get loadingSequenceId() { return loadingSequenceId; },
+		get servicesReady() { return servicesReady; },
+		get showFilters() { return showFilters; },
+		get showLetterSheet() { return showLetterSheet; },
+		get currentSortMethod() { return currentSortMethod; },
+		get sortDirection() { return sortDirection; },
+		get currentLevel() { return currentLevel; },
+		get currentLength() { return currentLength; },
+		get currentLetter() { return currentLetter; },
+		get isFavoritesActive() { return isFavoritesActive; },
+		get hasActiveFilter() { return hasActiveFilter; },
+		get filteredSequences() { return filteredSequences; },
+		get allFilteredSequences() { return allFilteredSequences; },
+		get hasMore() { return hasMore; },
+
+		// Setters
+		set showFilters(value: boolean) { showFilters = value; },
+		set showLetterSheet(value: boolean) { showLetterSheet = value; },
+
+		// Actions
+		initializeServices,
+		loadSequences,
+		loadFullSequence,
+		getThumbnailUrl,
+		setLevelFilter,
+		setFavoritesFilter,
+		setLengthFilter,
+		setLetterFilter,
+		setSearchQuery,
+		setSortMethod,
+		clearFilters,
+		loadMore,
+		setLoadingSequence,
+	};
+}
+
+export type MediaBrowserState = ReturnType<typeof createMediaBrowserState>;

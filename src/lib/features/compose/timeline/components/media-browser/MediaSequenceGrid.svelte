@@ -1,0 +1,207 @@
+<!--
+  MediaSequenceGrid.svelte - Grid display of sequences with infinite scroll
+-->
+<script lang="ts">
+	import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+	import MediaSequenceCard from './MediaSequenceCard.svelte';
+
+	interface Props {
+		sequences: SequenceData[];
+		isLoading: boolean;
+		error: string | null;
+		hasMore: boolean;
+		hasActiveFilter: boolean;
+		loadingSequenceId: string | null;
+		getThumbnailUrl: (seq: SequenceData) => string | undefined;
+		onSequenceClick: (seq: SequenceData) => void;
+		onDragStart: (e: DragEvent, seq: SequenceData) => void;
+		onLoadMore: () => void;
+		onRetry: () => void;
+		onClearFilters: () => void;
+	}
+
+	let {
+		sequences,
+		isLoading,
+		error,
+		hasMore,
+		hasActiveFilter,
+		loadingSequenceId,
+		getThumbnailUrl,
+		onSequenceClick,
+		onDragStart,
+		onLoadMore,
+		onRetry,
+		onClearFilters,
+	}: Props = $props();
+
+	function handleScroll(e: Event) {
+		const target = e.target as HTMLElement;
+		const scrolledToBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 200;
+		if (scrolledToBottom && hasMore && !isLoading) {
+			onLoadMore();
+		}
+	}
+</script>
+
+<div class="sequence-list" onscroll={handleScroll}>
+	{#if isLoading && sequences.length === 0}
+		<div class="state-message">
+			<div class="spinner"></div>
+			<span>Loading...</span>
+		</div>
+	{:else if error}
+		<div class="state-message error">
+			<i class="fas fa-exclamation-triangle"></i>
+			<span>{error}</span>
+			<button onclick={onRetry}>Retry</button>
+		</div>
+	{:else if sequences.length === 0}
+		<div class="state-message">
+			<i class="fas fa-search"></i>
+			<span>No sequences found</span>
+			{#if hasActiveFilter}
+				<button onclick={onClearFilters}>Clear filters</button>
+			{/if}
+		</div>
+	{:else}
+		{#each sequences as sequence (sequence.id)}
+			<MediaSequenceCard
+				{sequence}
+				coverUrl={getThumbnailUrl(sequence)}
+				isLoading={loadingSequenceId === sequence.id}
+				disabled={!!loadingSequenceId}
+				onclick={() => onSequenceClick(sequence)}
+				ondragstart={(e) => onDragStart(e, sequence)}
+			/>
+		{/each}
+
+		{#if hasMore}
+			<div class="load-more-indicator">
+				<div class="spinner small"></div>
+				<span>Scroll for more...</span>
+			</div>
+		{/if}
+	{/if}
+</div>
+
+<style>
+	.sequence-list {
+		flex: 1;
+		overflow-y: auto;
+		overflow-x: hidden;
+		padding: 16px;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 16px;
+		align-content: start;
+	}
+
+	/* Custom scrollbar */
+	.sequence-list::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	.sequence-list::-webkit-scrollbar-track {
+		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+		border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+	}
+
+	.sequence-list::-webkit-scrollbar-thumb {
+		background: var(--theme-card-bg, rgba(255, 255, 255, 0.2));
+		border: 3px solid var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+		border-radius: 6px;
+		transition: all 0.2s ease;
+	}
+
+	.sequence-list::-webkit-scrollbar-thumb:hover {
+		background: var(--theme-accent, #4a9eff);
+		border-color: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+		box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent);
+	}
+
+	.sequence-list::-webkit-scrollbar-thumb:active {
+		background: var(--theme-accent-strong, #3a7ed0);
+	}
+
+	/* Firefox scrollbar */
+	.sequence-list {
+		scrollbar-width: auto;
+		scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.5);
+	}
+
+	/* State messages */
+	.state-message {
+		grid-column: 1 / -1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		padding: 48px 24px;
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+		font-size: var(--font-size-min, 14px);
+	}
+
+	.state-message i {
+		font-size: 32px;
+		opacity: 0.5;
+		color: var(--theme-accent, #4a9eff);
+	}
+
+	.state-message button {
+		padding: 8px 16px;
+		border-radius: 12px;
+		border: 1px solid var(--theme-accent, #4a9eff);
+		background: color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
+		color: var(--theme-accent, #4a9eff);
+		cursor: pointer;
+		font-size: 13px;
+		font-weight: 500;
+		transition: all 0.2s ease;
+	}
+
+	.state-message button:hover {
+		background: color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
+		border-color: var(--theme-accent, #4a9eff);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+		transform: translateY(-1px);
+	}
+
+	.spinner {
+		width: 28px;
+		height: 28px;
+		border: 3px solid color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
+		border-top-color: var(--theme-accent, #4a9eff);
+		border-radius: 50%;
+		animation: spin 0.8s linear infinite;
+	}
+
+	.spinner.small {
+		width: 18px;
+		height: 18px;
+		border-width: 2px;
+	}
+
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.load-more-indicator {
+		grid-column: 1 / -1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 24px;
+		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+		font-size: 12px;
+	}
+
+	.load-more-indicator .spinner {
+		opacity: 0.6;
+	}
+</style>
