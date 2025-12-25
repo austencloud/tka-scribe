@@ -111,11 +111,17 @@ export class TransformationAnalysisService implements ITransformationAnalysisSer
 		if (beatPairs.length === 0) return;
 
 		const commonRaw = this.findAllCommonTransformations(beatPairs);
-		if (commonRaw.length === 0) return;
 
-		const primaryCommon = commonRaw[0];
-		if (!primaryCommon) return;
+		if (commonRaw.length > 0) {
+			// Global harmonization - all pairs share a common transformation
+			this.harmonizeAllPairs(beatPairs, commonRaw[0]!);
+		} else {
+			// No global common transformation - harmonize subgroups by family
+			this.harmonizeSubgroups(beatPairs);
+		}
+	}
 
+	private harmonizeAllPairs(beatPairs: InternalBeatPair[], primaryCommon: string): void {
 		// Find the family for this common transformation
 		const family = TRANSFORMATION_FAMILIES.find(
 			(f) => f.base === primaryCommon || f.members.includes(primaryCommon)
@@ -163,6 +169,74 @@ export class TransformationAnalysisService implements ITransformationAnalysisSer
 		}
 	}
 
+	private harmonizeSubgroups(beatPairs: InternalBeatPair[]): void {
+		// Group beat pairs by their transformation family
+		const familyGroups: Map<string, InternalBeatPair[]> = new Map();
+
+		for (const pair of beatPairs) {
+			// Find which family this pair belongs to
+			let matchedFamily: { base: string; members: string[] } | null = null;
+			for (const family of TRANSFORMATION_FAMILIES) {
+				const hasMatch = family.members.some((member) =>
+					pair.rawTransformations.includes(member)
+				);
+				if (hasMatch) {
+					matchedFamily = family;
+					break;
+				}
+			}
+
+			if (matchedFamily) {
+				const key = matchedFamily.base;
+				if (!familyGroups.has(key)) {
+					familyGroups.set(key, []);
+				}
+				familyGroups.get(key)!.push(pair);
+			}
+		}
+
+		// Harmonize each subgroup that has 2+ members
+		for (const [familyBase, groupPairs] of familyGroups) {
+			if (groupPairs.length < 2) continue;
+
+			const family = TRANSFORMATION_FAMILIES.find((f) => f.base === familyBase);
+			if (!family) continue;
+
+			// Find if any pair in this subgroup has a definitive (non-ambiguous) member
+			let definitiveVariant: string | null = null;
+			for (const pair of groupPairs) {
+				const matchingMembers = family.members.filter((member) =>
+					pair.rawTransformations.includes(member)
+				);
+				if (matchingMembers.length === 1) {
+					definitiveVariant = matchingMembers[0]!;
+					break;
+				}
+			}
+
+			// Apply the definitive variant to all pairs in this subgroup
+			if (definitiveVariant) {
+				for (const pair of groupPairs) {
+					// Only update if this pair has the definitive variant as a valid option
+					if (pair.rawTransformations.includes(definitiveVariant)) {
+						pair.detectedTransformations = [
+							this.formattingService.formatSingleTransformation(definitiveVariant)
+						];
+					} else {
+						// Check if the pair has both members (ambiguous) - use the definitive one
+						const hasBase = pair.rawTransformations.includes(family.base);
+						const hasInverted = pair.rawTransformations.includes(`${family.base}_inverted`);
+						if (hasBase && hasInverted) {
+							pair.detectedTransformations = [
+								this.formattingService.formatSingleTransformation(definitiveVariant)
+							];
+						}
+					}
+				}
+			}
+		}
+	}
+
 	detectAxisAlternatingPattern(
 		beatPairs: InternalBeatPair[],
 		_beatPairGroups: BeatPairGroups
@@ -183,6 +257,17 @@ export class TransformationAnalysisService implements ITransformationAnalysisSer
 		// Skip if there are too many different transformations
 		if (uniqueTransformations.length > 3) return null;
 
+		// Determine the meta-pattern type
+		let metaPatternType: 'palindromic' | 'alternating' | 'symmetric' | 'structured' = 'structured';
+
+		if (this.isPalindromic(patternSequence)) {
+			metaPatternType = 'palindromic';
+		} else if (this.isAlternating(patternSequence)) {
+			metaPatternType = 'alternating';
+		} else if (this.isSymmetricAroundCenter(patternSequence)) {
+			metaPatternType = 'symmetric';
+		}
+
 		// Check if all transformations belong to a related group
 		let matchedGroup: (typeof RELATED_TRANSFORMATION_GROUPS)[0] | null = null;
 		for (const group of RELATED_TRANSFORMATION_GROUPS) {
@@ -195,33 +280,36 @@ export class TransformationAnalysisService implements ITransformationAnalysisSer
 			}
 		}
 
-		if (!matchedGroup) return null;
-
-		// Determine the meta-pattern type
-		let metaPatternType: 'palindromic' | 'alternating' | 'symmetric' | 'structured' = 'structured';
-
-		if (this.isPalindromic(patternSequence)) {
-			metaPatternType = 'palindromic';
-		} else if (this.isAlternating(patternSequence)) {
-			metaPatternType = 'alternating';
-		} else if (this.isSymmetricAroundCenter(patternSequence)) {
-			metaPatternType = 'symmetric';
-		}
-
 		// Build human-readable description
 		const formattedTransformations = uniqueTransformations.map((t) =>
 			t.toUpperCase().replace(/_/g, ' ')
 		);
 
 		let description = '';
-		if (metaPatternType === 'palindromic') {
-			description = `Palindromic Axis-Alternating: ${formattedTransformations.join(' ↔ ')}`;
-		} else if (metaPatternType === 'alternating') {
-			description = `Alternating Axis: ${formattedTransformations.join(' ↔ ')}`;
-		} else if (metaPatternType === 'symmetric') {
-			description = `Symmetric Axis-Alternating: ${formattedTransformations.join(' ↔ ')}`;
+		if (matchedGroup) {
+			// Matched a related transformation group
+			if (metaPatternType === 'palindromic') {
+				description = `Palindromic Axis-Alternating: ${formattedTransformations.join(' ↔ ')}`;
+			} else if (metaPatternType === 'alternating') {
+				description = `Alternating Axis: ${formattedTransformations.join(' ↔ ')}`;
+			} else if (metaPatternType === 'symmetric') {
+				description = `Symmetric Axis-Alternating: ${formattedTransformations.join(' ↔ ')}`;
+			} else {
+				description = `Dual-Axis (${matchedGroup.description}): ${formattedTransformations.join(' + ')}`;
+			}
 		} else {
-			description = `Dual-Axis (${matchedGroup.description}): ${formattedTransformations.join(' + ')}`;
+			// No matched group, but we have a structured pattern with 2-3 distinct types
+			// This is a "Simple Modular" pattern
+			const typeCount = uniqueTransformations.length;
+			if (metaPatternType === 'palindromic') {
+				description = `Simple Modular (${typeCount} types, palindromic): ${formattedTransformations.join(' ↔ ')}`;
+			} else if (metaPatternType === 'alternating') {
+				description = `Simple Modular (${typeCount} types, alternating): ${formattedTransformations.join(' ↔ ')}`;
+			} else if (metaPatternType === 'symmetric') {
+				description = `Simple Modular (${typeCount} types, symmetric): ${formattedTransformations.join(' ↔ ')}`;
+			} else {
+				description = `Simple Modular (${typeCount} primary pair types): ${formattedTransformations.join(' + ')}`;
+			}
 		}
 
 		return {

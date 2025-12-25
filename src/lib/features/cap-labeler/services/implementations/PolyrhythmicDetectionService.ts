@@ -242,12 +242,15 @@ export class PolyrhythmicDetectionService {
             continue;
           }
 
-          // Also skip if EITHER period is halved - halved patterns are definitively CAPs
-          if (p1.period === halvedPeriod || p2.period === halvedPeriod) {
-            console.log("[PolyrhythmicDetection] Skipping pair - contains halved period:", {
+          // Also skip if EITHER period is halved or quartered - these are standard CAP intervals
+          // A repeated word (like 5-letter word repeated 4 times = 20 beats) is NOT polyrhythmic
+          if (p1.period === halvedPeriod || p2.period === halvedPeriod ||
+              p1.period === quarteredPeriod || p2.period === quarteredPeriod) {
+            console.log("[PolyrhythmicDetection] Skipping pair - contains standard CAP interval:", {
               p1Period: p1.period,
               p2Period: p2.period,
               halvedPeriod,
+              quarteredPeriod,
             });
             continue;
           }

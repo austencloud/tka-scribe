@@ -68,16 +68,9 @@
         // Silent - will try direct import
       }
 
-      // If tryResolve failed, try importing and instantiating directly
+      // If tryResolve failed, log error - CAPDetectionService has too many dependencies for manual instantiation
       if (!resolvedService) {
-        try {
-          const { CAPDetectionService } = await import("../services/implementations/CAPDetectionService");
-          const { PolyrhythmicDetectionService } = await import("../services/implementations/PolyrhythmicDetectionService");
-          const polyrhythmicService = new PolyrhythmicDetectionService();
-          resolvedService = new CAPDetectionService(polyrhythmicService);
-        } catch (importErr) {
-          console.error("[CAPLabelerModule] Failed to create detection service:", importErr);
-        }
+        console.error("[CAPLabelerModule] Failed to resolve CAPDetectionService from DI container. Detection features will be unavailable.");
       }
 
       detectionService = resolvedService;
@@ -387,11 +380,22 @@
 
   async function handleMarkUnknown() {
     if (!currentSequence) return;
-    if (labelingMode === "whole" && wholeState) {
-      await wholeState.actions.markAsUnknown(currentSequence.word, notes);
-    }
-    // For section/beatpair modes, mark via main state
-    // (would need to add markAsUnknown to capLabelerState if needed)
+
+    // Mark sequence as unknown (needs more investigation)
+    const updatedLabel = {
+      word: currentSequence.word,
+      designations: [],
+      isFreeform: false,
+      isModular: false,
+      isUnknown: true,
+      needsVerification: true, // Keep in review queue
+      labeledAt: new Date().toISOString(),
+      notes: notes || "Marked as unknown - needs further investigation",
+      sections: currentLabel?.sections || [],
+      beatPairs: currentLabel?.beatPairs || [],
+    };
+
+    await capLabelerState.saveLabel(updatedLabel);
     capLabelerState.nextSequence();
   }
 
@@ -424,6 +428,17 @@
   async function handleDeleteLabel() {
     if (!currentSequence) return;
     await capLabelerState.deleteLabel(currentSequence.word);
+  }
+
+  async function handleDeleteSequence() {
+    if (!currentSequence) return;
+    const result = await capLabelerState.deleteSequenceFromDatabase(
+      currentSequence.id,
+      currentSequence.word
+    );
+    if (!result.success) {
+      console.error("Failed to delete sequence:", result.error);
+    }
   }
 
   /**
@@ -480,11 +495,32 @@
   }
 
   /**
-   * Individual candidate denial is no longer needed with on-the-fly detection
+   * Deny a candidate designation - marks the sequence as freeform
    */
-  function handleDenyCandidate(_index: number) {
-    // No-op - individual denials not needed with computed designations
-    console.log("[CAPLabeler] Individual candidate denial deprecated - use Verify button");
+  async function handleDenyCandidate(_index: number) {
+    // Denying a candidate means "this detection is wrong" - mark as freeform
+    await handleSetFreeform();
+  }
+
+  /**
+   * Mark sequence as freeform (no recognizable pattern)
+   */
+  async function handleSetFreeform() {
+    if (!currentSequence) return;
+
+    const updatedLabel = {
+      word: currentSequence.word,
+      designations: [],
+      isFreeform: true,
+      isModular: false,
+      needsVerification: false,
+      labeledAt: new Date().toISOString(),
+      notes: notes || "",
+      sections: currentLabel?.sections || [],
+      beatPairs: currentLabel?.beatPairs || [],
+    };
+
+    await capLabelerState.saveLabel(updatedLabel);
   }
 
   // Keyboard event handling (shift key for section selection)
@@ -602,20 +638,21 @@
           onRemoveWholeDesignation={handleRemoveDesignation}
           onRemoveSectionDesignation={handleRemoveSection}
           onRemoveBeatPairDesignation={handleRemoveBeatPair}
-          onSetFreeform={() =>
-            wholeState?.actions.setFreeform(!wholeState?.isFreeform)}
+          onSetFreeform={handleSetFreeform}
           onMarkUnknown={handleMarkUnknown}
           onSaveAndNext={handleSaveAndNext}
           onConfirmAutoLabel={handleVerify}
           onConfirmCandidate={handleConfirmCandidate}
           onDenyCandidate={handleDenyCandidate}
           onConfirmAllCandidates={handleVerify}
+          onDeleteSequence={handleDeleteSequence}
           canSave={(wholeState?.pendingDesignations.length ?? 0) > 0 ||
             (sectionState?.savedSections.length ?? 0) > 0 ||
             (beatPairState?.savedBeatPairs.length ?? 0) > 0 ||
             (wholeState?.isFreeform ?? false) ||
             (currentComputedDetection?.isModular ?? false) ||
             (currentComputedDetection?.isPolyrhythmic ?? false)}
+          sequenceWord={currentSequence?.word ?? ""}
         />
 
         <!-- Manual designation builder - hidden behind toggle -->

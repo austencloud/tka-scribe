@@ -24,18 +24,42 @@ export function invertRotDir(dir: string): string {
 
 /**
  * Check if a beat pair has rotation data that can be used to determine inversion.
- * Returns true if at least one color in both beats has rotation direction.
+ * Returns true if at least one color in both beats has meaningful rotation direction.
+ * Static motions are excluded - their rotation direction shouldn't determine inversion.
  */
 export function hasRotationData(
 	b1BluePropRotDir: string,
 	b1RedPropRotDir: string,
 	b2BluePropRotDir: string,
-	b2RedPropRotDir: string
+	b2RedPropRotDir: string,
+	b1BlueMotionType?: string,
+	b1RedMotionType?: string,
+	b2BlueMotionType?: string,
+	b2RedMotionType?: string
 ): boolean {
-	const b1BlueHasRot = Boolean(b1BluePropRotDir && b1BluePropRotDir !== 'norotation');
-	const b1RedHasRot = Boolean(b1RedPropRotDir && b1RedPropRotDir !== 'norotation');
-	const b2BlueHasRot = Boolean(b2BluePropRotDir && b2BluePropRotDir !== 'norotation');
-	const b2RedHasRot = Boolean(b2RedPropRotDir && b2RedPropRotDir !== 'norotation');
+	// A prop has meaningful rotation if:
+	// 1. It has a rotation direction (not noRotation)
+	// 2. It's NOT a static motion (static props spinning in place don't count)
+	const b1BlueHasRot = Boolean(
+		b1BluePropRotDir &&
+		b1BluePropRotDir !== 'norotation' &&
+		b1BlueMotionType !== 'static'
+	);
+	const b1RedHasRot = Boolean(
+		b1RedPropRotDir &&
+		b1RedPropRotDir !== 'norotation' &&
+		b1RedMotionType !== 'static'
+	);
+	const b2BlueHasRot = Boolean(
+		b2BluePropRotDir &&
+		b2BluePropRotDir !== 'norotation' &&
+		b2BlueMotionType !== 'static'
+	);
+	const b2RedHasRot = Boolean(
+		b2RedPropRotDir &&
+		b2RedPropRotDir !== 'norotation' &&
+		b2RedMotionType !== 'static'
+	);
 
 	// Has rotation data if at least one color has rotation in BOTH beats
 	return (b1BlueHasRot && b2BlueHasRot) || (b1RedHasRot && b2RedHasRot);

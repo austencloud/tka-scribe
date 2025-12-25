@@ -12,6 +12,7 @@ import { NavigationService } from "$lib/features/cap-labeler/services/implementa
 import { SequenceFeatureExtractor } from "$lib/features/cap-labeler/services/implementations/SequenceFeatureExtractor";
 import { RuleBasedTagger } from "$lib/features/cap-labeler/services/implementations/RuleBasedTagger";
 import { PolyrhythmicDetectionService } from "$lib/features/cap-labeler/services/implementations/PolyrhythmicDetectionService";
+import { LayeredPathDetectionService } from "$lib/features/cap-labeler/services/implementations/LayeredPathDetectionService";
 
 // Comparison services
 import { RotationComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/RotationComparisonService";
@@ -48,6 +49,12 @@ export const capLabelerModule = new ContainerModule(
     options
       .bind(CAPLabelerTypes.IPolyrhythmicDetectionService)
       .to(PolyrhythmicDetectionService)
+      .inSingletonScope();
+
+    // LayeredPathDetectionService - analyzes individual hand path periodicity
+    options
+      .bind(CAPLabelerTypes.ILayeredPathDetectionService)
+      .to(LayeredPathDetectionService)
       .inSingletonScope();
 
     // === COMPARISON SERVICES ===

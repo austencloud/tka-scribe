@@ -58,4 +58,13 @@ export interface ICAPLabelsFirebaseService {
   syncLocalStorageToFirebase(
     labels: Map<string, LabeledSequence>
   ): Promise<void>;
+
+  /**
+   * Delete a sequence from the publicSequences collection
+   * Also deletes the associated CAP label
+   */
+  deleteSequenceFromDatabase(
+    sequenceId: string,
+    word: string
+  ): Promise<{ success: boolean; error?: string }>;
 }

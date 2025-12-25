@@ -74,7 +74,11 @@ export class RotationComparisonService implements IRotationComparisonService {
 			b1Blue.propRotDir,
 			b1Red.propRotDir,
 			b2Blue.propRotDir,
-			b2Red.propRotDir
+			b2Red.propRotDir,
+			b1Blue.motionType,
+			b1Red.motionType,
+			b2Blue.motionType,
+			b2Red.motionType
 		);
 
 		// Check each rotation type
@@ -153,7 +157,11 @@ export class RotationComparisonService implements IRotationComparisonService {
 			b1Red.propRotDir,
 			b1Blue.propRotDir,
 			b2Blue.propRotDir,
-			b2Red.propRotDir
+			b2Red.propRotDir,
+			b1Red.motionType,
+			b1Blue.motionType,
+			b2Blue.motionType,
+			b2Red.motionType
 		);
 
 		if (positions180Swapped) {

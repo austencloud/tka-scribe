@@ -55,7 +55,11 @@ export class ReflectionComparisonService implements IReflectionComparisonService
 			b1Blue.propRotDir,
 			b1Red.propRotDir,
 			b2Blue.propRotDir,
-			b2Red.propRotDir
+			b2Red.propRotDir,
+			b1Blue.motionType,
+			b1Red.motionType,
+			b2Blue.motionType,
+			b2Red.motionType
 		);
 
 		// For MIRROR/FLIP: rotation direction naturally FLIPS due to reflection.
@@ -171,7 +175,11 @@ export class ReflectionComparisonService implements IReflectionComparisonService
 			b1Red.propRotDir,
 			b1Blue.propRotDir,
 			b2Blue.propRotDir,
-			b2Red.propRotDir
+			b2Red.propRotDir,
+			b1Red.motionType,
+			b1Blue.motionType,
+			b2Blue.motionType,
+			b2Red.motionType
 		);
 
 		const rotDirInvertedForSwap =

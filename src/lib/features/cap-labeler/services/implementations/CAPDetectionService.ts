@@ -14,6 +14,10 @@ import type {
 	IPolyrhythmicDetectionService,
 	PolyrhythmicCAPResult
 } from '../contracts/IPolyrhythmicDetectionService';
+import type {
+	ILayeredPathDetectionService,
+	LayeredPathResult
+} from '../contracts/ILayeredPathDetectionService';
 import type { InternalBeatPair, CandidateInfo } from '../../domain/models/internal-beat-models';
 import type { ComponentId } from '../../domain/constants/cap-components';
 import { CAPLabelerTypes } from '$lib/shared/inversify/types/cap-labeler.types';
@@ -33,11 +37,14 @@ export class CAPDetectionService implements ICAPDetectionService {
 		private formattingService: ICandidateFormattingService,
 		@inject(CAPLabelerTypes.IPolyrhythmicDetectionService)
 		@optional()
-		private polyrhythmicService?: IPolyrhythmicDetectionService
+		private polyrhythmicService?: IPolyrhythmicDetectionService,
+		@inject(CAPLabelerTypes.ILayeredPathDetectionService)
+		@optional()
+		private layeredPathService?: ILayeredPathDetectionService
 	) {
 		console.log(
-			'[CAPDetectionService] Constructed with polyrhythmic service:',
-			!!polyrhythmicService
+			'[CAPDetectionService] Constructed with services:',
+			{ polyrhythmic: !!polyrhythmicService, layeredPath: !!layeredPathService }
 		);
 	}
 
@@ -62,7 +69,7 @@ export class CAPDetectionService implements ICAPDetectionService {
 		const circular = this.isCircular(sequence);
 		const beats = this.comparisonOrchestrator.extractBeats(sequence);
 
-		// Run polyrhythmic detection
+		// Run polyrhythmic detection (legacy)
 		const rawSequence = (sequence.fullMetadata?.sequence || []) as Record<string, unknown>[];
 		const polyrhythmic: PolyrhythmicCAPResult = this.polyrhythmicService?.detectPolyrhythmic(
 			rawSequence
@@ -76,21 +83,36 @@ export class CAPDetectionService implements ICAPDetectionService {
 			confidence: 0
 		};
 
+		// Run layered path detection (new parent category)
+		const layeredPath: LayeredPathResult = this.layeredPathService?.detectLayeredPath(
+			rawSequence
+		) ?? {
+			isLayeredPath: false,
+			blueCycle: null,
+			redCycle: null,
+			rhythmType: null,
+			polyrhythmRatio: null,
+			zoneCoverage: null,
+			description: 'Layered path detection not available',
+			confidence: 0
+		};
+
 		console.log('[CAPDetectionService] Initial analysis:', {
 			word: sequence.word,
 			isCircular: circular,
 			beatCount: beats.length,
-			polyrhythmic: polyrhythmic.isPolyrhythmic ? polyrhythmic.polyrhythm : 'none'
+			polyrhythmic: polyrhythmic.isPolyrhythmic ? polyrhythmic.polyrhythm : 'none',
+			layeredPath: layeredPath.isLayeredPath ? layeredPath.rhythmType : 'none'
 		});
 
 		// Non-circular or too short
 		if (!circular || beats.length < 2) {
-			return this.buildEmptyResult(circular, polyrhythmic);
+			return this.buildEmptyResult(circular, polyrhythmic, layeredPath);
 		}
 
 		// Must have even number of beats
 		if (beats.length % 2 !== 0) {
-			return this.buildFreeformResult(polyrhythmic);
+			return this.buildFreeformResult(polyrhythmic, layeredPath);
 		}
 
 		// Generate halved beat pairs (always needed)
@@ -110,7 +132,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 				beats,
 				halvedBeatPairs,
 				rotationDirection,
-				polyrhythmic
+				polyrhythmic,
+				layeredPath
 			);
 			if (quarteredResult) {
 				return quarteredResult;
@@ -122,21 +145,23 @@ export class CAPDetectionService implements ICAPDetectionService {
 			halvedBeatPairs,
 			halvedBeatPairGroups,
 			rotationDirection,
-			polyrhythmic
+			polyrhythmic,
+			layeredPath
 		);
 		if (halvedResult) {
 			return halvedResult;
 		}
 
 		// Fallback: modular or freeform
-		return this.buildFallbackResult(halvedBeatPairs, halvedBeatPairGroups, polyrhythmic);
+		return this.buildFallbackResult(halvedBeatPairs, halvedBeatPairGroups, polyrhythmic, layeredPath);
 	}
 
 	private detectQuarteredPattern(
 		beats: ReturnType<IBeatComparisonOrchestrator['extractBeats']>,
 		halvedBeatPairs: InternalBeatPair[],
 		rotationDirection: 'cw' | 'ccw' | null,
-		polyrhythmic: PolyrhythmicCAPResult
+		polyrhythmic: PolyrhythmicCAPResult,
+		layeredPath: LayeredPathResult
 	): CAPDetectionResult | null {
 		const quarteredBeatPairs = this.comparisonOrchestrator.generateQuarteredBeatPairs(beats);
 		this.analysisService.reprioritizeBeatPairs(quarteredBeatPairs);
@@ -170,7 +195,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 			const modularResult = this.detectModularQuarteredPattern(
 				quarteredBeatPairs,
 				rotationDirection,
-				polyrhythmic
+				polyrhythmic,
+				layeredPath
 			);
 			if (modularResult) {
 				return modularResult;
@@ -243,6 +269,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 			isCircular: true,
 			isFreeform: false,
 			isModular: false,
+			layeredPath,
+			isLayeredPath: layeredPath.isLayeredPath,
 			polyrhythmic,
 			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
 			compoundPattern,
@@ -340,7 +368,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 		halvedBeatPairs: InternalBeatPair[],
 		halvedBeatPairGroups: Record<string, number[]>,
 		rotationDirection: 'cw' | 'ccw' | null,
-		polyrhythmic: PolyrhythmicCAPResult
+		polyrhythmic: PolyrhythmicCAPResult,
+		layeredPath: LayeredPathResult
 	): CAPDetectionResult | null {
 		const allHalvedCommon = this.analysisService.findAllCommonTransformations(halvedBeatPairs);
 
@@ -381,6 +410,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 			isCircular: true,
 			isFreeform: false,
 			isModular: false,
+			layeredPath,
+			isLayeredPath: layeredPath.isLayeredPath,
 			polyrhythmic,
 			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
 			isAxisAlternating: false
@@ -390,7 +421,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 	private buildFallbackResult(
 		halvedBeatPairs: InternalBeatPair[],
 		halvedBeatPairGroups: Record<string, number[]>,
-		polyrhythmic: PolyrhythmicCAPResult
+		polyrhythmic: PolyrhythmicCAPResult,
+		layeredPath: LayeredPathResult
 	): CAPDetectionResult {
 		const patternGroups = Object.keys(halvedBeatPairGroups);
 		const hasUnknown = patternGroups.some((p) => p === 'UNKNOWN');
@@ -415,6 +447,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 			isCircular: true,
 			isFreeform,
 			isModular,
+			layeredPath,
+			isLayeredPath: layeredPath.isLayeredPath,
 			polyrhythmic,
 			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
 			isAxisAlternating: axisAlternating !== null,
@@ -432,7 +466,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 
 	private buildEmptyResult(
 		isCircular: boolean,
-		polyrhythmic: PolyrhythmicCAPResult
+		polyrhythmic: PolyrhythmicCAPResult,
+		layeredPath: LayeredPathResult
 	): CAPDetectionResult {
 		return {
 			capType: null,
@@ -445,13 +480,18 @@ export class CAPDetectionService implements ICAPDetectionService {
 			isCircular,
 			isFreeform: false,
 			isModular: false,
+			layeredPath,
+			isLayeredPath: layeredPath.isLayeredPath,
 			polyrhythmic,
 			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
 			isAxisAlternating: false
 		};
 	}
 
-	private buildFreeformResult(polyrhythmic: PolyrhythmicCAPResult): CAPDetectionResult {
+	private buildFreeformResult(
+		polyrhythmic: PolyrhythmicCAPResult,
+		layeredPath: LayeredPathResult
+	): CAPDetectionResult {
 		return {
 			capType: null,
 			components: [],
@@ -463,6 +503,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 			isCircular: true,
 			isFreeform: true,
 			isModular: false,
+			layeredPath,
+			isLayeredPath: layeredPath.isLayeredPath,
 			polyrhythmic,
 			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
 			isAxisAlternating: false
@@ -534,8 +576,32 @@ export class CAPDetectionService implements ICAPDetectionService {
 	private detectModularQuarteredPattern(
 		quarteredBeatPairs: InternalBeatPair[],
 		rotationDirection: 'cw' | 'ccw' | null,
-		polyrhythmic: PolyrhythmicCAPResult
+		polyrhythmic: PolyrhythmicCAPResult,
+		layeredPath: LayeredPathResult
 	): CAPDetectionResult | null {
+		// Check for high UNKNOWN rate - if too many beat pairs are unknown, this isn't modular
+		const unknownCount = quarteredBeatPairs.filter((pair) => {
+			const primary = pair.detectedTransformations[0]?.toUpperCase() || '';
+			return primary === 'UNKNOWN' || primary === '';
+		}).length;
+
+		const unknownRate = unknownCount / quarteredBeatPairs.length;
+		if (unknownRate >= 0.5) {
+			// 50% or more UNKNOWN = not a modular pattern, let fallback handle as freeform
+			return null;
+		}
+
+		// Check if all beat pairs have the SAME detected transformation
+		// If so, this is UNIFORM, not modular - let halved detection handle it
+		const detectedPrimaries = quarteredBeatPairs.map(
+			(pair) => pair.detectedTransformations[0]?.toUpperCase() || 'UNKNOWN'
+		);
+		const uniqueDetected = new Set(detectedPrimaries);
+		if (uniqueDetected.size === 1 && !uniqueDetected.has('UNKNOWN')) {
+			// All beat pairs have the same transformation - this is uniform, not modular
+			return null;
+		}
+
 		// Use 4 columns for quartered patterns (positions 1,2,3,4 within each quarter)
 		const modularAnalysis = this.analysisService.detectModularPattern(quarteredBeatPairs, 4);
 
@@ -609,6 +675,8 @@ export class CAPDetectionService implements ICAPDetectionService {
 			isCircular: true,
 			isFreeform: false,
 			isModular: true,
+			layeredPath,
+			isLayeredPath: layeredPath.isLayeredPath,
 			polyrhythmic,
 			isPolyrhythmic: polyrhythmic.isPolyrhythmic,
 			isAxisAlternating: false,

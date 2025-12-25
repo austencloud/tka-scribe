@@ -5,6 +5,7 @@ import {
   setDoc,
   deleteDoc,
   getDocs,
+  getDoc,
   type Firestore,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
@@ -14,6 +15,7 @@ import type {
 } from "../contracts/ICAPLabelsFirebaseService";
 
 const CAP_LABELS_COLLECTION = "cap-labels";
+const PUBLIC_SEQUENCES_COLLECTION = "publicSequences";
 const LOCAL_STORAGE_KEY = "cap-labels";
 
 /**
@@ -171,5 +173,47 @@ export class CAPLabelsFirebaseService implements ICAPLabelsFirebaseService {
    */
   getSyncStatus(): "synced" | "syncing" | "error" {
     return this.syncStatus;
+  }
+
+  /**
+   * Delete a sequence from the publicSequences collection
+   * Also deletes the associated CAP label
+   */
+  async deleteSequenceFromDatabase(sequenceId: string, word: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const firestore = await this.ensureFirestore();
+      this.syncStatus = "syncing";
+
+      // Check if sequence exists in publicSequences
+      const sequenceRef = doc(firestore, PUBLIC_SEQUENCES_COLLECTION, sequenceId);
+      const sequenceSnap = await getDoc(sequenceRef);
+
+      if (!sequenceSnap.exists()) {
+        console.warn(`Sequence "${sequenceId}" not found in publicSequences`);
+        // Continue anyway to delete the CAP label
+      } else {
+        // Delete from publicSequences
+        await deleteDoc(sequenceRef);
+        console.log(`Deleted sequence "${sequenceId}" from publicSequences`);
+      }
+
+      // Also delete the CAP label if it exists
+      const labelRef = doc(firestore, CAP_LABELS_COLLECTION, word);
+      const labelSnap = await getDoc(labelRef);
+      if (labelSnap.exists()) {
+        await deleteDoc(labelRef);
+        console.log(`Deleted CAP label for "${word}"`);
+      }
+
+      this.syncStatus = "synced";
+      return { success: true };
+    } catch (error) {
+      console.error("Failed to delete sequence from database:", error);
+      this.syncStatus = "error";
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error occurred"
+      };
+    }
   }
 }

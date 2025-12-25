@@ -3,6 +3,7 @@ import type { CandidateDesignation, BeatPairGroups, TransformationIntervals } fr
 import type { BeatPairRelationship } from "./IBeatPairAnalysisService";
 import type { ComponentId } from "../../domain/constants/cap-components";
 import type { PolyrhythmicCAPResult } from "./IPolyrhythmicDetectionService";
+import type { LayeredPathResult } from "./ILayeredPathDetectionService";
 
 /**
  * Describes a compound CAP pattern with multiple transformations at different intervals
@@ -93,12 +94,20 @@ export interface CAPDetectionResult {
   /** Is this a modular pattern (multiple different but recognizable transformations)? */
   isModular: boolean;
 
-  // === POLYRHYTHMIC DETECTION (runs alongside beat-pair detection) ===
+  // === LAYERED PATH DETECTION ===
 
-  /** Polyrhythmic analysis result */
+  /** Layered path analysis result (parent category) */
+  layeredPath: LayeredPathResult | null;
+
+  /** Is this a layered path CAP? */
+  isLayeredPath: boolean;
+
+  // === POLYRHYTHMIC DETECTION (subtype of layered path) ===
+
+  /** Polyrhythmic analysis result (legacy - now part of layeredPath) */
   polyrhythmic: PolyrhythmicCAPResult | null;
 
-  /** Is this a polyrhythmic pattern? */
+  /** Is this a polyrhythmic pattern? (subtype of layered path) */
   isPolyrhythmic: boolean;
 
   // === COMPOUND PATTERN DETECTION ===

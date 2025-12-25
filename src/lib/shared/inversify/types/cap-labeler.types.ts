@@ -13,6 +13,7 @@ export const CAPLabelerTypes = {
   ISequenceFeatureExtractor: Symbol.for("ISequenceFeatureExtractor"),
   IRuleBasedTagger: Symbol.for("IRuleBasedTagger"),
   IPolyrhythmicDetectionService: Symbol.for("IPolyrhythmicDetectionService"),
+  ILayeredPathDetectionService: Symbol.for("ILayeredPathDetectionService"),
 
   // Comparison services (CAP detection)
   IRotationComparisonService: Symbol.for("IRotationComparisonService"),

@@ -48,7 +48,9 @@
     onConfirmCandidate?: (index: number) => void;
     onDenyCandidate?: (index: number) => void;
     onConfirmAllCandidates?: () => void;
+    onDeleteSequence?: () => void;
     canSave: boolean;
+    sequenceWord?: string;
   }
 
   let {
@@ -77,11 +79,28 @@
     onConfirmCandidate,
     onDenyCandidate,
     onConfirmAllCandidates,
+    onDeleteSequence,
     canSave,
+    sequenceWord = "",
   }: Props = $props();
 
   // Copy detection info to clipboard for debugging
   let copySuccess = $state(false);
+
+  // Delete confirmation state
+  let showDeleteConfirm = $state(false);
+  let isDeleting = $state(false);
+
+  async function handleDeleteSequence() {
+    if (!onDeleteSequence) return;
+    isDeleting = true;
+    try {
+      await onDeleteSequence();
+      showDeleteConfirm = false;
+    } finally {
+      isDeleting = false;
+    }
+  }
 
   async function copyDetectionInfo() {
     const detectionInfo = {
@@ -472,6 +491,52 @@
       Save & Next
     </button>
   </div>
+
+  <!-- Delete sequence section -->
+  {#if onDeleteSequence}
+    <div class="delete-section">
+      {#if showDeleteConfirm}
+        <div class="delete-confirm">
+          <span class="delete-warning">
+            <FontAwesomeIcon icon="triangle-exclamation" size="0.9em" />
+            Delete "{sequenceWord}" from database?
+          </span>
+          <div class="delete-actions">
+            <button
+              class="delete-cancel-btn"
+              onclick={() => showDeleteConfirm = false}
+              disabled={isDeleting}
+            >
+              Cancel
+            </button>
+            <button
+              class="delete-confirm-btn"
+              onclick={handleDeleteSequence}
+              disabled={isDeleting}
+            >
+              {#if isDeleting}
+                <span class="spinner-icon">
+                  <FontAwesomeIcon icon="spinner" size="0.9em" />
+                </span>
+                Deleting...
+              {:else}
+                <FontAwesomeIcon icon="trash" size="0.9em" />
+                Delete
+              {/if}
+            </button>
+          </div>
+        </div>
+      {:else}
+        <button
+          class="action-btn delete"
+          onclick={() => showDeleteConfirm = true}
+        >
+          <FontAwesomeIcon icon="trash" size="0.9em" />
+          Delete Sequence
+        </button>
+      {/if}
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -1173,5 +1238,112 @@
     font-weight: 600;
     min-width: 3em;
     text-align: right;
+  }
+
+  /* Delete Section */
+  .delete-section {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .delete-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+  }
+
+  .delete-warning {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: #ef4444;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+
+  .delete-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
+  }
+
+  .delete-cancel-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    color: var(--muted-foreground);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .delete-cancel-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--foreground);
+  }
+
+  .delete-cancel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .delete-confirm-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 6px;
+    color: #ef4444;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+  }
+
+  .delete-confirm-btn:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.7);
+  }
+
+  .delete-confirm-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .action-btn.delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: var(--muted-foreground);
+    font-weight: 500;
+  }
+
+  .action-btn.delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #ef4444;
+  }
+
+  .spinner-icon {
+    display: inline-flex;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

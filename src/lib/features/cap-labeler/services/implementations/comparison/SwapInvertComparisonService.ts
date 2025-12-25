@@ -58,7 +58,11 @@ export class SwapInvertComparisonService implements ISwapInvertComparisonService
 			b1Red.propRotDir,
 			b1Blue.propRotDir,
 			b2Blue.propRotDir,
-			b2Red.propRotDir
+			b2Red.propRotDir,
+			b1Red.motionType,
+			b1Blue.motionType,
+			b2Blue.motionType,
+			b2Red.motionType
 		);
 
 		const rotDirSameSwapped =

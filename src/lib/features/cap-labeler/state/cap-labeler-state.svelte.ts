@@ -740,6 +740,58 @@ class CAPLabelerStateManager {
     }
   }
 
+  /**
+   * Delete a sequence from the database entirely
+   * This removes from publicSequences AND deletes any CAP label
+   */
+  async deleteSequenceFromDatabase(sequenceId: string, word: string): Promise<{ success: boolean; error?: string }> {
+    const labelsService = this.getLabelsService();
+    if (!labelsService) {
+      return { success: false, error: "Labels service not available" };
+    }
+
+    try {
+      this.state.syncStatus = "syncing";
+
+      // Delete from Firebase
+      const result = await labelsService.deleteSequenceFromDatabase(sequenceId, word);
+
+      if (result.success) {
+        // Remove from local labels state
+        this.state.labels.delete(word);
+        this.state.labels = new Map(this.state.labels);
+
+        // Remove from local sequences list
+        this.state.sequences = this.state.sequences.filter(s => s.id !== sequenceId);
+
+        // Clear detection cache for this sequence
+        this.detectionCache.delete(sequenceId);
+
+        // Adjust current index if needed
+        if (this.state.currentIndex >= this.filteredSequences.length) {
+          this.state.currentIndex = Math.max(0, this.filteredSequences.length - 1);
+        }
+
+        // Save labels to localStorage
+        labelsService.saveToLocalStorage(this.state.labels);
+
+        this.state.syncStatus = "synced";
+        console.log(`Successfully deleted sequence "${word}" (${sequenceId}) from database`);
+      } else {
+        this.state.syncStatus = "error";
+      }
+
+      return result;
+    } catch (error) {
+      console.error("[CAPLabelerState] Failed to delete sequence:", error);
+      this.state.syncStatus = "error";
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error occurred"
+      };
+    }
+  }
+
   // ============================================================
   // HELPERS
   // ============================================================
