@@ -10,6 +10,24 @@ import type { GridMode } from "../../domain/constants/grid-layout";
 import type { Plane } from "../../domain/enums/Plane";
 
 /**
+ * Body proportions for avatar (all in centimeters)
+ */
+export interface AvatarProportions {
+  height: number;
+  headHeight: number;
+  neckLength: number;
+  shoulderWidth: number;
+  torsoLength: number;
+  hipWidth: number;
+  upperArmLength: number;
+  forearmLength: number;
+  handLength: number;
+  inseam: number;
+  thighLength: number;
+  shinLength: number;
+}
+
+/**
  * State structure for persistence
  */
 export interface Animation3DPersistedState {
@@ -28,6 +46,12 @@ export interface Animation3DPersistedState {
   activeTab: "blue" | "red";
   panelOpen: boolean;
   speed: number;
+
+  // Avatar customization
+  bodyType: "masculine" | "feminine";
+  skinTone: string;
+  showFigure: boolean;
+  avatarProportions: AvatarProportions;
 
   // Playback
   loop: boolean;

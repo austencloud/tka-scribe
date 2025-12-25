@@ -15,24 +15,24 @@ export const PLANE_OPTIONS = [
   { value: Plane.WALL, label: "Wall" },
   { value: Plane.WHEEL, label: "Wheel" },
   { value: Plane.FLOOR, label: "Floor" },
-] as const;
+];
 
 export const MOTION_TYPE_OPTIONS = [
   { value: MotionType.PRO, label: "PRO" },
   { value: MotionType.ANTI, label: "ANTI" },
   { value: MotionType.STATIC, label: "STATIC" },
   { value: MotionType.DASH, label: "DASH" },
-] as const;
+];
 
 export const DIRECTION_OPTIONS = [
   { value: RotationDirection.CLOCKWISE, label: "CW", icon: "fas fa-redo" },
   { value: RotationDirection.COUNTER_CLOCKWISE, label: "CCW", icon: "fas fa-undo" },
   { value: RotationDirection.NO_ROTATION, label: "—" },
-] as const;
+];
 
 export const ORIENTATION_OPTIONS = [
   { value: Orientation.IN, label: "IN" },
   { value: Orientation.OUT, label: "OUT" },
   { value: Orientation.CLOCK, label: "CK" },
   { value: Orientation.COUNTER, label: "CC" },
-] as const;
+];

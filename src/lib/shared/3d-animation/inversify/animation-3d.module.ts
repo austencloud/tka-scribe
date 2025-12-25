@@ -17,6 +17,12 @@ import { PropStateInterpolatorService } from "../services/implementations/PropSt
 import { SequenceConverterService } from "../services/implementations/SequenceConverterService";
 import { Animation3DPersistenceService } from "../services/implementations/Animation3DPersistenceService";
 
+// Avatar system (production-quality rigged model support)
+import { AvatarSkeletonService } from "../services/implementations/AvatarSkeletonService";
+import { IKSolverService } from "../services/implementations/IKSolverService";
+import { AvatarCustomizationService } from "../services/implementations/AvatarCustomizationService";
+import { AvatarAnimationService } from "../services/implementations/AvatarAnimationService";
+
 export const animation3DModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Core math services (no dependencies)
@@ -58,6 +64,34 @@ export const animation3DModule = new ContainerModule(
     options
       .bind(ANIMATION_3D_TYPES.IAnimation3DPersistenceService)
       .to(Animation3DPersistenceService)
+      .inSingletonScope();
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // AVATAR SYSTEM (Production-quality rigged model support)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Skeleton management (GLTF loading, bone access)
+    options
+      .bind(ANIMATION_3D_TYPES.IAvatarSkeletonService)
+      .to(AvatarSkeletonService)
+      .inSingletonScope();
+
+    // IK solver (analytic, CCD, FABRIK algorithms)
+    options
+      .bind(ANIMATION_3D_TYPES.IIKSolverService)
+      .to(IKSolverService)
+      .inSingletonScope();
+
+    // Customization (body type, skin tone, proportions)
+    options
+      .bind(ANIMATION_3D_TYPES.IAvatarCustomizationService)
+      .to(AvatarCustomizationService)
+      .inSingletonScope();
+
+    // Animation (pose blending, transitions)
+    options
+      .bind(ANIMATION_3D_TYPES.IAvatarAnimationService)
+      .to(AvatarAnimationService)
       .inSingletonScope();
   }
 );

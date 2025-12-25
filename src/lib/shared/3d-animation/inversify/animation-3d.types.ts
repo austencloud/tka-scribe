@@ -19,4 +19,10 @@ export const ANIMATION_3D_TYPES = {
 
   // Persistence
   IAnimation3DPersistenceService: Symbol.for("IAnimation3DPersistenceService"),
+
+  // Avatar system (production-quality rigged model support)
+  IAvatarSkeletonService: Symbol.for("IAvatarSkeletonService"),
+  IIKSolverService: Symbol.for("IIKSolverService"),
+  IAvatarCustomizationService: Symbol.for("IAvatarCustomizationService"),
+  IAvatarAnimationService: Symbol.for("IAvatarAnimationService"),
 };

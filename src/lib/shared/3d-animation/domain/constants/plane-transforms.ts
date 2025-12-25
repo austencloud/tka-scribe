@@ -14,16 +14,26 @@ import { Vector3, Euler, Quaternion } from "three";
 import { Plane } from "../enums/Plane";
 
 /**
+ * Scale: 1 unit = 0.5 cm
+ *
+ * Grid radius = comfortable arm extension distance from body center
+ * For a 6'3" person, this is about 50cm (100 units)
+ *
+ * Staff length is SEPARATE - a 34" staff = 86.4cm = 173 units
+ */
+
+/**
  * Default grid radius in 3D world units.
  * This determines the distance from center to hand points.
- * Staff length = 2× this value, so staff spans from center to outer.
+ * Based on comfortable arm extension (~50cm for tall performer)
  */
-export const GRID_RADIUS_3D = 150;
+export const GRID_RADIUS_3D = 100; // 50cm in new scale
 
 /**
  * Conversion factor from 2D canvas (950x950) to 3D units
+ * ~143px is the 2D hand point radius in canvas coords
  */
-export const CANVAS_TO_3D_SCALE = GRID_RADIUS_3D / 143; // ~143px is 2D hand point radius
+export const CANVAS_TO_3D_SCALE = GRID_RADIUS_3D / 143;
 
 /**
  * Convert a 2D path angle to a 3D world position on the specified plane.

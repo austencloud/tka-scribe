@@ -11,37 +11,37 @@
   import { onMount, onDestroy } from "svelte";
   import Scene3D from "./components/Scene3D.svelte";
   import Staff3D from "./components/Staff3D.svelte";
+  import IKFigure3D, { type BodyType } from "./components/IKFigure3D.svelte";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
+  import AvatarToggleButton from "./components/controls/AvatarToggleButton.svelte";
   import Keyboard3DCoordinator from "./keyboard/Keyboard3DCoordinator.svelte";
   import type { CameraPreset } from "./components/controls/CameraPresetBar.svelte";
   import { Plane } from "./domain/enums/Plane";
   import type { GridMode } from "./domain/constants/grid-layout";
-  import { createAnimation3DState } from "./state/animation-3d-state.svelte";
+  import { createAnimation3DState, type Animation3DState } from "./state/animation-3d-state.svelte";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import ShortcutsHelp from "$lib/shared/keyboard/components/ShortcutsHelp.svelte";
   import { keyboardShortcutState } from "$lib/shared/keyboard/state/keyboard-shortcut-state.svelte";
-  import type { CameraState } from "./components/Scene3D.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { container } from "$lib/shared/inversify/container";
+
+  // CameraState type (matches Scene3D.svelte's internal definition)
+  interface CameraState {
+    position: [number, number, number];
+    target: [number, number, number];
+  }
+  import { container, loadFeatureModule } from "$lib/shared/inversify/container";
   import { ANIMATION_3D_TYPES } from "./inversify/animation-3d.types";
   import type { IPropStateInterpolatorService } from "./services/contracts/IPropStateInterpolatorService";
   import type { ISequenceConverterService } from "./services/contracts/ISequenceConverterService";
   import type { IAnimation3DPersistenceService } from "./services/contracts/IAnimation3DPersistenceService";
 
-  // Get services from container
-  const propInterpolator = container.get<IPropStateInterpolatorService>(
-    ANIMATION_3D_TYPES.IPropStateInterpolatorService
-  );
-  const sequenceConverter = container.get<ISequenceConverterService>(
-    ANIMATION_3D_TYPES.ISequenceConverterService
-  );
-  const persistenceService = container.get<IAnimation3DPersistenceService>(
-    ANIMATION_3D_TYPES.IAnimation3DPersistenceService
-  );
-
-  // Animation state (now with injected services)
-  const animState = createAnimation3DState({ propInterpolator, sequenceConverter });
+  // Services and state - initialized asynchronously
+  let propInterpolator: IPropStateInterpolatorService | null = $state(null);
+  let sequenceConverter: ISequenceConverterService | null = $state(null);
+  let persistenceService: IAnimation3DPersistenceService | null = $state(null);
+  let animState: Animation3DState | null = $state(null);
+  let servicesReady = $state(false);
 
   // UI state
   let visiblePlanes = $state(new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]));
@@ -52,6 +52,9 @@
   let panelOpen = $state(true);
   let browserOpen = $state(false);
   let speed = $state(1);
+  let showFigure = $state(true);
+  let bodyType = $state<BodyType>("masculine");
+  let skinTone = $state("#d4a574");
 
   // Camera position from orbit controls
   let customCameraPosition = $state<[number, number, number] | null>(null);
@@ -62,7 +65,7 @@
 
   // Derived
   const sequenceName = $derived(
-    animState.loadedSequence?.word || animState.loadedSequence?.name || null
+    animState?.loadedSequence?.word || animState?.loadedSequence?.name || null
   );
 
   // Camera handlers
@@ -90,12 +93,30 @@
 
   // Sequence handlers
   function handleSequenceSelect(sequence: SequenceData) {
-    animState.loadSequence(sequence);
+    animState?.loadSequence(sequence);
     browserOpen = false;
   }
 
-  // Persistence
-  onMount(() => {
+  // Initialize services asynchronously
+  onMount(async () => {
+    // Load the 3D viewer feature module first
+    await loadFeatureModule("3d-viewer");
+
+    // Now resolve services
+    propInterpolator = container.get<IPropStateInterpolatorService>(
+      ANIMATION_3D_TYPES.IPropStateInterpolatorService
+    );
+    sequenceConverter = container.get<ISequenceConverterService>(
+      ANIMATION_3D_TYPES.ISequenceConverterService
+    );
+    persistenceService = container.get<IAnimation3DPersistenceService>(
+      ANIMATION_3D_TYPES.IAnimation3DPersistenceService
+    );
+
+    // Create animation state
+    animState = createAnimation3DState({ propInterpolator, sequenceConverter });
+
+    // Load persisted state
     const saved = persistenceService.loadState();
 
     if (saved.visiblePlanes) visiblePlanes = persistenceService.parsePlanes(saved.visiblePlanes);
@@ -108,6 +129,8 @@
     if (saved.cameraPosition) customCameraPosition = saved.cameraPosition;
     if (saved.cameraTarget) customCameraTarget = saved.cameraTarget;
     if (saved.loop !== undefined) animState.loop = saved.loop;
+    if (saved.bodyType) bodyType = saved.bodyType;
+    if (saved.skinTone) skinTone = saved.skinTone;
 
     if (saved.loadedSequence) {
       animState.loadSequence(saved.loadedSequence);
@@ -116,17 +139,18 @@
       }
     }
 
+    servicesReady = true;
     setTimeout(() => (initialized = true), 50);
   });
 
   // Sync speed to animState
   $effect(() => {
-    animState.speed = speed;
+    if (animState) animState.speed = speed;
   });
 
   // Persist state changes
   $effect(() => {
-    if (!initialized) return;
+    if (!initialized || !persistenceService || !animState) return;
     persistenceService.saveState({
       visiblePlanes: Array.from(visiblePlanes),
       showGrid,
@@ -140,120 +164,170 @@
       loop: animState.loop,
       loadedSequence: animState.loadedSequence ?? null,
       currentBeatIndex: animState.currentBeatIndex,
+      bodyType,
+      skinTone,
     });
   });
 
-  onDestroy(() => animState.destroy());
+  onDestroy(() => animState?.destroy());
 </script>
 
-<div class="viewer-3d-module">
-  <!-- Scene Area -->
-  <main class="scene-area">
-    <Scene3D
-      {visiblePlanes}
-      {showGrid}
-      {showLabels}
+{#if !servicesReady}
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Loading 3D Viewer...</p>
+  </div>
+{:else if animState}
+  <div class="viewer-3d-module">
+    <!-- Scene Area -->
+    <main class="scene-area">
+      <Scene3D
+        {visiblePlanes}
+        {showGrid}
+        {showLabels}
+        {gridMode}
+        {cameraPreset}
+        {customCameraPosition}
+        {customCameraTarget}
+        onCameraChange={handleCameraChange}
+      >
+        {#if animState.showBlue && animState.bluePropState}
+          <Staff3D propState={animState.bluePropState} color="blue" />
+        {/if}
+        {#if animState.showRed && animState.redPropState}
+          <Staff3D propState={animState.redPropState} color="red" />
+        {/if}
+        {#if showFigure}
+          <IKFigure3D
+            bluePropState={animState.bluePropState}
+            redPropState={animState.redPropState}
+            {bodyType}
+            {skinTone}
+          />
+        {/if}
+      </Scene3D>
+
+      <SceneOverlayControls
+        {cameraPreset}
+        isCustomCamera={!!customCameraPosition}
+        onCameraChange={setCameraPreset}
+        {speed}
+        onSpeedChange={(s) => (speed = s)}
+        {sequenceName}
+        onClearSequence={() => animState?.clearSequence()}
+        isPlaying={animState?.isPlaying ?? false}
+        progress={animState?.progress ?? 0}
+        loop={animState?.loop ?? false}
+        hasSequence={animState?.hasSequence ?? false}
+        currentBeatIndex={animState?.currentBeatIndex ?? 0}
+        totalBeats={animState?.totalBeats ?? 0}
+        onPlay={() => animState?.play()}
+        onPause={() => animState?.pause()}
+        onTogglePlay={() => animState?.togglePlay()}
+        onReset={() => animState?.reset()}
+        onProgressChange={(v) => animState?.setProgress(v)}
+        onLoopChange={(v) => { if (animState) animState.loop = v; }}
+        onPrevBeat={() => animState?.prevBeat()}
+        onNextBeat={() => animState?.nextBeat()}
+        onShowHelp={() => keyboardShortcutState.openHelp()}
+      >
+        {#snippet trailing()}
+          <AvatarToggleButton
+            {showFigure}
+            {bodyType}
+            {skinTone}
+            onToggle={() => (showFigure = !showFigure)}
+            onBodyTypeChange={(t) => (bodyType = t)}
+            onSkinToneChange={(c) => (skinTone = c)}
+          />
+          <button
+            class="toggle-panel-btn"
+            onclick={() => (panelOpen = !panelOpen)}
+            aria-label={panelOpen ? "Hide panel" : "Show panel"}
+          >
+            <i class="fas" class:fa-chevron-right={panelOpen} class:fa-chevron-left={!panelOpen}></i>
+          </button>
+        {/snippet}
+      </SceneOverlayControls>
+    </main>
+
+    <!-- Side Panel -->
+    <Animation3DSidePanel
+      collapsed={!panelOpen}
+      hasSequence={animState?.hasSequence ?? false}
+      currentBeatIndex={animState?.currentBeatIndex ?? 0}
+      totalBeats={animState?.totalBeats ?? 0}
+      blueConfig={animState?.showBlue ? animState.activeBlueConfig : null}
+      redConfig={animState?.showRed ? animState.activeRedConfig : null}
       {gridMode}
-      {cameraPreset}
-      {customCameraPosition}
-      {customCameraTarget}
-      onCameraChange={handleCameraChange}
-    >
-      {#if animState.showBlue && animState.bluePropState}
-        <Staff3D propState={animState.bluePropState} color="blue" />
-      {/if}
-      {#if animState.showRed && animState.redPropState}
-        <Staff3D propState={animState.redPropState} color="red" />
-      {/if}
-    </Scene3D>
+      {visiblePlanes}
+      onLoadSequence={() => (browserOpen = true)}
+      onGridModeChange={(m) => (gridMode = m)}
+      onPlaneToggle={togglePlane}
+    />
+  </div>
 
-    <SceneOverlayControls
-      {cameraPreset}
-      isCustomCamera={!!customCameraPosition}
-      onCameraChange={setCameraPreset}
-      {speed}
-      onSpeedChange={(s) => (speed = s)}
-      {sequenceName}
-      onClearSequence={() => animState.clearSequence()}
-      isPlaying={animState.isPlaying}
-      progress={animState.progress}
-      loop={animState.loop}
-      hasSequence={animState.hasSequence}
-      currentBeatIndex={animState.currentBeatIndex}
-      totalBeats={animState.totalBeats}
-      onPlay={() => animState.play()}
-      onPause={() => animState.pause()}
-      onTogglePlay={() => animState.togglePlay()}
-      onReset={() => animState.reset()}
-      onProgressChange={(v) => animState.setProgress(v)}
-      onLoopChange={(v) => (animState.loop = v)}
-      onPrevBeat={() => animState.prevBeat()}
-      onNextBeat={() => animState.nextBeat()}
-      onShowHelp={() => keyboardShortcutState.openHelp()}
-    >
-      {#snippet trailing()}
-        <button
-          class="toggle-panel-btn"
-          onclick={() => (panelOpen = !panelOpen)}
-          aria-label={panelOpen ? "Hide panel" : "Show panel"}
-        >
-          <i class="fas" class:fa-chevron-right={panelOpen} class:fa-chevron-left={!panelOpen}></i>
-        </button>
-      {/snippet}
-    </SceneOverlayControls>
-  </main>
-
-  <!-- Side Panel -->
-  <Animation3DSidePanel
-    collapsed={!panelOpen}
-    hasSequence={animState.hasSequence}
-    currentBeatIndex={animState.currentBeatIndex}
-    totalBeats={animState.totalBeats}
-    blueConfig={animState.showBlue ? animState.activeBlueConfig : null}
-    redConfig={animState.showRed ? animState.activeRedConfig : null}
-    {gridMode}
-    {visiblePlanes}
-    onLoadSequence={() => (browserOpen = true)}
-    onGridModeChange={(m) => (gridMode = m)}
-    onPlaneToggle={togglePlane}
+  <!-- Sequence Browser -->
+  <SequenceBrowserPanel
+    mode="primary"
+    show={browserOpen}
+    onSelect={handleSequenceSelect}
+    onClose={() => (browserOpen = false)}
   />
-</div>
 
-<!-- Sequence Browser -->
-<SequenceBrowserPanel
-  mode="primary"
-  show={browserOpen}
-  onSelect={handleSequenceSelect}
-  onClose={() => (browserOpen = false)}
+  <!-- Keyboard Shortcuts -->
+  <Keyboard3DCoordinator
+    isPlaying={animState?.isPlaying ?? false}
+    togglePlay={() => animState?.togglePlay()}
+    reset={() => animState?.reset()}
+    loop={animState?.loop ?? false}
+    setLoop={(v) => { if (animState) animState.loop = v; }}
+    {speed}
+    setSpeed={(s) => (speed = s)}
+    hasSequence={animState?.hasSequence ?? false}
+    currentBeatIndex={animState?.currentBeatIndex ?? 0}
+    totalBeats={animState?.totalBeats ?? 0}
+    prevBeat={() => animState?.prevBeat()}
+    nextBeat={() => animState?.nextBeat()}
+    goToBeat={(i) => animState?.goToBeat(i)}
+    setCameraPreset={setCameraPreset}
+    {showGrid}
+    setShowGrid={(v) => (showGrid = v)}
+    {panelOpen}
+    setPanelOpen={(v) => (panelOpen = v)}
+    setBrowserOpen={(v) => (browserOpen = v)}
 />
 
-<!-- Keyboard Shortcuts -->
-<Keyboard3DCoordinator
-  isPlaying={animState.isPlaying}
-  togglePlay={() => animState.togglePlay()}
-  reset={() => animState.reset()}
-  loop={animState.loop}
-  setLoop={(v) => (animState.loop = v)}
-  {speed}
-  setSpeed={(s) => (speed = s)}
-  hasSequence={animState.hasSequence}
-  currentBeatIndex={animState.currentBeatIndex}
-  totalBeats={animState.totalBeats}
-  prevBeat={() => animState.prevBeat()}
-  nextBeat={() => animState.nextBeat()}
-  goToBeat={(i) => animState.goToBeat(i)}
-  setCameraPreset={setCameraPreset}
-  {showGrid}
-  setShowGrid={(v) => (showGrid = v)}
-  {panelOpen}
-  setPanelOpen={(v) => (panelOpen = v)}
-  setBrowserOpen={(v) => (browserOpen = v)}
-/>
-
-<!-- Shortcuts Help Modal -->
-<ShortcutsHelp />
+  <!-- Shortcuts Help Modal -->
+  <ShortcutsHelp />
+{/if}
 
 <style>
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    background: #0a0a12;
+    color: rgba(255, 255, 255, 0.7);
+    gap: 1rem;
+  }
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #64b5f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
   .viewer-3d-module {
     display: flex;
     width: 100%;

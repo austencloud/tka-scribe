@@ -1,0 +1,243 @@
+/**
+ * AvatarSkeletonService
+ *
+ * Loads and manages GLTF rigged humanoid models.
+ * Provides access to bones for IK solving and animation.
+ */
+
+import { injectable } from "inversify";
+import {
+  Object3D,
+  Bone,
+  SkinnedMesh,
+  Skeleton,
+  Vector3,
+  Box3,
+} from "three";
+import { GLTFLoader, type GLTF } from "three/addons/loaders/GLTFLoader.js";
+import type {
+  IAvatarSkeletonService,
+  BoneName,
+  BoneChain,
+  SkeletonState,
+} from "../contracts/IAvatarSkeletonService";
+
+/**
+ * Mapping of standard bone names to common variations
+ * GLTF models from different sources use different naming conventions
+ */
+const BONE_NAME_ALIASES: Record<BoneName, string[]> = {
+  Hips: ["Hips", "pelvis", "hip", "root"],
+  Spine: ["Spine", "spine", "spine1"],
+  Spine1: ["Spine1", "spine2", "chest"],
+  Spine2: ["Spine2", "spine3", "upper_chest"],
+  Neck: ["Neck", "neck"],
+  Head: ["Head", "head"],
+  LeftShoulder: ["LeftShoulder", "l_shoulder", "shoulder.L", "clavicle_l"],
+  LeftArm: ["LeftArm", "l_arm", "arm.L", "upperarm_l", "LeftUpperArm"],
+  LeftForeArm: ["LeftForeArm", "l_forearm", "forearm.L", "lowerarm_l", "LeftLowerArm"],
+  LeftHand: ["LeftHand", "l_hand", "hand.L", "hand_l"],
+  RightShoulder: ["RightShoulder", "r_shoulder", "shoulder.R", "clavicle_r"],
+  RightArm: ["RightArm", "r_arm", "arm.R", "upperarm_r", "RightUpperArm"],
+  RightForeArm: ["RightForeArm", "r_forearm", "forearm.R", "lowerarm_r", "RightLowerArm"],
+  RightHand: ["RightHand", "r_hand", "hand.R", "hand_r"],
+  LeftUpLeg: ["LeftUpLeg", "l_thigh", "thigh.L", "upperleg_l", "LeftUpperLeg"],
+  LeftLeg: ["LeftLeg", "l_shin", "shin.L", "lowerleg_l", "LeftLowerLeg"],
+  LeftFoot: ["LeftFoot", "l_foot", "foot.L", "foot_l"],
+  RightUpLeg: ["RightUpLeg", "r_thigh", "thigh.R", "upperleg_r", "RightUpperLeg"],
+  RightLeg: ["RightLeg", "r_shin", "shin.R", "lowerleg_r", "RightLowerLeg"],
+  RightFoot: ["RightFoot", "r_foot", "foot.R", "foot_r"],
+};
+
+@injectable()
+export class AvatarSkeletonService implements IAvatarSkeletonService {
+  private state: SkeletonState = {
+    isLoaded: false,
+    root: null,
+    meshes: [],
+    bones: new Map(),
+    leftArmChain: null,
+    rightArmChain: null,
+  };
+
+  private loader = new GLTFLoader();
+  private originalHeight: number = 0;
+  private skeleton: Skeleton | null = null;
+
+  async loadModel(url: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.loader.load(
+        url,
+        (gltf: GLTF) => {
+          this.processGLTF(gltf);
+          resolve();
+        },
+        undefined,
+        (error) => {
+          console.error("Failed to load avatar model:", error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  private processGLTF(gltf: GLTF): void {
+    this.state.root = gltf.scene;
+    this.state.meshes = [];
+    this.state.bones = new Map();
+
+    // Find all skinned meshes and bones
+    gltf.scene.traverse((child) => {
+      if ((child as SkinnedMesh).isSkinnedMesh) {
+        const skinnedMesh = child as SkinnedMesh;
+        this.state.meshes.push(skinnedMesh);
+        this.skeleton = skinnedMesh.skeleton;
+      }
+
+      if ((child as Bone).isBone) {
+        this.mapBone(child as Bone);
+      }
+    });
+
+    // Compute original height
+    const box = new Box3().setFromObject(gltf.scene);
+    this.originalHeight = box.max.y - box.min.y;
+
+    // Build arm chains
+    this.buildArmChains();
+
+    this.state.isLoaded = true;
+    console.log(
+      `Avatar loaded: ${this.state.meshes.length} meshes, ${this.state.bones.size} mapped bones`
+    );
+  }
+
+  private mapBone(bone: Bone): void {
+    const boneName = bone.name.toLowerCase();
+
+    for (const [standardName, aliases] of Object.entries(BONE_NAME_ALIASES)) {
+      for (const alias of aliases) {
+        if (boneName === alias.toLowerCase() || boneName.includes(alias.toLowerCase())) {
+          this.state.bones.set(standardName as BoneName, bone);
+          return;
+        }
+      }
+    }
+  }
+
+  private buildArmChains(): void {
+    // Left arm
+    const leftShoulder = this.state.bones.get("LeftArm");
+    const leftElbow = this.state.bones.get("LeftForeArm");
+    const leftHand = this.state.bones.get("LeftHand");
+
+    if (leftShoulder && leftElbow && leftHand) {
+      const upperLen = this.getBoneLength(leftShoulder, leftElbow);
+      const lowerLen = this.getBoneLength(leftElbow, leftHand);
+
+      this.state.leftArmChain = {
+        root: leftShoulder,
+        middle: leftElbow,
+        effector: leftHand,
+        totalLength: upperLen + lowerLen,
+        upperLength: upperLen,
+        lowerLength: lowerLen,
+      };
+    }
+
+    // Right arm
+    const rightShoulder = this.state.bones.get("RightArm");
+    const rightElbow = this.state.bones.get("RightForeArm");
+    const rightHand = this.state.bones.get("RightHand");
+
+    if (rightShoulder && rightElbow && rightHand) {
+      const upperLen = this.getBoneLength(rightShoulder, rightElbow);
+      const lowerLen = this.getBoneLength(rightElbow, rightHand);
+
+      this.state.rightArmChain = {
+        root: rightShoulder,
+        middle: rightElbow,
+        effector: rightHand,
+        totalLength: upperLen + lowerLen,
+        upperLength: upperLen,
+        lowerLength: lowerLen,
+      };
+    }
+  }
+
+  private getBoneLength(parent: Bone, child: Bone): number {
+    const parentWorld = new Vector3();
+    const childWorld = new Vector3();
+    parent.getWorldPosition(parentWorld);
+    child.getWorldPosition(childWorld);
+    return parentWorld.distanceTo(childWorld);
+  }
+
+  getState(): SkeletonState {
+    return this.state;
+  }
+
+  getBone(name: BoneName): Bone | null {
+    return this.state.bones.get(name) ?? null;
+  }
+
+  getLeftArmChain(): BoneChain | null {
+    return this.state.leftArmChain;
+  }
+
+  getRightArmChain(): BoneChain | null {
+    return this.state.rightArmChain;
+  }
+
+  getRoot(): Object3D | null {
+    return this.state.root;
+  }
+
+  updateMatrices(): void {
+    if (this.skeleton) {
+      this.skeleton.update();
+    }
+    if (this.state.root) {
+      this.state.root.updateMatrixWorld(true);
+    }
+  }
+
+  setHeight(height: number): void {
+    if (!this.state.root || this.originalHeight === 0) return;
+
+    const scale = height / this.originalHeight;
+    this.state.root.scale.setScalar(scale);
+
+    // Rebuild arm chains with new scale
+    this.state.root.updateMatrixWorld(true);
+    this.buildArmChains();
+  }
+
+  dispose(): void {
+    if (this.state.root) {
+      this.state.root.traverse((child) => {
+        const mesh = child as SkinnedMesh;
+        if (mesh.geometry) {
+          mesh.geometry.dispose();
+        }
+        if (mesh.material) {
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((m) => m.dispose());
+          } else {
+            mesh.material.dispose();
+          }
+        }
+      });
+    }
+
+    this.state = {
+      isLoaded: false,
+      root: null,
+      meshes: [],
+      bones: new Map(),
+      leftArmChain: null,
+      rightArmChain: null,
+    };
+    this.skeleton = null;
+  }
+}

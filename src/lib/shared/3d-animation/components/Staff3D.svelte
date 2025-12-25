@@ -14,7 +14,7 @@
   import { T } from "@threlte/core";
   import { Quaternion, Euler } from "three";
   import type { PropState3D } from "../domain/models/PropState3D";
-  import { GRID_RADIUS_3D } from "../domain/constants/plane-transforms";
+  import { AUSTEN_STAFF } from "../config/avatar-proportions";
 
   interface Props {
     /** Prop state with position and rotation */
@@ -23,7 +23,7 @@
     color: "blue" | "red";
     /** Whether to show the prop */
     visible?: boolean;
-    /** Staff length - defaults to full diameter (center to hand * 2) */
+    /** Staff length in scene units (default: 34" staff = 173 units) */
     length?: number;
     /** Staff thickness (radius of the tube) */
     thickness?: number;
@@ -33,8 +33,8 @@
     propState,
     color,
     visible = true,
-    length = GRID_RADIUS_3D * 2, // Staff spans from center to outer (2× hand radius = 300)
-    thickness = 15, // Dialed down from exact SVG proportions for cleaner 3D look
+    length = AUSTEN_STAFF.length, // 34" staff = 86.4cm = 173 units
+    thickness = AUSTEN_STAFF.radius * 2, // ~1" diameter = 5 units diameter
   }: Props = $props();
 
   // T-bar dimensions - proportional to staff
