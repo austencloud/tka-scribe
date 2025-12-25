@@ -17,7 +17,9 @@
     <h2>{title}</h2>
   {/if}
   <div class="content">
-    {@render children()}
+    {#if children}
+      {@render children()}
+    {/if}
   </div>
 </div>
 

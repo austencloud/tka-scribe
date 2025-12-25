@@ -21,7 +21,7 @@
 	import ReviewNavigationBar from "$lib/shared/sequence-review/components/ReviewNavigationBar.svelte";
 	import ReviewHeader from "$lib/shared/sequence-review/components/ReviewHeader.svelte";
 	import NotesInput from "$lib/shared/sequence-review/components/NotesInput.svelte";
-	import type { FilterOption, ReviewStatus } from "$lib/shared/sequence-review/domain/models/review-models";
+	import type { FilterOption, ReviewStatus, BaseSequenceEntry } from "$lib/shared/sequence-review/domain/models/review-models";
 
 	// Tag-specific components
 	import TagSuggestionPanel from "./TagSuggestionPanel.svelte";
@@ -152,7 +152,7 @@ ${JSON.stringify(summary, null, 2)}
 	];
 
 	// Get status for sidebar
-	function getStatus(seq: TaggedSequenceEntry): ReviewStatus {
+	function getStatus(seq: BaseSequenceEntry): ReviewStatus {
 		const review = tagReviewerState.reviews.get(seq.word);
 
 		if (!review) {
@@ -177,7 +177,7 @@ ${JSON.stringify(summary, null, 2)}
 	}
 
 	// Get secondary label for sidebar
-	function getSecondaryLabel(seq: TaggedSequenceEntry): string {
+	function getSecondaryLabel(seq: BaseSequenceEntry): string {
 		const review = tagReviewerState.reviews.get(seq.word);
 		if (!review) return "No tags";
 

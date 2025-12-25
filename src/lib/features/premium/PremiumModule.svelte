@@ -9,7 +9,7 @@
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import PremiumShowcase from "./components/PremiumShowcase.svelte";
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService = $state<IHapticFeedbackService | null>(null);
 
   $effect(() => {
     hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
