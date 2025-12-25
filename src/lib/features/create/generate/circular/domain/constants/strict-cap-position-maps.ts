@@ -297,6 +297,186 @@ export function getInvertedLetter(letter: string): string {
 }
 
 /**
+ * Alpha-Beta Counterpart Letter Map
+ * Maps letters that share a common gamma endpoint but differ in the other section (α↔β).
+ * Also called "Cross-Section Complementary" relationships.
+ *
+ * Pattern:
+ * - Letters ending at gamma from different origins: Σ↔θ (α→γ ↔ β→γ), Δ↔Ω (α→γ ↔ β→γ)
+ * - Letters starting from gamma to different destinations: W↔Y (γ→α ↔ γ→β), X↔Z (γ→α ↔ γ→β)
+ *
+ * This differs from standard inversion (pro↔anti) - these pairs share the same rotation
+ * but swap their alpha/beta relationship while both involving gamma.
+ */
+export const ALPHA_BETA_COUNTERPART_LETTER_MAP: Record<string, string> = {
+  // Type 2 Shift letters sharing gamma endpoint
+  // Origin swap (both end at gamma, start from α vs β)
+  Σ: "θ", // α→γ ↔ β→γ
+  θ: "Σ", // β→γ ↔ α→γ
+  Δ: "Ω", // α→γ ↔ β→γ (anti versions)
+  Ω: "Δ", // β→γ ↔ α→γ
+
+  // Destination swap (both start at gamma, end at α vs β)
+  W: "Y", // γ→α ↔ γ→β
+  Y: "W", // γ→β ↔ γ→α
+  X: "Z", // γ→α ↔ γ→β (anti versions)
+  Z: "X", // γ→β ↔ γ→α
+
+  // Type 3 Cross-Shift dash variants follow same pattern
+  "Σ-": "θ-",
+  "θ-": "Σ-",
+  "Δ-": "Ω-",
+  "Ω-": "Δ-",
+  "W-": "Y-",
+  "Y-": "W-",
+  "X-": "Z-",
+  "Z-": "X-",
+};
+
+/**
+ * Compound Letter Map
+ * Maps letters that form compound pairs - letters that combine to create circular motion.
+ * These pairs complete each other to return to starting position.
+ *
+ * Two categories:
+ * 1. Alpha↔Beta transitions (opposite section directions)
+ * 2. Gamma internal pairs (γ→γ with complementary quarter-opp motions)
+ */
+export const COMPOUND_LETTER_MAP: Record<string, string> = {
+  // Type 1 Dual-Shift compound pairs (β↔α transitions)
+  D: "J", // β→α (Tog-Opp, isolation) ↔ α→β (Split-Opp, isolation) - "Disco Jam"
+  J: "D",
+  E: "K", // β→α (Tog-Opp, antispin) ↔ α→β (Split-Opp, antispin) - "Exploding Kitten"
+  K: "E",
+  F: "L", // β→α (Tog-Opp, hybrid) ↔ α→β (Split-Opp, hybrid) - "Fruity Loops"
+  L: "F",
+
+  // Gamma internal compound pairs (γ→γ Quarter-Opp complementary motions)
+  M: "P", // γ→γ isolation ↔ γ→γ isolation - "Magic Potion"
+  P: "M",
+  N: "Q", // γ→γ antispin ↔ γ→γ antispin - "Never Quit"
+  Q: "N",
+  O: "R", // γ→γ hybrid ↔ γ→γ hybrid - "Open Road"
+  R: "O",
+
+  // Type 4 Dash compound pairs (β↔α transitions via dash)
+  Φ: "Ψ", // β→α (Dash) ↔ α→β (Dash)
+  Ψ: "Φ",
+};
+
+/**
+ * Letter Transformation Types
+ * Used for algorithmic detection and generation
+ */
+export enum LetterTransformationType {
+  INVERSION = "inversion", // Pro ↔ Anti (A↔B, Σ↔Δ)
+  COMPOUND = "compound", // Section transition pairs (D↔J, M↔P)
+  ALPHA_BETA_COUNTERPART = "alpha_beta_counterpart", // Gamma endpoint sharing (Σ↔θ, W↔Y)
+}
+
+/**
+ * Get alpha-beta counterpart letter for a given letter
+ * Returns the letter that shares the same gamma endpoint but swaps α↔β
+ */
+export function getAlphaBetaCounterpart(letter: string): string | null {
+  return ALPHA_BETA_COUNTERPART_LETTER_MAP[letter] ?? null;
+}
+
+/**
+ * Get compound pair letter for a given letter
+ * Returns the letter that forms a compound pair (α↔β transition pair or γ internal pair)
+ */
+export function getCompoundLetter(letter: string): string | null {
+  return COMPOUND_LETTER_MAP[letter] ?? null;
+}
+
+/**
+ * Check if two letters have a specific transformation relationship
+ */
+export function hasTransformationRelationship(
+  letter1: string,
+  letter2: string,
+  type: LetterTransformationType
+): boolean {
+  switch (type) {
+    case LetterTransformationType.INVERSION:
+      return INVERTED_LETTER_MAP[letter1] === letter2;
+    case LetterTransformationType.COMPOUND:
+      return COMPOUND_LETTER_MAP[letter1] === letter2;
+    case LetterTransformationType.ALPHA_BETA_COUNTERPART:
+      return ALPHA_BETA_COUNTERPART_LETTER_MAP[letter1] === letter2;
+    default:
+      return false;
+  }
+}
+
+/**
+ * Get all transformation relationships between two letters
+ * Returns array of transformation types that apply to this letter pair
+ */
+export function getLetterRelationships(
+  letter1: string,
+  letter2: string
+): LetterTransformationType[] {
+  const relationships: LetterTransformationType[] = [];
+
+  if (INVERTED_LETTER_MAP[letter1] === letter2) {
+    relationships.push(LetterTransformationType.INVERSION);
+  }
+  if (COMPOUND_LETTER_MAP[letter1] === letter2) {
+    relationships.push(LetterTransformationType.COMPOUND);
+  }
+  if (ALPHA_BETA_COUNTERPART_LETTER_MAP[letter1] === letter2) {
+    relationships.push(LetterTransformationType.ALPHA_BETA_COUNTERPART);
+  }
+
+  return relationships;
+}
+
+/**
+ * Get all letters that have a specific transformation relationship with the given letter
+ */
+export function getRelatedLetters(
+  letter: string,
+  type: LetterTransformationType
+): string | null {
+  switch (type) {
+    case LetterTransformationType.INVERSION:
+      return INVERTED_LETTER_MAP[letter] ?? null;
+    case LetterTransformationType.COMPOUND:
+      return COMPOUND_LETTER_MAP[letter] ?? null;
+    case LetterTransformationType.ALPHA_BETA_COUNTERPART:
+      return ALPHA_BETA_COUNTERPART_LETTER_MAP[letter] ?? null;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Analyze beat pair letters and return their transformation relationships
+ * Useful for polyrhythmic CAP analysis
+ */
+export function analyzeBeatPairTransformation(
+  letter1: string,
+  letter2: string
+): {
+  relationships: LetterTransformationType[];
+  isInverted: boolean;
+  isCompound: boolean;
+  isAlphaBetaCounterpart: boolean;
+} {
+  const relationships = getLetterRelationships(letter1, letter2);
+  return {
+    relationships,
+    isInverted: relationships.includes(LetterTransformationType.INVERSION),
+    isCompound: relationships.includes(LetterTransformationType.COMPOUND),
+    isAlphaBetaCounterpart: relationships.includes(
+      LetterTransformationType.ALPHA_BETA_COUNTERPART
+    ),
+  };
+}
+
+/**
  * Validation Sets for Strict CAP Types
  * These define which (start_position, end_position) pairs are valid for each CAP type
  */

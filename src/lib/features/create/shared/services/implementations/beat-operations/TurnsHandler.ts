@@ -16,6 +16,7 @@ import {
   MotionType,
   RotationDirection,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { IReversalDetectionService } from "../../../services/contracts/IReversalDetectionService";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
@@ -190,6 +191,15 @@ export function updateBeatTurns(
       ...currentSequence,
       beats: propagatedBeats,
     };
+  }
+
+  // Process reversals to update reversal indicators after turns change
+  // Turns changes can affect reversals when rotation direction changes (e.g., 0 to >0 turns)
+  try {
+    const reversalService = resolve<IReversalDetectionService>(TYPES.IReversalDetectionService);
+    updatedSequence = reversalService.processReversals(updatedSequence);
+  } catch {
+    // Reversal service is optional - continue without reversal processing
   }
 
   createModuleState.sequenceState.setCurrentSequence(updatedSequence);

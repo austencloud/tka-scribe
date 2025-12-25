@@ -332,7 +332,7 @@ Renders a section with:
 </script>
 
 <div
-  class="option-picker-section"
+  class="option-viewer-section"
   bind:this={sectionContainer}
   style:--section-width={contentAreaBounds
     ? `${contentAreaBounds.width}px`
@@ -392,7 +392,7 @@ Renders a section with:
 </div>
 
 <style>
-  .option-picker-section {
+  .option-viewer-section {
     /* Use the content area bounds width when available */
     display: flex;
     flex-direction: column;
@@ -461,6 +461,7 @@ Renders a section with:
     justify-content: center;
     justify-items: center;
     width: 100%;
+    gap: 8px;
   }
 
   .pictograph-option {

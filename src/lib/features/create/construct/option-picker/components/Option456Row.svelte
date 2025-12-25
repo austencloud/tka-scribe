@@ -6,6 +6,7 @@ with individual headers for each type.
 -->
 <script lang="ts">
   import type { PreparedPictographData } from "../services/PictographPreparer";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import OptionSectionHeader from "./OptionSectionHeader.svelte";
   import OptionGrid from "./OptionGrid.svelte";
 
@@ -21,6 +22,8 @@ with individual headers for each type.
     gap?: string;
     isFading?: boolean;
     onSelect: (option: PreparedPictographData) => void;
+    // Sequence context for reversal detection
+    currentSequence?: PictographData[];
   }
 
   const {
@@ -30,6 +33,7 @@ with individual headers for each type.
     gap = "8px",
     isFading = false,
     onSelect,
+    currentSequence = [],
   }: Props = $props();
 </script>
 
@@ -46,6 +50,7 @@ with individual headers for each type.
           {gap}
           {isFading}
           {onSelect}
+          {currentSequence}
         />
       </div>
     {/if}

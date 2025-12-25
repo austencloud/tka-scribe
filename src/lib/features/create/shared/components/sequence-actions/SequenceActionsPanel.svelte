@@ -98,7 +98,7 @@
 
   // Shift start availability - need at least 2 beats
   const canShiftStart = $derived(
-    sequence && sequence.beats && sequence.beats.length >= 2
+    !!(sequence && sequence.beats && sequence.beats.length >= 2)
   );
 
   onMount(() => {

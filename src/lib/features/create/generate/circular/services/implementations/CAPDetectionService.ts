@@ -19,6 +19,7 @@ import { CAPComponent } from "../../../shared/domain/models/generate-models";
 import type {
   ICAPDetectionService,
   CAPDetectionResult,
+  CompoundPattern,
 } from "../contracts/ICAPDetectionService";
 import type { ISequenceLoopabilityChecker } from "$lib/features/compose/services/contracts/ISequenceLoopabilityChecker";
 import type { ICAPTypeService } from "../../../shared/services/contracts/ICAPTypeService";
@@ -78,26 +79,50 @@ export class CAPDetectionService implements ICAPDetectionService {
       };
     }
 
-    // Step 2: Determine slice size
-    const sliceSize = this.determineSliceSize(beats);
+    // Step 2: Detect transformations at BOTH intervals independently
+    const quarteredTransformations = this.detectAtQuartered(beats);
+    const halvedTransformations = this.detectAtHalved(beats);
 
-    // Step 3: Detect individual components
+    // Step 3: Check for compound pattern (transformations at different intervals)
+    const compoundPattern = this.detectCompoundPattern(
+      beats,
+      quarteredTransformations,
+      halvedTransformations
+    );
+
+    // Step 4: Determine primary slice size and components for CAP type
+    let sliceSize: SliceSize | null = null;
     const detectedComponents = new Set<CAPComponent>();
 
-    if (this.detectsRotation(beats, sliceSize)) {
-      detectedComponents.add(CAPComponent.ROTATED);
-    }
-    if (this.detectsMirroring(beats)) {
-      detectedComponents.add(CAPComponent.MIRRORED);
-    }
-    if (this.detectsSwapping(beats)) {
-      detectedComponents.add(CAPComponent.SWAPPED);
-    }
-    if (this.detectsInversion(beats)) {
-      detectedComponents.add(CAPComponent.INVERTED);
+    if (compoundPattern) {
+      // Compound pattern: use quartered as primary slice size
+      sliceSize = SliceSize.QUARTERED;
+      // Combine all components
+      compoundPattern.quarteredTransformations.forEach((c) =>
+        detectedComponents.add(c)
+      );
+      compoundPattern.halvedTransformations.forEach((c) =>
+        detectedComponents.add(c)
+      );
+    } else {
+      // Simple pattern: use traditional detection
+      sliceSize = this.determineSliceSize(beats);
+
+      if (this.detectsRotation(beats, sliceSize)) {
+        detectedComponents.add(CAPComponent.ROTATED);
+      }
+      if (this.detectsMirroring(beats)) {
+        detectedComponents.add(CAPComponent.MIRRORED);
+      }
+      if (this.detectsSwapping(beats)) {
+        detectedComponents.add(CAPComponent.SWAPPED);
+      }
+      if (this.detectsInversion(beats)) {
+        detectedComponents.add(CAPComponent.INVERTED);
+      }
     }
 
-    // Step 4: Map components to CAP type
+    // Step 5: Map components to CAP type
     let capType: CAPType | null = null;
     let confidence: "strict" | "probable" | "accidental" = "accidental";
 
@@ -118,6 +143,7 @@ export class CAPDetectionService implements ICAPDetectionService {
         ? sliceSize
         : null,
       confidence,
+      compoundPattern: compoundPattern ?? undefined,
     };
   }
 
@@ -379,5 +405,275 @@ export class CAPDetectionService implements ICAPDetectionService {
     }
 
     return false;
+  }
+
+  // ============ COMPOUND PATTERN DETECTION ============
+
+  /**
+   * Detect transformations at quartered interval (90° rotation period)
+   */
+  private detectAtQuartered(beats: readonly BeatData[]): CAPComponent[] {
+    const components: CAPComponent[] = [];
+    const length = beats.length;
+
+    if (length < 4 || length % 4 !== 0) return components;
+
+    // Check for 90° rotation at quartered interval
+    if (this.detectsQuarteredRotation(beats)) {
+      components.push(CAPComponent.ROTATED);
+    }
+
+    // Check for swap at quartered interval (every quarter)
+    if (this.detectsSwappingAtInterval(beats, length / 4)) {
+      components.push(CAPComponent.SWAPPED);
+    }
+
+    // Check for inversion at quartered interval
+    if (this.detectsInversionAtInterval(beats, length / 4)) {
+      components.push(CAPComponent.INVERTED);
+    }
+
+    return components;
+  }
+
+  /**
+   * Detect transformations at halved interval (180° rotation period)
+   */
+  private detectAtHalved(beats: readonly BeatData[]): CAPComponent[] {
+    const components: CAPComponent[] = [];
+    const length = beats.length;
+
+    if (length < 2 || length % 2 !== 0) return components;
+
+    const halfLength = length / 2;
+
+    // Check for 180° rotation at halved interval
+    const h1Start = beats[0]?.startPosition;
+    const h2Start = beats[halfLength]?.startPosition;
+    if (h1Start && h2Start) {
+      if (HALF_POSITION_MAP[h1Start as GridPosition] === h2Start) {
+        components.push(CAPComponent.ROTATED);
+      }
+    }
+
+    // Check for swap at halved interval
+    if (this.detectsSwappingAtInterval(beats, halfLength)) {
+      components.push(CAPComponent.SWAPPED);
+    }
+
+    // Check for inversion at halved interval
+    if (this.detectsInversionAtInterval(beats, halfLength)) {
+      components.push(CAPComponent.INVERTED);
+    }
+
+    // Check for mirroring at halved interval
+    if (this.detectsMirroring(beats)) {
+      components.push(CAPComponent.MIRRORED);
+    }
+
+    return components;
+  }
+
+  /**
+   * Detect swap at a specific interval
+   * @param interval The number of beats between comparisons
+   */
+  private detectsSwappingAtInterval(
+    beats: readonly BeatData[],
+    interval: number
+  ): boolean {
+    const length = beats.length;
+    if (interval <= 0 || interval >= length) return false;
+
+    let swapCount = 0;
+    let checkCount = 0;
+    let hasDifferentMotionTypes = false;
+
+    // Check first few beat pairs at this interval
+    const pairsToCheck = Math.min(4, length - interval);
+
+    for (let i = 0; i < pairsToCheck; i++) {
+      const firstBeat = beats[i];
+      const secondBeat = beats[i + interval];
+
+      const firstBlue = firstBeat?.motions?.[MotionColor.BLUE];
+      const firstRed = firstBeat?.motions?.[MotionColor.RED];
+      const secondBlue = secondBeat?.motions?.[MotionColor.BLUE];
+      const secondRed = secondBeat?.motions?.[MotionColor.RED];
+
+      if (firstBlue && firstRed && secondBlue && secondRed) {
+        checkCount++;
+
+        if (firstBlue.motionType !== firstRed.motionType) {
+          hasDifferentMotionTypes = true;
+        }
+
+        if (
+          secondBlue.motionType === firstRed.motionType &&
+          secondRed.motionType === firstBlue.motionType
+        ) {
+          swapCount++;
+        }
+      }
+    }
+
+    return (
+      checkCount > 0 && swapCount >= checkCount * 0.75 && hasDifferentMotionTypes
+    );
+  }
+
+  /**
+   * Detect inversion at a specific interval
+   */
+  private detectsInversionAtInterval(
+    beats: readonly BeatData[],
+    interval: number
+  ): boolean {
+    const length = beats.length;
+    if (interval <= 0 || interval >= length) return false;
+
+    const pairsToCheck = Math.min(4, length - interval);
+
+    for (let i = 0; i < pairsToCheck; i++) {
+      const firstBeat = beats[i];
+      const secondBeat = beats[i + interval];
+
+      if (!firstBeat || !secondBeat) continue;
+
+      // Check letter inversion
+      if (firstBeat.letter && secondBeat.letter) {
+        const expectedLetter = INVERTED_LETTER_MAP[firstBeat.letter];
+        if (expectedLetter && secondBeat.letter !== expectedLetter) {
+          return false;
+        }
+      }
+
+      // Check motion type inversion
+      const firstBlue = firstBeat.motions?.[MotionColor.BLUE];
+      const secondBlue = secondBeat.motions?.[MotionColor.BLUE];
+      const firstRed = firstBeat.motions?.[MotionColor.RED];
+      const secondRed = secondBeat.motions?.[MotionColor.RED];
+
+      if (firstBlue && secondBlue) {
+        if (
+          !this.isMotionTypeInverted(firstBlue.motionType, secondBlue.motionType)
+        ) {
+          return false;
+        }
+      }
+
+      if (firstRed && secondRed) {
+        if (
+          !this.isMotionTypeInverted(firstRed.motionType, secondRed.motionType)
+        ) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Detect compound pattern where different transformations occur at different intervals
+   * e.g., 90° rotation (quartered) + swap (halved)
+   */
+  private detectCompoundPattern(
+    beats: readonly BeatData[],
+    quarteredComponents: CAPComponent[],
+    halvedComponents: CAPComponent[]
+  ): CompoundPattern | null {
+    const length = beats.length;
+
+    // Need at least 8 beats for compound patterns (quartered needs 4, halved needs 2, LCM = 8 minimum for both)
+    if (length < 8 || length % 4 !== 0) return null;
+
+    // Check if we have rotation at quartered but NOT swap at quartered
+    const hasQuarteredRotation = quarteredComponents.includes(
+      CAPComponent.ROTATED
+    );
+    const hasQuarteredSwap = quarteredComponents.includes(CAPComponent.SWAPPED);
+
+    // Check if we have swap at halved
+    const hasHalvedSwap = halvedComponents.includes(CAPComponent.SWAPPED);
+    const hasHalvedInversion = halvedComponents.includes(CAPComponent.INVERTED);
+
+    // Compound pattern: rotation at quartered + swap ONLY at halved (not at quartered)
+    if (hasQuarteredRotation && !hasQuarteredSwap && hasHalvedSwap) {
+      const rotationDirection = this.getQuarteredRotationDirection(beats);
+      const rotationDesc =
+        rotationDirection === "ccw" ? "90° CCW Rotated" : "90° CW Rotated";
+
+      return {
+        isCompound: true,
+        quarteredTransformations: [CAPComponent.ROTATED],
+        halvedTransformations: [CAPComponent.SWAPPED],
+        description: `${rotationDesc} (quartered) + Swapped (halved)`,
+      };
+    }
+
+    // Compound pattern: rotation at quartered + inversion ONLY at halved
+    if (hasQuarteredRotation && hasHalvedInversion) {
+      const hasQuarteredInversion = quarteredComponents.includes(
+        CAPComponent.INVERTED
+      );
+      if (!hasQuarteredInversion) {
+        const rotationDirection = this.getQuarteredRotationDirection(beats);
+        const rotationDesc =
+          rotationDirection === "ccw" ? "90° CCW Rotated" : "90° CW Rotated";
+
+        return {
+          isCompound: true,
+          quarteredTransformations: [CAPComponent.ROTATED],
+          halvedTransformations: [CAPComponent.INVERTED],
+          description: `${rotationDesc} (quartered) + Inverted (halved)`,
+        };
+      }
+    }
+
+    // Compound pattern: rotation at quartered + swap + inversion at halved
+    if (hasQuarteredRotation && !hasQuarteredSwap && hasHalvedSwap && hasHalvedInversion) {
+      const rotationDirection = this.getQuarteredRotationDirection(beats);
+      const rotationDesc =
+        rotationDirection === "ccw" ? "90° CCW Rotated" : "90° CW Rotated";
+
+      return {
+        isCompound: true,
+        quarteredTransformations: [CAPComponent.ROTATED],
+        halvedTransformations: [CAPComponent.SWAPPED, CAPComponent.INVERTED],
+        description: `${rotationDesc} (quartered) + Swapped + Inverted (halved)`,
+      };
+    }
+
+    return null;
+  }
+
+  /**
+   * Get the rotation direction for quartered rotation
+   */
+  private getQuarteredRotationDirection(
+    beats: readonly BeatData[]
+  ): "cw" | "ccw" | null {
+    const length = beats.length;
+    if (length < 4 || length % 4 !== 0) return null;
+
+    const quarterLength = length / 4;
+
+    const q1Start = beats[0]?.startPosition;
+    const q2Start = beats[quarterLength]?.startPosition;
+
+    if (!q1Start || !q2Start) return null;
+
+    // Check clockwise
+    if (QUARTER_POSITION_MAP_CW[q1Start as GridPosition] === q2Start) {
+      return "cw";
+    }
+
+    // Check counter-clockwise
+    if (QUARTER_POSITION_MAP_CCW[q1Start as GridPosition] === q2Start) {
+      return "ccw";
+    }
+
+    return null;
   }
 }

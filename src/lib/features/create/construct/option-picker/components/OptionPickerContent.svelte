@@ -5,15 +5,16 @@ Single responsibility: Organize prepared options into sections and layout.
 Uses organizer and sizer services for section grouping and sizing.
 -->
 <script lang="ts">
-  import type { PreparedPictographData } from '../services/PictographPreparer';
-  import type { IOptionOrganizer } from '../services/contracts/IOptionOrganizer';
-  import type { IOptionSizer } from '../services/contracts/IOptionSizer';
-  import OptionSection from './OptionSection.svelte';
-  import Option456Row from './Option456Row.svelte';
-  import OptionGrid from './OptionGrid.svelte';
-  import OptionCard from './OptionCard.svelte';
-  import OptionViewerSwipeLayout from '../option-viewer/components/OptionViewerSwipeLayout.svelte';
-  import OptionViewerSection from '../option-viewer/components/OptionViewerSection.svelte';
+  import type { PreparedPictographData } from "../services/PictographPreparer";
+  import type { IOptionOrganizer } from "../services/contracts/IOptionOrganizer";
+  import type { IOptionSizer } from "../services/contracts/IOptionSizer";
+  import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  import OptionSection from "./OptionSection.svelte";
+  import Option456Row from "./Option456Row.svelte";
+  import OptionGrid from "./OptionGrid.svelte";
+  import OptionCard from "./OptionCard.svelte";
+  import OptionViewerSwipeLayout from "../option-viewer/components/OptionViewerSwipeLayout.svelte";
+  import OptionViewerSection from "../option-viewer/components/OptionViewerSection.svelte";
 
   interface Props {
     options: PreparedPictographData[];
@@ -25,6 +26,8 @@ Uses organizer and sizer services for section grouping and sizing.
     isContinuousOnly?: boolean;
     onToggleContinuous?: (value: boolean) => void;
     isSideBySideLayout?: () => boolean;
+    // Sequence context for reversal detection
+    currentSequence?: PictographData[];
   }
 
   const {
@@ -36,6 +39,7 @@ Uses organizer and sizer services for section grouping and sizing.
     isContinuousOnly = false,
     onToggleContinuous,
     isSideBySideLayout = () => false,
+    currentSequence = [],
   }: Props = $props();
 
   // Track container dimensions with simple resize observer
@@ -55,12 +59,10 @@ Uses organizer and sizer services for section grouping and sizing.
     return shouldUseWideLayout ? 8 : 4;
   });
 
-  // Only show filter toggle when we have at least one actual beat (not just start position)
-  // Without a beat, there's no rotation context to filter against
+  // Only show filter toggle when we have at least 2 beats (start position + 1 actual beat)
+  // Without a previous beat, there's no rotation context to filter against
   const shouldShowFilterToggle = $derived(() => {
-    // Options only exist when we have rotation context (at least 1 beat after start position)
-    // The filter service requires currentSequence.length >= 2 to apply filtering
-    return options.length > 0;
+    return options.length > 0 && currentSequence.length >= 2;
   });
 
   // Organize options into sections
@@ -68,19 +70,19 @@ Uses organizer and sizer services for section grouping and sizing.
     if (!organizerService || options.length === 0) {
       return [];
     }
-    return organizerService.organizePictographs(options, 'type');
+    return organizerService.organizePictographs(options, "type");
   });
 
   // Separate Types 1-3 (individual sections) from Types 4-6 (horizontal row)
   const types123Sections = $derived(() => {
-    return organizedSections().filter(s =>
-      s.title === 'Type1' || s.title === 'Type2' || s.title === 'Type3'
+    return organizedSections().filter(
+      (s) => s.title === "Type1" || s.title === "Type2" || s.title === "Type3"
     );
   });
 
   const types456Sections = $derived(() => {
-    return organizedSections().filter(s =>
-      s.title === 'Type4' || s.title === 'Type5' || s.title === 'Type6'
+    return organizedSections().filter(
+      (s) => s.title === "Type4" || s.title === "Type5" || s.title === "Type6"
     );
   });
 
@@ -116,7 +118,7 @@ Uses organizer and sizer services for section grouping and sizing.
     const sections456 = types456Sections();
 
     // Combine all Types 4-6 pictographs into one grouped section
-    const grouped456Pictographs = sections456.flatMap(s => s.pictographs);
+    const grouped456Pictographs = sections456.flatMap((s) => s.pictographs);
 
     if (grouped456Pictographs.length === 0) {
       return sections123;
@@ -125,10 +127,10 @@ Uses organizer and sizer services for section grouping and sizing.
     return [
       ...sections123,
       {
-        title: 'Types 4-6',
+        title: "Types 4-6",
         pictographs: grouped456Pictographs,
-        type: 'grouped' as const
-      }
+        type: "grouped" as const,
+      },
     ];
   });
 
@@ -139,7 +141,7 @@ Uses organizer and sizer services for section grouping and sizing.
     const cols = columns();
     // Use reasonable defaults until stable
     if (!sizingStable || !sizerService) {
-      return { cardSize: 80, columns: cols, gap: '8px' };
+      return { cardSize: 80, columns: cols, gap: "8px" };
     }
 
     try {
@@ -148,64 +150,31 @@ Uses organizer and sizer services for section grouping and sizing.
         containerWidth: containerWidth,
         containerHeight: containerHeight,
         columns: cols,
-        isMobileDevice: false
+        isMobileDevice: false,
       });
 
       return {
         cardSize: Math.max(60, Math.min(120, result.pictographSize)),
         columns: cols,
-        gap: result.gridGap
+        gap: result.gridGap,
       };
     } catch {
-      return { cardSize: 80, columns: cols, gap: '8px' };
+      return { cardSize: 80, columns: cols, gap: "8px" };
     }
   });
 
   // ==================== MOBILE LAYOUT CONFIGS ====================
+  // Both configs use consistent values to prevent size "burst" when toggling
 
-  // Layout config for mobile swipe layout - allows OptionViewerSection to calculate optimal size
-  const layoutConfig = $derived(() => {
-    const cols = columns();
-    return {
-      optionsPerRow: cols,
-      // Pass a generous max size - OptionViewerSection will calculate actual optimal size
-      // based on available container space
-      pictographSize: 200,  // Large max to allow filling available space
-      spacing: 8,
-      containerWidth: containerWidth,
-      containerHeight: containerHeight,
-      gridColumns: `repeat(${cols}, 1fr)`,  // Use fr units for flexible sizing
-      gridGap: '8px',
-    };
-  });
-
-  // Layout config for compact 4x4 continuous mode
-  const compact4x4Config = $derived(() => {
-    const gap = 4;
-    // Calculate size to fit 4x4 grid in available space
-    // Use viewport-based calculation for reliable sizing
-    const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 600;
-    const bottomNavHeight = 80;
-    const filterToggleHeight = 40;
-    const topUIHeight = 280; // Sequence display + action buttons
-    const availableHeight = viewportHeight - topUIHeight - bottomNavHeight - filterToggleHeight;
-    const availableWidth = containerWidth - 16; // padding
-
-    // Size to fit 4 columns with gaps
-    const maxByWidth = Math.floor((availableWidth - (gap * 3)) / 4);
-    const maxByHeight = Math.floor((availableHeight - (gap * 3)) / 4);
-    const pictographSize = Math.min(maxByWidth, maxByHeight, 100); // Cap at 100px
-
-    return {
-      optionsPerRow: 4,
-      pictographSize: Math.max(60, pictographSize),
-      spacing: gap,
-      containerWidth: availableWidth,
-      containerHeight: availableHeight,
-      gridColumns: `repeat(4, 1fr)`,
-      gridGap: `${gap}px`,
-    };
-  });
+  const mobileLayoutConfig = $derived(() => ({
+    optionsPerRow: 4,
+    pictographSize: 120, // Consistent max size hint
+    spacing: 8,
+    containerWidth: containerWidth,
+    containerHeight: containerHeight,
+    gridColumns: `repeat(4, 1fr)`,
+    gridGap: "8px",
+  }));
 
   // Simple resize observer - only update after stable
   $effect(() => {
@@ -254,11 +223,19 @@ Uses organizer and sizer services for section grouping and sizing.
         class:mobile={shouldUseSwipeLayout()}
         class:continuous={isContinuousOnly}
         onclick={() => onToggleContinuous?.(!isContinuousOnly)}
-        aria-label={isContinuousOnly ? "Showing continuous only - click for all" : "Showing all - click for continuous only"}
+        aria-label={isContinuousOnly
+          ? "Showing continuous only - click for all"
+          : "Showing all - click for continuous only"}
         aria-pressed={isContinuousOnly}
       >
-        <i class="fas" class:fa-link={isContinuousOnly} class:fa-th={!isContinuousOnly}></i>
-        <span class="filter-label">{isContinuousOnly ? "Continuous" : "All"}</span>
+        <i
+          class="fas"
+          class:fa-link={isContinuousOnly}
+          class:fa-th={!isContinuousOnly}
+        ></i>
+        <span class="filter-label"
+          >{isContinuousOnly ? "Continuous" : "All"}</span
+        >
       </button>
     </div>
   {/if}
@@ -274,10 +251,11 @@ Uses organizer and sizer services for section grouping and sizing.
       <OptionViewerSection
         pictographs={options}
         onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
-        layoutConfig={compact4x4Config()}
+        layoutConfig={mobileLayoutConfig()}
         fitToViewport={true}
         showHeader={false}
         isFadingOut={isFading}
+        {currentSequence}
       />
     </div>
   {:else if shouldUseSwipeLayout()}
@@ -287,8 +265,9 @@ Uses organizer and sizer services for section grouping and sizing.
       <OptionViewerSwipeLayout
         organizedPictographs={swipeSections()}
         onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
-        layoutConfig={layoutConfig()}
+        layoutConfig={mobileLayoutConfig()}
         isFadingOut={isFading}
+        {currentSequence}
       />
     </div>
   {:else if shouldUseWideLayout && !isMobileStackedLayout()}
@@ -306,6 +285,7 @@ Uses organizer and sizer services for section grouping and sizing.
           showHeader={organizedSections().length > 1}
           {isFading}
           {onSelect}
+          {currentSequence}
         />
       {/each}
 
@@ -318,6 +298,7 @@ Uses organizer and sizer services for section grouping and sizing.
           gap={desktopSizing().gap}
           {isFading}
           {onSelect}
+          {currentSequence}
         />
       {/if}
     </div>
@@ -328,10 +309,11 @@ Uses organizer and sizer services for section grouping and sizing.
       <OptionViewerSection
         pictographs={options}
         onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
-        layoutConfig={layoutConfig()}
+        layoutConfig={mobileLayoutConfig()}
         fitToViewport={true}
         showHeader={false}
         isFadingOut={isFading}
+        {currentSequence}
       />
     </div>
   {/if}
@@ -438,23 +420,9 @@ Uses organizer and sizer services for section grouping and sizing.
     flex: 1;
     width: 100%;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 0;
-    overflow: hidden;
-    padding: 8px;
-  }
-
-  /* Ensure the grid section inside fits and centers properly */
-  .compact-4x4-container :global(.option-picker-section) {
-    max-width: 100%;
-    max-height: 100%;
-  }
-
-  .compact-4x4-container :global(.pictographs-grid) {
-    justify-content: center;
-    align-content: center;
   }
 
   .empty-state {

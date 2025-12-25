@@ -8,6 +8,33 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { CAPType, SliceSize } from "../../domain/models/circular-models";
+import type { CAPComponent } from "../../../shared/domain/models/generate-models";
+
+/**
+ * Describes a transformation at a specific interval
+ */
+export interface IntervalTransformation {
+  /** The interval at which this transformation occurs */
+  interval: SliceSize;
+  /** The transformation component detected */
+  component: CAPComponent;
+  /** Human-readable description */
+  description: string;
+}
+
+/**
+ * Describes a compound CAP pattern with multiple transformations at different intervals
+ */
+export interface CompoundPattern {
+  /** Whether this is a compound pattern (multiple intervals) */
+  isCompound: true;
+  /** Transformations at quartered interval (90°) */
+  quarteredTransformations: CAPComponent[];
+  /** Transformations at halved interval (180°) */
+  halvedTransformations: CAPComponent[];
+  /** Combined human-readable description like "90° CCW Rotated (quartered) + Swapped (halved)" */
+  description: string;
+}
 
 /**
  * Result of CAP type detection on a sequence
@@ -29,6 +56,12 @@ export interface CAPDetectionResult {
    * - 'accidental': Circular by coincidence, not a structured CAP
    */
   confidence: "strict" | "probable" | "accidental";
+
+  /**
+   * Compound pattern info when transformations occur at different intervals
+   * e.g., rotation at quartered + swap at halved
+   */
+  compoundPattern?: CompoundPattern;
 }
 
 /**

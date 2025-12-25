@@ -53,21 +53,33 @@ export function createSequenceTransformOperations(
   }
 
   return {
-    setStartPosition(startPosition: BeatData) {
+    setStartPosition(startPosition: BeatData | null) {
       if (!coreState.currentSequence) return;
 
       try {
-        // Update sequence with start position - set both fields for compatibility
-        const updatedSequence = updateSequenceData(coreState.currentSequence, {
-          startPosition: startPosition,
-          startingPositionBeat: startPosition, // CRITICAL: Set both fields for compatibility
-        });
-
-        coreState.setCurrentSequence(updatedSequence);
-        selectionState.setStartPosition(startPosition);
-        console.log(
-          "✅ Transform: Updated hasStartPosition to true (setStartPosition called)"
-        );
+        if (startPosition === null) {
+          // Clear start position
+          const updatedSequence = updateSequenceData(coreState.currentSequence, {
+            startPosition: undefined,
+            startingPositionBeat: undefined,
+          });
+          coreState.setCurrentSequence(updatedSequence);
+          selectionState.setStartPosition(null);
+          console.log(
+            "✅ Transform: Cleared start position (setStartPosition called with null)"
+          );
+        } else {
+          // Update sequence with start position - set both fields for compatibility
+          const updatedSequence = updateSequenceData(coreState.currentSequence, {
+            startPosition: startPosition,
+            startingPositionBeat: startPosition, // CRITICAL: Set both fields for compatibility
+          });
+          coreState.setCurrentSequence(updatedSequence);
+          selectionState.setStartPosition(startPosition);
+          console.log(
+            "✅ Transform: Updated hasStartPosition to true (setStartPosition called)"
+          );
+        }
         coreState.clearError();
       } catch (error) {
         handleError("Failed to set start position", error);
@@ -190,6 +202,30 @@ export function createSequenceTransformOperations(
         await onSave?.();
       } catch (error) {
         handleError("Failed to rewind sequence", error);
+      }
+    },
+
+    async shiftStartPosition(targetBeatNumber: number) {
+      if (!coreState.currentSequence || !sequenceTransformationService) return;
+
+      try {
+        const shiftedSequence = sequenceTransformationService.shiftStartPosition(
+          coreState.currentSequence,
+          targetBeatNumber
+        );
+        coreState.setCurrentSequence(shiftedSequence);
+
+        // Update selection state with new start position so UI re-renders
+        if (shiftedSequence.startPosition) {
+          selectionState.setStartPosition(shiftedSequence.startPosition);
+        }
+
+        coreState.clearError();
+
+        // Persist the transformed sequence
+        await onSave?.();
+      } catch (error) {
+        handleError("Failed to shift start position", error);
       }
     },
 

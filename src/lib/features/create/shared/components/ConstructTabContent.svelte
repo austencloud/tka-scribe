@@ -73,10 +73,7 @@
               GridMode.DIAMOND}
             {isSideBySideLayout}
             {isUndoingOption}
-            {onOpenFilters}
-            {onCloseFilters}
             {isContinuousOnly}
-            {isFilterPanelOpen}
             {onToggleContinuous}
           />
         {/if}

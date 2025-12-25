@@ -16,6 +16,9 @@ import type {
   TurnValue,
 } from "../models/TurnPatternData";
 
+// Re-export TurnValue for consumers
+export type { TurnValue } from "../models/TurnPatternData";
+
 /**
  * Complexity level for pattern categorization
  */

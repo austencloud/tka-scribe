@@ -16,6 +16,7 @@ import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/service
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { IReversalDetectionService } from "../../../services/contracts/IReversalDetectionService";
 import {
   createMotionData,
   type MotionData,
@@ -203,6 +204,14 @@ export function updateRotationDirection(
         gridModeDeriver
       );
     }
+  }
+
+  // Process reversals to update reversal indicators after rotation direction change
+  try {
+    const reversalService = resolve<IReversalDetectionService>(TYPES.IReversalDetectionService);
+    updatedSequence = reversalService.processReversals(updatedSequence);
+  } catch {
+    // Reversal service is optional - continue without reversal processing
   }
 
   // Call setCurrentSequence ONCE with the fully updated sequence

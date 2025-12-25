@@ -123,7 +123,38 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
   }
 
   function setContinuousOnly(value: boolean) {
+    // Force state update to trigger derived recomputation
     isContinuousOnly = value;
+  }
+
+  // Get filtered options - called as a function to ensure fresh computation
+  function getFilteredOptions(): PictographData[] {
+    if (options.length === 0) {
+      return [];
+    }
+
+    let filteredResults = [...options];
+
+    // Apply continuity filter if enabled (requires at least 2 beats for rotation context)
+    if (isContinuousOnly && currentSequence.length >= 2) {
+      const continuousFilter = {
+        continuous: true,
+        "1-reversal": false,
+        "2-reversals": false,
+      };
+      filteredResults = filterService.applyReversalFiltering(
+        filteredResults,
+        continuousFilter,
+        currentSequence
+      );
+    }
+
+    // Apply sorting
+    if (sortMethod) {
+      filteredResults = optionSorter.applySorting(filteredResults, sortMethod);
+    }
+
+    return filteredResults;
   }
 
   function selectOption(_option: PictographData) {
@@ -196,5 +227,6 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     selectOption,
     clearError,
     reset,
+    getFilteredOptions,
   };
 }

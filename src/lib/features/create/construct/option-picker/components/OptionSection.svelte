@@ -18,6 +18,8 @@ Single responsibility: Combine header and grid for a letter type section.
     showHeader?: boolean;
     isFading?: boolean;
     onSelect: (option: PreparedPictographData) => void;
+    // Sequence context for reversal detection
+    currentSequence?: PictographData[];
   }
 
   const {
@@ -29,6 +31,7 @@ Single responsibility: Combine header and grid for a letter type section.
     showHeader = true,
     isFading = false,
     onSelect,
+    currentSequence = [],
   }: Props = $props();
 </script>
 
@@ -37,7 +40,7 @@ Single responsibility: Combine header and grid for a letter type section.
     <OptionSectionHeader {letterType} />
   {/if}
 
-  <OptionGrid {options} {cardSize} {columns} {gap} {isFading} {onSelect} />
+  <OptionGrid {options} {cardSize} {columns} {gap} {isFading} {onSelect} {currentSequence} />
 </div>
 
 <style>

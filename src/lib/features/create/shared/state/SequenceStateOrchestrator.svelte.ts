@@ -616,7 +616,7 @@ export function createSequenceState(services: SequenceStateServices) {
     hasContent: () => beatOperations.hasContent(),
 
     // Transform operations - delegate to facade
-    setStartPosition: (startPosition: BeatData) =>
+    setStartPosition: (startPosition: BeatData | null) =>
       transformOperations.setStartPosition(startPosition),
     mirrorSequence: () => transformOperations.mirrorSequence(),
     flipSequence: () => transformOperations.flipSequence(),

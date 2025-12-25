@@ -6,7 +6,108 @@
  * - Quartered CAPs: 90° rotation (position +2 or -2 for clockwise/counter-clockwise)
  */
 
-import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import {
+  GridPosition,
+  GridPositionGroup,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+
+/**
+ * Position Zone Types
+ * Alpha and Beta have 8 positions each.
+ * Gamma has 16 positions split into two structural halves.
+ */
+export type PositionZone = "alpha" | "beta" | "gamma1-8" | "gamma9-16";
+
+/**
+ * Extract the zone from a GridPosition
+ */
+export function getPositionZone(position: GridPosition): PositionZone {
+  if (position.startsWith("alpha")) return "alpha";
+  if (position.startsWith("beta")) return "beta";
+  if (position.startsWith("gamma")) {
+    const num = parseInt(position.replace("gamma", ""), 10);
+    return num <= 8 ? "gamma1-8" : "gamma9-16";
+  }
+  throw new Error(`Unknown position: ${position}`);
+}
+
+/**
+ * Get the position group (ALPHA, BETA, GAMMA) from a GridPosition
+ */
+export function getPositionGroup(position: GridPosition): GridPositionGroup {
+  if (position.startsWith("alpha")) return GridPositionGroup.ALPHA;
+  if (position.startsWith("beta")) return GridPositionGroup.BETA;
+  if (position.startsWith("gamma")) return GridPositionGroup.GAMMA;
+  throw new Error(`Unknown position: ${position}`);
+}
+
+/**
+ * Zone coverage analysis result
+ */
+export interface ZoneCoverageAnalysis {
+  alpha: GridPosition[];
+  beta: GridPosition[];
+  gamma1to8: GridPosition[];
+  gamma9to16: GridPosition[];
+  summary: {
+    alphaCount: number;
+    betaCount: number;
+    gamma1to8Count: number;
+    gamma9to16Count: number;
+    totalZonesCovered: number; // 0-4
+    isComplete: boolean; // All 4 zones represented
+  };
+}
+
+/**
+ * Analyze zone coverage for a list of end positions
+ */
+export function analyzeZoneCoverage(
+  positions: (GridPosition | null | undefined)[]
+): ZoneCoverageAnalysis {
+  const alpha: GridPosition[] = [];
+  const beta: GridPosition[] = [];
+  const gamma1to8: GridPosition[] = [];
+  const gamma9to16: GridPosition[] = [];
+
+  for (const pos of positions) {
+    if (!pos) continue;
+    const zone = getPositionZone(pos);
+    switch (zone) {
+      case "alpha":
+        alpha.push(pos);
+        break;
+      case "beta":
+        beta.push(pos);
+        break;
+      case "gamma1-8":
+        gamma1to8.push(pos);
+        break;
+      case "gamma9-16":
+        gamma9to16.push(pos);
+        break;
+    }
+  }
+
+  const zonesCovered = [alpha, beta, gamma1to8, gamma9to16].filter(
+    (arr) => arr.length > 0
+  ).length;
+
+  return {
+    alpha,
+    beta,
+    gamma1to8,
+    gamma9to16,
+    summary: {
+      alphaCount: alpha.length,
+      betaCount: beta.length,
+      gamma1to8Count: gamma1to8.length,
+      gamma9to16Count: gamma9to16.length,
+      totalZonesCovered: zonesCovered,
+      isComplete: zonesCovered === 4,
+    },
+  };
+}
 
 /**
  * Half position map - 180° rotation

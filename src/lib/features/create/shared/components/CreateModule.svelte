@@ -412,7 +412,7 @@
 
           // Sync picker state with the newly loaded sequence
           // This ensures hasStartPosition and getCurrentSequenceData() are properly evaluated
-          constructTabState.syncPickerStateWithSequence();
+          constructTabState?.syncPickerStateWithSequence();
         } else {
           // Fallback to the getter-based approach if constructTabState isn't available
           CreateModuleState!.sequenceState.setCurrentSequence(sequence);
@@ -542,8 +542,11 @@
 
     // Run async initialization in an IIFE
     (async () => {
-      if (!ensureContainerInitialized()) {
+      try {
+        await ensureContainerInitialized();
+      } catch (initError) {
         error = "Dependency injection container not initialized";
+        console.error("Container initialization failed:", initError);
         return;
       }
 

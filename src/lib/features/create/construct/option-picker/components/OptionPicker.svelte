@@ -88,11 +88,18 @@ Delegates all rendering to child components.
 
   // Prepare options when filtered options change OR continuous filter changes
   $effect(() => {
-    // Explicitly track continuous state to ensure effect re-runs on toggle
-    const _continuousFilter = internalContinuousOnly;
-    const filtered = pickerState?.filteredOptions || [];
+    // Track continuous state - when this changes, we need to re-filter and re-prepare
+    const continuousFilter = internalContinuousOnly;
 
-    if (filtered.length === 0 || !preparer) {
+    if (!pickerState || !preparer) {
+      preparedOptions = [];
+      return;
+    }
+
+    // Call getFilteredOptions() as a function to get fresh filtered results
+    const filtered = pickerState.getFilteredOptions();
+
+    if (filtered.length === 0) {
       preparedOptions = [];
       return;
     }
@@ -177,6 +184,7 @@ Delegates all rendering to child components.
     isContinuousOnly={internalContinuousOnly}
     onToggleContinuous={handleToggleContinuous}
     {isSideBySideLayout}
+    {currentSequence}
   />
 {/if}
 

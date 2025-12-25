@@ -464,7 +464,7 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
                     class="copy-btn small"
                     onclick={() =>
                       copyToClipboard(
-                        `Grid Mode: ${lookupKeys.gridMode}\nOri Key: ${lookupKeys.oriKey}\nTurns Tuple: ${lookupKeys.turnsTuple}\nBlue Rot Key: ${lookupKeys.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`,
+                        `Grid Mode: ${lookupKeys?.gridMode ?? "N/A"}\nOri Key: ${lookupKeys?.oriKey ?? "N/A"}\nTurns Tuple: ${lookupKeys?.turnsTuple ?? "N/A"}\nBlue Rot Key: ${lookupKeys?.blueRotationOverrideKey ?? "N/A"}\nRed Rot Key: ${lookupKeys?.redRotationOverrideKey ?? "N/A"}`,
                         "keys"
                       )}
                     title="Copy Lookup Keys"

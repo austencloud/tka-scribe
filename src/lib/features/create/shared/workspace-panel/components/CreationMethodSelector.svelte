@@ -74,9 +74,10 @@
         case "Enter":
         case " ":
           // On choice step, select the focused method
-          if (isOnChoiceStep && methods[focusedChoiceIndex]) {
+          const selectedMethod = methods[focusedChoiceIndex];
+          if (isOnChoiceStep && selectedMethod) {
             event.preventDefault();
-            selectMethod(methods[focusedChoiceIndex].id);
+            selectMethod(selectedMethod.id);
           }
           break;
         case "1":
@@ -217,17 +218,17 @@
   }
 
   function scrollPrev() {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     emblaApi?.scrollPrev();
   }
 
   function scrollNext() {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     emblaApi?.scrollNext();
   }
 
   function goToStep(index: number) {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     emblaApi?.scrollTo(index);
   }
 
@@ -237,7 +238,7 @@
   }
 
   function skipTutorial() {
-    hapticService?.trigger("light");
+    hapticService?.trigger("selection");
     onMethodSelected("assembler");
   }
 
@@ -290,7 +291,7 @@
   <div class="carousel-layout">
     <div
       class="embla"
-      use:emblaCarouselSvelte={{ options: { loop: false } }}
+      use:emblaCarouselSvelte={{ options: { loop: false }, plugins: [] }}
       onemblaInit={onEmblaInit}
     >
       <div class="embla__container">

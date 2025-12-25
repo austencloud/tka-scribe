@@ -116,7 +116,7 @@
               assemblerSeq?.startingPositionBeat ||
               assemblerSeq?.startPosition ||
               null}
-            {@const existingBeatsArray = assemblerSeq?.beats || []}
+            {@const existingBeatsArray = [...(assemblerSeq?.beats || [])]}
             {@const hasExistingAssemblerData = !!(
               existingStartBeat || existingBeatsArray.length > 0
             )}
