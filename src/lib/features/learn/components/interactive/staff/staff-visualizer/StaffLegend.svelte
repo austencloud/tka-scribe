@@ -1,0 +1,79 @@
+<!--
+StaffLegend - Legend showing left/right staff position and thumb orientation
+-->
+<script lang="ts">
+	import {
+		LEFT_STAFF_COLOR,
+		RIGHT_STAFF_COLOR,
+		type HandPosition,
+		type ThumbOrientation
+	} from "../../../../domain/constants/staff-visualizer-data";
+
+	let {
+		leftPosition,
+		rightPosition,
+		leftThumbOrientation,
+		rightThumbOrientation
+	}: {
+		leftPosition: HandPosition;
+		rightPosition: HandPosition;
+		leftThumbOrientation: ThumbOrientation;
+		rightThumbOrientation: ThumbOrientation;
+	} = $props();
+</script>
+
+<div class="thumb-legend">
+	<div class="legend-item left">
+		<div class="legend-color" style="background: {LEFT_STAFF_COLOR}"></div>
+		<span>Left: {leftPosition}</span>
+		<span class="thumb-label">Thumb {leftThumbOrientation}</span>
+	</div>
+	<div class="legend-item right">
+		<div class="legend-color" style="background: {RIGHT_STAFF_COLOR}"></div>
+		<span>Right: {rightPosition}</span>
+		<span class="thumb-label">Thumb {rightThumbOrientation}</span>
+	</div>
+</div>
+
+<style>
+	.thumb-legend {
+		display: flex;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.legend-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-size: 0.8125rem;
+		color: rgba(255, 255, 255, 0.8);
+	}
+
+	.legend-color {
+		width: 12px;
+		height: 12px;
+		border-radius: 3px;
+	}
+
+	.thumb-label {
+		font-size: 0.75rem;
+		color: rgba(255, 255, 255, 0.5);
+		padding: 0.125rem 0.5rem;
+		background: rgba(255, 255, 255, 0.08);
+		border-radius: 4px;
+	}
+
+	@media (max-width: 400px) {
+		.thumb-legend {
+			flex-direction: column;
+			gap: 0.5rem;
+		}
+
+		.legend-item {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+</style>

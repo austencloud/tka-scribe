@@ -7,7 +7,7 @@ Type1QuizSection - Main quiz UI with letter, pictograph, and answers
     type MotionPattern,
     type Type1LetterQuestion,
     PATTERN_INFO,
-  } from "../../../../domain/constants/type1-letter-questions";
+  } from "../../../../../domain/constants/type1-letter-questions";
   import Type1LetterDisplay from "./Type1LetterDisplay.svelte";
   import Type1PictographDisplay from "./Type1PictographDisplay.svelte";
   import Type1AnswerButton from "./Type1AnswerButton.svelte";

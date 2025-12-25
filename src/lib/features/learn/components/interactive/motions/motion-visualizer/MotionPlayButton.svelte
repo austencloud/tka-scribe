@@ -1,0 +1,64 @@
+<!--
+MotionPlayButton - Play/replay button for motion animation
+-->
+<script lang="ts">
+	let {
+		animating,
+		hasCompleted,
+		onclick
+	}: {
+		animating: boolean;
+		hasCompleted: boolean;
+		onclick: () => void;
+	} = $props();
+</script>
+
+<button class="play-button" {onclick} disabled={animating}>
+	{#if animating}
+		<i class="fa-solid fa-spinner fa-spin"></i>
+		Playing...
+	{:else if hasCompleted}
+		<i class="fa-solid fa-redo"></i>
+		Replay
+	{:else}
+		<i class="fa-solid fa-play"></i>
+		Play Motion
+	{/if}
+</button>
+
+<style>
+	.play-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.75rem 1.5rem;
+		background: linear-gradient(
+			135deg,
+			rgba(34, 211, 238, 0.2) 0%,
+			rgba(6, 182, 212, 0.2) 100%
+		);
+		border: 1px solid rgba(34, 211, 238, 0.4);
+		border-radius: 10px;
+		color: #22d3ee;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		min-width: 140px;
+	}
+
+	.play-button:hover:not(:disabled) {
+		background: linear-gradient(
+			135deg,
+			rgba(34, 211, 238, 0.3) 0%,
+			rgba(6, 182, 212, 0.3) 100%
+		);
+		border-color: rgba(34, 211, 238, 0.6);
+	}
+
+	.play-button:disabled {
+		opacity: 0.7;
+		cursor: not-allowed;
+	}
+</style>

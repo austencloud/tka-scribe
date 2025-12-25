@@ -1,0 +1,113 @@
+<!--
+VTGAnswerButton - Single answer button with state styling
+-->
+<script lang="ts">
+	import type { VTGMode } from "../../../../domain/constants/vtg-quiz-data";
+
+	let {
+		mode,
+		name,
+		color,
+		isSelected,
+		isCorrect,
+		showResult,
+		onclick,
+		disabled = false
+	}: {
+		mode: VTGMode;
+		name: string;
+		color: string;
+		isSelected: boolean;
+		isCorrect: boolean;
+		showResult: boolean;
+		onclick: () => void;
+		disabled?: boolean;
+	} = $props();
+
+	const showIncorrect = $derived(showResult && isSelected && !isCorrect);
+	const showCorrectMark = $derived(showResult && isCorrect);
+</script>
+
+<button
+	class="answer-button"
+	class:selected={isSelected}
+	class:correct={showResult && isCorrect}
+	class:incorrect={showIncorrect}
+	style="--type-color: {color}"
+	{onclick}
+	{disabled}
+>
+	<span class="mode-code">{mode}</span>
+	<span class="mode-name">{name}</span>
+	{#if showCorrectMark}
+		<i class="fa-solid fa-check result-icon"></i>
+	{:else if showIncorrect}
+		<i class="fa-solid fa-xmark result-icon"></i>
+	{/if}
+</button>
+
+<style>
+	.answer-button {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.75rem 0.5rem;
+		background: rgba(255, 255, 255, 0.04);
+		border: 2px solid rgba(255, 255, 255, 0.1);
+		border-radius: 10px;
+		color: rgba(255, 255, 255, 0.7);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+	}
+
+	.answer-button:hover:not(:disabled) {
+		background: color-mix(in srgb, var(--type-color) 10%, transparent);
+		border-color: color-mix(in srgb, var(--type-color) 40%, transparent);
+		color: var(--type-color);
+	}
+
+	.answer-button:disabled {
+		cursor: default;
+	}
+
+	.answer-button.selected {
+		background: color-mix(in srgb, var(--type-color) 15%, transparent);
+		border-color: var(--type-color);
+		color: var(--type-color);
+	}
+
+	.answer-button.correct {
+		background: rgba(74, 222, 128, 0.15);
+		border-color: #4ade80;
+		color: #4ade80;
+	}
+
+	.answer-button.incorrect {
+		background: rgba(248, 113, 113, 0.15);
+		border-color: #f87171;
+		color: #f87171;
+	}
+
+	.mode-code {
+		font-family: monospace;
+		font-size: 0.875rem;
+		font-weight: 800;
+	}
+
+	.mode-name {
+		font-size: 0.625rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
+		opacity: 0.8;
+	}
+
+	.result-icon {
+		position: absolute;
+		top: 4px;
+		right: 4px;
+		font-size: 0.75rem;
+	}
+</style>

@@ -2,7 +2,7 @@
 Type1AnswerButton - Single answer option for motion pattern
 -->
 <script lang="ts">
-  import type { MotionPattern, PatternInfo } from "../../../../domain/constants/type1-letter-questions";
+  import type { MotionPattern, PatternInfo } from "../../../../../domain/constants/type1-letter-questions";
 
   let {
     pattern,

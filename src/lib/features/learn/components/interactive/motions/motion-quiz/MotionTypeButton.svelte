@@ -1,0 +1,112 @@
+<!--
+MotionTypeButton - Answer button for motion type selection
+-->
+<script lang="ts">
+	import type { MotionTypeNumber, MotionTypeInfo } from "../../../../domain/constants/motion-quiz-data";
+
+	let {
+		type,
+		isSelected,
+		isCorrect,
+		showResult,
+		disabled,
+		onclick
+	}: {
+		type: MotionTypeInfo;
+		isSelected: boolean;
+		isCorrect: boolean;
+		showResult: boolean;
+		disabled: boolean;
+		onclick: () => void;
+	} = $props();
+</script>
+
+<button
+	class="answer-button"
+	class:selected={isSelected}
+	class:correct={showResult && isCorrect}
+	class:incorrect={showResult && isSelected && !isCorrect}
+	style="--type-color: {type.color}"
+	{onclick}
+	{disabled}
+>
+	<span class="type-num">{type.num}</span>
+	<span class="type-name">{type.name}</span>
+	{#if showResult && isCorrect}
+		<i class="fa-solid fa-check result-icon"></i>
+	{:else if showResult && isSelected && !isCorrect}
+		<i class="fa-solid fa-xmark result-icon"></i>
+	{/if}
+</button>
+
+<style>
+	.answer-button {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25rem;
+		padding: 0.75rem 0.5rem;
+		background: rgba(255, 255, 255, 0.04);
+		border: 2px solid rgba(255, 255, 255, 0.1);
+		border-radius: 10px;
+		color: rgba(255, 255, 255, 0.7);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+	}
+
+	.answer-button:hover:not(:disabled) {
+		background: color-mix(in srgb, var(--type-color) 10%, transparent);
+		border-color: color-mix(in srgb, var(--type-color) 40%, transparent);
+		color: var(--type-color);
+	}
+
+	.answer-button:disabled {
+		cursor: default;
+	}
+
+	.answer-button.selected {
+		background: color-mix(in srgb, var(--type-color) 15%, transparent);
+		border-color: var(--type-color);
+		color: var(--type-color);
+	}
+
+	.answer-button.correct {
+		background: rgba(74, 222, 128, 0.15);
+		border-color: #4ade80;
+		color: #4ade80;
+	}
+
+	.answer-button.incorrect {
+		background: rgba(248, 113, 113, 0.15);
+		border-color: #f87171;
+		color: #f87171;
+	}
+
+	.type-num {
+		width: 24px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: currentColor;
+		color: black;
+		font-size: 0.75rem;
+		font-weight: 700;
+		border-radius: 6px;
+	}
+
+	.type-name {
+		font-size: 0.6875rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
+	}
+
+	.result-icon {
+		position: absolute;
+		top: 4px;
+		right: 4px;
+		font-size: 0.75rem;
+	}
+</style>

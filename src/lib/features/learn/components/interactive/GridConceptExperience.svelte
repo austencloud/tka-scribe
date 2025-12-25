@@ -9,6 +9,7 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { onMount } from "svelte";
   import LessonGridDisplay from "./LessonGridDisplay.svelte";
+  import GridIdentificationQuiz from "./GridIdentificationQuiz.svelte";
 
   let { onComplete, onBack } = $props<{
     onComplete?: () => void;
@@ -140,18 +141,13 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
         </div>
       </div>
     </div>
-  {:else}
-    <!-- Future steps placeholder -->
-    <div class="step-content">
-      <h1 class="title anim-item" style="--anim-order: 0">The Grid</h1>
-      <p class="description anim-item" style="--anim-order: 1">
-        More content coming...
-      </p>
-      <button
-        class="next-button anim-item"
-        style="--anim-order: 2"
-        onclick={handleNext}>Next</button
-      >
+  {:else if step === 2}
+    <!-- Step 2: Quiz -->
+    <div class="step-content step-quiz">
+      <h1 class="title anim-item" style="--anim-order: 0">Test Your Knowledge</h1>
+      <div class="quiz-container anim-item" style="--anim-order: 1">
+        <GridIdentificationQuiz onComplete={onComplete} />
+      </div>
     </div>
   {/if}
 </div>
@@ -253,6 +249,17 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   .step-points {
     max-width: 900px;
     width: 100%;
+  }
+
+  /* Step 2: Quiz layout */
+  .step-quiz {
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .step-quiz .quiz-container {
+    width: 100%;
+    max-width: none;
   }
 
   /* Split layout for side-by-side content */
