@@ -165,7 +165,7 @@
   <div class="sheet-content">
     <div class="sheet-header">
       <h2 id="snap-settings-title">Snap Settings</h2>
-      <button class="close-btn" onclick={() => (showAdvancedSheet = false)}>
+      <button class="close-btn" onclick={() => (showAdvancedSheet = false)} aria-label="Close">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>

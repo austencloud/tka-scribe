@@ -102,6 +102,11 @@ export class SequenceFramePreRenderer {
   private offscreenContainer: HTMLDivElement | null = null;
   private loadedGlyphs = new Set<Letter>(); // Track which glyphs have been loaded
 
+  // Memory management: Track loops and auto-cleanup
+  private loopCount = 0;
+  private readonly MAX_LOOPS_BEFORE_CLEANUP = 5; // Clear frames after N loops to prevent memory accumulation
+  private isDisposed = false;
+
   constructor(
     private readonly orchestrator: ISequenceAnimationOrchestrator,
     private readonly renderer: IPixiAnimationRenderer
@@ -579,6 +584,57 @@ export class SequenceFramePreRenderer {
    */
   cancel(): void {
     this.shouldCancel = true;
+    // Immediately clean up offscreen resources on cancel to prevent memory leaks
+    this.cleanupOffscreenResources();
+  }
+
+  /**
+   * Notify that the animation has looped.
+   * Call this from the playback controller when a loop is detected.
+   * After MAX_LOOPS_BEFORE_CLEANUP loops, automatically clears frames to free memory.
+   * Returns true if cleanup was performed.
+   */
+  notifyLoop(): boolean {
+    this.loopCount++;
+
+    if (this.loopCount >= this.MAX_LOOPS_BEFORE_CLEANUP) {
+      console.log(`🔄 [SequenceFramePreRenderer] Auto-cleanup after ${this.loopCount} loops to free memory`);
+      this.clear();
+      this.loopCount = 0;
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Reset loop counter (call when sequence changes)
+   */
+  resetLoopCount(): void {
+    this.loopCount = 0;
+  }
+
+  /**
+   * Clean up offscreen rendering resources without clearing cached frames
+   */
+  private cleanupOffscreenResources(): void {
+    if (this.offscreenRenderer) {
+      try {
+        this.offscreenRenderer.destroy();
+      } catch (e) {
+        console.warn('[SequenceFramePreRenderer] Error destroying offscreen renderer:', e);
+      }
+      this.offscreenRenderer = null;
+    }
+
+    if (this.offscreenContainer?.parentElement) {
+      try {
+        this.offscreenContainer.parentElement.removeChild(this.offscreenContainer);
+      } catch (e) {
+        console.warn('[SequenceFramePreRenderer] Error removing offscreen container:', e);
+      }
+      this.offscreenContainer = null;
+    }
   }
 
   /**
@@ -609,26 +665,38 @@ export class SequenceFramePreRenderer {
     if (this.currentRender) {
       // Close all ImageBitmaps to free GPU memory
       for (const frame of this.currentRender.frames) {
-        frame.bitmap.close();
+        try {
+          frame.bitmap.close();
+        } catch (e) {
+          // ImageBitmap may already be closed
+        }
       }
       this.currentRender = null;
     }
 
-    // Clean up offscreen renderer
-    if (this.offscreenRenderer) {
-      this.offscreenRenderer.destroy();
-      this.offscreenRenderer = null;
-    }
-
-    // Remove offscreen container from DOM
-    if (this.offscreenContainer?.parentElement) {
-      this.offscreenContainer.parentElement.removeChild(
-        this.offscreenContainer
-      );
-      this.offscreenContainer = null;
-    }
+    // Clean up offscreen resources
+    this.cleanupOffscreenResources();
 
     // Clear loaded glyphs cache
     this.loadedGlyphs.clear();
+
+    // Reset loop counter
+    this.loopCount = 0;
+  }
+
+  /**
+   * Full disposal - call when the component using this service is destroyed
+   */
+  dispose(): void {
+    if (this.isDisposed) return;
+    this.isDisposed = true;
+
+    // Cancel any in-progress render
+    this.shouldCancel = true;
+
+    // Clear all resources
+    this.clear();
+
+    console.log('[SequenceFramePreRenderer] Disposed');
   }
 }

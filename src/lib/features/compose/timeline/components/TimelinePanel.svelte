@@ -27,7 +27,7 @@
   import ClipInspector from "./ClipInspector.svelte";
   import TimelineEmptyState from "./TimelineEmptyState.svelte";
   import TimelineMinimap from "./TimelineMinimap.svelte";
-  import MediaBrowserPanel, { type MediaImportType } from "./MediaBrowserPanel.svelte";
+  import MediaBrowserPanel, { type MediaImportType } from "./media-browser/MediaBrowserPanel.svelte";
   import TimelinePreview from "./TimelinePreview.svelte";
   import SourcePreview from "./SourcePreview.svelte";
   import PanelGroup from "$lib/shared/panels/PanelGroup.svelte";

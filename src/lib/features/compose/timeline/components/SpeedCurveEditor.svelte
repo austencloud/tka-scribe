@@ -89,7 +89,7 @@
   let hoverPosition = $state<number | null>(null);
 
   // Canvas for curve preview
-  let canvasEl: HTMLCanvasElement;
+  let canvasEl = $state<HTMLCanvasElement>();
 
   // Calculate speed at a position using selected preset
   function calculateSpeed(position: number, preset: SpeedCurvePreset): number {

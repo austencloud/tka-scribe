@@ -196,40 +196,6 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
-  .control-btn.active {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent, #4a9eff) 25%,
-      transparent
-    );
-    border-color: var(--theme-accent, #4a9eff);
-    color: var(--theme-accent, #4a9eff);
-    box-shadow: 0 0 12px
-      color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
-  }
-
-  .control-btn.play-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 16px;
-    border-width: 2px;
-  }
-
-  .control-btn.play-btn:hover {
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.2),
-      0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
-  }
-
-  .control-btn.play-btn.playing {
-    background: var(--theme-accent, #4a9eff);
-    border-color: var(--theme-accent-strong, #3a7ed0);
-    color: white;
-    box-shadow:
-      0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent),
-      0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-
   .time-display {
     display: flex;
     align-items: center;

@@ -40,7 +40,7 @@
   </div>
 
   <div class="field">
-    <label class="field-label">Clip Color</label>
+    <span class="field-label">Clip Color</span>
     <div class="color-presets">
       {#each COLOR_PRESETS as presetColor}
         <button
@@ -55,8 +55,9 @@
   </div>
 
   <div class="field">
-    <label class="field-label">Rotation ({rotation}°)</label>
+    <label class="field-label" for="clip-rotation">Rotation ({rotation}°)</label>
     <input
+      id="clip-rotation"
       type="range"
       class="range-input"
       min="0"
@@ -69,8 +70,9 @@
   </div>
 
   <div class="field">
-    <label class="field-label">Opacity ({Math.round(opacity * 100)}%)</label>
+    <label class="field-label" for="clip-opacity">Opacity ({Math.round(opacity * 100)}%)</label>
     <input
+      id="clip-opacity"
       type="range"
       class="range-input"
       min="0"
@@ -84,7 +86,58 @@
 </section>
 
 <style>
-  @import "./inspector-styles.css";
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .section-header i {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .field {
+    margin-bottom: 12px;
+  }
+
+  .range-input {
+    flex: 1;
+    height: 4px;
+    appearance: none;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 2px;
+  }
+
+  .range-input::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--theme-accent, #4a9eff);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
 
   .color-presets {
     display: flex;

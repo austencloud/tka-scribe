@@ -133,6 +133,7 @@
         class="close-btn"
         onclick={() => getState().closeClipInspector()}
         title="Close inspector"
+        aria-label="Close inspector"
       >
         <i class="fa-solid fa-xmark"></i>
       </button>

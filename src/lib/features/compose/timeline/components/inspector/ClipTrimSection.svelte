@@ -47,9 +47,10 @@
 
   <div class="field-row">
     <div class="field">
-      <label class="field-label">In Point</label>
+      <label class="field-label" for="in-point-range">In Point</label>
       <div class="input-group">
         <input
+          id="in-point-range"
           type="range"
           class="range-input"
           min="0"
@@ -63,9 +64,10 @@
     </div>
 
     <div class="field">
-      <label class="field-label">Out Point</label>
+      <label class="field-label" for="out-point-range">Out Point</label>
       <div class="input-group">
         <input
+          id="out-point-range"
           type="range"
           class="range-input"
           min="1"
@@ -86,7 +88,97 @@
 </section>
 
 <style>
-  @import "./inspector-styles.css";
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .section-header i {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .field {
+    margin-bottom: 12px;
+  }
+
+  .input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .range-input {
+    flex: 1;
+    height: 4px;
+    appearance: none;
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 2px;
+  }
+
+  .range-input::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--theme-accent, #4a9eff);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    font-size: 11px;
+    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .action-btn:hover {
+    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .value-label {
+    min-width: 40px;
+    font-size: 11px;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    text-align: right;
+  }
 
   .trim-range {
     position: relative;

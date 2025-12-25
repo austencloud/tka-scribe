@@ -176,7 +176,7 @@ export class TrailCaptureService implements ITrailCaptureService {
 
   // Memory leak prevention: Track total accumulated points
   private totalPointsCaptured = 0;
-  private readonly MAX_TOTAL_POINTS_BEFORE_PRUNE = 50000; // Safety limit to prevent OOM
+  private readonly MAX_TOTAL_POINTS_BEFORE_PRUNE = 15000; // Safety limit to prevent OOM (lowered for mobile devices)
 
   // Constants
   private readonly GRID_HALFWAY_POINT_OFFSET = 150; // Matches strict grid points

@@ -47,8 +47,9 @@
   </div>
 
   <div class="field">
-    <label class="field-label">Label</label>
+    <label class="field-label" for="clip-label">Label</label>
     <input
+      id="clip-label"
       type="text"
       class="text-input"
       placeholder="Optional clip label"
@@ -59,7 +60,56 @@
 </section>
 
 <style>
-  @import "./inspector-styles.css";
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 600;
+    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .section-header i {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .field {
+    margin-bottom: 12px;
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .text-input {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .text-input:focus {
+    outline: none;
+    border-color: var(--theme-accent, #4a9eff);
+  }
 
   .info-row {
     display: flex;

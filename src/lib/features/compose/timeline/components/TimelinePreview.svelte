@@ -332,19 +332,19 @@
 
     <!-- Control buttons -->
     <div class="control-buttons">
-      <button class="transport-btn" onclick={() => getPlayback().goToStart()} title="Go to start (Home)">
+      <button class="transport-btn" onclick={() => getPlayback().goToStart()} title="Go to start (Home)" aria-label="Go to start">
         <i class="fas fa-backward-fast"></i>
       </button>
-      <button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)">
+      <button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)" aria-label="Previous frame">
         <i class="fas fa-backward-step"></i>
       </button>
-      <button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"}>
+      <button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"} aria-label={isPlaying ? "Pause" : "Play"}>
         <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
       </button>
-      <button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)">
+      <button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)" aria-label="Next frame">
         <i class="fas fa-forward-step"></i>
       </button>
-      <button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)">
+      <button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)" aria-label="Go to end">
         <i class="fas fa-forward-fast"></i>
       </button>
     </div>

@@ -118,6 +118,10 @@ export class PixiTrailRenderer {
   private blueTrailGraphics: Graphics;
   private redTrailGraphics: Graphics;
 
+  // Memory management: Track frame count for periodic graphics refresh
+  private frameCount = 0;
+  private readonly FRAMES_BEFORE_GRAPHICS_REFRESH = 500; // Recreate Graphics every N frames to flush geometry cache
+
   constructor(trailContainer: Container) {
     this.trailContainer = trailContainer;
 
@@ -128,6 +132,28 @@ export class PixiTrailRenderer {
     this.trailContainer.addChild(this.redTrailGraphics);
   }
 
+  /**
+   * Recreate Graphics objects to flush PixiJS internal geometry cache.
+   * This prevents memory accumulation during extended playback.
+   */
+  private refreshGraphicsObjects(): void {
+    // Destroy old graphics
+    try {
+      this.blueTrailGraphics.destroy();
+      this.redTrailGraphics.destroy();
+    } catch (e) {
+      // Ignore errors during destroy
+    }
+
+    // Create new graphics
+    this.blueTrailGraphics = new Graphics();
+    this.redTrailGraphics = new Graphics();
+    this.trailContainer.addChild(this.blueTrailGraphics);
+    this.trailContainer.addChild(this.redTrailGraphics);
+
+    console.log('🔄 [PixiTrailRenderer] Refreshed Graphics objects to free geometry cache');
+  }
+
   renderTrails(
     blueTrailPoints: TrailPoint[],
     redTrailPoints: TrailPoint[],
@@ -136,6 +162,13 @@ export class PixiTrailRenderer {
     hasBlue: boolean,
     hasRed: boolean
   ): void {
+    // Increment frame count and periodically refresh graphics to prevent memory accumulation
+    this.frameCount++;
+    if (this.frameCount >= this.FRAMES_BEFORE_GRAPHICS_REFRESH) {
+      this.refreshGraphicsObjects();
+      this.frameCount = 0;
+    }
+
     if (!trailSettings.enabled || trailSettings.mode === TrailMode.OFF) {
       this.blueTrailGraphics.clear();
       this.redTrailGraphics.clear();
@@ -393,7 +426,15 @@ export class PixiTrailRenderer {
     this.redTrailGraphics.clear();
   }
 
+  /**
+   * Reset frame counter (call when animation resets or sequence changes)
+   */
+  resetFrameCount(): void {
+    this.frameCount = 0;
+  }
+
   destroy(): void {
+    this.frameCount = 0;
     try {
       this.blueTrailGraphics.destroy();
       this.redTrailGraphics.destroy();

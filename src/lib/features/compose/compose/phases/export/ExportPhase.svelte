@@ -181,6 +181,7 @@
               class="loop-btn"
               onclick={() => (loopCount = Math.max(1, loopCount - 1))}
               disabled={loopCount <= 1}
+              aria-label="Decrease loop count"
             >
               <i class="fas fa-minus"></i>
             </button>
@@ -189,6 +190,7 @@
               class="loop-btn"
               onclick={() => (loopCount = Math.min(10, loopCount + 1))}
               disabled={loopCount >= 10}
+              aria-label="Increase loop count"
             >
               <i class="fas fa-plus"></i>
             </button>

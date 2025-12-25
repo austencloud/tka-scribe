@@ -96,7 +96,7 @@
   <div class="color-indicator"></div>
 
   <!-- Track name -->
-  <div class="track-name" ondblclick={startEdit}>
+  <div class="track-name" ondblclick={startEdit} onkeydown={(e) => e.key === 'Enter' && startEdit()} role="button" tabindex="0">
     {#if isEditing}
       <input
         type="text"

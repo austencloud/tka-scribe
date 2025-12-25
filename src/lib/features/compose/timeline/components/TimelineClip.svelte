@@ -178,13 +178,17 @@
     onmousedown={handleTrimLeftStart}
     role="slider"
     aria-label="Trim start"
+    aria-valuenow={clip.inPoint * 100}
+    aria-valuemin="0"
+    aria-valuemax="99"
+    tabindex="0"
     title="Drag to trim start"
   >
     <div class="handle-grip"></div>
   </div>
 
   <!-- Main clip body -->
-  <div class="clip-body" onmousedown={handleMoveStart}>
+  <div class="clip-body" onmousedown={handleMoveStart} role="button" tabindex="-1">
     <div class="clip-preview">
       {#if clip.sequence.thumbnails?.[0]}
         <img src={clip.sequence.thumbnails[0]} alt="" draggable="false" />
@@ -224,6 +228,10 @@
     onmousedown={handleTrimRightStart}
     role="slider"
     aria-label="Trim end"
+    aria-valuenow={clip.outPoint * 100}
+    aria-valuemin="1"
+    aria-valuemax="100"
+    tabindex="0"
     title="Drag to trim end"
   >
     <div class="handle-grip"></div>
@@ -235,6 +243,10 @@
     onmousedown={handleResizeStart}
     role="slider"
     aria-label="Resize clip"
+    aria-valuenow={clip.duration}
+    aria-valuemin="0"
+    aria-valuemax="100"
+    tabindex="0"
     title="Drag to resize"
   >
     <div class="resize-grip"></div>

@@ -147,8 +147,7 @@
       <!-- Canvas Phase -->
       <div class="canvas-phase">
         <div class="canvas-column">
-          <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-          <div class="canvas-area" onclick={handleCanvasClick}>
+          <div class="canvas-area" onclick={handleCanvasClick} onkeydown={(e) => e.key === 'Enter' && handleCanvasClick(e)} role="button" tabindex="0">
             <CompositionCanvas
               {composition}
               {isPlaying}

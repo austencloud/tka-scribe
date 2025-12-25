@@ -27,7 +27,7 @@
     return getTimelinePlaybackService();
   }
 
-  let waveformContainer: HTMLDivElement;
+  let waveformContainer = $state<HTMLDivElement>();
   let wavesurfer: WaveSurfer | null = null;
   let isReady = $state(false);
   let isLoadingAudio = $state(false);
@@ -275,6 +275,7 @@
           class="icon-btn danger"
           onclick={removeAudio}
           title="Remove audio"
+          aria-label="Remove audio"
         >
           <i class="fa-solid fa-trash"></i>
         </button>
