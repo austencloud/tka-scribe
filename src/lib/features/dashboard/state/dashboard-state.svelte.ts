@@ -13,7 +13,10 @@ import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.sve
 import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
 
-export interface DashboardState {
+/**
+ * Internal state structure (not exported to consumers)
+ */
+interface InternalDashboardState {
   challengeDrawerOpen: boolean;
   signInToastMessage: string;
   showSignInToast: boolean;
@@ -23,8 +26,33 @@ export interface DashboardState {
   feedbackDetailOpen: boolean;
 }
 
+/**
+ * Public interface for dashboard state consumers
+ */
+export interface DashboardState {
+  challengeDrawerOpen: boolean;
+  readonly signInToastMessage: string;
+  readonly showSignInToast: boolean;
+  isVisible: boolean;
+  readonly feedbackDetailItem: FeedbackItem | null;
+  readonly feedbackDetailOpen: boolean;
+  readonly isAuthenticated: boolean;
+  readonly user: any;
+  readonly sequenceCount: number;
+  readonly favoriteCount: number;
+  readonly greeting: string;
+  readonly welcomeMessage: string;
+  readonly moduleCards: any[];
+  readonly isPreviewActive: boolean;
+  readonly previewProfile: any;
+  showSignInRequiredToast: (moduleName: string) => void;
+  clearToast: () => void;
+  openFeedbackDetail: (item: FeedbackItem) => void;
+  closeFeedbackDetail: () => void;
+}
+
 function createDashboardState() {
-  const state: DashboardState = $state({
+  const state: InternalDashboardState = $state({
     challengeDrawerOpen: false,
     signInToastMessage: "",
     showSignInToast: false,

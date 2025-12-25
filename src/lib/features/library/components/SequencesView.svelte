@@ -23,6 +23,7 @@
   import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import type { IDiscoverThumbnailService } from "../../discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import TagFilterChips from "./tags/TagFilterChips.svelte";
 
   type ViewFilter = "all" | "created" | "forked" | "favorites";
 
@@ -326,6 +327,9 @@
       {/if}
     </button>
   </div>
+
+  <!-- Tag Filter Chips -->
+  <TagFilterChips />
 
   <!-- Selection Bar (when in select mode) -->
   {#if isSelectMode}

@@ -500,10 +500,6 @@
       gap: 12px;
     }
 
-    .widget-community,
-    .widget-notifications {
-      min-height: 240px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {

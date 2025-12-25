@@ -38,6 +38,7 @@ interface LibraryFilters {
   visibility: SequenceVisibility | "all";
   source: "created" | "forked" | "all";
   collectionId: string | null;
+  tagIds: string[];
   sortBy: LibrarySortField;
   sortDirection: LibrarySortDirection;
 }
@@ -129,6 +130,7 @@ class LibraryStateManager {
         visibility: "all",
         source: "all",
         collectionId: null,
+        tagIds: [],
         sortBy: "updatedAt",
         sortDirection: "desc",
       },
@@ -274,6 +276,18 @@ class LibraryStateManager {
       result = result.filter((seq) =>
         seq.collectionIds.includes(filters.collectionId!)
       );
+    }
+
+    // Filter by tags (OR logic - sequences with ANY selected tag)
+    if (filters.tagIds.length > 0) {
+      result = result.filter((seq) => {
+        // Check both legacy tagIds and new sequenceTags
+        const seqTagIds = new Set([
+          ...seq.tagIds,
+          ...seq.sequenceTags.map((st) => st.tagId),
+        ]);
+        return filters.tagIds.some((tagId) => seqTagIds.has(tagId));
+      });
     }
 
     // Sort
@@ -641,6 +655,26 @@ class LibraryStateManager {
     this.persistState();
   }
 
+  setTagFilter(tagIds: string[]) {
+    this.state.filters.tagIds = tagIds;
+    this.persistState();
+  }
+
+  toggleTagFilter(tagId: string) {
+    const current = this.state.filters.tagIds;
+    if (current.includes(tagId)) {
+      this.state.filters.tagIds = current.filter((id) => id !== tagId);
+    } else {
+      this.state.filters.tagIds = [...current, tagId];
+    }
+    this.persistState();
+  }
+
+  clearTagFilter() {
+    this.state.filters.tagIds = [];
+    this.persistState();
+  }
+
   setSortBy(field: LibrarySortField) {
     this.state.filters.sortBy = field;
     this.persistState();
@@ -663,6 +697,7 @@ class LibraryStateManager {
       visibility: "all",
       source: "all",
       collectionId: null,
+      tagIds: [],
       sortBy: "updatedAt",
       sortDirection: "desc",
     };
@@ -699,6 +734,7 @@ class LibraryStateManager {
         visibility: "all",
         source: "all",
         collectionId: null,
+        tagIds: [],
         sortBy: "updatedAt",
         sortDirection: "desc",
       },
