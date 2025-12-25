@@ -24,6 +24,7 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
   private rafId: number | null = null;
   private needsRender: boolean = false;
   private getFrameParamsCallback: (() => RenderFrameParams) | null = null;
+  private isDisposed: boolean = false; // Prevent RAF from continuing after disposal
 
   initialize(config: RenderLoopConfig): void {
     this.pixiRenderer = config.pixiRenderer;
@@ -74,13 +75,22 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
   }
 
   dispose(): void {
+    // Mark as disposed FIRST to stop any pending RAF callbacks
+    this.isDisposed = true;
     this.stop();
     this.pixiRenderer = null;
     this.trailCaptureService = null;
     this.pathCache = null;
+    this.getFrameParamsCallback = null;
   }
 
   private renderLoop = (currentTime: number): void => {
+    // CRITICAL: Check disposed flag first to prevent memory leaks
+    if (this.isDisposed) {
+      this.rafId = null;
+      return;
+    }
+
     if (!this.pixiRenderer || !this.getFrameParamsCallback) {
       this.rafId = null;
       return;
@@ -117,7 +127,12 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
     ) {
       this.render(params, currentTime);
       this.needsRender = false;
-      this.rafId = requestAnimationFrame(this.renderLoop);
+      // Only schedule next frame if not disposed
+      if (!this.isDisposed) {
+        this.rafId = requestAnimationFrame(this.renderLoop);
+      } else {
+        this.rafId = null;
+      }
     } else {
       // Stop loop when no render is needed
       this.rafId = null;

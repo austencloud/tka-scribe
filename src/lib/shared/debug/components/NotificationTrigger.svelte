@@ -128,10 +128,12 @@
           selectedType === "achievement-unlocked" ? "Test Master" : undefined
         );
       } else if (selectedType === "message-received") {
+        const messageText = messages[selectedType];
         await notificationTriggerService.createMessageNotification(
           user.uid,
           "test-conversation-id",
-          messages[selectedType],
+          messageText,
+          messageText.slice(0, 100), // messagePreview
           user.uid,
           user.displayName || "Test User"
         );

@@ -110,6 +110,7 @@
   class="inbox-tabs {className}"
   role="tablist"
   aria-label="Inbox tabs"
+  tabindex="0"
   onkeydown={handleKeydown}
 >
   <!-- Sliding indicator -->

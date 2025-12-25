@@ -64,6 +64,7 @@
     role="dialog"
     aria-modal="true"
     aria-labelledby="settings-title"
+    tabindex="-1"
   >
     <div class="settings-panel" bind:this={panelElement}>
       <!-- Header -->

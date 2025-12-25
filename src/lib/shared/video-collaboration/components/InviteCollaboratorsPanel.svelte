@@ -75,7 +75,7 @@
   }
 
   function currentMessage(): string | undefined {
-    const message = useCustomMessage ? customMessage.trim() : selectedMessage.trim();
+    const message = useCustomMessage ? customMessage.trim() : (selectedMessage ?? "").trim();
     return message.length > 0 ? message : undefined;
   }
 

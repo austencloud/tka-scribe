@@ -63,6 +63,8 @@
   class="media-piece-card"
   onmouseenter={() => (isHovered = true)}
   onmouseleave={() => (isHovered = false)}
+  role="region"
+  aria-label="{label} preview"
 >
   <!-- Preview Content -->
   <div class="preview-content">
