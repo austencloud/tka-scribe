@@ -102,8 +102,13 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
     let modifiedSvg = svgContent;
 
-    // For outer points, set base attributes but let CSS handle fill-opacity and stroke-opacity
-    // This allows CSS transitions to animate the morphing effect smoothly
+    // For outer points, set all attributes inline including opacity
+    // This ensures correct rendering in exported images where CSS doesn't apply
+    // Diamond mode: filled circles (fill visible, stroke hidden)
+    // Box mode: outlined circles (fill hidden, stroke visible)
+    const fillOpacity = mode === GridMode.DIAMOND ? "1" : "0";
+    const strokeOpacity = mode === GridMode.DIAMOND ? "0" : "1";
+
     for (const id of outerPointIds) {
       // Use regex to find each outer point circle and add/update base attributes
       const circlePattern = new RegExp(
@@ -122,8 +127,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           cleaned = cleaned.replace(/\s*stroke-width="[^"]*"/g, "");
           cleaned = cleaned.replace(/\s*stroke-miterlimit="[^"]*"/g, "");
 
-          // Add base attributes but DON'T set fill-opacity/stroke-opacity - let CSS handle it
-          return `${cleaned} fill="#000" stroke="#000" stroke-width="13" stroke-miterlimit="10"${closing}`;
+          // Add all attributes inline for correct export rendering
+          return `${cleaned} fill="#000" fill-opacity="${fillOpacity}" stroke="#000" stroke-opacity="${strokeOpacity}" stroke-width="13" stroke-miterlimit="10"${closing}`;
         }
       );
     }
@@ -230,6 +235,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
       // Animate rotation smoothly if element is available
       if (gridContainerElement) {
+        // Capture element reference for use in animate callback
+        const element = gridContainerElement;
         // Use requestAnimationFrame for smooth SVG transform animation
         const startTime = performance.now();
         const duration = 200; // ms - matches arrow/prop transition duration
@@ -243,7 +250,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
           const currentRotation =
             previousRotation + (newRotation - previousRotation) * eased;
-          gridContainerElement.setAttribute(
+          element.setAttribute(
             "transform",
             `rotate(${currentRotation}, 475, 475)`
           );
@@ -252,7 +259,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
             requestAnimationFrame(animate);
           } else {
             // Ensure final value is exact
-            gridContainerElement.setAttribute(
+            element.setAttribute(
               "transform",
               `rotate(${newRotation}, 475, 475)`
             );

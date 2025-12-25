@@ -148,7 +148,10 @@ Props:
   );
 </script>
 
-<!-- Turns Column Group -->
+<!-- Turns Column Group - only render when visible (or in preview mode)
+     NOTE: We check visibility here (not just CSS) because when exporting to SVG/image,
+     CSS classes don't carry over - only the raw SVG markup is captured. -->
+{#if visible || previewMode}
 <g
   class="turns-column"
   class:visible
@@ -237,6 +240,7 @@ Props:
     </g>
   {/if}
 </g>
+{/if}
 
 <style>
   .turns-column {

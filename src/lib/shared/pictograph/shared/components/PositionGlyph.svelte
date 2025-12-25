@@ -46,8 +46,15 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     return match ? match[0].toLowerCase() : null;
   }
 
-  // Only render if we have valid positions and it's not a static letter
+  // Only render if we have valid positions, it's not a static letter, AND when visible
+  // NOTE: We check visibility here (not just CSS) because when exporting to SVG/image,
+  // CSS classes don't carry over - only the raw SVG markup is captured.
+  // Preview mode allows rendering at reduced opacity even when not visible.
   const shouldRender = $derived.by(() => {
+    // Don't render if not visible (unless in preview mode which shows dimmed)
+    if (!visible && !previewMode) {
+      return false;
+    }
     if (!hasValidData || !startPosition || !endPosition) {
       return false;
     }

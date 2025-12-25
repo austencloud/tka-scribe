@@ -36,8 +36,15 @@ Based on legacy elemental_glyph.py implementation.
     onToggle?: () => void;
   }>();
 
-  // Only render for Type1 letters with valid elemental type
+  // Only render for Type1 letters with valid elemental type AND when visible
+  // NOTE: We check visibility here (not just CSS) because when exporting to SVG/image,
+  // CSS classes don't carry over - only the raw SVG markup is captured.
+  // Preview mode allows rendering at reduced opacity even when not visible.
   const shouldRender = $derived.by(() => {
+    // Don't render if not visible (unless in preview mode which shows dimmed)
+    if (!visible && !previewMode) {
+      return false;
+    }
     if (!hasValidData || !elementalType) {
       return false;
     }

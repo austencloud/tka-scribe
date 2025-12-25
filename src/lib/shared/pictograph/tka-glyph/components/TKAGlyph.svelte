@@ -275,8 +275,11 @@ Uses pure runes instead of stores for reactivity.
   );
 </script>
 
-<!-- TKA Glyph Group - only render when dimensions are loaded to prevent flash -->
-{#if hasLetter && dimensionsLoaded}
+<!-- TKA Glyph Group - only render when dimensions are loaded AND when visible
+     NOTE: We check visibility here (not just CSS) because when exporting to SVG/image,
+     CSS classes don't carry over - only the raw SVG markup is captured.
+     Preview mode allows rendering at reduced opacity even when not visible. -->
+{#if hasLetter && dimensionsLoaded && (visible || previewMode)}
   <g
     class="tka-glyph"
     class:visible={visible && imageReady}

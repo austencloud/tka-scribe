@@ -65,8 +65,15 @@ colored according to the motion that is reversing between pictographs.
     );
   });
 
-  // Only render if we have valid data and at least one reversal (after visibility filtering)
+  // Only render if we have valid data, at least one reversal, AND when visible
+  // NOTE: We check visibility here (not just CSS) because when exporting to SVG/image,
+  // CSS classes don't carry over - only the raw SVG markup is captured.
+  // Preview mode allows rendering at reduced opacity even when not visible.
   const shouldRender = $derived(() => {
+    // Don't render if not visible (unless in preview mode which shows dimmed)
+    if (!visible && !previewMode) {
+      return false;
+    }
     const render =
       hasValidData && (effectiveBlueReversal || effectiveRedReversal);
     return render;

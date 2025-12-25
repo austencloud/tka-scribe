@@ -72,6 +72,10 @@ export class VisibilityStateManager {
   // Sub-elements that depend on their parent glyph
   private readonly TKA_SUB_ELEMENTS = ["turnNumbers"];
 
+  // Promise that resolves when settings are fully loaded
+  private settingsLoadedPromise: Promise<void> | null = null;
+  private settingsLoadedResolve: (() => void) | null = null;
+
   constructor(initialSettings?: Partial<AppSettings>) {
     // Initialize with defaults matching desktop app
     this.settings = {
@@ -107,7 +111,23 @@ export class VisibilityStateManager {
 
     // Load persisted settings asynchronously (browser only)
     if (browser) {
+      // Create a promise that resolves when settings are loaded
+      this.settingsLoadedPromise = new Promise((resolve) => {
+        this.settingsLoadedResolve = resolve;
+      });
       this.loadPersistedSettings();
+    }
+  }
+
+  /**
+   * Ensure settings have been loaded from persistence
+   * Call this before reading settings in async contexts (e.g., image export)
+   */
+  async ensureSettingsLoaded(): Promise<void> {
+    debug.log("ensureSettingsLoaded called, promise exists:", !!this.settingsLoadedPromise);
+    if (this.settingsLoadedPromise) {
+      await this.settingsLoadedPromise;
+      debug.log("ensureSettingsLoaded completed, current settings:", this.settings);
     }
   }
 
@@ -115,27 +135,43 @@ export class VisibilityStateManager {
    * Load visibility settings from persisted storage
    */
   private async loadPersistedSettings(): Promise<void> {
-    const service = await getSettingsService();
-    if (!service?.settings?.visibility) return;
+    debug.log("loadPersistedSettings: Starting async load...");
+    try {
+      const service = await getSettingsService();
+      debug.log("loadPersistedSettings: Got settings service, visibility data:", service?.settings?.visibility);
 
-    const v = service.settings.visibility;
-    debug.log("Loading persisted visibility settings", v);
+      if (service?.settings?.visibility) {
+        const v = service.settings.visibility;
+        debug.log("Loading persisted visibility settings", v);
 
-    // Apply persisted settings (only if they exist)
-    if (v.tkaGlyph !== undefined) this.settings.tkaGlyph = v.tkaGlyph;
-    if (v.vtgGlyph !== undefined) this.settings.vtgGlyph = v.vtgGlyph;
-    if (v.elementalGlyph !== undefined)
-      this.settings.elementalGlyph = v.elementalGlyph;
-    if (v.positionsGlyph !== undefined)
-      this.settings.positionsGlyph = v.positionsGlyph;
-    if (v.reversalIndicators !== undefined)
-      this.settings.reversalIndicators = v.reversalIndicators;
-    if (v.turnNumbers !== undefined) this.settings.turnNumbers = v.turnNumbers;
-    if (v.nonRadialPoints !== undefined)
-      this.settings.nonRadialPoints = v.nonRadialPoints;
+        // Apply persisted settings (only if they exist)
+        if (v.tkaGlyph !== undefined) this.settings.tkaGlyph = v.tkaGlyph;
+        if (v.vtgGlyph !== undefined) this.settings.vtgGlyph = v.vtgGlyph;
+        if (v.elementalGlyph !== undefined)
+          this.settings.elementalGlyph = v.elementalGlyph;
+        if (v.positionsGlyph !== undefined)
+          this.settings.positionsGlyph = v.positionsGlyph;
+        if (v.reversalIndicators !== undefined)
+          this.settings.reversalIndicators = v.reversalIndicators;
+        if (v.turnNumbers !== undefined) this.settings.turnNumbers = v.turnNumbers;
+        if (v.nonRadialPoints !== undefined)
+          this.settings.nonRadialPoints = v.nonRadialPoints;
 
-    // Notify observers that settings have been loaded
-    this.notifyObservers(["all"]);
+        debug.log("loadPersistedSettings: Applied settings, result:", this.settings);
+        // Notify observers that settings have been loaded
+        this.notifyObservers(["all"]);
+      } else {
+        debug.log("loadPersistedSettings: No visibility settings found in persistence, using defaults");
+      }
+    } finally {
+      // Always resolve the settings loaded promise, even if loading fails
+      // This prevents blocking indefinitely on ensureSettingsLoaded()
+      debug.log("loadPersistedSettings: Resolving promise, final settings:", this.settings);
+      if (this.settingsLoadedResolve) {
+        this.settingsLoadedResolve();
+        this.settingsLoadedResolve = null;
+      }
+    }
   }
 
   /**
