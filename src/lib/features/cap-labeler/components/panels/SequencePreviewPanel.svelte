@@ -418,11 +418,6 @@
     color: var(--muted-foreground);
   }
 
-  .meta-item.id {
-    font-family: monospace;
-    color: var(--muted);
-  }
-
   .meta-item.grid-mode {
     font-weight: 600;
     text-transform: uppercase;

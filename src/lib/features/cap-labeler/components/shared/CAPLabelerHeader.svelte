@@ -267,48 +267,6 @@
     flex-wrap: wrap;
   }
 
-  .filter-chips {
-    display: flex;
-    gap: var(--spacing-sm);
-    flex-wrap: wrap;
-  }
-
-  .filter-chip {
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    border-radius: 9999px;
-    color: var(--muted-foreground);
-    cursor: pointer;
-    font-size: var(--font-size-sm);
-    transition: var(--transition-fast);
-    min-height: var(--min-touch-target);
-  }
-
-  .filter-chip:hover {
-    background: var(--surface-hover);
-  }
-
-  .filter-chip.active {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: var(--primary-color);
-    color: var(--foreground);
-  }
-
-  .filter-chip.verify {
-    border-color: rgba(234, 179, 8, 0.4);
-    color: #eab308;
-  }
-
-  .filter-chip.verify:hover {
-    background: rgba(234, 179, 8, 0.15);
-  }
-
-  .filter-chip.verify.active {
-    background: rgba(234, 179, 8, 0.25);
-    border-color: #eab308;
-  }
-
   .io-controls {
     display: flex;
     gap: var(--spacing-sm);
