@@ -68,10 +68,10 @@
   <!-- Mode Toggle -->
   <div class="setting-group">
     <div class="setting-header">
-      <label>
+      <span class="setting-label">
         <i class="fas fa-video"></i>
         Video Source
-      </label>
+      </span>
     </div>
     <div class="mode-toggle-card">
       <button
@@ -197,7 +197,8 @@
     justify-content: space-between;
   }
 
-  .setting-header label {
+  .setting-header label,
+  .setting-header .setting-label {
     display: flex;
     align-items: center;
     gap: 10px;

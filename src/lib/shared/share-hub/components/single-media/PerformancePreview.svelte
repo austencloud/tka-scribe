@@ -337,10 +337,10 @@
             <i class="fas fa-circle pulse"></i>
             {formatDuration(recordingDuration)}
           </span>
-          <button class="control-button stop-button" onclick={stopRecording}>
+          <button class="control-button stop-button" onclick={stopRecording} aria-label="Stop recording">
             <i class="fas fa-stop"></i>
           </button>
-          <button class="control-button cancel-button" onclick={cancelRecording}>
+          <button class="control-button cancel-button" onclick={cancelRecording} aria-label="Cancel recording">
             <i class="fas fa-times"></i>
           </button>
         </div>

@@ -63,6 +63,8 @@ export function moduleHasPrimaryNav(moduleId: string): boolean {
     moduleId === "feedback" || // Submit, Manage tabs
     moduleId === "ml-training" || // ML Training - no tabs, full page
     moduleId === "admin" || // Various admin tabs
-    moduleId === "settings" // No tabs, but needs nav bar for module switcher on mobile
+    moduleId === "settings" || // No tabs, but needs nav bar for module switcher on mobile
+    moduleId === "3d-viewer" || // 3D Viewer - needs nav bar for module switcher on mobile
+    moduleId === "premium" // Premium - needs nav bar for module switcher on mobile
   );
 }

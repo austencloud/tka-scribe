@@ -64,9 +64,6 @@
     padding-left: 8px;
   }
 
-  .section-item {
-    /* Normal appearance */
-  }
 
   /* Celebrate animation - tabs revealed after tutorial */
   .section-item.celebrate {
