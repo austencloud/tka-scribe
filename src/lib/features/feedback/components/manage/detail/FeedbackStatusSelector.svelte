@@ -40,7 +40,10 @@
       direction === "next"
         ? Math.min(currentStatusIndex + 1, statusOrder.length - 1)
         : Math.max(currentStatusIndex - 1, 0);
-    detailState.handleStatusChange(statusOrder[newIndex]);
+    const newStatus = statusOrder[newIndex];
+    if (newStatus) {
+      detailState.handleStatusChange(newStatus);
+    }
   }
 </script>
 
