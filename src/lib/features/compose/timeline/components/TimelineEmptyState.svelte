@@ -14,6 +14,7 @@
 </script>
 
 <!-- Stop propagation to prevent clicks triggering playhead movement -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="empty-state" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="region" aria-label="Empty timeline state">
   <div class="empty-icon">
     <i class="fa-solid fa-film"></i>

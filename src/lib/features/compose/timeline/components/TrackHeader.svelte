@@ -99,6 +99,7 @@
   <div class="track-name" ondblclick={startEdit} onkeydown={(e) => e.key === 'Enter' && startEdit()} role="button" tabindex="0">
     {#if isEditing}
       <!-- autofocus needed: User just double-clicked to edit, expects immediate typing -->
+      <!-- svelte-ignore a11y_autofocus -->
       <input
         type="text"
         class="name-input"

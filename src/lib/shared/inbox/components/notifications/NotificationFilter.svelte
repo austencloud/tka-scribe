@@ -147,9 +147,11 @@
     }}
     role="presentation"
   >
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="sheet"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-label="Select notification type"
       tabindex="-1"
