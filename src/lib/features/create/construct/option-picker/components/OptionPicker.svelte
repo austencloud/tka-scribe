@@ -59,9 +59,9 @@ Delegates all rendering to child components.
 
   // Services
   let preparer: IPictographPreparer | null = null;
-  let hapticService: IHapticFeedbackService | null = null;
-  let sizerService: IOptionSizer | null = null;
-  let organizerService: IOptionOrganizer | null = null;
+  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let sizerService = $state<IOptionSizer | null>(null);
+  let organizerService = $state<IOptionOrganizer | null>(null);
 
   // Track if we're waiting for new options after a selection
   let pendingFadeIn = $state(false);

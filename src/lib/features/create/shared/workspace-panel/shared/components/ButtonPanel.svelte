@@ -54,7 +54,6 @@
     CreateModuleState.canShowSequenceActionsButton()
   );
   const canClearSequence = $derived(CreateModuleState.canClearSequence());
-  const isAnimating = $derived(panelState.isAnimationPanelOpen);
   const isShareHubOpen = $derived(panelState.isShareHubPanelOpen);
 
   // Count center-zone buttons to key the container (for smooth cross-fade on layout changes)
@@ -114,10 +113,10 @@
           out:fade={{ duration: 150 }}
           in:fade={{ duration: 150, delay: 150 }}
         >
-          <!-- Play Button -->
+          <!-- Play Button (opens animation viewer) -->
           {#if showPlayButton && onPlayAnimation}
             <div>
-              <PlayButton onclick={onPlayAnimation} {isAnimating} />
+              <PlayButton onclick={onPlayAnimation} />
             </div>
           {/if}
 

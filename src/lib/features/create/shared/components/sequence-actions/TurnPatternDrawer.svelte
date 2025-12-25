@@ -116,7 +116,7 @@
   <div class="turn-pattern-drawer-content">
     <header class="drawer-header">
       <h2>Turn Patterns</h2>
-      <button class="close-btn" onclick={handleClose}>
+      <button class="close-btn" onclick={handleClose} aria-label="Close">
         <i class="fas fa-times"></i>
       </button>
     </header>
@@ -359,6 +359,7 @@
                           handleDeletePattern(pattern);
                         }}
                         title="Delete pattern"
+                        aria-label="Delete pattern"
                       >
                         <i class="fas fa-trash"></i>
                       </button>

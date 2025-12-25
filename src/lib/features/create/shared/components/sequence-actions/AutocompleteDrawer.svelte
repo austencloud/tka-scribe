@@ -89,7 +89,7 @@
           {/if}
         </span>
       </div>
-      <button class="close-btn" onclick={handleClose} disabled={isApplying}>
+      <button class="close-btn" onclick={handleClose} disabled={isApplying} aria-label="Close">
         <i class="fas fa-times"></i>
       </button>
     </header>

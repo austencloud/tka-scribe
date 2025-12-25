@@ -48,13 +48,17 @@
     // Height sizing threshold: grids with this many rows or fewer will consider height when sizing
     // Default 4 (workspace mode), use higher values (e.g., 20) for fixed-height containers
     heightSizingRowThreshold = undefined,
+    // Multi-select support
+    selectedBeatNumbers = new Set<number>(),
+    isMultiSelectMode = false,
+    onStartLongPress,
   } = $props<{
     beats: ReadonlyArray<BeatData> | BeatData[];
     startPosition?: StartPositionData | BeatData | null;
     onBeatClick?: (beatNumber: number) => void;
     onStartClick?: () => void;
     onBeatDelete?: (beatNumber: number) => void;
-    onBeatLongPress?: () => void;
+    onBeatLongPress?: (beatNumber: number) => void;
     selectedBeatNumber?: number | null; // 0=start, 1=first beat, 2=second beat, etc.
     removingBeatIndex?: number | null;
     removingBeatIndices?: Set<number>;
@@ -72,6 +76,10 @@
     // Height sizing threshold: grids with this many rows or fewer will consider height when sizing
     // Default 4 (workspace mode), use higher values (e.g., 20) for fixed-height containers
     heightSizingRowThreshold?: number;
+    // Multi-select support
+    selectedBeatNumbers?: Set<number>;
+    isMultiSelectMode?: boolean;
+    onStartLongPress?: () => void;
   }>();
 
   const placeholderBeat = createBeatData({

@@ -722,10 +722,4 @@ Orchestrates specialized components and services:
     opacity: 1;
     transition: opacity var(--fade-in-duration, 250ms) ease-in;
   }
-
-  .fade-wrapper.fading-out {
-    opacity: 0;
-    transition: opacity var(--fade-duration, 250ms) ease-out;
-    pointer-events: none; /* Prevent clicks during fade-out */
-  }
 </style>

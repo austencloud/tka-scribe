@@ -272,13 +272,6 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;
     }
-    .grid-btn.full-width {
-      grid-column: span 3;
-    }
-  }
-
-  .grid-btn.full-width {
-    grid-column: span 2;
   }
 
   /* ===== BUTTON BASE STYLES ===== */
@@ -592,19 +585,6 @@
     background: #22c55e;
   }
 
-  /* Autocomplete unavailable state */
-  .grid-btn.autocomplete.unavailable {
-    background: linear-gradient(
-      135deg,
-      rgba(100, 100, 100, 0.1),
-      rgba(100, 100, 100, 0.05)
-    );
-    border-color: rgba(100, 100, 100, 0.2);
-    opacity: 0.5;
-  }
-  .grid-btn.autocomplete.unavailable .btn-icon {
-    background: rgba(100, 100, 100, 0.4);
-  }
 
   /* Shift Start - Cyan */
   .grid-btn.shift-start {

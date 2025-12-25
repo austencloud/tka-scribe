@@ -405,7 +405,7 @@
     <div class="panel-body">
       <!-- TKA Name (read-only) -->
       <div class="form-group">
-        <label>TKA Name</label>
+        <span class="form-label">TKA Name</span>
         <div class="tka-name-display">
           <span class="tka-badge">{tkaName || "..."}</span>
           <span class="tka-hint">Auto-generated from sequence letters</span>
@@ -499,7 +499,7 @@
         {:else}
           <div class="expandable-field">
             <div class="field-header">
-              <label>Tags</label>
+              <span class="field-label">Tags</span>
               <button
                 type="button"
                 class="collapse-btn"

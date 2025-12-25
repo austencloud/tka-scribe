@@ -1,16 +1,16 @@
 <!--
   PlayButton.svelte
 
-  Central play button that opens inline AnimatorPanel for sequence playback
+  Button to open the animation viewer for sequence playback.
+  Note: This only opens the viewer - actual playback controls are inside the viewer.
 -->
 <script lang="ts">
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
-  let { onclick, isAnimating = false } = $props<{
+  let { onclick } = $props<{
     onclick?: () => void;
-    isAnimating?: boolean;
   }>();
 
   // Resolve haptic feedback service
@@ -26,16 +26,11 @@
 
 <button
   class="play-button glass-button"
-  class:is-animating={isAnimating}
   onclick={handleClick}
-  aria-label={isAnimating ? "Stop animation" : "Play animation"}
-  title={isAnimating ? "Stop" : "Play"}
+  aria-label="Play sequence animation"
+  title="Animate"
 >
-  {#if isAnimating}
-    <i class="fas fa-stop"></i>
-  {:else}
-    <i class="fas fa-play"></i>
-  {/if}
+  <i class="fas fa-play"></i>
 </button>
 
 <style>
@@ -78,23 +73,6 @@
   .play-button:focus-visible {
     outline: 2px solid var(--theme-accent, #818cf8);
     outline-offset: 2px;
-  }
-
-  /* Animating state - red/stop color */
-  .play-button.is-animating {
-    background: color-mix(
-      in srgb,
-      var(--semantic-error, #ef4444) 20%,
-      transparent
-    ); /* Red tint when animating */
-  }
-
-  .play-button.is-animating:hover {
-    background: color-mix(
-      in srgb,
-      var(--semantic-error, #ef4444) 30%,
-      transparent
-    );
   }
 
   .play-button i {

@@ -342,6 +342,7 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
     role="dialog"
     aria-modal="true"
     aria-label="Pictograph Inspector"
+    tabindex="-1"
   >
     <div class="modal-content">
       <header class="modal-header">
