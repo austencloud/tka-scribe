@@ -170,7 +170,6 @@ export class FeedbackService implements IFeedbackService {
 
       // Admin management
       status: "new" as FeedbackStatus,
-      adminNotes: null,
 
       // Timestamps
       createdAt: serverTimestamp(),
@@ -451,15 +450,6 @@ export class FeedbackService implements IFeedbackService {
     return timeSinceLastEntry >= DEBOUNCE_MS;
   }
 
-  async updateAdminNotes(feedbackId: string, notes: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const docRef = doc(firestore, COLLECTION_NAME, feedbackId);
-    await updateDoc(docRef, {
-      adminNotes: notes,
-      updatedAt: serverTimestamp(),
-    });
-  }
-
   async deferFeedback(
     feedbackId: string,
     deferredUntil: Date,
@@ -470,7 +460,7 @@ export class FeedbackService implements IFeedbackService {
     await updateDoc(docRef, {
       status: "archived",
       deferredUntil: Timestamp.fromDate(deferredUntil),
-      adminNotes: notes,
+      resolutionNotes: notes,
       archivedAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
@@ -1075,7 +1065,6 @@ export class FeedbackService implements IFeedbackService {
       capturedTab: data["capturedTab"] as string,
       deviceContext,
       status,
-      adminNotes: data["adminNotes"] as string | undefined,
       resolutionNotes: data["resolutionNotes"] as string | undefined,
       adminResponse,
       testerConfirmation,

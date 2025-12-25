@@ -91,9 +91,6 @@
   // Preview mode = read-only, no editing allowed
   const isPreviewMode = $derived(preview.isReadOnly);
 
-  // Check if current user is an admin (for showing admin-only notes)
-  const isUserAdmin = $derived(authState.isEffectiveAdmin);
-
   // Can edit if new, in-progress, or in-review (not completed/archived) AND not in preview mode
   const canEdit = $derived(
     item &&
@@ -308,19 +305,6 @@
                   {item.capturedTab}
                 </span>
               {/if}
-            </div>
-          </div>
-        {/if}
-
-        <!-- Admin Notes (admin-only) -->
-        {#if item.adminNotes && isUserAdmin}
-          <div class="response-section">
-            <h3>
-              <i class="fas fa-sticky-note"></i>
-              Admin Notes (Internal)
-            </h3>
-            <div class="response-card admin">
-              <p class="response-message">{item.adminNotes}</p>
             </div>
           </div>
         {/if}
@@ -705,19 +689,6 @@
   .response-date {
     font-size: 0.75rem;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-  }
-
-  /* Admin card styling (internal-only) */
-  .response-card.admin {
-    background: linear-gradient(
-      135deg,
-      rgba(239, 68, 68, 0.2) 0%,
-      rgba(239, 68, 68, 0.1) 100%
-    );
-    border: 1.5px solid rgba(239, 68, 68, 0.4);
-    box-shadow:
-      0 4px 16px rgba(239, 68, 68, 0.15),
-      0 0 0 1px rgba(239, 68, 68, 0.1);
   }
 
   /* Resolution card styling */

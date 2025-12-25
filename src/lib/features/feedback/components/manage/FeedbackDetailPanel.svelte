@@ -105,18 +105,14 @@
 
   <div class="admin-feedback-body">
     <!-- Resolution Summary - Show for in-review/completed/archived feedback -->
-    {#if (item.status === "in-review" || item.status === "completed" || item.status === "archived") && (item.resolutionNotes || item.adminNotes)}
+    {#if (item.status === "in-review" || item.status === "completed" || item.status === "archived") && item.resolutionNotes}
       <section class="section resolution-section">
         <h3 class="section-title">
           <i class="fas fa-check-circle"></i>
           Resolution
         </h3>
         <div class="resolution-card">
-          {#if item.resolutionNotes}
-            <p class="resolution-text">{item.resolutionNotes}</p>
-          {:else if item.adminNotes}
-            <p class="resolution-text">{item.adminNotes}</p>
-          {/if}
+          <p class="resolution-text">{item.resolutionNotes}</p>
           {#if item.fixedInVersion}
             <span class="version-badge">
               <i class="fas fa-tag"></i>

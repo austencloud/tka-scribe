@@ -122,7 +122,6 @@ export interface FeedbackItem {
 
   // Admin management
   status: FeedbackStatus;
-  adminNotes?: string;
   resolutionNotes?: string; // Agent's summary of how feedback was resolved
   updatedAt?: Date;
 

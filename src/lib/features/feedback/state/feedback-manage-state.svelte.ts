@@ -178,28 +178,6 @@ export function createFeedbackManageState() {
     }
   }
 
-  async function updateAdminNotes(feedbackId: string, notes: string) {
-    try {
-      await feedbackService.updateAdminNotes(feedbackId, notes);
-      // Update local state
-      items = items.map((item) =>
-        item.id === feedbackId
-          ? { ...item, adminNotes: notes, updatedAt: new Date() }
-          : item
-      );
-      if (selectedItem?.id === feedbackId) {
-        selectedItem = {
-          ...selectedItem,
-          adminNotes: notes,
-          updatedAt: new Date(),
-        };
-      }
-    } catch (err) {
-      console.error("Failed to update admin notes:", err);
-      throw err;
-    }
-  }
-
   async function deleteFeedback(feedbackId: string) {
     try {
       await feedbackService.deleteFeedback(feedbackId);
@@ -332,7 +310,7 @@ export function createFeedbackManageState() {
               ...item,
               status: "archived",
               deferredUntil,
-              adminNotes: notes,
+              resolutionNotes: notes,
               archivedAt: new Date(),
               updatedAt: new Date(),
             }
@@ -343,7 +321,7 @@ export function createFeedbackManageState() {
           ...selectedItem,
           status: "archived",
           deferredUntil,
-          adminNotes: notes,
+          resolutionNotes: notes,
           archivedAt: new Date(),
           updatedAt: new Date(),
         };
@@ -394,7 +372,6 @@ export function createFeedbackManageState() {
     selectItem,
     selectItemById,
     updateStatus,
-    updateAdminNotes,
     updateFeedback,
     deleteFeedback,
     loadMore, // Legacy compatibility

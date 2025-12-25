@@ -61,10 +61,6 @@ export function createFeedbackDetailState(
   let isSaving = $state(false);
   let currentItemId = $state(item.id);
 
-  // Admin notes state
-  let adminNotes = $state(item.adminNotes || "");
-  let isSavingNotes = $state(false);
-
   // Status update state
   let isUpdatingStatus = $state(false);
   let lastUpdatedStatus = $state<string | null>(null);
@@ -104,8 +100,6 @@ export function createFeedbackDetailState(
     )
   );
 
-  const notesChanged = $derived(adminNotes !== (item.adminNotes || ""));
-
   // Effect: Sync when item ID changes (different item selected)
   // This prevents resetting fields during typing when real-time updates arrive
   $effect(() => {
@@ -119,8 +113,7 @@ export function createFeedbackDetailState(
       editTitle = item.title;
       editDescription = item.description;
 
-      // Sync admin fields
-      adminNotes = item.adminNotes || "";
+      // Sync admin response field
       adminResponseMessage = item.adminResponse?.message || "";
     }
   });
@@ -169,16 +162,6 @@ export function createFeedbackDetailState(
   function handleFieldBlur() {
     if (hasChanges) {
       void saveChanges();
-    }
-  }
-
-  async function handleSaveNotes() {
-    if (readOnly || !manageState || isSavingNotes || !notesChanged) return;
-    isSavingNotes = true;
-    try {
-      await manageState.updateAdminNotes(item.id, adminNotes);
-    } finally {
-      isSavingNotes = false;
     }
   }
 
@@ -253,12 +236,6 @@ export function createFeedbackDetailState(
     },
 
     // Admin state
-    get adminNotes() {
-      return adminNotes;
-    },
-    set adminNotes(v: string) {
-      adminNotes = v;
-    },
     get adminResponseMessage() {
       return adminResponseMessage;
     },
@@ -269,9 +246,6 @@ export function createFeedbackDetailState(
     // UI state
     get isSaving() {
       return isSaving;
-    },
-    get isSavingNotes() {
-      return isSavingNotes;
     },
     get isUpdatingStatus() {
       return isUpdatingStatus;
@@ -308,15 +282,11 @@ export function createFeedbackDetailState(
     get hasChanges() {
       return hasChanges;
     },
-    get notesChanged() {
-      return notesChanged;
-    },
 
     // Methods
     restoreOriginal,
     saveChanges,
     handleFieldBlur,
-    handleSaveNotes,
     handleStatusChange,
     handleDelete,
     formatDate,

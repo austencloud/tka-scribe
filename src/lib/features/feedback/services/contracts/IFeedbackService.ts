@@ -47,11 +47,6 @@ export interface IFeedbackService {
   updateStatus(feedbackId: string, status: FeedbackStatus): Promise<void>;
 
   /**
-   * Update admin notes (admin)
-   */
-  updateAdminNotes(feedbackId: string, notes: string): Promise<void>;
-
-  /**
    * Defer feedback to be reactivated at a future date (admin)
    */
   deferFeedback(
