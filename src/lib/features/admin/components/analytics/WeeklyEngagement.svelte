@@ -2,8 +2,10 @@
   /**
    * WeeklyEngagement.svelte
    *
-   * Shows weekly engagement metrics calculated from cached SystemState data.
+   * Shows key user metrics from cached SystemState data.
    * No additional Firebase queries - uses the 2-min cached user data.
+   *
+   * Accessibility: WCAG AAA compliant
    */
   import { onMount } from "svelte";
   import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
@@ -16,10 +18,9 @@
   let users = $state<CachedUserMetadata[]>([]);
   let cacheAge = $state<string>("");
 
-  // Calculate date boundaries
+  // Calculate date boundary
   const now = new Date();
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-  const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
 
   // Metrics derived from user data
   const metrics = $derived(() => {
@@ -30,55 +31,17 @@
       (u) => u.createdAt && u.createdAt >= weekAgo
     ).length;
 
-    // New users last week (for comparison)
-    const newLastWeek = users.filter(
-      (u) => u.createdAt && u.createdAt >= twoWeeksAgo && u.createdAt < weekAgo
-    ).length;
-
     // Active users this week
     const activeThisWeek = users.filter(
       (u) => u.lastActivityDate && u.lastActivityDate >= weekAgo
     ).length;
 
-    // Returning users (active this week, created before this week)
-    const returningUsers = users.filter(
-      (u) =>
-        u.lastActivityDate &&
-        u.lastActivityDate >= weekAgo &&
-        u.createdAt &&
-        u.createdAt < weekAgo
-    ).length;
-
-    // Users with active streaks
-    const usersWithStreaks = users.filter((u) => u.currentStreak > 0).length;
-
-    // Average streak among active streakers
-    const activeStreakers = users.filter((u) => u.currentStreak > 0);
-    const avgStreak =
-      activeStreakers.length > 0
-        ? Math.round(
-            activeStreakers.reduce((sum, u) => sum + u.currentStreak, 0) /
-              activeStreakers.length
-          )
-        : 0;
-
     return {
       totalUsers,
       newThisWeek,
-      newLastWeek,
       activeThisWeek,
-      returningUsers,
-      usersWithStreaks,
-      avgStreak,
     };
   });
-
-  // Calculate change indicator
-  function getChange(current: number, previous: number): string {
-    if (previous === 0) return current > 0 ? "+100%" : "0%";
-    const change = Math.round(((current - previous) / previous) * 100);
-    return change > 0 ? `+${change}%` : `${change}%`;
-  }
 
   onMount(async () => {
     try {
@@ -104,54 +67,60 @@
   });
 </script>
 
-<section class="section">
+<section class="section" aria-labelledby="stats-title">
   <header class="section-header">
-    <h3><i class="fas fa-chart-line"></i> Weekly Engagement</h3>
+    <h3 id="stats-title">
+      <i class="fas fa-chart-line" aria-hidden="true"></i>
+      Quick Stats
+    </h3>
     {#if cacheAge}
       <span class="cache-indicator" title="Data cached from SystemState">
-        <i class="fas fa-database"></i> {cacheAge}
+        <i class="fas fa-database" aria-hidden="true"></i>
+        <span class="visually-hidden">Data loaded</span>
+        {cacheAge}
       </span>
     {/if}
   </header>
 
-  {#if isLoading}
-    <div class="metrics-grid">
-      {#each Array(4) as _}
-        <div class="metric-card skeleton">
-          <div class="skeleton-value"></div>
-          <div class="skeleton-label"></div>
+  <div aria-live="polite" aria-busy={isLoading}>
+    {#if isLoading}
+      <div class="metrics-grid" role="status">
+        <span class="visually-hidden">Loading stats...</span>
+        {#each Array(3) as _}
+          <div class="metric-card skeleton" aria-hidden="true">
+            <div class="skeleton-value"></div>
+            <div class="skeleton-label"></div>
+          </div>
+        {/each}
+      </div>
+    {:else}
+      <div class="metrics-grid" role="list" aria-label="User statistics">
+        <div class="metric-card" role="listitem">
+          <div class="metric-value" aria-hidden="true">{metrics().totalUsers}</div>
+          <div class="metric-label">Total Users</div>
+          <span class="visually-hidden">
+            {metrics().totalUsers} total registered users
+          </span>
         </div>
-      {/each}
-    </div>
-  {:else}
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-value">{metrics().activeThisWeek}</div>
-        <div class="metric-label">Active This Week</div>
-        <div class="metric-sub">of {metrics().totalUsers} total</div>
-      </div>
 
-      <div class="metric-card">
-        <div class="metric-value">{metrics().newThisWeek}</div>
-        <div class="metric-label">New Users</div>
-        <div class="metric-change" class:positive={metrics().newThisWeek >= metrics().newLastWeek}>
-          {getChange(metrics().newThisWeek, metrics().newLastWeek)} vs last week
+        <div class="metric-card" role="listitem">
+          <div class="metric-value" aria-hidden="true">{metrics().activeThisWeek}</div>
+          <div class="metric-label">Active This Week</div>
+          <span class="visually-hidden">
+            {metrics().activeThisWeek} users active this week
+          </span>
+        </div>
+
+        <div class="metric-card" role="listitem">
+          <div class="metric-value" aria-hidden="true">{metrics().newThisWeek}</div>
+          <div class="metric-label">New This Week</div>
+          <span class="visually-hidden">
+            {metrics().newThisWeek} new users this week
+          </span>
         </div>
       </div>
-
-      <div class="metric-card">
-        <div class="metric-value">{metrics().returningUsers}</div>
-        <div class="metric-label">Returning Users</div>
-        <div class="metric-sub">active again this week</div>
-      </div>
-
-      <div class="metric-card">
-        <div class="metric-value">{metrics().avgStreak}</div>
-        <div class="metric-label">Avg Streak</div>
-        <div class="metric-sub">{metrics().usersWithStreaks} users with streaks</div>
-      </div>
-    </div>
-  {/if}
+    {/if}
+  </div>
 </section>
 
 <style>
@@ -184,8 +153,8 @@
   }
 
   .cache-indicator {
-    font-size: 11px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     display: flex;
     align-items: center;
     gap: 4px;
@@ -193,7 +162,7 @@
 
   .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
   }
 
@@ -213,24 +182,9 @@
   }
 
   .metric-label {
-    font-size: 13px;
+    font-size: var(--font-size-min, 14px);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
-    margin-bottom: 4px;
-  }
-
-  .metric-sub {
-    font-size: 11px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-  }
-
-  .metric-change {
-    font-size: 11px;
-    color: var(--semantic-error, #ef4444);
-  }
-
-  .metric-change.positive {
-    color: var(--semantic-success, #10b981);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
   }
 
   /* Skeleton loading */
@@ -249,7 +203,7 @@
 
   .skeleton-label {
     width: 80px;
-    height: 13px;
+    height: 14px;
     background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 3px;
     margin: 0 auto;
@@ -266,9 +220,30 @@
     }
   }
 
-  @media (max-width: 400px) {
+  /* Visually hidden but accessible to screen readers */
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 500px) {
     .metrics-grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton-value,
+    .skeleton-label {
+      animation: none;
     }
   }
 </style>

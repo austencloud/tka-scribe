@@ -3,13 +3,11 @@
    * AnalyticsDashboard
    *
    * Minimal analytics view for admin users.
-   * Four panels: Weekly Engagement, Background Popularity, User Lookup, Active Users
+   * Two sections: Quick Stats + Active Users
    *
    * Uses SystemStateService cached data - no wasteful Firebase queries.
    */
   import WeeklyEngagement from "./analytics/WeeklyEngagement.svelte";
-  import BackgroundPopularity from "./analytics/BackgroundPopularity.svelte";
-  import UserLookup from "./analytics/UserLookup.svelte";
   import ActiveUsersPanel from "./ActiveUsersPanel.svelte";
 </script>
 
@@ -18,12 +16,7 @@
     <h2>Analytics Overview</h2>
   </header>
 
-  <div class="two-column">
-    <WeeklyEngagement />
-    <BackgroundPopularity />
-  </div>
-
-  <UserLookup />
+  <WeeklyEngagement />
 
   <section class="active-users-section">
     <ActiveUsersPanel />
@@ -53,12 +46,6 @@
     font-size: 24px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
-  }
-
-  .two-column {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 24px;
   }
 
   .active-users-section {
@@ -92,10 +79,6 @@
     .analytics-dashboard {
       padding: 16px;
       gap: 16px;
-    }
-
-    .two-column {
-      grid-template-columns: 1fr;
     }
 
     .dashboard-header h2 {
