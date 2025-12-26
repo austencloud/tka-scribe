@@ -175,8 +175,10 @@ export class TrailCaptureService implements ITrailCaptureService {
   private readonly DEFAULT_POINT_SPACING = 0.75;
 
   // Memory leak prevention: Track total accumulated points
+  // CRITICAL: Lower threshold for mobile devices which have limited memory
+  // 8000 points = ~133 seconds at 60fps with default spacing (plenty for most animations)
   private totalPointsCaptured = 0;
-  private readonly MAX_TOTAL_POINTS_BEFORE_PRUNE = 15000; // Safety limit to prevent OOM (lowered for mobile devices)
+  private readonly MAX_TOTAL_POINTS_BEFORE_PRUNE = 8000; // Reduced from 15000 for mobile memory safety
 
   // Constants
   private readonly GRID_HALFWAY_POINT_OFFSET = 150; // Matches strict grid points
@@ -311,6 +313,29 @@ export class TrailCaptureService implements ITrailCaptureService {
       secondaryBlue: this.secondaryBlueTrailBuffer.toArray(),
       secondaryRed: this.secondaryRedTrailBuffer.toArray(),
     };
+  }
+
+  /**
+   * Fill provided arrays with trail points (avoids allocation)
+   * CRITICAL: Use this in hot paths to prevent GC pressure on mobile
+   */
+  fillTrailPointArrays(
+    blue: TrailPoint[],
+    red: TrailPoint[],
+    secondaryBlue: TrailPoint[],
+    secondaryRed: TrailPoint[]
+  ): void {
+    // Clear arrays without deallocating
+    blue.length = 0;
+    red.length = 0;
+    secondaryBlue.length = 0;
+    secondaryRed.length = 0;
+
+    // Fill from buffers using iterator (no intermediate array)
+    for (const p of this.blueTrailBuffer) blue.push(p);
+    for (const p of this.redTrailBuffer) red.push(p);
+    for (const p of this.secondaryBlueTrailBuffer) secondaryBlue.push(p);
+    for (const p of this.secondaryRedTrailBuffer) secondaryRed.push(p);
   }
 
   clearTrails(): void {

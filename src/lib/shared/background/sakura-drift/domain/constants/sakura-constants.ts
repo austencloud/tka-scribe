@@ -21,32 +21,48 @@ export const SAKURA_DISTRIBUTION = {
 /** Physics behavior constants */
 export const SAKURA_PHYSICS = {
   /** Base falling speed */
-  FALLING_SPEED_BASE: 0.2,
+  FALLING_SPEED_BASE: 0.3,
   /** Additional random falling speed range */
-  FALLING_SPEED_RANGE: 0.6,
-  /** Horizontal drift amplitude */
-  DRIFT_AMPLITUDE: 0.4,
-  /** Sway animation speed (radians per frame) */
-  SWAY_SPEED: 0.02,
-  /** Sway animation scale factor */
-  SWAY_SCALE: 0.01,
-  /** Minimum sway amplitude */
-  SWAY_AMPLITUDE_MIN: 20,
-  /** Sway amplitude range (added to minimum) */
-  SWAY_AMPLITUDE_RANGE: 40,
+  FALLING_SPEED_RANGE: 0.5,
+
+  /** Tumble-drag coupling - how much tumble affects fall speed */
+  TUMBLE_DRAG_FACTOR: 0.6, // At max tumble, speed reduces by this factor
+  /** Tumble speed range */
+  TUMBLE_SPEED_MIN: 0.015,
+  TUMBLE_SPEED_RANGE: 0.025,
+
+  /** Primary sway (slow, wide oscillation) */
+  SWAY_SPEED: 0.012,
+  SWAY_AMPLITUDE_MIN: 25,
+  SWAY_AMPLITUDE_RANGE: 35,
+
+  /** Secondary sway (faster, smaller - adds complexity) */
+  SECONDARY_SWAY_SPEED: 0.031,
+  SECONDARY_SWAY_FACTOR: 0.4, // Relative to primary amplitude
+
+  /** Flutter effect (rapid micro-movements) */
+  FLUTTER_SPEED: 0.08,
+  FLUTTER_AMPLITUDE: 0.3,
+
+  /** Horizontal drift */
+  DRIFT_AMPLITUDE: 0.25,
+  DRIFT_BIAS_RANGE: 0.15, // Tendency to drift one direction
+
+  /** How much rotation speed varies with tumble */
+  ROTATION_TUMBLE_FACTOR: 0.5,
 } as const;
 
 /** Size configuration */
 export const SAKURA_SIZE = {
-  /** Flower size range */
+  /** Flower size range - notably larger than petals */
   FLOWER: {
-    MIN: 8,
-    RANGE: 8,
+    MIN: 12,
+    RANGE: 10,
   },
-  /** Single petal size range */
+  /** Single petal size range - smaller, more delicate */
   PETAL: {
-    MIN: 5,
-    RANGE: 6,
+    MIN: 4,
+    RANGE: 5,
   },
 } as const;
 
@@ -76,47 +92,65 @@ export const SAKURA_OPACITY = {
 
 /** Color definitions for sakura variants */
 export const SAKURA_COLORS = {
-  /** Bright pink flowers (50% probability) */
+  /** Vibrant magenta-pink flowers (40% probability) - the showstoppers */
+  FLOWER_MAGENTA: {
+    r: 255,
+    gMin: 100,
+    gMax: 150,
+    bMin: 180,
+    bMax: 220,
+    probability: 0.4,
+  },
+  /** Bright cherry pink flowers (35% probability) */
   FLOWER_PINK: {
     r: 255,
-    gMin: 182,
-    gMax: 222,
-    bMin: 210,
-    bMax: 250,
-    probability: 0.5,
+    gMin: 150,
+    gMax: 190,
+    bMin: 190,
+    bMax: 220,
+    probability: 0.75, // Cumulative
   },
-  /** White with pink tint flowers (50% probability) */
-  FLOWER_WHITE: {
+  /** Soft blush flowers (25% probability) - lighter accent */
+  FLOWER_BLUSH: {
+    r: 255,
+    gMin: 200,
+    gMax: 230,
+    bMin: 210,
+    bMax: 240,
+  },
+  /** Deep rose petals (25% probability) - adds depth */
+  PETAL_ROSE: {
+    r: 255,
+    gMin: 140,
+    gMax: 180,
+    bMin: 170,
+    bMax: 200,
+    probability: 0.25,
+  },
+  /** Soft pink petals (35% probability) */
+  PETAL_PINK: {
+    r: 255,
+    gMin: 190,
+    gMax: 220,
+    bMin: 210,
+    bMax: 240,
+    probability: 0.6, // Cumulative with PETAL_ROSE
+  },
+  /** Cream/off-white petals (25% probability) - contrast */
+  PETAL_CREAM: {
     r: 255,
     gMin: 240,
     gMax: 255,
     bMin: 245,
     bMax: 255,
+    probability: 0.85, // Cumulative
   },
-  /** Pale pink petals (40% probability) */
-  PETAL_PINK: {
-    r: 255,
-    gMin: 220,
-    gMax: 245,
-    bMin: 230,
-    bMax: 255,
-    probability: 0.4,
-  },
-  /** Cream/off-white petals (30% probability) */
-  PETAL_CREAM: {
-    r: 255,
-    gMin: 245,
-    gMax: 255,
-    bMin: 240,
-    bMax: 255,
-    probability: 0.7, // Cumulative with PETAL_PINK
-  },
-  /** Soft lavender petals (30% probability) */
+  /** Soft lavender petals (15% probability) - subtle variety */
   PETAL_LAVENDER: {
-    r: 240,
-    rRange: 15,
-    gMin: 220,
-    gMax: 240,
+    r: 245,
+    rRange: 10,
+    gMin: 200,
+    gMax: 225,
     b: 255,
   },
 } as const;
@@ -125,6 +159,15 @@ export const SAKURA_COLORS = {
 export const SAKURA_FLOWER = {
   /** Number of petals per flower */
   PETAL_COUNT: 5,
+  /** Glow effect for flowers - subtle ambient light */
+  GLOW: {
+    /** Glow radius multiplier (relative to flower size) */
+    RADIUS: 2.0,
+    /** Glow opacity */
+    OPACITY: 0.12,
+    /** Inner glow opacity */
+    INNER_OPACITY: 0.2,
+  },
   /** Petal gradient inner position */
   GRADIENT_INNER: 0,
   /** Petal gradient mid position */

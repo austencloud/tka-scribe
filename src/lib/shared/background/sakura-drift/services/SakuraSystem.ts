@@ -21,7 +21,8 @@ import {
  */
 export function createSakuraSystem() {
   /**
-   * Initialize petals with pre-dispersed positions
+   * Initialize petals with stratified vertical distribution
+   * This ensures even spacing across the screen instead of random clusters
    */
   function initialize(
     dimensions: Dimensions,
@@ -30,11 +31,212 @@ export function createSakuraSystem() {
     const count = getPetalCount(quality);
     const petals: SakuraPetal[] = [];
 
+    // Use stratified sampling for even vertical distribution
+    // Divide screen into horizontal bands, place one particle per band with jitter
+    const bandHeight = dimensions.height / count;
+
     for (let i = 0; i < count; i++) {
-      petals.push(createPetal(dimensions, true));
+      const bandStart = i * bandHeight;
+      // Random Y position within this band (stratified with jitter)
+      const stratifiedY = bandStart + Math.random() * bandHeight;
+      petals.push(createPetalWithPosition(dimensions, stratifiedY));
     }
 
     return petals;
+  }
+
+  /**
+   * Create petal at a specific Y position (for stratified initialization)
+   */
+  function createPetalWithPosition(
+    dimensions: Dimensions,
+    y: number
+  ): SakuraPetal {
+    const x = Math.random() * dimensions.width;
+
+    // 30% chance of being a full flower, 70% single petal
+    const isFlower = Math.random() < SAKURA_DISTRIBUTION.FLOWER_PROBABILITY;
+
+    // Size variation - flowers are larger
+    const size = isFlower
+      ? SAKURA_SIZE.FLOWER.MIN + Math.random() * SAKURA_SIZE.FLOWER.RANGE
+      : SAKURA_SIZE.PETAL.MIN + Math.random() * SAKURA_SIZE.PETAL.RANGE;
+
+    // Base falling speed - slower for larger items (parallax effect)
+    const baseVy =
+      (SAKURA_PHYSICS.FALLING_SPEED_BASE +
+        Math.random() * SAKURA_PHYSICS.FALLING_SPEED_RANGE) *
+      (1 / (size / 4));
+
+    // Initial horizontal drift with bias
+    const driftBias = (Math.random() - 0.5) * 2 * SAKURA_PHYSICS.DRIFT_BIAS_RANGE;
+    const vx = (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE + driftBias;
+
+    // Rotation properties - flowers rotate slower
+    const rotationSpeed = isFlower
+      ? (Math.random() - SAKURA_ROTATION.RANDOMNESS) *
+        SAKURA_ROTATION.FLOWER_SPEED
+      : (Math.random() - SAKURA_ROTATION.RANDOMNESS) *
+        SAKURA_ROTATION.PETAL_SPEED;
+
+    // Sway properties - primary oscillation
+    const swayAmplitude =
+      SAKURA_PHYSICS.SWAY_AMPLITUDE_MIN +
+      Math.random() * SAKURA_PHYSICS.SWAY_AMPLITUDE_RANGE;
+    const swayOffset = Math.random() * Math.PI * 2;
+
+    // Secondary sway - different phase for complexity
+    const secondarySwayOffset = Math.random() * Math.PI * 2;
+
+    // Tumble properties - controls fall speed variation
+    const tumblePhase = Math.random() * Math.PI * 2;
+    const tumbleSpeed =
+      SAKURA_PHYSICS.TUMBLE_SPEED_MIN +
+      Math.random() * SAKURA_PHYSICS.TUMBLE_SPEED_RANGE;
+
+    // Flutter intensity - petals flutter more than flowers
+    const flutterIntensity = isFlower
+      ? Math.random() * 0.3
+      : 0.4 + Math.random() * 0.6;
+
+    // Color variation - vibrant flowers, varied petals
+    const colorVariant = Math.random();
+    let r: number, g: number, b: number;
+
+    if (isFlower) {
+      // Flowers get vibrant, saturated colors
+      if (colorVariant < SAKURA_COLORS.FLOWER_MAGENTA.probability) {
+        // Vibrant magenta-pink (showstoppers)
+        r = SAKURA_COLORS.FLOWER_MAGENTA.r;
+        g =
+          SAKURA_COLORS.FLOWER_MAGENTA.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_MAGENTA.gMax - SAKURA_COLORS.FLOWER_MAGENTA.gMin)
+          );
+        b =
+          SAKURA_COLORS.FLOWER_MAGENTA.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_MAGENTA.bMax - SAKURA_COLORS.FLOWER_MAGENTA.bMin)
+          );
+      } else if (colorVariant < SAKURA_COLORS.FLOWER_PINK.probability) {
+        // Bright cherry pink
+        r = SAKURA_COLORS.FLOWER_PINK.r;
+        g =
+          SAKURA_COLORS.FLOWER_PINK.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_PINK.gMax - SAKURA_COLORS.FLOWER_PINK.gMin)
+          );
+        b =
+          SAKURA_COLORS.FLOWER_PINK.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_PINK.bMax - SAKURA_COLORS.FLOWER_PINK.bMin)
+          );
+      } else {
+        // Soft blush (lighter accent)
+        r = SAKURA_COLORS.FLOWER_BLUSH.r;
+        g =
+          SAKURA_COLORS.FLOWER_BLUSH.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_BLUSH.gMax - SAKURA_COLORS.FLOWER_BLUSH.gMin)
+          );
+        b =
+          SAKURA_COLORS.FLOWER_BLUSH.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_BLUSH.bMax - SAKURA_COLORS.FLOWER_BLUSH.bMin)
+          );
+      }
+    } else {
+      // Petals get a mix of deep and soft colors
+      if (colorVariant < SAKURA_COLORS.PETAL_ROSE.probability) {
+        // Deep rose (adds depth)
+        r = SAKURA_COLORS.PETAL_ROSE.r;
+        g =
+          SAKURA_COLORS.PETAL_ROSE.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_ROSE.gMax - SAKURA_COLORS.PETAL_ROSE.gMin)
+          );
+        b =
+          SAKURA_COLORS.PETAL_ROSE.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_ROSE.bMax - SAKURA_COLORS.PETAL_ROSE.bMin)
+          );
+      } else if (colorVariant < SAKURA_COLORS.PETAL_PINK.probability) {
+        // Soft pink
+        r = SAKURA_COLORS.PETAL_PINK.r;
+        g =
+          SAKURA_COLORS.PETAL_PINK.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_PINK.gMax - SAKURA_COLORS.PETAL_PINK.gMin)
+          );
+        b =
+          SAKURA_COLORS.PETAL_PINK.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_PINK.bMax - SAKURA_COLORS.PETAL_PINK.bMin)
+          );
+      } else if (colorVariant < SAKURA_COLORS.PETAL_CREAM.probability) {
+        // Cream (contrast)
+        r = SAKURA_COLORS.PETAL_CREAM.r;
+        g =
+          SAKURA_COLORS.PETAL_CREAM.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_CREAM.gMax - SAKURA_COLORS.PETAL_CREAM.gMin)
+          );
+        b =
+          SAKURA_COLORS.PETAL_CREAM.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_CREAM.bMax - SAKURA_COLORS.PETAL_CREAM.bMin)
+          );
+      } else {
+        // Soft lavender (subtle variety)
+        r =
+          SAKURA_COLORS.PETAL_LAVENDER.r +
+          Math.floor(Math.random() * SAKURA_COLORS.PETAL_LAVENDER.rRange);
+        g =
+          SAKURA_COLORS.PETAL_LAVENDER.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_LAVENDER.gMax -
+                SAKURA_COLORS.PETAL_LAVENDER.gMin)
+          );
+        b = SAKURA_COLORS.PETAL_LAVENDER.b;
+      }
+    }
+
+    return {
+      x,
+      y,
+      size,
+      vx,
+      vy: baseVy,
+      baseVy,
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed,
+      opacity: isFlower
+        ? SAKURA_OPACITY.FLOWER.MIN +
+          Math.random() * SAKURA_OPACITY.FLOWER.RANGE
+        : SAKURA_OPACITY.PETAL.MIN + Math.random() * SAKURA_OPACITY.PETAL.RANGE,
+      swayOffset,
+      swayAmplitude,
+      secondarySwayOffset,
+      tumblePhase,
+      tumbleSpeed,
+      flutterIntensity,
+      driftBias,
+      color: { r, g, b },
+      isFlower,
+    };
   }
 
   /**
@@ -73,14 +275,15 @@ export function createSakuraSystem() {
       ? SAKURA_SIZE.FLOWER.MIN + Math.random() * SAKURA_SIZE.FLOWER.RANGE
       : SAKURA_SIZE.PETAL.MIN + Math.random() * SAKURA_SIZE.PETAL.RANGE;
 
-    // Gentle falling speed - slower for larger items (parallax effect)
-    const vy =
+    // Base falling speed - slower for larger items (parallax effect)
+    const baseVy =
       (SAKURA_PHYSICS.FALLING_SPEED_BASE +
         Math.random() * SAKURA_PHYSICS.FALLING_SPEED_RANGE) *
       (1 / (size / 4));
 
-    // Gentle horizontal drift
-    const vx = (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE;
+    // Initial horizontal drift with bias
+    const driftBias = (Math.random() - 0.5) * 2 * SAKURA_PHYSICS.DRIFT_BIAS_RANGE;
+    const vx = (Math.random() - 0.5) * SAKURA_PHYSICS.DRIFT_AMPLITUDE + driftBias;
 
     // Rotation properties - flowers rotate slower
     const rotationSpeed = isFlower
@@ -89,20 +292,47 @@ export function createSakuraSystem() {
       : (Math.random() - SAKURA_ROTATION.RANDOMNESS) *
         SAKURA_ROTATION.PETAL_SPEED;
 
-    // Sway properties
+    // Sway properties - primary oscillation
     const swayAmplitude =
       SAKURA_PHYSICS.SWAY_AMPLITUDE_MIN +
       Math.random() * SAKURA_PHYSICS.SWAY_AMPLITUDE_RANGE;
     const swayOffset = Math.random() * Math.PI * 2;
 
-    // Color variation - more vibrant for flowers
+    // Secondary sway - different phase for complexity
+    const secondarySwayOffset = Math.random() * Math.PI * 2;
+
+    // Tumble properties - controls fall speed variation
+    const tumblePhase = Math.random() * Math.PI * 2;
+    const tumbleSpeed =
+      SAKURA_PHYSICS.TUMBLE_SPEED_MIN +
+      Math.random() * SAKURA_PHYSICS.TUMBLE_SPEED_RANGE;
+
+    // Flutter intensity - petals flutter more than flowers
+    const flutterIntensity = isFlower
+      ? Math.random() * 0.3
+      : 0.4 + Math.random() * 0.6;
+
+    // Color variation - vibrant flowers, varied petals
     const colorVariant = Math.random();
     let r: number, g: number, b: number;
 
     if (isFlower) {
-      // Flowers are more vibrant
-      if (colorVariant < SAKURA_COLORS.FLOWER_PINK.probability) {
-        // Bright pink
+      // Flowers get vibrant, saturated colors
+      if (colorVariant < SAKURA_COLORS.FLOWER_MAGENTA.probability) {
+        r = SAKURA_COLORS.FLOWER_MAGENTA.r;
+        g =
+          SAKURA_COLORS.FLOWER_MAGENTA.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_MAGENTA.gMax - SAKURA_COLORS.FLOWER_MAGENTA.gMin)
+          );
+        b =
+          SAKURA_COLORS.FLOWER_MAGENTA.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.FLOWER_MAGENTA.bMax - SAKURA_COLORS.FLOWER_MAGENTA.bMin)
+          );
+      } else if (colorVariant < SAKURA_COLORS.FLOWER_PINK.probability) {
         r = SAKURA_COLORS.FLOWER_PINK.r;
         g =
           SAKURA_COLORS.FLOWER_PINK.gMin +
@@ -117,27 +347,37 @@ export function createSakuraSystem() {
               (SAKURA_COLORS.FLOWER_PINK.bMax - SAKURA_COLORS.FLOWER_PINK.bMin)
           );
       } else {
-        // White with pink tint
-        r = SAKURA_COLORS.FLOWER_WHITE.r;
+        r = SAKURA_COLORS.FLOWER_BLUSH.r;
         g =
-          SAKURA_COLORS.FLOWER_WHITE.gMin +
+          SAKURA_COLORS.FLOWER_BLUSH.gMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_WHITE.gMax -
-                SAKURA_COLORS.FLOWER_WHITE.gMin)
+              (SAKURA_COLORS.FLOWER_BLUSH.gMax - SAKURA_COLORS.FLOWER_BLUSH.gMin)
           );
         b =
-          SAKURA_COLORS.FLOWER_WHITE.bMin +
+          SAKURA_COLORS.FLOWER_BLUSH.bMin +
           Math.floor(
             Math.random() *
-              (SAKURA_COLORS.FLOWER_WHITE.bMax -
-                SAKURA_COLORS.FLOWER_WHITE.bMin)
+              (SAKURA_COLORS.FLOWER_BLUSH.bMax - SAKURA_COLORS.FLOWER_BLUSH.bMin)
           );
       }
     } else {
-      // Petals are softer
-      if (colorVariant < SAKURA_COLORS.PETAL_PINK.probability) {
-        // Pale pink
+      // Petals get a mix of deep and soft colors
+      if (colorVariant < SAKURA_COLORS.PETAL_ROSE.probability) {
+        r = SAKURA_COLORS.PETAL_ROSE.r;
+        g =
+          SAKURA_COLORS.PETAL_ROSE.gMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_ROSE.gMax - SAKURA_COLORS.PETAL_ROSE.gMin)
+          );
+        b =
+          SAKURA_COLORS.PETAL_ROSE.bMin +
+          Math.floor(
+            Math.random() *
+              (SAKURA_COLORS.PETAL_ROSE.bMax - SAKURA_COLORS.PETAL_ROSE.bMin)
+          );
+      } else if (colorVariant < SAKURA_COLORS.PETAL_PINK.probability) {
         r = SAKURA_COLORS.PETAL_PINK.r;
         g =
           SAKURA_COLORS.PETAL_PINK.gMin +
@@ -152,7 +392,6 @@ export function createSakuraSystem() {
               (SAKURA_COLORS.PETAL_PINK.bMax - SAKURA_COLORS.PETAL_PINK.bMin)
           );
       } else if (colorVariant < SAKURA_COLORS.PETAL_CREAM.probability) {
-        // Cream/off-white
         r = SAKURA_COLORS.PETAL_CREAM.r;
         g =
           SAKURA_COLORS.PETAL_CREAM.gMin +
@@ -167,7 +406,6 @@ export function createSakuraSystem() {
               (SAKURA_COLORS.PETAL_CREAM.bMax - SAKURA_COLORS.PETAL_CREAM.bMin)
           );
       } else {
-        // Soft lavender
         r =
           SAKURA_COLORS.PETAL_LAVENDER.r +
           Math.floor(Math.random() * SAKURA_COLORS.PETAL_LAVENDER.rRange);
@@ -187,7 +425,8 @@ export function createSakuraSystem() {
       y,
       size,
       vx,
-      vy,
+      vy: baseVy,
+      baseVy,
       rotation: Math.random() * Math.PI * 2,
       rotationSpeed,
       opacity: isFlower
@@ -196,13 +435,19 @@ export function createSakuraSystem() {
         : SAKURA_OPACITY.PETAL.MIN + Math.random() * SAKURA_OPACITY.PETAL.RANGE,
       swayOffset,
       swayAmplitude,
+      secondarySwayOffset,
+      tumblePhase,
+      tumbleSpeed,
+      flutterIntensity,
+      driftBias,
       color: { r, g, b },
       isFlower,
     };
   }
 
   /**
-   * Update petal positions and properties
+   * Update petal positions and properties with organic physics
+   * Creates natural, graceful falling motion with tumble-drag coupling
    */
   function update(
     petals: SakuraPetal[],
@@ -210,21 +455,55 @@ export function createSakuraSystem() {
     frameMultiplier: number
   ): SakuraPetal[] {
     return petals.map((petal) => {
-      // Update sway animation
+      // Update phase animations
       const newSwayOffset =
         petal.swayOffset + SAKURA_PHYSICS.SWAY_SPEED * frameMultiplier;
-      const swayX =
-        Math.sin(newSwayOffset) *
+      const newSecondarySwayOffset =
+        petal.secondarySwayOffset +
+        SAKURA_PHYSICS.SECONDARY_SWAY_SPEED * frameMultiplier;
+      const newTumblePhase =
+        petal.tumblePhase + petal.tumbleSpeed * frameMultiplier;
+
+      // Tumble factor (0-1): represents how "flat" the petal is to airflow
+      // When tumbleFactor is high (near 1), petal is flat = more drag = slower fall
+      // When tumbleFactor is low (near 0), petal is edge-on = less drag = faster fall
+      const tumbleFactor = (Math.sin(newTumblePhase) + 1) / 2;
+
+      // Calculate current fall speed based on tumble (tumble-drag coupling)
+      // Flat petals (high tumbleFactor) fall slower, edge-on petals fall faster
+      const dragModifier =
+        1 - tumbleFactor * SAKURA_PHYSICS.TUMBLE_DRAG_FACTOR;
+      const currentVy = petal.baseVy * dragModifier;
+
+      // Primary sway - slow, wide oscillation
+      const primarySway =
+        Math.sin(newSwayOffset) * petal.swayAmplitude * 0.015;
+
+      // Secondary sway - faster, smaller, adds complexity
+      const secondarySway =
+        Math.sin(newSecondarySwayOffset) *
         petal.swayAmplitude *
-        SAKURA_PHYSICS.SWAY_SCALE;
+        SAKURA_PHYSICS.SECONDARY_SWAY_FACTOR *
+        0.015;
 
-      // Update position with sway
-      let newX = petal.x + (petal.vx + swayX) * frameMultiplier;
-      const newY = petal.y + petal.vy * frameMultiplier;
+      // Flutter effect - rapid micro-movements, more intense for petals
+      const flutterPhase = newSwayOffset * (SAKURA_PHYSICS.FLUTTER_SPEED / SAKURA_PHYSICS.SWAY_SPEED);
+      const flutter =
+        Math.sin(flutterPhase) *
+        SAKURA_PHYSICS.FLUTTER_AMPLITUDE *
+        petal.flutterIntensity *
+        tumbleFactor; // Flutter more when flat
 
-      // Update rotation
+      // Combine all horizontal movement
+      const totalSwayX = primarySway + secondarySway + flutter;
+      let newX = petal.x + (petal.vx + petal.driftBias + totalSwayX) * frameMultiplier;
+      const newY = petal.y + currentVy * frameMultiplier;
+
+      // Rotation varies with tumble - faster rotation when tumbling more
+      const rotationModifier =
+        1 + tumbleFactor * SAKURA_PHYSICS.ROTATION_TUMBLE_FACTOR;
       const newRotation =
-        petal.rotation + petal.rotationSpeed * frameMultiplier;
+        petal.rotation + petal.rotationSpeed * rotationModifier * frameMultiplier;
 
       // Respawn if petal has fallen below the viewport
       if (newY > dimensions.height + SAKURA_BOUNDS.RESPAWN_BUFFER) {
@@ -242,8 +521,11 @@ export function createSakuraSystem() {
         ...petal,
         x: newX,
         y: newY,
+        vy: currentVy,
         rotation: newRotation,
         swayOffset: newSwayOffset,
+        secondarySwayOffset: newSecondarySwayOffset,
+        tumblePhase: newTumblePhase,
       };
     });
   }
@@ -264,6 +546,21 @@ export function createSakuraSystem() {
       ctx.rotate(rotation);
 
       if (isFlower) {
+        // Draw glow effect behind flower
+        const glowRadius = size * SAKURA_FLOWER.GLOW.RADIUS;
+        const glowGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, glowRadius);
+        glowGradient.addColorStop(
+          0,
+          `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity * SAKURA_FLOWER.GLOW.INNER_OPACITY})`
+        );
+        glowGradient.addColorStop(
+          0.4,
+          `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity * SAKURA_FLOWER.GLOW.OPACITY})`
+        );
+        glowGradient.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+        ctx.fillStyle = glowGradient;
+        ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
+
         // Draw a full cherry blossom flower (5 petals)
         for (let i = 0; i < SAKURA_FLOWER.PETAL_COUNT; i++) {
           const angle = (i * Math.PI * 2) / SAKURA_FLOWER.PETAL_COUNT;

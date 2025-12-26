@@ -26,6 +26,13 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
   private getFrameParamsCallback: (() => RenderFrameParams) | null = null;
   private isDisposed: boolean = false; // Prevent RAF from continuing after disposal
 
+  // CRITICAL: Reusable arrays to prevent GC pressure on mobile
+  // These are reused every frame instead of allocating new arrays
+  private reusableBlueTrailPoints: TrailPoint[] = [];
+  private reusableRedTrailPoints: TrailPoint[] = [];
+  private reusableSecondaryBlueTrailPoints: TrailPoint[] = [];
+  private reusableSecondaryRedTrailPoints: TrailPoint[] = [];
+
   initialize(config: RenderLoopConfig): void {
     this.pixiRenderer = config.pixiRenderer;
     this.trailCaptureService = config.trailCaptureService;
@@ -82,6 +89,11 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
     this.trailCaptureService = null;
     this.pathCache = null;
     this.getFrameParamsCallback = null;
+    // Clear reusable arrays to free memory
+    this.reusableBlueTrailPoints.length = 0;
+    this.reusableRedTrailPoints.length = 0;
+    this.reusableSecondaryBlueTrailPoints.length = 0;
+    this.reusableSecondaryRedTrailPoints.length = 0;
   }
 
   private renderLoop = (currentTime: number): void => {
@@ -242,54 +254,69 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
     secondaryBlue: TrailPoint[];
     secondaryRed: TrailPoint[];
   } {
-    let blueTrailPoints: TrailPoint[] = [];
-    let redTrailPoints: TrailPoint[] = [];
-    let secondaryBlueTrailPoints: TrailPoint[] = [];
-    let secondaryRedTrailPoints: TrailPoint[] = [];
+    // CRITICAL: Reuse arrays to prevent GC pressure on mobile
+    // Clear arrays without deallocating (length = 0 keeps capacity)
+    this.reusableBlueTrailPoints.length = 0;
+    this.reusableRedTrailPoints.length = 0;
+    this.reusableSecondaryBlueTrailPoints.length = 0;
+    this.reusableSecondaryRedTrailPoints.length = 0;
 
     // Use cache for perfect gap-free trails (if available and valid)
     if (this.pathCache && this.pathCache.isValid() && currentBeat !== null) {
       const scaleFactor = this.canvasSize / 950;
 
-      const transformTrailPoints = (points: TrailPoint[]): TrailPoint[] => {
-        return points.map((p) => ({
-          ...p,
-          x: p.x * scaleFactor,
-          y: p.y * scaleFactor,
-        }));
+      // Transform points in-place into reusable arrays (no .map() allocation)
+      const transformAndPush = (
+        points: TrailPoint[],
+        targetArray: TrailPoint[]
+      ): void => {
+        for (let i = 0; i < points.length; i++) {
+          const p = points[i]!;
+          // Mutate existing object if possible, otherwise push transformed
+          targetArray.push({
+            x: p.x * scaleFactor,
+            y: p.y * scaleFactor,
+            timestamp: p.timestamp,
+            propIndex: p.propIndex,
+            endType: p.endType,
+          });
+        }
       };
 
       // Blue prop trails (both left and right endpoints)
-      const blueLeft = transformTrailPoints(
-        this.pathCache.getTrailPoints(0, 0, 0, currentBeat)
+      transformAndPush(
+        this.pathCache.getTrailPoints(0, 0, 0, currentBeat),
+        this.reusableBlueTrailPoints
       );
-      const blueRight = transformTrailPoints(
-        this.pathCache.getTrailPoints(0, 1, 0, currentBeat)
+      transformAndPush(
+        this.pathCache.getTrailPoints(0, 1, 0, currentBeat),
+        this.reusableBlueTrailPoints
       );
-      blueTrailPoints = [...blueLeft, ...blueRight];
 
       // Red prop trails (both left and right endpoints)
-      const redLeft = transformTrailPoints(
-        this.pathCache.getTrailPoints(1, 0, 0, currentBeat)
+      transformAndPush(
+        this.pathCache.getTrailPoints(1, 0, 0, currentBeat),
+        this.reusableRedTrailPoints
       );
-      const redRight = transformTrailPoints(
-        this.pathCache.getTrailPoints(1, 1, 0, currentBeat)
+      transformAndPush(
+        this.pathCache.getTrailPoints(1, 1, 0, currentBeat),
+        this.reusableRedTrailPoints
       );
-      redTrailPoints = [...redLeft, ...redRight];
     } else if (this.trailCaptureService) {
-      // Fallback to real-time capture
-      const allTrails = this.trailCaptureService.getAllTrailPoints();
-      blueTrailPoints = allTrails.blue;
-      redTrailPoints = allTrails.red;
-      secondaryBlueTrailPoints = allTrails.secondaryBlue;
-      secondaryRedTrailPoints = allTrails.secondaryRed;
+      // Fallback to real-time capture - use zero-allocation fill method
+      this.trailCaptureService.fillTrailPointArrays(
+        this.reusableBlueTrailPoints,
+        this.reusableRedTrailPoints,
+        this.reusableSecondaryBlueTrailPoints,
+        this.reusableSecondaryRedTrailPoints
+      );
     }
 
     return {
-      blue: blueTrailPoints,
-      red: redTrailPoints,
-      secondaryBlue: secondaryBlueTrailPoints,
-      secondaryRed: secondaryRedTrailPoints,
+      blue: this.reusableBlueTrailPoints,
+      red: this.reusableRedTrailPoints,
+      secondaryBlue: this.reusableSecondaryBlueTrailPoints,
+      secondaryRed: this.reusableSecondaryRedTrailPoints,
     };
   }
 }

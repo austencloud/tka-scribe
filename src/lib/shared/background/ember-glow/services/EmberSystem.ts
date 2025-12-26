@@ -18,17 +18,104 @@ import {
  */
 export function createEmberSystem() {
   /**
-   * Initialize embers with pre-dispersed positions
+   * Initialize embers with stratified vertical distribution
+   * This ensures even spacing across the screen instead of random clusters
    */
   function initialize(dimensions: Dimensions, quality: QualityLevel): Ember[] {
     const count = getEmberCount(quality);
     const embers: Ember[] = [];
 
+    // Use stratified sampling for even vertical distribution
+    // Divide screen into horizontal bands, place one particle per band with jitter
+    const bandHeight = dimensions.height / count;
+
     for (let i = 0; i < count; i++) {
-      embers.push(createEmber(dimensions, true));
+      const bandStart = i * bandHeight;
+      // Random Y position within this band (stratified with jitter)
+      const stratifiedY = bandStart + Math.random() * bandHeight;
+      embers.push(createEmberWithPosition(dimensions, stratifiedY));
     }
 
     return embers;
+  }
+
+  /**
+   * Create ember at a specific Y position (for stratified initialization)
+   */
+  function createEmberWithPosition(dimensions: Dimensions, y: number): Ember {
+    const x = Math.random() * dimensions.width;
+
+    // Larger size variation for better visibility
+    const size = EMBER_SIZE.MIN + Math.random() * EMBER_SIZE.RANGE;
+
+    // Rising speed - slower for larger embers (parallax effect)
+    const vy =
+      -(
+        EMBER_PHYSICS.RISING_SPEED_BASE +
+        Math.random() * EMBER_PHYSICS.RISING_SPEED_RANGE
+      ) *
+      (1 / size);
+
+    // Gentle horizontal drift
+    const vx = (Math.random() - 0.5) * EMBER_PHYSICS.DRIFT_AMPLITUDE;
+
+    // Color variation - brighter amber to deep orange
+    const colorVariant = Math.random();
+    let r: number, g: number, b: number;
+
+    if (colorVariant < EMBER_COLORS.ORANGE_RED.probability) {
+      r = EMBER_COLORS.ORANGE_RED.r;
+      g =
+        EMBER_COLORS.ORANGE_RED.gMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.ORANGE_RED.gMax - EMBER_COLORS.ORANGE_RED.gMin)
+        );
+      b =
+        EMBER_COLORS.ORANGE_RED.bMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.ORANGE_RED.bMax - EMBER_COLORS.ORANGE_RED.bMin)
+        );
+    } else if (colorVariant < EMBER_COLORS.AMBER.probability) {
+      r = EMBER_COLORS.AMBER.r;
+      g =
+        EMBER_COLORS.AMBER.gMin +
+        Math.floor(
+          Math.random() * (EMBER_COLORS.AMBER.gMax - EMBER_COLORS.AMBER.gMin)
+        );
+      b =
+        EMBER_COLORS.AMBER.bMin +
+        Math.floor(
+          Math.random() * (EMBER_COLORS.AMBER.bMax - EMBER_COLORS.AMBER.bMin)
+        );
+    } else {
+      r = EMBER_COLORS.WHITE_HOT.r;
+      g =
+        EMBER_COLORS.WHITE_HOT.gMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.WHITE_HOT.gMax - EMBER_COLORS.WHITE_HOT.gMin)
+        );
+      b =
+        EMBER_COLORS.WHITE_HOT.bMin +
+        Math.floor(
+          Math.random() *
+            (EMBER_COLORS.WHITE_HOT.bMax - EMBER_COLORS.WHITE_HOT.bMin)
+        );
+    }
+
+    return {
+      x,
+      y,
+      size,
+      vx,
+      vy,
+      opacity: EMBER_OPACITY.MIN + Math.random() * EMBER_OPACITY.RANGE,
+      glowRadius: size * EMBER_PHYSICS.GLOW_MULTIPLIER,
+      flickerOffset: Math.random() * Math.PI * 2,
+      color: { r, g, b },
+    };
   }
 
   /**

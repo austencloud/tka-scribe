@@ -138,12 +138,84 @@ export function createLeafSystem(): LeafSystem {
     targetParticleCount = config.particleCount;
 
     leaves = [];
+
+    // Use stratified sampling for even vertical distribution
+    // Divide screen into horizontal bands, place one leaf per band with jitter
+    const bandHeight = canvasHeight / targetParticleCount;
+
     for (let i = 0; i < targetParticleCount; i++) {
-      leaves.push(createLeaf(false)); // Distribute across screen initially
+      const bandStart = i * bandHeight;
+      // Random Y position within this band (stratified with jitter)
+      const stratifiedY = bandStart + Math.random() * bandHeight;
+      leaves.push(createLeafWithPosition(stratifiedY));
     }
 
     // Sort by depth for proper layering (far to near)
     leaves.sort((a, b) => a.depth - b.depth);
+  }
+
+  /**
+   * Create leaf at a specific Y position (for stratified initialization)
+   */
+  function createLeafWithPosition(y: number): Leaf {
+    const type = getLeafType();
+    const size = getLeafSize(type);
+    const depth = Math.random();
+
+    // Position - X is random, Y is provided
+    const x =
+      Math.random() * (canvasWidth + AUTUMN_BOUNDS.wrapMargin * 2) -
+      AUTUMN_BOUNDS.wrapMargin;
+
+    // Velocity - larger leaves fall slower
+    const sizeModifier = 1 - (size / 30) * AUTUMN_PHYSICS.sizeSpeedFactor;
+    const vy =
+      AUTUMN_PHYSICS.baseSpeed +
+      Math.random() * AUTUMN_PHYSICS.speedVariance * sizeModifier;
+
+    const vx =
+      (Math.random() - 0.5) * 2 * AUTUMN_PHYSICS.baseDrift +
+      (Math.random() - 0.5) * AUTUMN_PHYSICS.driftVariance;
+
+    // Rotation
+    const rotationSpeed =
+      (Math.random() < 0.5 ? 1 : -1) *
+      (AUTUMN_PHYSICS.rotationSpeed.min +
+        Math.random() *
+          (AUTUMN_PHYSICS.rotationSpeed.max -
+            AUTUMN_PHYSICS.rotationSpeed.min));
+
+    const tumbleSpeed =
+      AUTUMN_PHYSICS.tumbleSpeed.min +
+      Math.random() *
+        (AUTUMN_PHYSICS.tumbleSpeed.max - AUTUMN_PHYSICS.tumbleSpeed.min);
+
+    // Opacity based on depth
+    const baseOpacity =
+      AUTUMN_OPACITY.min +
+      Math.random() * (AUTUMN_OPACITY.max - AUTUMN_OPACITY.min);
+    const opacity = baseOpacity - depth * AUTUMN_OPACITY.depthFactor;
+
+    // Spiral descent
+    const spiralActive = Math.random() < AUTUMN_PHYSICS.spiralChance;
+
+    return {
+      x,
+      y,
+      vx,
+      vy,
+      size,
+      type,
+      color: getLeafColor(),
+      opacity: Math.max(0.4, opacity),
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed,
+      tumblePhase: Math.random() * Math.PI * 2,
+      tumbleSpeed,
+      depth,
+      spiralPhase: spiralActive ? Math.random() * Math.PI * 2 : undefined,
+      spiralActive,
+    };
   }
 
   function update(windForce: number, frameMultiplier: number): void {

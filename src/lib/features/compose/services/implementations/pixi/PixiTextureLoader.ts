@@ -244,6 +244,13 @@ export class PixiTextureLoader {
     previous: Texture | null;
   }> {
     try {
+      // CRITICAL: Destroy old previousGlyphTexture BEFORE overwriting to prevent memory leak
+      // Without this, rapid beat changes during animation leak textures (one per beat!)
+      if (this.previousGlyphTexture) {
+        this.previousGlyphTexture.destroy(true);
+        this.previousGlyphTexture = null;
+      }
+
       // Save previous glyph for fade transition
       if (this.glyphTexture) {
         this.previousGlyphTexture = this.glyphTexture;
@@ -334,6 +341,10 @@ export class PixiTextureLoader {
 
           const ctx = canvas.getContext("2d");
           if (!ctx) {
+            // CRITICAL: Clean up Image element before rejecting
+            img.onload = null;
+            img.onerror = null;
+            img.src = "";
             reject(new Error("Failed to get 2D context"));
             return;
           }
@@ -341,16 +352,30 @@ export class PixiTextureLoader {
           // Draw the SVG image to canvas at target size
           ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
+          // CRITICAL: Clean up Image element to prevent memory leaks on mobile
+          // The image data has been copied to canvas, so we can release it
+          img.onload = null;
+          img.onerror = null;
+          img.src = ""; // Release the data URL reference
+
           // Create texture from canvas
           const texture = Texture.from(canvas);
           resolve(texture);
         } catch (error) {
+          // Clean up on error
+          img.onload = null;
+          img.onerror = null;
+          img.src = "";
           console.error("Texture creation error:", error);
           reject(error);
         }
       };
 
       img.onerror = () => {
+        // Clean up on error
+        img.onload = null;
+        img.onerror = null;
+        img.src = "";
         console.error("Image load error");
         reject(new Error("Failed to load SVG image"));
       };

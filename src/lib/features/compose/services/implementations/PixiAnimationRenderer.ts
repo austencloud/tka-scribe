@@ -87,11 +87,8 @@ export class PixiAnimationRenderer implements IPixiAnimationRenderer {
     app.stage.addChild(this.propContainer);
     app.stage.addChild(this.glyphContainer);
 
-    // Create trail graphics (persistent, cleared and redrawn each frame)
-    const blueTrailGraphics = new Graphics();
-    const redTrailGraphics = new Graphics();
-    this.trailContainer.addChild(blueTrailGraphics);
-    this.trailContainer.addChild(redTrailGraphics);
+    // NOTE: Trail Graphics are created by PixiTrailRenderer constructor
+    // DO NOT create them here - that would create duplicate leaked objects
 
     // Initialize specialized managers
     this.spriteManager = new PixiSpriteManager(

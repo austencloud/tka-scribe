@@ -91,6 +91,17 @@ export interface ITrailCaptureService {
   };
 
   /**
+   * Fill provided arrays with trail points (avoids allocation)
+   * CRITICAL: Use this in hot paths to prevent GC pressure on mobile
+   */
+  fillTrailPointArrays(
+    blue: TrailPoint[],
+    red: TrailPoint[],
+    secondaryBlue: TrailPoint[],
+    secondaryRed: TrailPoint[]
+  ): void;
+
+  /**
    * Clear all trail points and reset state
    */
   clearTrails(): void;

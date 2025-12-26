@@ -124,17 +124,15 @@
   /* Content Area */
   .admin-content {
     flex: 1;
-    overflow: hidden;
     min-height: 0;
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
+    overflow-y: auto;
   }
 
   /* Tab panels need to fill available height */
   .admin-content > [role="tabpanel"] {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    min-height: min-content;
   }
 </style>

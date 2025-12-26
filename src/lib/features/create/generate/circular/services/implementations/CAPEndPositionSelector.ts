@@ -106,11 +106,19 @@ export class CAPEndPositionSelector implements ICAPEndPositionSelector {
           startPosition
         );
 
-      // Combined CAP types with MIRRORED (mirror takes precedence)
+      // Combined CAP types with MIRRORED
       case CAPType.MIRRORED_INVERTED:
-      case CAPType.MIRRORED_SWAPPED:
-        // Any mirrored CAP uses vertical mirror map
+        // Mirrored-inverted uses just vertical mirror map
         return VERTICAL_MIRROR_POSITION_MAP[startPosition];
+
+      case CAPType.MIRRORED_SWAPPED: {
+        // Mirrored-swapped requires BOTH transformations:
+        // 1. First mirror the position (east↔west)
+        // 2. Then swap the colors (blue↔red positions)
+        // This ensures the end position has swapped prop locations
+        const mirroredPosition = VERTICAL_MIRROR_POSITION_MAP[startPosition];
+        return SWAPPED_POSITION_MAP[mirroredPosition];
+      }
 
       // Combined CAP types with SWAPPED + INVERTED
       case CAPType.SWAPPED_INVERTED:
