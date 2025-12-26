@@ -303,12 +303,13 @@ export const ML_TRAINING_TABS: Section[] = [
 ];
 
 // Admin tabs configuration
+// Note: Users tab merged into Analytics - no longer separate
 export const ADMIN_TABS: Section[] = [
   {
-    id: "users",
-    label: "Users",
-    icon: '<i class="fas fa-users"></i>',
-    description: "Active users and activity monitoring",
+    id: "analytics",
+    label: "Analytics",
+    icon: '<i class="fas fa-chart-line"></i>',
+    description: "User activity, metrics, and insights",
     color: "#22c55e",
     gradient: "linear-gradient(135deg, #4ade80 0%, #22c55e 100%)",
   },
@@ -327,14 +328,6 @@ export const ADMIN_TABS: Section[] = [
     description: "Manage training challenges",
     color: "#3b82f6",
     gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%)",
-  },
-  {
-    id: "analytics",
-    label: "Analytics",
-    icon: '<i class="fas fa-chart-line"></i>',
-    description: "View app usage and metrics",
-    color: "#64748b",
-    gradient: "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)",
   },
   {
     id: "flags",

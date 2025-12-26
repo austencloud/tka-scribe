@@ -13,7 +13,6 @@
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
   import FeatureFlagManagement from "./FeatureFlagManagement.svelte";
   import AnnouncementManagement from "./AnnouncementManagement.svelte";
-  import ActiveUsersPanel from "./ActiveUsersPanel.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Services
@@ -51,9 +50,13 @@
   {:else}
     <!-- Content Area -->
     <main class="admin-content">
-      {#if !activeSection || activeSection === "users"}
-        <div id="users-panel" role="tabpanel" aria-labelledby="users-tab">
-          <ActiveUsersPanel />
+      {#if !activeSection || activeSection === "analytics"}
+        <div
+          id="analytics-panel"
+          role="tabpanel"
+          aria-labelledby="analytics-tab"
+        >
+          <AnalyticsDashboard />
         </div>
       {:else if activeSection === "challenges" && adminChallengeService}
         <div
@@ -70,14 +73,6 @@
           aria-labelledby="train-challenges-tab"
         >
           <TrainChallengeManager />
-        </div>
-      {:else if activeSection === "analytics"}
-        <div
-          id="analytics-panel"
-          role="tabpanel"
-          aria-labelledby="analytics-tab"
-        >
-          <AnalyticsDashboard />
         </div>
       {:else if activeSection === "flags"}
         <div id="flags-panel" role="tabpanel" aria-labelledby="flags-tab">
