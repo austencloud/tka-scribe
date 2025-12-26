@@ -81,11 +81,12 @@
 				class="stepper-btn"
 				onclick={decrementLength}
 				disabled={!currentLength || currentLength <= 1}
+				aria-label="Decrease sequence length"
 			>
 				<i class="fas fa-minus"></i>
 			</button>
 			<span class="length-display">{currentLength ?? '–'}</span>
-			<button class="stepper-btn" onclick={incrementLength}>
+			<button class="stepper-btn" onclick={incrementLength} aria-label="Increase sequence length">
 				<i class="fas fa-plus"></i>
 			</button>
 		</div>

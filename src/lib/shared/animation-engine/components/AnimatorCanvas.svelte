@@ -609,8 +609,21 @@ Last audit: 2025-12-20
     );
 
     return () => {
-      renderLoopService?.stop();
+      // CRITICAL: Use dispose() not stop() to fully clean up RAF and references
+      // This prevents memory leaks on mobile during long playback sessions
+      renderLoopService?.dispose();
       canvasResizeService?.teardown();
+
+      // Clean up texture services to release WebGL textures from VRAM
+      glyphTextureService?.dispose?.();
+      propTextureService?.dispose?.();
+
+      // Clean up precomputation service to release cached paths/frames
+      precomputationService?.dispose?.();
+
+      // Clean up trail capture to release trail point buffers
+      trailCaptureService?.clearTrails();
+
       canvasInitializer.destroy({
         onCanvasReady: (canvas) => {
           onCanvasReady?.(canvas);

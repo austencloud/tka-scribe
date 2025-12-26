@@ -14,7 +14,7 @@
    */
 
   import { slide } from "svelte/transition";
-  import type { UserNotification } from "$lib/features/feedback/domain/models/notification-models";
+  // Note: UserNotification type is imported in the module script above
 
   interface Props {
     onFilterChange: (filters: FilterState) => void;
@@ -139,13 +139,22 @@
   <div
     class="sheet-overlay"
     onclick={() => (isTypeSheetOpen = false)}
+    onkeydown={(e) => {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        isTypeSheetOpen = false;
+      }
+    }}
     role="presentation"
   >
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="sheet"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-label="Select notification type"
+      tabindex="-1"
     >
       <div class="sheet-header">
         <h3>Notification Type</h3>
@@ -284,10 +293,6 @@
     outline: none;
     box-shadow: 0 0 0 2px
       color-mix(in srgb, var(--theme-accent) 50%, transparent);
-  }
-
-  .chip i {
-    font-size: 12px;
   }
 
   /* Filter toggle button */

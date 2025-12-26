@@ -355,6 +355,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
                 class="copy-btn"
                 onclick={copyLookupKeys}
                 title="Copy keys"
+                aria-label="Copy lookup keys"
               >
                 <i class="fas fa-copy"></i>
               </button>

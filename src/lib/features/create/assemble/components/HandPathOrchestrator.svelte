@@ -109,9 +109,11 @@ Integrates all Assembly components and manages state transitions.
 
   // Create state manager with restored state if available
   // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
+  // Note: gridMode is captured at initialization only - when gridMode changes, we recreate assemblyState (see handleGridModeChange)
+  const initialGridModeValue = gridMode; // Capture initial value to avoid reactivity warning
   let assemblyState: HandPathAssembleState = $state(
     createHandPathAssembleState({
-      gridMode: gridMode,
+      gridMode: initialGridModeValue,
       initialBlueHandPath:
         initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
     })

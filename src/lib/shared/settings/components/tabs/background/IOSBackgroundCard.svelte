@@ -932,6 +932,198 @@
     }
   }
 
+  /* ===== FIREFLY FOREST BACKGROUND ===== */
+  .background-preview[data-background="fireflyForest"] {
+    background: linear-gradient(
+      180deg,
+      #080c14 0%,
+      #0a1210 30%,
+      #0c1a14 60%,
+      #081510 100%
+    );
+  }
+
+  /* Stars in sky + forest silhouette hint at bottom */
+  .background-preview[data-background="fireflyForest"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      /* Tiny stars */
+      radial-gradient(circle at 15% 12%, white 0.5px, transparent 0.5px),
+      radial-gradient(circle at 45% 8%, white 0.5px, transparent 0.5px),
+      radial-gradient(circle at 72% 15%, rgba(255,255,255,0.7) 0.5px, transparent 0.5px),
+      radial-gradient(circle at 88% 10%, white 0.5px, transparent 0.5px),
+      radial-gradient(circle at 30% 18%, rgba(255,255,255,0.6) 0.5px, transparent 0.5px),
+      /* Dark tree silhouette suggestion at bottom */
+      linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 15%, transparent 30%);
+    animation: stars-twinkle 4s ease-in-out infinite;
+  }
+
+  /* Fireflies - multiple sizes, drifting and glowing */
+  .background-preview[data-background="fireflyForest"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      /* Large bright fireflies */
+      radial-gradient(circle at 22% 35%, rgba(180, 255, 100, 1) 0%, rgba(150, 230, 80, 0.6) 4px, rgba(120, 200, 60, 0.2) 8px, transparent 12px),
+      radial-gradient(circle at 70% 45%, rgba(200, 255, 120, 1) 0%, rgba(170, 240, 90, 0.6) 3px, rgba(140, 210, 70, 0.2) 7px, transparent 11px),
+      radial-gradient(circle at 48% 65%, rgba(190, 255, 110, 1) 0%, rgba(160, 235, 85, 0.6) 4px, rgba(130, 205, 65, 0.2) 8px, transparent 12px),
+      /* Medium fireflies */
+      radial-gradient(circle at 82% 30%, rgba(175, 250, 95, 0.9) 0%, rgba(145, 220, 75, 0.5) 3px, transparent 7px),
+      radial-gradient(circle at 15% 60%, rgba(185, 255, 105, 0.9) 0%, rgba(155, 230, 85, 0.5) 3px, transparent 7px),
+      radial-gradient(circle at 58% 38%, rgba(195, 255, 115, 0.85) 0%, rgba(165, 235, 90, 0.45) 2px, transparent 6px),
+      /* Small distant fireflies */
+      radial-gradient(circle at 35% 50%, rgba(170, 245, 90, 0.7) 0%, rgba(140, 215, 70, 0.3) 2px, transparent 4px),
+      radial-gradient(circle at 88% 55%, rgba(180, 250, 100, 0.7) 0%, rgba(150, 220, 80, 0.3) 2px, transparent 4px),
+      radial-gradient(circle at 42% 78%, rgba(175, 248, 95, 0.65) 0%, rgba(145, 218, 75, 0.25) 2px, transparent 4px);
+    animation: fireflies-drift 6s ease-in-out infinite;
+  }
+
+  @keyframes stars-twinkle {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  @keyframes fireflies-drift {
+    0%, 100% {
+      transform: translate(0, 0);
+      opacity: 0.7;
+    }
+    25% {
+      transform: translate(2%, -1%);
+      opacity: 1;
+    }
+    50% {
+      transform: translate(-1%, 2%);
+      opacity: 0.8;
+    }
+    75% {
+      transform: translate(1%, -2%);
+      opacity: 1;
+    }
+  }
+
+  /* ===== AUTUMN DRIFT BACKGROUND ===== */
+  .background-preview[data-background="autumnDrift"] {
+    background: linear-gradient(
+      180deg,
+      #1a1520 0%,
+      #2d1f25 25%,
+      #3a2820 50%,
+      #2a1a15 75%,
+      #1f1510 100%
+    );
+  }
+
+  /* Falling leaves - front layer with wind drift */
+  .background-preview[data-background="autumnDrift"]::before {
+    content: "";
+    position: absolute;
+    top: -80%;
+    left: -20%;
+    width: 140%;
+    height: 180%;
+    background:
+      /* Orange maple-ish */
+      radial-gradient(ellipse 14px 8px at 50% 50%, #ff9040 0%, rgba(255, 130, 50, 0.6) 50%, transparent 100%),
+      /* Deep red */
+      radial-gradient(ellipse 12px 7px at 50% 50%, #cc4030 0%, rgba(180, 50, 35, 0.6) 50%, transparent 100%),
+      /* Golden yellow */
+      radial-gradient(ellipse 16px 9px at 50% 50%, #e8b830 0%, rgba(220, 170, 40, 0.6) 50%, transparent 100%),
+      /* Rust brown */
+      radial-gradient(ellipse 11px 6px at 50% 50%, #b86830 0%, rgba(160, 90, 40, 0.6) 50%, transparent 100%),
+      /* Bright orange */
+      radial-gradient(ellipse 13px 7px at 50% 50%, #f07028 0%, rgba(230, 100, 35, 0.6) 50%, transparent 100%),
+      /* Crimson */
+      radial-gradient(ellipse 10px 6px at 50% 50%, #a83828 0%, rgba(150, 45, 35, 0.6) 50%, transparent 100%);
+    background-size:
+      65px 75px,
+      85px 65px,
+      55px 85px,
+      75px 70px,
+      70px 80px,
+      80px 60px;
+    background-position:
+      10% 10%,
+      50% 30%,
+      85% 15%,
+      25% 55%,
+      65% 50%,
+      40% 75%;
+    animation: autumn-drift-front 12s linear infinite;
+    animation-delay: -6s;
+  }
+
+  /* Falling leaves - back layer, smaller and blurred */
+  .background-preview[data-background="autumnDrift"]::after {
+    content: "";
+    position: absolute;
+    top: -80%;
+    left: -20%;
+    width: 140%;
+    height: 180%;
+    background:
+      radial-gradient(ellipse 9px 5px at 50% 50%, rgba(255, 160, 70, 0.7) 0%, rgba(230, 130, 55, 0.4) 50%, transparent 100%),
+      radial-gradient(ellipse 8px 5px at 50% 50%, rgba(200, 70, 45, 0.65) 0%, rgba(170, 55, 40, 0.35) 50%, transparent 100%),
+      radial-gradient(ellipse 10px 6px at 50% 50%, rgba(230, 190, 50, 0.7) 0%, rgba(200, 160, 45, 0.4) 50%, transparent 100%),
+      radial-gradient(ellipse 7px 4px at 50% 50%, rgba(180, 100, 50, 0.6) 0%, rgba(150, 80, 45, 0.3) 50%, transparent 100%);
+    background-size:
+      95px 85px,
+      75px 95px,
+      105px 80px,
+      85px 90px;
+    background-position:
+      30% 25%,
+      70% 45%,
+      20% 65%,
+      80% 70%;
+    animation: autumn-drift-back 16s linear infinite;
+    animation-delay: -10s;
+    filter: blur(1px);
+    opacity: 0.6;
+  }
+
+  @keyframes autumn-drift-front {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    20% {
+      transform: translateY(20%) translateX(6%) rotate(8deg);
+    }
+    40% {
+      transform: translateY(40%) translateX(-4%) rotate(-6deg);
+    }
+    60% {
+      transform: translateY(60%) translateX(8%) rotate(12deg);
+    }
+    80% {
+      transform: translateY(80%) translateX(-5%) rotate(-8deg);
+    }
+    100% {
+      transform: translateY(100%) translateX(0) rotate(0deg);
+    }
+  }
+
+  @keyframes autumn-drift-back {
+    0% {
+      transform: translateY(0) translateX(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(25%) translateX(-8%) rotate(-10deg);
+    }
+    50% {
+      transform: translateY(50%) translateX(6%) rotate(8deg);
+    }
+    75% {
+      transform: translateY(75%) translateX(-10%) rotate(-14deg);
+    }
+    100% {
+      transform: translateY(100%) translateX(0) rotate(0deg);
+    }
+  }
+
   /* Light Mode - iOS support */
   @media (prefers-color-scheme: light) {
     .ios-background-card {

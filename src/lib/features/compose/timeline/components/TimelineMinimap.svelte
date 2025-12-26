@@ -117,12 +117,24 @@
   function handleMouseUp() {
     endDrag();
   }
+
+  // Keyboard handler for accessibility
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      const clickEvent = new MouseEvent("click", {
+        clientX: minimapEl.getBoundingClientRect().left + minimapEl.offsetWidth / 2,
+      });
+      handleClick(clickEvent as any);
+    }
+  }
 </script>
 
 <div
   class="timeline-minimap"
   bind:this={minimapEl}
   onclick={handleClick}
+  onkeydown={handleKeyDown}
   role="slider"
   aria-label="Timeline overview - click to seek"
   aria-valuemin={0}

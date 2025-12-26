@@ -63,7 +63,12 @@
         aria-label="Select {point.label}"
       >
         <circle cx={point.x} cy={point.y} r="20" class="point-hitarea" />
-        <circle cx={point.x} cy={point.y} r="6" class="point-dot" />
+        <circle
+          cx={point.x}
+          cy={point.y}
+          r={value === point.loc ? '9' : '6'}
+          class="point-dot"
+        />
         <text x={point.x} y={point.y} class="point-label">{point.label}</text>
       </g>
     {/each}
@@ -129,17 +134,14 @@
 
   .point-group:hover .point-dot {
     fill: var(--theme-text, rgba(255, 255, 255, 0.92));
-    r: 8;
   }
 
   .blue .point-group.selected .point-dot {
     fill: var(--prop-blue, #2e3192);
-    r: 9;
   }
 
   .red .point-group.selected .point-dot {
     fill: var(--prop-red, #ed1c24);
-    r: 9;
   }
 
   .point-label {

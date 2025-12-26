@@ -147,7 +147,7 @@
       <!-- Canvas Phase -->
       <div class="canvas-phase">
         <div class="canvas-column">
-          <div class="canvas-area" onclick={handleCanvasClick} onkeydown={(e) => e.key === 'Enter' && handleCanvasClick(e)} role="button" tabindex="0">
+          <div class="canvas-area" onclick={handleCanvasClick} onkeydown={(e) => e.key === 'Enter' && handleCanvasClick()} role="button" tabindex="0">
             <CompositionCanvas
               {composition}
               {isPlaying}

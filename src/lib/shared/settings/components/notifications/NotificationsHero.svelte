@@ -24,13 +24,6 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.96));
   }
 
-  .hero .lede {
-    margin: 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
   .eyebrow {
     margin: 0;
     font-size: 12px;

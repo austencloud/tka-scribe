@@ -119,8 +119,11 @@ export class PixiTrailRenderer {
   private redTrailGraphics: Graphics;
 
   // Memory management: Track frame count for periodic graphics refresh
+  // CRITICAL: Use lower threshold for mobile safety (prevents OOM crashes)
+  // At 60fps: 180 frames = 3 seconds (mobile-safe)
+  // At 30fps: 180 frames = 6 seconds (still reasonable)
   private frameCount = 0;
-  private readonly FRAMES_BEFORE_GRAPHICS_REFRESH = 500; // Recreate Graphics every N frames to flush geometry cache
+  private readonly FRAMES_BEFORE_GRAPHICS_REFRESH = 180; // Reduced from 500 for mobile memory safety
 
   constructor(trailContainer: Container) {
     this.trailContainer = trailContainer;

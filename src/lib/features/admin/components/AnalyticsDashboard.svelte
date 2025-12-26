@@ -22,6 +22,7 @@
   import RecentActivityFeed from "./analytics/RecentActivityFeed.svelte";
   import ContentStatistics from "./analytics/ContentStatistics.svelte";
   import EngagementMetrics from "./analytics/EngagementMetrics.svelte";
+  import BackgroundPopularity from "./analytics/BackgroundPopularity.svelte";
   import { calculateChange, formatNumber } from "./analytics/utils";
   import type {
     MetricCardData,
@@ -358,20 +359,22 @@
     <ModuleUsage modules={moduleUsage} loading={loadingModules} />
   </div>
 
+  <div class="two-column">
+    <BackgroundPopularity />
+    <EngagementMetrics stats={engagementStats} loading={loadingEngagement} />
+  </div>
+
   <RecentActivityFeed
     activities={recentActivity}
     {eventBreakdown}
     loading={loadingRecent}
   />
 
-  <div class="two-column">
-    <ContentStatistics
-      stats={contentStats}
-      {topSequences}
-      loading={loadingContent}
-    />
-    <EngagementMetrics stats={engagementStats} loading={loadingEngagement} />
-  </div>
+  <ContentStatistics
+    stats={contentStats}
+    {topSequences}
+    loading={loadingContent}
+  />
 
   {#if !loadingSummary && summaryMetrics.length > 0 && summaryMetrics[0]?.value === "0"}
     <div class="data-notice warning">

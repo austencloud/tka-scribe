@@ -25,13 +25,15 @@ PointQuizSection - Click on the correct grid point
   <h3 class="quiz-title">Find the point!</h3>
   <p class="quiz-subtitle">
     Click on the <strong>{question.direction}</strong> point
-    <span class="direction-hint">
-      ({pointInfo.mode === "diamond"
-        ? "Diamond grid"
-        : pointInfo.mode === "box"
-          ? "Box grid"
-          : ""})
-    </span>
+    {#if pointInfo}
+      <span class="direction-hint">
+        ({pointInfo.mode === "diamond"
+          ? "Diamond grid"
+          : pointInfo.mode === "box"
+            ? "Box grid"
+            : ""})
+      </span>
+    {/if}
   </p>
 
   <div class="grid-display interactive">
@@ -79,7 +81,7 @@ PointQuizSection - Click on the correct grid point
               class="main-point"
             />
             <!-- Label on reveal -->
-            {#if (showCorrect || revealCorrect) && answerState !== "idle"}
+            {#if showCorrect || revealCorrect}
               <text
                 x={point.x}
                 y={point.y - 8}

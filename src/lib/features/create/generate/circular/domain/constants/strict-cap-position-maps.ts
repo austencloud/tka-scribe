@@ -501,13 +501,17 @@ export const SWAPPED_CAP_VALIDATION_SET = new Set<string>(
 
 /**
  * Mirrored-Swapped CAP validation set
- * Valid when: vertical_mirror(start_pos) === end_pos (same as mirrored)
- * The swapping happens with motion attributes, but position requirement is same as mirrored
+ * Valid when: swapped(vertical_mirror(start_pos)) === end_pos
+ * The end position must reflect BOTH transformations:
+ * 1. First mirror (east↔west)
+ * 2. Then swap (blue↔red positions)
  */
 export const MIRRORED_SWAPPED_VALIDATION_SET = new Set<string>(
-  Object.entries(VERTICAL_MIRROR_POSITION_MAP).map(
-    ([start, end]) => `${start},${end}`
-  )
+  Object.entries(VERTICAL_MIRROR_POSITION_MAP).map(([start, mirroredEnd]) => {
+    // Compose: first mirror, then swap
+    const swappedMirroredEnd = SWAPPED_POSITION_MAP[mirroredEnd as GridPosition];
+    return `${start},${swappedMirroredEnd}`;
+  })
 );
 
 /**

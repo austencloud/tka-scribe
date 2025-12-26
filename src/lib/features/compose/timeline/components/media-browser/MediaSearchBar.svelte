@@ -25,11 +25,12 @@
 		class:active={isFavoritesActive}
 		onclick={() => onFavoritesToggle(!isFavoritesActive)}
 		title="Favorites"
+		aria-label="Toggle favorites filter"
 	>
 		<i class="fas fa-heart"></i>
 	</button>
 	{#if searchQuery}
-		<button class="clear-btn" onclick={() => onSearchChange('')}>
+		<button class="clear-btn" onclick={() => onSearchChange('')} aria-label="Clear search">
 			<i class="fas fa-times"></i>
 		</button>
 	{/if}

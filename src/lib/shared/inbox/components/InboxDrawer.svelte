@@ -430,11 +430,6 @@
     color: var(--theme-accent, #6366f1);
   }
 
-  .inbox-bottom-nav {
-    flex-shrink: 0;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-  }
-
   :global(.drawer-content.inbox-drawer) {
     --sheet-width: min(480px, 95vw);
     width: var(--sheet-width) !important;

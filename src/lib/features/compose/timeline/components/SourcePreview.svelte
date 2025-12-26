@@ -292,19 +292,19 @@
     <div class="control-buttons-wrapper">
       <!-- Centered transport buttons -->
       <div class="control-buttons">
-        <button class="transport-btn" onclick={goToStart} title="Go to start" disabled={!sequence}>
+        <button class="transport-btn" onclick={goToStart} title="Go to start" aria-label="Go to start" disabled={!sequence}>
           <i class="fas fa-backward-fast"></i>
         </button>
-        <button class="transport-btn" onclick={stepBackward} title="Previous beat" disabled={!sequence}>
+        <button class="transport-btn" onclick={stepBackward} title="Previous beat" aria-label="Previous beat" disabled={!sequence}>
           <i class="fas fa-backward-step"></i>
         </button>
-        <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
+        <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} aria-label={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
           <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
         </button>
-        <button class="transport-btn" onclick={stepForward} title="Next beat" disabled={!sequence}>
+        <button class="transport-btn" onclick={stepForward} title="Next beat" aria-label="Next beat" disabled={!sequence}>
           <i class="fas fa-forward-step"></i>
         </button>
-        <button class="transport-btn" onclick={goToEnd} title="Go to end" disabled={!sequence}>
+        <button class="transport-btn" onclick={goToEnd} title="Go to end" aria-label="Go to end" disabled={!sequence}>
           <i class="fas fa-forward-fast"></i>
         </button>
       </div>

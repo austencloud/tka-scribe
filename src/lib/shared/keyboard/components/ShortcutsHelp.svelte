@@ -412,21 +412,6 @@
     text-align: center;
   }
 
-  .shortcuts-help__footer kbd {
-    padding: 4px 8px;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, #8b5cf6) 12%,
-      transparent
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
-    border-radius: 5px;
-    font-family: ui-monospace, "SF Mono", monospace;
-    font-size: 11px;
-    color: var(--theme-accent-strong, #a78bfa);
-  }
-
   /* Scrollbar */
   .shortcuts-help__content::-webkit-scrollbar {
     width: 6px;

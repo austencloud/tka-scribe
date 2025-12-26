@@ -339,6 +339,7 @@ ${formatMotionText(redMotion, "red", redRotationOverride)}`;
   <div
     class="modal-backdrop"
     onclick={handleBackdropClick}
+    onkeydown={handleKeydown}
     role="dialog"
     aria-modal="true"
     aria-label="Pictograph Inspector"

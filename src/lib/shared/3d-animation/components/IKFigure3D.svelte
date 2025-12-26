@@ -186,9 +186,9 @@
 
   // Leg positions (thigh center, shin center)
   const leftThighY = $derived((figureProps.hipY + figureProps.kneeY) / 2);
-  const rightThighY = leftThighY;
+  const rightThighY = $derived(leftThighY);
   const leftShinY = $derived((figureProps.kneeY + figureProps.ankleY) / 2);
-  const rightShinY = leftShinY;
+  const rightShinY = $derived(leftShinY);
 </script>
 
 {#if visible}

@@ -100,6 +100,7 @@
         onclick={handleOverlaysToggle}
         role="switch"
         aria-checked={hubState.animationSettings.showOverlays}
+        aria-label="Toggle overlays"
       >
         <span class="toggle-thumb"></span>
       </button>

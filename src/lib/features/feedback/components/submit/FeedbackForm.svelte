@@ -303,19 +303,6 @@
           placeholder={`${currentTypeConfig?.placeholder ?? "Describe the issue, suggestion, or idea..."}${isMobileDevice ? "" : " (Shift+Enter to submit)"}`}
           rows="6"
         ></textarea>
-        {#if displayText.trim().length > 0}
-          <div class="clear-wrapper">
-            <button
-              type="button"
-              class="clear-text-btn"
-              onclick={handleClearText}
-              aria-label="Clear feedback text"
-              title="Clear text"
-            >
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-        {/if}
         <div class="voice-input-wrapper">
           <VoiceInputButton
             onTranscript={handleVoiceTranscript}
@@ -351,6 +338,17 @@
           {/if}
         </div>
         <div class="field-actions">
+          {#if displayText.trim().length > 0}
+            <button
+              type="button"
+              class="clear-text-btn"
+              onclick={handleClearText}
+              aria-label="Clear feedback text"
+              title="Clear text"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+          {/if}
           <ImageUpload
             bind:images={formState.images}
             disabled={formState.isSubmitting}
@@ -770,7 +768,7 @@
   .field-textarea {
     width: 100%;
     padding: clamp(8px, 2cqi, 12px) clamp(10px, 2.5cqi, 16px);
-    padding-right: clamp(48px, 10cqi, 60px); /* Make room for voice button */
+    padding-right: clamp(48px, 10cqi, 60px); /* Room for voice button */
     background: transparent;
     border: none;
     color: var(--fb-text);
@@ -789,19 +787,14 @@
     color: var(--fb-text-subtle);
   }
 
-  .clear-wrapper {
-    position: absolute;
-    bottom: clamp(10px, 2.5cqi, 16px);
-    left: clamp(10px, 2.5cqi, 16px);
-    z-index: 1;
-  }
-
   .clear-text-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(32px, 8cqi, 40px);
-    height: clamp(32px, 8cqi, 40px);
+    min-width: var(--min-touch-target, 44px);
+    min-height: var(--min-touch-target, 44px);
+    width: clamp(36px, 8cqi, 44px);
+    height: clamp(36px, 8cqi, 44px);
     background: transparent;
     border: 1px solid
       color-mix(

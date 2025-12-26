@@ -270,7 +270,7 @@
       <i class="fa-solid fa-bezier-curve"></i>
       <span>Speed Curves</span>
     </div>
-    <button class="close-btn" onclick={onClose}>
+    <button class="close-btn" onclick={onClose} aria-label="Close speed curve editor">
       <i class="fa-solid fa-xmark"></i>
     </button>
   </div>

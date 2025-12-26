@@ -37,10 +37,10 @@
 <div class="composite-controls">
   <!-- Orientation Toggle -->
   <div class="control-group">
-    <label class="control-label">
+    <span class="control-label">
       <i class="fas fa-arrows-alt"></i>
       Layout
-    </label>
+    </span>
     <button class="orientation-toggle" onclick={toggleOrientation} aria-label="Toggle orientation">
       {#if hubState.compositeLayout.orientation === 'horizontal'}
         <i class="fas fa-grip-horizontal"></i>
@@ -54,15 +54,16 @@
 
   <!-- Piece 1 Selector -->
   <div class="control-group">
-    <label class="control-label">
+    <span class="control-label">
       <i class="fas fa-play-circle"></i>
       Piece 1
-    </label>
-    <div class="piece-selector">
+    </span>
+    <div class="piece-selector" role="group" aria-label="Piece 1 format">
       <button
         class="piece-option"
         class:active={hubState.compositeLayout.piece1 === 'animation'}
         onclick={() => handlePiece1Change('animation')}
+        aria-pressed={hubState.compositeLayout.piece1 === 'animation'}
       >
         <i class="fas fa-play-circle"></i>
         <span>Animation</span>
@@ -71,6 +72,7 @@
         class="piece-option"
         class:active={hubState.compositeLayout.piece1 === 'static'}
         onclick={() => handlePiece1Change('static')}
+        aria-pressed={hubState.compositeLayout.piece1 === 'static'}
       >
         <i class="fas fa-image"></i>
         <span>Static</span>
@@ -80,15 +82,16 @@
 
   <!-- Piece 2 Selector -->
   <div class="control-group">
-    <label class="control-label">
+    <span class="control-label">
       <i class="fas fa-th"></i>
       Piece 2
-    </label>
-    <div class="piece-selector">
+    </span>
+    <div class="piece-selector" role="group" aria-label="Piece 2 format">
       <button
         class="piece-option"
         class:active={hubState.compositeLayout.piece2 === 'grid'}
         onclick={() => handlePiece2Change('grid')}
+        aria-pressed={hubState.compositeLayout.piece2 === 'grid'}
       >
         <i class="fas fa-th"></i>
         <span>Grid</span>
@@ -97,6 +100,7 @@
         class="piece-option"
         class:active={hubState.compositeLayout.piece2 === 'performance'}
         onclick={() => handlePiece2Change('performance')}
+        aria-pressed={hubState.compositeLayout.piece2 === 'performance'}
       >
         <i class="fas fa-video"></i>
         <span>Performance</span>

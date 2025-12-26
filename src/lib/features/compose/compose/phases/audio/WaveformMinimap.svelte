@@ -169,12 +169,24 @@
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   }
+
+  // Keyboard handler for accessibility
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      const clickEvent = new MouseEvent("click", {
+        clientX: minimapEl.getBoundingClientRect().left + minimapEl.offsetWidth / 2,
+      });
+      handleClick(clickEvent as any);
+    }
+  }
 </script>
 
 <div
   class="waveform-minimap"
   bind:this={minimapEl}
   onclick={handleClick}
+  onkeydown={handleKeyDown}
   ontouchend={handleTouchTap}
   role="slider"
   aria-label="Song overview - click to seek"

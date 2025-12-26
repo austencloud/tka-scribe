@@ -35,13 +35,14 @@
   }
 </script>
 
-<button
-  type="button"
+<div
   class="shortcut-row"
   class:customized={item.isCustomized}
   class:disabled={item.isDisabled}
   onclick={handleClick}
   onkeydown={handleKeydown}
+  role="button"
+  tabindex="0"
   title={item.shortcut.description || item.shortcut.label}
 >
   <!-- Key combo - left aligned, fixed width -->
@@ -60,6 +61,7 @@
         class="reset-btn"
         onclick={handleReset}
         title="Reset to default"
+        aria-label="Reset to default"
       >
         <i class="fas fa-undo"></i>
       </button>
@@ -71,7 +73,7 @@
 
   <!-- Edit indicator -->
   <i class="fas fa-pen edit-icon"></i>
-</button>
+</div>
 
 <style>
   /* Row with subtle background to group key + label */

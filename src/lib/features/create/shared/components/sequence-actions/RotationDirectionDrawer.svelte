@@ -595,13 +595,6 @@
     color: rgba(255, 255, 255, 0.4);
   }
 
-  .rotation-value.blue {
-    /* Additional blue tint for blue hand */
-  }
-
-  .rotation-value.red {
-    /* Additional red tint for red hand */
-  }
 
   .save-form {
     display: flex;

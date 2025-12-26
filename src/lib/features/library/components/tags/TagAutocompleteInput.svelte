@@ -204,6 +204,8 @@
     {:else}
       <div class="custom-tag-creator">
         <div class="custom-input-container">
+          <!-- autofocus needed: User clicked "Add Custom Tag", expects to type immediately -->
+          <!-- svelte-ignore a11y_autofocus -->
           <input
             bind:value={inputValue}
             type="text"
