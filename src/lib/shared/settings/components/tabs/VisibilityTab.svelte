@@ -14,7 +14,7 @@
   import {
     getAnimationVisibilityManager,
     type TrailStyle,
-    type GridMode as AnimGridMode,
+    type PlaybackMode,
   } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -62,9 +62,11 @@
   let nonRadialVisible = $state(false);
 
   // Animation visibility state
-  let animGridMode = $state<AnimGridMode>("diamond");
+  let animGridVisible = $state(true);
   let animBeatNumbersVisible = $state(true);
   let animTrailStyle = $state<TrailStyle>("subtle");
+  let animPlaybackMode = $state<PlaybackMode>("continuous");
+  let animBpm = $state(60);
   let animTkaGlyphVisible = $state(true);
   let animReversalIndicatorsVisible = $state(false);
   let animTurnNumbersVisible = $state(true);
@@ -137,6 +139,11 @@
   function handleAnimationToggle(key: string) {
     triggerHaptic();
     switch (key) {
+      case "grid":
+        animGridVisible = !animGridVisible;
+        // When visible, use diamond (sequence will override); when hidden, use none
+        animationVisibilityManager.setGridMode(animGridVisible ? "diamond" : "none");
+        break;
       case "beatNumbers":
         animBeatNumbersVisible = !animBeatNumbersVisible;
         animationVisibilityManager.setVisibility("beatNumbers", animBeatNumbersVisible);
@@ -156,15 +163,21 @@
     }
   }
 
-  // Animation cycling handlers
-  function handleGridModeChange(newMode: string) {
-    triggerHaptic();
-    animationVisibilityManager.setGridMode(newMode as AnimGridMode);
-  }
-
   function handleTrailStyleChange(newStyle: string) {
     triggerHaptic();
     animationVisibilityManager.setTrailStyle(newStyle as TrailStyle);
+  }
+
+  function handlePlaybackModeChange(mode: PlaybackMode) {
+    triggerHaptic();
+    animPlaybackMode = mode;
+    animationVisibilityManager.setPlaybackMode(mode);
+  }
+
+  function handleBpmChange(bpm: number) {
+    triggerHaptic();
+    animBpm = bpm;
+    animationVisibilityManager.setBpm(bpm);
   }
 
   // Image toggle handler
@@ -207,9 +220,11 @@
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
 
     // Load initial animation visibility
-    animGridMode = animationVisibilityManager.getGridMode();
+    animGridVisible = animationVisibilityManager.isGridVisible();
     animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
     animTrailStyle = animationVisibilityManager.getTrailStyle();
+    animPlaybackMode = animationVisibilityManager.getPlaybackMode();
+    animBpm = animationVisibilityManager.getBpm();
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
     animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
     animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
@@ -233,9 +248,11 @@
     };
 
     const animationObserver = () => {
-      animGridMode = animationVisibilityManager.getGridMode();
+      animGridVisible = animationVisibilityManager.isGridVisible();
       animBeatNumbersVisible = animationVisibilityManager.getVisibility("beatNumbers");
       animTrailStyle = animationVisibilityManager.getTrailStyle();
+      animPlaybackMode = animationVisibilityManager.getPlaybackMode();
+      animBpm = animationVisibilityManager.getBpm();
       animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
       animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
       animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
@@ -286,15 +303,18 @@
     />
 
     <AnimationPanel
-      gridMode={animGridMode}
+      gridVisible={animGridVisible}
       beatNumbersVisible={animBeatNumbersVisible}
       trailStyle={animTrailStyle}
+      playbackMode={animPlaybackMode}
+      bpm={animBpm}
       tkaGlyphVisible={animTkaGlyphVisible}
       reversalIndicatorsVisible={animReversalIndicatorsVisible}
       turnNumbersVisible={animTurnNumbersVisible}
       onToggle={handleAnimationToggle}
-      onGridModeChange={handleGridModeChange}
       onTrailStyleChange={handleTrailStyleChange}
+      onPlaybackModeChange={handlePlaybackModeChange}
+      onBpmChange={handleBpmChange}
       onOpenHelp={() => openHelpModal("animation")}
       isMobileHidden={mobileMode !== "animation"}
     />

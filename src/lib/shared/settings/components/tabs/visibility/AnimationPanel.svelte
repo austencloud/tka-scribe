@@ -5,41 +5,45 @@
   Includes grid mode, trail style, and overlay toggles.
 -->
 <script lang="ts">
-  import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
+  import AnimationPreviewWithPlayback from "./AnimationPreviewWithPlayback.svelte";
   import CyclingButton from "./CyclingButton.svelte";
-  import { exampleSequenceData } from "./example-data";
-  import type {
-    TrailStyle,
-    GridMode as AnimGridMode,
-  } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import type { TrailStyle, PlaybackMode } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   interface Props {
-    gridMode: AnimGridMode;
+    gridVisible: boolean;
     beatNumbersVisible: boolean;
     trailStyle: TrailStyle;
+    playbackMode: PlaybackMode;
+    bpm: number;
     tkaGlyphVisible: boolean;
     reversalIndicatorsVisible: boolean;
     turnNumbersVisible: boolean;
     onToggle: (key: string) => void;
-    onGridModeChange: (mode: string) => void;
     onTrailStyleChange: (style: string) => void;
+    onPlaybackModeChange: (mode: PlaybackMode) => void;
+    onBpmChange: (bpm: number) => void;
     onOpenHelp: () => void;
     isMobileHidden?: boolean;
   }
 
   let {
-    gridMode,
+    gridVisible,
     beatNumbersVisible,
     trailStyle,
+    playbackMode,
+    bpm,
     tkaGlyphVisible,
     reversalIndicatorsVisible,
     turnNumbersVisible,
     onToggle,
-    onGridModeChange,
     onTrailStyleChange,
+    onPlaybackModeChange,
+    onBpmChange,
     onOpenHelp,
     isMobileHidden = false,
   }: Props = $props();
+
+  const bpmPresets = [30, 60, 90, 120];
 </script>
 
 <section class="settings-panel animation-panel" class:mobile-hidden={isMobileHidden}>
@@ -59,24 +63,61 @@
   </header>
 
   <div class="preview-frame animation-preview">
-    <AnimatorCanvas
-      sequenceData={exampleSequenceData}
-      isPlaying={true}
-      blueProp={null}
-      redProp={null}
-    />
+    <AnimationPreviewWithPlayback />
   </div>
 
   <div class="panel-controls">
     <div class="control-group">
+      <span class="group-label">Playback</span>
+      <div class="playback-mode-toggle">
+        <button
+          class="mode-btn"
+          class:active={playbackMode === "continuous"}
+          onclick={() => onPlaybackModeChange("continuous")}
+          type="button"
+          aria-label="Continuous playback"
+        >
+          <i class="fas fa-wave-square" aria-hidden="true"></i>
+          <span>Continuous</span>
+        </button>
+        <button
+          class="mode-btn"
+          class:active={playbackMode === "step"}
+          onclick={() => onPlaybackModeChange("step")}
+          type="button"
+          aria-label="Step playback"
+        >
+          <i class="fas fa-shoe-prints" aria-hidden="true"></i>
+          <span>Step</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="group-label">Speed (BPM)</span>
+      <div class="bpm-presets">
+        {#each bpmPresets as presetBpm}
+          <button
+            class="bpm-btn"
+            class:active={bpm === presetBpm}
+            onclick={() => onBpmChange(presetBpm)}
+            type="button"
+            aria-label="Set BPM to {presetBpm}"
+          >
+            {presetBpm}
+          </button>
+        {/each}
+      </div>
+    </div>
+
+    <div class="control-group">
       <span class="group-label">Canvas</span>
       <div class="toggle-grid">
-        <CyclingButton
-          value={gridMode}
-          options={["none", "diamond", "box"]}
-          onValueChange={onGridModeChange}
-          ariaLabel="Grid mode"
-        />
+        <button
+          class="toggle-btn"
+          class:active={gridVisible}
+          onclick={() => onToggle("grid")}>Grid</button
+        >
         <button
           class="toggle-btn"
           class:active={beatNumbersVisible}
@@ -260,6 +301,127 @@
     gap: 8px;
   }
 
+  .playback-mode-toggle {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mode-btn {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: var(--min-touch-target);
+    padding: 12px 14px;
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 12px;
+    color: var(--theme-text-dim);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+      sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mode-btn i {
+    font-size: 14px;
+  }
+
+  .mode-btn:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
+    transform: translateY(-1px);
+  }
+
+  .mode-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 50ms;
+  }
+
+  .mode-btn.active {
+    background: color-mix(in srgb, #fbbf24 20%, transparent);
+    border-color: color-mix(in srgb, #fbbf24 40%, transparent);
+    color: #fcd34d;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, #fbbf24 15%, transparent),
+      0 4px 12px color-mix(in srgb, #fbbf24 20%, transparent);
+  }
+
+  .mode-btn.active:hover {
+    background: color-mix(in srgb, #fbbf24 30%, transparent);
+    border-color: color-mix(in srgb, #fbbf24 50%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, #fbbf24 20%, transparent),
+      0 4px 16px color-mix(in srgb, #fbbf24 30%, transparent);
+  }
+
+  .mode-btn:focus-visible {
+    outline: 2px solid color-mix(in srgb, #fbbf24 50%, transparent);
+    outline-offset: 2px;
+  }
+
+  .bpm-presets {
+    display: flex;
+    gap: 8px;
+  }
+
+  .bpm-btn {
+    flex: 1;
+    min-height: var(--min-touch-target);
+    padding: 12px 8px;
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 12px;
+    color: var(--theme-text-dim);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+      sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bpm-btn:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
+    transform: translateY(-1px);
+  }
+
+  .bpm-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 50ms;
+  }
+
+  .bpm-btn.active {
+    background: color-mix(in srgb, #8b5cf6 25%, transparent);
+    border-color: color-mix(in srgb, #8b5cf6 45%, transparent);
+    color: white;
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, #8b5cf6 15%, transparent),
+      0 4px 12px color-mix(in srgb, #8b5cf6 25%, transparent);
+  }
+
+  .bpm-btn.active:hover {
+    background: color-mix(in srgb, #8b5cf6 35%, transparent);
+    border-color: color-mix(in srgb, #8b5cf6 55%, transparent);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, #8b5cf6 20%, transparent),
+      0 4px 16px color-mix(in srgb, #8b5cf6 35%, transparent);
+  }
+
+  .bpm-btn:focus-visible {
+    outline: 2px solid color-mix(in srgb, #8b5cf6 50%, transparent);
+    outline-offset: 2px;
+  }
+
   .toggle-btn {
     display: flex;
     align-items: center;
@@ -338,6 +500,8 @@
   @media (prefers-reduced-motion: reduce) {
     .settings-panel,
     .toggle-btn,
+    .mode-btn,
+    .bpm-btn,
     .help-btn {
       transition: none;
     }
@@ -345,6 +509,8 @@
 
   @media (prefers-contrast: high) {
     .toggle-btn,
+    .mode-btn,
+    .bpm-btn,
     .settings-panel {
       border-width: 2px;
     }
@@ -353,7 +519,17 @@
       border-color: var(--theme-accent, #6366f1);
     }
 
-    .toggle-btn:focus-visible {
+    .mode-btn.active {
+      border-color: #fbbf24;
+    }
+
+    .bpm-btn.active {
+      border-color: #8b5cf6;
+    }
+
+    .toggle-btn:focus-visible,
+    .mode-btn:focus-visible,
+    .bpm-btn:focus-visible {
       outline-width: 3px;
     }
   }

@@ -29,7 +29,6 @@ import { authState } from "../../auth/state/authState.svelte";
 import type { ISettingsState } from "../services/contracts/ISettingsState";
 import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { recordBackgroundChange } from "./background-popularity-state.svelte";
 
 const debug = createComponentLogger("SettingsState");
 
@@ -287,12 +286,6 @@ class SettingsState implements ISettingsState {
         getCustomBackgroundOptions(settingsState)
       );
       ThemeService.updateTheme(value as string);
-
-      // Track background popularity (non-blocking)
-      void recordBackgroundChange(
-        previousValue as string | undefined,
-        value as string
-      );
     }
 
     this.saveSettings();
@@ -341,12 +334,6 @@ class SettingsState implements ISettingsState {
         getCustomBackgroundOptions(newSettings)
       );
       ThemeService.updateTheme(newBackgroundType);
-
-      // Track background popularity (non-blocking)
-      void recordBackgroundChange(
-        oldBackgroundType as string | undefined,
-        newBackgroundType as string
-      );
     }
 
     this.saveSettings();

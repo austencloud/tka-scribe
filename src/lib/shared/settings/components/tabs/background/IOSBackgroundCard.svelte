@@ -103,9 +103,10 @@
     border: 0.33px solid rgba(255, 255, 255, 0.16);
     background: rgba(0, 0, 0, 0.25);
     container-type: size;
-    aspect-ratio: 16 / 9;
-    min-height: 80px;
-    min-width: 80px;
+    /* More compact 4:3 aspect ratio for better mobile fit */
+    aspect-ratio: 4 / 3;
+    min-height: 70px;
+    min-width: 70px;
     /* iOS precise shadow - matches Photos.app card elevation */
     box-shadow:
       0 3px 12px rgba(0, 0, 0, 0.12),
@@ -185,7 +186,7 @@
     justify-content: space-between;
     color: white;
     z-index: 1;
-    padding: clamp(10px, 3cqi, 18px);
+    padding: clamp(8px, 2.5cqi, 14px);
     transition: background 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
     pointer-events: none;
     font-family:
@@ -209,7 +210,7 @@
       0 2px 8px rgba(0, 0, 0, 0.6),
       0 0 4px rgba(0, 0, 0, 0.8);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-    font-size: clamp(24px, 7cqi, 48px);
+    font-size: clamp(18px, 5cqi, 36px);
     transition: transform 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
@@ -227,23 +228,23 @@
   }
 
   .card-name {
-    font-size: clamp(15px, 4cqi, 17px); /* iOS body text */
+    font-size: clamp(12px, 3.5cqi, 15px); /* Compact for mobile */
     font-weight: 600; /* iOS semibold */
-    letter-spacing: -0.41px; /* iOS tight tracking - exact spec */
-    line-height: 22px; /* iOS line-height: 1.29411 ratio */
+    letter-spacing: -0.3px; /* iOS tight tracking */
+    line-height: 1.3;
     margin: 0;
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.8),
       0 0 3px rgba(0, 0, 0, 0.9);
   }
 
-  /* iOS-style selection indicator - small checkmark in corner - Exact Size */
+  /* iOS-style selection indicator - small checkmark in corner */
   .ios-selection-indicator {
     position: absolute;
-    top: 8px; /* iOS standard inset */
-    right: 8px; /* iOS standard inset */
-    width: 24px; /* iOS exact checkmark badge size */
-    height: 24px; /* iOS exact checkmark badge size */
+    top: clamp(5px, 1.5cqi, 8px);
+    right: clamp(5px, 1.5cqi, 8px);
+    width: clamp(20px, 5cqi, 24px);
+    height: clamp(20px, 5cqi, 24px);
     border-radius: 50%;
     background: var(
       --theme-accent,
@@ -255,7 +256,7 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 12px; /* iOS checkmark icon size */
+    font-size: clamp(10px, 2.5cqi, 12px);
     box-shadow:
       0 2px 6px
         color-mix(in srgb, var(--theme-accent, #007aff) 30%, transparent),
@@ -1199,28 +1200,32 @@
   }
 
   /* Compact mode optimizations - iOS corner radii */
-  @container (max-width: 100px) {
+  @container (max-width: 120px) {
     .ios-background-card {
-      min-height: 60px;
-      min-width: 60px;
+      min-height: 50px;
+      min-width: 50px;
       border-radius: 10px; /* iOS small corner radius */
     }
 
     .card-name {
-      font-size: 12px;
-      line-height: 16px;
+      font-size: 11px;
+      line-height: 1.2;
     }
 
     .card-icon {
-      font-size: 18px;
+      font-size: 16px;
+    }
+
+    .card-overlay {
+      padding: 6px;
     }
 
     .ios-selection-indicator {
-      width: 20px;
-      height: 20px;
-      font-size: 10px;
-      top: 6px;
-      right: 6px;
+      width: 18px;
+      height: 18px;
+      font-size: 9px;
+      top: 4px;
+      right: 4px;
     }
   }
 </style>

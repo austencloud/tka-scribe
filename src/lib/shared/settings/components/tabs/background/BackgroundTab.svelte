@@ -192,10 +192,16 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: clamp(16px, 3cqi, 24px);
-    gap: clamp(14px, 2cqi, 20px);
+    padding: clamp(8px, 2cqi, 16px);
+    gap: clamp(10px, 1.5cqi, 16px);
+
+    /* Enable scrolling */
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 
     opacity: 0;
     transition: opacity 200ms ease;
@@ -211,13 +217,13 @@
   .settings-panel {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: clamp(16px, 3cqi, 24px);
+    gap: clamp(12px, 2cqi, 20px);
+    padding: clamp(12px, 2cqi, 20px);
     background: var(--theme-card-bg);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--theme-stroke);
-    border-radius: 20px;
+    border-radius: 16px;
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
@@ -236,8 +242,8 @@
   .panel-header {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding-bottom: 16px;
+    gap: clamp(10px, 2cqi, 14px);
+    padding-bottom: clamp(10px, 2cqi, 14px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
@@ -245,10 +251,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    font-size: 18px;
+    width: clamp(36px, 8cqi, 44px);
+    height: clamp(36px, 8cqi, 44px);
+    border-radius: 10px;
+    font-size: clamp(14px, 3cqi, 18px);
     flex-shrink: 0;
     background: color-mix(
       in srgb,
@@ -274,7 +280,7 @@
   }
 
   .panel-title {
-    font-size: 17px;
+    font-size: clamp(15px, 3cqi, 17px);
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
     margin: 0;
@@ -283,9 +289,9 @@
   }
 
   .panel-subtitle {
-    font-size: 13px;
+    font-size: clamp(11px, 2.5cqi, 13px);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    margin: 3px 0 0 0;
+    margin: 2px 0 0 0;
   }
 
   /* ========================================
@@ -294,29 +300,29 @@
   .category-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(8px, 1.5cqi, 12px);
   }
 
   .category-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .category-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    font-size: 12px;
+    width: clamp(20px, 4cqi, 24px);
+    height: clamp(20px, 4cqi, 24px);
+    border-radius: 5px;
+    font-size: clamp(10px, 2cqi, 12px);
     background: rgba(255, 255, 255, 0.06);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .category-label {
-    font-size: 12px;
+    font-size: clamp(11px, 2cqi, 12px);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -330,35 +336,28 @@
      ======================================== */
   .card-grid {
     display: grid;
-    gap: 12px;
+    gap: clamp(8px, 1.5cqi, 12px);
     width: 100%;
   }
 
-  /* Animated grid: 3 columns on desktop, 2 on mobile */
+  /* Default: 3 columns for animated, 2 for simple */
   .animated-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  /* Simple grid: 2 columns, constrain height to match animated cards */
   .simple-grid {
     grid-template-columns: repeat(2, 1fr);
     align-items: start;
   }
 
-  /* Responsive: 2 columns for animated on smaller containers */
-  @container background-tab (max-width: 600px) {
+  /* Medium containers: 2 columns for all */
+  @container background-tab (max-width: 500px) {
     .animated-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  /* Very small: single column */
-  @container background-tab (max-width: 360px) {
-    .animated-grid,
-    .simple-grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  /* Never go to single column - always maintain 2 columns minimum */
 
   /* ========================================
      SCROLLBAR
