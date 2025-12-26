@@ -1,125 +1,212 @@
 <!--
-  PreviewModeBanner - Global banner shown when in debug/preview mode
+  PreviewModeBanner - Unified debug toolbar for previewing users
 
-  Displays persistently at the top of the app to make preview mode unmistakable.
-  Shows for:
-  - User preview mode (viewing another user's data)
-  - Role override mode (testing as a different role)
+  Press F9 to toggle. Single consistent bar with:
+  - Search input (left)
+  - Quick Access users (center)
+  - Current preview info (right, if active)
 -->
 <script lang="ts">
+  import { onMount } from "svelte";
   import {
     userPreviewState,
+    loadUserPreview,
     clearUserPreview,
   } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
+  import { roleSwitcherState } from "$lib/shared/debug/state/role-switcher-state.svelte";
+  import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
+  import UserSearchInput from "$lib/shared/user-search/UserSearchInput.svelte";
 
-  // User preview state
+  // Quick access storage
+  const QUICK_ACCESS_KEY = "tka-quick-access-users";
+
+  interface QuickAccessUser {
+    uid: string;
+    displayName: string;
+    email: string;
+    photoURL?: string | null;
+  }
+
+  // State
+  let quickAccessUsers = $state<QuickAccessUser[]>([]);
+
+  // Derived state
+  const isOpen = $derived(roleSwitcherState.isOpen);
   const isUserPreview = $derived(userPreviewState.isActive);
   const profile = $derived(userPreviewState.data.profile);
-  const gamification = $derived(userPreviewState.data.gamification);
-
-  // Role override state
-  const debugOverride = $derived(featureFlagService.debugRoleOverride);
   const actualRole = $derived(featureFlagService.userRole);
+  const isAdmin = $derived(actualRole === "admin");
 
-  // Show banner if either mode is active
-  const showBanner = $derived(isUserPreview || !!debugOverride);
-  const isRoleOnlyMode = $derived(!isUserPreview && !!debugOverride);
+  // Show banner if F9 is toggled OR user is being previewed
+  const showBanner = $derived(isAdmin && (isOpen || isUserPreview));
 
-  function handleClearUserPreview() {
-    clearUserPreview();
+  // Check if current preview user is in quick access
+  const isCurrentUserInQuickAccess = $derived(
+    profile ? quickAccessUsers.some((u) => u.uid === profile.uid) : false
+  );
+
+  // Quick Access Functions
+  function loadQuickAccessUsers(): QuickAccessUser[] {
+    if (typeof localStorage === "undefined") return [];
+    try {
+      const saved = localStorage.getItem(QUICK_ACCESS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   }
 
-  function handleClearRoleOverride() {
+  function saveQuickAccessUsers(users: QuickAccessUser[]) {
+    if (typeof localStorage === "undefined") return;
+    localStorage.setItem(QUICK_ACCESS_KEY, JSON.stringify(users));
+  }
+
+  function addToQuickAccess() {
+    if (!profile) return;
+    const newUser: QuickAccessUser = {
+      uid: profile.uid,
+      displayName: profile.displayName || profile.email || "Unknown",
+      email: profile.email || "",
+      photoURL: profile.photoURL,
+    };
+    quickAccessUsers = [...quickAccessUsers, newUser];
+    saveQuickAccessUsers(quickAccessUsers);
+  }
+
+  function removeFromQuickAccess(uid: string) {
+    quickAccessUsers = quickAccessUsers.filter((u) => u.uid !== uid);
+    saveQuickAccessUsers(quickAccessUsers);
+  }
+
+  async function selectQuickAccessUser(user: QuickAccessUser) {
+    await handleUserSelect({
+      uid: user.uid,
+      displayName: user.displayName,
+      email: user.email,
+    });
+  }
+
+  async function handleUserSelect(user: {
+    uid: string;
+    displayName: string;
+    email: string;
+  }) {
+    await loadUserPreview(user.uid, true);
+
+    // Auto-apply the user's role
+    const previewedRole = userPreviewState.data.profile?.role as UserRole | undefined;
+    if (previewedRole) {
+      featureFlagService.setDebugRoleOverride(previewedRole);
+    }
+  }
+
+  function handleClearPreview() {
+    clearUserPreview();
     featureFlagService.clearDebugRoleOverride();
   }
 
-  function handleClearAll() {
-    clearUserPreview();
-    featureFlagService.clearDebugRoleOverride();
+  function handleClose() {
+    // Clear preview and close
+    if (isUserPreview) {
+      clearUserPreview();
+      featureFlagService.clearDebugRoleOverride();
+    }
+    if (isOpen) {
+      roleSwitcherState.toggle();
+    }
   }
+
+  onMount(() => {
+    quickAccessUsers = loadQuickAccessUsers();
+  });
 </script>
 
 {#if showBanner}
-  <div class="preview-banner" class:role-only={isRoleOnlyMode}>
+  <div class="preview-banner">
     <div class="banner-content">
-      <div class="banner-left">
+      <!-- Left: Search -->
+      <div class="search-section">
         <div class="banner-icon">
-          <i class="fas {isRoleOnlyMode ? 'fa-user-secret' : 'fa-eye'}"></i>
+          <i class="fas fa-eye"></i>
         </div>
-        <div class="banner-info">
-          {#if isRoleOnlyMode}
-            <!-- Role Override Only -->
-            <span class="banner-label">Role Override</span>
-            <span class="banner-user">
-              Testing as: <strong class="role-name">{debugOverride}</strong>
-              <span class="actual-role">(actual: {actualRole})</span>
-            </span>
-          {:else if isUserPreview && profile}
-            <!-- User Preview Mode -->
-            <span class="banner-label">Preview Mode</span>
-            <span class="banner-user">
-              Viewing as: <strong
-                >{profile.displayName || profile.email || profile.uid}</strong
-              >
-              {#if profile.role && profile.role !== "user"}
-                <span class="role-badge">{profile.role}</span>
-              {/if}
-              {#if debugOverride}
-                <span class="role-override-badge">+ {debugOverride} role</span>
-              {/if}
-            </span>
-          {/if}
+        <div class="search-container">
+          <UserSearchInput
+            onSelect={handleUserSelect}
+            selectedUserId={profile?.uid || ""}
+            selectedUserDisplay={profile?.displayName || profile?.email || ""}
+            placeholder="Search users..."
+            disabled={userPreviewState.isLoading}
+          />
         </div>
       </div>
 
-      {#if isUserPreview}
-        <div class="banner-stats">
-          {#if gamification}
-            <div class="stat">
-              <i class="fas fa-star"></i>
-              <span>{gamification.totalXP} XP</span>
-            </div>
-            <div class="stat">
-              <i class="fas fa-trophy"></i>
-              <span>Lv {gamification.currentLevel}</span>
-            </div>
-          {/if}
-          <div class="stat">
-            <i class="fas fa-layer-group"></i>
-            <span>{userPreviewState.data.sequences.length}</span>
-          </div>
-        </div>
-      {/if}
+      <!-- Center: Quick Access -->
+      <div class="quick-access-section">
+        {#if quickAccessUsers.length > 0}
+          {#each quickAccessUsers as user (user.uid)}
+            <button
+              type="button"
+              class="quick-chip"
+              class:active={profile?.uid === user.uid}
+              onclick={() => selectQuickAccessUser(user)}
+              title={user.email}
+            >
+              {#if user.photoURL}
+                <img src={user.photoURL} alt="" class="chip-avatar" />
+              {:else}
+                <span class="chip-avatar-placeholder">
+                  <i class="fas fa-user"></i>
+                </span>
+              {/if}
+              <span class="chip-name">{user.displayName}</span>
+            </button>
+          {/each}
+        {/if}
+      </div>
 
-      <div class="banner-actions">
-        {#if isUserPreview}
+      <!-- Right: Preview Info & Actions -->
+      <div class="actions-section">
+        {#if isUserPreview && profile}
+          <div class="preview-info">
+            <span class="preview-label">Viewing:</span>
+            <span class="preview-name">{profile.displayName || profile.email}</span>
+            {#if profile.role && profile.role !== "user"}
+              <span class="role-badge">{profile.role}</span>
+            {/if}
+          </div>
+
           <span class="read-only-badge">
             <i class="fas fa-lock"></i>
-            Read-Only
           </span>
-        {:else}
-          <span class="testing-badge">
-            <i class="fas fa-flask"></i>
-            Testing
-          </span>
-        {/if}
 
-        {#if isUserPreview && debugOverride}
-          <!-- Both active - show option to clear all -->
-          <button class="clear-btn" onclick={handleClearAll}>
+          {#if isCurrentUserInQuickAccess}
+            <button
+              type="button"
+              class="action-btn saved"
+              onclick={() => removeFromQuickAccess(profile.uid)}
+              title="Remove from quick access"
+            >
+              <i class="fas fa-bookmark"></i>
+            </button>
+          {:else}
+            <button
+              type="button"
+              class="action-btn"
+              onclick={addToQuickAccess}
+              title="Save to quick access"
+            >
+              <i class="far fa-bookmark"></i>
+            </button>
+          {/if}
+
+          <button class="clear-btn" onclick={handleClearPreview} title="Exit preview">
             <i class="fas fa-times"></i>
-            Exit All
-          </button>
-        {:else if isUserPreview}
-          <button class="clear-btn" onclick={handleClearUserPreview}>
-            <i class="fas fa-times"></i>
-            Exit Preview
           </button>
         {:else}
-          <button class="clear-btn" onclick={handleClearRoleOverride}>
+          <span class="hint-text">Select a user to preview</span>
+          <button class="close-btn" onclick={handleClose} title="Close (F9)">
             <i class="fas fa-times"></i>
-            Reset Role
           </button>
         {/if}
       </div>
@@ -133,241 +220,293 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 56px; /* Fixed height for consistent spacing */
+    height: 56px;
     z-index: 9998;
     background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
     border-bottom: 2px solid #3b82f6;
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
   }
 
-  /* Role override only - amber/orange theme */
-  .preview-banner.role-only {
-    background: linear-gradient(135deg, #78350f 0%, #b45309 100%);
-    border-bottom-color: #f59e0b;
-    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
-  }
-
-  .preview-banner.role-only .banner-icon {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fcd34d;
-  }
-
-  .preview-banner.role-only .banner-label {
-    color: #fcd34d;
-  }
-
   .banner-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 16px;
     height: 100%;
-    padding: 0 20px;
-    max-width: 100%;
+    padding: 0 16px;
   }
 
-  .banner-left {
+  /* Search Section */
+  .search-section {
     display: flex;
     align-items: center;
-    gap: 12px;
-    min-width: 0;
+    gap: 10px;
+    flex-shrink: 0;
+    width: 280px;
   }
 
   .banner-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: 10px;
+    border-radius: 8px;
     color: #93c5fd;
-    font-size: 16px;
+    font-size: 14px;
     flex-shrink: 0;
   }
 
-  .banner-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  .search-container {
+    flex: 1;
     min-width: 0;
   }
 
-  .banner-label {
-    font-size: var(--font-size-compact, 12px); /* Supplementary label */
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #93c5fd;
+  .search-container :global(.user-search) {
+    width: 100%;
   }
 
-  .banner-user {
-    font-size: 14px;
+  .search-container :global(.search-input) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 13px;
+    min-height: 36px;
+    padding: 0 36px;
+  }
+
+  .search-container :global(.search-input::placeholder) {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .search-container :global(.search-input:focus) {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+
+  .search-container :global(.search-icon) {
+    color: rgba(255, 255, 255, 0.5);
+    left: 12px;
+  }
+
+  .search-container :global(.search-results) {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Quick Access Section */
+  .quick-access-section {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .quick-access-section::-webkit-scrollbar {
+    display: none;
+  }
+
+  .quick-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px 4px 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
     color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
     white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .quick-chip:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .quick-chip.active {
+    background: rgba(59, 130, 246, 0.4);
+    border-color: #3b82f6;
+    color: white;
+  }
+
+  .chip-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .chip-avatar-placeholder {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 9px;
+  }
+
+  .chip-name {
+    max-width: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .banner-user strong {
-    color: white;
+  /* Actions Section */
+  .actions-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .preview-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-right: 8px;
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    margin-right: 4px;
+  }
+
+  .preview-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .preview-name {
+    font-size: 13px;
     font-weight: 600;
+    color: white;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .role-badge {
-    display: inline-flex;
     padding: 2px 6px;
-    margin-left: 8px;
     background: rgba(251, 191, 36, 0.2);
     border: 1px solid rgba(251, 191, 36, 0.4);
     border-radius: 4px;
-    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
+    font-size: 10px;
     font-weight: 700;
     text-transform: uppercase;
     color: #fcd34d;
   }
 
-  .role-name {
-    text-transform: capitalize;
-  }
-
-  .actual-role {
-    margin-left: 8px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
-    font-weight: 400;
-  }
-
-  .role-override-badge {
-    display: inline-flex;
-    padding: 2px 6px;
-    margin-left: 8px;
-    background: rgba(245, 158, 11, 0.2);
-    border: 1px solid rgba(245, 158, 11, 0.4);
-    border-radius: 4px;
-    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
-    font-weight: 700;
-    text-transform: capitalize;
-    color: #fbbf24;
-  }
-
-  .banner-stats {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .stat {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  .stat i {
-    color: #93c5fd;
-    font-size: 12px; /* Icon minimum */
-  }
-
-  .banner-actions {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-shrink: 0;
-  }
-
   .read-only-badge {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 6px;
-    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
-    font-weight: 700;
-    text-transform: uppercase;
     color: #fca5a5;
+    font-size: 11px;
   }
 
-  .testing-badge {
+  .hint-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+  }
+
+  .action-btn {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    background: rgba(168, 85, 247, 0.15);
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 6px;
-    font-size: var(--font-size-compact, 12px); /* Supplementary badge */
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #c4b5fd;
-  }
-
-  .clear-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    color: white;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
-    font-weight: 600;
     cursor: pointer;
     transition: all 0.15s;
   }
 
-  .clear-btn:hover {
+  .action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+
+  .action-btn.saved {
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.4);
+  }
+
+  .clear-btn,
+  .close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .clear-btn:hover,
+  .close-btn:hover {
     background: rgba(239, 68, 68, 0.3);
     border-color: rgba(239, 68, 68, 0.5);
+    color: white;
   }
 
   /* Responsive */
-  @media (max-width: 768px) {
-    .preview-banner {
-      height: 48px; /* Compact banner height on mobile */
+  @media (max-width: 900px) {
+    .search-section {
+      width: 200px;
     }
 
-    .banner-content {
-      padding: 0 12px;
-      gap: 10px;
-    }
-
-    .banner-stats {
+    .preview-info {
       display: none;
-    }
-
-    .banner-icon {
-      width: 32px;
-      height: 32px;
-      font-size: 14px;
-    }
-
-    .banner-user {
-      font-size: 13px;
-    }
-
-    .read-only-badge {
-      padding: 4px 8px;
-      font-size: var(--font-size-compact, 12px); /* Supplementary minimum */
-    }
-
-    .clear-btn {
-      padding: 6px 10px;
-      font-size: 12px;
     }
   }
 
-  @media (max-width: 480px) {
-    .clear-btn {
-      padding: 8px;
+  @media (max-width: 768px) {
+    .preview-banner {
+      height: 48px;
+    }
+
+    .banner-content {
+      padding: 0 10px;
+      gap: 8px;
+    }
+
+    .search-section {
+      width: 160px;
+    }
+
+    .banner-icon {
+      display: none;
+    }
+
+    .quick-access-section {
+      display: none;
+    }
+
+    .hint-text {
+      display: none;
     }
   }
 </style>

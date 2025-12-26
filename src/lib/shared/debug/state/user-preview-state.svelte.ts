@@ -2,10 +2,21 @@
  * User Preview State
  *
  * Comprehensive read-only preview of another user's data for admin debugging.
- * This state holds all user data that can be previewed throughout the app.
- * Components check this state to decide whether to show previewed or actual user data.
+ * Uses direct Firestore queries - no server endpoints needed.
  */
 import { browser } from "$app/environment";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
+  type Timestamp,
+} from "firebase/firestore";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 
 // ============================================================================
 // Types
@@ -87,8 +98,21 @@ interface UserPreviewState {
   loadingSection: string | null;
   error: string | null;
   data: UserPreviewData;
-  /** Track which sections have been lazy-loaded */
   loadedSections: Set<LazySection>;
+}
+
+// ============================================================================
+// Helpers
+// ============================================================================
+
+function formatTimestamp(ts: Timestamp | Date | string | null | undefined): string | null {
+  if (!ts) return null;
+  if (typeof ts === "string") return ts;
+  if (ts instanceof Date) return ts.toISOString();
+  if (typeof ts === "object" && "toDate" in ts) {
+    return (ts as Timestamp).toDate().toISOString();
+  }
+  return null;
 }
 
 // ============================================================================
@@ -114,15 +138,179 @@ export const userPreviewState = $state<UserPreviewState>({
 });
 
 // ============================================================================
+// Direct Firestore Fetchers
+// ============================================================================
+
+async function fetchProfile(userId: string): Promise<PreviewUserProfile | null> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const userDoc = await getDoc(doc(firestore, "users", userId));
+
+    if (!userDoc.exists()) {
+      // Return minimal profile with just the UID
+      return {
+        uid: userId,
+        email: null,
+        displayName: null,
+        photoURL: null,
+        role: "user",
+      };
+    }
+
+    const data = userDoc.data();
+    return {
+      uid: userId,
+      email: data.email || null,
+      displayName: data.displayName || null,
+      photoURL: data.photoURL || data.avatar || null,
+      username: data.username || null,
+      role: data.role || (data.isAdmin ? "admin" : "user"),
+      createdAt: formatTimestamp(data.createdAt) || undefined,
+      lastActivityDate: formatTimestamp(data.lastActivityDate) || undefined,
+    };
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch profile:", err);
+    return null;
+  }
+}
+
+async function fetchGamification(userId: string): Promise<PreviewGamification | null> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const userDoc = await getDoc(doc(firestore, "users", userId));
+
+    if (!userDoc.exists()) return null;
+
+    const data = userDoc.data();
+    return {
+      totalXP: data.totalXP || 0,
+      currentLevel: data.currentLevel || 1,
+      achievementCount: data.achievementCount || 0,
+      currentStreak: data.currentStreak || 0,
+      longestStreak: data.longestStreak || 0,
+    };
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch gamification:", err);
+    return null;
+  }
+}
+
+async function fetchSequences(userId: string): Promise<PreviewSequence[]> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const q = query(
+      collection(firestore, "sequences"),
+      where("createdBy", "==", userId),
+      orderBy("createdAt", "desc"),
+      limit(50)
+    );
+    const snap = await getDocs(q);
+
+    return snap.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        name: data.name || "Untitled",
+        word: data.word || undefined,
+        thumbnailUrl: data.thumbnailUrl || undefined,
+        createdAt: formatTimestamp(data.createdAt) || undefined,
+        isPublic: data.isPublic || false,
+        favoriteCount: data.favoriteCount || 0,
+      };
+    });
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch sequences:", err);
+    return [];
+  }
+}
+
+async function fetchCollections(userId: string): Promise<PreviewCollection[]> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const q = query(
+      collection(firestore, `users/${userId}/collections`),
+      orderBy("createdAt", "desc"),
+      limit(30)
+    );
+    const snap = await getDocs(q);
+
+    return snap.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        name: data.name || "Untitled",
+        description: data.description || undefined,
+        sequenceCount: data.sequenceCount || 0,
+        isSystem: data.isSystem || false,
+        createdAt: formatTimestamp(data.createdAt) || undefined,
+      };
+    });
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch collections:", err);
+    return [];
+  }
+}
+
+async function fetchAchievements(userId: string): Promise<PreviewAchievement[]> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const q = query(
+      collection(firestore, `users/${userId}/achievements`),
+      orderBy("unlockedAt", "desc"),
+      limit(50)
+    );
+    const snap = await getDocs(q);
+
+    return snap.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        name: data.name || data.achievementId || docSnap.id,
+        description: data.description || undefined,
+        icon: data.icon || undefined,
+        unlockedAt: formatTimestamp(data.unlockedAt) || undefined,
+      };
+    });
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch achievements:", err);
+    return [];
+  }
+}
+
+async function fetchNotifications(userId: string): Promise<PreviewNotification[]> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const q = query(
+      collection(firestore, `users/${userId}/notifications`),
+      orderBy("createdAt", "desc"),
+      limit(30)
+    );
+    const snap = await getDocs(q);
+
+    return snap.docs.map((docSnap) => {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        type: data.type || "general",
+        title: data.title || undefined,
+        message: data.message || undefined,
+        read: data.read || false,
+        createdAt: formatTimestamp(data.createdAt) || undefined,
+      };
+    });
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch notifications:", err);
+    return [];
+  }
+}
+
+// ============================================================================
 // Actions
 // ============================================================================
 
 /**
  * Load user preview - initially only loads profile + gamification (lightweight).
  * Other sections are lazy-loaded on demand via loadPreviewSection.
- *
- * @param userId - The user ID to preview
- * @param eager - If true, loads all sections immediately (for backward compat)
  */
 export async function loadUserPreview(
   userId: string,
@@ -137,18 +325,25 @@ export async function loadUserPreview(
 
   try {
     if (eager) {
-      // Legacy behavior: fetch all data at once
-      const res = await fetch(
-        `/api/preview-user?userId=${encodeURIComponent(userId)}`
-      );
+      // Load all data in parallel
+      const [profile, gamification, sequences, collections, achievements, notifications] =
+        await Promise.all([
+          fetchProfile(userId),
+          fetchGamification(userId),
+          fetchSequences(userId),
+          fetchCollections(userId),
+          fetchAchievements(userId),
+          fetchNotifications(userId),
+        ]);
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `Request failed: ${res.status}`);
-      }
-
-      const data = (await res.json()) as UserPreviewData;
-      userPreviewState.data = data;
+      userPreviewState.data = {
+        profile,
+        gamification,
+        sequences,
+        collections,
+        achievements,
+        notifications,
+      };
       userPreviewState.loadedSections = new Set([
         "sequences",
         "collections",
@@ -157,19 +352,14 @@ export async function loadUserPreview(
       ]);
     } else {
       // Lazy mode: only fetch profile + gamification initially
-      const res = await fetch(
-        `/api/preview-user?userId=${encodeURIComponent(userId)}&sections=profile,gamification`
-      );
+      const [profile, gamification] = await Promise.all([
+        fetchProfile(userId),
+        fetchGamification(userId),
+      ]);
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || `Request failed: ${res.status}`);
-      }
-
-      const data = (await res.json()) as Partial<UserPreviewData>;
       userPreviewState.data = {
-        profile: data.profile ?? null,
-        gamification: data.gamification ?? null,
+        profile,
+        gamification,
         sequences: [],
         collections: [],
         achievements: [],
@@ -192,50 +382,34 @@ export async function loadUserPreview(
 
 /**
  * Lazy-load a specific section of preview data.
- * Use this when navigating to a view that needs that section.
- *
- * @example
- * // In Library view
- * $effect(() => {
- *   if (preview.isActive && !preview.loadedSections.has("sequences")) {
- *     loadPreviewSection("sequences");
- *   }
- * });
  */
 export async function loadPreviewSection(section: LazySection): Promise<void> {
   if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile)
     return;
-  if (userPreviewState.loadedSections.has(section)) return; // Already loaded
+  if (userPreviewState.loadedSections.has(section)) return;
 
   const userId = userPreviewState.data.profile.uid;
   userPreviewState.loadingSection = section;
 
   try {
-    const res = await fetch(
-      `/api/preview-user?userId=${encodeURIComponent(userId)}&section=${section}`
-    );
-
-    if (!res.ok) {
-      throw new Error(`Failed to load ${section}`);
+    switch (section) {
+      case "sequences":
+        userPreviewState.data.sequences = await fetchSequences(userId);
+        break;
+      case "collections":
+        userPreviewState.data.collections = await fetchCollections(userId);
+        break;
+      case "achievements":
+        userPreviewState.data.achievements = await fetchAchievements(userId);
+        break;
+      case "notifications":
+        userPreviewState.data.notifications = await fetchNotifications(userId);
+        break;
     }
 
-    const data = await res.json();
-
-    // Update the requested section
-    if (section === "sequences") {
-      userPreviewState.data.sequences = data.sequences || [];
-    } else if (section === "collections") {
-      userPreviewState.data.collections = data.collections || [];
-    } else if (section === "achievements") {
-      userPreviewState.data.achievements = data.achievements || [];
-    } else if (section === "notifications") {
-      userPreviewState.data.notifications = data.notifications || [];
-    }
-
-    // Mark as loaded
     userPreviewState.loadedSections.add(section);
   } catch (err) {
-    console.error(`Failed to load preview ${section}:`, err);
+    console.error(`[UserPreview] Failed to load ${section}:`, err);
   } finally {
     userPreviewState.loadingSection = null;
   }
@@ -244,9 +418,7 @@ export async function loadPreviewSection(section: LazySection): Promise<void> {
 /**
  * Refresh a specific section of the preview data
  */
-export async function refreshPreviewSection(
-  section: "sequences" | "collections" | "achievements" | "notifications"
-): Promise<void> {
+export async function refreshPreviewSection(section: LazySection): Promise<void> {
   if (!browser || !userPreviewState.isActive || !userPreviewState.data.profile)
     return;
 
@@ -254,28 +426,22 @@ export async function refreshPreviewSection(
   userPreviewState.loadingSection = section;
 
   try {
-    const res = await fetch(
-      `/api/preview-user?userId=${encodeURIComponent(userId)}&section=${section}`
-    );
-
-    if (!res.ok) {
-      throw new Error(`Failed to refresh ${section}`);
-    }
-
-    const data = await res.json();
-
-    // Update just the requested section
-    if (section === "sequences") {
-      userPreviewState.data.sequences = data.sequences || [];
-    } else if (section === "collections") {
-      userPreviewState.data.collections = data.collections || [];
-    } else if (section === "achievements") {
-      userPreviewState.data.achievements = data.achievements || [];
-    } else if (section === "notifications") {
-      userPreviewState.data.notifications = data.notifications || [];
+    switch (section) {
+      case "sequences":
+        userPreviewState.data.sequences = await fetchSequences(userId);
+        break;
+      case "collections":
+        userPreviewState.data.collections = await fetchCollections(userId);
+        break;
+      case "achievements":
+        userPreviewState.data.achievements = await fetchAchievements(userId);
+        break;
+      case "notifications":
+        userPreviewState.data.notifications = await fetchNotifications(userId);
+        break;
     }
   } catch (err) {
-    console.error(`Failed to refresh preview ${section}:`, err);
+    console.error(`[UserPreview] Failed to refresh ${section}:`, err);
   } finally {
     userPreviewState.loadingSection = null;
   }
@@ -306,7 +472,6 @@ export function isSectionLoaded(section: LazySection): boolean {
 
 /**
  * Get the effective user ID (previewed or actual)
- * Use this in components that need to fetch user-specific data
  */
 export function getEffectiveUserId(actualUserId: string | null): string | null {
   if (userPreviewState.isActive && userPreviewState.data.profile) {
@@ -341,7 +506,6 @@ export function getEffectivePhotoURL(
 
 /**
  * Check if the app is in read-only preview mode.
- * Use this to disable write actions (edit, delete, etc.)
  */
 export function isPreviewReadOnly(): boolean {
   return userPreviewState.isActive;

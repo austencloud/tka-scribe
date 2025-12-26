@@ -1,9 +1,17 @@
 /**
  * Test Preview State
  * Read-only preview of another user's notifications (dev/debug only).
- * Uses a server-side preview API; never marks notifications as read.
+ * Uses direct Firestore queries; never marks notifications as read.
  */
 import { browser } from "$app/environment";
+import {
+  collection,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
+import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 
 type PreviewNotification = {
   id: string;
@@ -17,6 +25,12 @@ type PreviewNotification = {
   createdAt?: string;
 };
 
+type UserSuggestion = {
+  id: string;
+  displayName?: string;
+  email?: string;
+};
+
 export const testPreviewState = $state({
   isActive: false,
   isLoading: false,
@@ -26,7 +40,7 @@ export const testPreviewState = $state({
   notifications: [] as PreviewNotification[],
   searchLoading: false,
   searchError: "" as string | null,
-  suggestions: [] as { id: string; displayName?: string; email?: string }[],
+  suggestions: [] as UserSuggestion[],
 });
 
 export async function loadPreviewNotifications(
@@ -38,21 +52,39 @@ export async function loadPreviewNotifications(
   testPreviewState.error = null;
 
   try {
-    const res = await fetch(
-      `/api/preview-notifications?userId=${encodeURIComponent(userId)}&limit=20`
+    const firestore = await getFirestoreInstance();
+    const q = query(
+      collection(firestore, `users/${userId}/notifications`),
+      orderBy("createdAt", "desc"),
+      limit(20)
     );
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || `Request failed: ${res.status}`);
-    }
-    const data = (await res.json()) as PreviewNotification[];
-    testPreviewState.notifications = data;
+    const snap = await getDocs(q);
+
+    const notifications: PreviewNotification[] = snap.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        type: data.type || "general",
+        title: data.title || undefined,
+        feedbackTitle: data.feedbackTitle || undefined,
+        message: data.message || undefined,
+        actionUrl: data.actionUrl || undefined,
+        feedbackId: data.feedbackId || undefined,
+        read: data.read || false,
+        createdAt:
+          data.createdAt?.toDate?.()?.toISOString?.() ||
+          data.createdAt?.toISOString?.() ||
+          undefined,
+      };
+    });
+
+    testPreviewState.notifications = notifications;
     testPreviewState.userId = userId;
     testPreviewState.userLabel = userLabel || userId;
     testPreviewState.isActive = true;
-  } catch (err: any) {
+  } catch (err: unknown) {
     testPreviewState.error =
-      err?.message || "Failed to load preview notifications";
+      err instanceof Error ? err.message : "Failed to load preview notifications";
     testPreviewState.isActive = false;
     testPreviewState.notifications = [];
   } finally {
@@ -68,31 +100,44 @@ export function clearPreview() {
   testPreviewState.error = null;
 }
 
-export async function searchPreviewUsers(query: string) {
-  if (!browser || !query.trim()) {
+export async function searchPreviewUsers(searchQuery: string) {
+  if (!browser || !searchQuery.trim()) {
     testPreviewState.suggestions = [];
     return;
   }
 
   testPreviewState.searchLoading = true;
   testPreviewState.searchError = null;
+
   try {
-    const res = await fetch(
-      `/api/preview-users?q=${encodeURIComponent(query.trim())}&limit=8`
-    );
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(text || `Request failed: ${res.status}`);
+    const firestore = await getFirestoreInstance();
+    const q = query(collection(firestore, "users"), limit(200));
+    const snap = await getDocs(q);
+
+    const queryLower = searchQuery.trim().toLowerCase();
+    const matches: UserSuggestion[] = [];
+
+    for (const doc of snap.docs) {
+      const data = doc.data();
+      const displayName = data.displayName || data.name || "";
+      const email = data.email || "";
+
+      const haystack = `${displayName} ${email}`.toLowerCase();
+      if (haystack.includes(queryLower)) {
+        matches.push({
+          id: doc.id,
+          displayName: displayName || undefined,
+          email: email || undefined,
+        });
+      }
+
+      if (matches.length >= 8) break;
     }
-    const data = (await res.json()) as {
-      id: string;
-      displayName?: string;
-      email?: string;
-    }[];
-    testPreviewState.suggestions = data;
-  } catch (err: any) {
+
+    testPreviewState.suggestions = matches;
+  } catch (err: unknown) {
     testPreviewState.searchError =
-      err?.message || "Failed to search users (preview)";
+      err instanceof Error ? err.message : "Failed to search users (preview)";
     testPreviewState.suggestions = [];
   } finally {
     testPreviewState.searchLoading = false;
