@@ -1685,6 +1685,7 @@ async function addFeedback(args) {
     description: flags.description,
     type,
     status: "new",
+    source: "terminal", // Created via CLI, not app feedback form
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     userId: AUSTEN_USER.userId,
     userDisplayName: AUSTEN_USER.userDisplayName,
@@ -1820,6 +1821,7 @@ async function main() {
       capturedModule: module,
       capturedTab: tab,
       status: "new",
+      source: "terminal", // Created via CLI, not app feedback form
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       userId: AUSTEN_USER.userId,
       userDisplayName: AUSTEN_USER.userDisplayName,
