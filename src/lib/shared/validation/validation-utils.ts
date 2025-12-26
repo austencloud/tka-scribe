@@ -25,7 +25,7 @@ export function createValidationError(
   error: z.ZodError,
   context: string = "data validation"
 ): ValidationError {
-  const firstError = error.errors[0];
+  const firstError = error.issues[0];
   if (!firstError) {
     return new ValidationError(
       `${context} failed: Unknown validation error`,

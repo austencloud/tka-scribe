@@ -44,6 +44,15 @@ const ArrowPlacementDataSchema = z.object({
   svgMirrored: z.boolean().default(false),
 });
 
+const defaultArrowPlacementData = {
+  positionX: 0.0,
+  positionY: 0.0,
+  rotationAngle: 0.0,
+  coordinates: null,
+  svgCenter: null,
+  svgMirrored: false,
+};
+
 const PropPlacementDataSchema = z.object({
   positionX: z.number().default(0.0),
   positionY: z.number().default(0.0),
@@ -51,6 +60,14 @@ const PropPlacementDataSchema = z.object({
   coordinates: CoordinateSchema.default(null),
   svgCenter: CoordinateSchema.default(null),
 });
+
+const defaultPropPlacementData = {
+  positionX: 0.0,
+  positionY: 0.0,
+  rotationAngle: 0.0,
+  coordinates: null,
+  svgCenter: null,
+};
 
 // ============================================================================
 // MOTION AND PICTOGRAPH SCHEMAS
@@ -70,8 +87,8 @@ const MotionDataSchema = z.object({
   propType: z.nativeEnum(PropType).default(PropType.STAFF),
   arrowLocation: z.nativeEnum(GridLocation).default(GridLocation.NORTH),
   color: z.nativeEnum(MotionColor).default(MotionColor.BLUE),
-  arrowPlacementData: ArrowPlacementDataSchema.default({}),
-  propPlacementData: PropPlacementDataSchema.default({}),
+  arrowPlacementData: ArrowPlacementDataSchema.default(defaultArrowPlacementData),
+  propPlacementData: PropPlacementDataSchema.default(defaultPropPlacementData),
   prefloatMotionType: z.nativeEnum(MotionType).nullable().default(null),
   prefloatRotationDirection: z
     .nativeEnum(RotationDirection)
@@ -87,7 +104,10 @@ const PictographDataSchema = z.object({
   letter: z.nativeEnum(Letter).nullable().default(null),
   startPosition: z.nativeEnum(GridPosition).nullable().default(null),
   endPosition: z.nativeEnum(GridPosition).nullable().default(null),
-  motions: z.record(z.nativeEnum(MotionColor), MotionDataSchema).default({}),
+  motions: z
+    .record(z.nativeEnum(MotionColor), MotionDataSchema)
+    .optional()
+    .default({} as Record<MotionColor, z.infer<typeof MotionDataSchema>>),
 });
 
 // ============================================================================
