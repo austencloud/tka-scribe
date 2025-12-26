@@ -8,33 +8,22 @@ Allow: /
 # Sitemap
 Sitemap: ${PRIMARY_DOMAIN}/sitemap.xml
 
-# Main application pages - high priority for indexing
+# Main application pages
 Allow: /
 Allow: /profile
-
-# Authentication
 Allow: /auth/login
+Allow: /sequence/
 
-# Development/Testing pages - lower priority
-Allow: /animation-test
-Allow: /benchmark
-Allow: /gallery-test
-Allow: /icon-preview
-Allow: /pictograph-test
-
-# Block API endpoints and internal paths
+# Block internal paths
 Disallow: /api/
+Disallow: /admin/
+Disallow: /test/
+Disallow: /demo/
 Disallow: /_app/
-Disallow: /static/
 Disallow: /.svelte-kit/
-Disallow: /node_modules/
-Disallow: /clear-cache
 
 # Crawl delay for respectful crawling
-Crawl-delay: 1
-
-# Cache instruction
-Cache-control: max-age=86400`;
+Crawl-delay: 1`;
 
   return new Response(robots, {
     headers: {

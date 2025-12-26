@@ -120,6 +120,18 @@
   onMount(() => {
     quickAccessUsers = loadQuickAccessUsers();
   });
+
+  // Set CSS variable for banner height when visible
+  $effect(() => {
+    const root = document.documentElement;
+    if (showBanner) {
+      // 56px on desktop, 48px on mobile (matches CSS)
+      const height = window.innerWidth <= 768 ? 48 : 56;
+      root.style.setProperty("--preview-banner-height", `${height}px`);
+    } else {
+      root.style.removeProperty("--preview-banner-height");
+    }
+  });
 </script>
 
 {#if showBanner}

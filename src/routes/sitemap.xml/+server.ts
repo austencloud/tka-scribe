@@ -1,79 +1,24 @@
-// import { PRIMARY_DOMAIN } from "$config/domains";
-const PRIMARY_DOMAIN = "localhost:5173"; // Temporary fallback
+import { PRIMARY_DOMAIN } from "../../config/domains";
 import type { RequestHandler } from "./$types";
 
 const pages = [
-  // Main Application Pages (High Priority)
+  // Main Application - Home/Dashboard
   {
     url: "",
     priority: "1.0",
     changefreq: "weekly",
-    description: "TKA Scribe | Home",
   },
+  // Authentication
   {
-    url: "about",
-    priority: "0.9",
-    changefreq: "monthly",
-    description: "About TKA Scribe - Revolutionary Flow Arts Tool",
-  },
-  {
-    url: "build",
-    priority: "0.9",
-    changefreq: "weekly",
-    description: "TKA Scribe - Sequence Builder",
-  },
-  {
-    url: "Explore",
-    priority: "0.8",
-    changefreq: "weekly",
-    description: "Explore - Flow Arts Sequence Library",
-  },
-  {
-    url: "learn",
-    priority: "0.8",
-    changefreq: "weekly",
-    description: "Learn Flow Arts - Comprehensive Tutorials",
-  },
-
-  // Secondary Pages (Medium Priority)
-  {
-    url: "features",
-    priority: "0.7",
-    changefreq: "monthly",
-    description: "TKA Features - Advanced Animation Tools",
-  },
-  {
-    url: "getting-started",
-    priority: "0.7",
-    changefreq: "monthly",
-    description: "Getting Started with TKA Scribe - Tutorial",
-  },
-  {
-    url: "word-card",
+    url: "auth/login",
     priority: "0.6",
     changefreq: "monthly",
-    description: "Word Cards - Movement Notation",
   },
+  // User Profile
   {
-    url: "write",
-    priority: "0.6",
+    url: "profile",
+    priority: "0.5",
     changefreq: "monthly",
-    description: "Flow Arts Composer - Advanced Editor",
-  },
-
-  // Development Tools (Lower Priority - but still indexed)
-  {
-    url: "animator",
-    priority: "0.3",
-    changefreq: "monthly",
-    description: "Animator - Development Tool",
-  },
-
-  {
-    url: "metadata-tester",
-    priority: "0.3",
-    changefreq: "monthly",
-    description: "Metadata Tester - Development Tool",
   },
 ];
 

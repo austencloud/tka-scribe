@@ -258,6 +258,16 @@
   }
 
   /*
+   * Animation panel: Full height on desktop (respects preview banner if visible)
+   * Uses --preview-banner-height set by PreviewModeBanner when F9 debug panel is open
+   */
+  :global(
+    .drawer-content.animation-panel-container.side-by-side-layout[data-placement="right"]
+  ) {
+    top: var(--preview-banner-height, 0);
+  }
+
+  /*
    * Mobile/Stacked layout: Panels slide from bottom
    * Height determined by combinedPanelHeight prop via .create-drawer-body
    * Let base Drawer handle positioning from bottom

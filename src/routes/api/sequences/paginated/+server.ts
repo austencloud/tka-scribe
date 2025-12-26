@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ url }) => {
         {
           success: false,
           error: "Invalid parameters",
-          details: validationResult.error.errors,
+          details: validationResult.error.issues,
         },
         { status: 400 }
       );
