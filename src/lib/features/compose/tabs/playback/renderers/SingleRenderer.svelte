@@ -9,14 +9,14 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import {
     resolve,
-    loadPixiModule,
+    loadAnimationModule,
     loadFeatureModule,
   } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
-  import type { IPixiAnimationRenderer } from "../../../services/contracts/IPixiAnimationRenderer";
+  import type { IAnimationRenderer } from "../../../services/contracts/IAnimationRenderer";
   import { createAnimationPanelState } from "../../../state/animation-panel-state.svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
@@ -30,7 +30,7 @@
     speed = 1.0,
     shouldLoop = false,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     visible = true,
     blueVisible = true,
@@ -52,7 +52,7 @@
 
   // Services
   let playbackController: IAnimationPlaybackController | null = null;
-  let pixiRenderer: IPixiAnimationRenderer | null = null;
+  let animationRenderer: IAnimationRenderer | null = null;
 
   // Animation state
   const animationState = createAnimationPanelState();
@@ -77,11 +77,11 @@
           TYPES.IAnimationPlaybackController
         ) as IAnimationPlaybackController;
 
-        // Load Pixi module on-demand
-        await loadPixiModule();
-        pixiRenderer = resolve(
-          TYPES.IPixiAnimationRenderer
-        ) as IPixiAnimationRenderer;
+        // Load animation module on-demand
+        await loadAnimationModule();
+        animationRenderer = resolve(
+          TYPES.IAnimationRenderer
+        ) as IAnimationRenderer;
       } catch (err) {
         console.error("❌ Failed to initialize single renderer:", err);
         error = "Failed to initialize animation services";

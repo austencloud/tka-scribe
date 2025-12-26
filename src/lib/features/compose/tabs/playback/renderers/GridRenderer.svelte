@@ -17,7 +17,7 @@
     speed = 1.0,
     shouldLoop = false,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     onSelectCell,
     onRemoveCell,

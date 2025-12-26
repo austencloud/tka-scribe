@@ -1,7 +1,7 @@
 /**
- * PixiJS Trail Renderer
+ * Canvas2D Trail Renderer
  *
- * Handles trail rendering:
+ * Handles trail rendering using pure Canvas2D:
  * - Smooth trail rendering (Catmull-Rom splines)
  * - Segmented trail rendering
  * - Trail opacity calculations (fade/gradient)
@@ -10,8 +10,6 @@
  * Single Responsibility: Trail rendering logic
  */
 
-import type { Container } from "pixi.js";
-import { Graphics } from "pixi.js";
 import type {
   TrailPoint,
   TrailSettings,
@@ -23,7 +21,7 @@ import {
 } from "../../../shared/domain/types/TrailTypes";
 
 // ============================================================================
-// CATMULL-ROM SPLINE (inlined for smooth trail curves)
+// CATMULL-ROM SPLINE (pure math, no framework dependencies)
 // ============================================================================
 
 interface Point2D {
@@ -110,54 +108,12 @@ function createSmoothCurve(
 }
 
 // ============================================================================
-// PIXI TRAIL RENDERER
+// CANVAS 2D TRAIL RENDERER
 // ============================================================================
 
-export class PixiTrailRenderer {
-  private trailContainer: Container;
-  private blueTrailGraphics: Graphics;
-  private redTrailGraphics: Graphics;
-
-  // Memory management: Track frame count for periodic graphics refresh
-  // CRITICAL: Use lower threshold for mobile safety (prevents OOM crashes)
-  // At 60fps: 180 frames = 3 seconds (mobile-safe)
-  // At 30fps: 180 frames = 6 seconds (still reasonable)
-  private frameCount = 0;
-  private readonly FRAMES_BEFORE_GRAPHICS_REFRESH = 180; // Reduced from 500 for mobile memory safety
-
-  constructor(trailContainer: Container) {
-    this.trailContainer = trailContainer;
-
-    // Create trail graphics (persistent, cleared and redrawn each frame)
-    this.blueTrailGraphics = new Graphics();
-    this.redTrailGraphics = new Graphics();
-    this.trailContainer.addChild(this.blueTrailGraphics);
-    this.trailContainer.addChild(this.redTrailGraphics);
-  }
-
-  /**
-   * Recreate Graphics objects to flush PixiJS internal geometry cache.
-   * This prevents memory accumulation during extended playback.
-   */
-  private refreshGraphicsObjects(): void {
-    // Destroy old graphics
-    try {
-      this.blueTrailGraphics.destroy();
-      this.redTrailGraphics.destroy();
-    } catch (e) {
-      // Ignore errors during destroy
-    }
-
-    // Create new graphics
-    this.blueTrailGraphics = new Graphics();
-    this.redTrailGraphics = new Graphics();
-    this.trailContainer.addChild(this.blueTrailGraphics);
-    this.trailContainer.addChild(this.redTrailGraphics);
-
-    console.log('🔄 [PixiTrailRenderer] Refreshed Graphics objects to free geometry cache');
-  }
-
+export class Canvas2DTrailRenderer {
   renderTrails(
+    ctx: CanvasRenderingContext2D,
     blueTrailPoints: TrailPoint[],
     redTrailPoints: TrailPoint[],
     trailSettings: TrailSettings,
@@ -165,26 +121,14 @@ export class PixiTrailRenderer {
     hasBlue: boolean,
     hasRed: boolean
   ): void {
-    // Increment frame count and periodically refresh graphics to prevent memory accumulation
-    this.frameCount++;
-    if (this.frameCount >= this.FRAMES_BEFORE_GRAPHICS_REFRESH) {
-      this.refreshGraphicsObjects();
-      this.frameCount = 0;
-    }
-
     if (!trailSettings.enabled || trailSettings.mode === TrailMode.OFF) {
-      this.blueTrailGraphics.clear();
-      this.redTrailGraphics.clear();
       return;
     }
 
-    // Debug: log visibility state
-
-    // Clear and render blue trail (always clear to remove stale trails when visibility toggled off)
-    this.blueTrailGraphics.clear();
+    // Render blue trail
     if (hasBlue && blueTrailPoints.length >= 2) {
       this.renderTrailSegments(
-        this.blueTrailGraphics,
+        ctx,
         blueTrailPoints,
         trailSettings.blueColor,
         trailSettings,
@@ -192,11 +136,10 @@ export class PixiTrailRenderer {
       );
     }
 
-    // Clear and render red trail (always clear to remove stale trails when visibility toggled off)
-    this.redTrailGraphics.clear();
+    // Render red trail
     if (hasRed && redTrailPoints.length >= 2) {
       this.renderTrailSegments(
-        this.redTrailGraphics,
+        ctx,
         redTrailPoints,
         trailSettings.redColor,
         trailSettings,
@@ -206,7 +149,7 @@ export class PixiTrailRenderer {
   }
 
   private renderTrailSegments(
-    graphics: Graphics,
+    ctx: CanvasRenderingContext2D,
     points: TrailPoint[],
     colorString: string,
     settings: TrailSettings,
@@ -223,37 +166,22 @@ export class PixiTrailRenderer {
           ]
         : [points]; // Single end (left or right)
 
-    // Convert color string to hex number (e.g., "#2E3192" -> 0x2E3192)
-    const color = parseInt(colorString.replace("#", ""), 16);
-
     for (const pointSet of pointSets) {
       if (pointSet.length < 2) continue;
 
       // Use smooth curves if enabled, otherwise line segments
       if (settings.style === TrailStyle.SMOOTH_LINE) {
-        this.renderSmoothTrail(
-          graphics,
-          pointSet,
-          color,
-          settings,
-          currentTime
-        );
+        this.renderSmoothTrail(ctx, pointSet, colorString, settings, currentTime);
       } else {
-        this.renderSegmentedTrail(
-          graphics,
-          pointSet,
-          color,
-          settings,
-          currentTime
-        );
+        this.renderSegmentedTrail(ctx, pointSet, colorString, settings, currentTime);
       }
     }
   }
 
   private renderSmoothTrail(
-    graphics: Graphics,
+    ctx: CanvasRenderingContext2D,
     points: TrailPoint[],
-    color: number,
+    color: string,
     settings: TrailSettings,
     currentTime: number
   ): void {
@@ -261,10 +189,6 @@ export class PixiTrailRenderer {
 
     // Convert trail points to Point2D for spline interpolation
     const controlPoints: Point2D[] = points.map((p) => ({ x: p.x, y: p.y }));
-
-    // Debug logging disabled - too noisy for every frame
-    // console.log(`🎨 SMOOTH TRAIL INPUT (${points.length} points):`);
-    // console.log(`   First 3 points:`, points.slice(0, 3).map(p => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`);
 
     // Adaptive subdivision based on point count
     const subdivisionsPerSegment = Math.max(
@@ -280,10 +204,6 @@ export class PixiTrailRenderer {
       subdivisionsPerSegment,
     });
 
-    // Debug logging disabled - too noisy for every frame
-    // console.log(`   Smoothed to ${smoothPoints.length} points`);
-    // console.log(`   First 3 smoothed:`, smoothPoints.slice(0, 3).map(p => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`);
-
     if (smoothPoints.length < 2) return;
 
     // Calculate average opacity for the entire trail
@@ -295,9 +215,12 @@ export class PixiTrailRenderer {
       currentTime
     );
 
-    // Draw as ONE continuous path (no gaps!)
+    // Draw as ONE continuous path
+    ctx.save();
+    ctx.beginPath();
+
     const firstPoint = smoothPoints[0]!;
-    graphics.moveTo(firstPoint.x, firstPoint.y);
+    ctx.moveTo(firstPoint.x, firstPoint.y);
 
     for (let i = 1; i < smoothPoints.length; i++) {
       const point = smoothPoints[i]!;
@@ -307,34 +230,34 @@ export class PixiTrailRenderer {
         continue;
       }
 
-      graphics.lineTo(point.x, point.y);
+      ctx.lineTo(point.x, point.y);
     }
 
-    // Stroke the entire path at once (smooth and gap-free!)
-    graphics.stroke({
-      width: settings.lineWidth,
-      color: color,
-      alpha: avgOpacity,
-      cap: "round",
-      join: "round",
-    });
+    // Stroke the entire path
+    ctx.strokeStyle = color;
+    ctx.lineWidth = settings.lineWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.globalAlpha = avgOpacity;
+    ctx.stroke();
+
+    ctx.restore();
   }
 
   private renderSegmentedTrail(
-    graphics: Graphics,
+    ctx: CanvasRenderingContext2D,
     points: TrailPoint[],
-    color: number,
+    color: string,
     settings: TrailSettings,
     currentTime: number
   ): void {
     if (points.length < 2) return;
 
-    // Debug: Log first few input points for segmented trail
-    console.log(`📏 SEGMENTED TRAIL INPUT (${points.length} points):`);
-    console.log(
-      `   First 3 points:`,
-      points.slice(0, 3).map((p) => `(${p.x.toFixed(1)}, ${p.y.toFixed(1)})`)
-    );
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = settings.lineWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
 
     // Draw trail segments with varying opacity
     for (let i = 0; i < points.length - 1; i++) {
@@ -372,16 +295,14 @@ export class PixiTrailRenderer {
       }
 
       // Draw line segment
-      graphics.moveTo(point.x, point.y);
-      graphics.lineTo(nextPoint.x, nextPoint.y);
-      graphics.stroke({
-        width: settings.lineWidth,
-        color: color,
-        alpha: opacity,
-        cap: "round",
-        join: "round",
-      });
+      ctx.globalAlpha = opacity;
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(nextPoint.x, nextPoint.y);
+      ctx.stroke();
     }
+
+    ctx.restore();
   }
 
   private calculateOpacity(
@@ -418,31 +339,6 @@ export class PixiTrailRenderer {
         settings.minOpacity +
         progress * (settings.maxOpacity - settings.minOpacity)
       );
-    }
-  }
-
-  /**
-   * Clear all trails (used when trails visibility is toggled off)
-   */
-  clearTrails(): void {
-    this.blueTrailGraphics.clear();
-    this.redTrailGraphics.clear();
-  }
-
-  /**
-   * Reset frame counter (call when animation resets or sequence changes)
-   */
-  resetFrameCount(): void {
-    this.frameCount = 0;
-  }
-
-  destroy(): void {
-    this.frameCount = 0;
-    try {
-      this.blueTrailGraphics.destroy();
-      this.redTrailGraphics.destroy();
-    } catch (e) {
-      // Ignore graphics destroy errors
     }
   }
 }

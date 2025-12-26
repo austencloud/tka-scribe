@@ -376,6 +376,15 @@ export class AnimationPlaybackController
         }
         this.animationEngine.calculateState(0);
         this.updatePropStatesFromEngine();
+
+        // For seamlessly loopable sequences (circular), beat 0 is identical
+        // to totalBeats, so immediately animate to the first step instead
+        // of pausing at beat 0. This shows beat 1's motion without the
+        // redundant pause at the start position.
+        if (this.isSeamlesslyLoopable) {
+          const duration = this.getStepDuration(stepSize);
+          this.animateToBeatInternal(stepSize, duration, true, false);
+        }
       } else {
         this.state.setCurrentBeat(this.state.totalBeats);
         this.state.setIsPlaying(false);

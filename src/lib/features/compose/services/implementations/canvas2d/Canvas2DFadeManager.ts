@@ -1,18 +1,21 @@
 /**
- * PixiJS Fade Transition Manager
+ * Canvas2D Fade Transition Manager
  *
  * Handles glyph fade transitions:
  * - Fade-in/fade-out timing
  * - Alpha interpolation
  * - Transition state management
- * - Cleanup after fade completion
  *
  * Single Responsibility: Glyph fade transition logic
  */
 
-import type { Sprite } from "pixi.js";
+export interface FadeState {
+  currentAlpha: number;
+  previousAlpha: number;
+  isComplete: boolean;
+}
 
-export class PixiFadeTransitionManager {
+export class Canvas2DFadeManager {
   private readonly FADE_DURATION_MS = 300;
 
   private isFading: boolean = false;
@@ -29,35 +32,39 @@ export class PixiFadeTransitionManager {
   }
 
   /**
-   * Update fade progress and sprite alphas
-   * Returns true if fade is complete
+   * Update fade progress and return alpha values for rendering
    */
-  updateFadeProgress(
-    currentTime: number,
-    currentGlyphSprite: Sprite | null,
-    previousGlyphSprite: Sprite | null
-  ): boolean {
-    if (!this.isFading || this.fadeStartTime === null) return false;
+  updateFadeProgress(currentTime: number): FadeState {
+    if (!this.isFading || this.fadeStartTime === null) {
+      return {
+        currentAlpha: 1,
+        previousAlpha: 0,
+        isComplete: true,
+      };
+    }
 
     const elapsed = currentTime - this.fadeStartTime;
     this.fadeProgress = Math.min(elapsed / this.FADE_DURATION_MS, 1);
 
-    // Update alphas
-    if (previousGlyphSprite) {
-      previousGlyphSprite.alpha = 1 - this.fadeProgress;
-    }
-    if (currentGlyphSprite) {
-      currentGlyphSprite.alpha = this.fadeProgress;
-    }
+    const currentAlpha = this.fadeProgress;
+    const previousAlpha = 1 - this.fadeProgress;
 
     // Check if fade complete
     if (this.fadeProgress >= 1) {
       this.isFading = false;
       this.fadeProgress = 1;
-      return true; // Fade complete
+      return {
+        currentAlpha: 1,
+        previousAlpha: 0,
+        isComplete: true,
+      };
     }
 
-    return false; // Still fading
+    return {
+      currentAlpha,
+      previousAlpha,
+      isComplete: false,
+    };
   }
 
   /**

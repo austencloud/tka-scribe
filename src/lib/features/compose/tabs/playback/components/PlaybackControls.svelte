@@ -8,20 +8,12 @@
     PlaybackMode,
     StepPlaybackStepSize,
   } from "../../../state/animation-panel-state.svelte";
-  const STEP_PAUSE_PRESETS = [
-    { label: "None", ms: 0 },
-    { label: "Short", ms: 150 },
-    { label: "Med", ms: 300 },
-    { label: "Long", ms: 600 },
-    { label: "Extra", ms: 1000 },
-  ] as const;
 
   let {
     isPlaying,
     speed,
     shouldLoop,
     playbackMode,
-    stepPlaybackPauseMs,
     stepPlaybackStepSize,
     onPlay,
     onPause,
@@ -29,14 +21,12 @@
     onSpeedChange,
     onLoopToggle,
     onPlaybackModeChange,
-    onStepPlaybackPauseMsChange,
     onStepPlaybackStepSizeChange,
   }: {
     isPlaying: boolean;
     speed: number;
     shouldLoop: boolean;
     playbackMode: PlaybackMode;
-    stepPlaybackPauseMs: number;
     stepPlaybackStepSize: StepPlaybackStepSize;
     onPlay: () => void;
     onPause: () => void;
@@ -44,7 +34,6 @@
     onSpeedChange: (speed: number) => void;
     onLoopToggle: (loop: boolean) => void;
     onPlaybackModeChange: (mode: PlaybackMode) => void;
-    onStepPlaybackPauseMsChange: (pauseMs: number) => void;
     onStepPlaybackStepSizeChange: (stepSize: StepPlaybackStepSize) => void;
   } = $props();
 
@@ -125,6 +114,7 @@
       class="step-settings"
       class:disabled={playbackMode !== "step" || isPlaying}
     >
+      <span class="step-size-label">Size:</span>
       <div class="step-size">
         <button
           class="mini-btn"
@@ -145,23 +135,6 @@
           Half
         </button>
       </div>
-
-      <label class="pause-field">
-        <span class="pause-label">Pause</span>
-        <div class="pause-presets" aria-label="Pause presets">
-          {#each STEP_PAUSE_PRESETS as preset}
-            <button
-              class="pause-chip"
-              class:active={stepPlaybackPauseMs === preset.ms}
-              onclick={() => onStepPlaybackPauseMsChange(preset.ms)}
-              disabled={playbackMode !== "step" || isPlaying}
-              aria-label="Pause {preset.label}"
-            >
-              {preset.label}
-            </button>
-          {/each}
-        </div>
-      </label>
     </div>
 
     <button
@@ -266,8 +239,8 @@
   .step-settings {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.35rem 0.6rem;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
@@ -275,6 +248,12 @@
 
   .step-settings.disabled {
     opacity: 0.45;
+  }
+
+  .step-size-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
   }
 
   .step-size {
@@ -305,51 +284,6 @@
     background: rgba(251, 191, 36, 0.14);
     border-color: rgba(251, 191, 36, 0.35);
     color: rgba(252, 211, 77, 1);
-  }
-
-  .pause-field {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.8rem;
-    font-weight: 600;
-    user-select: none;
-  }
-
-  .pause-label {
-    opacity: 0.8;
-    margin-right: 0.25rem;
-  }
-
-  .pause-presets {
-    display: flex;
-    gap: 0.35rem;
-    flex-wrap: wrap;
-  }
-
-  .pause-chip {
-    height: var(--min-touch-target);
-    padding: 0 0.65rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 999px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.75rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .pause-chip.active {
-    background: rgba(251, 191, 36, 0.14);
-    border-color: rgba(251, 191, 36, 0.35);
-    color: rgba(252, 211, 77, 1);
-  }
-
-  .pause-chip:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
   }
 
   .speed-label {
@@ -412,11 +346,10 @@
 
     .step-settings {
       padding: 0.3rem 0.5rem;
-      gap: 0.6rem;
+      gap: 0.4rem;
     }
 
-    .mini-btn,
-    .pause-chip {
+    .mini-btn {
       height: var(--min-touch-target);
     }
 

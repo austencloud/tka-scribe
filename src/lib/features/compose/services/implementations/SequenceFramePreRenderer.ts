@@ -13,7 +13,7 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
-import type { IPixiAnimationRenderer } from "../contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "../contracts/IAnimationRenderer";
 import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { getLetterImagePath } from "$lib/shared/pictograph/tka-glyph/utils/letter-image-getter";
@@ -98,7 +98,7 @@ export class SequenceFramePreRenderer {
   private currentRender: PreRenderedSequence | null = null;
   private isRendering = false;
   private shouldCancel = false;
-  private offscreenRenderer: IPixiAnimationRenderer | null = null;
+  private offscreenRenderer: IAnimationRenderer | null = null;
   private offscreenContainer: HTMLDivElement | null = null;
   private loadedGlyphs = new Set<Letter>(); // Track which glyphs have been loaded
 
@@ -109,17 +109,17 @@ export class SequenceFramePreRenderer {
 
   constructor(
     private readonly orchestrator: ISequenceAnimationOrchestrator,
-    private readonly renderer: IPixiAnimationRenderer
+    private readonly renderer: IAnimationRenderer
   ) {}
 
   /**
-   * Create offscreen PixiAnimationRenderer for pre-rendering
+   * Create offscreen Canvas2DAnimationRenderer for pre-rendering
    * This is completely separate from the visible renderer and never touches the DOM
    */
   private async createOffscreenRenderer(
     size: number,
     _trailSettings: TrailSettings
-  ): Promise<IPixiAnimationRenderer> {
+  ): Promise<IAnimationRenderer> {
     // Create offscreen container (not attached to DOM)
     this.offscreenContainer = document.createElement("div");
     this.offscreenContainer.style.position = "absolute";
@@ -129,12 +129,12 @@ export class SequenceFramePreRenderer {
     this.offscreenContainer.style.height = `${size}px`;
     this.offscreenContainer.style.pointerEvents = "none";
 
-    // Add to document temporarily (PixiJS needs it in DOM to initialize)
+    // Add to document temporarily (Canvas needs it in DOM to initialize)
     document.body.appendChild(this.offscreenContainer);
 
-    // Import PixiAnimationRenderer class directly
-    const { PixiAnimationRenderer } = await import("./PixiAnimationRenderer");
-    const offscreenRenderer = new PixiAnimationRenderer();
+    // Import Canvas2DAnimationRenderer class directly
+    const { Canvas2DAnimationRenderer } = await import("./Canvas2DAnimationRenderer");
+    const offscreenRenderer = new Canvas2DAnimationRenderer();
 
     // Initialize with offscreen container
     await offscreenRenderer.initialize(this.offscreenContainer, size, 1.0);

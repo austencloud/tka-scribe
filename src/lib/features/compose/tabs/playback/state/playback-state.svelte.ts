@@ -388,7 +388,7 @@ export function createPlaybackState(): PlaybackState {
       shouldLoop = false;
       currentBeat = 0;
       playbackMode = "continuous";
-      stepPlaybackPauseMs = 250;
+      stepPlaybackPauseMs = 300;
       stepPlaybackStepSize = 1;
       easingType = "linear";
       currentMode = "single";

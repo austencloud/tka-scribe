@@ -1,15 +1,15 @@
 /**
  * VideoPreRenderService
  *
- * Generates videos from animation sequences using the REAL PixiJS renderer.
+ * Generates videos from animation sequences using the Canvas2D renderer.
  * This ensures the video looks identical to the live preview.
  *
  * How it works:
- * 1. Create an offscreen PixiJS renderer (same as the visible one)
- * 2. Load actual SVG textures (grid, props) - NOT fake shapes
+ * 1. Create an offscreen Canvas2D renderer (same as the visible one)
+ * 2. Load actual SVG images (grid, props) - NOT fake shapes
  * 3. For each video frame:
  *    a. Calculate prop states using the orchestrator
- *    b. Render the frame using PixiJS (real SVGs, real trails)
+ *    b. Render the frame using Canvas2D (real SVGs, real trails)
  *    c. Capture the frame
  * 4. Encode to video using MediaRecorder
  * 5. Cache in IndexedDB for instant replay
@@ -28,7 +28,7 @@ import type {
 } from "../contracts/IVideoPreRenderService";
 import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
-import { PixiAnimationRenderer } from "./PixiAnimationRenderer";
+import { Canvas2DAnimationRenderer } from "./Canvas2DAnimationRenderer";
 import {
   DEFAULT_TRAIL_SETTINGS,
   type TrailSettings,
@@ -166,8 +166,8 @@ export class VideoPreRenderService implements IVideoPreRenderService {
     `;
     document.body.appendChild(offscreenContainer);
 
-    // Create the REAL PixiJS renderer (same as live preview)
-    const pixiRenderer = new PixiAnimationRenderer();
+    // Create the Canvas2D renderer (same as live preview)
+    const canvasRenderer = new Canvas2DAnimationRenderer();
 
     try {
       // Report preparation phase
@@ -179,15 +179,15 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         phase: "rendering",
       });
 
-      // Initialize PixiJS with offscreen container
-      console.log("🔧 Initializing offscreen PixiJS renderer...");
-      await pixiRenderer.initialize(offscreenContainer, width, 1);
+      // Initialize Canvas2D with offscreen container
+      console.log("🔧 Initializing offscreen Canvas2D renderer...");
+      await canvasRenderer.initialize(offscreenContainer, width, 1);
 
-      // Load REAL grid and prop textures (the actual SVGs!)
-      console.log("📦 Loading real SVG textures...");
+      // Load REAL grid and prop images (the actual SVGs!)
+      console.log("📦 Loading real SVG images...");
       await Promise.all([
-        pixiRenderer.loadGridTexture("diamond"),
-        pixiRenderer.loadPropTextures("staff"),
+        canvasRenderer.loadGridTexture("diamond"),
+        canvasRenderer.loadPropTextures("staff"),
       ]);
 
       // Get prop dimensions from SVG generator
@@ -218,7 +218,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       }
 
       // Get the canvas for MediaRecorder
-      const canvas = pixiRenderer.getCanvas();
+      const canvas = canvasRenderer.getCanvas();
       if (!canvas) {
         throw new Error("Failed to get canvas from PixiJS renderer");
       }
@@ -294,7 +294,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       for (let frameIndex = 0; frameIndex <= totalFrames; frameIndex++) {
         if (this.cancelRequested) {
           mediaRecorder.stop();
-          pixiRenderer.destroy();
+          canvasRenderer.destroy();
           offscreenContainer.remove();
           this.isCurrentlyRendering = false;
           return {
@@ -313,7 +313,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
         const redProp = orchestrator.getRedPropState();
 
         // Render the scene using REAL PixiJS (with actual SVGs!)
-        pixiRenderer.renderScene({
+        canvasRenderer.renderScene({
           blueProp,
           redProp,
           gridVisible: true,
@@ -381,7 +381,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
       });
 
       // Clean up
-      pixiRenderer.destroy();
+      canvasRenderer.destroy();
       offscreenContainer.remove();
 
       // Create blob URL
@@ -416,7 +416,7 @@ export class VideoPreRenderService implements IVideoPreRenderService {
     } catch (error) {
       // Clean up on error
       try {
-        pixiRenderer.destroy();
+        canvasRenderer.destroy();
       } catch (_e) {
         // Ignore cleanup errors
       }

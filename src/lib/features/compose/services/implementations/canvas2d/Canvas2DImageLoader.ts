@@ -1,0 +1,311 @@
+/**
+ * Canvas2D Image Loader
+ *
+ * Handles SVG-to-HTMLImageElement conversion and caching:
+ * - Prop image loading
+ * - Grid image loading
+ * - Glyph image loading
+ * - Memory-safe image lifecycle
+ *
+ * Single Responsibility: Image loading and management
+ */
+
+import type { ISVGGenerator } from "../../contracts/ISVGGenerator";
+
+const VIEWBOX_SIZE = 950;
+
+export class Canvas2DImageLoader {
+  // Image cache
+  private bluePropImage: HTMLImageElement | null = null;
+  private redPropImage: HTMLImageElement | null = null;
+  private secondaryBluePropImage: HTMLImageElement | null = null;
+  private secondaryRedPropImage: HTMLImageElement | null = null;
+  private gridImage: HTMLImageElement | null = null;
+  private glyphImage: HTMLImageElement | null = null;
+  private previousGlyphImage: HTMLImageElement | null = null;
+
+  // Track prop dimensions (from SVG viewBox)
+  private bluePropDimensions: { width: number; height: number } = { width: 0, height: 0 };
+  private redPropDimensions: { width: number; height: number } = { width: 0, height: 0 };
+
+  async loadPropImages(propType: string): Promise<{
+    blue: HTMLImageElement;
+    red: HTMLImageElement;
+  }> {
+    try {
+      const { TYPES } = await import("$lib/shared/inversify/types");
+      const { resolve } = await import("$lib/shared/inversify/di");
+      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+
+      // Generate blue and red prop SVGs
+      const [bluePropData, redPropData] = await Promise.all([
+        svgGenerator.generateBluePropSvg(propType),
+        svgGenerator.generateRedPropSvg(propType),
+      ]);
+
+      // Create new images BEFORE releasing old ones
+      const [newBlueImage, newRedImage] = await Promise.all([
+        this.createImageFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
+        this.createImageFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+      ]);
+
+      // Store dimensions
+      this.bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
+      this.redPropDimensions = { width: redPropData.width, height: redPropData.height };
+
+      // Swap references (old images will be garbage collected)
+      this.bluePropImage = newBlueImage;
+      this.redPropImage = newRedImage;
+
+      return {
+        blue: this.bluePropImage,
+        red: this.redPropImage,
+      };
+    } catch (error) {
+      console.error("[Canvas2DImageLoader] Failed to load prop images:", error);
+      throw error;
+    }
+  }
+
+  async loadPerColorPropImages(
+    bluePropType: string,
+    redPropType: string
+  ): Promise<{
+    blue: HTMLImageElement;
+    red: HTMLImageElement;
+  }> {
+    try {
+      const { TYPES } = await import("$lib/shared/inversify/types");
+      const { resolve } = await import("$lib/shared/inversify/di");
+      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+
+      // Generate blue and red prop SVGs with different types
+      const [bluePropData, redPropData] = await Promise.all([
+        svgGenerator.generateBluePropSvg(bluePropType),
+        svgGenerator.generateRedPropSvg(redPropType),
+      ]);
+
+      // Create new images
+      const [newBlueImage, newRedImage] = await Promise.all([
+        this.createImageFromSVG(bluePropData.svg, bluePropData.width, bluePropData.height),
+        this.createImageFromSVG(redPropData.svg, redPropData.width, redPropData.height),
+      ]);
+
+      // Store dimensions
+      this.bluePropDimensions = { width: bluePropData.width, height: bluePropData.height };
+      this.redPropDimensions = { width: redPropData.width, height: redPropData.height };
+
+      // Swap references
+      this.bluePropImage = newBlueImage;
+      this.redPropImage = newRedImage;
+
+      return {
+        blue: this.bluePropImage,
+        red: this.redPropImage,
+      };
+    } catch (error) {
+      console.error("[Canvas2DImageLoader] Failed to load per-color prop images:", error);
+      throw error;
+    }
+  }
+
+  async loadSecondaryPropImages(
+    propType: string,
+    blueColor: string,
+    redColor: string
+  ): Promise<{
+    blue: HTMLImageElement;
+    red: HTMLImageElement;
+  }> {
+    try {
+      const { TYPES } = await import("$lib/shared/inversify/types");
+      const { resolve } = await import("$lib/shared/inversify/di");
+      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+
+      // Generate secondary prop SVGs with custom colors
+      const [secondaryBluePropData, secondaryRedPropData] = await Promise.all([
+        svgGenerator.generatePropSvg(propType, blueColor),
+        svgGenerator.generatePropSvg(propType, redColor),
+      ]);
+
+      // Create new images
+      const [newBlueImage, newRedImage] = await Promise.all([
+        this.createImageFromSVG(
+          secondaryBluePropData.svg,
+          secondaryBluePropData.width,
+          secondaryBluePropData.height
+        ),
+        this.createImageFromSVG(
+          secondaryRedPropData.svg,
+          secondaryRedPropData.width,
+          secondaryRedPropData.height
+        ),
+      ]);
+
+      // Swap references
+      this.secondaryBluePropImage = newBlueImage;
+      this.secondaryRedPropImage = newRedImage;
+
+      return {
+        blue: this.secondaryBluePropImage,
+        red: this.secondaryRedPropImage,
+      };
+    } catch (error) {
+      console.error("[Canvas2DImageLoader] Failed to load secondary prop images:", error);
+      throw error;
+    }
+  }
+
+  async loadGridImage(gridMode: string, canvasSize: number): Promise<HTMLImageElement> {
+    try {
+      const { TYPES } = await import("$lib/shared/inversify/types");
+      const { resolve } = await import("$lib/shared/inversify/di");
+      const { GridMode } = await import(
+        "$lib/shared/pictograph/grid/domain/enums/grid-enums"
+      );
+      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+
+      // Convert gridMode string to GridMode enum
+      const gridModeEnum =
+        GridMode[gridMode.toUpperCase() as keyof typeof GridMode] ||
+        GridMode.DIAMOND;
+
+      const gridSvg = svgGenerator.generateGridSvg(gridModeEnum);
+
+      // Create new image
+      const newImage = await this.createImageFromSVG(gridSvg, canvasSize, canvasSize);
+
+      // Swap reference
+      this.gridImage = newImage;
+
+      return this.gridImage;
+    } catch (error) {
+      console.error("[Canvas2DImageLoader] Failed to load grid image:", error);
+      throw error;
+    }
+  }
+
+  async loadGlyphImage(
+    svgString: string,
+    _width: number,
+    _height: number
+  ): Promise<{
+    current: HTMLImageElement;
+    previous: HTMLImageElement | null;
+  }> {
+    try {
+      // CRITICAL: Clear old previousGlyphImage reference
+      // HTMLImageElements don't need explicit destroy, but clearing ref allows GC
+      this.previousGlyphImage = null;
+
+      // Save previous glyph for fade transition
+      if (this.glyphImage) {
+        this.previousGlyphImage = this.glyphImage;
+      }
+
+      // Create image from SVG (full 950x950 viewBox)
+      this.glyphImage = await this.createImageFromSVG(
+        svgString,
+        VIEWBOX_SIZE,
+        VIEWBOX_SIZE
+      );
+
+      return {
+        current: this.glyphImage,
+        previous: this.previousGlyphImage,
+      };
+    } catch (error) {
+      console.error("[Canvas2DImageLoader] Failed to load glyph image:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Convert SVG string to HTMLImageElement
+   * Uses data URL approach for reliable cross-browser support
+   */
+  private async createImageFromSVG(
+    svgString: string,
+    width: number,
+    height: number
+  ): Promise<HTMLImageElement> {
+    // Convert SVG to data URL
+    const base64 = btoa(unescape(encodeURIComponent(svgString)));
+    const dataUrl = `data:image/svg+xml;base64,${base64}`;
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.width = width;
+      img.height = height;
+
+      img.onload = () => {
+        // Clean up handlers
+        img.onload = null;
+        img.onerror = null;
+        resolve(img);
+      };
+
+      img.onerror = () => {
+        // Clean up handlers
+        img.onload = null;
+        img.onerror = null;
+        console.error("[Canvas2DImageLoader] Image load error");
+        reject(new Error("Failed to load SVG image"));
+      };
+
+      img.src = dataUrl;
+    });
+  }
+
+  // Getters
+  getBluePropImage(): HTMLImageElement | null {
+    return this.bluePropImage;
+  }
+
+  getRedPropImage(): HTMLImageElement | null {
+    return this.redPropImage;
+  }
+
+  getSecondaryBluePropImage(): HTMLImageElement | null {
+    return this.secondaryBluePropImage;
+  }
+
+  getSecondaryRedPropImage(): HTMLImageElement | null {
+    return this.secondaryRedPropImage;
+  }
+
+  getGridImage(): HTMLImageElement | null {
+    return this.gridImage;
+  }
+
+  getGlyphImage(): HTMLImageElement | null {
+    return this.glyphImage;
+  }
+
+  getPreviousGlyphImage(): HTMLImageElement | null {
+    return this.previousGlyphImage;
+  }
+
+  getBluePropDimensions(): { width: number; height: number } {
+    return this.bluePropDimensions;
+  }
+
+  getRedPropDimensions(): { width: number; height: number } {
+    return this.redPropDimensions;
+  }
+
+  clearPreviousGlyphImage(): void {
+    this.previousGlyphImage = null;
+  }
+
+  destroy(): void {
+    // Clear all image references (allows garbage collection)
+    this.bluePropImage = null;
+    this.redPropImage = null;
+    this.secondaryBluePropImage = null;
+    this.secondaryRedPropImage = null;
+    this.gridImage = null;
+    this.glyphImage = null;
+    this.previousGlyphImage = null;
+  }
+}

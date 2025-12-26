@@ -9,14 +9,14 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import {
     getContainerInstance,
-    loadPixiModule,
+    loadAnimationModule,
     loadFeatureModule,
   } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "../../../services/contracts/IAnimationPlaybackController";
-  import type { IPixiAnimationRenderer } from "../../../services/contracts/IPixiAnimationRenderer";
+  import type { IAnimationRenderer } from "../../../services/contracts/IAnimationRenderer";
   import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
   import { createAnimationPanelState } from "../../../state/animation-panel-state.svelte";
   import {
@@ -45,7 +45,7 @@
     speed = 1.0,
     shouldLoop = false,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     primaryVisible = true,
     primaryBlueVisible = true,
@@ -76,7 +76,7 @@
   // Services
   let primaryPlaybackController: IAnimationPlaybackController | null = null;
   let secondaryPlaybackController: IAnimationPlaybackController | null = null;
-  let pixiRenderer: IPixiAnimationRenderer | null = null;
+  let animationRenderer: IAnimationRenderer | null = null;
   let settingsService: ISettingsState | null = null;
 
   // Animation states (one for each sequence)
@@ -110,10 +110,10 @@
           );
         settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
 
-        // Load Pixi module on-demand
-        await loadPixiModule();
-        pixiRenderer = container.get<IPixiAnimationRenderer>(
-          TYPES.IPixiAnimationRenderer
+        // Load animation module on-demand
+        await loadAnimationModule();
+        animationRenderer = container.get<IAnimationRenderer>(
+          TYPES.IAnimationRenderer
         );
 
         // Load secondary prop textures for tunnel mode
@@ -128,7 +128,7 @@
 
   // Load secondary prop textures with tunnel colors
   async function loadSecondaryPropTextures() {
-    if (!pixiRenderer || !settingsService) return;
+    if (!animationRenderer || !settingsService) return;
 
     try {
       const propType = settingsService.currentSettings.propType || "staff";
@@ -139,7 +139,7 @@
         redColor: tunnelColors.secondary.red,
       });
 
-      await pixiRenderer.loadSecondaryPropTextures(
+      await animationRenderer.loadSecondaryPropTextures(
         propType,
         tunnelColors.secondary.blue,
         tunnelColors.secondary.red
