@@ -184,7 +184,8 @@ export function rotateSequence(
       // Start position stored as StartPositionData - use rotateStartPosition
       rotatedStartPosition = rotateStartPosition(
         sequence.startPosition,
-        rotationAmount
+        rotationAmount,
+        positionDeriver
       );
     }
   }
@@ -203,7 +204,8 @@ export function rotateSequence(
       // Start position stored as StartPositionData - use rotateStartPosition
       rotatedStartingPositionBeat = rotateStartPosition(
         sequence.startingPositionBeat,
-        rotationAmount
+        rotationAmount,
+        positionDeriver
       );
     }
   }

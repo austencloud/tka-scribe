@@ -50,6 +50,21 @@
   );
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
 
+  // Track viewport width reactively for compact mode detection
+  let viewportWidth = $state(typeof window !== 'undefined' ? window.innerWidth : 1000);
+
+  $effect(() => {
+    if (typeof window === 'undefined') return;
+    viewportWidth = window.innerWidth; // Update on mount
+    const handleResize = () => { viewportWidth = window.innerWidth; };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  });
+
+  // Compact mode for mobile portrait - horizontal icon+text layout
+  // Applies to most mobile widths, disabled at tablet/desktop widths
+  const useCompactMode = $derived(!isSideBySideLayout && viewportWidth < 600);
+
   // Panel height for drawer content
   const panelHeight = $derived(
     panelState.navigationBarHeight + panelState.toolPanelHeight
@@ -581,6 +596,8 @@
         {isAutocompleting}
         {canShiftStart}
         showEditInConstructor={!isInConstructTab}
+        isDesktopPanel={isSideBySideLayout}
+        compactMode={useCompactMode}
         onTurns={handleOpenBeatEditor}
         onMirror={handleMirror}
         onFlip={handleFlip}
@@ -888,12 +905,9 @@
     background: linear-gradient(135deg, #22d3ee, #06b6d4);
   }
 
-  /* Desktop (side-by-side): hide beat grid section */
-  @media (min-width: 768px) {
-    .beat-grid-section {
-      display: none;
-    }
-  }
+  /* Note: Beat grid visibility is controlled by isSideBySideLayout in the template,
+     not by CSS media queries. The JavaScript logic considers device type,
+     orientation, and viewport dimensions for proper responsive behavior. */
 
   .controls-content {
     flex: 1;

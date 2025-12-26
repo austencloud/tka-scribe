@@ -12,6 +12,10 @@
     isAutocompleting?: boolean;
     canShiftStart?: boolean;
     showEditInConstructor: boolean;
+    /** True when panel is desktop side-panel (2 cols), false for mobile bottom drawer (3 cols) */
+    isDesktopPanel?: boolean;
+    /** True to use compact horizontal layout (icon left, text right) for very small screens */
+    compactMode?: boolean;
     onTurns: () => void;
     onMirror: () => void;
     onFlip: () => void;
@@ -35,6 +39,8 @@
     isAutocompleting = false,
     canShiftStart = false,
     showEditInConstructor,
+    isDesktopPanel = false,
+    compactMode = false,
     onTurns,
     onMirror,
     onFlip,
@@ -53,47 +59,47 @@
   const disabled = $derived(isTransforming || isAutocompleting || !hasSequence);
 </script>
 
-<div class="actions-container" class:disabled>
+<div class="actions-container" class:disabled class:desktop={isDesktopPanel} class:mobile={!isDesktopPanel} class:compact={compactMode}>
   <!-- TRANSFORM Section -->
   <section class="section transform-section">
     <span class="section-label">Transform</span>
     <div class="section-grid">
-      <button class="grid-btn mirror" onclick={onMirror} {disabled}>
+      <button class="grid-btn mirror" onclick={onMirror} {disabled} aria-label="Mirror sequence: flip left and right">
         <div class="btn-icon"><i class="fas fa-left-right"></i></div>
         <div class="btn-text">
           <span class="btn-label">Mirror</span>
           <span class="btn-desc">Flip left & right</span>
         </div>
       </button>
-      <button class="grid-btn flip" onclick={onFlip} {disabled}>
+      <button class="grid-btn flip" onclick={onFlip} {disabled} aria-label="Flip sequence: flip up and down">
         <div class="btn-icon"><i class="fas fa-up-down"></i></div>
         <div class="btn-text">
           <span class="btn-label">Flip</span>
           <span class="btn-desc">Flip up & down</span>
         </div>
       </button>
-      <button class="grid-btn swap" onclick={onSwap} {disabled}>
+      <button class="grid-btn swap" onclick={onSwap} {disabled} aria-label="Swap hands in sequence">
         <div class="btn-icon"><i class="fas fa-arrows-rotate"></i></div>
         <div class="btn-text">
           <span class="btn-label">Swap</span>
           <span class="btn-desc">Switch hands</span>
         </div>
       </button>
-      <button class="grid-btn invert" onclick={onInvert} {disabled}>
+      <button class="grid-btn invert" onclick={onInvert} {disabled} aria-label="Invert sequence: reverse turn directions">
         <div class="btn-icon"><i class="fas fa-repeat"></i></div>
         <div class="btn-text">
           <span class="btn-label">Invert</span>
           <span class="btn-desc">Reverse turns</span>
         </div>
       </button>
-      <button class="grid-btn rotate-ccw" onclick={onRotateCCW} {disabled}>
+      <button class="grid-btn rotate-ccw" onclick={onRotateCCW} {disabled} aria-label="Rotate sequence left 45 degrees">
         <div class="btn-icon"><i class="fas fa-rotate-left"></i></div>
         <div class="btn-text">
           <span class="btn-label">Rotate L</span>
           <span class="btn-desc">Pivot 45°</span>
         </div>
       </button>
-      <button class="grid-btn rotate-cw" onclick={onRotateCW} {disabled}>
+      <button class="grid-btn rotate-cw" onclick={onRotateCW} {disabled} aria-label="Rotate sequence right 45 degrees">
         <div class="btn-icon"><i class="fas fa-rotate-right"></i></div>
         <div class="btn-text">
           <span class="btn-label">Rotate R</span>
@@ -111,6 +117,7 @@
         class="grid-btn turn-pattern"
         onclick={onTurnPattern}
         disabled={!hasSequence}
+        aria-label="Apply turn pattern to sequence"
       >
         <div class="btn-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
         <div class="btn-text">
@@ -122,6 +129,7 @@
         class="grid-btn direction"
         onclick={onRotationDirection}
         disabled={!hasSequence}
+        aria-label="Apply rotation direction pattern (clockwise or counter-clockwise)"
       >
         <div class="btn-icon"><i class="fas fa-compass"></i></div>
         <div class="btn-text">
@@ -134,6 +142,7 @@
           class="grid-btn autocomplete"
           onclick={onAutocomplete}
           disabled={!hasSequence || isAutocompleting}
+          aria-label={isAutocompleting ? "Autocompleting sequence" : "Autocomplete sequence back to starting position"}
         >
           <div class="btn-icon">
             {#if isAutocompleting}
@@ -156,6 +165,7 @@
           class:unavailable={!canShiftStart}
           onclick={onShiftStart}
           disabled={!hasSequence || isTransforming || !canShiftStart}
+          aria-label="Pick new first beat: change where the sequence starts"
         >
           <div class="btn-icon">
             <i class="fas fa-forward"></i>
@@ -166,7 +176,7 @@
           </div>
         </button>
       {/if}
-      <button class="grid-btn rewind" onclick={onRewind} {disabled}>
+      <button class="grid-btn rewind" onclick={onRewind} {disabled} aria-label="Rewind: add reversed sequence to the end">
         <div class="btn-icon"><i class="fas fa-backward"></i></div>
         <div class="btn-text">
           <span class="btn-label">Rewind</span>
@@ -185,6 +195,7 @@
         class:highlighted={hasSelection}
         onclick={onTurns}
         disabled={!hasSelection}
+        aria-label={hasSelection ? "Edit turns for selected beat" : "Edit turns: select a beat first"}
       >
         <div class="btn-icon"><i class="fas fa-sliders-h"></i></div>
         <div class="btn-text">
@@ -200,6 +211,7 @@
           onclick={onEditInConstructor}
           disabled={!hasSequence}
           data-testid="edit-in-constructor"
+          aria-label="Open sequence in constructor for full editing"
         >
           <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
           <div class="btn-text">
@@ -267,36 +279,33 @@
     min-height: 0;
   }
 
-  /* Mobile: 3 columns, adjust section proportions */
-  @media (max-width: 500px) {
-    /* Transform 2 rows, Patterns 2 rows, Edit 1 row */
-    .transform-section {
-      flex: 2;
-    }
-    .patterns-section {
-      flex: 2;
-    }
-    .edit-section {
-      flex: 1;
-    }
-
-    .section-grid {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-    }
+  /* ===== MOBILE MODE: 3 columns, compact buttons ===== */
+  .actions-container.mobile .transform-section {
+    flex: 2;
+  }
+  .actions-container.mobile .patterns-section {
+    flex: 2;
+  }
+  .actions-container.mobile .edit-section {
+    flex: 1;
+  }
+  .actions-container.mobile .section-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
   }
 
   /* ===== BUTTON BASE STYLES ===== */
   .grid-btn {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 8px 10px;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.15s ease;
-    text-align: left;
+    text-align: center;
     min-height: var(--min-touch-target, 44px);
     container-type: size;
   }
@@ -315,10 +324,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    font-size: 14px;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    font-size: 19px;
     flex-shrink: 0;
     color: white;
   }
@@ -326,375 +335,131 @@
   .btn-text {
     display: flex;
     flex-direction: column;
-    gap: 1px;
+    align-items: center;
+    gap: 2px;
     min-width: 0;
+    width: 100%;
   }
 
   .btn-label {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   .btn-desc {
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.65);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 100%;
   }
 
-  /* Mobile: icon only, centered */
-  @media (max-width: 500px) {
-    .grid-btn {
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 6px;
-      gap: 2px;
-    }
-    .btn-text {
-      display: none;
-    }
+  /* Mobile mode: hide descriptions, smaller icons */
+  .actions-container.mobile .grid-btn {
+    padding: 8px 4px;
+    gap: 4px;
+  }
+  .actions-container.mobile .btn-desc {
+    display: none;
+  }
+  .actions-container.mobile .btn-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  .actions-container.mobile .btn-label {
+    font-size: 0.75rem;
+  }
+
+  /* Taller buttons: larger icons and text */
+  @container (min-height: 90px) {
     .btn-icon {
-      width: 28px;
-      height: 28px;
-      font-size: 14px;
+      width: 48px;
+      height: 48px;
+      font-size: 22px;
+    }
+    .btn-label {
+      font-size: 0.95rem;
+    }
+    .btn-desc {
+      font-size: 0.75rem;
     }
   }
 
-  /* Taller buttons: larger icons */
-  @container (min-height: 80px) {
-    .btn-icon {
-      width: 36px;
-      height: 36px;
-      font-size: 16px;
-    }
+
+  /* ===== BUTTON COLORS - CSS custom properties for each button ===== */
+  .grid-btn.mirror { --btn-color: 139, 92, 246; }       /* Purple */
+  .grid-btn.flip { --btn-color: 99, 102, 241; }         /* Indigo */
+  .grid-btn.swap { --btn-color: 16, 185, 129; }         /* Emerald */
+  .grid-btn.invert { --btn-color: 245, 158, 11; }       /* Amber */
+  .grid-btn.rotate-ccw,
+  .grid-btn.rotate-cw { --btn-color: 249, 115, 22; }    /* Orange */
+  .grid-btn.rewind { --btn-color: 244, 63, 94; }        /* Rose */
+  .grid-btn.turn-pattern { --btn-color: 20, 184, 166; } /* Teal */
+  .grid-btn.direction { --btn-color: 14, 165, 233; }    /* Sky */
+  .grid-btn.autocomplete { --btn-color: 34, 197, 94; }  /* Green */
+  .grid-btn.shift-start { --btn-color: 6, 182, 212; }   /* Cyan */
+  .grid-btn.edit-turns { --btn-color: 59, 130, 246; }   /* Blue */
+  .grid-btn.constructor { --btn-color: 124, 58, 237; }  /* Violet */
+
+  /* ===== SHARED COLOR APPLICATION - applies --btn-color to all buttons ===== */
+  .grid-btn[class] {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--btn-color), 0.15),
+      rgba(var(--btn-color), 0.05)
+    );
+    border: 1px solid rgba(var(--btn-color), 0.3);
   }
 
-  /* ===== RAINBOW COLORS - Each button gets its own color ===== */
-
-  /* Mirror - Purple */
-  .grid-btn.mirror {
+  .grid-btn[class]:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(139, 92, 246, 0.15),
-      rgba(139, 92, 246, 0.05)
+      rgba(var(--btn-color), 0.25),
+      rgba(var(--btn-color), 0.1)
     );
-    border: 1px solid rgba(139, 92, 246, 0.3);
-  }
-  .grid-btn.mirror:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(139, 92, 246, 0.25),
-      rgba(139, 92, 246, 0.1)
-    );
-    border-color: rgba(139, 92, 246, 0.5);
-    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
-  }
-  .grid-btn.mirror .btn-icon {
-    background: #8b5cf6;
+    border-color: rgba(var(--btn-color), 0.5);
+    box-shadow: 0 4px 16px rgba(var(--btn-color), 0.2);
   }
 
-  /* Flip - Indigo */
-  .grid-btn.flip {
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 0.15),
-      rgba(99, 102, 241, 0.05)
-    );
-    border: 1px solid rgba(99, 102, 241, 0.3);
-  }
-  .grid-btn.flip:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(99, 102, 241, 0.25),
-      rgba(99, 102, 241, 0.1)
-    );
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
-  }
-  .grid-btn.flip .btn-icon {
-    background: #6366f1;
+  .grid-btn[class] .btn-icon {
+    background: rgb(var(--btn-color));
   }
 
-  /* Swap - Emerald */
-  .grid-btn.swap {
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.15),
-      rgba(16, 185, 129, 0.05)
-    );
-    border: 1px solid rgba(16, 185, 129, 0.3);
-  }
-  .grid-btn.swap:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(16, 185, 129, 0.25),
-      rgba(16, 185, 129, 0.1)
-    );
-    border-color: rgba(16, 185, 129, 0.5);
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
-  }
-  .grid-btn.swap .btn-icon {
-    background: #10b981;
-  }
+  /* ===== SPECIAL STATES ===== */
 
-  /* Invert - Amber */
-  .grid-btn.invert {
-    background: linear-gradient(
-      135deg,
-      rgba(245, 158, 11, 0.15),
-      rgba(245, 158, 11, 0.05)
-    );
-    border: 1px solid rgba(245, 158, 11, 0.3);
-  }
-  .grid-btn.invert:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(245, 158, 11, 0.25),
-      rgba(245, 158, 11, 0.1)
-    );
-    border-color: rgba(245, 158, 11, 0.5);
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.2);
-  }
-  .grid-btn.invert .btn-icon {
-    background: #f59e0b;
-  }
-
-  /* Rotate CCW - Orange */
-  .grid-btn.rotate-ccw {
-    background: linear-gradient(
-      135deg,
-      rgba(249, 115, 22, 0.15),
-      rgba(249, 115, 22, 0.05)
-    );
-    border: 1px solid rgba(249, 115, 22, 0.3);
-  }
-  .grid-btn.rotate-ccw:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(249, 115, 22, 0.25),
-      rgba(249, 115, 22, 0.1)
-    );
-    border-color: rgba(249, 115, 22, 0.5);
-    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
-  }
-  .grid-btn.rotate-ccw .btn-icon {
-    background: #f97316;
-  }
-
-  /* Rotate CW - Orange (same as CCW) */
-  .grid-btn.rotate-cw {
-    background: linear-gradient(
-      135deg,
-      rgba(249, 115, 22, 0.15),
-      rgba(249, 115, 22, 0.05)
-    );
-    border: 1px solid rgba(249, 115, 22, 0.3);
-  }
-  .grid-btn.rotate-cw:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(249, 115, 22, 0.25),
-      rgba(249, 115, 22, 0.1)
-    );
-    border-color: rgba(249, 115, 22, 0.5);
-    box-shadow: 0 4px 16px rgba(249, 115, 22, 0.2);
-  }
-  .grid-btn.rotate-cw .btn-icon {
-    background: #f97316;
-  }
-
-  /* Rewind - Rose */
-  .grid-btn.rewind {
-    background: linear-gradient(
-      135deg,
-      rgba(244, 63, 94, 0.15),
-      rgba(244, 63, 94, 0.05)
-    );
-    border: 1px solid rgba(244, 63, 94, 0.3);
-  }
-  .grid-btn.rewind:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(244, 63, 94, 0.25),
-      rgba(244, 63, 94, 0.1)
-    );
-    border-color: rgba(244, 63, 94, 0.5);
-    box-shadow: 0 4px 16px rgba(244, 63, 94, 0.2);
-  }
-  .grid-btn.rewind .btn-icon {
-    background: #f43f5e;
-  }
-
-  /* Turn Pattern - Teal */
-  .grid-btn.turn-pattern {
-    background: linear-gradient(
-      135deg,
-      rgba(20, 184, 166, 0.15),
-      rgba(20, 184, 166, 0.05)
-    );
-    border: 1px solid rgba(20, 184, 166, 0.3);
-  }
-  .grid-btn.turn-pattern:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(20, 184, 166, 0.25),
-      rgba(20, 184, 166, 0.1)
-    );
-    border-color: rgba(20, 184, 166, 0.5);
-    box-shadow: 0 4px 16px rgba(20, 184, 166, 0.2);
-  }
-  .grid-btn.turn-pattern .btn-icon {
-    background: #14b8a6;
-  }
-
-  /* Direction - Sky */
-  .grid-btn.direction {
-    background: linear-gradient(
-      135deg,
-      rgba(14, 165, 233, 0.15),
-      rgba(14, 165, 233, 0.05)
-    );
-    border: 1px solid rgba(14, 165, 233, 0.3);
-  }
-  .grid-btn.direction:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(14, 165, 233, 0.25),
-      rgba(14, 165, 233, 0.1)
-    );
-    border-color: rgba(14, 165, 233, 0.5);
-    box-shadow: 0 4px 16px rgba(14, 165, 233, 0.2);
-  }
-  .grid-btn.direction .btn-icon {
-    background: #0ea5e9;
-  }
-
-  /* Autocomplete - Green */
-  .grid-btn.autocomplete {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.15),
-      rgba(34, 197, 94, 0.05)
-    );
-    border: 1px solid rgba(34, 197, 94, 0.3);
-  }
-  .grid-btn.autocomplete:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(34, 197, 94, 0.25),
-      rgba(34, 197, 94, 0.1)
-    );
-    border-color: rgba(34, 197, 94, 0.5);
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.2);
-  }
-  .grid-btn.autocomplete .btn-icon {
-    background: #22c55e;
-  }
-
-
-  /* Shift Start - Cyan */
-  .grid-btn.shift-start {
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.15),
-      rgba(6, 182, 212, 0.05)
-    );
-    border: 1px solid rgba(6, 182, 212, 0.3);
-  }
-  .grid-btn.shift-start:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(6, 182, 212, 0.25),
-      rgba(6, 182, 212, 0.1)
-    );
-    border-color: rgba(6, 182, 212, 0.5);
-    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
-  }
-  .grid-btn.shift-start .btn-icon {
-    background: #06b6d4;
-  }
-
-  /* Shift Start unavailable state */
+  /* Shift Start unavailable */
   .grid-btn.shift-start.unavailable {
-    background: linear-gradient(
-      135deg,
-      rgba(100, 100, 100, 0.1),
-      rgba(100, 100, 100, 0.05)
-    );
-    border-color: rgba(100, 100, 100, 0.2);
+    --btn-color: 100, 100, 100;
     opacity: 0.5;
   }
   .grid-btn.shift-start.unavailable .btn-icon {
     background: rgba(100, 100, 100, 0.4);
   }
 
-  /* Edit Turns - Blue */
-  .grid-btn.edit-turns {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.15),
-      rgba(59, 130, 246, 0.05)
-    );
-    border: 1px solid rgba(59, 130, 246, 0.3);
-  }
-  .grid-btn.edit-turns:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.25),
-      rgba(59, 130, 246, 0.1)
-    );
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
-  }
-  .grid-btn.edit-turns .btn-icon {
-    background: #3b82f6;
-  }
-
-  /* Edit Turns highlighted state (beat selected) */
+  /* Edit Turns highlighted (beat selected) */
   .grid-btn.edit-turns.highlighted {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.25),
-      rgba(59, 130, 246, 0.12)
+      rgba(var(--btn-color), 0.25),
+      rgba(var(--btn-color), 0.12)
     );
-    border: 2px solid rgba(59, 130, 246, 0.6);
-    box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
+    border: 2px solid rgba(var(--btn-color), 0.6);
+    box-shadow: 0 0 16px rgba(var(--btn-color), 0.2);
   }
   .grid-btn.edit-turns.highlighted:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      rgba(59, 130, 246, 0.35),
-      rgba(59, 130, 246, 0.18)
+      rgba(var(--btn-color), 0.35),
+      rgba(var(--btn-color), 0.18)
     );
-    border-color: rgba(59, 130, 246, 0.8);
-  }
-
-  /* Constructor - Violet */
-  .grid-btn.constructor {
-    background: linear-gradient(
-      135deg,
-      rgba(124, 58, 237, 0.15),
-      rgba(124, 58, 237, 0.05)
-    );
-    border: 1px solid rgba(124, 58, 237, 0.3);
-  }
-  .grid-btn.constructor:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      rgba(124, 58, 237, 0.25),
-      rgba(124, 58, 237, 0.1)
-    );
-    border-color: rgba(124, 58, 237, 0.5);
-    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
-  }
-  .grid-btn.constructor .btn-icon {
-    background: #7c3aed;
+    border-color: rgba(var(--btn-color), 0.8);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -704,5 +469,56 @@
     .grid-btn:active:not(:disabled) {
       transform: none;
     }
+  }
+
+  /* ===== COMPACT MODE: Horizontal layout for very small screens ===== */
+  .actions-container.compact .grid-btn {
+    flex-direction: row;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  .actions-container.compact .btn-text {
+    align-items: flex-start;
+  }
+
+  .actions-container.compact .btn-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+
+  .actions-container.compact .btn-label {
+    font-size: 0.7rem;
+  }
+
+  /* Compact mode: TRANSFORM section uses 3 columns */
+  .actions-container.compact .transform-section .section-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Compact mode: PATTERNS section uses mixed grid for long labels */
+  .actions-container.compact .patterns-section .section-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .actions-container.compact .patterns-section .grid-btn {
+    grid-column: span 2;
+    order: 1;
+  }
+
+  /* Long labels get more space and appear last */
+  .actions-container.compact .patterns-section .grid-btn.turn-pattern,
+  .actions-container.compact .patterns-section .grid-btn.autocomplete {
+    grid-column: span 3;
+    order: 2;
+  }
+
+  /* Compact mode: EDIT section uses 2 columns */
+  .actions-container.compact .edit-section .section-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 </style>

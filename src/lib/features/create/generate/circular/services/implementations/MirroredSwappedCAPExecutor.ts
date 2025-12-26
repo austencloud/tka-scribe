@@ -32,6 +32,7 @@ import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/service
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
+  SWAPPED_POSITION_MAP,
   MIRRORED_SWAPPED_VALIDATION_SET,
 } from "../../domain/constants/strict-cap-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
@@ -136,20 +137,22 @@ export class MirroredSwappedCAPExecutor {
       finalIntendedLength
     );
 
-    // Get the mirrored end position
-    const mirroredEndPosition = this._getMirroredPosition(previousMatchingBeat);
+    // Get the mirrored AND swapped end position
+    // For mirrored+swapped CAP, we need to apply both transformations to the grid position
+    const mirroredSwappedEndPosition =
+      this._getMirroredSwappedPosition(previousMatchingBeat);
 
     // Create the new beat with swapped and mirrored attributes
-    // KEY: Blue gets attributes from Red's matching beat (SWAP)
-    //      Red gets attributes from Blue's matching beat (SWAP)
-    //      Then locations and rotations are mirrored
+    // KEY: Continuity is NORMAL (same color continues from where it was)
+    //      But motion PATTERNS are swapped (blue does red's pattern, red does blue's)
+    //      Then patterns are mirrored (cw↔ccw, e↔w)
     const newBeat: BeatData = {
       ...previousMatchingBeat,
       id: `beat-${beatNumber}`,
       beatNumber,
       letter: previousMatchingBeat.letter ?? null, // Same letter
-      startPosition: previousBeat.endPosition ?? null,
-      endPosition: mirroredEndPosition,
+      startPosition: previousBeat.endPosition ?? null, // NORMAL continuity (not swapped)
+      endPosition: mirroredSwappedEndPosition,
       motions: {
         // SWAP: Blue does what Red did, but with mirrored transformation
         [MotionColor.BLUE]: this._createMirroredSwappedMotion(
@@ -226,9 +229,12 @@ export class MirroredSwappedCAPExecutor {
   }
 
   /**
-   * Get the vertical mirrored position
+   * Get the mirrored AND swapped position
+   * For mirrored+swapped CAP, the end position must reflect both transformations:
+   * 1. First mirror the position (east↔west)
+   * 2. Then swap the colors (blue↔red positions)
    */
-  private _getMirroredPosition(
+  private _getMirroredSwappedPosition(
     previousMatchingBeat: BeatData
   ): GridPosition | null {
     const endPos = previousMatchingBeat.endPosition;
@@ -237,41 +243,46 @@ export class MirroredSwappedCAPExecutor {
       throw new Error("Previous matching beat must have an end position");
     }
 
+    // First mirror, then swap (same order as CAPEndPositionSelector)
     const mirroredPosition =
       VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
+    const mirroredSwappedPosition = SWAPPED_POSITION_MAP[mirroredPosition];
 
-    return mirroredPosition;
+    return mirroredSwappedPosition;
   }
 
   /**
    * Create mirrored-swapped motion data for the new beat
    * Combines color swapping with location mirroring and rotation flipping
+   *
+   * KEY INSIGHT:
+   * - CONTINUITY is NORMAL: Same color continues from where it ended
+   * - PATTERN is SWAPPED: Blue does what Red did, Red does what Blue did
+   * - PATTERN is MIRRORED: Locations flip e↔w, rotations flip cw↔ccw
    */
   private _createMirroredSwappedMotion(
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData,
-    isSwapped: boolean
+    _isSwapped: boolean // Kept for interface compatibility, always true for this executor
   ): MotionData {
-    // SWAP: Get the opposite color's motion data
+    // Get the opposite color for pattern swapping
     const oppositeColor =
       color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
 
-    // When swapped, this color follows the opposite color's path
-    // So its start location must continue from where the opposite color ended
-    const previousMotion = isSwapped
-      ? previousBeat.motions[oppositeColor]
-      : previousBeat.motions[color];
+    // NORMAL CONTINUITY: Same color continues from where it was
+    // (Blue continues from Blue's previous end, Red continues from Red's previous end)
+    const previousMotion = previousBeat.motions[color];
 
-    const matchingMotion = isSwapped
-      ? previousMatchingBeat.motions[oppositeColor]
-      : previousMatchingBeat.motions[color];
+    // SWAPPED PATTERN: Get the pattern from the opposite color's matching beat
+    // (Blue follows Red's pattern from beat 1, Red follows Blue's pattern from beat 1)
+    const matchingMotion = previousMatchingBeat.motions[oppositeColor];
 
     if (!previousMotion || !matchingMotion) {
       throw new Error(`Missing motion data for ${color}`);
     }
 
-    // Get start location from previous motion's end (for continuity)
+    // Get start location from THIS color's previous end (NORMAL continuity)
     const startLocation = previousMotion.endLocation;
 
     // For STATIC motions, end = start (no movement)

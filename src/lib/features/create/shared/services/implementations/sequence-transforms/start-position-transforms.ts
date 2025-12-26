@@ -7,14 +7,11 @@
 
 import type { StartPositionData } from "../../../domain/models/StartPositionData";
 import { createStartPositionData } from "../../../domain/factories/createStartPositionData";
-import type {
-  GridLocation,
-  GridPosition,
-} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import {
   VERTICAL_MIRROR_POSITION_MAP,
   HORIZONTAL_MIRROR_POSITION_MAP,
@@ -27,11 +24,7 @@ import {
   swapMotionColor,
   invertMotion,
 } from "./motion-transforms";
-import {
-  rotateLocation,
-  invertMotionType,
-  reverseRotationDirection,
-} from "./rotation-helpers";
+import { invertMotionType, reverseRotationDirection } from "./rotation-helpers";
 
 /**
  * Mirror a start position across the vertical axis (E ↔ W).
@@ -91,10 +84,12 @@ export function flipStartPosition(
 
 /**
  * Rotate a start position by 45° steps.
+ * Derives new gridPosition from rotated motion locations.
  */
 export function rotateStartPosition(
   startPos: StartPositionData,
-  rotationAmount: number
+  rotationAmount: number,
+  positionDeriver: IGridPositionDeriver
 ): StartPositionData {
   const rotatedMotions = { ...startPos.motions };
 
@@ -111,12 +106,18 @@ export function rotateStartPosition(
     );
   }
 
-  const rotatedGridPosition = startPos.gridPosition
-    ? (rotateLocation(
-        startPos.gridPosition as GridPosition,
-        rotationAmount
-      ) as GridPosition)
-    : null;
+  // Derive new gridPosition from rotated motion locations
+  // This correctly handles the DIAMOND ↔ BOX mode transitions
+  let rotatedGridPosition: GridPosition | null = startPos.gridPosition ?? null;
+  const blueMotion = rotatedMotions[MotionColor.BLUE];
+  const redMotion = rotatedMotions[MotionColor.RED];
+
+  if (blueMotion && redMotion) {
+    rotatedGridPosition = positionDeriver.getGridPositionFromLocations(
+      blueMotion.startLocation,
+      redMotion.startLocation
+    );
+  }
 
   return createStartPositionData({
     ...startPos,
