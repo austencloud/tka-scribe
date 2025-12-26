@@ -36,11 +36,13 @@ export interface ISpecialPlacementLookupService {
    * @param letterData Special placement data for the letter
    * @param turnsTuple Turns tuple string
    * @param rotationOverrideKey Rotation override key
+   * @param letter The letter to look up (e.g., "Z")
    * @returns true if override flag exists and is true
    */
   lookupRotationOverride(
     letterData: Record<string, unknown>,
     turnsTuple: string,
-    rotationOverrideKey: string
+    rotationOverrideKey: string,
+    letter: string
   ): boolean;
 }

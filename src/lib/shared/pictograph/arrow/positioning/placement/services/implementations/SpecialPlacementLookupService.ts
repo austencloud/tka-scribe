@@ -78,10 +78,10 @@ export class SpecialPlacementLookupService
   lookupRotationOverride(
     letterData: Record<string, unknown>,
     turnsTuple: string,
-    rotationOverrideKey: string
+    rotationOverrideKey: string,
+    letter: string
   ): boolean {
-    // Handle nested structure
-    const letter = Object.keys(letterData)[0] ?? "";
+    // Handle nested structure - use the actual letter, not first key
     const letterSpecificData = letterData[letter];
     const actualLetterData =
       letterSpecificData && typeof letterSpecificData === "object"
@@ -116,16 +116,17 @@ export class SpecialPlacementLookupService
   /**
    * Try alternative tuple format for legacy JSON compatibility.
    * Desktop JSON files sometimes use different direction prefix rules.
+   *
+   * IMPORTANT: For TYPE2+ letters (W, X, Y, Z, Σ, Δ, θ, Ω, etc.), the direction
+   * prefix (s/o) is semantically meaningful - it indicates whether motions rotate
+   * in the same or opposite direction. We should NOT strip this prefix as a fallback
+   * because (s, 0, 1) and (0, 1) represent different configurations.
+   *
+   * Only strip the direction prefix for simple 2-value tuples where direction
+   * might have been omitted in legacy data (e.g., when one motion has 0 turns).
    */
   private tryAlternativeTupleFormat(turnsTuple: string): string | null {
-    // Pattern: "(direction, num1, num2)" or "(direction, num1, num2, state1, state2)"
-    const withDirectionMatch = turnsTuple.match(/^\(([so]),\s*(.+)\)$/);
-    if (withDirectionMatch) {
-      // Has direction prefix - try without it: "(num1, num2)"
-      return `(${withDirectionMatch[2]})`;
-    }
-
-    // Pattern: "(num1, num2)" - try adding direction prefixes
+    // Pattern: "(num1, num2)" without direction - try adding direction prefixes
     const withoutDirectionMatch = turnsTuple.match(
       /^\((\d+(?:\.\d+)?),\s*(\d+(?:\.\d+)?)\)$/
     );
@@ -135,6 +136,9 @@ export class SpecialPlacementLookupService
       return null;
     }
 
+    // DO NOT strip direction prefix from tuples like "(s, 0, 1)" because
+    // the direction is meaningful for TYPE2+ letters. The old fallback
+    // was causing incorrect override matches.
     return null;
   }
 

@@ -162,6 +162,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     );
 
     const finalAngle = rotationMap[location] || 0.0;
+
+
+
     return finalAngle;
   }
 

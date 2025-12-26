@@ -175,7 +175,8 @@ export class SpecialPlacementService implements ISpecialPlacementService {
     let result = this.lookupService.lookupRotationOverride(
       letterData,
       turnsTuple,
-      rotationOverrideKey
+      rotationOverrideKey,
+      letter
     );
 
     // FALLBACK: If not found, try color-based key (e.g., red_rot_angle_override)
@@ -186,7 +187,8 @@ export class SpecialPlacementService implements ISpecialPlacementService {
         result = this.lookupService.lookupRotationOverride(
           letterData,
           turnsTuple,
-          colorBasedKey
+          colorBasedKey,
+          letter
         );
       }
     }
