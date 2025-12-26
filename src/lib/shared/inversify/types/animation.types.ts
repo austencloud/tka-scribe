@@ -30,7 +30,9 @@ export const AnimationTypes = {
 
   // Rendering
   ICanvasRenderer: Symbol.for("ICanvasRenderer"),
-  IPixiAnimationRenderer: Symbol.for("IPixiAnimationRenderer"),
+  IAnimationRenderer: Symbol.for("IAnimationRenderer"),
+  /** @deprecated Use IAnimationRenderer instead */
+  IPixiAnimationRenderer: Symbol.for("IAnimationRenderer"), // Alias for backward compatibility
   ISVGGenerator: Symbol.for("ISVGGenerator"),
 
   // Trail

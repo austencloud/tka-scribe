@@ -72,6 +72,7 @@ import { OptionTransitionCoordinator } from "../../../features/create/construct/
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
 import { PictographPreparerService } from "../../../features/create/construct/option-picker/services/implementations/PictographPreparerService";
 import { AutocompleteService } from "../../../features/create/shared/services/implementations/AutocompleteService";
+import { PanelPersistenceService } from "../../../features/create/shared/services/implementations/PanelPersistenceService.svelte";
 
 export const createModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -242,6 +243,9 @@ export const createModule = new ContainerModule(
 
     // === AUTOCOMPLETE SERVICE ===
     options.bind(TYPES.IAutocompleteService).to(AutocompleteService);
+
+    // === PANEL MANAGEMENT ===
+    options.bind(TYPES.IPanelPersistenceService).to(PanelPersistenceService);
 
     // === LAYOUT SERVICES ===
     // Note: PrintablePageLayoutService handled in word-card module

@@ -12,7 +12,7 @@ import { VideoExportOrchestrator } from "../../../features/compose/services/impl
 import { VideoExportService } from "../../../features/compose/services/implementations/VideoExportService";
 import { CompositeVideoRenderer } from "../../../features/compose/services/implementations/CompositeVideoRenderer";
 import { MotionCalculator } from "../../../features/compose/services/implementations/MotionCalculator";
-// PixiAnimationRenderer moved to on-demand loading in PixiModule (pixi.js ~500KB)
+// Canvas2DAnimationRenderer loaded on-demand via animation module
 import { PropInterpolator as PropInterpolationService } from "../../../features/compose/services/implementations/PropInterpolator";
 import { SequenceAnimationOrchestrator } from "../../../features/compose/services/implementations/SequenceAnimationOrchestrator";
 import { SequenceLoopabilityChecker } from "../../../features/compose/services/implementations/SequenceLoopabilityChecker";
@@ -50,7 +50,7 @@ export const animatorModule = new ContainerModule(
 
     // === RENDERING SERVICES ===
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
-    // IPixiAnimationRenderer loaded on-demand via PixiModule when animation canvas is used
+    // IAnimationRenderer loaded on-demand via animation module when animation canvas is used
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
     options.bind(TYPES.IVideoExportService).to(VideoExportService);
     options.bind(TYPES.IVideoExportOrchestrator).to(VideoExportOrchestrator);

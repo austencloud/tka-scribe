@@ -306,17 +306,17 @@ export async function loadSharedModules(): Promise<void> {
 // ============================================================================
 
 /**
- * Load the Pixi module on-demand (pixi.js ~500KB).
- * Call this before using IPixiAnimationRenderer.
+ * Load the Animation Renderer module on-demand.
+ * Call this before using IAnimationRenderer.
  *
  * Uses container.isBound() as the source of truth to prevent duplicate bindings
  * (module-level flags get duplicated across production chunks)
  */
-export async function loadPixiModule(): Promise<void> {
+export async function loadAnimationModule(): Promise<void> {
   const container = await getContainerInstance();
 
   // Use container.isBound() as the source of truth (survives code-splitting)
-  if (container.isBound(TYPES.IPixiAnimationRenderer)) {
+  if (container.isBound(TYPES.IAnimationRenderer)) {
     return; // Already loaded
   }
 
@@ -325,6 +325,11 @@ export async function loadPixiModule(): Promise<void> {
   );
   await container.load(pixiModule);
 }
+
+/**
+ * @deprecated Use loadAnimationModule() instead
+ */
+export const loadPixiModule = loadAnimationModule;
 
 /**
  * Get the container instance. Use sparingly - prefer resolve() for service access.

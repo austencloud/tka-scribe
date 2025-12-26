@@ -58,4 +58,7 @@ export const CreateTypes = {
 
   // Autocomplete
   IAutocompleteService: Symbol.for("IAutocompleteService"),
+
+  // Panel Management
+  IPanelPersistenceService: Symbol.for("IPanelPersistenceService"),
 } as const;

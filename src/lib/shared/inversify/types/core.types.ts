@@ -25,7 +25,6 @@ export const CoreTypes = {
   // Settings Services
   ISettingsState: Symbol.for("ISettingsState"),
   ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
-  IBackgroundPopularityService: Symbol.for("IBackgroundPopularityService"),
 
   // Onboarding Services
   IOnboardingPersistenceService: Symbol.for("IOnboardingPersistenceService"),
