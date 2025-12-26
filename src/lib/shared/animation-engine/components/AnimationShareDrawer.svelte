@@ -422,6 +422,7 @@
       <div class="canvas-container">
         <div
           class="content-wrapper"
+          class:desktop={isSideBySideLayout}
           class:mobile-expanded={!isSideBySideLayout}
           class:settings-open={isSettingsOpen && !isSideBySideLayout}
         >
@@ -622,6 +623,26 @@
     }
   }
 
+  /* ===========================
+     DESKTOP LAYOUT - Full height canvas
+     =========================== */
+
+  .content-wrapper.desktop {
+    gap: 12px;
+  }
+
+  .content-wrapper.desktop :global(.canvas-area) {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none; /* No height restriction on desktop */
+    height: 100%;
+  }
+
+  .content-wrapper.desktop :global(.controls-panel) {
+    flex: 0 0 auto;
+    overflow-y: auto;
+  }
+
   /* Medium to large devices (Galaxy Fold, tablets): Responsive flexible layout */
   @media (min-width: 431px), (min-height: 751px) {
     .content-wrapper.mobile-expanded :global(.canvas-area) {
@@ -666,6 +687,13 @@
       max-width: 400px;
       height: 100%;
       overflow-y: auto;
+    }
+
+    /* Desktop in landscape: ensure full height */
+    .content-wrapper.desktop :global(.canvas-area) {
+      flex: 1 1 auto;
+      height: 100%;
+      max-height: none;
     }
   }
 

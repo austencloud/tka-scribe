@@ -115,11 +115,7 @@
       ? showVTG
       : visibilityManager.getGlyphVisibility("vtgGlyph");
 
-    // Debug: Log what VTG visibility is being computed (only log when beatNumber is defined for export context)
-    if (beatNumber === 1 || beatNumber === 0) {
-      console.log(`🔍 Pictograph[beat ${beatNumber}]: showVTG prop =`, showVTG,
-        `(type: ${typeof showVTG}), effectiveShowVTG =`, result);
-    }
+
 
     return result;
   });

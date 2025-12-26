@@ -52,9 +52,7 @@ export class RotationOverrideChecker {
           location,
           motion.rotationDirection
         );
-        console.log(
-          `🎯 OVERRIDE APPLIED! Angle: ${overrideAngle}° (isRadial=${isRadial}, location=${location}, rotDir=${motion.rotationDirection})`
-        );
+
         return overrideAngle;
       }
     } catch (error) {

@@ -57,12 +57,6 @@ export class TrailSettingsSyncService implements ITrailSettingsSyncService {
     externalSettings: TrailSettings | undefined
   ): void {
     if (externalSettings !== undefined) {
-      console.log("🎬 TrailSettingsSyncService received external settings:", {
-        mode: externalSettings.mode,
-        enabled: externalSettings.enabled,
-        lineWidth: externalSettings.lineWidth,
-        maxOpacity: externalSettings.maxOpacity,
-      });
       this.settingsUpdateCallback?.({ ...externalSettings });
     }
   }
