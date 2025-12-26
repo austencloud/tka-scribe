@@ -21,97 +21,157 @@ import { createLayoutEffects } from "../../state/managers/LayoutManager.svelte";
 import { createNavigationSyncEffects } from "../../state/managers/NavigationSyncManager.svelte";
 import { createPanelHeightTracker } from "../../state/managers/PanelHeightTracker.svelte";
 import { createPWAEngagementEffect } from "../../state/managers/PWAEngagementManager.svelte";
+import { createGlobalStateSyncEffects } from "../../state/managers/GlobalStateSyncManager.svelte";
+import { createCreationFlowEffects } from "../../state/managers/CreationFlowManager.svelte";
+import { createPendingEditEffect } from "../../state/managers/PendingEditManager.svelte";
+import { createPropTypeSyncEffect } from "../../state/managers/PropTypeSyncManager.svelte";
+import { createAutosaveEffect } from "../../state/managers/AutosaveManager.svelte";
 
 @injectable()
 export class CreateModuleEffectCoordinator
   implements ICreateModuleEffectCoordinator
 {
-  /**
-   * Set up all reactive effects for CreateModule
-   * Coordinates:
-   * - Navigation synchronization
-   * - Responsive layout management
-   * - Auto edit panel behavior
-   * - Single beat edit mode
-   * - PWA engagement tracking
-   * - Current word display updates
-   * - Panel height tracking
-   */
   setupEffects(config: CreateModuleEffectConfig): () => void {
     const {
-      CreateModuleState,
-      constructTabState,
+      getCreateModuleState,
+      getConstructTabState,
       panelState,
       navigationState,
       layoutService,
       navigationSyncService,
+      getDeepLinkService,
+      getCreationMethodPersistence,
+      getBeatOperationsService,
+      getAutosaveService,
+      isServicesInitialized,
       hasSelectedCreationMethod,
+      setHasSelectedCreationMethod,
       onLayoutChange,
+      getShouldUseSideBySideLayout,
+      setAnimatingBeatNumber,
       onCurrentWordChange,
+      onTabAccessibilityChange,
       toolPanelElement,
       buttonPanelElement,
     } = config;
 
     const cleanups: (() => void)[] = [];
 
-    // Navigation sync effects
-    const navigationCleanup = createNavigationSyncEffects({
-      CreateModuleState,
-      navigationState,
-      navigationSyncService,
-    });
-    cleanups.push(navigationCleanup);
+    // Global state sync (panel state, layout, animation beat)
+    cleanups.push(
+      createGlobalStateSyncEffects({
+        panelState,
+        getShouldUseSideBySideLayout,
+        setAnimatingBeatNumber,
+      })
+    );
 
-    // URL sync removed - share panel now generates viewer URLs on-demand
-    // Deep links still work for incoming shared links via DeepLinkService
+    // Creation flow (selector visibility, tab accessibility)
+    cleanups.push(
+      createCreationFlowEffects({
+        getCreateModuleState,
+        hasSelectedCreationMethod,
+        onTabAccessibilityChange,
+      })
+    );
+
+    // Pending edit processing (from Discover gallery)
+    cleanups.push(
+      createPendingEditEffect({
+        getDeepLinkService,
+        getCreateModuleState,
+        getConstructTabState,
+        getCreationMethodPersistence,
+        isServicesInitialized,
+        hasSelectedCreationMethod,
+        setHasSelectedCreationMethod,
+      })
+    );
+
+    // Prop type sync (bulk update when settings change)
+    cleanups.push(
+      createPropTypeSyncEffect({
+        getBeatOperationsService,
+        getCreateModuleState,
+        isServicesInitialized,
+      })
+    );
+
+    // Autosave dirty marking
+    cleanups.push(
+      createAutosaveEffect({
+        getCreateModuleState,
+        getAutosaveService,
+      })
+    );
+
+    // Navigation sync effects
+    const createModuleState = getCreateModuleState();
+    if (createModuleState) {
+      cleanups.push(
+        createNavigationSyncEffects({
+          CreateModuleState: createModuleState,
+          navigationState,
+          navigationSyncService,
+        })
+      );
+    }
 
     // Layout effects
-    const layoutCleanup = createLayoutEffects({
-      layoutService,
-      onLayoutChange,
-    });
-    cleanups.push(layoutCleanup);
+    cleanups.push(
+      createLayoutEffects({
+        layoutService,
+        onLayoutChange,
+      })
+    );
 
     // Auto edit panel effects (multi-select)
-    const autoEditCleanup = createAutoEditPanelEffect({
-      CreateModuleState,
-      panelState,
-    });
-    cleanups.push(autoEditCleanup);
+    if (createModuleState) {
+      cleanups.push(
+        createAutoEditPanelEffect({
+          CreateModuleState: createModuleState,
+          panelState,
+        })
+      );
 
-    // Auto Beat Editor panel effects (opens when beat is clicked)
-    const autoBeatEditorCleanup = createAutoBeatEditorEffect({
-      CreateModuleState,
-      panelState,
-    });
-    cleanups.push(autoBeatEditorCleanup);
+      // Auto Beat Editor panel effects
+      cleanups.push(
+        createAutoBeatEditorEffect({
+          CreateModuleState: createModuleState,
+          panelState,
+        })
+      );
 
-    // PWA engagement tracking
-    const pwaCleanup = createPWAEngagementEffect({ CreateModuleState });
-    cleanups.push(pwaCleanup);
-
-    // Current word display effects (if callback provided)
-    if (onCurrentWordChange) {
-      const currentWordCleanup = createCurrentWordDisplayEffect({
-        CreateModuleState,
-        constructTabState,
-        hasSelectedCreationMethod,
-        onCurrentWordChange,
-      });
-      cleanups.push(currentWordCleanup);
+      // PWA engagement tracking
+      cleanups.push(
+        createPWAEngagementEffect({ CreateModuleState: createModuleState })
+      );
     }
 
-    // Panel height tracking (if elements are available)
+    // Current word display effects
+    const constructTabState = getConstructTabState();
+    if (onCurrentWordChange && createModuleState && constructTabState) {
+      cleanups.push(
+        createCurrentWordDisplayEffect({
+          CreateModuleState: createModuleState,
+          constructTabState,
+          hasSelectedCreationMethod,
+          onCurrentWordChange,
+        })
+      );
+    }
+
+    // Panel height tracking
     if (toolPanelElement || buttonPanelElement) {
-      const panelHeightCleanup = createPanelHeightTracker({
-        toolPanelElement,
-        buttonPanelElement,
-        panelState,
-      });
-      cleanups.push(panelHeightCleanup);
+      cleanups.push(
+        createPanelHeightTracker({
+          toolPanelElement,
+          buttonPanelElement,
+          panelState,
+        })
+      );
     }
 
-    // Return combined cleanup function
     return () => {
       cleanups.forEach((cleanup) => cleanup());
     };

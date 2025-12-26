@@ -13,20 +13,44 @@ import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
 import type { INavigationSyncService } from "./INavigationSyncService";
+import type { IDeepLinkSequenceService } from "./IDeepLinkSequenceService";
+import type { ICreationMethodPersistenceService } from "./ICreationMethodPersistenceService";
+import type { IBeatOperationsService } from "./IBeatOperationsService";
+import type { AutosaveService } from "../../services/AutosaveService";
 
 /**
  * Configuration for CreateModule effects
  */
 export interface CreateModuleEffectConfig {
-  CreateModuleState: CreateModuleState;
-  constructTabState: ConstructTabState;
+  // State accessors (use getters to avoid stale closures)
+  getCreateModuleState: () => CreateModuleState | null;
+  getConstructTabState: () => ConstructTabState | null;
   panelState: PanelCoordinationState;
   navigationState: NavigationState;
+
+  // Services
   layoutService: IResponsiveLayoutService;
   navigationSyncService: INavigationSyncService;
+  getDeepLinkService: () => IDeepLinkSequenceService | null;
+  getCreationMethodPersistence: () => ICreationMethodPersistenceService | null;
+  getBeatOperationsService: () => IBeatOperationsService | null;
+  getAutosaveService: () => AutosaveService | null;
+
+  // State flags
+  isServicesInitialized: () => boolean;
   hasSelectedCreationMethod: () => boolean;
+  setHasSelectedCreationMethod: (value: boolean) => void;
+
+  // Layout callbacks
   onLayoutChange: (shouldUseSideBySideLayout: boolean) => void;
+  getShouldUseSideBySideLayout: () => boolean;
+  setAnimatingBeatNumber: (beat: number | null) => void;
+
+  // Optional callbacks
   onCurrentWordChange?: (word: string) => void;
+  onTabAccessibilityChange?: (canAccess: boolean) => void;
+
+  // DOM elements
   toolPanelElement: HTMLElement | null;
   buttonPanelElement: HTMLElement | null;
 }

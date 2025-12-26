@@ -46,6 +46,7 @@ import { getCreateModuleEventService } from "./CreateModuleEventService";
 import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 import type { ICreateModuleState } from "../../types/create-module-types";
 import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
+import type { IPanelPersistenceService } from "../contracts/IPanelPersistenceService";
 import type { BeatData } from "../../domain/models/BeatData";
 
 @injectable()
@@ -82,6 +83,8 @@ export class CreateModuleInitializationService
     private readonly effectCoordinator: ICreateModuleEffectCoordinator,
     @inject(TYPES.IShareService)
     private readonly shareService: IShareService,
+    @inject(TYPES.IPanelPersistenceService)
+    private readonly panelPersistenceService: IPanelPersistenceService,
 
     // Sequence operation services
     @inject(TYPES.ISequenceStatisticsService)
@@ -174,6 +177,7 @@ export class CreateModuleInitializationService
       effectCoordinator: this.effectCoordinator,
       deepLinkService: this.deepLinkService,
       shareService: this.shareService,
+      panelPersistenceService: this.panelPersistenceService,
     };
   }
 

@@ -1,7 +1,34 @@
 <script lang="ts">
   /**
-   * CreateModule - Composition Root for Create Module
-   * See: docs/architecture/create-module-composition-root.md for detailed architecture documentation
+   * CreateModule.svelte - COMPOSITION ROOT
+   *
+   * ============================================================================
+   * FOR AI AGENTS: DO NOT DECONSTRUCT THIS FILE FURTHER
+   * ============================================================================
+   *
+   * This is a COMPOSITION ROOT - its job is to wire dependencies together.
+   * The ~700 line count is intentional and appropriate because:
+   *
+   * 1. Composition roots import many dependencies (that's their purpose)
+   * 2. They wire services, create state, set up contexts
+   * 3. They coordinate initialization and cleanup
+   * 4. They contain NO business logic - only glue code
+   *
+   * What belongs here:
+   * - DI service resolution
+   * - State object creation
+   * - Context registration
+   * - Effect coordinator setup
+   * - Simple event handler wiring
+   * - Child component composition
+   *
+   * What does NOT belong here (extract to services/managers):
+   * - Business logic → move to services
+   * - Complex effect logic → move to Manager files in state/managers/
+   * - Handlers > 10 lines → move to ICreateModuleHandlers
+   * - State mutation logic → move to state operations
+   *
+   * See: docs/architecture/create-module-composition-root.md
    *
    * Domain: Create module - Composition Root
    */
@@ -16,19 +43,15 @@
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import {
-    setAnyPanelOpen,
-    setSideBySideLayout,
-  } from "$lib/shared/application/state/animation-visibility-state.svelte";
-  import { getSettings } from "$lib/shared/application/state/app-state.svelte";
+  import { setSideBySideLayout } from "$lib/shared/application/state/animation-visibility-state.svelte";
   import { onMount, setContext, tick } from "svelte";
-  import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
   import type { CreateModuleServices } from "../types/create-module-services";
   import type { ICreateModuleInitializationService } from "../services/contracts/ICreateModuleInitializationService";
   import type { ICreateModuleHandlers } from "../services/contracts/ICreateModuleHandlers";
   import type { ICreationMethodPersistenceService } from "../services/contracts/ICreationMethodPersistenceService";
   import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
+  import type { IPanelPersistenceService } from "../services/contracts/IPanelPersistenceService";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
@@ -81,6 +104,7 @@
   let deepLinkService:
     | import("../services/contracts/IDeepLinkSequenceService").IDeepLinkSequenceService
     | null = $state(null);
+  let panelPersistenceService: IPanelPersistenceService | null = $state(null);
   let CreateModuleState: CreateModuleState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
 
@@ -109,7 +133,7 @@
   let buttonPanelElement: HTMLElement | null = $state(null);
   let assemblyTabKey = $state(0); // Changes when assembly tab needs to reset
   let effectCleanup: (() => void) | null = null;
-  let deepLinkProcessed = $state(false); // Track if deep link has been processed
+  let panelPersistenceCleanup: (() => void) | null = null;
   let currentDisplayWord = $state<string>(""); // Current word with contextual messages
 
   // ============================================================================
@@ -167,286 +191,10 @@
   });
 
   // ============================================================================
-  // DERIVED STATE
+  // EFFECT COORDINATOR SETUP
   // ============================================================================
-
-  // ============================================================================
-  // REACTIVE EFFECTS
-  // ============================================================================
-
-  // Sync creation method selector visibility to navigation
-  // Show onboarding tutorial for first-time users who haven't selected a creation method yet
-  $effect(() => {
-    if (
-      !CreateModuleState?.isPersistenceInitialized ||
-      !creationMethodPersistence
-    ) {
-      return;
-    }
-
-    // Show the onboarding selector if user has never completed the tutorial
-    // Once they select a method, they're on their own with normal tab navigation
-    const shouldShow = !hasSelectedCreationMethod;
-    navigationState.setCreationMethodSelectorVisible(shouldShow);
-  });
-
-  // Notify parent of tab accessibility changes
-  $effect(() => {
-    if (!CreateModuleState) return;
-    const canAccess = CreateModuleState.canAccessEditTab;
-    if (onTabAccessibilityChange) {
-      onTabAccessibilityChange(canAccess);
-    }
-  });
-
-  // Sync panel states and layout to global state
-  $effect(() => {
-    setAnyPanelOpen(panelState.isAnyPanelOpen);
-    setSideBySideLayout(shouldUseSideBySideLayout);
-  });
-
-  // Sync animating beat number from shared animation state
-  // This ensures beat grid highlights current beat when animation plays
-  $effect(() => {
-    const currentBeat = sharedAnimationState.currentBeat;
-    if (sharedAnimationState.isPlaying || currentBeat > 0) {
-      animatingBeatNumber = Math.floor(currentBeat) + 1;
-    } else {
-      animatingBeatNumber = null;
-    }
-  });
-
-  // Track previous module and tab to detect navigation changes
-  let previousModule = $state<string | null>(null);
-  let previousTab = $state<string | null>(null);
-
-  // Flag to track if we've already processed the pending edit during this session
-  // Prevents re-loading if user navigates away and back
-  let pendingEditProcessed = $state(false);
-
-  // Track previous panel open state to detect user-initiated closes
-  let previousPanelOpen = $state<string | null>(null);
-
-  // Clear saved panel state when user explicitly closes a panel (not due to navigation)
-  $effect(() => {
-    const currentModule = navigationState.currentModule;
-
-    // Only track while we're in the create module
-    if (currentModule !== "create") return;
-
-    // Determine current open panel
-    let currentPanelOpen: string | null = null;
-    if (panelState.isAnimationPanelOpen) currentPanelOpen = "animation";
-    else if (panelState.isEditPanelOpen) currentPanelOpen = "edit";
-    else if (panelState.isSharePanelOpen) currentPanelOpen = "share";
-    else if (panelState.isVideoRecordPanelOpen)
-      currentPanelOpen = "videoRecord";
-    else if (panelState.isFilterPanelOpen) currentPanelOpen = "filter";
-    else if (panelState.isSequenceActionsPanelOpen)
-      currentPanelOpen = "sequenceActions";
-    else if (panelState.isCAPPanelOpen) currentPanelOpen = "cap";
-    else if (panelState.isCustomizePanelOpen) currentPanelOpen = "customize";
-
-    // If a panel was open and is now closed (user closed it), clear the saved state
-    if (previousPanelOpen !== null && currentPanelOpen === null) {
-      logger.log(
-        `Panel "${previousPanelOpen}" was closed by user, clearing saved state for tab`
-      );
-      navigationState.clearPanelForTab(); // Clears for current module:tab
-    }
-
-    previousPanelOpen = currentPanelOpen;
-  });
-
-  // Persist and close panels when navigating away from create module OR switching tabs
-  // This ensures panels animate away gracefully and can be restored when returning
-  $effect(() => {
-    const currentModule = navigationState.currentModule;
-    const currentTab = navigationState.activeTab;
-
-    // Only act when module or tab actually changes (not on initial render)
-    const moduleChanged =
-      previousModule !== null && currentModule !== previousModule;
-    const tabChanged =
-      previousTab !== null &&
-      currentTab !== previousTab &&
-      currentModule === "create";
-
-    if (moduleChanged || tabChanged) {
-      // Save which panel was open before closing (for panel persistence)
-      if (
-        panelState.isAnyPanelOpen &&
-        previousModule === "create" &&
-        previousTab
-      ) {
-        // Determine which panel is currently open and save it
-        let openPanelId: string | null = null;
-        if (panelState.isAnimationPanelOpen) openPanelId = "animation";
-        else if (panelState.isEditPanelOpen) openPanelId = "edit";
-        else if (panelState.isSharePanelOpen) openPanelId = "share";
-        else if (panelState.isVideoRecordPanelOpen) openPanelId = "videoRecord";
-        else if (panelState.isFilterPanelOpen) openPanelId = "filter";
-        else if (panelState.isSequenceActionsPanelOpen)
-          openPanelId = "sequenceActions";
-        else if (panelState.isCAPPanelOpen) openPanelId = "cap";
-        else if (panelState.isCustomizePanelOpen) openPanelId = "customize";
-
-        if (openPanelId) {
-          logger.log(
-            `Saving open panel "${openPanelId}" for tab "${previousModule}:${previousTab}"`
-          );
-          navigationState.setLastPanelForTab(
-            openPanelId,
-            previousModule as any,
-            previousTab
-          );
-        }
-      }
-
-      // Close all panels when navigating away or switching tabs
-      if (panelState.isAnyPanelOpen) {
-        if (moduleChanged) {
-          logger.log(
-            `Module changed from ${previousModule} to ${currentModule}, closing all panels`
-          );
-        } else {
-          logger.log(
-            `Tab changed from ${previousTab} to ${currentTab}, closing all panels`
-          );
-        }
-        panelState.closeEditPanel();
-        panelState.closeAnimationPanel();
-        panelState.closeSharePanel();
-        panelState.closeVideoRecordPanel();
-        panelState.closeFilterPanel();
-        panelState.closeSequenceActionsPanel();
-        panelState.closeCAPPanel();
-        panelState.closeCustomizePanel();
-      }
-
-      // Restore panel for the new tab (if returning to create module or switching tabs within it)
-      // Only restore if there's actually a sequence to work with (canAccessEditTab)
-      if (
-        currentModule === "create" &&
-        !panelState.isAnyPanelOpen &&
-        CreateModuleState?.canAccessEditTab
-      ) {
-        const savedPanel = navigationState.getLastPanelForTab(
-          "create",
-          currentTab
-        );
-        if (savedPanel) {
-          logger.log(
-            `Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`
-          );
-          // Use setTimeout to allow panel close animation to complete first
-          setTimeout(() => {
-            switch (savedPanel) {
-              case "animation":
-                panelState.openAnimationPanel();
-                break;
-              case "share":
-                panelState.openSharePanel();
-                break;
-              case "videoRecord":
-                panelState.openVideoRecordPanel();
-                break;
-              case "filter":
-                panelState.openFilterPanel();
-                break;
-              case "sequenceActions":
-                panelState.openSequenceActionsPanel();
-                break;
-              // Note: edit and cap panels require additional context (beat data, CAP type)
-              // so we skip restoring those - they need user interaction to open
-            }
-          }, 100);
-        }
-      }
-    }
-
-    previousModule = currentModule;
-    previousTab = currentTab;
-  });
-
-  // Check for pending edits from Discover gallery when on create module
-  // This handles the case where user clicks Edit from Discover gallery
-  $effect(() => {
-    const currentModule = navigationState.currentModule;
-
-    // Only process when we're on the create module
-    if (currentModule !== "create") {
-      return;
-    }
-
-    // Check if services are ready
-    if (
-      !deepLinkService ||
-      !CreateModuleState ||
-      !constructTabState ||
-      !servicesInitialized
-    ) {
-      return;
-    }
-
-    // Skip if we've already processed a pending edit this session
-    if (pendingEditProcessed) {
-      return;
-    }
-
-    // Check for pending edit from Discover gallery
-    const hasPending = deepLinkService.hasPendingEdit();
-
-    if (hasPending) {
-      // Mark as processed BEFORE loading to prevent double-processing
-      pendingEditProcessed = true;
-
-      deepLinkService.loadFromPendingEdit((sequence) => {
-        // IMPORTANT: Set directly on constructor tab's sequence state, NOT through
-        // the getter which uses navigationState.activeTab. The view transition might
-        // not have completed setting activeTab to "constructor" yet, causing the
-        // sequence to be set on the wrong tab's state (or fallback state).
-        const constructorSequenceState = constructTabState?.sequenceState;
-        if (constructorSequenceState) {
-          constructorSequenceState.setCurrentSequence(sequence);
-
-          // Sync picker state with the newly loaded sequence
-          // This ensures hasStartPosition and getCurrentSequenceData() are properly evaluated
-          constructTabState?.syncPickerStateWithSequence();
-        } else {
-          // Fallback to the getter-based approach if constructTabState isn't available
-          CreateModuleState!.sequenceState.setCurrentSequence(sequence);
-        }
-
-        // Mark creation method as selected since we're loading a sequence
-        if (!hasSelectedCreationMethod) {
-          hasSelectedCreationMethod = true;
-          creationMethodPersistence?.markMethodSelected();
-        }
-        // Explicitly hide the creation method selector - the visibility sync effect
-        // might not re-run in time due to Svelte 5's reactive tracking
-        navigationState.setCreationMethodSelectorVisible(false);
-
-        // Tell the construct tab to show the option viewer (not start position picker)
-        // since we're loading an existing sequence
-        if (constructTabState?.setShowStartPositionPicker) {
-          constructTabState.setShowStartPositionPicker(false);
-        }
-      });
-    }
-  });
-
-  // Setup all managed effects using EffectCoordinator (includes URL sync)
-  $effect(() => {
-    if (
-      !servicesInitialized ||
-      !CreateModuleState ||
-      !constructTabState ||
-      !services ||
-      !effectCoordinator
-    ) {
-      return;
-    }
+  function setupEffectCoordinator(): void {
+    if (!effectCoordinator || !services) return;
 
     if (effectCleanup) {
       effectCleanup();
@@ -454,85 +202,38 @@
     }
 
     effectCleanup = effectCoordinator.setupEffects({
-      CreateModuleState,
-      constructTabState,
+      getCreateModuleState: () => CreateModuleState,
+      getConstructTabState: () => constructTabState,
       panelState,
       navigationState,
       layoutService: services.layoutService,
       navigationSyncService: services.navigationSyncService,
+      getDeepLinkService: () => deepLinkService,
+      getCreationMethodPersistence: () => creationMethodPersistence,
+      getBeatOperationsService: () => services?.beatOperationsService ?? null,
+      getAutosaveService: () => autosaveService,
+      isServicesInitialized: () => servicesInitialized,
       hasSelectedCreationMethod: () => hasSelectedCreationMethod,
+      setHasSelectedCreationMethod: (value: boolean) => {
+        hasSelectedCreationMethod = value;
+      },
       onLayoutChange: (layout) => {
         shouldUseSideBySideLayout = layout;
         setSideBySideLayout(layout);
+      },
+      getShouldUseSideBySideLayout: () => shouldUseSideBySideLayout,
+      setAnimatingBeatNumber: (beat) => {
+        animatingBeatNumber = beat;
       },
       onCurrentWordChange: (word: string) => {
         currentDisplayWord = word;
         onCurrentWordChange?.(word);
       },
+      onTabAccessibilityChange,
       toolPanelElement,
       buttonPanelElement,
     });
-
-    return () => {
-      if (effectCleanup) {
-        effectCleanup();
-        effectCleanup = null;
-      }
-    };
-  });
-
-  // Watch for prop type changes in settings and bulk update all motions
-  let previousBluePropType = $state<string | undefined>(undefined);
-  let previousRedPropType = $state<string | undefined>(undefined);
-
-  $effect(() => {
-    if (!servicesInitialized || !CreateModuleState || !services) return;
-
-    const settings = getSettings();
-    const newBluePropType = settings.bluePropType;
-    const newRedPropType = settings.redPropType;
-
-    // Update blue prop type if changed
-    if (
-      newBluePropType &&
-      newBluePropType !== previousBluePropType &&
-      previousBluePropType !== undefined
-    ) {
-      logger.log(
-        `Blue prop type changed to ${newBluePropType}, bulk updating sequence`
-      );
-      services.beatOperationsService.bulkUpdatePropType(
-        "blue",
-        newBluePropType,
-        CreateModuleState
-      );
-    }
-    previousBluePropType = newBluePropType;
-
-    // Update red prop type if changed
-    if (
-      newRedPropType &&
-      newRedPropType !== previousRedPropType &&
-      previousRedPropType !== undefined
-    ) {
-      logger.log(
-        `Red prop type changed to ${newRedPropType}, bulk updating sequence`
-      );
-      services.beatOperationsService.bulkUpdatePropType(
-        "red",
-        newRedPropType,
-        CreateModuleState
-      );
-    }
-    previousRedPropType = newRedPropType;
-  });
-
-  // Mark autosave as dirty when sequence changes
-  $effect(() => {
-    if (CreateModuleState?.sequenceState.currentSequence && autosaveService) {
-      autosaveService.markDirty();
-    }
-  });
+  }
 
   // ============================================================================
   // LIFECYCLE
@@ -583,6 +284,7 @@
         creationMethodPersistence = result.creationMethodPersistence;
         effectCoordinator = result.effectCoordinator;
         deepLinkService = result.deepLinkService;
+        panelPersistenceService = result.panelPersistenceService;
 
         // Ensure state is initialized before setting reference
         if (!CreateModuleState || !constructTabState) {
@@ -603,6 +305,15 @@
         servicesInitialized = true;
 
         initService.configureEventCallbacks(CreateModuleState, panelState);
+
+        // Start panel persistence tracking (handles navigation changes, panel close detection)
+        panelPersistenceCleanup = panelPersistenceService.startTracking({
+          panelState,
+          canRestorePanels: () => CreateModuleState?.canAccessEditTab ?? false,
+        });
+
+        // Start effect coordinator (manages all reactive effects)
+        setupEffectCoordinator();
 
         // Initialize session management
         sessionManager = new SessionManager();
@@ -670,9 +381,6 @@
           hasDeepLink = true;
         }
 
-        // Mark deep link as processed (allow URL syncing now)
-        deepLinkProcessed = true;
-
         // Check if there's a share deep link waiting to be processed by ShareCoordinator
         // If so, don't restore panels from localStorage - let the share deep link take priority
         const hasShareDeepLink = initService.hasShareDeepLink?.() ?? false;
@@ -695,27 +403,11 @@
             logger.log(
               `Restoring saved panel "${savedPanel}" for tab "create:${currentTab}"`
             );
-            // Use tick to ensure UI is ready before opening panel
             await tick();
-            switch (savedPanel) {
-              case "animation":
-                panelState.openAnimationPanel();
-                break;
-              case "share":
-                panelState.openSharePanel();
-                break;
-              case "videoRecord":
-                panelState.openVideoRecordPanel();
-                break;
-              case "filter":
-                panelState.openFilterPanel();
-                break;
-              case "sequenceActions":
-                panelState.openSequenceActionsPanel();
-                break;
-              // Note: edit and cap panels require additional context (beat data, CAP type)
-              // so we skip restoring those - they need user interaction to open
-            }
+            panelPersistenceService.restoreSavedPanel(
+              panelState,
+              savedPanel as any
+            );
           }
         }
 
@@ -740,6 +432,18 @@
         window.removeEventListener("resize", checkIsMobile);
       }
       setCreateModuleStateRef(null);
+
+      // Cleanup effect coordinator
+      if (effectCleanup) {
+        effectCleanup();
+        effectCleanup = null;
+      }
+
+      // Cleanup panel persistence tracking
+      if (panelPersistenceCleanup) {
+        panelPersistenceCleanup();
+        panelPersistenceCleanup = null;
+      }
 
       // Cleanup session management
       autosaveService?.stopAutosave();

@@ -27,6 +27,7 @@ import type { ISequencePersistenceService } from "./ISequencePersistenceService"
 import type { ICreateModuleService } from "./ICreateModuleService";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts/IStartPositionService";
 import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
+import type { IPanelPersistenceService } from "./IPanelPersistenceService";
 import type { ICreateModuleState } from "../../types/create-module-types";
 import type { createConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { AssemblerTabState } from "../../state/assembler-tab-state.svelte";
@@ -57,6 +58,7 @@ export interface CreateModuleInitializationResult {
   effectCoordinator: ICreateModuleEffectCoordinator;
   deepLinkService: IDeepLinkSequenceService;
   shareService: IShareService;
+  panelPersistenceService: IPanelPersistenceService;
 }
 
 export interface SequenceLoadResult {
