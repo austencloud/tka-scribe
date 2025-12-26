@@ -8,11 +8,11 @@
 
 This project follows a **2025+ AI-assisted development approach**:
 
-- **Prefer small, single-responsibility files** (20-80 lines typical, but not a hard rule)
-- **Composition over consolidation** - build features by composing small primitives
+- **Single responsibility per file** - each file does one thing well
+- **Composition over consolidation** - build features by composing small services
 - **Don't warn about "too many files"** - AI navigation makes file count a non-issue
-- **Each component should do ONE thing completely**
-- **Extract aggressively** - if a component has multiple responsibilities, split it
+- **Extract when there are multiple responsibilities** - not to hit arbitrary line counts
+- **Service-based architecture** - logic lives in services, components orchestrate
 
 ### Why this matters for AI-assisted development:
 
@@ -375,23 +375,33 @@ When `/done` is called and there's no matching feedback item for the work just c
 4. **Do NOT ask** for confirmation - just do it automatically
 5. Report what was created so the user knows it's tracked
 
-**Feedback item format (IMPORTANT):**
+**Source field distinction:**
 
-- **Title**: Phrase as a user request or bug report, as if user submitted feedback
-  - Example: "Continuous filter toggle doesn't work" or "Add gap between 4x4 grid items"
-  - NOT: "Fixed continuous filter and updated gap spacing"
-- **Description**: Describe the problem or request from the user's perspective
-  - What was broken, missing, or needed improvement?
-  - What did the user want to achieve?
-- **Resolution Notes**: Describe the solution that was implemented
-  - Brief summary of what was changed to fix the issue
-  - Focus on WHAT was done, not detailed HOW
+Feedback items have a `source` field to distinguish origin:
+- `source: "app"` - User submitted through the in-app feedback form (real user feedback)
+- `source: "terminal"` - Created via CLI/Claude Code (dev work log)
 
-This format makes it easier to understand feedback items later - the title tells you what the problem/request was, and the resolution tells you how it was solved.
+When auto-creating via `/done`, the script automatically sets `source: "terminal"`. This allows filtering "what users actually submitted" vs "what devs proactively fixed."
+
+**Terminal-sourced items (via /done):**
+
+Unlike app feedback (problem → resolution), terminal items are work logs:
+- Work is already complete when created
+- Title describes what was done (not a problem to solve)
+- Description has details of the work
+- Created directly as `completed` status
+- No separate "resolution notes" needed (description IS the resolution)
+
+**Format:**
+
+- **Title**: Brief description of completed work
+  - Example: "Simplified Analytics dashboard to 3 metrics"
+- **Description**: Details of what was changed and why
+  - What was the work? What files were affected? What's the outcome?
 
 ---
 
-_Last updated: 2025-12-24_
+_Last updated: 2025-12-26_
 
 ---
 

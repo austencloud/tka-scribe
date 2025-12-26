@@ -313,6 +313,9 @@ export default defineConfig({
       // ⚡ PERFORMANCE FIX: Pre-bundle dexie for proper ESM handling
       // Needs Vite transformation despite being in dataModule (Tier 1)
       "dexie",
+      // Threlte: avoid on-demand re-optimization (prevents stale dep 504s)
+      "@threlte/core",
+      "@threlte/extras",
     ],
     exclude: [
       "pdfjs-dist",

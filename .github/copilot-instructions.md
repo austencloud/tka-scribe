@@ -260,11 +260,11 @@ When user asks for help:
 
 ### 2025 AI-Assisted Development Philosophy
 
-- **Prefer small, single-responsibility files** (20-80 lines typical)
-- **Composition over consolidation** - build features by composing small primitives
+- **Single responsibility per file** - each file does one thing well
+- **Composition over consolidation** - build features by composing services
 - **Don't warn about "too many files"** - AI navigation makes file count a non-issue
-- **Each component should do ONE thing completely**
-- **Extract aggressively** when a component has multiple responsibilities
+- **Extract when there are multiple responsibilities** - not to hit arbitrary line counts
+- **Service-based architecture** - logic lives in services, components orchestrate
 
 **Why this matters:**
 
