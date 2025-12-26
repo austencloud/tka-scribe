@@ -21,7 +21,6 @@
     }}
   >
     <h1>{welcomeMessage}</h1>
-    <p>Where would you like to go?</p>
   </header>
 {/if}
 
@@ -39,12 +38,6 @@
     letter-spacing: -0.02em;
   }
 
-  .welcome-header p {
-    margin: 6px 0 0;
-    font-size: 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-  }
-
   @media (max-width: 768px) {
     .welcome-header h1 {
       font-size: 1.5rem;
@@ -58,10 +51,6 @@
 
     .welcome-header h1 {
       font-size: 1.25rem;
-    }
-
-    .welcome-header p {
-      font-size: 0.875rem;
     }
   }
 

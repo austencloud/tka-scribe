@@ -7,6 +7,7 @@
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
+  import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
   import type { ConversationPreview } from "$lib/shared/messaging/domain/models/conversation-models";
 
   // Props
@@ -18,6 +19,18 @@
   // Derived state from inbox
   const conversations = $derived(inboxState.conversations.slice(0, 4));
   const unreadCount = $derived(inboxState.unreadMessageCount);
+
+  async function handleMarkAllAsRead() {
+    try {
+      // Mark each conversation with unread messages as read
+      const unreadConversations = inboxState.conversations.filter(c => c.unreadCount > 0);
+      await Promise.all(
+        unreadConversations.map(c => messagingService.markAsRead(c.id))
+      );
+    } catch (error) {
+      console.error("[MessagesWidget] Failed to mark messages as read:", error);
+    }
+  }
 
   function openConversation(conversation: ConversationPreview) {
     // Use prop if provided, otherwise use default behavior
@@ -62,7 +75,9 @@
       <h3>Messages</h3>
     </div>
     {#if unreadCount > 0}
-      <span class="unread-badge">{unreadCount > 99 ? "99+" : unreadCount}</span>
+      <button class="mark-read-btn" onclick={handleMarkAllAsRead} aria-label="Mark all messages as read">
+        Mark All Read
+      </button>
     {/if}
   </div>
 
@@ -167,18 +182,22 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
-  .unread-badge {
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    background: var(--semantic-error, #ef4444);
-    border-radius: 10px;
-    color: white;
+  .mark-read-btn {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.6875rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .mark-read-btn:hover {
+    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .widget-content {
@@ -345,7 +364,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .conversation-item,
-    .view-all-btn {
+    .view-all-btn,
+    .mark-read-btn {
       transition: none;
     }
   }

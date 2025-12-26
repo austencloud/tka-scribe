@@ -7,6 +7,7 @@
 
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
   import type { UserNotification, FeedbackNotification } from "$lib/features/feedback/domain/models/notification-models";
   import type { DashboardState } from "../../state/dashboard-state.svelte";
 
@@ -27,6 +28,17 @@
   const unreadCount = $derived(
     inboxState.notifications.filter(n => !n.read && n.type !== "system-announcement").length
   );
+
+  async function handleClearAll() {
+    const userId = authState.user?.uid;
+    if (!userId) return;
+
+    try {
+      await notificationService.markAllAsRead(userId);
+    } catch (error) {
+      console.error("[AlertsWidget] Failed to clear notifications:", error);
+    }
+  }
 
   async function openNotification(notification: UserNotification) {
     // If it's a feedback notification, open the detail panel in dashboard
@@ -123,7 +135,9 @@
       <h3>Alerts</h3>
     </div>
     {#if unreadCount > 0}
-      <span class="unread-badge">{unreadCount > 99 ? "99+" : unreadCount}</span>
+      <button class="clear-all-btn" onclick={handleClearAll} aria-label="Clear all notifications">
+        Clear All
+      </button>
     {/if}
   </div>
 
@@ -223,18 +237,22 @@
     color: var(--theme-text, rgba(255, 255, 255, 0.95));
   }
 
-  .unread-badge {
-    min-width: 20px;
-    height: 20px;
-    padding: 0 6px;
-    background: var(--semantic-error, #ef4444);
-    border-radius: 10px;
-    color: white;
+  .clear-all-btn {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 6px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     font-size: 0.6875rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+
+  .clear-all-btn:hover {
+    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
   }
 
   .widget-content {
@@ -397,7 +415,8 @@
 
   @media (prefers-reduced-motion: reduce) {
     .alert-item,
-    .view-all-btn {
+    .view-all-btn,
+    .clear-all-btn {
       transition: none;
     }
   }

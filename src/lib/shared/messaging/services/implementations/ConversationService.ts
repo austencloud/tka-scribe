@@ -487,7 +487,6 @@ export class ConversationService implements IConversationService {
 
     // Filter out self-conversations (user messaging themselves)
     if (!otherUserId || otherUserId === currentUserId) {
-      console.log("[ConversationService] Filtering out self-conversation:", id);
       return null;
     }
 
@@ -547,10 +546,6 @@ export class ConversationService implements IConversationService {
           [`participantInfo.${userId}.avatar`]: userInfo.photoURL,
         }),
       });
-      console.log(
-        "[ConversationService] Refreshed participant info for",
-        userId
-      );
     } catch (error) {
       console.error(
         "[ConversationService] Failed to refresh participant info:",

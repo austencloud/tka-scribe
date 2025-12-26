@@ -10,6 +10,8 @@
   import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
   import NotificationList from "$lib/shared/inbox/components/notifications/NotificationList.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
@@ -41,6 +43,23 @@
     mediaQuery.addEventListener("change", (e) => {
       isMobile = e.matches;
     });
+  });
+
+  // Auto-mark all notifications as read when drawer opens (viewing = acknowledging)
+  $effect(() => {
+    const unreadCount = inboxState.unreadNotificationCount;
+    const userId = authState.user?.uid;
+
+    if (!isOpen || unreadCount === 0 || !userId) {
+      return;
+    }
+
+    // Small delay to let drawer render, then mark all as read
+    const timer = setTimeout(() => {
+      notificationService.markAllAsRead(userId).catch(console.error);
+    }, 150);
+
+    return () => clearTimeout(timer);
   });
 
   // Handle notification-specific actions (navigate to relevant location)

@@ -11,6 +11,7 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { inboxState } from "../state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { toast } from "../../toast/state/toast-state.svelte";
   import InboxTabs from "./InboxTabs.svelte";
@@ -38,6 +39,14 @@
 
   // Haptic feedback service
   let hapticService: IHapticFeedbackService | undefined;
+
+  // Create a derived value that tracks preview mode (View As feature)
+  // Moved up to be available for effects
+  const currentUserId = $derived(
+    userPreviewState.isActive && userPreviewState.data.profile
+      ? userPreviewState.data.profile.uid
+      : authState.user?.uid
+  );
 
   onMount(() => {
     hapticService = resolve<IHapticFeedbackService>(
@@ -71,6 +80,25 @@
       setTimeout(() => {
         handleNotificationAction(notificationId);
       }, 50);
+    }
+  });
+
+  // Auto-mark all notifications as read when viewing the notifications tab
+  // This provides a clean UX - opening the panel acknowledges all notifications
+  $effect(() => {
+    if (
+      inboxState.isOpen &&
+      inboxState.activeTab === "notifications" &&
+      inboxState.currentView === "list" &&
+      inboxState.unreadNotificationCount > 0
+    ) {
+      const userId = currentUserId;
+      if (userId) {
+        // Fire and forget - don't block UI on this
+        notificationService.markAllAsRead(userId).catch((error) => {
+          console.warn("Failed to mark notifications as read:", error);
+        });
+      }
     }
   });
 
@@ -123,13 +151,6 @@
         break;
     }
   }
-
-  // Create a derived value that tracks preview mode (View As feature)
-  const currentUserId = $derived(
-    userPreviewState.isActive && userPreviewState.data.profile
-      ? userPreviewState.data.profile.uid
-      : authState.user?.uid
-  );
 
   function handleClose() {
     hapticService?.trigger("selection");
