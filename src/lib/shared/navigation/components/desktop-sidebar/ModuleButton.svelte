@@ -30,7 +30,9 @@
 
   let hapticService: IHapticFeedbackService | undefined;
 
-  // Get total unread count from inbox (notifications + messages)
+  // Get unread notification count (for Dashboard badge - shows only notifications, not messages)
+  const notificationUnreadCount = $derived(inboxState.unreadNotificationCount);
+  // Get total unread count from inbox (notifications + messages) for Inbox badge
   const inboxUnreadCount = $derived(inboxState.totalUnreadCount);
 
   onMount(() => {
@@ -96,8 +98,10 @@
       <span class="module-icon">{@html module.icon}</span>
     {/if}
 
-    <!-- Notification Badge for Inbox Module (only when not expanded) -->
-    {#if module.id === "inbox" && !isExpanded && inboxUnreadCount > 0}
+    <!-- Notification Badge for Dashboard (notifications only) or Inbox (all unread) -->
+    {#if module.id === "dashboard" && !isExpanded && notificationUnreadCount > 0}
+      <NotificationBadge count={notificationUnreadCount} />
+    {:else if module.id === "inbox" && !isExpanded && inboxUnreadCount > 0}
       <NotificationBadge count={inboxUnreadCount} />
     {/if}
   </div>

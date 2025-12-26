@@ -312,6 +312,7 @@ const TAB_ORDERS: Record<string, string[]> = {
   train: ["drills", "challenges", "progress"],
   collect: ["achievements", "badges", "stats"],
   feedback: ["submit", "manage"],
+  settings: ["profile", "release-notes", "notifications", "props", "theme", "visibility", "keyboard"],
 };
 
 // Section change handler with View Transitions

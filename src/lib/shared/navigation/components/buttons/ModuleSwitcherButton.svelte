@@ -4,6 +4,7 @@
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
+  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   let { onClick = () => {} } = $props<{
     onClick?: () => void;
@@ -27,8 +28,12 @@
     onClick();
   }
 
-  // Inbox badge count - shows total unread
-  const badgeCount = $derived(inboxState.totalUnreadCount);
+  // Check if currently on Dashboard
+  const isOnDashboard = $derived(navigationState.currentModule === "dashboard");
+
+  // Inbox badge count - shows notification count (only when NOT on Dashboard)
+  // Once on Dashboard, the user sees the badge on the notification bell - no need for redundancy
+  const badgeCount = $derived(isOnDashboard ? 0 : inboxState.unreadNotificationCount);
 
   function formatBadgeCount(count: number): string {
     if (count > 99) return "99+";

@@ -2,12 +2,13 @@
   UserSearchInput - Shared user search with autocomplete
 
   Reusable component for searching users by name or email.
-  Used in announcements, admin preview, and anywhere user selection is needed.
-  Uses the preview-users API for case-insensitive search.
+  Uses direct Firestore queries - no server endpoints needed.
 -->
 <script lang="ts">
   import { browser } from "$app/environment";
   import { onMount } from "svelte";
+  import { collection, getDocs, limit, query } from "firebase/firestore";
+  import { getFirestoreInstance } from "$lib/shared/auth/firebase";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
@@ -26,9 +27,9 @@
     onSelect: (user: UserResult) => void;
     placeholder?: string;
     disabled?: boolean;
-    useFixedPosition?: boolean; // Use position:fixed for overflow container contexts
-    inlineResults?: boolean; // Show results inline instead of dropdown
-    excludeUserIds?: string[]; // User IDs to exclude from search results
+    useFixedPosition?: boolean;
+    inlineResults?: boolean;
+    excludeUserIds?: string[];
   }
 
   let {
@@ -50,7 +51,7 @@
   let isSearching = $state(false);
   let showResults = $state(false);
   let searchTimeout: number | null = null;
-  let wasCleared = $state(false); // Track if user intentionally cleared
+  let wasCleared = $state(false);
 
   // Haptic feedback service
   let hapticService: IHapticFeedbackService | undefined;
@@ -68,51 +69,48 @@
     }
   });
 
-  // Debug effect to track rendering state
-  $effect(() => {
-    console.log("[UserSearch] Render state:", {
-      showResults,
-      resultsCount: searchResults.length,
-      inlineResults,
-    });
-  });
-
+  /**
+   * Search users directly from Firestore
+   * Fetches from users collection and filters client-side
+   */
   async function searchUsers(queryText: string): Promise<UserResult[]> {
-    const q = queryText.trim();
-    console.log("[UserSearch] Searching for:", q);
+    const q = queryText.trim().toLowerCase();
     if (!q || q.length < 2 || !browser) {
-      console.log("[UserSearch] Query too short or not in browser");
       return [];
     }
 
     try {
-      // Use the preview-users API which does case-insensitive matching
-      const url = `/api/preview-users?q=${encodeURIComponent(q)}&limit=10`;
-      console.log("[UserSearch] Fetching:", url);
-      const res = await fetch(url);
+      const firestore = await getFirestoreInstance();
 
-      if (!res.ok) {
-        console.error("[UserSearch] API failed:", res.status, await res.text());
-        return [];
+      // Fetch users from Firestore (limited batch, filter client-side)
+      // Firestore doesn't support case-insensitive full-text search natively
+      const usersQuery = query(collection(firestore, "users"), limit(200));
+      const snapshot = await getDocs(usersQuery);
+
+      const matches: UserResult[] = [];
+
+      for (const docSnap of snapshot.docs) {
+        const data = docSnap.data();
+        const displayName = data.displayName || data.name || "";
+        const email = data.email || "";
+        const photoURL = data.photoURL || data.avatar || undefined;
+
+        // Case-insensitive search on displayName and email
+        const haystack = `${displayName} ${email}`.toLowerCase();
+        if (haystack.includes(q)) {
+          matches.push({
+            uid: docSnap.id,
+            displayName,
+            email,
+            photoURL,
+          });
+        }
+
+        // Stop after finding enough matches
+        if (matches.length >= 10) break;
       }
 
-      const data = (await res.json()) as Array<{
-        id: string;
-        displayName?: string;
-        email?: string;
-        photoURL?: string;
-      }>;
-
-      console.log("[UserSearch] Got results:", data.length, data);
-
-      return data
-        .map((user) => ({
-          uid: user.id,
-          displayName: user.displayName || "",
-          email: user.email || "",
-          photoURL: user.photoURL || undefined,
-        }))
-        .filter((user) => !excludeUserIds.includes(user.uid));
+      return matches.filter((user) => !excludeUserIds.includes(user.uid));
     } catch (error) {
       console.error("[UserSearch] Failed to search users:", error);
       return [];
@@ -120,7 +118,6 @@
   }
 
   async function handleSearchInput() {
-    // Reset cleared flag when user types
     if (wasCleared && searchQuery) {
       wasCleared = false;
     }
@@ -143,15 +140,8 @@
       try {
         searchResults = await searchUsers(q);
         showResults = true;
-        console.log(
-          "[UserSearch] Setting showResults=true, results:",
-          searchResults.length,
-          "inlineResults:",
-          inlineResults
-        );
         if (!inlineResults) {
           updateDropdownPosition();
-          console.log("[UserSearch] dropdownStyle:", dropdownStyle);
         }
       } catch (error) {
         console.error("Failed to search users:", error);
@@ -189,13 +179,9 @@
   }
 
   function handleBlur() {
-    // Delay to allow click events on results to fire
-    // In inline mode, don't auto-hide on blur
     if (inlineResults) {
-      console.log("[UserSearch] Blur ignored in inline mode");
       return;
     }
-    console.log("[UserSearch] Blur - hiding results in 200ms");
     setTimeout(() => {
       showResults = false;
     }, 200);
@@ -407,7 +393,7 @@
   }
 
   .search-results.fixed-position {
-    z-index: 10000; /* Higher z-index for fixed positioning */
+    z-index: 10000;
   }
 
   .search-results.inline {
@@ -445,7 +431,6 @@
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
-  /* RobustAvatar wrapper styles */
   .result-item :global(.robust-avatar) {
     flex-shrink: 0;
   }

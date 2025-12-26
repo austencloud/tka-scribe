@@ -201,7 +201,8 @@
 
   function handleSettingsSectionTap(section: Section) {
     hapticService?.trigger("selection");
-    navigationState.setActiveTab(section.id);
+    // Use onSectionChange to go through navigation coordinator for URL updates
+    onSectionChange?.(section.id);
   }
 
   // Modules that have onboarding (excluding Create which has its own handling)

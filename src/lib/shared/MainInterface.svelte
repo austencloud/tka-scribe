@@ -60,10 +60,10 @@
   import KeyboardShortcutCoordinator from "./keyboard/coordinators/KeyboardShortcutCoordinator.svelte";
 
   // Debug tools
-  import RoleSwitcherDebugPanel from "./debug/components/RoleSwitcherDebugPanel.svelte";
   import PreviewModeBanner from "./debug/components/PreviewModeBanner.svelte";
   import { initUserPreviewContext } from "./debug/context/user-preview-context";
   import { userPreviewState } from "./debug/state/user-preview-state.svelte";
+  import { roleSwitcherState } from "./debug/state/role-switcher-state.svelte";
   import { featureFlagService } from "./auth/services/FeatureFlagService.svelte";
   import ToastContainer from "./toast/components/ToastContainer.svelte";
   import ReleaseNotesDrawer from "./settings/components/ReleaseNotesDrawer.svelte";
@@ -76,9 +76,10 @@
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
   const isModuleLoading = $derived(activeModule === null);
-  // Show banner offset when user preview OR role override is active
+  // Show banner offset when user preview, role override, OR role switcher is open
+  const isAdmin = $derived(featureFlagService.userRole === "admin");
   const isPreviewMode = $derived(
-    userPreviewState.isActive || !!featureFlagService.debugRoleOverride
+    isAdmin && (userPreviewState.isActive || roleSwitcherState.isOpen)
   );
 
   // Desktop sidebar visibility management
@@ -270,8 +271,6 @@
   <KeyboardShortcutCoordinator />
   <CommandPalette />
   <ShortcutsHelp />
-  <!-- Debug Tools -->
-  <RoleSwitcherDebugPanel />
   <!-- Toast Notifications -->
   <ToastContainer />
   <!-- Release Notes Drawer -->
