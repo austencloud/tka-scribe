@@ -2,7 +2,7 @@ import { sveltekit } from "@sveltejs/kit/vite";
 import { defineConfig } from "vitest/config";
 
 // ============================================================================
-// VITEST 3.0 CONFIGURATION (2025 - Optimized for SvelteKit)
+// VITEST 4.0 CONFIGURATION (2025 - Optimized for SvelteKit)
 // ============================================================================
 
 export default defineConfig({
@@ -44,26 +44,25 @@ export default defineConfig({
     },
 
     // ============================================================================
-    // PERFORMANCE (Vitest 3.0 - 2025 best practices)
+    // PERFORMANCE (Vitest 4.0 - 2025 best practices)
     // ============================================================================
+    // Vitest 4.0: poolOptions deprecated, use pool config directly
     pool: "forks", // Better isolation
-    poolOptions: {
-      forks: {
-        singleFork: true, // Faster for smaller test suites
-      },
+    forks: {
+      singleFork: true, // Faster for smaller test suites
     },
 
-    // 2025: Improved test isolation
+    // Improved test isolation
     isolate: true, // Default, but explicit for clarity
 
-    // 2025: Coverage configuration (if needed)
+    // Coverage configuration (if needed)
     // coverage: {
     //   provider: 'v8',
     //   reporter: ['text', 'html'],
     //   exclude: ['tests/**', '**/*.config.*'],
     // },
 
-    // 2025: Better error output
+    // Better error output
     outputFile: {
       json: "./test-results/vitest-results.json",
     },
