@@ -20,6 +20,7 @@ import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/Mot
 import {
   RotationDirection,
   MotionColor,
+  MotionType,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
@@ -252,11 +253,16 @@ export class MirroredSwappedCAPExecutor {
     previousMatchingBeat: BeatData,
     isSwapped: boolean
   ): MotionData {
-    const previousMotion = previousBeat.motions[color];
-
     // SWAP: Get the opposite color's motion data
     const oppositeColor =
       color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
+
+    // When swapped, this color follows the opposite color's path
+    // So its start location must continue from where the opposite color ended
+    const previousMotion = isSwapped
+      ? previousBeat.motions[oppositeColor]
+      : previousBeat.motions[color];
+
     const matchingMotion = isSwapped
       ? previousMatchingBeat.motions[oppositeColor]
       : previousMatchingBeat.motions[color];
@@ -265,10 +271,15 @@ export class MirroredSwappedCAPExecutor {
       throw new Error(`Missing motion data for ${color}`);
     }
 
-    // Mirror the end location vertically
-    const mirroredEndLocation = this._getMirroredLocation(
-      matchingMotion.endLocation as GridLocation
-    );
+    // Get start location from previous motion's end (for continuity)
+    const startLocation = previousMotion.endLocation;
+
+    // For STATIC motions, end = start (no movement)
+    // For other motions, mirror the end location vertically
+    const endLocation =
+      matchingMotion.motionType === MotionType.STATIC
+        ? startLocation
+        : this._getMirroredLocation(matchingMotion.endLocation as GridLocation);
 
     // Flip the prop rotation direction (mirroring effect)
     const mirroredPropRotDir = this._getMirroredPropRotDir(
@@ -280,8 +291,8 @@ export class MirroredSwappedCAPExecutor {
       ...matchingMotion,
       color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
       motionType: matchingMotion.motionType, // Same motion type (no inverted flip)
-      startLocation: previousMotion.endLocation,
-      endLocation: mirroredEndLocation,
+      startLocation,
+      endLocation,
       rotationDirection: mirroredPropRotDir,
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService

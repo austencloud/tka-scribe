@@ -9,7 +9,7 @@ allowed-tools: Bash, Read, Edit, Write, Glob, Grep, Task, mcp__playwright__brows
 
 Supports optional priority filter:
 
-- `/fb` - claim next item (highest priority first)
+- `/fb` - claim next item (highest priority first), or resume in-progress if queue is empty
 - `/fb low` - claim next LOW priority item (quick wins)
 - `/fb medium` - claim next MEDIUM priority item
 - `/fb high` - claim next HIGH priority item
@@ -45,9 +45,10 @@ Run `scripts/node scripts/fetch-feedback.js.js $ARGUMENTS` to auto-claim the nex
 
 The script will:
 
-1. Find the oldest feedback with status "new"
-2. Mark it as "in-progress" with a timestamp (so other agents skip it)
-3. Output the full details for you to work on
+1. Find the oldest feedback with status "new" (prioritized by priority level)
+2. If no "new" items exist, resume the oldest "in-progress" item
+3. Mark it as "in-progress" with a timestamp (so other agents skip it)
+4. Output the full details for you to work on
 
 If another agent runs `/fb` at the same time, they'll get a different item - no collisions!
 

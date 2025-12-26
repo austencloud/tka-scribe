@@ -16,7 +16,10 @@
  * IMPORTANT: End position is calculated from rotated locations
  */
 
-import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -306,11 +309,16 @@ export class RotatedSwappedCAPExecutor {
     previousMatchingBeat: BeatData,
     isSwapped: boolean
   ): MotionData {
-    const previousMotion = previousBeat.motions[color];
-
     // SWAP: Get the opposite color's motion data
     const oppositeColor =
       color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
+
+    // When swapped, this color follows the opposite color's path
+    // So its start location must continue from where the opposite color ended
+    const previousMotion = isSwapped
+      ? previousBeat.motions[oppositeColor]
+      : previousBeat.motions[color];
+
     const matchingMotion = isSwapped
       ? previousMatchingBeat.motions[oppositeColor]
       : previousMatchingBeat.motions[color];
@@ -318,6 +326,9 @@ export class RotatedSwappedCAPExecutor {
     if (!previousMotion || !matchingMotion) {
       throw new Error(`Missing motion data for ${color}`);
     }
+
+    // Get start location from previous motion's end (for continuity)
+    const startLocation = previousMotion.endLocation;
 
     // Get hand rotation direction from the matching motion
     const handRotDir = getHandRotationDirection(
@@ -328,17 +339,20 @@ export class RotatedSwappedCAPExecutor {
     // Get location map for this rotation direction
     const locationMap = getLocationMapForHandRotation(handRotDir);
 
-    // Rotate the end location
-    const rotatedEndLocation =
-      locationMap[previousMotion.endLocation as GridLocation];
+    // For STATIC motions, end = start (no movement)
+    // For other motions, rotate the end location
+    const endLocation =
+      matchingMotion.motionType === MotionType.STATIC
+        ? startLocation
+        : locationMap[startLocation as GridLocation];
 
     // Create rotated-swapped motion
     const rotatedSwappedMotion = {
       ...matchingMotion,
       color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
       motionType: matchingMotion.motionType, // Same motion type (from opposite color due to swap)
-      startLocation: previousMotion.endLocation,
-      endLocation: rotatedEndLocation,
+      startLocation,
+      endLocation,
       rotationDirection: matchingMotion.rotationDirection, // Same rotation direction (from opposite color due to swap)
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService

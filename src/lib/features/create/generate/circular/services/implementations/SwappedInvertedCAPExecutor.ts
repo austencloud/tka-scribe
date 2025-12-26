@@ -246,11 +246,16 @@ export class SwappedInvertedCAPExecutor {
     previousMatchingBeat: BeatData,
     isSwapped: boolean
   ): MotionData {
-    const previousMotion = previousBeat.motions[color];
-
     // SWAP: Get the opposite color's motion data
     const oppositeColor =
       color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
+
+    // When swapped, this color follows the opposite color's path
+    // So its start location must continue from where the opposite color ended
+    const previousMotion = isSwapped
+      ? previousBeat.motions[oppositeColor]
+      : previousBeat.motions[color];
+
     const matchingMotion = isSwapped
       ? previousMatchingBeat.motions[oppositeColor]
       : previousMatchingBeat.motions[color];
@@ -259,10 +264,20 @@ export class SwappedInvertedCAPExecutor {
       throw new Error(`Missing motion data for ${color}`);
     }
 
+    // Get start location from previous motion's end (for continuity)
+    const startLocation = previousMotion.endLocation;
+
     // INVERTED: Flip the motion type (PRO ↔ ANTI)
     const invertedMotionType = this._getInvertedMotionType(
       matchingMotion.motionType
     );
+
+    // For STATIC motions, end = start (no movement)
+    // For other motions, keep the matching motion's end location
+    const endLocation =
+      invertedMotionType === MotionType.STATIC
+        ? startLocation
+        : matchingMotion.endLocation;
 
     // INVERTED: Flip the prop rotation direction
     const invertedPropRotDir = this._getInvertedPropRotDir(
@@ -274,8 +289,8 @@ export class SwappedInvertedCAPExecutor {
       ...matchingMotion,
       color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
       motionType: invertedMotionType, // Flipped
-      startLocation: previousMotion.endLocation,
-      endLocation: matchingMotion.endLocation, // Same location
+      startLocation,
+      endLocation,
       rotationDirection: invertedPropRotDir, // Flipped
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService

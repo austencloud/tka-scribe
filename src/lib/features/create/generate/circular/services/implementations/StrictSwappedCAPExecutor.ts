@@ -15,7 +15,10 @@
  * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
  */
 
-import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import {
+  MotionColor,
+  MotionType,
+} from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -243,11 +246,25 @@ export class StrictSwappedCAPExecutor {
     previousBeat: BeatData,
     matchingMotion: MotionData // This is from the OPPOSITE color in the matching beat
   ): MotionData {
-    const previousMotion = previousBeat.motions[color];
+    // When swapped, this color follows the opposite color's path
+    // So its start location must continue from where the opposite color ended
+    const oppositeColor =
+      color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
+    const previousMotion = previousBeat.motions[oppositeColor];
 
     if (!previousMotion) {
-      throw new Error(`Missing motion data for ${color}`);
+      throw new Error(`Missing motion data for ${oppositeColor}`);
     }
+
+    // Get start location from previous motion's end (for continuity)
+    const startLocation = previousMotion.endLocation;
+
+    // For STATIC motions, end = start (no movement)
+    // For other motions, keep the matching motion's end location
+    const endLocation =
+      matchingMotion.motionType === MotionType.STATIC
+        ? startLocation
+        : matchingMotion.endLocation;
 
     // CRITICAL: We must explicitly set the color to match THIS motion,
     // not copy it from the opposite color's matching motion!
@@ -255,8 +272,8 @@ export class StrictSwappedCAPExecutor {
     const swappedMotion = {
       ...matchingMotion,
       color, // FIXED: Set to THIS motion's color, not matchingMotion's color
-      startLocation: previousMotion.endLocation,
-      endLocation: matchingMotion.endLocation, // Keep same end location from swapped motion
+      startLocation,
+      endLocation,
       // motionType, rotationDirection, turns all come from matchingMotion (opposite color)
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService
