@@ -213,8 +213,9 @@
 </div>
 
 <style>
-  /* ===== CONTAINER - Flex column of sections ===== */
+  /* ===== CONTAINER - Flex column with uniform button heights ===== */
   .actions-container {
+    --button-row-height: 1fr;
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -227,7 +228,7 @@
     pointer-events: none;
   }
 
-  /* ===== SECTIONS - Proportional heights ===== */
+  /* ===== SECTIONS ===== */
   .section {
     display: flex;
     flex-direction: column;
@@ -235,16 +236,16 @@
     min-height: 0;
   }
 
-  /* Proportional flex values based on button count */
+  /* Proportional flex based on row count (desktop 2-col): Transform 3 rows, Patterns 3 rows, Edit 1 row */
   .transform-section {
     flex: 3;
-  } /* 6 buttons = 3 rows (desktop) or 2 rows (mobile) */
+  }
   .patterns-section {
-    flex: 2;
-  } /* 5 buttons = 2 rows */
+    flex: 3;
+  }
   .edit-section {
     flex: 1;
-  } /* 2 buttons = 1 row */
+  }
 
   .section-label {
     font-size: 9px;
@@ -266,8 +267,19 @@
     min-height: 0;
   }
 
-  /* Mobile: 3 columns */
+  /* Mobile: 3 columns, adjust section proportions */
   @media (max-width: 500px) {
+    /* Transform 2 rows, Patterns 2 rows, Edit 1 row */
+    .transform-section {
+      flex: 2;
+    }
+    .patterns-section {
+      flex: 2;
+    }
+    .edit-section {
+      flex: 1;
+    }
+
     .section-grid {
       grid-template-columns: repeat(3, 1fr);
       gap: 4px;

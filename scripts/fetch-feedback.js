@@ -319,9 +319,33 @@ async function claimNextFeedback(priorityFilter = null) {
       }
     }
 
+    // If no new items, fall back to in-progress items (resume work)
+    if (!itemToClaim && !priorityFilter) {
+      const inProgressSnapshot = await db
+        .collection("feedback")
+        .where("status", "==", "in-progress")
+        .get();
+
+      if (!inProgressSnapshot.empty) {
+        // Sort by claimedAt (oldest first) to resume oldest work
+        const inProgressItems = inProgressSnapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }))
+          .sort((a, b) => {
+            const timeA = a.claimedAt?.toDate?.()?.getTime() || 0;
+            const timeB = b.claimedAt?.toDate?.()?.getTime() || 0;
+            return timeA - timeB;
+          });
+
+        if (inProgressItems.length > 0) {
+          itemToClaim = inProgressItems[0];
+          isReclaim = true; // Mark as resuming existing work
+        }
+      }
+    }
+
     if (!itemToClaim) {
       console.log("\n" + "=".repeat(70));
-      console.log("\n  ✨ QUEUE EMPTY - No unclaimed feedback items!\n");
+      console.log("\n  ✨ QUEUE EMPTY - No unclaimed or in-progress feedback items!\n");
       console.log("  Run `node scripts/fetch-feedback.js.js list` to see all items.");
       console.log("\n" + "=".repeat(70) + "\n");
       return null;
@@ -339,7 +363,8 @@ async function claimNextFeedback(priorityFilter = null) {
       : "Unknown date";
 
     console.log("\n" + "=".repeat(70));
-    console.log(`\n  ${isReclaim ? "🔄 RECLAIMED" : "🎯 CLAIMED"} FEEDBACK\n`);
+    const headerText = isReclaim ? "🔄 RESUMING IN-PROGRESS" : "🎯 CLAIMED";
+    console.log(`\n  ${headerText} FEEDBACK\n`);
     console.log("─".repeat(70));
     console.log(`  ID: ${itemToClaim.id}`);
     console.log(`  Type: ${itemToClaim.type || "N/A"}`);

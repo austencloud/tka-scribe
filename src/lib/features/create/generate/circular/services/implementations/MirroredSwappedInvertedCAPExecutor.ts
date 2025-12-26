@@ -274,11 +274,16 @@ export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
     previousMatchingBeat: BeatData,
     isSwapped: boolean
   ): MotionData {
-    const previousMotion = previousBeat.motions[color];
-
     // SWAP: Get the opposite color's motion data
     const oppositeColor =
       color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
+
+    // When swapped, this color follows the opposite color's path
+    // So its start location must continue from where the opposite color ended
+    const previousMotion = isSwapped
+      ? previousBeat.motions[oppositeColor]
+      : previousBeat.motions[color];
+
     const matchingMotion = isSwapped
       ? previousMatchingBeat.motions[oppositeColor]
       : previousMatchingBeat.motions[color];
@@ -287,15 +292,20 @@ export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
       throw new Error(`Missing motion data for ${color}`);
     }
 
-    // Mirror the end location vertically (MIRRORED effect)
-    const mirroredEndLocation = this._getMirroredLocation(
-      matchingMotion.endLocation
-    );
+    // Get start location from previous motion's end (for continuity)
+    const startLocation = previousMotion.endLocation;
 
     // Flip the motion type (INVERTED effect)
     const invertedMotionType = this._getInvertedMotionType(
       matchingMotion.motionType
     );
+
+    // For STATIC motions, end = start (no movement)
+    // For other motions, mirror the end location vertically
+    const endLocation =
+      invertedMotionType === MotionType.STATIC
+        ? startLocation
+        : this._getMirroredLocation(matchingMotion.endLocation);
 
     // Rotation direction stays the SAME for all motion types
     // SWAP + INVERTED + MIRRORED together preserve the rotation direction
@@ -306,8 +316,8 @@ export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
       ...matchingMotion,
       color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
       motionType: invertedMotionType, // INVERTED: Flip motion type
-      startLocation: previousMotion.endLocation,
-      endLocation: mirroredEndLocation, // MIRRORED: Flip location
+      startLocation,
+      endLocation, // MIRRORED: Flip location (or same as start for STATIC)
       rotationDirection: finalPropRotDir, // Conditional: No flip for shifts, flip for dashes
       // Start orientation will be set by orientationCalculationService
       // End orientation will be calculated by orientationCalculationService
