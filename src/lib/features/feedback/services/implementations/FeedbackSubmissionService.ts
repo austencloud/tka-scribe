@@ -1,0 +1,199 @@
+/**
+ * FeedbackSubmissionService
+ *
+ * Handles feedback submission, image uploads, and messaging integration.
+ */
+
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import {
+  getFirestoreInstance,
+  getStorageInstance,
+} from "$lib/shared/auth/firebase";
+import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
+import { authState } from "$lib/shared/auth/state/authState.svelte";
+import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+import type { IFeedbackSubmissionService } from "../contracts/IFeedbackSubmissionService";
+import type {
+  FeedbackFormData,
+  FeedbackStatus,
+} from "../../domain/models/feedback-models";
+import type { MessageAttachment } from "$lib/shared/messaging/domain/models/message-models";
+import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
+import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
+import { captureDeviceContext } from "../../utils/device-context-capturer";
+
+const ADMIN_USER_ID = "PBp3GSBO6igCKPwJyLZNmVEmamI3";
+const COLLECTION_NAME = "feedback";
+
+export class FeedbackSubmissionService implements IFeedbackSubmissionService {
+  generateTitleFromDescription(description: string): string {
+    const trimmed = description.trim();
+
+    // Try to get first sentence (up to . ! or ?)
+    const sentenceMatch = trimmed.match(/^[^.!?]+[.!?]?/);
+    if (
+      sentenceMatch &&
+      sentenceMatch[0].length >= 10 &&
+      sentenceMatch[0].length <= 80
+    ) {
+      return sentenceMatch[0].trim();
+    }
+
+    // Otherwise take first ~60 chars at word boundary
+    if (trimmed.length <= 60) {
+      return trimmed;
+    }
+
+    const truncated = trimmed.substring(0, 60);
+    const lastSpace = truncated.lastIndexOf(" ");
+    if (lastSpace > 30) {
+      return truncated.substring(0, lastSpace) + "...";
+    }
+    return truncated + "...";
+  }
+
+  async submitFeedback(
+    formData: FeedbackFormData,
+    capturedModule: string,
+    capturedTab: string,
+    images?: File[]
+  ): Promise<string> {
+    const firestore = await getFirestoreInstance();
+    const user = authState.user;
+    if (!user) {
+      throw new Error("User must be authenticated to submit feedback");
+    }
+
+    // Use effective user (respects preview mode for proper attribution)
+    const effectiveUser = this.getEffectiveUser(user);
+
+    // Generate title from description if not provided
+    const title =
+      formData.title?.trim() ||
+      this.generateTitleFromDescription(formData.description);
+
+    // Capture device context
+    const deviceContext = captureDeviceContext(capturedModule, capturedTab);
+
+    const feedbackData = {
+      userId: effectiveUser.uid,
+      userEmail: effectiveUser.email,
+      userDisplayName: effectiveUser.displayName,
+      userPhotoURL: effectiveUser.photoURL,
+      type: formData.type,
+      title,
+      description: formData.description,
+      priority: null,
+      capturedModule,
+      capturedTab,
+      deviceContext,
+      source: "app" as const,
+      status: "new" as FeedbackStatus,
+      createdAt: serverTimestamp(),
+      updatedAt: null,
+    };
+
+    // Create document first to get ID
+    const docRef = await addDoc(
+      collection(firestore, COLLECTION_NAME),
+      feedbackData
+    );
+
+    // Upload images if provided
+    if (images && images.length > 0) {
+      const imageUrls = await Promise.all(
+        images.map((file) => this.uploadImage(file, docRef.id))
+      );
+      await updateDoc(docRef, { imageUrls });
+    }
+
+    // Award XP for submitting feedback (non-blocking)
+    trackXP("feedback_submitted", {
+      feedbackId: docRef.id,
+      feedbackType: formData.type,
+    }).catch((err) => console.warn("Failed to track feedback XP:", err));
+
+    // Send message to admin (non-blocking, skip if user is admin)
+    const effectiveUserId = effectiveUser.uid;
+    if (effectiveUserId !== ADMIN_USER_ID) {
+      this.sendFeedbackMessage(
+        docRef.id,
+        title,
+        formData.type,
+        formData.description
+      ).catch((err) =>
+        console.error("[FeedbackSubmissionService] Failed to send message:", err)
+      );
+    }
+
+    return docRef.id;
+  }
+
+  private getEffectiveUser(user: { uid: string; email: string | null; displayName: string | null; photoURL: string | null }) {
+    if (userPreviewState.isActive && userPreviewState.data.profile) {
+      return {
+        uid: userPreviewState.data.profile.uid,
+        email: userPreviewState.data.profile.email || "",
+        displayName: userPreviewState.data.profile.displayName || "Unknown User",
+        photoURL: userPreviewState.data.profile.photoURL || null,
+      };
+    }
+    return {
+      uid: user.uid,
+      email: user.email || "",
+      displayName: user.displayName || user.email || "Anonymous",
+      photoURL: user.photoURL || null,
+    };
+  }
+
+  private async uploadImage(file: File, feedbackId: string): Promise<string> {
+    const { ref, uploadBytes, getDownloadURL } = await import("firebase/storage");
+    const storage = await getStorageInstance();
+
+    const timestamp = Date.now();
+    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    const storagePath = `feedback/${feedbackId}/${timestamp}_${sanitizedFilename}`;
+
+    const storageRef = ref(storage, storagePath);
+    await uploadBytes(storageRef, file);
+
+    return getDownloadURL(storageRef);
+  }
+
+  private async sendFeedbackMessage(
+    feedbackId: string,
+    title: string,
+    type: FeedbackFormData["type"],
+    description: string
+  ): Promise<void> {
+    const { conversation } = await conversationService.getOrCreateConversation(
+      ADMIN_USER_ID
+    );
+
+    const feedbackAttachment: MessageAttachment = {
+      type: "feedback",
+      url: `/feedback/${feedbackId}`,
+      metadata: {
+        feedbackId,
+        feedbackTitle: title,
+        feedbackType: type,
+        feedbackStatus: "new",
+        feedbackDescription: description.slice(0, 200),
+      },
+    };
+
+    await messagingService.sendMessage({
+      conversationId: conversation.id,
+      content: "[Feedback submitted]",
+      attachments: [feedbackAttachment],
+    });
+  }
+}
+
+// Export singleton instance
+export const feedbackSubmissionService = new FeedbackSubmissionService();

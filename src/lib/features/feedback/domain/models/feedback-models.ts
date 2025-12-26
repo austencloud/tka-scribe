@@ -71,6 +71,13 @@ export function isFeedbackStatus(value: unknown): value is FeedbackStatus {
 }
 
 /**
+ * Feedback source - where the feedback originated
+ * - "app": Submitted through the in-app feedback form
+ * - "terminal": Created via CLI/Claude Code (dev work log)
+ */
+export type FeedbackSource = "app" | "terminal";
+
+/**
  * Tester confirmation status after admin resolves feedback
  */
 export type TesterConfirmationStatus =
@@ -119,6 +126,9 @@ export interface FeedbackItem {
   capturedModule: string;
   capturedTab: string;
   deviceContext?: DeviceContext; // Browser/device info for debugging
+
+  // Source tracking
+  source?: FeedbackSource; // "app" = in-app form, "terminal" = CLI/dev log
 
   // Admin management
   status: FeedbackStatus;

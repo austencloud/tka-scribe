@@ -2,7 +2,19 @@
 <script lang="ts">
   import type { VersionState } from "../../state/version-state.svelte";
   import type { FeedbackItem } from "../../domain/models/feedback-models";
-  import { TYPE_CONFIG } from "../../domain/models/feedback-models";
+  import { TYPE_CONFIG, type FeedbackType } from "../../domain/models/feedback-models";
+
+  // Fallback config for unknown types
+  const DEFAULT_TYPE_CONFIG = {
+    label: "Unknown",
+    color: "#6b7280",
+    icon: "fa-question-circle",
+    placeholder: "",
+  };
+
+  function getTypeConfig(type: string) {
+    return TYPE_CONFIG[type as FeedbackType] || DEFAULT_TYPE_CONFIG;
+  }
   import { feedbackService } from "../../services/implementations/FeedbackService";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
@@ -231,8 +243,7 @@
       {:else}
         <div class="all-items-list">
           {#each sortedArchivedItems as item (item.id)}
-            {@const typeConfig =
-              TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
+            {@const typeConfig = getTypeConfig(item.type)}
             <button
               type="button"
               class="feedback-item-card"
@@ -351,8 +362,7 @@
                   </div>
                 {:else}
                   {#each versionState.selectedVersionFeedback as item (item.id)}
-                    {@const typeConfig =
-                      TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]}
+                    {@const typeConfig = getTypeConfig(item.type)}
                     <button
                       type="button"
                       class="feedback-item"
