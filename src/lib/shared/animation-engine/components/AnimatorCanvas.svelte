@@ -1,5 +1,5 @@
 <!--
-AnimatorCanvas.svelte - PixiJS WebGL Animation Canvas
+AnimatorCanvas.svelte - Canvas2D Animation Canvas
 
 ================================================================================
 ARCHITECTURAL NOTE - READ BEFORE ATTEMPTING TO REFACTOR
@@ -16,10 +16,10 @@ without meaningful abstraction. That approach was abandoned and deleted.
 
 WHY THIS COMPONENT CANNOT BE MEANINGFULLY SPLIT:
 
-PixiJS WebGL rendering has inherent lifecycle coupling:
+Canvas2D rendering has inherent lifecycle coupling:
 
-1. CANVAS ELEMENT must exist before PixiJS can initialize
-2. TEXTURE LOADING must happen after PixiJS init but before rendering
+1. CANVAS ELEMENT must exist before renderer can initialize
+2. TEXTURE/IMAGE LOADING must happen after renderer init but before rendering
 3. STATE SYNC (visibility, props, trails) must trigger re-renders
 4. RENDER LOOP needs access to all the above
 
@@ -28,7 +28,7 @@ Splitting them creates artificial boundaries that require complex coordination.
 
 WHAT IS ALREADY WELL-FACTORED (the actual work is in services):
 
-- AnimatorCanvasInitializer     → PixiJS bootstrap sequence
+- AnimatorCanvasInitializer     → Canvas bootstrap sequence
 - AnimationRenderLoopService    → Frame rendering logic
 - PropTextureService            → Prop SVG → texture conversion
 - GlyphTextureService           → TKA glyph → texture conversion
@@ -63,7 +63,7 @@ Last audit: 2025-12-20
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { StartPositionData } from "../../../features/create/shared/domain/models/StartPositionData";
   import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
-  import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+  import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
   import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
   import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
   import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
@@ -140,10 +140,10 @@ Last audit: 2025-12-20
   let turnsTupleGenerator = $state<ITurnsTupleGeneratorService | null>(null);
   let servicesReady = $state(false);
 
-  // Heavy services - loaded on-demand (pixi.js ~500KB)
-  let pixiRenderer = $state<IPixiAnimationRenderer | null>(null);
-  let pixiLoading = $state(false);
-  let pixiError = $state<string | null>(null);
+  // Heavy services - loaded on-demand
+  let animationRenderer = $state<IAnimationRenderer | null>(null);
+  let rendererLoading = $state(false);
+  let rendererError = $state<string | null>(null);
 
   // Load animator services on-demand (using extracted loader)
   async function loadAnimatorServices(): Promise<boolean> {
@@ -156,7 +156,7 @@ Last audit: 2025-12-20
           "[AnimatorCanvas] CRITICAL: DI container returned success but svgGenerator is null!"
         );
         console.error("[AnimatorCanvas] Services returned:", result.services);
-        pixiError = "Failed to load SVG generator service";
+        rendererError = "Failed to load SVG generator service";
         return false;
       }
 
@@ -164,7 +164,7 @@ Last audit: 2025-12-20
         console.error(
           "[AnimatorCanvas] CRITICAL: DI container returned success but orchestrator is null!"
         );
-        pixiError = "Failed to load animation orchestrator service";
+        rendererError = "Failed to load animation orchestrator service";
         return false;
       }
 
@@ -172,7 +172,7 @@ Last audit: 2025-12-20
         console.error(
           "[AnimatorCanvas] CRITICAL: DI container returned success but trailCaptureService is null!"
         );
-        pixiError = "Failed to load trail capture service";
+        rendererError = "Failed to load trail capture service";
         return false;
       }
 
@@ -185,7 +185,7 @@ Last audit: 2025-12-20
       return true;
     }
     console.error("[AnimatorCanvas] Failed to load services:", result.error);
-    pixiError = result.error || "Failed to load animator services";
+    rendererError = result.error || "Failed to load animator services";
     return false;
   }
 
@@ -412,7 +412,7 @@ Last audit: 2025-12-20
     precomputationService.initialize({
       orchestrator,
       trailCaptureService,
-      pixiRenderer,
+      renderer: animationRenderer,
       propDimensions: bluePropDimensions,
       canvasSize,
       instanceId,
@@ -509,10 +509,10 @@ Last audit: 2025-12-20
   let previousGridMode = $state<string | null>(gridMode?.toString() ?? null);
   $effect(() => {
     const currentGridMode = gridMode?.toString() ?? null;
-    if (isInitialized && pixiRenderer && currentGridMode !== previousGridMode) {
+    if (isInitialized && animationRenderer && currentGridMode !== previousGridMode) {
       previousGridMode = currentGridMode;
       // Reload grid texture with new mode
-      pixiRenderer.loadGridTexture(currentGridMode ?? "diamond").then(() => {
+      animationRenderer.loadGridTexture(currentGridMode ?? "diamond").then(() => {
         renderLoopService?.triggerRender(getFrameParams);
       });
     }
@@ -559,7 +559,7 @@ Last audit: 2025-12-20
     propTypeChangeService?.checkForChanges(settingsService);
   });
 
-  // Initialize PixiJS renderer (orchestrated by canvasInitializer service)
+  // Initialize animation renderer (orchestrated by canvasInitializer service)
   // Only containerElement is a tracked dependency - backgroundAlpha and gridMode
   // are read with untrack to prevent re-initialization on prop changes
   $effect(() => {
@@ -591,13 +591,13 @@ Last audit: 2025-12-20
       },
       {
         onPixiLoading: (loading) => {
-          pixiLoading = loading;
+          rendererLoading = loading;
         },
         onPixiError: (error) => {
-          pixiError = error;
+          rendererError = error;
         },
         onPixiRendererReady: (renderer) => {
-          pixiRenderer = renderer;
+          animationRenderer = renderer;
         },
         onInitialized: (initialized) => {
           isInitialized = initialized;
@@ -638,11 +638,11 @@ Last audit: 2025-12-20
   // Initialize prop texture service
   function initializePropTextureService() {
     // Validate dependencies with specific error messages
-    if (!pixiRenderer) {
+    if (!animationRenderer) {
       const error =
-        "Cannot initialize PropTextureService: pixiRenderer is null";
+        "Cannot initialize PropTextureService: animationRenderer is null";
       console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
-      pixiError = error;
+      rendererError = error;
       return;
     }
 
@@ -653,12 +653,12 @@ Last audit: 2025-12-20
       console.error(
         '[AnimatorCanvas] This usually means the "animate" feature module did not register ISVGGenerator properly'
       );
-      pixiError = error;
+      rendererError = error;
       return;
     }
 
     propTextureService = new PropTextureService();
-    propTextureService.initialize(pixiRenderer, svgGenerator);
+    propTextureService.initialize(animationRenderer, svgGenerator);
     propTextureService.setTrailCaptureService(trailCaptureService);
     propTextureService.setDimensionsLoadedCallback((blue, red) => {
       bluePropDimensions = blue;
@@ -686,10 +686,10 @@ Last audit: 2025-12-20
 
   // Create resize service with callbacks
   function initializeResizeService() {
-    if (!containerElement || !pixiRenderer) return;
+    if (!containerElement || !animationRenderer) return;
 
     canvasResizeService = new CanvasResizeService();
-    canvasResizeService.initialize(containerElement, pixiRenderer);
+    canvasResizeService.initialize(containerElement, animationRenderer);
     canvasResizeService.setSizeChangeCallback((newSize: number) => {
       canvasSize = newSize;
       // Update trail capture service with new canvas size
@@ -702,10 +702,10 @@ Last audit: 2025-12-20
 
   // Initialize glyph texture service
   function initializeGlyphTextureService() {
-    if (!pixiRenderer) return;
+    if (!animationRenderer) return;
 
     glyphTextureService = new GlyphTextureService();
-    glyphTextureService.initialize(pixiRenderer);
+    glyphTextureService.initialize(animationRenderer);
     glyphTextureService.setLoadCompleteCallback(() => {
       renderLoopService?.triggerRender(getFrameParams);
     });
@@ -727,7 +727,7 @@ Last audit: 2025-12-20
     if (
       isInitialized &&
       glyphTextureService?.getPendingGlyph() &&
-      pixiRenderer
+      animationRenderer
     ) {
       glyphTextureService.processPendingGlyph();
     }
@@ -764,11 +764,11 @@ Last audit: 2025-12-20
 
   // Initialize render loop service
   function initializeRenderLoopService() {
-    if (!pixiRenderer) return;
+    if (!animationRenderer) return;
 
     renderLoopService = new AnimationRenderLoopService();
     renderLoopService.initialize({
-      pixiRenderer,
+      renderer: animationRenderer,
       trailCaptureService,
       pathCache: precomputationService?.getPathCache() ?? null,
       canvasSize,
@@ -781,7 +781,7 @@ Last audit: 2025-12-20
   });
 </script>
 
-<!-- Hidden GlyphRenderer that converts TKAGlyph to SVG for PixiJS rendering -->
+<!-- Hidden GlyphRenderer that converts TKAGlyph to SVG for Canvas2D rendering -->
 {#if letter}
   <GlyphRenderer {letter} {beatData} onSvgReady={handleGlyphSvgReady} />
 {/if}
@@ -816,13 +816,15 @@ Last audit: 2025-12-20
     position: relative;
     aspect-ratio: 1 / 1;
     /*
-     * Use width: 100% with aspect-ratio to ensure square shape.
-     * Do NOT set height: 100% as it overrides aspect-ratio.
-     * max-height: 100% prevents overflow when parent is shorter than wide.
+     * STRICT 1:1 RATIO: Size based on height, let aspect-ratio determine width.
+     * This ensures the wrapper is always square (matching other pictographs).
+     * - height: 100% takes available height
+     * - aspect-ratio: 1/1 makes width = height
+     * - max-width: 100% prevents overflow if container is taller than wide
      */
-    width: 100%;
+    height: 100%;
+    width: auto;
     max-width: 100%;
-    max-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -836,6 +838,8 @@ Last audit: 2025-12-20
     display: block;
     width: 100%;
     height: 100%;
+    /* CRITICAL: Maintain 1:1 aspect ratio - prevents stretched canvas when container isn't square */
+    object-fit: contain;
   }
 
   /* Transparent canvas when used as overlay */

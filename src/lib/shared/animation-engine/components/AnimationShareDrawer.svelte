@@ -47,6 +47,7 @@
   // Mobile tool view state
   let mobileToolsExpanded = $state(true); // Whether to show full controls or just toolbar
   let mobileToolView = $state<"controls" | "beat-grid">("controls"); // Toggle between views
+  let isSettingsOpen = $state(false); // Track when settings sheet is open for canvas adjustment
 
   // Toggle mobile tool view between controls and beat-grid
   function toggleMobileToolView() {
@@ -135,7 +136,7 @@
     speed = 1,
     isPlaying = false,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     blueProp = null,
     redProp = null,
@@ -422,6 +423,7 @@
         <div
           class="content-wrapper"
           class:mobile-expanded={!isSideBySideLayout}
+          class:settings-open={isSettingsOpen && !isSideBySideLayout}
         >
           <!-- Canvas Area -->
           <AnimationCanvas
@@ -451,6 +453,7 @@
             {redMotionVisible}
             {isSideBySideLayout}
             isExpanded={!isSideBySideLayout}
+            bind:isSettingsOpen
             {mobileToolView}
             {sequenceData}
             currentBeat={beatData && "beatNumber" in beatData
@@ -551,6 +554,21 @@
   /* Mobile Expanded: Responsive layout that adapts to viewport size */
   .content-wrapper.mobile-expanded {
     gap: 4px;
+  }
+
+  /* When settings sheet is open, shrink canvas to fit in top portion */
+  .content-wrapper.settings-open {
+    gap: 0;
+  }
+
+  .content-wrapper.settings-open :global(.canvas-area) {
+    flex: 0 0 auto;
+    max-height: 42vh;
+    min-height: 0;
+  }
+
+  .content-wrapper.settings-open :global(.controls-panel) {
+    display: none; /* Hide controls when settings sheet is open */
   }
 
   /* Small devices (iPhone SE, small phones): Canvas expands to fill space */

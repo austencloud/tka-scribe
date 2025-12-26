@@ -5,7 +5,7 @@
  * Loads textures and retrieves dimensions for both prop colors.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import type {
@@ -16,14 +16,14 @@ import type {
 } from "../contracts/IPropTextureService";
 
 export class PropTextureService implements IPropTextureService {
-  private renderer: IPixiAnimationRenderer | null = null;
+  private renderer: IAnimationRenderer | null = null;
   private svgGenerator: ISVGGenerator | null = null;
   private trailCaptureService: ITrailCaptureService | null = null;
   private onDimensionsLoaded: DimensionsLoadedCallback | null = null;
   private onLoadComplete: LoadCompleteCallback | null = null;
 
   initialize(
-    renderer: IPixiAnimationRenderer,
+    renderer: IAnimationRenderer,
     svgGenerator: ISVGGenerator
   ): void {
     this.renderer = renderer;

@@ -5,7 +5,7 @@
  * Provides access to core animation dependencies.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
@@ -31,11 +31,14 @@ export type AnimatorServiceLoadResult =
   | { success: false; error: string };
 
 /**
- * Result of loading PixiJS renderer
+ * Result of loading animation renderer
  */
-export type PixiLoadResult =
-  | { success: true; renderer: IPixiAnimationRenderer }
+export type AnimationRendererLoadResult =
+  | { success: true; renderer: IAnimationRenderer }
   | { success: false; error: string };
+
+/** @deprecated Use AnimationRendererLoadResult instead */
+export type PixiLoadResult = AnimationRendererLoadResult;
 
 /**
  * Service for loading animator-related dependencies
@@ -43,13 +46,15 @@ export type PixiLoadResult =
 export interface IAnimatorServiceLoader {
   /**
    * Load core animator services (requires animate module).
-   * Does NOT load PixiJS - that's handled separately due to size.
+   * Does NOT load renderer - that's handled separately.
    */
   loadAnimatorServices(): Promise<AnimatorServiceLoadResult>;
 
   /**
-   * Load PixiJS renderer (heavy - ~500KB).
-   * Separate from core services due to bundle size.
+   * Load animation renderer.
    */
-  loadPixiRenderer(): Promise<PixiLoadResult>;
+  loadAnimationRenderer(): Promise<AnimationRendererLoadResult>;
+
+  /** @deprecated Use loadAnimationRenderer() instead */
+  loadPixiRenderer(): Promise<AnimationRendererLoadResult>;
 }

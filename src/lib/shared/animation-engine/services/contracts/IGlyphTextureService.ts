@@ -5,7 +5,7 @@
  * Handles queuing glyphs when renderer isn't ready yet.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 
 /**
  * Pending glyph data
@@ -28,7 +28,7 @@ export interface IGlyphTextureService {
   /**
    * Initialize the service with renderer
    */
-  initialize(renderer: IPixiAnimationRenderer): void;
+  initialize(renderer: IAnimationRenderer): void;
 
   /**
    * Set callback for load completion

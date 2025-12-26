@@ -5,7 +5,7 @@
  * Handles RAF scheduling, trail point gathering, and scene rendering.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { PropState } from "$lib/shared/animation-engine/domain/PropState";
@@ -19,7 +19,7 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
  * Configuration for render loop initialization
  */
 export interface RenderLoopConfig {
-  pixiRenderer: IPixiAnimationRenderer;
+  renderer: IAnimationRenderer;
   trailCaptureService: ITrailCaptureService | null;
   pathCache: AnimationPathCache | null;
   canvasSize: number;

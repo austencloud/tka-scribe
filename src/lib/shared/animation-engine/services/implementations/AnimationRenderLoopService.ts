@@ -5,7 +5,7 @@
  * Handles RAF scheduling, trail point gathering, and scene rendering.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 import { TrailMode } from "../../domain/types/TrailTypes";
@@ -17,7 +17,7 @@ import type {
 } from "../contracts/IAnimationRenderLoopService";
 
 export class AnimationRenderLoopService implements IAnimationRenderLoopService {
-  private pixiRenderer: IPixiAnimationRenderer | null = null;
+  private renderer: IAnimationRenderer | null = null;
   private trailCaptureService: ITrailCaptureService | null = null;
   private pathCache: AnimationPathCache | null = null;
   private canvasSize: number = 950;
@@ -34,15 +34,15 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
   private reusableSecondaryRedTrailPoints: TrailPoint[] = [];
 
   initialize(config: RenderLoopConfig): void {
-    this.pixiRenderer = config.pixiRenderer;
+    this.renderer = config.renderer;
     this.trailCaptureService = config.trailCaptureService;
     this.pathCache = config.pathCache;
     this.canvasSize = config.canvasSize;
   }
 
   updateConfig(config: Partial<RenderLoopConfig>): void {
-    if (config.pixiRenderer !== undefined)
-      this.pixiRenderer = config.pixiRenderer;
+    if (config.renderer !== undefined)
+      this.renderer = config.renderer;
     if (config.trailCaptureService !== undefined)
       this.trailCaptureService = config.trailCaptureService;
     if (config.pathCache !== undefined) this.pathCache = config.pathCache;
@@ -51,7 +51,7 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
 
   start(getFrameParams: () => RenderFrameParams): void {
     this.getFrameParamsCallback = getFrameParams;
-    if (this.rafId === null && this.pixiRenderer) {
+    if (this.rafId === null && this.renderer) {
       this.rafId = requestAnimationFrame(this.renderLoop);
     }
   }
@@ -69,14 +69,14 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
   }
 
   renderFrame(params: RenderFrameParams): void {
-    if (!this.pixiRenderer) return;
+    if (!this.renderer) return;
     this.render(params, performance.now());
   }
 
   triggerRender(getFrameParams: () => RenderFrameParams): void {
     this.needsRender = true;
     this.getFrameParamsCallback = getFrameParams;
-    if (this.rafId === null && this.pixiRenderer) {
+    if (this.rafId === null && this.renderer) {
       this.rafId = requestAnimationFrame(this.renderLoop);
     }
   }
@@ -85,7 +85,7 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
     // Mark as disposed FIRST to stop any pending RAF callbacks
     this.isDisposed = true;
     this.stop();
-    this.pixiRenderer = null;
+    this.renderer = null;
     this.trailCaptureService = null;
     this.pathCache = null;
     this.getFrameParamsCallback = null;
@@ -103,7 +103,7 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
       return;
     }
 
-    if (!this.pixiRenderer || !this.getFrameParamsCallback) {
+    if (!this.renderer || !this.getFrameParamsCallback) {
       this.rafId = null;
       return;
     }
@@ -152,7 +152,7 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
   };
 
   private render(params: RenderFrameParams, currentTime: number): void {
-    if (!this.pixiRenderer) return;
+    if (!this.renderer) return;
 
     const {
       beatData,
@@ -196,8 +196,8 @@ export class AnimationRenderLoopService implements IAnimationRenderLoopService {
       );
     }
 
-    // Render scene using PixiJS
-    this.pixiRenderer.renderScene({
+    // Render scene
+    this.renderer.renderScene({
       blueProp:
         effectivePropsVisible && effectiveBlueMotionVisible
           ? props.blueProp

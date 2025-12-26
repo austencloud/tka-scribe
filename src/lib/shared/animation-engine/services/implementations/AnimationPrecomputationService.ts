@@ -10,7 +10,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import {
   AnimationPathCache,
   type AnimationPathCacheData,
@@ -31,7 +31,7 @@ export class AnimationPrecomputationService
 {
   private orchestrator: ISequenceAnimationOrchestrator | null = null;
   private trailCaptureService: ITrailCaptureService | null = null;
-  private pixiRenderer: IPixiAnimationRenderer | null = null;
+  private renderer: IAnimationRenderer | null = null;
   private propDimensions: PropDimensions = { width: 100, height: 100 };
   private canvasSize: number = 950;
   private instanceId: string = "unknown";
@@ -43,7 +43,7 @@ export class AnimationPrecomputationService
   initialize(config: PrecomputationServiceConfig): void {
     this.orchestrator = config.orchestrator;
     this.trailCaptureService = config.trailCaptureService;
-    this.pixiRenderer = config.pixiRenderer;
+    this.renderer = config.renderer;
     this.propDimensions = config.propDimensions;
     this.canvasSize = config.canvasSize;
     this.instanceId = config.instanceId ?? "unknown";
@@ -54,8 +54,8 @@ export class AnimationPrecomputationService
       this.orchestrator = config.orchestrator;
     if (config.trailCaptureService !== undefined)
       this.trailCaptureService = config.trailCaptureService;
-    if (config.pixiRenderer !== undefined)
-      this.pixiRenderer = config.pixiRenderer;
+    if (config.renderer !== undefined)
+      this.renderer = config.renderer;
     if (config.propDimensions !== undefined)
       this.propDimensions = config.propDimensions;
     if (config.canvasSize !== undefined) this.canvasSize = config.canvasSize;
@@ -66,10 +66,10 @@ export class AnimationPrecomputationService
   }
 
   initializeFramePreRenderer(): void {
-    if (this.orchestrator && this.pixiRenderer && !this.framePreRenderer) {
+    if (this.orchestrator && this.renderer && !this.framePreRenderer) {
       this.framePreRenderer = new SequenceFramePreRenderer(
         this.orchestrator,
-        this.pixiRenderer
+        this.renderer
       );
     }
   }
@@ -236,7 +236,7 @@ export class AnimationPrecomputationService
     this.clearCaches();
     this.orchestrator = null;
     this.trailCaptureService = null;
-    this.pixiRenderer = null;
+    this.renderer = null;
     this.pathCache = null;
     this.framePreRenderer = null;
     this.stateCallback = null;

@@ -10,6 +10,7 @@ type VisibilityObserver = () => void;
 // 3-state enums for multi-option settings
 export type TrailStyle = "off" | "subtle" | "vivid";
 export type GridMode = "none" | "diamond" | "box";
+export type PlaybackMode = "continuous" | "step";
 
 interface AnimationVisibilitySettings {
   // Animation-specific elements (no pictograph equivalent)
@@ -17,6 +18,8 @@ interface AnimationVisibilitySettings {
   beatNumbers: boolean; // "Beat 1, 2, 3..." overlay at top-left
   props: boolean; // Show props vs trails-only mode
   trailStyle: TrailStyle; // Trail visualization style (3-state)
+  playbackMode: PlaybackMode; // Continuous flow vs step-by-step
+  speed: number; // Speed multiplier (1.0 = 60 BPM, range 0.1-3.0)
 
   // Shared with pictograph visibility (can sync)
   tkaGlyph: boolean;
@@ -40,6 +43,8 @@ export class AnimationVisibilityStateManager {
       beatNumbers: true,
       props: true,
       trailStyle: "subtle", // Default to subtle trails
+      playbackMode: "continuous", // Default to continuous playback
+      speed: 1.0, // Default to 60 BPM
 
       // Shared elements - defaults optimized for animation viewing
       tkaGlyph: true,
@@ -116,10 +121,10 @@ export class AnimationVisibilityStateManager {
 
   /**
    * Get specific boolean visibility setting
-   * (For gridMode and trailStyle, use getGridMode() and getTrailStyle())
+   * (For gridMode, trailStyle, playbackMode, speed use dedicated getters)
    */
   getVisibility(
-    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle">
+    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle" | "playbackMode" | "speed">
   ): boolean {
     return this.settings[key];
   }
@@ -137,10 +142,10 @@ export class AnimationVisibilityStateManager {
 
   /**
    * Set specific boolean visibility setting
-   * (For gridMode and trailStyle, use setGridMode() and setTrailStyle())
+   * (For gridMode, trailStyle, playbackMode, speed use dedicated setters)
    */
   setVisibility(
-    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle">,
+    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle" | "playbackMode" | "speed">,
     visible: boolean
   ): void {
     this.settings[key] = visible;
@@ -187,6 +192,8 @@ export class AnimationVisibilityStateManager {
       beatNumbers: true,
       props: true,
       trailStyle: "subtle",
+      playbackMode: "continuous",
+      speed: 1.0,
       tkaGlyph: true,
       reversalIndicators: false,
       turnNumbers: true,
@@ -245,6 +252,52 @@ export class AnimationVisibilityStateManager {
    */
   isGridVisible(): boolean {
     return this.settings.gridMode !== "none";
+  }
+
+  /**
+   * Get current playback mode
+   */
+  getPlaybackMode(): PlaybackMode {
+    return this.settings.playbackMode;
+  }
+
+  /**
+   * Set playback mode
+   */
+  setPlaybackMode(mode: PlaybackMode): void {
+    this.settings.playbackMode = mode;
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * Get current speed (multiplier where 1.0 = 60 BPM)
+   */
+  getSpeed(): number {
+    return this.settings.speed;
+  }
+
+  /**
+   * Get current BPM (speed * 60)
+   */
+  getBpm(): number {
+    return Math.round(this.settings.speed * 60);
+  }
+
+  /**
+   * Set speed (multiplier where 1.0 = 60 BPM)
+   */
+  setSpeed(speed: number): void {
+    this.settings.speed = Math.max(0.1, Math.min(3.0, speed));
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * Set speed from BPM value
+   */
+  setBpm(bpm: number): void {
+    this.setSpeed(bpm / 60);
   }
 }
 

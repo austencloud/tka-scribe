@@ -5,7 +5,7 @@
  * Handles queuing glyphs when renderer isn't ready yet.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type {
   IGlyphTextureService,
   PendingGlyph,
@@ -13,11 +13,11 @@ import type {
 } from "../contracts/IGlyphTextureService";
 
 export class GlyphTextureService implements IGlyphTextureService {
-  private renderer: IPixiAnimationRenderer | null = null;
+  private renderer: IAnimationRenderer | null = null;
   private pendingGlyph: PendingGlyph | null = null;
   private onLoadComplete: GlyphLoadCompleteCallback | null = null;
 
-  initialize(renderer: IPixiAnimationRenderer): void {
+  initialize(renderer: IAnimationRenderer): void {
     this.renderer = renderer;
   }
 

@@ -6,12 +6,12 @@
  */
 
 import {
-  loadPixiModule,
+  loadAnimationModule,
   loadFeatureModule,
   getContainerInstance,
 } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
@@ -21,7 +21,7 @@ import type {
   IAnimatorServiceLoader,
   AnimatorServices,
   AnimatorServiceLoadResult,
-  PixiLoadResult,
+  AnimationRendererLoadResult,
 } from "../contracts/IAnimatorServiceLoader";
 
 export class AnimatorServiceLoader implements IAnimatorServiceLoader {
@@ -71,16 +71,16 @@ export class AnimatorServiceLoader implements IAnimatorServiceLoader {
     }
   }
 
-  async loadPixiRenderer(): Promise<PixiLoadResult> {
+  async loadAnimationRenderer(): Promise<AnimationRendererLoadResult> {
     try {
-      await loadPixiModule();
+      await loadAnimationModule();
       const container = await getContainerInstance();
-      const renderer = container.get<IPixiAnimationRenderer>(
-        TYPES.IPixiAnimationRenderer
+      const renderer = container.get<IAnimationRenderer>(
+        TYPES.IAnimationRenderer
       );
       return { success: true, renderer };
     } catch (err) {
-      console.error("Failed to load Pixi module:", err);
+      console.error("Failed to load animation renderer:", err);
       return {
         success: false,
         error:
@@ -89,6 +89,11 @@ export class AnimatorServiceLoader implements IAnimatorServiceLoader {
             : "Failed to load animation renderer",
       };
     }
+  }
+
+  /** @deprecated Use loadAnimationRenderer() instead */
+  async loadPixiRenderer(): Promise<AnimationRendererLoadResult> {
+    return this.loadAnimationRenderer();
   }
 }
 
@@ -104,9 +109,12 @@ export async function loadAnimatorServices(): Promise<AnimatorServiceLoadResult>
 }
 
 /**
- * Load PixiJS renderer (heavy - ~500KB).
+ * Load animation renderer.
  * Convenience function for direct usage.
  */
-export async function loadPixiRenderer(): Promise<PixiLoadResult> {
-  return animatorServiceLoader.loadPixiRenderer();
+export async function loadAnimationRenderer(): Promise<AnimationRendererLoadResult> {
+  return animatorServiceLoader.loadAnimationRenderer();
 }
+
+/** @deprecated Use loadAnimationRenderer() instead */
+export const loadPixiRenderer = loadAnimationRenderer;

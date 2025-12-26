@@ -2,10 +2,10 @@
  * Animator Canvas Initializer Service Interface
  *
  * Orchestrates the complex async initialization sequence for AnimatorCanvas.
- * Handles service loading, PixiJS setup, texture loading, and sub-service wiring.
+ * Handles service loading, renderer setup, texture loading, and sub-service wiring.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
@@ -23,7 +23,7 @@ export interface InitializationResult {
 export interface InitializerCallbacks {
   onPixiLoading: (loading: boolean) => void;
   onPixiError: (error: string | null) => void;
-  onPixiRendererReady: (renderer: IPixiAnimationRenderer) => void;
+  onPixiRendererReady: (renderer: IAnimationRenderer) => void;
   onInitialized: (initialized: boolean) => void;
   onCanvasReady: (canvas: HTMLCanvasElement | null) => void;
 }
@@ -65,9 +65,9 @@ export interface IAnimatorCanvasInitializer {
   ): void;
 
   /**
-   * Get the current PixiJS renderer (if initialized)
+   * Get the current renderer (if initialized)
    */
-  getRenderer(): IPixiAnimationRenderer | null;
+  getRenderer(): IAnimationRenderer | null;
 
   /**
    * Check if initialization is complete

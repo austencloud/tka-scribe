@@ -10,7 +10,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
 import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type {
   AnimationPathCache,
   AnimationPathCacheData,
@@ -34,7 +34,7 @@ export interface PropDimensions {
 export interface PrecomputationServiceConfig {
   orchestrator: ISequenceAnimationOrchestrator;
   trailCaptureService: ITrailCaptureService | null;
-  pixiRenderer: IPixiAnimationRenderer | null;
+  renderer: IAnimationRenderer | null;
   propDimensions: PropDimensions;
   canvasSize: number;
   instanceId?: string;

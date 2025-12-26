@@ -4,8 +4,8 @@
  * Orchestrates the complex async initialization sequence for AnimatorCanvas.
  */
 
-import type { IPixiAnimationRenderer } from "$lib/features/compose/services/contracts/IPixiAnimationRenderer";
-import { loadPixiRenderer } from "./AnimatorServiceLoader";
+import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
+import { loadAnimationRenderer } from "./AnimatorServiceLoader";
 import { DEFAULT_CANVAS_SIZE } from "../contracts/ICanvasResizeService";
 import type {
   IAnimatorCanvasInitializer,
@@ -28,7 +28,7 @@ function measureContainerSize(container: HTMLDivElement): number {
 }
 
 export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
-  private pixiRenderer: IPixiAnimationRenderer | null = null;
+  private renderer: IAnimationRenderer | null = null;
   private initialized = false;
   private isInitializing = false;
   private destroyRequested = false;
@@ -42,7 +42,7 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
       return { success: false, error: "Initialization already in progress" };
     }
     if (this.initialized) {
-      return { success: true, canvas: this.pixiRenderer?.getCanvas() };
+      return { success: true, canvas: this.renderer?.getCanvas() };
     }
 
     this.isInitializing = true;
@@ -61,12 +61,12 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
         };
       }
 
-      // Step 2: Load PixiJS renderer (heavy ~500KB module)
-      if (!this.pixiRenderer) {
+      // Step 2: Load animation renderer
+      if (!this.renderer) {
         callbacks.onPixiLoading(true);
         callbacks.onPixiError(null);
 
-        const pixiResult = await loadPixiRenderer();
+        const rendererResult = await loadAnimationRenderer();
         callbacks.onPixiLoading(false);
 
         // Check if destroyed during async operation
@@ -75,16 +75,16 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
           return { success: false, error: "Destroyed during initialization" };
         }
 
-        if (!pixiResult.success) {
-          callbacks.onPixiError(pixiResult.error ?? "Unknown PixiJS error");
+        if (!rendererResult.success) {
+          callbacks.onPixiError(rendererResult.error ?? "Unknown renderer error");
           this.isInitializing = false;
-          return { success: false, error: pixiResult.error };
+          return { success: false, error: rendererResult.error };
         }
 
-        this.pixiRenderer = pixiResult.renderer!;
-        callbacks.onPixiRendererReady(this.pixiRenderer);
+        this.renderer = rendererResult.renderer!;
+        callbacks.onPixiRendererReady(this.renderer);
 
-        // Initialize pre-computation now that pixi is available
+        // Initialize pre-computation now that renderer is available
         deps.initializePrecomputationService();
       }
 
@@ -99,11 +99,11 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
         };
       }
 
-      // Step 4: Measure container size BEFORE initializing PixiJS to avoid resize flash
+      // Step 4: Measure container size BEFORE initializing renderer to avoid resize flash
       const initialSize = measureContainerSize(deps.containerElement);
 
-      // Step 5: Initialize PixiJS renderer with measured size
-      await this.pixiRenderer.initialize(
+      // Step 5: Initialize renderer with measured size
+      await this.renderer.initialize(
         deps.containerElement,
         initialSize,
         deps.backgroundAlpha
@@ -111,8 +111,8 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 
       // Check if destroyed during async operation
       if (this.destroyRequested) {
-        this.pixiRenderer?.destroy();
-        this.pixiRenderer = null;
+        this.renderer?.destroy();
+        this.renderer = null;
         this.isInitializing = false;
         return { success: false, error: "Destroyed during initialization" };
       }
@@ -123,14 +123,14 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
       // Step 7: Load initial textures
       const initialGridMode = deps.gridMode?.toString() ?? "diamond";
       await Promise.all([
-        this.pixiRenderer.loadGridTexture(initialGridMode),
+        this.renderer.loadGridTexture(initialGridMode),
         deps.loadPropTextures(),
       ]);
 
       // Final check if destroyed during texture loading
       if (this.destroyRequested) {
-        this.pixiRenderer?.destroy();
-        this.pixiRenderer = null;
+        this.renderer?.destroy();
+        this.renderer = null;
         this.isInitializing = false;
         return { success: false, error: "Destroyed during initialization" };
       }
@@ -139,7 +139,7 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
       this.initialized = true;
       callbacks.onInitialized(true);
 
-      const canvas = this.pixiRenderer.getCanvas();
+      const canvas = this.renderer.getCanvas();
       callbacks.onCanvasReady(canvas);
 
       // Step 9: Set up remaining services
@@ -155,7 +155,7 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
     } catch (err) {
       const error =
         err instanceof Error ? err.message : "Unknown initialization error";
-      console.error("Failed to initialize PixiJS renderer:", err);
+      console.error("Failed to initialize animation renderer:", err);
       this.isInitializing = false;
       return { success: false, error };
     }
@@ -168,9 +168,9 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
     this.destroyRequested = true;
 
     // Only destroy renderer if not currently initializing (let init handle its own cleanup)
-    if (!this.isInitializing && this.pixiRenderer) {
-      this.pixiRenderer.destroy();
-      this.pixiRenderer = null;
+    if (!this.isInitializing && this.renderer) {
+      this.renderer.destroy();
+      this.renderer = null;
     }
 
     this.initialized = false;
@@ -178,8 +178,8 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
     callbacks.onInitialized(false);
   }
 
-  getRenderer(): IPixiAnimationRenderer | null {
-    return this.pixiRenderer;
+  getRenderer(): IAnimationRenderer | null {
+    return this.renderer;
   }
 
   isReady(): boolean {
