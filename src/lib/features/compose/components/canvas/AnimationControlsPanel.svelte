@@ -20,11 +20,11 @@
   import CompactMobileRow from "../controls/CompactMobileRow.svelte";
   import QuickBpmPresets from "../controls/QuickBpmPresets.svelte";
   import TransportControls from "../controls/TransportControls.svelte";
-  import PlaybackModeToggle from "../controls/PlaybackModeToggle.svelte";
+  import PlaybackStyleRow from "../controls/PlaybackStyleRow.svelte";
   import StepModeSettings from "../controls/StepModeSettings.svelte";
-  import VisibilityButton from "../controls/VisibilityButton.svelte";
   import BpmChips from "../controls/BpmChips.svelte";
-  import SimpleTrailControls from "../trail/SimpleTrailControls.svelte";
+  import SettingsButtonRow from "../controls/SettingsButtonRow.svelte";
+  import VisibilitySettingsSheet from "../controls/VisibilitySettingsSheet.svelte";
   import ExportActionsPanel from "./ExportActionsPanel.svelte";
   import AnimationSettingsSheet from "../controls/AnimationSettingsSheet.svelte";
   import AnimationBeatGrid from "$lib/shared/animation-engine/components/AnimationBeatGrid.svelte";
@@ -42,11 +42,12 @@
     blueMotionVisible = true,
     redMotionVisible = true,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     isSideBySideLayout = false,
     isExpanded = false,
     scrollContainerRef = $bindable(null),
+    isSettingsOpen = $bindable(false),
     isExporting = false,
     exportProgress = null,
     mobileToolView = "controls" as MobileToolView,
@@ -84,6 +85,7 @@
     isSideBySideLayout?: boolean;
     isExpanded?: boolean;
     scrollContainerRef?: HTMLDivElement | null;
+    isSettingsOpen?: boolean;
     isExporting?: boolean;
     exportProgress?: { progress: number; stage: string } | null;
     mobileToolView?: MobileToolView;
@@ -150,8 +152,14 @@
       (viewportWidth > 0 && viewportWidth < COMPACT_CONTROLS_WIDTH)
   );
 
-  // Settings sheet state
+  // Settings sheet state - sync with bindable prop
   let isSettingsSheetOpen = $state(false);
+  let isVisibilitySheetOpen = $state(false);
+
+  // Sync internal state with bindable prop for parent to track
+  $effect(() => {
+    isSettingsOpen = isSettingsSheetOpen || isVisibilitySheetOpen;
+  });
 
   // Derive trail preset for settings button summary
   const currentTrailPreset = $derived.by(() => {
@@ -210,7 +218,7 @@
     {/if}
   {/if}
 
-  <!-- Expanded/Desktop Mode: Playback Row -->
+  <!-- Expanded/Desktop Mode: Playback Row (just transport controls) -->
   {#if isSideBySideLayout || isExpanded}
     <div class="control-row playback-row">
       <TransportControls
@@ -221,36 +229,35 @@
         {onStepFullBeatBackward}
         {onStepFullBeatForward}
       />
+    </div>
 
-      <!-- Hide PlaybackModeToggle on compact mobile - it's in settings sheet instead -->
-      {#if !useCompactControls}
-        <PlaybackModeToggle
+    <!-- Playback Style Row (Continuous vs Step-by-Step) - always visible when expanded -->
+    {#if !useCompactControls}
+      <div class="control-row style-row">
+        <PlaybackStyleRow
           {playbackMode}
           {isPlaying}
           {onPlaybackModeChange}
           {onPlaybackToggle}
         />
-      {/if}
-    </div>
-
-    <!-- Step Mode Settings Row (shown when step mode active and not compact) -->
-    {#if playbackMode === "step" && !useCompactControls}
-      <div class="control-row step-settings-container">
-        <StepModeSettings
-          {stepPlaybackStepSize}
-          {stepPlaybackPauseMs}
-          {isPlaying}
-          {onStepPlaybackStepSizeChange}
-          {onStepPlaybackPauseMsChange}
-        />
       </div>
+
+      <!-- Step Mode Settings (shown when step mode active) -->
+      {#if playbackMode === "step"}
+        <div class="control-row step-settings-container">
+          <StepModeSettings
+            {stepPlaybackStepSize}
+            {onStepPlaybackStepSizeChange}
+          />
+        </div>
+      {/if}
     {/if}
   {/if}
 
-  <!-- BPM & Visibility/Trails -->
+  <!-- BPM & Settings Buttons -->
   {#if isSideBySideLayout || isExpanded}
     {#if useCompactControls}
-      <!-- Compact: Single settings button -->
+      <!-- Compact: Single settings button for all settings -->
       <div class="control-row compact-row-settings">
         <button
           class="settings-sheet-btn"
@@ -264,7 +271,7 @@
         </button>
       </div>
     {:else}
-      <!-- Full controls -->
+      <!-- Full controls: BPM inline, Trails/Visibility as sheet buttons -->
       <div class="control-row bpm-row">
         <BpmChips
           bind:bpm
@@ -275,17 +282,9 @@
         />
       </div>
 
-      <div class="control-row trails-row">
-        <VisibilityButton
-          color="blue"
-          isVisible={blueMotionVisible}
-          onToggle={onToggleBlue}
-        />
-        <SimpleTrailControls propType={currentPropType} />
-        <VisibilityButton
-          color="red"
-          isVisible={redMotionVisible}
-          onToggle={onToggleRed}
+      <div class="control-row settings-row">
+        <SettingsButtonRow
+          onOpenVisibility={() => (isVisibilitySheetOpen = true)}
         />
       </div>
     {/if}
@@ -305,7 +304,7 @@
   {/if}
 </div>
 
-<!-- Settings Sheet (Playback settings - not export settings) -->
+<!-- Settings Sheet (Compact mobile - all settings) -->
 <AnimationSettingsSheet
   bind:isOpen={isSettingsSheetOpen}
   bind:bpm
@@ -324,6 +323,9 @@
   {onStepPlaybackStepSizeChange}
   {onPlaybackToggle}
 />
+
+<!-- Visual Settings Sheet (visibility + trails) -->
+<VisibilitySettingsSheet bind:isOpen={isVisibilitySheetOpen} propType={currentPropType} />
 
 <style>
   /* Controls Panel Container */
@@ -431,15 +433,8 @@
     width: 100%;
   }
 
-  .trails-row {
+  .settings-row {
     width: 100%;
-    justify-content: space-between;
-    gap: 8px;
-  }
-
-  .trails-row :global(.trail-controls) {
-    flex: 1;
-    min-width: 0;
   }
 
   /* Compact Settings Button */

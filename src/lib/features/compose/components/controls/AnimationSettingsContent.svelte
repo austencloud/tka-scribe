@@ -27,7 +27,7 @@
     redMotionVisible = true,
     currentPropType = null,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     isPlaying = false,
     onBpmChange = () => {},
@@ -57,60 +57,65 @@
 </script>
 
 <div class="settings-content">
-  <!-- Playback Mode -->
-  <section class="settings-section">
-    <h4 class="settings-section-title">Playback Mode</h4>
-    <div class="playback-mode-row">
+  <!-- Top row: Playback Mode + Visibility side by side -->
+  <div class="top-row">
+    <!-- Playback Mode -->
+    <section class="settings-section compact">
+      <h4 class="settings-section-title">Playback Mode</h4>
       <PlaybackModeToggle
         {playbackMode}
         {isPlaying}
         onPlaybackModeChange={onPlaybackModeChange}
         onPlaybackToggle={onPlaybackToggle}
       />
-    </div>
-    {#if playbackMode === "step"}
-      <div class="step-settings-wrapper">
-        <StepModeSettings
-          {stepPlaybackStepSize}
-          {stepPlaybackPauseMs}
-          {isPlaying}
-          onStepPlaybackStepSizeChange={onStepPlaybackStepSizeChange}
-          onStepPlaybackPauseMsChange={onStepPlaybackPauseMsChange}
-        />
-      </div>
-    {/if}
-  </section>
+    </section>
 
-  <!-- Motion Visibility -->
-  <section class="settings-section">
-    <h4 class="settings-section-title">Motion Visibility</h4>
-    <div class="visibility-toggles">
-      <button
-        class="visibility-toggle blue"
-        class:active={blueMotionVisible}
-        onclick={onToggleBlue}
-        type="button"
-      >
-        <i
-          class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
-          aria-hidden="true"
-        ></i>
-        <span>Blue</span>
-      </button>
-      <button
-        class="visibility-toggle red"
-        class:active={redMotionVisible}
-        onclick={onToggleRed}
-        type="button"
-      >
-        <i
-          class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
-          aria-hidden="true"
-        ></i>
-        <span>Red</span>
-      </button>
+    <!-- Motion Visibility -->
+    <section class="settings-section compact">
+      <h4 class="settings-section-title">Motion Visibility</h4>
+      <div class="visibility-toggles">
+        <button
+          class="visibility-toggle blue"
+          class:active={blueMotionVisible}
+          onclick={onToggleBlue}
+          type="button"
+          aria-label={blueMotionVisible ? "Hide blue motion" : "Show blue motion"}
+        >
+          <i
+            class="fas {blueMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+            aria-hidden="true"
+          ></i>
+          <span>Blue</span>
+        </button>
+        <button
+          class="visibility-toggle red"
+          class:active={redMotionVisible}
+          onclick={onToggleRed}
+          type="button"
+          aria-label={redMotionVisible ? "Hide red motion" : "Show red motion"}
+        >
+          <i
+            class="fas {redMotionVisible ? 'fa-eye' : 'fa-eye-slash'}"
+            aria-hidden="true"
+          ></i>
+          <span>Red</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Step settings (only when step mode active) -->
+  {#if playbackMode === "step"}
+    <div class="step-row">
+      <StepModeSettings
+        {stepPlaybackStepSize}
+        {stepPlaybackPauseMs}
+        {isPlaying}
+        onStepPlaybackStepSizeChange={onStepPlaybackStepSizeChange}
+        onStepPlaybackPauseMsChange={onStepPlaybackPauseMsChange}
+      />
     </div>
-  </section>
+  {/if}
 
   <!-- Speed -->
   <section class="settings-section">
@@ -129,14 +134,35 @@
   .settings-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 12px;
+  }
+
+  /* Top row: 2-column grid for Playback Mode + Visibility */
+  .top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Step settings row */
+  .step-row {
+    margin-top: -4px;
   }
 
   /* Settings sections */
   .settings-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
+  }
+
+  /* Compact variant for top row sections */
+  .settings-section.compact {
+    gap: 4px;
+  }
+
+  .settings-section.compact .settings-section-title {
+    font-size: 0.65rem;
   }
 
   .settings-section-title {
@@ -148,25 +174,25 @@
     margin: 0;
   }
 
-  /* Visibility toggles */
+  /* Visibility toggles - vertical stack in compact layout */
   .visibility-toggles {
     display: flex;
-    gap: 8px;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .visibility-toggle {
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-height: var(--min-touch-target);
-    padding: 10px 14px;
+    gap: 6px;
+    min-height: 36px;
+    padding: 6px 10px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: 10px;
+    border-radius: 8px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -194,15 +220,5 @@
 
   .visibility-toggle:active {
     transform: scale(0.97);
-  }
-
-  /* Playback mode */
-  .playback-mode-row {
-    display: flex;
-    justify-content: center;
-  }
-
-  .step-settings-wrapper {
-    margin-top: 12px;
   }
 </style>

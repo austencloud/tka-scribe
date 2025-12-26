@@ -46,7 +46,7 @@ const playbackModePersistence = createPersistenceHelper<PlaybackMode>({
 
 const stepPlaybackPauseMsPersistence = createPersistenceHelper<number>({
   key: "tka_animation_step_playback_pause_ms",
-  defaultValue: 250,
+  defaultValue: 300,
 });
 
 const stepPlaybackStepSizePersistence =
@@ -294,7 +294,7 @@ export function createAnimationPanelState(): AnimationPanelState {
       speed = 1.0;
       shouldLoop = false;
       playbackMode = "continuous";
-      stepPlaybackPauseMs = 250;
+      stepPlaybackPauseMs = 300;
       stepPlaybackStepSize = 1;
       exportLoopCount = 1;
       totalBeats = 0;

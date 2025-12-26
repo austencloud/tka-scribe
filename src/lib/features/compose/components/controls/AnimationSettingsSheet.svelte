@@ -20,7 +20,7 @@
     redMotionVisible = true,
     currentPropType = null,
     playbackMode = "continuous",
-    stepPlaybackPauseMs = 250,
+    stepPlaybackPauseMs = 300,
     stepPlaybackStepSize = 1,
     isPlaying = false,
     onBpmChange = () => {},
@@ -52,115 +52,53 @@
 
 <Drawer
   bind:isOpen
-  placement="right"
+  placement="bottom"
   respectLayoutMode={true}
   closeOnBackdrop={true}
   closeOnEscape={true}
   ariaLabel="Animation Settings"
   showHandle={true}
-  class="settings-sheet"
+  class="settings-sheet-bottom"
 >
   <div class="sheet-content">
-    <header class="sheet-header">
-      <h3 class="sheet-title">Animation Settings</h3>
-      <button
-        class="sheet-close-btn"
-        onclick={() => (isOpen = false)}
-        aria-label="Close"
-        type="button"
-      >
-        <i class="fas fa-times"></i>
-      </button>
-    </header>
-    <div class="sheet-body">
-      <AnimationSettingsContent
-        bind:bpm
-        {blueMotionVisible}
-        {redMotionVisible}
-        {currentPropType}
-        {playbackMode}
-        {stepPlaybackPauseMs}
-        {stepPlaybackStepSize}
-        {isPlaying}
-        {onBpmChange}
-        {onToggleBlue}
-        {onToggleRed}
-        {onPlaybackModeChange}
-        {onStepPlaybackPauseMsChange}
-        {onStepPlaybackStepSizeChange}
-        {onPlaybackToggle}
-      />
-    </div>
+    <!-- No header - swipe handle or tap backdrop to close -->
+    <AnimationSettingsContent
+      bind:bpm
+      {blueMotionVisible}
+      {redMotionVisible}
+      {currentPropType}
+      {playbackMode}
+      {stepPlaybackPauseMs}
+      {stepPlaybackStepSize}
+      {isPlaying}
+      {onBpmChange}
+      {onToggleBlue}
+      {onToggleRed}
+      {onPlaybackModeChange}
+      {onStepPlaybackPauseMsChange}
+      {onStepPlaybackStepSizeChange}
+      {onPlaybackToggle}
+    />
   </div>
 </Drawer>
 
 <style>
-  /* Sheet Styles */
-  :global(.settings-sheet) {
-    --sheet-width: min(320px, 85vw);
+  /* Bottom Sheet Styles - ~55% height so animation remains visible */
+  :global(.settings-sheet-bottom) {
+    --drawer-max-height: 55dvh;
   }
 
-  /*
-   * Settings sheet opens on top of animation panel (which is already above bottom nav),
-   * so no bottom offset needed - it can extend to the full height
-   */
-  :global(.drawer-content.settings-sheet) {
-    bottom: 0 !important;
-    max-height: 100dvh !important;
-    border-radius: 16px 0 0 16px !important;
+  :global(.drawer-content.settings-sheet-bottom) {
+    max-height: 55dvh !important;
+    border-radius: 20px 20px 0 0 !important;
   }
 
   .sheet-content {
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    min-width: 280px;
+    padding: 8px 16px 16px;
     height: 100%;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
-  }
-
-  .sheet-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    margin-bottom: 20px;
-    flex-shrink: 0;
-  }
-
-  .sheet-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    margin: 0;
-  }
-
-  .sheet-close-btn {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .sheet-close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-  }
-
-  .sheet-body {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    flex: 1;
+    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

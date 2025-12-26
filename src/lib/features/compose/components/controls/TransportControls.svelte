@@ -31,7 +31,6 @@
   <button
     class="step-btn step-full"
     onclick={onStepFullBeatBackward}
-    disabled={isPlaying}
     type="button"
     aria-label="Previous full beat"
   >
@@ -42,7 +41,6 @@
   <button
     class="step-btn step-half"
     onclick={onStepHalfBeatBackward}
-    disabled={isPlaying}
     type="button"
     aria-label="Previous half beat"
   >
@@ -64,7 +62,6 @@
   <button
     class="step-btn step-half"
     onclick={onStepHalfBeatForward}
-    disabled={isPlaying}
     type="button"
     aria-label="Next half beat"
   >
@@ -75,7 +72,6 @@
   <button
     class="step-btn step-full"
     onclick={onStepFullBeatForward}
-    disabled={isPlaying}
     type="button"
     aria-label="Next full beat"
   >
@@ -118,7 +114,7 @@
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .step-btn:hover:not(:disabled) {
+    .step-btn:hover {
       background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
       border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
       color: var(--theme-text, rgba(255, 255, 255, 0.9));
@@ -126,14 +122,9 @@
     }
   }
 
-  .step-btn:active:not(:disabled) {
+  .step-btn:active {
     transform: scale(0.95);
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-  }
-
-  .step-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
   }
 
   /* Play/Pause Button */
