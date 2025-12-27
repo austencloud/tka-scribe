@@ -4,9 +4,9 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
-    IUserActivityService,
+    IUserActivityTracker,
     SessionSummary,
-  } from "../../services/contracts/IUserActivityService";
+  } from "../../services/contracts/IUserActivityTracker";
   import type { ActivityEvent } from "$lib/shared/analytics/domain/models/ActivityEvent";
 
   interface Props {
@@ -25,7 +25,7 @@
 
   onMount(async () => {
     try {
-      const service = resolve<IUserActivityService>(TYPES.IUserActivityService);
+      const service = resolve<IUserActivityTracker>(TYPES.IUserActivityTracker);
       sessions = await service.getUserSessions(userId, 20);
     } catch (e) {
       console.error("Failed to load user sessions:", e);
@@ -45,7 +45,7 @@
     isLoadingEvents = true;
 
     try {
-      const service = resolve<IUserActivityService>(TYPES.IUserActivityService);
+      const service = resolve<IUserActivityTracker>(TYPES.IUserActivityTracker);
       sessionEvents = await service.getSessionActivity(
         userId,
         session.sessionId

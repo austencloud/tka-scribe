@@ -13,8 +13,8 @@
   import { Dialog as DialogPrimitive } from "bits-ui";
   import { authState } from "../state/authState.svelte";
   import { resolve, TYPES } from "../../inversify/di";
-  import type { IAuthService } from "../services/contracts/IAuthService";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IAuthenticator } from "../services/contracts/IAuthenticator";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { onMount, onDestroy } from "svelte";
   import {
     createEmailLinkingState,
@@ -35,14 +35,14 @@
   } = $props();
 
   // Services
-  let authService = $state<IAuthService | null>(null);
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let authService = $state<IAuthenticator | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
   let linkingState = $state<EmailLinkingState | null>(null);
 
   onMount(() => {
-    authService = resolve<IAuthService>(TYPES.IAuthService);
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    authService = resolve<IAuthenticator>(TYPES.IAuthenticator);
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

@@ -31,7 +31,7 @@
     loadSharedModules,
     resolveAsync,
   } from "$lib/shared/inversify/container";
-  import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
+  import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
 
   // Legacy data types from meta.json files
   interface LegacyMotionAttributes {
@@ -260,7 +260,7 @@
   let isGenerating = $state(false);
   let isPaused = $state(false);
   let errorMessage = $state<string | null>(null);
-  let renderService: ISequenceRenderService | null = $state(null);
+  let renderService: ISequenceRenderer | null = $state(null);
 
   // Progress tracking
   let currentSequenceIndex = $state(0);
@@ -303,8 +303,8 @@
     try {
       console.log("Loading render service...");
       await loadSharedModules();
-      renderService = await resolveAsync<ISequenceRenderService>(
-        TYPES.ISequenceRenderService
+      renderService = await resolveAsync<ISequenceRenderer>(
+        TYPES.ISequenceRenderer
       );
       console.log("Render service loaded:", !!renderService);
     } catch (error) {

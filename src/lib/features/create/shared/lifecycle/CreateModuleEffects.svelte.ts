@@ -9,13 +9,13 @@ import type {
   ICreateModuleState,
   IConstructTabState,
 } from "../types/create-module-types";
-import type { IResponsiveLayoutService } from "../services/contracts/IResponsiveLayoutService";
+import type { IResponsiveLayoutManager } from "../services/contracts/IResponsiveLayoutManager";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 
 export interface EffectConfig {
   CreateModuleState: ICreateModuleState | null;
   constructTabState?: IConstructTabState | null;
-  layoutService: IResponsiveLayoutService | null;
+  layoutService: IResponsiveLayoutManager | null;
   onTabAccessibilityChange?: (canAccess: boolean) => void;
 }
 

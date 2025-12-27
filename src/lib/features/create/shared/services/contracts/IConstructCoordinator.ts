@@ -3,7 +3,7 @@ import type { BeatData } from "../../domain/models/BeatData";
 
 /**
  * Coordination service for the Construct tab within the Create module
- * Restored minimal contract based on usages in CreateModuleEventService.
+ * Restored minimal contract based on usages in CreateModuleEventHandler.
  */
 export interface IConstructCoordinator {
   setupComponentCoordination(components: Record<string, unknown>): void;

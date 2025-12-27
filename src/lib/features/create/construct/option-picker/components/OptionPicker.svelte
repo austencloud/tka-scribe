@@ -22,7 +22,7 @@ Delegates all rendering to child components.
     IPictographPreparer,
     PreparedPictographData,
   } from "../services/PictographPreparer";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import OptionPickerContent from "./OptionPickerContent.svelte";
 
   // Props
@@ -55,11 +55,12 @@ Delegates all rendering to child components.
   let isReady = $state(false);
 
   // Internal continuous filter state (initialized from prop)
+  // svelte-ignore state_referenced_locally - intentional: internal filter state initialized from prop
   let internalContinuousOnly = $state(isContinuousOnly);
 
   // Services
   let preparer: IPictographPreparer | null = null;
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
   let sizerService = $state<IOptionSizer | null>(null);
   let organizerService = $state<IOptionOrganizer | null>(null);
 
@@ -151,8 +152,8 @@ Delegates all rendering to child components.
       );
       sizerService = resolve<IOptionSizer>(TYPES.IOptionPickerSizingService);
       preparer = resolve<IPictographPreparer>(TYPES.IPictographPreparer);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
       pickerState = createOptionPickerState({

@@ -22,12 +22,12 @@
   import PrivacySheet from "../../navigation/components/PrivacySheet.svelte";
   import TermsSheet from "../../navigation/components/TermsSheet.svelte";
   import type {
-    ISheetRouterService,
+    ISheetRouter,
     SheetType,
-  } from "../../navigation/services/contracts/ISheetRouterService";
+  } from "../../navigation/services/contracts/ISheetRouter";
   import { authState } from "../../auth/state/authState.svelte";
   import LandingPage from "../../auth/components/LandingPage.svelte";
-  import type { IAuthService } from "../../auth/services/contracts/IAuthService";
+  import type { IAuthenticator } from "../../auth/services/contracts/IAuthenticator";
   import ErrorScreen from "../../foundation/ui/ErrorScreen.svelte";
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import { ThemeService } from "../../theme/services/ThemeService";
@@ -67,8 +67,8 @@
   let initService: IApplicationInitializer | null = $state(null);
   let settingsService: ISettingsState | null = $state(null);
   let deviceService: IDeviceDetector | null = $state(null);
-  let sheetRouterService: ISheetRouterService | null = $state(null);
-  let authService: IAuthService | null = $state(null);
+  let sheetRouterService: ISheetRouter | null = $state(null);
+  let authService: IAuthenticator | null = $state(null);
   let servicesResolved = $state(false);
 
   // App state
@@ -120,10 +120,10 @@
             deviceService = container.get<IDeviceDetector>(
               TYPES.IDeviceDetector
             );
-            sheetRouterService = container.get<ISheetRouterService>(
-              TYPES.ISheetRouterService
+            sheetRouterService = container.get<ISheetRouter>(
+              TYPES.ISheetRouter
             );
-            authService = container.get<IAuthService>(TYPES.IAuthService);
+            authService = container.get<IAuthenticator>(TYPES.IAuthenticator);
             servicesResolved = true;
           }
         } catch (error) {

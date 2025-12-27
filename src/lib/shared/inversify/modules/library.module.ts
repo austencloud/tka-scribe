@@ -8,16 +8,18 @@ import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
 
 // Contracts
-import type { ILibraryService } from "../../../features/library/services/contracts/ILibraryService";
-import type { ICollectionService } from "../../../features/library/services/contracts/ICollectionService";
-// import type { ILibraryActService } from "../../../features/library/services/contracts/ILibraryActService";
+import type { ILibraryRepository } from "../../../features/library/services/contracts/ILibraryRepository";
+import type { ILibrarySaveService } from "../../../features/library/services/contracts/ILibrarySaveService";
+import type { ICollectionManager } from "../../../features/library/services/contracts/ICollectionManager";
+// import type { ILibraryActManager } from "../../../features/library/services/contracts/ILibraryActManager";
 // import type { IForkService } from "../../../features/library/services/contracts/IForkService";
 // import type { ILibraryMigrationService } from "../../../features/library/services/contracts/ILibraryMigrationService";
 
 // Implementations
-import { LibraryService } from "../../../features/library/services/implementations/LibraryService";
-import { CollectionService } from "../../../features/library/services/implementations/CollectionService";
-// import { LibraryActService } from "../../../features/library/services/implementations/LibraryActService";
+import { LibraryRepository } from "../../../features/library/services/implementations/LibraryRepository";
+import { LibrarySaveService } from "../../../features/library/services/implementations/LibrarySaveService";
+import { CollectionManager } from "../../../features/library/services/implementations/CollectionManager";
+// import { LibraryActManager } from "../../../features/library/services/implementations/LibraryActManager";
 // import { ForkService } from "../../../features/library/services/implementations/ForkService";
 // import { LibraryMigrationService } from "../../../features/library/services/implementations/LibraryMigrationService";
 
@@ -25,9 +27,9 @@ import { CollectionService } from "../../../features/library/services/implementa
  * Library Module
  *
  * Provides:
- * - ILibraryService: Core sequence CRUD operations
- * - ICollectionService: Collection management (including Favorites)
- * - ILibraryActService: Act/playlist management (TODO)
+ * - ILibraryRepository: Core sequence CRUD operations
+ * - ICollectionManager: Collection management (including Favorites)
+ * - ILibraryActManager: Act/playlist management (TODO)
  * - IForkService: Forking sequences from other users (TODO)
  * - ILibraryMigrationService: IndexedDB to Firestore migration (TODO)
  */
@@ -35,20 +37,26 @@ export const libraryModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Core Library Service
     options
-      .bind<ILibraryService>(TYPES.ILibraryService)
-      .to(LibraryService)
+      .bind<ILibraryRepository>(TYPES.ILibraryRepository)
+      .to(LibraryRepository)
+      .inSingletonScope();
+
+    // Library Save Service (orchestrates multi-step save workflow)
+    options
+      .bind<ILibrarySaveService>(TYPES.ILibrarySaveService)
+      .to(LibrarySaveService)
       .inSingletonScope();
 
     // Collection Service (includes system collections like Favorites)
     options
-      .bind<ICollectionService>(TYPES.ICollectionService)
-      .to(CollectionService)
+      .bind<ICollectionManager>(TYPES.ICollectionManager)
+      .to(CollectionManager)
       .inSingletonScope();
 
     // Act Service (TODO: Implement)
     // options
-    //   .bind<ILibraryActService>(TYPES.ILibraryActService)
-    //   .to(LibraryActService)
+    //   .bind<ILibraryActManager>(TYPES.ILibraryActManager)
+    //   .to(LibraryActManager)
     //   .inSingletonScope();
 
     // Fork Service (TODO: Implement)

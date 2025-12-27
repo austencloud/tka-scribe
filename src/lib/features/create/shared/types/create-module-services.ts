@@ -7,25 +7,25 @@
  * Domain: Create module - Service types
  */
 
-import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
-import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts/IStartPositionService";
-import type { IBeatOperationsService } from "../services/contracts/IBeatOperationsService";
-import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
-import type { INavigationSyncService } from "../services/contracts/INavigationSyncService";
-import type { IResponsiveLayoutService } from "../services/contracts/IResponsiveLayoutService";
+import type { ISharer } from "$lib/shared/share/services/contracts/ISharer";
+import type { IStartPositionManager } from "../../construct/start-position-picker/services/contracts/IStartPositionManager";
+import type { IBeatOperator } from "../services/contracts/IBeatOperator";
+import type { ICreateModuleOrchestrator } from "../services/contracts/ICreateModuleOrchestrator";
+import type { INavigationSyncer } from "../services/contracts/INavigationSyncer";
+import type { IResponsiveLayoutManager } from "../services/contracts/IResponsiveLayoutManager";
 import type { ISequencePersister } from "../services/contracts/ISequencePersister";
 import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 
 /**
  * Container for all CreateModule services
  */
-export interface CreateModuleServices {
+export interface CreateModuleOrchestrators {
   sequenceService: ISequenceRepository;
-  sequencePersistenceService: ISequencePersister;
-  startPositionService: IStartPositionService;
-  CreateModuleService: ICreateModuleService;
-  layoutService: IResponsiveLayoutService;
-  navigationSyncService: INavigationSyncService;
-  beatOperationsService: IBeatOperationsService;
-  shareService: IShareService;
+  SequencePersister: ISequencePersister;
+  StartPositionManager: IStartPositionManager;
+  CreateModuleOrchestrator: ICreateModuleOrchestrator;
+  layoutService: IResponsiveLayoutManager;
+  NavigationSyncer: INavigationSyncer;
+  BeatOperator: IBeatOperator;
+  shareService: ISharer;
 }

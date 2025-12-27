@@ -10,9 +10,9 @@
     loadFeatureModule,
   } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IFirebaseVideoUploadService } from "$lib/shared/share/services/contracts/IFirebaseVideoUploadService";
-  import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IFirebaseVideoUploader } from "$lib/shared/share/services/contracts/IFirebaseVideoUploader";
+  import type { ICollaborativeVideoManager } from "../services/contracts/ICollaborativeVideoManager";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { auth } from "$lib/shared/auth/firebase";
   import { onMount } from "svelte";
@@ -41,9 +41,9 @@
   } = $props();
 
   // Services
-  let uploadService = $state<IFirebaseVideoUploadService | null>(null);
-  let videoService = $state<ICollaborativeVideoService | null>(null);
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let uploadService = $state<IFirebaseVideoUploader | null>(null);
+  let videoService = $state<ICollaborativeVideoManager | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
 
   onMount(async () => {
     // Load the share module to ensure upload services are available
@@ -53,15 +53,13 @@
       console.warn("[VideoUploadSheet] Failed to load share module:", e);
     }
 
-    uploadService = tryResolve<IFirebaseVideoUploadService>(
-      TYPES.IFirebaseVideoUploadService
+    uploadService = tryResolve<IFirebaseVideoUploader>(
+      TYPES.IFirebaseVideoUploader
     );
-    videoService = tryResolve<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    videoService = tryResolve<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
-    );
+    hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     console.log("[VideoUploadSheet] Services resolved:", {
       uploadService: !!uploadService,
@@ -156,13 +154,13 @@
       return;
     }
     if (!uploadService) {
-      console.error("FirebaseVideoUploadService not available");
+      console.error("FirebaseVideoUploader not available");
       uploadError =
         "Upload service not available. Please refresh and try again.";
       return;
     }
     if (!videoService) {
-      console.error("CollaborativeVideoService not available");
+      console.error("CollaborativeVideoManager not available");
       uploadError =
         "Video service not available. Please refresh and try again.";
       return;

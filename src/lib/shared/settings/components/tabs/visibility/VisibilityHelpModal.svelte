@@ -15,7 +15,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import PictographHelpContent from "./PictographHelpContent.svelte";
   import AnimationHelpContent from "./AnimationHelpContent.svelte";
   import ImageHelpContent from "./ImageHelpContent.svelte";
@@ -32,7 +32,7 @@
 
   let isMobile = $state(true);
   let deviceDetector: IDeviceDetector | null = null;
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Panel metadata for headers and icons
   const panelMeta: Record<
@@ -61,8 +61,8 @@
   onMount(() => {
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
       const responsive = deviceDetector.getResponsiveSettings();
       isMobile = responsive.isMobile || responsive.isTablet;

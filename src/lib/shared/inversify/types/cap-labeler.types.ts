@@ -3,25 +3,25 @@
  */
 
 export const CAPLabelerTypes = {
-  IBeatDataConversionService: Symbol.for("IBeatDataConversionService"),
-  IBeatPairAnalysisService: Symbol.for("IBeatPairAnalysisService"),
-  ICAPDesignationService: Symbol.for("ICAPDesignationService"),
+  IBeatDataConverter: Symbol.for("IBeatDataConverter"),
+  IBeatPairAnalyzer: Symbol.for("IBeatPairAnalyzer"),
+  ICAPDesignator: Symbol.for("ICAPDesignator"),
   ICAPLabelerDetectionService: Symbol.for("ICAPLabelerDetectionService"),
-  ICAPLabelsFirebaseService: Symbol.for("ICAPLabelsFirebaseService"),
-  ISequenceLoadingService: Symbol.for("ISequenceLoadingService"),
-  INavigationService: Symbol.for("ICAPLabelerNavigationService"),
+  ICAPLabelsFirebaseRepository: Symbol.for("ICAPLabelsFirebaseRepository"),
+  ISequenceLoader: Symbol.for("ISequenceLoader"),
+  INavigator: Symbol.for("ICAPLabelerNavigator"),
   ISequenceFeatureExtractor: Symbol.for("ISequenceFeatureExtractor"),
   IRuleBasedTagger: Symbol.for("IRuleBasedTagger"),
-  IPolyrhythmicDetectionService: Symbol.for("IPolyrhythmicDetectionService"),
-  ILayeredPathDetectionService: Symbol.for("ILayeredPathDetectionService"),
+  IPolyrhythmicDetector: Symbol.for("IPolyrhythmicDetector"),
+  ILayeredPathDetector: Symbol.for("ILayeredPathDetector"),
 
   // Comparison services (CAP detection)
-  IRotationComparisonService: Symbol.for("IRotationComparisonService"),
-  IReflectionComparisonService: Symbol.for("IReflectionComparisonService"),
-  ISwapInvertComparisonService: Symbol.for("ISwapInvertComparisonService"),
+  IRotationComparer: Symbol.for("IRotationComparer"),
+  IReflectionComparer: Symbol.for("IReflectionComparer"),
+  ISwapInvertComparer: Symbol.for("ISwapInvertComparer"),
   IBeatComparisonOrchestrator: Symbol.for("IBeatComparisonOrchestrator"),
 
   // Analysis and formatting services
-  ITransformationAnalysisService: Symbol.for("ITransformationAnalysisService"),
-  ICandidateFormattingService: Symbol.for("ICandidateFormattingService"),
+  ITransformationAnalyzer: Symbol.for("ITransformationAnalyzer"),
+  ICandidateFormatter: Symbol.for("ICandidateFormatter"),
 } as const;

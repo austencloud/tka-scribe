@@ -3,8 +3,8 @@ FilterBaseCard.svelte - Base component for filter Bento cards
 Provides consistent styling matching the Generate tab's card aesthetic
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IRippleEffect } from "$lib/shared/application/services/contracts/IRippleEffect";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -31,16 +31,16 @@ Provides consistent styling matching the Generate tab's card aesthetic
     children?: import("svelte").Snippet;
   }>();
 
-  let hapticService: IHapticFeedbackService | null = null;
-  let rippleService: IRippleEffectService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let rippleService: IRippleEffect | null = null;
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    rippleService = tryResolve<IRippleEffectService>(
-      TYPES.IRippleEffectService
+    rippleService = tryResolve<IRippleEffect>(
+      TYPES.IRippleEffect
     );
 
     if (clickable && cardElement && rippleService) {

@@ -9,7 +9,7 @@
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IImageCompositionService } from "$lib/shared/render/services/contracts/IImageCompositionService";
+  import type { IImageComposer } from "$lib/shared/render/services/contracts/IImageComposer";
 
   interface Props {
     beatData: BeatData;
@@ -23,8 +23,8 @@
   async function generatePreview() {
     isGenerating = true;
     try {
-      const compositionService = resolve<IImageCompositionService>(
-        TYPES.IImageCompositionService
+      const compositionService = resolve<IImageComposer>(
+        TYPES.IImageComposer
       );
 
       // Generate canvas from beat data using a minimal SequenceData object

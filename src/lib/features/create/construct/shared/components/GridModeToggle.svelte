@@ -6,15 +6,15 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   const { currentGridMode = GridMode.DIAMOND, onGridModeChange } = $props<{
     currentGridMode?: GridMode;
     onGridModeChange?: (gridMode: GridMode) => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Action-oriented: Show the mode you can switch TO

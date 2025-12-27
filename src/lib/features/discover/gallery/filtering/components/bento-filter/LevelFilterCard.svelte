@@ -3,7 +3,7 @@ LevelFilterCard.svelte - Card with inline stepper for difficulty level selection
 Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -20,11 +20,11 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
     cardIndex?: number;
   }>();
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

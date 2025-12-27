@@ -10,10 +10,16 @@
 
   let {
     stepPlaybackStepSize = 1,
+    stepPlaybackPauseMs = 0,
+    isPlaying = false,
     onStepPlaybackStepSizeChange = () => {},
+    onStepPlaybackPauseMsChange = () => {},
   }: {
     stepPlaybackStepSize?: StepPlaybackStepSize;
+    stepPlaybackPauseMs?: number;
+    isPlaying?: boolean;
     onStepPlaybackStepSizeChange?: (stepSize: StepPlaybackStepSize) => void;
+    onStepPlaybackPauseMsChange?: (pauseMs: number) => void;
   } = $props();
 </script>
 

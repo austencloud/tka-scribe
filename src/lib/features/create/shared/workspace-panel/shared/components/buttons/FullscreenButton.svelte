@@ -5,15 +5,15 @@
   Handles cross-browser fullscreen API with proper state management.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IMobileFullscreenService } from "$lib/shared/mobile/services/contracts/IMobileFullscreenService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IMobileFullscreenManager } from "$lib/shared/mobile/services/contracts/IMobileFullscreenManager";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let fullscreenService: IMobileFullscreenService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let fullscreenService: IMobileFullscreenManager | null = null;
 
   // State
   let isFullscreen = $state(false);
@@ -24,16 +24,16 @@
     const cleanupFns: Array<() => void> = [];
 
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch (error) {
       console.warn("Failed to resolve haptic feedback service:", error);
     }
 
     try {
-      fullscreenService = resolve<IMobileFullscreenService>(
-        TYPES.IMobileFullscreenService
+      fullscreenService = resolve<IMobileFullscreenManager>(
+        TYPES.IMobileFullscreenManager
       );
     } catch (error) {
       console.warn("Failed to resolve mobile fullscreen service:", error);

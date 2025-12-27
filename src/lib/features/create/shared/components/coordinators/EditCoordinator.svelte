@@ -18,7 +18,7 @@
   // Get context
   const ctx = getCreateModuleContext();
   const { CreateModuleState, panelState, services, layout, handlers } = ctx;
-  const beatOperationsService = services.beatOperationsService;
+  const BeatOperator = services.BeatOperator;
   const shouldUseSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
   const onError = handlers.onError;
 
@@ -61,7 +61,7 @@
     }
 
     try {
-      beatOperationsService.updateBeatOrientation(
+      BeatOperator.updateBeatOrientation(
         beatIndex,
         color,
         orientation,
@@ -84,7 +84,7 @@
     }
 
     try {
-      beatOperationsService.updateBeatTurns(
+      BeatOperator.updateBeatTurns(
         beatIndex,
         color,
         turnAmount,
@@ -110,7 +110,7 @@
     }
 
     try {
-      beatOperationsService.updateRotationDirection(
+      BeatOperator.updateRotationDirection(
         beatIndex,
         color,
         rotationDirection,
@@ -129,7 +129,7 @@
 
   function handleBatchApply(changes: BatchEditChanges) {
     try {
-      beatOperationsService.applyBatchChanges(changes, CreateModuleState);
+      BeatOperator.applyBatchChanges(changes, CreateModuleState);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to apply changes";
@@ -144,7 +144,7 @@
 
   function handleRemoveBeat(beatNumber: number) {
     try {
-      beatOperationsService.removeBeat(beatNumber - 1, CreateModuleState);
+      BeatOperator.removeBeat(beatNumber - 1, CreateModuleState);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to remove beat";

@@ -1,7 +1,7 @@
 /**
  * Messaging Service Type Identifiers
  *
- * Note: MessagingService and ConversationService use singleton exports
+ * Note: Messenger and ConversationManager use singleton exports
  * directly instead of DI resolution. This file exists for consistency
  * but contains no types.
  */

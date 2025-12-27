@@ -14,13 +14,13 @@
     TimedConfig,
   } from "../state/train-practice-state.svelte";
   import ResultsScreen from "./ResultsScreen.svelte";
-  import type { IPositionDetectionService } from "../services/contracts/IPositionDetectionService";
+  import type { IPositionDetector } from "../services/contracts/IPositionDetector";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ITrainChallengeService } from "../services/contracts/ITrainChallengeService";
-  import type { IPerformanceHistoryService } from "../services/contracts/IPerformanceHistoryService";
-  import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ITrainChallengeManager } from "../services/contracts/ITrainChallengeManager";
+  import type { IPerformanceHistoryTracker } from "../services/contracts/IPerformanceHistoryTracker";
+  import type { IAchievementManager } from "$lib/shared/gamification/services/contracts/IAchievementManager";
   import type { StoredPerformance } from "../domain/models/TrainDatabaseModels";
   import { activeChallengeState } from "../state/active-challenge-state.svelte";
   import {
@@ -70,17 +70,17 @@
   const trainState = createTrainState();
 
   // Services
-  let detectionService: IPositionDetectionService | null = $state(null);
-  let hapticService: IHapticFeedbackService | undefined;
+  let detectionService: IPositionDetector | null = $state(null);
+  let hapticService: IHapticFeedback | undefined;
   let isDetectionReady = $state(false);
-  const challengeService = resolve<ITrainChallengeService>(
-    TYPES.ITrainChallengeService
+  const challengeService = resolve<ITrainChallengeManager>(
+    TYPES.ITrainChallengeManager
   );
-  const achievementService = resolve<IAchievementService>(
-    TYPES.IAchievementService
+  const achievementService = resolve<IAchievementManager>(
+    TYPES.IAchievementManager
   );
-  const historyService = resolve<IPerformanceHistoryService>(
-    TYPES.IPerformanceHistoryService
+  const historyService = resolve<IPerformanceHistoryTracker>(
+    TYPES.IPerformanceHistoryTracker
   );
 
   // Session tracking
@@ -135,8 +135,8 @@
 
   async function initDetection() {
     try {
-      detectionService = resolve<IPositionDetectionService>(
-        TYPES.IPositionDetectionService
+      detectionService = resolve<IPositionDetector>(
+        TYPES.IPositionDetector
       );
       await detectionService.initialize();
       isDetectionReady = true;
@@ -529,8 +529,8 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     initDetection();
   });

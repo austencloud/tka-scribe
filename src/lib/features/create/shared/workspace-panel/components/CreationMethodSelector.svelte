@@ -10,7 +10,7 @@
 <script lang="ts">
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount, onDestroy } from "svelte";
   import { fly, fade } from "svelte/transition";
   import type { EmblaCarouselType } from "embla-carousel";
@@ -24,15 +24,15 @@
   } = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
 
   // Refs for focus management
   let containerRef: HTMLDivElement | null = $state(null);
   let focusedChoiceIndex = $state(0);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Add keyboard event listener

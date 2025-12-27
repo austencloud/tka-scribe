@@ -2,61 +2,61 @@ import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 
 // Import service implementations
-import { KeyboardNavigationService } from "../../navigation/services/KeyboardNavigationService";
-import { ModuleSelectionService } from "../../navigation/services/ModuleSelectionService";
-import { SheetRouterService } from "../../navigation/services/implementations/SheetRouterService";
-import { SequenceEncoderService } from "../../navigation/services/implementations/SequenceEncoderService";
-import { URLSyncService } from "../../navigation/services/implementations/URLSyncService";
-import { DeepLinkService } from "../../navigation/services/implementations/DeepLinkService";
-import { LetterDeriverService } from "../../navigation/services/implementations/LetterDeriverService";
-import { PositionDeriverService } from "../../navigation/services/implementations/PositionDeriverService";
-import { SequenceViewerService } from "../../sequence-viewer/services/implementations/SequenceViewerService";
-import { NavigationPersistenceService } from "../../navigation/services/implementations/NavigationPersistenceService";
-import { NavigationValidationService } from "../../navigation/services/implementations/NavigationValidationService";
+import { KeyboardNavigator } from "../../navigation/services/KeyboardNavigator";
+import { ModuleSelector } from "../../navigation/services/ModuleSelector";
+import { SheetRouter } from "../../navigation/services/implementations/SheetRouter";
+import { SequenceEncoder } from "../../navigation/services/implementations/SequenceEncoder";
+import { URLSyncer } from "../../navigation/services/implementations/URLSyncer";
+import { DeepLinker } from "../../navigation/services/implementations/DeepLinker";
+import { LetterDeriver } from "../../navigation/services/implementations/LetterDeriver";
+import { PositionDeriver } from "../../navigation/services/implementations/PositionDeriver";
+import { SequenceViewer } from "../../sequence-viewer/services/implementations/SequenceViewer";
+import { NavigationPersister } from "../../navigation/services/implementations/NavigationPersister";
+import { NavigationValidator } from "../../navigation/services/implementations/NavigationValidator";
 
 import { TYPES } from "../types";
 
 export const navigationModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === NAVIGATION UI SERVICES ===
-    // Note: IViewportService is bound in core.module.ts
+    // Note: IViewportManager is bound in core.module.ts
     options
-      .bind(TYPES.IModuleSelectionService)
-      .to(ModuleSelectionService)
+      .bind(TYPES.IModuleSelector)
+      .to(ModuleSelector)
       .inSingletonScope();
     options
-      .bind(TYPES.IKeyboardNavigationService)
-      .to(KeyboardNavigationService)
+      .bind(TYPES.IKeyboardNavigator)
+      .to(KeyboardNavigator)
       .inSingletonScope();
     options
-      .bind(TYPES.ISheetRouterService)
-      .to(SheetRouterService)
+      .bind(TYPES.ISheetRouter)
+      .to(SheetRouter)
       .inSingletonScope();
     options
-      .bind(TYPES.ISequenceEncoderService)
-      .to(SequenceEncoderService)
+      .bind(TYPES.ISequenceEncoder)
+      .to(SequenceEncoder)
       .inSingletonScope();
-    options.bind(TYPES.IURLSyncService).to(URLSyncService).inSingletonScope();
-    options.bind(TYPES.IDeepLinkService).to(DeepLinkService).inSingletonScope();
+    options.bind(TYPES.IURLSyncer).to(URLSyncer).inSingletonScope();
+    options.bind(TYPES.IDeepLinker).to(DeepLinker).inSingletonScope();
     options
-      .bind(TYPES.ILetterDeriverService)
-      .to(LetterDeriverService)
-      .inSingletonScope();
-    options
-      .bind(TYPES.IPositionDeriverService)
-      .to(PositionDeriverService)
+      .bind(TYPES.ILetterDeriver)
+      .to(LetterDeriver)
       .inSingletonScope();
     options
-      .bind(TYPES.ISequenceViewerService)
-      .to(SequenceViewerService)
+      .bind(TYPES.IPositionDeriver)
+      .to(PositionDeriver)
       .inSingletonScope();
     options
-      .bind(TYPES.INavigationPersistenceService)
-      .to(NavigationPersistenceService)
+      .bind(TYPES.ISequenceViewer)
+      .to(SequenceViewer)
       .inSingletonScope();
     options
-      .bind(TYPES.INavigationValidationService)
-      .to(NavigationValidationService)
+      .bind(TYPES.INavigationPersister)
+      .to(NavigationPersister)
+      .inSingletonScope();
+    options
+      .bind(TYPES.INavigationValidator)
+      .to(NavigationValidator)
       .inSingletonScope();
   }
 );

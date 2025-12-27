@@ -21,7 +21,7 @@
   import { fade, fly } from "svelte/transition";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IPlatformDetectionService } from "../services/contracts/IPlatformDetectionService";
+  import type { IPlatformDetector } from "../services/contracts/IPlatformDetector";
   import type { Platform, Browser } from "../config/pwa-install-instructions";
   import { getInstallInstructions } from "../config/pwa-install-instructions";
   import { createViewportMeasurement } from "../utils/viewport-measurement.svelte";
@@ -43,8 +43,8 @@
 
   // Detect platform and browser on mount
   onMount(() => {
-    const platformService = resolve<IPlatformDetectionService>(
-      TYPES.IPlatformDetectionService
+    const platformService = resolve<IPlatformDetector>(
+      TYPES.IPlatformDetector
     );
     const detected = platformService.detectPlatformAndBrowser();
     platform = detected.platform;

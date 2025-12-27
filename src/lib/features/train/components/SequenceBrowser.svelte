@@ -6,7 +6,7 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
-  import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
+  import type { ILibraryRepository } from "$lib/features/library/services/contracts/ILibraryRepository";
   import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
@@ -19,7 +19,7 @@
   let { show = false, onSelect, onClose }: Props = $props();
 
   // Services - lazily resolved
-  let libraryService: ILibraryService | null = null;
+  let libraryService: ILibraryRepository | null = null;
 
   // State
   let sequences = $state<SequenceData[]>([]);
@@ -46,7 +46,7 @@
 
       // Resolve service if not already resolved
       if (!libraryService) {
-        libraryService = tryResolve<ILibraryService>(TYPES.ILibraryService);
+        libraryService = tryResolve<ILibraryRepository>(TYPES.ILibraryRepository);
         if (!libraryService) {
           throw new Error("Library service not available");
         }

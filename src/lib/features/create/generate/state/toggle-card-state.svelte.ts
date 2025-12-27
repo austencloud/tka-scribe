@@ -10,8 +10,8 @@
  */
 
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
+import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+import type { IRippleEffect } from "$lib/shared/application/services/contracts/IRippleEffect";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 
@@ -30,8 +30,8 @@ export function createToggleCardState<T>(props: {
   onToggle: (value: T) => void;
 }) {
   // Services
-  let hapticService = $state<IHapticFeedbackService | null>(null);
-  let rippleService = $state<IRippleEffectService | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
+  let rippleService = $state<IRippleEffect | null>(null);
   let deviceDetector = $state<IDeviceDetector | null>(null);
 
   // Reactive state
@@ -55,10 +55,10 @@ export function createToggleCardState<T>(props: {
   async function initialize(): Promise<() => void> {
     try {
       // Resolve services from DI container
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
-      rippleService = resolve<IRippleEffectService>(TYPES.IRippleEffectService);
+      rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 
       // Set initial layout state

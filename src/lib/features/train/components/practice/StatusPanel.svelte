@@ -7,7 +7,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IPositionDetectionService } from "../../services/contracts/IPositionDetectionService";
+  import type { IPositionDetector } from "../../services/contracts/IPositionDetector";
 
   interface Props {
     isCameraReady?: boolean;
@@ -22,7 +22,7 @@
   }: Props = $props();
 
   // Performance monitoring
-  let detectionService: IPositionDetectionService | null = null;
+  let detectionService: IPositionDetector | null = null;
   let fps = $state(0);
   let avgFrameTime = $state(0);
   let videoResolution = $state("N/A");
@@ -30,8 +30,8 @@
   let showStats = $state(false);
 
   onMount(() => {
-    detectionService = resolve<IPositionDetectionService>(
-      TYPES.IPositionDetectionService
+    detectionService = resolve<IPositionDetector>(
+      TYPES.IPositionDetector
     );
 
     // Update performance stats every 500ms

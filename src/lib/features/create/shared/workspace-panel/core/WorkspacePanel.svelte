@@ -13,10 +13,10 @@
   import Toast from "../components/Toast.svelte";
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
   import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
-  import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
+  import type { IBeatOperator } from "../../services/contracts/IBeatOperator";
 
   // Services
-  let beatOperationsService: IBeatOperationsService | null = null;
+  let BeatOperator: IBeatOperator | null = null;
 
   // Props
   let {
@@ -123,7 +123,7 @@
 
   // Handle beat deletion via keyboard
   function handleBeatDelete(beatNumber: number) {
-    if (!beatOperationsService || !createModuleState) {
+    if (!BeatOperator || !createModuleState) {
       console.warn("Cannot delete beat - services not initialized");
       return;
     }
@@ -132,7 +132,7 @@
     const beatIndex = beatNumber - 1;
 
     try {
-      beatOperationsService.removeBeat(beatIndex, createModuleState);
+      BeatOperator.removeBeat(beatIndex, createModuleState);
     } catch (err) {
       console.error("Failed to remove beat", err);
       toastMessage = "Failed to remove beat";
@@ -148,8 +148,8 @@
 
   // Initialize services on mount
   onMount(() => {
-    beatOperationsService = resolve<IBeatOperationsService>(
-      TYPES.IBeatOperationsService
+    BeatOperator = resolve<IBeatOperator>(
+      TYPES.IBeatOperator
     );
   });
 </script>

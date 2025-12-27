@@ -14,7 +14,7 @@
   import { onMount } from "svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IMediaBundlerService } from "../services/contracts/IMediaBundlerService";
+  import type { IMediaBundler } from "../services/contracts/IMediaBundler";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import type { InstagramMediaItem } from "../domain/models/InstagramMedia";
   import type { ShareOptions } from "../domain/models/ShareOptions";
@@ -30,7 +30,7 @@
   } = $props();
 
   // Services
-  let mediaBundlerService: IMediaBundlerService;
+  let mediaBundlerService: IMediaBundler;
 
   // State
   let videoFile = $state<File | null>(null);
@@ -42,8 +42,8 @@
   let hasNativeShare = $state(false);
 
   onMount(async () => {
-    mediaBundlerService = await resolve<IMediaBundlerService>(
-      TYPES.IMediaBundlerService
+    mediaBundlerService = await resolve<IMediaBundler>(
+      TYPES.IMediaBundler
     );
     // Check if Web Share API is available (mobile devices)
     hasNativeShare =

@@ -57,6 +57,7 @@
 
   // Editable name
   let isEditing = $state(false);
+  // svelte-ignore state_referenced_locally - intentional: reset in startEdit() when editing begins
   let editValue = $state(track.name);
 
   function startEdit() {

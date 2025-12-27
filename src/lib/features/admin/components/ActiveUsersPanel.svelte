@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IUserActivityService } from "../services/contracts/IUserActivityService";
+  import type { IUserActivityTracker } from "../services/contracts/IUserActivityTracker";
   import type { UserPresenceWithId } from "$lib/shared/presence/domain/models/presence-models";
   import UserPresenceCard from "./active-users/UserPresenceCard.svelte";
   import UserActivityDetail from "./active-users/UserActivityDetail.svelte";
@@ -11,7 +11,7 @@
   import PanelGrid from "$lib/shared/components/panel/PanelGrid.svelte";
 
   // Services
-  let userActivityService: IUserActivityService | null = null;
+  let userActivityService: IUserActivityTracker | null = null;
 
   // State
   let users = $state<UserPresenceWithId[]>([]);
@@ -61,8 +61,8 @@
     resizeListener = checkMobile;
 
     try {
-      userActivityService = resolve<IUserActivityService>(
-        TYPES.IUserActivityService
+      userActivityService = resolve<IUserActivityTracker>(
+        TYPES.IUserActivityTracker
       );
 
       // Subscribe to real-time presence updates

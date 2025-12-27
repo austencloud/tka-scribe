@@ -5,7 +5,7 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { onMount } from "svelte";
@@ -20,7 +20,7 @@ Shows pictograph, user identifies the motion pattern (Pro-Pro, Anti-Anti, or Hyb
 
   let { onComplete } = $props<{ onComplete?: () => void }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   type AnswerState = "idle" | "correct" | "incorrect";
 

@@ -9,12 +9,12 @@
   import { browser } from "$app/environment";
   import { loadFeatureModule, resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICameraService } from "$lib/features/train/services/contracts/ICameraService";
-  import { getVideoRecordService } from "../services/implementations/VideoRecordService";
+  import type { ICameraManager } from "$lib/features/train/services/contracts/ICameraManager";
+  import { getVideoRecorder } from "../services/implementations/VideoRecorder";
   import type {
     RecordingProgress,
     RecordingResult,
-  } from "../services/contracts/IVideoRecordService";
+  } from "../services/contracts/IVideoRecorder";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { createVideoRecordSettings } from "../state/video-record-settings.svelte";
   import InlineAnimationPlayer from "$lib/features/discover/gallery/display/components/media-viewer/InlineAnimationPlayer.svelte";
@@ -36,8 +36,8 @@
   let settingsOpen = $state(false);
 
   // Services (lazy-loaded)
-  let cameraService = $state<ICameraService | null>(null);
-  const recordService = getVideoRecordService();
+  let cameraService = $state<ICameraManager | null>(null);
+  const recordService = getVideoRecorder();
 
   // Settings
   const settings = createVideoRecordSettings();
@@ -255,7 +255,7 @@
 
     try {
       await loadFeatureModule("train");
-      cameraService = resolve<ICameraService>(TYPES.ICameraService);
+      cameraService = resolve<ICameraManager>(TYPES.ICameraManager);
       await initializeCamera();
     } catch (error) {
       cameraError = "Failed to load camera service";

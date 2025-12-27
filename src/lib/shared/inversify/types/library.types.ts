@@ -5,9 +5,10 @@
  */
 
 export const LibraryTypes = {
-  ILibraryService: Symbol.for("ILibraryService"),
-  ICollectionService: Symbol.for("ICollectionService"),
-  ILibraryActService: Symbol.for("ILibraryActService"),
+  ILibraryRepository: Symbol.for("ILibraryRepository"),
+  ILibrarySaveService: Symbol.for("ILibrarySaveService"),
+  ICollectionManager: Symbol.for("ICollectionManager"),
+  ILibraryActManager: Symbol.for("ILibraryActManager"),
   ILibraryQueryService: Symbol.for("ILibraryQueryService"),
   IForkService: Symbol.for("IForkService"),
   ILibraryMigrationService: Symbol.for("ILibraryMigrationService"),

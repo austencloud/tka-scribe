@@ -12,9 +12,9 @@
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type { ISequencePersister } from "../../services/contracts/ISequencePersister";
-import type { IUndoService } from "../../services/contracts/IUndoService";
-import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
-import type { IDeepLinkSequenceService } from "../../services/contracts/IDeepLinkSequenceService";
+import type { IUndoManager } from "../../services/contracts/IUndoManager";
+import type { IDeepLinker } from "$lib/shared/navigation/services/contracts/IDeepLinker";
+import type { IDeepLinkSequenceHandler } from "../../services/contracts/IDeepLinkSequenceHandler";
 import type { OptionHistoryManager } from "./option-history-manager.svelte";
 
 type ConstructTabState =
@@ -27,7 +27,7 @@ type ConstructTabState =
 
 type PersistenceControllerDeps = {
   sequenceState: SequenceState;
-  sequencePersistenceService?: ISequencePersister;
+  SequencePersister?: ISequencePersister;
   handPathCoordinator: { initializeServices: () => void };
   optionHistoryManager: OptionHistoryManager;
   /** Function to get the sequence state for a specific tab (or fallback to shared) */
@@ -36,7 +36,7 @@ type PersistenceControllerDeps = {
 
 export function createCreateModulePersistenceController({
   sequenceState,
-  sequencePersistenceService,
+  SequencePersister,
   handPathCoordinator,
   optionHistoryManager,
   getSequenceStateForTab,
@@ -59,9 +59,9 @@ export function createCreateModulePersistenceController({
     let modeToLoad: BuildModeId = "constructor";
 
     try {
-      if (sequencePersistenceService) {
+      if (SequencePersister) {
         const lastActiveState =
-          await sequencePersistenceService.loadCurrentState();
+          await SequencePersister.loadCurrentState();
         if (lastActiveState?.activeBuildSection) {
           modeToLoad = lastActiveState.activeBuildSection;
         }
@@ -69,7 +69,7 @@ export function createCreateModulePersistenceController({
 
       await sequenceState.initializeWithPersistence();
 
-      if (sequencePersistenceService) {
+      if (SequencePersister) {
         await restoreWorkspaceForMode(modeToLoad, null, {
           bypassInitializationGuard: true,
         });
@@ -111,7 +111,7 @@ export function createCreateModulePersistenceController({
     constructTabState: ConstructTabState,
     options?: { bypassInitializationGuard?: boolean }
   ): Promise<void> {
-    if (!sequencePersistenceService) {
+    if (!SequencePersister) {
       return;
     }
 
@@ -131,7 +131,7 @@ export function createCreateModulePersistenceController({
     try {
       const { resolve } = await import("$lib/shared/inversify/di");
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+      const deepLinkService = resolve<IDeepLinker>(TYPES.IDeepLinker);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
 
       // Also check for pending edit from Discover gallery (stored in localStorage)
@@ -140,11 +140,11 @@ export function createCreateModulePersistenceController({
 
       // CRITICAL: Also check session flag - pending edit may have already been processed
       // (and localStorage cleared) by the $effect before this function runs
-      const deepLinkSequenceService = resolve<IDeepLinkSequenceService>(
-        TYPES.IDeepLinkSequenceService
+      const DeepLinkSequenceHandler = resolve<IDeepLinkSequenceHandler>(
+        TYPES.IDeepLinkSequenceHandler
       );
       pendingEditWasProcessed =
-        deepLinkSequenceService.wasPendingEditProcessedThisSession();
+        DeepLinkSequenceHandler.wasPendingEditProcessedThisSession();
     } catch {
       // Service not available - assume no deep link
       void 0; // Suppress unused catch binding warning
@@ -156,7 +156,7 @@ export function createCreateModulePersistenceController({
 
     try {
       const savedState =
-        await sequencePersistenceService.loadCurrentState(panel);
+        await SequencePersister.loadCurrentState(panel);
 
       if (savedState) {
         // Load saved state for this tab's specific sequence state

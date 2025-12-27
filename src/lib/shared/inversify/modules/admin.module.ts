@@ -6,55 +6,55 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { ISystemStateService } from "../../../features/admin/services/contracts/ISystemStateService";
-import type { IAuditLogService } from "../../../features/admin/services/contracts/IAuditLogService";
-import type { IAdminChallengeService } from "../../../features/admin/services/contracts/IAdminChallengeService";
-import type { IAnalyticsDataService } from "../../../features/admin/services/contracts/IAnalyticsDataService";
-import type { IAnnouncementService } from "../../../features/admin/services/contracts/IAnnouncementService";
-import type { IUserActivityService } from "../../../features/admin/services/contracts/IUserActivityService";
-import { SystemStateService } from "../../../features/admin/services/implementations/SystemStateService";
-import { AuditLogService } from "../../../features/admin/services/implementations/AuditLogService";
-import { AdminChallengeService } from "../../../features/admin/services/implementations/AdminChallengeService";
-import { AnalyticsDataService } from "../../../features/admin/services/implementations/AnalyticsDataService";
-import { AnnouncementService } from "../../../features/admin/services/implementations/AnnouncementService";
-import { UserActivityService } from "../../../features/admin/services/implementations/UserActivityService";
+import type { ISystemStateManager } from "../../../features/admin/services/contracts/ISystemStateManager";
+import type { IAuditLogger } from "../../../features/admin/services/contracts/IAuditLogger";
+import type { IAdminChallengeManager } from "../../../features/admin/services/contracts/IAdminChallengeManager";
+import type { IAnalyticsDataProvider } from "../../../features/admin/services/contracts/IAnalyticsDataProvider";
+import type { IAnnouncementManager } from "../../../features/admin/services/contracts/IAnnouncementManager";
+import type { IUserActivityTracker } from "../../../features/admin/services/contracts/IUserActivityTracker";
+import { SystemStateManager } from "../../../features/admin/services/implementations/SystemStateManager";
+import { AuditLogger } from "../../../features/admin/services/implementations/AuditLogger";
+import { AdminChallengeManager } from "../../../features/admin/services/implementations/AdminChallengeManager";
+import { AnalyticsDataProvider } from "../../../features/admin/services/implementations/AnalyticsDataProvider";
+import { AnnouncementManager } from "../../../features/admin/services/implementations/AnnouncementManager";
+import { UserActivityTracker } from "../../../features/admin/services/implementations/UserActivityTracker";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // System State Service (foundation for all admin views)
     options
-      .bind<ISystemStateService>(TYPES.ISystemStateService)
-      .to(SystemStateService)
+      .bind<ISystemStateManager>(TYPES.ISystemStateManager)
+      .to(SystemStateManager)
       .inSingletonScope();
 
     // Audit Log Service (accountability and debugging)
     options
-      .bind<IAuditLogService>(TYPES.IAuditLogService)
-      .to(AuditLogService)
+      .bind<IAuditLogger>(TYPES.IAuditLogger)
+      .to(AuditLogger)
       .inSingletonScope();
 
     // Admin Challenge Service
     options
-      .bind<IAdminChallengeService>(TYPES.IAdminChallengeService)
-      .to(AdminChallengeService)
+      .bind<IAdminChallengeManager>(TYPES.IAdminChallengeManager)
+      .to(AdminChallengeManager)
       .inSingletonScope();
 
     // Analytics Data Service
     options
-      .bind<IAnalyticsDataService>(TYPES.IAnalyticsDataService)
-      .to(AnalyticsDataService)
+      .bind<IAnalyticsDataProvider>(TYPES.IAnalyticsDataProvider)
+      .to(AnalyticsDataProvider)
       .inSingletonScope();
 
     // Announcement Service
     options
-      .bind<IAnnouncementService>(TYPES.IAnnouncementService)
-      .to(AnnouncementService)
+      .bind<IAnnouncementManager>(TYPES.IAnnouncementManager)
+      .to(AnnouncementManager)
       .inSingletonScope();
 
     // User Activity Service (admin user monitoring)
     options
-      .bind<IUserActivityService>(TYPES.IUserActivityService)
-      .to(UserActivityService)
+      .bind<IUserActivityTracker>(TYPES.IUserActivityTracker)
+      .to(UserActivityTracker)
       .inSingletonScope();
   }
 );

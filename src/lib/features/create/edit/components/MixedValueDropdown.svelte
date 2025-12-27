@@ -37,6 +37,7 @@ Usage:
   const isEdited = $derived(selectedValue !== null);
 
   // Generate unique ID for the select element
+  // svelte-ignore state_referenced_locally - intentional: one-time ID generation
   const selectId = `dropdown-${label.toLowerCase().replace(/\s+/g, "-")}`;
 
   function handleChange(event: Event) {

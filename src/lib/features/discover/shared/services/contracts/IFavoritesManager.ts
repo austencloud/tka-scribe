@@ -1,16 +1,16 @@
 /**
  * Service for managing user favorites
  *
- * @deprecated Use ICollectionService from the library module instead.
+ * @deprecated Use ICollectionManager from the library module instead.
  * Favorites are now stored as a system collection in Firestore.
  *
  * Migration guide:
- * - toggleFavorite() -> ICollectionService.toggleFavorite()
- * - isFavorite() -> ICollectionService.isFavorite()
- * - getFavorites() -> ICollectionService.getFavoriteIds()
- * - Get full sequences: ICollectionService.getFavorites()
+ * - toggleFavorite() -> ICollectionManager.toggleFavorite()
+ * - isFavorite() -> ICollectionManager.isFavorite()
+ * - getFavorites() -> ICollectionManager.getFavoriteIds()
+ * - Get full sequences: ICollectionManager.getFavorites()
  *
- * The old FavoritesService used session storage and data was lost on refresh.
+ * The old FavoritesManager used session storage and data was lost on refresh.
  * The new system persists favorites in Firestore as part of the user's collections.
  */
 export interface IFavoritesManager {

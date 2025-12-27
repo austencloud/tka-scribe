@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { FeedbackSubmitState } from "../../state/feedback-submit-state.svelte";
   import { TYPE_CONFIG } from "../../domain/models/feedback-models";
@@ -22,7 +22,7 @@
     hideSuccessState?: boolean;
   }>();
 
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
   let deviceDetector: IDeviceDetector | undefined;
   let isMobileDevice = $state(false);
   let interimText = $state(""); // Store live streaming text
@@ -33,8 +33,8 @@
   let voiceTimeoutMessage = $state(false);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);

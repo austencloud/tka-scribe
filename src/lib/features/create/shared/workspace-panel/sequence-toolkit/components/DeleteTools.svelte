@@ -5,7 +5,7 @@ Handles sequence deletion operations like delete beat and clear sequence.
 Pure presentation component that delegates to deletion services.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { Snippet } from "svelte";
@@ -27,11 +27,11 @@ Pure presentation component that delegates to deletion services.
     renderExtra?: Snippet;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

@@ -7,10 +7,10 @@
 
 import { tryResolve, loadFeatureModule, ensureContainerInitialized } from "$lib/shared/inversify/di";
 import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-import type { ISequenceLoadingService } from "../services/contracts/ISequenceLoadingService";
-import type { ICAPLabelsFirebaseService } from "../services/contracts/ICAPLabelsFirebaseService";
-import type { INavigationService } from "../services/contracts/INavigationService";
-import type { ICAPDetectionService, CAPDetectionResult } from "../services/contracts/ICAPDetectionService";
+import type { ISequenceLoader } from "../services/contracts/ISequenceLoader";
+import type { ICAPLabelsFirebaseRepository } from "../services/contracts/ICAPLabelsFirebaseRepository";
+import type { INavigator } from "../services/contracts/INavigator";
+import type { ICAPDetector, CAPDetectionResult } from "../services/contracts/ICAPDetector";
 import type { SequenceEntry } from "../domain/models/sequence-models";
 import type {
   LabeledSequence,
@@ -313,8 +313,8 @@ class CAPLabelerStateManager {
       // Load persisted state to get last sequence ID
       const persisted = this.loadPersistedState();
       const lastSequenceId = persisted?.lastSequenceId;
-      const navigationService = this.getNavigationService();
-      const urlSeqId = navigationService?.getSequenceFromUrl();
+      const Navigator = this.getNavigator();
+      const urlSeqId = Navigator?.getSequenceFromUrl();
 
       // Store for deferred restoration after labels load
       this.lastSequenceIdToRestore = urlSeqId || lastSequenceId || null;
@@ -325,7 +325,7 @@ class CAPLabelerStateManager {
       // localStorage is the source of truth for filterMode (already loaded in getInitialState)
       // Only use URL filter if localStorage didn't have one
       if (!persisted?.filterMode) {
-        const urlFilter = navigationService?.getFilterFromUrl();
+        const urlFilter = Navigator?.getFilterFromUrl();
         if (
           urlFilter &&
           ["all", "labeled", "unlabeled", "unknown", "needsVerification", "verified"].includes(urlFilter)
@@ -364,7 +364,7 @@ class CAPLabelerStateManager {
    * Called from the labels subscription callback
    */
   private restoreSequencePosition(sequenceId: string | null, isFromUrl: boolean) {
-    const navigationService = this.getNavigationService();
+    const Navigator = this.getNavigator();
 
     if (sequenceId && this.state.sequences.length > 0) {
       const targetSeq = this.circularSequences.find((s) => s.id === sequenceId);
@@ -397,8 +397,8 @@ class CAPLabelerStateManager {
     }
 
     // Update URL to match current state (don't add to history on initial load)
-    if (navigationService) {
-      navigationService.updateUrlWithSequence(
+    if (Navigator) {
+      Navigator.updateUrlWithSequence(
         this.currentSequence?.id ?? null,
         this.state.filterMode,
         false // Don't add initial state to history
@@ -430,8 +430,8 @@ class CAPLabelerStateManager {
         this.navigateToSequenceIdWithoutHistory(state.sequenceId);
       } else {
         // Fallback: try to get from URL
-        const navigationService = this.getNavigationService();
-        const urlSeqId = navigationService?.getSequenceFromUrl();
+        const Navigator = this.getNavigator();
+        const urlSeqId = Navigator?.getSequenceFromUrl();
         if (urlSeqId) {
           this.navigateToSequenceIdWithoutHistory(urlSeqId);
         }
@@ -497,16 +497,16 @@ class CAPLabelerStateManager {
   // ============================================================
 
   nextSequence() {
-    const navigationService = this.getNavigationService();
-    if (!navigationService) return;
+    const Navigator = this.getNavigator();
+    if (!Navigator) return;
 
-    this.state.currentIndex = navigationService.getNextIndex(
+    this.state.currentIndex = Navigator.getNextIndex(
       this.state.currentIndex,
       this.filteredSequences.length
     );
 
     if (this.currentSequence) {
-      navigationService.updateUrlWithSequence(
+      Navigator.updateUrlWithSequence(
         this.currentSequence.id,
         this.state.filterMode
       );
@@ -515,15 +515,15 @@ class CAPLabelerStateManager {
   }
 
   previousSequence() {
-    const navigationService = this.getNavigationService();
-    if (!navigationService) return;
+    const Navigator = this.getNavigator();
+    if (!Navigator) return;
 
-    this.state.currentIndex = navigationService.getPreviousIndex(
+    this.state.currentIndex = Navigator.getPreviousIndex(
       this.state.currentIndex
     );
 
     if (this.currentSequence) {
-      navigationService.updateUrlWithSequence(
+      Navigator.updateUrlWithSequence(
         this.currentSequence.id,
         this.state.filterMode
       );
@@ -563,9 +563,9 @@ class CAPLabelerStateManager {
     if (targetIndex >= 0) {
       this.state.currentIndex = targetIndex;
       // Update URL
-      const navigationService = this.getNavigationService();
-      if (navigationService) {
-        navigationService.updateUrlWithSequence(
+      const Navigator = this.getNavigator();
+      if (Navigator) {
+        Navigator.updateUrlWithSequence(
           sequenceId,
           this.state.filterMode
         );
@@ -597,10 +597,10 @@ class CAPLabelerStateManager {
     this.persistFilterMode();
 
     // Update URL with new filter and first sequence in filtered list
-    const navigationService = this.getNavigationService();
-    if (navigationService) {
+    const Navigator = this.getNavigator();
+    if (Navigator) {
       const firstSeq = this.filteredSequences[0];
-      navigationService.updateUrlWithSequence(firstSeq?.id ?? null, mode);
+      Navigator.updateUrlWithSequence(firstSeq?.id ?? null, mode);
     }
   }
 
@@ -682,19 +682,19 @@ class CAPLabelerStateManager {
   // ============================================================
 
   exportLabels() {
-    const navigationService = this.getNavigationService();
-    if (!navigationService) return;
+    const Navigator = this.getNavigator();
+    if (!Navigator) return;
 
-    navigationService.exportLabelsAsJson(this.state.labels);
+    Navigator.exportLabelsAsJson(this.state.labels);
   }
 
   async importLabels(file: File) {
-    const navigationService = this.getNavigationService();
+    const Navigator = this.getNavigator();
     const labelsService = this.getLabelsService();
-    if (!navigationService || !labelsService) return;
+    if (!Navigator || !labelsService) return;
 
     try {
-      const importedLabels = await navigationService.importLabelsFromJson(file);
+      const importedLabels = await Navigator.importLabelsFromJson(file);
       this.state.labels = importedLabels;
       labelsService.saveToLocalStorage(this.state.labels);
       console.log(`Imported ${importedLabels.size} labels`);
@@ -796,13 +796,13 @@ class CAPLabelerStateManager {
   // HELPERS
   // ============================================================
 
-  private getSequenceService(): ISequenceLoadingService | null {
+  private getSequenceService(): ISequenceLoader | null {
     if (this.cachedSequenceService) {
       return this.cachedSequenceService;
     }
 
-    const service = tryResolve<ISequenceLoadingService>(
-      CAPLabelerTypes.ISequenceLoadingService
+    const service = tryResolve<ISequenceLoader>(
+      CAPLabelerTypes.ISequenceLoader
     );
     if (service) {
       this.cachedSequenceService = service;
@@ -811,19 +811,19 @@ class CAPLabelerStateManager {
   }
 
   // Cache service instances to survive container issues
-  private cachedLabelsService: ICAPLabelsFirebaseService | null = null;
-  private cachedSequenceService: ISequenceLoadingService | null = null;
-  private cachedNavigationService: INavigationService | null = null;
-  private cachedDetectionService: ICAPDetectionService | null = null;
+  private cachedLabelsService: ICAPLabelsFirebaseRepository | null = null;
+  private cachedSequenceService: ISequenceLoader | null = null;
+  private cachedNavigator: INavigator | null = null;
+  private cachedDetectionService: ICAPDetector | null = null;
 
-  private getLabelsService(): ICAPLabelsFirebaseService | null {
+  private getLabelsService(): ICAPLabelsFirebaseRepository | null {
     if (this.cachedLabelsService) {
       return this.cachedLabelsService;
     }
 
     try {
-      const service = tryResolve<ICAPLabelsFirebaseService>(
-        CAPLabelerTypes.ICAPLabelsFirebaseService
+      const service = tryResolve<ICAPLabelsFirebaseRepository>(
+        CAPLabelerTypes.ICAPLabelsFirebaseRepository
       );
       if (service) {
         this.cachedLabelsService = service;
@@ -834,26 +834,26 @@ class CAPLabelerStateManager {
     }
   }
 
-  private getNavigationService(): INavigationService | null {
-    if (this.cachedNavigationService) {
-      return this.cachedNavigationService;
+  private getNavigator(): INavigator | null {
+    if (this.cachedNavigator) {
+      return this.cachedNavigator;
     }
 
-    const service = tryResolve<INavigationService>(
-      CAPLabelerTypes.INavigationService
+    const service = tryResolve<INavigator>(
+      CAPLabelerTypes.INavigator
     );
     if (service) {
-      this.cachedNavigationService = service;
+      this.cachedNavigator = service;
     }
     return service;
   }
 
-  private getDetectionService(): ICAPDetectionService | null {
+  private getDetectionService(): ICAPDetector | null {
     if (this.cachedDetectionService) {
       return this.cachedDetectionService;
     }
 
-    const service = tryResolve<ICAPDetectionService>(
+    const service = tryResolve<ICAPDetector>(
       CAPLabelerTypes.ICAPLabelerDetectionService
     );
     if (service) {
@@ -867,7 +867,7 @@ class CAPLabelerStateManager {
     // Clear cached services
     this.cachedLabelsService = null;
     this.cachedSequenceService = null;
-    this.cachedNavigationService = null;
+    this.cachedNavigator = null;
     this.cachedDetectionService = null;
     this.state = {
       sequences: [],
@@ -892,7 +892,7 @@ class CAPLabelerStateManager {
   cacheServices() {
     this.getSequenceService();
     this.getLabelsService();
-    this.getNavigationService();
+    this.getNavigator();
     this.getDetectionService();
   }
 }

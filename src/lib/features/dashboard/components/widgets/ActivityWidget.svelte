@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ISessionTrackingService } from "$lib/shared/analytics/services/contracts/ISessionTrackingService";
+  import type { ISessionTracker } from "$lib/shared/analytics/services/contracts/ISessionTracker";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { libraryState } from "$lib/features/library/state/library-state.svelte";
   import { showSettingsDialog } from "$lib/shared/application/state/ui/ui-state.svelte";
@@ -17,7 +17,7 @@
   let sessionDuration = $state(0);
 
   // Services
-  let sessionService: ISessionTrackingService | null = null;
+  let sessionService: ISessionTracker | null = null;
 
   // Use library's loading state directly
   const isLoading = $derived(libraryState.isLoading);
@@ -85,8 +85,8 @@
   });
 
   onMount(() => {
-    sessionService = tryResolve<ISessionTrackingService>(
-      TYPES.ISessionTrackingService
+    sessionService = tryResolve<ISessionTracker>(
+      TYPES.ISessionTracker
     );
 
     // Ensure library sequences are loaded

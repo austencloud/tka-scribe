@@ -1,7 +1,7 @@
 /**
  * Service for managing keyboard navigation within module selection
  */
-export interface IKeyboardNavigationService {
+export interface IKeyboardNavigator {
   /**
    * Handle arrow key navigation
    */

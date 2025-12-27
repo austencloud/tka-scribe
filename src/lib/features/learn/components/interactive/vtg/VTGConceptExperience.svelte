@@ -3,7 +3,7 @@ VTGConceptExperience - Multi-page VTG (Velocity-Timing-Direction) learning exper
 Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
 -->
 <script lang="ts">
-	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+	import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import { VTG_MODES, type VTGMode } from "../../../domain/constants/vtg-experience-data";
@@ -15,7 +15,7 @@ Teaches the 6 VTG modes: SS, TS, SO, TO, QS, QO
 		onComplete?: () => void;
 	}>();
 
-	const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
 	let currentPage = $state(1);
 	const totalPages = 8; // Intro + 6 modes + Quiz

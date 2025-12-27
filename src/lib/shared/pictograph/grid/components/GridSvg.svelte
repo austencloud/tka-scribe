@@ -7,7 +7,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 <script lang="ts">
   import { GridMode } from "../domain/enums/grid-enums";
   import { resolve, TYPES } from "../../../inversify/di";
-  import type { ISvgPreloadService } from "../../shared/services/contracts/ISvgPreloadService";
+  import type { ISvgPreloader } from "../../shared/services/contracts/ISvgPreloader";
   import { getGridRotationDirection } from "../state/grid-rotation-state.svelte";
 
   let {
@@ -36,18 +36,20 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
 
   // Track cumulative rotation for beautiful animation (ephemeral UI state)
   // Initialize based on starting gridMode: box mode starts at 45°, diamond at 0°
+  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
   let cumulativeRotation = $state(gridMode === GridMode.BOX ? 45 : 0);
+  // svelte-ignore state_referenced_locally - intentional: tracking previous value for animation
   let previousGridMode = $state(gridMode);
 
   // Get SVG preload service
-  const svgPreloadService = resolve(
-    TYPES.ISvgPreloadService
-  ) as ISvgPreloadService;
+  const SvgPreloader = resolve(
+    TYPES.ISvgPreloader
+  ) as ISvgPreloader;
 
   // Load diamond grid (we rotate it to create box appearance)
   async function loadGrid(): Promise<void> {
     try {
-      const svgText = await svgPreloadService.getSvgContent(
+      const svgText = await SvgPreloader.getSvgContent(
         "grid",
         "diamond_grid"
       );

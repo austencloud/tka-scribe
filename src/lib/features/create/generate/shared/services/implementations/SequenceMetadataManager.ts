@@ -12,7 +12,7 @@ import {
   type GenerationOptions,
 } from "../../domain/models/generate-models";
 
-export interface ISequenceMetadataService {
+export interface ISequenceMetadataManager {
   /**
    * Generate a sequence name based on options and timestamp
    */
@@ -42,7 +42,7 @@ export interface ISequenceMetadataService {
 }
 
 @injectable()
-export class SequenceMetadataService implements ISequenceMetadataService {
+export class SequenceMetadataManager implements ISequenceMetadataManager {
   /**
    * Generate sequence name based on options - matches legacy pattern
    */

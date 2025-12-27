@@ -12,7 +12,7 @@
   import KeyboardKeyDisplay from "./KeyboardKeyDisplay.svelte";
   import ConflictWarning from "./ConflictWarning.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import type { ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizationService";
+  import type { ShortcutWithBinding } from "../../services/contracts/IShortcutCustomizer";
   import type {
     ShortcutConflict,
     ParsedKeyCombo,

@@ -1,0 +1,415 @@
+<!--
+  SaveProgressOverlay.svelte
+
+  Full-screen overlay showing save progress with step indicators,
+  granular beat progress, and success animation.
+-->
+<script lang="ts">
+  interface SaveStep {
+    icon: string;
+    label: string;
+  }
+
+  interface Props {
+    currentStep: number;
+    steps: SaveStep[];
+    renderProgress?: { current: number; total: number };
+    /** Dynamic label for step 1 (e.g., "Rendering beat 3 of 8") */
+    step1Label?: string;
+  }
+
+  let {
+    currentStep,
+    steps,
+    renderProgress = { current: 0, total: 0 },
+    step1Label = "Creating thumbnail",
+  }: Props = $props();
+
+  const isComplete = $derived(currentStep === 6);
+  const progressPercent = $derived((currentStep / steps.length) * 100);
+  const beatProgressPercent = $derived(
+    renderProgress.total > 0
+      ? Math.round((renderProgress.current / renderProgress.total) * 100)
+      : 0
+  );
+</script>
+
+<div class="save-progress-overlay">
+  <div class="progress-content">
+    <!-- Success State -->
+    {#if isComplete}
+      <div class="success-animation">
+        <div class="success-circle">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3>Saved!</h3>
+        <p>Your sequence is now in your library</p>
+      </div>
+    {:else}
+      <!-- Progress Steps -->
+      <div class="progress-header">
+        <div class="progress-icon-wrapper">
+          <div class="progress-icon-ring"></div>
+          <i
+            class="fas {steps[currentStep - 1]?.icon || 'fa-spinner'} progress-icon"
+          ></i>
+        </div>
+        <h3>
+          {currentStep === 1
+            ? step1Label
+            : steps[currentStep - 1]?.label || "Preparing..."}
+        </h3>
+      </div>
+
+      <!-- Granular beat progress during step 1 -->
+      {#if currentStep === 1 && renderProgress.total > 0}
+        <div class="beat-progress">
+          <div class="beat-progress-bar">
+            <div
+              class="beat-progress-fill"
+              style="width: {beatProgressPercent}%"
+            ></div>
+          </div>
+          <span class="beat-progress-text">{beatProgressPercent}%</span>
+        </div>
+      {/if}
+
+      <div class="progress-steps">
+        {#each steps as step, i}
+          <div
+            class="step"
+            class:completed={currentStep > i + 1}
+            class:active={currentStep === i + 1}
+            class:pending={currentStep < i + 1}
+          >
+            <div class="step-indicator">
+              {#if currentStep > i + 1}
+                <i class="fas fa-check"></i>
+              {:else if currentStep === i + 1}
+                <div class="step-pulse"></div>
+              {:else}
+                <span class="step-number">{i + 1}</span>
+              {/if}
+            </div>
+            <span class="step-label">{i === 0 ? step1Label : step.label}</span>
+          </div>
+        {/each}
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" style="width: {progressPercent}%"></div>
+      </div>
+    {/if}
+  </div>
+</div>
+
+<style>
+  .save-progress-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .progress-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 32px;
+    max-width: 300px;
+    text-align: center;
+  }
+
+  /* Progress Header with Icon */
+  .progress-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-icon-wrapper {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .progress-icon-ring {
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--theme-accent-strong, #8b5cf6);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .progress-icon {
+    font-size: 24px;
+    color: var(--theme-accent-strong, #8b5cf6);
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  .progress-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  /* Progress Steps */
+  .progress-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .step.completed {
+    background: rgba(34, 197, 94, 0.1);
+  }
+
+  .step.active {
+    background: rgba(139, 92, 246, 0.15);
+  }
+
+  .step.pending {
+    opacity: 0.4;
+  }
+
+  .step-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .step.completed .step-indicator {
+    background: var(--semantic-success, #22c55e);
+    color: white;
+  }
+
+  .step.active .step-indicator {
+    background: var(--theme-accent-strong, #8b5cf6);
+    color: white;
+  }
+
+  .step.pending .step-indicator {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .step-pulse {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: stepPulse 1s ease-in-out infinite;
+  }
+
+  @keyframes stepPulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 0.5;
+    }
+  }
+
+  .step-number {
+    font-size: 11px;
+  }
+
+  .step-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.3s ease;
+  }
+
+  .step.completed .step-label {
+    color: var(--semantic-success, #22c55e);
+  }
+
+  .step.active .step-label {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+  }
+
+  /* Beat Progress (granular progress during thumbnail creation) */
+  .beat-progress {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .beat-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .beat-progress-fill {
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent-strong, #8b5cf6) 0%,
+      #a78bfa 100%
+    );
+    border-radius: 4px;
+    transition: width 0.15s ease-out;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+  }
+
+  .beat-progress-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--theme-accent-strong, #8b5cf6);
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* Progress Bar */
+  .progress-bar-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      var(--theme-accent-strong, #8b5cf6),
+      var(--semantic-success, #22c55e)
+    );
+    border-radius: 2px;
+    transition: width 0.5s ease;
+  }
+
+  /* Success Animation */
+  .success-animation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: successBounce 0.5s ease;
+  }
+
+  @keyframes successBounce {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .success-circle {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(
+      135deg,
+      var(--semantic-success, #22c55e),
+      #16a34a
+    );
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(34, 197, 94, 0.4);
+  }
+
+  .success-circle i {
+    font-size: 32px;
+    color: white;
+    animation: checkPop 0.3s ease 0.2s both;
+  }
+
+  @keyframes checkPop {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .success-animation h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--semantic-success, #22c55e);
+  }
+
+  .success-animation p {
+    margin: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+</style>

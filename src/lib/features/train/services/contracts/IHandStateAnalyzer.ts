@@ -3,7 +3,7 @@
  * Determines finger extension based on landmark positions
  */
 
-import type { HandLandmark } from "./IHandLandmarkerService";
+import type { HandLandmark } from "./IHandLandmarker";
 import type { HandState } from "../../domain/models/DetectionFrame";
 
 export interface HandStateAnalysisResult {

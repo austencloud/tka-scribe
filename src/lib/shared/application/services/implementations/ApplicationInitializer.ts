@@ -17,7 +17,7 @@ export class ApplicationInitializer implements IApplicationInitializer {
       // ⚡ PERFORMANCE: SVG preloading now uses lazy loading
       // Props and grids are fetched on-demand when first needed, then cached
       // This eliminates 15+ network requests at startup
-      // See SvgPreloadService.getSvgContent() for on-demand loading
+      // See SvgPreloader.getSvgContent() for on-demand loading
 
       // TODO: Add other initialization logic
       // - Initialize settings

@@ -20,7 +20,7 @@
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     attachment: MessageAttachment;
@@ -34,7 +34,7 @@
   let isChecking = $state(true);
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   const feedbackType = $derived(attachment.metadata?.feedbackType || "general");
   const feedbackStatus = $derived(attachment.metadata?.feedbackStatus || "new");
@@ -45,8 +45,8 @@
 
   // Check if feedback exists on mount
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     const feedbackId = attachment.metadata?.feedbackId;

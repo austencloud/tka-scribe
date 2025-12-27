@@ -6,7 +6,7 @@
  */
 
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { PropState } from "$lib/shared/animation-engine/domain/PropState";
 import type { AnimationPathCache } from "$lib/features/compose/services/implementations/AnimationPathCache";
@@ -20,7 +20,7 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
  */
 export interface RenderLoopConfig {
   renderer: IAnimationRenderer;
-  trailCaptureService: ITrailCaptureService | null;
+  TrailCapturer: ITrailCapturer | null;
   pathCache: AnimationPathCache | null;
   canvasSize: number;
 }

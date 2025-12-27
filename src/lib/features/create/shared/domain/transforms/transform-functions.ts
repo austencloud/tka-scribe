@@ -3,7 +3,7 @@
  *
  * Pure functions that apply transforms to pictograph data.
  * These are simplified versions for the help examples -
- * the full transform logic lives in SequenceTransformationService.
+ * the full transform logic lives in SequenceTransformer.
  */
 
 import {

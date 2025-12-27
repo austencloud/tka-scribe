@@ -6,18 +6,18 @@
   import { onMount, onDestroy } from "svelte";
   import { goto } from "$app/navigation";
   import { tryResolve, TYPES } from "../../../../inversify/di";
-  import type { ISubscriptionService } from "../../../../subscription/services/contracts/ISubscriptionService";
-  import type { SubscriptionInfo } from "../../../../subscription/services/contracts/ISubscriptionService";
-  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import type { ISubscriptionManager } from "../../../../subscription/services/contracts/ISubscriptionManager";
+  import type { SubscriptionInfo } from "../../../../subscription/services/contracts/ISubscriptionManager";
+  import type { IHapticFeedback } from "../../../../application/services/contracts/IHapticFeedback";
 
   interface Props {
-    hapticService?: IHapticFeedbackService | null;
+    hapticService?: IHapticFeedback | null;
   }
 
   let { hapticService = null }: Props = $props();
 
   // Services
-  let subscriptionService: ISubscriptionService | null = $state(null);
+  let subscriptionService: ISubscriptionManager | null = $state(null);
 
   // State
   let subscriptionInfo = $state<SubscriptionInfo | null>(null);
@@ -41,8 +41,8 @@
   );
 
   onMount(async () => {
-    subscriptionService = tryResolve<ISubscriptionService>(
-      TYPES.ISubscriptionService
+    subscriptionService = tryResolve<ISubscriptionManager>(
+      TYPES.ISubscriptionManager
     );
 
     if (subscriptionService) {

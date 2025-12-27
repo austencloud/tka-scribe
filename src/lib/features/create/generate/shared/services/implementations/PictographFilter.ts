@@ -21,7 +21,7 @@ const ROTATION_DIRS = {
   noRotation: RotationDirection.NO_ROTATION,
 } as const;
 
-export interface IPictographFilterService {
+export interface IPictographFilter {
   /**
    * Filter pictographs by continuity - next beat's start position must match last beat's end position
    */
@@ -76,7 +76,7 @@ export interface IPictographFilterService {
 }
 
 @injectable()
-export class PictographFilterService implements IPictographFilterService {
+export class PictographFilter implements IPictographFilter {
   /**
    * Filter by continuity - next beat's start position must match last beat's end position
    */

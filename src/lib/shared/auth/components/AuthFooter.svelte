@@ -6,21 +6,21 @@
 <script lang="ts">
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
+  import type { ISheetRouter } from "$lib/shared/navigation/services/contracts/ISheetRouter";
   import { onMount } from "svelte";
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let sheetRouterService: ISheetRouterService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let sheetRouterService: ISheetRouter | null = null;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     try {
-      sheetRouterService = resolve<ISheetRouterService>(
-        TYPES.ISheetRouterService
+      sheetRouterService = resolve<ISheetRouter>(
+        TYPES.ISheetRouter
       );
     } catch {
       // Service not available

@@ -10,7 +10,7 @@
   import { onMount } from "svelte";
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import ModuleList from "./ModuleList.svelte";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "../../device/domain/models/device-models";
   import Drawer from "../../foundation/ui/Drawer.svelte";
@@ -32,7 +32,7 @@
     onModuleChange?: (moduleId: ModuleId) => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let deviceDetector: IDeviceDetector | null = null;
   let isOpen = $state(false);
 
@@ -57,8 +57,8 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Resolve DeviceDetector service (same pattern as MobileNavigation)

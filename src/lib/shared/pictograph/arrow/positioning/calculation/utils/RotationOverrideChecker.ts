@@ -1,7 +1,7 @@
 import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
-import type { ISpecialPlacementService } from "../../placement/services/contracts/IArrowPlacementService";
+import type { ISpecialPlacer } from "../../placement/services/contracts/IArrowPlacer";
 import type { IRotationAngleOverrideKeyGenerator } from "../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { RotationMapSelector } from "./RotationMapSelector";
 import { normalizeRotationDirection } from "./RotationDirectionUtils";
@@ -20,7 +20,7 @@ export class RotationOverrideChecker {
    * @param location - Grid location for the arrow
    * @param pictographData - Pictograph data for override checking
    * @param isRadial - Whether the orientation is radial (IN/OUT) - only used for STATIC/DASH
-   * @param specialPlacementService - Service for checking special placements
+   * @param SpecialPlacer - Service for checking special placements
    * @param rotationOverrideKeyGenerator - Generator for override keys
    * @returns Override rotation angle if override exists, null otherwise
    */
@@ -29,7 +29,7 @@ export class RotationOverrideChecker {
     location: GridLocation,
     pictographData: PictographData,
     isRadial: boolean,
-    specialPlacementService: ISpecialPlacementService,
+    SpecialPlacer: ISpecialPlacer,
     rotationOverrideKeyGenerator: IRotationAngleOverrideKeyGenerator
   ): Promise<number | null> {
     try {
@@ -40,7 +40,7 @@ export class RotationOverrideChecker {
         );
 
       const hasOverride =
-        await specialPlacementService.hasRotationAngleOverride(
+        await SpecialPlacer.hasRotationAngleOverride(
           motion,
           pictographData,
           overrideKey

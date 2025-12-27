@@ -58,6 +58,7 @@
   onclick={handleBackdropClick}
 >
   {#if images.length > 0}
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div class="viewer-container" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="region">
       <!-- Close button -->
       <button

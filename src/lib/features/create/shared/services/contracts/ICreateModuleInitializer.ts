@@ -1,0 +1,133 @@
+/**
+ * Create Module Initialization Service Contract
+ *
+ * Handles all initialization logic for CreateModule including:
+ * - Service resolution
+ * - State object creation
+ * - Persistence initialization
+ * - Start position loading
+ * - Event service configuration
+ * - Deep link and sequence loading coordination
+ *
+ * Extracted from CreateModule.svelte onMount monolith.
+ */
+
+import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
+import type { IBeatOperator } from "./IBeatOperator";
+import type { ICreateModuleEffectCoordinator } from "./ICreateModuleEffectCoordinator";
+import type { ICreateModuleHandlers } from "./ICreateModuleHandlers";
+import type { ICreationMethodPersister } from "./ICreationMethodPersister";
+import type { IDeepLinkSequenceHandler } from "./IDeepLinkSequenceHandler";
+import type { INavigationSyncer } from "./INavigationSyncer";
+import type { IResponsiveLayoutManager } from "./IResponsiveLayoutManager";
+import type { ISequenceRepository } from "./ISequenceRepository";
+import type { ISequencePersister } from "./ISequencePersister";
+import type { ICreateModuleOrchestrator } from "./ICreateModuleOrchestrator";
+import type { IStartPositionManager } from "../../../construct/start-position-picker/services/contracts/IStartPositionManager";
+import type { ISharer } from "$lib/shared/share/services/contracts/ISharer";
+import type { IPanelPersister } from "./IPanelPersister";
+import type { ICreateModuleState } from "../../types/create-module-types";
+import type { createConstructTabState } from "../../state/construct-tab-state.svelte";
+import type { AssemblerTabState } from "../../state/assembler-tab-state.svelte";
+import type { GeneratorTabState } from "../../state/generator-tab-state.svelte";
+
+// Use the actual return type of createConstructTabState instead of the incomplete interface
+type ConstructTabState = ReturnType<typeof createConstructTabState>;
+
+export interface CreateModuleInitializationResult {
+  // State objects
+  CreateModuleState: ICreateModuleState;
+  constructTabState: ConstructTabState;
+  assemblerTabState: AssemblerTabState;
+  generatorTabState: GeneratorTabState;
+
+  // Core services
+  sequenceService: ISequenceRepository;
+  SequencePersister: ISequencePersister;
+  StartPositionManager: IStartPositionManager;
+  CreateModuleOrchestrator: ICreateModuleOrchestrator;
+  layoutService: IResponsiveLayoutManager;
+  NavigationSyncer: INavigationSyncer;
+  BeatOperator: IBeatOperator;
+
+  // UI coordination services
+  handlers: ICreateModuleHandlers;
+  creationMethodPersistence: ICreationMethodPersister;
+  effectCoordinator: ICreateModuleEffectCoordinator;
+  deepLinkService: IDeepLinkSequenceHandler;
+  shareService: ISharer;
+  panelPersistenceService: IPanelPersister;
+}
+
+export interface SequenceLoadResult {
+  /** Whether a sequence was loaded from deep link or pending edit */
+  sequenceLoaded: boolean;
+  /** Tab to navigate to (from deep link) */
+  targetTab?: string;
+  /** Whether creation method should be marked as selected */
+  shouldMarkMethodSelected: boolean;
+}
+
+export interface ICreateModuleInitializer {
+  /**
+   * Initialize all services and state for CreateModule
+   * @returns Initialized services and state objects
+   * @throws Error if initialization fails
+   */
+  initialize(): Promise<CreateModuleInitializationResult>;
+
+  /**
+   * Configure event service callbacks for sequence operations
+   * @param CreateModuleState Create Module State object
+   * @param panelState Panel coordination state for callback handlers
+   */
+  configureEventCallbacks(
+    CreateModuleState: ICreateModuleState,
+    panelState: PanelCoordinationState
+  ): void;
+
+  /**
+   * Load default start positions for a grid mode
+   * @param gridMode Grid mode to load start positions for
+   */
+  loadStartPositions(gridMode: GridMode): Promise<void>;
+
+  /**
+   * Load sequence from deep link or pending edit, then initialize persistence if needed.
+   * Coordinates the order of operations to prevent data overwrites.
+   *
+   * @param setSequence Callback to set sequence in state
+   * @param initializePersistence Callback to initialize persistence (only called if no sequence loaded)
+   * @returns Result indicating what was loaded and what actions to take
+   */
+  loadSequenceAndInitializePersistence(
+    setSequence: (sequence: SequenceData) => void,
+    initializePersistence: () => Promise<void>
+  ): Promise<SequenceLoadResult>;
+
+  /**
+   * Check if creation method was already selected based on current state.
+   * Auto-detects based on workspace content (not tab - we want tutorial to show).
+   *
+   * @param activeTab Current active navigation tab (unused, kept for API compatibility)
+   * @param isWorkspaceEmpty Whether the workspace has content
+   * @param currentSelection Current selection state from persistence
+   * @returns Whether method should be considered selected (skip tutorial)
+   */
+  detectCreationMethodSelection(
+    activeTab: string,
+    isWorkspaceEmpty: boolean,
+    currentSelection: boolean
+  ): boolean;
+
+  /**
+   * Check if there's a share deep link waiting to be processed.
+   * Used to prevent panel restoration from localStorage when share panel
+   * should open via deep link instead.
+   *
+   * @returns True if a share deep link is pending
+   */
+  hasShareDeepLink?(): boolean;
+}

@@ -14,7 +14,7 @@
     markModuleOnboardingComplete,
   } from "$lib/shared/onboarding/config/storage-keys";
 
-  import type { IDiscoverEventHandlerService } from "../services/contracts/IDiscoverEventHandlerService";
+  import type { IDiscoverEventHandler } from "../services/contracts/IDiscoverEventHandler";
   import CollectionsDiscoverPanel from "../../collections/components/CollectionsDiscoverPanel.svelte";
   import CreatorsPanel from "../../creators/components/CreatorsPanel.svelte";
   import UserProfilePanel from "../../creators/components/UserProfilePanel.svelte";
@@ -27,7 +27,7 @@
     discoverNavigationState,
     type DiscoverLocation,
   } from "../state/discover-navigation-state.svelte";
-  import { DiscoverScrollBehaviorService } from "../services/implementations/DiscoverScrollBehaviorService";
+  import { DiscoverScrollBehavior } from "../services/implementations/DiscoverScrollBehavior";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
@@ -42,7 +42,7 @@
   const galleryState = createExploreState();
 
   // Service resolved lazily in onMount to ensure feature module is loaded
-  let eventHandlerService: IDiscoverEventHandlerService | null = null;
+  let eventHandlerService: IDiscoverEventHandler | null = null;
 
   // ============================================================================
   // ONBOARDING STATE
@@ -271,7 +271,7 @@
   // ============================================================================
 
   // Create scroll behavior service instance
-  const scrollBehaviorService = new DiscoverScrollBehaviorService(
+  const scrollBehaviorService = new DiscoverScrollBehavior(
     discoverScrollState
   );
 
@@ -339,8 +339,8 @@
 
     // Resolve event handler service (feature module should be loaded by now)
     try {
-      eventHandlerService = resolve<IDiscoverEventHandlerService>(
-        TYPES.IDiscoverEventHandlerService
+      eventHandlerService = resolve<IDiscoverEventHandler>(
+        TYPES.IDiscoverEventHandler
       );
 
       // Initialize event handler service with required parameters
@@ -354,7 +354,7 @@
       });
     } catch (err) {
       console.error(
-        "DiscoverModule: Failed to resolve IDiscoverEventHandlerService",
+        "DiscoverModule: Failed to resolve IDiscoverEventHandler",
         err
       );
       error = "Failed to initialize discover module services";

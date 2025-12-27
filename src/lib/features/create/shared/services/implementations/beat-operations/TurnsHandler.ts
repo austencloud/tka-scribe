@@ -6,7 +6,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../../domain/models/BeatData";
 import type { ICreateModuleState } from "../../../types/create-module-types";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import {
   createMotionData,
   type MotionData,
@@ -16,7 +16,7 @@ import {
   MotionType,
   RotationDirection,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-import type { IReversalDetectionService } from "../../../services/contracts/IReversalDetectionService";
+import type { IReversalDetector } from "../../../services/contracts/IReversalDetector";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
@@ -196,7 +196,7 @@ export function updateBeatTurns(
   // Process reversals to update reversal indicators after turns change
   // Turns changes can affect reversals when rotation direction changes (e.g., 0 to >0 turns)
   try {
-    const reversalService = resolve<IReversalDetectionService>(TYPES.IReversalDetectionService);
+    const reversalService = resolve<IReversalDetector>(TYPES.IReversalDetector);
     updatedSequence = reversalService.processReversals(updatedSequence);
   } catch {
     // Reversal service is optional - continue without reversal processing

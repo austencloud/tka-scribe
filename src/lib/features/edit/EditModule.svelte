@@ -23,7 +23,7 @@
     createEditModuleState,
     type EditMode,
   } from "./state/edit-module-state.svelte";
-  import type { ISequenceTransformationService } from "../create/shared/services/contracts/ISequenceTransformationService";
+  import type { ISequenceTransformer } from "../create/shared/services/contracts/ISequenceTransformer";
   import type { IDiscoverLoader } from "../discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
   import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
@@ -39,7 +39,7 @@
   const editState = createEditModuleState();
 
   // Services
-  let transformService: ISequenceTransformationService | null = null;
+  let transformService: ISequenceTransformer | null = null;
   let exploreLoader: IDiscoverLoader | null = null;
   let motionQueryHandler: IMotionQueryHandler | null = null;
   let gridModeDeriver: IGridModeDeriver | null = null;
@@ -98,12 +98,12 @@
     console.log("EditModule: Mounted");
 
     try {
-      transformService = resolve<ISequenceTransformationService>(
-        TYPES.ISequenceTransformationService
+      transformService = resolve<ISequenceTransformer>(
+        TYPES.ISequenceTransformer
       );
       console.log("EditModule: Resolved transformation service");
     } catch (error) {
-      console.warn("Failed to resolve ISequenceTransformationService:", error);
+      console.warn("Failed to resolve ISequenceTransformer:", error);
     }
 
     try {

@@ -8,8 +8,8 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "../../inversify/di";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { IAchievementService } from "../services/contracts/IAchievementService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
+  import type { IAchievementManager } from "../services/contracts/IAchievementManager";
   import type { UserXP } from "../domain/models/achievement-models";
   import { getLevelProgress } from "../domain/constants/xp-constants";
   import { auth } from "../../auth/firebase";
@@ -18,12 +18,12 @@
   let { onclick = () => {} }: { onclick?: () => void } = $props();
 
   // State
-  let achievementService: IAchievementService | null = $state(null);
+  let achievementService: IAchievementManager | null = $state(null);
   let userXP: UserXP | null = $state(null);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
   let isLoggedIn = $state(false);
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // Derived state for level progress
   let levelProgress = $derived.by(() => {
@@ -33,16 +33,16 @@
 
   // Initialize
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     let interval: ReturnType<typeof setInterval> | null = null;
     let unsubscribe: (() => void) | null = null;
 
     (async () => {
       try {
-        achievementService = await resolve<IAchievementService>(
-          TYPES.IAchievementService
+        achievementService = await resolve<IAchievementManager>(
+          TYPES.IAchievementManager
         );
 
         // Listen for auth state changes

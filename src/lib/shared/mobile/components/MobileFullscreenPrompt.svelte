@@ -11,7 +11,7 @@
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
-  import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";
+  import type { IMobileFullscreenManager } from "../services/contracts/IMobileFullscreenManager";
 
   let {
     showPrompt = $bindable(false),
@@ -27,7 +27,7 @@
     onDismiss?: () => void;
   } = $props();
 
-  let fullscreenService: IMobileFullscreenService | null = null;
+  let fullscreenService: IMobileFullscreenManager | null = null;
 
   let strategy = $state<
     "pwa" | "fullscreen-api" | "viewport-only" | "not-supported"
@@ -134,8 +134,8 @@
 
   onMount(() => {
     try {
-      fullscreenService = resolve<IMobileFullscreenService>(
-        TYPES.IMobileFullscreenService
+      fullscreenService = resolve<IMobileFullscreenManager>(
+        TYPES.IMobileFullscreenManager
       );
     } catch (error) {
       console.warn("Failed to resolve mobile fullscreen service:", error);

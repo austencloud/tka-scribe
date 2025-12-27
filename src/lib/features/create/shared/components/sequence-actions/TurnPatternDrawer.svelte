@@ -8,7 +8,7 @@
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { turnPatternState } from "../../state/turn-pattern-state.svelte.ts";
-  import { TurnPatternService } from "../../services/implementations/TurnPatternService";
+  import { TurnPatternManager } from "../../services/implementations/TurnPatternManager";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { TurnPattern } from "../../domain/models/TurnPatternData";
@@ -41,7 +41,7 @@
   let errorMessage = $state<string | null>(null);
   let complexityFilter = $state<PatternComplexity | "all">("all");
 
-  const turnPatternService = new TurnPatternService();
+  const turnPatternManager = new TurnPatternManager();
 
   // Load patterns when drawer opens
   $effect(() => {
@@ -81,7 +81,7 @@
     applyingPattern = true;
     errorMessage = null;
 
-    const result = turnPatternService.applyPattern(pattern, sequence);
+    const result = turnPatternManager.applyPattern(pattern, sequence);
 
     if (result.success && result.sequence) {
       onApply({

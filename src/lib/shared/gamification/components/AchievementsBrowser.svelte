@@ -23,9 +23,9 @@
     UserAchievement,
     UserChallengeProgress,
   } from "../domain/models/achievement-models";
-  import type { IAchievementService } from "../services/contracts/IAchievementService";
-  import type { IDailyChallengeService } from "../services/contracts/IDailyChallengeService";
-  import type { IStreakService } from "../services/contracts/IStreakService";
+  import type { IAchievementManager } from "../services/contracts/IAchievementManager";
+  import type { IDailyChallengeManager } from "../services/contracts/IDailyChallengeManager";
+  import type { IStreakTracker } from "../services/contracts/IStreakTracker";
 
   // Props
   let {
@@ -34,9 +34,9 @@
   }: { isOpen: boolean; onClose: () => void } = $props();
 
   // Services
-  let achievementService: IAchievementService | null = $state(null);
-  let challengeService: IDailyChallengeService | null = $state(null);
-  let streakService: IStreakService | null = $state(null);
+  let achievementService: IAchievementManager | null = $state(null);
+  let challengeService: IDailyChallengeManager | null = $state(null);
+  let streakService: IStreakTracker | null = $state(null);
 
   // State
   let stats = $state<any>(null);
@@ -80,13 +80,13 @@
   // Initialize services on mount
   onMount(async () => {
     try {
-      achievementService = await resolve<IAchievementService>(
-        TYPES.IAchievementService
+      achievementService = await resolve<IAchievementManager>(
+        TYPES.IAchievementManager
       );
-      challengeService = await resolve<IDailyChallengeService>(
-        TYPES.IDailyChallengeService
+      challengeService = await resolve<IDailyChallengeManager>(
+        TYPES.IDailyChallengeManager
       );
-      streakService = await resolve<IStreakService>(TYPES.IStreakService);
+      streakService = await resolve<IStreakTracker>(TYPES.IStreakTracker);
     } catch (err) {
       console.error("Failed to initialize AchievementsPanel services:", err);
       isLoading = false;

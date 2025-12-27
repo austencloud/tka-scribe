@@ -8,39 +8,39 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import { KeyboardShortcutService } from "../../keyboard/services/implementations/KeyboardShortcutService";
-import { ShortcutRegistryService } from "../../keyboard/services/implementations/ShortcutRegistryService";
-import { CommandPaletteService } from "../../keyboard/services/implementations/CommandPaletteService";
-import { ShortcutCustomizationService } from "../../keyboard/services/implementations/ShortcutCustomizationService";
-import type { IKeyboardShortcutService } from "../../keyboard/services/contracts/IKeyboardShortcutService";
-import type { IShortcutRegistryService } from "../../keyboard/services/contracts/IShortcutRegistryService";
-import type { ICommandPaletteService } from "../../keyboard/services/contracts/ICommandPaletteService";
-import type { IShortcutCustomizationService } from "../../keyboard/services/contracts/IShortcutCustomizationService";
+import { KeyboardShortcutManager } from "../../keyboard/services/implementations/KeyboardShortcutManager";
+import { ShortcutRegistry } from "../../keyboard/services/implementations/ShortcutRegistry";
+import { CommandPalette } from "../../keyboard/services/implementations/CommandPalette";
+import { ShortcutCustomizer } from "../../keyboard/services/implementations/ShortcutCustomizer";
+import type { IKeyboardShortcutManager } from "../../keyboard/services/contracts/IKeyboardShortcutManager";
+import type { IShortcutRegistry } from "../../keyboard/services/contracts/IShortcutRegistry";
+import type { ICommandPalette } from "../../keyboard/services/contracts/ICommandPalette";
+import type { IShortcutCustomizer } from "../../keyboard/services/contracts/IShortcutCustomizer";
 
 export const keyboardModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Registry (Singleton - shared across the app)
     options
-      .bind<IShortcutRegistryService>(TYPES.IShortcutRegistryService)
-      .to(ShortcutRegistryService)
+      .bind<IShortcutRegistry>(TYPES.IShortcutRegistry)
+      .to(ShortcutRegistry)
       .inSingletonScope();
 
     // Main shortcut service (Singleton)
     options
-      .bind<IKeyboardShortcutService>(TYPES.IKeyboardShortcutService)
-      .to(KeyboardShortcutService)
+      .bind<IKeyboardShortcutManager>(TYPES.IKeyboardShortcutManager)
+      .to(KeyboardShortcutManager)
       .inSingletonScope();
 
     // Command palette service (Singleton)
     options
-      .bind<ICommandPaletteService>(TYPES.ICommandPaletteService)
-      .to(CommandPaletteService)
+      .bind<ICommandPalette>(TYPES.ICommandPalette)
+      .to(CommandPalette)
       .inSingletonScope();
 
     // Customization service (Singleton)
     options
-      .bind<IShortcutCustomizationService>(TYPES.IShortcutCustomizationService)
-      .to(ShortcutCustomizationService)
+      .bind<IShortcutCustomizer>(TYPES.IShortcutCustomizer)
+      .to(ShortcutCustomizer)
       .inSingletonScope();
   }
 );

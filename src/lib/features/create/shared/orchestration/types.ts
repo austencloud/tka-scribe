@@ -1,4 +1,4 @@
-import type { IViewportService } from "$lib/shared/device/services/contracts/IViewportService";
+import type { IViewportManager } from "$lib/shared/device/services/contracts/IViewportManager";
 /**
  * CreateModule Orchestration Types
  *
@@ -7,12 +7,12 @@ import type { IViewportService } from "$lib/shared/device/services/contracts/IVi
  */
 
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts/IStartPositionService";
-import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
+import type { IStartPositionManager } from "../../construct/start-position-picker/services/contracts/IStartPositionManager";
+import type { ICreateModuleOrchestrator } from "../services/contracts/ICreateModuleOrchestrator";
 import type { ISequencePersister } from "../services/contracts/ISequencePersister";
 import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
-import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../services/contracts/ISequenceTransformer";
 import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import type { createCreateModuleState } from "../state/create-module-state.svelte";
 import type { createConstructTabState } from "../state/construct-tab-state.svelte";
@@ -20,15 +20,15 @@ import type { createConstructTabState } from "../state/construct-tab-state.svelt
 /**
  * Collection of all services required by CreateModule
  */
-export interface CreateModuleServices {
+export interface CreateModuleOrchestrators {
   sequenceService: ISequenceRepository;
-  sequencePersistenceService: ISequencePersister;
-  startPositionService: IStartPositionService;
-  CreateModuleService: ICreateModuleService;
+  SequencePersister: ISequencePersister;
+  StartPositionManager: IStartPositionManager;
+  CreateModuleOrchestrator: ICreateModuleOrchestrator;
   deviceDetector: IDeviceDetector;
-  viewportService: IViewportService;
+  viewportService: IViewportManager;
   sequenceStatisticsService: ISequenceStatsCalculator;
-  sequenceTransformationService: ISequenceTransformationService;
+  SequenceTransformer: ISequenceTransformer;
   sequenceValidationService: ISequenceValidator;
 }
 
@@ -93,7 +93,7 @@ export interface InitializationStatus {
  * Result of initialization process
  */
 export interface InitializationResult {
-  services: CreateModuleServices;
+  services: CreateModuleOrchestrators;
   states: CreateModuleStates;
   status: InitializationStatus;
 }

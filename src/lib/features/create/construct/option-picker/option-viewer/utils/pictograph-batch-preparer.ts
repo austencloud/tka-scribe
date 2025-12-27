@@ -15,7 +15,7 @@
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { IArrowLifecycleManager } from "$lib/shared/pictograph/arrow/orchestration/services/contracts/IArrowLifecycleManager";
 import type { IPropSvgLoader } from "$lib/shared/pictograph/prop/services/contracts/IPropSvgLoader";
-import type { IPropPlacementService } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacementService";
+import type { IPropPlacer } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacer";
 import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
 import type { PropPosition } from "$lib/shared/pictograph/prop/domain/models/PropPosition";
 import type { PropAssets } from "$lib/shared/pictograph/prop/domain/models/PropAssets";
@@ -45,7 +45,7 @@ export async function preparePictographBatch(
   pictographs: PictographData[],
   arrowLifecycleManager: IArrowLifecycleManager,
   propSvgLoader: IPropSvgLoader,
-  propPlacementService: IPropPlacementService,
+  PropPlacer: IPropPlacer,
   gridModeDeriver: IGridModeDeriver
 ): Promise<PreparedPictographData[]> {
   // Process all pictographs in parallel for maximum performance
@@ -56,7 +56,7 @@ export async function preparePictographBatch(
           pictograph,
           arrowLifecycleManager,
           propSvgLoader,
-          propPlacementService,
+          PropPlacer,
           gridModeDeriver
         );
       } catch (error) {
@@ -77,7 +77,7 @@ async function prepareSinglePictograph(
   pictograph: PictographData,
   arrowLifecycleManager: IArrowLifecycleManager,
   propSvgLoader: IPropSvgLoader,
-  propPlacementService: IPropPlacementService,
+  PropPlacer: IPropPlacer,
   gridModeDeriver: IGridModeDeriver
 ): Promise<PreparedPictographData> {
   // Derive grid mode
@@ -101,7 +101,7 @@ async function prepareSinglePictograph(
   const { propPositions, propAssets } = await calculatePropPositions(
     pictograph,
     propSvgLoader,
-    propPlacementService
+    PropPlacer
   );
 
   // Return pictograph with prepared data attached
@@ -125,7 +125,7 @@ async function prepareSinglePictograph(
 async function calculatePropPositions(
   pictograph: PictographData,
   propSvgLoader: IPropSvgLoader,
-  propPlacementService: IPropPlacementService
+  PropPlacer: IPropPlacer
 ): Promise<{
   propPositions: Record<string, PropPosition>;
   propAssets: Record<string, PropAssets>;
@@ -169,7 +169,7 @@ async function calculatePropPositions(
         // Load assets and calculate position in parallel
         const [renderData, placementData] = await Promise.all([
           propSvgLoader.loadPropSvg(motionData.propPlacementData, motionData),
-          propPlacementService.calculatePlacement(pictograph, motionData),
+          PropPlacer.calculatePlacement(pictograph, motionData),
         ]);
 
         if (!renderData.svgData) {

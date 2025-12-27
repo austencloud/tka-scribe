@@ -16,9 +16,9 @@
   } from "$lib/shared/share/components/ImageShareDrawer.svelte";
   import { createShareState } from "$lib/shared/share/state/share-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
-  import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
-  import type { ILetterDeriverService } from "$lib/shared/navigation/services/contracts/ILetterDeriverService";
-  import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+  import type { IURLSyncer } from "$lib/shared/navigation/services/contracts/IURLSyncer";
+  import type { ILetterDeriver } from "$lib/shared/navigation/services/contracts/ILetterDeriver";
+  import type { IDeepLinker } from "$lib/shared/navigation/services/contracts/IDeepLinker";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { onMount } from "svelte";
   import { browser } from "$app/environment";
@@ -32,9 +32,9 @@
   const shareService = services.shareService;
 
   // Services
-  let urlSyncService: IURLSyncService | null = $state(null);
-  let letterDeriverService: ILetterDeriverService | null = $state(null);
-  let deepLinkService: IDeepLinkService | null = $state(null);
+  let urlSyncService: IURLSyncer | null = $state(null);
+  let LetterDeriver: ILetterDeriver | null = $state(null);
+  let deepLinkService: IDeepLinker | null = $state(null);
 
   // Track if deep link has been processed
   let deepLinkProcessed = $state(false);
@@ -207,11 +207,9 @@
 
     // Resolve services
     try {
-      urlSyncService = resolve<IURLSyncService>(TYPES.IURLSyncService);
-      letterDeriverService = resolve<ILetterDeriverService>(
-        TYPES.ILetterDeriverService
-      );
-      deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+      urlSyncService = resolve<IURLSyncer>(TYPES.IURLSyncer);
+      LetterDeriver = resolve<ILetterDeriver>(TYPES.ILetterDeriver);
+      deepLinkService = resolve<IDeepLinker>(TYPES.IDeepLinker);
     } catch (error) {
       logger.log("⚠️ Failed to resolve navigation services:", error);
     }
@@ -245,9 +243,8 @@
 
         // Derive letters from motion data (async but non-blocking)
         // This happens in the background after the pictograph module loads
-        if (letterDeriverService) {
-          letterDeriverService
-            .deriveLettersForSequence(deepLinkData.sequence)
+        if (LetterDeriver) {
+          LetterDeriver.deriveLettersForSequence(deepLinkData.sequence)
             .then((sequenceWithLetters) => {
               // Create a fresh sequence object with a new timestamp to ensure reactivity
               const updatedSequence = {
@@ -265,7 +262,7 @@
               // Still load the sequence even if letter derivation fails
             });
         } else {
-          logger.log("⚠️ LetterDeriverService not available");
+          logger.log("⚠️ LetterDeriver not available");
         }
 
         // IMPORTANT: Set view mode BEFORE opening the panel

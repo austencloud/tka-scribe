@@ -11,7 +11,7 @@
     NotificationType,
   } from "../domain/models/notification-models";
   import { NOTIFICATION_TYPE_CONFIG } from "../domain/models/notification-models";
-  import { notificationService } from "../services/implementations/NotificationService";
+  import { notificationService } from "../services/implementations/Notifier";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   let { notification, onAction, onDismiss } = $props<{
@@ -71,7 +71,7 @@
       try {
         // Dynamically import to avoid circular dependencies
         const { notificationService } = await import(
-          "$lib/features/feedback/services/implementations/NotificationService"
+          "$lib/features/feedback/services/implementations/Notifier"
         );
         await notificationService.deleteNotification(user.uid, notification.id);
       } catch (error) {

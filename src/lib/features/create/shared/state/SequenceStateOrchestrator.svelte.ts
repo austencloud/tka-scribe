@@ -23,15 +23,15 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ValidationResult } from "$lib/shared/validation/ValidationResult";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+import type { IDeepLinker } from "$lib/shared/navigation/services/contracts/IDeepLinker";
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
+import type { IActivityLogger } from "$lib/shared/analytics/services/contracts/IActivityLogger";
 import type { ISequencePersister } from "../services/contracts/ISequencePersister";
 import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
-import type { IReversalDetectionService } from "../services/contracts/IReversalDetectionService";
+import type { IReversalDetector } from "../services/contracts/IReversalDetector";
 import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
-import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../services/contracts/ISequenceTransformer";
 import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceAnimationState } from "./animation/SequenceAnimationState.svelte";
 import { createSequenceArrowState } from "./arrow/SequenceArrowState.svelte";
@@ -47,11 +47,11 @@ import { isBeat } from "$lib/features/create/shared/domain/type-guards/pictograp
  */
 export interface SequenceStateServices {
   sequenceService?: ISequenceRepository;
-  sequencePersistenceService?: ISequencePersister;
+  SequencePersister?: ISequencePersister;
   sequenceStatisticsService?: ISequenceStatsCalculator;
-  sequenceTransformationService?: ISequenceTransformationService;
+  SequenceTransformer?: ISequenceTransformer;
   sequenceValidationService?: ISequenceValidator;
-  reversalDetectionService?: IReversalDetectionService;
+  ReversalDetector?: IReversalDetector;
   /**
    * IMPORTANT: Tab ID for persistence isolation.
    * Each tab (constructor, assembler, generator) should have its own persisted data.
@@ -64,12 +64,12 @@ export interface SequenceStateServices {
 export function createSequenceState(services: SequenceStateServices) {
   const {
     sequenceService,
-    sequencePersistenceService,
+    SequencePersister,
     sequenceStatisticsService,
-    sequenceTransformationService,
+    SequenceTransformer,
     sequenceValidationService,
     tabId, // Tab ID for persistence isolation
-    // reversalDetectionService, // Removed - not used
+    // ReversalDetector, // Removed - not used
   } = services;
 
   // Create sub-states
@@ -80,7 +80,7 @@ export function createSequenceState(services: SequenceStateServices) {
 
   // Create persistence coordinator with tab ID for isolated persistence
   const persistenceCoordinator = createSequencePersistenceCoordinator(
-    sequencePersistenceService ?? null,
+    SequencePersister ?? null,
     undefined, // Reversal detection service removed
     tabId // Pass tab ID for persistence isolation
   );
@@ -101,7 +101,7 @@ export function createSequenceState(services: SequenceStateServices) {
     coreState,
     selectionState,
     sequenceStatisticsService: sequenceStatisticsService ?? null,
-    sequenceTransformationService: sequenceTransformationService ?? null,
+    SequenceTransformer: SequenceTransformer ?? null,
     sequenceValidationService: sequenceValidationService ?? null,
     onSave: saveSequenceDataOnly,
   });
@@ -118,7 +118,7 @@ export function createSequenceState(services: SequenceStateServices) {
     try {
       const { resolve } = await import("$lib/shared/inversify/di");
       const { TYPES } = await import("$lib/shared/inversify/types");
-      const deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+      const deepLinkService = resolve<IDeepLinker>(TYPES.IDeepLinker);
       hasDeepLink = deepLinkService.hasDataForModule("create") ?? false;
 
       // Also check for pending edit from Discover gallery (stored in localStorage)
@@ -207,8 +207,8 @@ export function createSequenceState(services: SequenceStateServices) {
 
       // Log sequence creation for analytics
       try {
-        const activityService = tryResolve<IActivityLogService>(
-          TYPES.IActivityLogService
+        const activityService = tryResolve<IActivityLogger>(
+          TYPES.IActivityLogger
         );
         if (activityService) {
           void activityService.logSequenceAction("create", sequence.id, {

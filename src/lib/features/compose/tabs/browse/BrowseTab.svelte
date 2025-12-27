@@ -19,14 +19,14 @@ Features:
   import AnimationGrid from "./components/AnimationGrid.svelte";
   import AnimationDetailPanel from "./components/AnimationDetailPanel.svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
   const debug = createComponentLogger("BrowseTab");
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Get singleton state
   const browseState = getBrowseState();
@@ -40,8 +40,8 @@ Features:
   const drawerWidth = "min(600px, 90vw)";
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Load animations

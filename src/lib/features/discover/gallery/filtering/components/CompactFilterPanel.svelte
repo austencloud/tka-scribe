@@ -5,7 +5,7 @@ Compact, mobile-optimized filter panel for the Discover module.
 Uses chips/tags for quick filtering with less screen real estate.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -21,7 +21,7 @@ Uses chips/tags for quick filtering with less screen real estate.
     onOpenAdvanced?: () => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Quick filter options with unique colors
   const quickFilters = [
@@ -100,8 +100,8 @@ Uses chips/tags for quick filtering with less screen real estate.
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

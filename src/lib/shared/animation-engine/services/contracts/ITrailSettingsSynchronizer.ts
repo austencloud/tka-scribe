@@ -3,10 +3,12 @@
  *
  * Manages synchronization of trail settings between external sources,
  * local state, and the trail capture service.
+ *
+ * Uses reactive state ownership - service owns $state, component derives from it.
  */
 
 import type { TrailSettings } from "../../domain/types/TrailTypes";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 
 /**
  * Callback for triggering re-renders
@@ -14,26 +16,31 @@ import type { ITrailCaptureService } from "$lib/features/compose/services/contra
 export type RenderTriggerCallback = () => void;
 
 /**
- * Callback for updating local trail settings
+ * Reactive state owned by the service
  */
-export type TrailSettingsUpdateCallback = (settings: TrailSettings) => void;
+export interface TrailSettingsSyncState {
+  /** Current settings (synced from external source) */
+  syncedSettings: TrailSettings | null;
+  /** Increments when a render is needed */
+  renderSignal: number;
+}
 
 /**
  * Service for syncing trail settings
  */
 export interface ITrailSettingsSynchronizer {
   /**
+   * Reactive state - read from component via $derived
+   */
+  readonly state: TrailSettingsSyncState;
+
+  /**
    * Initialize the service with dependencies
    */
   initialize(
-    trailCaptureService: ITrailCaptureService | null,
+    TrailCapturer: ITrailCapturer | null,
     renderTrigger: RenderTriggerCallback
   ): void;
-
-  /**
-   * Set callback for local settings updates
-   */
-  setSettingsUpdateCallback(callback: TrailSettingsUpdateCallback): void;
 
   /**
    * Handle trail settings change - updates service, saves to localStorage if needed

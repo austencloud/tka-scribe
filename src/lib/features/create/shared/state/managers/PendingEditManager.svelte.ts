@@ -7,16 +7,16 @@
  */
 
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
-import type { IDeepLinkSequenceService } from "../../services/contracts/IDeepLinkSequenceService";
-import type { ICreationMethodPersistenceService } from "../../services/contracts/ICreationMethodPersistenceService";
+import type { IDeepLinkSequenceHandler } from "../../services/contracts/IDeepLinkSequenceHandler";
+import type { ICreationMethodPersister } from "../../services/contracts/ICreationMethodPersister";
 import type { CreateModuleState } from "../create-module-state.svelte";
 import type { ConstructTabState } from "../construct-tab-state.svelte";
 
 export interface PendingEditConfig {
-  getDeepLinkService: () => IDeepLinkSequenceService | null;
+  getDeepLinker: () => IDeepLinkSequenceHandler | null;
   getCreateModuleState: () => CreateModuleState | null;
   getConstructTabState: () => ConstructTabState | null;
-  getCreationMethodPersistence: () => ICreationMethodPersistenceService | null;
+  getCreationMethodPersistence: () => ICreationMethodPersister | null;
   isServicesInitialized: () => boolean;
   hasSelectedCreationMethod: () => boolean;
   setHasSelectedCreationMethod: (value: boolean) => void;
@@ -24,7 +24,7 @@ export interface PendingEditConfig {
 
 export function createPendingEditEffect(config: PendingEditConfig): () => void {
   const {
-    getDeepLinkService,
+    getDeepLinker,
     getCreateModuleState,
     getConstructTabState,
     getCreationMethodPersistence,
@@ -40,7 +40,7 @@ export function createPendingEditEffect(config: PendingEditConfig): () => void {
       const currentModule = navigationState.currentModule;
       if (currentModule !== "create") return;
 
-      const deepLinkService = getDeepLinkService();
+      const deepLinkService = getDeepLinker();
       const createModuleState = getCreateModuleState();
       const constructTabState = getConstructTabState();
       const creationMethodPersistence = getCreationMethodPersistence();

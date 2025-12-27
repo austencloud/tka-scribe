@@ -5,8 +5,8 @@
   Displays camera feed or uploaded video with record/upload toggle.
 
   Features:
-  - Live camera preview using ICameraService
-  - Video recording using VideoRecordService
+  - Live camera preview using ICameraManager
+  - Video recording using VideoRecorder
   - File upload with video preview
   - Record/Upload mode toggle
   - Recording state with duration indicator
@@ -19,15 +19,15 @@
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import { loadFeatureModule, resolve } from '$lib/shared/inversify/di';
   import { TYPES } from '$lib/shared/inversify/types';
-  import type { ICameraService } from '$lib/features/train/services/contracts/ICameraService';
-  import { getVideoRecordService } from '$lib/shared/video-record/services/implementations/VideoRecordService';
-  import type { RecordingProgress, RecordingResult } from '$lib/shared/video-record/services/contracts/IVideoRecordService';
+  import type { ICameraManager } from '$lib/features/train/services/contracts/ICameraManager';
+  import { getVideoRecorder } from '$lib/shared/video-record/services/implementations/VideoRecorder';
+  import type { RecordingProgress, RecordingResult } from '$lib/shared/video-record/services/contracts/IVideoRecorder';
 
   const hubState = getShareHubState();
 
   // Services
-  let cameraService = $state<ICameraService | null>(null);
-  const recordService = getVideoRecordService();
+  let cameraService = $state<ICameraManager | null>(null);
+  const recordService = getVideoRecorder();
 
   // Camera state
   let loading = $state(true);
@@ -205,7 +205,7 @@
 
     try {
       await loadFeatureModule('train');
-      cameraService = resolve<ICameraService>(TYPES.ICameraService);
+      cameraService = resolve<ICameraManager>(TYPES.ICameraManager);
       await initializeCamera();
     } catch (err) {
       error = 'Failed to load camera service';

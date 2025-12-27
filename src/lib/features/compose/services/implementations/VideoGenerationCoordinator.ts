@@ -6,8 +6,8 @@ import type {
 import type {
   VideoRenderProgress,
   VideoRenderResult,
-} from "../contracts/IVideoPreRenderService";
-import { getVideoPreRenderService } from "./VideoPreRenderService";
+} from "../contracts/IVideoPreRenderer";
+import { getVideoPreRenderer } from "./VideoPreRenderer";
 
 /**
  * VideoGenerationCoordinator
@@ -16,7 +16,7 @@ import { getVideoPreRenderService } from "./VideoPreRenderService";
  * progress tracking, and error handling.
  */
 export class VideoGenerationCoordinator implements IVideoGenerationCoordinator {
-  private videoService = getVideoPreRenderService();
+  private videoService = getVideoPreRenderer();
   private generating = false;
 
   async checkCachedVideo(

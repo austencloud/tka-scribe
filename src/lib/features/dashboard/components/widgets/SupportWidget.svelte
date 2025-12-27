@@ -7,10 +7,10 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { SOCIAL_LINKS } from "$lib/shared/info/domain/content";
 
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
   let copiedEmail = $state(false);
 
   const paymentOptions = [
@@ -39,8 +39,8 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch {
       // Service may not be available

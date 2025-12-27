@@ -1,6 +1,6 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { IDiscoverThumbnailService } from "../../gallery/display/services/contracts/IDiscoverThumbnailService";
-import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+import type { IDiscoverThumbnailProvider } from "../../gallery/display/services/contracts/IDiscoverThumbnailProvider";
+import type { ISheetRouter } from "$lib/shared/navigation/services/contracts/ISheetRouter";
 import type { IDiscoverLoader } from "../../gallery/display/services/contracts/IDiscoverLoader";
 import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
@@ -16,8 +16,8 @@ interface ExploreHandlersParams {
   setSelectedSequence: (sequence: SequenceData | null) => void;
   setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
   setError: (error: string | null) => void;
-  thumbnailService: IDiscoverThumbnailService;
-  sheetRouterService?: ISheetRouterService | null;
+  thumbnailService: IDiscoverThumbnailProvider;
+  sheetRouterService?: ISheetRouter | null;
 }
 
 export function useDiscoverHandlers({

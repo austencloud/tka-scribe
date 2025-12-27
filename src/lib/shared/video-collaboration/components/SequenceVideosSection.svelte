@@ -10,8 +10,8 @@
     loadFeatureModule,
   } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { ICollaborativeVideoManager } from "../services/contracts/ICollaborativeVideoManager";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
   import { onMount } from "svelte";
   import CollaboratorAvatars from "./CollaboratorAvatars.svelte";
@@ -26,8 +26,8 @@
     onUploadClick?: () => void;
   } = $props();
 
-  let videoService = $state<ICollaborativeVideoService | null>(null);
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let videoService = $state<ICollaborativeVideoManager | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
   let videos = $state<CollaborativeVideo[]>([]);
   let loading = $state(true);
   let error = $state<string | null>(null);
@@ -40,11 +40,11 @@
       console.warn("[SequenceVideosSection] Failed to load share module:", e);
     }
 
-    videoService = tryResolve<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    videoService = tryResolve<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     loadVideos();
   });

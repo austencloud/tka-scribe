@@ -17,7 +17,7 @@
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   // Props
   interface Props {
@@ -31,11 +31,11 @@
   let placement = $derived(isMobile ? "bottom" : "right") as "bottom" | "right";
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     const mediaQuery = window.matchMedia("(max-width: 768px)");

@@ -2,7 +2,7 @@
  * Library State Management
  *
  * Reactive state for the Library module using Svelte 5 runes.
- * Integrates with ILibraryService for Firestore operations.
+ * Integrates with ILibraryRepository for Firestore operations.
  */
 
 import { tryResolve } from "$lib/shared/inversify/di";
@@ -14,10 +14,10 @@ import {
 } from "$lib/shared/debug/state/user-preview-state.svelte";
 import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type {
-  ILibraryService,
+  ILibraryRepository,
   LibraryQueryOptions,
   LibraryStats,
-} from "../services/contracts/ILibraryService";
+} from "../services/contracts/ILibraryRepository";
 import type {
   LibrarySequence,
   SequenceVisibility,
@@ -708,10 +708,10 @@ class LibraryStateManager {
   // HELPERS
   // ============================================================
 
-  private getService(): ILibraryService | null {
-    const service = tryResolve<ILibraryService>(TYPES.ILibraryService);
+  private getService(): ILibraryRepository | null {
+    const service = tryResolve<ILibraryRepository>(TYPES.ILibraryRepository);
     if (!service) {
-      console.warn("📚 [LibraryState] LibraryService not available");
+      console.warn("📚 [LibraryState] LibraryRepository not available");
     }
     return service;
   }

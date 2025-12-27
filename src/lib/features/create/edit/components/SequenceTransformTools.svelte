@@ -6,7 +6,7 @@ Responsive design:
 - Mobile: Compact with expandable info buttons
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { Snippet } from "svelte";
@@ -40,12 +40,12 @@ Responsive design:
     renderExtra?: Snippet;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let expandedAction = $state<string | null>(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 
@@ -60,6 +60,7 @@ Responsive design:
     expandedAction = expandedAction === id ? null : id;
   }
 
+  // svelte-ignore state_referenced_locally - intentional: static action definitions with handler props
   const actions: TransformAction[] = [
     {
       id: "mirror",

@@ -1,13 +1,13 @@
 import { injectable } from "inversify";
 import type {
-  ISequenceExportService,
+  ISequenceExporter,
   ExportableSequenceData,
   CondensedSequenceData,
   CondensedStartPosition,
   CondensedBeatData,
   CondensedMotionData,
   CondensedStartMotion,
-} from "../contracts/ISequenceExportService";
+} from "../contracts/ISequenceExporter";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
 
@@ -16,7 +16,7 @@ import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/Mot
  * Pure business logic - no Svelte dependencies
  */
 @injectable()
-export class SequenceExporter implements ISequenceExportService {
+export class SequenceExporter implements ISequenceExporter {
   /**
    * Create a condensed, human-readable version of sequence data
    * Removes: IDs, placement data, metadata, redundant fields

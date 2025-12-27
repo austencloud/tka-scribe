@@ -7,8 +7,8 @@
  * ARCHITECTURE:
  * - Tab/module definitions: config/tab-definitions.ts, config/module-definitions.ts
  * - Storage keys: config/storage-keys.ts
- * - Persistence service: services/implementations/NavigationPersistenceService.ts (for DI contexts)
- * - Validation service: services/implementations/NavigationValidationService.ts (for DI contexts)
+ * - Persistence service: services/implementations/NavigationPersister.ts (for DI contexts)
+ * - Validation service: services/implementations/NavigationValidator.ts (for DI contexts)
  *
  * NOTE: This state is created at module load time (before DI container is ready),
  * so we use storage keys directly and lazy-resolve services where needed.
@@ -17,8 +17,8 @@
 import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
 import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
-import type { IPresenceService } from "../../presence/services/contracts/IPresenceService";
+import type { IActivityLogger } from "../../analytics/services/contracts/IActivityLogger";
+import type { IPresenceTracker } from "../../presence/services/contracts/IPresenceTracker";
 
 // Import configurations from separated files
 import {
@@ -402,8 +402,8 @@ export function createNavigationState() {
       // Include the tab for more granular tracking (e.g., "create:generator")
       if (previousModuleLocal !== moduleId) {
         try {
-          const activityService = tryResolve<IActivityLogService>(
-            TYPES.IActivityLogService
+          const activityService = tryResolve<IActivityLogger>(
+            TYPES.IActivityLogger
           );
           if (activityService) {
             const moduleWithTab = nextTab ? `${moduleId}:${nextTab}` : moduleId;
@@ -418,8 +418,8 @@ export function createNavigationState() {
 
         // Update presence with new location (non-blocking)
         try {
-          const presenceService = tryResolve<IPresenceService>(
-            TYPES.IPresenceService
+          const presenceService = tryResolve<IPresenceTracker>(
+            TYPES.IPresenceTracker
           );
           if (presenceService) {
             void presenceService.updateLocation(moduleId, nextTab || null);
@@ -466,8 +466,8 @@ export function createNavigationState() {
       // Log tab switch for analytics (non-blocking)
       if (previousTab !== tabId) {
         try {
-          const activityService = tryResolve<IActivityLogService>(
-            TYPES.IActivityLogService
+          const activityService = tryResolve<IActivityLogger>(
+            TYPES.IActivityLogger
           );
           if (activityService) {
             const moduleWithTab = `${currentModule}:${tabId}`;
@@ -483,8 +483,8 @@ export function createNavigationState() {
 
         // Update presence with new tab (non-blocking)
         try {
-          const presenceService = tryResolve<IPresenceService>(
-            TYPES.IPresenceService
+          const presenceService = tryResolve<IPresenceTracker>(
+            TYPES.IPresenceTracker
           );
           if (presenceService) {
             void presenceService.updateLocation(currentModule, tabId);

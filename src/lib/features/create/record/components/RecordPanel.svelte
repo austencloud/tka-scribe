@@ -7,7 +7,7 @@ Combines video feed with playback controls for practicing sequences.
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { onDestroy, onMount } from "svelte";
-  import { MetronomeService } from "../services/MetronomeService";
+  import { Metronome } from "../services/Metronome";
   import { createRecordTabState } from "../state/record-tab-state.svelte";
   import RecordControls from "./RecordControls.svelte";
   import VideoFeedPanel from "./VideoFeedPanel.svelte";
@@ -23,7 +23,7 @@ Combines video feed with playback controls for practicing sequences.
 
   // State
   const recordState = createRecordTabState(sequence);
-  let metronome: MetronomeService | null = null;
+  let metronome: Metronome | null = null;
   let playbackIntervalId: number | null = null;
 
   // Sync sequence changes
@@ -120,7 +120,7 @@ Combines video feed with playback controls for practicing sequences.
 
   // Lifecycle
   onMount(() => {
-    metronome = new MetronomeService();
+    metronome = new Metronome();
   });
 
   onDestroy(() => {

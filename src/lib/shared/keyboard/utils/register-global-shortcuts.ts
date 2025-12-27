@@ -6,7 +6,7 @@
  * Domain: Keyboard Shortcuts - Registration
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+import type { IKeyboardShortcutManager } from "../services/contracts/IKeyboardShortcutManager";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import {
   handleModuleChange,
@@ -19,7 +19,7 @@ import { roleSwitcherState } from "../../debug/state/role-switcher-state.svelte"
 import { settingsService } from "../../settings/state/SettingsState.svelte";
 
 export function registerGlobalShortcuts(
-  service: IKeyboardShortcutService,
+  service: IKeyboardShortcutManager,
   state: ReturnType<typeof createKeyboardShortcutState>
 ) {
   // Get accessible modules

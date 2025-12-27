@@ -3,7 +3,7 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 
-export interface IPictographFilterService {
+export interface IPictographFilter {
   filterByContinuity(
     options: PictographData[],
     lastBeat: BeatData | StartPositionData | null

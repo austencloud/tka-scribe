@@ -7,14 +7,14 @@
 
   import { onMount } from "svelte";
   import type { ConversationPreview } from "$lib/shared/messaging/domain/models/conversation-models";
-  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
+  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationManager";
   import { toast } from "../../../toast/state/toast-state.svelte";
   import ConversationItem from "./ConversationItem.svelte";
   import ConversationSkeleton from "../skeletons/ConversationSkeleton.svelte";
   import EmptyConversations from "../empty-states/EmptyConversations.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     conversations: ConversationPreview[];
@@ -28,11 +28,11 @@
   let isMarkingRead = $state(false);
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

@@ -1,12 +1,12 @@
 <!--
 PositionPickerGrid.svelte - Compact 4x4 grid of all 16 start position variations
-Uses IStartPositionService to load variations and displays actual pictographs
+Uses IStartPositionManager to load variations and displays actual pictographs
 50px minimum touch targets for accessibility
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IStartPositionService } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IStartPositionManager } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionManager";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -27,14 +27,14 @@ Uses IStartPositionService to load variations and displays actual pictographs
 
   // State
   let variations = $state<PictographData[]>([]);
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
   let isLoading = $state(true);
-  let startPositionService: IStartPositionService | null = $state(null);
+  let StartPositionManager: IStartPositionManager | null = $state(null);
 
   // Load variations based on grid mode (reactive to prop changes)
   function loadVariations(mode: GridMode) {
-    if (startPositionService) {
-      variations = startPositionService.getAllStartPositionVariations(mode);
+    if (StartPositionManager) {
+      variations = StartPositionManager.getAllStartPositionVariations(mode);
     } else {
       variations = createStartPositionVariations(mode);
     }
@@ -50,13 +50,13 @@ Uses IStartPositionService to load variations and displays actual pictographs
   onMount(async () => {
     try {
       // Load haptic service
-      hapticService = tryResolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = tryResolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
-      // Try to use StartPositionService if available (in Create module)
-      startPositionService = tryResolve<IStartPositionService>(
-        TYPES.IStartPositionService
+      // Try to use StartPositionManager if available (in Create module)
+      StartPositionManager = tryResolve<IStartPositionManager>(
+        TYPES.IStartPositionManager
       );
 
       // Load initial variations

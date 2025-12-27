@@ -17,10 +17,10 @@
   import { T, useTask } from "@threlte/core";
   import { container, loadFeatureModule } from "$lib/shared/inversify/container";
   import { ANIMATION_3D_TYPES } from "../inversify/animation-3d.types";
-  import type { IAvatarSkeletonService } from "../services/contracts/IAvatarSkeletonService";
-  import type { IIKSolverService } from "../services/contracts/IIKSolverService";
-  import type { IAvatarAnimationService } from "../services/contracts/IAvatarAnimationService";
-  import type { IAvatarCustomizationService, BodyType } from "../services/contracts/IAvatarCustomizationService";
+  import type { IAvatarSkeletonBuilder } from "../services/contracts/IAvatarSkeletonBuilder";
+  import type { IIKSolver } from "../services/contracts/IIKSolver";
+  import type { IAvatarAnimator } from "../services/contracts/IAvatarAnimator";
+  import type { IAvatarCustomizer, BodyType } from "../services/contracts/IAvatarCustomizer";
   import type { PropState3D } from "../domain/models/PropState3D";
   import { getHeightForBodyType, deriveSceneProportions, AUSTEN_MEASUREMENTS, cmToUnits } from "../config/avatar-proportions";
   import IKFigure3D from "./IKFigure3D.svelte";
@@ -81,10 +81,10 @@
   }: Props = $props();
 
   // Services (resolved once feature module is loaded)
-  let skeletonService: IAvatarSkeletonService | null = $state(null);
-  let ikSolver: IIKSolverService | null = $state(null);
-  let animationService: IAvatarAnimationService | null = $state(null);
-  let customizationService: IAvatarCustomizationService | null = $state(null);
+  let skeletonService: IAvatarSkeletonBuilder | null = $state(null);
+  let ikSolver: IIKSolver | null = $state(null);
+  let animationService: IAvatarAnimator | null = $state(null);
+  let customizationService: IAvatarCustomizer | null = $state(null);
 
   let servicesReady = $state(false);
   let modelLoaded = $state(false);
@@ -181,17 +181,17 @@
       await loadFeatureModule("3d-viewer");
       console.log("[Avatar3D] Feature module loaded");
 
-      skeletonService = container.get<IAvatarSkeletonService>(
-        ANIMATION_3D_TYPES.IAvatarSkeletonService
+      skeletonService = container.get<IAvatarSkeletonBuilder>(
+        ANIMATION_3D_TYPES.IAvatarSkeletonBuilder
       );
-      ikSolver = container.get<IIKSolverService>(
-        ANIMATION_3D_TYPES.IIKSolverService
+      ikSolver = container.get<IIKSolver>(
+        ANIMATION_3D_TYPES.IIKSolver
       );
-      animationService = container.get<IAvatarAnimationService>(
-        ANIMATION_3D_TYPES.IAvatarAnimationService
+      animationService = container.get<IAvatarAnimator>(
+        ANIMATION_3D_TYPES.IAvatarAnimator
       );
-      customizationService = container.get<IAvatarCustomizationService>(
-        ANIMATION_3D_TYPES.IAvatarCustomizationService
+      customizationService = container.get<IAvatarCustomizer>(
+        ANIMATION_3D_TYPES.IAvatarCustomizer
       );
 
       servicesReady = true;

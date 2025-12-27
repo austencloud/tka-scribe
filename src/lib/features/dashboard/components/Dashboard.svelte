@@ -10,8 +10,8 @@
   import { cubicOut } from "svelte/easing";
   import { resolve, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IFollowingFeedService } from "../services/contracts/IFollowingFeedService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IFollowingFeedProvider } from "../services/contracts/IFollowingFeedProvider";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
@@ -38,7 +38,7 @@
   // Services
   let deviceDetector: IDeviceDetector | null = null;
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // State
   const dashboardState = createDashboard();
@@ -85,8 +85,8 @@
     let cleanup: (() => void) | undefined;
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
       responsiveSettings = deviceDetector.getResponsiveSettings();
 
@@ -116,8 +116,8 @@
     }
 
     try {
-      const feedService = tryResolve<IFollowingFeedService>(
-        TYPES.IFollowingFeedService
+      const feedService = tryResolve<IFollowingFeedProvider>(
+        TYPES.IFollowingFeedProvider
       );
       if (feedService) {
         hasFollowing = await feedService.hasFollowing();

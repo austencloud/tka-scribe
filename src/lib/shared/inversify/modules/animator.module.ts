@@ -18,16 +18,16 @@ import { SequenceAnimationOrchestrator } from "../../../features/compose/service
 import { SequenceLoopabilityChecker } from "../../../features/compose/services/implementations/SequenceLoopabilityChecker";
 // SequenceNormalizationService moved to data.module.ts (Tier 1) - required by ISequenceRepository
 import { SVGGenerator } from "../../../features/compose/services/implementations/SVGGenerator";
-import { TrailCaptureService } from "../../../features/compose/services/implementations/TrailCaptureService";
+import { TrailCapturer } from "../../../features/compose/services/implementations/TrailCapturer";
 import { TunnelModeSequenceManager } from "../../../features/compose/services/implementations/TunnelModeSequenceManager";
-import { AnimationStorageService } from "../../../features/compose/services/implementations/AnimationStorageService";
-import { AnimationService } from "../../application/services/implementations/AnimationService";
+import { AnimationStorageManager } from "../../../features/compose/services/implementations/AnimationStorageManager";
+import { Animator } from "../../application/services/implementations/Animator";
 import { TYPES } from "../types";
 
 export const animatorModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === CORE ANIMATION SERVICES ===
-    options.bind(TYPES.IAnimationService).to(AnimationService);
+    options.bind(TYPES.IAnimator).to(Animator);
     options.bind(TYPES.IAnimationLoopService).to(AnimationLoopService);
     options
       .bind(TYPES.IAnimationPlaybackController)
@@ -57,7 +57,7 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ICompositeVideoRenderer).to(CompositeVideoRenderer);
 
     // === TRAIL SERVICES ===
-    options.bind(TYPES.ITrailCaptureService).to(TrailCaptureService);
+    options.bind(TYPES.ITrailCapturer).to(TrailCapturer);
 
     // === MODE-SPECIFIC SERVICES ===
     // ISequenceNormalizationService moved to data.module.ts (Tier 1) - required by ISequenceRepository
@@ -66,7 +66,7 @@ export const animatorModule = new ContainerModule(
       .to(TunnelModeSequenceManager);
 
     // === ANIMATION STORAGE ===
-    options.bind(TYPES.IAnimationStorageService).to(AnimationStorageService);
+    options.bind(TYPES.IAnimationStorageManager).to(AnimationStorageManager);
 
     // ============================================================================
     // ARCHIVED BINDINGS (services moved to archive/animator-unused-services/)

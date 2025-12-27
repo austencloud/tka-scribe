@@ -3,7 +3,7 @@
 <script lang="ts">
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import { slide, fade } from "svelte/transition";
   import { openDebugPanel } from "../../application/state/ui/ui-state.svelte";
@@ -45,7 +45,7 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Ref to sidebar element
   let sidebarElement = $state<HTMLElement | null>(null);
@@ -256,8 +256,8 @@
     initializeDesktopSidebarCollapsedState();
 
     // Initialize services
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Set up ResizeObserver to measure and report sidebar height

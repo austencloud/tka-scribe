@@ -17,10 +17,10 @@
   import { onMount } from "svelte";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
-  import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
+  import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import PanelContent from "$lib/shared/components/panel/PanelContent.svelte";
   import PanelSearch from "$lib/shared/components/panel/PanelSearch.svelte";
@@ -64,8 +64,8 @@
   let error = $state<string | null>(null);
 
   // Services
-  let userService: IUserService;
-  let hapticService: IHapticFeedbackService;
+  let userService: IUserRepository;
+  let hapticService: IHapticFeedback;
 
   // Computed
   const currentUserId = $derived(authState.user?.uid);
@@ -96,9 +96,9 @@
   onMount(async () => {
     try {
       await loadFeatureModule("community");
-      userService = resolve<IUserService>(TYPES.IUserService);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      userService = resolve<IUserRepository>(TYPES.IUserRepository);
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
       await loadUsers();
     } catch (err) {

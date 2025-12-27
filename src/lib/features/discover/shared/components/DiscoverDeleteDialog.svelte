@@ -6,7 +6,7 @@ about the sequence being deleted and potential consequences.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceDeleteConfirmationData } from "../domain/models/discover-models";
@@ -25,11 +25,11 @@ about the sequence being deleted and potential consequences.
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

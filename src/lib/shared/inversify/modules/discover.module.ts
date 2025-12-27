@@ -1,18 +1,18 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
-import { DiscoverCacheService } from "../../../features/discover/gallery/display/services/implementations/DiscoverCacheService";
-import { DiscoverFilterService } from "../../../features/discover/gallery/display/services/implementations/DiscoverFilterService";
+import { DiscoverCache } from "../../../features/discover/gallery/display/services/implementations/DiscoverCache";
+import { DiscoverFilter } from "../../../features/discover/gallery/display/services/implementations/DiscoverFilter";
 import { DiscoverLoader } from "../../../features/discover/gallery/display/services/implementations/DiscoverLoader";
 import { DiscoverMetadataExtractor } from "../../../features/discover/gallery/display/services/implementations/DiscoverMetadataExtractor";
-import { DiscoverSectionService } from "../../../features/discover/gallery/display/services/implementations/DiscoverSectionService";
-import { DiscoverSortService } from "../../../features/discover/gallery/display/services/implementations/DiscoverSortService";
-import { DiscoverThumbnailService } from "../../../features/discover/gallery/display/services/implementations/DiscoverThumbnailService";
-import { FavoritesService } from "../../../features/discover/shared/services/implementations/FavoritesService";
-import { NavigationService } from "../../../features/discover/gallery/navigation/services/implementations/NavigationService";
-import { DiscoverDeleteService } from "../../../features/discover/shared/services/implementations/DiscoverDeleteService";
-import { DiscoverEventHandlerService } from "../../../features/discover/shared/services/implementations/DiscoverEventHandlerService";
+import { DiscoverSectionManager } from "../../../features/discover/gallery/display/services/implementations/DiscoverSectionManager";
+import { DiscoverSorter } from "../../../features/discover/gallery/display/services/implementations/DiscoverSorter";
+import { DiscoverThumbnailProvider } from "../../../features/discover/gallery/display/services/implementations/DiscoverThumbnailProvider";
+import { FavoritesManager } from "../../../features/discover/shared/services/implementations/FavoritesManager";
+import { Navigator } from "../../../features/discover/gallery/navigation/services/implementations/Navigator";
+import { DiscoverDeleter } from "../../../features/discover/shared/services/implementations/DiscoverDeleter";
+import { DiscoverEventHandler } from "../../../features/discover/shared/services/implementations/DiscoverEventHandler";
 import { SequenceDifficultyCalculator } from "../../../features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
-import { OptimizedDiscoverService } from "../../../features/discover/shared/services/implementations/OptimizedDiscoverService";
-import { FilterPersistenceService } from "../../persistence/services/implementations/FilterPersistenceService";
+import { OptimizedDiscoverer } from "../../../features/discover/shared/services/implementations/OptimizedDiscoverer";
+import { FilterPersister } from "../../persistence/services/implementations/FilterPersister";
 import { TYPES } from "../types";
 
 export const exploreModule = new ContainerModule(
@@ -26,25 +26,23 @@ export const exploreModule = new ContainerModule(
     options
       .bind(TYPES.IDiscoverMetadataExtractor)
       .to(DiscoverMetadataExtractor);
-    options.bind(TYPES.IDiscoverCacheService).to(DiscoverCacheService);
-    options.bind(TYPES.IDiscoverFilterService).to(DiscoverFilterService);
-    options.bind(TYPES.IDiscoverSortService).to(DiscoverSortService);
+    options.bind(TYPES.IDiscoverCache).to(DiscoverCache);
+    options.bind(TYPES.IDiscoverFilter).to(DiscoverFilter);
+    options.bind(TYPES.IDiscoverSorter).to(DiscoverSorter);
     // DiscoverLoader MUST be singleton - sequence index cache (4.7MB) needs to persist
     options.bind(TYPES.IDiscoverLoader).to(DiscoverLoader).inSingletonScope();
 
     // Other explore/Explore services
-    options.bind(TYPES.IFavoritesService).to(FavoritesService);
-    options.bind(TYPES.IFilterPersistenceService).to(FilterPersistenceService);
+    options.bind(TYPES.IFavoritesManager).to(FavoritesManager);
+    options.bind(TYPES.IFilterPersister).to(FilterPersister);
 
     // Note: IPersistenceService is now bound in data.module.ts to DexiePersistenceService
     // options.bind(TYPES.IPersistenceService).to(DiscoverPersistenceService); // REMOVED - conflicts with DexiePersistenceService
-    options.bind(TYPES.ISectionService).to(DiscoverSectionService);
-    options.bind(TYPES.IDiscoverThumbnailService).to(DiscoverThumbnailService);
-    options.bind(TYPES.IOptimizedDiscoverService).to(OptimizedDiscoverService);
-    options.bind(TYPES.INavigationService).to(NavigationService);
-    options.bind(TYPES.IDeleteService).to(DiscoverDeleteService);
-    options
-      .bind(TYPES.IDiscoverEventHandlerService)
-      .to(DiscoverEventHandlerService);
+    options.bind(TYPES.ISectionManager).to(DiscoverSectionManager);
+    options.bind(TYPES.IDiscoverThumbnailProvider).to(DiscoverThumbnailProvider);
+    options.bind(TYPES.IOptimizedDiscoverer).to(OptimizedDiscoverer);
+    options.bind(TYPES.INavigator).to(Navigator);
+    options.bind(TYPES.IDiscoverDeleter).to(DiscoverDeleter);
+    options.bind(TYPES.IDiscoverEventHandler).to(DiscoverEventHandler);
   }
 );

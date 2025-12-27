@@ -8,9 +8,9 @@
 import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
 import type { LibraryCollection } from "$lib/features/library/domain/models/Collection";
 import type { LibrarySequence } from "$lib/features/library/domain/models/LibrarySequence";
-import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
-import type { ICollectionService } from "$lib/features/library/services/contracts/ICollectionService";
-import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
+import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
+import type { ICollectionManager } from "$lib/features/library/services/contracts/ICollectionManager";
+import type { ILibraryRepository } from "$lib/features/library/services/contracts/ILibraryRepository";
 
 /**
  * Creator library data - profile + their public content
@@ -45,9 +45,9 @@ function createCollectionsBrowseState() {
    * Load creator libraries data if not already cached
    */
   async function loadCreatorLibraries(
-    userService: IUserService,
-    collectionService: ICollectionService,
-    libraryService: ILibraryService,
+    userService: IUserRepository,
+    collectionService: ICollectionManager,
+    libraryService: ILibraryRepository,
     currentUserId?: string
   ): Promise<void> {
     if (isLoaded) return;
@@ -122,9 +122,9 @@ function createCollectionsBrowseState() {
    * Force reload (bypasses cache)
    */
   async function refresh(
-    userService: IUserService,
-    collectionService: ICollectionService,
-    libraryService: ILibraryService,
+    userService: IUserRepository,
+    collectionService: ICollectionManager,
+    libraryService: ILibraryRepository,
     currentUserId?: string
   ): Promise<void> {
     isLoaded = false;
@@ -241,9 +241,9 @@ export const collectionsBrowseState = {
 
   // Actions
   loadCreatorLibraries: (
-    userService: IUserService,
-    collectionService: ICollectionService,
-    libraryService: ILibraryService,
+    userService: IUserRepository,
+    collectionService: ICollectionManager,
+    libraryService: ILibraryRepository,
     currentUserId?: string
   ) =>
     getState().loadCreatorLibraries(
@@ -253,9 +253,9 @@ export const collectionsBrowseState = {
       currentUserId
     ),
   refresh: (
-    userService: IUserService,
-    collectionService: ICollectionService,
-    libraryService: ILibraryService,
+    userService: IUserRepository,
+    collectionService: ICollectionManager,
+    libraryService: ILibraryRepository,
     currentUserId?: string
   ) =>
     getState().refresh(

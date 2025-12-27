@@ -11,7 +11,7 @@ import type {
   ExploreNavigationConfig,
   ExploreNavigationItem,
 } from "../../domain/models/navigation-models";
-import type { INavigationService } from "../contracts/INavigationService";
+import type { INavigator } from "../contracts/INavigator";
 
 // Local type alias for NavigationSection
 type NavigationSection = ExploreNavigationConfig;
@@ -19,7 +19,7 @@ type NavigationSection = ExploreNavigationConfig;
 // All interfaces now imported from domain and contracts
 
 @injectable()
-export class NavigationService implements INavigationService {
+export class Navigator implements INavigator {
   generateNavigationSections(
     sequences: SequenceData[],
     favorites: string[]

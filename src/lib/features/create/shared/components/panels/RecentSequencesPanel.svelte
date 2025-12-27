@@ -12,11 +12,11 @@
   import { createEventDispatcher } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { SessionManager } from "../../services/SessionManager.svelte";
-  import { AutosaveService } from "../../services/AutosaveService";
-  import { SequencePersistenceService } from "../../services/SequencePersistenceService";
+  import { Autosaver } from "../../services/Autosaver";
+  import { SequencePersister } from "../../services/SequencePersister";
   import type { SequenceSession } from "../../domain/SequenceSession";
   import type { DraftSequence } from "../../domain/DraftSequence";
-  import type { SavedSequence } from "../../services/SequencePersistenceService";
+  import type { SavedSequence } from "../../services/SequencePersister";
 
   interface Props {
     show: boolean;
@@ -31,8 +31,8 @@
   }>();
 
   const sessionManager = new SessionManager();
-  const autosaveService = new AutosaveService();
-  const persistenceService = new SequencePersistenceService();
+  const autosaver = new Autosaver();
+  const persistenceService = new SequencePersister();
 
   let sessions = $state<SequenceSession[]>([]);
   let drafts = $state<DraftSequence[]>([]);
@@ -48,7 +48,7 @@
     try {
       [sessions, drafts, savedSequences] = await Promise.all([
         sessionManager.getRecentSessions(10),
-        autosaveService.getAllDrafts(),
+        autosaver.getAllDrafts(),
         persistenceService.getRecentSequences(10),
       ]);
     } catch (error) {
@@ -76,7 +76,7 @@
 
   async function handleDeleteDraft(sessionId: string) {
     try {
-      await autosaveService.deleteDraft(sessionId);
+      await autosaver.deleteDraft(sessionId);
       drafts = drafts.filter((d) => d.sessionId !== sessionId);
       dispatch("deleteDraft", { sessionId });
     } catch (error) {

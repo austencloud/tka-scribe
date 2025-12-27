@@ -113,7 +113,7 @@
 
     // Call service to delete all notifications
     const { notificationService } = await import(
-      "$lib/features/feedback/services/implementations/NotificationService"
+      "$lib/features/feedback/services/implementations/Notifier"
     );
     await notificationService.deleteAllNotifications(user.uid);
   }

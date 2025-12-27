@@ -22,7 +22,7 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IDiscoverThumbnailService } from "../../discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "../../discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
   import TagFilterChips from "./tags/TagFilterChips.svelte";
 
   type ViewFilter = "all" | "created" | "forked" | "favorites";
@@ -119,13 +119,13 @@
   function openSequenceInViewer(sequence: SequenceData) {
     // Try to resolve thumbnail service, but it's optional
     // SpotlightViewer can work without it if thumbnails are full URLs
-    const thumbnailService = tryResolve<IDiscoverThumbnailService>(
-      TYPES.IDiscoverThumbnailService
+    const thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
+      TYPES.IDiscoverThumbnailProvider
     );
     // Pass null if service not available - SpotlightViewer handles this
     openSpotlightViewer(
       sequence,
-      thumbnailService as IDiscoverThumbnailService
+      thumbnailService as IDiscoverThumbnailProvider
     );
   }
 

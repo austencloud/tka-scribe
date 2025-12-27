@@ -5,7 +5,7 @@
   Features centered layout matching PersonalTab with descriptive hints.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import {
     hasPasswordProvider,
     isCompactMode,
@@ -20,7 +20,7 @@
   let { onChangePassword, onDeleteAccount, hapticService } = $props<{
     onChangePassword: () => Promise<void>;
     onDeleteAccount: () => Promise<void>;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
   }>();
 
   const userIdentifier = $derived(

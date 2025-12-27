@@ -9,8 +9,8 @@
 
 import type {
   CreateModuleStateForSync,
-  INavigationSyncService,
-} from "../../services/contracts/INavigationSyncService";
+  INavigationSyncer,
+} from "../../services/contracts/INavigationSyncer";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
@@ -20,7 +20,7 @@ type NavigationState = typeof navigationState;
 export interface NavigationSyncManagerConfig {
   CreateModuleState: CreateModuleState;
   navigationState: NavigationState;
-  navigationSyncService: INavigationSyncService;
+  NavigationSyncer: INavigationSyncer;
 }
 
 /**
@@ -30,14 +30,14 @@ export interface NavigationSyncManagerConfig {
 export function createNavigationSyncEffects(
   config: NavigationSyncManagerConfig
 ): () => void {
-  const { CreateModuleState, navigationState, navigationSyncService } = config;
+  const { CreateModuleState, navigationState, NavigationSyncer } = config;
   const createStateForSync =
     CreateModuleState as unknown as CreateModuleStateForSync;
 
   // Effect: Sync navigation state TO Create Module State
   const cleanup1 = $effect.root(() => {
     $effect(() => {
-      navigationSyncService.syncNavigationToCreateModule(
+      NavigationSyncer.syncNavigationToCreateModule(
         createStateForSync,
         navigationState
       );
@@ -49,7 +49,7 @@ export function createNavigationSyncEffects(
     $effect(() => {
       if (CreateModuleState.isUpdatingFromToggle) return;
 
-      navigationSyncService.syncCreateModuleToNavigation(
+      NavigationSyncer.syncCreateModuleToNavigation(
         createStateForSync,
         navigationState
       );

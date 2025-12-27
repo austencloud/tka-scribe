@@ -3,7 +3,7 @@ StaffIdentificationQuiz - Coordinator for staff position and rotation quiz
 Tests understanding of: Alpha/Beta/Gamma positions, Thumb orientations, Prospin/Antispin
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import {
@@ -16,7 +16,7 @@ Tests understanding of: Alpha/Beta/Gamma positions, Thumb orientations, Prospin/
 
   let { onComplete } = $props<{ onComplete?: () => void }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   type AnswerState = "idle" | "correct" | "incorrect";
 

@@ -18,8 +18,8 @@
   import ReversalIndicators from "./ReversalIndicators.svelte";
   import EmptyStateIndicator from "./EmptyStateIndicator.svelte";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-  import type { IAnimationService } from "../../../application/services/contracts/IAnimationService";
-  import type { ITurnsTupleGeneratorService } from "../../arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import type { IAnimator } from "../../../application/services/contracts/IAnimator";
+  import type { ITurnsTupleGenerator } from "../../arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
   import { GridMode } from "../../grid/domain/enums/grid-enums";
   import type { PictographData } from "../domain/models/PictographData";
 
@@ -162,21 +162,21 @@
   // =============================================================================
 
   // Lazy-resolved services (resolved on first access to avoid initialization race)
-  let animationService: IAnimationService | null = null;
-  let turnsTupleGenerator: ITurnsTupleGeneratorService | null = null;
+  let animationService: IAnimator | null = null;
+  let turnsTupleGenerator: ITurnsTupleGenerator | null = null;
 
   // Lazy service resolver - resolves on first access
-  function getAnimationService(): IAnimationService | null {
+  function getAnimator(): IAnimator | null {
     if (!animationService) {
-      animationService = tryResolve<IAnimationService>(TYPES.IAnimationService);
+      animationService = tryResolve<IAnimator>(TYPES.IAnimator);
     }
     return animationService;
   }
 
-  function getTurnsTupleGenerator(): ITurnsTupleGeneratorService | null {
+  function getTurnsTupleGenerator(): ITurnsTupleGenerator | null {
     if (!turnsTupleGenerator) {
-      turnsTupleGenerator = tryResolve<ITurnsTupleGeneratorService>(
-        TYPES.ITurnsTupleGeneratorService
+      turnsTupleGenerator = tryResolve<ITurnsTupleGenerator>(
+        TYPES.ITurnsTupleGenerator
       );
     }
     return turnsTupleGenerator;
@@ -184,7 +184,7 @@
 
   // Synchronized fade-in for pictograph elements (props, arrows, glyph)
   const pictographFadeIn = (_node: Element) => {
-    const service = getAnimationService();
+    const service = getAnimator();
     if (!service) {
       return { duration: 0 };
     }
@@ -197,7 +197,7 @@
 
   // Synchronized fade-out for pictograph elements
   const pictographFadeOut = (_node: Element) => {
-    const service = getAnimationService();
+    const service = getAnimator();
     if (!service) {
       return { duration: 0 };
     }
@@ -206,6 +206,7 @@
   };
 
   // Create pictograph state with reactive data management
+  // svelte-ignore state_referenced_locally - intentional: $effect below calls updatePictographData
   const pictographState = createPictographState(pictographData);
 
   // Track if component is mounted (services are ready)

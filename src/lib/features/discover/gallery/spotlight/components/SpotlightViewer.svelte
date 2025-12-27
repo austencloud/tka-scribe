@@ -2,7 +2,7 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IDiscoverThumbnailService } from "../../display/services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "../../display/services/contracts/IDiscoverThumbnailProvider";
   import type { SpotlightDisplayMode } from "$lib/shared/application/state/ui/ui-state.svelte";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 
@@ -16,7 +16,7 @@
   } = $props<{
     show?: boolean;
     sequence?: SequenceData;
-    thumbnailService?: IDiscoverThumbnailService;
+    thumbnailService?: IDiscoverThumbnailProvider;
     displayMode?: SpotlightDisplayMode;
     onClose?: () => void;
   }>();

@@ -9,7 +9,7 @@
   - iOS semantic colors
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../../application/services/contracts/IHapticFeedback";
   import { resolve } from "../../../../inversify/di";
   import { TYPES } from "../../../../inversify/types";
   import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
@@ -29,11 +29,11 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

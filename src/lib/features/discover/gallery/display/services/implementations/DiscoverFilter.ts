@@ -10,7 +10,7 @@ import { ExploreFilterType } from "$lib/shared/persistence/domain/enums/Filterin
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
-import type { IDiscoverFilterService } from "../contracts/IDiscoverFilterService";
+import type { IDiscoverFilter } from "../contracts/IDiscoverFilter";
 import {
   CAPType,
   CAP_TYPE_LABELS,
@@ -25,7 +25,7 @@ const DIFFICULTY_OPTIONS = ["beginner", "intermediate", "advanced"];
 const GRID_MODE_OPTIONS = [GridMode.DIAMOND, GridMode.BOX];
 
 @injectable()
-export class DiscoverFilterService implements IDiscoverFilterService {
+export class DiscoverFilter implements IDiscoverFilter {
   applyFilter(
     sequences: SequenceData[],
     filterType: ExploreFilterType,

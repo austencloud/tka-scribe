@@ -12,8 +12,8 @@
  * - Email/display name updates
  *
  * Extracted responsibilities (now services):
- * - Profile picture management → IProfilePictureService
- * - User document CRUD → IUserDocumentService
+ * - Profile picture management → IProfilePictureManager
+ * - User document CRUD → IUserDocumentManager
  *
  * Preview mode integration:
  * - getEffectiveUserId/Role/Admin check userPreviewState for admin preview mode
@@ -33,12 +33,12 @@ import { TYPES } from "../../inversify/types";
 import { tryResolve } from "../../inversify/di";
 
 // Service imports
-import type { IProfilePictureService } from "../services/contracts/IProfilePictureService";
-import type { IUserDocumentService } from "../services/contracts/IUserDocumentService";
+import type { IProfilePictureManager } from "../services/contracts/IProfilePictureManager";
+import type { IUserDocumentManager } from "../services/contracts/IUserDocumentManager";
 import { auth } from "../firebase";
 // Preview state for admin "View As" feature
 import { userPreviewState } from "../../debug/state/user-preview-state.svelte";
-import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
+import type { IActivityLogger } from "../../analytics/services/contracts/IActivityLogger";
 import { featureFlagService } from "../services/FeatureFlagService.svelte";
 import type { UserRole } from "../domain/models/UserRole";
 
@@ -243,8 +243,8 @@ export function initializeAuthListener() {
           role = (idTokenResult.claims.role as UserRole) || "user";
 
           // Create or update user document in Firestore
-          const userDocumentService = tryResolve<IUserDocumentService>(
-            TYPES.IUserDocumentService
+          const userDocumentService = tryResolve<IUserDocumentManager>(
+            TYPES.IUserDocumentManager
           );
           if (userDocumentService) {
             try {
@@ -258,8 +258,8 @@ export function initializeAuthListener() {
           }
 
           // Update profile pictures from OAuth providers (non-blocking)
-          const profilePictureService = tryResolve<IProfilePictureService>(
-            TYPES.IProfilePictureService
+          const profilePictureService = tryResolve<IProfilePictureManager>(
+            TYPES.IProfilePictureManager
           );
           if (profilePictureService) {
             try {
@@ -313,8 +313,8 @@ export function initializeAuthListener() {
       // Log session start for analytics (non-blocking)
       if (user) {
         try {
-          const activityService = tryResolve<IActivityLogService>(
-            TYPES.IActivityLogService
+          const activityService = tryResolve<IActivityLogger>(
+            TYPES.IActivityLogger
           );
           if (activityService) {
             void activityService.logSessionStart();
@@ -330,7 +330,7 @@ export function initializeAuthListener() {
               await ensureContainerInitialized(); // Ensure Tier 1 modules (including presence) are loaded
               const presenceService = resolve<{
                 initialize: () => Promise<void>;
-              }>(TYPES.IPresenceService);
+              }>(TYPES.IPresenceTracker);
               if (presenceService) {
                 void presenceService.initialize();
               }
@@ -385,7 +385,7 @@ export function initializeAuthListener() {
               await loadFeatureModule("library");
               const collectionService = tryResolve<{
                 ensureSystemCollections?: () => Promise<void>;
-              }>(TYPES.ICollectionService);
+              }>(TYPES.ICollectionManager);
               if (collectionService?.ensureSystemCollections) {
                 void collectionService.ensureSystemCollections();
               }
@@ -457,7 +457,7 @@ export async function signOut() {
     // Mark user as offline in presence system before signing out
     try {
       const presenceService = tryResolve<{ goOffline: () => Promise<void> }>(
-        TYPES.IPresenceService
+        TYPES.IPresenceTracker
       );
       if (presenceService) {
         await presenceService.goOffline();

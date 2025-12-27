@@ -8,7 +8,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
 <script lang="ts">
   import { galleryControlsManager } from "../state/gallery-controls-state.svelte";
   import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { getContext, onMount } from "svelte";
@@ -33,7 +33,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   const isFilterPanelOpen = $derived(galleryPanelManager.isFiltersOpen);
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Check if there's an active filter
   const hasActiveFilter = $derived(
@@ -70,8 +70,8 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   ];
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

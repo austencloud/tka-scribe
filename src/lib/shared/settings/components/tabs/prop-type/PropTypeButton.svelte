@@ -23,6 +23,7 @@
     onImageLoad?: (propType: PropType, width: number, height: number) => void;
   }>();
 
+  // svelte-ignore state_referenced_locally - intentional: component is recreated when propType changes
   const displayInfo = getPropTypeDisplayInfo(propType);
 
   let svgContent = $state("");

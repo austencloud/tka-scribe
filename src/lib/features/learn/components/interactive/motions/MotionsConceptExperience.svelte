@@ -3,7 +3,7 @@ MotionsConceptExperience - Coordinator for 8-page hand motions learning flow
 Pages 1: Intro, Pages 2-7: Motion types, Page 8: Quiz
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { TYPE_EXAMPLES, MOTION_INFO } from "../../../domain/constants/motion-experience-data";
@@ -13,7 +13,7 @@ Pages 1: Intro, Pages 2-7: Motion types, Page 8: Quiz
 
   let { onComplete } = $props<{ onComplete?: () => void }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   let currentPage = $state(1);
   const totalPages = 8;

@@ -14,15 +14,15 @@
 import type { MotionType } from "../../../../../shared/domain/enums/pictograph-enums";
 import type { IArrowAdjustmentCalculator } from "../../services/contracts/IArrowAdjustmentCalculator";
 import type { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
-import type { ArrowPlacementKeyService } from "../../../key-generation/services/implementations/ArrowPlacementKeyService";
+import type { ArrowPlacementKeyGenerator } from "../../../key-generation/services/implementations/ArrowPlacementKeyGenerator";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { IAttributeKeyGenerator } from "../../../key-generation/services/contracts/IAttributeKeyGenerator";
-import type { IDefaultPlacementService } from "../../../placement/services/contracts/IDefaultPlacementService";
-import type { IDirectionalTupleProcessor } from "../contracts/IDirectionalTupleService";
+import type { IDefaultPlacer } from "../../../placement/services/contracts/IDefaultPlacer";
+import type { IDirectionalTupleProcessor } from "../contracts/IDirectionalTupleGenerator";
 import type { IGridModeDeriver } from "../../../../../grid/services/contracts/IGridModeDeriver";
 import type { ISpecialPlacementOriKeyGenerator } from "../../../key-generation/services/contracts/ISpecialPlacementOriKeyGenerator";
-import type { ISpecialPlacementService } from "../../../placement/services/contracts/ISpecialPlacementService";
+import type { ISpecialPlacer } from "../../../placement/services/contracts/ISpecialPlacer";
 import type { ITurnsTupleKeyGenerator } from "../../../key-generation/services/contracts/ITurnsTupleKeyGenerator";
 import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import { TYPES } from "../../../../../../inversify/types";
@@ -37,10 +37,10 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
    */
 
   // Lookup services (previously in ArrowAdjustmentLookup)
-  private specialPlacementService: ISpecialPlacementService;
-  private defaultPlacementService: IDefaultPlacementService;
+  private SpecialPlacer: ISpecialPlacer;
+  private DefaultPlacer: IDefaultPlacer;
   private orientationKeyService: ISpecialPlacementOriKeyGenerator;
-  private placementKeyService: ArrowPlacementKeyService;
+  private placementKeyService: ArrowPlacementKeyGenerator;
   private turnsTupleService: ITurnsTupleKeyGenerator;
   private attributeKeyService: IAttributeKeyGenerator;
 
@@ -50,14 +50,14 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
 
   constructor(
     @inject(TYPES.IGridModeDeriver) gridModeService: IGridModeDeriver,
-    @inject(TYPES.ISpecialPlacementService)
-    specialPlacementService: ISpecialPlacementService,
-    @inject(TYPES.IDefaultPlacementService)
-    defaultPlacementService: IDefaultPlacementService,
+    @inject(TYPES.ISpecialPlacer)
+    SpecialPlacer: ISpecialPlacer,
+    @inject(TYPES.IDefaultPlacer)
+    DefaultPlacer: IDefaultPlacer,
     @inject(TYPES.ISpecialPlacementOriKeyGenerator)
     orientationKeyService: ISpecialPlacementOriKeyGenerator,
-    @inject(TYPES.IArrowPlacementKeyService)
-    placementKeyService: ArrowPlacementKeyService,
+    @inject(TYPES.IArrowPlacementKeyGenerator)
+    placementKeyService: ArrowPlacementKeyGenerator,
     @inject(TYPES.ITurnsTupleKeyGenerator)
     turnsTupleService: ITurnsTupleKeyGenerator,
     @inject(TYPES.IAttributeKeyGenerator)
@@ -67,8 +67,8 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
   ) {
     // Store all injected services
     this.gridModeService = gridModeService;
-    this.specialPlacementService = specialPlacementService;
-    this.defaultPlacementService = defaultPlacementService;
+    this.SpecialPlacer = SpecialPlacer;
+    this.DefaultPlacer = DefaultPlacer;
     this.orientationKeyService = orientationKeyService;
     this.placementKeyService = placementKeyService;
     this.turnsTupleService = turnsTupleService;
@@ -249,7 +249,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
      */
     try {
       const adjustment =
-        await this.specialPlacementService.getSpecialAdjustment(
+        await this.SpecialPlacer.getSpecialAdjustment(
           motionData,
           pictographData,
           arrowColor,
@@ -292,7 +292,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       //   gridMode
       // });
 
-      const keys = await this.defaultPlacementService.getAvailablePlacementKeys(
+      const keys = await this.DefaultPlacer.getAvailablePlacementKeys(
         motionData.motionType as MotionType,
         gridMode as GridMode
       );
@@ -311,7 +311,7 @@ export class ArrowAdjustmentCalculator implements IArrowAdjustmentCalculator {
       // console.log("🔑 Generated placement key:", placementKey);
 
       const adjustmentPoint =
-        await this.defaultPlacementService.getDefaultAdjustment(
+        await this.DefaultPlacer.getDefaultAdjustment(
           placementKey,
           motionData.turns || 0,
           motionData.motionType as MotionType,

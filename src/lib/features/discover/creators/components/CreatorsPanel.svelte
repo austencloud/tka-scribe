@@ -11,12 +11,12 @@
   import { onMount } from "svelte";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import { discoverNavigationState } from "../../shared/state/discover-navigation-state.svelte";
   import { creatorsDataState } from "../state/creators-data-state.svelte";
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
-  import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
+  import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
   import PanelContent from "$lib/shared/components/panel/PanelContent.svelte";
   import PanelSearch from "$lib/shared/components/panel/PanelSearch.svelte";
@@ -43,8 +43,8 @@
   let userColors = $state<Map<string, string>>(new Map());
 
   // Service instances
-  let userService: IUserService;
-  let hapticService: IHapticFeedbackService;
+  let userService: IUserRepository;
+  let hapticService: IHapticFeedback;
 
   // Get current user ID
   const currentUserId = $derived(authState.user?.uid);
@@ -69,13 +69,13 @@
 
   onMount(async () => {
     try {
-      // Ensure community module is loaded (provides IUserService)
+      // Ensure community module is loaded (provides IUserRepository)
       await loadFeatureModule("community");
 
       // Resolve services from DI container
-      userService = resolve<IUserService>(TYPES.IUserService);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      userService = resolve<IUserRepository>(TYPES.IUserRepository);
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
       // Load creators data (uses cache if already loaded)

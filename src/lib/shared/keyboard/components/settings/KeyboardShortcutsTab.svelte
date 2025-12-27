@@ -10,9 +10,9 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
-    IShortcutCustomizationService,
+    IShortcutCustomizer,
     ShortcutWithBinding,
-  } from "../../services/contracts/IShortcutCustomizationService";
+  } from "../../services/contracts/IShortcutCustomizer";
   import type {
     ShortcutContext,
     ShortcutConflict,
@@ -22,7 +22,7 @@
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   // Services
-  let customizationService: IShortcutCustomizationService | null = $state(null);
+  let customizationService: IShortcutCustomizer | null = $state(null);
 
   // State
   let searchQuery = $state("");
@@ -64,8 +64,8 @@
 
   onMount(() => {
     try {
-      customizationService = resolve<IShortcutCustomizationService>(
-        TYPES.IShortcutCustomizationService
+      customizationService = resolve<IShortcutCustomizer>(
+        TYPES.IShortcutCustomizer
       );
       refreshShortcuts();
     } catch (error) {

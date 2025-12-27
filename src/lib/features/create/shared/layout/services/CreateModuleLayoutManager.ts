@@ -1,4 +1,4 @@
-import type { IViewportService } from "$lib/shared/device/services/contracts/IViewportService";
+import type { IViewportManager } from "$lib/shared/device/services/contracts/IViewportManager";
 /**
  * CreateModule Layout Service Implementation
  *
@@ -11,13 +11,13 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { LayoutConfiguration } from "../../orchestration/types";
 import { LAYOUT_BREAKPOINTS } from "../models/LayoutState";
-import type { ICreateModuleLayoutService } from "./ICreateModuleLayoutService";
+import type { ICreateModuleLayoutManager } from "./ICreateModuleLayoutManager";
 
 @injectable()
-export class CreateModuleLayoutService implements ICreateModuleLayoutService {
+export class CreateModuleLayoutManager implements ICreateModuleLayoutManager {
   constructor(
     @inject(TYPES.IDeviceDetector) private deviceDetector: IDeviceDetector,
-    @inject(TYPES.IViewportService) private viewportService: IViewportService
+    @inject(TYPES.IViewportManager) private viewportService: IViewportManager
   ) {}
 
   /**

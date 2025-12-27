@@ -7,7 +7,7 @@ that triggers the filter panel dropdown.
 -->
 
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import { swipeGesture } from "$lib/shared/utils/swipeGesture";
 
@@ -30,8 +30,8 @@ that triggers the filter panel dropdown.
   }>();
 
   // Resolve service safely (tryResolve returns null if not available)
-  const hapticService = tryResolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = tryResolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   /**

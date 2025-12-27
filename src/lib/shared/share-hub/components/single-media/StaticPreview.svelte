@@ -1,7 +1,7 @@
 <!--
   StaticPreview.svelte
 
-  Static image format preview using the actual ImageCompositionService.
+  Static image format preview using the actual ImageComposer.
   Shows a real preview of what the exported image will look like.
 
   Features:
@@ -16,7 +16,7 @@
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import { loadSharedModules, tryResolve } from '$lib/shared/inversify/di';
   import { TYPES } from '$lib/shared/inversify/types';
-  import type { ISequenceRenderService } from '$lib/shared/render/services/contracts/ISequenceRenderService';
+  import type { ISequenceRenderer } from '$lib/shared/render/services/contracts/ISequenceRenderer';
   import { getImageCompositionManager } from '$lib/shared/share/state/image-composition-state.svelte';
   import { onMount } from 'svelte';
 
@@ -27,7 +27,7 @@
   let previewDataUrl = $state<string | null>(null);
   let isLoading = $state(false);
   let previewError = $state<string | null>(null);
-  let renderService = $state<ISequenceRenderService | null>(null);
+  let renderService = $state<ISequenceRenderer | null>(null);
   let renderVersion = $state(0); // Increment to trigger re-render
 
   // Local reactive copies of settings (for UI)
@@ -40,9 +40,9 @@
   // Load render service on mount
   $effect(() => {
     loadSharedModules().then(() => {
-      renderService = tryResolve<ISequenceRenderService>(TYPES.ISequenceRenderService);
+      renderService = tryResolve<ISequenceRenderer>(TYPES.ISequenceRenderer);
       if (!renderService) {
-        console.warn('⚠️ ISequenceRenderService not available after loading shared modules');
+        console.warn('⚠️ ISequenceRenderer not available after loading shared modules');
       }
     }).catch((error) => {
       console.error('Failed to load shared modules:', error);

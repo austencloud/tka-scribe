@@ -10,14 +10,14 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import type { IDailyChallengeService } from "$lib/shared/gamification/services/contracts/IDailyChallengeService";
+  import type { IDailyChallengeManager } from "$lib/shared/gamification/services/contracts/IDailyChallengeManager";
   import type {
     DailyChallenge,
     UserChallengeProgress,
   } from "$lib/shared/gamification/domain/models/achievement-models";
 
   // Services
-  let challengeService: IDailyChallengeService | null = $state(null);
+  let challengeService: IDailyChallengeManager | null = $state(null);
 
   // State
   let dailyChallenge = $state<DailyChallenge | null>(null);
@@ -54,8 +54,8 @@
   // Initialize services
   onMount(async () => {
     try {
-      challengeService = await resolve<IDailyChallengeService>(
-        TYPES.IDailyChallengeService
+      challengeService = await resolve<IDailyChallengeManager>(
+        TYPES.IDailyChallengeManager
       );
       await loadData();
     } catch (err) {

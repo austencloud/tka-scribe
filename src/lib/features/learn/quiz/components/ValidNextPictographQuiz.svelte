@@ -5,7 +5,7 @@ The next pictograph's start position must match the initial pictograph's end pos
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
   import { QuizType } from "../domain/enums/quiz-enums";
@@ -25,7 +25,7 @@ The next pictograph's start position must match the initial pictograph's end pos
     onBack?: () => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   let questionData = $state<QuizQuestionData | null>(null);
   let selectedAnswerId = $state<string | null>(null);
@@ -43,7 +43,7 @@ The next pictograph's start position must match the initial pictograph's end pos
   );
 
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     await loadQuestion();
   });
 

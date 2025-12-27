@@ -6,28 +6,28 @@
 
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { ShareService } from "../../share/services/implementations/ShareService";
-import { InstagramLinkService } from "../../share/services/implementations/InstagramLinkService";
-import { MediaBundlerService } from "../../share/services/implementations/MediaBundlerService";
-import { FirebaseVideoUploadService } from "../../share/services/implementations/FirebaseVideoUploadService";
-import { RecordingPersistenceService } from "../../video-record/services/implementations/RecordingPersistenceService";
-import { CollaborativeVideoService } from "../../video-collaboration/services/implementations/CollaborativeVideoService";
+import { Sharer } from "../../share/services/implementations/Sharer";
+import { InstagramLinker } from "../../share/services/implementations/InstagramLinker";
+import { MediaBundler } from "../../share/services/implementations/MediaBundler";
+import { FirebaseVideoUploader } from "../../share/services/implementations/FirebaseVideoUploader";
+import { RecordingPersister } from "../../video-record/services/implementations/RecordingPersister";
+import { CollaborativeVideoManager } from "../../video-collaboration/services/implementations/CollaborativeVideoManager";
 import { TYPES } from "../types";
 
 export const shareModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === SHARE SERVICES ===
-    options.bind(TYPES.IShareService).to(ShareService);
-    options.bind(TYPES.IInstagramLinkService).to(InstagramLinkService);
-    options.bind(TYPES.IMediaBundlerService).to(MediaBundlerService);
+    options.bind(TYPES.ISharer).to(Sharer);
+    options.bind(TYPES.IInstagramLinker).to(InstagramLinker);
+    options.bind(TYPES.IMediaBundler).to(MediaBundler);
     options
-      .bind(TYPES.IFirebaseVideoUploadService)
-      .to(FirebaseVideoUploadService);
+      .bind(TYPES.IFirebaseVideoUploader)
+      .to(FirebaseVideoUploader);
     options
-      .bind(TYPES.IRecordingPersistenceService)
-      .to(RecordingPersistenceService);
+      .bind(TYPES.IRecordingPersister)
+      .to(RecordingPersister);
     options
-      .bind(TYPES.ICollaborativeVideoService)
-      .to(CollaborativeVideoService);
+      .bind(TYPES.ICollaborativeVideoManager)
+      .to(CollaborativeVideoManager);
   }
 );

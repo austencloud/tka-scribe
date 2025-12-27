@@ -3,7 +3,7 @@ LengthSelectionSheet.svelte - Sheet content for selecting a length filter
 Displays available lengths as pill buttons with clear option
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -20,11 +20,11 @@ Displays available lengths as pill buttons with clear option
     onClear: () => void;
   }>();
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

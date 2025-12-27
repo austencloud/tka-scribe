@@ -9,7 +9,7 @@ Integrates with discoverNavigationState for proper navigation flow.
     discoverNavigationState,
     type DiscoverLocation,
   } from "../state/discover-navigation-state.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -18,11 +18,11 @@ Integrates with discoverNavigationState for proper navigation flow.
     onNavigate: (location: DiscoverLocation) => void;
   }>();
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

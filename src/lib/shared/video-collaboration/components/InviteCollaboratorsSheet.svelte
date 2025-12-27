@@ -7,9 +7,9 @@
 <script lang="ts">
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
-  import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
+  import type { ICollaborativeVideoManager } from "../services/contracts/ICollaborativeVideoManager";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
   import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
   import { onMount } from "svelte";
@@ -30,18 +30,18 @@
   } = $props();
 
   // Services
-  let userService = $state<IUserService>();
-  let videoService = $state<ICollaborativeVideoService>();
-  let hapticService = $state<IHapticFeedbackService>();
+  let userService = $state<IUserRepository>();
+  let videoService = $state<ICollaborativeVideoManager>();
+  let hapticService = $state<IHapticFeedback>();
 
   onMount(async () => {
     const container = await getContainerInstance();
-    userService = container.get<IUserService>(TYPES.IUserService);
-    videoService = container.get<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    userService = container.get<IUserRepository>(TYPES.IUserRepository);
+    videoService = container.get<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
-    hapticService = container.get<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = container.get<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

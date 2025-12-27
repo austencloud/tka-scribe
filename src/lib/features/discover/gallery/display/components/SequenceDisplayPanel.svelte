@@ -1,16 +1,16 @@
 <script lang="ts">
   import type { SequenceSection } from "./../../../shared/domain/models/discover-models.ts";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import DiscoverGrid from "./DiscoverGrid.svelte";
   import DiscoverThumbnailSkeleton from "./DiscoverThumbnailSkeleton.svelte";
   import GalleryTopBarControls from "../../../shared/components/GalleryTopBarControls.svelte";
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -32,7 +32,7 @@
   }>();
 
   // ✅ RESOLVE SERVICES: Get services from DI container (lazy resolution)
-  let thumbnailService: IDiscoverThumbnailService | null = $state(null);
+  let thumbnailService: IDiscoverThumbnailProvider | null = $state(null);
 
   // ✅ DERIVED RUNES: UI state
   const isEmpty = $derived(!isLoading && !error && sequences.length === 0);
@@ -44,11 +44,11 @@
   }
 
   onMount(async () => {
-    thumbnailService = tryResolve<IDiscoverThumbnailService>(
-      TYPES.IDiscoverThumbnailService
+    thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
+      TYPES.IDiscoverThumbnailProvider
     );
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

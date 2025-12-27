@@ -13,8 +13,8 @@
   } from "../../domain/models/label-models";
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
-  import type { PolyrhythmicCAPResult } from "../../services/contracts/IPolyrhythmicDetectionService";
-  import type { CompoundPattern, AxisAlternatingPattern } from "../../services/contracts/ICAPDetectionService";
+  import type { PolyrhythmicCAPResult } from "../../services/contracts/IPolyrhythmicDetector";
+  import type { CompoundPattern, AxisAlternatingPattern } from "../../services/contracts/ICAPDetector";
   import {
     formatDesignation,
     formatSectionBeats,

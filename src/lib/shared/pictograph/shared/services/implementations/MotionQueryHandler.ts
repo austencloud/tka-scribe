@@ -18,7 +18,7 @@ import type { ParsedCsvRow } from "$lib/features/create/generate/shared/domain/c
 import type { ICSVLoader } from "../../../../foundation/services/contracts/data/ICSVLoader";
 import type { IMotionQueryHandler } from "../../../../foundation/services/contracts/data/data-contracts";
 import { TYPES } from "../../../../inversify/types";
-import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculator";
 // Temporary interface definition
 interface ICSVParser {
   parseCSV(csvText: string): { rows: ParsedCsvRow[] };
@@ -40,7 +40,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     @inject(TYPES.ICSVPictographParser)
     private csvPictographParser: ICSVPictographParser,
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator
+    private OrientationCalculator: IOrientationCalculator
   ) {}
 
   /**
@@ -359,7 +359,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
 
   /**
    * Calculate the end orientation for a motion with a different start orientation
-   * Uses the proper OrientationCalculationService for accurate calculations
+   * Uses the proper OrientationCalculator for accurate calculations
    */
   private calculateTransformedEndOrientation(
     originalMotion: MotionData,
@@ -382,7 +382,7 @@ export class MotionQueryHandler implements IMotionQueryHandler {
     });
 
     // Use the proper orientation calculation service
-    return this.orientationCalculationService.calculateEndOrientation(
+    return this.OrientationCalculator.calculateEndOrientation(
       transformedMotionData,
       color
     );

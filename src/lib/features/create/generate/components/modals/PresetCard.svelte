@@ -7,7 +7,7 @@ Displays a single preset with icon, name, summary, and action buttons
     CAP_TYPE_LABELS,
     type CAPType,
   } from "$lib/features/create/generate/circular/domain/models/circular-models";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
   import type { GenerationPreset } from "../../state/preset.svelte";
@@ -19,11 +19,11 @@ Displays a single preset with icon, name, summary, and action buttons
     onDelete: (presetId: string) => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

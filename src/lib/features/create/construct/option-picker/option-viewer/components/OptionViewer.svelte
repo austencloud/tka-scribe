@@ -9,14 +9,14 @@ Orchestrates specialized components and services:
 <script lang="ts">
   import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount, untrack } from "svelte";
   import { fade } from "svelte/transition";
 
   import ConstructPickerHeader from "$lib/features/create/construct/shared/components/ConstructPickerHeader.svelte";
-  import type { ILayoutDetectionService } from "../../services/contracts/ILayoutDetectionService";
+  import type { ILayoutDetector } from "../../services/contracts/ILayoutDetector";
   import type { IOptionFilter } from "../services/contracts/IOptionFilter";
   import type { IOptionLoader } from "../services/contracts/IOptionLoader";
   import type { IOptionOrganizer } from "../services/contracts/IOptionOrganizer";
@@ -25,7 +25,7 @@ Orchestrates specialized components and services:
   import type { ISectionTitleFormatter } from "../services/contracts/ISectionTitleFormatter";
   import type { IArrowLifecycleManager } from "$lib/shared/pictograph/arrow/orchestration/services/contracts/IArrowLifecycleManager";
   import type { IPropSvgLoader } from "$lib/shared/pictograph/prop/services/contracts/IPropSvgLoader";
-  import type { IPropPlacementService } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacementService";
+  import type { IPropPlacer } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacer";
   import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
   import { createContainerDimensionTracker } from "../state/container-dimension-tracker.svelte";
   import { createOptionPickerState } from "../state/option-picker-state.svelte";
@@ -67,14 +67,14 @@ Orchestrates specialized components and services:
   // ===== SERVICES =====
   let optionPickerSizingService: IOptionSizer | null = null;
   let optionOrganizerService: IOptionOrganizer | null = null;
-  let layoutDetectionService: ILayoutDetectionService | null = null;
+  let LayoutDetector: ILayoutDetector | null = null;
   let sectionTitleFormatter: ISectionTitleFormatter | null = null;
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Services for batch preparation
   let arrowLifecycleManager: IArrowLifecycleManager | null = null;
   let propSvgLoader: IPropSvgLoader | null = null;
-  let propPlacementService: IPropPlacementService | null = null;
+  let propPlacementService: IPropPlacer | null = null;
   let gridModeDeriver: IGridModeDeriver | null = null;
 
   // ===== STATE =====
@@ -190,7 +190,7 @@ Orchestrates specialized components and services:
 
   // ===== DERIVED - Layout mode decisions =====
   const shouldUseSwipeLayout = $derived(() => {
-    if (!layoutDetectionService || organizedPictographs().length <= 1) {
+    if (!LayoutDetector || organizedPictographs().length <= 1) {
       return false;
     }
 
@@ -207,7 +207,7 @@ Orchestrates specialized components and services:
       return true;
     }
 
-    return layoutDetectionService.shouldUseHorizontalSwipe(
+    return LayoutDetector.shouldUseHorizontalSwipe(
       layoutConfig(),
       organizedPictographs().length,
       true
@@ -512,14 +512,14 @@ Orchestrates specialized components and services:
       optionPickerSizingService = resolve<IOptionSizer>(
         TYPES.IOptionPickerSizingService
       );
-      layoutDetectionService = resolve<ILayoutDetectionService>(
-        TYPES.ILayoutDetectionService
+      LayoutDetector = resolve<ILayoutDetector>(
+        TYPES.ILayoutDetector
       );
       sectionTitleFormatter = resolve<ISectionTitleFormatter>(
         TYPES.ISectionTitleFormatter
       );
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
       // Resolve batch preparation services
@@ -527,8 +527,8 @@ Orchestrates specialized components and services:
         TYPES.IArrowLifecycleManager
       );
       propSvgLoader = resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
-      propPlacementService = resolve<IPropPlacementService>(
-        TYPES.IPropPlacementService
+      propPlacementService = resolve<IPropPlacer>(
+        TYPES.IPropPlacer
       );
       gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
 

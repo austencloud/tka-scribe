@@ -6,10 +6,10 @@
  */
 
 import { injectable } from "inversify";
-import type { IDiscoverThumbnailService } from "../contracts/IDiscoverThumbnailService";
+import type { IDiscoverThumbnailProvider } from "../contracts/IDiscoverThumbnailProvider";
 
 @injectable()
-export class DiscoverThumbnailService implements IDiscoverThumbnailService {
+export class DiscoverThumbnailProvider implements IDiscoverThumbnailProvider {
   private thumbnailCache = new Map<string, Promise<void>>();
   private metadataCache = new Map<string, { width: number; height: number }>();
   private baseUrl = "/gallery";

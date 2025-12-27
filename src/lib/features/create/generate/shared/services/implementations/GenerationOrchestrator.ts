@@ -16,11 +16,11 @@ import {
 } from "../../domain/models/generate-models";
 import type { IBeatGenerationOrchestrator } from "../contracts/IBeatGenerationOrchestrator";
 import type { BeatGenerationOptions } from "../contracts/IBeatGenerationOrchestrator";
-import type { IGenerationOrchestrationService } from "../contracts/IGenerationOrchestrationService";
-import type { ISequenceMetadataService } from "../contracts/ISequenceMetadataService";
+import type { IGenerationOrchestrator } from "../contracts/IGenerationOrchestrator";
+import type { ISequenceMetadataManager } from "../contracts/ISequenceMetadataManager";
 import type { IStartPositionSelector } from "../contracts/IStartPositionSelector";
 import type { ITurnAllocator } from "../contracts/ITurnAllocator";
-import type { IReversalDetectionService } from "../../../../shared/services/contracts/IReversalDetectionService";
+import type { IReversalDetector } from "../../../../shared/services/contracts/IReversalDetector";
 /**
  * Service orchestrating the complete sequence generation pipeline
  *
@@ -29,8 +29,8 @@ import type { IReversalDetectionService } from "../../../../shared/services/cont
  * build complete sequences for both freeform and circular modes.
  */
 @injectable()
-export class GenerationOrchestrationService
-  implements IGenerationOrchestrationService
+export class GenerationOrchestrator
+  implements IGenerationOrchestrator
 {
   constructor(
     @inject(TYPES.IStartPositionSelector)
@@ -45,11 +45,11 @@ export class GenerationOrchestrationService
     @inject(TYPES.IBeatGenerationOrchestrator)
     private readonly beatGenerationOrchestrator: IBeatGenerationOrchestrator,
 
-    @inject(TYPES.ISequenceMetadataService)
-    private readonly metadataService: ISequenceMetadataService,
+    @inject(TYPES.ISequenceMetadataManager)
+    private readonly metadataService: ISequenceMetadataManager,
 
-    @inject(TYPES.IReversalDetectionService)
-    private readonly reversalDetectionService: IReversalDetectionService,
+    @inject(TYPES.IReversalDetector)
+    private readonly ReversalDetector: IReversalDetector,
 
     @inject(TYPES.IPartialSequenceGenerator)
     private readonly partialSequenceGenerator: IPartialSequenceGenerator,
@@ -201,7 +201,7 @@ export class GenerationOrchestrationService
 
     // Step 6: Apply reversal detection
     const finalSequence =
-      this.reversalDetectionService.processReversals(sequenceData);
+      this.ReversalDetector.processReversals(sequenceData);
 
     return finalSequence;
   }
@@ -303,7 +303,7 @@ export class GenerationOrchestrationService
       metadata,
     });
 
-    return this.reversalDetectionService.processReversals(sequence);
+    return this.ReversalDetector.processReversals(sequence);
   }
 
   /**

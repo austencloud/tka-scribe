@@ -9,7 +9,7 @@ Displays:
 - Checkmark for completed
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../shared/application/services/contracts/IHapticFeedback";
   import { resolve, TYPES } from "../../../shared/inversify/di";
   import { CONCEPT_CATEGORIES } from "../domain/concepts";
   import type { LearnConcept, ConceptStatus } from "../domain/types";
@@ -24,8 +24,8 @@ Displays:
     onClick?: (concept: LearnConcept) => void;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   const isClickable = $derived(status !== "locked");

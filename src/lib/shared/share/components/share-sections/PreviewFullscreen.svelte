@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
   import type { createShareState } from "../../state/share-state.svelte";
   import PreviewArea from "./PreviewArea.svelte";
@@ -14,7 +14,7 @@
   }: {
     currentSequence: SequenceData | null;
     shareState: ReturnType<typeof createShareState> | null;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
     onBack: () => void;
     onRetry: () => void;
   } = $props();

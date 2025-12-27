@@ -3,11 +3,11 @@ import type {
   UserSkillProgress,
 } from "../../../domain/models/challenge-models";
 import type {
-  ISkillProgressionService,
+  ISkillProgressionTracker,
   SkillProgressActionType,
   SkillProgressMetadata,
-} from "../../contracts/ISkillProgressionService";
-import type { IAchievementService } from "../../contracts/IAchievementService";
+} from "../../contracts/ISkillProgressionTracker";
+import type { IAchievementManager } from "../../contracts/IAchievementManager";
 import { computeSkillProgressUpdate } from "./SkillProgressionUpdate";
 import {
   persistSkillProgressIncrement,
@@ -16,10 +16,10 @@ import {
 } from "./SkillProgressionPersistence";
 
 type UpdateSkillProgressResult = Awaited<
-  ReturnType<ISkillProgressionService["updateSkillProgress"]>
+  ReturnType<ISkillProgressionTracker["updateSkillProgress"]>
 >;
 type TrackActionResult = Awaited<
-  ReturnType<ISkillProgressionService["trackAction"]>
+  ReturnType<ISkillProgressionTracker["trackAction"]>
 >;
 
 export async function startSkillForUser(params: {
@@ -88,7 +88,7 @@ export async function updateSkillProgressForUser(params: {
   getSkillById: (skillId: string) => Promise<SkillProgression | null>;
   getUserProgress: (skillId: string) => Promise<UserSkillProgress | null>;
   startSkill: (skillId: string) => Promise<UserSkillProgress>;
-  achievementService: IAchievementService | null;
+  achievementService: IAchievementManager | null;
   log?: (message: string) => void;
 }): Promise<UpdateSkillProgressResult> {
   const {

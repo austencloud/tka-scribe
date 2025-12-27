@@ -17,9 +17,9 @@
   import ShareHubDrawer from "$lib/shared/share-hub/components/ShareHubDrawer.svelte";
   import type { ExportSettings } from "$lib/shared/share-hub/domain/models/ExportSettings";
   import SaveToLibraryPanel from "../SaveToLibraryPanel.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
-  import type { IPlatformDetectionService } from "$lib/shared/mobile/services/contracts/IPlatformDetectionService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ISharer } from "$lib/shared/share/services/contracts/ISharer";
+  import type { IPlatformDetector } from "$lib/shared/mobile/services/contracts/IPlatformDetector";
   import type { ShareOptions } from "$lib/shared/share/domain/models/ShareOptions";
   import { DEFAULT_SHARE_OPTIONS } from "$lib/shared/share/domain/models/ShareOptions";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
@@ -34,28 +34,28 @@
   const { CreateModuleState, panelState } = ctx;
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let shareService: IShareService | null = null;
-  let platformService: IPlatformDetectionService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let shareService: ISharer | null = null;
+  let platformService: IPlatformDetector | null = null;
 
   // Resolve services
   try {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   } catch (error) {
     console.warn("⚠️ Failed to resolve haptic feedback service:", error);
   }
 
   try {
-    shareService = resolve<IShareService>(TYPES.IShareService);
+    shareService = resolve<ISharer>(TYPES.ISharer);
   } catch (error) {
     console.warn("⚠️ Failed to resolve share service:", error);
   }
 
   try {
-    platformService = resolve<IPlatformDetectionService>(
-      TYPES.IPlatformDetectionService
+    platformService = resolve<IPlatformDetector>(
+      TYPES.IPlatformDetector
     );
   } catch (error) {
     console.warn("⚠️ Failed to resolve platform detection service:", error);

@@ -8,7 +8,7 @@ Two phases:
 <script lang="ts">
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { GRID_DIRECTIONS } from "../../domain/constants/grid-constants";
   import QuizProgressBar from "./grid-quiz/QuizProgressBar.svelte";
   import ModeQuizSection from "./grid-quiz/ModeQuizSection.svelte";
@@ -19,8 +19,8 @@ Two phases:
     onComplete?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   type QuizPhase = "mode" | "point" | "complete";

@@ -10,9 +10,9 @@
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
-    IFollowingFeedService,
+    IFollowingFeedProvider,
     FollowingFeedItem,
-  } from "$lib/features/dashboard/services/contracts/IFollowingFeedService";
+  } from "$lib/features/dashboard/services/contracts/IFollowingFeedProvider";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import FeedItem from "./feed/FeedItem.svelte";
 
@@ -24,8 +24,8 @@
 
   onMount(async () => {
     try {
-      const feedService = tryResolve<IFollowingFeedService>(
-        TYPES.IFollowingFeedService
+      const feedService = tryResolve<IFollowingFeedProvider>(
+        TYPES.IFollowingFeedProvider
       );
 
       if (!feedService) {

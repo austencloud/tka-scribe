@@ -18,16 +18,16 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 const debug = createComponentLogger("ConstructTabState");
 import type { BeatData } from "../domain/models/BeatData";
-import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
+import type { ICreateModuleOrchestrator } from "../services/contracts/ICreateModuleOrchestrator";
 import type { ISequencePersister } from "../services/contracts/ISequencePersister";
 import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
-import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../services/contracts/ISequenceTransformer";
 import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { ICreateModuleState } from "../types/create-module-types";
-import type { IUndoService } from "../services/contracts/IUndoService";
+import type { IUndoManager } from "../services/contracts/IUndoManager";
 import { createUndoController } from "./create-module/undo-controller.svelte";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -35,21 +35,21 @@ import { TYPES } from "$lib/shared/inversify/types";
 /**
  * Creates construct tab state for construct-specific concerns
  *
- * @param createModuleService - Injected create module service for business logic
+ * @param CreateModuleOrchestrator - Injected create module service for business logic
  * @param sequenceService - Sequence service for creating Construct tab's own sequence state
- * @param sequencePersistenceService - Persistence service for state survival
+ * @param SequencePersister - Persistence service for state survival
  * @param sequenceStatisticsService - Optional statistics service for sequence analysis
- * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param SequenceTransformer - Optional transformation service for sequence operations
  * @param sequenceValidationService - Optional validation service for sequence validation
  * @param createModuleState - Create module state for accessing navigation history
  * @returns Reactive state object with getters and state mutations
  */
 export function createConstructTabState(
-  createModuleService: ICreateModuleService,
+  CreateModuleOrchestrator: ICreateModuleOrchestrator,
   sequenceService?: ISequenceRepository,
-  sequencePersistenceService?: ISequencePersister,
+  SequencePersister?: ISequencePersister,
   sequenceStatisticsService?: ISequenceStatsCalculator,
-  sequenceTransformationService?: ISequenceTransformationService,
+  SequenceTransformer?: ISequenceTransformer,
   sequenceValidationService?: ISequenceValidator,
   createModuleState?: ICreateModuleState | null
 ) {
@@ -87,19 +87,19 @@ export function createConstructTabState(
   const sequenceState: SequenceState | null = sequenceService
     ? createSequenceState({
         sequenceService,
-        ...(sequencePersistenceService && { sequencePersistenceService }),
+        ...(SequencePersister && { SequencePersister }),
         ...(sequenceStatisticsService && { sequenceStatisticsService }),
-        ...(sequenceTransformationService && { sequenceTransformationService }),
+        ...(SequenceTransformer && { SequenceTransformer }),
         ...(sequenceValidationService && { sequenceValidationService }),
         tabId: "constructor", // Persistence isolation - only load/save constructor's data
       })
     : null;
 
   // Construct tab has its own independent undo controller
-  const undoService = resolve<IUndoService>(TYPES.IUndoService);
+  const UndoManager = resolve<IUndoManager>(TYPES.IUndoManager);
   const undoController = sequenceState
     ? createUndoController({
-        undoService,
+        UndoManager,
         sequenceState,
         getActiveSection: () =>
           createModuleState?.activeSection || "constructor",
@@ -241,7 +241,7 @@ export function createConstructTabState(
     }
 
     if (!coordinationSetup) {
-      void createModuleService.initialize();
+      void CreateModuleOrchestrator.initialize();
       coordinationSetup = true;
     }
 
@@ -278,7 +278,7 @@ export function createConstructTabState(
         await sequenceState.initializeWithPersistence();
       }
       // Don't set showStartPositionPicker here - let the pending edit effect handle it
-    } else if (sequencePersistenceService && sequenceState) {
+    } else if (SequencePersister && sequenceState) {
       try {
         await sequenceState.initializeWithPersistence();
 
@@ -286,7 +286,7 @@ export function createConstructTabState(
         // IMPORTANT: Pass "constructor" to load only Constructor's persisted data
         // Without this, it loads based on navigationState.currentSection which could be another tab
         const savedState =
-          await sequencePersistenceService.loadCurrentState("constructor");
+          await SequencePersister.loadCurrentState("constructor");
         debug.log("init: savedState =", savedState);
         debug.log(
           "init: savedState?.hasStartPosition =",

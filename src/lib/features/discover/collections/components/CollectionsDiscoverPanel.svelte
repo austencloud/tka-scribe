@@ -9,10 +9,10 @@ Uses singleton state for caching - data persists across tab switches.
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, loadFeatureModule, TYPES } from "$lib/shared/inversify/di";
-  import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
-  import type { ICollectionService } from "$lib/features/library/services/contracts/ICollectionService";
-  import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
+  import type { ICollectionManager } from "$lib/features/library/services/contracts/ICollectionManager";
+  import type { ILibraryRepository } from "$lib/features/library/services/contracts/ILibraryRepository";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import { discoverNavigationState } from "../../shared/state/discover-navigation-state.svelte";
   import {
@@ -36,10 +36,10 @@ Uses singleton state for caching - data persists across tab switches.
   const onNavigate = navContext?.onNavigate ?? (() => {});
 
   // Services
-  let userService: IUserService;
-  let collectionService: ICollectionService;
-  let libraryService: ILibraryService;
-  let hapticService: IHapticFeedbackService;
+  let userService: IUserRepository;
+  let collectionService: ICollectionManager;
+  let libraryService: ILibraryRepository;
+  let hapticService: IHapticFeedback;
 
   // Local search state (synced with global state)
   let searchQuery = $state("");
@@ -83,11 +83,11 @@ Uses singleton state for caching - data persists across tab switches.
       ]);
 
       // Resolve services
-      userService = resolve<IUserService>(TYPES.IUserService);
-      collectionService = resolve<ICollectionService>(TYPES.ICollectionService);
-      libraryService = resolve<ILibraryService>(TYPES.ILibraryService);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      userService = resolve<IUserRepository>(TYPES.IUserRepository);
+      collectionService = resolve<ICollectionManager>(TYPES.ICollectionManager);
+      libraryService = resolve<ILibraryRepository>(TYPES.ILibraryRepository);
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
       // Load data (uses cache if already loaded)

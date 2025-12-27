@@ -12,7 +12,7 @@
   import Scene3D from "./components/Scene3D.svelte";
   import Staff3D from "./components/Staff3D.svelte";
   import Avatar3D from "./components/Avatar3D.svelte";
-  import type { BodyType } from "./services/contracts/IAvatarCustomizationService";
+  import type { BodyType } from "./services/contracts/IAvatarCustomizer";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
   import AvatarToggleButton from "./components/controls/AvatarToggleButton.svelte";
@@ -33,14 +33,14 @@
   }
   import { container, loadFeatureModule } from "$lib/shared/inversify/container";
   import { ANIMATION_3D_TYPES } from "./inversify/animation-3d.types";
-  import type { IPropStateInterpolatorService } from "./services/contracts/IPropStateInterpolatorService";
-  import type { ISequenceConverterService } from "./services/contracts/ISequenceConverterService";
-  import type { IAnimation3DPersistenceService } from "./services/contracts/IAnimation3DPersistenceService";
+  import type { IPropStateInterpolator } from "./services/contracts/IPropStateInterpolator";
+  import type { ISequenceConverter } from "./services/contracts/ISequenceConverter";
+  import type { IAnimation3DPersister } from "./services/contracts/IAnimation3DPersister";
 
   // Services and state - initialized asynchronously
-  let propInterpolator: IPropStateInterpolatorService | null = $state(null);
-  let sequenceConverter: ISequenceConverterService | null = $state(null);
-  let persistenceService: IAnimation3DPersistenceService | null = $state(null);
+  let propInterpolator: IPropStateInterpolator | null = $state(null);
+  let sequenceConverter: ISequenceConverter | null = $state(null);
+  let persistenceService: IAnimation3DPersister | null = $state(null);
   let animState: Animation3DState | null = $state(null);
   let servicesReady = $state(false);
 
@@ -107,14 +107,14 @@
     await loadFeatureModule("3d-viewer");
 
     // Now resolve services
-    propInterpolator = container.get<IPropStateInterpolatorService>(
-      ANIMATION_3D_TYPES.IPropStateInterpolatorService
+    propInterpolator = container.get<IPropStateInterpolator>(
+      ANIMATION_3D_TYPES.IPropStateInterpolator
     );
-    sequenceConverter = container.get<ISequenceConverterService>(
-      ANIMATION_3D_TYPES.ISequenceConverterService
+    sequenceConverter = container.get<ISequenceConverter>(
+      ANIMATION_3D_TYPES.ISequenceConverter
     );
-    persistenceService = container.get<IAnimation3DPersistenceService>(
-      ANIMATION_3D_TYPES.IAnimation3DPersistenceService
+    persistenceService = container.get<IAnimation3DPersister>(
+      ANIMATION_3D_TYPES.IAnimation3DPersister
     );
 
     // Create animation state

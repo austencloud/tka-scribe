@@ -7,7 +7,7 @@
 <script lang="ts">
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
+  import type { ICollaborativeVideoManager } from "../services/contracts/ICollaborativeVideoManager";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
   import { onMount } from "svelte";
   import PendingInviteCard from "./PendingInviteCard.svelte";
@@ -18,15 +18,15 @@
     onInviteHandled?: () => void;
   } = $props();
 
-  let videoService = $state<ICollaborativeVideoService>();
+  let videoService = $state<ICollaborativeVideoManager>();
   let pendingVideos = $state<CollaborativeVideo[]>([]);
   let loading = $state(true);
   let error = $state<string | null>(null);
 
   onMount(async () => {
     const container = await getContainerInstance();
-    videoService = container.get<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    videoService = container.get<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
     loadPendingInvites();
   });

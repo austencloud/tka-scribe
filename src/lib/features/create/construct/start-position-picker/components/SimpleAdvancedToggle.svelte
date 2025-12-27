@@ -3,7 +3,7 @@ SimpleAdvancedToggle.svelte - Single-button toggle showing opposite view mode
 Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -13,8 +13,8 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Action-oriented: Show the mode you can switch TO

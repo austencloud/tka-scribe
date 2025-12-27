@@ -4,7 +4,7 @@ Shows staffs positioned on the 4-point diamond grid with thumb end markers.
 Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixed).
 -->
 <script lang="ts">
-	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+	import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import {
@@ -56,7 +56,7 @@ Demonstrates Alpha, Beta, Gamma positions with thumb orientations (in, out, mixe
 		) => void;
 	}>();
 
-	const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
 	const currentPositionType = $derived(getPositionType(leftPosition, rightPosition));
 	const leftStaff = $derived(getStaffEndpoints(leftPosition, leftThumbOrientation));

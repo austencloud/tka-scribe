@@ -1,0 +1,141 @@
+<!--
+  VisibilityToggle.svelte
+
+  Toggle button for public/private visibility with contextual hint.
+-->
+<script lang="ts">
+  interface Props {
+    /** Current visibility state */
+    isPublic: boolean;
+    /** Called when visibility changes */
+    onToggle: () => void;
+    /** Optional creator name to display */
+    creatorName?: string;
+  }
+
+  let { isPublic, onToggle, creatorName }: Props = $props();
+</script>
+
+<div class="visibility-section">
+  <div class="meta-row">
+    {#if creatorName}
+      <div class="creator-chip">
+        <i class="fas fa-user"></i>
+        <span>By {creatorName}</span>
+      </div>
+    {/if}
+
+    <button
+      type="button"
+      class="visibility-toggle"
+      class:public={isPublic}
+      onclick={onToggle}
+      aria-pressed={isPublic}
+    >
+      {#if isPublic}
+        <i class="fas fa-globe"></i>
+        <span>Public</span>
+      {:else}
+        <i class="fas fa-lock"></i>
+        <span>Private</span>
+      {/if}
+    </button>
+  </div>
+
+  <p class="visibility-hint">
+    <i class="fas fa-info-circle"></i>
+    {#if isPublic}
+      Will appear in the public gallery for others to discover
+    {:else}
+      Only you can see this sequence. You can make it public later from your
+      library.
+    {/if}
+  </p>
+</div>
+
+<style>
+  .visibility-section {
+    margin-bottom: 16px;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .creator-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: 13px;
+  }
+
+  .creator-chip i {
+    opacity: 0.6;
+  }
+
+  .visibility-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .visibility-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .visibility-toggle.public {
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 15%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 40%,
+      transparent
+    );
+    color: var(--semantic-success, #22c55e);
+  }
+
+  .visibility-toggle.public:hover {
+    background: color-mix(
+      in srgb,
+      var(--semantic-success, #22c55e) 25%,
+      transparent
+    );
+  }
+
+  .visibility-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    line-height: 1.4;
+  }
+
+  .visibility-hint i {
+    flex-shrink: 0;
+    margin-top: 1px;
+    opacity: 0.6;
+  }
+</style>

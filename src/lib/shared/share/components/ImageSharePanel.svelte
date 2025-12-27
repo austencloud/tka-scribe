@@ -6,12 +6,12 @@
 <script lang="ts">
   import { browser } from "$app/environment";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
+  import type { ISequenceEncoder } from "$lib/shared/navigation/services/contracts/ISequenceEncoder";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
-  import type { IShareService } from "../services/contracts/IShareService";
+  import type { ISharer } from "../services/contracts/ISharer";
   import { createShareState } from "../state/share-state.svelte";
   import InstagramLinkSheet from "./InstagramLinkSheet.svelte";
   import { getInstagramLink } from "../domain/models/InstagramLink";
@@ -20,8 +20,8 @@
   import { getSettings } from "../../application/state/app-state.svelte";
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
-  let sequenceEncoderService: ISequenceEncoderService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
+  let SequenceEncoder: ISequenceEncoder | null = $state(null);
 
   // Reactive settings - properly tracks changes
   let settings = $derived(getSettings());
@@ -62,23 +62,21 @@
   ];
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    sequenceEncoderService = resolve<ISequenceEncoderService>(
-      TYPES.ISequenceEncoderService
-    );
+    SequenceEncoder = resolve<ISequenceEncoder>(TYPES.ISequenceEncoder);
   });
 
   // HMR-safe service resolution
-  const shareServiceResolver = createServiceResolver<IShareService>(
-    TYPES.IShareService
+  const shareServiceResolver = createServiceResolver<ISharer>(
+    TYPES.ISharer
   );
 
   // Use provided share state or create a new one
   // IMPORTANT: Track the service instance to avoid recreating shareState on every render
   let shareState = $state<ReturnType<typeof createShareState> | null>(null);
-  let lastServiceInstance: IShareService | null = null;
+  let lastServiceInstance: ISharer | null = null;
 
   $effect(() => {
     if (providedShareState) {
@@ -131,7 +129,7 @@
 
     if (navigator.share && navigator.canShare) {
       try {
-        const shareService = resolve<any>(TYPES.IShareService);
+        const shareService = resolve<any>(TYPES.ISharer);
         const blob = await shareService.getImageBlob(
           currentSequence,
           shareState.options
@@ -181,13 +179,12 @@
   }
 
   async function handleCopyLink() {
-    if (!currentSequence || isCopyingLink || !sequenceEncoderService) return;
+    if (!currentSequence || isCopyingLink || !SequenceEncoder) return;
     try {
       // Use the standalone sequence viewer URL format
-      const { url } = sequenceEncoderService.generateViewerURL(
-        currentSequence,
-        { compress: true }
-      );
+      const { url } = SequenceEncoder.generateViewerURL(currentSequence, {
+        compress: true,
+      });
       await navigator.clipboard.writeText(url);
       isCopyingLink = true;
       hapticService?.trigger("success");
@@ -235,10 +232,10 @@
   let canShare = $derived(() =>
     Boolean(
       browser &&
-        shareState &&
-        currentSequence &&
-        currentSequence.beats?.length > 0 &&
-        !shareState.isDownloading
+      shareState &&
+      currentSequence &&
+      currentSequence.beats?.length > 0 &&
+      !shareState.isDownloading
     )
   );
   let hasSequence = $derived(() =>

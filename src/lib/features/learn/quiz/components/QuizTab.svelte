@@ -8,15 +8,15 @@ Provides quiz functionality for learning TKA notation:
 - Codex integration for reference
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onDestroy, onMount } from "svelte";
-  import type { ICodexService } from "../../codex/services/contracts/ICodexService";
+  import type { ICodex } from "../../codex/services/contracts/ICodex";
   import { QuizMode, QuizType } from "../domain/enums/quiz-enums";
   import type { QuizProgress } from "../domain/models/quiz-models";
   import type { IQuizRepoManager } from "../services/contracts/IQuizRepository";
-  import type { IQuizSessionService } from "../services/contracts/IQuizSessionService";
+  import type { IQuizSessionManager } from "../services/contracts/IQuizSessionManager";
   import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
   import QuizResultsView from "./QuizResultsView.svelte";
   import QuizSelectorView from "./QuizSelectorView.svelte";
@@ -28,10 +28,10 @@ Provides quiz functionality for learning TKA notation:
   // SERVICE RESOLUTION - Resolved lazily in onMount
   // ============================================================================
 
-  let codexService = $state<ICodexService | null>(null);
+  let codexService = $state<ICodex | null>(null);
   let quizRepo = $state<IQuizRepoManager | null>(null);
-  let quizSessionService = $state<IQuizSessionService | null>(null);
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let quizSessionService = $state<IQuizSessionManager | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
 
   // ============================================================================
   // COMPONENT STATE
@@ -187,13 +187,13 @@ Provides quiz functionality for learning TKA notation:
 
       // Resolve services from container
       const container = await getContainerInstance();
-      codexService = container.get<ICodexService>(TYPES.ICodexService);
+      codexService = container.get<ICodex>(TYPES.ICodex);
       quizRepo = container.get<IQuizRepoManager>(TYPES.IQuizRepoManager);
-      quizSessionService = container.get<IQuizSessionService>(
-        TYPES.IQuizSessionService
+      quizSessionService = container.get<IQuizSessionManager>(
+        TYPES.IQuizSessionManager
       );
-      hapticService = container.get<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = container.get<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
       // Initialize quiz repository

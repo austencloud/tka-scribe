@@ -18,8 +18,8 @@
   import { onMount, untrack } from "svelte";
   import { getComposeModuleState } from "./shared/state/compose-module-state.svelte.ts";
   import type { ComposeTab } from "./shared/state/compose-module-state.svelte.ts";
-  import type { IURLSyncService } from "$lib/shared/navigation/services/contracts/IURLSyncService";
-  import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
+  import type { IURLSyncer } from "$lib/shared/navigation/services/contracts/IURLSyncer";
+  import type { IDeepLinker } from "$lib/shared/navigation/services/contracts/IDeepLinker";
   import ModuleOnboarding from "$lib/shared/onboarding/components/ModuleOnboarding.svelte";
   import { COMPOSE_ONBOARDING } from "$lib/shared/onboarding/config/module-onboarding-content";
   import {
@@ -76,8 +76,8 @@
   const composeState = getComposeModuleState();
 
   // Services
-  let urlSyncService: IURLSyncService | null = $state(null);
-  let deepLinkService: IDeepLinkService | null = $state(null);
+  let urlSyncService: IURLSyncer | null = $state(null);
+  let deepLinkService: IDeepLinker | null = $state(null);
 
   // Track if deep link has been processed
   let deepLinkProcessed = $state(false);
@@ -107,8 +107,8 @@
   onMount(() => {
     // Resolve services
     try {
-      urlSyncService = resolve<IURLSyncService>(TYPES.IURLSyncService);
-      deepLinkService = resolve<IDeepLinkService>(TYPES.IDeepLinkService);
+      urlSyncService = resolve<IURLSyncer>(TYPES.IURLSyncer);
+      deepLinkService = resolve<IDeepLinker>(TYPES.IDeepLinker);
     } catch (error) {
       console.warn("Failed to resolve navigation services:", error);
     }

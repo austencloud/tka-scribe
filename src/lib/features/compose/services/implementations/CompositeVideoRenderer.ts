@@ -17,8 +17,8 @@ import type {
   BeatGridPosition,
 } from '../contracts/ICompositeVideoRenderer';
 import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
-import type { IImageCompositionService } from '$lib/shared/render/services/contracts/IImageCompositionService';
-import type { IDimensionCalculationService } from '$lib/shared/render/services/contracts/IDimensionCalculationService';
+import type { IImageComposer } from '$lib/shared/render/services/contracts/IImageComposer';
+import type { IDimensionCalculator } from '$lib/shared/render/services/contracts/IDimensionCalculator';
 import { TYPES } from '$lib/shared/inversify/types';
 
 @injectable()
@@ -30,10 +30,10 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
   private gridDimensions: { width: number; height: number } | null = null;
 
   constructor(
-    @inject(TYPES.IImageCompositionService)
-    private imageCompositionService: IImageCompositionService,
-    @inject(TYPES.IDimensionCalculationService)
-    private dimensionService: IDimensionCalculationService
+    @inject(TYPES.IImageComposer)
+    private ImageComposer: IImageComposer,
+    @inject(TYPES.IDimensionCalculator)
+    private dimensionService: IDimensionCalculator
   ) {}
 
   async initialize(
@@ -85,7 +85,7 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     this.cachedGridCanvas.width = this.gridDimensions.width;
     this.cachedGridCanvas.height = this.gridDimensions.height;
 
-    // Render grid using ImageCompositionService
+    // Render grid using ImageComposer
     // TODO: Configure options for grid rendering (no background, beat numbers if enabled)
     const renderOptions = {
       beatSize: this.options.gridBeatSize,
@@ -97,7 +97,7 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
       includeDifficultyLevel: false,
     };
 
-    const renderedGrid = await this.imageCompositionService.composeSequenceImage(
+    const renderedGrid = await this.ImageComposer.composeSequenceImage(
       this.sequence,
       renderOptions
     );

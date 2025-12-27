@@ -6,10 +6,10 @@ Shows different states: no link, has link, opening link.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IInstagramLinkService } from "../services/contracts/IInstagramLinkService";
+  import type { IInstagramLinker } from "../services/contracts/IInstagramLinker";
   import type { InstagramLink } from "../domain/models/InstagramLink";
 
   let {
@@ -25,15 +25,15 @@ Shows different states: no link, has link, opening link.
   } = $props();
 
   // Services
-  let instagramService: IInstagramLinkService;
-  let hapticService: IHapticFeedbackService;
+  let instagramService: IInstagramLinker;
+  let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    instagramService = await resolve<IInstagramLinkService>(
-      TYPES.IInstagramLinkService
+    instagramService = await resolve<IInstagramLinker>(
+      TYPES.IInstagramLinker
     );
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

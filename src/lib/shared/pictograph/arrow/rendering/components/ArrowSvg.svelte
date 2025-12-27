@@ -6,7 +6,7 @@ Now with intelligent rotation animation matching prop behavior!
 <script lang="ts">
   import { resolve } from "../../../../inversify/di";
   import { TYPES } from "../../../../inversify/types";
-  import type { IHapticFeedbackService } from "../../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../../application/services/contracts/IHapticFeedback";
   import type { MotionData } from "../../../shared/domain/models/MotionData";
   import type { PictographData } from "../../../shared/domain/models/PictographData";
   import {
@@ -61,6 +61,7 @@ Now with intelligent rotation animation matching prop behavior!
   const EPSILON = 0.0001;
 
   // Track rotation state for intelligent animation
+  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
   let displayedRotation = $state<number>(arrowPosition?.rotation ?? 0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
@@ -253,14 +254,14 @@ Now with intelligent rotation animation matching prop behavior!
       : false
   );
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Initialize haptic service on mount (lazy load)
   $effect(() => {
     if (isClickable && !hapticService) {
       try {
-        hapticService = resolve<IHapticFeedbackService>(
-          TYPES.IHapticFeedbackService
+        hapticService = resolve<IHapticFeedback>(
+          TYPES.IHapticFeedback
         );
       } catch (error) {
         console.warn("Haptic service not available:", error);

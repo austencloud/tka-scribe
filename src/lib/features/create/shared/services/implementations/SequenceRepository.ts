@@ -5,7 +5,7 @@
  * This service orchestrates the business workflows for sequence management.
  *
  * Focused on core CRUD operations and domain coordination.
- * Workbench-specific operations moved to WorkbenchBeatOperationsService.
+ * Workbench-specific operations moved to WorkbenchBeatOperator.
  * Import operations moved to SequenceImportService.
  */
 
@@ -14,22 +14,22 @@ import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceCreateRequest } from "../../domain/models/sequence-models";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IPersistenceService } from "../contracts/IPersistenceService";
-import type { ISequenceDomainService } from "../contracts/ISequenceDomainService";
+import type { IPersistenceService } from "../contracts/IPersister";
+import type { ISequenceDomainManager } from "../contracts/ISequenceDomainManager";
 import type { ISequenceImporter } from "../contracts/ISequenceImporter";
-import type { IReversalDetectionService } from "../contracts/IReversalDetectionService";
+import type { IReversalDetector } from "../contracts/IReversalDetector";
 import type { ISequenceRepository } from "../contracts/ISequenceRepository";
 import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
 
 @injectable()
 export class SequenceRepository implements ISequenceRepository {
   constructor(
-    @inject(TYPES.ISequenceDomainService)
-    private sequenceDomainService: ISequenceDomainService,
+    @inject(TYPES.ISequenceDomainManager)
+    private SequenceDomainManager: ISequenceDomainManager,
     @inject(TYPES.IPersistenceService)
     private persistenceService: IPersistenceService,
-    @inject(TYPES.IReversalDetectionService)
-    private reversalDetectionService: IReversalDetectionService,
+    @inject(TYPES.IReversalDetector)
+    private ReversalDetector: IReversalDetector,
     @inject(TYPES.ISequenceNormalizationService)
     private normalizationService: ISequenceNormalizationService,
     @inject(TYPES.ISequenceImporter)
@@ -42,7 +42,7 @@ export class SequenceRepository implements ISequenceRepository {
   async createSequence(request: SequenceCreateRequest): Promise<SequenceData> {
     try {
       // Use domain service to create the sequence
-      const sequence = this.sequenceDomainService.createSequence(request);
+      const sequence = this.SequenceDomainManager.createSequence(request);
       await this.persistenceService.saveSequence(sequence);
       return sequence;
     } catch (error) {
@@ -70,7 +70,7 @@ export class SequenceRepository implements ISequenceRepository {
       }
 
       // Use domain service to update the beat
-      const updatedSequence = this.sequenceDomainService.updateBeat(
+      const updatedSequence = this.SequenceDomainManager.updateBeat(
         currentSequence,
         beatIndex,
         beatData
@@ -112,7 +112,7 @@ export class SequenceRepository implements ISequenceRepository {
 
       // Apply reversal detection to ensure sequence has up-to-date reversal data
       if (sequence) {
-        sequence = this.reversalDetectionService.processReversals(sequence);
+        sequence = this.ReversalDetector.processReversals(sequence);
 
         // Normalize sequence data to ensure start position is separated from beats
         // This handles legacy data formats where beat 0 or startingPositionBeat was mixed into beats array
@@ -143,7 +143,7 @@ export class SequenceRepository implements ISequenceRepository {
       return sequences.map((sequence) => {
         // Apply reversal detection
         const processed =
-          this.reversalDetectionService.processReversals(sequence);
+          this.ReversalDetector.processReversals(sequence);
 
         // Normalize to separate start position from beats
         const normalized =

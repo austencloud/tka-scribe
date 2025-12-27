@@ -5,7 +5,7 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
 <script lang="ts">
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -32,6 +32,7 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
   }>();
 
   // Create simplified state
+  // svelte-ignore state_referenced_locally - intentional: one-time initialization with fallback
   const pickerState =
     startPositionState ?? createSimplifiedStartPositionState();
 
@@ -42,11 +43,11 @@ Shows 3 start positions (Alpha, Beta, Gamma) with toggle to view all 16 variatio
   let isAnimating = $state(false);
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

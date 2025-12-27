@@ -7,8 +7,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ITrainChallengeService } from "../../services/contracts/ITrainChallengeService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ITrainChallengeManager } from "../../services/contracts/ITrainChallengeManager";
   import type {
     TrainChallengeFilter,
     TrainChallengeSortBy,
@@ -24,10 +24,10 @@
   import ChallengeCard from "./ChallengeCard.svelte";
 
   // Services
-  const challengeService = resolve<ITrainChallengeService>(
-    TYPES.ITrainChallengeService
+  const challengeService = resolve<ITrainChallengeManager>(
+    TYPES.ITrainChallengeManager
   );
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // Local UI state (filter preferences)
   let filter = $state<TrainChallengeFilter>("all");
@@ -110,8 +110,8 @@
 
   // Load challenges (will use cache if already loaded)
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     await trainChallengesState.loadChallenges(challengeService);
   });

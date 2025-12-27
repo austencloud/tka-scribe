@@ -12,9 +12,9 @@
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
-    ICollaborativeVideoService,
+    ICollaborativeVideoManager,
     UserVideoLibrary,
-  } from "../services/contracts/ICollaborativeVideoService";
+  } from "../services/contracts/ICollaborativeVideoManager";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
   import { onMount } from "svelte";
   import CollaborativeVideoCard from "./CollaborativeVideoCard.svelte";
@@ -28,7 +28,7 @@
 
   type Tab = "all" | "created" | "collaborations" | "invites";
 
-  let videoService = $state<ICollaborativeVideoService>();
+  let videoService = $state<ICollaborativeVideoManager>();
   let library = $state<UserVideoLibrary | null>(null);
   let loading = $state(true);
   let error = $state<string | null>(null);
@@ -36,8 +36,8 @@
 
   onMount(async () => {
     const container = await getContainerInstance();
-    videoService = container.get<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    videoService = container.get<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
     loadLibrary();
   });

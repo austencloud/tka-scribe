@@ -14,7 +14,7 @@ import { createOptionHistoryManager } from "./create-module/option-history-manag
 import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 import type { ISequencePersister } from "../services/contracts/ISequencePersister";
 import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
-import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../services/contracts/ISequenceTransformer";
 import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";
@@ -26,25 +26,25 @@ import type { GeneratorTabState } from "./generator-tab-state.svelte";
  * Creates the main Create Module state orchestrator
  *
  * @param sequenceService - Service for sequence operations
- * @param sequencePersistenceService - Service for persistence
+ * @param SequencePersister - Service for persistence
  * @param sequenceStatisticsService - Optional statistics service for sequence analysis
- * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param SequenceTransformer - Optional transformation service for sequence operations
  * @param sequenceValidationService - Optional validation service for sequence validation
  * @returns Unified state object with all Create module state and methods
  */
 export function createCreateModuleState(
   sequenceService: ISequenceRepository,
-  sequencePersistenceService?: ISequencePersister,
+  SequencePersister?: ISequencePersister,
   sequenceStatisticsService?: ISequenceStatsCalculator,
-  sequenceTransformationService?: ISequenceTransformationService,
+  SequenceTransformer?: ISequenceTransformer,
   sequenceValidationService?: ISequenceValidator
 ) {
   // Create sequence state (shared/legacy - kept for backwards compatibility)
   const sequenceState = createSequenceState({
     sequenceService,
-    ...(sequencePersistenceService && { sequencePersistenceService }),
+    ...(SequencePersister && { SequencePersister }),
     ...(sequenceStatisticsService && { sequenceStatisticsService }),
-    ...(sequenceTransformationService && { sequenceTransformationService }),
+    ...(SequenceTransformer && { SequenceTransformer }),
     ...(sequenceValidationService && { sequenceValidationService }),
   });
 
@@ -55,9 +55,9 @@ export function createCreateModuleState(
   const createTabFallbackState = () =>
     createSequenceState({
       sequenceService,
-      ...(sequencePersistenceService && { sequencePersistenceService }),
+      ...(SequencePersister && { SequencePersister }),
       ...(sequenceStatisticsService && { sequenceStatisticsService }),
-      ...(sequenceTransformationService && { sequenceTransformationService }),
+      ...(SequenceTransformer && { SequenceTransformer }),
       ...(sequenceValidationService && { sequenceValidationService }),
     });
 
@@ -107,7 +107,7 @@ export function createCreateModuleState(
   // Create persistence controller with tab-specific state lookup
   const persistenceController = createCreateModulePersistenceController({
     sequenceState,
-    ...(sequencePersistenceService && { sequencePersistenceService }),
+    ...(SequencePersister && { SequencePersister }),
     handPathCoordinator,
     optionHistoryManager,
     getSequenceStateForTab,

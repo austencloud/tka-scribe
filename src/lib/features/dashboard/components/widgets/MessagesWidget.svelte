@@ -7,7 +7,7 @@
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
-  import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
+  import { messagingService } from "$lib/shared/messaging/services/implementations/Messenger";
   import type { ConversationPreview } from "$lib/shared/messaging/domain/models/conversation-models";
 
   // Props

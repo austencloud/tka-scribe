@@ -6,7 +6,7 @@
  */
 
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 import type { TrailPoint, TrailSettings } from "../../domain/types/TrailTypes";
 import { TrailMode } from "../../domain/types/TrailTypes";
 import type { AnimationPathCache } from "$lib/features/compose/services/implementations/AnimationPathCache";
@@ -18,7 +18,7 @@ import type {
 
 export class AnimationRenderLoop implements IAnimationRenderLoop {
   private renderer: IAnimationRenderer | null = null;
-  private trailCaptureService: ITrailCaptureService | null = null;
+  private TrailCapturer: ITrailCapturer | null = null;
   private pathCache: AnimationPathCache | null = null;
   private canvasSize: number = 950;
   private rafId: number | null = null;
@@ -35,7 +35,7 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
 
   initialize(config: RenderLoopConfig): void {
     this.renderer = config.renderer;
-    this.trailCaptureService = config.trailCaptureService;
+    this.TrailCapturer = config.TrailCapturer;
     this.pathCache = config.pathCache;
     this.canvasSize = config.canvasSize;
   }
@@ -43,8 +43,8 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
   updateConfig(config: Partial<RenderLoopConfig>): void {
     if (config.renderer !== undefined)
       this.renderer = config.renderer;
-    if (config.trailCaptureService !== undefined)
-      this.trailCaptureService = config.trailCaptureService;
+    if (config.TrailCapturer !== undefined)
+      this.TrailCapturer = config.TrailCapturer;
     if (config.pathCache !== undefined) this.pathCache = config.pathCache;
     if (config.canvasSize !== undefined) this.canvasSize = config.canvasSize;
   }
@@ -86,7 +86,7 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
     this.isDisposed = true;
     this.stop();
     this.renderer = null;
-    this.trailCaptureService = null;
+    this.TrailCapturer = null;
     this.pathCache = null;
     this.getFrameParamsCallback = null;
     // Clear reusable arrays to free memory
@@ -115,13 +115,13 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
     if (
       trailSettings.enabled &&
       trailSettings.mode !== TrailMode.OFF &&
-      this.trailCaptureService
+      this.TrailCapturer
     ) {
       const currentBeat =
         params.beatData && "beatNumber" in params.beatData
           ? params.beatData.beatNumber
           : undefined;
-      this.trailCaptureService.captureFrame(
+      this.TrailCapturer.captureFrame(
         {
           blueProp: params.props.blueProp,
           redProp: params.props.redProp,
@@ -302,9 +302,9 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
         this.pathCache.getTrailPoints(1, 1, 0, currentBeat),
         this.reusableRedTrailPoints
       );
-    } else if (this.trailCaptureService) {
+    } else if (this.TrailCapturer) {
       // Fallback to real-time capture - use zero-allocation fill method
-      this.trailCaptureService.fillTrailPointArrays(
+      this.TrailCapturer.fillTrailPointArrays(
         this.reusableBlueTrailPoints,
         this.reusableRedTrailPoints,
         this.reusableSecondaryBlueTrailPoints,

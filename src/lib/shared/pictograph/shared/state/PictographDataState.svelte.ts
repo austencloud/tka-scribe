@@ -5,8 +5,8 @@
  * Independent sub-state with no dependencies on arrow/prop states.
  */
 
-import type { IComponentManagementService } from "../../../application/services/contracts/IComponentManagementService";
-import type { IDataTransformationService } from "../../../application/services/contracts/IDataTransformationService";
+import type { IComponentManager } from "../../../application/services/contracts/IComponentManager";
+import type { IDataTransformer } from "../../../application/services/contracts/IDataTransformer";
 import type { MotionColor } from "../domain/enums/pictograph-enums";
 import type { MotionData } from "../domain/models/MotionData";
 import type { PictographData } from "../domain/models/PictographData";
@@ -26,8 +26,8 @@ export interface PictographDataState {
 
 export function createPictographDataState(
   initialPictographData: PictographData | null,
-  dataTransformationService: IDataTransformationService,
-  componentManagementService: IComponentManagementService
+  dataTransformationService: IDataTransformer,
+  componentManagementService: IComponentManager
 ): PictographDataState {
   // Input data state
   let pictographData = $state<PictographData | null>(initialPictographData);

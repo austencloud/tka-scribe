@@ -1,11 +1,11 @@
 <!-- TurnPanel - Single color turn control panel -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import type { ITurnControlService } from "../services/TurnControlService";
+  import type { ITurnController } from "../services/TurnController";
 
   // Props
   const {
@@ -32,21 +32,21 @@
   }>();
 
   // Services
-  const turnControlService = resolve(
-    TYPES.ITurnControlService
-  ) as ITurnControlService;
-  let hapticService: IHapticFeedbackService;
+  const TurnController = resolve(
+    TYPES.ITurnController
+  ) as ITurnController;
+  let hapticService: IHapticFeedback;
 
   // Display helpers
   const displayLabel = $derived(() => (color === "blue" ? "Left" : "Right"));
 
   function getCurrentTurnValue(): number | "fl" {
-    return turnControlService.getCurrentTurnValue(currentBeatData, color);
+    return TurnController.getCurrentTurnValue(currentBeatData, color);
   }
 
   function getTurnValue(): string {
     const turnValue = getCurrentTurnValue();
-    return turnControlService.getTurnValue(turnValue);
+    return TurnController.getTurnValue(turnValue);
   }
 
   function getMotionType(): string {
@@ -100,26 +100,26 @@
   function canDecrementTurn(): boolean {
     const turnValue = getCurrentTurnValue();
     const motionType = getRawMotionType();
-    return turnControlService.canDecrementTurn(turnValue, motionType);
+    return TurnController.canDecrementTurn(turnValue, motionType);
   }
 
   function canIncrementTurn(): boolean {
     const turnValue = getCurrentTurnValue();
-    return turnControlService.canIncrementTurn(turnValue);
+    return TurnController.canIncrementTurn(turnValue);
   }
 
   // Handlers
   function handleTurnDecrement() {
     const currentValue = getCurrentTurnValue();
     const motionType = getRawMotionType();
-    const newValue = turnControlService.decrementTurn(currentValue, motionType);
+    const newValue = TurnController.decrementTurn(currentValue, motionType);
     hapticService?.trigger("selection");
     onTurnAmountChanged(color, newValue);
   }
 
   function handleTurnIncrement() {
     const currentValue = getCurrentTurnValue();
-    const newValue = turnControlService.incrementTurn(currentValue);
+    const newValue = TurnController.incrementTurn(currentValue);
     hapticService?.trigger("selection");
     onTurnAmountChanged(color, newValue);
   }
@@ -146,8 +146,8 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

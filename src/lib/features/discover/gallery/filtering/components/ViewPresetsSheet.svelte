@@ -6,7 +6,7 @@ Modern, touch-friendly interface for selecting view presets
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { FilterPreset } from "$lib/features/discover/shared/domain/types/discover-types";
 
   let { currentFilter, onFilterChange } = $props<{
@@ -14,11 +14,11 @@ Modern, touch-friendly interface for selecting view presets
     onFilterChange: (preset: FilterPreset) => void;
   }>();
 
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

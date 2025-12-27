@@ -8,7 +8,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { ISequenceAnalysisService, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalysisService";
+import type { ISequenceAnalyzer, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalyzer";
 import type { ISequenceFeatureExtractor } from "../contracts/ISequenceFeatureExtractor";
 import type {
 	SequenceFeatures,
@@ -28,8 +28,8 @@ import {
 @injectable()
 export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 	constructor(
-		@inject(TYPES.ISequenceAnalysisService)
-		private readonly sequenceAnalysisService: ISequenceAnalysisService
+		@inject(TYPES.ISequenceAnalyzer)
+		private readonly SequenceAnalyzer: ISequenceAnalyzer
 	) {}
 
 	/**
@@ -45,9 +45,9 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 			return createDefaultSequenceFeatures();
 		}
 
-		// Use existing SequenceAnalysisService for circularity
+		// Use existing SequenceAnalyzer for circularity
 		const circularity =
-			this.sequenceAnalysisService.analyzeCircularity(sequence);
+			this.SequenceAnalyzer.analyzeCircularity(sequence);
 
 		// Use existing capType from sequence if available (authoritative label from CAP labeler)
 		// Only fall back to detection if no capType exists
@@ -97,7 +97,7 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 		}
 
 		// Fall back to detection (may have bugs, but better than nothing)
-		return this.sequenceAnalysisService.detectCompletedCapTypes(sequence);
+		return this.SequenceAnalyzer.detectCompletedCapTypes(sequence);
 	}
 
 	/**

@@ -8,14 +8,14 @@
   import { onMount } from "svelte";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IDiscoverThumbnailProvider } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
   import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
   import PanelButton from "$lib/shared/components/panel/PanelButton.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
-  import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
-  import type { ILeaderboardService } from "$lib/shared/community/services/contracts/ILeaderboardService";
-  import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
+  import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
+  import type { ILeaderboardManager } from "$lib/shared/community/services/contracts/ILeaderboardManager";
+  import type { ILibraryRepository } from "$lib/features/library/services/contracts/ILibraryRepository";
   import type { LibrarySequence } from "$lib/features/library/domain/models/LibrarySequence";
   import type { EnhancedUserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
   import { creatorsViewState } from "../state/creators-view-state.svelte";
@@ -52,11 +52,11 @@
   >("sequences");
 
   // Services
-  let userService: IUserService;
-  let libraryService: ILibraryService;
-  let hapticService: IHapticFeedbackService;
-  let leaderboardService: ILeaderboardService;
-  let thumbnailService: IDiscoverThumbnailService;
+  let userService: IUserRepository;
+  let libraryService: ILibraryRepository;
+  let hapticService: IHapticFeedback;
+  let leaderboardService: ILeaderboardManager;
+  let thumbnailService: IDiscoverThumbnailProvider;
 
   // Personal rankings state (only for own profile)
   interface UserRanks {
@@ -107,16 +107,16 @@
       await loadFeatureModule("community");
 
       // Resolve services
-      userService = resolve<IUserService>(TYPES.IUserService);
-      libraryService = resolve<ILibraryService>(TYPES.ILibraryService);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      userService = resolve<IUserRepository>(TYPES.IUserRepository);
+      libraryService = resolve<ILibraryRepository>(TYPES.ILibraryRepository);
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
-      leaderboardService = resolve<ILeaderboardService>(
-        TYPES.ILeaderboardService
+      leaderboardService = resolve<ILeaderboardManager>(
+        TYPES.ILeaderboardManager
       );
-      thumbnailService = resolve<IDiscoverThumbnailService>(
-        TYPES.IDiscoverThumbnailService
+      thumbnailService = resolve<IDiscoverThumbnailProvider>(
+        TYPES.IDiscoverThumbnailProvider
       );
 
       // Load user profile with current user context for follow status

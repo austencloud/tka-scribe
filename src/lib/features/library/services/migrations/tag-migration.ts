@@ -2,7 +2,7 @@
  * Tag Migration Service
  *
  * Migrates legacy tag formats to the new SequenceTag model:
- * - tags: string[] → sequenceTags: SequenceTag[] (via TagService)
+ * - tags: string[] → sequenceTags: SequenceTag[] (via TagManager)
  * - tagIds: string[] → sequenceTags: SequenceTag[]
  *
  * Handles:
@@ -12,7 +12,7 @@
  * - Backward compatibility (keeps both old and new fields during transition)
  */
 
-import type { ITagService } from "../contracts/ITagService";
+import type { ITagManager } from "../contracts/ITagManager";
 import type { SequenceTag } from "../../domain/models/SequenceTag";
 import { createSequenceTag } from "../../domain/models/SequenceTag";
 import type { LibrarySequence } from "../../domain/models/LibrarySequence";
@@ -40,12 +40,12 @@ export interface TagMigrationResult {
  * 4. Otherwise, return empty array
  *
  * @param sequence The sequence to migrate
- * @param tagService TagService for creating tag documents
+ * @param tagService TagManager for creating tag documents
  * @returns Migration result with sequenceTags and tagIds
  */
 export async function migrateSequenceTags(
   sequence: LibrarySequence | (SequenceData & Partial<LibrarySequence>),
-  tagService: ITagService
+  tagService: ITagManager
 ): Promise<TagMigrationResult> {
   // Case 1: Already migrated (has sequenceTags)
   if (
@@ -112,13 +112,13 @@ export async function migrateSequenceTags(
  * Useful for migrating a user's entire library
  *
  * @param sequences Sequences to migrate
- * @param tagService TagService for creating tag documents
+ * @param tagService TagManager for creating tag documents
  * @param onProgress Optional progress callback
  * @returns Array of migration results
  */
 export async function batchMigrateSequenceTags(
   sequences: (LibrarySequence | (SequenceData & Partial<LibrarySequence>))[],
-  tagService: ITagService,
+  tagService: ITagManager,
   onProgress?: (completed: number, total: number) => void
 ): Promise<TagMigrationResult[]> {
   const results: TagMigrationResult[] = [];

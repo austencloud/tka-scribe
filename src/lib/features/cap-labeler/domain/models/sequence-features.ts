@@ -7,7 +7,7 @@
 
 import type { GridMode, GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import type { CircularityAnalysis, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalysisService";
+import type { CircularityAnalysis, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalyzer";
 
 /**
  * Position group dominance analysis
@@ -77,7 +77,7 @@ export interface SequenceFeatures {
 	readonly gridMode: GridMode | null;
 
 	// === Circularity Analysis ===
-	/** Complete circularity analysis from SequenceAnalysisService */
+	/** Complete circularity analysis from SequenceAnalyzer */
 	readonly circularity: CircularityAnalysis;
 
 	/** Detected CAP types for completed sequences */

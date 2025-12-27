@@ -2,7 +2,7 @@
  * Data Transformation Service
  *
  * Handles data transformation and adaptation between different formats.
- * Extracted from PictographRenderingService.
+ * Extracted from PictographRenderer.
  */
 
 import { injectable } from "inversify";

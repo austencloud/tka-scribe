@@ -22,7 +22,7 @@ import {
 import type { BeatData } from "../../../../../features/create/shared/domain/models/BeatData";
 import type { StartPositionData } from "../../../../../features/create/shared/domain/models/StartPositionData";
 import { injectable } from "inversify";
-import type { IOrientationCalculator } from "../contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "../contracts/IOrientationCalculator";
 import { GridLocation } from "../../../grid/domain/enums/grid-enums";
 import { PropType } from "../../domain/enums/PropType";
 

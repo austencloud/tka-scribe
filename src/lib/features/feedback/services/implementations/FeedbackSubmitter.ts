@@ -23,8 +23,8 @@ import type {
   FeedbackStatus,
 } from "../../domain/models/feedback-models";
 import type { MessageAttachment } from "$lib/shared/messaging/domain/models/message-models";
-import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
-import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
+import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationManager";
+import { messagingService } from "$lib/shared/messaging/services/implementations/Messenger";
 import { captureDeviceContext } from "../../utils/device-context-capturer";
 
 const ADMIN_USER_ID = "PBp3GSBO6igCKPwJyLZNmVEmamI3";

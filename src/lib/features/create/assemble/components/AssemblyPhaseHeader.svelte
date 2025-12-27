@@ -5,7 +5,7 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
 -->
 <script lang="ts">
   import type { HandPathPhase } from "../state/handpath-assemble-state.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -17,8 +17,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   function handleBack() {

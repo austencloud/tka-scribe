@@ -15,6 +15,7 @@
     shouldLoop,
     playbackMode,
     stepPlaybackStepSize,
+    stepPlaybackPauseMs,
     onPlay,
     onPause,
     onStop,
@@ -22,12 +23,14 @@
     onLoopToggle,
     onPlaybackModeChange,
     onStepPlaybackStepSizeChange,
+    onStepPlaybackPauseMsChange,
   }: {
     isPlaying: boolean;
     speed: number;
     shouldLoop: boolean;
     playbackMode: PlaybackMode;
     stepPlaybackStepSize: StepPlaybackStepSize;
+    stepPlaybackPauseMs: number;
     onPlay: () => void;
     onPause: () => void;
     onStop: () => void;
@@ -35,6 +38,7 @@
     onLoopToggle: (loop: boolean) => void;
     onPlaybackModeChange: (mode: PlaybackMode) => void;
     onStepPlaybackStepSizeChange: (stepSize: StepPlaybackStepSize) => void;
+    onStepPlaybackPauseMsChange: (pauseMs: number) => void;
   } = $props();
 
   // Speed presets

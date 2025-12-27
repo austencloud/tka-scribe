@@ -1,6 +1,6 @@
 <!-- PositionGroupGrid.svelte - Renders a group of pictographs (Alpha, Beta, or Gamma) -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
@@ -26,8 +26,8 @@
     onAnimationEnd: (id: string) => void;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   function handleSelect(pictograph: PictographData) {

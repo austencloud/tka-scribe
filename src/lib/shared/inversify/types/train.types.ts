@@ -6,24 +6,24 @@
 
 export const TrainTypes = {
   // Core Training
-  IPositionDetectionService: Symbol.for("IPositionDetectionService"),
+  IPositionDetector: Symbol.for("IPositionDetector"),
   IOrientationTracker: Symbol.for("IOrientationTracker"),
-  ICameraService: Symbol.for("ICameraService"),
-  IPerformanceScoringService: Symbol.for("IPerformanceScoringService"),
-  IPerformanceRecordingService: Symbol.for("IPerformanceRecordingService"),
+  ICameraManager: Symbol.for("ICameraManager"),
+  IPerformanceScorer: Symbol.for("IPerformanceScorer"),
+  IPerformanceRecorder: Symbol.for("IPerformanceRecorder"),
   ITrainPersistenceService: Symbol.for("ITrainPersistenceService"),
 
   // Hand Detection
-  IHandLandmarkerService: Symbol.for("IHandLandmarkerService"),
+  IHandLandmarker: Symbol.for("IHandLandmarker"),
   IHandednessAnalyzer: Symbol.for("IHandednessAnalyzer"),
   IHandStateAnalyzer: Symbol.for("IHandStateAnalyzer"),
   IHandTrackingStabilizer: Symbol.for("IHandTrackingStabilizer"),
-  IHandAssignmentService: Symbol.for("IHandAssignmentService"),
+  IHandAssigner: Symbol.for("IHandAssigner"),
 
   // Practice
-  IVoiceCommandService: Symbol.for("IVoiceCommandService"),
+  IVoiceCommandHandler: Symbol.for("IVoiceCommandHandler"),
 
   // Challenges & Progress
-  ITrainChallengeService: Symbol.for("ITrainChallengeService"),
-  IPerformanceHistoryService: Symbol.for("IPerformanceHistoryService"),
+  ITrainChallengeManager: Symbol.for("ITrainChallengeManager"),
+  IPerformanceHistoryTracker: Symbol.for("IPerformanceHistoryTracker"),
 } as const;

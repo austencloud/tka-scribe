@@ -16,17 +16,17 @@ import type {
   ICreateModuleHandlers,
   ClearSequenceParams,
 } from "../contracts/ICreateModuleHandlers";
-import type { ICreateModuleService } from "../contracts/ICreateModuleService";
-import type { IBeatOperationsService } from "../contracts/IBeatOperationsService";
+import type { ICreateModuleOrchestrator } from "../contracts/ICreateModuleOrchestrator";
+import type { IBeatOperator } from "../contracts/IBeatOperator";
 import { executeClearSequenceWorkflow } from "../../utils/clearSequenceWorkflow";
 
 @injectable()
 export class CreateModuleHandlers implements ICreateModuleHandlers {
   constructor(
-    @inject(TYPES.ICreateModuleService)
-    private createModuleService: ICreateModuleService,
-    @inject(TYPES.IBeatOperationsService)
-    private beatOperationsService: IBeatOperationsService
+    @inject(TYPES.ICreateModuleOrchestrator)
+    private CreateModuleOrchestrator: ICreateModuleOrchestrator,
+    @inject(TYPES.IBeatOperator)
+    private BeatOperator: IBeatOperator
   ) {}
 
   /**
@@ -34,7 +34,7 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
    */
   async handleOptionSelected(option: PictographData): Promise<void> {
     try {
-      await this.createModuleService.selectOption(option);
+      await this.CreateModuleOrchestrator.selectOption(option);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to select option";
@@ -129,7 +129,7 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
     }
 
     try {
-      this.beatOperationsService.removeBeat(beatIndex, CreateModuleState);
+      this.BeatOperator.removeBeat(beatIndex, CreateModuleState);
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to remove beat";

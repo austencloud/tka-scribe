@@ -6,7 +6,7 @@ import { TYPES } from "../types";
  *
  * Registers inbox-specific services and dependencies.
  * Note: Inbox primarily uses shared state (inboxState) and existing services
- * (NotificationService, ConversationService) so this module is lightweight.
+ * (NotificationService, ConversationManager) so this module is lightweight.
  */
 export const inboxModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {

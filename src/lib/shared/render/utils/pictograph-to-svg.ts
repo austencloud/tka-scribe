@@ -16,7 +16,7 @@ import Pictograph from "../../pictograph/shared/components/Pictograph.svelte";
 import { mount, tick, unmount } from "svelte";
 import { resolve as resolveService } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { IGlyphCacheService } from "../services/implementations/GlyphCacheService";
+import type { IGlyphCache } from "../services/implementations/GlyphCache";
 
 /**
  * Visibility settings for pictograph rendering
@@ -330,8 +330,8 @@ async function waitForImagesLoaded(container: HTMLElement): Promise<void> {
   }
 
   // Get glyph cache service
-  const glyphCache = await resolveService<IGlyphCacheService>(
-    TYPES.IGlyphCacheService
+  const glyphCache = await resolveService<IGlyphCache>(
+    TYPES.IGlyphCache
   );
 
   const imagePromises = Array.from(images).map(async (img) => {

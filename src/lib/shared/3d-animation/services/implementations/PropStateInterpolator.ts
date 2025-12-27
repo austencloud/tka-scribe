@@ -1,0 +1,166 @@
+/**
+ * PropStateInterpolator Implementation
+ *
+ * Calculates PropState3D from MotionConfig3D and progress (0-1).
+ * Handles all motion types and plane transformations.
+ */
+
+import { injectable, inject } from "inversify";
+import { Vector3 } from "three";
+import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { LOCATION_ANGLES } from "$lib/features/compose/shared/domain/math-constants";
+import type { PropState3D } from "../../domain/models/PropState3D";
+import type { MotionConfig3D } from "../../domain/models/MotionData3D";
+import {
+  planeAngleToWorldPosition,
+  calculatePropQuaternion,
+  GRID_RADIUS_3D,
+} from "../../domain/constants/plane-transforms";
+import type { IPropStateInterpolator } from "../contracts/IPropStateInterpolator";
+import type { IAngleMathCalculator } from "../contracts/IAngleMathCalculator";
+import type { IOrientationMapper } from "../contracts/IOrientationMapper";
+import type { IMotionCalculator } from "../contracts/IMotionCalculator";
+import { ANIMATION_3D_TYPES } from "../../inversify/animation-3d.types";
+
+@injectable()
+export class PropStateInterpolator
+  implements IPropStateInterpolator
+{
+  constructor(
+    @inject(ANIMATION_3D_TYPES.IAngleMathCalculator)
+    private angleMath: IAngleMathCalculator,
+    @inject(ANIMATION_3D_TYPES.IOrientationMapper)
+    private orientationService: IOrientationMapper,
+    @inject(ANIMATION_3D_TYPES.IMotionCalculator)
+    private motionCalculator: IMotionCalculator
+  ) {}
+
+  /**
+   * Interpolate center path angle (position on grid)
+   *
+   * IMPORTANT: Center path ALWAYS uses shortest path interpolation!
+   * The rotation direction only affects STAFF rotation, not position.
+   */
+  private interpolateCenterPath(
+    startAngle: number,
+    endAngle: number,
+    progress: number
+  ): number {
+    return this.angleMath.lerpAngle(startAngle, endAngle, progress);
+  }
+
+  /**
+   * Interpolate DASH motion in Cartesian space
+   *
+   * DASH motions move in a straight line through the center.
+   * The radius varies - at midpoint of N→S dash, prop passes through center.
+   */
+  private interpolateDashPosition(
+    config: MotionConfig3D,
+    startAngle: number,
+    endAngle: number,
+    progress: number
+  ): { worldPosition: Vector3; centerPathAngle: number } {
+    // Convert to Cartesian coordinates (unit circle)
+    const startX = Math.cos(startAngle);
+    const startY = Math.sin(startAngle);
+    const endX = Math.cos(endAngle);
+    const endY = Math.sin(endAngle);
+
+    // Linear interpolation in Cartesian space (straight line through center)
+    const currentX = this.angleMath.lerp(startX, endX, progress);
+    const currentY = this.angleMath.lerp(startY, endY, progress);
+
+    // Calculate distance from center (varies during dash!)
+    const radius = Math.sqrt(currentX * currentX + currentY * currentY);
+
+    // Calculate angle (for state tracking)
+    const centerPathAngle = Math.atan2(currentY, currentX);
+
+    // Convert to world position with interpolated radius
+    const worldPosition = planeAngleToWorldPosition(
+      config.plane,
+      centerPathAngle,
+      radius * GRID_RADIUS_3D
+    );
+
+    return { worldPosition, centerPathAngle };
+  }
+
+  /**
+   * Calculate PropState3D from config and progress
+   */
+  calculatePropState(config: MotionConfig3D, progress: number): PropState3D {
+    // Get start/end center angles from grid locations
+    const startCenterAngle = LOCATION_ANGLES[config.startLocation] ?? 0;
+    const endCenterAngle = LOCATION_ANGLES[config.endLocation] ?? 0;
+
+    // Calculate start staff angle from orientation
+    const startStaffAngle = this.orientationService.mapOrientationToAngle(
+      config.startOrientation,
+      startCenterAngle
+    );
+
+    // Calculate target staff angle based on motion type
+    const targetStaffAngle = this.motionCalculator.calculateTargetStaffAngle(
+      config,
+      startStaffAngle,
+      startCenterAngle,
+      endCenterAngle
+    );
+
+    // Calculate staff rotation delta (un-normalized for multi-turn)
+    const staffRotationDelta = targetStaffAngle - startStaffAngle;
+
+    // Interpolate staff rotation (linear for multi-turn support)
+    const staffRotationAngle = this.angleMath.normalizeAngle(
+      startStaffAngle + staffRotationDelta * progress
+    );
+
+    // Calculate 3D rotation
+    const worldRotation = calculatePropQuaternion(
+      config.plane,
+      staffRotationAngle
+    );
+
+    // DASH motions use Cartesian interpolation (straight line through center)
+    if (config.motionType === MotionType.DASH) {
+      const { worldPosition, centerPathAngle } = this.interpolateDashPosition(
+        config,
+        startCenterAngle,
+        endCenterAngle,
+        progress
+      );
+
+      return {
+        plane: config.plane,
+        centerPathAngle,
+        staffRotationAngle,
+        worldPosition,
+        worldRotation,
+      };
+    }
+
+    // All other motions: interpolate along circular path
+    const centerPathAngle = this.interpolateCenterPath(
+      startCenterAngle,
+      endCenterAngle,
+      progress
+    );
+
+    // Convert to 3D position (fixed radius for circular motion)
+    const worldPosition = planeAngleToWorldPosition(
+      config.plane,
+      centerPathAngle,
+      GRID_RADIUS_3D
+    );
+
+    return {
+      plane: config.plane,
+      centerPathAngle,
+      staffRotationAngle,
+      worldPosition,
+      worldRotation,
+    };
+  }
+}

@@ -10,9 +10,9 @@ import type { MotionData } from "../../shared/domain/models/MotionData";
 import type { PropType } from "../domain/enums/PropType";
 import type { PropAssets } from "../domain/models/PropAssets";
 import type { PropPosition } from "../domain/models/PropPosition";
-import type { IPropPlacementService } from "../services/contracts/IPropPlacementService";
+import type { IPropPlacer } from "../services/contracts/IPropPlacer";
 import type { IPropSvgLoader } from "../services/contracts/IPropSvgLoader";
-import type { IPropTypeConfigurationService } from "../services/contracts/IPropTypeConfigurationService";
+import type { IPropTypeConfigurator } from "../services/contracts/IPropTypeConfigurator";
 
 export interface PropState {
   readonly propPositions: Record<string, PropPosition>;
@@ -26,8 +26,8 @@ export interface PropState {
 
 export function createPropState(
   propSvgLoader: IPropSvgLoader,
-  propPlacementService: IPropPlacementService,
-  propTypeConfigService: IPropTypeConfigurationService
+  PropPlacer: IPropPlacer,
+  propTypeConfigService: IPropTypeConfigurator
 ): PropState {
   // Prop positioning state
   let propPositions = $state<Record<string, PropPosition>>({});
@@ -106,7 +106,7 @@ export function createPropState(
                 motionData.propPlacementData,
                 motionDataWithUserProp
               ),
-              propPlacementService.calculatePlacement(
+              PropPlacer.calculatePlacement(
                 updatedPictographData,
                 motionDataWithUserProp
               ),

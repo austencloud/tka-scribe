@@ -7,8 +7,8 @@
   import { logEvent } from "firebase/analytics";
   import { analytics } from "../../../shared/auth/firebase";
   import { tryResolve, TYPES } from "../../../shared/inversify/di";
-  import type { ISubscriptionService } from "../../../shared/subscription/services/contracts/ISubscriptionService";
-  import type { IHapticFeedbackService } from "../../../shared/application/services/contracts/IHapticFeedbackService";
+  import type { ISubscriptionManager } from "../../../shared/subscription/services/contracts/ISubscriptionManager";
+  import type { IHapticFeedback } from "../../../shared/application/services/contracts/IHapticFeedback";
   import PremiumHero from "./PremiumHero.svelte";
   import PremiumCTA from "./PremiumCTA.svelte";
   import StickyPremiumCTA from "./StickyPremiumCTA.svelte";
@@ -21,12 +21,12 @@
 
   interface Props {
     onClose?: () => void;
-    hapticService?: IHapticFeedbackService | null;
+    hapticService?: IHapticFeedback | null;
   }
 
   let { onClose, hapticService = null }: Props = $props();
 
-  let subscriptionService: ISubscriptionService | null = $state(null);
+  let subscriptionService: ISubscriptionManager | null = $state(null);
   let isLoading = $state(false);
 
   const PRICE_ID = import.meta.env.PUBLIC_STRIPE_PRICE_ID || "price_1SgbRTLZdzgHfpQbEp99bKp7";
@@ -39,7 +39,7 @@
   }
 
   $effect(() => {
-    subscriptionService = tryResolve<ISubscriptionService>(TYPES.ISubscriptionService);
+    subscriptionService = tryResolve<ISubscriptionManager>(TYPES.ISubscriptionManager);
 
     // Track page view
     trackEvent("premium_page_viewed", {

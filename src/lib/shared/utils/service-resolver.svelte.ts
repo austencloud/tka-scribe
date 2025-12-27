@@ -39,7 +39,7 @@ interface ServiceResolver<T> {
  *
  * @example
  * ```typescript
- * const shareService = createServiceResolver<IShareService>(TYPES.IShareService);
+ * const shareService = createServiceResolver<ISharer>(TYPES.ISharer);
  *
  * // Use in component:
  * $effect(() => {
@@ -165,7 +165,7 @@ export function createServiceResolver<T>(
  * @example
  * ```typescript
  * const services = createServiceResolvers({
- *   share: TYPES.IShareService,
+ *   share: TYPES.ISharer,
  *   sequence: TYPES.ISequenceRepository
  * });
  *

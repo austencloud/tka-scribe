@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import ContentTypeSelector from "../ContentTypeSelector.svelte";
 
   type ContentType = "video" | "animation" | "image";
@@ -21,7 +21,7 @@
     canShare: boolean;
     isDownloading: boolean;
     isCopyingLink?: boolean;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
     hidePreviewButton?: boolean;
     onDownload: () => void;
     onShare: () => void;

@@ -18,7 +18,7 @@ import type { GenerationOptions } from "../../domain/models/generate-models";
  * - Handle animations (that's the caller's responsibility)
  * - Update the workbench directly (returns data instead)
  */
-export interface IGenerationOrchestrationService {
+export interface IGenerationOrchestrator {
   /**
    * Generate a complete sequence based on provided options
    *

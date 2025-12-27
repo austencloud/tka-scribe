@@ -8,14 +8,14 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
 import type {
-  IUndoService,
+  IUndoManager,
   UndoMetadata,
-} from "../../services/contracts/IUndoService";
-import { UndoOperationType } from "../../services/contracts/IUndoService";
+} from "../../services/contracts/IUndoManager";
+import { UndoOperationType } from "../../services/contracts/IUndoManager";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 
 type UndoControllerDeps = {
-  undoService: IUndoService;
+  UndoManager: IUndoManager;
   sequenceState: SequenceState;
   getActiveSection: () => BuildModeId;
   setActiveSectionInternal: (
@@ -32,7 +32,7 @@ export type UndoSnapshotType =
   | "BATCH_EDIT";
 
 export function createUndoController({
-  undoService,
+  UndoManager,
   sequenceState,
   getActiveSection,
   setActiveSectionInternal,
@@ -43,7 +43,7 @@ export function createUndoController({
 
   let undoChangeCounter = $state(0);
 
-  undoService.onChange(() => {
+  UndoManager.onChange(() => {
     undoChangeCounter++;
   });
 
@@ -85,12 +85,12 @@ export function createUndoController({
         timestamp: timestampRef,
       };
 
-      undoService.pushUndo(operationType, beforeState, metadata);
+      UndoManager.pushUndo(operationType, beforeState, metadata);
     });
   }
 
   function undo(): boolean {
-    const lastEntry = undoService.undo();
+    const lastEntry = UndoManager.undo();
     if (!lastEntry) {
       return false;
     }
@@ -169,7 +169,7 @@ export function createUndoController({
   }
 
   function redo(): boolean {
-    const entry = undoService.redo();
+    const entry = UndoManager.redo();
     if (!entry) {
       return false;
     }
@@ -190,7 +190,7 @@ export function createUndoController({
   }
 
   function clearUndoHistory() {
-    undoService.clearHistory();
+    UndoManager.clearHistory();
   }
 
   function setShowStartPositionPickerCallback(callback: () => void) {
@@ -215,14 +215,14 @@ export function createUndoController({
     setOnUndoingOptionCallback,
     get canUndo() {
       void undoChangeCounter;
-      return undoService.canUndo;
+      return UndoManager.canUndo;
     },
     get canRedo() {
       void undoChangeCounter;
-      return undoService.canRedo;
+      return UndoManager.canRedo;
     },
     get undoHistory() {
-      return undoService.undoHistory;
+      return UndoManager.undoHistory;
     },
   };
 }

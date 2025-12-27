@@ -6,7 +6,7 @@
    * Click toggles visibility, gear icon opens customizer popover.
    */
 
-  import type { BodyType } from "../../services/contracts/IAvatarCustomizationService";
+  import type { BodyType } from "../../services/contracts/IAvatarCustomizer";
   import AvatarCustomizer from "../panels/AvatarCustomizer.svelte";
 
   interface Props {

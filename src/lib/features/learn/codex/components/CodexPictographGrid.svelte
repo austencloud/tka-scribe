@@ -5,7 +5,7 @@
 	Matches desktop CodexPictographGrid functionality with proper row organization.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
   import { resolve } from "$lib/shared/inversify/di";
@@ -20,11 +20,11 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

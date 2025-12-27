@@ -2,53 +2,37 @@
  * Prop Type Change Service Interface
  *
  * Watches for prop type changes from settings and triggers texture reloading.
+ *
+ * Uses reactive state ownership - service owns $state, component derives from it.
  */
 
 import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 
 /**
- * Current prop types
+ * Reactive state owned by the service
  */
-export interface PropTypeState {
+export interface PropTypeChangerState {
   bluePropType: string;
   redPropType: string;
   legacyPropType: string;
+  /** Increments when textures should be reloaded */
+  textureReloadSignal: number;
 }
-
-/**
- * Callback for prop type state changes
- */
-export type PropTypeStateCallback = (state: PropTypeState) => void;
-
-/**
- * Callback for triggering texture reload
- */
-export type TextureReloadCallback = () => void;
 
 /**
  * Service for handling prop type changes
  */
-export interface IPropTypeChangeService {
+export interface IPropTypeChanger {
   /**
-   * Set callback for state changes
+   * Reactive state - read from component via $derived
    */
-  setStateCallback(callback: PropTypeStateCallback): void;
-
-  /**
-   * Set callback for texture reload trigger
-   */
-  setTextureReloadCallback(callback: TextureReloadCallback): void;
+  readonly state: PropTypeChangerState;
 
   /**
    * Check for prop type changes from settings
    * @param settingsService The settings service to read from
    */
   checkForChanges(settingsService: ISettingsState | null): void;
-
-  /**
-   * Get current state
-   */
-  getState(): PropTypeState;
 
   /**
    * Clean up resources

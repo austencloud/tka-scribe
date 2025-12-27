@@ -4,7 +4,7 @@
  */
 
 import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
-import type { IViewportService } from "../../device/services/contracts/IViewportService";
+import type { IViewportManager } from "../../device/services/contracts/IViewportManager";
 import {
   desktopSidebarState,
   updateDesktopSidebarVisibility,
@@ -15,7 +15,7 @@ import {
  */
 export function useDesktopSidebarVisibility(
   deviceDetector: IDeviceDetector,
-  viewportService: IViewportService
+  viewportService: IViewportManager
 ) {
   // Subscribe to viewport changes
   const unsubscribe = viewportService.onViewportChange(() => {
@@ -31,7 +31,7 @@ export function useDesktopSidebarVisibility(
 
     // Check if we're in a module that uses side-by-side layout
     // For now, we'll use viewport width as a proxy
-    // In the Create module, this would be determined by CreateModuleLayoutService
+    // In the Create module, this would be determined by CreateModuleLayoutManager
     const isSideBySideLayout = viewportWidth >= 1024;
 
     updateDesktopSidebarVisibility(

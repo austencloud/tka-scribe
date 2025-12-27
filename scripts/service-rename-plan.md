@@ -373,7 +373,7 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | `ModuleSelectionService` | `ModuleSelector` |
 | `NavigationPersistenceService` | `NavigationPersister` |
 | `NavigationValidationService` | `NavigationValidator` |
-| `SequenceEncoderService` | `SequenceEncoder` |
+| `SequenceEncoder` | `SequenceEncoder` |
 
 ### Shared - Onboarding
 
@@ -395,7 +395,7 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | `AngleMathService` | `AngleCalculator` |
 | `GridRenderingService` | `GridRenderer` |
 | `LetterClassificationService` | `LetterClassifier` |
-| `LetterDeriverService` | `LetterDeriver` |
+| `LetterDeriver` | `LetterDeriver` |
 | `MotionCalculatorService` | `MotionCalculator` |
 | `OrientationService` | `OrientationResolver` |
 | `PositionDeriverService` | `PositionDeriver` |
@@ -409,7 +409,7 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | Current | Proposed |
 |---------|----------|
 | `CanvasManagementService` | `CanvasManager` |
-| `CanvasResizeService` | `CanvasResizer` |
+| `CanvasResizer` | `CanvasResizer` |
 | `ComponentManagementService` | `ComponentManager` |
 | `DimensionCalculationService` | `DimensionCalculator` |
 | `FilenameGeneratorService` | `FilenameGenerator` |
@@ -440,7 +440,7 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 
 | Current | Proposed |
 |---------|----------|
-| `FirebaseVideoUploadService` | `FirebaseVideoUploader` |
+| `FirebaseVideoUploader` | `FirebaseVideoUploader` |
 | `InstagramLinkService` | `InstagramLinker` |
 | `MediaBundlerService` | `MediaBundler` |
 | `ShareService` | `Sharer` |

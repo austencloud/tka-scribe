@@ -19,7 +19,7 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
-  import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
   import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   interface Props {
@@ -39,7 +39,7 @@
 
   // Services
   let loaderService = $state<IDiscoverLoader | null>(null);
-  let thumbnailService = $state<IDiscoverThumbnailService | null>(null);
+  let thumbnailService = $state<IDiscoverThumbnailProvider | null>(null);
   let servicesReady = $state(false);
 
   // Drawer placement based on screen size
@@ -108,8 +108,8 @@
     try {
       await loadFeatureModule("discover");
       loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      thumbnailService = tryResolve<IDiscoverThumbnailService>(
-        TYPES.IDiscoverThumbnailService
+      thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
+        TYPES.IDiscoverThumbnailProvider
       );
       servicesReady = !!(loaderService && thumbnailService);
     } catch (err) {

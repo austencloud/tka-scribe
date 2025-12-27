@@ -14,7 +14,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { ISequencePersister } from "../../services/contracts/ISequencePersister";
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
+import type { IActivityLogger } from "$lib/shared/analytics/services/contracts/IActivityLogger";
 import type { ActiveCreateModule } from "$lib/shared/foundation/ui/UITypes";
 
 export interface PersistenceState {
@@ -130,8 +130,8 @@ export function createSequencePersistenceCoordinator(
         // Log sequence save for analytics (non-blocking)
         if (currentSequence) {
           try {
-            const activityService = tryResolve<IActivityLogService>(
-              TYPES.IActivityLogService
+            const activityService = tryResolve<IActivityLogger>(
+              TYPES.IActivityLogger
             );
             if (activityService) {
               void activityService.logSequenceAction(

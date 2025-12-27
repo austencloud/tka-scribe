@@ -3,7 +3,7 @@
  * Manages page navigation and letter cycling for each motion type category
  */
 
-import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 import {
   PROSPIN_LETTERS,
   ANTISPIN_LETTERS,
@@ -11,7 +11,7 @@ import {
 } from "../domain/type1-letter-data";
 
 export interface Type1ConceptStateOptions {
-  hapticService: IHapticFeedbackService | null;
+  hapticService: IHapticFeedback | null;
   onComplete?: () => void;
 }
 

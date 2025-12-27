@@ -15,9 +15,9 @@
     type SaveMetadata,
   } from "../SaveToLibraryDialog.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
-  import type { RecordingResult } from "$lib/shared/video-record/services/contracts/IVideoRecordService";
-  import { FirebaseVideoUploadService } from "$lib/shared/share/services/implementations/FirebaseVideoUploadService";
-  import { RecordingPersistenceService } from "$lib/shared/video-record/services/implementations/RecordingPersistenceService";
+  import type { RecordingResult } from "$lib/shared/video-record/services/contracts/IVideoRecorder";
+  import { FirebaseVideoUploader } from "$lib/shared/share/services/implementations/FirebaseVideoUploader";
+  import { RecordingPersister } from "$lib/shared/video-record/services/implementations/RecordingPersister";
   import {
     createRecordingMetadata,
     detectDeviceType,
@@ -31,8 +31,8 @@
   const { CreateModuleState, panelState } = ctx;
 
   // Services (lazy-loaded)
-  let uploadService: FirebaseVideoUploadService | null = $state(null);
-  let persistenceService: RecordingPersistenceService | null = $state(null);
+  let uploadService: FirebaseVideoUploader | null = $state(null);
+  let persistenceService: RecordingPersister | null = $state(null);
 
   // UI State
   let showSavePrompt = $state(false);
@@ -40,8 +40,8 @@
   let pendingRecording: RecordingResult | null = $state(null);
 
   onMount(() => {
-    uploadService = new FirebaseVideoUploadService();
-    persistenceService = new RecordingPersistenceService();
+    uploadService = new FirebaseVideoUploader();
+    persistenceService = new RecordingPersister();
   });
 
   // Event handlers
@@ -88,8 +88,8 @@
       logger.error("No current sequence found");
       return;
     }
-    if (!ctx.sequencePersistenceService) {
-      logger.error("sequencePersistenceService not available");
+    if (!ctx.sequencePersister) {
+      logger.error("SequencePersister not available");
       return;
     }
     if (!ctx.sessionManager) {
@@ -104,7 +104,7 @@
       });
 
       // Save sequence to library
-      const sequenceId = await ctx.sequencePersistenceService.saveSequence(
+      const sequenceId = await ctx.sequencePersister.saveSequence(
         currentSequence,
         metadata
       );
@@ -117,9 +117,8 @@
 
       // Refresh library state if available
       try {
-        const { libraryState } = await import(
-          "$lib/features/library/state/library-state.svelte"
-        );
+        const { libraryState } =
+          await import("$lib/features/library/state/library-state.svelte");
         if (libraryState) {
           logger.info("Refreshing library sequences...");
           await libraryState.loadSequences();

@@ -5,7 +5,7 @@ Tab-based navigation for the Discover module.
 Tabs: Gallery, Collections, Creators
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -19,7 +19,7 @@ Tabs: Gallery, Collections, Creators
     onTabChange?: (tab: DiscoverModuleType) => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Note: Library is now integrated into Gallery via scope toggle (Community / My Library)
   const tabs: DiscoverTabConfig[] = [
@@ -34,8 +34,8 @@ Tabs: Gallery, Collections, Creators
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

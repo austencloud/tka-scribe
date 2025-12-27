@@ -13,9 +13,9 @@
 <script lang="ts">
   import type { BeatData } from "../../domain/models/BeatData";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import type { IKeyboardArrowAdjustmentService } from "$lib/features/create/shared/services/contracts/IKeyboardArrowAdjustmentService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import type { IKeyboardArrowAdjuster } from "$lib/features/create/shared/services/contracts/IKeyboardArrowAdjuster";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ITurnsTupleGenerator } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
   import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
   import type { IRotationAngleOverrideKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
   import { SpecialPlacementOriKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
@@ -38,8 +38,8 @@
   let { isOpen, beatData, onClose, onBeatDataUpdate }: Props = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let keyboardAdjustmentService: IKeyboardArrowAdjustmentService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let keyboardAdjustmentService: IKeyboardArrowAdjuster | null = null;
 
   // State
   let currentIncrement = $state(5);
@@ -71,8 +71,8 @@
     if (!beatData) return;
 
     try {
-      const tupleGenerator = resolve<ITurnsTupleGeneratorService>(
-        TYPES.ITurnsTupleGeneratorService
+      const tupleGenerator = resolve<ITurnsTupleGenerator>(
+        TYPES.ITurnsTupleGenerator
       );
       const gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
       const rotationKeyGenerator = resolve<IRotationAngleOverrideKeyGenerator>(
@@ -221,11 +221,11 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
-      keyboardAdjustmentService = resolve<IKeyboardArrowAdjustmentService>(
-        TYPES.IKeyboardArrowAdjustmentService
+      keyboardAdjustmentService = resolve<IKeyboardArrowAdjuster>(
+        TYPES.IKeyboardArrowAdjuster
       );
     } catch (error) {
       console.error("[PictographEditor] Failed to initialize services:", error);

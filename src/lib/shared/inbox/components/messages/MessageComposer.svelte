@@ -6,11 +6,11 @@
    */
 
   import { onMount } from "svelte";
-  import { messagingService } from "../../../messaging/services/implementations/MessagingService";
+  import { messagingService } from "../../../messaging/services/implementations/Messenger";
   import { toast } from "../../../toast/state/toast-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     conversationId: string;
@@ -24,11 +24,11 @@
   let sendSuccess = $state(false);
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

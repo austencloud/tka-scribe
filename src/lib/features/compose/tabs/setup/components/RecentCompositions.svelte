@@ -17,13 +17,13 @@
   } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   // Get state instances
   const browseState = getBrowseState();
   const composeModuleState = getComposeModuleState();
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Get recent compositions (max 4, sorted by date)
   const recentCompositions = $derived(
@@ -52,8 +52,8 @@
   };
 
   onMount(async () => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Ensure animations are loaded

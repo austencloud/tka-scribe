@@ -1,7 +1,7 @@
 <!-- TabOverflowSelector - 2026-ready tab overflow handler using Popover API -->
 <script lang="ts">
   import type { Section } from "$lib/shared/navigation/domain/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -18,7 +18,7 @@
 
   let popoverElement: HTMLElement | null = null;
   let isOpen = $state(false);
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Find current section
   let currentSectionData = $derived(
@@ -47,8 +47,8 @@
   // Set up toggle event listener for chevron rotation
   onMount(() => {
     // Resolve haptic service
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     const element = popoverElement;

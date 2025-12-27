@@ -9,8 +9,8 @@
 <script lang="ts">
   import { authState } from "../../../auth/state/authState.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
-  import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IAuthenticator } from "../../../auth/services/contracts/IAuthenticator";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import EmailLinkingDrawer from "../../../auth/components/EmailLinkingDrawer.svelte";
   import {
@@ -41,8 +41,8 @@
   }
 
   // Services
-  let authService = $state<IAuthService | null>(null);
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let authService = $state<IAuthenticator | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
 
   // UI State
   let linkingProvider = $state<ProviderId | null>(null);
@@ -53,9 +53,9 @@
   let showEmailLinkingDrawer = $state(false);
 
   onMount(() => {
-    authService = resolve<IAuthService>(TYPES.IAuthService);
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    authService = resolve<IAuthenticator>(TYPES.IAuthenticator);
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

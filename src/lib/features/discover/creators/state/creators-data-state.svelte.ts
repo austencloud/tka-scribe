@@ -6,7 +6,7 @@
  */
 
 import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
-import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
+import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
 
 function createCreatorsDataState() {
   // Data cache
@@ -19,7 +19,7 @@ function createCreatorsDataState() {
    * Load creators data if not already cached
    */
   async function loadCreators(
-    service: IUserService,
+    service: IUserRepository,
     currentUserId?: string
   ): Promise<void> {
     // If already loaded, skip
@@ -50,7 +50,7 @@ function createCreatorsDataState() {
    * Force reload creators data (bypasses cache)
    */
   async function refreshCreators(
-    service: IUserService,
+    service: IUserRepository,
     currentUserId?: string
   ): Promise<void> {
     isLoaded = false;
@@ -125,10 +125,10 @@ export const creatorsDataState = {
   get error() {
     return getCreatorsDataState().error;
   },
-  loadCreators(service: IUserService, currentUserId?: string) {
+  loadCreators(service: IUserRepository, currentUserId?: string) {
     return getCreatorsDataState().loadCreators(service, currentUserId);
   },
-  refreshCreators(service: IUserService, currentUserId?: string) {
+  refreshCreators(service: IUserRepository, currentUserId?: string) {
     return getCreatorsDataState().refreshCreators(service, currentUserId);
   },
   updateUserFollowStatus(

@@ -3,12 +3,14 @@
  *
  * Manages cross-fade transitions between glyph states (letter, turns, beat number).
  * Handles the timing and state management for smooth visual transitions.
+ *
+ * Uses reactive state ownership - service owns $state, component derives from it.
  */
 
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 
 /**
- * Current transition state
+ * Current transition state - owned by service
  */
 export interface GlyphTransitionState {
   // Currently displayed values
@@ -26,23 +28,13 @@ export interface GlyphTransitionState {
 }
 
 /**
- * Callback for transition state changes
- */
-export type TransitionStateCallback = (state: GlyphTransitionState) => void;
-
-/**
  * Service for managing glyph cross-fade transitions
  */
 export interface IGlyphTransitionController {
   /**
-   * Get current transition state
+   * Reactive state - read from component via $derived
    */
-  getState(): GlyphTransitionState;
-
-  /**
-   * Set callback for state changes
-   */
-  setStateCallback(callback: TransitionStateCallback): void;
+  readonly state: GlyphTransitionState;
 
   /**
    * Update the target glyph values - triggers transition if changed

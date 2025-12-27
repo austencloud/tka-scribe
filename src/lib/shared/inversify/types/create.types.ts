@@ -6,34 +6,34 @@
 
 export const CreateTypes = {
   // Create Module Core
-  ICreateModuleService: Symbol.for("ICreateModuleService"),
+  ICreateModuleOrchestrator: Symbol.for("ICreateModuleOrchestrator"),
   ICreateModuleHandlers: Symbol.for("ICreateModuleHandlers"),
-  ICreateModuleInitializationService: Symbol.for(
-    "ICreateModuleInitializationService"
+  ICreateModuleInitializer: Symbol.for(
+    "ICreateModuleInitializer"
   ),
   ICreateModuleEffectCoordinator: Symbol.for("ICreateModuleEffectCoordinator"),
-  ICreationMethodPersistenceService: Symbol.for(
-    "ICreationMethodPersistenceService"
+  ICreationMethodPersister: Symbol.for(
+    "ICreationMethodPersister"
   ),
-  IDeepLinkSequenceService: Symbol.for("IDeepLinkSequenceService"),
-  ICreateModuleLayoutService: Symbol.for("ICreateModuleLayoutService"),
-  IResponsiveLayoutService: Symbol.for("IResponsiveLayoutService"),
-  INavigationSyncService: Symbol.for("INavigationSyncService"),
-  IBeatOperationsService: Symbol.for("IBeatOperationsService"),
-  IKeyboardArrowAdjustmentService: Symbol.for(
-    "IKeyboardArrowAdjustmentService"
+  IDeepLinkSequenceHandler: Symbol.for("IDeepLinkSequenceHandler"),
+  ICreateModuleLayoutManager: Symbol.for("ICreateModuleLayoutManager"),
+  IResponsiveLayoutManager: Symbol.for("IResponsiveLayoutManager"),
+  INavigationSyncer: Symbol.for("INavigationSyncer"),
+  IBeatOperator: Symbol.for("IBeatOperator"),
+  IKeyboardArrowAdjuster: Symbol.for(
+    "IKeyboardArrowAdjuster"
   ),
-  IUndoService: Symbol.for("IUndoService"),
-  ITurnControlService: Symbol.for("ITurnControlService"),
+  IUndoManager: Symbol.for("IUndoManager"),
+  ITurnController: Symbol.for("ITurnController"),
 
   // Write Tab
-  IActService: Symbol.for("IActService"),
-  IMusicPlayerService: Symbol.for("IMusicPlayerService"),
+  IActManager: Symbol.for("IActManager"),
+  IMusicPlayer: Symbol.for("IMusicPlayer"),
 
   // Option Picker
   IOptionPickerSizingService: Symbol.for("IOptionPickerSizingService"),
-  IOptionPickerFilterPersistenceService: Symbol.for(
-    "IOptionPickerFilterPersistenceService"
+  IOptionPickerFilterPersister: Symbol.for(
+    "IOptionPickerFilterPersister"
   ),
   IReversalChecker: Symbol.for("IReversalChecker"),
   IPositionAnalyzer: Symbol.for("IPositionAnalyzer"),
@@ -41,24 +41,24 @@ export const CreateTypes = {
   IOptionFilter: Symbol.for("IOptionFilter"),
   IOptionOrganizerService: Symbol.for("IOptionOrganizerService"),
   IOptionLoader: Symbol.for("IOptionLoader"),
-  ILayoutDetectionService: Symbol.for("ILayoutDetectionService"),
+  ILayoutDetector: Symbol.for("ILayoutDetector"),
   IOptionTransitionCoordinator: Symbol.for("IOptionTransitionCoordinator"),
   ISectionTitleFormatter: Symbol.for("ISectionTitleFormatter"),
   IPictographPreparer: Symbol.for("IPictographPreparer"),
 
   // Workbench
-  IWorkbenchService: Symbol.for("IWorkbenchService"),
+  IWorkbench: Symbol.for("IWorkbench"),
   IBuildConstructTabCoordinator: Symbol.for("IBuildConstructTabCoordinator"),
-  IStartPositionService: Symbol.for("IStartPositionService"),
+  IStartPositionManager: Symbol.for("IStartPositionManager"),
 
   // Gestural Path Builder
   IHandPathDirectionDetector: Symbol.for("IHandPathDirectionDetector"),
-  ISwipeDetectionService: Symbol.for("ISwipeDetectionService"),
+  ISwipeDetector: Symbol.for("ISwipeDetector"),
   IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
 
   // Autocomplete
-  IAutocompleteService: Symbol.for("IAutocompleteService"),
+  IAutocompleter: Symbol.for("IAutocompleter"),
 
   // Panel Management
-  IPanelPersistenceService: Symbol.for("IPanelPersistenceService"),
+  IPanelPersister: Symbol.for("IPanelPersister"),
 } as const;

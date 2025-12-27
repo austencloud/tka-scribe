@@ -7,16 +7,16 @@
    */
 
   import { onMount } from "svelte";
-  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
+  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationManager";
   import UserSearchInput from "$lib/shared/user-search/UserSearchInput.svelte";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { inboxState } from "../../state/inbox-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IUserService } from "$lib/shared/community/services/contracts/IUserService";
+  import type { IUserRepository } from "$lib/shared/community/services/contracts/IUserRepository";
   import type { UserProfile } from "$lib/shared/community/domain/models/enhanced-user-profile";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     recipientId?: string | null;
@@ -40,8 +40,8 @@
   let isLoadingSuggestions = $state(true);
 
   // Services
-  let userService: IUserService | undefined;
-  let hapticService: IHapticFeedbackService | undefined;
+  let userService: IUserRepository | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // Exclude current user from search results (can't message yourself)
   let currentUserId = $derived(authState.user?.uid ?? "");
@@ -55,14 +55,14 @@
   });
 
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     try {
-      userService = resolve<IUserService>(TYPES.IUserService);
+      userService = resolve<IUserRepository>(TYPES.IUserRepository);
     } catch {
-      console.warn("[NewMessageSheet] UserService not available");
+      console.warn("[NewMessageSheet] UserRepository not available");
     }
 
     await loadSuggestions();

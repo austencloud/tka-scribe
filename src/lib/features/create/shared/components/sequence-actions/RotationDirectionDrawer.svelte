@@ -8,7 +8,7 @@
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { rotationDirectionPatternState } from "../../state/rotation-direction-pattern-state.svelte.ts";
-  import { RotationDirectionPatternService } from "../../services/implementations/RotationDirectionPatternService";
+  import { RotationDirectionPatternManager } from "../../services/implementations/RotationDirectionPatternManager";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { RotationDirectionPattern } from "../../domain/models/RotationDirectionPatternData";
@@ -42,7 +42,7 @@
   let errorMessage = $state<string | null>(null);
   let categoryFilter = $state<TemplateCategory | "all">("all");
 
-  const rotationPatternService = new RotationDirectionPatternService();
+  const rotationPatternService = new RotationDirectionPatternManager();
 
   // Load patterns when drawer opens
   $effect(() => {

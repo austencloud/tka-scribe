@@ -55,8 +55,11 @@
   const isModified = $derived(!activePreset && trailSettings.enabled);
 
   // Local state for smooth slider interactions
+  // svelte-ignore state_referenced_locally - intentional: $effect below syncs prop changes
   let fadeDuration = $state(trailSettings.fadeDurationMs / 1000);
+  // svelte-ignore state_referenced_locally
   let lineWidth = $state(trailSettings.lineWidth);
+  // svelte-ignore state_referenced_locally
   let opacity = $state(trailSettings.maxOpacity);
 
   // Sync from parent

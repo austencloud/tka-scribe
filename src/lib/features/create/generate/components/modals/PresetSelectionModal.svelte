@@ -3,7 +3,7 @@ PresetSelectionModal.svelte - Modal for selecting saved generation presets
 Displays user-saved presets with delete option and allows loading preset configuration
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -21,13 +21,13 @@ Displays user-saved presets with delete option and allows loading preset configu
       onClose: () => void;
     }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let modalElement: HTMLElement;
 
   onMount(() => {
     // Service resolution
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Focus the modal for accessibility

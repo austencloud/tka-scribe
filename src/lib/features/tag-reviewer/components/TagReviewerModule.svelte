@@ -12,7 +12,7 @@
 		tryResolve,
 	} from "$lib/shared/inversify/di";
 	import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-	import type { IBeatDataConversionService } from "$lib/features/cap-labeler/services/contracts/IBeatDataConversionService";
+	import type { IBeatDataConverter } from "$lib/features/cap-labeler/services/contracts/IBeatDataConverter";
 	import { tagReviewerState } from "../state/tag-reviewer-state.svelte";
 
 	// Shared components
@@ -123,8 +123,8 @@ ${JSON.stringify(summary, null, 2)}
 
 	// Services for beat parsing
 	const conversionService = $derived(
-		tryResolve<IBeatDataConversionService>(
-			CAPLabelerTypes.IBeatDataConversionService
+		tryResolve<IBeatDataConverter>(
+			CAPLabelerTypes.IBeatDataConverter
 		)
 	);
 

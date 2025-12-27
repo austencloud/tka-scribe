@@ -59,9 +59,11 @@ Integrates all Assembly components and manages state transitions.
   }>();
 
   // Local state for whether user has started building
+  // svelte-ignore state_referenced_locally - intentional: initial flag based on prop
   let hasStarted = $state(hasExistingSequence);
 
   // Grid mode (managed locally)
+  // svelte-ignore state_referenced_locally - intentional: handleGridModeChange handles updates
   let gridMode = $state(initialGridMode);
 
   // Extract GridLocation from a pictograph's blue motion
@@ -103,6 +105,7 @@ Integrates all Assembly components and manages state transitions.
   }
 
   // Get initial blue hand path from existing data
+  // svelte-ignore state_referenced_locally - intentional: one-time initialization based on existing data
   const initialBlueHandPath = hasExistingSequence
     ? reconstructBlueHandPath()
     : [];
@@ -110,7 +113,8 @@ Integrates all Assembly components and manages state transitions.
   // Create state manager with restored state if available
   // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
   // Note: gridMode is captured at initialization only - when gridMode changes, we recreate assemblyState (see handleGridModeChange)
-  const initialGridModeValue = gridMode; // Capture initial value to avoid reactivity warning
+  // svelte-ignore state_referenced_locally - intentional: captured for initial state creation
+  const initialGridModeValue = gridMode;
   let assemblyState: HandPathAssembleState = $state(
     createHandPathAssembleState({
       gridMode: initialGridModeValue,

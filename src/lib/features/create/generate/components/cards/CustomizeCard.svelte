@@ -3,7 +3,7 @@ CustomizeCard.svelte - Card for opening customize generation options
 Opens sheet with start/end position and letter constraint options
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { resolve } from "$lib/shared/inversify/di";
@@ -53,14 +53,14 @@ Opens sheet with start/end position and letter constraint options
     }
   });
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Get panel coordination state from context (provided by CreateModule)
   const panelState = getContext<PanelCoordinationState>("panelState");
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

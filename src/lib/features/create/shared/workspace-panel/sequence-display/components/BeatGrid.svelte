@@ -2,7 +2,7 @@
 <script lang="ts">
   import type { BeatData } from "../../../domain/models/BeatData";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
   import type { StartPositionData } from "../../../domain/models/StartPositionData";
   import { createBeatData } from "../../../domain/factories/createBeatData";
@@ -21,7 +21,7 @@
   import BeatCell from "./BeatCell.svelte";
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let deviceDetector: IDeviceDetector;
 
   let {
@@ -266,8 +266,8 @@
   // IMPORTANT: Event listeners must be set up in onMount (not $effect) to ensure
   // they're ready synchronously before any events are dispatched on first generation
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 

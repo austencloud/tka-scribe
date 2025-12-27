@@ -32,7 +32,7 @@ import type { IAuditLogger } from "../contracts/IAuditLogger";
 @injectable()
 export class AdminChallengeManager implements IAdminChallengeManager {
   constructor(
-    @inject(TYPES.IAuditLogService)
+    @inject(TYPES.IAuditLogger)
     private readonly auditLogger: IAuditLogger
   ) {}
   /**

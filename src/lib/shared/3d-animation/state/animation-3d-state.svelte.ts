@@ -10,18 +10,18 @@ import type { MotionConfig3D } from "../domain/models/MotionData3D";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { Plane } from "../domain/enums/Plane";
 import { createPlaybackState } from "./playback-state.svelte";
-import type { IPropStateInterpolatorService } from "../services/contracts/IPropStateInterpolatorService";
+import type { IPropStateInterpolator } from "../services/contracts/IPropStateInterpolator";
 import type {
-  ISequenceConverterService,
+  ISequenceConverter,
   BeatMotionConfigs,
-} from "../services/contracts/ISequenceConverterService";
+} from "../services/contracts/ISequenceConverter";
 
 /**
  * Dependencies for Animation 3D State
  */
 export interface Animation3DStateDeps {
-  propInterpolator: IPropStateInterpolatorService;
-  sequenceConverter: ISequenceConverterService;
+  propInterpolator: IPropStateInterpolator;
+  sequenceConverter: ISequenceConverter;
 }
 
 /**

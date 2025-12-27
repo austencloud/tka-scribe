@@ -16,8 +16,8 @@ import { GridLocation } from "../../../../../grid/domain/enums/grid-enums";
 import { TYPES } from "../../../../../../inversify/types";
 import { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import type { IDirectionalTupleCalculator } from "../contracts/IDirectionalTupleService";
-import type { IDirectionalTupleProcessor } from "../contracts/IDirectionalTupleService";
+import type { IDirectionalTupleCalculator } from "../contracts/IDirectionalTupleGenerator";
+import type { IDirectionalTupleProcessor } from "../contracts/IDirectionalTupleGenerator";
 
 @injectable()
 export class DirectionalTupleCalculator implements IDirectionalTupleCalculator {
@@ -338,7 +338,7 @@ export class DirectionalTupleProcessor implements IDirectionalTupleProcessor {
 
   constructor(
     @inject(TYPES.IDirectionalTupleCalculator)
-    private directionalTupleService: IDirectionalTupleCalculator,
+    private DirectionalTupleGenerator: IDirectionalTupleCalculator,
     @inject(TYPES.IQuadrantIndexCalculator)
     private quadrantIndexService: QuadrantIndexCalculator
   ) {}
@@ -362,7 +362,7 @@ export class DirectionalTupleProcessor implements IDirectionalTupleProcessor {
     try {
       // Generate directional tuples from base adjustment
       const directionalTuples =
-        this.directionalTupleService.generateDirectionalTuples(
+        this.DirectionalTupleGenerator.generateDirectionalTuples(
           motion,
           baseAdjustment.x,
           baseAdjustment.y

@@ -8,7 +8,7 @@
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAnnouncementService } from "../services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "../services/contracts/IAnnouncementManager";
   import type { Announcement } from "../domain/models/announcement-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -22,11 +22,11 @@
   let { announcement, onDismiss }: Props = $props();
 
   // Services (resolved lazily to avoid module initialization errors)
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
 
   onMount(() => {
-    announcementService = resolve<IAnnouncementService>(
-      TYPES.IAnnouncementService
+    announcementService = resolve<IAnnouncementManager>(
+      TYPES.IAnnouncementManager
     );
   });
 

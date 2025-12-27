@@ -6,7 +6,7 @@ Allows navigating through frames and labeling each one.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getMLTrainingStorage } from "../services/MLTrainingStorageService";
+  import { getMLTrainingStorage } from "../services/MLTrainingStorageManager";
   import LabelingCanvas from "./LabelingCanvas.svelte";
   import type {
     CaptureSession,

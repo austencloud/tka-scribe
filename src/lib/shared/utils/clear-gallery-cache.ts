@@ -9,26 +9,26 @@
 
 import { resolve } from "../inversify/di";
 import { TYPES } from "../inversify/types";
-import type { IDiscoverCacheService } from "../../features/discover/gallery/display/services/contracts/IDiscoverCacheService";
-import type { IOptimizedDiscoverService } from "../../features/discover/shared/services/contracts/IOptimizedDiscoverService";
+import type { IDiscoverCache } from "../../features/discover/gallery/display/services/contracts/IDiscoverCache";
+import type { IOptimizedDiscoverer } from "../../features/discover/shared/services/contracts/IOptimizedDiscoverer";
 
 export async function clearAllGalleryCaches(): Promise<void> {
   console.log("🧹 Clearing ALL gallery caches...");
 
   try {
-    // 1. Clear DiscoverCacheService
-    const exploreCacheService = resolve<IDiscoverCacheService>(
-      TYPES.IDiscoverCacheService
+    // 1. Clear DiscoverCache
+    const exploreCacheService = resolve<IDiscoverCache>(
+      TYPES.IDiscoverCache
     );
     exploreCacheService.clearCache();
-    console.log("✅ Cleared DiscoverCacheService");
+    console.log("✅ Cleared DiscoverCache");
 
-    // 2. Clear OptimizedDiscoverService
-    const optimizedService = resolve<IOptimizedDiscoverService>(
-      TYPES.IOptimizedDiscoverService
+    // 2. Clear OptimizedDiscoverer
+    const optimizedService = resolve<IOptimizedDiscoverer>(
+      TYPES.IOptimizedDiscoverer
     );
     optimizedService.clearCache();
-    console.log("✅ Cleared OptimizedDiscoverService");
+    console.log("✅ Cleared OptimizedDiscoverer");
 
     // 3. Clear IndexedDB/Dexie cache if it exists
     if ("indexedDB" in window) {

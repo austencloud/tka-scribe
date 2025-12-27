@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { BeatData } from "../../../domain/models/BeatData";
   import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -38,11 +38,11 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 
@@ -71,6 +71,7 @@
 
   let hasAnimated = $state(false);
   let currentAnimationName = $state("gentleBloom");
+  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
   let previousBeatId = beat.id;
 
   // Long-press detection
@@ -95,6 +96,7 @@
     return `${beatData.letter || "null"}-${motionStructure}`;
   }
 
+  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
   let previousSignature = getPictographSignature(beat);
 
   // Reset hasAnimated ONLY when the beat data itself changes (different beat loaded)

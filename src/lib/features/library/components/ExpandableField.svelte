@@ -1,0 +1,124 @@
+<!--
+  ExpandableField.svelte
+
+  A collapsible field that starts as a chip button and expands
+  to show the full input when clicked. Used for optional form fields.
+-->
+<script lang="ts">
+  import type { Snippet } from "svelte";
+
+  interface Props {
+    /** Label shown on the chip and field header */
+    label: string;
+    /** Whether the field is currently expanded */
+    expanded: boolean;
+    /** Called when expand state changes */
+    onExpandedChange: (expanded: boolean) => void;
+    /** Called when field is collapsed (to reset value) */
+    onCollapse?: () => void;
+    /** Content to render when expanded */
+    children: Snippet;
+  }
+
+  let { label, expanded, onExpandedChange, onCollapse, children }: Props =
+    $props();
+
+  function handleExpand() {
+    onExpandedChange(true);
+  }
+
+  function handleCollapse() {
+    onCollapse?.();
+    onExpandedChange(false);
+  }
+</script>
+
+{#if !expanded}
+  <button type="button" class="expand-chip" onclick={handleExpand}>
+    <i class="fas fa-plus"></i>
+    Add {label}
+  </button>
+{:else}
+  <div class="expandable-field">
+    <div class="field-header">
+      <span class="field-label">{label}</span>
+      <button
+        type="button"
+        class="collapse-btn"
+        onclick={handleCollapse}
+        aria-label="Remove {label.toLowerCase()}"
+      >
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    {@render children()}
+  </div>
+{/if}
+
+<style>
+  .expand-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .expand-chip:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .expand-chip i {
+    font-size: 10px;
+  }
+
+  .expandable-field {
+    width: 100%;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-top: 4px;
+  }
+
+  .field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .collapse-btn {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+  }
+</style>

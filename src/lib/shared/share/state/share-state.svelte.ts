@@ -10,9 +10,9 @@ import {
   SHARE_PRESETS,
   DEFAULT_SHARE_OPTIONS,
 } from "../domain/models/ShareOptions";
-import type { IShareService } from "../services/contracts/IShareService";
+import type { ISharer } from "../services/contracts/ISharer";
 import { tryResolve, TYPES } from "../../inversify/di";
-import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
+import type { IActivityLogger } from "../../analytics/services/contracts/IActivityLogger";
 import { getUser } from "../../auth/state/authState.svelte";
 import { settingsService } from "../../settings/state/SettingsState.svelte";
 import { PropType } from "../../pictograph/prop/domain/enums/PropType";
@@ -48,7 +48,7 @@ export interface ShareState {
   clearCache: () => void;
 }
 
-export function createShareState(shareService: IShareService): ShareState {
+export function createShareState(shareService: ISharer): ShareState {
   // Get image composition settings from the global settings manager
   // This is the single source of truth - shared with Settings > Visibility tab
   const imageCompositionManager = getImageCompositionManager();
@@ -372,8 +372,8 @@ export function createShareState(shareService: IShareService): ShareState {
 
         // Log share/download action for analytics (non-blocking)
         try {
-          const activityService = tryResolve<IActivityLogService>(
-            TYPES.IActivityLogService
+          const activityService = tryResolve<IActivityLogger>(
+            TYPES.IActivityLogger
           );
           if (activityService) {
             void activityService.logShareAction("sequence_export", {

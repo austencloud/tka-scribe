@@ -5,11 +5,11 @@
  */
 
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
-import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
+import type { IBeatOperator } from "../../services/contracts/IBeatOperator";
 import type { CreateModuleState } from "../create-module-state.svelte";
 
 export interface PropTypeSyncConfig {
-  getBeatOperationsService: () => IBeatOperationsService | null;
+  getBeatOperator: () => IBeatOperator | null;
   getCreateModuleState: () => CreateModuleState | null;
   isServicesInitialized: () => boolean;
 }
@@ -17,7 +17,7 @@ export interface PropTypeSyncConfig {
 export function createPropTypeSyncEffect(
   config: PropTypeSyncConfig
 ): () => void {
-  const { getBeatOperationsService, getCreateModuleState, isServicesInitialized } =
+  const { getBeatOperator, getCreateModuleState, isServicesInitialized } =
     config;
 
   let previousBluePropType: string | undefined = undefined;
@@ -27,9 +27,9 @@ export function createPropTypeSyncEffect(
     $effect(() => {
       if (!isServicesInitialized()) return;
 
-      const beatOperationsService = getBeatOperationsService();
+      const BeatOperator = getBeatOperator();
       const createModuleState = getCreateModuleState();
-      if (!beatOperationsService || !createModuleState) return;
+      if (!BeatOperator || !createModuleState) return;
 
       const settings = getSettings();
       const newBluePropType = settings.bluePropType;
@@ -40,7 +40,7 @@ export function createPropTypeSyncEffect(
         newBluePropType !== previousBluePropType &&
         previousBluePropType !== undefined
       ) {
-        beatOperationsService.bulkUpdatePropType(
+        BeatOperator.bulkUpdatePropType(
           "blue",
           newBluePropType,
           createModuleState
@@ -53,7 +53,7 @@ export function createPropTypeSyncEffect(
         newRedPropType !== previousRedPropType &&
         previousRedPropType !== undefined
       ) {
-        beatOperationsService.bulkUpdatePropType(
+        BeatOperator.bulkUpdatePropType(
           "red",
           newRedPropType,
           createModuleState

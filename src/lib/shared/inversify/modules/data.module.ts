@@ -9,13 +9,13 @@ import { CSVParser } from "../../foundation/services/implementations/data/CsvPar
 import { EnumMapper } from "../../foundation/services/implementations/data/EnumMapper";
 import { DexiePersistenceService } from "../../persistence/services/implementations/DexiePersistenceService";
 import { PersistenceInitializationService } from "../../persistence/services/implementations/PersistenceInitializationService";
-import { DataTransformer } from "../../pictograph/shared/services/implementations/DataTransformer";
+import { DataTransformer } from "../../application/services/implementations/DataTransformer";
 import { TYPES } from "../types";
 // Deep Ocean services moved to on-demand loading in BackgroundFactory
 // Core Sequence Services (moved from createModule to Tier 1)
 import { SequenceRepository } from "../../../features/create/shared/services/implementations/SequenceRepository";
-import { SequenceDomainService } from "../../../features/create/shared/services/implementations/SequenceDomainService";
-import { ReversalDetectionService } from "../../../features/create/shared/services/implementations/ReversalDetectionService";
+import { SequenceDomainManager } from "../../../features/create/shared/services/implementations/SequenceDomainManager";
+import { ReversalDetector } from "../../../features/create/shared/services/implementations/ReversalDetector";
 import { SequenceImporter } from "../../../features/create/shared/services/implementations/SequenceImporter";
 import { SequenceNormalizationService } from "../../../features/compose/services/implementations/SequenceNormalizationService";
 
@@ -43,8 +43,8 @@ export const dataModule = new ContainerModule(
     // ISequenceRepository and its dependencies are used across multiple modules
     // (create, explore, animate) so they must be in Tier 1 to be available early
     options.bind(TYPES.ISequenceRepository).to(SequenceRepository);
-    options.bind(TYPES.ISequenceDomainService).to(SequenceDomainService);
-    options.bind(TYPES.IReversalDetectionService).to(ReversalDetectionService);
+    options.bind(TYPES.ISequenceDomainManager).to(SequenceDomainManager);
+    options.bind(TYPES.IReversalDetector).to(ReversalDetector);
     options.bind(TYPES.ISequenceImporter).to(SequenceImporter);
     // ISequenceNormalizationService moved here - required by ISequenceRepository
     options

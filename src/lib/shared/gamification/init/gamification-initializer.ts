@@ -10,9 +10,9 @@ import {
   loadSharedModules,
   loadFeatureModule,
 } from "../../inversify/di";
-import type { IAchievementService } from "../services/contracts/IAchievementService";
-import type { IDailyChallengeService } from "../services/contracts/IDailyChallengeService";
-import type { IStreakService } from "../services/contracts/IStreakService";
+import type { IAchievementManager } from "../services/contracts/IAchievementManager";
+import type { IDailyChallengeManager } from "../services/contracts/IDailyChallengeManager";
+import type { IStreakTracker } from "../services/contracts/IStreakTracker";
 import type { XPEventMetadata } from "../domain/models/achievement-models";
 
 // Track if gamification is loaded to avoid redundant imports
@@ -38,9 +38,9 @@ export async function initializeGamification(): Promise<void> {
     // Resolve services
     const [achievementService, challengeService, streakService] =
       await Promise.all([
-        resolve<IAchievementService>(TYPES.IAchievementService),
-        resolve<IDailyChallengeService>(TYPES.IDailyChallengeService),
-        resolve<IStreakService>(TYPES.IStreakService),
+        resolve<IAchievementManager>(TYPES.IAchievementManager),
+        resolve<IDailyChallengeManager>(TYPES.IDailyChallengeManager),
+        resolve<IStreakTracker>(TYPES.IStreakTracker),
       ]);
 
     // Initialize in parallel
@@ -103,8 +103,8 @@ export async function trackXP(
     // Ensure gamification module is loaded
     await ensureGamificationLoaded();
 
-    const achievementService = resolve<IAchievementService>(
-      TYPES.IAchievementService
+    const achievementService = resolve<IAchievementManager>(
+      TYPES.IAchievementManager
     );
     await achievementService.trackAction(action, metadata);
   } catch (error) {

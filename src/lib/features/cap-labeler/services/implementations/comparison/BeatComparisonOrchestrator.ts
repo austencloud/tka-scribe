@@ -1,9 +1,9 @@
 import { injectable, inject } from 'inversify';
 import type { IBeatComparisonOrchestrator } from '../../contracts/IBeatComparisonOrchestrator';
-import type { IRotationComparisonService } from '../../contracts/IRotationComparisonService';
-import type { IReflectionComparisonService } from '../../contracts/IReflectionComparisonService';
-import type { ISwapInvertComparisonService } from '../../contracts/ISwapInvertComparisonService';
-import type { ICandidateFormattingService } from '../../contracts/ICandidateFormattingService';
+import type { IRotationComparer } from '../../contracts/IRotationComparer';
+import type { IReflectionComparer } from '../../contracts/IReflectionComparer';
+import type { ISwapInvertComparer } from '../../contracts/ISwapInvertComparer';
+import type { ICandidateFormatter } from '../../contracts/ICandidateFormatter';
 import type { ExtractedBeat, InternalBeatPair } from '../../../domain/models/internal-beat-models';
 import type { SequenceEntry } from '../../../domain/models/sequence-models';
 import { ROTATE_90_CCW, ROTATE_90_CW } from '../../../domain/constants/transformation-maps';
@@ -15,14 +15,14 @@ import { CAPLabelerTypes } from '$lib/shared/inversify/types/cap-labeler.types';
 @injectable()
 export class BeatComparisonOrchestrator implements IBeatComparisonOrchestrator {
 	constructor(
-		@inject(CAPLabelerTypes.IRotationComparisonService)
-		private rotationService: IRotationComparisonService,
-		@inject(CAPLabelerTypes.IReflectionComparisonService)
-		private reflectionService: IReflectionComparisonService,
-		@inject(CAPLabelerTypes.ISwapInvertComparisonService)
-		private swapInvertService: ISwapInvertComparisonService,
-		@inject(CAPLabelerTypes.ICandidateFormattingService)
-		private formattingService: ICandidateFormattingService
+		@inject(CAPLabelerTypes.IRotationComparer)
+		private rotationService: IRotationComparer,
+		@inject(CAPLabelerTypes.IReflectionComparer)
+		private reflectionService: IReflectionComparer,
+		@inject(CAPLabelerTypes.ISwapInvertComparer)
+		private swapInvertService: ISwapInvertComparer,
+		@inject(CAPLabelerTypes.ICandidateFormatter)
+		private formattingService: ICandidateFormatter
 	) {}
 
 	extractBeats(sequence: SequenceEntry): ExtractedBeat[] {

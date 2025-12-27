@@ -6,13 +6,13 @@
  */
 
 import { injectable } from "inversify";
-import { StorageService } from "$lib/shared/foundation/services/implementations/StorageService";
+import { StorageManager } from "$lib/shared/foundation/services/implementations/StorageManager";
 
-const storageService = new StorageService();
-import type { IFavoritesService } from "../contracts/IFavoritesService";
+const storageService = new StorageManager();
+import type { IFavoritesManager } from "../contracts/IFavoritesManager";
 
 @injectable()
-export class FavoritesService implements IFavoritesService {
+export class FavoritesManager implements IFavoritesManager {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly STORAGE_KEY = `tka-${this.CACHE_VERSION}-favorites`;
   private favoritesCache: Set<string> | null = null;

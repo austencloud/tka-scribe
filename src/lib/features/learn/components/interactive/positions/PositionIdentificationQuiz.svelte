@@ -3,7 +3,7 @@ PositionIdentificationQuiz - Quiz to identify Alpha, Beta, and Gamma positions
 Shows hand positions on grid, user identifies the type
 -->
 <script lang="ts">
-	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+	import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import {
@@ -22,7 +22,7 @@ Shows hand positions on grid, user identifies the type
 		onComplete?: () => void;
 	}>();
 
-	const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
 	type AnswerState = "idle" | "correct" | "incorrect";
 

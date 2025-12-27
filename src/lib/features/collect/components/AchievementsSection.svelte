@@ -9,20 +9,20 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { getLevelProgress } from "$lib/shared/gamification/domain/constants/xp-constants";
-  import type { IAchievementService } from "$lib/shared/gamification/services/contracts/IAchievementService";
-  import type { IStreakService } from "$lib/shared/gamification/services/contracts/IStreakService";
-  import type { ILeaderboardService } from "$lib/shared/community/services/contracts/ILeaderboardService";
+  import type { IAchievementManager } from "$lib/shared/gamification/services/contracts/IAchievementManager";
+  import type { IStreakTracker } from "$lib/shared/gamification/services/contracts/IStreakTracker";
+  import type { ILeaderboardManager } from "$lib/shared/community/services/contracts/ILeaderboardManager";
   import type { LeaderboardCategory } from "$lib/shared/community/domain/models/leaderboard-models";
   import AchievementsBrowser from "$lib/shared/gamification/components/AchievementsBrowser.svelte";
 
   // Services
-  let achievementService: IAchievementService | null = $state(null);
-  let streakService: IStreakService | null = $state(null);
-  let leaderboardService: ILeaderboardService | null = $state(null);
-  let hapticService: IHapticFeedbackService | undefined;
+  let achievementService: IAchievementManager | null = $state(null);
+  let streakService: IStreakTracker | null = $state(null);
+  let leaderboardService: ILeaderboardManager | null = $state(null);
+  let hapticService: IHapticFeedback | undefined;
 
   // State
   let stats = $state<any>(null);
@@ -69,16 +69,16 @@
 
   // Initialize services
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     try {
-      achievementService = await resolve<IAchievementService>(
-        TYPES.IAchievementService
+      achievementService = await resolve<IAchievementManager>(
+        TYPES.IAchievementManager
       );
-      streakService = await resolve<IStreakService>(TYPES.IStreakService);
-      leaderboardService = await resolve<ILeaderboardService>(
-        TYPES.ILeaderboardService
+      streakService = await resolve<IStreakTracker>(TYPES.IStreakTracker);
+      leaderboardService = await resolve<ILeaderboardManager>(
+        TYPES.ILeaderboardManager
       );
       await loadData();
       // Load ranks in background (non-blocking)

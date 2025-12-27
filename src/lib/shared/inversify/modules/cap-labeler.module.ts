@@ -2,27 +2,27 @@ import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 
 // Direct imports to avoid barrel exports
-import { BeatDataConversionService } from "$lib/features/cap-labeler/services/implementations/BeatDataConversionService";
-import { BeatPairAnalysisService } from "$lib/features/cap-labeler/services/implementations/BeatPairAnalysisService";
-import { CAPDesignationService } from "$lib/features/cap-labeler/services/implementations/CAPDesignationService";
-import { CAPDetectionService } from "$lib/features/cap-labeler/services/implementations/CAPDetectionService";
-import { CAPLabelsFirebaseService } from "$lib/features/cap-labeler/services/implementations/CAPLabelsFirebaseService";
-import { SequenceLoadingService } from "$lib/features/cap-labeler/services/implementations/SequenceLoadingService";
-import { NavigationService } from "$lib/features/cap-labeler/services/implementations/NavigationService";
+import { BeatDataConverter } from "$lib/features/cap-labeler/services/implementations/BeatDataConverter";
+import { BeatPairAnalyzer } from "$lib/features/cap-labeler/services/implementations/BeatPairAnalyzer";
+import { CAPDesignator } from "$lib/features/cap-labeler/services/implementations/CAPDesignator";
+import { CAPDetector } from "$lib/features/cap-labeler/services/implementations/CAPDetector";
+import { CAPLabelsFirebaseRepository } from "$lib/features/cap-labeler/services/implementations/CAPLabelsFirebaseRepository";
+import { SequenceLoader } from "$lib/features/cap-labeler/services/implementations/SequenceLoader";
+import { Navigator } from "$lib/features/cap-labeler/services/implementations/Navigator";
 import { SequenceFeatureExtractor } from "$lib/features/cap-labeler/services/implementations/SequenceFeatureExtractor";
 import { RuleBasedTagger } from "$lib/features/cap-labeler/services/implementations/RuleBasedTagger";
-import { PolyrhythmicDetectionService } from "$lib/features/cap-labeler/services/implementations/PolyrhythmicDetectionService";
-import { LayeredPathDetectionService } from "$lib/features/cap-labeler/services/implementations/LayeredPathDetectionService";
+import { PolyrhythmicDetector } from "$lib/features/cap-labeler/services/implementations/PolyrhythmicDetector";
+import { LayeredPathDetector } from "$lib/features/cap-labeler/services/implementations/LayeredPathDetector";
 
 // Comparison services
-import { RotationComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/RotationComparisonService";
-import { ReflectionComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/ReflectionComparisonService";
-import { SwapInvertComparisonService } from "$lib/features/cap-labeler/services/implementations/comparison/SwapInvertComparisonService";
+import { RotationComparer } from "$lib/features/cap-labeler/services/implementations/comparison/RotationComparer";
+import { ReflectionComparer } from "$lib/features/cap-labeler/services/implementations/comparison/ReflectionComparer";
+import { SwapInvertComparer } from "$lib/features/cap-labeler/services/implementations/comparison/SwapInvertComparer";
 import { BeatComparisonOrchestrator } from "$lib/features/cap-labeler/services/implementations/comparison/BeatComparisonOrchestrator";
 
 // Analysis and formatting services
-import { TransformationAnalysisService } from "$lib/features/cap-labeler/services/implementations/TransformationAnalysisService";
-import { CandidateFormattingService } from "$lib/features/cap-labeler/services/implementations/CandidateFormattingService";
+import { TransformationAnalyzer } from "$lib/features/cap-labeler/services/implementations/TransformationAnalyzer";
+import { CandidateFormatter } from "$lib/features/cap-labeler/services/implementations/CandidateFormatter";
 
 import { CAPLabelerTypes } from "../types/cap-labeler.types";
 
@@ -30,55 +30,55 @@ export const capLabelerModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === CAP LABELER SERVICES ===
     options
-      .bind(CAPLabelerTypes.IBeatDataConversionService)
-      .to(BeatDataConversionService)
+      .bind(CAPLabelerTypes.IBeatDataConverter)
+      .to(BeatDataConverter)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.IBeatPairAnalysisService)
-      .to(BeatPairAnalysisService)
+      .bind(CAPLabelerTypes.IBeatPairAnalyzer)
+      .to(BeatPairAnalyzer)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.ICAPDesignationService)
-      .to(CAPDesignationService)
+      .bind(CAPLabelerTypes.ICAPDesignator)
+      .to(CAPDesignator)
       .inSingletonScope();
 
-    // PolyrhythmicDetectionService must be registered BEFORE CAPDetectionService
-    // since CAPDetectionService depends on it
+    // PolyrhythmicDetector must be registered BEFORE CAPDetector
+    // since CAPDetector depends on it
     options
-      .bind(CAPLabelerTypes.IPolyrhythmicDetectionService)
-      .to(PolyrhythmicDetectionService)
+      .bind(CAPLabelerTypes.IPolyrhythmicDetector)
+      .to(PolyrhythmicDetector)
       .inSingletonScope();
 
-    // LayeredPathDetectionService - analyzes individual hand path periodicity
+    // LayeredPathDetector - analyzes individual hand path periodicity
     options
-      .bind(CAPLabelerTypes.ILayeredPathDetectionService)
-      .to(LayeredPathDetectionService)
+      .bind(CAPLabelerTypes.ILayeredPathDetector)
+      .to(LayeredPathDetector)
       .inSingletonScope();
 
     // === COMPARISON SERVICES ===
-    // These must be registered BEFORE CAPDetectionService
-    // CandidateFormattingService has no dependencies - register first
+    // These must be registered BEFORE CAPDetector
+    // CandidateFormatter has no dependencies - register first
     options
-      .bind(CAPLabelerTypes.ICandidateFormattingService)
-      .to(CandidateFormattingService)
+      .bind(CAPLabelerTypes.ICandidateFormatter)
+      .to(CandidateFormatter)
       .inSingletonScope();
 
     // Individual comparison services (no dependencies)
     options
-      .bind(CAPLabelerTypes.IRotationComparisonService)
-      .to(RotationComparisonService)
+      .bind(CAPLabelerTypes.IRotationComparer)
+      .to(RotationComparer)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.IReflectionComparisonService)
-      .to(ReflectionComparisonService)
+      .bind(CAPLabelerTypes.IReflectionComparer)
+      .to(ReflectionComparer)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.ISwapInvertComparisonService)
-      .to(SwapInvertComparisonService)
+      .bind(CAPLabelerTypes.ISwapInvertComparer)
+      .to(SwapInvertComparer)
       .inSingletonScope();
 
     // BeatComparisonOrchestrator depends on individual comparison services + formatting
@@ -87,31 +87,31 @@ export const capLabelerModule = new ContainerModule(
       .to(BeatComparisonOrchestrator)
       .inSingletonScope();
 
-    // TransformationAnalysisService depends on CandidateFormattingService
+    // TransformationAnalyzer depends on CandidateFormatter
     options
-      .bind(CAPLabelerTypes.ITransformationAnalysisService)
-      .to(TransformationAnalysisService)
+      .bind(CAPLabelerTypes.ITransformationAnalyzer)
+      .to(TransformationAnalyzer)
       .inSingletonScope();
 
-    // CAPDetectionService depends on all above + PolyrhythmicDetectionService
+    // CAPDetector depends on all above + PolyrhythmicDetector
     options
       .bind(CAPLabelerTypes.ICAPLabelerDetectionService)
-      .to(CAPDetectionService)
+      .to(CAPDetector)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.ICAPLabelsFirebaseService)
-      .to(CAPLabelsFirebaseService)
+      .bind(CAPLabelerTypes.ICAPLabelsFirebaseRepository)
+      .to(CAPLabelsFirebaseRepository)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.ISequenceLoadingService)
-      .to(SequenceLoadingService)
+      .bind(CAPLabelerTypes.ISequenceLoader)
+      .to(SequenceLoader)
       .inSingletonScope();
 
     options
-      .bind(CAPLabelerTypes.INavigationService)
-      .to(NavigationService)
+      .bind(CAPLabelerTypes.INavigator)
+      .to(Navigator)
       .inSingletonScope();
 
     options

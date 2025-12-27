@@ -6,7 +6,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
@@ -39,7 +39,7 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let deviceDetector: IDeviceDetector | null = null;
 
   // Drawer placement based on device
@@ -91,8 +91,8 @@
   }
 
   function handlePropSelect(propType: PropType) {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     hapticService?.trigger("selection");
     onSelect(propType);

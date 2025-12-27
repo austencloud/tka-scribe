@@ -12,7 +12,7 @@ import type { SimplifiedStartPositionState } from "../../construct/start-positio
 import type {
   UndoHistoryEntry,
   UndoMetadata,
-} from "../services/contracts/IUndoService";
+} from "../services/contracts/IUndoManager";
 import type { createCreateModuleState } from "../state/create-module-state.svelte";
 
 /**

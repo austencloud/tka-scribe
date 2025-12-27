@@ -6,7 +6,7 @@
 
   Uses proper infrastructure:
   - DiscoverLoader to load valid sequence data
-  - TurnPatternService to apply turn modifications
+  - TurnPatternManager to apply turn modifications
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -22,7 +22,7 @@
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
-  import { TurnPatternService } from "$lib/features/create/shared/services/implementations/TurnPatternService";
+  import { TurnPatternManager } from "$lib/features/create/shared/services/implementations/TurnPatternManager";
   import type { TurnPattern } from "$lib/features/create/shared/domain/models/TurnPatternData";
   import { Timestamp } from "firebase/firestore";
 
@@ -37,7 +37,7 @@
   // Services
   let playbackController: IAnimationPlaybackController | null = null;
   let discoverLoader: IDiscoverLoader | null = null;
-  const turnPatternService = new TurnPatternService();
+  const turnPatternManager = new TurnPatternManager();
 
   // Component state
   let loading = $state(true);
@@ -208,7 +208,7 @@
 
       // Create and apply 1,1 turn pattern to get visible trails
       const turnPattern = createOneTurnPattern(baseSequence.beats.length);
-      const result = turnPatternService.applyPattern(turnPattern, baseSequence);
+      const result = turnPatternManager.applyPattern(turnPattern, baseSequence);
 
       if (!result.success || !result.sequence) {
         console.error("❌ Failed to apply turn pattern:", result.error);

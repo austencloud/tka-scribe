@@ -11,12 +11,12 @@
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IAuthService } from "$lib/shared/auth/services/contracts/IAuthService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IAuthenticator } from "$lib/shared/auth/services/contracts/IAuthenticator";
   import { useUserPreview } from "$lib/shared/debug/context/user-preview-context";
 
-  let hapticService: IHapticFeedbackService | null = $state(null);
-  let authService: IAuthService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
+  let authService: IAuthenticator | null = $state(null);
   let showAuthOptions = $state(false);
 
   // Get preview context
@@ -48,10 +48,10 @@
 
   onMount(async () => {
     try {
-      hapticService = await resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = await resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
-      authService = await resolve<IAuthService>(TYPES.IAuthService);
+      authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
     } catch {
       // Services may not be available in all contexts
     }

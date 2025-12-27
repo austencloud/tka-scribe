@@ -6,57 +6,57 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { IAchievementService } from "../../gamification/services/contracts/IAchievementService";
-import type { IDailyChallengeService } from "../../gamification/services/contracts/IDailyChallengeService";
-import type { IWeeklyChallengeService } from "../../gamification/services/contracts/IWeeklyChallengeService";
-import type { ISkillProgressionService } from "../../gamification/services/contracts/ISkillProgressionService";
+import type { IAchievementManager } from "../../gamification/services/contracts/IAchievementManager";
+import type { IDailyChallengeManager } from "../../gamification/services/contracts/IDailyChallengeManager";
+import type { IWeeklyChallengeManager } from "../../gamification/services/contracts/IWeeklyChallengeManager";
+import type { ISkillProgressionTracker } from "../../gamification/services/contracts/ISkillProgressionTracker";
 import type { IChallengeCoordinator } from "../../gamification/services/contracts/IChallengeCoordinator";
-import type { INotificationService } from "../../gamification/services/contracts/INotificationService";
-import type { IStreakService } from "../../gamification/services/contracts/IStreakService";
-import { AchievementService } from "../../gamification/services/implementations/AchievementService";
-import { DailyChallengeService } from "../../gamification/services/implementations/DailyChallengeService";
-import { WeeklyChallengeService } from "../../gamification/services/implementations/WeeklyChallengeService";
-import { SkillProgressionService } from "../../gamification/services/implementations/SkillProgressionService";
+import type { IGamificationNotifier } from "../../gamification/services/contracts/IGamificationNotifier";
+import type { IStreakTracker } from "../../gamification/services/contracts/IStreakTracker";
+import { AchievementManager } from "../../gamification/services/implementations/AchievementManager";
+import { DailyChallengeManager } from "../../gamification/services/implementations/DailyChallengeManager";
+import { WeeklyChallengeManager } from "../../gamification/services/implementations/WeeklyChallengeManager";
+import { SkillProgressionTracker } from "../../gamification/services/implementations/SkillProgressionTracker";
 import { ChallengeCoordinator } from "../../gamification/services/implementations/ChallengeCoordinator";
-import { NotificationService } from "../../gamification/services/implementations/NotificationService";
-import { StreakService } from "../../gamification/services/implementations/StreakService";
+import { GamificationNotifier } from "../../gamification/services/implementations/GamificationNotifier";
+import { StreakTracker } from "../../gamification/services/implementations/StreakTracker";
 
 export const gamificationModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Notification Service (no dependencies, bind first)
     options
-      .bind<INotificationService>(TYPES.INotificationService)
-      .to(NotificationService)
+      .bind<IGamificationNotifier>(TYPES.IGamificationNotifier)
+      .to(GamificationNotifier)
       .inSingletonScope();
 
     // Streak Service
     options
-      .bind<IStreakService>(TYPES.IStreakService)
-      .to(StreakService)
+      .bind<IStreakTracker>(TYPES.IStreakTracker)
+      .to(StreakTracker)
       .inSingletonScope();
 
-    // Achievement Service (depends on NotificationService)
+    // Achievement Service (depends on GamificationNotifier)
     options
-      .bind<IAchievementService>(TYPES.IAchievementService)
-      .to(AchievementService)
+      .bind<IAchievementManager>(TYPES.IAchievementManager)
+      .to(AchievementManager)
       .inSingletonScope();
 
-    // Daily Challenge Service (depends on AchievementService)
+    // Daily Challenge Service (depends on AchievementManager)
     options
-      .bind<IDailyChallengeService>(TYPES.IDailyChallengeService)
-      .to(DailyChallengeService)
+      .bind<IDailyChallengeManager>(TYPES.IDailyChallengeManager)
+      .to(DailyChallengeManager)
       .inSingletonScope();
 
-    // Weekly Challenge Service (depends on AchievementService)
+    // Weekly Challenge Service (depends on AchievementManager)
     options
-      .bind<IWeeklyChallengeService>(TYPES.IWeeklyChallengeService)
-      .to(WeeklyChallengeService)
+      .bind<IWeeklyChallengeManager>(TYPES.IWeeklyChallengeManager)
+      .to(WeeklyChallengeManager)
       .inSingletonScope();
 
-    // Skill Progression Service (depends on AchievementService)
+    // Skill Progression Service (depends on AchievementManager)
     options
-      .bind<ISkillProgressionService>(TYPES.ISkillProgressionService)
-      .to(SkillProgressionService)
+      .bind<ISkillProgressionTracker>(TYPES.ISkillProgressionTracker)
+      .to(SkillProgressionTracker)
       .inSingletonScope();
 
     // Challenge Coordinator (depends on all challenge services)

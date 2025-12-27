@@ -6,7 +6,7 @@
  * - Mirror: Vertical flip, reverses rotation directions
  * - Color Swap: Swaps blue and red motion data
  *
- * Uses the same transformation maps as SequenceTransformationService
+ * Uses the same transformation maps as SequenceTransformer
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";

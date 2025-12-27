@@ -7,14 +7,14 @@
 export const CoreTypes = {
   // Sequence Services
   ISequenceRepository: Symbol.for("ISequenceRepository"),
-  ISequenceDomainService: Symbol.for("ISequenceDomainService"),
-  ISequenceAnalysisService: Symbol.for("ISequenceAnalysisService"),
+  ISequenceDomainManager: Symbol.for("ISequenceDomainManager"),
+  ISequenceAnalyzer: Symbol.for("ISequenceAnalyzer"),
   ISequenceValidator: Symbol.for("ISequenceValidator"),
   ISequenceStatsCalculator: Symbol.for("ISequenceStatsCalculator"),
-  ISequenceTransformationService: Symbol.for("ISequenceTransformationService"),
+  ISequenceTransformer: Symbol.for("ISequenceTransformer"),
   ISequenceImportService: Symbol.for("ISequenceImportService"),
   ISequenceImporter: Symbol.for("ISequenceImporter"),
-  ISequenceExportService: Symbol.for("ISequenceExportService"),
+  ISequenceExporter: Symbol.for("ISequenceExporter"),
   ISequenceIndexer: Symbol.for("ISequenceIndexer"),
   ISequencePersister: Symbol.for("ISequencePersister"),
 
@@ -26,10 +26,10 @@ export const CoreTypes = {
 
   // Settings Services
   ISettingsState: Symbol.for("ISettingsState"),
-  ISettingsPersistenceService: Symbol.for("ISettingsPersistenceService"),
+  ISettingsPersister: Symbol.for("ISettingsPersister"),
 
   // Onboarding Services
-  IOnboardingPersistenceService: Symbol.for("IOnboardingPersistenceService"),
+  IOnboardingPersister: Symbol.for("IOnboardingPersister"),
 
   // Device & Resource
   IDeviceDetector: Symbol.for("IDeviceDetector"),
@@ -38,12 +38,12 @@ export const CoreTypes = {
 
   // Application
   IApplicationInitializer: Symbol.for("IApplicationInitializer"),
-  IComponentManagementService: Symbol.for("IComponentManagementService"),
-  IDataTransformationService: Symbol.for("IDataTransformationService"),
+  IComponentManager: Symbol.for("IComponentManager"),
+  IDataTransformer: Symbol.for("IDataTransformer"),
   IPictographCoordinator: Symbol.for("IPictographCoordinator"),
-  IAnimationService: Symbol.for("IAnimationService"),
-  IHapticFeedbackService: Symbol.for("IHapticFeedbackService"),
-  IRippleEffectService: Symbol.for("IRippleEffectService"),
+  IAnimator: Symbol.for("IAnimator"),
+  IHapticFeedback: Symbol.for("IHapticFeedback"),
+  IRippleEffect: Symbol.for("IRippleEffect"),
 
   // State
   IAppState: Symbol.for("IAppState"),
@@ -53,14 +53,14 @@ export const CoreTypes = {
   IPerformanceMetricsState: Symbol.for("IPerformanceMetricsState"),
 
   // Dashboard
-  IFollowingFeedService: Symbol.for("IFollowingFeedService"),
+  IFollowingFeedProvider: Symbol.for("IFollowingFeedProvider"),
 
   // Library Services
-  ITagService: Symbol.for("ITagService"),
+  ITagManager: Symbol.for("ITagManager"),
 
   // Utility
-  IBetaDetectionService: Symbol.for("IBetaDetectionService"),
-  IErrorHandlingService: Symbol.for("IErrorHandlingService"),
+  IBetaDetector: Symbol.for("IBetaDetector"),
+  IErrorHandler: Symbol.for("IErrorHandler"),
   IEnumMapper: Symbol.for("IEnumMapper"),
   ICSVParser: Symbol.for("ICSVParser"),
   ICSVLoader: Symbol.for("ICsvLoader"),

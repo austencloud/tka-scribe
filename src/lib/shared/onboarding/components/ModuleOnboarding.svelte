@@ -20,7 +20,7 @@
 -->
 <script lang="ts">
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount, onDestroy } from "svelte";
   import { fly } from "svelte/transition";
   import type { EmblaCarouselType } from "embla-carousel";
@@ -56,14 +56,14 @@
   }: Props = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
 
   // Focus management for choice step
   let focusedChoiceIndex = $state(0);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     const handleKeyDown = (event: KeyboardEvent) => {

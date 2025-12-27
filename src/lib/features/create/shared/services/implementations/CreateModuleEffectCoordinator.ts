@@ -38,11 +38,11 @@ export class CreateModuleEffectCoordinator
       panelState,
       navigationState,
       layoutService,
-      navigationSyncService,
-      getDeepLinkService,
+      NavigationSyncer,
+      getDeepLinker,
       getCreationMethodPersistence,
-      getBeatOperationsService,
-      getAutosaveService,
+      getBeatOperator,
+      getAutosaver,
       isServicesInitialized,
       hasSelectedCreationMethod,
       setHasSelectedCreationMethod,
@@ -78,7 +78,7 @@ export class CreateModuleEffectCoordinator
     // Pending edit processing (from Discover gallery)
     cleanups.push(
       createPendingEditEffect({
-        getDeepLinkService,
+        getDeepLinker,
         getCreateModuleState,
         getConstructTabState,
         getCreationMethodPersistence,
@@ -91,7 +91,7 @@ export class CreateModuleEffectCoordinator
     // Prop type sync (bulk update when settings change)
     cleanups.push(
       createPropTypeSyncEffect({
-        getBeatOperationsService,
+        getBeatOperator,
         getCreateModuleState,
         isServicesInitialized,
       })
@@ -101,7 +101,7 @@ export class CreateModuleEffectCoordinator
     cleanups.push(
       createAutosaveEffect({
         getCreateModuleState,
-        getAutosaveService,
+        getAutosaver,
       })
     );
 
@@ -112,7 +112,7 @@ export class CreateModuleEffectCoordinator
         createNavigationSyncEffects({
           CreateModuleState: createModuleState,
           navigationState,
-          navigationSyncService,
+          NavigationSyncer,
         })
       );
     }

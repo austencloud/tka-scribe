@@ -7,8 +7,8 @@
 <script lang="ts">
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICollaborativeVideoService } from "../services/contracts/ICollaborativeVideoService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { ICollaborativeVideoManager } from "../services/contracts/ICollaborativeVideoManager";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { CollaborativeVideo } from "../domain/CollaborativeVideo";
   import { onMount } from "svelte";
 
@@ -22,16 +22,16 @@
     onDeclined?: () => void;
   } = $props();
 
-  let videoService = $state<ICollaborativeVideoService>();
-  let hapticService = $state<IHapticFeedbackService>();
+  let videoService = $state<ICollaborativeVideoManager>();
+  let hapticService = $state<IHapticFeedback>();
 
   onMount(async () => {
     const container = await getContainerInstance();
-    videoService = container.get<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    videoService = container.get<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
-    hapticService = container.get<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = container.get<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

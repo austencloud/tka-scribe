@@ -7,8 +7,8 @@
 
 import { tryResolve } from "$lib/shared/inversify/di";
 import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-import type { ICAPLabelsFirebaseService } from "../services/contracts/ICAPLabelsFirebaseService";
-import type { ICAPDesignationService } from "../services/contracts/ICAPDesignationService";
+import type { ICAPLabelsFirebaseRepository } from "../services/contracts/ICAPLabelsFirebaseRepository";
+import type { ICAPDesignator } from "../services/contracts/ICAPDesignator";
 import type {
   CAPDesignation,
   LabeledSequence,
@@ -82,11 +82,11 @@ export function createWholeModeState(): WholeModeState {
   let pendingDesignations = $state<CAPDesignation[]>([]);
 
   // Services
-  const labelsService = tryResolve<ICAPLabelsFirebaseService>(
-    CAPLabelerTypes.ICAPLabelsFirebaseService
+  const labelsService = tryResolve<ICAPLabelsFirebaseRepository>(
+    CAPLabelerTypes.ICAPLabelsFirebaseRepository
   );
-  const designationService = tryResolve<ICAPDesignationService>(
-    CAPLabelerTypes.ICAPDesignationService
+  const designationService = tryResolve<ICAPDesignator>(
+    CAPLabelerTypes.ICAPDesignator
   );
 
   // Actions

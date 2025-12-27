@@ -6,21 +6,21 @@
 
 export const AdminTypes = {
   // System
-  ISystemStateService: Symbol.for("ISystemStateService"),
-  IAuditLogService: Symbol.for("IAuditLogService"),
-  IAdminChallengeService: Symbol.for("IAdminChallengeService"),
+  ISystemStateManager: Symbol.for("ISystemStateManager"),
+  IAuditLogger: Symbol.for("IAuditLogger"),
+  IAdminChallengeManager: Symbol.for("IAdminChallengeManager"),
 
   // Analytics
-  IAnalyticsDataService: Symbol.for("IAnalyticsDataService"),
-  IActivityLogService: Symbol.for("IActivityLogService"),
-  ISessionTrackingService: Symbol.for("ISessionTrackingService"),
+  IAnalyticsDataProvider: Symbol.for("IAnalyticsDataProvider"),
+  IActivityLogger: Symbol.for("IActivityLogger"),
+  ISessionTracker: Symbol.for("ISessionTracker"),
 
   // Announcements
-  IAnnouncementService: Symbol.for("IAnnouncementService"),
+  IAnnouncementManager: Symbol.for("IAnnouncementManager"),
 
   // User Activity
-  IUserActivityService: Symbol.for("IUserActivityService"),
+  IUserActivityTracker: Symbol.for("IUserActivityTracker"),
 
   // Presence
-  IPresenceService: Symbol.for("IPresenceService"),
+  IPresenceTracker: Symbol.for("IPresenceTracker"),
 } as const;

@@ -7,7 +7,7 @@ import type {
   ResponsiveSettings,
 } from "../../domain/models/device-models";
 import type { IDeviceDetector } from "../contracts/IDeviceDetector";
-import type { IViewportService } from "../contracts/IViewportService";
+import type { IViewportManager } from "../contracts/IViewportManager";
 /**
  * Device Detector Implementation
  *
@@ -22,7 +22,7 @@ export class DeviceDetector implements IDeviceDetector {
   private _lastViewportHeight: number = 0;
 
   constructor(
-    @inject(TYPES.IViewportService) private viewportService: IViewportService
+    @inject(TYPES.IViewportManager) private viewportService: IViewportManager
   ) {
     // Subscribe to viewport changes to make device detection reactive
     this.viewportService.onViewportChange(() => {

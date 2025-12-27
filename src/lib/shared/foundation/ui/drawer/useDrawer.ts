@@ -1,6 +1,6 @@
 import { onMount, onDestroy, untrack } from "svelte";
 import { tryResolve, TYPES } from "../../../inversify/di";
-import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
+import type { IResponsiveLayoutManager } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutManager";
 import { SwipeToDismiss } from "./SwipeToDismiss";
 import { FocusTrap } from "./FocusTrap";
 import { SnapPoints, type SnapPointValue } from "./SnapPoints";
@@ -43,7 +43,7 @@ export function useDrawer(props: any) {
     children,
   } = props;
 
-  let layoutService: IResponsiveLayoutService | null = null;
+  let layoutService: IResponsiveLayoutManager | null = null;
   let isSideBySideLayout = $state(false);
   let mounted = $state(false);
   let wasOpen = $state(false);
@@ -174,8 +174,8 @@ export function useDrawer(props: any) {
     if (respectLayoutMode) {
       // Try to resolve layout service (optional dependency)
       // Will be null if create module hasn't loaded yet
-      layoutService = tryResolve<IResponsiveLayoutService>(
-        TYPES.IResponsiveLayoutService
+      layoutService = tryResolve<IResponsiveLayoutManager>(
+        TYPES.IResponsiveLayoutManager
       );
     }
   });

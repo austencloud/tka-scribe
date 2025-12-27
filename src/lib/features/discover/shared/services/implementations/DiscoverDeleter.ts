@@ -11,10 +11,10 @@ import type {
 } from "$lib/features/create/shared/domain/models/sequence-models";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
-import type { IDiscoverDeleteService } from "../contracts/IDiscoverDeleteService";
+import type { IDiscoverDeleter } from "../contracts/IDiscoverDeleter";
 
 @injectable()
-export class DiscoverDeleteService implements IDiscoverDeleteService {
+export class DiscoverDeleter implements IDiscoverDeleter {
   prepareDeleteConfirmation(
     sequence: SequenceData,
     allSequences: SequenceData[]

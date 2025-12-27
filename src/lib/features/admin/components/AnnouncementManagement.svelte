@@ -7,13 +7,13 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAnnouncementService } from "../services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "../services/contracts/IAnnouncementManager";
   import type { Announcement } from "../domain/models/announcement-models";
   import AnnouncementForm from "./announcements/AnnouncementForm.svelte";
   import AnnouncementList from "./announcements/AnnouncementList.svelte";
 
   // Services
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
 
   // State
   let announcements = $state<Announcement[]>([]);
@@ -23,8 +23,8 @@
 
   onMount(async () => {
     try {
-      announcementService = resolve<IAnnouncementService>(
-        TYPES.IAnnouncementService
+      announcementService = resolve<IAnnouncementManager>(
+        TYPES.IAnnouncementManager
       );
       await loadAnnouncements();
     } catch (error) {

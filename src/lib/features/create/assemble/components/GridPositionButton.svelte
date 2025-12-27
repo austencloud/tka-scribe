@@ -6,7 +6,7 @@ Supports enabled/disabled states and highlights current position.
 -->
 <script lang="ts">
   import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -18,8 +18,8 @@ Supports enabled/disabled states and highlights current position.
   }>();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Map GridLocation to display label
@@ -34,6 +34,7 @@ Supports enabled/disabled states and highlights current position.
     [GridLocation.NORTHWEST]: "NW",
   };
 
+  // svelte-ignore state_referenced_locally - intentional: component is keyed/recreated when position changes
   const label = positionLabels[position as GridLocation] ?? "?";
 
   function handleClick() {

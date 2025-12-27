@@ -3,7 +3,7 @@ VTGQuiz - Quiz to identify VTG modes from animations
 User watches animation and identifies which VTG mode is being shown
 -->
 <script lang="ts">
-	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+	import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import { shuffleArray, type VTGMode, VTG_QUESTIONS } from "../../../domain/constants/vtg-quiz-data";
@@ -18,7 +18,7 @@ User watches animation and identifies which VTG mode is being shown
 		onComplete?: () => void;
 	}>();
 
-	const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
 	// Take 8 shuffled questions for quiz
 	const quizQuestions = $state(shuffleArray(VTG_QUESTIONS).slice(0, 8));

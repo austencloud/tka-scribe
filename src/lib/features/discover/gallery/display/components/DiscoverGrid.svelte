@@ -3,7 +3,7 @@
   import { slide } from "svelte/transition";
   import { onMount } from "svelte";
   import { wrapGrid } from "animate-css-grid";
-  import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import SequenceCard from "./SequenceCard/SequenceCard.svelte";
   import SectionHeader from "./SectionHeader.svelte";
 
@@ -19,7 +19,7 @@
     sequences?: SequenceData[];
     sections?: SequenceData[];
     viewMode?: "grid" | "list";
-    thumbnailService: IDiscoverThumbnailService | null;
+    thumbnailService: IDiscoverThumbnailProvider | null;
     showSections?: boolean;
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();

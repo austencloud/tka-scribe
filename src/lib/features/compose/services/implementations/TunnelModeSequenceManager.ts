@@ -14,15 +14,15 @@ import type {
   TransformOperation,
 } from "../contracts/ITunnelModeSequenceManager";
 import type { ISequenceRepository } from "../../../create/shared/services/contracts/ISequenceRepository";
-import type { ISequenceTransformationService } from "../../../create/shared/services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../../../create/shared/services/contracts/ISequenceTransformer";
 
 @injectable()
 export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
   constructor(
     @inject(TYPES.ISequenceRepository)
     private readonly sequenceService: ISequenceRepository,
-    @inject(TYPES.ISequenceTransformationService)
-    private readonly transformationService: ISequenceTransformationService
+    @inject(TYPES.ISequenceTransformer)
+    private readonly transformationService: ISequenceTransformer
   ) {}
 
   /**

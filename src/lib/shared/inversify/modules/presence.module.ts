@@ -6,14 +6,14 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { IPresenceService } from "../../presence/services/contracts/IPresenceService";
-import { PresenceService } from "../../presence/services/implementations/PresenceService";
+import type { IPresenceTracker } from "../../presence/services/contracts/IPresenceTracker";
+import { PresenceTracker } from "../../presence/services/implementations/PresenceTracker";
 
 export const presenceModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     options
-      .bind<IPresenceService>(TYPES.IPresenceService)
-      .to(PresenceService)
+      .bind<IPresenceTracker>(TYPES.IPresenceTracker)
+      .to(PresenceTracker)
       .inSingletonScope();
   }
 );

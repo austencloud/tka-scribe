@@ -14,17 +14,17 @@ Matches the desktop version exactly:
     Letter,
     getLetterType,
   } from "$lib/shared/foundation/domain/models/Letter";
-  import type { IAnimationService } from "$lib/shared/application/services/contracts/IAnimationService";
+  import type { IAnimator } from "$lib/shared/application/services/contracts/IAnimator";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
   import type { TypeFilter } from "../domain/option-picker-types";
   import OptionViewerSection from "./OptionViewerSection.svelte";
 
   // Services
-  let animationService: IAnimationService;
+  let animationService: IAnimator;
 
   onMount(() => {
-    animationService = resolve<IAnimationService>(TYPES.IAnimationService);
+    animationService = resolve<IAnimator>(TYPES.IAnimator);
   });
 
   // Animation functions following established app patterns
@@ -81,6 +81,7 @@ Matches the desktop version exactly:
   );
 
   // Reactive container dimension tracking (width AND height)
+  // svelte-ignore state_referenced_locally - intentional: ResizeObserver handles updates
   let actualContainerWidth = $state(containerWidth);
   let actualContainerHeight = $state(600); // Default height
   let containerElement: HTMLDivElement;

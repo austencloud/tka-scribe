@@ -11,7 +11,7 @@ Responsive behavior:
 - Mobile: Bottom sheet modal
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -20,7 +20,7 @@ Responsive behavior:
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let deviceDetector: IDeviceDetector | null = null;
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
@@ -128,8 +128,8 @@ Responsive behavior:
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Initialize DeviceDetector

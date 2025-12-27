@@ -1,6 +1,6 @@
 <!-- ShareOptionsForm.svelte - Share options configuration -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import FontAwesomeIcon from "../../foundation/ui/FontAwesomeIcon.svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
@@ -16,11 +16,11 @@
   } = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

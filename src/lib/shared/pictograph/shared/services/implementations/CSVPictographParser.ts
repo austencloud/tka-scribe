@@ -13,7 +13,7 @@ import { createMotionData } from "../../domain/models/MotionData";
 import type { PictographData } from "../../domain/models/PictographData";
 import { createPictographData } from "../../domain/factories/createPictographData";
 import type { IEnumMapper } from "../../../../foundation/services/contracts/data/IEnumMapper";
-import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "../../../prop/services/contracts/IOrientationCalculator";
 import type {
   CSVRow,
   ICSVPictographParser,

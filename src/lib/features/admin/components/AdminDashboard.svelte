@@ -7,7 +7,7 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
-  import type { IAdminChallengeService } from "../services/contracts/IAdminChallengeService";
+  import type { IAdminChallengeManager } from "../services/contracts/IAdminChallengeManager";
   import DailyChallengeScheduler from "./DailyChallengeScheduler.svelte";
   import TrainChallengeManager from "./TrainChallengeManager.svelte";
   import AnalyticsDashboard from "./AnalyticsDashboard.svelte";
@@ -16,7 +16,7 @@
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Services
-  let adminChallengeService = $state<IAdminChallengeService | null>(null);
+  let adminChallengeService = $state<IAdminChallengeManager | null>(null);
 
   // State
   let isLoading = $state(true);
@@ -30,8 +30,8 @@
       // This is needed for HMR recovery and initial load scenarios
       await loadFeatureModule("admin");
 
-      adminChallengeService = resolve<IAdminChallengeService>(
-        TYPES.IAdminChallengeService
+      adminChallengeService = resolve<IAdminChallengeManager>(
+        TYPES.IAdminChallengeManager
       );
       isLoading = false;
     } catch (error) {

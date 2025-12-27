@@ -6,7 +6,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import { notificationPreferencesService } from "../services/implementations/NotificationPreferencesService";
+  import { notificationPreferencesService } from "../services/implementations/NotificationPreferencesManager";
   import type {
     NotificationPreferences,
     NotificationType,

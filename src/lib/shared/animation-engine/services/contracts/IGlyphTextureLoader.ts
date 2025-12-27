@@ -3,6 +3,8 @@
  *
  * Manages glyph texture loading for AnimatorCanvas.
  * Handles queuing glyphs when renderer isn't ready yet.
+ *
+ * Uses reactive state ownership - service owns $state, component derives from it.
  */
 
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
@@ -17,23 +19,29 @@ export interface PendingGlyph {
 }
 
 /**
- * Callback for when glyph loading completes
+ * Reactive state owned by the service
  */
-export type GlyphLoadCompleteCallback = () => void;
+export interface GlyphTextureState {
+  isLoaded: boolean;
+  isLoading: boolean;
+  pendingGlyph: PendingGlyph | null;
+  loadCount: number; // Increments on each successful load for reactivity
+  error: string | null;
+}
 
 /**
  * Service for managing glyph texture loading
  */
 export interface IGlyphTextureLoader {
   /**
+   * Reactive state - read from component via $derived
+   */
+  readonly state: GlyphTextureState;
+
+  /**
    * Initialize the service with renderer
    */
   initialize(renderer: IAnimationRenderer): void;
-
-  /**
-   * Set callback for load completion
-   */
-  setLoadCompleteCallback(callback: GlyphLoadCompleteCallback): void;
 
   /**
    * Handler for GlyphRenderer's onSvgReady callback
@@ -48,10 +56,6 @@ export interface IGlyphTextureLoader {
 
   /**
    * Load a glyph texture (queues if not initialized)
-   * @param svgString - SVG string to load
-   * @param width - Width of the glyph
-   * @param height - Height of the glyph
-   * @param isInitialized - Whether the renderer is initialized
    */
   loadGlyphTexture(
     svgString: string,
@@ -67,7 +71,6 @@ export interface IGlyphTextureLoader {
 
   /**
    * Process pending glyph if one exists.
-   * Call this when initialization completes.
    */
   processPendingGlyph(): Promise<void>;
 

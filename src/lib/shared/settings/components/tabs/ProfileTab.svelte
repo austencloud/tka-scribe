@@ -3,7 +3,7 @@
 <script lang="ts">
   import { authState } from "../../../auth/state/authState.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
-  import type { IAuthService } from "../../../auth/services/contracts/IAuthService";
+  import type { IAuthenticator } from "../../../auth/services/contracts/IAuthenticator";
   import { onMount } from "svelte";
   import {
     hasPasswordProvider,
@@ -23,7 +23,7 @@
   import RobustAvatar from "../../../components/avatar/RobustAvatar.svelte";
   import SubscriptionCard from "./profile/SubscriptionCard.svelte";
 
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import SocialAuthCompact from "../../../auth/components/SocialAuthCompact.svelte";
   import EmailPasswordAuth from "../../../auth/components/EmailPasswordAuth.svelte";
   import { nuclearCacheClear } from "../../../auth/utils/nuclearCacheClear";
@@ -45,8 +45,8 @@
   }: Props = $props();
 
   // Services
-  let hapticService = $state<IHapticFeedbackService | null>(null);
-  let authService = $state<IAuthService | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
+  let authService = $state<IAuthenticator | null>(null);
 
   // Auth mode for inline auth
   let authMode = $state<"signin" | "signup">("signin");
@@ -77,10 +77,10 @@
   );
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    authService = resolve<IAuthService>(TYPES.IAuthService);
+    authService = resolve<IAuthenticator>(TYPES.IAuthenticator);
 
     setTimeout(() => (isVisible = true), 30);
   });

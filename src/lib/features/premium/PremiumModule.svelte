@@ -6,13 +6,13 @@
 -->
 <script lang="ts">
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import PremiumShowcase from "./components/PremiumShowcase.svelte";
 
-  let hapticService = $state<IHapticFeedbackService | null>(null);
+  let hapticService = $state<IHapticFeedback | null>(null);
 
   $effect(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 </script>
 

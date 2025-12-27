@@ -9,24 +9,24 @@ import { ContainerModule } from "inversify";
 import { TYPES } from "../types";
 
 // Service implementations
-import { HandLandmarkerService } from "../../../features/train/services/implementations/HandLandmarkerService";
+import { HandLandmarker } from "../../../features/train/services/implementations/HandLandmarker";
 import { HandednessAnalyzer } from "../../../features/train/services/implementations/HandednessAnalyzer";
 import { HandStateAnalyzer } from "../../../features/train/services/implementations/HandStateAnalyzer";
 import { HandTrackingStabilizer } from "../../../features/train/services/implementations/HandTrackingStabilizer";
-import { HandAssignmentService } from "../../../features/train/services/implementations/HandAssignmentService";
-import { MediaPipeDetectionService } from "../../../features/train/services/implementations/MediaPipeDetectionService";
-import { CameraService } from "../../../features/train/services/implementations/CameraService";
-import { VoiceCommandService } from "../../../features/train/services/implementations/VoiceCommandService";
-import { PerformanceHistoryService } from "../../../features/train/services/implementations/PerformanceHistoryService";
-import { TrainChallengeService } from "../../../features/train/services/implementations/TrainChallengeService";
+import { HandAssigner } from "../../../features/train/services/implementations/HandAssigner";
+import { MediaPipeDetector } from "../../../features/train/services/implementations/MediaPipeDetector";
+import { CameraManager } from "../../../features/train/services/implementations/CameraManager";
+import { VoiceCommandHandler } from "../../../features/train/services/implementations/VoiceCommandHandler";
+import { PerformanceHistoryTracker } from "../../../features/train/services/implementations/PerformanceHistoryTracker";
+import { TrainChallengeManager } from "../../../features/train/services/implementations/TrainChallengeManager";
 
 export const trainModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === HAND DETECTION SERVICES ===
     // Core MediaPipe wrapper
     options
-      .bind(TYPES.IHandLandmarkerService)
-      .to(HandLandmarkerService)
+      .bind(TYPES.IHandLandmarker)
+      .to(HandLandmarker)
       .inSingletonScope();
 
     // Analysis services
@@ -45,35 +45,35 @@ export const trainModule = new ContainerModule(
       .to(HandTrackingStabilizer)
       .inSingletonScope();
     options
-      .bind(TYPES.IHandAssignmentService)
-      .to(HandAssignmentService)
+      .bind(TYPES.IHandAssigner)
+      .to(HandAssigner)
       .inSingletonScope();
 
     // Position detection orchestrator
     options
-      .bind(TYPES.IPositionDetectionService)
-      .to(MediaPipeDetectionService)
+      .bind(TYPES.IPositionDetector)
+      .to(MediaPipeDetector)
       .inSingletonScope();
 
     // Camera service
-    options.bind(TYPES.ICameraService).to(CameraService).inSingletonScope();
+    options.bind(TYPES.ICameraManager).to(CameraManager).inSingletonScope();
 
     // === PRACTICE SERVICES ===
     options
-      .bind(TYPES.IVoiceCommandService)
-      .to(VoiceCommandService)
+      .bind(TYPES.IVoiceCommandHandler)
+      .to(VoiceCommandHandler)
       .inSingletonScope();
 
     // === CHALLENGES SERVICES ===
     options
-      .bind(TYPES.ITrainChallengeService)
-      .to(TrainChallengeService)
+      .bind(TYPES.ITrainChallengeManager)
+      .to(TrainChallengeManager)
       .inSingletonScope();
 
     // === PROGRESS SERVICES ===
     options
-      .bind(TYPES.IPerformanceHistoryService)
-      .to(PerformanceHistoryService)
+      .bind(TYPES.IPerformanceHistoryTracker)
+      .to(PerformanceHistoryTracker)
       .inSingletonScope();
   }
 );

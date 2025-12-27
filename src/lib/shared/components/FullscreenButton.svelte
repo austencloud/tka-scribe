@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
-  import type { IMobileFullscreenService } from "../mobile/services/contracts/IMobileFullscreenService";
+  import type { IHapticFeedback } from "../application/services/contracts/IHapticFeedback";
+  import type { IMobileFullscreenManager } from "../mobile/services/contracts/IMobileFullscreenManager";
   import { resolve } from "../inversify/di";
   import { TYPES } from "../inversify/types";
   import { onMount } from "svelte";
@@ -10,16 +10,16 @@
   let isPWA = $state(false);
 
   // Services
-  let hapticService: IHapticFeedbackService;
-  let fullscreenService: IMobileFullscreenService;
+  let hapticService: IHapticFeedback;
+  let fullscreenService: IMobileFullscreenManager;
 
   // Check if fullscreen is supported and if running as PWA
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    fullscreenService = resolve<IMobileFullscreenService>(
-      TYPES.IMobileFullscreenService
+    fullscreenService = resolve<IMobileFullscreenManager>(
+      TYPES.IMobileFullscreenManager
     );
 
     // Check if running as PWA - if so, don't show the button

@@ -6,9 +6,9 @@
  */
 
 import type {
-  IFileDownloadService,
+  IFileDownloader,
   DownloadResult,
-} from "$lib/shared/foundation/services/contracts/IFileDownloadService";
+} from "$lib/shared/foundation/services/contracts/IFileDownloader";
 import type { ExportResult } from "$lib/shared/foundation/ui/UITypes";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { inject, injectable } from "inversify";
@@ -20,7 +20,7 @@ import type {
 
 // Local type definitions
 
-// File download functionality provided by FileDownloadService
+// File download functionality provided by FileDownloader
 
 function generateTimestampedFilename(
   prefix: string,
@@ -71,8 +71,8 @@ export class WordCardExportIntegrationService
   private abortController: AbortController | null = null;
 
   constructor(
-    @inject(TYPES.IFileDownloadService)
-    private fileDownloadService: IFileDownloadService,
+    @inject(TYPES.IFileDownloader)
+    private fileDownloadService: IFileDownloader,
     private readonly pageImageExportService: IPageImageExportService
   ) {}
 

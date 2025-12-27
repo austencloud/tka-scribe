@@ -24,7 +24,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { applyThemeForBackground } from "$lib/shared/settings/utils/background-theme-calculator";
 
   // Navigation state - use global activeTab
@@ -54,7 +54,7 @@
   let responsiveSettings = $state<ResponsiveSettings | null>(null);
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Back header is no longer needed on mobile/tablet since back button is now in bottom nav
   // Desktop has sidebar with its own back button
@@ -66,8 +66,8 @@
     try {
       deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
       responsiveSettings = deviceDetector.getResponsiveSettings();
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
 
       deviceCleanup = deviceDetector.onCapabilitiesChanged(() => {

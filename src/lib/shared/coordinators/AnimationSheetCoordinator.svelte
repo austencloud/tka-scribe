@@ -33,7 +33,7 @@
   import { resolve, loadFeatureModule } from "../inversify/di";
   import { TYPES } from "../inversify/types";
   import type { SequenceData } from "../foundation/domain/models/SequenceData";
-  import type { IHapticFeedbackService } from "../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../application/services/contracts/IHapticFeedback";
   import { onMount, onDestroy } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
@@ -41,9 +41,9 @@
     VIDEO_EXPORT_SUCCESS_DELAY_MS,
   } from "$lib/features/compose/shared/domain/constants/timing";
   import type {
-    ISheetRouterService,
+    ISheetRouter,
     AnimationPanelState,
-  } from "../navigation/services/contracts/ISheetRouterService";
+  } from "../navigation/services/contracts/ISheetRouter";
   import { createComponentLogger } from "../utils/debug-logger";
 
   const debug = createComponentLogger("AnimationSheetCoordinator");
@@ -64,10 +64,10 @@
   // Services
   let sequenceService: ISequenceRepository | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
   let videoExportOrchestrator: IVideoExportOrchestrator | null = null;
   let videoExportService: IVideoExportService | null = null;
-  let sheetRouterService: ISheetRouterService | null = null;
+  let sheetRouterService: ISheetRouter | null = null;
   let loopabilityChecker: ISequenceLoopabilityChecker | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
@@ -203,11 +203,11 @@
       // Resolve core services immediately (Tier 1 - navigation module)
       try {
         sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
-        hapticService = resolve<IHapticFeedbackService>(
-          TYPES.IHapticFeedbackService
+        hapticService = resolve<IHapticFeedback>(
+          TYPES.IHapticFeedback
         );
-        sheetRouterService = resolve<ISheetRouterService>(
-          TYPES.ISheetRouterService
+        sheetRouterService = resolve<ISheetRouter>(
+          TYPES.ISheetRouter
         );
         debug.success("Core services resolved");
       } catch (error) {

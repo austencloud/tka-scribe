@@ -12,15 +12,15 @@
 import { getContext, setContext } from "svelte";
 import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
 import type { IDeviceDetector } from "../../device/services/contracts/IDeviceDetector";
-import type { IHapticFeedbackService } from "../services/contracts/IHapticFeedbackService";
-import type { ICollaborativeVideoService } from "../../video-collaboration/services/contracts/ICollaborativeVideoService";
-import type { IUserService } from "../../community/services/contracts/IUserService";
+import type { IHapticFeedback } from "../services/contracts/IHapticFeedback";
+import type { ICollaborativeVideoManager } from "../../video-collaboration/services/contracts/ICollaborativeVideoManager";
+import type { IUserRepository } from "../../community/services/contracts/IUserRepository";
 import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
-import type { ICodexService } from "$lib/features/learn/codex/services/contracts/ICodexService";
+import type { ICodex } from "$lib/features/learn/codex/services/contracts/ICodex";
 // TODO: IQuizRepoManager contract doesn't exist yet - uncomment when created
 // import type { IQuizRepoManager } from "$lib/features/learn/quiz/services/contracts/IQuizRepoManager";
-import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
-import type { IStartPositionService } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionService";
+import type { ICAPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeResolver";
+import type { IStartPositionManager } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionManager";
 
 const APP_SERVICES_KEY = "app-services";
 
@@ -31,16 +31,16 @@ export interface AppServicesContext {
   // Core services
   settingsService: ISettingsState;
   deviceService: IDeviceDetector;
-  hapticService: IHapticFeedbackService;
+  hapticService: IHapticFeedback;
 
   // Feature services (lazy-loaded, may be null initially)
-  videoService?: ICollaborativeVideoService;
-  userService?: IUserService;
+  videoService?: ICollaborativeVideoManager;
+  userService?: IUserRepository;
   discoverLoader?: IDiscoverLoader;
-  codexService?: ICodexService;
+  codexService?: ICodex;
   // quizRepo?: IQuizRepoManager; // TODO: uncomment when IQuizRepoManager contract is created
-  capTypeService?: ICAPTypeService;
-  startPositionService?: IStartPositionService;
+  CAPTypeResolver?: ICAPTypeResolver;
+  StartPositionManager?: IStartPositionManager;
 }
 
 /**

@@ -10,7 +10,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     GridPositionGroup,
   } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { MotionType } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
@@ -28,8 +28,8 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     size?: "small" | "medium" | "large";
   }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // State for loaded pictograph data

@@ -1,5 +1,5 @@
 /**
- * Arrow Grid Coordinator
+ * Arrow Grid Coordinate Service
  *
  * Uses the grid module's coordinate system instead of duplicating data.
  * Provides arrow-specific coordinate functionality using the authoritative grid data.

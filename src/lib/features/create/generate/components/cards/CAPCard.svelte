@@ -3,8 +3,8 @@ CAPCard.svelte - Card for selecting CAP type
 Always opens selector panel when clicked
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ICAPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeResolver";
   import {
     CAP_TYPE_LABELS,
     CAPType,
@@ -31,23 +31,23 @@ Always opens selector panel when clicked
     headerFontSize?: string;
   }>();
 
-  let hapticService: IHapticFeedbackService;
-  let capTypeService: ICAPTypeService = resolve<ICAPTypeService>(
-    TYPES.ICAPTypeService
+  let hapticService: IHapticFeedback;
+  let CAPTypeResolver: ICAPTypeResolver = resolve<ICAPTypeResolver>(
+    TYPES.ICAPTypeResolver
   );
 
   // Get panel coordination state from context (provided by CreateModule)
   const panelState = getContext<PanelCoordinationState>("panelState");
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 
   // Get current selected components using service
   const selectedComponents = $derived(
-    capTypeService.parseComponents(currentCAPType)
+    CAPTypeResolver.parseComponents(currentCAPType)
   );
 
   // Open CAP panel via coordinator (renders at CreateModule level)

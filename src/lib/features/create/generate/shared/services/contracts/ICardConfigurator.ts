@@ -51,7 +51,7 @@ export interface CardHandlers {
  * Service for building card configuration arrays
  * Encapsulates the complex logic for determining which cards to display and how they should be laid out
  */
-export interface ICardConfigurationService {
+export interface ICardConfigurator {
   /**
    * Build an array of card descriptors based on current configuration
    * Handles conditional rendering logic (e.g., turn intensity only shown for non-beginner levels)

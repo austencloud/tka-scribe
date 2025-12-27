@@ -6,7 +6,7 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
 <script lang="ts">
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import LessonGridDisplay from "./LessonGridDisplay.svelte";
   import GridIdentificationQuiz from "./GridIdentificationQuiz.svelte";
@@ -16,8 +16,8 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     onBack?: () => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Current step in the experience

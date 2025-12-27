@@ -13,9 +13,9 @@ import {
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
-import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+import type { ITurnsTupleGenerator } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
 import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 import type {
   IAnimatorLoader,
@@ -39,17 +39,17 @@ export class AnimatorLoader implements IAnimatorLoader {
         orchestrator: container.get<ISequenceAnimationOrchestrator>(
           TYPES.ISequenceAnimationOrchestrator
         ),
-        trailCaptureService: container.get<ITrailCaptureService>(
-          TYPES.ITrailCaptureService
+        TrailCapturer: container.get<ITrailCapturer>(
+          TYPES.ITrailCapturer
         ),
-        turnsTupleGenerator: container.get<ITurnsTupleGeneratorService>(
-          TYPES.ITurnsTupleGeneratorService
+        turnsTupleGenerator: container.get<ITurnsTupleGenerator>(
+          TYPES.ITurnsTupleGenerator
         ),
       };
 
       if (!services.svgGenerator) {
         console.error(
-          "[AnimatorServiceLoader] CRITICAL: container.get() returned null/undefined for ISVGGenerator!"
+          "[AnimatorLoader] CRITICAL: container.get() returned null/undefined for ISVGGenerator!"
         );
         return {
           success: false,
@@ -61,7 +61,7 @@ export class AnimatorLoader implements IAnimatorLoader {
       return { success: true, services };
     } catch (err) {
       console.error(
-        "[AnimatorServiceLoader] Failed to load animator services:",
+        "[AnimatorLoader] Failed to load animator services:",
         err
       );
       return {

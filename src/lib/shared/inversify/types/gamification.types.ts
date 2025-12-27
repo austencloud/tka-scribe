@@ -5,11 +5,11 @@
  */
 
 export const GamificationTypes = {
-  IAchievementService: Symbol.for("IAchievementService"),
-  IDailyChallengeService: Symbol.for("IDailyChallengeService"),
-  IWeeklyChallengeService: Symbol.for("IWeeklyChallengeService"),
-  ISkillProgressionService: Symbol.for("ISkillProgressionService"),
+  IAchievementManager: Symbol.for("IAchievementManager"),
+  IDailyChallengeManager: Symbol.for("IDailyChallengeManager"),
+  IWeeklyChallengeManager: Symbol.for("IWeeklyChallengeManager"),
+  ISkillProgressionTracker: Symbol.for("ISkillProgressionTracker"),
   IChallengeCoordinator: Symbol.for("IChallengeCoordinator"),
-  INotificationService: Symbol.for("INotificationService"),
-  IStreakService: Symbol.for("IStreakService"),
+  IGamificationNotifier: Symbol.for("IGamificationNotifier"),
+  IStreakTracker: Symbol.for("IStreakTracker"),
 } as const;

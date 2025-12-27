@@ -19,12 +19,12 @@ export {
 
 // Services
 export { SessionManager } from "./services/SessionManager.svelte";
-export { AutosaveService } from "./services/AutosaveService";
+export { Autosaver } from "./services/Autosaver";
 export {
-  SequencePersistenceService,
+  SequencePersister,
   type SaveSequenceMetadata,
   type SavedSequence,
-} from "./services/SequencePersistenceService";
+} from "./services/SequencePersister";
 
 // UI Components
 export { default as SavePromptDialog } from "./components/dialogs/SavePromptDialog.svelte";

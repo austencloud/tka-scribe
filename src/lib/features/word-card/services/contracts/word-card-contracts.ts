@@ -134,7 +134,7 @@ export interface IWordCardBatchService {
 /**
  * Service for caching word card data
  */
-export interface IWordCardCacheService {
+export interface IWordCardCache {
   /**
    * Cache word card data
    */
@@ -245,7 +245,7 @@ export interface IWordCardExportOrchestrator {
  * Word Card Batch Processing Service Interface
  * Handles batch processing of word cards
  */
-export interface IWordCardBatchProcessingService {
+export interface IWordCardBatchProcessor {
   processBatch(
     sequences: SequenceData[],
     config: BatchOperationConfig,
@@ -280,7 +280,7 @@ export interface IWordCardExportProgressTracker {
  * Word Card Image Generation Service Interface
  * Generates images for word cards
  */
-export interface IWordCardImageGenerationService {
+export interface IWordCardImageGenerator {
   generateWordCardImage(
     sequence: SequenceData,
     dimensions: { width: number; height: number }
@@ -296,7 +296,7 @@ export interface IWordCardImageGenerationService {
  * Word Card Image Conversion Service Interface
  * Converts images between formats
  */
-export interface IWordCardImageConversionService {
+export interface IWordCardImageConverter {
   convertCanvasToBlob(
     canvas: HTMLCanvasElement,
     format: string,
@@ -315,7 +315,7 @@ export interface IWordCardImageConversionService {
  * Sequence Card Metadata Overlay Service Interface
  * Handles metadata overlays on word cards
  */
-export interface IWordCardMetadataOverlayService {
+export interface IWordCardMetadataOverlay {
   addMetadataOverlay(
     canvas: HTMLCanvasElement,
     metadata: Record<string, unknown>,
@@ -329,7 +329,7 @@ export interface IWordCardMetadataOverlayService {
  * Sequence Card SVG Composition Service Interface
  * Handles SVG composition for word cards
  */
-export interface IWordCardSVGCompositionService {
+export interface IWordCardSVGComposer {
   composeSVG(
     sequence: SequenceData,
     dimensions: { width: number; height: number }

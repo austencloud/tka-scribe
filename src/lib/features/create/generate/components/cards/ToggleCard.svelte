@@ -37,6 +37,7 @@ Hides header when card height is below 65px for space optimization
 
   // Create state using factory function
   // Use getter for activeOption to ensure reactivity
+  // svelte-ignore state_referenced_locally - intentional: configuration for state creation
   const state = createToggleCardState({
     option1,
     option2,

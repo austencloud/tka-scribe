@@ -37,9 +37,9 @@ export interface InitializerDependencies {
   gridMode: GridMode | null;
   loadAnimatorServices: () => Promise<boolean>;
   initializePrecomputationService: () => void;
-  initializePropTextureService: () => void;
+  initializePropTextureLoader: () => void;
   initializeResizeService: () => void;
-  initializeGlyphTextureService: () => void;
+  initializeGlyphTextureLoader: () => void;
   initializeRenderLoopService: () => void;
   loadPropTextures: () => Promise<void>;
   startRenderLoop: () => void;

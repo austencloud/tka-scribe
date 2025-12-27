@@ -6,7 +6,7 @@
 
 export const LearnTypes = {
   // Codex
-  ICodexService: Symbol.for("ICodexService"),
+  ICodex: Symbol.for("ICodex"),
   ICodexPictographUpdater: Symbol.for("ICodexPictographUpdater"),
   ILetterQueryHandler: Symbol.for("ILetterQueryHandler"),
   IPictographTransformationService: Symbol.for(
@@ -15,12 +15,12 @@ export const LearnTypes = {
   ICodexLetterMappingRepo: Symbol.for("ICodexLetterMappingRepo"),
 
   // Quiz
-  IQuizSessionService: Symbol.for("IQuizSessionService"),
+  IQuizSessionManager: Symbol.for("IQuizSessionManager"),
   IQuizResultsAnalyzer: Symbol.for("IQuizResultsAnalyzer"),
   IQuizRepoManager: Symbol.for("IQuizRepoManager"),
 
   // Concept Progress
-  IConceptProgressService: Symbol.for("IConceptProgressService"),
+  IConceptProgressTracker: Symbol.for("IConceptProgressTracker"),
 
   // Motion & Letter
   IMotionQueryHandler: Symbol.for("IMotionQueryHandler"),

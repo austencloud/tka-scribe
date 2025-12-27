@@ -10,7 +10,7 @@
   import { cubicOut } from "svelte/easing";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAnnouncementService } from "$lib/features/admin/services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "$lib/features/admin/services/contracts/IAnnouncementManager";
   import type { Announcement } from "$lib/features/admin/domain/models/announcement-models";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
@@ -19,7 +19,7 @@
   let announcements = $state<Announcement[]>([]);
   let currentIndex = $state(0);
   let isLoading = $state(true);
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
 
   const currentAnnouncement = $derived(announcements[currentIndex] ?? null);
   const hasMultiple = $derived(announcements.length > 1);
@@ -32,7 +32,7 @@
     }
 
     try {
-      announcementService = tryResolve<IAnnouncementService>(TYPES.IAnnouncementService);
+      announcementService = tryResolve<IAnnouncementManager>(TYPES.IAnnouncementManager);
       if (announcementService) {
         // Get announcements user hasn't dismissed
         const active = await announcementService.getActiveAnnouncementsForUser(authState.user.uid);

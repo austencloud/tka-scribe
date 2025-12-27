@@ -16,7 +16,7 @@
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import {
     ANIMATION_LOAD_DELAY_MS,
@@ -41,7 +41,7 @@
   let sequenceService: ISequenceRepository | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
   let videoExportOrchestrator: IVideoExportOrchestrator | null = null;
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
 
   // Export state
@@ -150,8 +150,8 @@
     // Resolve core services immediately (should be available from create module loading)
     try {
       sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
       console.log("✅ Core services resolved");
     } catch (error) {

@@ -7,10 +7,10 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
-import type { IDiscoverCacheService } from "../contracts/IDiscoverCacheService";
+import type { IDiscoverCache } from "../contracts/IDiscoverCache";
 
 @injectable()
-export class DiscoverCacheService implements IDiscoverCacheService {
+export class DiscoverCache implements IDiscoverCache {
   private cachedSequences: SequenceData[] | null = null;
 
   getCached(): SequenceData[] | null {

@@ -28,7 +28,7 @@ import type {
   GridPosition,
 } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { ICAPParameterProvider } from "$lib/features/create/generate/shared/services/contracts/ICAPParameterProvider";
 import {
   MIRRORED_INVERTED_VALIDATION_SET,
@@ -41,7 +41,7 @@ import type { SliceSize } from "../../domain/models/circular-models";
 export class MirroredInvertedCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator,
+    private OrientationCalculator: IOrientationCalculator,
     @inject(TYPES.ICAPParameterProvider)
     private capParams: ICAPParameterProvider
   ) {}
@@ -176,12 +176,12 @@ export class MirroredInvertedCAPExecutor {
 
     // Update orientations
     const beatWithStartOri =
-      this.orientationCalculationService.updateStartOrientations(
+      this.OrientationCalculator.updateStartOrientations(
         newBeat,
         previousBeat
       );
     const finalBeat =
-      this.orientationCalculationService.updateEndOrientations(
+      this.OrientationCalculator.updateEndOrientations(
         beatWithStartOri
       );
 
@@ -287,8 +287,8 @@ export class MirroredInvertedCAPExecutor {
       startLocation: previousMotion.endLocation,
       endLocation: mirroredEndLocation, // MIRRORED: Flip location
       rotationDirection: rotationDirection, // NO CHANGE: Both flips cancel out
-      // Start orientation will be set by orientationCalculationService
-      // End orientation will be calculated by orientationCalculationService
+      // Start orientation will be set by OrientationCalculator
+      // End orientation will be calculated by OrientationCalculator
     };
 
     return mirroredInvertedMotion;

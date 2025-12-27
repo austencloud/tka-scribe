@@ -3,7 +3,7 @@
   import QuizTimer from "./QuizTimer.svelte";
   import { onDestroy, onMount } from "svelte";
 
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -14,7 +14,7 @@
   import type { QuizLayoutMode } from "../domain/enums/quiz-enums";
   import type { QuizResults, QuizProgress } from "../domain/models/quiz-models";
   import { QuizConfigurator } from "../services/implementations/QuizConfigurator";
-  import type { IQuizSessionService } from "../services/contracts/IQuizSessionService";
+  import type { IQuizSessionManager } from "../services/contracts/IQuizSessionManager";
 
   // Props
   let {
@@ -50,11 +50,11 @@
   let timerComponent = $state<QuizTimer>();
 
   // Services
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
-  const quizSessionService = resolve<IQuizSessionService>(
-    TYPES.IQuizSessionService
+  const quizSessionService = resolve<IQuizSessionManager>(
+    TYPES.IQuizSessionManager
   );
 
   // Derived state

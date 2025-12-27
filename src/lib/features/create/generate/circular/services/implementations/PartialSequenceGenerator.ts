@@ -15,12 +15,12 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { GenerationOptions } from "$lib/features/create/generate/shared/domain/models/generate-models";
 import { PropContinuity } from "$lib/features/create/generate/shared/domain/models/generate-models";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
-import type { IBeatConverterService } from "$lib/features/create/generate/shared/services/contracts/IBeatConverterService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
+import type { IBeatConverter } from "$lib/features/create/generate/shared/services/contracts/IBeatConverter";
 import type { ICAPParameterProvider } from "$lib/features/create/generate/shared/services/contracts/ICAPParameterProvider";
-import type { IPictographFilterService } from "$lib/features/create/generate/shared/services/contracts/IPictographFilterService";
-import type { ISequenceMetadataService } from "$lib/features/create/generate/shared/services/contracts/ISequenceMetadataService";
-import type { ITurnManagementService } from "$lib/features/create/generate/shared/services/contracts/ITurnManagementService";
+import type { IPictographFilter } from "$lib/features/create/generate/shared/services/contracts/IPictographFilter";
+import type { ISequenceMetadataManager } from "$lib/features/create/generate/shared/services/contracts/ISequenceMetadataManager";
+import type { ITurnManager } from "$lib/features/create/generate/shared/services/contracts/ITurnManager";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { SliceSize } from "../../domain/models/circular-models";
 import { CAPType } from "../../domain/models/circular-models";
@@ -32,18 +32,18 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
   constructor(
     @inject(TYPES.ILetterQueryHandler)
     private letterQueryHandler: ILetterQueryHandler,
-    @inject(TYPES.IPictographFilterService)
-    private pictographFilterService: IPictographFilterService,
-    @inject(TYPES.IBeatConverterService)
-    private beatConverterService: IBeatConverterService,
-    @inject(TYPES.ITurnManagementService)
-    private turnManagementService: ITurnManagementService,
-    @inject(TYPES.ISequenceMetadataService)
-    private metadataService: ISequenceMetadataService,
+    @inject(TYPES.IPictographFilter)
+    private PictographFilter: IPictographFilter,
+    @inject(TYPES.IBeatConverter)
+    private BeatConverter: IBeatConverter,
+    @inject(TYPES.ITurnManager)
+    private TurnManager: ITurnManager,
+    @inject(TYPES.ISequenceMetadataManager)
+    private metadataService: ISequenceMetadataManager,
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver,
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator,
+    private OrientationCalculator: IOrientationCalculator,
     @inject(TYPES.IArrowPositioningOrchestrator)
     private arrowPositioningOrchestrator: IArrowPositioningOrchestrator,
     @inject(TYPES.ICAPParameterProvider)
@@ -63,7 +63,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     options: GenerationOptions
   ): Promise<BeatData[]> {
     // Step 1: Create Type 6 static start position beat (beat 0)
-    // Use the same approach as StartPositionService to create a proper Type 6 motion
+    // Use the same approach as StartPositionManager to create a proper Type 6 motion
     const { MotionType, MotionColor, Orientation, RotationDirection } =
       await import(
         "$lib/shared/pictograph/shared/domain/enums/pictograph-enums"
@@ -144,7 +144,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       },
     });
 
-    let startBeat = this.beatConverterService.convertToBeat(
+    let startBeat = this.BeatConverter.convertToBeat(
       startPictograph,
       0,
       options.gridMode
@@ -165,7 +165,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
 
     // Filter by prop type to ensure consistency with selected prop
-    allOptions = this.pictographFilterService.filterByPropType(
+    allOptions = this.PictographFilter.filterByPropType(
       allOptions,
       options.propType
     );
@@ -267,20 +267,20 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
 
     // Apply the same filters as intermediate beats to respect continuity setting
-    finalMoves = this.pictographFilterService.filterByContinuity(
+    finalMoves = this.PictographFilter.filterByContinuity(
       finalMoves,
       lastBeat
     );
 
     // Filter out static Type 6 pictographs based on level
     // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
-    finalMoves = this.pictographFilterService.filterStaticType6(
+    finalMoves = this.PictographFilter.filterStaticType6(
       finalMoves,
       level
     );
 
     if (options.propContinuity === PropContinuity.CONTINUOUS) {
-      finalMoves = this.pictographFilterService.filterByRotation(
+      finalMoves = this.PictographFilter.filterByRotation(
         finalMoves,
         blueRotationDirection,
         redRotationDirection
@@ -296,8 +296,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     }
 
     const finalPictograph =
-      this.pictographFilterService.selectRandom(finalMoves);
-    let finalBeat = this.beatConverterService.convertToBeat(
+      this.PictographFilter.selectRandom(finalMoves);
+    let finalBeat = this.BeatConverter.convertToBeat(
       finalPictograph,
       sequence.length,
       options.gridMode
@@ -317,22 +317,22 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         );
       }
 
-      this.turnManagementService.setTurns(finalBeat, blueTurn, redTurn);
+      this.TurnManager.setTurns(finalBeat, blueTurn, redTurn);
     }
 
     // Update orientations
-    finalBeat = this.orientationCalculationService.updateStartOrientations(
+    finalBeat = this.OrientationCalculator.updateStartOrientations(
       finalBeat,
       lastBeat
     );
-    this.turnManagementService.updateDashStaticRotationDirections(
+    this.TurnManager.updateDashStaticRotationDirections(
       finalBeat,
       options.propContinuity ?? PropContinuity.CONTINUOUS,
       blueRotationDirection,
       redRotationDirection
     );
     finalBeat =
-      this.orientationCalculationService.updateEndOrientations(finalBeat);
+      this.OrientationCalculator.updateEndOrientations(finalBeat);
 
     // 🎯 CRITICAL FIX: Calculate arrow placements for final beat
     const finalPictographData =
@@ -394,7 +394,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
 
     // Filter by prop type to ensure consistency with selected prop
-    allOptions = this.pictographFilterService.filterByPropType(
+    allOptions = this.PictographFilter.filterByPropType(
       allOptions,
       propType
     );
@@ -414,7 +414,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
       afterAvoidPos: 0,
     };
 
-    filteredOptions = this.pictographFilterService.filterByContinuity(
+    filteredOptions = this.PictographFilter.filterByContinuity(
       filteredOptions,
       lastBeatSafe
     );
@@ -422,14 +422,14 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Filter out static Type 6 pictographs based on level
     // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
-    filteredOptions = this.pictographFilterService.filterStaticType6(
+    filteredOptions = this.PictographFilter.filterStaticType6(
       filteredOptions,
       level
     );
     filterCounts.afterType6 = filteredOptions.length;
 
     if (propContinuity === PropContinuity.CONTINUOUS) {
-      filteredOptions = this.pictographFilterService.filterByRotation(
+      filteredOptions = this.PictographFilter.filterByRotation(
         filteredOptions,
         blueRotationDirection,
         redRotationDirection
@@ -481,10 +481,10 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Random selection
     const selectedOption =
-      this.pictographFilterService.selectRandom(filteredOptions);
+      this.PictographFilter.selectRandom(filteredOptions);
 
     // Convert to beat
-    let nextBeat = this.beatConverterService.convertToBeat(
+    let nextBeat = this.BeatConverter.convertToBeat(
       selectedOption,
       sequence.length,
       gridMode
@@ -492,7 +492,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
 
     // Set turns if level 2 or 3
     if (level === 2 || level === 3) {
-      this.turnManagementService.setTurns(nextBeat, turnBlue, turnRed);
+      this.TurnManager.setTurns(nextBeat, turnBlue, turnRed);
     }
 
     // Update orientations
@@ -502,13 +502,13 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
         throw new Error("Expected previous beat but found undefined");
       }
 
-      nextBeat = this.orientationCalculationService.updateStartOrientations(
+      nextBeat = this.OrientationCalculator.updateStartOrientations(
         nextBeat,
         previousBeat
       );
     }
 
-    this.turnManagementService.updateDashStaticRotationDirections(
+    this.TurnManager.updateDashStaticRotationDirections(
       nextBeat,
       propContinuity,
       blueRotationDirection,
@@ -516,7 +516,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     );
 
     nextBeat =
-      this.orientationCalculationService.updateEndOrientations(nextBeat);
+      this.OrientationCalculator.updateEndOrientations(nextBeat);
 
     // 🎯 CRITICAL FIX: Calculate arrow placements before returning
     const nextPictographData =

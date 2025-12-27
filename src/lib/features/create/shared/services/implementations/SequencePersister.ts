@@ -46,7 +46,7 @@ export class SequencePersister implements ISequencePersister {
       await this.persistenceService.initialize();
     } catch (error) {
       console.error(
-        "❌ SequencePersistenceService: Failed to initialize:",
+        "❌ SequencePersister: Failed to initialize:",
         error
       );
       throw error;
@@ -63,7 +63,7 @@ export class SequencePersister implements ISequencePersister {
       await this.persistenceService.saveCurrentSequenceState(state);
     } catch (error) {
       console.error(
-        "❌ SequencePersistenceService: Failed to save current state:",
+        "❌ SequencePersister: Failed to save current state:",
         error
       );
       throw error;
@@ -100,7 +100,7 @@ export class SequencePersister implements ISequencePersister {
       return null;
     } catch (error) {
       console.error(
-        "❌ SequencePersistenceService: Failed to load current state:",
+        "❌ SequencePersister: Failed to load current state:",
         error
       );
       return null;
@@ -124,7 +124,7 @@ export class SequencePersister implements ISequencePersister {
       await this.persistenceService.clearCurrentSequenceState(mode);
     } catch (error) {
       console.error(
-        "❌ SequencePersistenceService: Failed to clear current state:",
+        "❌ SequencePersister: Failed to clear current state:",
         error
       );
       throw error;
@@ -139,7 +139,7 @@ export class SequencePersister implements ISequencePersister {
       return state !== null;
     } catch (error) {
       console.error(
-        "❌ SequencePersistenceService: Failed to check for saved state:",
+        "❌ SequencePersister: Failed to check for saved state:",
         error
       );
       return false;
@@ -159,7 +159,7 @@ export class SequencePersister implements ISequencePersister {
       return null;
     } catch (error) {
       console.error(
-        "❌ SequencePersistenceService: Failed to get last save timestamp:",
+        "❌ SequencePersister: Failed to get last save timestamp:",
         error
       );
       return null;

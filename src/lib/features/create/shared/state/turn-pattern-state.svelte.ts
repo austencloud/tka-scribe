@@ -6,7 +6,7 @@
  */
 
 import type { TurnPattern } from "../domain/models/TurnPatternData";
-import { TurnPatternService } from "../services/implementations/TurnPatternService";
+import { TurnPatternManager } from "../services/implementations/TurnPatternManager";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const logger = createComponentLogger("TurnPatternState");
@@ -19,7 +19,7 @@ let _error: string | null = null;
 let _initialized = false;
 
 // Create service instance
-const turnPatternService = new TurnPatternService();
+const turnPatternManager = new TurnPatternManager();
 
 export const turnPatternState = {
   // Getters
@@ -54,7 +54,7 @@ export const turnPatternState = {
     _error = null;
 
     try {
-      _patterns = await turnPatternService.loadPatterns(userId);
+      _patterns = await turnPatternManager.loadPatterns(userId);
       _initialized = true;
       logger.log(`Loaded ${_patterns.length} patterns`);
     } catch (err) {
@@ -79,11 +79,11 @@ export const turnPatternState = {
     _error = null;
 
     try {
-      const patternData = turnPatternService.extractPattern(
+      const patternData = turnPatternManager.extractPattern(
         sequence as any,
         name
       );
-      const saved = await turnPatternService.savePattern(patternData, userId);
+      const saved = await turnPatternManager.savePattern(patternData, userId);
 
       // Add to local state
       _patterns = [saved, ..._patterns];
@@ -108,7 +108,7 @@ export const turnPatternState = {
     _error = null;
 
     try {
-      await turnPatternService.deletePattern(patternId, userId);
+      await turnPatternManager.deletePattern(patternId, userId);
 
       // Remove from local state
       _patterns = _patterns.filter((p) => p.id !== patternId);

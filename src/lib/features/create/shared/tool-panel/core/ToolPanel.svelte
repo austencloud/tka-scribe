@@ -18,7 +18,7 @@
 -->
 <script lang="ts">
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createBeatData } from "../../domain/factories/createBeatData";
@@ -62,7 +62,7 @@
   });
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
   let deviceDetector: IDeviceDetector | null = null;
   let navigationLayout = $state<"top" | "bottom" | "right">("top");
 
@@ -103,8 +103,8 @@
   // ============================================================================
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 

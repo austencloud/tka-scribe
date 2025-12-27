@@ -9,22 +9,22 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { resolve, tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ExploreFilterType } from "$lib/shared/persistence/domain/enums/FilteringEnums";
-import type { IDiscoverFilterService } from "../../gallery/display/services/contracts/IDiscoverFilterService";
+import type { IDiscoverFilter } from "../../gallery/display/services/contracts/IDiscoverFilter";
 import type { IDiscoverLoader } from "../../gallery/display/services/contracts/IDiscoverLoader";
-import type { IDiscoverSortService } from "../../gallery/display/services/contracts/IDiscoverSortService";
+import type { IDiscoverSorter } from "../../gallery/display/services/contracts/IDiscoverSorter";
 import type { ExploreNavigationConfig } from "../../gallery/navigation/domain/models/navigation-models";
 import type { ExploreNavigationItem } from "../../gallery/navigation/domain/models/navigation-models";
-import type { INavigationService } from "../../gallery/navigation/services/contracts/INavigationService";
+import type { INavigator } from "../../gallery/navigation/services/contracts/INavigator";
 import { ExploreSortMethod } from "../domain/enums/discover-enums";
 import type {
   SectionConfig,
   SequenceSection,
 } from "../domain/models/discover-models";
 import type { ExploreFilterValue } from "../domain/types/discover-types";
-import type { ISectionService } from "../services/contracts/ISectionService";
-import type { ILibraryService } from "../../../library/services/contracts/ILibraryService";
+import type { ISectionManager } from "../services/contracts/ISectionManager";
+import type { ILibraryRepository } from "../../../library/services/contracts/ILibraryRepository";
 import type { GallerySource } from "../state/gallery-source-state.svelte";
-import type { IFavoritesService } from "../services/contracts/IFavoritesService";
+import type { IFavoritesManager } from "../services/contracts/IFavoritesManager";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 
 const STORAGE_KEY = "tka-discover-gallery-controls";
@@ -38,23 +38,23 @@ interface PersistedControlsState {
 export function createExploreState() {
   // Services - Use specialized services directly instead of orchestration layer
   const loaderService = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-  const filterService = resolve<IDiscoverFilterService>(
-    TYPES.IDiscoverFilterService
+  const filterService = resolve<IDiscoverFilter>(
+    TYPES.IDiscoverFilter
   );
-  const sortService = resolve<IDiscoverSortService>(TYPES.IDiscoverSortService);
-  const navigationService = resolve<INavigationService>(
-    TYPES.INavigationService
+  const sortService = resolve<IDiscoverSorter>(TYPES.IDiscoverSorter);
+  const Navigator = resolve<INavigator>(
+    TYPES.INavigator
   );
-  const sectionService = resolve<ISectionService>(TYPES.ISectionService);
-  const favoritesService = tryResolve<IFavoritesService>(
-    TYPES.IFavoritesService
+  const SectionManager = resolve<ISectionManager>(TYPES.ISectionManager);
+  const FavoritesManager = tryResolve<IFavoritesManager>(
+    TYPES.IFavoritesManager
   );
 
   // Library service for "My Library" mode - lazily resolved
-  let libraryService: ILibraryService | null = null;
-  function getLibraryService(): ILibraryService | null {
+  let libraryService: ILibraryRepository | null = null;
+  function getLibraryRepository(): ILibraryRepository | null {
     if (!libraryService) {
-      libraryService = tryResolve<ILibraryService>(TYPES.ILibraryService);
+      libraryService = tryResolve<ILibraryRepository>(TYPES.ILibraryRepository);
     }
     return libraryService;
   }
@@ -164,7 +164,7 @@ export function createExploreState() {
       const sequences = await loaderService.loadSequenceMetadata();
       allSequences = sequences;
       displayedSequences = sequences;
-      const sections = navigationService.generateNavigationSections(
+      const sections = Navigator.generateNavigationSections(
         sequences,
         []
       );
@@ -181,9 +181,9 @@ export function createExploreState() {
 
   // Load user's library sequences
   async function loadLibrarySequences(): Promise<void> {
-    const libService = getLibraryService();
+    const libService = getLibraryRepository();
     if (!libService) {
-      console.warn("LibraryService not available");
+      console.warn("LibraryRepository not available");
       error = "Please sign in to view your library";
       allSequences = [];
       displayedSequences = [];
@@ -198,7 +198,7 @@ export function createExploreState() {
       // LibrarySequence extends SequenceData, so this is compatible
       allSequences = librarySequences;
       displayedSequences = librarySequences;
-      const sections = navigationService.generateNavigationSections(
+      const sections = Navigator.generateNavigationSections(
         librarySequences,
         []
       );
@@ -251,7 +251,7 @@ export function createExploreState() {
     }));
 
     // Filter sequences
-    const filtered = navigationService.getSequencesForNavigationItem(
+    const filtered = Navigator.getSequencesForNavigationItem(
       item,
       section.type,
       allSequences
@@ -265,17 +265,17 @@ export function createExploreState() {
   }
 
   async function toggleFavorite(sequenceId: string): Promise<void> {
-    if (!favoritesService) {
-      console.warn("FavoritesService not available");
+    if (!FavoritesManager) {
+      console.warn("FavoritesManager not available");
       return;
     }
 
     try {
       // Toggle in the service (persists to storage)
-      await favoritesService.toggleFavorite(sequenceId);
+      await FavoritesManager.toggleFavorite(sequenceId);
 
       // Get the new favorite status
-      const isFavorite = await favoritesService.isFavorite(sequenceId);
+      const isFavorite = await FavoritesManager.isFavorite(sequenceId);
 
       // Update local state - find and update the sequence in all relevant arrays
       const updateSequence = (seq: SequenceData) =>
@@ -375,7 +375,7 @@ export function createExploreState() {
         expandedSections: new Set<string>(), // All sections always visible now
       };
 
-      const sections = await sectionService.organizeSections(
+      const sections = await SectionManager.organizeSections(
         filteredSequences,
         config
       );
@@ -422,7 +422,7 @@ export function createExploreState() {
 
   // Toggle sequence section expansion
   function toggleSequenceSection(sectionId: string): void {
-    sequenceSections = sectionService.toggleSectionExpansion(
+    sequenceSections = SectionManager.toggleSectionExpansion(
       sectionId,
       sequenceSections
     );
@@ -430,7 +430,7 @@ export function createExploreState() {
 
   // Navigation section expansion
   function toggleNavigationSection(sectionId: string): void {
-    navigationSections = navigationService.toggleSectionExpansion(
+    navigationSections = Navigator.toggleSectionExpansion(
       sectionId,
       navigationSections
     );

@@ -8,7 +8,7 @@
   import { getCurrentError, dismissError } from "../state/error-state.svelte";
   import { resolve, tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IErrorHandlingService } from "$lib/shared/application/services/contracts/IErrorHandlingService";
+  import type { IErrorHandler } from "$lib/shared/application/services/contracts/IErrorHandler";
   import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
   let showDetails = $state(false);
@@ -67,8 +67,8 @@
 
     isReporting = true;
     try {
-      const errorService = tryResolve<IErrorHandlingService>(
-        TYPES.IErrorHandlingService
+      const errorService = tryResolve<IErrorHandler>(
+        TYPES.IErrorHandler
       );
       if (!errorService) {
         toast.error("Unable to submit bug report - service unavailable");

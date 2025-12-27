@@ -10,10 +10,10 @@ Features:
 - Hotkey legend
 -->
 <script lang="ts">
-  import type { IKeyboardArrowAdjustmentService } from "$lib/features/create/shared/services/contracts/IKeyboardArrowAdjustmentService";
+  import type { IKeyboardArrowAdjuster } from "$lib/features/create/shared/services/contracts/IKeyboardArrowAdjuster";
   import { selectedArrowState } from "$lib/features/create/shared/state/selected-arrow-state.svelte";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -35,8 +35,8 @@ Features:
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let keyboardAdjustmentService: IKeyboardArrowAdjustmentService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let keyboardAdjustmentService: IKeyboardArrowAdjuster | null = null;
 
   // State
   let currentIncrement = $state(5); // 5, 20, or 200
@@ -133,11 +133,11 @@ Features:
   // Lifecycle
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
-      keyboardAdjustmentService = resolve<IKeyboardArrowAdjustmentService>(
-        TYPES.IKeyboardArrowAdjustmentService
+      keyboardAdjustmentService = resolve<IKeyboardArrowAdjuster>(
+        TYPES.IKeyboardArrowAdjuster
       );
     } catch (error) {
       console.error(

@@ -5,7 +5,7 @@ import { injectable } from "inversify";
 
 /**
  * SpecialPlacementOriKeyGenerator
- * Generates ori_key matching SpecialPlacementService's internal logic.
+ * Generates ori_key matching SpecialPlacer's internal logic.
  */
 @injectable()
 export class SpecialPlacementOriKeyGenerator

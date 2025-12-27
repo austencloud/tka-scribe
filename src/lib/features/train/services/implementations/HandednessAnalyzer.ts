@@ -13,7 +13,7 @@ import type {
   PalmOrientation,
   AnatomicalHandedness,
 } from "../contracts/IHandednessAnalyzer";
-import type { HandLandmark } from "../contracts/IHandLandmarkerService";
+import type { HandLandmark } from "../contracts/IHandLandmarker";
 
 @injectable()
 export class HandednessAnalyzer implements IHandednessAnalyzer {

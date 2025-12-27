@@ -3,7 +3,7 @@ WordBuildingQuiz - Coordinator for word formation quiz
 Questions about letter sequences, motion types, position transitions, and CAPs
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import {
@@ -16,7 +16,7 @@ Questions about letter sequences, motion types, position transitions, and CAPs
 
   let { onComplete } = $props<{ onComplete?: () => void }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
   type AnswerState = "idle" | "correct" | "incorrect";
 

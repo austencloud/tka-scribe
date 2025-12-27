@@ -312,8 +312,8 @@ export async function loadSharedModules(): Promise<void> {
   tier2Promise = (async () => {
     try {
       // Only load modules that are truly needed everywhere
-      // NOTE: shareModule is included because CreateModuleInitializationService
-      // (in build.module) depends on IShareService - must be available for HMR recovery
+      // NOTE: shareModule is included because CreateModuleInitializer
+      // (in build.module) depends on ISharer - must be available for HMR recovery
       // NOTE: communityModule is included because Dashboard's FollowingFeedWidget needs it
       const [
         { renderModule },
@@ -408,7 +408,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
       case "create":
         // Create needs build (create), animator, and gamification
         // NOTE: share is loaded in Tier 2, so we must wait for Tier 2 to complete
-        // before loading build.module (which depends on IShareService)
+        // before loading build.module (which depends on ISharer)
         if (tier2Promise) {
           await tier2Promise;
         }
@@ -423,7 +423,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "discover":
-        // Discover needs community module for CreatorsPanel (IUserService)
+        // Discover needs community module for CreatorsPanel (IUserRepository)
         // Community module is loaded in Tier 2, wait for it
         if (tier2Promise) {
           await tier2Promise;
@@ -554,7 +554,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "cap-labeler":
-        // CAP labeler needs ISequenceAnalysisService from build.module
+        // CAP labeler needs ISequenceAnalyzer from build.module
         await loadIfNeeded("create", () => import("./modules/build.module"));
         await loadIfNeeded(
           "cap-labeler",

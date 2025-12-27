@@ -172,9 +172,9 @@ async function exportStatic() {
 **Implementation:**
 
 ```typescript
-import type { IFirebaseVideoUploadService } from '$lib/shared/share/services/contracts/IFirebaseVideoUploadService';
+import type { IFirebaseVideoUploader } from '$lib/shared/share/services/contracts/IFirebaseVideoUploader';
 
-const videoUploadService = resolve<IFirebaseVideoUploadService>(TYPES.IFirebaseVideoUploadService);
+const videoUploadService = resolve<IFirebaseVideoUploader>(TYPES.IFirebaseVideoUploader);
 
 async function exportPerformance() {
   const settings = /* TODO: Get from ShareHubPanel state */;
@@ -538,8 +538,8 @@ const imageCompositionService = resolve<IImageCompositionService>(
 );
 
 // Firebase uploads
-const videoUploadService = resolve<IFirebaseVideoUploadService>(
-  TYPES.IFirebaseVideoUploadService
+const videoUploadService = resolve<IFirebaseVideoUploader>(
+  TYPES.IFirebaseVideoUploader
 );
 
 // Composite rendering

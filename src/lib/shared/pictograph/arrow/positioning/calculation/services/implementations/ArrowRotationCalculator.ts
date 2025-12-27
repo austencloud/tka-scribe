@@ -5,7 +5,7 @@ import {
 } from "../../../../../shared/domain/enums/pictograph-enums";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
-import type { ISpecialPlacementService } from "../../../placement/services/contracts/IArrowPlacementService";
+import type { ISpecialPlacer } from "../../../placement/services/contracts/IArrowPlacer";
 import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "../../../../../../inversify/types";
@@ -46,16 +46,16 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
    * - Rotation direction normalization is handled by RotationDirectionUtils
    */
 
-  private specialPlacementService: ISpecialPlacementService | undefined;
+  private SpecialPlacer: ISpecialPlacer | undefined;
   private rotationOverrideKeyGenerator:
     | IRotationAngleOverrideKeyGenerator
     | undefined;
   private handpathDirectionCalculator: IHandpathDirectionCalculator | undefined;
 
   constructor(
-    @inject(TYPES.ISpecialPlacementService)
+    @inject(TYPES.ISpecialPlacer)
     @optional()
-    specialPlacementService?: ISpecialPlacementService,
+    SpecialPlacer?: ISpecialPlacer,
     @inject(TYPES.IRotationAngleOverrideKeyGenerator)
     @optional()
     rotationOverrideKeyGenerator?: IRotationAngleOverrideKeyGenerator,
@@ -63,7 +63,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
     @optional()
     handpathDirectionCalculator?: IHandpathDirectionCalculator
   ) {
-    this.specialPlacementService = specialPlacementService ?? undefined;
+    this.SpecialPlacer = SpecialPlacer ?? undefined;
     this.rotationOverrideKeyGenerator =
       rotationOverrideKeyGenerator ?? undefined;
     this.handpathDirectionCalculator = handpathDirectionCalculator ?? undefined;
@@ -290,9 +290,9 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       );
       return null;
     }
-    if (!this.specialPlacementService) {
+    if (!this.SpecialPlacer) {
       console.log(
-        `🔍 [RotationOverride] Skipping - no specialPlacementService for ${letter} ${motionType}`
+        `🔍 [RotationOverride] Skipping - no SpecialPlacer for ${letter} ${motionType}`
       );
       return null;
     }
@@ -308,7 +308,7 @@ export class ArrowRotationCalculator implements IArrowRotationCalculator {
       location,
       pictographData,
       isRadial,
-      this.specialPlacementService,
+      this.SpecialPlacer,
       this.rotationOverrideKeyGenerator
     );
   }

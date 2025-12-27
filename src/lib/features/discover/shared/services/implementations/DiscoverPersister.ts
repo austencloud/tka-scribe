@@ -18,7 +18,7 @@ import { injectable } from "inversify";
  * Standalone Discover persistence - no interface inheritance needed.
  */
 @injectable()
-export class DiscoverPersistenceService {
+export class DiscoverPersister {
   private readonly CACHE_VERSION = "v2.1"; // ✅ ROBUST: Cache versioning
   private readonly SEQUENCES_KEY = `tka-${this.CACHE_VERSION}-sequences`;
   private readonly SEQUENCE_PREFIX = `tka-${this.CACHE_VERSION}-sequence-`;

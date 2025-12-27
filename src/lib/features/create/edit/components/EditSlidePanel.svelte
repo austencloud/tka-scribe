@@ -12,7 +12,7 @@ HMR Test: Nested component change test
 -->
 <script lang="ts">
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import CreatePanelDrawer from "$lib/features/create/shared/components/CreatePanelDrawer.svelte";
@@ -57,6 +57,7 @@ HMR Test: Nested component change test
   }>();
 
   // Local state for isOpen (bindable to Drawer)
+  // svelte-ignore state_referenced_locally - intentional: $effect below syncs prop changes
   let isOpen = $state(isOpenProp);
 
   // Sync local isOpen with prop changes
@@ -68,7 +69,7 @@ HMR Test: Nested component change test
   // SERVICES
   // ============================================================================
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
   let deviceDetector: IDeviceDetector | null = null;
 
   // ============================================================================
@@ -174,8 +175,8 @@ HMR Test: Nested component change test
 
   onMount(() => {
     // Resolve services
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
 

@@ -9,7 +9,7 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IKeyboardShortcutService } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutService";
+  import type { IKeyboardShortcutManager } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutManager";
   import { keyboardShortcutState } from "$lib/shared/keyboard/state/keyboard-shortcut-state.svelte";
   import {
     createViewer3DShortcuts,
@@ -72,8 +72,8 @@
 
   onMount(async () => {
     try {
-      const shortcutService = await resolve<IKeyboardShortcutService>(
-        TYPES.IKeyboardShortcutService
+      const shortcutService = await resolve<IKeyboardShortcutManager>(
+        TYPES.IKeyboardShortcutManager
       );
 
       // Set context to 3d-viewer so our shortcuts are active

@@ -8,7 +8,7 @@
    */
 
   import { onMount } from "svelte";
-  import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+  import type { IKeyboardShortcutManager } from "../services/contracts/IKeyboardShortcutManager";
   import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
   import type {
     ShortcutRegistrationOptions,
@@ -17,7 +17,7 @@
   import { resolve, TYPES } from "../../inversify/di";
 
   // Service
-  let shortcutService: IKeyboardShortcutService | null = null;
+  let shortcutService: IKeyboardShortcutManager | null = null;
 
   // Shortcuts grouped by scope
   let shortcutsByScope = $state<
@@ -26,8 +26,8 @@
 
   onMount(async () => {
     try {
-      shortcutService = await resolve<IKeyboardShortcutService>(
-        TYPES.IKeyboardShortcutService
+      shortcutService = await resolve<IKeyboardShortcutManager>(
+        TYPES.IKeyboardShortcutManager
       );
       loadShortcuts();
     } catch (error) {

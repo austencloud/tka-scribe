@@ -17,8 +17,8 @@
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import BeatEditorPanel from "../sequence-actions/BeatEditorPanel.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IBeatOperationsService } from "../../services/contracts/IBeatOperationsService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IBeatOperator } from "../../services/contracts/IBeatOperator";
   import {
     MotionColor,
     RotationDirection,
@@ -31,20 +31,20 @@
   const { CreateModuleState, panelState } = ctx;
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
-  let beatOperationsService: IBeatOperationsService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
+  let BeatOperator: IBeatOperator | null = $state(null);
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch {
       /* Optional service */
     }
     try {
-      beatOperationsService = resolve<IBeatOperationsService>(
-        TYPES.IBeatOperationsService
+      BeatOperator = resolve<IBeatOperator>(
+        TYPES.IBeatOperator
       );
     } catch {
       /* Optional service */
@@ -86,7 +86,7 @@
   }
 
   function handleTurnsChange(color: MotionColor, delta: number) {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
+    if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("selection");
 
     const currentTurns =
@@ -95,7 +95,7 @@
     const newTurns: number | "fl" =
       newNumericTurns === -0.5 ? "fl" : newNumericTurns;
 
-    beatOperationsService.updateBeatTurns(
+    BeatOperator.updateBeatTurns(
       selectedBeatNumber,
       color,
       newTurns,
@@ -108,12 +108,12 @@
     color: MotionColor,
     direction: RotationDirection
   ) {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
+    if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("selection");
 
     const directionString =
       direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
-    beatOperationsService.updateRotationDirection(
+    BeatOperator.updateRotationDirection(
       selectedBeatNumber,
       color,
       directionString,
@@ -123,10 +123,10 @@
   }
 
   function handleOrientationChange(color: MotionColor, orientation: string) {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
+    if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("selection");
 
-    beatOperationsService.updateBeatOrientation(
+    BeatOperator.updateBeatOrientation(
       selectedBeatNumber,
       color,
       orientation,
@@ -136,7 +136,7 @@
   }
 
   function handleBeatDelete() {
-    if (selectedBeatNumber === null || !beatOperationsService) return;
+    if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("warning");
 
     // For start position (0), clear the start position
@@ -151,7 +151,7 @@
     // will select the appropriate next beat after the animation completes.
     // This prevents the mobile Beat Editor controls from disappearing during deletion.
     const beatIndex = selectedBeatNumber - 1;
-    beatOperationsService.removeBeat(beatIndex, CreateModuleState);
+    BeatOperator.removeBeat(beatIndex, CreateModuleState);
   }
 
   function handleBeatSelect(beatNumber: number) {

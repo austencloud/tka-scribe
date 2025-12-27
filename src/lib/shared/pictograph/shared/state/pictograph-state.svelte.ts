@@ -6,8 +6,8 @@
  * Follows TKA architecture: services handle business logic, runes handle reactivity.
  */
 
-import type { IComponentManagementService } from "../../../application/services/contracts/IComponentManagementService";
-import type { IDataTransformationService } from "../../../application/services/contracts/IDataTransformationService";
+import type { IComponentManager } from "../../../application/services/contracts/IComponentManager";
+import type { IDataTransformer } from "../../../application/services/contracts/IDataTransformer";
 import type { MotionColor } from "../domain/enums/pictograph-enums";
 import type { MotionData } from "../domain/models/MotionData";
 import type { PictographData } from "../domain/models/PictographData";
@@ -20,7 +20,7 @@ import type { IArrowLifecycleManager } from "../../arrow/orchestration/services/
 import type { PropAssets } from "../../prop/domain/models/PropAssets";
 import type { PropPosition } from "../../prop/domain/models/PropPosition";
 import type { IPropSvgLoader } from "../../prop/services/contracts/IPropSvgLoader";
-import type { IPropPlacementService } from "../../prop/services/contracts/IPropPlacementService";
+import type { IPropPlacer } from "../../prop/services/contracts/IPropPlacer";
 
 export interface PictographState {
   // Data state
@@ -70,11 +70,11 @@ export function createPictographState(
   initialPictographData: PictographData | null = null
 ): PictographState {
   // Services will be resolved asynchronously to avoid container initialization errors
-  let dataTransformationService: IDataTransformationService | null = null;
-  let componentManagementService: IComponentManagementService | null = null;
+  let dataTransformationService: IDataTransformer | null = null;
+  let componentManagementService: IComponentManager | null = null;
   let arrowLifecycleManager: IArrowLifecycleManager | null = null;
   let propSvgLoader: IPropSvgLoader | null = null;
-  let propPlacementService: IPropPlacementService | null = null;
+  let PropPlacer: IPropPlacer | null = null;
   let servicesInitialized = $state(false);
 
   // Initialize services asynchronously
@@ -91,18 +91,18 @@ export function createPictographState(
         // This prevents race conditions where services are accessed before bindings exist
         await loadSharedModules();
 
-        dataTransformationService = await resolve<IDataTransformationService>(
-          TYPES.IDataTransformationService
+        dataTransformationService = await resolve<IDataTransformer>(
+          TYPES.IDataTransformer
         );
-        componentManagementService = await resolve<IComponentManagementService>(
-          TYPES.IComponentManagementService
+        componentManagementService = await resolve<IComponentManager>(
+          TYPES.IComponentManager
         );
         arrowLifecycleManager = await resolve<IArrowLifecycleManager>(
           TYPES.IArrowLifecycleManager
         );
         propSvgLoader = await resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
-        propPlacementService = await resolve<IPropPlacementService>(
-          TYPES.IPropPlacementService
+        PropPlacer = await resolve<IPropPlacer>(
+          TYPES.IPropPlacer
         );
         servicesInitialized = true;
       } catch (error) {
@@ -309,7 +309,7 @@ export function createPictographState(
       !currentData?.motions ||
       !servicesInitialized ||
       !propSvgLoader ||
-      !propPlacementService
+      !PropPlacer
     ) {
       // Only clear if we don't have valid data - don't clear during transitions
       propPositions = {};
@@ -363,7 +363,7 @@ export function createPictographState(
                 motionData.propPlacementData,
                 motionData
               ),
-              propPlacementService!.calculatePlacement(currentData, motionData),
+              PropPlacer!.calculatePlacement(currentData, motionData),
             ]);
 
             if (!renderData.svgData) {

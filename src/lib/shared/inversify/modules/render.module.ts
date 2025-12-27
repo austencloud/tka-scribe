@@ -1,45 +1,45 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { CanvasManagementService } from "../../render/services/implementations/CanvasManagementService";
-import { DimensionCalculationService } from "../../render/services/implementations/DimensionCalculationService";
-import { FilenameGeneratorService } from "../../render/services/implementations/FilenameGeneratorService";
-import { GlyphCacheService } from "../../render/services/implementations/GlyphCacheService";
-import { ImageCompositionService } from "../../render/services/implementations/ImageCompositionService";
-import { ImageFormatConverterService } from "../../render/services/implementations/ImageFormatConverterService";
-import { LayoutCalculationService } from "../../render/services/implementations/LayoutCalculationService";
-import { SequenceRenderService } from "../../render/services/implementations/SequenceRenderService";
-import { SVGToCanvasConverterService } from "../../render/services/implementations/SVGToCanvasConverterService";
-import { TextRenderingService } from "../../render/services/implementations/TextRenderingService";
+import { CanvasManager } from "../../render/services/implementations/CanvasManager";
+import { DimensionCalculator } from "../../render/services/implementations/DimensionCalculator";
+import { FilenameGenerator } from "../../render/services/implementations/FilenameGenerator";
+import { GlyphCache } from "../../render/services/implementations/GlyphCache";
+import { ImageComposer } from "../../render/services/implementations/ImageComposer";
+import { ImageFormatConverter } from "../../render/services/implementations/ImageFormatConverter";
+import { LayoutCalculator } from "../../render/services/implementations/LayoutCalculator";
+import { SequenceRenderer } from "../../render/services/implementations/SequenceRenderer";
+import { SVGToCanvasConverter } from "../../render/services/implementations/SVGToCanvasConverter";
+import { TextRenderer } from "../../render/services/implementations/TextRenderer";
 import { TYPES } from "../types";
 
 export const renderModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === MAIN RENDER SERVICE ===
-    options.bind(TYPES.ISequenceRenderService).to(SequenceRenderService);
+    options.bind(TYPES.ISequenceRenderer).to(SequenceRenderer);
 
     // === PURE RENDERING SERVICES ===
-    options.bind(TYPES.ICanvasManagementService).to(CanvasManagementService);
+    options.bind(TYPES.ICanvasManager).to(CanvasManager);
     options
-      .bind(TYPES.IImageCompositionService)
-      .to(ImageCompositionService)
+      .bind(TYPES.IImageComposer)
+      .to(ImageComposer)
       .inSingletonScope(); // PERF: Cache persists across all renders
-    options.bind(TYPES.ILayoutCalculationService).to(LayoutCalculationService);
+    options.bind(TYPES.ILayoutCalculator).to(LayoutCalculator);
     options
-      .bind(TYPES.IDimensionCalculationService)
-      .to(DimensionCalculationService);
+      .bind(TYPES.IDimensionCalculator)
+      .to(DimensionCalculator);
     options
-      .bind(TYPES.IImageFormatConverterService)
-      .to(ImageFormatConverterService);
+      .bind(TYPES.IImageFormatConverter)
+      .to(ImageFormatConverter);
     options
-      .bind(TYPES.ISVGToCanvasConverterService)
-      .to(SVGToCanvasConverterService);
-    options.bind(TYPES.ITextRenderingService).to(TextRenderingService);
+      .bind(TYPES.ISVGToCanvasConverter)
+      .to(SVGToCanvasConverter);
+    options.bind(TYPES.ITextRenderer).to(TextRenderer);
     options
-      .bind(TYPES.IGlyphCacheService)
-      .to(GlyphCacheService)
+      .bind(TYPES.IGlyphCache)
+      .to(GlyphCache)
       .inSingletonScope();
 
     // === UTILITY SERVICES ===
-    options.bind(TYPES.IFilenameGeneratorService).to(FilenameGeneratorService);
+    options.bind(TYPES.IFilenameGenerator).to(FilenameGenerator);
   }
 );

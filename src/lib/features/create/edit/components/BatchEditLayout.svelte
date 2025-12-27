@@ -5,7 +5,7 @@ Replaces the normal edit panel when multiple beats are selected.
 Uses simplified stepper controls matching the single-beat edit pattern.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -23,7 +23,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Available turn values (0 to 3 in 0.5 increments)
   const TURN_OPTIONS = [0, 0.5, 1, 1.5, 2, 2.5, 3];
@@ -138,8 +138,8 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

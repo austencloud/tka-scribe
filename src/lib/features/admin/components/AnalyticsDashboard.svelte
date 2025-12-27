@@ -5,7 +5,7 @@
    * Minimal analytics view for admin users.
    * Two sections: Quick Stats + Active Users
    *
-   * Uses SystemStateService cached data - no wasteful Firebase queries.
+   * Uses SystemStateManager cached data - no wasteful Firebase queries.
    */
   import WeeklyEngagement from "./analytics/WeeklyEngagement.svelte";
   import ActiveUsersPanel from "./ActiveUsersPanel.svelte";

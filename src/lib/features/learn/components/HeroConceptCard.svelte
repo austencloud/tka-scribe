@@ -8,7 +8,7 @@ Clean design with:
 - Prominent CTA
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../shared/application/services/contracts/IHapticFeedback";
   import { TYPES } from "../../../shared/inversify/types";
   import { resolve } from "../../../shared/inversify/di";
   import { CONCEPT_CATEGORIES } from "../domain/concepts";
@@ -24,8 +24,8 @@ Clean design with:
     onStart?: (concept: LearnConcept) => void;
   } = $props();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   const category = $derived(CONCEPT_CATEGORIES[concept.category]);

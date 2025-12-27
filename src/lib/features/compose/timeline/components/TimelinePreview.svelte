@@ -229,16 +229,21 @@
         throw new Error("Failed to initialize animation");
       }
 
-      currentSequence = sequence;
-
       // Get initial prop states
       animationOrchestrator.calculateState(0);
       const propStates = animationOrchestrator.getCurrentPropStates();
-      bluePropState = propStates.blue;
-      redPropState = propStates.red;
+
+      // Wrap all state updates in untrack to prevent effect cycles
+      untrack(() => {
+        currentSequence = sequence;
+        bluePropState = propStates.blue;
+        redPropState = propStates.red;
+      });
     } catch (err) {
       console.error("TimelinePreview: animation init failed:", err);
-      currentSequence = null;
+      untrack(() => {
+        currentSequence = null;
+      });
     }
   }
 

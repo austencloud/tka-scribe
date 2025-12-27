@@ -4,28 +4,28 @@
  * Centralized storage key constants for onboarding persistence.
  *
  * NOTE: localStorage is used for synchronous access (to avoid UI flash).
- * The OnboardingPersistenceService syncs localStorage with Firebase for
+ * The OnboardingPersister syncs localStorage with Firebase for
  * authenticated users. Use `markModuleOnboardingComplete()` which calls
  * the service when available.
  */
 
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IOnboardingPersistenceService } from "../services/contracts/IOnboardingPersistenceService";
+import type { IOnboardingPersister } from "../services/contracts/IOnboardingPersister";
 
 // Lazy service resolution to avoid circular dependencies
-let _onboardingService: IOnboardingPersistenceService | null = null;
+let _onboardingService: IOnboardingPersister | null = null;
 let _serviceResolved = false;
-let _servicePromise: Promise<IOnboardingPersistenceService | null> | null =
+let _servicePromise: Promise<IOnboardingPersister | null> | null =
   null;
 
-function getOnboardingService(): IOnboardingPersistenceService | null {
+function getOnboardingService(): IOnboardingPersister | null {
   if (_serviceResolved) return _onboardingService;
 
   if (!_servicePromise) {
     _servicePromise = import("$lib/shared/inversify/di")
       .then((di) => {
-        _onboardingService = di.resolve<IOnboardingPersistenceService>(
-          TYPES.IOnboardingPersistenceService
+        _onboardingService = di.resolve<IOnboardingPersister>(
+          TYPES.IOnboardingPersister
         );
         return _onboardingService;
       })

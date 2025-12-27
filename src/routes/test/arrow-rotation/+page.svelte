@@ -14,6 +14,8 @@
     Orientation,
     MotionColor,
   } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   // Helper to convert lowercase location string to GridLocation enum
@@ -45,8 +47,8 @@
   // Helper to convert lowercase rotation direction string to RotationDirection enum
   function toRotationDirection(dir: string): RotationDirection {
     const map: Record<string, RotationDirection> = {
-      cw: RotationDirection.CW,
-      ccw: RotationDirection.CCW,
+      cw: RotationDirection.CLOCKWISE,
+      ccw: RotationDirection.COUNTER_CLOCKWISE,
       norotation: RotationDirection.NO_ROTATION,
     };
     return map[dir.toLowerCase().replace("_", "")] || RotationDirection.NO_ROTATION;
@@ -70,14 +72,14 @@
   // X at EAST - red static CW at east, blue anti ccw from s to w
   const xAtEast: PictographData = {
     id: "x-at-east",
-    letter: "X",
-    startPosition: "gamma11",
-    endPosition: "alpha3",
+    letter: Letter.X,
+    startPosition: GridPosition.GAMMA11,
+    endPosition: GridPosition.ALPHA3,
     motions: {
       [MotionColor.BLUE]: createMotionData({
         motionType: MotionType.ANTI,
         startOrientation: Orientation.OUT,
-        rotationDirection: RotationDirection.CCW,
+        rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
         startLocation: GridLocation.SOUTH,
         endLocation: GridLocation.WEST,
         turns: 0,
@@ -89,7 +91,7 @@
       [MotionColor.RED]: createMotionData({
         motionType: MotionType.STATIC,
         startOrientation: Orientation.IN,
-        rotationDirection: RotationDirection.CW,
+        rotationDirection: RotationDirection.CLOCKWISE,
         startLocation: GridLocation.EAST,
         endLocation: GridLocation.EAST,
         turns: 1,
@@ -104,14 +106,14 @@
   // X at WEST - red static CW at west, blue anti ccw from n to e
   const xAtWest: PictographData = {
     id: "x-at-west",
-    letter: "X",
-    startPosition: "gamma15",
-    endPosition: "alpha7",
+    letter: Letter.X,
+    startPosition: GridPosition.GAMMA15,
+    endPosition: GridPosition.ALPHA7,
     motions: {
       [MotionColor.BLUE]: createMotionData({
         motionType: MotionType.ANTI,
         startOrientation: Orientation.OUT,
-        rotationDirection: RotationDirection.CCW,
+        rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
         startLocation: GridLocation.NORTH,
         endLocation: GridLocation.EAST,
         turns: 0,
@@ -123,7 +125,7 @@
       [MotionColor.RED]: createMotionData({
         motionType: MotionType.STATIC,
         startOrientation: Orientation.IN,
-        rotationDirection: RotationDirection.CW,
+        rotationDirection: RotationDirection.CLOCKWISE,
         startLocation: GridLocation.WEST,
         endLocation: GridLocation.WEST,
         turns: 1,
@@ -138,14 +140,14 @@
   // X at NORTH - red static CW at north, blue anti ccw from e to s
   const xAtNorth: PictographData = {
     id: "x-at-north",
-    letter: "X",
-    startPosition: "gamma9",
-    endPosition: "alpha1",
+    letter: Letter.X,
+    startPosition: GridPosition.GAMMA9,
+    endPosition: GridPosition.ALPHA1,
     motions: {
       [MotionColor.BLUE]: createMotionData({
         motionType: MotionType.ANTI,
         startOrientation: Orientation.OUT,
-        rotationDirection: RotationDirection.CCW,
+        rotationDirection: RotationDirection.COUNTER_CLOCKWISE,
         startLocation: GridLocation.EAST,
         endLocation: GridLocation.SOUTH,
         turns: 0,
@@ -157,7 +159,7 @@
       [MotionColor.RED]: createMotionData({
         motionType: MotionType.STATIC,
         startOrientation: Orientation.OUT,
-        rotationDirection: RotationDirection.CW,
+        rotationDirection: RotationDirection.CLOCKWISE,
         startLocation: GridLocation.NORTH,
         endLocation: GridLocation.NORTH,
         turns: 1,

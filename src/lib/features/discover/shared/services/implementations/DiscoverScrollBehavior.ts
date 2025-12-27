@@ -1,5 +1,5 @@
 /**
- * DiscoverScrollBehaviorService.ts
+ * DiscoverScrollBehavior.ts
  *
  * Service that handles scroll behavior for the Explorer module.
  * Determines when to hide/show UI elements (TopBar, Navigation, Filters)
@@ -19,7 +19,7 @@
 
 import type { DiscoverScrollState } from "../../state/DiscoverScrollState.svelte";
 
-export class DiscoverScrollBehaviorService {
+export class DiscoverScrollBehavior {
   private scrollThreshold = 50; // Minimum scroll distance to trigger hide/show
   private minScrollForHide = 100; // Minimum scroll position before hiding UI
 

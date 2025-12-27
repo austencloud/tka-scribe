@@ -5,7 +5,7 @@
   Modern design with show/hide toggles instead of confirm field.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import {
     passwordState,
     resetPasswordForm,
@@ -14,7 +14,7 @@
 
   let { onChangePassword, hapticService } = $props<{
     onChangePassword: () => Promise<void>;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
   }>();
 
   // Password visibility toggles

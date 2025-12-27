@@ -5,7 +5,7 @@
  * These shortcuts are only active when the animation panel is open.
  */
 
-import type { IKeyboardShortcutService } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutService";
+import type { IKeyboardShortcutManager } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutManager";
 
 export interface AnimationShortcutHandlers {
   onPlaybackToggle: () => void;
@@ -24,7 +24,7 @@ export interface AnimationShortcutHandlers {
  * @returns Unregister function to clean up all shortcuts
  */
 export function registerAnimationShortcuts(
-  service: IKeyboardShortcutService,
+  service: IKeyboardShortcutManager,
   handlers: AnimationShortcutHandlers
 ): () => void {
   const unregisterFns: (() => void)[] = [];

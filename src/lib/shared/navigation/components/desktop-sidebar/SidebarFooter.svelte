@@ -1,7 +1,7 @@
 <!-- Sidebar Footer Component -->
 <!-- Footer with settings gear/back button -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { tryResolve } from "../../../inversify/container";
   import { TYPES } from "../../../inversify/types";
   import { releaseNotesDrawerState } from "../../../settings/state/release-notes-drawer-state.svelte";
@@ -16,8 +16,8 @@
   function handleVersionClick() {
     // Haptic feedback
     try {
-      const hapticService = tryResolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      const hapticService = tryResolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
       hapticService?.trigger("selection");
     } catch {

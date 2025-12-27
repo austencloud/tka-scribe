@@ -10,9 +10,9 @@
   import { onMount } from "svelte";
   import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
   import type {
-    ISystemStateService,
+    ISystemStateManager,
     CachedUserMetadata,
-  } from "../../services/contracts/ISystemStateService";
+  } from "../../services/contracts/ISystemStateManager";
 
   let isLoading = $state(true);
   let users = $state<CachedUserMetadata[]>([]);
@@ -46,8 +46,8 @@
   onMount(async () => {
     try {
       await loadFeatureModule("admin");
-      const systemStateService = resolve<ISystemStateService>(
-        TYPES.ISystemStateService
+      const systemStateService = resolve<ISystemStateManager>(
+        TYPES.ISystemStateManager
       );
       const state = await systemStateService.getSystemState();
       users = state.users;

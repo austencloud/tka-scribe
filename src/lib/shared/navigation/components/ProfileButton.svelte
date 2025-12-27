@@ -11,8 +11,8 @@
   import { authState } from "../../auth/state/authState.svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { ISheetRouterService } from "$lib/shared/navigation/services/contracts/ISheetRouterService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
+  import type { ISheetRouter } from "$lib/shared/navigation/services/contracts/ISheetRouter";
   import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
   import { onMount } from "svelte";
 
@@ -28,16 +28,16 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let sheetRouterService: ISheetRouterService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let sheetRouterService: ISheetRouter | null = null;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     try {
-      sheetRouterService = await resolve<ISheetRouterService>(
-        TYPES.ISheetRouterService
+      sheetRouterService = await resolve<ISheetRouter>(
+        TYPES.ISheetRouter
       );
     } catch {
       // Service not available

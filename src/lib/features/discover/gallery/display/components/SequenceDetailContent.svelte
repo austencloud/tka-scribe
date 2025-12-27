@@ -10,11 +10,11 @@ Used by both desktop side panel and mobile slide-up overlay.
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import type { IDiscoverThumbnailService } from "../services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import AvatarImage from "../../../creators/components/profile/AvatarImage.svelte";
   import { discoverNavigationState } from "../../../shared/state/discover-navigation-state.svelte";
   import { galleryPanelManager } from "../../../shared/state/gallery-panel-state.svelte";
@@ -25,7 +25,7 @@ Used by both desktop side panel and mobile slide-up overlay.
   import { auth } from "$lib/shared/auth/firebase";
   import ShareHubDrawer from "$lib/shared/share-hub/components/ShareHubDrawer.svelte";
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Video state
   let showUploadSheet = $state(false);
@@ -48,14 +48,14 @@ Used by both desktop side panel and mobile slide-up overlay.
   }>();
 
   // Services - resolved lazily to ensure feature module is loaded
-  let thumbnailService: IDiscoverThumbnailService | null = $state(null);
+  let thumbnailService: IDiscoverThumbnailProvider | null = $state(null);
 
   onMount(() => {
-    thumbnailService = tryResolve<IDiscoverThumbnailService>(
-      TYPES.IDiscoverThumbnailService
+    thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
+      TYPES.IDiscoverThumbnailProvider
     );
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

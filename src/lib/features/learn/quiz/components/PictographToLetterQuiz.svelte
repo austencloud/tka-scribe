@@ -4,7 +4,7 @@ Pictograph to Letter Quiz - Shows a pictograph, asks user to identify the letter
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import { QuestionGeneratorService } from "../services/implementations/QuestionGenerator";
   import { QuizType } from "../domain/enums/quiz-enums";
@@ -24,7 +24,7 @@ Pictograph to Letter Quiz - Shows a pictograph, asks user to identify the letter
     onBack?: () => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   let questionData = $state<QuizQuestionData | null>(null);
   let selectedAnswerId = $state<string | null>(null);
@@ -43,7 +43,7 @@ Pictograph to Letter Quiz - Shows a pictograph, asks user to identify the letter
   );
 
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     await loadQuestion();
   });
 

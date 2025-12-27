@@ -10,10 +10,10 @@ import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/Mot
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-// import type { IBetaDetectionService, IGridModeDeriver } from "../../contracts";
+// import type { IBetaDetector, IGridModeDeriver } from "../../contracts";
 
 // Temporary interface definitions
-interface IBetaDetectionService {
+interface IBetaDetector {
   detectBeta(data: unknown): boolean;
   endsWithBeta(pictographData: PictographData): boolean;
 }
@@ -95,11 +95,11 @@ export class PictographDataDebugger {
     const identifier = `${pictographData.letter}_${Date.now()}`;
 
     // Analyze the pictograph data using the new beta detection
-    const betaDetectionService = resolve<IBetaDetectionService>(
-      TYPES.IBetaDetectionService
+    const BetaDetector = resolve<IBetaDetector>(
+      TYPES.IBetaDetector
     );
     const endsWithBetaPosition =
-      betaDetectionService.endsWithBeta(pictographData);
+      BetaDetector.endsWithBeta(pictographData);
     const hasValidMotionData = this.validateMotionData(pictographData);
     const hasValidPropPlacementData =
       this.validatePropPlacementData(pictographData);

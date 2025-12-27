@@ -12,11 +12,11 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../../domain/models/BeatData";
 import type { ICreateModuleState } from "../../../types/create-module-types";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-import type { IReversalDetectionService } from "../../../services/contracts/IReversalDetectionService";
+import type { IReversalDetector } from "../../../services/contracts/IReversalDetector";
 import {
   createMotionData,
   type MotionData,
@@ -208,7 +208,7 @@ export function updateRotationDirection(
 
   // Process reversals to update reversal indicators after rotation direction change
   try {
-    const reversalService = resolve<IReversalDetectionService>(TYPES.IReversalDetectionService);
+    const reversalService = resolve<IReversalDetector>(TYPES.IReversalDetector);
     updatedSequence = reversalService.processReversals(updatedSequence);
   } catch {
     // Reversal service is optional - continue without reversal processing

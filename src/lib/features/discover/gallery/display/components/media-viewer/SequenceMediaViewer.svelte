@@ -9,8 +9,8 @@
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IDiscoverThumbnailService } from "../../services/contracts/IDiscoverThumbnailService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IDiscoverThumbnailProvider } from "../../services/contracts/IDiscoverThumbnailProvider";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -29,16 +29,16 @@
     onCreatorClick,
   }: {
     sequence: SequenceData;
-    thumbnailService?: IDiscoverThumbnailService | null;
+    thumbnailService?: IDiscoverThumbnailProvider | null;
     initialMediaType?: MediaType;
     onCreatorClick?: () => void;
   } = $props();
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

@@ -18,7 +18,7 @@
   import "./drawer/Drawer.css";
   import { onMount, onDestroy, untrack, type Snippet } from "svelte";
   import { tryResolve, TYPES } from "../../inversify/di";
-  import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
+  import type { IResponsiveLayoutManager } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutManager";
   import { SwipeToDismiss } from "./drawer/SwipeToDismiss";
   import { FocusTrap } from "./drawer/FocusTrap";
   import { SnapPoints, type SnapPointValue } from "./drawer/SnapPoints";
@@ -110,7 +110,7 @@
     children?: Snippet;
   } = $props();
 
-  let layoutService: IResponsiveLayoutService | null = null;
+  let layoutService: IResponsiveLayoutManager | null = null;
   let isSideBySideLayout = $state(false);
   let mounted = $state(false);
   let wasOpen = $state(false);
@@ -201,6 +201,7 @@
   });
 
   // Focus trap handler for accessibility
+  // svelte-ignore state_referenced_locally - intentional: configuration set once at creation
   let focusTrap = new FocusTrap({
     initialFocus: initialFocusElement,
     returnFocusOnDeactivate: returnFocusOnClose,
@@ -213,6 +214,7 @@
   let currentSnapIndex = $state<number | null>(null);
 
   // Drawer effects
+  // svelte-ignore state_referenced_locally - intentional: configuration set once at creation
   let drawerEffects = new DrawerEffects({
     scaleBackground,
     preventScroll,
@@ -263,8 +265,8 @@
     if (respectLayoutMode) {
       // Try to resolve layout service (optional dependency)
       // Will be null if create module hasn't loaded yet
-      layoutService = tryResolve<IResponsiveLayoutService>(
-        TYPES.IResponsiveLayoutService
+      layoutService = tryResolve<IResponsiveLayoutManager>(
+        TYPES.IResponsiveLayoutManager
       );
     }
   });

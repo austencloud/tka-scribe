@@ -15,14 +15,14 @@
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
   import { slide } from "svelte/transition";
-  import type { IMobileFullscreenService } from "../services/contracts/IMobileFullscreenService";
-  import type { IPWAEngagementService } from "../services/contracts/IPWAEngagementService";
-  import type { IPWAInstallDismissalService } from "../services/contracts/IPWAInstallDismissalService";
+  import type { IMobileFullscreenManager } from "../services/contracts/IMobileFullscreenManager";
+  import type { IPWAEngagementTracker } from "../services/contracts/IPWAEngagementTracker";
+  import type { IPWAInstallDismissalManager } from "../services/contracts/IPWAInstallDismissalManager";
 
   // Services
-  let fullscreenService: IMobileFullscreenService | null = null;
-  let engagementService: IPWAEngagementService | null = null;
-  let dismissalService: IPWAInstallDismissalService | null = null;
+  let fullscreenService: IMobileFullscreenManager | null = null;
+  let engagementService: IPWAEngagementTracker | null = null;
+  let dismissalService: IPWAInstallDismissalManager | null = null;
 
   // State
   let show = $state(false);
@@ -32,14 +32,14 @@
 
   onMount(() => {
     try {
-      fullscreenService = resolve<IMobileFullscreenService>(
-        TYPES.IMobileFullscreenService
+      fullscreenService = resolve<IMobileFullscreenManager>(
+        TYPES.IMobileFullscreenManager
       );
-      engagementService = resolve<IPWAEngagementService>(
-        TYPES.IPWAEngagementService
+      engagementService = resolve<IPWAEngagementTracker>(
+        TYPES.IPWAEngagementTracker
       );
-      dismissalService = resolve<IPWAInstallDismissalService>(
-        TYPES.IPWAInstallDismissalService
+      dismissalService = resolve<IPWAInstallDismissalManager>(
+        TYPES.IPWAInstallDismissalManager
       );
     } catch (error) {
       console.warn("Failed to resolve PWA services:", error);

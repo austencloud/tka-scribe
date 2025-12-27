@@ -6,7 +6,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES, loadFeatureModule } from "$lib/shared/inversify/di";
-  import type { ITrainChallengeService } from "$lib/features/train/services/contracts/ITrainChallengeService";
+  import type { ITrainChallengeManager } from "$lib/features/train/services/contracts/ITrainChallengeManager";
   import type { TrainChallenge } from "$lib/features/train/domain/models/TrainChallengeModels";
   import type { ChallengeDifficulty } from "$lib/shared/gamification/domain/models/achievement-models";
   import { PracticeMode } from "$lib/features/train/domain/enums/TrainEnums";
@@ -16,7 +16,7 @@
   import { SEED_CHALLENGES } from "$lib/features/train/data/seed-challenges";
 
   // Services (resolved lazily to avoid module initialization errors)
-  let challengeService: ITrainChallengeService | null = null;
+  let challengeService: ITrainChallengeManager | null = null;
 
   // State
   let challenges = $state<TrainChallenge[]>([]);
@@ -44,8 +44,8 @@
     // Ensure train module is loaded before resolving services
     // This is needed for HMR recovery and initial load scenarios
     await loadFeatureModule("train");
-    challengeService = resolve<ITrainChallengeService>(
-      TYPES.ITrainChallengeService
+    challengeService = resolve<ITrainChallengeManager>(
+      TYPES.ITrainChallengeManager
     );
     await loadChallenges();
   });

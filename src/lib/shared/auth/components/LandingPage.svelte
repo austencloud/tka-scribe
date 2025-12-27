@@ -11,14 +11,14 @@
   import AuthFooter from "./AuthFooter.svelte";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IAuthService } from "../services/contracts/IAuthService";
+  import type { IAuthenticator } from "../services/contracts/IAuthenticator";
   import { settingsService } from "../../settings/state/SettingsState.svelte";
   import { BackgroundType } from "../../background/shared/domain/enums/background-enums";
   import { applyThemeForBackground } from "../../settings/utils/background-theme-calculator";
 
   let authMode = $state<"signin" | "signup">("signin");
   let showEmailAuth = $state(false);
-  let authService: IAuthService | null = null;
+  let authService: IAuthenticator | null = null;
 
   // Background toggle state
   const backgrounds: { type: BackgroundType; icon: string; label: string }[] = [
@@ -33,7 +33,7 @@
 
   onMount(async () => {
     try {
-      authService = await resolve<IAuthService>(TYPES.IAuthService);
+      authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
     } catch (error) {
       console.error("Failed to resolve auth service:", error);
     }

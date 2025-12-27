@@ -14,7 +14,7 @@
 -->
 <script lang="ts">
   import type { ModuleDefinition, ModuleId } from "../domain/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { resolve, TYPES, preloadFeatureModule } from "../../inversify/di";
   import { onMount } from "svelte";
 
@@ -28,7 +28,7 @@
     onModuleSelect?: (moduleId: ModuleId) => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Track drag state to prevent clicks during swipe gestures
   let dragState = $state<{
@@ -45,8 +45,8 @@
   let hoverTimers = new Map<ModuleId, number>();
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

@@ -6,30 +6,30 @@
 
 export const DiscoverTypes = {
   // Discover Services
-  IDiscoverThumbnailService: Symbol.for("IDiscoverThumbnailService"),
-  IDiscoverCacheService: Symbol.for("IDiscoverCacheService"),
-  IDiscoverFilterService: Symbol.for("IDiscoverFilterService"),
+  IDiscoverThumbnailProvider: Symbol.for("IDiscoverThumbnailProvider"),
+  IDiscoverCache: Symbol.for("IDiscoverCache"),
+  IDiscoverFilter: Symbol.for("IDiscoverFilter"),
   IDiscoverLoader: Symbol.for("IDiscoverLoader"),
   IDiscoverMetadataExtractor: Symbol.for("IDiscoverMetadataExtractor"),
-  IDiscoverSortService: Symbol.for("IDiscoverSortService"),
-  IOptimizedDiscoverService: Symbol.for("IOptimizedDiscoverService"),
-  IDiscoverEventHandlerService: Symbol.for("IDiscoverEventHandlerService"),
+  IDiscoverSorter: Symbol.for("IDiscoverSorter"),
+  IOptimizedDiscoverer: Symbol.for("IOptimizedDiscoverer"),
+  IDiscoverEventHandler: Symbol.for("IDiscoverEventHandler"),
   IDiscoverPanelManager: Symbol.for("IDiscoverPanelManager"),
 
   // Browse State
   IBrowseStatePersister: Symbol.for("IBrowseStatePersister"),
-  IFilterPersistenceService: Symbol.for("IFilterPersistenceService"),
+  IFilterPersister: Symbol.for("IFilterPersister"),
 
   // Section & Index
-  ISectionService: Symbol.for("ISectionService"),
-  ISequenceIndexService: Symbol.for("ISequenceIndexService"),
+  ISectionManager: Symbol.for("ISectionManager"),
+  ISequenceIndexer: Symbol.for("ISequenceIndexer"),
   ISequenceDifficultyCalculator: Symbol.for("ISequenceDifficultyCalculator"),
 
   // Favorites & Delete
-  IFavoritesService: Symbol.for("IFavoritesService"),
-  IDeleteService: Symbol.for("IDeleteService"),
+  IFavoritesManager: Symbol.for("IFavoritesManager"),
+  IDiscoverDeleter: Symbol.for("IDiscoverDeleter"),
 
   // Community
-  ILeaderboardService: Symbol.for("ILeaderboardService"),
+  ILeaderboardManager: Symbol.for("ILeaderboardManager"),
   ICommunityStatsService: Symbol.for("ICommunityStatsService"),
 } as const;

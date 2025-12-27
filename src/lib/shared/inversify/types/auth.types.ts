@@ -3,9 +3,9 @@
  */
 
 export const AuthTypes = {
-  IAuthService: Symbol.for("IAuthService"),
-  IProfilePictureService: Symbol.for("IProfilePictureService"),
-  IUserDocumentService: Symbol.for("IUserDocumentService"),
-  IUserService: Symbol.for("IUserService"),
-  ISubscriptionService: Symbol.for("ISubscriptionService"),
+  IAuthenticator: Symbol.for("IAuthenticator"),
+  IProfilePictureManager: Symbol.for("IProfilePictureManager"),
+  IUserDocumentManager: Symbol.for("IUserDocumentManager"),
+  IUserRepository: Symbol.for("IUserRepository"),
+  ISubscriptionManager: Symbol.for("ISubscriptionManager"),
 } as const;

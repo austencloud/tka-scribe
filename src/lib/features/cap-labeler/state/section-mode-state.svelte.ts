@@ -7,8 +7,8 @@
 
 import { tryResolve } from "$lib/shared/inversify/di";
 import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-import type { ICAPLabelsFirebaseService } from "../services/contracts/ICAPLabelsFirebaseService";
-import type { ICAPDesignationService } from "../services/contracts/ICAPDesignationService";
+import type { ICAPLabelsFirebaseRepository } from "../services/contracts/ICAPLabelsFirebaseRepository";
+import type { ICAPDesignator } from "../services/contracts/ICAPDesignator";
 import type { SectionDesignation } from "../domain/models/section-models";
 import type { LabeledSequence } from "../domain/models/label-models";
 import type { ComponentId } from "../domain/constants/cap-components";
@@ -67,11 +67,11 @@ export function createSectionModeState(): SectionModeState {
   let selectedBaseWord = $state<string | null>(null);
 
   // Services
-  const labelsService = tryResolve<ICAPLabelsFirebaseService>(
-    CAPLabelerTypes.ICAPLabelsFirebaseService
+  const labelsService = tryResolve<ICAPLabelsFirebaseRepository>(
+    CAPLabelerTypes.ICAPLabelsFirebaseRepository
   );
-  const designationService = tryResolve<ICAPDesignationService>(
-    CAPLabelerTypes.ICAPDesignationService
+  const designationService = tryResolve<ICAPDesignator>(
+    CAPLabelerTypes.ICAPDesignator
   );
 
   // Actions

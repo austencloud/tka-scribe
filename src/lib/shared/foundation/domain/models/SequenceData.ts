@@ -38,7 +38,7 @@ export interface SequenceData {
   readonly gridMode?: GridMode;
   readonly propType?: PropType;
   /**
-   * @deprecated Use ICollectionService.isFavorite(sequenceId) instead.
+   * @deprecated Use ICollectionManager.isFavorite(sequenceId) instead.
    * Favorites are now stored as collection membership, not as a boolean flag.
    * This field is kept for backwards compatibility during migration.
    */

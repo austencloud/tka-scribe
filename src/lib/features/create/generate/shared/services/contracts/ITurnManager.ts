@@ -1,6 +1,6 @@
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 
-export interface ITurnManagementService {
+export interface ITurnManager {
   setTurns(
     beat: BeatData,
     turnBlue: number | "fl",

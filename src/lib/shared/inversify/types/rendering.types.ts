@@ -7,12 +7,12 @@
 export const RenderingTypes = {
   // SVG Services
   ISvgUtilityService: Symbol.for("ISvgUtilityService"),
-  ISvgPreloadService: Symbol.for("ISvgPreloadService"),
+  ISvgPreloader: Symbol.for("ISvgPreloader"),
   ISvgConfig: Symbol.for("ISvgConfig"),
   IDataTransformer: Symbol.for("IDataTransformer"),
 
   // Grid Services
-  IGridRenderingService: Symbol.for("IGridRenderingService"),
+  IGridRenderer: Symbol.for("IGridRenderer"),
   IGridService: Symbol.for("IGridService"),
 
   // Arrow Rendering
@@ -38,12 +38,19 @@ export const RenderingTypes = {
   IGridModeDeriver: Symbol.for("IGridModeDeriver"),
 
   // Render Services
-  ISequenceRenderService: Symbol.for("ISequenceRenderService"),
-  ITextRenderingService: Symbol.for("ITextRenderingService"),
-  IGlyphCacheService: Symbol.for("IGlyphCacheService"),
-  IReversalDetectionService: Symbol.for("IReversalDetectionService"),
-  IUltimatePictographRenderingService: Symbol.for(
-    "IUltimatePictographRenderingService"
+  ISequenceRenderer: Symbol.for("ISequenceRenderer"),
+  ICanvasManager: Symbol.for("ICanvasManager"),
+  IImageComposer: Symbol.for("IImageComposer"),
+  ILayoutCalculator: Symbol.for("ILayoutCalculator"),
+  IDimensionCalculator: Symbol.for("IDimensionCalculator"),
+  IImageFormatConverter: Symbol.for("IImageFormatConverter"),
+  ISVGToCanvasConverter: Symbol.for("ISVGToCanvasConverter"),
+  ITextRenderer: Symbol.for("ITextRenderer"),
+  IGlyphCache: Symbol.for("IGlyphCache"),
+  IFilenameGenerator: Symbol.for("IFilenameGenerator"),
+  IReversalDetector: Symbol.for("IReversalDetector"),
+  IUltimatePictographRenderer: Symbol.for(
+    "IUltimatePictographRenderer"
   ),
 
   // CSV/Data Loading

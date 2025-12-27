@@ -10,7 +10,7 @@
   import { goto } from "$app/navigation";
   import SequenceViewer from "$lib/shared/sequence-viewer/components/SequenceViewer.svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { ISequenceEncoderService } from "$lib/shared/navigation/services/contracts/ISequenceEncoderService";
+  import type { ISequenceEncoder } from "$lib/shared/navigation/services/contracts/ISequenceEncoder";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   // Get encoded sequence from URL param
@@ -21,9 +21,7 @@
     if (!encodedId) return null;
 
     try {
-      const encoderService = resolve<ISequenceEncoderService>(
-        TYPES.ISequenceEncoderService
-      );
+      const encoderService = resolve<ISequenceEncoder>(TYPES.ISequenceEncoder);
       return encoderService.decodeWithCompression(
         decodeURIComponent(encodedId)
       );

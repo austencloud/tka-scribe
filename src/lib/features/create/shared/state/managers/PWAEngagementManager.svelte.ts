@@ -9,7 +9,7 @@
 
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IPWAEngagementService } from "$lib/shared/mobile/services/contracts/IPWAEngagementService";
+import type { IPWAEngagementTracker } from "$lib/shared/mobile/services/contracts/IPWAEngagementTracker";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
@@ -44,8 +44,8 @@ export function createPWAEngagementEffect(
       if (!CreateModuleState.hasSequence) return;
 
       try {
-        const engagementService = resolve<IPWAEngagementService>(
-          TYPES.IPWAEngagementService
+        const engagementService = resolve<IPWAEngagementTracker>(
+          TYPES.IPWAEngagementTracker
         );
         engagementService.recordSequenceCreated();
         engagementService.recordInteraction(); // Also count as interaction

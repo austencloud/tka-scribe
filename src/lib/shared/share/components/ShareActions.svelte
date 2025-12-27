@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import InstagramButton from "./InstagramButton.svelte";
@@ -24,14 +24,14 @@
     onSequenceUpdate?: (sequence: SequenceData) => void;
   } = $props();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Instagram modal state
   let showInstagramModal = $state(false);
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

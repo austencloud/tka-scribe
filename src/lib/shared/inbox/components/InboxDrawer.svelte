@@ -19,8 +19,8 @@
   import MessageThread from "./messages/MessageThread.svelte";
   import NewMessageSheet from "./messages/NewMessageSheet.svelte";
   import NotificationList from "./notifications/NotificationList.svelte";
-  import { conversationService } from "../../messaging/services/implementations/ConversationService";
-  import { messagingService } from "../../messaging/services/implementations/MessagingService";
+  import { conversationService } from "../../messaging/services/implementations/ConversationManager";
+  import { messagingService } from "../../messaging/services/implementations/Messenger";
   import BottomNavigation from "$lib/shared/navigation/components/layouts/BottomNavigation.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import {
@@ -31,14 +31,14 @@
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   // Responsive placement
   let isMobile = $state(false);
   let placement = $derived(isMobile ? "bottom" : "right") as "bottom" | "right";
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // Create a derived value that tracks preview mode (View As feature)
   // Moved up to be available for effects
@@ -49,8 +49,8 @@
   );
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     const mediaQuery = window.matchMedia("(max-width: 768px)");

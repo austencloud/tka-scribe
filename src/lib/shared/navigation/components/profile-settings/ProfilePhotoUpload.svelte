@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import { authState } from "../../../auth/state/authState.svelte";
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import {
     isCompactMode,
     isVeryCompactMode,
@@ -15,7 +15,7 @@
 
   let { onPhotoUpload, hapticService } = $props<{
     onPhotoUpload: (file: File) => Promise<void>;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
   }>();
 
   let displayName = $derived(authState.user?.displayName || "");

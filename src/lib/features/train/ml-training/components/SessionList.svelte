@@ -6,7 +6,7 @@ Allows viewing, continuing, or deleting sessions.
 -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getMLTrainingStorage } from "../services/MLTrainingStorageService";
+  import { getMLTrainingStorage } from "../services/MLTrainingStorageManager";
   import type { CaptureSession, DatasetStats } from "../domain/models";
 
   interface Props {

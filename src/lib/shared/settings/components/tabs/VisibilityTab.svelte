@@ -17,7 +17,7 @@
     type PlaybackMode,
   } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -79,7 +79,7 @@
   let imgAddUserInfo = $state(false);
 
   // Haptics
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
   const triggerHaptic = () => hapticService?.trigger("selection");
 
   // Help modal handlers
@@ -208,7 +208,7 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
     // Load initial pictograph visibility
     tkaGlyphVisible = visibilityManager.getRawGlyphVisibility("tkaGlyph");

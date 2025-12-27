@@ -5,9 +5,9 @@
 
 import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
 import type { IDiscoverLoader } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader';
-import type { IDiscoverThumbnailService } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService';
-import type { IDiscoverFilterService } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverFilterService';
-import type { IDiscoverSortService } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverSortService';
+import type { IDiscoverThumbnailProvider } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailProvider';
+import type { IDiscoverFilter } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverFilter';
+import type { IDiscoverSorter } from '$lib/features/discover/gallery/display/services/contracts/IDiscoverSorter';
 import type { ExploreFilterType } from '$lib/shared/persistence/domain/enums/FilteringEnums';
 import type { ExploreFilterValue } from '$lib/shared/persistence/domain/types/FilteringTypes';
 import type { DifficultyLevel } from '$lib/shared/domain/models/sequence-parameters';
@@ -25,9 +25,9 @@ export interface MediaFilter {
 export function createMediaBrowserState() {
 	// Services
 	let loaderService = $state<IDiscoverLoader | null>(null);
-	let thumbnailService = $state<IDiscoverThumbnailService | null>(null);
-	let filterService = $state<IDiscoverFilterService | null>(null);
-	let sortService = $state<IDiscoverSortService | null>(null);
+	let thumbnailService = $state<IDiscoverThumbnailProvider | null>(null);
+	let filterService = $state<IDiscoverFilter | null>(null);
+	let sortService = $state<IDiscoverSorter | null>(null);
 	let servicesReady = $state(false);
 
 	// Core state
@@ -104,9 +104,9 @@ export function createMediaBrowserState() {
 		try {
 			await loadFeatureModule('discover');
 			loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-			thumbnailService = tryResolve<IDiscoverThumbnailService>(TYPES.IDiscoverThumbnailService);
-			filterService = tryResolve<IDiscoverFilterService>(TYPES.IDiscoverFilterService);
-			sortService = tryResolve<IDiscoverSortService>(TYPES.IDiscoverSortService);
+			thumbnailService = tryResolve<IDiscoverThumbnailProvider>(TYPES.IDiscoverThumbnailProvider);
+			filterService = tryResolve<IDiscoverFilter>(TYPES.IDiscoverFilter);
+			sortService = tryResolve<IDiscoverSorter>(TYPES.IDiscoverSorter);
 			servicesReady = !!(loaderService && thumbnailService);
 			return servicesReady;
 		} catch (err) {

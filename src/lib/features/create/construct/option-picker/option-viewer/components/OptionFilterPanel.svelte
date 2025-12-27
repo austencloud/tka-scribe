@@ -10,7 +10,7 @@ Provides a dedicated UI for filtering option viewer content:
 -->
 
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { fly, fade } from "svelte/transition";
@@ -29,8 +29,8 @@ Provides a dedicated UI for filtering option viewer content:
     onToggleContinuous?: (isContinuousOnly: boolean) => void;
   }>();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Container-aware sizing state

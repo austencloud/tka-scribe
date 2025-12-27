@@ -2,7 +2,7 @@
  * Pictograph Rendering Utilities
  *
  * Direct composition functions for rendering pictographs without orchestration service.
- * This replaces the PictographRenderingService with explicit composition.
+ * This replaces the PictographRenderer with explicit composition.
  */
 
 import type { MotionColor } from "../domain/enums/pictograph-enums";
@@ -18,7 +18,7 @@ import { Point } from "fabric";
 // import type { ISvgUtilityService } from "../../../../features/animator/services/implementations/SvgUtilityService";
 import type { ArrowPosition } from "../../arrow/orchestration/domain/arrow-models";
 import type { IArrowRenderer } from "../../arrow/rendering/services/contracts/IArrowRenderer";
-import type { IGridRenderingService } from "../../grid/services/contracts/IGridRenderingService";
+import type { IGridRenderer } from "../../grid/services/contracts/IGridRenderer";
 
 // TODO: These services are archived - defining minimal interfaces for compilation
 interface ISvgUtilityService {
@@ -46,8 +46,8 @@ export async function renderPictograph(
 
     // Resolve required services directly
     const svgUtility = resolve<ISvgUtilityService>(TYPES.ISvgUtilityService);
-    const gridRendering = resolve<IGridRenderingService>(
-      TYPES.IGridRenderingService
+    const gridRendering = resolve<IGridRenderer>(
+      TYPES.IGridRenderer
     );
     const arrowRendering = resolve<IArrowRenderer>(TYPES.IArrowRenderer);
     const overlayRendering = resolve<IOverlayRenderer>(TYPES.IOverlayRenderer);

@@ -1,12 +1,12 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { CodexService } from "../../../features/learn/codex/services/implementations/CodexService";
+import { Codex } from "../../../features/learn/codex/services/implementations/Codex";
 import { CodexLetterMappingRepo } from "../../../features/learn/codex/services/implementations/CodexLetterMappingRepo";
 import { CodexPictographUpdater } from "../../../features/learn/codex/services/implementations/CodexPictographUpdater";
 import { QuizRepoManager } from "../../../features/learn/quiz/services/implementations/QuizRepoManager";
-import { QuizSessionService } from "../../../features/learn/quiz/services/implementations/QuizSessionService";
+import { QuizSessionManager } from "../../../features/learn/quiz/services/implementations/QuizSessionManager";
 import { QuizResultsAnalyzer } from "../../../features/learn/quiz/QuizResultsAnalyzer";
-import { ConceptProgressService } from "../../../features/learn/services/implementations/ConceptProgressService";
+import { ConceptProgressTracker } from "../../../features/learn/services/implementations/ConceptProgressTracker";
 import { TYPES } from "../types";
 
 export const learnModule = new ContainerModule(
@@ -16,20 +16,20 @@ export const learnModule = new ContainerModule(
     // LetterQueryHandler (Tier 2) makes it optional so Generate doesn't need Learn module
     options.bind(TYPES.ICodexLetterMappingRepo).to(CodexLetterMappingRepo);
     options.bind(TYPES.ICodexPictographUpdater).to(CodexPictographUpdater);
-    options.bind(TYPES.ICodexService).to(CodexService);
+    options.bind(TYPES.ICodex).to(Codex);
 
     // === QUIZ SERVICES ===
     options.bind(TYPES.IQuizRepoManager).to(QuizRepoManager);
     options
-      .bind(TYPES.IQuizSessionService)
-      .to(QuizSessionService)
+      .bind(TYPES.IQuizSessionManager)
+      .to(QuizSessionManager)
       .inSingletonScope();
     options.bind(TYPES.IQuizResultsAnalyzer).to(QuizResultsAnalyzer);
 
     // === CONCEPT PROGRESS ===
     options
-      .bind(TYPES.IConceptProgressService)
-      .to(ConceptProgressService)
+      .bind(TYPES.IConceptProgressTracker)
+      .to(ConceptProgressTracker)
       .inSingletonScope();
   }
 );

@@ -4,7 +4,7 @@
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import type { KanbanBoardState } from "../../state/kanban-board-state.svelte";
   import { createKanbanBoardState } from "../../state/kanban-board-state.svelte";
-  import type { IStorageService } from "$lib/shared/foundation/services/contracts/IStorageService";
+  import type { IStorageManager } from "$lib/shared/foundation/services/contracts/IStorageManager";
   import type { IFeedbackSortingService } from "../../services/contracts/IFeedbackSortingService";
   import {
     tryResolve,
@@ -25,7 +25,7 @@
   // Resolve services
   let boardState = $state<KanbanBoardState | null>(null);
   let sortingService: IFeedbackSortingService | null = null;
-  let storageService: IStorageService | null = null;
+  let storageService: IStorageManager | null = null;
 
   onMount(() => {
     let resizeObserver: ResizeObserver | null = null;
@@ -42,7 +42,7 @@
         sortingService = tryResolve<IFeedbackSortingService>(
           TYPES.IFeedbackSortingService
         );
-        storageService = tryResolve<IStorageService>(TYPES.IStorageService);
+        storageService = tryResolve<IStorageManager>(TYPES.IStorageManager);
 
         if (!sortingService) {
           console.error(

@@ -12,7 +12,7 @@
 <script lang="ts">
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ITagService } from "../../services/contracts/ITagService";
+  import type { ITagManager } from "../../services/contracts/ITagManager";
   import type { LibraryTag } from "../../domain/models/Tag";
   import { TAG_COLORS } from "../../domain/models/Tag";
 
@@ -33,7 +33,7 @@
   }: Props = $props();
 
   // Services
-  const tagService = tryResolve<ITagService>(TYPES.ITagService);
+  const tagService = tryResolve<ITagManager>(TYPES.ITagManager);
 
   // State
   let inputValue = $state("");

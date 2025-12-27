@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { UndoOperationType } from "$lib/features/create/shared/services/contracts/IUndoService";
+  import { UndoOperationType } from "$lib/features/create/shared/services/contracts/IUndoManager";
   import type { createCreateModuleState } from "$lib/features/create/shared/state/create-module-state.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -17,8 +17,8 @@
   } = $props();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Debug logging removed - this creates noise during reactive updates

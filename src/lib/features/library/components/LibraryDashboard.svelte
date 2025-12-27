@@ -21,7 +21,7 @@
   import { goto } from "$app/navigation";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICollaborativeVideoService } from "$lib/shared/video-collaboration/services/contracts/ICollaborativeVideoService";
+  import type { ICollaborativeVideoManager } from "$lib/shared/video-collaboration/services/contracts/ICollaborativeVideoManager";
   import type { CollaborativeVideo } from "$lib/shared/video-collaboration/domain/CollaborativeVideo";
   import CollaborativeVideoCard from "$lib/shared/video-collaboration/components/CollaborativeVideoCard.svelte";
 
@@ -60,7 +60,7 @@
   );
 
   // Video state
-  let videoService = $state<ICollaborativeVideoService | null>(null);
+  let videoService = $state<ICollaborativeVideoManager | null>(null);
   let videos = $state<CollaborativeVideo[]>([]);
   let videosLoading = $state(false);
 
@@ -119,8 +119,8 @@
   // Initialize on mount
   onMount(() => {
     prevIsAuthenticated = isAuthenticated;
-    videoService = tryResolve<ICollaborativeVideoService>(
-      TYPES.ICollaborativeVideoService
+    videoService = tryResolve<ICollaborativeVideoManager>(
+      TYPES.ICollaborativeVideoManager
     );
     if (isAuthenticated) {
       libraryState.initialize();

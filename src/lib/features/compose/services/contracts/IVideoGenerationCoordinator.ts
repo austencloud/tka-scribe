@@ -2,7 +2,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type {
   VideoRenderProgress,
   VideoRenderResult,
-} from "./IVideoPreRenderService";
+} from "./IVideoPreRenderer";
 
 /**
  * Video generation options

@@ -9,7 +9,7 @@ import { tryResolve } from "$lib/shared/inversify/di";
 import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
 import type { ISequenceFeatureExtractor } from "$lib/features/cap-labeler/services/contracts/ISequenceFeatureExtractor";
 import type { IRuleBasedTagger } from "$lib/features/cap-labeler/services/contracts/IRuleBasedTagger";
-import type { IBeatDataConversionService } from "$lib/features/cap-labeler/services/contracts/IBeatDataConversionService";
+import type { IBeatDataConverter } from "$lib/features/cap-labeler/services/contracts/IBeatDataConverter";
 import type {
 	TaggedSequenceEntry,
 	SequenceTagReview,
@@ -37,7 +37,7 @@ export function createTagReviewerState() {
 	// === Services ===
 	let featureExtractor: ISequenceFeatureExtractor | null = null;
 	let tagger: IRuleBasedTagger | null = null;
-	let conversionService: IBeatDataConversionService | null = null;
+	let conversionService: IBeatDataConverter | null = null;
 
 	// === Derived State ===
 	const filteredSequences = $derived.by(() => {
@@ -176,8 +176,8 @@ export function createTagReviewerState() {
 			CAPLabelerTypes.ISequenceFeatureExtractor
 		);
 		tagger = tryResolve<IRuleBasedTagger>(CAPLabelerTypes.IRuleBasedTagger);
-		conversionService = tryResolve<IBeatDataConversionService>(
-			CAPLabelerTypes.IBeatDataConversionService
+		conversionService = tryResolve<IBeatDataConverter>(
+			CAPLabelerTypes.IBeatDataConverter
 		);
 
 		// Load sequences from sequence-index.json

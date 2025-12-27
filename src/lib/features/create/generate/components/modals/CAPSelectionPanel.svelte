@@ -3,14 +3,14 @@ CAPSelectionModal.svelte - Bottom sheet for selecting CAP components
 Refactored to use Drawer component for consistent behavior
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { getContainerInstance } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
   import { onMount } from "svelte";
   import { CAPComponent } from "$lib/features/create/generate/shared/domain/constants/cap-components";
   import { CAPExplanationTextGenerator } from "$lib/features/create/generate/shared/services/implementations/CAPExplanationTextGenerator";
-  import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
+  import type { ICAPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeResolver";
   import CAPComponentGrid from "./CAPComponentGrid.svelte";
   import CAPExplanationPanel from "./CAPExplanationPanel.svelte";
   import CAPModalHeader from "./CAPModalHeader.svelte";
@@ -26,17 +26,17 @@ Refactored to use Drawer component for consistent behavior
       onClose: () => void;
     }>();
 
-  let hapticService: IHapticFeedbackService | null = null;
-  let capTypeService: ICAPTypeService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let CAPTypeResolver: ICAPTypeResolver | null = null;
   let isMultiSelectMode = $state(false);
   const explanationGenerator = new CAPExplanationTextGenerator();
 
   onMount(async () => {
     const container = await getContainerInstance();
-    hapticService = container.get<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = container.get<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    capTypeService = container.get<ICAPTypeService>(TYPES.ICAPTypeService);
+    CAPTypeResolver = container.get<ICAPTypeResolver>(TYPES.ICAPTypeResolver);
   });
 
   // Generate explanation text based on selected components
@@ -46,8 +46,8 @@ Refactored to use Drawer component for consistent behavior
 
   // Check if the current combination is implemented
   const isImplemented = $derived.by(() => {
-    if (!capTypeService || selectionCount === 0) return true;
-    return capTypeService.isImplemented(selectedComponents);
+    if (!CAPTypeResolver || selectionCount === 0) return true;
+    return CAPTypeResolver.isImplemented(selectedComponents);
   });
 
   // Derive selection count and adaptive button text

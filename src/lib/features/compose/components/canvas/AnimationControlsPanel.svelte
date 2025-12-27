@@ -122,6 +122,7 @@
   } = $props();
 
   // BPM state
+  // svelte-ignore state_referenced_locally - intentional: $effect below syncs prop changes
   let bpm = $state(Math.round(speed * DEFAULT_BPM));
   $effect(() => {
     bpm = Math.round(speed * DEFAULT_BPM);

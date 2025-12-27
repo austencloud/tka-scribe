@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { container } from "../../../../../../../shared/inversify/container";
   import { AudioTypes } from "../../../../../../../shared/inversify/types/audio.types";
-  import type { IAudioLibraryService } from "../services/contracts/IAudioLibraryService";
+  import type { IAudioLibrary } from "../services/contracts/IAudioLibrary";
   import type { AudioTrackLocal } from "../domain/models/AudioTrack";
 
   let {
@@ -21,8 +21,8 @@
     onClose: () => void;
   } = $props();
 
-  const audioLibrary = container.get<IAudioLibraryService>(
-    AudioTypes.IAudioLibraryService
+  const audioLibrary = container.get<IAudioLibrary>(
+    AudioTypes.IAudioLibrary
   );
 
   let tracks = $state<AudioTrackLocal[]>([]);

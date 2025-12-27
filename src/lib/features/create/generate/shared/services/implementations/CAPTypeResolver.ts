@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { CAPType } from "../../../circular/domain/models/circular-models";
 import { CAPComponent } from "../../domain/models/generate-models";
-import type { ICAPTypeService } from "../contracts/ICAPTypeService";
+import type { ICAPTypeResolver } from "../contracts/ICAPTypeResolver";
 
 /**
  * Service implementing CAP type parsing and generation algorithms
@@ -11,7 +11,7 @@ import type { ICAPTypeService } from "../contracts/ICAPTypeService";
  * conditional logic for mapping between component sets and CAP type enums.
  */
 @injectable()
-export class CAPTypeService implements ICAPTypeService {
+export class CAPTypeResolver implements ICAPTypeResolver {
   /**
    * Parse CAP type to extract components
    * EXACT ORIGINAL LOGIC from CAPCard.svelte lines 70-79

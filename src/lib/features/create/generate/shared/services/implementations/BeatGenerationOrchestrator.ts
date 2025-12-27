@@ -11,10 +11,10 @@ import type { StartPositionData } from "$lib/features/create/shared/domain/model
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import { PropContinuity } from "../../domain/models/generate-models";
-import type { IBeatConverterService } from "../contracts/IBeatConverterService";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
-import type { IPictographFilterService } from "../contracts/IPictographFilterService";
-import type { ITurnManagementService } from "../contracts/ITurnManagementService";
+import type { IBeatConverter } from "../contracts/IBeatConverter";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
+import type { IPictographFilter } from "../contracts/IPictographFilter";
+import type { ITurnManager } from "../contracts/ITurnManager";
 
 import type {
   BeatGenerationOptions,
@@ -27,14 +27,14 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
   constructor(
     @inject(TYPES.ILetterQueryHandler)
     private letterQueryHandler: ILetterQueryHandler,
-    @inject(TYPES.IPictographFilterService)
-    private pictographFilterService: IPictographFilterService,
-    @inject(TYPES.IBeatConverterService)
-    private beatConverterService: IBeatConverterService,
-    @inject(TYPES.ITurnManagementService)
-    private turnManagementService: ITurnManagementService,
+    @inject(TYPES.IPictographFilter)
+    private PictographFilter: IPictographFilter,
+    @inject(TYPES.IBeatConverter)
+    private BeatConverter: IBeatConverter,
+    @inject(TYPES.ITurnManager)
+    private TurnManager: ITurnManager,
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator,
+    private OrientationCalculator: IOrientationCalculator,
     @inject(TYPES.IArrowPositioningOrchestrator)
     private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
   ) {}
@@ -79,7 +79,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     );
 
     // Filter by prop type to ensure consistency with selected prop
-    allOptions = this.pictographFilterService.filterByPropType(
+    allOptions = this.PictographFilter.filterByPropType(
       allOptions,
       options.propType
     );
@@ -88,20 +88,20 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     let filteredOptions = allOptions;
     const lastBeat = sequence.length > 0 ? sequence[sequence.length - 1] : null;
 
-    filteredOptions = this.pictographFilterService.filterByContinuity(
+    filteredOptions = this.PictographFilter.filterByContinuity(
       filteredOptions,
       lastBeat ?? null
     );
 
     // Filter out static Type 6 pictographs based on level
     // Level 1: No Type 6 allowed (no turns), Level 2+: Only Type 6 with turns
-    filteredOptions = this.pictographFilterService.filterStaticType6(
+    filteredOptions = this.PictographFilter.filterStaticType6(
       filteredOptions,
       options.level
     );
 
     if (options.propContinuity === PropContinuity.CONTINUOUS) {
-      filteredOptions = this.pictographFilterService.filterByRotation(
+      filteredOptions = this.PictographFilter.filterByRotation(
         filteredOptions,
         options.blueRotationDirection,
         options.redRotationDirection
@@ -110,7 +110,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
 
     // Apply end position constraint if specified (for last beat in freeform mode)
     if (options.requiredEndPosition) {
-      filteredOptions = this.pictographFilterService.filterByEndPosition(
+      filteredOptions = this.PictographFilter.filterByEndPosition(
         filteredOptions,
         options.requiredEndPosition
       );
@@ -122,10 +122,10 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
 
     // Random selection
     const selectedOption =
-      this.pictographFilterService.selectRandom(filteredOptions);
+      this.PictographFilter.selectRandom(filteredOptions);
 
     // Convert to beat
-    let nextBeat = this.beatConverterService.convertToBeat(
+    let nextBeat = this.BeatConverter.convertToBeat(
       selectedOption,
       sequence.length,
       options.gridMode
@@ -133,18 +133,18 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
 
     // Set turns if level 2 or 3
     if (options.level === 2 || options.level === 3) {
-      this.turnManagementService.setTurns(nextBeat, turnBlue, turnRed);
+      this.TurnManager.setTurns(nextBeat, turnBlue, turnRed);
     }
 
     // Update orientations
     if (sequence.length > 0) {
-      nextBeat = this.orientationCalculationService.updateStartOrientations(
+      nextBeat = this.OrientationCalculator.updateStartOrientations(
         nextBeat,
         sequence[sequence.length - 1]!
       );
     }
 
-    this.turnManagementService.updateDashStaticRotationDirections(
+    this.TurnManager.updateDashStaticRotationDirections(
       nextBeat,
       options.propContinuity,
       options.blueRotationDirection,
@@ -152,7 +152,7 @@ export class BeatGenerationOrchestrator implements IBeatGenerationOrchestrator {
     );
 
     nextBeat =
-      this.orientationCalculationService.updateEndOrientations(nextBeat);
+      this.OrientationCalculator.updateEndOrientations(nextBeat);
 
     // 🎯 CRITICAL FIX: Calculate arrow placements BEFORE returning the beat
     // This ensures arrows have correct positions instead of default (0, 0)

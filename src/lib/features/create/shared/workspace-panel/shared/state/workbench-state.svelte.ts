@@ -9,14 +9,14 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { BeatData } from "../../../domain/models/BeatData";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { IWorkbenchService } from "../services/contracts/IWorkbenchService";
+import type { IWorkbench } from "../services/contracts/IWorkbench";
 
 /**
  * Creates simplified workbench state
  */
 export function createWorkbenchState() {
   // Get the service
-  const workbenchService = resolve<IWorkbenchService>(TYPES.IWorkbenchService);
+  const Workbench = resolve<IWorkbench>(TYPES.IWorkbench);
 
   // Simple reactive state - just what we need
   let selectedBeatIndex = $state<number | null>(null);
@@ -37,7 +37,7 @@ export function createWorkbenchState() {
     sequence: SequenceData | null
   ): boolean {
     try {
-      const shouldSelect = workbenchService.handleBeatClick(
+      const shouldSelect = Workbench.handleBeatClick(
         beatIndex,
         sequence
       );
@@ -59,7 +59,7 @@ export function createWorkbenchState() {
     sequence: SequenceData
   ): BeatData | null {
     try {
-      const updatedBeat = workbenchService.editBeat(beatIndex, sequence);
+      const updatedBeat = Workbench.editBeat(beatIndex, sequence);
       error = null;
       return updatedBeat;
     } catch (err) {
@@ -75,7 +75,7 @@ export function createWorkbenchState() {
     sequence: SequenceData
   ): BeatData | null {
     try {
-      const updatedBeat = workbenchService.clearBeat(beatIndex, sequence);
+      const updatedBeat = Workbench.clearBeat(beatIndex, sequence);
       error = null;
       return updatedBeat;
     } catch (err) {
@@ -114,7 +114,7 @@ export function createWorkbenchState() {
 
     // Service access for advanced operations
     get service() {
-      return workbenchService;
+      return Workbench;
     },
   };
 }

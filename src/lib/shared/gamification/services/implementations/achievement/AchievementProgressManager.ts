@@ -78,7 +78,7 @@ export class AchievementProgressManager {
         return action === "concept_learned" ? 1 : 0;
 
       case "daily_streak":
-        // Handled by StreakService, check metadata
+        // Handled by StreakTracker, check metadata
         return metadata?.currentStreak === req.target ? req.target : 0;
 
       case "letter_usage":

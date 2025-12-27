@@ -15,10 +15,10 @@ import { getContext, setContext } from "svelte";
 import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
 import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
-import type { CreateModuleServices } from "../types/create-module-services";
+import type { CreateModuleOrchestrators } from "../types/create-module-services";
 import type { SessionManager } from "../services/SessionManager.svelte";
-import type { AutosaveService } from "../services/AutosaveService";
-import type { SequencePersistenceService } from "../services/SequencePersistenceService";
+import type { Autosaver } from "../services/Autosaver";
+import type { SequencePersister } from "../services/SequencePersister";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
@@ -34,12 +34,12 @@ export interface CreateModuleContext {
   panelState: PanelCoordinationState;
 
   // Services
-  services: CreateModuleServices;
+  services: CreateModuleOrchestrators;
 
   // Session management services
   sessionManager: SessionManager | null;
-  autosaveService: AutosaveService | null;
-  sequencePersistenceService: SequencePersistenceService | null;
+  autosaver: Autosaver | null;
+  sequencePersister: SequencePersister | null;
 
   // Layout state
   layout: {

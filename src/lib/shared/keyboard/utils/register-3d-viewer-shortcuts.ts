@@ -5,7 +5,7 @@
  * Actual handlers are bound dynamically when the viewer mounts.
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+import type { IKeyboardShortcutManager } from "../services/contracts/IKeyboardShortcutManager";
 import type { ShortcutRegistrationOptions } from "../domain/types/keyboard-types";
 
 /**
@@ -164,7 +164,7 @@ const VIEWER_3D_SHORTCUTS: Omit<ShortcutRegistrationOptions, "action">[] = [
  * These are placeholder registrations - actual handlers bound by Keyboard3DCoordinator
  */
 export function register3DViewerShortcuts(
-  shortcutService: IKeyboardShortcutService
+  shortcutService: IKeyboardShortcutManager
 ): void {
   const noop = () => {
     // Placeholder action - real action bound dynamically by Keyboard3DCoordinator

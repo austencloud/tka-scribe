@@ -10,7 +10,7 @@
   import { TYPES } from "../../../../inversify/types";
   import { BackgroundType } from "../../../../background/shared/domain/enums/background-enums";
   import type { IDeviceDetector } from "../../../../device/services/contracts/IDeviceDetector";
-  import type { IViewportService } from "../../../../device/services/contracts/IViewportService";
+  import type { IViewportManager } from "../../../../device/services/contracts/IViewportManager";
   import { onMount } from "svelte";
   import IOSBackgroundCard from "./IOSBackgroundCard.svelte";
   import { backgroundsConfig } from "./background-config";
@@ -23,7 +23,7 @@
 
   // Services
   let deviceDetector: IDeviceDetector | null = null;
-  let viewportService: IViewportService | null = null;
+  let viewportService: IViewportManager | null = null;
 
   // Device orientation state
   let orientation = $state<"portrait" | "landscape" | "square">("square");
@@ -61,7 +61,7 @@
   onMount(() => {
     // Initialize services
     deviceDetector = resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-    viewportService = resolve<IViewportService>(TYPES.IViewportService);
+    viewportService = resolve<IViewportManager>(TYPES.IViewportManager);
 
     // Set initial orientation
     updateOrientation();

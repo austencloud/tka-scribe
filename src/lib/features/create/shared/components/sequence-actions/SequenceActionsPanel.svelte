@@ -7,11 +7,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type {
-    IAutocompleteService,
+    IAutocompleter,
     AutocompleteAnalysis,
-  } from "../../services/contracts/IAutocompleteService";
+  } from "../../services/contracts/IAutocompleter";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
@@ -71,10 +71,11 @@
   );
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
-  let autocompleteService: IAutocompleteService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
+  let Autocompleter: IAutocompleter | null = $state(null);
 
   // Local state
+  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
   let isOpen = $state(show);
   let isTransforming = $state(false);
   let showConfirmDialog = $state(false);
@@ -102,9 +103,9 @@
 
   // Autocomplete availability - check if sequence can be completed
   const canAutocomplete = $derived.by(() => {
-    if (!sequence || !autocompleteService) return false;
+    if (!sequence || !Autocompleter) return false;
     try {
-      const analysis = autocompleteService.analyzeSequence(sequence);
+      const analysis = Autocompleter.analyzeSequence(sequence);
       return analysis.canComplete;
     } catch {
       return false;
@@ -118,15 +119,15 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch {
       /* Optional service */
     }
     try {
-      autocompleteService = resolve<IAutocompleteService>(
-        TYPES.IAutocompleteService
+      Autocompleter = resolve<IAutocompleter>(
+        TYPES.IAutocompleter
       );
     } catch {
       /* Optional service */
@@ -267,11 +268,11 @@
   }
 
   function handleAutocomplete() {
-    if (!sequence || !autocompleteService) return;
+    if (!sequence || !Autocompleter) return;
     hapticService?.trigger("selection");
 
     // Analyze the sequence to get available CAP options
-    const analysis = autocompleteService.analyzeSequence(sequence);
+    const analysis = Autocompleter.analyzeSequence(sequence);
     console.log("[Autocomplete] Analysis:", analysis);
 
     if (!analysis.canComplete) {
@@ -285,7 +286,7 @@
   }
 
   async function handleAutocompleteApply(capType: CAPType) {
-    if (!sequence || !autocompleteService || isAutocompleting) return;
+    if (!sequence || !Autocompleter || isAutocompleting) return;
     isAutocompleting = true;
     hapticService?.trigger("selection");
 
@@ -293,7 +294,7 @@
       console.log("[Autocomplete] Applying CAP:", capType);
       console.log("[Autocomplete] Before - beats:", sequence.beats?.length);
 
-      const completedSequence = await autocompleteService.autocompleteSequence(
+      const completedSequence = await Autocompleter.autocompleteSequence(
         sequence,
         { capType }
       );

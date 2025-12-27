@@ -6,23 +6,23 @@
 
 export const ANIMATION_3D_TYPES = {
   // Core math services
-  IAngleMathService: Symbol.for("IAngleMathService"),
-  IOrientationService: Symbol.for("IOrientationService"),
-  IMotionCalculatorService: Symbol.for("IMotionCalculatorService"),
+  IAngleMathCalculator: Symbol.for("IAngleMathCalculator"),
+  IOrientationMapper: Symbol.for("IOrientationMapper"),
+  IMotionCalculator: Symbol.for("IMotionCalculator"),
 
   // Coordinate and interpolation services
   IPlaneCoordinateMapper: Symbol.for("IPlaneCoordinateMapper"),
-  IPropStateInterpolatorService: Symbol.for("IPropStateInterpolatorService"),
+  IPropStateInterpolator: Symbol.for("IPropStateInterpolator"),
 
   // Conversion services
-  ISequenceConverterService: Symbol.for("ISequenceConverterService"),
+  ISequenceConverter: Symbol.for("ISequenceConverter"),
 
   // Persistence
-  IAnimation3DPersistenceService: Symbol.for("IAnimation3DPersistenceService"),
+  IAnimation3DPersister: Symbol.for("IAnimation3DPersister"),
 
   // Avatar system (production-quality rigged model support)
-  IAvatarSkeletonService: Symbol.for("IAvatarSkeletonService"),
-  IIKSolverService: Symbol.for("IIKSolverService"),
-  IAvatarCustomizationService: Symbol.for("IAvatarCustomizationService"),
-  IAvatarAnimationService: Symbol.for("IAvatarAnimationService"),
+  IAvatarSkeletonBuilder: Symbol.for("IAvatarSkeletonBuilder"),
+  IIKSolver: Symbol.for("IIKSolver"),
+  IAvatarCustomizer: Symbol.for("IAvatarCustomizer"),
+  IAvatarAnimator: Symbol.for("IAvatarAnimator"),
 };

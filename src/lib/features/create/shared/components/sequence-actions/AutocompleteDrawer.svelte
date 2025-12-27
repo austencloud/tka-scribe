@@ -9,7 +9,7 @@
   import type {
     CAPOption,
     AutocompleteAnalysis,
-  } from "../../services/contracts/IAutocompleteService";
+  } from "../../services/contracts/IAutocompleter";
   import { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
   interface Props {

@@ -19,9 +19,9 @@
     getSpotlightDisplayMode,
   } from "../application/state/ui/ui-state.svelte";
   import type {
-    ISheetRouterService,
+    ISheetRouter,
     RouteState,
-  } from "../navigation/services/contracts/ISheetRouterService";
+  } from "../navigation/services/contracts/ISheetRouter";
   import { resolve, TYPES } from "../inversify/di";
 
   // Legacy spotlight state (from global app state)
@@ -32,7 +32,7 @@
 
   // Route-based spotlight state
   let spotlightSequenceId = $state<string | null>(null);
-  let sheetRouterService: ISheetRouterService | null = null;
+  let sheetRouterService: ISheetRouter | null = null;
 
   onMount(() => {
     if (typeof window === "undefined") {
@@ -41,11 +41,11 @@
 
     // Resolve sheet router service
     try {
-      sheetRouterService = resolve<ISheetRouterService>(
-        TYPES.ISheetRouterService
+      sheetRouterService = resolve<ISheetRouter>(
+        TYPES.ISheetRouter
       );
     } catch (error) {
-      console.error("Failed to resolve SheetRouterService:", error);
+      console.error("Failed to resolve SheetRouter:", error);
       return;
     }
 

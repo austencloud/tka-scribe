@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SequenceEntry } from "../../domain/models/sequence-models";
   import type { LabeledSequence } from "../../domain/models/label-models";
-  import type { CAPDetectionResult } from "../../services/contracts/ICAPDetectionService";
+  import type { CAPDetectionResult } from "../../services/contracts/ICAPDetector";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
   import { createMotionData, type MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
@@ -11,7 +11,7 @@
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+  import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 
   interface Props {
     sequence: SequenceEntry | null;

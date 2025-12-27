@@ -46,12 +46,12 @@
   import { setSideBySideLayout } from "$lib/shared/application/state/animation-visibility-state.svelte";
   import { onMount, setContext, tick } from "svelte";
   import ErrorBanner from "./ErrorBanner.svelte";
-  import type { CreateModuleServices } from "../types/create-module-services";
-  import type { ICreateModuleInitializationService } from "../services/contracts/ICreateModuleInitializationService";
+  import type { CreateModuleOrchestrators } from "../types/create-module-services";
+  import type { ICreateModuleInitializer } from "../services/contracts/ICreateModuleInitializer";
   import type { ICreateModuleHandlers } from "../services/contracts/ICreateModuleHandlers";
-  import type { ICreationMethodPersistenceService } from "../services/contracts/ICreationMethodPersistenceService";
+  import type { ICreationMethodPersister } from "../services/contracts/ICreationMethodPersister";
   import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
-  import type { IPanelPersistenceService } from "../services/contracts/IPanelPersistenceService";
+  import type { IPanelPersister } from "../services/contracts/IPanelPersister";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
   import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
   import { createPanelCoordinationState } from "../state/panel-coordination-state.svelte";
@@ -73,8 +73,8 @@
   import ShareHubCoordinator from "./coordinators/ShareHubCoordinator.svelte";
   import SaveToLibraryPanel from "./SaveToLibraryPanel.svelte";
   import { SessionManager } from "../services/SessionManager.svelte";
-  import { AutosaveService } from "../services/AutosaveService";
-  import { SequencePersistenceService } from "../services/SequencePersistenceService";
+  import { Autosaver } from "../services/Autosaver";
+  import { SequencePersister } from "../services/SequencePersister";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   const logger = createComponentLogger("CreateModule");
@@ -96,23 +96,22 @@
   // ============================================================================
   // SERVICES & STATE (Resolved via DI)
   // ============================================================================
-  let services: CreateModuleServices | null = $state(null);
+  let services: CreateModuleOrchestrators | null = $state(null);
   let handlers: ICreateModuleHandlers | null = $state(null);
-  let creationMethodPersistence: ICreationMethodPersistenceService | null =
+  let creationMethodPersistence: ICreationMethodPersister | null =
     $state(null);
   let effectCoordinator: ICreateModuleEffectCoordinator | null = $state(null);
   let deepLinkService:
-    | import("../services/contracts/IDeepLinkSequenceService").IDeepLinkSequenceService
+    | import("../services/contracts/IDeepLinkSequenceHandler").IDeepLinkSequenceHandler
     | null = $state(null);
-  let panelPersistenceService: IPanelPersistenceService | null = $state(null);
+  let panelPersistenceService: IPanelPersister | null = $state(null);
   let CreateModuleState: CreateModuleState | null = $state(null);
   let constructTabState: ConstructTabState | null = $state(null);
 
   // Session management services
   let sessionManager: SessionManager | null = $state(null);
-  let autosaveService: AutosaveService | null = $state(null);
-  let sequencePersistenceService: SequencePersistenceService | null =
-    $state(null);
+  let autosaver: Autosaver | null = $state(null);
+  let sequencePersister: SequencePersister | null = $state(null);
 
   // ============================================================================
   // COMPONENT STATE
@@ -173,11 +172,11 @@
     get sessionManager() {
       return sessionManager;
     },
-    get autosaveService() {
-      return autosaveService;
+    get autosaver() {
+      return autosaver;
     },
-    get sequencePersistenceService() {
-      return sequencePersistenceService;
+    get sequencePersister() {
+      return sequencePersister;
     },
     get assemblyTabKey() {
       return assemblyTabKey;
@@ -207,11 +206,11 @@
       panelState,
       navigationState,
       layoutService: services.layoutService,
-      navigationSyncService: services.navigationSyncService,
-      getDeepLinkService: () => deepLinkService,
+      NavigationSyncer: services.NavigationSyncer,
+      getDeepLinker: () => deepLinkService,
       getCreationMethodPersistence: () => creationMethodPersistence,
-      getBeatOperationsService: () => services?.beatOperationsService ?? null,
-      getAutosaveService: () => autosaveService,
+      getBeatOperator: () => services?.BeatOperator ?? null,
+      getAutosaver: () => autosaver,
       isServicesInitialized: () => servicesInitialized,
       hasSelectedCreationMethod: () => hasSelectedCreationMethod,
       setHasSelectedCreationMethod: (value: boolean) => {
@@ -258,8 +257,8 @@
         // Load the create feature module before resolving its services
         await loadFeatureModule("create");
 
-        const initService = resolve<ICreateModuleInitializationService>(
-          TYPES.ICreateModuleInitializationService
+        const initService = resolve<ICreateModuleInitializer>(
+          TYPES.ICreateModuleInitializer
         );
 
         const result = await initService.initialize();
@@ -267,12 +266,12 @@
         // Extract all services and state from initialization result
         services = {
           sequenceService: result.sequenceService,
-          sequencePersistenceService: result.sequencePersistenceService,
-          startPositionService: result.startPositionService,
-          CreateModuleService: result.CreateModuleService,
+          SequencePersister: result.SequencePersister,
+          StartPositionManager: result.StartPositionManager,
+          CreateModuleOrchestrator: result.CreateModuleOrchestrator,
           layoutService: result.layoutService,
-          navigationSyncService: result.navigationSyncService,
-          beatOperationsService: result.beatOperationsService,
+          NavigationSyncer: result.NavigationSyncer,
+          BeatOperator: result.BeatOperator,
           shareService: result.shareService,
         };
 
@@ -317,8 +316,8 @@
 
         // Initialize session management
         sessionManager = new SessionManager();
-        autosaveService = new AutosaveService();
-        sequencePersistenceService = new SequencePersistenceService();
+        autosaver = new Autosaver();
+        sequencePersister = new SequencePersister();
 
         // Wait for auth to be initialized before creating session
         // This prevents race condition where CreateModule initializes before Firebase auth
@@ -338,7 +337,7 @@
             await sessionManager.createSession();
 
             // Start autosave interval (every 30 seconds)
-            autosaveService.startAutosave(
+            autosaver.startAutosave(
               () => CreateModuleState?.sequenceState.currentSequence || null,
               sessionManager.getCurrentSession()?.sessionId || "",
               30000
@@ -446,7 +445,7 @@
       }
 
       // Cleanup session management
-      autosaveService?.stopAutosave();
+      autosaver?.stopAutosave();
       sessionManager?.abandonSession();
     };
   });
@@ -555,7 +554,7 @@
 
     try {
       // Save the sequence to Constructor's localStorage key
-      await services.sequencePersistenceService.saveCurrentState({
+      await services.SequencePersister.saveCurrentState({
         currentSequence: sequence,
         selectedStartPosition: sequence.beats[0] || null,
         hasStartPosition: sequence.beats.length > 0,

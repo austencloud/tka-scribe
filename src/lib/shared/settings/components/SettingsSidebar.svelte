@@ -1,6 +1,6 @@
 <!-- SettingsSidebar.svelte - Improved contrast navigation sidebar -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
@@ -18,7 +18,7 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Runes for tracking sidebar dimensions
   let sidebarElement = $state<HTMLElement | null>(null);
@@ -34,8 +34,8 @@
   const _shouldUseIconAboveText = $derived(tabs.length <= 8);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Track sidebar width changes with ResizeObserver

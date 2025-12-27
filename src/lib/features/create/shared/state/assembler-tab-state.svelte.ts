@@ -14,11 +14,11 @@
 import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 import type { ISequencePersister } from "../services/contracts/ISequencePersister";
 import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
-import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../services/contracts/ISequenceTransformer";
 import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import type { IUndoService } from "../services/contracts/IUndoService";
+import type { IUndoManager } from "../services/contracts/IUndoManager";
 import { createUndoController } from "./create-module/undo-controller.svelte";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -27,17 +27,17 @@ import { TYPES } from "$lib/shared/inversify/types";
  * Creates assembler tab state for assembler-specific concerns
  *
  * @param sequenceService - Injected sequence service for business logic
- * @param sequencePersistenceService - Optional persistence service for state survival
+ * @param SequencePersister - Optional persistence service for state survival
  * @param sequenceStatisticsService - Optional statistics service for sequence analysis
- * @param sequenceTransformationService - Optional transformation service for sequence operations
+ * @param SequenceTransformer - Optional transformation service for sequence operations
  * @param sequenceValidationService - Optional validation service for sequence validation
  * @returns Reactive state object with getters and state mutations
  */
 export function createAssemblerTabState(
   sequenceService?: ISequenceRepository,
-  sequencePersistenceService?: ISequencePersister,
+  SequencePersister?: ISequencePersister,
   sequenceStatisticsService?: ISequenceStatsCalculator,
-  sequenceTransformationService?: ISequenceTransformationService,
+  SequenceTransformer?: ISequenceTransformer,
   sequenceValidationService?: ISequenceValidator
 ) {
   // ============================================================================
@@ -54,19 +54,19 @@ export function createAssemblerTabState(
   const sequenceState: SequenceState | null = sequenceService
     ? createSequenceState({
         sequenceService,
-        ...(sequencePersistenceService && { sequencePersistenceService }),
+        ...(SequencePersister && { SequencePersister }),
         ...(sequenceStatisticsService && { sequenceStatisticsService }),
-        ...(sequenceTransformationService && { sequenceTransformationService }),
+        ...(SequenceTransformer && { SequenceTransformer }),
         ...(sequenceValidationService && { sequenceValidationService }),
         tabId: "assembler", // Persistence isolation - only load/save assembler's data
       })
     : null;
 
   // Assembler tab has its own independent undo controller
-  const undoService = resolve<IUndoService>(TYPES.IUndoService);
+  const UndoManager = resolve<IUndoManager>(TYPES.IUndoManager);
   const undoController = sequenceState
     ? createUndoController({
-        undoService,
+        UndoManager,
         sequenceState,
         getActiveSection: () => "assembler",
         setActiveSectionInternal: async (panel, addToHistory) => {
@@ -103,7 +103,7 @@ export function createAssemblerTabState(
 
     try {
       // Initialize persistence and restore state if available
-      if (sequencePersistenceService) {
+      if (SequencePersister) {
         await sequenceState.initializeWithPersistence();
       }
 

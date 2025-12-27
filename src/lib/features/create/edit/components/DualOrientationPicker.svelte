@@ -2,7 +2,7 @@
 <script lang="ts">
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -24,7 +24,7 @@
   let redOrientation = $state("in");
   let selectedColor = $state<MotionColor | null>(null);
   let selectedArrow = $state<string | null>(null);
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Orientation options
   const orientationOptions = ["in", "out", "clock", "counter"];
@@ -76,8 +76,8 @@
   });
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

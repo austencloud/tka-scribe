@@ -11,7 +11,7 @@ the actual fullscreen state rather than inferring from viewport size.
 -->
 <script lang="ts">
   import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
-  import type { IMobileFullscreenService } from "$lib/shared/mobile/services/contracts/IMobileFullscreenService";
+  import type { IMobileFullscreenManager } from "$lib/shared/mobile/services/contracts/IMobileFullscreenManager";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -21,7 +21,7 @@ the actual fullscreen state rather than inferring from viewport size.
   let message = $state("");
 
   let deviceDetector: IDeviceDetector | null = null;
-  let fullscreenService: IMobileFullscreenService | null = null;
+  let fullscreenService: IMobileFullscreenManager | null = null;
 
   // Session-based dismissal (resets on page reload)
   const DISMISSAL_KEY = "tka-fullscreen-prompt-dismissed-session";
@@ -46,8 +46,8 @@ the actual fullscreen state rather than inferring from viewport size.
       try {
         // Resolve services
         deviceDetector = await resolve<IDeviceDetector>(TYPES.IDeviceDetector);
-        fullscreenService = await resolve<IMobileFullscreenService>(
-          TYPES.IMobileFullscreenService
+        fullscreenService = await resolve<IMobileFullscreenManager>(
+          TYPES.IMobileFullscreenManager
         );
 
         // Pick a random message

@@ -12,8 +12,8 @@
     tryResolve,
   } from "$lib/shared/inversify/di";
   import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-  import type { IBeatDataConversionService } from "../services/contracts/IBeatDataConversionService";
-  import type { ICAPDetectionService, CAPDetectionResult } from "../services/contracts/ICAPDetectionService";
+  import type { IBeatDataConverter } from "../services/contracts/IBeatDataConverter";
+  import type { ICAPDetector, CAPDetectionResult } from "../services/contracts/ICAPDetector";
   import { capLabelerState } from "../state/cap-labeler-state.svelte";
   import { createSectionModeState } from "../state/section-mode-state.svelte";
   import { createBeatPairModeState } from "../state/beatpair-mode-state.svelte";
@@ -41,8 +41,8 @@
   let showManualBuilder = $state(false); // Hide manual designation tools behind toggle
 
   // Store service references after loading (to avoid resolving in $derived)
-  let detectionService = $state<ICAPDetectionService | null>(null);
-  let conversionService = $state<IBeatDataConversionService | null>(null);
+  let detectionService = $state<ICAPDetector | null>(null);
+  let conversionService = $state<IBeatDataConverter | null>(null);
 
   // Create mode-specific state managers (after module loads)
   let sectionState = $state<ReturnType<typeof createSectionModeState>>();
@@ -59,25 +59,25 @@
       await loadFeatureModule("cap-labeler");
 
       // Store reference to detection service AFTER module is loaded
-      let resolvedService: ICAPDetectionService | null = null;
+      let resolvedService: ICAPDetector | null = null;
       try {
-        resolvedService = tryResolve<ICAPDetectionService>(
+        resolvedService = tryResolve<ICAPDetector>(
           CAPLabelerTypes.ICAPLabelerDetectionService
         );
       } catch (err) {
         // Silent - will try direct import
       }
 
-      // If tryResolve failed, log error - CAPDetectionService has too many dependencies for manual instantiation
+      // If tryResolve failed, log error - CAPDetector has too many dependencies for manual instantiation
       if (!resolvedService) {
-        console.error("[CAPLabelerModule] Failed to resolve CAPDetectionService from DI container. Detection features will be unavailable.");
+        console.error("[CAPLabelerModule] Failed to resolve CAPDetector from DI container. Detection features will be unavailable.");
       }
 
       detectionService = resolvedService;
 
       // Also cache the conversion service for beat parsing
-      conversionService = tryResolve<IBeatDataConversionService>(
-        CAPLabelerTypes.IBeatDataConversionService
+      conversionService = tryResolve<IBeatDataConverter>(
+        CAPLabelerTypes.IBeatDataConverter
       );
 
       // Pre-cache all services to ensure they're available for subsequent operations
@@ -171,7 +171,7 @@
     // Use the cached conversion service instead of resolving each time
     if (!conversionService) {
       console.warn(
-        "[CAPLabelerModule] BeatDataConversionService not available (not cached)"
+        "[CAPLabelerModule] BeatDataConverter not available (not cached)"
       );
       return { beats: [], startPosition: null };
     }
@@ -276,7 +276,7 @@
 
     const sorted = Array.from(components).sort().join("_");
 
-    // Component mapping (simplified - real mapping in CAPDesignationService)
+    // Component mapping (simplified - real mapping in CAPDesignator)
     const mapping: Record<string, string> = {
       rotated: "STRICT_ROTATED",
       mirrored: "STRICT_MIRRORED",

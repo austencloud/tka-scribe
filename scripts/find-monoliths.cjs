@@ -13,6 +13,7 @@
  *   node scripts/find-monoliths.cjs --threshold 300  # Custom threshold
  *   node scripts/find-monoliths.cjs --type svelte    # Only .svelte files
  *   node scripts/find-monoliths.cjs --type ts        # Only .ts files
+ *   node scripts/find-monoliths.cjs --include-audited  # Include audited files in results
  */
 
 const fs = require('fs');
@@ -22,6 +23,35 @@ const path = require('path');
 const SRC_DIR = path.join(__dirname, '..', 'src');
 const DEFAULT_THRESHOLD = 300; // Files over this are worth reviewing
 const MONOLITH_THRESHOLD = 600; // Likely has multiple responsibilities
+
+/**
+ * AUDITED ORCHESTRATORS
+ *
+ * Files that have been manually reviewed and are intentionally complex.
+ * These are orchestrators that coordinate multiple services - their size
+ * reflects their coordination role, not poor factoring.
+ *
+ * To add a file: include its path relative to src/ and the audit date.
+ */
+const AUDITED_FILES = {
+  'lib/shared/animation-engine/components/AnimatorCanvas.svelte': {
+    auditDate: '2025-12-26',
+    reason: 'Orchestrator coordinating 11+ animation services. Logic lives in services, this file is reactive glue.',
+    services: [
+      'AnimatorCanvasInitializer',
+      'AnimationRenderLoopService',
+      'PropTextureService',
+      'GlyphTextureService',
+      'AnimationVisibilitySyncService',
+      'TrailSettingsSyncService',
+      'PropTypeChangeService',
+      'SequenceCacheService',
+      'GlyphTransitionService',
+      'CanvasResizer',
+      'AnimationPrecomputationService',
+    ],
+  },
+};
 
 // Scoring weights
 const WEIGHTS = {
@@ -35,6 +65,7 @@ const WEIGHTS = {
 // Parse arguments
 const args = process.argv.slice(2);
 const showAll = args.includes('--all');
+const includeAudited = args.includes('--include-audited');
 const thresholdIdx = args.indexOf('--threshold');
 const threshold = thresholdIdx !== -1 ? parseInt(args[thresholdIdx + 1]) : DEFAULT_THRESHOLD;
 const typeIdx = args.indexOf('--type');
@@ -49,6 +80,14 @@ function analyzeFile(filePath) {
 
   // Skip small files
   if (lineCount < threshold) return null;
+
+  const relativePath = path.relative(SRC_DIR, filePath);
+  // Normalize to forward slashes for cross-platform matching
+  const normalizedPath = relativePath.replace(/\\/g, '/');
+
+  // Check if file has been audited
+  const auditInfo = AUDITED_FILES[normalizedPath];
+  const isAudited = !!auditInfo;
 
   // Count complexity indicators
   const effectCount = (content.match(/\$effect\s*\(/g) || []).length;
@@ -70,9 +109,10 @@ function analyzeFile(filePath) {
   let severity = 'candidate';
   if (lineCount >= MONOLITH_THRESHOLD) severity = 'monolith';
   if (lineCount >= 1000) severity = 'critical';
+  if (isAudited) severity = 'audited';
 
   return {
-    path: path.relative(SRC_DIR, filePath),
+    path: relativePath,
     lines: lineCount,
     effects: effectCount,
     deriveds: derivedCount,
@@ -80,6 +120,8 @@ function analyzeFile(filePath) {
     functions: functionCount,
     score,
     severity,
+    isAudited,
+    auditInfo,
   };
 }
 
@@ -120,17 +162,29 @@ function main() {
   console.log('\n🔍 Scanning for monoliths...\n');
   console.log(`   Threshold: ${threshold} lines`);
   console.log(`   File types: ${extensions.join(', ')}`);
+  if (!includeAudited) {
+    console.log(`   Excluding: ${Object.keys(AUDITED_FILES).length} audited orchestrators`);
+  }
   console.log('');
 
   // Find and analyze files
   const files = findFiles(SRC_DIR, extensions);
-  const analyses = files
+  const allAnalyses = files
     .map(analyzeFile)
     .filter(Boolean)
     .sort((a, b) => b.score - a.score);
 
+  // Separate audited files
+  const auditedFiles = allAnalyses.filter(a => a.isAudited);
+  const analyses = includeAudited
+    ? allAnalyses
+    : allAnalyses.filter(a => !a.isAudited);
+
   if (analyses.length === 0) {
     console.log('✅ No monoliths found above threshold!\n');
+    if (auditedFiles.length > 0) {
+      console.log(`   (${auditedFiles.length} audited orchestrators excluded)\n`);
+    }
     return;
   }
 
@@ -147,6 +201,7 @@ function main() {
       critical: '🔴',
       monolith: '🟠',
       candidate: '🟡',
+      audited: '✅',
     }[file.severity];
 
     const num = String(index + 1).padStart(3);
@@ -174,19 +229,32 @@ function main() {
   const critical = analyses.filter(a => a.severity === 'critical').length;
   const monoliths = analyses.filter(a => a.severity === 'monolith').length;
   const candidates = analyses.filter(a => a.severity === 'candidate').length;
+  const audited = auditedFiles.length;
 
   console.log('\n📊 Summary:');
   console.log(`   🔴 Critical (1000+ lines): ${critical}`);
   console.log(`   🟠 Monolith (500+ lines):  ${monoliths}`);
   console.log(`   🟡 Candidate (${threshold}+ lines): ${candidates}`);
+  if (audited > 0 && !includeAudited) {
+    console.log(`   ✅ Audited (excluded):     ${audited}`);
+  }
 
   // Top recommendation
-  if (toShow.length > 0) {
-    const top = toShow[0];
+  const nonAuditedToShow = toShow.filter(f => !f.isAudited);
+  if (nonAuditedToShow.length > 0) {
+    const top = nonAuditedToShow[0];
     console.log('\n🎯 Top refactor candidate:');
     console.log(`   ${top.path}`);
     console.log(`   ${top.lines} lines, ${top.effects} $effects, ${top.imports} imports`);
     console.log(`   Score: ${top.score}`);
+  }
+
+  // Show audited files summary if any
+  if (auditedFiles.length > 0 && !includeAudited) {
+    console.log('\n📋 Audited orchestrators (use --include-audited to show):');
+    auditedFiles.forEach(f => {
+      console.log(`   ✅ ${f.path} (${f.lines} lines, audited ${f.auditInfo.auditDate})`);
+    });
   }
 
   console.log('');

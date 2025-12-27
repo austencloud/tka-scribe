@@ -4,7 +4,7 @@
  * relying solely on MediaPipe's handedness classification
  */
 
-import type { HandLandmark } from "./IHandLandmarkerService";
+import type { HandLandmark } from "./IHandLandmarker";
 
 export type PalmOrientation = "facing" | "away" | "unknown";
 export type AnatomicalHandedness = "left" | "right" | null;

@@ -35,7 +35,7 @@ import type {
   GridPosition,
 } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { ICAPParameterProvider } from "$lib/features/create/generate/shared/services/contracts/ICAPParameterProvider";
 import {
   INVERTED_CAP_VALIDATION_SET,
@@ -49,7 +49,7 @@ import type { ICAPExecutor } from "../contracts/ICAPExecutor";
 export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator,
+    private OrientationCalculator: IOrientationCalculator,
     @inject(TYPES.ICAPParameterProvider)
     private capParams: ICAPParameterProvider
   ) {}
@@ -191,12 +191,12 @@ export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
 
     // Update orientations
     const beatWithStartOri =
-      this.orientationCalculationService.updateStartOrientations(
+      this.OrientationCalculator.updateStartOrientations(
         newBeat,
         previousBeat
       );
     const finalBeat =
-      this.orientationCalculationService.updateEndOrientations(
+      this.OrientationCalculator.updateEndOrientations(
         beatWithStartOri
       );
 
@@ -319,8 +319,8 @@ export class MirroredSwappedInvertedCAPExecutor implements ICAPExecutor {
       startLocation,
       endLocation, // MIRRORED: Flip location (or same as start for STATIC)
       rotationDirection: finalPropRotDir, // Conditional: No flip for shifts, flip for dashes
-      // Start orientation will be set by orientationCalculationService
-      // End orientation will be calculated by orientationCalculationService
+      // Start orientation will be set by OrientationCalculator
+      // End orientation will be calculated by OrientationCalculator
     };
 
     return mirroredSwappedInvertedMotion;

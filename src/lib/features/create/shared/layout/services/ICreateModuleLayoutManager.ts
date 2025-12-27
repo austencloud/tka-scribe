@@ -6,7 +6,7 @@
 
 import type { LayoutConfiguration } from "../../orchestration/types";
 
-export interface ICreateModuleLayoutService {
+export interface ICreateModuleLayoutManager {
   /**
    * Calculate current layout configuration based on device and viewport
    * @returns Current layout configuration

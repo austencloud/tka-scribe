@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { listPasskeys, registerPasskey } from "../webauthn/passkeysClient";
 
   interface Props {
-    hapticService?: IHapticFeedbackService | null;
+    hapticService?: IHapticFeedback | null;
   }
 
   let { hapticService = null }: Props = $props();

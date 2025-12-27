@@ -6,7 +6,7 @@
  */
 
 import type { RotationDirectionPattern } from "../domain/models/RotationDirectionPatternData";
-import { RotationDirectionPatternService } from "../services/implementations/RotationDirectionPatternService";
+import { RotationDirectionPatternManager } from "../services/implementations/RotationDirectionPatternManager";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const logger = createComponentLogger("RotationDirectionPatternState");
@@ -19,7 +19,7 @@ let _error: string | null = null;
 let _initialized = false;
 
 // Create service instance
-const rotationDirectionPatternService = new RotationDirectionPatternService();
+const rotationDirectionPatternManager = new RotationDirectionPatternManager();
 
 export const rotationDirectionPatternState = {
   // Getters
@@ -54,7 +54,7 @@ export const rotationDirectionPatternState = {
     _error = null;
 
     try {
-      _patterns = await rotationDirectionPatternService.loadPatterns(userId);
+      _patterns = await rotationDirectionPatternManager.loadPatterns(userId);
       _initialized = true;
       logger.log(`Loaded ${_patterns.length} rotation direction patterns`);
     } catch (err) {
@@ -79,11 +79,11 @@ export const rotationDirectionPatternState = {
     _error = null;
 
     try {
-      const patternData = rotationDirectionPatternService.extractPattern(
+      const patternData = rotationDirectionPatternManager.extractPattern(
         sequence as any,
         name
       );
-      const saved = await rotationDirectionPatternService.savePattern(
+      const saved = await rotationDirectionPatternManager.savePattern(
         patternData,
         userId
       );
@@ -111,7 +111,7 @@ export const rotationDirectionPatternState = {
     _error = null;
 
     try {
-      await rotationDirectionPatternService.deletePattern(patternId, userId);
+      await rotationDirectionPatternManager.deletePattern(patternId, userId);
 
       // Remove from local state
       _patterns = _patterns.filter((p) => p.id !== patternId);

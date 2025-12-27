@@ -20,7 +20,7 @@ Shows:
     getPreviousConcept,
   } from "../domain/concepts";
   import type { LearnConcept, ConceptCategory } from "../domain/types";
-  import type { IConceptProgressService } from "../services/contracts/IConceptProgressService";
+  import type { IConceptProgressTracker } from "../services/contracts/IConceptProgressTracker";
   import ProgressMiniMap from "./ProgressMiniMap.svelte";
   import HeroConceptCard from "./HeroConceptCard.svelte";
   import ConceptContext from "./ConceptContext.svelte";
@@ -31,8 +31,8 @@ Shows:
     $props();
 
   // Resolve service via DI
-  const conceptProgressService = resolve<IConceptProgressService>(
-    TYPES.IConceptProgressService
+  const conceptProgressService = resolve<IConceptProgressTracker>(
+    TYPES.IConceptProgressTracker
   );
 
   // Progress state

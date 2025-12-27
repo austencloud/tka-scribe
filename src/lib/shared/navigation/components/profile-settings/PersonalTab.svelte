@@ -5,7 +5,7 @@
   Features sticky footer with save button and adaptive layout.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { authState } from "../../../auth/state/authState.svelte";
   import {
     personalInfoState,
@@ -33,7 +33,7 @@
     onChangeEmail: () => Promise<void>;
     onSignOut: () => Promise<void>;
     signingOut: boolean;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
   }>();
 
   // Sync with auth store

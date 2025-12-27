@@ -1,7 +1,7 @@
 /**
  * Generation Actions State - Reactive wrapper for generation orchestration
  *
- * Delegates complex generation logic to IGenerationOrchestrationService.
+ * Delegates complex generation logic to IGenerationOrchestrator.
  * Manages reactive state and workbench animation updates.
  */
 
@@ -11,8 +11,8 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { resolve, tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { GenerationOptions } from "../shared/domain/models/generate-models";
-import type { IGenerationOrchestrationService } from "../shared/services/contracts/IGenerationOrchestrationService";
-import type { IErrorHandlingService } from "$lib/shared/application/services/contracts/IErrorHandlingService";
+import type { IGenerationOrchestrator } from "../shared/services/contracts/IGenerationOrchestrator";
+import type { IErrorHandler } from "$lib/shared/application/services/contracts/IErrorHandler";
 
 export function createGenerationActionsState(
   sequenceState?: SequenceState,
@@ -21,7 +21,7 @@ export function createGenerationActionsState(
   let isGenerating = $state(false);
   let lastGeneratedSequence = $state<SequenceData | null>(null);
   let generationError = $state<string | null>(null);
-  let orchestrationService: IGenerationOrchestrationService | null = null;
+  let orchestrationService: IGenerationOrchestrator | null = null;
 
   async function onGenerateClicked(options: GenerationOptions) {
     if (isGenerating) return;
@@ -31,8 +31,8 @@ export function createGenerationActionsState(
 
     try {
       if (!orchestrationService) {
-        orchestrationService = resolve<IGenerationOrchestrationService>(
-          TYPES.IGenerationOrchestrationService
+        orchestrationService = resolve<IGenerationOrchestrator>(
+          TYPES.IGenerationOrchestrator
         );
       }
 
@@ -45,8 +45,8 @@ export function createGenerationActionsState(
         error instanceof Error ? error.message : "Unknown generation error";
 
       // Show user-facing error with bug report option
-      const errorService = tryResolve<IErrorHandlingService>(
-        TYPES.IErrorHandlingService
+      const errorService = tryResolve<IErrorHandler>(
+        TYPES.IErrorHandler
       );
       if (errorService) {
         errorService.showUserError({

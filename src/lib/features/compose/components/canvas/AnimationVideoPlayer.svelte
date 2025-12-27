@@ -18,7 +18,7 @@
   import type {
     VideoRenderProgress,
     VideoRenderResult,
-  } from "../../services/contracts/IVideoPreRenderService";
+  } from "../../services/contracts/IVideoPreRenderer";
   import { getVideoPlaybackService } from "../../services/implementations/VideoPlaybackService";
   import { getVideoGenerationCoordinator } from "../../services/implementations/VideoGenerationCoordinator";
   import VideoGenerationStatus from "../video-player/VideoGenerationStatus.svelte";

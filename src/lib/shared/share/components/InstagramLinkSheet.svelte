@@ -6,8 +6,8 @@
 <script lang="ts">
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { IInstagramLinkService } from "../services/contracts/IInstagramLinkService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
+  import type { IInstagramLinker } from "../services/contracts/IInstagramLinker";
   import type { InstagramLink } from "../domain/models/InstagramLink";
   import { onMount } from "svelte";
   import Drawer from "../../foundation/ui/Drawer.svelte";
@@ -28,16 +28,16 @@
   } = $props();
 
   // Services
-  let instagramService = $state<IInstagramLinkService>();
-  let hapticService = $state<IHapticFeedbackService>();
+  let instagramService = $state<IInstagramLinker>();
+  let hapticService = $state<IHapticFeedback>();
 
   onMount(() => {
     instagramService = resolve(
-      TYPES.IInstagramLinkService
-    ) as IInstagramLinkService;
+      TYPES.IInstagramLinker
+    ) as IInstagramLinker;
     hapticService = resolve(
-      TYPES.IHapticFeedbackService
-    ) as IHapticFeedbackService;
+      TYPES.IHapticFeedback
+    ) as IHapticFeedback;
   });
 
   // Form state

@@ -28,7 +28,7 @@ const MOTION_TYPES = {
   STATIC: MotionType.STATIC,
 } as const;
 
-export interface ITurnManagementService {
+export interface ITurnManager {
   /**
    * Set turns on a beat - handles both numeric turns and float conversions
    */
@@ -55,7 +55,7 @@ export interface ITurnManagementService {
 }
 
 @injectable()
-export class TurnManagementService implements ITurnManagementService {
+export class TurnManager implements ITurnManager {
   /**
    * Set turns - exact port from legacy set_turns()
    */

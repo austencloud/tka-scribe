@@ -5,7 +5,7 @@
    * Displays a feed event with user avatar, action description, and timestamp
    */
 
-  import type { FollowingFeedItem } from "$lib/features/dashboard/services/contracts/IFollowingFeedService";
+  import type { FollowingFeedItem } from "$lib/features/dashboard/services/contracts/IFollowingFeedProvider";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
 

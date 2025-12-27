@@ -9,7 +9,7 @@ Manages navigation through 5 pages:
 5. Quiz
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import StaffIntroPage from "./pages/StaffIntroPage.svelte";
@@ -22,8 +22,8 @@ Manages navigation through 5 pages:
     onComplete?: () => void;
   }>();
 
-  const hapticServiceRaw = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticServiceRaw = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Wrap the haptic service to match the simpler interface expected by child components

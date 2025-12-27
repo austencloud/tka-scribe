@@ -43,6 +43,7 @@
   // Embla state
   let emblaApi: EmblaCarouselType;
   let emblaNode: HTMLElement;
+  // svelte-ignore state_referenced_locally - intentional: initial value only, emblaApi handles subsequent navigation
   let currentIndex = $state(initialPanelIndex);
   let canScrollPrev = $state(false);
   let canScrollNext = $state(false);

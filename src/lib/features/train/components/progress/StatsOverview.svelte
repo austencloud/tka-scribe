@@ -4,7 +4,7 @@
   Displays key training statistics in a responsive grid.
 -->
 <script lang="ts">
-  import type { StatsOverview } from "../../services/contracts/IPerformanceHistoryService";
+  import type { StatsOverview } from "../../services/contracts/IPerformanceHistoryTracker";
 
   interface Props {
     stats: StatsOverview;

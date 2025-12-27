@@ -10,7 +10,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
   import type { UIGenerationConfig } from "../../state/generate-config.svelte";
   import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { uiConfigToGenerationOptions } from "$lib/features/create/generate/shared/utils/config-mapper";
 
   let {
@@ -25,11 +25,11 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     customizeOptions?: CustomizeOptions | null;
   }>();
 
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

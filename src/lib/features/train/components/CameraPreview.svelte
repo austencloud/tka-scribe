@@ -2,13 +2,13 @@
 CameraPreview.svelte
 
 Camera feed component for the Train module.
-Displays the camera feed and integrates with the CameraService.
+Displays the camera feed and integrates with the CameraManager.
 Features frame processing loop for pose estimation and overlay support.
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { CameraService } from "../services/implementations/CameraService";
-  import type { ICameraService } from "../services/contracts/ICameraService";
+  import { CameraManager } from "../services/implementations/CameraManager";
+  import type { ICameraManager } from "../services/contracts/ICameraManager";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -29,7 +29,7 @@ Features frame processing loop for pose estimation and overlay support.
 
   let videoContainer: HTMLDivElement;
   let videoElement: HTMLVideoElement | null = $state(null);
-  let cameraService: ICameraService | null = $state(null);
+  let cameraService: ICameraManager | null = $state(null);
   let isInitializing = $state(true);
   let errorMessage = $state<string | null>(null);
   let isActive = $state(false);
@@ -39,7 +39,7 @@ Features frame processing loop for pose estimation and overlay support.
     errorMessage = null;
 
     try {
-      cameraService = new CameraService();
+      cameraService = new CameraManager();
       await cameraService.initialize({ facingMode: "user" });
       await cameraService.start();
 

@@ -5,8 +5,8 @@
  */
 
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
-import { loadAnimationRenderer } from "./AnimatorServiceLoader";
-import { DEFAULT_CANVAS_SIZE } from "../contracts/ICanvasResizeService";
+import { loadAnimationRenderer } from "./AnimatorLoader";
+import { DEFAULT_CANVAS_SIZE } from "../contracts/ICanvasResizer";
 import type {
   IAnimatorCanvasInitializer,
   InitializationResult,
@@ -118,7 +118,7 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
       }
 
       // Step 6: Initialize texture services
-      deps.initializePropTextureService();
+      deps.initializePropTextureLoader();
 
       // Step 7: Load initial textures
       const initialGridMode = deps.gridMode?.toString() ?? "diamond";
@@ -144,7 +144,7 @@ export class AnimatorCanvasInitializer implements IAnimatorCanvasInitializer {
 
       // Step 9: Set up remaining services
       deps.initializeResizeService();
-      deps.initializeGlyphTextureService();
+      deps.initializeGlyphTextureLoader();
       deps.initializeRenderLoopService();
 
       // Step 10: Start render loop

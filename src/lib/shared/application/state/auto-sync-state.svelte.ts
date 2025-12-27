@@ -8,7 +8,7 @@
 import { browser } from "$app/environment";
 import { resolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { IStorageService } from "../../foundation/services/contracts/IStorageService";
+import type { IStorageManager } from "../../foundation/services/contracts/IStorageManager";
 
 // ============================================================================
 // AUTO-SYNC CONFIGURATION
@@ -92,7 +92,7 @@ export function createAutoSyncState<T>(config: AutoSyncConfig) {
       }
 
       const transformedState = beforeSave(state);
-      const storageService = resolve<IStorageService>(TYPES.IStorageService);
+      const storageService = resolve<IStorageManager>(TYPES.IStorageManager);
       storageService.safeLocalStorageSet(key, transformedState);
     } catch (error) {
       console.error(`Error saving state for key "${key}":`, error);
@@ -103,7 +103,7 @@ export function createAutoSyncState<T>(config: AutoSyncConfig) {
     if (!browser) return defaultValue;
 
     try {
-      const storageService = resolve<IStorageService>(TYPES.IStorageService);
+      const storageService = resolve<IStorageManager>(TYPES.IStorageManager);
       const stored = storageService.safeLocalStorageGet<unknown>(key, null);
 
       if (stored === null) {

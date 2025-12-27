@@ -8,10 +8,10 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import { injectable } from "inversify";
 import { ExploreSortMethod } from "$lib/features/discover/shared/domain/enums/discover-enums";
-import type { IDiscoverSortService } from "../contracts/IDiscoverSortService";
+import type { IDiscoverSorter } from "../contracts/IDiscoverSorter";
 
 @injectable()
-export class DiscoverSortService implements IDiscoverSortService {
+export class DiscoverSorter implements IDiscoverSorter {
   sortSequences(
     sequences: SequenceData[],
     sortMethod: ExploreSortMethod

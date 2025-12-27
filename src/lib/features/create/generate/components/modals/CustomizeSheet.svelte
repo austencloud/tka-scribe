@@ -3,7 +3,7 @@ CustomizeSheet.svelte - Sheet for configuring customize generation options
 Follows modern 2026 Material Design patterns with 48px touch targets
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { CustomizeOptions } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
@@ -33,7 +33,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
     gridMode?: GridMode;
   }>();
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Local pending state for editing
   let pendingOptions = $state<CustomizeOptions>({
@@ -44,8 +44,8 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   });
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

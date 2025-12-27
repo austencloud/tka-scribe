@@ -4,14 +4,14 @@ import { DifficultyLevel } from "../../domain/models/generate-models";
 import type {
   CardDescriptor,
   CardHandlers,
-  ICardConfigurationService,
-} from "../contracts/ICardConfigurationService";
+  ICardConfigurator,
+} from "../contracts/ICardConfigurator";
 
 /**
- * Implementation of ICardConfigurationService
+ * Implementation of ICardConfigurator
  * Builds card descriptor arrays with conditional rendering and responsive grid layouts
  */
-export class CardConfigurationService implements ICardConfigurationService {
+export class CardConfigurator implements ICardConfigurator {
   /**
    * Build card descriptors array for rendering
    * Extracted from CardBasedSettingsContainer to separate business logic from presentation

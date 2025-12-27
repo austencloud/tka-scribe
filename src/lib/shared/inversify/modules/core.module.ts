@@ -3,34 +3,33 @@ import { ContainerModule } from "inversify";
 
 // PERFORMANCE FIX: Import services directly to avoid circular dependencies
 import { ApplicationInitializer } from "../../application/services/implementations/ApplicationInitializer";
-import { ComponentManagementService } from "../../application/services/implementations/ComponentManagementService";
-import { DataTransformationService } from "../../application/services/implementations/DataTransformationService";
-import { ErrorHandlingService } from "../../application/services/implementations/ErrorHandlingService";
-import { HapticFeedbackService } from "../../application/services/implementations/HapticFeedbackService";
+import { ComponentManager } from "../../application/services/implementations/ComponentManager";
+import { ErrorHandler } from "../../application/services/implementations/ErrorHandler";
+import { HapticFeedback } from "../../application/services/implementations/HapticFeedback";
 import { ResourceTracker } from "../../application/services/implementations/ResourceTracker";
-import { RippleEffectService } from "../../application/services/implementations/RippleEffectService";
-import { AuthService } from "../../auth/services/implementations/AuthService";
-import { ProfilePictureService } from "../../auth/services/implementations/ProfilePictureService";
-import { UserDocumentService } from "../../auth/services/implementations/UserDocumentService";
-import { SubscriptionService } from "../../subscription/services/implementations/SubscriptionService";
+import { RippleEffect } from "../../application/services/implementations/RippleEffect";
+import { Authenticator } from "../../auth/services/implementations/Authenticator";
+import { ProfilePictureManager } from "../../auth/services/implementations/ProfilePictureManager";
+import { UserDocumentManager } from "../../auth/services/implementations/UserDocumentManager";
+import { SubscriptionManager } from "../../subscription/services/implementations/SubscriptionManager";
 import { createAppState } from "../../application/state/app-state-factory.svelte";
 import { createPerformanceMetricsState } from "../../application/state/PerformanceMetricsState.svelte";
 import { DeviceDetector } from "../../device/services/implementations/DeviceDetector";
-import { ViewportService } from "../../device/services/implementations/ViewportService.svelte";
+import { ViewportManager } from "../../device/services/implementations/ViewportManager.svelte";
 import { createAppStateInitializer } from "../../foundation/services/implementations/data/app-state-initializer.svelte";
-import { FileDownloadService } from "../../foundation/services/implementations/FileDownloadService";
-import { SeoService } from "../../foundation/services/implementations/SeoService";
-import { StorageService } from "../../foundation/services/implementations/StorageService";
-import { SvgImageService } from "../../foundation/services/implementations/SvgImageService";
-import { MobileFullscreenService } from "../../mobile/services/implementations/MobileFullscreenService";
-import { PlatformDetectionService } from "../../mobile/services/implementations/PlatformDetectionService";
-import { GestureService } from "../../mobile/services/implementations/GestureService";
-import { PWAEngagementService } from "../../mobile/services/implementations/PWAEngagementService";
-import { PWAInstallDismissalService } from "../../mobile/services/implementations/PWAInstallDismissalService";
+import { FileDownloader } from "../../foundation/services/implementations/FileDownloader";
+import { SeoManager } from "../../foundation/services/implementations/SeoManager";
+import { StorageManager } from "../../foundation/services/implementations/StorageManager";
+import { SvgImageConverter } from "../../foundation/services/implementations/SvgImageConverter";
+import { MobileFullscreenManager } from "../../mobile/services/implementations/MobileFullscreenManager";
+import { PlatformDetector } from "../../mobile/services/implementations/PlatformDetector";
+import { GestureHandler } from "../../mobile/services/implementations/GestureHandler";
+import { PWAEngagementTracker } from "../../mobile/services/implementations/PWAEngagementTracker";
+import { PWAInstallDismissalManager } from "../../mobile/services/implementations/PWAInstallDismissalManager";
 import { SettingsState } from "../../settings/state/SettingsState.svelte.js";
-import { FirebaseSettingsPersistenceService } from "../../settings/services/implementations/FirebaseSettingsPersistenceService";
-import { OnboardingPersistenceService } from "../../onboarding/services/implementations/OnboardingPersistenceService";
-import { TagService } from "../../../features/library/services/implementations/TagService";
+import { FirebaseSettingsPersister } from "../../settings/services/implementations/FirebaseSettingsPersister";
+import { OnboardingPersister } from "../../onboarding/services/implementations/OnboardingPersister";
+import { TagManager } from "../../../features/library/services/implementations/TagManager";
 import { TYPES } from "../types";
 
 export const coreModule = new ContainerModule(
@@ -39,64 +38,61 @@ export const coreModule = new ContainerModule(
     options.bind(TYPES.IApplicationInitializer).to(ApplicationInitializer);
     options.bind(TYPES.IResourceTracker).to(ResourceTracker);
     options
-      .bind(TYPES.IComponentManagementService)
-      .to(ComponentManagementService);
-    options
-      .bind(TYPES.IDataTransformationService)
-      .to(DataTransformationService);
-    options.bind(TYPES.IErrorHandlingService).to(ErrorHandlingService);
-    options.bind(TYPES.IHapticFeedbackService).to(HapticFeedbackService);
-    options.bind(TYPES.IRippleEffectService).to(RippleEffectService);
+      .bind(TYPES.IComponentManager)
+      .to(ComponentManager);
+    options.bind(TYPES.IErrorHandler).to(ErrorHandler);
+    options.bind(TYPES.IHapticFeedback).to(HapticFeedback);
+    options.bind(TYPES.IRippleEffect).to(RippleEffect);
 
     // === AUTH SERVICES ===
-    options.bind(TYPES.IAuthService).to(AuthService);
+    options.bind(TYPES.IAuthenticator).to(Authenticator);
     options
-      .bind(TYPES.IProfilePictureService)
-      .to(ProfilePictureService)
+      .bind(TYPES.IProfilePictureManager)
+      .to(ProfilePictureManager)
       .inSingletonScope();
     options
-      .bind(TYPES.IUserDocumentService)
-      .to(UserDocumentService)
+      .bind(TYPES.IUserDocumentManager)
+      .to(UserDocumentManager)
       .inSingletonScope();
     options
-      .bind(TYPES.ISubscriptionService)
-      .to(SubscriptionService)
+      .bind(TYPES.ISubscriptionManager)
+      .to(SubscriptionManager)
       .inSingletonScope();
 
     // === MOBILE SERVICES ===
-    options.bind(TYPES.IMobileFullscreenService).to(MobileFullscreenService);
-    options.bind(TYPES.IPlatformDetectionService).to(PlatformDetectionService);
-    options.bind(TYPES.IGestureService).to(GestureService);
-    options.bind(TYPES.IPWAEngagementService).to(PWAEngagementService);
+    options.bind(TYPES.IMobileFullscreenManager).to(MobileFullscreenManager);
+    options.bind(TYPES.IPlatformDetector).to(PlatformDetector);
+    options.bind(TYPES.IGestureHandler).to(GestureHandler);
+    options.bind(TYPES.IPWAEngagementTracker).to(PWAEngagementTracker);
     options
-      .bind(TYPES.IPWAInstallDismissalService)
-      .to(PWAInstallDismissalService);
+      .bind(TYPES.IPWAInstallDismissalManager)
+      .to(PWAInstallDismissalManager);
 
     // === DEVICE SERVICES ===
-    options.bind(TYPES.IViewportService).to(ViewportService).inSingletonScope();
+    options.bind(TYPES.IViewportManager).to(ViewportManager).inSingletonScope();
     options.bind(TYPES.IDeviceDetector).to(DeviceDetector).inSingletonScope();
 
     // === FOUNDATION SERVICES ===
-    options.bind(TYPES.IFileDownloadService).to(FileDownloadService);
-    options.bind(TYPES.IStorageService).to(StorageService);
-    options.bind(TYPES.ISeoService).to(SeoService);
-    options.bind(TYPES.ISvgImageService).to(SvgImageService);
+    options.bind(TYPES.IFileDownloader).to(FileDownloader);
+    options.bind(TYPES.IStorageManager).to(StorageManager);
+    options.bind(TYPES.ISeoManager).to(SeoManager);
+    options.bind(TYPES.ISvgImageConverter).to(SvgImageConverter);
 
     // === SETTINGS SERVICES ===
     options.bind(TYPES.ISettingsState).to(SettingsState);
     options
-      .bind(TYPES.ISettingsPersistenceService)
-      .to(FirebaseSettingsPersistenceService)
+      .bind(TYPES.ISettingsPersister)
+      .to(FirebaseSettingsPersister)
       .inSingletonScope();
 
     // === ONBOARDING SERVICES ===
     options
-      .bind(TYPES.IOnboardingPersistenceService)
-      .to(OnboardingPersistenceService)
+      .bind(TYPES.IOnboardingPersister)
+      .to(OnboardingPersister)
       .inSingletonScope();
 
     // === LIBRARY SERVICES ===
-    options.bind(TYPES.ITagService).to(TagService).inSingletonScope();
+    options.bind(TYPES.ITagManager).to(TagManager).inSingletonScope();
 
     // === STATE SERVICES ===
     options.bind(TYPES.IAppState).toConstantValue(createAppState());

@@ -11,12 +11,12 @@ import type { NavigationState } from "$lib/shared/navigation/state/navigation-st
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
-import type { INavigationSyncService } from "./INavigationSyncService";
-import type { IDeepLinkSequenceService } from "./IDeepLinkSequenceService";
-import type { ICreationMethodPersistenceService } from "./ICreationMethodPersistenceService";
-import type { IBeatOperationsService } from "./IBeatOperationsService";
-import type { AutosaveService } from "../../services/AutosaveService";
+import type { IResponsiveLayoutManager } from "./IResponsiveLayoutManager";
+import type { INavigationSyncer } from "./INavigationSyncer";
+import type { IDeepLinkSequenceHandler } from "./IDeepLinkSequenceHandler";
+import type { ICreationMethodPersister } from "./ICreationMethodPersister";
+import type { IBeatOperator } from "./IBeatOperator";
+import type { Autosaver } from "../../services/Autosaver";
 
 /**
  * Configuration for CreateModule effects
@@ -29,12 +29,12 @@ export interface CreateModuleEffectConfig {
   navigationState: NavigationState;
 
   // Services
-  layoutService: IResponsiveLayoutService;
-  navigationSyncService: INavigationSyncService;
-  getDeepLinkService: () => IDeepLinkSequenceService | null;
-  getCreationMethodPersistence: () => ICreationMethodPersistenceService | null;
-  getBeatOperationsService: () => IBeatOperationsService | null;
-  getAutosaveService: () => AutosaveService | null;
+  layoutService: IResponsiveLayoutManager;
+  NavigationSyncer: INavigationSyncer;
+  getDeepLinker: () => IDeepLinkSequenceHandler | null;
+  getCreationMethodPersistence: () => ICreationMethodPersister | null;
+  getBeatOperator: () => IBeatOperator | null;
+  getAutosaver: () => Autosaver | null;
 
   // State flags
   isServicesInitialized: () => boolean;

@@ -20,7 +20,7 @@ Follows Svelte 5 runes + microservices architecture.
     ExploreNavigationConfig,
     ExploreNavigationItem,
   } from "../domain/models/navigation-models";
-  import type { IHapticFeedbackService } from "../../../../../shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../../../shared/application/services/contracts/IHapticFeedback";
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -38,11 +38,11 @@ Follows Svelte 5 runes + microservices architecture.
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = $state(null);
+  let hapticService: IHapticFeedback | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 
@@ -61,7 +61,7 @@ Follows Svelte 5 runes + microservices architecture.
     onItemClick(section.id, item.id);
   }
 
-  // Note: Section titles already include emojis from NavigationService
+  // Note: Section titles already include emojis from Navigator
   // No need for additional icon function
 
   // Format item count for display

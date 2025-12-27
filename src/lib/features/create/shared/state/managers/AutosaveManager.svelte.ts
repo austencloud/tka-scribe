@@ -4,24 +4,24 @@
  * Marks autosave as dirty when sequence changes.
  */
 
-import type { AutosaveService } from "../../services/AutosaveService";
+import type { Autosaver } from "../../services/Autosaver";
 import type { CreateModuleState } from "../create-module-state.svelte";
 
 export interface AutosaveConfig {
   getCreateModuleState: () => CreateModuleState | null;
-  getAutosaveService: () => AutosaveService | null;
+  getAutosaver: () => Autosaver | null;
 }
 
 export function createAutosaveEffect(config: AutosaveConfig): () => void {
-  const { getCreateModuleState, getAutosaveService } = config;
+  const { getCreateModuleState, getAutosaver } = config;
 
   const cleanup = $effect.root(() => {
     $effect(() => {
       const createModuleState = getCreateModuleState();
-      const autosaveService = getAutosaveService();
+      const Autosaver = getAutosaver();
 
-      if (createModuleState?.sequenceState.currentSequence && autosaveService) {
-        autosaveService.markDirty();
+      if (createModuleState?.sequenceState.currentSequence && Autosaver) {
+        Autosaver.markDirty();
       }
     });
   });

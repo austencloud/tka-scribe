@@ -9,12 +9,12 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { loadSharedModules } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAnnouncementService } from "../services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "../services/contracts/IAnnouncementManager";
   import type { Announcement } from "../domain/models/announcement-models";
   import AnnouncementModal from "./AnnouncementModal.svelte";
 
   // Services
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
 
   // State
   let pendingAnnouncements = $state<Announcement[]>([]);
@@ -32,8 +32,8 @@
       // Wait for Tier 2 modules (including admin) to load
       await loadSharedModules();
 
-      announcementService = resolve<IAnnouncementService>(
-        TYPES.IAnnouncementService
+      announcementService = resolve<IAnnouncementManager>(
+        TYPES.IAnnouncementManager
       );
 
       if (authState.isAuthenticated) {

@@ -9,14 +9,14 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import {
-    getDataCaptureService,
+    getDataCapturer,
     type CaptureState,
-  } from "../services/DataCaptureService";
+  } from "../services/DataCapturer";
   import {
-    getFirebaseMLStorageService,
+    getFirebaseMLStorageManager,
     type SyncProgress,
-  } from "../services/FirebaseMLStorageService";
-  import { getMLTrainingStorage } from "../services/MLTrainingStorageService";
+  } from "../services/FirebaseMLStorage";
+  import { getMLTrainingStorage } from "../services/MLTrainingStorageManager";
   import { auth } from "$lib/shared/auth/firebase";
   import type { PropType, CaptureSession } from "../domain/models";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
@@ -36,8 +36,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }: Props = $props();
 
   // Services
-  const captureService = getDataCaptureService();
-  const firebaseStorage = getFirebaseMLStorageService();
+  const captureService = getDataCapturer();
+  const firebaseStorage = getFirebaseMLStorageManager();
   const localStorage = getMLTrainingStorage();
 
   // State

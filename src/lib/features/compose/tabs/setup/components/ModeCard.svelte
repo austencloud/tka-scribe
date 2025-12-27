@@ -9,7 +9,7 @@
   import type { ComposeMode } from "$lib/features/compose/shared/state/compose-module-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     mode: ComposeMode;
@@ -67,14 +67,14 @@
   const previewConfig = $derived(modePreviewConfig[mode]);
 
   // Haptic feedback
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   try {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   } catch (error) {
-    console.warn("ModeCard: Failed to resolve HapticFeedbackService", error);
+    console.warn("ModeCard: Failed to resolve HapticFeedback", error);
   }
 
   function handleClick() {

@@ -6,7 +6,7 @@
  * Domain: Keyboard Shortcuts - CREATE Module
  */
 
-import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
+import type { IKeyboardShortcutManager } from "../services/contracts/IKeyboardShortcutManager";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import { getCreateModuleRef } from "$lib/features/create/shared/state/create-module-state-ref.svelte";
 import { executeClearSequenceWorkflow } from "$lib/features/create/shared/utils/clearSequenceWorkflow";
@@ -15,7 +15,7 @@ import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 const debug = createComponentLogger("CreateShortcuts");
 
 export function registerCreateShortcuts(
-  service: IKeyboardShortcutService,
+  service: IKeyboardShortcutManager,
   state: ReturnType<typeof createKeyboardShortcutState>
 ) {
   // ==================== Animation Control ====================
@@ -39,7 +39,7 @@ export function registerCreateShortcuts(
       // TODO: Integrate with animation service when pause is implemented
       debug.log("Space pressed - Play/Pause (not yet implemented)");
       // This will need to call something like:
-      // const animService = getAnimationService();
+      // const animService = getAnimator();
       // animService.togglePlayback();
     },
   });

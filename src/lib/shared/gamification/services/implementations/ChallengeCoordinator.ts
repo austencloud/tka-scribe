@@ -24,12 +24,12 @@ import type {
   LeaderboardData,
 } from "../../domain/models/challenge-models";
 import type { IChallengeCoordinator } from "../contracts/IChallengeCoordinator";
-import type { IDailyChallengeService } from "../contracts/IDailyChallengeService";
-import type { IWeeklyChallengeService } from "../contracts/IWeeklyChallengeService";
-import type { ISkillProgressionService } from "../contracts/ISkillProgressionService";
-import type { IAchievementService } from "../contracts/IAchievementService";
-import type { IStreakService } from "../contracts/IStreakService";
-import type { SkillProgressActionType } from "../contracts/ISkillProgressionService";
+import type { IDailyChallengeManager } from "../contracts/IDailyChallengeManager";
+import type { IWeeklyChallengeManager } from "../contracts/IWeeklyChallengeManager";
+import type { ISkillProgressionTracker } from "../contracts/ISkillProgressionTracker";
+import type { IAchievementManager } from "../contracts/IAchievementManager";
+import type { IStreakTracker } from "../contracts/IStreakTracker";
+import type { SkillProgressActionType } from "../contracts/ISkillProgressionTracker";
 import { TYPES } from "../../../inversify/types";
 
 @injectable()
@@ -37,16 +37,16 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
   private _initialized = false;
 
   constructor(
-    @inject(TYPES.IDailyChallengeService)
-    private _dailyChallengeService: IDailyChallengeService,
-    @inject(TYPES.IWeeklyChallengeService)
-    private _weeklyChallengeService: IWeeklyChallengeService,
-    @inject(TYPES.ISkillProgressionService)
-    private _skillProgressionService: ISkillProgressionService,
-    @inject(TYPES.IAchievementService)
-    private _achievementService: IAchievementService,
-    @inject(TYPES.IStreakService)
-    private _streakService: IStreakService
+    @inject(TYPES.IDailyChallengeManager)
+    private _dailyChallengeService: IDailyChallengeManager,
+    @inject(TYPES.IWeeklyChallengeManager)
+    private _weeklyChallengeService: IWeeklyChallengeManager,
+    @inject(TYPES.ISkillProgressionTracker)
+    private _skillProgressionService: ISkillProgressionTracker,
+    @inject(TYPES.IAchievementManager)
+    private _achievementService: IAchievementManager,
+    @inject(TYPES.IStreakTracker)
+    private _streakService: IStreakTracker
   ) {}
 
   // ============================================================================
@@ -478,7 +478,7 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     timeframe: LeaderboardTimeframe,
     _limit: number = 50
   ): Promise<LeaderboardData> {
-    // Placeholder - LeaderboardService will be extended in Phase 5
+    // Placeholder - LeaderboardManager will be extended in Phase 5
     return {
       category,
       timeframe,
@@ -496,7 +496,7 @@ export class ChallengeCoordinator implements IChallengeCoordinator {
     totalUsers: number;
     percentile: number;
   }> {
-    // Placeholder - LeaderboardService will be extended in Phase 5
+    // Placeholder - LeaderboardManager will be extended in Phase 5
     return {
       rank: 0,
       totalUsers: 0,

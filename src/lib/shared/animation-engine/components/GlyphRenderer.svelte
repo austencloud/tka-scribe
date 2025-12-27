@@ -19,13 +19,13 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import type { ITurnsTupleGenerator } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
   import { onMount } from "svelte";
 
   // Resolve service
   const turnsTupleGenerator = resolve(
-    TYPES.ITurnsTupleGeneratorService
-  ) as ITurnsTupleGeneratorService;
+    TYPES.ITurnsTupleGenerator
+  ) as ITurnsTupleGenerator;
 
   let {
     letter = null,

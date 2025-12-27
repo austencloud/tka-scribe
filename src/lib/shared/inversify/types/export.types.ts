@@ -7,15 +7,15 @@
 export const ExportTypes = {
   // Core Export
   IExportService: Symbol.for("IExportService"),
-  IShareService: Symbol.for("IShareService"),
-  IInstagramLinkService: Symbol.for("IInstagramLinkService"),
-  IMediaBundlerService: Symbol.for("IMediaBundlerService"),
+  ISharer: Symbol.for("ISharer"),
+  IInstagramLinker: Symbol.for("IInstagramLinker"),
+  IMediaBundler: Symbol.for("IMediaBundler"),
   IFileExportService: Symbol.for("IFileExportService"),
 
   // Video Export
-  IFirebaseVideoUploadService: Symbol.for("IFirebaseVideoUploadService"),
-  IRecordingPersistenceService: Symbol.for("IRecordingPersistenceService"),
-  ICollaborativeVideoService: Symbol.for("ICollaborativeVideoService"),
+  IFirebaseVideoUploader: Symbol.for("IFirebaseVideoUploader"),
+  IRecordingPersister: Symbol.for("IRecordingPersister"),
+  ICollaborativeVideoManager: Symbol.for("ICollaborativeVideoManager"),
   IVideoExportService: Symbol.for("IVideoExportService"),
   IVideoExportOrchestrator: Symbol.for("IVideoExportOrchestrator"),
   ICompositeVideoRenderer: Symbol.for("ICompositeVideoRenderer"),
@@ -25,11 +25,11 @@ export const ExportTypes = {
   IPageFactoryService: Symbol.for("IPageFactoryService"),
   IPrintablePageLayoutService: Symbol.for("IPrintablePageLayoutService"),
   ITKAImageExportService: Symbol.for("ITKAImageExportService"),
-  ICanvasManagementService: Symbol.for("ICanvasManagementService"),
-  IImageCompositionService: Symbol.for("IImageCompositionService"),
-  ILayoutCalculationService: Symbol.for("ILayoutCalculationService"),
-  IDimensionCalculationService: Symbol.for("IDimensionCalculationService"),
-  IFilenameGeneratorService: Symbol.for("IFilenameGeneratorService"),
+  ICanvasManager: Symbol.for("ICanvasManager"),
+  IImageComposer: Symbol.for("IImageComposer"),
+  ILayoutCalculator: Symbol.for("ILayoutCalculator"),
+  IDimensionCalculator: Symbol.for("IDimensionCalculator"),
+  IFilenameGenerator: Symbol.for("IFilenameGenerator"),
   IImagePreviewGenerator: Symbol.for("IImagePreviewGenerator"),
 
   // Word Card Export
@@ -37,25 +37,25 @@ export const ExportTypes = {
     "IWordCardExportIntegrationService"
   ),
   IWordCardExportOrchestrator: Symbol.for("IWordCardExportOrchestrator"),
-  IWordCardImageGenerationService: Symbol.for(
-    "IWordCardImageGenerationService"
+  IWordCardImageGenerator: Symbol.for(
+    "IWordCardImageGenerator"
   ),
-  IWordCardImageConversionService: Symbol.for(
-    "IWordCardImageConversionService"
+  IWordCardImageConverter: Symbol.for(
+    "IWordCardImageConverter"
   ),
-  IWordCardBatchProcessingService: Symbol.for(
-    "IWordCardBatchProcessingService"
+  IWordCardBatchProcessor: Symbol.for(
+    "IWordCardBatchProcessor"
   ),
   IWordCardExportProgressTracker: Symbol.for("IWordCardExportProgressTracker"),
-  IWordCardCacheService: Symbol.for("IWordCardCacheService"),
-  IWordCardSVGCompositionService: Symbol.for("IWordCardSVGCompositionService"),
-  IWordCardMetadataOverlayService: Symbol.for(
-    "IWordCardMetadataOverlayService"
+  IWordCardCache: Symbol.for("IWordCardCache"),
+  IWordCardSVGComposer: Symbol.for("IWordCardSVGComposer"),
+  IWordCardMetadataOverlay: Symbol.for(
+    "IWordCardMetadataOverlay"
   ),
 
   // Format Conversion
-  IImageFormatConverterService: Symbol.for("IImageFormatConverterService"),
-  ISVGToCanvasConverterService: Symbol.for("ISVGToCanvasConverterService"),
+  IImageFormatConverter: Symbol.for("IImageFormatConverter"),
+  ISVGToCanvasConverter: Symbol.for("ISVGToCanvasConverter"),
 
   // Config
   IExportConfigManager: Symbol.for("IExportConfigManager"),

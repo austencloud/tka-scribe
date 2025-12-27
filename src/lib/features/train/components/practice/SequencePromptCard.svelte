@@ -14,7 +14,7 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
 
   interface Props {
@@ -25,14 +25,14 @@
 
   const practiceState = getTrainPracticeState();
   let showBrowser = $state(false);
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Get recent sequences from state
   const recentSequences = $derived(practiceState.recentSequences);
 
   onMount(() => {
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 

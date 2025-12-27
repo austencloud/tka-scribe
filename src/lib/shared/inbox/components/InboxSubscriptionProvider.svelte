@@ -14,7 +14,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { inboxState } from "../state/inbox-state.svelte";
-  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
+  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationManager";
   import { notificationService } from "$lib/features/feedback/services/implementations/Notifier";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";

@@ -6,10 +6,10 @@
 
 import { injectable, inject } from "inversify";
 import type {
-  IAudioLibraryService,
+  IAudioLibrary,
   UploadResult,
   DownloadProgress,
-} from "../contracts/IAudioLibraryService";
+} from "../contracts/IAudioLibrary";
 import type { AudioTrackLocal } from "../../domain/models/AudioTrack";
 import {
   saveAudio,
@@ -26,7 +26,7 @@ import {
   updateLastPlayed,
   updateTrackMetadata,
 } from "../../persistence/audio-library-metadata-sync";
-import type { IAudioStorageService } from "../contracts/IAudioStorageService";
+import type { IAudioStorageManager } from "../contracts/IAudioStorageManager";
 import { AudioTypes } from "../../../../../../../../shared/inversify/types/audio.types";
 
 /**
@@ -60,13 +60,13 @@ async function extractAudioMetadata(file: File): Promise<{ duration: number }> {
 }
 
 @injectable()
-export class AudioLibraryService implements IAudioLibraryService {
+export class AudioLibraryService implements IAudioLibrary {
   private library: AudioTrackLocal[] = [];
   private libraryLoaded = false;
 
   constructor(
-    @inject(AudioTypes.IAudioStorageService)
-    private audioStorage: IAudioStorageService
+    @inject(AudioTypes.IAudioStorageManager)
+    private audioStorage: IAudioStorageManager
   ) {}
 
   async uploadAudioFile(

@@ -16,7 +16,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { updateSequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { ISequenceStatsCalculator } from "../../services/contracts/ISequenceStatsCalculator";
-import type { ISequenceTransformationService } from "../../services/contracts/ISequenceTransformationService";
+import type { ISequenceTransformer } from "../../services/contracts/ISequenceTransformer";
 import type { ISequenceValidator } from "../../services/contracts/ISequenceValidator";
 import type { SequenceCoreState } from "../core/SequenceCoreState.svelte";
 import type { SequenceSelectionState } from "../selection/SequenceSelectionState.svelte";
@@ -26,7 +26,7 @@ export interface TransformOperationsConfig {
   coreState: SequenceCoreState;
   selectionState: SequenceSelectionState;
   sequenceStatisticsService?: ISequenceStatsCalculator | null;
-  sequenceTransformationService?: ISequenceTransformationService | null;
+  SequenceTransformer?: ISequenceTransformer | null;
   sequenceValidationService?: ISequenceValidator | null;
   onError?: (error: string) => void;
   onSave?: () => Promise<void>;
@@ -39,7 +39,7 @@ export function createSequenceTransformOperations(
     coreState,
     selectionState,
     sequenceStatisticsService,
-    sequenceTransformationService,
+    SequenceTransformer,
     sequenceValidationService,
     onError,
     onSave,
@@ -87,13 +87,13 @@ export function createSequenceTransformOperations(
     },
 
     async mirrorSequence() {
-      if (!coreState.currentSequence || !sequenceTransformationService) {
+      if (!coreState.currentSequence || !SequenceTransformer) {
         return;
       }
 
       try {
         console.log("🔄 Mirroring sequence...");
-        const updatedSequence = sequenceTransformationService.mirrorSequence(
+        const updatedSequence = SequenceTransformer.mirrorSequence(
           coreState.currentSequence
         );
         console.log("✅ Got mirrored sequence:", updatedSequence);
@@ -117,10 +117,10 @@ export function createSequenceTransformOperations(
     },
 
     async swapColors() {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
-        const updatedSequence = sequenceTransformationService.swapColors(
+        const updatedSequence = SequenceTransformer.swapColors(
           coreState.currentSequence
         );
         coreState.setCurrentSequence(updatedSequence);
@@ -140,11 +140,11 @@ export function createSequenceTransformOperations(
     },
 
     async rotateSequence(direction: "clockwise" | "counterclockwise") {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
         const rotationAmount = direction === "clockwise" ? 1 : -1;
-        const updatedSequence = sequenceTransformationService.rotateSequence(
+        const updatedSequence = SequenceTransformer.rotateSequence(
           coreState.currentSequence,
           rotationAmount
         );
@@ -165,11 +165,11 @@ export function createSequenceTransformOperations(
     },
 
     duplicateSequence(newName?: string): SequenceData | null {
-      if (!coreState.currentSequence || !sequenceTransformationService)
+      if (!coreState.currentSequence || !SequenceTransformer)
         return null;
 
       try {
-        const duplicated = sequenceTransformationService.duplicateSequence(
+        const duplicated = SequenceTransformer.duplicateSequence(
           coreState.currentSequence,
           newName
         );
@@ -182,11 +182,11 @@ export function createSequenceTransformOperations(
     },
 
     async rewindSequence() {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
         const rewindSequence =
-          await sequenceTransformationService.rewindSequence(
+          await SequenceTransformer.rewindSequence(
             coreState.currentSequence
           );
         coreState.setCurrentSequence(rewindSequence);
@@ -206,10 +206,10 @@ export function createSequenceTransformOperations(
     },
 
     async shiftStartPosition(targetBeatNumber: number) {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
-        const shiftedSequence = sequenceTransformationService.shiftStartPosition(
+        const shiftedSequence = SequenceTransformer.shiftStartPosition(
           coreState.currentSequence,
           targetBeatNumber
         );
@@ -230,11 +230,11 @@ export function createSequenceTransformOperations(
     },
 
     async flipSequence() {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
         console.log("🔄 Flipping sequence...");
-        const flippedSequence = sequenceTransformationService.flipSequence(
+        const flippedSequence = SequenceTransformer.flipSequence(
           coreState.currentSequence
         );
         console.log("✅ Got flipped sequence:", flippedSequence);
@@ -258,12 +258,12 @@ export function createSequenceTransformOperations(
     },
 
     async invertSequence() {
-      if (!coreState.currentSequence || !sequenceTransformationService) return;
+      if (!coreState.currentSequence || !SequenceTransformer) return;
 
       try {
         console.log("🔄 Inverting sequence rotation directions...");
         const invertedSequence =
-          await sequenceTransformationService.invertSequence(
+          await SequenceTransformer.invertSequence(
             coreState.currentSequence
           );
         console.log("✅ Got inverted sequence:", invertedSequence);

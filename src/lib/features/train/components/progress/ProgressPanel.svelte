@@ -8,12 +8,12 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IPerformanceHistoryService } from "../../services/contracts/IPerformanceHistoryService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IPerformanceHistoryTracker } from "../../services/contracts/IPerformanceHistoryTracker";
   import type {
     StatsOverview,
     PersonalBest,
-  } from "../../services/contracts/IPerformanceHistoryService";
+  } from "../../services/contracts/IPerformanceHistoryTracker";
   import type { StoredPerformance } from "../../domain/models/TrainDatabaseModels";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -25,17 +25,17 @@
   let stats = $state<StatsOverview | null>(null);
   let personalBests = $state<PersonalBest[]>([]);
   let recentSessions = $state<StoredPerformance[]>([]);
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   const hasData = $derived(stats && stats.totalSessions > 0);
 
   onMount(async () => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     try {
-      const historyService = resolve<IPerformanceHistoryService>(
-        TYPES.IPerformanceHistoryService
+      const historyService = resolve<IPerformanceHistoryTracker>(
+        TYPES.IPerformanceHistoryTracker
       );
 
       const [statsData, bestsData, sessionsData] = await Promise.all([

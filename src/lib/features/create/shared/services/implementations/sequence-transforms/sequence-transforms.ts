@@ -22,7 +22,7 @@ import {
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { isBeat } from "../../../domain/type-guards/pictograph-type-guards";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 import {

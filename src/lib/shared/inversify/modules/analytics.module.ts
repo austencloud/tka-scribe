@@ -6,22 +6,22 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
-import type { ISessionTrackingService } from "../../analytics/services/contracts/ISessionTrackingService";
-import { ActivityLogService } from "../../analytics/services/implementations/ActivityLogService";
-import { SessionTrackingService } from "../../analytics/services/implementations/SessionTrackingService";
+import type { IActivityLogger } from "../../analytics/services/contracts/IActivityLogger";
+import type { ISessionTracker } from "../../analytics/services/contracts/ISessionTracker";
+import { ActivityLogger } from "../../analytics/services/implementations/ActivityLogger";
+import { SessionTracker } from "../../analytics/services/implementations/SessionTracker";
 
 export const analyticsModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
-    // SessionTrackingService must be registered first (ActivityLogService depends on it)
+    // SessionTracker must be registered first (ActivityLogger depends on it)
     options
-      .bind<ISessionTrackingService>(TYPES.ISessionTrackingService)
-      .to(SessionTrackingService)
+      .bind<ISessionTracker>(TYPES.ISessionTracker)
+      .to(SessionTracker)
       .inSingletonScope();
 
     options
-      .bind<IActivityLogService>(TYPES.IActivityLogService)
-      .to(ActivityLogService)
+      .bind<IActivityLogger>(TYPES.IActivityLogger)
+      .to(ActivityLogger)
       .inSingletonScope();
   }
 );

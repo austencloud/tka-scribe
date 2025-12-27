@@ -10,7 +10,7 @@
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import { openAuthDialog } from "$lib/shared/auth/state/auth-ui-state.svelte";
 
@@ -20,7 +20,7 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Popover state
   let showPopover = $state(false);
@@ -28,8 +28,8 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch (error) {
       console.error("Failed to resolve haptic service", error);

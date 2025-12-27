@@ -10,9 +10,9 @@ import type { MotionData } from "../../domain/models/MotionData";
 import type { PropType } from "../../../prop/domain/enums/PropType";
 import type { PropAssets } from "../../../prop/domain/models/PropAssets";
 import type { PropPosition } from "../../../prop/domain/models/PropPosition";
-import type { IPropPlacementService } from "../../../prop/services/contracts/IPropPlacementService";
+import type { IPropPlacer } from "../../../prop/services/contracts/IPropPlacer";
 import type { IPropSvgLoader } from "../../../prop/services/contracts/IPropSvgLoader";
-import type { IPropTypeConfigurationService } from "../../../prop/services/contracts/IPropTypeConfigurationService";
+import type { IPropTypeConfigurator } from "../../../prop/services/contracts/IPropTypeConfigurator";
 
 export interface PictographPropState {
   readonly propPositions: Record<string, PropPosition>;
@@ -26,8 +26,8 @@ export interface PictographPropState {
 
 export function createPictographPropState(
   propSvgLoader: IPropSvgLoader,
-  propPlacementService: IPropPlacementService,
-  propTypeConfigService: IPropTypeConfigurationService,
+  PropPlacer: IPropPlacer,
+  propTypeConfigService: IPropTypeConfigurator,
   useAnimatedProps: boolean = false
 ): PictographPropState {
   // Prop positioning state
@@ -108,7 +108,7 @@ export function createPictographPropState(
                 motionDataWithUserProp,
                 useAnimatedProps
               ),
-              propPlacementService.calculatePlacement(
+              PropPlacer.calculatePlacement(
                 updatedPictographData,
                 motionDataWithUserProp
               ),

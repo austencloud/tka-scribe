@@ -10,7 +10,7 @@ export const AnimationTypes = {
   IAnimationLoopService: Symbol.for("IAnimationLoopService"),
   IAnimationPlaybackController: Symbol.for("IAnimationPlaybackController"),
   IAnimationStateService: Symbol.for("IAnimationStateService"),
-  IAnimationStorageService: Symbol.for("IAnimationStorageService"),
+  IAnimationStorageManager: Symbol.for("IAnimationStorageManager"),
   IAnimationControlService: Symbol.for("IAnimationControlService"),
 
   // Beat & Prop Calculation
@@ -36,7 +36,7 @@ export const AnimationTypes = {
   ISVGGenerator: Symbol.for("ISVGGenerator"),
 
   // Trail
-  ITrailCaptureService: Symbol.for("ITrailCaptureService"),
+  ITrailCapturer: Symbol.for("ITrailCapturer"),
 
   // Mode-Specific
   ISequenceNormalizationService: Symbol.for("ISequenceNormalizationService"),

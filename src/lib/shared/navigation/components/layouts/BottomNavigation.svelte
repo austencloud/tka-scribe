@@ -2,7 +2,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { Section } from "$lib/shared/navigation/domain/types";
   import NavButton from "$lib/shared/navigation/components/buttons/NavButton.svelte";
   import ModuleSwitcherButton from "$lib/shared/navigation/components/buttons/ModuleSwitcherButton.svelte";
@@ -51,7 +51,7 @@
   let availableWidth = $state(0);
   let backButtonLongPressTimer: ReturnType<typeof setTimeout> | null = null;
   let backButtonSuppressClick = $state(false);
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // Calculate required width for all tabs
   // Each section button needs: min 48px base + 8px gap
@@ -124,12 +124,12 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch (error) {
       console.warn(
-        "BottomNavigation: Failed to resolve IHapticFeedbackService",
+        "BottomNavigation: Failed to resolve IHapticFeedback",
         error
       );
     }

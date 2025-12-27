@@ -25,8 +25,8 @@
   // Services
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IResponsiveLayoutService } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutService";
-  import type { IKeyboardShortcutService } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutService";
+  import type { IResponsiveLayoutManager } from "$lib/features/create/shared/services/contracts/IResponsiveLayoutManager";
+  import type { IKeyboardShortcutManager } from "$lib/shared/keyboard/services/contracts/IKeyboardShortcutManager";
   import { registerAnimationShortcuts } from "../utils/register-animation-shortcuts";
 
   // Types
@@ -227,7 +227,7 @@
   // KEYBOARD SHORTCUTS
   // ============================================================================
 
-  let shortcutService: IKeyboardShortcutService | null = null;
+  let shortcutService: IKeyboardShortcutManager | null = null;
   let unregisterShortcuts: (() => void) | null = null;
 
   function setupKeyboardShortcuts() {
@@ -279,20 +279,20 @@
   // ============================================================================
 
   // Detect side-by-side layout internally if not provided via prop
-  let layoutService: IResponsiveLayoutService | null = null;
+  let layoutService: IResponsiveLayoutManager | null = null;
   let detectedSideBySide = $state(false);
 
   onMount(() => {
-    layoutService = tryResolve<IResponsiveLayoutService>(
-      TYPES.IResponsiveLayoutService
+    layoutService = tryResolve<IResponsiveLayoutManager>(
+      TYPES.IResponsiveLayoutManager
     );
     if (layoutService) {
       detectedSideBySide = layoutService.shouldUseSideBySideLayout();
     }
 
     // Try to resolve keyboard shortcut service
-    shortcutService = tryResolve<IKeyboardShortcutService>(
-      TYPES.IKeyboardShortcutService
+    shortcutService = tryResolve<IKeyboardShortcutManager>(
+      TYPES.IKeyboardShortcutManager
     );
   });
 

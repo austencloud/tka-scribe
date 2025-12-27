@@ -9,7 +9,7 @@ Orchestrator component that manages navigation between 5 lesson pages:
 -->
 <script lang="ts">
   import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { createType1ConceptState } from "./state/type1-concept-state.svelte";
   import Type1IntroPage from "./pages/Type1IntroPage.svelte";
   import Type1ProspinPage from "./pages/Type1ProspinPage.svelte";
@@ -19,8 +19,8 @@ Orchestrator component that manages navigation between 5 lesson pages:
 
   let { onComplete }: { onComplete?: () => void } = $props();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   const state = createType1ConceptState({

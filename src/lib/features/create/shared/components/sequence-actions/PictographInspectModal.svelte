@@ -10,9 +10,9 @@
   import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { IArrowPositioningOrchestrator } from "$lib/shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
-  import type { ISpecialPlacementService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ISpecialPlacementService";
+  import type { ISpecialPlacer } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ISpecialPlacer";
   import type { IRotationAngleOverrideKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
-  import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import type { ITurnsTupleGenerator } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
   import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
   import { SpecialPlacementOriKeyGenerator } from "$lib/shared/pictograph/arrow/positioning/key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
   import { resolve } from "$lib/shared/inversify/di";
@@ -97,8 +97,8 @@
 
   function calculateLookupKeys(pictographData: PictographData) {
     try {
-      const tupleGenerator = resolve<ITurnsTupleGeneratorService>(
-        TYPES.ITurnsTupleGeneratorService
+      const tupleGenerator = resolve<ITurnsTupleGenerator>(
+        TYPES.ITurnsTupleGenerator
       );
       const gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
       const rotationKeyGenerator = resolve<IRotationAngleOverrideKeyGenerator>(
@@ -168,8 +168,8 @@
 
   async function checkRotationOverrides(pictographData: PictographData) {
     try {
-      const specialPlacementService = resolve<ISpecialPlacementService>(
-        TYPES.ISpecialPlacementService
+      const SpecialPlacer = resolve<ISpecialPlacer>(
+        TYPES.ISpecialPlacer
       );
       const rotationKeyGenerator = resolve<IRotationAngleOverrideKeyGenerator>(
         TYPES.IRotationAngleOverrideKeyGenerator
@@ -185,7 +185,7 @@
             pictographData
           );
           const blueHasOverride =
-            await specialPlacementService.hasRotationAngleOverride(
+            await SpecialPlacer.hasRotationAngleOverride(
               blueMotionData,
               pictographData,
               blueKey
@@ -206,7 +206,7 @@
             pictographData
           );
           const redHasOverride =
-            await specialPlacementService.hasRotationAngleOverride(
+            await SpecialPlacer.hasRotationAngleOverride(
               redMotionData,
               pictographData,
               redKey

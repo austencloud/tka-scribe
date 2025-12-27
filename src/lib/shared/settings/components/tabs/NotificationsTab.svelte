@@ -8,7 +8,7 @@
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAnnouncementService } from "$lib/features/admin/services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "$lib/features/admin/services/contracts/IAnnouncementManager";
   import type { Announcement } from "$lib/features/admin/domain/models/announcement-models";
   import NotificationPreferencesPanel from "$lib/features/feedback/components/NotificationPreferencesPanel.svelte";
   import NotificationsHero from "$lib/shared/settings/components/notifications/NotificationsHero.svelte";
@@ -16,7 +16,7 @@
   import NotificationsSectionShell from "$lib/shared/settings/components/notifications/NotificationsSectionShell.svelte";
 
   // Services
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
 
   // State
   let announcements = $state<Announcement[]>([]);
@@ -25,8 +25,8 @@
 
   onMount(async () => {
     try {
-      announcementService = resolve<IAnnouncementService>(
-        TYPES.IAnnouncementService
+      announcementService = resolve<IAnnouncementManager>(
+        TYPES.IAnnouncementManager
       );
       await loadAnnouncements();
     } catch (error) {

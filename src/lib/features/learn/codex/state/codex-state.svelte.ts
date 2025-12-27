@@ -2,7 +2,7 @@
  * Codex State Management with Svelte 5 Runes
  *
  * Handles reactive state for the codex component including
- * search, pictograph data, operations, and orientation using the CodexService.
+ * search, pictograph data, operations, and orientation using the Codex.
  * Matches desktop functionality with row organization and control operations.
  */
 
@@ -11,7 +11,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 
 // CRITICAL: Import container to ensure it loads
 import { resolve } from "$lib/shared/inversify/di";
-import type { ICodexService } from "../services/contracts/ICodexService";
+import type { ICodex } from "../services/contracts/ICodex";
 
 // Container is now loaded successfully - debug messages removed
 
@@ -21,9 +21,9 @@ import type { ICodexService } from "../services/contracts/ICodexService";
 export function createCodexState() {
   // Using direct container import instead of context
 
-  function getCodexService(): ICodexService {
+  function getCodex(): ICodex {
     // Use the directly imported container instead of context
-    return resolve<ICodexService>(TYPES.ICodexService);
+    return resolve<ICodex>(TYPES.ICodex);
   }
 
   // Core reactive state using Svelte 5 runes
@@ -82,7 +82,7 @@ export function createCodexState() {
     error = null;
 
     try {
-      const codexService = getCodexService();
+      const codexService = getCodex();
 
       // Load pictographs from service
       const allPictographs = await codexService.loadAllPictographs();
@@ -126,7 +126,7 @@ export function createCodexState() {
 
     isProcessingOperation = true;
     try {
-      const codexService = getCodexService();
+      const codexService = getCodex();
       const rotatedPictographs =
         await codexService.rotateAllPictographs(pictographs);
       pictographs = rotatedPictographs;
@@ -146,7 +146,7 @@ export function createCodexState() {
 
     isProcessingOperation = true;
     try {
-      const codexService = getCodexService();
+      const codexService = getCodex();
       const mirroredPictographs =
         await codexService.mirrorAllPictographs(pictographs);
       pictographs = mirroredPictographs;
@@ -166,7 +166,7 @@ export function createCodexState() {
 
     isProcessingOperation = true;
     try {
-      const codexService = getCodexService();
+      const codexService = getCodex();
       const swappedPictographs =
         await codexService.colorSwapAllPictographs(pictographs);
       pictographs = swappedPictographs;
@@ -237,12 +237,12 @@ export function createCodexState() {
     },
 
     async getPictographByLetter(letter: string) {
-      const codexService = getCodexService();
+      const codexService = getCodex();
       return await codexService.getPictographByLetter(letter);
     },
 
     async getAllPictographsForLetter(letter: string) {
-      const codexService = getCodexService();
+      const codexService = getCodex();
       return await codexService.getAllPictographsForLetter(letter);
     },
 

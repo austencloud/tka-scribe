@@ -26,7 +26,7 @@ import {
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import {
   INVERTED_CAP_VALIDATION_SET,
   getInvertedLetter,
@@ -37,7 +37,7 @@ import type { SliceSize } from "../../domain/models/circular-models";
 export class SwappedInvertedCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator
+    private OrientationCalculator: IOrientationCalculator
   ) {}
 
   /**
@@ -166,12 +166,12 @@ export class SwappedInvertedCAPExecutor {
 
     // Update orientations
     const beatWithStartOri =
-      this.orientationCalculationService.updateStartOrientations(
+      this.OrientationCalculator.updateStartOrientations(
         newBeat,
         previousBeat
       );
     const finalBeat =
-      this.orientationCalculationService.updateEndOrientations(
+      this.OrientationCalculator.updateEndOrientations(
         beatWithStartOri
       );
 
@@ -292,8 +292,8 @@ export class SwappedInvertedCAPExecutor {
       startLocation,
       endLocation,
       rotationDirection: invertedPropRotDir, // Flipped
-      // Start orientation will be set by orientationCalculationService
-      // End orientation will be calculated by orientationCalculationService
+      // Start orientation will be set by OrientationCalculator
+      // End orientation will be calculated by OrientationCalculator
     };
 
     return swappedInvertedMotion;

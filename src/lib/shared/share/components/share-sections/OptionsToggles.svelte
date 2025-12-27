@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import type { createShareState } from "../../state/share-state.svelte";
 
   let {
@@ -7,7 +7,7 @@
     hapticService = null,
   }: {
     shareState: ReturnType<typeof createShareState> | null;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
   } = $props();
 
   // Create derived state to properly track reactivity through the getter

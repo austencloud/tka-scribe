@@ -16,11 +16,11 @@
   import ConversationList from "$lib/shared/inbox/components/messages/ConversationList.svelte";
   import MessageThread from "$lib/shared/inbox/components/messages/MessageThread.svelte";
   import NewMessageSheet from "$lib/shared/inbox/components/messages/NewMessageSheet.svelte";
-  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
-  import { messagingService } from "$lib/shared/messaging/services/implementations/MessagingService";
+  import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationManager";
+  import { messagingService } from "$lib/shared/messaging/services/implementations/Messenger";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   // Props
   interface Props {
@@ -38,11 +38,11 @@
   let currentView = $state<"list" | "thread" | "compose">("list");
 
   // Haptic feedback service
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     const mediaQuery = window.matchMedia("(max-width: 768px)");

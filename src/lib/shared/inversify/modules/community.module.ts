@@ -6,31 +6,31 @@
 
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { TYPES } from "../types";
-import type { ILeaderboardService } from "../../community/services/contracts/ILeaderboardService";
-import type { IUserService } from "../../community/services/contracts/IUserService";
-import type { IFollowingFeedService } from "$lib/features/dashboard/services/contracts/IFollowingFeedService";
-import { LeaderboardService } from "../../community/services/implementations/LeaderboardService";
-import { UserService } from "../../community/services/implementations/UserService";
-import { FollowingFeedService } from "$lib/features/dashboard/services/implementations/FollowingFeedService";
+import type { ILeaderboardManager } from "../../community/services/contracts/ILeaderboardManager";
+import type { IUserRepository } from "../../community/services/contracts/IUserRepository";
+import type { IFollowingFeedProvider } from "$lib/features/dashboard/services/contracts/IFollowingFeedProvider";
+import { LeaderboardManager } from "../../community/services/implementations/LeaderboardManager";
+import { UserRepository } from "../../community/services/implementations/UserRepository";
+import { FollowingFeedProvider } from "$lib/features/dashboard/services/implementations/FollowingFeedProvider";
 
 export const communityModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Leaderboard Service
     options
-      .bind<ILeaderboardService>(TYPES.ILeaderboardService)
-      .to(LeaderboardService)
+      .bind<ILeaderboardManager>(TYPES.ILeaderboardManager)
+      .to(LeaderboardManager)
       .inSingletonScope();
 
     // User Service (with follow functionality)
     options
-      .bind<IUserService>(TYPES.IUserService)
-      .to(UserService)
+      .bind<IUserRepository>(TYPES.IUserRepository)
+      .to(UserRepository)
       .inSingletonScope();
 
     // Following Feed Service (dashboard widget)
     options
-      .bind<IFollowingFeedService>(TYPES.IFollowingFeedService)
-      .to(FollowingFeedService)
+      .bind<IFollowingFeedProvider>(TYPES.IFollowingFeedProvider)
+      .to(FollowingFeedProvider)
       .inSingletonScope();
   }
 );

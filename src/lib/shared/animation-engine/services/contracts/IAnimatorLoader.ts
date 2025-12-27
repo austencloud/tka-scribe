@@ -7,9 +7,9 @@
 
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
-import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+import type { ITurnsTupleGenerator } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
 import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 
 /**
@@ -19,8 +19,8 @@ export interface AnimatorServices {
   svgGenerator: ISVGGenerator;
   settingsService: ISettingsState;
   orchestrator: ISequenceAnimationOrchestrator;
-  trailCaptureService: ITrailCaptureService;
-  turnsTupleGenerator: ITurnsTupleGeneratorService;
+  TrailCapturer: ITrailCapturer;
+  turnsTupleGenerator: ITurnsTupleGenerator;
 }
 
 /**

@@ -19,11 +19,11 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type {
-  IWordCardBatchProcessingService,
-  IWordCardCacheService,
+  IWordCardBatchProcessor,
+  IWordCardCache,
   IWordCardExportProgressTracker,
-  IWordCardImageConversionService,
-  IWordCardImageGenerationService,
+  IWordCardImageConverter,
+  IWordCardImageGenerator,
 } from "../contracts/word-card-contracts";
 import {} from "../contracts/word-card-contracts";
 import {} from "../contracts/word-card-contracts";
@@ -34,16 +34,16 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
   private currentOperationId: string | null = null;
 
   constructor(
-    @inject(TYPES.IWordCardImageGenerationService)
-    private readonly imageGenerationService: IWordCardImageGenerationService,
-    @inject(TYPES.IWordCardImageConversionService)
-    private readonly imageConversionService: IWordCardImageConversionService,
-    @inject(TYPES.IWordCardBatchProcessingService)
-    private readonly batchProcessingService: IWordCardBatchProcessingService,
+    @inject(TYPES.IWordCardImageGenerator)
+    private readonly imageGenerationService: IWordCardImageGenerator,
+    @inject(TYPES.IWordCardImageConverter)
+    private readonly imageConversionService: IWordCardImageConverter,
+    @inject(TYPES.IWordCardBatchProcessor)
+    private readonly batchProcessingService: IWordCardBatchProcessor,
     @inject(TYPES.IWordCardExportProgressTracker)
     private readonly progressTracker: IWordCardExportProgressTracker,
-    @inject(TYPES.IWordCardCacheService)
-    private readonly cacheService: IWordCardCacheService
+    @inject(TYPES.IWordCardCache)
+    private readonly cacheService: IWordCardCache
   ) {}
 
   /**

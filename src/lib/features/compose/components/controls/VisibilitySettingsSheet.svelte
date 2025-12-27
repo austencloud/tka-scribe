@@ -446,7 +446,8 @@
   }
 
   .empty-cell {
-    /* Invisible placeholder */
+    /* Invisible placeholder for grid alignment */
+    display: block;
   }
 
   /* Chip Button Base - Text Only */

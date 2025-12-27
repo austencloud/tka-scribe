@@ -6,12 +6,12 @@
   Includes GitHub-style text confirmation barrier.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { uiState } from "../../state/profile-settings-state.svelte";
 
   let { onDeleteAccount, hapticService, userIdentifier } = $props<{
     onDeleteAccount: () => Promise<void>;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
     userIdentifier: string;
   }>();
 

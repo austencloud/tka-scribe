@@ -24,10 +24,10 @@ import { PropType } from "../../pictograph/prop/domain/enums/PropType";
 import type { AppSettings } from "../domain/AppSettings";
 import { tryResolve } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
-import type { ISettingsPersistenceService } from "../services/contracts/ISettingsPersistenceService";
+import type { ISettingsPersister } from "../services/contracts/ISettingsPersister";
 import { authState } from "../../auth/state/authState.svelte";
 import type { ISettingsState } from "../services/contracts/ISettingsState";
-import type { IActivityLogService } from "../../analytics/services/contracts/IActivityLogService";
+import type { IActivityLogger } from "../../analytics/services/contracts/IActivityLogger";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const debug = createComponentLogger("SettingsState");
@@ -80,7 +80,7 @@ function getCustomBackgroundOptions(
 
 @injectable()
 class SettingsState implements ISettingsState {
-  private firebasePersistence: ISettingsPersistenceService | null = null;
+  private firebasePersistence: ISettingsPersister | null = null;
   private unsubscribeFirebaseSync: (() => void) | null = null;
   private syncInitialized = false;
   private isSavingToFirebase = false; // Prevent re-entrant saves
@@ -115,8 +115,8 @@ class SettingsState implements ISettingsState {
 
     // Try to get the Firebase persistence service
     try {
-      this.firebasePersistence = tryResolve<ISettingsPersistenceService>(
-        TYPES.ISettingsPersistenceService
+      this.firebasePersistence = tryResolve<ISettingsPersister>(
+        TYPES.ISettingsPersister
       );
     } catch {
       console.warn(
@@ -292,8 +292,8 @@ class SettingsState implements ISettingsState {
 
     // Log settings change for analytics (non-blocking)
     try {
-      const activityService = tryResolve<IActivityLogService>(
-        TYPES.IActivityLogService
+      const activityService = tryResolve<IActivityLogger>(
+        TYPES.IActivityLogger
       );
       if (activityService) {
         void activityService.logSettingChange(

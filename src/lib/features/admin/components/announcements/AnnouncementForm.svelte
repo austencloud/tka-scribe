@@ -8,7 +8,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import type { IAnnouncementService } from "../../services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "../../services/contracts/IAnnouncementManager";
   import type {
     Announcement,
     AnnouncementSeverity,
@@ -25,31 +25,41 @@
   let { announcement = null, onSave, onCancel }: Props = $props();
 
   // Services
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
 
   onMount(() => {
-    announcementService = resolve<IAnnouncementService>(
-      TYPES.IAnnouncementService
+    announcementService = resolve<IAnnouncementManager>(
+      TYPES.IAnnouncementManager
     );
   });
 
-  // Form state
+  // Form state - intentional initial capture from prop, form is locally editable
+  // svelte-ignore state_referenced_locally
   let title = $state(announcement?.title ?? "");
+  // svelte-ignore state_referenced_locally
   let message = $state(announcement?.message ?? "");
+  // svelte-ignore state_referenced_locally
   let severity = $state<AnnouncementSeverity>(announcement?.severity ?? "info");
+  // svelte-ignore state_referenced_locally
   let targetAudience = $state<AnnouncementAudience>(
     announcement?.targetAudience ?? "all"
   );
+  // svelte-ignore state_referenced_locally
   let targetUserId = $state(announcement?.targetUserId ?? "");
   let targetUserDisplay = $state(""); // Display name for selected user
+  // svelte-ignore state_referenced_locally
   let showAsModal = $state(announcement?.showAsModal ?? true);
+  // svelte-ignore state_referenced_locally
   let hasExpiration = $state(!!announcement?.expiresAt);
+  // svelte-ignore state_referenced_locally
   let expirationDate = $state(
     announcement?.expiresAt
       ? new Date(announcement.expiresAt).toISOString().split("T")[0]
       : ""
   );
+  // svelte-ignore state_referenced_locally
   let actionUrl = $state(announcement?.actionUrl ?? "");
+  // svelte-ignore state_referenced_locally
   let actionLabel = $state(announcement?.actionLabel ?? "");
 
   let isSaving = $state(false);

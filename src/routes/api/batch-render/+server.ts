@@ -5,7 +5,7 @@
  * Used by batch-rerender-gallery.js script for server-side rendering.
  */
 
-import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
+import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -68,8 +68,8 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Resolve rendering service
-    const renderService = resolve<ISequenceRenderService>(
-      TYPES.ISequenceRenderService
+    const renderService = resolve<ISequenceRenderer>(
+      TYPES.ISequenceRenderer
     );
 
     // Prepare rendering options with prop type override

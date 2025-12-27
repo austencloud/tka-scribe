@@ -12,8 +12,8 @@ import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contra
 import type { StartPositionData } from "$lib/features/create/shared/domain/models/StartPositionData";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IBeatConverterService } from "../contracts/IBeatConverterService";
-import type { IPictographFilterService } from "../contracts/IPictographFilterService";
+import type { IBeatConverter } from "../contracts/IBeatConverter";
+import type { IPictographFilter } from "../contracts/IPictographFilter";
 import type { IStartPositionSelector } from "../contracts/IStartPositionSelector";
 
 @injectable()
@@ -21,10 +21,10 @@ export class StartPositionSelector implements IStartPositionSelector {
   constructor(
     @inject(TYPES.ILetterQueryHandler)
     private letterQueryHandler: ILetterQueryHandler,
-    @inject(TYPES.IPictographFilterService)
-    private pictographFilterService: IPictographFilterService,
-    @inject(TYPES.IBeatConverterService)
-    private beatConverterService: IBeatConverterService,
+    @inject(TYPES.IPictographFilter)
+    private PictographFilter: IPictographFilter,
+    @inject(TYPES.IBeatConverter)
+    private BeatConverter: IBeatConverter,
     @inject(TYPES.IArrowPositioningOrchestrator)
     private arrowPositioningOrchestrator: IArrowPositioningOrchestrator
   ) {}
@@ -37,12 +37,12 @@ export class StartPositionSelector implements IStartPositionSelector {
     const allOptions =
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
     const startPositions =
-      this.pictographFilterService.filterStartPositions(allOptions);
+      this.PictographFilter.filterStartPositions(allOptions);
     const startPictograph =
-      this.pictographFilterService.selectRandom(startPositions);
+      this.PictographFilter.selectRandom(startPositions);
 
     // Use the new convertToStartPosition method instead of convertToBeat(pictograph, 0, gridMode)
-    let startPosition = this.beatConverterService.convertToStartPosition(
+    let startPosition = this.BeatConverter.convertToStartPosition(
       startPictograph,
       gridMode
     );

@@ -4,7 +4,7 @@ Provides a clean button group for mutually exclusive options
 Used for sort method selection (Letter/Length/Date)
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -15,7 +15,7 @@ Used for sort method selection (Letter/Length/Date)
     icon?: string;
   }
 
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   // Props
   const {
@@ -39,8 +39,8 @@ Used for sort method selection (Letter/Length/Date)
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

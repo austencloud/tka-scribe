@@ -16,7 +16,7 @@ Features:
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     /** Currently active sub-tab */
@@ -27,8 +27,8 @@ Features:
 
   let { activeTab = $bindable("concepts"), onTabChange }: Props = $props();
 
-  const hapticService = resolve<IHapticFeedbackService>(
-    TYPES.IHapticFeedbackService
+  const hapticService = resolve<IHapticFeedback>(
+    TYPES.IHapticFeedback
   );
 
   // Tab configuration

@@ -12,7 +12,7 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 
   interface Props {
     onComplete: (selectedModule?: string) => void;
@@ -21,7 +21,7 @@
 
   const { onComplete, onSkip }: Props = $props();
 
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Current step
   let step = $state(0);
@@ -71,8 +71,8 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
     } catch {
       // Haptics optional
@@ -191,7 +191,7 @@
       </div>
 
       <div class="nav-buttons anim-item" style="--anim-order: 3">
-        <button class="back-button" onclick={handleBack}>
+        <button class="back-button" onclick={handleBack} aria-label="Go back">
           <i class="fas fa-arrow-left"></i>
         </button>
         <button class="next-button" onclick={handleNext}>

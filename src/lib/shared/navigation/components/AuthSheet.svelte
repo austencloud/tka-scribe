@@ -9,14 +9,14 @@
 
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import AuthFooter from "../../auth/components/AuthFooter.svelte";
   import AuthHeader from "../../auth/components/AuthHeader.svelte";
   import EmailPasswordAuth from "../../auth/components/EmailPasswordAuth.svelte";
   import SocialAuthCompact from "../../auth/components/SocialAuthCompact.svelte";
   import { authState } from "../../auth/state/authState.svelte";
-  import type { IAuthService } from "../../auth/services/contracts/IAuthService";
+  import type { IAuthenticator } from "../../auth/services/contracts/IAuthenticator";
 
   // Props
   let { isOpen = false, onClose } = $props<{
@@ -25,18 +25,18 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
-  let authService: IAuthService | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let authService: IAuthenticator | null = null;
 
   // Track auth mode to update UI accordingly
   let authMode = $state<"signin" | "signup">("signin");
 
   onMount(async () => {
     try {
-      hapticService = await resolve<IHapticFeedbackService>(
-        TYPES.IHapticFeedbackService
+      hapticService = await resolve<IHapticFeedback>(
+        TYPES.IHapticFeedback
       );
-      authService = await resolve<IAuthService>(TYPES.IAuthService);
+      authService = await resolve<IAuthenticator>(TYPES.IAuthenticator);
     } catch (error) {
       console.error("❌ [AuthSheet] Failed to resolve services:", error);
     }

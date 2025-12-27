@@ -9,7 +9,7 @@
   import PanelHeader from "$lib/features/create/shared/components/PanelHeader.svelte";
   import { tryGetCreateModuleContext } from "$lib/features/create/shared/context/create-module-context";
   import VideoRecordPanel from "./VideoRecordPanel.svelte";
-  import type { RecordingResult } from "../services/contracts/IVideoRecordService";
+  import type { RecordingResult } from "../services/contracts/IVideoRecorder";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   let {

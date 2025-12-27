@@ -12,10 +12,10 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 import type {
-  IOptimizedDiscoverService,
+  IOptimizedDiscoverer,
   PaginatedSequences,
   SequenceMetadata,
-} from "../contracts/IOptimizedDiscoverService";
+} from "../contracts/IOptimizedDiscoverer";
 
 // API Response types
 interface PaginatedSequencesResponse {
@@ -29,7 +29,7 @@ interface SequenceCountResponse {
 }
 
 @injectable()
-export class OptimizedDiscoverService implements IOptimizedDiscoverService {
+export class OptimizedDiscoverer implements IOptimizedDiscoverer {
   private cache = new Map<number, SequenceMetadata[]>();
   private totalCount: number = 0;
   private readonly MOBILE_PAGE_SIZE = 20;

@@ -31,7 +31,7 @@ import type {
 } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { RotationDirection } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { inject, injectable } from "inversify";
-import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculationService";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { ICAPParameterProvider } from "$lib/features/create/generate/shared/services/contracts/ICAPParameterProvider";
 import {
   getHandRotationDirection,
@@ -45,7 +45,7 @@ import { SliceSize } from "../../domain/models/circular-models";
 export class RotatedInvertedCAPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
-    private orientationCalculationService: IOrientationCalculator,
+    private OrientationCalculator: IOrientationCalculator,
     @inject(TYPES.IGridPositionDeriver)
     private gridPositionDeriver: IGridPositionDeriver,
     @inject(TYPES.ICAPParameterProvider)
@@ -199,12 +199,12 @@ export class RotatedInvertedCAPExecutor {
 
     // Update orientations
     const beatWithStartOri =
-      this.orientationCalculationService.updateStartOrientations(
+      this.OrientationCalculator.updateStartOrientations(
         newBeat,
         previousBeat
       );
     const finalBeat =
-      this.orientationCalculationService.updateEndOrientations(
+      this.OrientationCalculator.updateEndOrientations(
         beatWithStartOri
       );
 
@@ -372,8 +372,8 @@ export class RotatedInvertedCAPExecutor {
       startLocation: previousMotion.endLocation,
       endLocation: rotatedEndLocation, // ROTATED: Rotate location
       rotationDirection: invertedPropRotDir, // INVERTED: Flip prop rotation
-      // Start orientation will be set by orientationCalculationService
-      // End orientation will be calculated by orientationCalculationService
+      // Start orientation will be set by OrientationCalculator
+      // End orientation will be calculated by OrientationCalculator
     };
 
     return rotatedInvertedMotion;

@@ -15,7 +15,7 @@
   function getTypeConfig(type: string) {
     return TYPE_CONFIG[type as FeedbackType] || DEFAULT_TYPE_CONFIG;
   }
-  import { feedbackService } from "../../services/implementations/FeedbackService";
+  import { feedbackQueryService } from "../../services/implementations/FeedbackQuerier";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackDetailPanel from "./FeedbackDetailPanel.svelte";
   import { getFirestoreInstance } from "$lib/shared/auth/firebase";
@@ -120,7 +120,7 @@
     isDetailOpen = true;
 
     try {
-      const item = await feedbackService.getFeedback(feedbackId);
+      const item = await feedbackQueryService.getFeedback(feedbackId);
       selectedItem = item;
     } catch (e) {
       console.error("Failed to load feedback item:", e);

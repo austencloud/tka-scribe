@@ -17,7 +17,7 @@ import {
 import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ISystemStateManager } from "../contracts/ISystemStateManager";
-import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
+import type { IActivityLogger } from "$lib/shared/analytics/services/contracts/IActivityLogger";
 import type {
   IAnalyticsDataProvider,
   SummaryMetrics,
@@ -53,10 +53,10 @@ function withTimeout<T>(
 @injectable()
 export class AnalyticsDataProvider implements IAnalyticsDataProvider {
   constructor(
-    @inject(TYPES.ISystemStateService)
+    @inject(TYPES.ISystemStateManager)
     private readonly systemStateManager: ISystemStateManager,
-    @inject(TYPES.IActivityLogService)
-    private readonly activityLogService: IActivityLogService
+    @inject(TYPES.IActivityLogger)
+    private readonly activityLogService: IActivityLogger
   ) {}
 
   /**

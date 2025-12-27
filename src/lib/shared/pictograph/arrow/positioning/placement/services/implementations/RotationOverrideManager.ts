@@ -13,7 +13,7 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "../../../../../../inversify/types";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../../../shared/domain/models/MotionData";
-import type { ITurnsTupleGeneratorService } from "../contracts/ITurnsTupleGeneratorService";
+import type { ITurnsTupleGenerator } from "../contracts/ITurnsTupleGenerator";
 import { SpecialPlacementOriKeyGenerator } from "../../../key-generation/services/implementations/SpecialPlacementOriKeyGenerator";
 import type { IRotationAngleOverrideKeyGenerator } from "../../../key-generation/services/implementations/RotationAngleOverrideKeyGenerator";
 import type { IGridModeDeriver } from "../../../../../grid/services/contracts/IGridModeDeriver.ts";
@@ -70,8 +70,8 @@ export class RotationOverrideManager implements IRotationOverrideManager {
   private oriKeyGenerator: SpecialPlacementOriKeyGenerator;
 
   constructor(
-    @inject(TYPES.ITurnsTupleGeneratorService)
-    private readonly tupleGenerator: ITurnsTupleGeneratorService,
+    @inject(TYPES.ITurnsTupleGenerator)
+    private readonly tupleGenerator: ITurnsTupleGenerator,
     @inject(TYPES.IRotationAngleOverrideKeyGenerator)
     private readonly rotationKeyGenerator: IRotationAngleOverrideKeyGenerator,
     @inject(TYPES.IGridModeDeriver)

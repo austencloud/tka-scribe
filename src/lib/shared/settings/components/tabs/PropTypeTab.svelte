@@ -9,7 +9,7 @@
   import { resolve } from "../../../inversify/di";
   import { TYPES } from "../../../inversify/types";
   import { PropType } from "../../../pictograph/prop/domain/enums/PropType";
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
   import {
     getPropTypeDisplayInfo,
@@ -29,11 +29,11 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
     setTimeout(() => (isVisible = true), 30);
   });

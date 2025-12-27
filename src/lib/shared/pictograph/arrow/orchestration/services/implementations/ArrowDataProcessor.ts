@@ -11,16 +11,16 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../../../../inversify/bootstrap";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
-import type { IArrowGridCoordinateService } from "../contracts/IArrowGridCoordinateService";
+import type { IArrowGridCoordinator } from "../contracts/IArrowGridCoordinator";
 import type { IArrowDataProcessor } from "../contracts/IArrowDataProcessor";
 
 @injectable()
 export class ArrowDataProcessor implements IArrowDataProcessor {
-  private coordinateSystem: IArrowGridCoordinateService;
+  private coordinateSystem: IArrowGridCoordinator;
 
   constructor(
-    @inject(TYPES.IArrowGridCoordinateService)
-    coordinateSystem: IArrowGridCoordinateService
+    @inject(TYPES.IArrowGridCoordinator)
+    coordinateSystem: IArrowGridCoordinator
   ) {
     this.coordinateSystem = coordinateSystem;
   }

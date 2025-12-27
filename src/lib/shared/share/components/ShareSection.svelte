@@ -1,6 +1,6 @@
 <!-- ShareSection.svelte - Share button component -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import type { SequenceData } from "../../foundation/domain/models/SequenceData";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
@@ -25,11 +25,11 @@
   } = $props();
 
   // Services
-  let hapticService: IHapticFeedbackService;
+  let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = await resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 
@@ -43,7 +43,7 @@
     if (navigator.share && navigator.canShare) {
       try {
         // Get the actual image blob from the share service
-        const shareService = await resolve<any>(TYPES.IShareService);
+        const shareService = await resolve<any>(TYPES.ISharer);
         const blob = await shareService.getImageBlob(
           currentSequence,
           shareState.options

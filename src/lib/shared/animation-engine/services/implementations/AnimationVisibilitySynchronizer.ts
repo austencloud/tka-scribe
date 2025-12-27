@@ -60,7 +60,7 @@ export class AnimationVisibilitySynchronizer
         callback(state);
       } catch (error) {
         console.error(
-          "[AnimationVisibilitySyncService] Error in callback:",
+          "[AnimationVisibilitySynchronizer] Error in callback:",
           error
         );
       }

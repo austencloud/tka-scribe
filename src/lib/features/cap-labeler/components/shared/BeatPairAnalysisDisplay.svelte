@@ -8,7 +8,7 @@
    */
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
   import type { BeatPairGroups } from "../../domain/models/label-models";
-  import type { AxisAlternatingPattern } from "../../services/contracts/ICAPDetectionService";
+  import type { AxisAlternatingPattern } from "../../services/contracts/ICAPDetector";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
 
   interface Props {
@@ -21,6 +21,7 @@
 
   let { beatPairs, beatPairGroups, collapsed = false, isAxisAlternating = false, axisAlternatingPattern = null }: Props = $props();
 
+  // svelte-ignore state_referenced_locally - intentional: initial expanded state from prop
   let isExpanded = $state(!collapsed);
 
   // Color coding for different transformation types

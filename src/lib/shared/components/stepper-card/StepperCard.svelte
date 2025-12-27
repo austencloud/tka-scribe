@@ -5,8 +5,8 @@ Portrait: Top half increments, bottom half decrements (vertical layout)
 Landscape: Left half decrements, right half increments (horizontal layout)
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IRippleEffect } from "$lib/shared/application/services/contracts/IRippleEffect";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -47,16 +47,16 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     headerFontSize?: string;
   }>();
 
-  let hapticService: IHapticFeedbackService;
-  let rippleService: IRippleEffectService;
+  let hapticService: IHapticFeedback;
+  let rippleService: IRippleEffect;
   let cardElement: HTMLDivElement | null = $state(null);
   let previousColor = $state(color);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    rippleService = resolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
     previousColor = color; // Initialize on mount
 
     // Attach ripple effect

@@ -2,7 +2,7 @@
 <script lang="ts">
   import { resolve } from "../../../inversify/di";
   import { TYPES } from "../../../inversify/types";
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
 
   let {
@@ -35,7 +35,7 @@
   }
 
   // Services
-  let hapticService: IHapticFeedbackService | undefined;
+  let hapticService: IHapticFeedback | undefined;
 
   // Label values (NavigationLabelService was a no-op, removed)
   let compactLabel = $derived(label);
@@ -53,8 +53,8 @@
   }
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
   });
 </script>

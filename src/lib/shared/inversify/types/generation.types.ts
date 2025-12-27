@@ -7,10 +7,10 @@
 export const GenerationTypes = {
   // Core Generation
   IRandomSelectionService: Symbol.for("IRandomSelectionService"),
-  IPictographFilterService: Symbol.for("IPictographFilterService"),
-  IBeatConverterService: Symbol.for("IBeatConverterService"),
-  ITurnManagementService: Symbol.for("ITurnManagementService"),
-  ISequenceMetadataService: Symbol.for("ISequenceMetadataService"),
+  IPictographFilter: Symbol.for("IPictographFilter"),
+  IBeatConverter: Symbol.for("IBeatConverter"),
+  ITurnManager: Symbol.for("ITurnManager"),
+  ISequenceMetadataManager: Symbol.for("ISequenceMetadataManager"),
 
   // Focused Generation (replaced monolithic SequenceGenerationService)
   IStartPositionSelector: Symbol.for("IStartPositionSelector"),
@@ -50,15 +50,15 @@ export const GenerationTypes = {
   ),
 
   // Generation UI Services
-  IResponsiveTypographyService: Symbol.for("IResponsiveTypographyService"),
-  ICardConfigurationService: Symbol.for("ICardConfigurationService"),
-  ICAPTypeService: Symbol.for("ICAPTypeService"),
-  IGenerationOrchestrationService: Symbol.for(
-    "IGenerationOrchestrationService"
+  IResponsiveTypographer: Symbol.for("IResponsiveTypographer"),
+  ICardConfigurator: Symbol.for("ICardConfigurator"),
+  ICAPTypeResolver: Symbol.for("ICAPTypeResolver"),
+  IGenerationOrchestrator: Symbol.for(
+    "IGenerationOrchestrator"
   ),
   IPresetFormatterService: Symbol.for("IPresetFormatterService"),
 
   // CAP Detection (reverse of generation - detect CAP type from existing sequence)
-  ICAPDetectionService: Symbol.for("ICAPDetectionService"),
+  ICAPDetector: Symbol.for("ICAPDetector"),
   IOrientationCycleDetector: Symbol.for("IOrientationCycleDetector"),
 } as const;

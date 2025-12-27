@@ -13,16 +13,16 @@ import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
   ExploreLoadingState,
-  IOptimizedDiscoverService,
+  IOptimizedDiscoverer,
   SequenceMetadata,
-} from "../services/contracts/IOptimizedDiscoverService";
+} from "../services/contracts/IOptimizedDiscoverer";
 import { adjustQueueForConnection } from "../utils/image-request-queue";
 import { getConnectionInfo } from "../utils/connection-quality";
 
 export function createOptimizedExploreState() {
   // Services
-  const galleryService = resolve<IOptimizedDiscoverService>(
-    TYPES.IOptimizedDiscoverService
+  const galleryService = resolve<IOptimizedDiscoverer>(
+    TYPES.IOptimizedDiscoverer
   );
 
   // Initialize connection-aware image request throttling

@@ -25,10 +25,10 @@ import {
 } from "firebase/firestore";
 import { auth, getFirestoreInstance } from "../../../auth/firebase";
 import type {
-  ISubscriptionService,
+  ISubscriptionManager,
   SubscriptionInfo,
   SubscriptionStatus,
-} from "../contracts/ISubscriptionService";
+} from "../contracts/ISubscriptionManager";
 
 const DEFAULT_SUBSCRIPTION_INFO: SubscriptionInfo = {
   status: "none",
@@ -37,7 +37,7 @@ const DEFAULT_SUBSCRIPTION_INFO: SubscriptionInfo = {
 };
 
 @injectable()
-export class SubscriptionService implements ISubscriptionService {
+export class SubscriptionManager implements ISubscriptionManager {
   /**
    * Ensure a customer document exists for the current user.
    * The Stripe extension needs this to create a Stripe customer.
@@ -52,7 +52,7 @@ export class SubscriptionService implements ISubscriptionService {
 
     if (!customerSnap.exists()) {
       console.log(
-        "[SubscriptionService] Creating customer document for existing user"
+        "[SubscriptionManager] Creating customer document for existing user"
       );
       // Create minimal customer doc - extension will sync to Stripe
       await setDoc(customerRef, {

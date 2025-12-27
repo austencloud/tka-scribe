@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IAnnouncementService } from "../../services/contracts/IAnnouncementService";
+  import type { IAnnouncementManager } from "../../services/contracts/IAnnouncementManager";
 
   interface Props {
     selectedUserId?: string;
@@ -21,7 +21,7 @@
     onSelect,
   }: Props = $props();
 
-  let announcementService: IAnnouncementService | null = null;
+  let announcementService: IAnnouncementManager | null = null;
   let searchQuery = $state("");
   let searchResults = $state<
     Array<{ uid: string; displayName: string; email: string }>
@@ -31,8 +31,8 @@
   let searchTimeout: number | null = null;
 
   onMount(() => {
-    announcementService = resolve<IAnnouncementService>(
-      TYPES.IAnnouncementService
+    announcementService = resolve<IAnnouncementManager>(
+      TYPES.IAnnouncementManager
     );
 
     // Pre-fill if we have a selected user

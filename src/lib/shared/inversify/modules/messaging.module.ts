@@ -1,7 +1,7 @@
 /**
  * Messaging Module - Placeholder for messaging feature loading
  *
- * Note: MessagingService and ConversationService use singleton exports
+ * Note: Messenger and ConversationManager use singleton exports
  * directly instead of DI resolution. This module exists only to support
  * the loadFeatureModule("messaging") pattern for lazy-loading.
  */

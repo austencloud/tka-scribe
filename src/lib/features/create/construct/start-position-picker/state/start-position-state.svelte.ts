@@ -10,11 +10,11 @@ import { TYPES } from "../../../../../shared/inversify/types";
 import { GridMode } from "../../../../../shared/pictograph/grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
 import type { ISettingsState } from "../../../../../shared/settings/services/contracts/ISettingsState";
-import type { IStartPositionService } from "../services/contracts/IStartPositionService";
+import type { IStartPositionManager } from "../services/contracts/IStartPositionManager";
 
 export function createSimplifiedStartPositionState() {
   // Lazy service resolution to avoid effect_orphan error
-  let startPositionService: IStartPositionService | null = null;
+  let StartPositionManager: IStartPositionManager | null = null;
   let settingsService: ISettingsState | null = null;
   let containerPromise: ReturnType<typeof getContainerInstance> | null = null;
 
@@ -25,16 +25,16 @@ export function createSimplifiedStartPositionState() {
     return containerPromise;
   }
 
-  async function getService(): Promise<IStartPositionService> {
-    if (!startPositionService) {
+  async function getService(): Promise<IStartPositionManager> {
+    if (!StartPositionManager) {
       const container = await ensureContainer();
       if (container) {
-        startPositionService = container.get<IStartPositionService>(
-          TYPES.IStartPositionService
+        StartPositionManager = container.get<IStartPositionManager>(
+          TYPES.IStartPositionManager
         );
       }
     }
-    return startPositionService!;
+    return StartPositionManager!;
   }
 
   async function getSettingsServiceAsync(): Promise<ISettingsState> {

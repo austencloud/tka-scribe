@@ -12,11 +12,11 @@ Mobile-first design:
   import CaptureInterface from "./CaptureInterface.svelte";
   import SessionList from "./SessionList.svelte";
   import LabelingSession from "./LabelingSession.svelte";
-  import { getMLTrainingStorage } from "../services/MLTrainingStorageService";
+  import { getMLTrainingStorage } from "../services/MLTrainingStorageManager";
   import {
     exportSessionToCoco,
     downloadBlob,
-  } from "../services/CocoExportService";
+  } from "../services/CocoExporter";
   import type { CaptureSession, CapturedFrame } from "../domain/models";
   import {
     navigationState,

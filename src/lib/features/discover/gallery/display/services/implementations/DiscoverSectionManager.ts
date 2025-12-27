@@ -12,11 +12,11 @@ import type {
   SectionConfig,
   SequenceSection,
 } from "$lib/features/discover/shared/domain/models/discover-models";
-import type { IDiscoverSectionService } from "../contracts/IDiscoverSectionService";
+import type { IDiscoverSectionManager } from "../contracts/IDiscoverSectionManager";
 import { sortSequencesByKineticAlphabet } from "$lib/features/discover/shared/utils/kinetic-alphabet-sort";
 
 @injectable()
-export class DiscoverSectionService implements IDiscoverSectionService {
+export class DiscoverSectionManager implements IDiscoverSectionManager {
   organizeSections(
     sequences: SequenceData[],
     config: SectionConfig

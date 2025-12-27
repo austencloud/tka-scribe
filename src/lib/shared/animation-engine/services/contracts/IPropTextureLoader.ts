@@ -2,12 +2,12 @@
  * Prop Texture Service Interface
  *
  * Handles prop texture loading for AnimatorCanvas.
- * Loads textures and retrieves dimensions for both prop colors.
+ * Uses reactive state ownership - service owns $state, component derives from it.
  */
 
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 
 /**
  * Prop dimensions
@@ -18,44 +18,41 @@ export interface PropDimensions {
 }
 
 /**
- * Callback for when dimensions are loaded
+ * Default prop dimensions
  */
-export type DimensionsLoadedCallback = (
-  blue: PropDimensions,
-  red: PropDimensions
-) => void;
+export const DEFAULT_PROP_DIMENSIONS: PropDimensions = {
+  width: 100,
+  height: 100,
+};
 
 /**
- * Callback for when loading completes
+ * Reactive state for prop textures
  */
-export type LoadCompleteCallback = () => void;
+export interface PropTextureState {
+  blueDimensions: PropDimensions;
+  redDimensions: PropDimensions;
+  isLoaded: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
 
 /**
  * Service for managing prop texture loading
  */
-export interface IPropTextureService {
+export interface IPropTextureLoader {
+  /**
+   * Reactive state - owned by service, read by component via $derived
+   */
+  state: PropTextureState;
+
   /**
    * Initialize the service with required dependencies
    */
   initialize(
     renderer: IAnimationRenderer,
-    svgGenerator: ISVGGenerator
+    svgGenerator: ISVGGenerator,
+    TrailCapturer: ITrailCapturer | null
   ): void;
-
-  /**
-   * Set trail capture service for dimension updates
-   */
-  setTrailCaptureService(service: ITrailCaptureService | null): void;
-
-  /**
-   * Set callback for when dimensions are loaded
-   */
-  setDimensionsLoadedCallback(callback: DimensionsLoadedCallback): void;
-
-  /**
-   * Set callback for load completion
-   */
-  setLoadCompleteCallback(callback: LoadCompleteCallback): void;
 
   /**
    * Load textures for both prop colors

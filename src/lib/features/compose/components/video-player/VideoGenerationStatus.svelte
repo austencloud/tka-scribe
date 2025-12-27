@@ -5,7 +5,7 @@
   Shows current phase, percentage, frame count, and allows cancellation.
 -->
 <script lang="ts">
-  import type { VideoRenderProgress } from "../../services/contracts/IVideoPreRenderService";
+  import type { VideoRenderProgress } from "../../services/contracts/IVideoPreRenderer";
 
   let {
     progress,

@@ -1,6 +1,6 @@
 import type { SequenceData } from "../../../foundation/domain/models/SequenceData";
 import type { TabId } from "../../../navigation/domain/types";
-import type { IDiscoverThumbnailService } from "../../../../features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+import type { IDiscoverThumbnailProvider } from "../../../../features/discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
 
 // Spotlight display modes
 export type SpotlightDisplayMode = "image" | "beatgrid";
@@ -20,7 +20,7 @@ export const uiState = $state({
   isWaitingForModuleLoad: false,
   showSpotlight: false,
   spotlightSequence: null as SequenceData | null,
-  spotlightThumbnailService: null as IDiscoverThumbnailService | null,
+  spotlightThumbnailService: null as IDiscoverThumbnailProvider | null,
   spotlightImageUrl: null as string | null, // Direct image URL (for Create module spotlight)
   spotlightDisplayMode: "image" as SpotlightDisplayMode, // "image" or "beatgrid"
   showDebugPanel: false, // Admin-only debug console
@@ -197,7 +197,7 @@ export function getSpotlightSequence(): SequenceData | null {
   return uiState.spotlightSequence;
 }
 
-export function getSpotlightThumbnailService(): IDiscoverThumbnailService | null {
+export function getSpotlightThumbnailService(): IDiscoverThumbnailProvider | null {
   return uiState.spotlightThumbnailService;
 }
 
@@ -211,7 +211,7 @@ export function getSpotlightDisplayMode(): SpotlightDisplayMode {
 
 export function openSpotlightViewer(
   sequence: SequenceData,
-  thumbnailService: IDiscoverThumbnailService
+  thumbnailService: IDiscoverThumbnailProvider
 ): void {
   uiState.spotlightSequence = sequence;
   uiState.spotlightThumbnailService = thumbnailService;

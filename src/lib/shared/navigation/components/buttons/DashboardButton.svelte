@@ -15,7 +15,7 @@
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import NotificationBadge from "../NotificationBadge.svelte";
   import { createNotificationState } from "$lib/features/feedback/state/notification-state.svelte";
 
@@ -25,15 +25,15 @@
   }>();
 
   // Services
-  let hapticService: IHapticFeedbackService | null = null;
+  let hapticService: IHapticFeedback | null = null;
 
   // Notification state
   const notificationState = createNotificationState();
 
   onMount(() => {
     // Load haptic service synchronously
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
 
     // Initialize notifications when user is authenticated

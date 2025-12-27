@@ -5,8 +5,8 @@
   Handles both native install prompts and fallback to instruction guide.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
-  import type { IMobileFullscreenService } from "$lib/shared/mobile/services/contracts/IMobileFullscreenService";
+  import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
+  import type { IMobileFullscreenManager } from "$lib/shared/mobile/services/contracts/IMobileFullscreenManager";
   import { resolve } from "../../inversify/di";
   import { TYPES } from "../../inversify/types";
   import { onMount } from "svelte";
@@ -16,15 +16,15 @@
     onInstall?: () => void;
   }>();
 
-  let hapticService: IHapticFeedbackService;
-  let fullscreenService: IMobileFullscreenService;
+  let hapticService: IHapticFeedback;
+  let fullscreenService: IMobileFullscreenManager;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    fullscreenService = resolve<IMobileFullscreenService>(
-      TYPES.IMobileFullscreenService
+    fullscreenService = resolve<IMobileFullscreenManager>(
+      TYPES.IMobileFullscreenManager
     );
   });
 

@@ -10,7 +10,7 @@
 
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICAPTypeService } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeService";
+  import type { ICAPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeResolver";
   import CAPSelectionModal from "../../../generate/components/modals/CAPSelectionPanel.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
 
@@ -18,8 +18,8 @@
   const ctx = getCreateModuleContext();
   const { panelState } = ctx;
 
-  let capTypeService: ICAPTypeService = resolve<ICAPTypeService>(
-    TYPES.ICAPTypeService
+  let CAPTypeResolver: ICAPTypeResolver = resolve<ICAPTypeResolver>(
+    TYPES.ICAPTypeResolver
   );
 
   // Local pending state - tracks changes before applying
@@ -35,7 +35,7 @@
     // Apply pending changes if any
     if (pendingComponents && panelState.capOnChange) {
       // Check if the combination is implemented
-      const isImplemented = capTypeService.isImplemented(pendingComponents);
+      const isImplemented = CAPTypeResolver.isImplemented(pendingComponents);
 
       if (!isImplemented) {
         // Show "Coming Soon" message
@@ -49,7 +49,7 @@
         return; // Don't close the panel, let user select a different combination
       }
 
-      const finalCAPType = capTypeService.generateCAPType(pendingComponents);
+      const finalCAPType = CAPTypeResolver.generateCAPType(pendingComponents);
       panelState.capOnChange(finalCAPType);
     }
 

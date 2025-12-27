@@ -19,9 +19,9 @@
   import { goto } from "$app/navigation";
   import { browser } from "$app/environment";
   import { createSequenceViewerState } from "$lib/shared/sequence-viewer/state/sequence-viewer-state.svelte";
-  import type { ISequenceViewerService } from "$lib/shared/sequence-viewer/services/contracts/ISequenceViewerService";
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { ILibraryService } from "$lib/features/library/services/contracts/ILibraryService";
+  import type { ISequenceViewer } from "$lib/shared/sequence-viewer/services/contracts/ISequenceViewer";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ILibraryRepository } from "$lib/features/library/services/contracts/ILibraryRepository";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import EditSlidePanel from "$lib/features/create/edit/components/EditSlidePanel.svelte";
   import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
@@ -47,9 +47,9 @@
   const viewerState = createSequenceViewerState();
 
   // Services
-  let viewerService: ISequenceViewerService | null = null;
-  let hapticService: IHapticFeedbackService | null = null;
-  let libraryService: ILibraryService | null = null;
+  let viewerService: ISequenceViewer | null = null;
+  let hapticService: IHapticFeedback | null = null;
+  let libraryService: ILibraryRepository | null = null;
 
   // Library state
   let isSaving = $state(false);
@@ -325,13 +325,13 @@
 
   // Lifecycle
   onMount(() => {
-    viewerService = tryResolve<ISequenceViewerService>(
-      TYPES.ISequenceViewerService
+    viewerService = tryResolve<ISequenceViewer>(
+      TYPES.ISequenceViewer
     );
-    hapticService = tryResolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = tryResolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    libraryService = tryResolve<ILibraryService>(TYPES.ILibraryService);
+    libraryService = tryResolve<ILibraryRepository>(TYPES.ILibraryRepository);
 
     updateWidth();
     window.addEventListener("resize", updateWidth);

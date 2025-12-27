@@ -11,7 +11,7 @@ import type {
   IHandStateAnalyzer,
   HandStateAnalysisResult,
 } from "../contracts/IHandStateAnalyzer";
-import type { HandLandmark } from "../contracts/IHandLandmarkerService";
+import type { HandLandmark } from "../contracts/IHandLandmarker";
 import type { HandState } from "../../domain/models/DetectionFrame";
 
 // Finger landmark indices

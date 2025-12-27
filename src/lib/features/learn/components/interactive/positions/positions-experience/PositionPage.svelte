@@ -2,7 +2,7 @@
 PositionPage - Single position type learning page
 -->
 <script lang="ts">
-	import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
+	import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
 	import { resolve } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
 	import {
@@ -27,7 +27,7 @@ PositionPage - Single position type learning page
 		onNext: () => void;
 	} = $props();
 
-	const hapticService = resolve<IHapticFeedbackService>(TYPES.IHapticFeedbackService);
+	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 	const info = POSITION_INFO[type];
 
 	let leftHand = $state<HandPosition>(examples[0]!.left);

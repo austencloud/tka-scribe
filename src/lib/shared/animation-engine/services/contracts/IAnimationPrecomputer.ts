@@ -9,7 +9,7 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { TrailSettings } from "../../domain/types/TrailTypes";
 import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
-import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
+import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
 import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
 import type {
   AnimationPathCache,
@@ -33,7 +33,7 @@ export interface PropDimensions {
  */
 export interface PrecomputationServiceConfig {
   orchestrator: ISequenceAnimationOrchestrator;
-  trailCaptureService: ITrailCaptureService | null;
+  TrailCapturer: ITrailCapturer | null;
   renderer: IAnimationRenderer | null;
   propDimensions: PropDimensions;
   canvasSize: number;
@@ -41,7 +41,7 @@ export interface PrecomputationServiceConfig {
 }
 
 /**
- * State of precomputation operations
+ * Reactive state owned by the service
  */
 export interface PrecomputationState {
   pathCacheData: AnimationPathCacheData | null;
@@ -52,16 +52,14 @@ export interface PrecomputationState {
 }
 
 /**
- * Callback for state changes
- */
-export type PrecomputationStateCallback = (
-  state: Partial<PrecomputationState>
-) => void;
-
-/**
  * Service for managing animation precomputation
  */
 export interface IAnimationPrecomputer {
+  /**
+   * Reactive state - read from component via $derived/$effect
+   */
+  readonly state: PrecomputationState;
+
   /**
    * Initialize the service with required dependencies
    */
@@ -71,11 +69,6 @@ export interface IAnimationPrecomputer {
    * Update configuration
    */
   updateConfig(config: Partial<PrecomputationServiceConfig>): void;
-
-  /**
-   * Set callback for state changes
-   */
-  setStateCallback(callback: PrecomputationStateCallback): void;
 
   /**
    * Pre-compute animation paths for gap-free trail rendering

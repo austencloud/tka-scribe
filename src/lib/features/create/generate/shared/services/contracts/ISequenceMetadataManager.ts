@@ -4,7 +4,7 @@ import type {
   DifficultyLevel,
 } from "../../domain/models/generate-models";
 
-export interface ISequenceMetadataService {
+export interface ISequenceMetadataManager {
   generateSequenceName(options: GenerationOptions): string;
   calculateWordFromBeats(beats: BeatData[]): string;
   mapDifficultyToLevel(difficulty: DifficultyLevel): number;

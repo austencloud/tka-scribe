@@ -17,7 +17,7 @@
 
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
-  import type { IDiscoverThumbnailService } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailService";
+  import type { IDiscoverThumbnailProvider } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
   import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
   import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
@@ -40,7 +40,7 @@
 
   // Services - resolved lazily after module is loaded
   let loaderService = $state<IDiscoverLoader | null>(null);
-  let thumbnailService = $state<IDiscoverThumbnailService | null>(null);
+  let thumbnailService = $state<IDiscoverThumbnailProvider | null>(null);
   let normalizationService = $state<ISequenceNormalizationService | null>(null);
   let servicesReady = $state(false);
 
@@ -105,8 +105,8 @@
       await loadFeatureModule("discover");
 
       loaderService = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      thumbnailService = tryResolve<IDiscoverThumbnailService>(
-        TYPES.IDiscoverThumbnailService
+      thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
+        TYPES.IDiscoverThumbnailProvider
       );
       normalizationService = tryResolve<ISequenceNormalizationService>(
         TYPES.ISequenceNormalizationService

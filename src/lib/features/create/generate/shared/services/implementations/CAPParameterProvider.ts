@@ -23,14 +23,14 @@ import {
   DifficultyLevel,
   PropContinuity,
 } from "../../domain/models/generate-models";
-import type { IPictographFilterService } from "../contracts/IPictographFilterService";
+import type { IPictographFilter } from "../contracts/IPictographFilter";
 import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
 
 @injectable()
 export class CAPParameterProvider implements ICAPParameterProvider {
   constructor(
-    @inject(TYPES.IPictographFilterService)
-    private pictographFilterService: IPictographFilterService
+    @inject(TYPES.IPictographFilter)
+    private PictographFilter: IPictographFilter
   ) {}
 
   // ============================================================================
@@ -97,11 +97,11 @@ export class CAPParameterProvider implements ICAPParameterProvider {
   ): RotationDirections {
     if (propContinuity === PropContinuity.CONTINUOUS) {
       return {
-        blueRotationDirection: this.pictographFilterService.selectRandom([
+        blueRotationDirection: this.PictographFilter.selectRandom([
           RotationDirection.CLOCKWISE,
           RotationDirection.COUNTER_CLOCKWISE,
         ]),
-        redRotationDirection: this.pictographFilterService.selectRandom([
+        redRotationDirection: this.PictographFilter.selectRandom([
           RotationDirection.CLOCKWISE,
           RotationDirection.COUNTER_CLOCKWISE,
         ]),

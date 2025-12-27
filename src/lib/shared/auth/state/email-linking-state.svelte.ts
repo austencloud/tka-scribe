@@ -5,8 +5,8 @@
  * Handles form validation, verification polling, and resend cooldown.
  */
 
-import type { IAuthService } from "../services/contracts/IAuthService";
-import type { IHapticFeedbackService } from "../../application/services/contracts/IHapticFeedbackService";
+import type { IAuthenticator } from "../services/contracts/IAuthenticator";
+import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
 
 export type EmailLinkingStep = "form" | "verifying" | "success";
 
@@ -49,8 +49,8 @@ export interface EmailLinkingState {
 }
 
 export function createEmailLinkingState(
-  authService: IAuthService,
-  hapticService: IHapticFeedbackService | null,
+  authService: IAuthenticator,
+  hapticService: IHapticFeedback | null,
   initialEmail: string,
   onSuccess?: () => void,
   onClose?: () => void

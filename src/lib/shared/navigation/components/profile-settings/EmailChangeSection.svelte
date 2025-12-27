@@ -6,7 +6,7 @@
   Sends verification email to new address.
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "../../../application/services/contracts/IHapticFeedbackService";
+  import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import {
     emailChangeState,
     uiState,
@@ -17,7 +17,7 @@
   let { onChangeEmail, onCancel, hapticService } = $props<{
     onChangeEmail: () => Promise<void>;
     onCancel: () => void;
-    hapticService: IHapticFeedbackService | null;
+    hapticService: IHapticFeedback | null;
   }>();
 
   // Validation state

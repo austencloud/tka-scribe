@@ -1,5 +1,5 @@
 /**
- * DiscoverEventHandlerService - Handles all discover module events and actions
+ * DiscoverEventHandler - Handles all discover module events and actions
  *
  * Coordinates sequence actions, detail panel interactions, and navigation
  * following the service-based architecture pattern.
@@ -9,28 +9,28 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { injectable, inject, optional } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type {
-  IDiscoverEventHandlerService,
+  IDiscoverEventHandler,
   ExploreEventHandlerParams,
-} from "../contracts/IDiscoverEventHandlerService";
+} from "../contracts/IDiscoverEventHandler";
 import { openSpotlightViewer } from "../../../../../shared/application/state/ui/ui-state.svelte";
-import type { IDiscoverThumbnailService } from "../../../gallery/display/services/contracts/IDiscoverThumbnailService";
+import type { IDiscoverThumbnailProvider } from "../../../gallery/display/services/contracts/IDiscoverThumbnailProvider";
 import type { IDiscoverLoader } from "../../../gallery/display/services/contracts/IDiscoverLoader";
 import { galleryPanelManager } from "../../state/gallery-panel-state.svelte";
-import type { ISheetRouterService } from "../../../../../shared/navigation/services/contracts/ISheetRouterService";
+import type { ISheetRouter } from "../../../../../shared/navigation/services/contracts/ISheetRouter";
 import { handleModuleChange } from "../../../../../shared/navigation-coordinator/navigation-coordinator.svelte";
 @injectable()
-export class DiscoverEventHandlerService
-  implements IDiscoverEventHandlerService
+export class DiscoverEventHandler
+  implements IDiscoverEventHandler
 {
   private params: ExploreEventHandlerParams | null = null;
 
   constructor(
-    @inject(TYPES.IDiscoverThumbnailService)
-    private thumbnailService: IDiscoverThumbnailService,
+    @inject(TYPES.IDiscoverThumbnailProvider)
+    private thumbnailService: IDiscoverThumbnailProvider,
 
-    @inject(TYPES.ISheetRouterService)
+    @inject(TYPES.ISheetRouter)
     @optional()
-    private sheetRouterService: ISheetRouterService | null,
+    private sheetRouterService: ISheetRouter | null,
 
     @inject(TYPES.IDiscoverLoader)
     @optional()
@@ -47,7 +47,7 @@ export class DiscoverEventHandlerService
 
   private ensureInitialized(): void {
     if (!this.params) {
-      throw new Error("DiscoverEventHandlerService not initialized");
+      throw new Error("DiscoverEventHandler not initialized");
     }
   }
 

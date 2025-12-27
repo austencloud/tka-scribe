@@ -3,8 +3,8 @@ BaseCard.svelte - Base component for all setting cards
 Provides consistent styling and interaction patterns for all generation setting cards
 -->
 <script lang="ts">
-  import type { IHapticFeedbackService } from "$lib/shared/application/services/contracts/IHapticFeedbackService";
-  import type { IRippleEffectService } from "$lib/shared/application/services/contracts/IRippleEffectService";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { IRippleEffect } from "$lib/shared/application/services/contracts/IRippleEffect";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -36,15 +36,15 @@ Provides consistent styling and interaction patterns for all generation setting 
     children?: import("svelte").Snippet;
   }>();
 
-  let hapticService: IHapticFeedbackService;
-  let rippleService: IRippleEffectService;
+  let hapticService: IHapticFeedback;
+  let rippleService: IRippleEffect;
   let cardElement: HTMLDivElement | null = $state(null);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedbackService>(
-      TYPES.IHapticFeedbackService
+    hapticService = resolve<IHapticFeedback>(
+      TYPES.IHapticFeedback
     );
-    rippleService = resolve<IRippleEffectService>(TYPES.IRippleEffectService);
+    rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
 
     // 🌊 Attach ripple effect to clickable cards
     if (clickable && cardElement) {

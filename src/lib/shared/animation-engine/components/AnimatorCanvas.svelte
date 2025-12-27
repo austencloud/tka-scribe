@@ -29,16 +29,16 @@ Splitting them creates artificial boundaries that require complex coordination.
 WHAT IS ALREADY WELL-FACTORED (the actual work is in services):
 
 - AnimatorCanvasInitializer     → Canvas bootstrap sequence
-- AnimationRenderLoopService    → Frame rendering logic
-- PropTextureService            → Prop SVG → texture conversion
-- GlyphTextureService           → TKA glyph → texture conversion
-- AnimationVisibilitySyncService → Visibility state subscriptions
-- TrailSettingsSyncService      → Trail settings subscriptions
-- PropTypeChangeService         → Prop type change detection
-- SequenceCacheService          → Cache lifecycle management
-- GlyphTransitionService        → Letter cross-fade animations
-- CanvasResizeService           → Container resize handling
-- AnimationPrecomputationService → Path/frame pre-computation
+- AnimationRenderLoop    → Frame rendering logic
+- PropTextureLoader            → Prop SVG → texture conversion
+- GlyphTextureLoader           → TKA glyph → texture conversion
+- AnimationVisibilitySynchronizer → Visibility state subscriptions
+- TrailSettingsSynchronizer      → Trail settings subscriptions
+- PropTypeChanger         → Prop type change detection
+- SequenceCache          → Cache lifecycle management
+- GlyphTransitionController        → Letter cross-fade animations
+- CanvasResizer           → Container resize handling
+- AnimationPrecomputer → Path/frame pre-computation
 
 The component's role is ORCHESTRATION: wiring services together with
 Svelte 5 $effect() calls. The ~20 $effect() blocks are the minimum
@@ -65,45 +65,51 @@ Last audit: 2025-12-20
   import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
   import type { IAnimationRenderer } from "$lib/features/compose/services/contracts/IAnimationRenderer";
   import type { ISVGGenerator } from "$lib/features/compose/services/contracts/ISVGGenerator";
-  import type { ITrailCaptureService } from "$lib/features/compose/services/contracts/ITrailCaptureService";
-  import type { ITurnsTupleGeneratorService } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGeneratorService";
+  import type { ITrailCapturer } from "$lib/features/compose/services/contracts/ITrailCapturer";
+  import type { ITurnsTupleGenerator } from "$lib/shared/pictograph/arrow/positioning/placement/services/contracts/ITurnsTupleGenerator";
   import GlyphRenderer from "./GlyphRenderer.svelte";
   import GlyphOverlay from "./layers/GlyphOverlay.svelte";
   import ProgressOverlay from "./layers/ProgressOverlay.svelte";
-  import { CanvasResizeService } from "../services/implementations/CanvasResizeService";
+  import { CanvasResizer } from "../services/implementations/CanvasResizer.svelte";
   import {
     DEFAULT_CANVAS_SIZE,
-    type ICanvasResizeService,
-  } from "../services/contracts/ICanvasResizeService";
-  import { loadAnimatorServices as loadServices } from "../services/implementations/AnimatorServiceLoader";
-  import type { AnimatorServices } from "../services/contracts/IAnimatorServiceLoader";
+    type ICanvasResizer,
+  } from "../services/contracts/ICanvasResizer";
+  import { loadAnimatorServices as loadServices } from "../services/implementations/AnimatorLoader";
+  import type { AnimatorServices } from "../services/contracts/IAnimatorLoader";
   import { type TrailSettings } from "../domain/types/TrailTypes";
   import { loadTrailSettings } from "$lib/features/compose/utils/animation-panel-persistence";
-  import { GlyphTextureService } from "../services/implementations/GlyphTextureService";
-  import type { IGlyphTextureService } from "../services/contracts/IGlyphTextureService";
-  import { PropTextureService } from "../services/implementations/PropTextureService";
-  import type { IPropTextureService } from "../services/contracts/IPropTextureService";
-  import { AnimationPrecomputationService } from "../services/implementations/AnimationPrecomputationService";
-  import type { IAnimationPrecomputationService } from "../services/contracts/IAnimationPrecomputationService";
-  import { AnimationRenderLoopService } from "../services/implementations/AnimationRenderLoopService";
+  import { GlyphTextureLoader } from "../services/implementations/GlyphTextureLoader.svelte";
+  import type { IGlyphTextureLoader } from "../services/contracts/IGlyphTextureLoader";
+  import { PropTextureLoader } from "../services/implementations/PropTextureLoader.svelte";
+  import {
+    type IPropTextureLoader,
+    DEFAULT_PROP_DIMENSIONS,
+  } from "../services/contracts/IPropTextureLoader";
+  import { AnimationPrecomputer } from "../services/implementations/AnimationPrecomputer.svelte";
+  import type { IAnimationPrecomputer } from "../services/contracts/IAnimationPrecomputer";
+  import { AnimationRenderLoop } from "../services/implementations/AnimationRenderLoop";
   import type {
-    IAnimationRenderLoopService,
+    IAnimationRenderLoop,
     RenderFrameParams,
-  } from "../services/contracts/IAnimationRenderLoopService";
+  } from "../services/contracts/IAnimationRenderLoop";
   import type { AnimationPathCacheData } from "$lib/features/compose/services/implementations/AnimationPathCache";
   import type { ISequenceAnimationOrchestrator } from "$lib/features/compose/services/contracts/ISequenceAnimationOrchestrator";
   import type { PreRenderProgress } from "$lib/features/compose/services/implementations/SequenceFramePreRenderer";
   import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
   import type { PropState } from "../domain/PropState";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-  import { AnimationVisibilitySyncService } from "../services/implementations/AnimationVisibilitySyncService";
-  import type { AnimationVisibilityState } from "../services/contracts/IAnimationVisibilitySyncService";
+  import { AnimationVisibilitySynchronizer } from "../services/implementations/AnimationVisibilitySynchronizer";
+  import type { AnimationVisibilityState } from "../services/contracts/IAnimationVisibilitySynchronizer";
   import { getAnimationVisibilityManager } from "../state/animation-visibility-state.svelte";
-  import { GlyphTransitionService } from "../services/implementations/GlyphTransitionService";
-  import type { GlyphTransitionState } from "../services/contracts/IGlyphTransitionService";
-  import { SequenceCacheService } from "../services/implementations/SequenceCacheService";
-  import { TrailSettingsSyncService } from "../services/implementations/TrailSettingsSyncService";
-  import { PropTypeChangeService } from "../services/implementations/PropTypeChangeService";
+  import { GlyphTransitionController } from "../services/implementations/GlyphTransitionController.svelte";
+  import type {
+    GlyphTransitionState,
+    IGlyphTransitionController,
+  } from "../services/contracts/IGlyphTransitionController";
+  import { SequenceCache } from "../services/implementations/SequenceCache.svelte";
+  import { TrailSettingsSynchronizer } from "../services/implementations/TrailSettingsSynchronizer.svelte";
+  import { PropTypeChanger } from "../services/implementations/PropTypeChanger.svelte";
   import { AnimatorCanvasInitializer } from "../services/implementations/AnimatorCanvasInitializer";
   import { onMount, untrack } from "svelte";
 
@@ -136,8 +142,8 @@ Last audit: 2025-12-20
   let svgGenerator = $state<ISVGGenerator | null>(null);
   let settingsService = $state<ISettingsState | null>(null);
   let orchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
-  let trailCaptureService = $state<ITrailCaptureService | null>(null);
-  let turnsTupleGenerator = $state<ITurnsTupleGeneratorService | null>(null);
+  let TrailCapturer = $state<ITrailCapturer | null>(null);
+  let turnsTupleGenerator = $state<ITurnsTupleGenerator | null>(null);
   let servicesReady = $state(false);
 
   // Heavy services - loaded on-demand
@@ -168,9 +174,9 @@ Last audit: 2025-12-20
         return false;
       }
 
-      if (!result.services?.trailCaptureService) {
+      if (!result.services?.TrailCapturer) {
         console.error(
-          "[AnimatorCanvas] CRITICAL: DI container returned success but trailCaptureService is null!"
+          "[AnimatorCanvas] CRITICAL: DI container returned success but TrailCapturer is null!"
         );
         rendererError = "Failed to load trail capture service";
         return false;
@@ -179,7 +185,7 @@ Last audit: 2025-12-20
       svgGenerator = result.services.svgGenerator;
       settingsService = result.services.settingsService;
       orchestrator = result.services.orchestrator;
-      trailCaptureService = result.services.trailCaptureService;
+      TrailCapturer = result.services.TrailCapturer;
       turnsTupleGenerator = result.services.turnsTupleGenerator;
       servicesReady = true;
       return true;
@@ -189,26 +195,32 @@ Last audit: 2025-12-20
     return false;
   }
 
-  // Glyph cross-fade transition - managed by service
-  let glyphTransitionService: GlyphTransitionService | null = null;
-  let glyphTransition = $state<GlyphTransitionState>({
-    displayedLetter: null,
-    displayedTurnsTuple: "(s, 0, 0)",
-    displayedBeatNumber: null,
-    fadingOutLetter: null,
-    fadingOutTurnsTuple: null,
-    fadingOutBeatNumber: null,
-    isNewLetter: false,
-  });
+  // Glyph cross-fade transition - owns reactive state
+  let glyphTransitionService: IGlyphTransitionController | null = null;
 
-  // Derived accessors for template usage
-  const fadingOutLetter = $derived(glyphTransition.fadingOutLetter);
-  const fadingOutTurnsTuple = $derived(glyphTransition.fadingOutTurnsTuple);
-  const fadingOutBeatNumber = $derived(glyphTransition.fadingOutBeatNumber);
-  const displayedLetter = $derived(glyphTransition.displayedLetter);
-  const displayedTurnsTuple = $derived(glyphTransition.displayedTurnsTuple);
-  const displayedBeatNumber = $derived(glyphTransition.displayedBeatNumber);
-  const isNewLetter = $derived(glyphTransition.isNewLetter);
+  // Derived accessors from service's reactive state
+  // Note: Type assertions needed for svelte-check compatibility with $state reactivity
+  const fadingOutLetter = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.fadingOutLetter ?? null
+  );
+  const fadingOutTurnsTuple = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.fadingOutTurnsTuple ?? null
+  );
+  const fadingOutBeatNumber = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.fadingOutBeatNumber ?? null
+  );
+  const displayedLetter = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.displayedLetter ?? null
+  );
+  const displayedTurnsTuple = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.displayedTurnsTuple ?? "(s, 0, 0)"
+  );
+  const displayedBeatNumber = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.displayedBeatNumber ?? null
+  );
+  const isNewLetter = $derived(
+    (glyphTransitionService as IGlyphTransitionController | null)?.state?.isNewLetter ?? false
+  );
 
   // Convert float currentBeat to integer beat number for display
   // NOTE: We derive from beatData instead of currentBeat because currentBeat prop isn't reactive
@@ -288,29 +300,35 @@ Last audit: 2025-12-20
   let containerElement: HTMLDivElement;
   let hasLoggedFrameParams = false;
 
-  // Resize handler (extracted utility)
-  let canvasResizeService: ICanvasResizeService | null = null;
+  // Resize handler (extracted utility) - owns reactive state
+  let canvasResizerService: ICanvasResizer | null = null;
 
-  // ViewBox dimensions from the prop SVGs
-  let bluePropDimensions = { width: 252.8, height: 77.8 };
-  let redPropDimensions = { width: 252.8, height: 77.8 };
+  // Prop texture service - created once, owns its own reactive state
+  let propTextureService: IPropTextureLoader | null = null;
+
+  // ViewBox dimensions - derived from prop texture service state
+  // Note: Type assertions needed for svelte-check compatibility with $state reactivity
+  const bluePropDimensions = $derived(
+    (propTextureService as IPropTextureLoader | null)?.state?.blueDimensions ?? DEFAULT_PROP_DIMENSIONS
+  );
+  const redPropDimensions = $derived(
+    (propTextureService as IPropTextureLoader | null)?.state?.redDimensions ?? DEFAULT_PROP_DIMENSIONS
+  );
+
   let isInitialized = $state(false);
   let needsRender = $state(true);
   let currentPropType = $state<string>("staff");
 
   // Glyph texture loader (handles queuing when not initialized)
-  let glyphTextureService: IGlyphTextureService | null = null;
-
-  // Prop texture service
-  let propTextureService: IPropTextureService | null = null;
+  let glyphTextureService: IGlyphTextureLoader | null = null;
 
   // Pre-computation service (paths + frames)
-  let precomputationService: IAnimationPrecomputationService | null = null;
+  let precomputationService: IAnimationPrecomputer | null = null;
 
   // Render loop service
-  let renderLoopService: IAnimationRenderLoopService | null = null;
+  let renderLoopService: IAnimationRenderLoop | null = null;
 
-  // Trail settings (managed by TrailCaptureService)
+  // Trail settings (managed by TrailCapturer)
   let trailSettings = $state<TrailSettings>(
     externalTrailSettings ?? loadTrailSettings()
   );
@@ -328,62 +346,42 @@ Last audit: 2025-12-20
   // ============================================================================
 
   // Visibility sync service - handles all visibility state subscriptions
-  let visibilitySyncService: AnimationVisibilitySyncService | null = null;
+  let visibilitySyncService: AnimationVisibilitySynchronizer | null = null;
 
   // Sequence cache service - manages cache lifecycle
-  let sequenceCacheService: SequenceCacheService | null = null;
+  let sequenceCacheService: SequenceCache | null = null;
 
   // Trail settings sync service
-  let trailSettingsSyncService: TrailSettingsSyncService | null = null;
+  let trailSettingsSyncService: TrailSettingsSynchronizer | null = null;
 
   // Prop type change service
-  let propTypeChangeService: PropTypeChangeService | null = null;
+  let propTypeChangeService: PropTypeChanger | null = null;
 
   // Canvas initializer service - created immediately (not in onMount)
   const canvasInitializer = new AnimatorCanvasInitializer();
 
   onMount(() => {
     // Initialize visibility sync
-    visibilitySyncService = new AnimationVisibilitySyncService();
+    visibilitySyncService = new AnimationVisibilitySynchronizer();
     const unsubscribeVisibility = visibilitySyncService.subscribe((state) => {
       visibilityState = state;
     });
 
-    // Initialize glyph transition service
-    glyphTransitionService = new GlyphTransitionService();
-    glyphTransitionService.setStateCallback((state) => {
-      glyphTransition = state;
-    });
+    // Initialize glyph transition service - owns reactive state
+    glyphTransitionService = new GlyphTransitionController();
+    // No callback needed - component derives from service.state
 
-    // Initialize sequence cache service
-    sequenceCacheService = new SequenceCacheService();
-    sequenceCacheService.setClearCallback(() => {
-      precomputationService?.clearCaches();
-      trailCaptureService?.clearTrails();
-      cacheSequenceId = null;
-    });
-    sequenceCacheService.setPreRenderClearCallback(() => {
-      precomputationService?.getFramePreRenderer()?.clear();
-      preRenderedFramesReady = false;
-    });
+    // Initialize sequence cache service - owns reactive state
+    sequenceCacheService = new SequenceCache();
+    // No callbacks needed - component reacts via $effect watching state.clearSignal/preRenderClearSignal
 
-    // Initialize trail settings sync service
-    trailSettingsSyncService = new TrailSettingsSyncService();
-    trailSettingsSyncService.setSettingsUpdateCallback((newSettings) => {
-      trailSettings = newSettings;
-    });
+    // Initialize trail settings sync service - owns reactive state
+    trailSettingsSyncService = new TrailSettingsSynchronizer();
+    // No callback needed - component reacts via $effect watching state.syncedSettings
 
     // Initialize prop type change service
-    propTypeChangeService = new PropTypeChangeService();
-    propTypeChangeService.setStateCallback((state) => {
-      currentBluePropType = state.bluePropType;
-      currentRedPropType = state.redPropType;
-      currentPropType = state.legacyPropType;
-    });
-    propTypeChangeService.setTextureReloadCallback(() => {
-      isInitialized = false;
-      loadPropTextures();
-    });
+    propTypeChangeService = new PropTypeChanger();
+    // No callbacks needed - component reacts via $effect watching state
 
     return () => {
       unsubscribeVisibility();
@@ -408,27 +406,16 @@ Last audit: 2025-12-20
   function initializePrecomputationService() {
     if (!orchestrator) return;
 
-    precomputationService = new AnimationPrecomputationService();
+    precomputationService = new AnimationPrecomputer();
     precomputationService.initialize({
       orchestrator,
-      trailCaptureService,
+      TrailCapturer,
       renderer: animationRenderer,
       propDimensions: bluePropDimensions,
       canvasSize,
       instanceId,
     });
-    precomputationService.setStateCallback((state) => {
-      if (state.pathCacheData !== undefined)
-        pathCacheData = state.pathCacheData;
-      if (state.isCachePrecomputing !== undefined)
-        isCachePrecomputing = state.isCachePrecomputing;
-      if (state.isPreRendering !== undefined)
-        isPreRendering = state.isPreRendering;
-      if (state.preRenderProgress !== undefined)
-        preRenderProgress = state.preRenderProgress;
-      if (state.preRenderedFramesReady !== undefined)
-        preRenderedFramesReady = state.preRenderedFramesReady;
-    });
+    // No callback needed - component reacts via $effect watching service.state
   }
 
   // ============================================================================
@@ -450,10 +437,10 @@ Last audit: 2025-12-20
 
   // Initialize trail capture service reactively (only when services AND settings are ready)
   $effect(() => {
-    if (!trailCaptureService || !settingsLoaded) return;
+    if (!TrailCapturer || !settingsLoaded) return;
     // Use settings-based prop types (currentBluePropType/currentRedPropType)
     // instead of sequence data - settings has the actual prop types being rendered
-    trailCaptureService.initialize({
+    TrailCapturer.initialize({
       canvasSize,
       bluePropDimensions,
       redPropDimensions,
@@ -462,18 +449,18 @@ Last audit: 2025-12-20
       redPropType: currentRedPropType,
     });
     // Initialize trail settings sync with capture service
-    trailSettingsSyncService?.initialize(trailCaptureService, () =>
+    trailSettingsSyncService?.initialize(TrailCapturer, () =>
       renderLoopService?.triggerRender(getFrameParams)
     );
   });
 
   // Update trail capture service when prop types change (after initial load)
   $effect(() => {
-    if (!trailCaptureService || !settingsLoaded) return;
+    if (!TrailCapturer || !settingsLoaded) return;
     // Track prop type changes from settings
     const blue = currentBluePropType;
     const red = currentRedPropType;
-    trailCaptureService.updateConfig({
+    TrailCapturer.updateConfig({
       bluePropType: blue,
       redPropType: red,
     });
@@ -482,6 +469,79 @@ Last audit: 2025-12-20
   // ============================================================================
   // EFFECTS AND LIFECYCLE
   // ============================================================================
+
+  // Trigger render when prop textures finish loading (replaces callback)
+  $effect(() => {
+    if (propTextureService?.state.isLoaded && isInitialized) {
+      renderLoopService?.triggerRender(getFrameParams);
+    }
+  });
+
+  // Trigger render when glyph textures finish loading (replaces callback)
+  $effect(() => {
+    // Track loadCount - increments on each successful glyph load
+    const loadCount = glyphTextureService?.state.loadCount;
+    if (loadCount && loadCount > 0 && isInitialized) {
+      renderLoopService?.triggerRender(getFrameParams);
+    }
+  });
+
+  // React to canvas size changes (replaces setSizeChangeCallback)
+  $effect(() => {
+    const newSize = canvasResizerService?.state.currentSize;
+    if (newSize && newSize !== canvasSize) {
+      canvasSize = newSize;
+      // Update trail capture service with new canvas size
+      TrailCapturer?.updateConfig({ canvasSize: newSize });
+    }
+  });
+
+  // Trigger render when resize completes (replaces setResizeCompleteCallback)
+  $effect(() => {
+    const resizeCount = canvasResizerService?.state.resizeCount;
+    if (resizeCount && resizeCount > 0 && isInitialized) {
+      renderLoopService?.triggerRender(getFrameParams);
+    }
+  });
+
+  // React to cache clear signals (replaces setClearCallback)
+  $effect(() => {
+    const clearSignal = sequenceCacheService?.state.clearSignal;
+    if (clearSignal && clearSignal > 0) {
+      precomputationService?.clearCaches();
+      TrailCapturer?.clearTrails();
+      cacheSequenceId = null;
+    }
+  });
+
+  // React to pre-render clear signals (replaces setPreRenderClearCallback)
+  $effect(() => {
+    const preRenderClearSignal = sequenceCacheService?.state.preRenderClearSignal;
+    if (preRenderClearSignal && preRenderClearSignal > 0) {
+      precomputationService?.getFramePreRenderer()?.clear();
+      preRenderedFramesReady = false;
+    }
+  });
+
+  // React to synced trail settings from external source (replaces setSettingsUpdateCallback)
+  $effect(() => {
+    const syncedSettings = trailSettingsSyncService?.state.syncedSettings;
+    if (syncedSettings) {
+      trailSettings = syncedSettings;
+    }
+  });
+
+  // React to precomputation state changes
+  $effect(() => {
+    const state = precomputationService?.state;
+    if (state) {
+      pathCacheData = state.pathCacheData;
+      isCachePrecomputing = state.isCachePrecomputing;
+      isPreRendering = state.isPreRendering;
+      preRenderProgress = state.preRenderProgress;
+      preRenderedFramesReady = state.preRenderedFramesReady;
+    }
+  });
 
   // Track prop and visibility changes to trigger re-renders
   // Only run when initialized to prevent render triggers during initialization
@@ -506,15 +566,22 @@ Last audit: 2025-12-20
   });
 
   // Track gridMode changes and reload grid texture when it changes
+  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
   let previousGridMode = $state<string | null>(gridMode?.toString() ?? null);
   $effect(() => {
     const currentGridMode = gridMode?.toString() ?? null;
-    if (isInitialized && animationRenderer && currentGridMode !== previousGridMode) {
+    if (
+      isInitialized &&
+      animationRenderer &&
+      currentGridMode !== previousGridMode
+    ) {
       previousGridMode = currentGridMode;
       // Reload grid texture with new mode
-      animationRenderer.loadGridTexture(currentGridMode ?? "diamond").then(() => {
-        renderLoopService?.triggerRender(getFrameParams);
-      });
+      animationRenderer
+        .loadGridTexture(currentGridMode ?? "diamond")
+        .then(() => {
+          renderLoopService?.triggerRender(getFrameParams);
+        });
     }
   });
 
@@ -535,7 +602,7 @@ Last audit: 2025-12-20
   // Individual prop visibility is handled by the render loop filtering trail points
   $effect(() => {
     if (!blueProp && !redProp) {
-      trailCaptureService?.clearTrails();
+      TrailCapturer?.clearTrails();
       renderLoopService?.triggerRender(getFrameParams);
     }
   });
@@ -559,6 +626,25 @@ Last audit: 2025-12-20
     propTypeChangeService?.checkForChanges(settingsService);
   });
 
+  // React to prop type state changes from service
+  $effect(() => {
+    const state = propTypeChangeService?.state;
+    if (state) {
+      currentBluePropType = state.bluePropType;
+      currentRedPropType = state.redPropType;
+      currentPropType = state.legacyPropType;
+    }
+  });
+
+  // React to texture reload signal from service
+  $effect(() => {
+    const signal = propTypeChangeService?.state.textureReloadSignal;
+    if (signal && signal > 0) {
+      isInitialized = false;
+      loadPropTextures();
+    }
+  });
+
   // Initialize animation renderer (orchestrated by canvasInitializer service)
   // Only containerElement is a tracked dependency - backgroundAlpha and gridMode
   // are read with untrack to prevent re-initialization on prop changes
@@ -579,12 +665,12 @@ Last audit: 2025-12-20
           initializePrecomputationService();
           precomputationService?.initializeFramePreRenderer();
         },
-        initializePropTextureService,
+        initializePropTextureLoader,
         initializeResizeService: () => {
           initializeResizeService();
-          canvasResizeService?.setup();
+          canvasResizerService?.setup();
         },
-        initializeGlyphTextureService,
+        initializeGlyphTextureLoader,
         initializeRenderLoopService,
         loadPropTextures,
         startRenderLoop: () => renderLoopService?.triggerRender(getFrameParams),
@@ -612,7 +698,7 @@ Last audit: 2025-12-20
       // CRITICAL: Use dispose() not stop() to fully clean up RAF and references
       // This prevents memory leaks on mobile during long playback sessions
       renderLoopService?.dispose();
-      canvasResizeService?.teardown();
+      canvasResizerService?.teardown();
 
       // Clean up texture services to release WebGL textures from VRAM
       glyphTextureService?.dispose?.();
@@ -622,7 +708,7 @@ Last audit: 2025-12-20
       precomputationService?.dispose?.();
 
       // Clean up trail capture to release trail point buffers
-      trailCaptureService?.clearTrails();
+      TrailCapturer?.clearTrails();
 
       canvasInitializer.destroy({
         onCanvasReady: (canvas) => {
@@ -636,11 +722,11 @@ Last audit: 2025-12-20
   });
 
   // Initialize prop texture service
-  function initializePropTextureService() {
+  function initializePropTextureLoader() {
     // Validate dependencies with specific error messages
     if (!animationRenderer) {
       const error =
-        "Cannot initialize PropTextureService: animationRenderer is null";
+        "Cannot initialize PropTextureLoader: animationRenderer is null";
       console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
       rendererError = error;
       return;
@@ -648,7 +734,7 @@ Last audit: 2025-12-20
 
     if (!svgGenerator) {
       const error =
-        "Cannot initialize PropTextureService: svgGenerator is null (DI container may have failed to load it)";
+        "Cannot initialize PropTextureLoader: svgGenerator is null (DI container may have failed to load it)";
       console.error(`[AnimatorCanvas] CRITICAL: ${error}`);
       console.error(
         '[AnimatorCanvas] This usually means the "animate" feature module did not register ISVGGenerator properly'
@@ -657,16 +743,14 @@ Last audit: 2025-12-20
       return;
     }
 
-    propTextureService = new PropTextureService();
-    propTextureService.initialize(animationRenderer, svgGenerator);
-    propTextureService.setTrailCaptureService(trailCaptureService);
-    propTextureService.setDimensionsLoadedCallback((blue, red) => {
-      bluePropDimensions = blue;
-      redPropDimensions = red;
-    });
-    propTextureService.setLoadCompleteCallback(() => {
-      renderLoopService?.triggerRender(getFrameParams);
-    });
+    // Create service - it owns its own reactive state
+    // No callbacks needed - component derives from service.state
+    propTextureService = new PropTextureLoader();
+    propTextureService.initialize(
+      animationRenderer,
+      svgGenerator,
+      TrailCapturer
+    );
   }
 
   // Wrapper for prop texture loading
@@ -684,31 +768,22 @@ Last audit: 2025-12-20
     );
   }
 
-  // Create resize service with callbacks
+  // Create resize service - owns reactive state
   function initializeResizeService() {
     if (!containerElement || !animationRenderer) return;
 
-    canvasResizeService = new CanvasResizeService();
-    canvasResizeService.initialize(containerElement, animationRenderer);
-    canvasResizeService.setSizeChangeCallback((newSize: number) => {
-      canvasSize = newSize;
-      // Update trail capture service with new canvas size
-      trailCaptureService?.updateConfig({ canvasSize: newSize });
-    });
-    canvasResizeService.setResizeCompleteCallback(() => {
-      renderLoopService?.triggerRender(getFrameParams);
-    });
+    canvasResizerService = new CanvasResizer();
+    canvasResizerService.initialize(containerElement, animationRenderer);
+    // No callbacks needed - we use $effect watching canvasResizerService.state
   }
 
   // Initialize glyph texture service
-  function initializeGlyphTextureService() {
+  function initializeGlyphTextureLoader() {
     if (!animationRenderer) return;
 
-    glyphTextureService = new GlyphTextureService();
+    glyphTextureService = new GlyphTextureLoader();
     glyphTextureService.initialize(animationRenderer);
-    glyphTextureService.setLoadCompleteCallback(() => {
-      renderLoopService?.triggerRender(getFrameParams);
-    });
+    // No callback needed - we use $effect watching glyphTextureService.state.loadCount
   }
 
   // Wrapper for GlyphRenderer callback (handles case when service not ready)
@@ -766,10 +841,10 @@ Last audit: 2025-12-20
   function initializeRenderLoopService() {
     if (!animationRenderer) return;
 
-    renderLoopService = new AnimationRenderLoopService();
+    renderLoopService = new AnimationRenderLoop();
     renderLoopService.initialize({
       renderer: animationRenderer,
-      trailCaptureService,
+      TrailCapturer,
       pathCache: precomputationService?.getPathCache() ?? null,
       canvasSize,
     });

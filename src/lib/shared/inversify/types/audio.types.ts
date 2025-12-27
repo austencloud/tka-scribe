@@ -3,6 +3,6 @@
  */
 
 export const AudioTypes = {
-  IAudioLibraryService: Symbol.for("IAudioLibraryService"),
-  IAudioStorageService: Symbol.for("IAudioStorageService"),
+  IAudioLibrary: Symbol.for("IAudioLibrary"),
+  IAudioStorageManager: Symbol.for("IAudioStorageManager"),
 } as const;

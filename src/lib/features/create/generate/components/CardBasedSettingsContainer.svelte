@@ -9,10 +9,10 @@ Delegates ALL logic to services (SRP compliant)
   import { flip } from "svelte/animate";
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
-  import type { CardDescriptor } from "../shared/services/contracts/ICardConfigurationService";
+  import type { CardDescriptor } from "../shared/services/contracts/ICardConfigurator";
   import type { ICAPParameterProvider } from "../shared/services/contracts/ICAPParameterProvider";
-  import type { ICardConfigurationService } from "../shared/services/contracts/ICardConfigurationService";
-  import type { IResponsiveTypographyService } from "../shared/services/contracts/IResponsiveTypographyService";
+  import type { ICardConfigurator } from "../shared/services/contracts/ICardConfigurator";
+  import type { IResponsiveTypographer } from "../shared/services/contracts/IResponsiveTypographer";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
   import type { CustomizeOptionsState } from "../state/customize-options-state.svelte";
   import type {
@@ -55,8 +55,8 @@ Delegates ALL logic to services (SRP compliant)
   }>();
 
   // Services - use $state to make them reactive
-  let typographyService = $state<IResponsiveTypographyService | null>(null);
-  let cardConfigService = $state<ICardConfigurationService | null>(null);
+  let typographyService = $state<IResponsiveTypographer | null>(null);
+  let cardConfigService = $state<ICardConfigurator | null>(null);
   let capParamProvider = $state<ICAPParameterProvider | null>(null);
 
   // State
@@ -75,11 +75,11 @@ Delegates ALL logic to services (SRP compliant)
 
   // Initialize services
   onMount(() => {
-    typographyService = resolve<IResponsiveTypographyService>(
-      TYPES.IResponsiveTypographyService
+    typographyService = resolve<IResponsiveTypographer>(
+      TYPES.IResponsiveTypographer
     );
-    cardConfigService = resolve<ICardConfigurationService>(
-      TYPES.ICardConfigurationService
+    cardConfigService = resolve<ICardConfigurator>(
+      TYPES.ICardConfigurator
     );
     capParamProvider = resolve<ICAPParameterProvider>(
       TYPES.ICAPParameterProvider
@@ -197,7 +197,7 @@ Delegates ALL logic to services (SRP compliant)
       in:scale={{ start: 0.95, duration: 300, easing: quintOut }}
       out:scale={{ start: 0.95, duration: 250, easing: quintOut }}
     >
-      <!-- Props are dynamically typed by CardConfigurationService - type assertion needed -->
+      <!-- Props are dynamically typed by CardConfigurator - type assertion needed -->
       {#if card.id === "level"}
         <LevelCard {...card.props as any} />
       {:else if card.id === "length"}

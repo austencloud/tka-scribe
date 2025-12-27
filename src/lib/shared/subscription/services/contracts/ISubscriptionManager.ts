@@ -21,7 +21,7 @@ export interface SubscriptionInfo {
   cancelAtPeriodEnd: boolean;
 }
 
-export interface ISubscriptionService {
+export interface ISubscriptionManager {
   /**
    * Create a Stripe Checkout session for premium subscription
    * @param priceId The Stripe price ID

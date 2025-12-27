@@ -10,7 +10,7 @@
   import { onMount } from "svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICollectionService } from "../services/contracts/ICollectionService";
+  import type { ICollectionManager } from "../services/contracts/ICollectionManager";
   import type { LibraryCollection } from "../domain/models/Collection";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import PanelState from "$lib/shared/components/panel/PanelState.svelte";
@@ -19,7 +19,7 @@
   let collections = $state<LibraryCollection[]>([]);
   let isLoading = $state(true);
   let error = $state<string | null>(null);
-  let collectionService: ICollectionService | null = null;
+  let collectionService: ICollectionManager | null = null;
 
   const isAuthenticated = $derived(!!authState.user);
 
@@ -30,7 +30,7 @@
     }
 
     try {
-      collectionService = resolve<ICollectionService>(TYPES.ICollectionService);
+      collectionService = resolve<ICollectionManager>(TYPES.ICollectionManager);
       collections = await collectionService.getCollections();
       isLoading = false;
     } catch (err) {

@@ -5,7 +5,7 @@ import type {
 import type {
   SkillProgressActionType,
   SkillProgressMetadata,
-} from "../../contracts/ISkillProgressionService";
+} from "../../contracts/ISkillProgressionTracker";
 
 export function findRelevantSkills(params: {
   availableSkills: SkillProgression[];
