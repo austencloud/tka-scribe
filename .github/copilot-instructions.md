@@ -417,6 +417,64 @@ import { MyService } from "../../../services/MyService";
 - Types: `PascalCase.ts` or `kebab-case.ts`
 - Tests: `*.test.ts` (unit), `*.spec.ts` (E2E)
 
+### Service Naming Convention (CRITICAL)
+
+**Never use the word "Service" in service names.** Use descriptive, verb-based names instead.
+
+This is a core architectural decision. The word "Service" is redundant - everything in the `services/` folder is already a service. Using action-oriented names makes the codebase more readable and intention-revealing.
+
+**Naming patterns:**
+
+| If the service does... | Name it... | Example |
+|------------------------|------------|---------|
+| Detection/checking | `*Detector` | `CAPDetector`, `ReversalDetector` |
+| Management/coordination | `*Manager` | `TurnManager`, `CollectionManager` |
+| Configuration | `*Configurator` | `CardConfigurator` |
+| Orchestration | `*Orchestrator` | `GenerationOrchestrator` |
+| Persistence/storage | `*Persister` | `SequencePersister`, `FilterPersister` |
+| Loading data | `*Loader` | `SequenceLoader`, `OptionLoader` |
+| Filtering | `*Filter` | `OptionFilter`, `DiscoverFilter` |
+| Sorting | `*Sorter` | `OptionSorter`, `DiscoverSorter` |
+| Validation | `*Validator` | `SequenceValidator` |
+| Transformation | `*Transformer` | `SequenceTransformer` |
+| Analysis | `*Analyzer` | `SequenceAnalyzer`, `PositionAnalyzer` |
+| Calculation | `*Calculator` | `SequenceStatsCalculator` |
+| Export/conversion | `*Exporter` | `SequenceExporter`, `CocoExporter` |
+| Import | `*Importer` | `SequenceImporter` |
+| Indexing | `*Indexer` | `SequenceIndexer` |
+| Repository/CRUD | `*Repository` | `LibraryRepository`, `FeedbackRepository` |
+| Playing media | `*Player` | `MusicPlayer` |
+| Recording | `*Recorder` | `PerformanceRecorder` |
+| Tracking | `*Tracker` | `SessionTracker`, `ActivityTracker` |
+| Handling events | `*Handler` | `DeepLinkSequenceHandler` |
+| Notifying | `*Notifier` | `AdminNotifier` |
+| Caching | `*Cache` | `DiscoverCache`, `SequenceCache` |
+
+**Examples:**
+
+```typescript
+// ✅ CORRECT - Descriptive, action-oriented names
+class CAPDetector implements ICAPDetector { }
+class SequencePersister implements ISequencePersister { }
+class TurnManager implements ITurnManager { }
+class OptionFilter implements IOptionFilter { }
+
+// ❌ WRONG - Redundant "Service" suffix
+class CAPDetectionService implements ICAPDetectionService { }
+class SequencePersistenceService implements ISequencePersistenceService { }
+class TurnManagementService implements ITurnManagementService { }
+class OptionFilterService implements IOptionFilterService { }
+```
+
+**Interface naming:** Interfaces follow the same pattern with `I` prefix:
+- `ISequencePersister` (not `ISequencePersistenceService`)
+- `ICAPDetector` (not `ICAPDetectionService`)
+
+**When creating new services:**
+1. Think: "What does this service DO?"
+2. Name it after that action: Detector, Manager, Loader, etc.
+3. Never append "Service" - it adds no information
+
 ### Critical Files
 
 - `src/lib/shared/inversify/container.ts` - DI container initialization
