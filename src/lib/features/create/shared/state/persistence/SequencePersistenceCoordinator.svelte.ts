@@ -11,7 +11,7 @@
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { ISequencePersistenceService } from "../../services/contracts/ISequencePersistenceService";
+import type { ISequencePersister } from "../../services/contracts/ISequencePersister";
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
@@ -30,7 +30,7 @@ export interface SequencePersistenceStateData {
 }
 
 export function createSequencePersistenceCoordinator(
-  persistenceService: ISequencePersistenceService | null,
+  persistenceService: ISequencePersister | null,
   applyReversalDetection?: (sequence: SequenceData) => SequenceData,
   /**
    * IMPORTANT: Tab ID for persistence isolation.

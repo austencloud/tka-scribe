@@ -143,7 +143,7 @@
   ): Promise<FeedbackItem> {
     // Dynamically import feedback service
     const { feedbackService } = await import(
-      "$lib/features/feedback/services/implementations/FeedbackService"
+      "$lib/features/feedback/services/implementations/FeedbackRepository"
     );
 
     const updatedItem = await feedbackService.updateUserFeedback(
@@ -163,7 +163,7 @@
   async function handleFeedbackDelete(feedbackId: string): Promise<void> {
     // Dynamically import feedback service
     const { feedbackService } = await import(
-      "$lib/features/feedback/services/implementations/FeedbackService"
+      "$lib/features/feedback/services/implementations/FeedbackRepository"
     );
 
     await feedbackService.deleteUserFeedback(feedbackId);

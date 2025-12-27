@@ -11,7 +11,7 @@
 
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { SequenceState } from "../SequenceStateOrchestrator.svelte";
-import type { ISequencePersistenceService } from "../../services/contracts/ISequencePersistenceService";
+import type { ISequencePersister } from "../../services/contracts/ISequencePersister";
 import type { IUndoService } from "../../services/contracts/IUndoService";
 import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts/IDeepLinkService";
 import type { IDeepLinkSequenceService } from "../../services/contracts/IDeepLinkSequenceService";
@@ -27,7 +27,7 @@ type ConstructTabState =
 
 type PersistenceControllerDeps = {
   sequenceState: SequenceState;
-  sequencePersistenceService?: ISequencePersistenceService;
+  sequencePersistenceService?: ISequencePersister;
   handPathCoordinator: { initializeServices: () => void };
   optionHistoryManager: OptionHistoryManager;
   /** Function to get the sequence state for a specific tab (or fallback to shared) */

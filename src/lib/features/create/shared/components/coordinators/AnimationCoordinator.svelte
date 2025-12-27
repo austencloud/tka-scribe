@@ -12,7 +12,7 @@
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
   import type { IVideoExportOrchestrator } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
   import { sharedAnimationState } from "$lib/shared/animation-engine/state/shared-animation-state.svelte";
-  import type { ISequenceService } from "../../services/contracts/ISequenceService";
+  import type { ISequenceRepository } from "../../services/contracts/ISequenceRepository";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
@@ -38,7 +38,7 @@
   } = $props();
 
   // Services
-  let sequenceService: ISequenceService | null = null;
+  let sequenceService: ISequenceRepository | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
   let videoExportOrchestrator: IVideoExportOrchestrator | null = null;
   let hapticService: IHapticFeedbackService | null = null;
@@ -149,7 +149,7 @@
 
     // Resolve core services immediately (should be available from create module loading)
     try {
-      sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
+      sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
       hapticService = resolve<IHapticFeedbackService>(
         TYPES.IHapticFeedbackService
       );
@@ -311,7 +311,7 @@
    */
   async function loadSequenceData(
     sequence: SequenceData | null,
-    service: ISequenceService
+    service: ISequenceRepository
   ): Promise<SequenceData | null> {
     if (!sequence) return null;
 

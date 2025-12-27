@@ -1,12 +1,12 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { FeedbackSortingService } from "../../../features/feedback/services/implementations/FeedbackSortingService";
-import { FeedbackEditingService } from "../../../features/feedback/services/implementations/FeedbackEditingService";
-import { FeedbackSubtaskService } from "../../../features/feedback/services/implementations/FeedbackSubtaskService";
-import { FeedbackFormattingService } from "../../../features/feedback/services/implementations/FeedbackFormattingService";
-import type { IFeedbackEditingService } from "../../../features/feedback/services/contracts/IFeedbackEditingService";
-import type { IFeedbackSubtaskService } from "../../../features/feedback/services/contracts/IFeedbackSubtaskService";
-import type { IFeedbackFormattingService } from "../../../features/feedback/services/contracts/IFeedbackFormattingService";
+import { FeedbackSorter } from "../../../features/feedback/services/implementations/FeedbackSorter";
+import { FeedbackEditor } from "../../../features/feedback/services/implementations/FeedbackEditor";
+import { FeedbackSubtaskManager } from "../../../features/feedback/services/implementations/FeedbackSubtaskManager";
+import { FeedbackFormatter } from "../../../features/feedback/services/implementations/FeedbackFormatter";
+import type { IFeedbackEditor } from "../../../features/feedback/services/contracts/IFeedbackEditor";
+import type { IFeedbackSubtaskManager } from "../../../features/feedback/services/contracts/IFeedbackSubtaskManager";
+import type { IFeedbackFormatter } from "../../../features/feedback/services/contracts/IFeedbackFormatter";
 import { TYPES } from "../types";
 
 export const feedbackModule = new ContainerModule(
@@ -14,25 +14,25 @@ export const feedbackModule = new ContainerModule(
     // === FEEDBACK SERVICES ===
     options
       .bind(TYPES.IFeedbackSortingService)
-      .to(FeedbackSortingService)
+      .to(FeedbackSorter)
       .inSingletonScope();
 
-    // Feedback Editing Service (snapshot-based change tracking)
+    // Feedback Editor (snapshot-based change tracking)
     options
-      .bind<IFeedbackEditingService>(TYPES.IFeedbackEditingService)
-      .to(FeedbackEditingService)
+      .bind<IFeedbackEditor>(TYPES.IFeedbackEditingService)
+      .to(FeedbackEditor)
       .inSingletonScope();
 
-    // Feedback Subtask Service (prerequisite tracking and management)
+    // Feedback Subtask Manager (prerequisite tracking and management)
     options
-      .bind<IFeedbackSubtaskService>(TYPES.IFeedbackSubtaskService)
-      .to(FeedbackSubtaskService)
+      .bind<IFeedbackSubtaskManager>(TYPES.IFeedbackSubtaskService)
+      .to(FeedbackSubtaskManager)
       .inSingletonScope();
 
-    // Feedback Formatting Service (date/time/label formatting)
+    // Feedback Formatter (date/time/label formatting)
     options
-      .bind<IFeedbackFormattingService>(TYPES.IFeedbackFormattingService)
-      .to(FeedbackFormattingService)
+      .bind<IFeedbackFormatter>(TYPES.IFeedbackFormattingService)
+      .to(FeedbackFormatter)
       .inSingletonScope();
   }
 );

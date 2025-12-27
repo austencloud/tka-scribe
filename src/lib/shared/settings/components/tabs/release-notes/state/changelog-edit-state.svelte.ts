@@ -3,7 +3,7 @@ import type {
   AppVersion,
   ChangelogEntry,
 } from "$lib/features/feedback/domain/models/version-models";
-import { versionService } from "$lib/features/feedback/services/implementations/VersionService";
+import { versionService } from "$lib/features/feedback/services/implementations/VersionManager";
 
 export type UndoAction =
   | { type: "delete"; entry: ChangelogEntry; absoluteIndex: number }

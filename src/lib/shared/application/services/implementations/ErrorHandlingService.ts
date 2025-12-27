@@ -134,7 +134,7 @@ export class ErrorHandlingService implements IErrorHandlingService {
 
       // Dynamically import feedback service singleton to avoid circular dependencies
       const { feedbackService } = await import(
-        "$lib/features/feedback/services/implementations/FeedbackService"
+        "$lib/features/feedback/services/implementations/FeedbackRepository"
       );
 
       // Build bug report

@@ -32,11 +32,11 @@ import type { ICreationMethodPersistenceService } from "../contracts/ICreationMe
 import type { IDeepLinkSequenceService } from "../contracts/IDeepLinkSequenceService";
 import type { INavigationSyncService } from "../contracts/INavigationSyncService";
 import type { IResponsiveLayoutService } from "../contracts/IResponsiveLayoutService";
-import type { ISequencePersistenceService } from "../contracts/ISequencePersistenceService";
-import type { ISequenceService } from "../contracts/ISequenceService";
-import type { ISequenceStatisticsService } from "../contracts/ISequenceStatisticsService";
+import type { ISequencePersister } from "../contracts/ISequencePersister";
+import type { ISequenceRepository } from "../contracts/ISequenceRepository";
+import type { ISequenceStatsCalculator } from "../contracts/ISequenceStatsCalculator";
 import type { ISequenceTransformationService } from "../contracts/ISequenceTransformationService";
-import type { ISequenceValidationService } from "../contracts/ISequenceValidationService";
+import type { ISequenceValidator } from "../contracts/ISequenceValidator";
 import type {
   CreateModuleInitializationResult,
   ICreateModuleInitializationService,
@@ -55,10 +55,10 @@ export class CreateModuleInitializationService
 {
   constructor(
     // Core services
-    @inject(TYPES.ISequenceService)
-    private readonly sequenceService: ISequenceService,
-    @inject(TYPES.ISequencePersistenceService)
-    private readonly sequencePersistenceService: ISequencePersistenceService,
+    @inject(TYPES.ISequenceRepository)
+    private readonly sequenceService: ISequenceRepository,
+    @inject(TYPES.ISequencePersister)
+    private readonly sequencePersistenceService: ISequencePersister,
     @inject(TYPES.IStartPositionService)
     private readonly startPositionService: IStartPositionService,
     @inject(TYPES.ICreateModuleService)
@@ -87,12 +87,12 @@ export class CreateModuleInitializationService
     private readonly panelPersistenceService: IPanelPersistenceService,
 
     // Sequence operation services
-    @inject(TYPES.ISequenceStatisticsService)
-    private readonly sequenceStatisticsService: ISequenceStatisticsService,
+    @inject(TYPES.ISequenceStatsCalculator)
+    private readonly sequenceStatisticsService: ISequenceStatsCalculator,
     @inject(TYPES.ISequenceTransformationService)
     private readonly sequenceTransformationService: ISequenceTransformationService,
-    @inject(TYPES.ISequenceValidationService)
-    private readonly sequenceValidationService: ISequenceValidationService
+    @inject(TYPES.ISequenceValidator)
+    private readonly sequenceValidationService: ISequenceValidator
   ) {}
 
   async initialize(): Promise<CreateModuleInitializationResult> {

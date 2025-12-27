@@ -11,11 +11,11 @@ import { createHandPathCoordinator } from "./hand-path-coordinator.svelte";
 import { createCreateModulePersistenceController } from "./create-module/persistence-controller.svelte";
 import { createNavigationController } from "./create-module/navigation-controller.svelte";
 import { createOptionHistoryManager } from "./create-module/option-history-manager.svelte";
-import type { ISequenceService } from "../services/contracts/ISequenceService";
-import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
+import type { ISequencePersister } from "../services/contracts/ISequencePersister";
+import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
-import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { BeatData } from "../domain/models/BeatData";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
@@ -33,11 +33,11 @@ import type { GeneratorTabState } from "./generator-tab-state.svelte";
  * @returns Unified state object with all Create module state and methods
  */
 export function createCreateModuleState(
-  sequenceService: ISequenceService,
-  sequencePersistenceService?: ISequencePersistenceService,
-  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceService: ISequenceRepository,
+  sequencePersistenceService?: ISequencePersister,
+  sequenceStatisticsService?: ISequenceStatsCalculator,
   sequenceTransformationService?: ISequenceTransformationService,
-  sequenceValidationService?: ISequenceValidationService
+  sequenceValidationService?: ISequenceValidator
 ) {
   // Create sequence state (shared/legacy - kept for backwards compatibility)
   const sequenceState = createSequenceState({

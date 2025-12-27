@@ -6,15 +6,17 @@
 
 export const CoreTypes = {
   // Sequence Services
-  ISequenceService: Symbol.for("ISequenceService"),
+  ISequenceRepository: Symbol.for("ISequenceRepository"),
   ISequenceDomainService: Symbol.for("ISequenceDomainService"),
   ISequenceAnalysisService: Symbol.for("ISequenceAnalysisService"),
-  ISequenceValidationService: Symbol.for("ISequenceValidationService"),
-  ISequenceStatisticsService: Symbol.for("ISequenceStatisticsService"),
+  ISequenceValidator: Symbol.for("ISequenceValidator"),
+  ISequenceStatsCalculator: Symbol.for("ISequenceStatsCalculator"),
   ISequenceTransformationService: Symbol.for("ISequenceTransformationService"),
   ISequenceImportService: Symbol.for("ISequenceImportService"),
+  ISequenceImporter: Symbol.for("ISequenceImporter"),
   ISequenceExportService: Symbol.for("ISequenceExportService"),
-  ISequencePersistenceService: Symbol.for("ISequencePersistenceService"),
+  ISequenceIndexer: Symbol.for("ISequenceIndexer"),
+  ISequencePersister: Symbol.for("ISequencePersister"),
 
   // Persistence Services
   IPersistenceService: Symbol.for("IPersistenceService"),

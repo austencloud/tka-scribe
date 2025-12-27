@@ -9,13 +9,13 @@
 
   import { onMount } from "svelte";
   import { resolve, TYPES } from "../../inversify/di";
-  import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
+  import type { ICommandPalette } from "../services/contracts/ICommandPalette";
   import { commandPaletteState } from "../state/command-palette-state.svelte";
   import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
   import type { CommandPaletteItem } from "../domain/types/keyboard-types";
 
   // Service
-  let paletteService: ICommandPaletteService | null = null;
+  let paletteService: ICommandPalette | null = null;
 
   // Local state
   let inputElement = $state<HTMLInputElement | null>(null);
@@ -23,11 +23,11 @@
 
   onMount(async () => {
     try {
-      paletteService = await resolve<ICommandPaletteService>(
-        TYPES.ICommandPaletteService
+      paletteService = await resolve<ICommandPalette>(
+        TYPES.ICommandPalette
       );
     } catch (error) {
-      console.error("Failed to resolve command palette service:", error);
+      console.error("Failed to resolve command palette:", error);
     }
   });
 

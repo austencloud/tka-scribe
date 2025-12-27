@@ -11,7 +11,7 @@
   import { onMount } from "svelte";
   import { inboxState } from "../state/inbox-state.svelte";
   import { conversationService } from "$lib/shared/messaging/services/implementations/ConversationService";
-  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
+  import { notificationService } from "$lib/features/feedback/services/implementations/Notifier";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { loadFeatureModule } from "$lib/shared/inversify/container";

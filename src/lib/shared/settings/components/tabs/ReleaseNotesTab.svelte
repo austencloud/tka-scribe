@@ -4,7 +4,7 @@
   import type { AppVersion } from "$lib/features/feedback/domain/models/version-models";
   import VersionCard from "./release-notes/VersionCard.svelte";
   import VersionDetailPanel from "./release-notes/VersionDetailPanel.svelte";
-  import { versionService } from "$lib/features/feedback/services/implementations/VersionService";
+  import { versionService } from "$lib/features/feedback/services/implementations/VersionManager";
 
   // Create version state
   const versionState = createVersionState();

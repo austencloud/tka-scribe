@@ -9,11 +9,11 @@ import type { IViewportService } from "$lib/shared/device/services/contracts/IVi
 import type { IDeviceDetector } from "$lib/shared/device/services/contracts/IDeviceDetector";
 import type { IStartPositionService } from "../../construct/start-position-picker/services/contracts/IStartPositionService";
 import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
-import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { ISequenceService } from "../services/contracts/ISequenceService";
-import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequencePersister } from "../services/contracts/ISequencePersister";
+import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
+import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
-import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import type { createCreateModuleState } from "../state/create-module-state.svelte";
 import type { createConstructTabState } from "../state/construct-tab-state.svelte";
 
@@ -21,15 +21,15 @@ import type { createConstructTabState } from "../state/construct-tab-state.svelt
  * Collection of all services required by CreateModule
  */
 export interface CreateModuleServices {
-  sequenceService: ISequenceService;
-  sequencePersistenceService: ISequencePersistenceService;
+  sequenceService: ISequenceRepository;
+  sequencePersistenceService: ISequencePersister;
   startPositionService: IStartPositionService;
   CreateModuleService: ICreateModuleService;
   deviceDetector: IDeviceDetector;
   viewportService: IViewportService;
-  sequenceStatisticsService: ISequenceStatisticsService;
+  sequenceStatisticsService: ISequenceStatsCalculator;
   sequenceTransformationService: ISequenceTransformationService;
-  sequenceValidationService: ISequenceValidationService;
+  sequenceValidationService: ISequenceValidator;
 }
 
 /**

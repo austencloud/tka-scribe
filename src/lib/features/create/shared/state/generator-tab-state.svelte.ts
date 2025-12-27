@@ -11,11 +11,11 @@
  * ✅ Each tab maintains its own independent sequence state
  */
 
-import type { ISequenceService } from "../services/contracts/ISequenceService";
-import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
+import type { ISequencePersister } from "../services/contracts/ISequencePersister";
+import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
-import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { IUndoService } from "../services/contracts/IUndoService";
@@ -34,11 +34,11 @@ import { TYPES } from "$lib/shared/inversify/types";
  * @returns Reactive state object with getters and state mutations
  */
 export function createGeneratorTabState(
-  sequenceService?: ISequenceService,
-  sequencePersistenceService?: ISequencePersistenceService,
-  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceService?: ISequenceRepository,
+  sequencePersistenceService?: ISequencePersister,
+  sequenceStatisticsService?: ISequenceStatsCalculator,
   sequenceTransformationService?: ISequenceTransformationService,
-  sequenceValidationService?: ISequenceValidationService
+  sequenceValidationService?: ISequenceValidator
 ) {
   // ============================================================================
   // REACTIVE STATE (Generator-specific)

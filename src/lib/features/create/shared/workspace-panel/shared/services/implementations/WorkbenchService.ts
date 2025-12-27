@@ -14,13 +14,13 @@ import { inject, injectable } from "inversify";
 import { createBeatData } from "../../../../domain/factories/createBeatData";
 import type { BeatData } from "../../../../domain/models/BeatData";
 import type { IPersistenceService } from "../../../../services/contracts/IPersistenceService";
-import type { ISequenceService } from "../../../../services/contracts/ISequenceService";
+import type { ISequenceRepository } from "../../../../services/contracts/ISequenceRepository";
 import type { IWorkbenchService } from "../contracts/IWorkbenchService";
 
 @injectable()
 export class WorkbenchService implements IWorkbenchService {
   constructor(
-    @inject(TYPES.ISequenceService) private sequenceService: ISequenceService,
+    @inject(TYPES.ISequenceRepository) private sequenceService: ISequenceRepository,
     @inject(TYPES.IPersistenceService)
     private persistenceService: IPersistenceService
   ) {}

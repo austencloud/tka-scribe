@@ -12,7 +12,7 @@ import type {
   FeedbackType,
   FeedbackPriority,
 } from "../domain/models/feedback-models";
-import { feedbackService } from "../services/implementations/FeedbackService";
+import { feedbackService } from "../services/implementations/FeedbackRepository";
 
 /**
  * Creates feedback manage state with real-time updates

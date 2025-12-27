@@ -13,10 +13,10 @@ import { DataTransformer } from "../../pictograph/shared/services/implementation
 import { TYPES } from "../types";
 // Deep Ocean services moved to on-demand loading in BackgroundFactory
 // Core Sequence Services (moved from createModule to Tier 1)
-import { SequenceService } from "../../../features/create/shared/services/implementations/SequenceService";
+import { SequenceRepository } from "../../../features/create/shared/services/implementations/SequenceRepository";
 import { SequenceDomainService } from "../../../features/create/shared/services/implementations/SequenceDomainService";
 import { ReversalDetectionService } from "../../../features/create/shared/services/implementations/ReversalDetectionService";
-import { SequenceImportService } from "../../../features/create/shared/services/implementations/SequenceImportService";
+import { SequenceImporter } from "../../../features/create/shared/services/implementations/SequenceImporter";
 import { SequenceNormalizationService } from "../../../features/compose/services/implementations/SequenceNormalizationService";
 
 export const dataModule = new ContainerModule(
@@ -40,13 +40,13 @@ export const dataModule = new ContainerModule(
       .inSingletonScope();
 
     // === CORE SEQUENCE SERVICES ===
-    // ISequenceService and its dependencies are used across multiple modules
+    // ISequenceRepository and its dependencies are used across multiple modules
     // (create, explore, animate) so they must be in Tier 1 to be available early
-    options.bind(TYPES.ISequenceService).to(SequenceService);
+    options.bind(TYPES.ISequenceRepository).to(SequenceRepository);
     options.bind(TYPES.ISequenceDomainService).to(SequenceDomainService);
     options.bind(TYPES.IReversalDetectionService).to(ReversalDetectionService);
-    options.bind(TYPES.ISequenceImportService).to(SequenceImportService);
-    // ISequenceNormalizationService moved here - required by ISequenceService
+    options.bind(TYPES.ISequenceImporter).to(SequenceImporter);
+    // ISequenceNormalizationService moved here - required by ISequenceRepository
     options
       .bind(TYPES.ISequenceNormalizationService)
       .to(SequenceNormalizationService);

@@ -1,0 +1,182 @@
+/**
+ * Arrow Grid Coordinator
+ *
+ * Uses the grid module's coordinate system instead of duplicating data.
+ * Provides arrow-specific coordinate functionality using the authoritative grid data.
+ */
+
+import { GridLocation } from "../../../../grid/domain/enums/grid-enums";
+import { GridMode } from "../../../../grid/domain/enums/grid-enums";
+import type { MotionData } from "../../../../shared/domain/models/MotionData";
+import { Point } from "fabric";
+import { injectable } from "inversify";
+import { createGridPointData } from "../../../../grid/utils/grid-coordinate-utils";
+import type { IArrowGridCoordinator } from "../contracts/IArrowGridCoordinator";
+
+@injectable()
+export class ArrowGridCoordinator implements IArrowGridCoordinator {
+  // Scene dimensions from grid module
+  private readonly SCENE_SIZE = 950;
+  private readonly CENTER_X = 475.0;
+  private readonly CENTER_Y = 475.0;
+
+  getInitialPosition(motion: MotionData, location: GridLocation): Point {
+    const motionType = motion.motionType.toLowerCase();
+    const gridMode = motion.gridMode || GridMode.DIAMOND;
+
+    if (["pro", "anti", "float"].includes(motionType || "")) {
+      // Shift arrows use layer2 points
+      return this.getLayer2Coords(location, gridMode);
+    } else if (["static", "dash"].includes(motionType || "")) {
+      // Static/dash arrows use hand points
+      return this.getHandPointCoords(location, gridMode);
+    } else {
+      // Default fallback
+      return this.getSceneCenter();
+    }
+  }
+
+  getSceneCenter(): Point {
+    return new Point(this.CENTER_X, this.CENTER_Y);
+  }
+
+  getSceneDimensions(): [number, number] {
+    return [this.SCENE_SIZE, this.SCENE_SIZE];
+  }
+
+  validateCoordinates(point: Point): boolean {
+    return (
+      point &&
+      typeof point.x === "number" &&
+      typeof point.y === "number" &&
+      point.x >= 0 &&
+      point.x <= this.SCENE_SIZE &&
+      point.y >= 0 &&
+      point.y <= this.SCENE_SIZE
+    );
+  }
+
+  getAllHandPoints(
+    gridMode: GridMode = GridMode.DIAMOND
+  ): Partial<Record<GridLocation, Point>> {
+    const gridData = createGridPointData(gridMode);
+    const handPoints: Partial<Record<GridLocation, Point>> = {};
+
+    // Map grid coordinate keys to GridLocation enum (strict points)
+    const locationMap: Record<string, GridLocation> = {
+      n_diamond_hand_point_strict: GridLocation.NORTH,
+      e_diamond_hand_point_strict: GridLocation.EAST,
+      s_diamond_hand_point_strict: GridLocation.SOUTH,
+      w_diamond_hand_point_strict: GridLocation.WEST,
+      ne_box_hand_point_strict: GridLocation.NORTHEAST,
+      se_box_hand_point_strict: GridLocation.SOUTHEAST,
+      sw_box_hand_point_strict: GridLocation.SOUTHWEST,
+      nw_box_hand_point_strict: GridLocation.NORTHWEST,
+    };
+
+    // Extract hand points from grid data (using strict points for animation viewer)
+    Object.entries(gridData.allHandPointsStrict).forEach(([key, value]) => {
+      const location = locationMap[key];
+      if (location && value.coordinates) {
+        handPoints[location] = new Point(
+          value.coordinates.x,
+          value.coordinates.y
+        );
+      }
+    });
+
+    return handPoints;
+  }
+
+  getAllLayer2Points(
+    gridMode: GridMode = GridMode.DIAMOND
+  ): Partial<Record<GridLocation, Point>> {
+    const gridData = createGridPointData(gridMode);
+    const layer2Points: Partial<Record<GridLocation, Point>> = {};
+
+    // For diamond mode, layer2 points are diagonal positions (strict points)
+    if (gridMode === GridMode.DIAMOND) {
+      // Diamond layer2 strict points map to diagonal positions
+      layer2Points[GridLocation.NORTHEAST] = new Point(625.0, 325.0);
+      layer2Points[GridLocation.SOUTHEAST] = new Point(625.0, 625.0);
+      layer2Points[GridLocation.SOUTHWEST] = new Point(325.0, 625.0);
+      layer2Points[GridLocation.NORTHWEST] = new Point(325.0, 325.0);
+
+      // For cardinal directions, map to nearest diagonal
+      layer2Points[GridLocation.NORTH] = layer2Points[GridLocation.NORTHEAST];
+      layer2Points[GridLocation.EAST] = layer2Points[GridLocation.SOUTHEAST];
+      layer2Points[GridLocation.SOUTH] = layer2Points[GridLocation.SOUTHWEST];
+      layer2Points[GridLocation.WEST] = layer2Points[GridLocation.NORTHWEST];
+    } else {
+      // For box mode, use strict layer2 points from grid data
+      const locationMap: Record<string, GridLocation> = {
+        n_box_layer2_point_strict: GridLocation.NORTH,
+        e_box_layer2_point_strict: GridLocation.EAST,
+        s_box_layer2_point_strict: GridLocation.SOUTH,
+        w_box_layer2_point_strict: GridLocation.WEST,
+      };
+
+      Object.entries(gridData.allLayer2PointsStrict).forEach(([key, value]) => {
+        const location = locationMap[key];
+        if (location && value.coordinates) {
+          layer2Points[location] = new Point(
+            value.coordinates.x,
+            value.coordinates.y
+          );
+        }
+      });
+
+      // Box mode: Map intercardinal locations to nearest cardinal layer2 points
+      // In box mode, hands are at NE/SE/SW/NW but layer2 is at N/E/S/W
+      // When a shift arrow needs positioning at an intercardinal, use nearest cardinal
+      if (layer2Points[GridLocation.NORTH] && layer2Points[GridLocation.EAST]) {
+        layer2Points[GridLocation.NORTHEAST] = layer2Points[GridLocation.NORTH];
+        layer2Points[GridLocation.SOUTHEAST] = layer2Points[GridLocation.EAST];
+        layer2Points[GridLocation.SOUTHWEST] = layer2Points[GridLocation.SOUTH];
+        layer2Points[GridLocation.NORTHWEST] = layer2Points[GridLocation.WEST];
+      }
+    }
+
+    return layer2Points;
+  }
+
+  getSupportedLocations(): GridLocation[] {
+    return [
+      GridLocation.NORTH,
+      GridLocation.EAST,
+      GridLocation.SOUTH,
+      GridLocation.WEST,
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST,
+    ];
+  }
+
+  private getLayer2Coords(location: GridLocation, gridMode: GridMode): Point {
+    const layer2Points = this.getAllLayer2Points(gridMode);
+    const coords = layer2Points[location];
+    if (!coords) {
+      console.warn(
+        `No layer2 coordinates for location: ${location} in ${gridMode} mode, using center`
+      );
+      return this.getSceneCenter();
+    }
+    return coords;
+  }
+
+  private getHandPointCoords(
+    location: GridLocation,
+    gridMode: GridMode
+  ): Point {
+    const handPoints = this.getAllHandPoints(gridMode);
+    const coords = handPoints[location];
+    if (!coords) {
+      console.warn(
+        `No hand point coordinates for location: ${location} in ${gridMode} mode, using center`
+      );
+      return this.getSceneCenter();
+    }
+    return coords;
+  }
+}

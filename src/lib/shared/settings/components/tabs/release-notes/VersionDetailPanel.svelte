@@ -10,7 +10,7 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import FeedbackDetailPanel from "$lib/features/feedback/components/manage/FeedbackDetailPanel.svelte";
   import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
-  import { feedbackService } from "$lib/features/feedback/services/implementations/FeedbackService";
+  import { feedbackService } from "$lib/features/feedback/services/implementations/FeedbackRepository";
   import { createFeedbackManageState } from "$lib/features/feedback/state/feedback-manage-state.svelte";
   import EditableReleaseNotes from "./EditableReleaseNotes.svelte";
   import ChangeGroupSection from "./ChangeGroupSection.svelte";
@@ -19,7 +19,7 @@
   import ActionToast from "./ActionToast.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { changelogEditState } from "./state/changelog-edit-state.svelte";
-  import { versionService } from "$lib/features/feedback/services/implementations/VersionService";
+  import { versionService } from "$lib/features/feedback/services/implementations/VersionManager";
 
   let {
     version,

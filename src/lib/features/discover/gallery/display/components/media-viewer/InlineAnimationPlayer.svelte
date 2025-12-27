@@ -12,7 +12,7 @@
   import BpmChips from "$lib/features/compose/components/controls/BpmChips.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
-  import type { ISequenceService } from "$lib/features/create/shared/services/contracts/ISequenceService";
+  import type { ISequenceRepository } from "$lib/features/create/shared/services/contracts/ISequenceRepository";
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
@@ -32,7 +32,7 @@
   } = $props();
 
   // Services
-  let sequenceService: ISequenceService | null = null;
+  let sequenceService: ISequenceRepository | null = null;
   let playbackController: IAnimationPlaybackController | null = null;
   let servicesReady = $state(false);
   let loading = $state(true);
@@ -121,7 +121,7 @@
       // Load animator module
       await loadFeatureModule("animate");
 
-      sequenceService = resolve<ISequenceService>(TYPES.ISequenceService);
+      sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
       playbackController = resolve<IAnimationPlaybackController>(
         TYPES.IAnimationPlaybackController
       );

@@ -11,7 +11,7 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { inboxState } from "../state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
+  import { notificationService } from "$lib/features/feedback/services/implementations/Notifier";
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { toast } from "../../toast/state/toast-state.svelte";
   import InboxTabs from "./InboxTabs.svelte";

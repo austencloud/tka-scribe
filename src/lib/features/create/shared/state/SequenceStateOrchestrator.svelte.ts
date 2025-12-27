@@ -27,12 +27,12 @@ import type { IDeepLinkService } from "$lib/shared/navigation/services/contracts
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IActivityLogService } from "$lib/shared/analytics/services/contracts/IActivityLogService";
-import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { ISequenceService } from "../services/contracts/ISequenceService";
+import type { ISequencePersister } from "../services/contracts/ISequencePersister";
+import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 import type { IReversalDetectionService } from "../services/contracts/IReversalDetectionService";
-import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
-import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceAnimationState } from "./animation/SequenceAnimationState.svelte";
 import { createSequenceArrowState } from "./arrow/SequenceArrowState.svelte";
 import { createSequenceCoreState } from "./core/SequenceCoreState.svelte";
@@ -46,11 +46,11 @@ import { isBeat } from "$lib/features/create/shared/domain/type-guards/pictograp
  * Clean service configuration - no more type gymnastics!
  */
 export interface SequenceStateServices {
-  sequenceService?: ISequenceService;
-  sequencePersistenceService?: ISequencePersistenceService;
-  sequenceStatisticsService?: ISequenceStatisticsService;
+  sequenceService?: ISequenceRepository;
+  sequencePersistenceService?: ISequencePersister;
+  sequenceStatisticsService?: ISequenceStatsCalculator;
   sequenceTransformationService?: ISequenceTransformationService;
-  sequenceValidationService?: ISequenceValidationService;
+  sequenceValidationService?: ISequenceValidator;
   reversalDetectionService?: IReversalDetectionService;
   /**
    * IMPORTANT: Tab ID for persistence isolation.

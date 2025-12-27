@@ -13,15 +13,15 @@ import type { IBeatOperationsService } from "../services/contracts/IBeatOperatio
 import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
 import type { INavigationSyncService } from "../services/contracts/INavigationSyncService";
 import type { IResponsiveLayoutService } from "../services/contracts/IResponsiveLayoutService";
-import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { ISequenceService } from "../services/contracts/ISequenceService";
+import type { ISequencePersister } from "../services/contracts/ISequencePersister";
+import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
 
 /**
  * Container for all CreateModule services
  */
 export interface CreateModuleServices {
-  sequenceService: ISequenceService;
-  sequencePersistenceService: ISequencePersistenceService;
+  sequenceService: ISequenceRepository;
+  sequencePersistenceService: ISequencePersister;
   startPositionService: IStartPositionService;
   CreateModuleService: ICreateModuleService;
   layoutService: IResponsiveLayoutService;

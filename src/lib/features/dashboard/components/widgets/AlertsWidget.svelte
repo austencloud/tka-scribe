@@ -7,7 +7,7 @@
 
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
+  import { notificationService } from "$lib/features/feedback/services/implementations/Notifier";
   import type { UserNotification, FeedbackNotification } from "$lib/features/feedback/domain/models/notification-models";
   import type { DashboardState } from "../../state/dashboard-state.svelte";
 
@@ -60,7 +60,7 @@
     try {
       // Dynamically import feedback service to load the item
       const { feedbackService } = await import(
-        "$lib/features/feedback/services/implementations/FeedbackService"
+        "$lib/features/feedback/services/implementations/FeedbackRepository"
       );
 
       const feedbackItem = await feedbackService.getFeedback(feedbackId);

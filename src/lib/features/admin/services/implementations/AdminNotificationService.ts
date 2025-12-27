@@ -16,7 +16,7 @@ import {
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import type { AdminNotification } from "$lib/features/feedback/domain/models/notification-models";
 import { getPreferenceKeyForType } from "$lib/features/feedback/domain/models/notification-models";
-import { notificationPreferencesService } from "$lib/features/feedback/services/implementations/NotificationPreferencesService";
+import { notificationPreferencesService } from "$lib/features/feedback/services/implementations/NotificationPreferencesManager";
 
 const USERS_COLLECTION = "users";
 const NOTIFICATIONS_SUBCOLLECTION = "notifications";

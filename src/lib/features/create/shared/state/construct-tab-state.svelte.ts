@@ -19,11 +19,11 @@ import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 const debug = createComponentLogger("ConstructTabState");
 import type { BeatData } from "../domain/models/BeatData";
 import type { ICreateModuleService } from "../services/contracts/ICreateModuleService";
-import type { ISequencePersistenceService } from "../services/contracts/ISequencePersistenceService";
-import type { ISequenceService } from "../services/contracts/ISequenceService";
-import type { ISequenceStatisticsService } from "../services/contracts/ISequenceStatisticsService";
+import type { ISequencePersister } from "../services/contracts/ISequencePersister";
+import type { ISequenceRepository } from "../services/contracts/ISequenceRepository";
+import type { ISequenceStatsCalculator } from "../services/contracts/ISequenceStatsCalculator";
 import type { ISequenceTransformationService } from "../services/contracts/ISequenceTransformationService";
-import type { ISequenceValidationService } from "../services/contracts/ISequenceValidationService";
+import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { ICreateModuleState } from "../types/create-module-types";
@@ -46,11 +46,11 @@ import { TYPES } from "$lib/shared/inversify/types";
  */
 export function createConstructTabState(
   createModuleService: ICreateModuleService,
-  sequenceService?: ISequenceService,
-  sequencePersistenceService?: ISequencePersistenceService,
-  sequenceStatisticsService?: ISequenceStatisticsService,
+  sequenceService?: ISequenceRepository,
+  sequencePersistenceService?: ISequencePersister,
+  sequenceStatisticsService?: ISequenceStatsCalculator,
   sequenceTransformationService?: ISequenceTransformationService,
-  sequenceValidationService?: ISequenceValidationService,
+  sequenceValidationService?: ISequenceValidator,
   createModuleState?: ICreateModuleState | null
 ) {
   // ============================================================================

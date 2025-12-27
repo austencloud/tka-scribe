@@ -6,7 +6,7 @@
  */
 
 import type { UserNotification } from "../domain/models/notification-models";
-import { notificationService } from "../services/implementations/NotificationService";
+import { notificationService } from "../services/implementations/Notifier";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 
 /**

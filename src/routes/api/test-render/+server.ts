@@ -1,4 +1,4 @@
-import type { ISequencePersistenceService } from "$lib/features/create/shared/services/contracts/ISequencePersistenceService";
+import type { ISequencePersister } from "$lib/features/create/shared/services/contracts/ISequencePersister";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ISequenceRenderService } from "$lib/shared/render/services/contracts/ISequenceRenderService";
@@ -14,8 +14,8 @@ export const POST: RequestHandler = async ({ request }) => {
     const renderService = resolve<ISequenceRenderService>(
       TYPES.ISequenceRenderService
     );
-    const persistenceService = resolve<ISequencePersistenceService>(
-      TYPES.ISequencePersistenceService
+    const persistenceService = resolve<ISequencePersister>(
+      TYPES.ISequencePersister
     );
 
     // Load current sequence

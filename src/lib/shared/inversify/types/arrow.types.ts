@@ -38,6 +38,7 @@ export const ArrowTypes = {
 
   // Tuple & Quadrant Calculation
   ILetterClassificationService: Symbol.for("ILetterClassificationService"),
+  ILetterClassifier: Symbol.for("ILetterClassifier"),
   ITurnsTupleGeneratorService: Symbol.for("ITurnsTupleGeneratorService"),
   IHandpathDirectionCalculator: Symbol.for("IHandpathDirectionCalculator"),
   IRotationOverrideManager: Symbol.for("IRotationOverrideManager"),

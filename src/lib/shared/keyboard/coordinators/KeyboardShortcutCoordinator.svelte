@@ -11,8 +11,8 @@
   import { onMount } from "svelte";
   import { resolve, TYPES } from "../../inversify/di";
 
-  import type { IKeyboardShortcutService } from "../services/contracts/IKeyboardShortcutService";
-  import type { ICommandPaletteService } from "../services/contracts/ICommandPaletteService";
+  import type { IKeyboardShortcutManager } from "../services/contracts/IKeyboardShortcutManager";
+  import type { ICommandPalette } from "../services/contracts/ICommandPalette";
   import { keyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
   import { getActiveModule } from "../../application/state/ui/ui-state.svelte";
   import { registerGlobalShortcuts } from "../utils/register-global-shortcuts";
@@ -21,47 +21,47 @@
   import { register3DViewerShortcuts } from "../utils/register-3d-viewer-shortcuts";
 
   // Services
-  let shortcutService: IKeyboardShortcutService | null = null;
-  let commandPaletteService: ICommandPaletteService | null = null;
+  let shortcutManager: IKeyboardShortcutManager | null = null;
+  let commandPalette: ICommandPalette | null = null;
 
   onMount(() => {
     // Initialize services asynchronously
     (async () => {
       try {
         // Resolve services
-        shortcutService = resolve<IKeyboardShortcutService>(
-          TYPES.IKeyboardShortcutService
+        shortcutManager = resolve<IKeyboardShortcutManager>(
+          TYPES.IKeyboardShortcutManager
         );
-        commandPaletteService = resolve<ICommandPaletteService>(
-          TYPES.ICommandPaletteService
+        commandPalette = resolve<ICommandPalette>(
+          TYPES.ICommandPalette
         );
 
-        // Initialize the shortcut service
-        shortcutService.initialize();
+        // Initialize the shortcut manager
+        shortcutManager.initialize();
 
         // Register global shortcuts
-        registerGlobalShortcuts(shortcutService, keyboardShortcutState);
+        registerGlobalShortcuts(shortcutManager, keyboardShortcutState);
 
         // Register command palette commands
         registerCommandPaletteCommands(
-          commandPaletteService,
+          commandPalette,
           keyboardShortcutState
         );
 
         // Register CREATE module shortcuts
-        registerCreateShortcuts(shortcutService, keyboardShortcutState);
+        registerCreateShortcuts(shortcutManager, keyboardShortcutState);
 
         // Register 3D Viewer shortcuts (static, handlers bound dynamically)
-        register3DViewerShortcuts(shortcutService);
+        register3DViewerShortcuts(shortcutManager);
       } catch (error) {
-        console.error("❌ Failed to initialize keyboard shortcuts:", error);
+        console.error("Failed to initialize keyboard shortcuts:", error);
       }
     })();
 
     // Cleanup on unmount
     return () => {
-      if (shortcutService) {
-        shortcutService.dispose();
+      if (shortcutManager) {
+        shortcutManager.dispose();
       }
     };
   });
@@ -71,8 +71,8 @@
     const module = getActiveModule();
 
     // Only set context if service is initialized and module is available
-    if (shortcutService && module) {
-      shortcutService.setContext(module as any);
+    if (shortcutManager && module) {
+      shortcutManager.setContext(module as any);
     }
   });
 </script>

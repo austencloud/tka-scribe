@@ -1,16 +1,16 @@
 import { ContainerModule, type ContainerModuleLoadOptions } from "inversify";
 import { CreateModuleService } from "../../../features/create/shared/services/implementations/CreateModuleService";
 import { ConstructCoordinator } from "../../../features/create/shared/services/implementations/ConstructCoordinator";
-import { SequenceIndexService } from "../../../features/create/shared/services/implementations/SequenceIndexService";
-import { SequencePersistenceService } from "../../../features/create/shared/services/implementations/SequencePersistenceService";
+import { SequenceIndexer } from "../../../features/create/shared/services/implementations/SequenceIndexer";
+import { SequencePersister } from "../../../features/create/shared/services/implementations/SequencePersister";
 import { WorkbenchService } from "../../../features/create/shared/workspace-panel/shared/services/implementations/WorkbenchService";
-import { SequenceExportService } from "../../../features/create/shared/services/implementations/SequenceExportService";
+import { SequenceExporter } from "../../../features/create/shared/services/implementations/SequenceExporter";
 import { SequenceAnalysisService } from "../../../features/create/shared/services/implementations/SequenceAnalysisService";
 import { CreateModuleHandlers } from "../../../features/create/shared/services/implementations/CreateModuleHandlers";
 import { CreateModuleLayoutService } from "../../../features/create/shared/layout/services/CreateModuleLayoutService";
-import { SequenceStatisticsService } from "../../../features/create/shared/services/implementations/SequenceStatisticsService";
+import { SequenceStatsCalculator } from "../../../features/create/shared/services/implementations/SequenceStatsCalculator";
 import { SequenceTransformationService } from "../../../features/create/shared/services/implementations/sequence-transforms/SequenceTransformationService";
-import { SequenceValidationService } from "../../../features/create/shared/services/implementations/SequenceValidationService";
+import { SequenceValidator } from "../../../features/create/shared/services/implementations/SequenceValidator";
 import { UndoService } from "../../../features/create/shared/services/implementations/UndoService";
 import { BeatOperationsService } from "../../../features/create/shared/services/implementations/BeatOperationsService";
 import { KeyboardArrowAdjustmentService } from "../../../features/create/shared/services/implementations/KeyboardArrowAdjustmentService";
@@ -57,7 +57,7 @@ import { OrientationCycleDetector } from "../../../features/create/generate/circ
 import { CardConfigurationService } from "../../../features/create/generate/shared/services/implementations/CardConfigurationService";
 import { GenerationOrchestrationService } from "../../../features/create/generate/shared/services/implementations/GenerationOrchestrationService";
 import { PictographFilterService } from "../../../features/create/generate/shared/services/implementations/PictographFilterService";
-import { ResponsiveTypographyService } from "../../../features/create/generate/shared/services/implementations/ResponsiveTypographyService";
+import { TypographyScaler } from "../../../features/create/generate/shared/services/implementations/TypographyScaler";
 import { SequenceMetadataService } from "../../../features/create/generate/shared/services/implementations/SequenceMetadataService";
 import { StartPositionSelector } from "../../../features/create/generate/shared/services/implementations/StartPositionSelector";
 import { TurnManagementService } from "../../../features/create/generate/shared/services/implementations/TurnManagementService";
@@ -199,7 +199,7 @@ export const createModule = new ContainerModule(
     // Generation UI Services (SRP Refactoring - Dec 2024)
     options
       .bind(TYPES.IResponsiveTypographyService)
-      .to(ResponsiveTypographyService);
+      .to(TypographyScaler);
     options.bind(TYPES.ICardConfigurationService).to(CardConfigurationService);
     options.bind(TYPES.ICAPTypeService).to(CAPTypeService);
     options.bind(TYPES.ICAPDetectionService).to(CAPDetectionService);
@@ -219,27 +219,27 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IWorkbenchService).to(WorkbenchService);
 
     // === SEQUENCE SERVICES ===
-    // NOTE: IReversalDetectionService, ISequenceDomainService, ISequenceImportService
-    // moved to dataModule (Tier 1) - required by ISequenceService
+    // NOTE: IReversalDetectionService, ISequenceDomainService, ISequenceImporter
+    // moved to dataModule (Tier 1) - required by ISequenceRepository
     options.bind(TYPES.ISequenceAnalysisService).to(SequenceAnalysisService);
 
     // Focused sequence services (refactored from monolithic SequenceStateService)
     options
-      .bind(TYPES.ISequenceValidationService)
-      .to(SequenceValidationService);
+      .bind(TYPES.ISequenceValidator)
+      .to(SequenceValidator);
     options
-      .bind(TYPES.ISequenceStatisticsService)
-      .to(SequenceStatisticsService);
+      .bind(TYPES.ISequenceStatsCalculator)
+      .to(SequenceStatsCalculator);
     options
       .bind(TYPES.ISequenceTransformationService)
       .to(SequenceTransformationService);
 
-    options.bind(TYPES.ISequenceExportService).to(SequenceExportService);
-    // NOTE: ISequenceService, ISequenceImportService moved to dataModule (Tier 1)
+    options.bind(TYPES.ISequenceExportService).to(SequenceExporter);
+    // NOTE: ISequenceRepository, ISequenceImporter moved to dataModule (Tier 1)
     options
-      .bind(TYPES.ISequencePersistenceService)
-      .to(SequencePersistenceService);
-    options.bind(TYPES.ISequenceIndexService).to(SequenceIndexService);
+      .bind(TYPES.ISequencePersister)
+      .to(SequencePersister);
+    options.bind(TYPES.ISequenceIndexer).to(SequenceIndexer);
 
     // === AUTOCOMPLETE SERVICE ===
     options.bind(TYPES.IAutocompleteService).to(AutocompleteService);

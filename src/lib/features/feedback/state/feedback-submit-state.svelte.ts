@@ -13,7 +13,7 @@ import type {
   FeedbackSubmitStatus,
   FeedbackType,
 } from "../domain/models/feedback-models";
-import { feedbackService } from "../services/implementations/FeedbackService";
+import { feedbackService } from "../services/implementations/FeedbackRepository";
 import {
   getCapturedModule,
   getCapturedTab,

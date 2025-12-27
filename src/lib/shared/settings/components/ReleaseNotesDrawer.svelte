@@ -1,7 +1,7 @@
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { releaseNotesDrawerState } from "../state/release-notes-drawer-state.svelte";
-  import { versionService } from "$lib/features/feedback/services/implementations/VersionService";
+  import { versionService } from "$lib/features/feedback/services/implementations/VersionManager";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 

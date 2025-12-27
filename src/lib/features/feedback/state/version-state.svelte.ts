@@ -4,7 +4,7 @@
  * Svelte 5 runes-based state for version tracking and release management.
  */
 
-import { versionService } from "../services/implementations/VersionService";
+import { versionService } from "../services/implementations/VersionManager";
 import type {
   AppVersion,
   VersionFeedbackItem,

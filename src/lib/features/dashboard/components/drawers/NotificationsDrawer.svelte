@@ -11,7 +11,7 @@
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
-  import { notificationService } from "$lib/features/feedback/services/implementations/NotificationService";
+  import { notificationService } from "$lib/features/feedback/services/implementations/Notifier";
   import NotificationList from "$lib/shared/inbox/components/notifications/NotificationList.svelte";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";

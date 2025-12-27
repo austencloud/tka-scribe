@@ -22,8 +22,8 @@ import type { ICreationMethodPersistenceService } from "./ICreationMethodPersist
 import type { IDeepLinkSequenceService } from "./IDeepLinkSequenceService";
 import type { INavigationSyncService } from "./INavigationSyncService";
 import type { IResponsiveLayoutService } from "./IResponsiveLayoutService";
-import type { ISequenceService } from "./ISequenceService";
-import type { ISequencePersistenceService } from "./ISequencePersistenceService";
+import type { ISequenceRepository } from "./ISequenceRepository";
+import type { ISequencePersister } from "./ISequencePersister";
 import type { ICreateModuleService } from "./ICreateModuleService";
 import type { IStartPositionService } from "../../../construct/start-position-picker/services/contracts/IStartPositionService";
 import type { IShareService } from "$lib/shared/share/services/contracts/IShareService";
@@ -44,8 +44,8 @@ export interface CreateModuleInitializationResult {
   generatorTabState: GeneratorTabState;
 
   // Core services
-  sequenceService: ISequenceService;
-  sequencePersistenceService: ISequencePersistenceService;
+  sequenceService: ISequenceRepository;
+  sequencePersistenceService: ISequencePersister;
   startPositionService: IStartPositionService;
   CreateModuleService: ICreateModuleService;
   layoutService: IResponsiveLayoutService;

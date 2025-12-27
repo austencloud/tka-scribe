@@ -36,6 +36,7 @@ export const UITypes = {
   // Keyboard Shortcuts
   IKeyboardShortcutService: Symbol.for("IKeyboardShortcutService"),
   IShortcutRegistryService: Symbol.for("IShortcutRegistryService"),
+  IShortcutRegistry: Symbol.for("IShortcutRegistry"),
   ICommandPaletteService: Symbol.for("ICommandPaletteService"),
   IShortcutCustomizationService: Symbol.for("IShortcutCustomizationService"),
 } as const;

@@ -1,6 +1,6 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
-import { PrintablePageLayoutService } from "../../../features/word-card/services/implementations/PrintablePageLayoutService";
+import { PrintablePageLayoutManager } from "../../../features/word-card/services/implementations/PrintablePageLayoutManager";
 import { WordCardBatchProcessingService } from "../../../features/word-card/services/implementations/WordCardBatchProcessingService";
 import { WordCardCacheService } from "../../../features/word-card/services/implementations/WordCardCacheService";
 import { WordCardExportOrchestrator } from "../../../features/word-card/services/implementations/WordCardExportOrchestrator";
@@ -16,7 +16,7 @@ export const wordCardModule = new ContainerModule(
     // === WORD CARD SERVICES ===
     options
       .bind(TYPES.IPrintablePageLayoutService)
-      .to(PrintablePageLayoutService);
+      .to(PrintablePageLayoutManager);
     options
       .bind(TYPES.IWordCardImageGenerationService)
       .to(WordCardImageGenerationService);

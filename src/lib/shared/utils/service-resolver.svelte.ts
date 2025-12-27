@@ -166,7 +166,7 @@ export function createServiceResolver<T>(
  * ```typescript
  * const services = createServiceResolvers({
  *   share: TYPES.IShareService,
- *   sequence: TYPES.ISequenceService
+ *   sequence: TYPES.ISequenceRepository
  * });
  *
  * // Use: services.share.value, services.sequence.value
