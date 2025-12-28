@@ -1224,7 +1224,14 @@
       "Bash(powershell -ExecutionPolicy Bypass -File scripts/temp/update-create-refs.ps1)",
       "WebFetch(domain:www.thisdot.co)",
       "WebFetch(domain:pixijs.com)",
-      "Bash(cmd //c \"taskkill /PID 109776 /F\")"
+      "Bash(cmd //c \"taskkill /PID 109776 /F\")",
+      "Bash(cmd //c \"F:\\\\_THE KINETIC ALPHABET\\\\_TKA-SCRIBE\\\\scripts\\\\run-audits.bat\")",
+      "Bash(src/lib/features/admin/services/implementations/AnalyticsDataProvider.ts )",
+      "Bash(src/lib/features/feedback/services/implementations/Notifier.ts )",
+      "Bash(src/lib/shared/community/services/implementations/LeaderboardManager.ts )",
+      "Bash(src/lib/shared/community/services/implementations/UserRepository.ts )",
+      "Bash(src/lib/shared/gamification/services/implementations/AchievementManager.ts )",
+      "Bash(src/lib/shared/video-collaboration/services/implementations/CollaborativeVideoManager.ts)"
     ],
     "deny": [],
     "ask": []
