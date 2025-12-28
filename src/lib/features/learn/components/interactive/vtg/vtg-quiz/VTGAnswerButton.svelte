@@ -40,9 +40,9 @@ VTGAnswerButton - Single answer button with state styling
 	<span class="mode-code">{mode}</span>
 	<span class="mode-name">{name}</span>
 	{#if showCorrectMark}
-		<i class="fa-solid fa-check result-icon"></i>
+		<i class="fa-solid fa-check result-icon" aria-hidden="true"></i>
 	{:else if showIncorrect}
-		<i class="fa-solid fa-xmark result-icon"></i>
+		<i class="fa-solid fa-xmark result-icon" aria-hidden="true"></i>
 	{/if}
 </button>
 

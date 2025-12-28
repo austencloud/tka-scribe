@@ -20,17 +20,17 @@ Simple inline display showing journey position
   <div class="context-side prev">
     {#if previousConcept}
       {@const cat = CONCEPT_CATEGORIES[previousConcept.category]}
-      <i class="fa-solid fa-check" style="color: {cat.color}"></i>
+      <i class="fa-solid fa-check" aria-hidden="true" style="color: {cat.color}"></i>
       <span class="name">{previousConcept.shortName}</span>
     {:else}
-      <i class="fa-solid fa-flag"></i>
+      <i class="fa-solid fa-flag" aria-hidden="true"></i>
       <span class="name">Start</span>
     {/if}
   </div>
 
   <div class="connector">
     <div class="line"></div>
-    <i class="fa-solid fa-chevron-right"></i>
+    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
     <div class="line"></div>
   </div>
 
@@ -38,10 +38,10 @@ Simple inline display showing journey position
     {#if nextConcept}
       {@const cat = CONCEPT_CATEGORIES[nextConcept.category]}
       <span class="name">{nextConcept.shortName}</span>
-      <i class="fa-solid fa-arrow-right" style="color: {cat.color}"></i>
+      <i class="fa-solid fa-arrow-right" aria-hidden="true" style="color: {cat.color}"></i>
     {:else}
       <span class="name">Complete!</span>
-      <i class="fa-solid fa-trophy" style="color: #FFD700"></i>
+      <i class="fa-solid fa-trophy" aria-hidden="true" style="color: #FFD700"></i>
     {/if}
   </div>
 </div>

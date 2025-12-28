@@ -43,11 +43,11 @@ Type1CompleteSection - Score display and completion actions
 
   <div class="complete-actions">
     <button class="action-btn secondary" onclick={onRestart}>
-      <i class="fa-solid fa-rotate"></i>
+      <i class="fa-solid fa-rotate" aria-hidden="true"></i>
       Try Again
     </button>
     <button class="action-btn primary" onclick={onComplete}>
-      <i class="fa-solid fa-check"></i>
+      <i class="fa-solid fa-check" aria-hidden="true"></i>
       Complete Lesson
     </button>
   </div>

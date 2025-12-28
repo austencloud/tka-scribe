@@ -202,7 +202,7 @@
         onclick={openFilterPanel}
         aria-label="Open filters"
       >
-        <i class="fas fa-sliders-h"></i>
+        <i class="fas fa-sliders-h" aria-hidden="true"></i>
         {#if activeFilterCount > 0}
           <span class="filter-badge">{activeFilterCount}</span>
         {/if}
@@ -220,7 +220,7 @@
     {:else if filteredChallenges.length === 0}
       <div class="empty-state">
         <div class="empty-icon">
-          <i class="fas fa-trophy"></i>
+          <i class="fas fa-trophy" aria-hidden="true"></i>
         </div>
         <h3>No Challenges Found</h3>
         <p>
@@ -268,7 +268,7 @@
         onclick={closeFilterPanel}
         aria-label="Close filters"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -282,7 +282,7 @@
             class:active={sortBy === "difficulty"}
             onclick={() => handleSortChange("difficulty")}
           >
-            <i class="fas fa-layer-group"></i>
+            <i class="fas fa-layer-group" aria-hidden="true"></i>
             <span>Difficulty</span>
           </button>
           <button
@@ -290,7 +290,7 @@
             class:active={sortBy === "xp"}
             onclick={() => handleSortChange("xp")}
           >
-            <i class="fas fa-star"></i>
+            <i class="fas fa-star" aria-hidden="true"></i>
             <span>XP Reward</span>
           </button>
           <button
@@ -298,7 +298,7 @@
             class:active={sortBy === "newest"}
             onclick={() => handleSortChange("newest")}
           >
-            <i class="fas fa-clock"></i>
+            <i class="fas fa-clock" aria-hidden="true"></i>
             <span>Newest</span>
           </button>
         </div>
@@ -436,7 +436,7 @@
     justify-content: center;
     background: linear-gradient(135deg, #f43f5e, #ec4899);
     border-radius: 9px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: white;
     padding: 0 5px;

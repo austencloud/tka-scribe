@@ -25,7 +25,7 @@ Orchestrator component that manages navigation between 5 lesson pages:
 
   const state = createType1ConceptState({
     hapticService,
-    onComplete,
+    getOnComplete: () => onComplete,
   });
 </script>
 

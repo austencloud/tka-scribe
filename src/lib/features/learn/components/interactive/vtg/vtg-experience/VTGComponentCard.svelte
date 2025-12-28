@@ -19,7 +19,7 @@ VTGComponentCard - Shows direction or timing component explanation
 
 <div class="component-card" class:direction={type === "direction"} class:timing={type === "timing"}>
 	<div class="component-icon">
-		<i class="fa-solid {icon}"></i>
+		<i class="fa-solid {icon}" aria-hidden="true"></i>
 	</div>
 	<h4>{title}</h4>
 	<p>{@html options}</p>

@@ -9,7 +9,7 @@
 
   <div class="intro-section">
     <div class="concept-icon">
-      <i class="fa-solid fa-spell-check"></i>
+      <i class="fa-solid fa-spell-check" aria-hidden="true"></i>
     </div>
     <p class="intro-text">
       In TKA, a <strong>word</strong> is a sequence of letters that connect smoothly
@@ -20,7 +20,7 @@
   <div class="key-points">
     <div class="key-point">
       <div class="point-icon">
-        <i class="fa-solid fa-link"></i>
+        <i class="fa-solid fa-link" aria-hidden="true"></i>
       </div>
       <div class="point-content">
         <h4>Letters Connect</h4>
@@ -33,7 +33,7 @@
 
     <div class="key-point">
       <div class="point-icon">
-        <i class="fa-solid fa-music"></i>
+        <i class="fa-solid fa-music" aria-hidden="true"></i>
       </div>
       <div class="point-content">
         <h4>Beat by Beat</h4>
@@ -43,7 +43,7 @@
 
     <div class="key-point">
       <div class="point-icon">
-        <i class="fa-solid fa-rotate"></i>
+        <i class="fa-solid fa-rotate" aria-hidden="true"></i>
       </div>
       <div class="point-content">
         <h4>Return Home</h4>
@@ -67,7 +67,7 @@
 
   <button class="next-button" onclick={onNext}>
     <span>Learn About Letter Types</span>
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

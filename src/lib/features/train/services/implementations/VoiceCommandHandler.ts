@@ -42,14 +42,11 @@ export class VoiceCommandHandler implements IVoiceCommandHandler {
         .trim()
         .toLowerCase();
 
-      console.log("[VoiceCommandHandler] Heard:", transcript);
-
       // Check if transcript contains the keyword
       if (
         this.currentKeyword &&
         transcript.includes(this.currentKeyword.toLowerCase())
       ) {
-        console.log("[VoiceCommandHandler] Keyword detected!");
         this.currentCallback?.();
       }
     };
@@ -67,7 +64,6 @@ export class VoiceCommandHandler implements IVoiceCommandHandler {
     // Auto-restart when recognition ends
     this.recognition.onend = () => {
       if (this.listening) {
-        console.log("[VoiceCommandHandler] Recognition ended, restarting...");
         this.restart();
       }
     };
@@ -100,7 +96,6 @@ export class VoiceCommandHandler implements IVoiceCommandHandler {
 
     try {
       this.recognition.start();
-      console.log(`[VoiceCommandHandler] Listening for "${keyword}"`);
     } catch (error) {
       console.error("[VoiceCommandHandler] Failed to start:", error);
       this.listening = false;
@@ -116,7 +111,6 @@ export class VoiceCommandHandler implements IVoiceCommandHandler {
 
     try {
       this.recognition.stop();
-      console.log("[VoiceCommandHandler] Stopped listening");
     } catch (error) {
       console.warn("[VoiceCommandHandler] Stop failed:", error);
     }

@@ -81,7 +81,7 @@ Clean design with:
     <!-- Left: Icon -->
     <div class="icon-area">
       <div class="icon-wrapper">
-        <i class="fa-solid {concept.icon}"></i>
+        <i class="fa-solid {concept.icon}" aria-hidden="true"></i>
       </div>
       <span class="category-label">{category.name}</span>
     </div>
@@ -92,11 +92,11 @@ Clean design with:
       <p class="description">{concept.description}</p>
       <div class="meta">
         <span class="meta-item">
-          <i class="fa-solid fa-clock"></i>
+          <i class="fa-solid fa-clock" aria-hidden="true"></i>
           {concept.estimatedMinutes} min
         </span>
         <span class="meta-item">
-          <i class="fa-solid fa-list-check"></i>
+          <i class="fa-solid fa-list-check" aria-hidden="true"></i>
           {concept.concepts.length} topics
         </span>
       </div>
@@ -105,7 +105,7 @@ Clean design with:
     <!-- Right: CTA -->
     <div class="cta-area">
       <div class="cta-button">
-        <i class="fa-solid {buttonIcon()}"></i>
+        <i class="fa-solid {buttonIcon()}" aria-hidden="true"></i>
         <span>{buttonText()}</span>
       </div>
     </div>

@@ -43,11 +43,11 @@ QuizCompleteSection - Results display and actions
 
   <div class="complete-actions">
     <button class="action-btn secondary" onclick={onRestart}>
-      <i class="fa-solid fa-rotate"></i>
+      <i class="fa-solid fa-rotate" aria-hidden="true"></i>
       Try Again
     </button>
     <button class="action-btn primary" onclick={onComplete}>
-      <i class="fa-solid fa-arrow-right"></i>
+      <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
       Continue
     </button>
   </div>

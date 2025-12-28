@@ -49,7 +49,7 @@
         onclick={() => onGridModeChange?.(GridMode.BOX)}
         aria-label="Box mode"
       >
-        <i class="fas fa-square"></i>
+        <i class="fas fa-square" aria-hidden="true"></i>
       </button>
       <button
         class="toggle-option"
@@ -57,7 +57,7 @@
         onclick={() => onGridModeChange?.(GridMode.DIAMOND)}
         aria-label="Diamond mode"
       >
-        <i class="fas fa-diamond"></i>
+        <i class="fas fa-diamond" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -72,7 +72,7 @@
         disabled={gridScale <= 0.5}
         aria-label="Decrease grid size"
       >
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
       <span class="scale-value">{Math.round(gridScale * 100)}%</span>
       <button
@@ -81,11 +81,11 @@
         disabled={gridScale >= 1.5}
         aria-label="Increase grid size"
       >
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
       </button>
       {#if gridScale !== 1.0}
         <button class="reset-btn" onclick={resetScale} aria-label="Reset scale">
-          <i class="fas fa-undo"></i>
+          <i class="fas fa-undo" aria-hidden="true"></i>
         </button>
       {/if}
     </div>
@@ -101,7 +101,7 @@
         onclick={() => onPropsVisibilityChange?.(!propsVisible)}
         aria-label={propsVisible ? "Hide props" : "Show props"}
       >
-        <i class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+        <i class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
         <span>{propsVisible ? "Visible" : "Hidden"}</span>
       </button>
     </div>

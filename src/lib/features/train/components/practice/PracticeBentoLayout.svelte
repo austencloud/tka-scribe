@@ -151,7 +151,7 @@
         <button class="sequence-info" onclick={onBrowseSequences}>
           <span class="seq-name">{sequence.word || sequence.name}</span>
           <span class="seq-meta">{sequence.beats?.length || 0} beats</span>
-          <i class="fas fa-exchange-alt"></i>
+          <i class="fas fa-exchange-alt" aria-hidden="true"></i>
         </button>
       </section>
     {/if}
@@ -172,15 +172,16 @@
         class="settings-toggle"
         onclick={() => (showGridSettings = !showGridSettings)}
         aria-expanded={showGridSettings}
+        aria-controls="grid-settings-panel"
       >
-        <i class="fas fa-sliders-h"></i>
+        <i class="fas fa-sliders-h" aria-hidden="true"></i>
         <span>Grid Settings</span>
-        <i class="fas fa-chevron-{showGridSettings ? 'up' : 'down'} toggle-icon"
+        <i class="fas fa-chevron-{showGridSettings ? 'up' : 'down'} toggle-icon" aria-hidden="true"
         ></i>
       </button>
 
       {#if showGridSettings}
-        <div class="bento-grid-settings">
+        <div class="bento-grid-settings" id="grid-settings-panel">
           <GridSettingsInline
             {gridScale}
             {gridMode}

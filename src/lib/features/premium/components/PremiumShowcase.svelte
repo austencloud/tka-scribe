@@ -178,7 +178,7 @@
   <!-- Close Button (for modal mode) -->
   {#if onClose}
     <button class="close-button" onclick={onClose} aria-label="Close">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   {/if}
 </div>

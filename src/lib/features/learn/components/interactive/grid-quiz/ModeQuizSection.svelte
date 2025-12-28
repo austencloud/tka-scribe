@@ -38,7 +38,7 @@ ModeQuizSection - Identify diamond vs box grid
       onclick={() => onAnswer("diamond")}
       disabled={answerState !== "idle"}
     >
-      <i class="fa-solid fa-diamond"></i>
+      <i class="fa-solid fa-diamond" aria-hidden="true"></i>
       <span>Diamond</span>
       {#if answerState !== "idle" && selectedAnswer === "diamond"}
         <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>
@@ -54,7 +54,7 @@ ModeQuizSection - Identify diamond vs box grid
       onclick={() => onAnswer("box")}
       disabled={answerState !== "idle"}
     >
-      <i class="fa-solid fa-square"></i>
+      <i class="fa-solid fa-square" aria-hidden="true"></i>
       <span>Box</span>
       {#if answerState !== "idle" && selectedAnswer === "box"}
         <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>

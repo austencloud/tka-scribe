@@ -139,7 +139,7 @@
         <p class="card-description">{challenge.description}</p>
       </div>
       <div class="xp-badge">
-        <i class="fas fa-star"></i>
+        <i class="fas fa-star" aria-hidden="true"></i>
         <span class="xp-value">{xpReward}</span>
         {#if bonusXP > 0 && !isComplete}
           <span class="bonus">+{bonusXP}</span>
@@ -169,7 +169,7 @@
         </div>
         <span class="progress-text">
           {#if isComplete}
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           {:else}
             {currentProgress}/{targetProgress}
           {/if}
@@ -181,13 +181,13 @@
     <div class="card-footer">
       {#if isComplete}
         <div class="status-badge complete">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
           <span>Completed</span>
         </div>
       {:else}
         <div class="action-hint">
           <span>{isStarted ? "Continue" : "Start"}</span>
-          <i class="fas fa-arrow-right"></i>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </div>
       {/if}
     </div>
@@ -321,7 +321,7 @@
   }
 
   .xp-badge .bonus {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: #f59e0b;
   }
@@ -335,7 +335,7 @@
 
   .tag {
     padding: 5px 10px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -426,7 +426,7 @@
   }
 
   .action-hint i {
-    font-size: 11px;
+    font-size: 12px;
     transition: transform 0.2s ease;
   }
 
@@ -482,7 +482,7 @@
 
     .tag {
       padding: 6px 12px;
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

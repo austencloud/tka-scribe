@@ -107,7 +107,7 @@ Shows:
           style="--cat-color: {cat.color}"
           title="{cat.name}: {cat.completed}/{cat.total}"
         >
-          <i class="fa-solid {cat.icon}"></i>
+          <i class="fa-solid {cat.icon}" aria-hidden="true"></i>
           <div class="bar-track">
             <div class="bar-fill" style="width: {cat.percent}%"></div>
           </div>

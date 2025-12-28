@@ -335,10 +335,10 @@ Shows how hands coordinate their movements in different VTG patterns
   <!-- Play button -->
   <button class="play-button" onclick={playAnimation} disabled={animating}>
     {#if animating}
-      <i class="fa-solid fa-spinner fa-spin"></i>
+      <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
       Playing...
     {:else}
-      <i class="fa-solid fa-play"></i>
+      <i class="fa-solid fa-play" aria-hidden="true"></i>
       Play Animation
     {/if}
   </button>

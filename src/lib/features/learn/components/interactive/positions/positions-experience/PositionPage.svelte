@@ -28,11 +28,22 @@ PositionPage - Single position type learning page
 	} = $props();
 
 	const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
-	const info = POSITION_INFO[type];
+	const info = $derived(POSITION_INFO[type]);
 
-	let leftHand = $state<HandPosition>(examples[0]!.left);
-	let rightHand = $state<HandPosition>(examples[0]!.right);
+	// State - initialized with defaults, $effect below syncs from props
+	let leftHand = $state<HandPosition>("N");
+	let rightHand = $state<HandPosition>("N");
 	let exampleIndex = $state(0);
+
+	// Sync from examples prop
+	$effect(() => {
+		const example = examples[0];
+		if (example) {
+			leftHand = example.left;
+			rightHand = example.right;
+		}
+		exampleIndex = 0;
+	});
 
 	function cycleExample() {
 		exampleIndex = (exampleIndex + 1) % examples.length;
@@ -51,7 +62,7 @@ PositionPage - Single position type learning page
 	<div class="visualizer-section">
 		<PositionVisualizer bind:leftHand bind:rightHand highlightType={type} showLabels={true} />
 		<button class="cycle-button" onclick={cycleExample}>
-			<i class="fa-solid fa-shuffle"></i>
+			<i class="fa-solid fa-shuffle" aria-hidden="true"></i>
 			Show Another Example
 		</button>
 	</div>
@@ -64,7 +75,7 @@ PositionPage - Single position type learning page
 
 	<button class="next-button" onclick={onNext}>
 		{#if showSummary}
-			<i class="fa-solid fa-graduation-cap"></i>
+			<i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
 			Take the Quiz
 		{:else}
 			Next

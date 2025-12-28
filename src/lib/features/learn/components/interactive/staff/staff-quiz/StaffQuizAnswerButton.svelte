@@ -36,7 +36,7 @@ StaffQuizAnswerButton - Single answer option button
   onclick={onSelect}
   {disabled}
 >
-  <i class="fa-solid {info.icon}"></i>
+  <i class="fa-solid {info.icon}" aria-hidden="true"></i>
   <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
   {#if answerState !== "idle" && isSelected}
     <span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>

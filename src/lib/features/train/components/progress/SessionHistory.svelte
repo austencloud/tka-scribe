@@ -84,15 +84,15 @@
 
       <div class="session-stats">
         <div class="stat">
-          <i class="fas fa-bullseye"></i>
+          <i class="fas fa-bullseye" aria-hidden="true"></i>
           <span>{session.score.percentage.toFixed(1)}%</span>
         </div>
         <div class="stat">
-          <i class="fas fa-fire"></i>
+          <i class="fas fa-fire" aria-hidden="true"></i>
           <span>{session.score.maxCombo}</span>
         </div>
         <div class="stat">
-          <i class="fas fa-clock"></i>
+          <i class="fas fa-clock" aria-hidden="true"></i>
           <span>{formatDuration(session.metadata?.sessionDuration)}</span>
         </div>
       </div>

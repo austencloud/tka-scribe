@@ -28,7 +28,7 @@ VTGModePage - Individual VTG mode learning page
 
 	<div class="mode-intro" style="--type-color: {info.color}">
 		<div class="mode-icon">
-			<i class="fa-solid {info.icon}"></i>
+			<i class="fa-solid {info.icon}" aria-hidden="true"></i>
 		</div>
 		<p class="mode-description">{info.description}</p>
 	</div>
@@ -51,14 +51,14 @@ VTGModePage - Individual VTG mode learning page
 
 	<button class="next-button" onclick={onNext}>
 		{#if isLastMode}
-			<i class="fa-solid fa-graduation-cap"></i>
+			<i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
 			Take the Quiz
 		{:else if nextMode}
 			Next: {nextMode}
-			<i class="fa-solid fa-arrow-right"></i>
+			<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
 		{:else}
 			Next
-			<i class="fa-solid fa-arrow-right"></i>
+			<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
 		{/if}
 	</button>
 </div>

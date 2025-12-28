@@ -14,13 +14,13 @@ StaffQuizTypeBadge - Question type indicator badge
   class:rotation={type === "rotation"}
 >
   {#if type === "position"}
-    <i class="fa-solid fa-crosshairs"></i>
+    <i class="fa-solid fa-crosshairs" aria-hidden="true"></i>
     <span>Position</span>
   {:else if type === "thumb"}
-    <i class="fa-solid fa-hand-point-up"></i>
+    <i class="fa-solid fa-hand-point-up" aria-hidden="true"></i>
     <span>Thumb</span>
   {:else}
-    <i class="fa-solid fa-sync-alt"></i>
+    <i class="fa-solid fa-sync-alt" aria-hidden="true"></i>
     <span>Rotation</span>
   {/if}
 </div>

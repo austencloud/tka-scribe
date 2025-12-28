@@ -55,15 +55,15 @@
       </div>
       <div class="best-stats">
         <div class="stat">
-          <i class="fas fa-bullseye"></i>
+          <i class="fas fa-bullseye" aria-hidden="true"></i>
           <span>{best.bestAccuracy.toFixed(1)}%</span>
         </div>
         <div class="stat">
-          <i class="fas fa-fire"></i>
+          <i class="fas fa-fire" aria-hidden="true"></i>
           <span>{best.bestCombo} combo</span>
         </div>
         <div class="stat date">
-          <i class="fas fa-calendar"></i>
+          <i class="fas fa-calendar" aria-hidden="true"></i>
           <span>{formatDate(best.achievedAt)}</span>
         </div>
       </div>

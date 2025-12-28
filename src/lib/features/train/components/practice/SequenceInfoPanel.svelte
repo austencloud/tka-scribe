@@ -47,7 +47,7 @@
     </div>
   {:else}
     <div class="sequence-content">
-      <i class="fas fa-folder-open"></i>
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
       <span class="sequence-name">Select Sequence</span>
     </div>
   {/if}

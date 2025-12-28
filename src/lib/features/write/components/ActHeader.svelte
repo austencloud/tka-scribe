@@ -28,9 +28,9 @@
     );
   });
 
-  // Local state for editing
-  let nameInput = $state(act.name || "");
-  let descriptionInput = $state(act.description || "");
+  // Local state for editing - initialized with defaults, synced from act via $effect below
+  let nameInput = $state("");
+  let descriptionInput = $state("");
   let isEditingName = $state(false);
   let isEditingDescription = $state(false);
 
@@ -114,6 +114,7 @@
         onclick={startEditingName}
         tabindex="0"
         role="button"
+        aria-label="Edit act name"
         onkeydown={(e) =>
           (e.key === "Enter" || e.key === " ") && startEditingName()}
       >
@@ -141,6 +142,7 @@
         onclick={startEditingDescription}
         tabindex="0"
         role="button"
+        aria-label="Edit act description"
         onkeydown={(e) =>
           (e.key === "Enter" || e.key === " ") && startEditingDescription()}
       >
@@ -224,7 +226,7 @@
   .music-label {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -251,7 +253,7 @@
 
   .name-display.empty,
   .description-display.empty {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
     font-style: italic;
   }
 
@@ -314,7 +316,7 @@
     align-items: center;
     gap: var(--spacing-xs);
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .stats-section {
@@ -332,7 +334,7 @@
 
   .stat-label {
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .stat-value {

@@ -45,15 +45,15 @@ StaffQuizCompleteSection - Score display and completion actions
     <h4>Topics Covered</h4>
     <div class="topic-badges">
       <span class="topic-badge position">
-        <i class="fa-solid fa-crosshairs"></i>
+        <i class="fa-solid fa-crosshairs" aria-hidden="true"></i>
         Positions
       </span>
       <span class="topic-badge thumb">
-        <i class="fa-solid fa-hand-point-up"></i>
+        <i class="fa-solid fa-hand-point-up" aria-hidden="true"></i>
         Thumbs
       </span>
       <span class="topic-badge rotation">
-        <i class="fa-solid fa-sync-alt"></i>
+        <i class="fa-solid fa-sync-alt" aria-hidden="true"></i>
         Rotations
       </span>
     </div>
@@ -61,11 +61,11 @@ StaffQuizCompleteSection - Score display and completion actions
 
   <div class="complete-actions">
     <button class="action-btn secondary" onclick={onRestart}>
-      <i class="fa-solid fa-rotate"></i>
+      <i class="fa-solid fa-rotate" aria-hidden="true"></i>
       Try Again
     </button>
     <button class="action-btn primary" onclick={onComplete}>
-      <i class="fa-solid fa-check"></i>
+      <i class="fa-solid fa-check" aria-hidden="true"></i>
       Finish
     </button>
   </div>

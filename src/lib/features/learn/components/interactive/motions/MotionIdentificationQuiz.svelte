@@ -119,7 +119,7 @@ User must play animation first, then identify the motion type (1-6)
 
 				<button class="next-button" onclick={nextQuestion}>
 					{currentQuestionIndex < quizQuestions.length - 1 ? "Next Question" : "See Results"}
-					<i class="fa-solid fa-arrow-right"></i>
+					<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
 				</button>
 			{/if}
 		{/if}

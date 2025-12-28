@@ -172,7 +172,7 @@
     </div>
   {:else if loadError}
     <div class="error-state">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       <span>{loadError}</span>
     </div>
   {:else if sequence && pixiReady}
@@ -188,12 +188,12 @@
   {:else}
     <div class="empty-state">
       <div class="empty-icon">
-        <i class="fas fa-play-circle"></i>
+        <i class="fas fa-play-circle" aria-hidden="true"></i>
       </div>
       <p class="empty-text">No sequence selected</p>
       {#if onBrowseSequences}
         <button class="browse-btn" onclick={onBrowseSequences}>
-          <i class="fas fa-folder-open"></i>
+          <i class="fas fa-folder-open" aria-hidden="true"></i>
           Browse
         </button>
       {/if}

@@ -36,7 +36,7 @@ PositionAnswerButton - Answer button for position type selection
 	{onclick}
 	{disabled}
 >
-	<i class="fa-solid {info.icon}"></i>
+	<i class="fa-solid {info.icon}" aria-hidden="true"></i>
 	<span>{info.label}</span>
 	{#if answerState !== "idle" && isSelected}
 		<span class="result-icon">{answerState === "correct" ? "✓" : "✗"}</span>

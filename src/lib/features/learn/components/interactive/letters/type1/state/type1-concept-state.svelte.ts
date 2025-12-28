@@ -12,7 +12,7 @@ import {
 
 export interface Type1ConceptStateOptions {
   hapticService: IHapticFeedback | null;
-  onComplete?: () => void;
+  getOnComplete?: () => (() => void) | undefined;
 }
 
 export interface Type1ConceptState {
@@ -51,7 +51,7 @@ export interface Type1ConceptState {
 export function createType1ConceptState(
   options: Type1ConceptStateOptions
 ): Type1ConceptState {
-  const { hapticService, onComplete } = options;
+  const { hapticService, getOnComplete } = options;
   const totalPages = 5;
 
   // Core state
@@ -75,7 +75,7 @@ export function createType1ConceptState(
     if (currentPage < totalPages) {
       currentPage++;
     } else {
-      onComplete?.();
+      getOnComplete?.()?.();
     }
   }
 
@@ -95,7 +95,7 @@ export function createType1ConceptState(
 
   function complete() {
     hapticService?.trigger("success");
-    onComplete?.();
+    getOnComplete?.()?.();
   }
 
   // Letter cycling methods

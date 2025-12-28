@@ -190,7 +190,7 @@
       onclick={onGridSettingsClick}
       aria-label="Grid settings"
     >
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
   {/if}
 

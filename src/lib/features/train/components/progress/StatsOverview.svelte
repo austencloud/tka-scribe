@@ -29,7 +29,7 @@
     class="stat-card"
     style="--gradient: linear-gradient(135deg, var(--semantic-info, #3b82f6) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, white) 100%)"
   >
-    <i class="fas fa-calendar-check"></i>
+    <i class="fas fa-calendar-check" aria-hidden="true"></i>
     <div class="stat-content">
       <div class="stat-value">{stats.totalSessions}</div>
       <div class="stat-label">Total Sessions</div>
@@ -40,7 +40,7 @@
     class="stat-card"
     style="--gradient: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, white) 100%)"
   >
-    <i class="fas fa-clock"></i>
+    <i class="fas fa-clock" aria-hidden="true"></i>
     <div class="stat-content">
       <div class="stat-value">{formatDuration(stats.totalPracticeTime)}</div>
       <div class="stat-label">Practice Time</div>
@@ -51,7 +51,7 @@
     class="stat-card"
     style="--gradient: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 70%, #000) 100%)"
   >
-    <i class="fas fa-bullseye"></i>
+    <i class="fas fa-bullseye" aria-hidden="true"></i>
     <div class="stat-content">
       <div class="stat-value">{stats.averageAccuracy.toFixed(1)}%</div>
       <div class="stat-label">Avg Accuracy</div>
@@ -62,7 +62,7 @@
     class="stat-card"
     style="--gradient: linear-gradient(135deg, var(--semantic-warning, #f59e0b) 0%, color-mix(in srgb, var(--semantic-warning, #f59e0b) 70%, #000) 100%)"
   >
-    <i class="fas fa-fire"></i>
+    <i class="fas fa-fire" aria-hidden="true"></i>
     <div class="stat-content">
       <div class="stat-value">{stats.maxCombo}</div>
       <div class="stat-label">Highest Combo</div>

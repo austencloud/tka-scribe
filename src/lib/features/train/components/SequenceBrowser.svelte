@@ -79,13 +79,13 @@
     <header class="browser-header">
       <h2>Select a Sequence</h2>
       <button class="close-button" onclick={onClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
     <!-- Search -->
     <div class="search-bar">
-      <i class="fas fa-search"></i>
+      <i class="fas fa-search" aria-hidden="true"></i>
       <input
         type="text"
         placeholder="Search sequences..."
@@ -97,18 +97,18 @@
     <div class="browser-content">
       {#if isLoading}
         <div class="loading-state">
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           <p>Loading sequences...</p>
         </div>
       {:else if error}
         <div class="error-state">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
           <p>{error}</p>
           <button onclick={loadSequences}>Retry</button>
         </div>
       {:else if filteredSequences.length === 0}
         <div class="empty-state">
-          <i class="fas fa-folder-open"></i>
+          <i class="fas fa-folder-open" aria-hidden="true"></i>
           <p>
             {searchQuery
               ? "No sequences found matching your search"
@@ -126,15 +126,15 @@
                 <h3>{sequence.word || sequence.name || "Untitled"}</h3>
                 <div class="sequence-meta">
                   <span
-                    ><i class="fas fa-drum"></i>
+                    ><i class="fas fa-drum" aria-hidden="true"></i>
                     {sequence.beats?.length || 0} beats</span
                   >
                   {#if sequence.author}
-                    <span><i class="fas fa-user"></i> {sequence.author}</span>
+                    <span><i class="fas fa-user" aria-hidden="true"></i> {sequence.author}</span>
                   {/if}
                 </div>
               </div>
-              <i class="fas fa-chevron-right"></i>
+              <i class="fas fa-chevron-right" aria-hidden="true"></i>
             </button>
           {/each}
         </div>

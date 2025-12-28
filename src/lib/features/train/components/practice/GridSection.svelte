@@ -47,12 +47,12 @@
   {:else}
     <div class="empty-state">
       <div class="empty-icon">
-        <i class="fas fa-th"></i>
+        <i class="fas fa-th" aria-hidden="true"></i>
       </div>
       <p class="empty-text">No sequence selected</p>
       {#if onBrowseSequences}
         <button class="browse-btn" onclick={onBrowseSequences}>
-          <i class="fas fa-folder-open"></i>
+          <i class="fas fa-folder-open" aria-hidden="true"></i>
           Browse
         </button>
       {/if}

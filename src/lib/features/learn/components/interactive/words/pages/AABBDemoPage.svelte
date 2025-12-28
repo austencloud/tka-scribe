@@ -46,10 +46,10 @@
         onclick={onToggleAnimation}
       >
         {#if isAnimating}
-          <i class="fa-solid fa-pause"></i>
+          <i class="fa-solid fa-pause" aria-hidden="true"></i>
           <span>Pause</span>
         {:else}
-          <i class="fa-solid fa-play"></i>
+          <i class="fa-solid fa-play" aria-hidden="true"></i>
           <span>Animate</span>
         {/if}
       </button>

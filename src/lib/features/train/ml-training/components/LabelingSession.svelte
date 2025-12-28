@@ -231,7 +231,7 @@ Allows navigating through frames and labeling each one.
     <div class="header-left">
       {#if onClose}
         <button class="btn-back" onclick={onClose}>
-          <i class="fa fa-arrow-left"></i>
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>
           Back
         </button>
       {/if}
@@ -285,7 +285,7 @@ Allows navigating through frames and labeling each one.
           disabled={currentFrameIndex === 0}
           aria-label="Previous frame"
         >
-          <i class="fa fa-chevron-left"></i>
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>
         </button>
 
         <div class="frame-info">
@@ -303,7 +303,7 @@ Allows navigating through frames and labeling each one.
           disabled={currentFrameIndex >= frames.length - 1}
           aria-label="Next frame"
         >
-          <i class="fa fa-chevron-right"></i>
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -329,7 +329,7 @@ Allows navigating through frames and labeling each one.
   <div class="action-bar">
     <div class="action-group">
       <button class="btn-skip" onclick={skipFrame}>
-        <i class="fa fa-forward"></i>
+        <i class="fa fa-forward" aria-hidden="true"></i>
         Skip (X)
       </button>
     </div>
@@ -340,7 +340,7 @@ Allows navigating through frames and labeling each one.
         onclick={saveCurrentAnnotations}
         disabled={isSaving}
       >
-        <i class="fa fa-save"></i>
+        <i class="fa fa-save" aria-hidden="true"></i>
         Save (S)
       </button>
       <button
@@ -348,7 +348,7 @@ Allows navigating through frames and labeling each one.
         onclick={markVerified}
         disabled={currentAnnotations.length === 0}
       >
-        <i class="fa fa-check"></i>
+        <i class="fa fa-check" aria-hidden="true"></i>
         Verify (V)
       </button>
     </div>
@@ -511,8 +511,8 @@ Allows navigating through frames and labeling each one.
   }
 
   .nav-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);
@@ -576,8 +576,8 @@ Allows navigating through frames and labeling each one.
 
   .thumbnail {
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: 2px solid transparent;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);

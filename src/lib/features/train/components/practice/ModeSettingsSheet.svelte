@@ -108,7 +108,7 @@
     <!-- Header -->
     <header class="panel-header">
       <div class="header-icon">
-        <i class="fas {modeInfo.icon}"></i>
+        <i class="fas {modeInfo.icon}" aria-hidden="true"></i>
       </div>
       <div class="header-content">
         <h3 class="panel-title">{modeInfo.title}</h3>
@@ -119,7 +119,7 @@
         onclick={handleClose}
         aria-label="Close settings"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 

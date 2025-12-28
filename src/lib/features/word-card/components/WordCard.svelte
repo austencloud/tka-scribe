@@ -60,6 +60,7 @@
   onkeydown={(e) => e.key === "Enter" && handleCardClick()}
   role="button"
   tabindex="0"
+  aria-label="View sequence {sequence.name}"
 >
   <img
     src={imagePath}

@@ -36,7 +36,7 @@ Type1AnswerButton - Single answer option for motion pattern
   onclick={onSelect}
   {disabled}
 >
-  <i class="fa-solid {info.icon}"></i>
+  <i class="fa-solid {info.icon}" aria-hidden="true"></i>
   <div class="answer-content">
     <span class="answer-label">{info.label}</span>
     <span class="answer-desc">{info.description}</span>

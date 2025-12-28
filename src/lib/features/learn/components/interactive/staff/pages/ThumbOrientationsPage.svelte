@@ -27,7 +27,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
 
   <div class="concept-intro thumb-intro">
     <div class="concept-icon">
-      <i class="fa-solid fa-hand-point-up"></i>
+      <i class="fa-solid fa-hand-point-up" aria-hidden="true"></i>
     </div>
     <p class="concept-summary">
       <strong>Thumbs In</strong> or <strong>Thumbs Out</strong> affects the staff's
@@ -45,7 +45,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
     />
     <div class="example-label">{currentExample.label}</div>
     <button class="cycle-button" onclick={cycleExample}>
-      <i class="fa-solid fa-shuffle"></i>
+      <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
       Show Another Example
     </button>
   </div>
@@ -71,12 +71,12 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
 
   <div class="thumb-cards">
     <div class="thumb-card in">
-      <i class="fa-solid fa-compress-alt"></i>
+      <i class="fa-solid fa-compress-alt" aria-hidden="true"></i>
       <span>Thumbs In</span>
       <small>Pointing toward center</small>
     </div>
     <div class="thumb-card out">
-      <i class="fa-solid fa-expand-alt"></i>
+      <i class="fa-solid fa-expand-alt" aria-hidden="true"></i>
       <span>Thumbs Out</span>
       <small>Pointing away from center</small>
     </div>

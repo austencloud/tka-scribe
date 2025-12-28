@@ -209,7 +209,7 @@
         onclick={handleBackToModule}
         aria-label="Go back"
       >
-        <i class="fas fa-chevron-left"></i>
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
       </button>
       <span class="back-header-title">Settings</span>
     </header>
@@ -222,7 +222,7 @@
     style="--swipe-progress: {swipeProgress}"
   >
     <div class="swipe-arrow">
-      <i class="fas fa-chevron-right"></i>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
     </div>
   </div>
 

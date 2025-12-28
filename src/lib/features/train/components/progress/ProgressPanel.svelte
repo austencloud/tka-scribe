@@ -72,7 +72,7 @@
       <!-- Header -->
       <header class="empty-header">
         <div class="header-icon">
-          <i class="fas fa-chart-line"></i>
+          <i class="fas fa-chart-line" aria-hidden="true"></i>
         </div>
         <h1>Your Training Journey</h1>
         <p>Track your progress and see how far you've come</p>
@@ -82,7 +82,7 @@
       <section class="preview-stats">
         <div class="stat-card">
           <div class="stat-icon sessions">
-            <i class="fas fa-dumbbell"></i>
+            <i class="fas fa-dumbbell" aria-hidden="true"></i>
           </div>
           <div class="stat-content">
             <span class="stat-value">0</span>
@@ -92,7 +92,7 @@
 
         <div class="stat-card">
           <div class="stat-icon time">
-            <i class="fas fa-clock"></i>
+            <i class="fas fa-clock" aria-hidden="true"></i>
           </div>
           <div class="stat-content">
             <span class="stat-value placeholder">--:--</span>
@@ -102,7 +102,7 @@
 
         <div class="stat-card">
           <div class="stat-icon accuracy">
-            <i class="fas fa-bullseye"></i>
+            <i class="fas fa-bullseye" aria-hidden="true"></i>
           </div>
           <div class="stat-content">
             <span class="stat-value placeholder">--%</span>
@@ -112,7 +112,7 @@
 
         <div class="stat-card">
           <div class="stat-icon combo">
-            <i class="fas fa-fire"></i>
+            <i class="fas fa-fire" aria-hidden="true"></i>
           </div>
           <div class="stat-content">
             <span class="stat-value">0</span>
@@ -126,7 +126,7 @@
         <!-- Personal Bests Preview -->
         <section class="preview-section">
           <div class="section-header">
-            <i class="fas fa-trophy"></i>
+            <i class="fas fa-trophy" aria-hidden="true"></i>
             <h2>Personal Bests</h2>
           </div>
           <div class="empty-rows">
@@ -148,7 +148,7 @@
         <!-- Recent Sessions Preview -->
         <section class="preview-section">
           <div class="section-header">
-            <i class="fas fa-history"></i>
+            <i class="fas fa-history" aria-hidden="true"></i>
             <h2>Recent Sessions</h2>
           </div>
           <div class="empty-rows">
@@ -169,9 +169,9 @@
       <!-- CTA -->
       <div class="cta-section">
         <button class="start-btn" onclick={navigateToPractice}>
-          <i class="fas fa-play"></i>
+          <i class="fas fa-play" aria-hidden="true"></i>
           <span>Start Your First Session</span>
-          <i class="fas fa-arrow-right"></i>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </button>
       </div>
     </div>

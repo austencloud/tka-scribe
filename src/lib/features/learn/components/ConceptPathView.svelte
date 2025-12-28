@@ -128,12 +128,12 @@ Shows:
       <!-- Celebration state -->
       <div class="completion-celebration">
         <div class="celebration-icon">
-          <i class="fa-solid fa-trophy"></i>
+          <i class="fa-solid fa-trophy" aria-hidden="true"></i>
         </div>
         <h2>Level 1 Complete!</h2>
         <p>You've mastered all 28 concepts of The Kinetic Alphabet.</p>
         <button class="review-button" onclick={() => (showAllConcepts = true)}>
-          <i class="fa-solid fa-rotate"></i>
+          <i class="fa-solid fa-rotate" aria-hidden="true"></i>
           Review Concepts
         </button>
       </div>
@@ -156,7 +156,7 @@ Shows:
   <!-- View All Toggle -->
   <button class="view-all-toggle" onclick={toggleShowAll}>
     <span>{showAllConcepts ? "Hide learning path" : "View learning path"}</span>
-    <i class="fa-solid {showAllConcepts ? 'fa-chevron-up' : 'fa-chevron-down'}"
+    <i class="fa-solid {showAllConcepts ? 'fa-chevron-up' : 'fa-chevron-down'}" aria-hidden="true"
     ></i>
   </button>
 

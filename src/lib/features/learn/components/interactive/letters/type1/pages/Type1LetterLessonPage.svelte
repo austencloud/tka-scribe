@@ -40,7 +40,7 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
 
   <div class="motion-intro {config.theme}">
     <div class="motion-icon">
-      <i class="fa-solid {config.icon}"></i>
+      <i class="fa-solid {config.icon}" aria-hidden="true"></i>
     </div>
     <p class="motion-summary">
       {@html config.motionSummary}
@@ -69,7 +69,7 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
         disabled={letterIndex === 0}
         aria-label="Previous {config.ariaLabelPrefix} letter"
       >
-        <i class="fa-solid fa-chevron-left"></i>
+        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
       </button>
       <span class="nav-indicator">
         {letterIndex + 1} / {config.letters.length}
@@ -80,7 +80,7 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
         disabled={letterIndex === config.letters.length - 1}
         aria-label="Next {config.ariaLabelPrefix} letter"
       >
-        <i class="fa-solid fa-chevron-right"></i>
+        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -105,21 +105,21 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
       <h3>Type 1 Letter Summary</h3>
       <div class="summary-grid">
         <div class="summary-card pro">
-          <i class="fa-solid fa-rotate-right"></i>
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
           <span class="card-label">Pro-Pro</span>
           <span class="card-letters">
             {PROSPIN_LETTERS.map((l) => l.letter).join(" ")}
           </span>
         </div>
         <div class="summary-card anti">
-          <i class="fa-solid fa-rotate-left"></i>
+          <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
           <span class="card-label">Anti-Anti</span>
           <span class="card-letters">
             {ANTISPIN_LETTERS.map((l) => l.letter).join(" ")}
           </span>
         </div>
         <div class="summary-card hybrid">
-          <i class="fa-solid fa-shuffle"></i>
+          <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
           <span class="card-label">Hybrid</span>
           <span class="card-letters">
             {HYBRID_LETTERS.map((l) => l.letter).join(" ")}
@@ -131,16 +131,16 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
 
   <div class="button-row">
     <button class="prev-button" onclick={onPrevious}>
-      <i class="fa-solid fa-arrow-left"></i>
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
       Back
     </button>
     <button class="next-button" onclick={onNext}>
       {#if config.nextButtonIcon !== "fa-arrow-right"}
-        <i class="fa-solid {config.nextButtonIcon}"></i>
+        <i class="fa-solid {config.nextButtonIcon}" aria-hidden="true"></i>
       {/if}
       {config.nextButtonText}
       {#if config.nextButtonIcon === "fa-arrow-right"}
-        <i class="fa-solid fa-arrow-right"></i>
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
       {/if}
     </button>
   </div>

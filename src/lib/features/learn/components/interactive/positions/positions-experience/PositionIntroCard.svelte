@@ -15,7 +15,7 @@ PositionIntroCard - Intro card for a position type
 
 <div class="position-intro {type}">
 	<div class="position-icon">
-		<i class="fa-solid {info.icon}"></i>
+		<i class="fa-solid {info.icon}" aria-hidden="true"></i>
 	</div>
 	<p class="position-summary">
 		{@html info.summary.replace(/(opposite|same|right angles)/gi, "<strong>$1</strong>")}

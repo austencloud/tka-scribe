@@ -13,7 +13,7 @@ VTGNextButton - Next question/see results button
 
 <button class="next-button" {onclick}>
 	{isLastQuestion ? "See Results" : "Next Question"}
-	<i class="fa-solid fa-arrow-right"></i>
+	<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
 </button>
 
 <style>

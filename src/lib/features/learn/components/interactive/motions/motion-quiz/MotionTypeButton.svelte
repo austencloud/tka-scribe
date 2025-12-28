@@ -33,9 +33,9 @@ MotionTypeButton - Answer button for motion type selection
 	<span class="type-num">{type.num}</span>
 	<span class="type-name">{type.name}</span>
 	{#if showResult && isCorrect}
-		<i class="fa-solid fa-check result-icon"></i>
+		<i class="fa-solid fa-check result-icon" aria-hidden="true"></i>
 	{:else if showResult && isSelected && !isCorrect}
-		<i class="fa-solid fa-xmark result-icon"></i>
+		<i class="fa-solid fa-xmark result-icon" aria-hidden="true"></i>
 	{/if}
 </button>
 

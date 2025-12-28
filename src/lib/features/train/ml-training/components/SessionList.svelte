@@ -95,7 +95,7 @@ Allows viewing, continuing, or deleting sessions.
       disabled={isLoading}
       aria-label="Refresh sessions"
     >
-      <i class="fa fa-refresh {isLoading ? 'fa-spin' : ''}"></i>
+      <i class="fa fa-refresh {isLoading ? 'fa-spin' : ''}" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -106,7 +106,7 @@ Allows viewing, continuing, or deleting sessions.
     </div>
   {:else if sessions.length === 0}
     <div class="empty-state">
-      <i class="fa fa-video-camera"></i>
+      <i class="fa fa-video-camera" aria-hidden="true"></i>
       <p>No capture sessions yet</p>
       <p class="hint">
         Start a new capture session to begin collecting training data.
@@ -124,6 +124,7 @@ Allows viewing, continuing, or deleting sessions.
           onkeydown={(e) => e.key === "Enter" && selectSession(session)}
           role="button"
           tabindex="0"
+          aria-label="Select session {session.name}"
         >
           <div class="session-header">
             <span class="prop-badge {session.propType}">{session.propType}</span
@@ -135,15 +136,15 @@ Allows viewing, continuing, or deleting sessions.
 
           <div class="session-stats">
             <div class="stat">
-              <i class="fa fa-image"></i>
+              <i class="fa fa-image" aria-hidden="true"></i>
               <span>{session.frameCount} frames</span>
             </div>
             <div class="stat">
-              <i class="fa fa-clock-o"></i>
+              <i class="fa fa-clock-o" aria-hidden="true"></i>
               <span>{session.fps} fps</span>
             </div>
             <div class="stat">
-              <i class="fa fa-expand"></i>
+              <i class="fa fa-expand" aria-hidden="true"></i>
               <span>{session.resolution.width}×{session.resolution.height}</span
               >
             </div>
@@ -169,7 +170,7 @@ Allows viewing, continuing, or deleting sessions.
                   onStartLabeling(session);
                 }}
               >
-                <i class="fa fa-tag"></i>
+                <i class="fa fa-tag" aria-hidden="true"></i>
                 Label
               </button>
             {/if}
@@ -205,7 +206,7 @@ Allows viewing, continuing, or deleting sessions.
                 }}
                 aria-label="Delete session"
               >
-                <i class="fa fa-trash"></i>
+                <i class="fa fa-trash" aria-hidden="true"></i>
               </button>
             {/if}
           </div>

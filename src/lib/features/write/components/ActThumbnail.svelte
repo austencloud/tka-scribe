@@ -65,6 +65,7 @@
   onkeydown={handleKeyDown}
   role="button"
   tabindex="0"
+  aria-label="Select act {actInfo.name}"
 >
   <!-- Thumbnail Image -->
   <div class="thumbnail-image">
@@ -214,7 +215,7 @@
     }
 
     .act-description {
-      font-size: 10px;
+      font-size: 12px;
     }
   }
 

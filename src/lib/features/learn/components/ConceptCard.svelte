@@ -73,11 +73,11 @@ Displays:
   tabindex={isClickable ? 0 : -1}
 >
   <div class="card-content">
-    <span class="icon"><i class="fa-solid {concept.icon}"></i></span>
+    <span class="icon"><i class="fa-solid {concept.icon}" aria-hidden="true"></i></span>
     <span class="name">{concept.shortName}</span>
   </div>
   {#if status === "completed"}
-    <span class="check"><i class="fa-solid fa-check"></i></span>
+    <span class="check"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
   {/if}
 </button>
 

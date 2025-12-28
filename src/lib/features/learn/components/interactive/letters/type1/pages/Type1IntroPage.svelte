@@ -13,7 +13,7 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
 
   <div class="intro-section">
     <div class="intro-icon">
-      <i class="fa-solid fa-arrows-rotate"></i>
+      <i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i>
     </div>
     <p class="intro-text">
       Type 1 letters are called <strong>"Dual-Shift"</strong> because
@@ -58,7 +58,7 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
 
   <button class="next-button" onclick={onNext}>
     Learn Prospin Letters
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

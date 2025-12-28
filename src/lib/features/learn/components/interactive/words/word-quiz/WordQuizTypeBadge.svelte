@@ -8,7 +8,7 @@ WordQuizTypeBadge - Question type indicator badge
 </script>
 
 <div class="question-type">
-  <i class="fa-solid {TYPE_ICONS[type]}"></i>
+  <i class="fa-solid {TYPE_ICONS[type]}" aria-hidden="true"></i>
   <span>{type.replace(/-/g, " ")}</span>
 </div>
 

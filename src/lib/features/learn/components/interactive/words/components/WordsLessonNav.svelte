@@ -15,13 +15,13 @@
 <div class="nav-buttons">
   {#if showBack && onBack}
     <button class="back-btn" onclick={onBack}>
-      <i class="fa-solid fa-arrow-left"></i>
+      <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
       Back
     </button>
   {/if}
   <button class="next-button" onclick={onNext}>
     <span>{nextLabel}</span>
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

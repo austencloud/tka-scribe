@@ -15,13 +15,13 @@ MotionPlayButton - Play/replay button for motion animation
 
 <button class="play-button" {onclick} disabled={animating}>
 	{#if animating}
-		<i class="fa-solid fa-spinner fa-spin"></i>
+		<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
 		Playing...
 	{:else if hasCompleted}
-		<i class="fa-solid fa-redo"></i>
+		<i class="fa-solid fa-redo" aria-hidden="true"></i>
 		Replay
 	{:else}
-		<i class="fa-solid fa-play"></i>
+		<i class="fa-solid fa-play" aria-hidden="true"></i>
 		Play Motion
 	{/if}
 </button>

@@ -22,9 +22,9 @@ MotionQuizResults - Final results display with score and review
 <div class="results">
 	<div class="results-icon" class:passing={isPassing}>
 		{#if isPassing}
-			<i class="fa-solid fa-trophy"></i>
+			<i class="fa-solid fa-trophy" aria-hidden="true"></i>
 		{:else}
-			<i class="fa-solid fa-book-open"></i>
+			<i class="fa-solid fa-book-open" aria-hidden="true"></i>
 		{/if}
 	</div>
 
@@ -45,10 +45,10 @@ MotionQuizResults - Final results display with score and review
 
 	<button class="finish-button" onclick={onFinish}>
 		{#if isPassing}
-			<i class="fa-solid fa-check"></i>
+			<i class="fa-solid fa-check" aria-hidden="true"></i>
 			Complete Lesson
 		{:else}
-			<i class="fa-solid fa-arrow-left"></i>
+			<i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
 			Review & Try Again
 		{/if}
 	</button>

@@ -10,7 +10,7 @@ PositionSummaryCards - Summary cards showing all position types
 	<div class="position-cards">
 		{#each Object.entries(POSITION_INFO) as [type, info]}
 			<div class="position-card {type}">
-				<i class="fa-solid {info.icon}"></i>
+				<i class="fa-solid {info.icon}" aria-hidden="true"></i>
 				<span>{info.name}</span>
 				<small>{type === "alpha" ? "Opposite" : type === "beta" ? "Same" : "Right Angle"} ({info.angle})</small>
 			</div>

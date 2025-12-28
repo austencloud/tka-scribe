@@ -10,13 +10,13 @@
 
 {#if variant === "inline"}
   <div class="cancel-inline">
-    <i class="fas fa-check-circle"></i>
+    <i class="fas fa-check-circle" aria-hidden="true"></i>
     <span>Cancel anytime, no questions asked</span>
   </div>
 {:else}
   <div class="cancel-badge">
     <div class="badge-header">
-      <i class="fas fa-door-open"></i>
+      <i class="fas fa-door-open" aria-hidden="true"></i>
       <h4>No Long-Term Commitment</h4>
     </div>
     <p>

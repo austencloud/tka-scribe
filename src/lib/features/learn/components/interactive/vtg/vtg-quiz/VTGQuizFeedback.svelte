@@ -15,10 +15,10 @@ VTGQuizFeedback - Correct/incorrect feedback after answer
 
 <div class="result-feedback" class:correct={isCorrect}>
 	{#if isCorrect}
-		<i class="fa-solid fa-check-circle"></i>
+		<i class="fa-solid fa-check-circle" aria-hidden="true"></i>
 		<span>Correct! It's {correctAnswer}.</span>
 	{:else}
-		<i class="fa-solid fa-times-circle"></i>
+		<i class="fa-solid fa-times-circle" aria-hidden="true"></i>
 		<span>Not quite. The answer is {correctAnswer}.</span>
 	{/if}
 </div>

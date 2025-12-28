@@ -79,6 +79,7 @@
           onclick={() => handleSequenceClick(sequence, index)}
           tabindex="0"
           role="button"
+          aria-label="Select sequence {sequence.name || `Sequence ${index + 1}`}"
           onkeydown={(e) =>
             (e.key === "Enter" || e.key === " ") &&
             handleSequenceClick(sequence, index)}

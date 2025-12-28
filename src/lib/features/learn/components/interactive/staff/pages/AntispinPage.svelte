@@ -27,7 +27,7 @@ AntispinPage - Page 4: Antispin rotation + summary comparison
 
   <div class="concept-intro antispin-intro">
     <div class="concept-icon">
-      <i class="fa-solid fa-retweet"></i>
+      <i class="fa-solid fa-retweet" aria-hidden="true"></i>
     </div>
     <p class="concept-summary">
       The prop rotates in the <strong>opposite direction</strong> of the handpath
@@ -48,7 +48,7 @@ AntispinPage - Page 4: Antispin rotation + summary comparison
       {currentExample.description}
     </div>
     <button class="cycle-button" onclick={cycleExample}>
-      <i class="fa-solid fa-play"></i>
+      <i class="fa-solid fa-play" aria-hidden="true"></i>
       Show Motion Step
     </button>
   </div>
@@ -70,12 +70,12 @@ AntispinPage - Page 4: Antispin rotation + summary comparison
       <span class="formula-label">Start</span>
       <span class="formula-value">Thumb In</span>
     </div>
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     <div class="formula-item antispin-item">
       <span class="formula-label">Antispin</span>
-      <i class="fa-solid fa-retweet"></i>
+      <i class="fa-solid fa-retweet" aria-hidden="true"></i>
     </div>
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     <div class="formula-item">
       <span class="formula-label">End</span>
       <span class="formula-value">Thumb Out</span>
@@ -86,7 +86,7 @@ AntispinPage - Page 4: Antispin rotation + summary comparison
     <h3>Pro vs Anti Summary</h3>
     <div class="comparison-cards">
       <div class="comparison-card prospin">
-        <i class="fa-solid fa-sync-alt"></i>
+        <i class="fa-solid fa-sync-alt" aria-hidden="true"></i>
         <span class="card-title">Prospin</span>
         <ul>
           <li>Same direction</li>
@@ -95,7 +95,7 @@ AntispinPage - Page 4: Antispin rotation + summary comparison
         </ul>
       </div>
       <div class="comparison-card antispin">
-        <i class="fa-solid fa-retweet"></i>
+        <i class="fa-solid fa-retweet" aria-hidden="true"></i>
         <span class="card-title">Antispin</span>
         <ul>
           <li>Opposite direction</li>
@@ -107,7 +107,7 @@ AntispinPage - Page 4: Antispin rotation + summary comparison
   </div>
 
   <button class="next-button" onclick={onNext}>
-    <i class="fa-solid fa-graduation-cap"></i>
+    <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
     Take the Quiz
   </button>
 </div>

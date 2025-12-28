@@ -111,7 +111,6 @@ export function createTagReviewerState() {
 		}
 
 		if (!seq.fullMetadata?.sequence) {
-			console.log(`[TagReviewerState] Skipping ${seq.word} - no fullMetadata.sequence`);
 			return null;
 		}
 
@@ -137,8 +136,6 @@ export function createTagReviewerState() {
 			// Extract features and generate tags
 			const features = featureExtractor.extractFeatures(sequenceData);
 			const suggestedTags = tagger.suggestTags(features);
-
-			console.log(`[TagReviewerState] ${seq.word}: generated ${suggestedTags.length} tags on-the-fly`);
 
 			// Create review with pending tags
 			const reviewableTags: ReviewableTag[] = suggestedTags.map((tag) => ({
@@ -166,7 +163,6 @@ export function createTagReviewerState() {
 		// Clear old persisted reviews from localStorage
 		try {
 			localStorage.removeItem(OLD_STORAGE_KEY);
-			console.log("[TagReviewerState] Cleared old persisted reviews");
 		} catch {
 			// Ignore errors
 		}
@@ -199,7 +195,6 @@ export function createTagReviewerState() {
 					}) as TaggedSequenceEntry
 			);
 
-			console.log(`[TagReviewerState] Loaded ${sequences.length} sequences`);
 			// Tags will be generated on-the-fly when viewing each sequence
 		} catch (error) {
 			console.error("[TagReviewerState] Failed to load sequences:", error);
@@ -250,22 +245,16 @@ export function createTagReviewerState() {
 	 */
 	function ensureTagsGenerated() {
 		if (!currentSequence) {
-			console.log("[TagReviewerState] ensureTagsGenerated: no currentSequence");
 			return;
 		}
 		if (reviews.has(currentSequence.word)) {
-			console.log(`[TagReviewerState] ensureTagsGenerated: already have review for ${currentSequence.word}`);
 			return;
 		}
-
-		console.log(`[TagReviewerState] ensureTagsGenerated: generating for ${currentSequence.word}`);
-		console.log(`[TagReviewerState] Services available: featureExtractor=${!!featureExtractor}, tagger=${!!tagger}, conversionService=${!!conversionService}`);
 
 		const generated = generateTagsForSequence(currentSequence);
 		if (generated) {
 			reviews.set(currentSequence.word, generated);
 			reviews = new Map(reviews);
-			console.log(`[TagReviewerState] Generated ${generated.suggestedTags.length} tags for ${currentSequence.word}`);
 		} else {
 			console.warn(`[TagReviewerState] Failed to generate tags for ${currentSequence.word}`);
 		}
@@ -283,7 +272,6 @@ export function createTagReviewerState() {
 
 		// Now generate new tags
 		ensureTagsGenerated();
-		console.log(`[TagReviewerState] Regenerated tags for ${currentSequence.word}`);
 	}
 
 	function confirmTag(tagIndex: number) {

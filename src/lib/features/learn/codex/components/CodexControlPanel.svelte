@@ -252,8 +252,8 @@ rotating, mirroring, and color-swapping pictographs.
   }
 
   .control-button {
-    width: 42px;
-    height: 42px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
@@ -317,8 +317,7 @@ rotating, mirroring, and color-swapping pictographs.
     }
 
     .control-button {
-      width: 38px;
-      height: 38px;
+      /* Touch target remains 48px for WCAG AAA */
       border-radius: 8px;
     }
 

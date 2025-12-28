@@ -44,7 +44,7 @@
     <div class="challenge-banner" transition:slide={{ duration: 300 }}>
       <div class="banner-content">
         <div class="banner-icon">
-          <i class="fas fa-trophy"></i>
+          <i class="fas fa-trophy" aria-hidden="true"></i>
         </div>
         <div class="banner-text">
           <h4>{activeChallengeState.activeChallenge.title}</h4>
@@ -63,7 +63,7 @@
         aria-label="Dismiss active challenge banner"
         onclick={() => activeChallengeState.clearActiveChallenge()}
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
   {/if}

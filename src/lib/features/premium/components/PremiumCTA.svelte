@@ -20,10 +20,10 @@
   </div>
   <button class="subscribe-button" onclick={onSubscribe} disabled={isLoading || disabled}>
     {#if isLoading}
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <span>Processing...</span>
     {:else}
-      <i class="fas fa-unlock"></i>
+      <i class="fas fa-unlock" aria-hidden="true"></i>
       <span>Unlock Unlimited Creation</span>
     {/if}
   </button>

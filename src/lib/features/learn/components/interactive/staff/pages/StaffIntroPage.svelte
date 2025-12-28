@@ -23,7 +23,7 @@ StaffIntroPage - Page 1: Staff Positions Introduction
 
   <div class="concept-intro staff-intro">
     <div class="concept-icon">
-      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
     </div>
     <p class="concept-summary">
       Staff positions show <strong>where your hands are</strong> and

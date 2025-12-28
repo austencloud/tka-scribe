@@ -47,7 +47,7 @@ MotionTypePage - Displays a single motion type with visualizer
       showMotionType={false}
     />
     <button class="cycle-button" onclick={onCycleExample}>
-      <i class="fa-solid fa-shuffle"></i>
+      <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
       Show Another Example
     </button>
   </div>
@@ -60,11 +60,11 @@ MotionTypePage - Displays a single motion type with visualizer
 
   <button class="next-button" onclick={onNext}>
     {#if isLastType}
-      <i class="fa-solid fa-graduation-cap"></i>
+      <i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>
       Take the Quiz
     {:else}
       Next: Type {typeNum + 1}
-      <i class="fa-solid fa-arrow-right"></i>
+      <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     {/if}
   </button>
 </div>

@@ -10,11 +10,11 @@ StaffPositionBadge - Badge showing Alpha/Beta/Gamma position type
 <div class="position-badge" style="--badge-color: {POSITION_COLORS[type]}">
 	<span class="badge-icon">
 		{#if type === "alpha"}
-			<i class="fa-solid fa-arrows-left-right"></i>
+			<i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i>
 		{:else if type === "beta"}
-			<i class="fa-solid fa-circle-dot"></i>
+			<i class="fa-solid fa-circle-dot" aria-hidden="true"></i>
 		{:else}
-			<i class="fa-solid fa-rotate-right"></i>
+			<i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
 		{/if}
 	</span>
 	<span class="badge-text">{type.charAt(0).toUpperCase() + type.slice(1)}</span>

@@ -28,7 +28,7 @@
             <img src={testimonial.photoUrl} alt={testimonial.author} />
           {:else}
             <div class="placeholder-avatar">
-              <i class="fas fa-user"></i>
+              <i class="fas fa-user" aria-hidden="true"></i>
             </div>
           {/if}
           <div class="author-info">

@@ -21,7 +21,7 @@
     // Add festivals after collecting data
   ];
 
-  const displayBadges = badges.length > 0 ? badges : defaultBadges;
+  const displayBadges = $derived(badges.length > 0 ? badges : defaultBadges);
 </script>
 
 <div class="trust-badges">
@@ -32,7 +32,7 @@
           {#if badge.logoUrl}
             <img src={badge.logoUrl} alt={badge.name} />
           {:else if badge.icon}
-            <i class="fas {badge.icon}"></i>
+            <i class="fas {badge.icon}" aria-hidden="true"></i>
           {/if}
           <span>{badge.name}</span>
         </a>
@@ -41,7 +41,7 @@
           {#if badge.logoUrl}
             <img src={badge.logoUrl} alt={badge.name} />
           {:else if badge.icon}
-            <i class="fas {badge.icon}"></i>
+            <i class="fas {badge.icon}" aria-hidden="true"></i>
           {/if}
           <span>{badge.name}</span>
         </div>

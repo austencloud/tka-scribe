@@ -52,7 +52,7 @@
       title={mode.description}
       aria-label={`${mode.label} mode: ${mode.description}`}
     >
-      <i class="fas {mode.icon}"></i>
+      <i class="fas {mode.icon}" aria-hidden="true"></i>
       {#if !compact}
         <div class="mode-text">
           <span class="mode-label">{mode.label}</span>

@@ -73,7 +73,7 @@
     <!-- Header -->
     <header class="panel-header">
       <div class="header-icon">
-        <i class="fas fa-th"></i>
+        <i class="fas fa-th" aria-hidden="true"></i>
       </div>
       <div class="header-content">
         <h3 class="panel-title">Grid Settings</h3>
@@ -84,7 +84,7 @@
         onclick={handleClose}
         aria-label="Close settings"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -105,7 +105,7 @@
             class:active={gridMode === GridMode.BOX}
             onclick={() => onModeChange(GridMode.BOX)}
           >
-            <i class="fas fa-square"></i>
+            <i class="fas fa-square" aria-hidden="true"></i>
             <span>Box</span>
           </button>
           <button
@@ -113,7 +113,7 @@
             class:active={gridMode === GridMode.DIAMOND}
             onclick={() => onModeChange(GridMode.DIAMOND)}
           >
-            <i class="fas fa-diamond"></i>
+            <i class="fas fa-diamond" aria-hidden="true"></i>
             <span>Diamond</span>
           </button>
         </div>
@@ -136,7 +136,7 @@
             disabled={gridScale <= 0.5}
             aria-label="Decrease grid size"
           >
-            <i class="fas fa-minus"></i>
+            <i class="fas fa-minus" aria-hidden="true"></i>
           </button>
           <span class="scale-value">{Math.round(gridScale * 100)}%</span>
           <button
@@ -145,7 +145,7 @@
             disabled={gridScale >= 1.5}
             aria-label="Increase grid size"
           >
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-plus" aria-hidden="true"></i>
           </button>
           {#if gridScale !== 1.0}
             <button class="reset-btn" onclick={resetScale}>Reset</button>
@@ -164,7 +164,7 @@
             onclick={() => onPropsVisibilityChange?.(!propsVisible)}
             aria-labelledby="prop-display-label"
           >
-            <i class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}"></i>
+            <i class="fas {propsVisible ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
             <span>{propsVisible ? "Props Visible" : "Props Hidden"}</span>
           </button>
         </div>
@@ -179,7 +179,7 @@
             onclick={onSwitchCamera}
             aria-label="Switch camera"
           >
-            <i class="fas fa-sync-alt"></i>
+            <i class="fas fa-sync-alt" aria-hidden="true"></i>
             <span>Switch Camera</span>
           </button>
         </div>
@@ -277,8 +277,8 @@
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -331,8 +331,8 @@
     }
 
     .close-btn {
-      width: 40px;
-      height: 40px;
+      width: 48px; /* WCAG AAA touch target */
+      height: 48px;
     }
 
     .grid-sheet-body {
@@ -417,8 +417,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
@@ -485,8 +485,8 @@
     }
 
     .scale-btn {
-      width: 44px;
-      height: 44px;
+      width: 48px; /* WCAG AAA touch target */
+      height: 48px;
       font-size: 1rem;
     }
 

@@ -53,8 +53,8 @@ Supports:
   let currentPoint = $state<Point | null>(null);
   let currentBox = $state<BoundingBox | null>(null);
 
-  // Annotation state
-  let annotations = $state<PropAnnotation[]>([...existingAnnotations]);
+  // Annotation state - initialized empty, synced from existingAnnotations via $effect below
+  let annotations = $state<PropAnnotation[]>([]);
   let selectedAnnotationId = $state<string | null>(null);
   let pendingHand = $state<PropHand>("left"); // Default hand for new annotations
 
@@ -484,7 +484,7 @@ Supports:
       </span>
       {#if selectedAnnotationId}
         <button class="btn-delete" onclick={deleteSelectedAnnotation}>
-          <i class="fa fa-trash"></i> Delete
+          <i class="fa fa-trash" aria-hidden="true"></i> Delete
         </button>
       {/if}
     </div>

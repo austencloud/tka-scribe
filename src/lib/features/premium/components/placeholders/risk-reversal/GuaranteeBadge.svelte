@@ -10,7 +10,7 @@
 
 <div class="guarantee-badge">
   <div class="badge-icon">
-    <i class="fas fa-shield-check"></i>
+    <i class="fas fa-shield-check" aria-hidden="true"></i>
   </div>
   <div class="badge-content">
     <div class="badge-title">{days}-Day Money-Back Guarantee</div>

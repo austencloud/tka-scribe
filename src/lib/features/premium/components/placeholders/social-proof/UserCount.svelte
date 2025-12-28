@@ -18,7 +18,7 @@
 
 <div class="user-count">
   <div class="count-badge">
-    <i class="fas fa-users"></i>
+    <i class="fas fa-users" aria-hidden="true"></i>
     <span class="count">{formatCount(totalUsers)}</span>
   </div>
   <p class="tagline">flow artists creating with TKA</p>

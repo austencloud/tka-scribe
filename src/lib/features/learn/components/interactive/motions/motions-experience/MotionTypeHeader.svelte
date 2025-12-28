@@ -9,7 +9,7 @@ MotionTypeHeader - Type intro with icon and description
 
 <div class="type-intro" style="--type-color: {info.color}">
   <div class="type-icon">
-    <i class="fa-solid {info.icon}"></i>
+    <i class="fa-solid {info.icon}" aria-hidden="true"></i>
   </div>
   <p class="type-description">{info.description}</p>
 </div>

@@ -102,13 +102,13 @@
   >
     {#if mode === TrainMode.SETUP}
       {#if !isCameraReady}
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       {:else}
-        <i class="fas fa-play"></i>
+        <i class="fas fa-play" aria-hidden="true"></i>
       {/if}
       <span class="btn-label">Play</span>
     {:else if mode === TrainMode.PERFORMING}
-      <i class="fas fa-stop"></i>
+      <i class="fas fa-stop" aria-hidden="true"></i>
       <span class="btn-label">Stop</span>
     {/if}
   </button>
@@ -119,7 +119,7 @@
     onclick={handleMode}
     aria-label="Change practice mode: {modeLabel()}"
   >
-    <i class="fas {modeIcon()}"></i>
+    <i class="fas {modeIcon()}" aria-hidden="true"></i>
     <span class="btn-label">{modeLabel()}</span>
   </button>
 
@@ -130,7 +130,7 @@
     onclick={handleSequence}
     aria-label={hasSequence ? "Change sequence" : "Select sequence"}
   >
-    <i class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}"></i>
+    <i class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}" aria-hidden="true"></i>
     <span class="btn-label">Seq</span>
   </button>
 
@@ -140,7 +140,7 @@
     onclick={handleSettings}
     aria-label="Mode settings"
   >
-    <i class="fas fa-cog"></i>
+    <i class="fas fa-cog" aria-hidden="true"></i>
     <span class="btn-label">Set</span>
   </button>
 </div>

@@ -45,7 +45,7 @@ MotionsIntroPage - Introduction to hand motions
 
   <button class="next-button" onclick={onNext}>
     Learn Type 1: Dual-Shift
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

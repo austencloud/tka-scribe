@@ -22,7 +22,7 @@
   <div class="developer-photo">
     <img src={photoUrl} alt="Developer" onerror={handleImageError} />
     <div class="photo-placeholder">
-      <i class="fas fa-user"></i>
+      <i class="fas fa-user" aria-hidden="true"></i>
     </div>
   </div>
   <h1>{title}</h1>

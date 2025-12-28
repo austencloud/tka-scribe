@@ -25,7 +25,6 @@ StaffGridPoint - Single grid point with label and interactivity
 	}
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions, a11y_no_noninteractive_tabindex -->
 <g
 	class="grid-point"
 	class:clickable={interactive}
@@ -33,7 +32,7 @@ StaffGridPoint - Single grid point with label and interactivity
 	role={interactive ? "button" : "img"}
 	tabindex={interactive ? 0 : -1}
 	aria-label={`Position ${position}`}
-	onkeydown={handleKeydown}
+	onkeydown={interactive ? handleKeydown : undefined}
 >
 	<!-- Base point -->
 	<circle cx={point.x} cy={point.y} r="4" fill="rgba(255, 255, 255, 0.3)" class="outer-point" />

@@ -18,10 +18,10 @@ WordQuizFeedback - Feedback display with explanation
 >
   <div class="feedback-header">
     {#if answerState === "correct"}
-      <i class="fa-solid fa-check-circle"></i>
+      <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
       <span>Correct!</span>
     {:else}
-      <i class="fa-solid fa-times-circle"></i>
+      <i class="fa-solid fa-times-circle" aria-hidden="true"></i>
       <span>Not quite!</span>
     {/if}
   </div>

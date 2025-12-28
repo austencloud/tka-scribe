@@ -63,6 +63,7 @@
   onkeydown={handleKeyDown}
   role="button"
   tabindex="0"
+  aria-label="Select sequence {sequence.word || sequence.name}"
 >
   <!-- Header with position and remove button -->
   <div class="thumbnail-header">
@@ -203,7 +204,7 @@
 
   .beats-count {
     color: var(--text-secondary);
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px);
     text-align: center;
   }
 
@@ -221,7 +222,7 @@
     }
 
     .position-number {
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px);
       padding: 1px 4px;
       min-width: 16px;
     }
@@ -229,15 +230,15 @@
     .remove-button {
       width: 16px;
       height: 16px;
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px);
     }
 
     .sequence-name {
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px);
     }
 
     .beats-count {
-      font-size: 9px;
+      font-size: var(--font-size-compact, 12px);
     }
   }
 
@@ -256,7 +257,7 @@
     }
 
     .position-number {
-      font-size: 9px;
+      font-size: var(--font-size-compact, 12px);
       padding: 1px 3px;
       min-width: 14px;
     }
@@ -264,16 +265,16 @@
     .remove-button {
       width: 14px;
       height: 14px;
-      font-size: 9px;
+      font-size: var(--font-size-compact, 12px);
     }
 
     .sequence-name {
-      font-size: 9px;
+      font-size: var(--font-size-compact, 12px);
       margin-bottom: 1px;
     }
 
     .beats-count {
-      font-size: 8px;
+      font-size: var(--font-size-compact, 12px);
     }
   }
 </style>

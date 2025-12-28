@@ -88,14 +88,14 @@
     <!-- Header -->
     <header class="panel-header">
       <div class="header-icon">
-        <i class="fas fa-brain"></i>
+        <i class="fas fa-brain" aria-hidden="true"></i>
       </div>
       <div class="header-content">
         <h3 class="panel-title">Practice Mode</h3>
         <p class="panel-subtitle">Choose how you want to practice</p>
       </div>
       <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -109,14 +109,14 @@
           style="--mode-color: {mode.color}"
         >
           <div class="mode-icon">
-            <i class="fas {mode.icon}"></i>
+            <i class="fas {mode.icon}" aria-hidden="true"></i>
           </div>
           <div class="mode-content">
             <span class="mode-label">{mode.label}</span>
             <span class="mode-desc">{mode.description}</span>
           </div>
           {#if currentMode === mode.value}
-            <i class="fas fa-check check-icon"></i>
+            <i class="fas fa-check check-icon" aria-hidden="true"></i>
           {/if}
         </button>
       {/each}
@@ -208,8 +208,8 @@
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -27,7 +27,7 @@ ProspinPage - Page 3: Prospin rotation concept
 
   <div class="concept-intro prospin-intro">
     <div class="concept-icon">
-      <i class="fa-solid fa-sync-alt"></i>
+      <i class="fa-solid fa-sync-alt" aria-hidden="true"></i>
     </div>
     <p class="concept-summary">
       The prop rotates in the <strong>same direction</strong> as the handpath
@@ -48,7 +48,7 @@ ProspinPage - Page 3: Prospin rotation concept
       {currentExample.description}
     </div>
     <button class="cycle-button" onclick={cycleExample}>
-      <i class="fa-solid fa-play"></i>
+      <i class="fa-solid fa-play" aria-hidden="true"></i>
       Show Motion Step
     </button>
   </div>
@@ -70,12 +70,12 @@ ProspinPage - Page 3: Prospin rotation concept
       <span class="formula-label">Start</span>
       <span class="formula-value">Thumb In</span>
     </div>
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     <div class="formula-item prospin-item">
       <span class="formula-label">Prospin</span>
-      <i class="fa-solid fa-sync-alt"></i>
+      <i class="fa-solid fa-sync-alt" aria-hidden="true"></i>
     </div>
-    <i class="fa-solid fa-arrow-right"></i>
+    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
     <div class="formula-item">
       <span class="formula-label">End</span>
       <span class="formula-value">Thumb In</span>

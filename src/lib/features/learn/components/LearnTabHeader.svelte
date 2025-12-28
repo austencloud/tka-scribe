@@ -56,12 +56,14 @@ Features:
   <div class="tab-nav" role="tablist" aria-label="Learn module navigation">
     {#each tabs as tab (tab.id)}
       <button
+        id="tab-{tab.id}"
         class="tab-button"
         class:active={activeTab === tab.id}
         onclick={() => handleTabClick(tab.id)}
         role="tab"
         aria-selected={activeTab === tab.id}
         aria-controls="{tab.id}-panel"
+        tabindex={activeTab === tab.id ? 0 : -1}
         type="button"
       >
         <span class="tab-icon">{tab.icon}</span>

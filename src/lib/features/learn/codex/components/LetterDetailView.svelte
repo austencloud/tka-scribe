@@ -85,7 +85,7 @@ Shows all pictographs for a selected letter with:
   <!-- Header with back button -->
   <div class="detail-header">
     <button class="back-button" onclick={onBack} aria-label="Back to codex">
-      <i class="fas fa-arrow-left"></i>
+      <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
     <div class="letter-title">
       <h2>{explanation.title}</h2>
@@ -111,11 +111,13 @@ Shows all pictographs for a selected letter with:
             class:has-eight={pictographs.length === 8}
           >
             {#each pictographs as pictograph (pictograph.id)}
-              <!-- svelte-ignore a11y_click_events_have_key_events -->
-              <!-- svelte-ignore a11y_no_static_element_interactions -->
               <div
                 class="pictograph-item"
                 onclick={() => handlePictographClick(pictograph)}
+                onkeydown={(e) => (e.key === "Enter" || e.key === " ") && handlePictographClick(pictograph)}
+                role="button"
+                tabindex="0"
+                aria-label="View pictograph details"
               >
                 <Pictograph pictographData={pictograph} />
               </div>
@@ -291,8 +293,8 @@ Shows all pictographs for a selected letter with:
     }
 
     .back-button {
-      width: 36px;
-      height: 36px;
+      width: var(--min-touch-target); /* Keep 48px on mobile */
+      height: var(--min-touch-target);
     }
 
     .letter-title h2 {

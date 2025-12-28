@@ -38,7 +38,7 @@ VTGIntroPage - Introduction page explaining VTG fundamentals
 
 	<button class="next-button" onclick={onNext}>
 		Learn SS: Split-Same
-		<i class="fa-solid fa-arrow-right"></i>
+		<i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
 	</button>
 </div>
 

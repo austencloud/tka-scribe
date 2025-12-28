@@ -83,7 +83,7 @@
   <div class="prompt-card">
     <!-- Icon -->
     <div class="prompt-icon">
-      <i class="fas fa-dumbbell"></i>
+      <i class="fas fa-dumbbell" aria-hidden="true"></i>
     </div>
 
     <!-- Title -->
@@ -96,7 +96,7 @@
     {#if recentSequences.length > 0}
       <div class="recent-section" in:fly={{ y: 10, duration: 200, delay: 100 }}>
         <div class="recent-header">
-          <i class="fas fa-history"></i>
+          <i class="fas fa-history" aria-hidden="true"></i>
           <span>Recent</span>
         </div>
         <div class="recent-grid">
@@ -129,7 +129,7 @@
         delay: recentSequences.length > 0 ? 300 : 100,
       }}
     >
-      <i class="fas fa-folder-open"></i>
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
       <span>Browse All Sequences</span>
     </button>
   </div>

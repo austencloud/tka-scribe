@@ -10,7 +10,7 @@
 </script>
 
 <div class="banner">
-  <i class="fas fa-flask"></i>
+  <i class="fas fa-flask" aria-hidden="true"></i>
   <p>{message}</p>
 </div>
 

@@ -74,7 +74,7 @@
     <!-- Header -->
     <header class="setup-header">
       <div class="icon-container">
-        <i class="fas fa-dumbbell"></i>
+        <i class="fas fa-dumbbell" aria-hidden="true"></i>
       </div>
       <h1>Train Mode</h1>
       <p>Practice sequences with real-time hand tracking feedback</p>
@@ -84,22 +84,22 @@
     <div class="content">
       <div class="feature-list">
         <div class="feature">
-          <i class="fas fa-video"></i>
+          <i class="fas fa-video" aria-hidden="true"></i>
           <span>Live camera tracking</span>
         </div>
         <div class="feature">
-          <i class="fas fa-hand-paper"></i>
+          <i class="fas fa-hand-paper" aria-hidden="true"></i>
           <span>Hand position detection</span>
         </div>
         <div class="feature">
-          <i class="fas fa-chart-line"></i>
+          <i class="fas fa-chart-line" aria-hidden="true"></i>
           <span>Performance scoring</span>
         </div>
       </div>
 
       <!-- Call to Action -->
       <button class="select-sequence-button" onclick={openBrowser}>
-        <i class="fas fa-th-list"></i>
+        <i class="fas fa-th-list" aria-hidden="true"></i>
         <span>Select Sequence</span>
       </button>
     </div>

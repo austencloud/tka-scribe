@@ -33,7 +33,7 @@
     <div class="row">
       <div class="feature-col">
         {#if feature.icon}
-          <i class="fas {feature.icon}"></i>
+          <i class="fas {feature.icon}" aria-hidden="true"></i>
         {/if}
         <span>{feature.name}</span>
       </div>

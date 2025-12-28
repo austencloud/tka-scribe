@@ -148,11 +148,11 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
     <div class="position-badge" style="--badge-color: {POSITION_COLORS[type]}">
       <span class="badge-icon">
         {#if type === "alpha"}
-          <i class="fa-solid fa-arrows-left-right"></i>
+          <i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i>
         {:else if type === "beta"}
-          <i class="fa-solid fa-circle-dot"></i>
+          <i class="fa-solid fa-circle-dot" aria-hidden="true"></i>
         {:else}
-          <i class="fa-solid fa-rotate-right"></i>
+          <i class="fa-solid fa-rotate-right" aria-hidden="true"></i>
         {/if}
       </span>
       <span class="badge-text"
@@ -195,17 +195,16 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
       {@const isRightHand = key === rightHand}
       {@const isBothHands = isLeftHand && isRightHand}
 
-      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
       <g
         class="grid-point"
         class:clickable={interactive}
-        onclick={() => handlePointClick(key as HandPosition)}
-        onkeydown={(e) =>
+        onclick={interactive ? () => handlePointClick(key as HandPosition) : undefined}
+        onkeydown={interactive ? (e) =>
           (e.key === "Enter" || e.key === " ") &&
-          handlePointClick(key as HandPosition)}
-        role={interactive ? "button" : "img"}
-        tabindex={interactive ? 0 : -1}
-        aria-label={point.label}
+          handlePointClick(key as HandPosition) : undefined}
+        role={interactive ? "button" : undefined}
+        tabindex={interactive ? 0 : undefined}
+        aria-label={interactive ? point.label : undefined}
       >
         <!-- Hit area -->
         {#if interactive}

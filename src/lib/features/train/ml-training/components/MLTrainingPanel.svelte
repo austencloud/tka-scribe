@@ -199,7 +199,7 @@ Mobile-first design:
           onclick={closeSessionDetail}
           aria-label="Close"
         >
-          <i class="fa fa-times"></i>
+          <i class="fa fa-times" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -227,7 +227,7 @@ Mobile-first design:
           </div>
         {:else}
           <div class="no-preview">
-            <i class="fa fa-image"></i>
+            <i class="fa fa-image" aria-hidden="true"></i>
             <span>No frames available</span>
           </div>
         {/if}
@@ -236,21 +236,21 @@ Mobile-first design:
       <!-- Stats -->
       <div class="detail-stats">
         <div class="stat-card">
-          <i class="fa fa-image"></i>
+          <i class="fa fa-image" aria-hidden="true"></i>
           <div class="stat-info">
             <span class="stat-value">{selectedSession.frameCount}</span>
             <span class="stat-label">Frames</span>
           </div>
         </div>
         <div class="stat-card">
-          <i class="fa fa-clock-o"></i>
+          <i class="fa fa-clock-o" aria-hidden="true"></i>
           <div class="stat-info">
             <span class="stat-value">{selectedSession.fps}</span>
             <span class="stat-label">FPS</span>
           </div>
         </div>
         <div class="stat-card">
-          <i class="fa fa-expand"></i>
+          <i class="fa fa-expand" aria-hidden="true"></i>
           <div class="stat-info">
             <span class="stat-value"
               >{selectedSession.resolution.width}×{selectedSession.resolution
@@ -267,7 +267,7 @@ Mobile-first design:
           class="btn-primary"
           onclick={() => handleStartLabeling(selectedSession!)}
         >
-          <i class="fa fa-tag"></i>
+          <i class="fa fa-tag" aria-hidden="true"></i>
           Start Labeling
         </button>
         <button
@@ -275,7 +275,7 @@ Mobile-first design:
           onclick={() => handleExport(selectedSession!)}
           disabled={isExporting}
         >
-          <i class="fa {isExporting ? 'fa-spinner fa-spin' : 'fa-download'}"
+          <i class="fa {isExporting ? 'fa-spinner fa-spin' : 'fa-download'}" aria-hidden="true"
           ></i>
           {isExporting ? "Exporting..." : "Export Dataset"}
         </button>
@@ -339,8 +339,8 @@ Mobile-first design:
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

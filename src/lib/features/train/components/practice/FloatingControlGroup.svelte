@@ -126,7 +126,7 @@
     onclick={handleSettings}
     aria-label="Mode settings"
   >
-    <i class="fas fa-cog"></i>
+    <i class="fas fa-cog" aria-hidden="true"></i>
   </button>
 
   <!-- Mode Button -->
@@ -135,7 +135,7 @@
     onclick={handleMode}
     aria-label="Change practice mode: {modeLabel()}"
   >
-    <i class="fas {modeIcon()}"></i>
+    <i class="fas {modeIcon()}" aria-hidden="true"></i>
     <span class="btn-label">{modeLabel()}</span>
   </button>
 
@@ -145,7 +145,7 @@
     onclick={handleView}
     aria-label="Change view: {viewLabel()}"
   >
-    <i class="fas {viewIcon()}"></i>
+    <i class="fas {viewIcon()}" aria-hidden="true"></i>
     <span class="btn-label">{viewLabel()}</span>
   </button>
 
@@ -156,7 +156,7 @@
     onclick={handleSequence}
     aria-label={hasSequence ? "Change sequence" : "Select sequence"}
   >
-    <i class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}"></i>
+    <i class="fas {hasSequence ? 'fa-exchange-alt' : 'fa-folder-open'}" aria-hidden="true"></i>
   </button>
 </div>
 

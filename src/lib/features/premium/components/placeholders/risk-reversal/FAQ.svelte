@@ -45,11 +45,15 @@
     }
   ];
 
-  const displayItems = items.length > 0 ? items : defaultFAQs;
+  const displayItems = $derived(items.length > 0 ? items : defaultFAQs);
 
-  let openItems = $state<Set<string>>(
-    defaultExpanded ? new Set(displayItems.map((i) => i.id)) : new Set()
-  );
+  let openItems = $state<Set<string>>(new Set());
+
+  // Sync open items when defaultExpanded or items change
+  $effect(() => {
+    const currentItems = items.length > 0 ? items : defaultFAQs;
+    openItems = defaultExpanded ? new Set(currentItems.map((i) => i.id)) : new Set();
+  });
 
   function toggle(id: string) {
     const newOpen = new Set(openItems);
@@ -69,7 +73,7 @@
       <div class="faq-item">
         <button class="faq-question" onclick={() => toggle(item.id)}>
           <span>{item.question}</span>
-          <i class="fas fa-chevron-{openItems.has(item.id) ? 'up' : 'down'}"></i>
+          <i class="fas fa-chevron-{openItems.has(item.id) ? 'up' : 'down'}" aria-hidden="true"></i>
         </button>
         {#if openItems.has(item.id)}
           <div class="faq-answer">

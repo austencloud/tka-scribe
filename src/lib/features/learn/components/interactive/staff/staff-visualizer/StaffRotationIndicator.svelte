@@ -8,7 +8,7 @@ StaffRotationIndicator - Shows prospin/antispin rotation type
 </script>
 
 <div class="rotation-indicator" style="--rotation-color: {ROTATION_COLORS[rotationType]}">
-	<i class="fa-solid {rotationType === 'prospin' ? 'fa-sync-alt' : 'fa-retweet'}"></i>
+	<i class="fa-solid {rotationType === 'prospin' ? 'fa-sync-alt' : 'fa-retweet'}" aria-hidden="true"></i>
 	<span>{rotationType === "prospin" ? "Prospin" : "Antispin"}</span>
 </div>
 

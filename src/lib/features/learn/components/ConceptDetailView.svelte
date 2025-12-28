@@ -28,9 +28,23 @@ ConceptDetailView - Direct view of concept content
     TYPES.IConceptProgressTracker
   );
 
-  let progress = $state<ConceptProgress>(
-    conceptProgressService.getConceptProgress(concept.id)
-  );
+  let progress = $state<ConceptProgress>({
+    conceptId: "",
+    status: "locked",
+    percentComplete: 0,
+    correctAnswers: 0,
+    incorrectAnswers: 0,
+    totalAttempts: 0,
+    accuracy: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    timeSpentSeconds: 0
+  });
+
+  // Sync progress when concept changes
+  $effect(() => {
+    progress = conceptProgressService.getConceptProgress(concept.id);
+  });
 
   // Reference to the current experience component for back navigation
   let experienceComponent: { handleBack?: () => void } | null = $state(null);

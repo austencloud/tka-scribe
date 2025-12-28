@@ -12,7 +12,7 @@ MotionKeyPoint - Key point display with lightbulb icon
 </script>
 
 <div class="key-point" style="--type-color: {color}">
-  <i class="fa-solid fa-lightbulb"></i>
+  <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
   <span>{text}</span>
 </div>
 

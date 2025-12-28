@@ -17,7 +17,7 @@ FundamentalMotionCard - Displays a fundamental motion type (shift/dash/static)
 
 <div class="fundamental-card {type}">
   <div class="motion-icon">
-    <i class="fa-solid {icon}"></i>
+    <i class="fa-solid {icon}" aria-hidden="true"></i>
   </div>
   <h4>{title}</h4>
   <p>{@html description}</p>
