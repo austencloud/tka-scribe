@@ -107,12 +107,6 @@ export class CompositeVideoRenderer implements ICompositeVideoRenderer {
     if (!ctx) throw new Error('Failed to get 2D context');
 
     ctx.drawImage(renderedGrid, 0, 0);
-
-    console.log('[CompositeVideoRenderer] Grid cached:', {
-      width: this.cachedGridCanvas.width,
-      height: this.cachedGridCanvas.height,
-      beatCount: this.sequence.beats.length,
-    });
   }
 
   renderCompositeFrame(

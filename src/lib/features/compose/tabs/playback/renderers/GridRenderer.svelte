@@ -85,7 +85,7 @@
           <!-- Filled Cell -->
           <div class="cell-header">
             <div class="rotation-badge">
-              <i class="fas fa-rotate"></i>
+              <i class="fas fa-rotate" aria-hidden="true"></i>
               {rotation}°
             </div>
             <button
@@ -96,7 +96,7 @@
               }}
               aria-label="Remove sequence"
             >
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
 
@@ -105,7 +105,7 @@
               class="sequence-visual"
               style="transform: rotate({rotation}deg);"
             >
-              <i class="fas fa-person-walking"></i>
+              <i class="fas fa-person-walking" aria-hidden="true"></i>
             </div>
             <div class="sequence-name">{sequence.word || "Untitled"}</div>
             <div class="sequence-beats">
@@ -117,7 +117,7 @@
             class="change-cell-btn"
             onclick={() => onSelectCell(pos.index)}
           >
-            <i class="fas fa-exchange-alt"></i>
+            <i class="fas fa-exchange-alt" aria-hidden="true"></i>
             Change
           </button>
         {:else}
@@ -127,7 +127,7 @@
             onclick={() => onSelectCell(pos.index)}
           >
             <div class="empty-icon">
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
             </div>
             <div class="empty-label">{pos.label}</div>
             <div class="empty-rotation">{pos.rotation}° rotation</div>

@@ -25,10 +25,10 @@
       onclick={onShowHelp}
       aria-label="Show help and shortcuts"
     >
-      <i class="fas fa-circle-info"></i>
+      <i class="fas fa-circle-info" aria-hidden="true"></i>
     </button>
     <button class="mobile-close-btn" onclick={onClose} aria-label="Close panel">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 {:else}
@@ -39,11 +39,11 @@
       onclick={onShowHelp}
       aria-label="Show help and shortcuts"
     >
-      <i class="fas fa-circle-info"></i>
+      <i class="fas fa-circle-info" aria-hidden="true"></i>
     </button>
     <span class="header-title">Animation Viewer</span>
     <button class="header-close-btn" onclick={onClose} aria-label="Close panel">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </header>
 {/if}

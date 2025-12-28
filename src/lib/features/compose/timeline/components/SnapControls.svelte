@@ -105,7 +105,7 @@
     aria-label="Toggle snapping"
     aria-pressed={snapEnabled}
   >
-    <i class="fa-solid fa-magnet"></i>
+    <i class="fa-solid fa-magnet" aria-hidden="true"></i>
   </button>
 
   <!-- Snap Type Chips -->
@@ -119,7 +119,7 @@
         title={`Snap to ${snapType.label}`}
         aria-pressed={snapType.active}
       >
-        <i class="fa-solid {snapType.icon}"></i>
+        <i class="fa-solid {snapType.icon}" aria-hidden="true"></i>
         <span class="chip-label">{snapType.label}</span>
       </button>
     {/each}
@@ -150,7 +150,7 @@
     title="More snap options"
     aria-label="More snap options"
   >
-    <i class="fa-solid fa-sliders"></i>
+    <i class="fa-solid fa-sliders" aria-hidden="true"></i>
   </button>
 </div>
 
@@ -166,7 +166,7 @@
     <div class="sheet-header">
       <h2 id="snap-settings-title">Snap Settings</h2>
       <button class="close-btn" onclick={() => (showAdvancedSheet = false)} aria-label="Close">
-        <i class="fa-solid fa-xmark"></i>
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -178,7 +178,7 @@
         onclick={toggleMaster}
       >
         <div class="setting-icon">
-          <i class="fa-solid fa-magnet"></i>
+          <i class="fa-solid fa-magnet" aria-hidden="true"></i>
         </div>
         <div class="setting-info">
           <span class="setting-name">Snapping</span>
@@ -202,7 +202,7 @@
             disabled={!snapEnabled}
             onclick={() => toggleSnapType(snapType.key)}
           >
-            <i class="fa-solid {snapType.icon}"></i>
+            <i class="fa-solid {snapType.icon}" aria-hidden="true"></i>
             <span>{snapType.label}</span>
           </button>
         {/each}
@@ -242,8 +242,8 @@
 
   /* Master Toggle */
   .master-toggle {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 8px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -295,7 +295,7 @@
   }
 
   .snap-chip i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .snap-chip:hover:not(:disabled) {
@@ -328,7 +328,7 @@
   }
 
   .grid-label {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
   }
 
@@ -343,7 +343,7 @@
     border: none;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -361,8 +361,8 @@
 
   /* More Options Button */
   .more-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 6px;
     border: none;
     background: transparent;
@@ -414,8 +414,8 @@
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

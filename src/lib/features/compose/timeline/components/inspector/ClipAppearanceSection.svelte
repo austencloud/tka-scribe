@@ -35,7 +35,7 @@
 
 <section class="section">
   <div class="section-header">
-    <i class="fa-solid fa-palette"></i>
+    <i class="fa-solid fa-palette" aria-hidden="true"></i>
     <span>Appearance</span>
   </div>
 
@@ -133,7 +133,7 @@
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -146,8 +146,8 @@
   }
 
   .color-swatch {
-    width: 28px;
-    height: 28px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 6px;
     border: 2px solid transparent;
     cursor: pointer;

@@ -72,7 +72,7 @@
       class="menu-item"
       onclick={() => handleAction(() => getState().duplicateClip(clipId))}
     >
-      <i class="fa-solid fa-copy"></i>
+      <i class="fa-solid fa-copy" aria-hidden="true"></i>
       <span>Duplicate</span>
       <kbd>Ctrl+D</kbd>
     </button>
@@ -81,7 +81,7 @@
       class="menu-item danger"
       onclick={() => handleAction(() => getState().removeClip(clipId))}
     >
-      <i class="fa-solid fa-trash"></i>
+      <i class="fa-solid fa-trash" aria-hidden="true"></i>
       <span>Delete</span>
       <kbd>Del</kbd>
     </button>
@@ -96,7 +96,7 @@
           getState().updateClip(clipId, { muted: !clip?.muted })
         )}
     >
-      <i class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}"
+      <i class="fa-solid {clip?.muted ? 'fa-volume-high' : 'fa-volume-xmark'}" aria-hidden="true"
       ></i>
       <span>{clip?.muted ? "Unmute" : "Mute"}</span>
       <kbd>M</kbd>
@@ -109,7 +109,7 @@
           getState().updateClip(clipId, { locked: !clip?.locked })
         )}
     >
-      <i class="fa-solid {clip?.locked ? 'fa-lock-open' : 'fa-lock'}"></i>
+      <i class="fa-solid {clip?.locked ? 'fa-lock-open' : 'fa-lock'}" aria-hidden="true"></i>
       <span>{clip?.locked ? "Unlock" : "Lock"}</span>
       <kbd>L</kbd>
     </button>
@@ -119,7 +119,7 @@
       onclick={() =>
         handleAction(() => getState().setClipLoop(clipId, !clip?.loop))}
     >
-      <i class="fa-solid fa-repeat"></i>
+      <i class="fa-solid fa-repeat" aria-hidden="true"></i>
       <span>{clip?.loop ? "Disable Loop" : "Enable Loop"}</span>
     </button>
 
@@ -128,9 +128,9 @@
     <!-- Speed presets -->
     <div class="submenu">
       <button class="menu-item">
-        <i class="fa-solid fa-gauge"></i>
+        <i class="fa-solid fa-gauge" aria-hidden="true"></i>
         <span>Speed</span>
-        <i class="fa-solid fa-chevron-right submenu-arrow"></i>
+        <i class="fa-solid fa-chevron-right submenu-arrow" aria-hidden="true"></i>
       </button>
       <div class="submenu-content">
         <button
@@ -193,7 +193,7 @@
       class="menu-item"
       onclick={() => handleAction(() => getState().openClipInspector(clipId))}
     >
-      <i class="fa-solid fa-sliders"></i>
+      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
       <span>Open Inspector</span>
     </button>
   </div>
@@ -253,7 +253,7 @@
   }
 
   .menu-item kbd {
-    font-size: 10px;
+    font-size: 12px;
     padding: 2px 4px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
@@ -271,7 +271,7 @@
   }
 
   .submenu-arrow {
-    font-size: 10px !important;
+    font-size: 12px !important;
   }
 
   .submenu-content {

@@ -146,7 +146,7 @@
           title="Close"
           aria-label="Close panel"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </header>
 
@@ -155,12 +155,12 @@
         <div class="preview-container">
           {#if cell.sequences.length > 0}
             <div class="preview-placeholder">
-              <i class="fas fa-film"></i>
+              <i class="fas fa-film" aria-hidden="true"></i>
               <span>{cell.sequences[0]?.name}</span>
             </div>
           {:else}
             <div class="preview-empty">
-              <i class="fas fa-plus-circle"></i>
+              <i class="fas fa-plus-circle" aria-hidden="true"></i>
               <span>No sequence</span>
             </div>
           {/if}
@@ -179,7 +179,7 @@
               title={option.label}
               aria-label={option.label}
             >
-              <i class="fas {option.icon}"></i>
+              <i class="fas {option.icon}" aria-hidden="true"></i>
               <span>{option.label}</span>
             </button>
           {/each}
@@ -198,7 +198,7 @@
               title={option.label}
               aria-label={option.label}
             >
-              <i class="fas {option.icon}"></i>
+              <i class="fas {option.icon}" aria-hidden="true"></i>
               <span>{option.label}</span>
             </button>
           {/each}
@@ -214,7 +214,7 @@
 
         {#if cell.sequences.length === 0}
           <button class="add-sequence-btn" onclick={handleBrowseSequences}>
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-plus" aria-hidden="true"></i>
             <span>Add Sequence</span>
           </button>
         {:else}
@@ -228,14 +228,14 @@
                   title="Remove"
                   aria-label="Remove {sequence.name}"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             {/each}
 
             {#if canAddMore}
               <button class="add-more-btn" onclick={handleBrowseSequences}>
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-plus" aria-hidden="true"></i>
                 <span>Add Another</span>
               </button>
             {/if}
@@ -256,8 +256,7 @@
                 title="{rotation}°"
                 aria-label="Rotate {rotation} degrees"
               >
-                <i
-                  class="fas fa-arrow-up"
+                <i class="fas fa-arrow-up" aria-hidden="true"
                   style:transform="rotate({rotation}deg)"
                 ></i>
                 <span>{rotation}°</span>
@@ -271,18 +270,18 @@
       <div class="panel-actions">
         {#if cell.sequences.length > 0}
           <button class="action-btn clear-btn" onclick={handleClearCell}>
-            <i class="fas fa-trash-alt"></i>
+            <i class="fas fa-trash-alt" aria-hidden="true"></i>
             Clear
           </button>
         {/if}
         <button class="action-btn swap-btn" onclick={handleBrowseSequences}>
-          <i class="fas fa-exchange-alt"></i>
+          <i class="fas fa-exchange-alt" aria-hidden="true"></i>
           Swap
         </button>
       </div>
     {:else}
       <div class="no-selection">
-        <i class="fas fa-mouse-pointer"></i>
+        <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
         <p>Select a cell to configure</p>
       </div>
     {/if}

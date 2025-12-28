@@ -7,15 +7,15 @@
 
 import { injectable } from "inversify";
 import type {
-  ITimelinePlaybackService,
+  ITimelinePlayer,
   ActiveClipInfo,
-} from "../contracts/ITimelinePlaybackService";
+} from "../contracts/ITimelinePlayer";
 import type { TimeSeconds, TimelineClip } from "../../domain/timeline-types";
 import { getClipEndTime } from "../../domain/timeline-types";
 import { getTimelineState } from "../../state/timeline-state.svelte";
 
 @injectable()
-export class TimelinePlaybackService implements ITimelinePlaybackService {
+export class TimelinePlayer implements ITimelinePlayer {
   private animationFrameId: number | null = null;
   private lastFrameTime: number = 0;
   private isRunning: boolean = false;
@@ -437,14 +437,14 @@ export class TimelinePlaybackService implements ITimelinePlaybackService {
 // Singleton Instance
 // ============================================================================
 
-let serviceInstance: TimelinePlaybackService | null = null;
+let serviceInstance: TimelinePlayer | null = null;
 
 /**
  * Get the singleton playback service instance
  */
-export function getTimelinePlaybackService(): TimelinePlaybackService {
+export function getTimelinePlayer(): TimelinePlayer {
   if (!serviceInstance) {
-    serviceInstance = new TimelinePlaybackService();
+    serviceInstance = new TimelinePlayer();
     serviceInstance.initialize();
   }
   return serviceInstance;

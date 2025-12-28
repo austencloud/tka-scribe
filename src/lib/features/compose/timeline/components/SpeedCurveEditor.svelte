@@ -267,11 +267,11 @@
 <div class="speed-curve-editor">
   <div class="editor-header">
     <div class="header-title">
-      <i class="fa-solid fa-bezier-curve"></i>
+      <i class="fa-solid fa-bezier-curve" aria-hidden="true"></i>
       <span>Speed Curves</span>
     </div>
     <button class="close-btn" onclick={onClose} aria-label="Close speed curve editor">
-      <i class="fa-solid fa-xmark"></i>
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -286,7 +286,7 @@
             class:selected={selectedPreset === preset.id}
             onclick={() => applyPreset(preset.id)}
           >
-            <i class="fa-solid {preset.icon}"></i>
+            <i class="fa-solid {preset.icon}" aria-hidden="true"></i>
             <span class="preset-name">{preset.name}</span>
             <span class="preset-desc">{preset.description}</span>
           </button>
@@ -327,7 +327,7 @@
 
     <!-- Info -->
     <div class="info-box">
-      <i class="fa-solid fa-info-circle"></i>
+      <i class="fa-solid fa-info-circle" aria-hidden="true"></i>
       <p>
         Speed curves allow the playback speed to change over the clip duration.
         Select a preset above to see how speed varies from start to end.
@@ -437,17 +437,17 @@
   }
 
   .preset-name {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     margin-bottom: 2px;
   }
 
   .preset-desc {
-    font-size: 9px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
     text-align: center;
-    line-height: 1.3;
+    line-height: 1.5;
   }
 
   .preview-section {
@@ -472,7 +472,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    font-size: 9px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.4));
   }
 
@@ -504,7 +504,7 @@
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     margin-top: 6px;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
   }
 
@@ -515,9 +515,9 @@
     background: rgba(74, 158, 255, 0.1);
     border: 1px solid rgba(74, 158, 255, 0.2);
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .info-box i {

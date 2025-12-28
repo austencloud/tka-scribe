@@ -19,7 +19,7 @@
     VideoRenderProgress,
     VideoRenderResult,
   } from "../../services/contracts/IVideoPreRenderer";
-  import { getVideoPlaybackService } from "../../services/implementations/VideoPlaybackService";
+  import { getVideoPlayer } from "../../services/implementations/VideoPlaybackService";
   import { getVideoGenerationCoordinator } from "../../services/implementations/VideoGenerationCoordinator";
   import VideoGenerationStatus from "../video-player/VideoGenerationStatus.svelte";
   import VideoReadyNotification from "../video-player/VideoReadyNotification.svelte";
@@ -53,7 +53,7 @@
   let videoElement: HTMLVideoElement | null = $state(null);
 
   // Services
-  const playbackService = getVideoPlaybackService();
+  const playbackService = getVideoPlayer();
   const generationCoordinator = getVideoGenerationCoordinator();
 
   // Check for cached video on mount
@@ -216,18 +216,12 @@
 
   // Handle video can play
   function handleCanPlay() {
-    console.log("📹 Video can play - ready for playback");
+    // Video is ready for playback
   }
 
   // Handle video loaded metadata
   function handleLoadedMetadata() {
-    if (videoElement) {
-      console.log("📹 Video metadata loaded:", {
-        duration: videoElement.duration,
-        videoWidth: videoElement.videoWidth,
-        videoHeight: videoElement.videoHeight,
-      });
-    }
+    // Video metadata is now available
   }
 </script>
 

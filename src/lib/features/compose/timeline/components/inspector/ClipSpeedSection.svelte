@@ -23,7 +23,7 @@
 
 <section class="section">
   <div class="section-header">
-    <i class="fa-solid fa-gauge"></i>
+    <i class="fa-solid fa-gauge" aria-hidden="true"></i>
     <span>Speed</span>
   </div>
 
@@ -108,7 +108,7 @@
     background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.9));
     text-align: center;
   }
@@ -133,7 +133,7 @@
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -151,7 +151,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
     cursor: pointer;
     transition: all 0.15s ease;

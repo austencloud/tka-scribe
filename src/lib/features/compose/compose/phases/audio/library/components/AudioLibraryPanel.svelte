@@ -168,7 +168,7 @@
   <div class="panel-header">
     <h2>Audio Library</h2>
     <button class="close-btn" onclick={onClose} aria-label="Close">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -178,42 +178,43 @@
       type="file"
       accept="audio/*"
       onchange={handleFileUpload}
-      hidden
+      aria-label="Upload audio file"
+      class="sr-only"
     />
-    <button class="upload-btn" onclick={openFilePicker} disabled={isUploading}>
+    <button class="upload-btn" onclick={openFilePicker} disabled={isUploading} aria-busy={isUploading}>
       {#if isUploading}
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {uploadProgress}
       {:else}
-        <i class="fas fa-upload"></i>
+        <i class="fas fa-upload" aria-hidden="true"></i>
         Upload New Audio
       {/if}
     </button>
   </div>
 
   {#if error}
-    <div class="error-message">
-      <i class="fas fa-exclamation-circle"></i>
+    <div class="error-message" role="alert" aria-live="assertive">
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       {error}
     </div>
   {/if}
 
   {#if downloadingTrackId}
-    <div class="download-progress">
-      <i class="fas fa-cloud-download-alt fa-spin"></i>
+    <div class="download-progress" role="status" aria-live="polite">
+      <i class="fas fa-cloud-download-alt fa-spin" aria-hidden="true"></i>
       {downloadProgress}
     </div>
   {/if}
 
   <div class="tracks-container">
     {#if isLoading}
-      <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i>
+      <div class="loading" role="status" aria-live="polite">
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         Loading your library...
       </div>
     {:else if tracks.length === 0}
       <div class="empty-state">
-        <i class="fas fa-music"></i>
+        <i class="fas fa-music" aria-hidden="true"></i>
         <p>Your library is empty</p>
         <p class="hint">Upload audio files to get started</p>
       </div>
@@ -231,9 +232,9 @@
           >
             <div class="track-icon">
               {#if downloadingTrackId === track.trackId}
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
               {:else}
-                <i class="fas fa-file-audio"></i>
+                <i class="fas fa-file-audio" aria-hidden="true"></i>
               {/if}
             </div>
             <div class="track-info">
@@ -247,22 +248,22 @@
             </div>
             {#if downloadingTrackId === track.trackId}
               <div class="status-badge downloading">
-                <i class="fas fa-cloud-download-alt"></i>
+                <i class="fas fa-cloud-download-alt" aria-hidden="true"></i>
                 Downloading...
               </div>
             {:else if track.isLocallyAvailable}
               <div class="status-badge local">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
                 Available
               </div>
             {:else if track.cloudUrl}
               <div class="status-badge cloud">
-                <i class="fas fa-cloud-download-alt"></i>
+                <i class="fas fa-cloud-download-alt" aria-hidden="true"></i>
                 Click to download
               </div>
             {:else}
               <div class="status-badge unavailable">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                 Unavailable
               </div>
             {/if}
@@ -300,8 +301,8 @@
   }
 
   .close-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -514,5 +515,17 @@
   .status-badge.unavailable {
     background: rgba(239, 68, 68, 0.15);
     color: rgba(248, 113, 113, 0.9);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

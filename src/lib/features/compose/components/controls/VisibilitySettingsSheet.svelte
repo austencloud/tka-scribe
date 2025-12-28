@@ -200,7 +200,7 @@
         aria-label="Close"
         type="button"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -360,8 +360,8 @@
   }
 
   .sheet-close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -415,9 +415,9 @@
   }
 
   .section-title {
-    font-size: 0.7rem;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -461,7 +461,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -549,7 +549,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;

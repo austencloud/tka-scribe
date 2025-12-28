@@ -60,7 +60,7 @@ async function extractAudioMetadata(file: File): Promise<{ duration: number }> {
 }
 
 @injectable()
-export class AudioLibraryService implements IAudioLibrary {
+export class AudioLibrary implements IAudioLibrary {
   private library: AudioTrackLocal[] = [];
   private libraryLoaded = false;
 

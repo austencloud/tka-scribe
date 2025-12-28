@@ -6,10 +6,10 @@
  */
 
 import { injectable } from "inversify";
-import type { IAnimationLoopService } from "../contracts/IAnimationLoopService";
+import type { IAnimationLoop } from "../contracts/IAnimationLoop";
 
 @injectable()
-export class AnimationLoopService implements IAnimationLoopService {
+export class AnimationLoop implements IAnimationLoop {
   private animationFrameId: number | null = null;
   private lastTimestamp: number | null = null;
   private speed: number = 1.0;

@@ -7,11 +7,11 @@
 
 import { injectable } from "inversify";
 import type {
-  ITimelineSnapService,
+  ITimelineSnapper,
   SnapResult,
   SnapPoint,
   SnapType,
-} from "../contracts/ITimelineSnapService";
+} from "../contracts/ITimelineSnapper";
 import type { TimeSeconds } from "../../domain/timeline-types";
 import {
   snapTimeValue,
@@ -22,7 +22,7 @@ import {
 import { getTimelineState } from "../../state/timeline-state.svelte";
 
 @injectable()
-export class TimelineSnapService implements ITimelineSnapService {
+export class TimelineSnapper implements ITimelineSnapper {
   private _activeSnapResult: SnapResult | null = null;
   private _draggingClipIds: string[] = [];
 
@@ -129,14 +129,14 @@ export class TimelineSnapService implements ITimelineSnapService {
 // Singleton Instance
 // ============================================================================
 
-let serviceInstance: TimelineSnapService | null = null;
+let serviceInstance: TimelineSnapper | null = null;
 
 /**
  * Get the singleton snap service instance
  */
-export function getTimelineSnapService(): TimelineSnapService {
+export function getTimelineSnapper(): TimelineSnapper {
   if (!serviceInstance) {
-    serviceInstance = new TimelineSnapService();
+    serviceInstance = new TimelineSnapper();
   }
   return serviceInstance;
 }

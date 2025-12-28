@@ -317,7 +317,6 @@
     />
   {/if}
 
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <div
     class="waveform-timeline"
     class:focused={isFocused}
@@ -333,7 +332,7 @@
 
     {#if !isReady}
       <div class="loading-overlay">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <span>Loading waveform...</span>
       </div>
     {/if}
@@ -349,7 +348,7 @@
           title={isPlaying ? "Pause (Space)" : "Play (Space)"}
           aria-label={isPlaying ? "Pause" : "Play"}
         >
-          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
         </button>
         <button
           class="control-btn"
@@ -358,7 +357,7 @@
           title="Stop"
           aria-label="Stop"
         >
-          <i class="fas fa-stop"></i>
+          <i class="fas fa-stop" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -381,7 +380,7 @@
           title="Zoom out"
           aria-label="Zoom out"
         >
-          <i class="fas fa-search-minus"></i>
+          <i class="fas fa-search-minus" aria-hidden="true"></i>
         </button>
         <input
           type="range"
@@ -403,7 +402,7 @@
           title="Zoom in"
           aria-label="Zoom in"
         >
-          <i class="fas fa-search-plus"></i>
+          <i class="fas fa-search-plus" aria-hidden="true"></i>
         </button>
         <button
           class="control-btn small"
@@ -412,7 +411,7 @@
           title="Reset zoom"
           aria-label="Reset zoom"
         >
-          <i class="fas fa-compress-arrows-alt"></i>
+          <i class="fas fa-compress-arrows-alt" aria-hidden="true"></i>
         </button>
       </div>
     </div>

@@ -24,30 +24,30 @@
 
 <section class="section">
   <div class="section-header">
-    <i class="fa-solid fa-bolt"></i>
+    <i class="fa-solid fa-bolt" aria-hidden="true"></i>
     <span>Actions</span>
   </div>
 
   <div class="action-buttons">
     <button class="action-btn" class:active={locked} onclick={onToggleLock}>
-      <i class="fa-solid {locked ? 'fa-lock' : 'fa-lock-open'}"></i>
+      <i class="fa-solid {locked ? 'fa-lock' : 'fa-lock-open'}" aria-hidden="true"></i>
       {locked ? "Unlock" : "Lock"}
     </button>
 
     <button class="action-btn" class:active={muted} onclick={onToggleMute}>
-      <i class="fa-solid {muted ? 'fa-volume-xmark' : 'fa-volume-high'}"></i>
+      <i class="fa-solid {muted ? 'fa-volume-xmark' : 'fa-volume-high'}" aria-hidden="true"></i>
       {muted ? "Unmute" : "Mute"}
     </button>
   </div>
 
   <div class="action-buttons">
     <button class="action-btn" onclick={onDuplicate}>
-      <i class="fa-solid fa-copy"></i>
+      <i class="fa-solid fa-copy" aria-hidden="true"></i>
       Duplicate
     </button>
 
     <button class="action-btn danger" onclick={onDelete}>
-      <i class="fa-solid fa-trash"></i>
+      <i class="fa-solid fa-trash" aria-hidden="true"></i>
       Delete
     </button>
   </div>
@@ -87,7 +87,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.15s ease;
@@ -116,6 +116,6 @@
   }
 
   .action-btn i {
-    font-size: 11px;
+    font-size: 12px;
   }
 </style>

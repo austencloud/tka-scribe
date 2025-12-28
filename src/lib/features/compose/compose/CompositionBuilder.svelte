@@ -16,7 +16,6 @@
    * - Workflow stepper: Canvas → Audio → Export
    */
 
-  import { onMount } from "svelte";
   import { getCompositionState } from "./state/composition-state.svelte";
   import type {
     WorkflowPhase,
@@ -120,9 +119,6 @@
     }
   }
 
-  onMount(() => {
-    console.log("🎨 CompositionBuilder mounted");
-  });
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -147,7 +143,7 @@
       <!-- Canvas Phase -->
       <div class="canvas-phase">
         <div class="canvas-column">
-          <div class="canvas-area" onclick={handleCanvasClick} onkeydown={(e) => e.key === 'Enter' && handleCanvasClick()} role="button" tabindex="0">
+          <div class="canvas-area" onclick={handleCanvasClick} onkeydown={(e) => e.key === 'Enter' && handleCanvasClick()} role="button" tabindex="0" aria-label="Composition canvas - click to exit fullscreen">
             <CompositionCanvas
               {composition}
               {isPlaying}

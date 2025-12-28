@@ -190,7 +190,7 @@
     <!-- Mobile Placeholder -->
     <div class="mobile-placeholder">
       <div class="placeholder-icon">
-        <i class="fas fa-desktop"></i>
+        <i class="fas fa-desktop" aria-hidden="true"></i>
       </div>
       <h3>Audio Timeline</h3>
       <p>The audio editor is optimized for desktop screens.</p>
@@ -219,6 +219,7 @@
             onkeydown={(e) => e.key === "Enter" && openFilePicker()}
             role="button"
             tabindex="0"
+            aria-label="Drop audio file here or click to browse"
           >
             <input
               bind:this={fileInput}
@@ -228,7 +229,7 @@
               hidden
             />
             <div class="drop-icon">
-              <i class="fas fa-music"></i>
+              <i class="fas fa-music" aria-hidden="true"></i>
             </div>
             <h3>Drop audio file here</h3>
             <p>or click to browse</p>
@@ -253,7 +254,7 @@
         <div class="timeline-container">
           <div class="audio-header">
             <div class="file-info">
-              <i class="fas fa-file-audio"></i>
+              <i class="fas fa-file-audio" aria-hidden="true"></i>
               <span class="file-name">{audioState.fileName}</span>
               <span class="duration">
                 {Math.floor(audioState.duration / 60)}:{String(
@@ -262,7 +263,7 @@
               </span>
             </div>
             <button class="clear-btn" onclick={onClearAudio}>
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
               Remove
             </button>
           </div>
@@ -282,7 +283,7 @@
             {#if audioState.isAnalyzing}
               <div class="analyzing-container">
                 <span class="analyzing">
-                  <i class="fas fa-spinner fa-spin"></i>
+                  <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                   Analyzing sections... {Math.round(bpmAnalysisProgress * 100)}%
                 </span>
                 <div class="progress-bar">
@@ -295,7 +296,7 @@
             {:else if bpmError}
               <div class="error-container">
                 <span class="error">
-                  <i class="fas fa-exclamation-triangle"></i>
+                  <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                   {bpmError}
                 </span>
                 <input
@@ -325,7 +326,7 @@
                 />
                 {#if bpmIsUncertain}
                   <span class="source uncertain">
-                    <i class="fas fa-question-circle"></i>
+                    <i class="fas fa-question-circle" aria-hidden="true"></i>
                     estimate - verify
                   </span>
                 {:else if audioState.manualBpm}

@@ -72,19 +72,9 @@
       // so x is the correct pixel position within the timeline's coordinate space
       const time = x / pixelsPerSecond;
 
-      console.log('[TrackLane] Drop calculation:', {
-        clientX: e.clientX,
-        rectLeft: rect.left,
-        x,
-        pixelsPerSecond,
-        calculatedTime: time,
-        viewportScrollX: getState().viewport.scrollX
-      });
-
       // If sequence needs full load, fetch it first
       let sequence = sequenceData;
       if (sequenceData._needsFullLoad) {
-        console.log('[TrackLane] Loading full sequence data for:', sequenceData.word || sequenceData.name);
         try {
           await loadFeatureModule("discover");
           const loader = tryResolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
@@ -102,7 +92,6 @@
       }
 
       getState().addClip(sequence, track.id, time);
-      console.log('[TrackLane] Added clip from drop:', sequence.word || sequence.name);
     } catch (err) {
       console.error("Failed to parse dropped sequence:", err);
     }
@@ -154,7 +143,7 @@
   <!-- Lock overlay -->
   {#if track.locked}
     <div class="lock-overlay">
-      <i class="fa-solid fa-lock"></i>
+      <i class="fa-solid fa-lock" aria-hidden="true"></i>
     </div>
   {/if}
 </div>

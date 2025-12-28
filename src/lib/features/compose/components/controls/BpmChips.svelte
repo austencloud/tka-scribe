@@ -148,7 +148,7 @@
           aria-label="Decrease BPM"
           type="button"
         >
-          <i class="fas fa-minus"></i>
+          <i class="fas fa-minus" aria-hidden="true"></i>
         </button>
 
         <button
@@ -169,7 +169,7 @@
           aria-label="Increase BPM"
           type="button"
         >
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -229,7 +229,7 @@
           aria-label="Decrease BPM"
           type="button"
         >
-          <i class="fas fa-minus"></i>
+          <i class="fas fa-minus" aria-hidden="true"></i>
         </button>
 
         <div class="bpm-display">
@@ -244,7 +244,7 @@
           aria-label="Increase BPM"
           type="button"
         >
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -548,8 +548,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
     border-radius: 50%;

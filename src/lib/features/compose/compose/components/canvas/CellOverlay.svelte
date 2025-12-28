@@ -46,7 +46,7 @@
       title="Configure cell"
       aria-label="Configure cell"
     >
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
 
     <button
@@ -55,7 +55,7 @@
       title="Toggle {cell.type === 'single' ? 'tunnel' : 'single'} mode"
       aria-label="Toggle cell type"
     >
-      <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}"
+      <i class="fas {cell.type === 'tunnel' ? 'fa-square' : 'fa-layer-group'}" aria-hidden="true"
       ></i>
     </button>
 
@@ -65,7 +65,7 @@
       title="Clear cell"
       aria-label="Clear cell"
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 {:else}
@@ -78,7 +78,7 @@
         title="Add sequence"
         aria-label="Add sequence to cell"
       >
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         <span>Configure</span>
       </button>
     </div>

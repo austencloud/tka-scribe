@@ -105,7 +105,7 @@ Features:
       />
     {:else}
       <div class="preview-placeholder">
-        <i class="fas {modeIcons[animation.mode]} placeholder-icon"></i>
+        <i class="fas {modeIcons[animation.mode]} placeholder-icon" aria-hidden="true"></i>
         <p class="placeholder-text">No preview available</p>
       </div>
     {/if}
@@ -116,7 +116,7 @@ Features:
     <h2 class="animation-name">{animation.name}</h2>
 
     <div class="mode-indicator">
-      <i class="fas {modeIcons[animation.mode]}"></i>
+      <i class="fas {modeIcons[animation.mode]}" aria-hidden="true"></i>
       <span>{modeNames[animation.mode]}</span>
     </div>
 
@@ -164,12 +164,12 @@ Features:
       class="action-btn action-btn-primary"
       onclick={() => handleAction("play")}
     >
-      <i class="fas fa-play"></i>
+      <i class="fas fa-play" aria-hidden="true"></i>
       <span>Play</span>
     </button>
 
     <button class="action-btn" onclick={() => handleAction("edit")}>
-      <i class="fas fa-edit"></i>
+      <i class="fas fa-edit" aria-hidden="true"></i>
       <span>Edit</span>
     </button>
 
@@ -181,8 +181,7 @@ Features:
         ? "Remove from favorites"
         : "Add to favorites"}
     >
-      <i
-        class="fas fa-heart"
+      <i class="fas fa-heart" aria-hidden="true"
         class:filled={animation.isFavorite}
         class:outlined={!animation.isFavorite}
       ></i>
@@ -193,7 +192,7 @@ Features:
       onclick={() => handleAction("duplicate")}
       aria-label="Duplicate animation"
     >
-      <i class="fas fa-copy"></i>
+      <i class="fas fa-copy" aria-hidden="true"></i>
     </button>
 
     <button
@@ -201,7 +200,7 @@ Features:
       onclick={() => handleAction("share")}
       aria-label="Share animation"
     >
-      <i class="fas fa-share-alt"></i>
+      <i class="fas fa-share-alt" aria-hidden="true"></i>
     </button>
 
     <button
@@ -209,7 +208,7 @@ Features:
       onclick={() => handleAction("delete")}
       aria-label="Delete animation"
     >
-      <i class="fas fa-trash"></i>
+      <i class="fas fa-trash" aria-hidden="true"></i>
     </button>
   </div>
 </div>

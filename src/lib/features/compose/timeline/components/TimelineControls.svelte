@@ -10,7 +10,7 @@
    */
 
   import { getTimelineState } from "../state/timeline-state.svelte";
-  import { getTimelinePlaybackService } from "../services/implementations/TimelinePlaybackService";
+  import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import SnapControls from "./SnapControls.svelte";
 
   interface Props {
@@ -25,7 +25,7 @@
   }
 
   function getPlayback() {
-    return getTimelinePlaybackService();
+    return getTimelinePlayer();
   }
 
   // Local reactive state for display values (updated via effects)
@@ -97,7 +97,7 @@
       title="Add media to timeline"
       aria-label="Add media"
     >
-      <i class="fa-solid fa-plus"></i>
+      <i class="fa-solid fa-plus" aria-hidden="true"></i>
       <span>Add Media</span>
     </button>
   {/if}
@@ -116,7 +116,7 @@
       title="Zoom out (-)"
       aria-label="Zoom out"
     >
-      <i class="fa-solid fa-magnifying-glass-minus"></i>
+      <i class="fa-solid fa-magnifying-glass-minus" aria-hidden="true"></i>
     </button>
 
     <span class="zoom-display" title="Zoom level">
@@ -129,7 +129,7 @@
       title="Zoom in (+)"
       aria-label="Zoom in"
     >
-      <i class="fa-solid fa-magnifying-glass-plus"></i>
+      <i class="fa-solid fa-magnifying-glass-plus" aria-hidden="true"></i>
     </button>
 
     <button
@@ -138,7 +138,7 @@
       title="Fit to view"
       aria-label="Fit to view"
     >
-      <i class="fa-solid fa-expand"></i>
+      <i class="fa-solid fa-expand" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -149,7 +149,7 @@
     title="Timeline settings"
     aria-label="Timeline settings"
   >
-    <i class="fa-solid fa-gear"></i>
+    <i class="fa-solid fa-gear" aria-hidden="true"></i>
   </button>
 </div>
 
@@ -167,8 +167,8 @@
   }
 
   .control-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 6px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
@@ -232,7 +232,7 @@
     background: var(--theme-accent, #4a9eff);
     color: white;
     border-radius: 6px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     box-shadow:

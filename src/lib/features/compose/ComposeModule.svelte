@@ -126,7 +126,6 @@
     const deepLinkData = deepLinkService?.consumeData("compose");
     if (deepLinkData) {
       try {
-        console.log("🔗 Loading composition from deep link");
         // TODO: Load composition by ID and open playback overlay
         // For now, just navigate to the specified tab
         if (

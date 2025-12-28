@@ -41,12 +41,12 @@
 			<img src={coverUrl} alt={displayName} loading="lazy" />
 		{:else}
 			<div class="placeholder-thumb">
-				<i class="fas fa-film"></i>
+				<i class="fas fa-film" aria-hidden="true"></i>
 			</div>
 		{/if}
 		{#if hasVideo}
 			<div class="video-badge">
-				<i class="fas fa-video"></i>
+				<i class="fas fa-video" aria-hidden="true"></i>
 			</div>
 		{/if}
 		{#if isLoading}
@@ -132,7 +132,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 9px;
+		font-size: 12px;
 		color: white;
 		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 	}
@@ -149,7 +149,7 @@
 	}
 
 	.item-name {
-		font-size: 11px;
+		font-size: 12px;
 		color: var(--theme-text, rgba(255, 255, 255, 0.92));
 		font-weight: 500;
 		white-space: nowrap;
@@ -159,7 +159,7 @@
 	}
 
 	.item-meta {
-		font-size: 10px;
+		font-size: 12px;
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
 	}
 

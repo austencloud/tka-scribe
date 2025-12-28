@@ -132,7 +132,7 @@
               class:selected={cell.type === option.value}
               onclick={() => handleTypeChange(option.value)}
             >
-              <i class="fas {option.icon}"></i>
+              <i class="fas {option.icon}" aria-hidden="true"></i>
               <div class="option-info">
                 <span class="option-label">{option.label}</span>
                 <span class="option-description">{option.description}</span>
@@ -153,10 +153,10 @@
 
         {#if cell.sequences.length === 0}
           <div class="empty-sequences">
-            <i class="fas fa-film"></i>
+            <i class="fas fa-film" aria-hidden="true"></i>
             <p>No sequences assigned</p>
             <button class="add-sequence-btn" onclick={handleBrowseSequences}>
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
               Browse Sequences
             </button>
           </div>
@@ -177,14 +177,14 @@
                   title="Remove sequence"
                   aria-label="Remove sequence"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             {/each}
 
             {#if cell.sequences.length < (cell.type === "tunnel" ? 4 : 1)}
               <button class="add-more-btn" onclick={handleBrowseSequences}>
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-plus" aria-hidden="true"></i>
                 Add {cell.type === "tunnel" ? "Another" : ""} Sequence
               </button>
             {/if}
@@ -206,6 +206,7 @@
                 <i
                   class="fas fa-arrow-up"
                   style:transform="rotate({rotation}deg)"
+                  aria-hidden="true"
                 ></i>
                 <span>{rotation}°</span>
               </button>
@@ -233,7 +234,7 @@
       <!-- Actions -->
       <div class="sheet-actions">
         <button class="action-btn clear-btn" onclick={handleClearCell}>
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt" aria-hidden="true"></i>
           Clear Cell
         </button>
         <button class="action-btn done-btn" onclick={onClose}> Done </button>

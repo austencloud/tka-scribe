@@ -138,7 +138,7 @@ Features:
 {:else}
   <!-- Empty state -->
   <div class="empty-state">
-    <i class="fas fa-film empty-icon"></i>
+    <i class="fas fa-film empty-icon" aria-hidden="true"></i>
     <p class="empty-message">No animations found</p>
     <p class="empty-hint">
       Create your first animation in the Single, Mirror, Tunnel, or Grid tabs

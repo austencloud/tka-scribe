@@ -225,7 +225,6 @@ export function createTimelineState() {
   function setProjectName(name: string) {
     project = { ...project, name, updatedAt: new Date() };
     saveProject();
-    console.log(`📁 Timeline: Project renamed to "${name}"`);
   }
 
   function setDefaultBpm(bpm: number) {
@@ -253,7 +252,6 @@ export function createTimelineState() {
     selection = createDefaultSelectionState();
     playhead = createDefaultPlayheadState();
     saveProject();
-    console.log(`📁 Timeline: Loaded project "${newProject.name}"`);
   }
 
   function resetProject() {
@@ -261,7 +259,6 @@ export function createTimelineState() {
     selection = createDefaultSelectionState();
     playhead = createDefaultPlayheadState();
     saveProject();
-    console.log("📁 Timeline: Project reset");
   }
 
   // =========================================================================
@@ -279,7 +276,6 @@ export function createTimelineState() {
       updatedAt: new Date(),
     };
     saveProject();
-    console.log(`🎚️ Timeline: Added track "${trackName}"`);
     return track;
   }
 
@@ -306,7 +302,6 @@ export function createTimelineState() {
     };
 
     saveProject();
-    console.log(`🎚️ Timeline: Removed track`);
   }
 
   function updateTrack(trackId: string, updates: Partial<TimelineTrack>) {
@@ -412,7 +407,6 @@ export function createTimelineState() {
     };
 
     saveProject();
-    console.log(`🎬 Timeline: Removed clip`);
   }
 
   function removeSelectedClips() {
@@ -563,7 +557,6 @@ export function createTimelineState() {
       updatedAt: new Date(),
     };
     saveProject();
-    console.log(`🎵 Timeline: Audio file set - ${fileName}`);
   }
 
   function setAudioDuration(duration: TimeSeconds) {
@@ -582,7 +575,6 @@ export function createTimelineState() {
       updatedAt: new Date(),
     };
     saveProject();
-    console.log(`🎵 Timeline: Audio BPM set to ${bpm}`);
   }
 
   function clearAudio() {
@@ -596,7 +588,6 @@ export function createTimelineState() {
       updatedAt: new Date(),
     };
     saveProject();
-    console.log("🎵 Timeline: Audio cleared");
   }
 
   function getAudioUrl(): string | null {

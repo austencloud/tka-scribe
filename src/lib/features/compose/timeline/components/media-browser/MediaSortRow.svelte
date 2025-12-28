@@ -31,9 +31,9 @@
 			onclick={() => onSortChange(option.id)}
 			title={option.label}
 		>
-			<i class="fas {option.icon}"></i>
+			<i class="fas {option.icon}" aria-hidden="true"></i>
 			{#if isActive}
-				<i class="fas {sortDirection === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} direction-icon"></i>
+				<i class="fas {sortDirection === 'asc' ? 'fa-arrow-up' : 'fa-arrow-down'} direction-icon" aria-hidden="true"></i>
 			{/if}
 		</button>
 	{/each}
@@ -45,7 +45,7 @@
 		title="Advanced filters"
 		aria-label="Toggle advanced filters"
 	>
-		<i class="fas fa-sliders-h"></i>
+		<i class="fas fa-sliders-h" aria-hidden="true"></i>
 	</button>
 </div>
 
@@ -91,13 +91,13 @@
 	}
 
 	.direction-icon {
-		font-size: 10px;
+		font-size: 12px;
 		margin-left: 2px;
 	}
 
 	.advanced-toggle {
-		width: 40px;
-		height: 32px;
+		width: 48px; /* WCAG AAA touch target */
+		height: 48px;
 		border-radius: 12px;
 		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
 		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));

@@ -34,7 +34,7 @@
 <header class="playback-header">
   <div class="header-left">
     <div class="mode-indicator">
-      <i class="fas fa-layer-group"></i>
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
       <span class="mode-label">{modeLabel()} Mode</span>
     </div>
   </div>
@@ -45,7 +45,7 @@
       onclick={onSave}
       aria-label="Save composition"
     >
-      <i class="fas fa-save"></i>
+      <i class="fas fa-save" aria-hidden="true"></i>
       <span class="btn-label">Save</span>
     </button>
 
@@ -54,14 +54,14 @@
       onclick={onShare}
       aria-label="Share composition"
     >
-      <i class="fas fa-share-alt"></i>
+      <i class="fas fa-share-alt" aria-hidden="true"></i>
       <span class="btn-label">Share</span>
     </button>
   </div>
 
   <div class="header-right">
     <button class="close-btn" onclick={onClose} aria-label="Close playback">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 </header>
@@ -172,8 +172,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -214,15 +214,15 @@
     }
 
     .action-btn {
-      width: 36px;
-      height: 36px;
+      width: 48px; /* WCAG AAA touch target */
+      height: 48px;
       justify-content: center;
       padding: 0;
     }
 
     .close-btn {
-      width: 36px;
-      height: 36px;
+      width: 48px; /* WCAG AAA touch target */
+      height: 48px;
       font-size: 1rem;
     }
   }

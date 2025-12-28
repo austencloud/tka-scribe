@@ -89,7 +89,7 @@
   <section class="recent-compositions">
     <div class="section-header">
       <h2 class="section-title">
-        <i class="fas fa-history"></i>
+        <i class="fas fa-history" aria-hidden="true"></i>
         Recent Compositions
       </h2>
       <span class="section-hint">Quick resume</span>
@@ -105,7 +105,7 @@
         >
           <!-- Mode indicator -->
           <div class="mode-badge">
-            <i class="fas {modeIcons[composition.mode]}"></i>
+            <i class="fas {modeIcons[composition.mode]}" aria-hidden="true"></i>
           </div>
 
           <!-- Card content -->
@@ -120,13 +120,13 @@
 
           <!-- Play indicator on hover -->
           <div class="play-overlay">
-            <i class="fas fa-play"></i>
+            <i class="fas fa-play" aria-hidden="true"></i>
           </div>
 
           <!-- Favorite indicator -->
           {#if composition.isFavorite}
             <div class="favorite-badge" aria-label="Favorited">
-              <i class="fas fa-heart"></i>
+              <i class="fas fa-heart" aria-hidden="true"></i>
             </div>
           {/if}
         </button>

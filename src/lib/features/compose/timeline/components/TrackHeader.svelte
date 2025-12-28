@@ -55,10 +55,18 @@
     }
   }
 
-  // Editable name
+  // Editable name - initialized empty, startEdit() sets from track.name
   let isEditing = $state(false);
-  // svelte-ignore state_referenced_locally - intentional: reset in startEdit() when editing begins
-  let editValue = $state(track.name);
+  let editValue = $state("");
+  let inputElement = $state<HTMLInputElement | null>(null);
+
+  // Focus input when entering edit mode (proper alternative to autofocus)
+  $effect(() => {
+    if (isEditing && inputElement) {
+      inputElement.focus();
+      inputElement.select();
+    }
+  });
 
   function startEdit() {
     editValue = track.name;
@@ -97,17 +105,15 @@
   <div class="color-indicator"></div>
 
   <!-- Track name -->
-  <div class="track-name" ondblclick={startEdit} onkeydown={(e) => e.key === 'Enter' && startEdit()} role="button" tabindex="0">
+  <div class="track-name" ondblclick={startEdit} onkeydown={(e) => e.key === 'Enter' && startEdit()} role="button" tabindex="0" aria-label="Double-click to rename track">
     {#if isEditing}
-      <!-- autofocus needed: User just double-clicked to edit, expects immediate typing -->
-      <!-- svelte-ignore a11y_autofocus -->
       <input
         type="text"
         class="name-input"
+        bind:this={inputElement}
         bind:value={editValue}
         onblur={confirmEdit}
         onkeydown={handleKeyDown}
-        autofocus
       />
     {:else}
       <span class="name-text">{track.name}</span>
@@ -123,7 +129,7 @@
       <span class="status-badge solo" title="Solo">S</span>
     {/if}
     {#if track.locked}
-      <span class="status-badge locked" title="Locked"><i class="fa-solid fa-lock"></i></span>
+      <span class="status-badge locked" title="Locked"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
     {/if}
   </div>
 
@@ -137,7 +143,7 @@
       title="Track options"
       aria-label="Toggle track options"
     >
-      <i class="fa-solid fa-ellipsis"></i>
+      <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
     </button>
 
     <!-- Expandable controls panel -->
@@ -173,7 +179,7 @@
           title="Lock track"
           aria-label={track.locked ? "Unlock track" : "Lock track"}
         >
-          <i class="fa-solid fa-lock" style="font-size: 9px"></i>
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
         </button>
 
         <!-- Delete button -->
@@ -184,7 +190,7 @@
             title="Delete track"
             aria-label="Delete track"
           >
-            <i class="fa-solid fa-trash"></i>
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
@@ -260,7 +266,7 @@
     width: 16px;
     height: 16px;
     border-radius: 3px;
-    font-size: 8px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -280,7 +286,7 @@
   .status-badge.locked {
     background: rgba(255, 255, 255, 0.2);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 7px;
+    font-size: var(--font-size-compact, 12px);
   }
 
   /* Controls menu container */
@@ -290,14 +296,16 @@
   }
 
   .menu-toggle {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
+    border-radius: 8px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -347,14 +355,16 @@
   }
 
   .track-btn {
-    width: 22px;
-    height: 22px;
-    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
+    border-radius: 8px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -385,14 +395,16 @@
   }
 
   .delete-btn {
-    width: 22px;
-    height: 22px;
-    border-radius: 4px;
+    width: 36px;
+    height: 36px;
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
+    border-radius: 8px;
     border: 1px solid transparent;
     background: transparent;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     cursor: pointer;
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
     display: flex;
     align-items: center;
     justify-content: center;

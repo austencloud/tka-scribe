@@ -136,7 +136,7 @@
         easing: cubicOut,
       }}
     >
-      <i class="fas fa-arrow-left"></i>
+      <i class="fas fa-arrow-left" aria-hidden="true"></i>
       Back to Modes
     </button>
 
@@ -169,7 +169,7 @@
 
         <div class="slot-card" style="--delay: {i * STAGGER.normal}ms">
           <div class="slot-header">
-            <i class="fas {meta?.icon ?? 'fa-square'}"></i>
+            <i class="fas {meta?.icon ?? 'fa-square'}" aria-hidden="true"></i>
             <span class="slot-label">{meta?.label ?? slotId}</span>
           </div>
 
@@ -194,7 +194,7 @@
                   onclick={() => handleSelectSequence(slotId)}
                   aria-label="Change sequence for {meta?.label ?? slotId}"
                 >
-                  <i class="fas fa-sync"></i>
+                  <i class="fas fa-sync" aria-hidden="true"></i>
                   Change
                 </button>
                 <button
@@ -202,7 +202,7 @@
                   onclick={() => handleClearSlot(slotId)}
                   aria-label="Clear {meta?.label ?? slotId}"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             </div>
@@ -213,7 +213,7 @@
               onclick={() => handleSelectSequence(slotId)}
               aria-label="Select sequence for {meta?.label ?? slotId}"
             >
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
               <span>Select Sequence</span>
             </button>
           {/if}
@@ -233,7 +233,7 @@
         easing: cubicOut,
       }}
     >
-      <i class="fas fa-play"></i>
+      <i class="fas fa-play" aria-hidden="true"></i>
       Start Animation
     </button>
 

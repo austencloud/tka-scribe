@@ -161,7 +161,7 @@
     }
 
     .style-btn i {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 </style>

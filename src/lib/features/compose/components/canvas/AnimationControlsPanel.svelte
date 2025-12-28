@@ -121,9 +121,8 @@
     onScroll?: (e: Event) => void;
   } = $props();
 
-  // BPM state
-  // svelte-ignore state_referenced_locally - intentional: $effect below syncs prop changes
-  let bpm = $state(Math.round(speed * DEFAULT_BPM));
+  // BPM state - initialized with default, $effect syncs from prop
+  let bpm = $state(DEFAULT_BPM);
   $effect(() => {
     bpm = Math.round(speed * DEFAULT_BPM);
   });
@@ -346,7 +345,6 @@
     );
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 16px;
-    backdrop-filter: blur(16px);
     box-shadow:
       0 4px 24px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 var(--theme-card-bg, rgba(255, 255, 255, 0.05));

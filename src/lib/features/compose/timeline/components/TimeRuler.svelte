@@ -111,7 +111,7 @@
   .tick-label {
     position: absolute;
     top: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
     white-space: nowrap;
     transform: translateX(-50%);

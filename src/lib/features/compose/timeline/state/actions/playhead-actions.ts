@@ -27,17 +27,14 @@ export function createPlayheadActions(ctx: PlayheadContext) {
 
   function play() {
     setPlayhead({ ...getPlayhead(), isPlaying: true, direction: 1 });
-    console.log("▶️ Timeline: Playing");
   }
 
   function pause() {
     setPlayhead({ ...getPlayhead(), isPlaying: false });
-    console.log("⏸️ Timeline: Paused");
   }
 
   function stop() {
     setPlayhead({ ...getPlayhead(), isPlaying: false, position: 0 });
-    console.log("⏹️ Timeline: Stopped");
   }
 
   function togglePlayPause() {

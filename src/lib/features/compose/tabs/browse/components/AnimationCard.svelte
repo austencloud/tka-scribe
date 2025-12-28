@@ -215,13 +215,13 @@ Features:
 
     <!-- Mode indicator badge -->
     <div class="mode-badge" title={modeNames[animation.mode]}>
-      <i class="fas {modeIcons[animation.mode]}"></i>
+      <i class="fas {modeIcons[animation.mode]}" aria-hidden="true"></i>
     </div>
 
     <!-- Favorite indicator -->
     {#if animation.isFavorite}
       <div class="favorite-badge" title="Favorite">
-        <i class="fas fa-heart"></i>
+        <i class="fas fa-heart" aria-hidden="true"></i>
       </div>
     {/if}
   </div>
@@ -231,11 +231,11 @@ Features:
     <h3 class="animation-title">{displayTitle()}</h3>
     <div class="card-meta">
       <span class="sequence-count" title="Number of sequences">
-        <i class="fas fa-file-alt"></i>
+        <i class="fas fa-file-alt" aria-hidden="true"></i>
         {animation.sequences.length}
       </span>
       <span class="creator" title="Creator">
-        <i class="fas fa-user"></i>
+        <i class="fas fa-user" aria-hidden="true"></i>
         {animation.creator}
       </span>
     </div>
@@ -367,7 +367,7 @@ Features:
   }
 
   .mode-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -447,7 +447,7 @@ Features:
   }
 
   .card-meta i {
-    font-size: 10px;
+    font-size: 12px;
     opacity: 0.7;
   }
 
@@ -463,7 +463,7 @@ Features:
     }
 
     .card-meta {
-      font-size: 11px;
+      font-size: 12px;
       gap: 8px;
     }
 

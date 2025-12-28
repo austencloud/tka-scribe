@@ -14,8 +14,8 @@
    */
 
   import { getTimelineState } from "../state/timeline-state.svelte";
-  import { getTimelinePlaybackService } from "../services/implementations/TimelinePlaybackService";
-  import { getTimelineSnapService } from "../services/implementations/TimelineSnapService";
+  import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
+  import { getTimelineSnapper } from "../services/implementations/TimelineSnapService";
   import { loadFromStorage, saveToStorage, TIMELINE_STORAGE_KEYS } from "../state/timeline-storage";
   import TimeRuler from "./TimeRuler.svelte";
   import TrackLane from "./TrackLane.svelte";
@@ -56,10 +56,10 @@
     return getTimelineState();
   }
   function getPlayback() {
-    return getTimelinePlaybackService();
+    return getTimelinePlayer();
   }
   function getSnap() {
-    return getTimelineSnapService();
+    return getTimelineSnapper();
   }
 
   // Container refs for scroll sync
@@ -430,7 +430,7 @@
 {#snippet sourceMonitorContent()}
   <div class="monitor-panel source-monitor">
     <div class="monitor-label">
-      <i class="fas fa-photo-film"></i>
+      <i class="fas fa-photo-film" aria-hidden="true"></i>
       <span>Source</span>
     </div>
     <div class="monitor-viewport">
@@ -446,7 +446,7 @@
 {#snippet programMonitorContent()}
   <div class="monitor-panel program-monitor">
     <div class="monitor-label">
-      <i class="fas fa-play-circle"></i>
+      <i class="fas fa-play-circle" aria-hidden="true"></i>
       <span>Program</span>
     </div>
     <div class="monitor-viewport">
@@ -455,6 +455,7 @@
         clips={allClips}
         {isPlaying}
         {pixelsPerSecond}
+        {totalDuration}
       />
     </div>
   </div>
@@ -518,7 +519,7 @@
       <div class="track-headers" style="width: {HEADER_WIDTH}px">
         <div class="header-spacer">
           <button class="add-track-btn" onclick={() => getState().addTrack()} title="Add Track" aria-label="Add track">
-            <i class="fa-solid fa-plus"></i>
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
           </button>
         </div>
         {#each tracks as track (track.id)}
@@ -533,8 +534,6 @@
           </div>
         </div>
 
-        <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         <div
           class="tracks-container"
           bind:this={tracksContainer}
@@ -549,6 +548,7 @@
           }}
           role="application"
           aria-label="Timeline tracks"
+          tabindex="0"
         >
           <div class="tracks-scroll-content" style="width: {timelineWidth}px">
             <SnapGuides activeSnapTime={getSnap().activeSnapTime} height={tracks.length * 80 + 60} />
@@ -574,8 +574,6 @@
   </div>
 {/snippet}
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
   class="timeline-panel"
   bind:this={panelElement}
@@ -598,7 +596,7 @@
         title={showMediaBrowser ? "Hide media browser" : "Show media browser"}
         aria-label={showMediaBrowser ? "Hide media browser" : "Show media browser"}
       >
-        <i class="fas fa-photo-film"></i>
+        <i class="fas fa-photo-film" aria-hidden="true"></i>
       </button>
       <button
         class="toggle-btn"
@@ -607,7 +605,7 @@
         title={showPreview ? "Hide monitors" : "Show monitors"}
         aria-label={showPreview ? "Hide monitors" : "Show monitors"}
       >
-        <i class="fa-solid fa-tv"></i>
+        <i class="fa-solid fa-tv" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -650,8 +648,6 @@
     padding: 10px 14px;
     background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
     border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
   }
 
   .layout-toggles {
@@ -661,8 +657,8 @@
   }
 
   .toggle-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 12px;
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
@@ -806,9 +802,11 @@
   }
 
   .add-track-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
+    border-radius: 10px;
     border: 1px dashed var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
     background: transparent;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
@@ -816,7 +814,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: var(--font-size-min, 14px);
     transition: all 0.2s ease;
   }
 

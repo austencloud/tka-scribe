@@ -68,7 +68,7 @@
   <!-- Header with label and controls -->
   <div class="track-header">
     <div class="header-left">
-      <i class="fas fa-drum"></i>
+      <i class="fas fa-drum" aria-hidden="true"></i>
       <span class="track-label">Beat Markers</span>
       {#if bpm}
         <span class="bpm-badge">{bpm} BPM</span>
@@ -76,7 +76,11 @@
     </div>
     <div class="header-controls">
       <label class="toggle-label">
-        <input type="checkbox" bind:checked={showAllBeats} />
+        <input
+          type="checkbox"
+          bind:checked={showAllBeats}
+          aria-label="Show all beats instead of just downbeats"
+        />
         <span>Show all beats</span>
       </label>
       <button
@@ -85,7 +89,7 @@
         disabled={duration <= 0}
         title="Add custom marker at playhead"
       >
-        <i class="fas fa-flag"></i>
+        <i class="fas fa-flag" aria-hidden="true"></i>
         Add Marker
       </button>
     </div>
@@ -118,7 +122,7 @@
       </div>
     {:else}
       <div class="no-beats">
-        <i class="fas fa-music"></i>
+        <i class="fas fa-music" aria-hidden="true"></i>
         <span>Set BPM to see beat markers</span>
       </div>
     {/if}
@@ -134,7 +138,7 @@
             title="Custom marker at {marker.time.toFixed(1)}s - click to remove"
             aria-label="Remove custom marker"
           >
-            <i class="fas fa-flag"></i>
+            <i class="fas fa-flag" aria-hidden="true"></i>
           </button>
         {/each}
       </div>
@@ -151,7 +155,7 @@
   {#if beatMarkers.length > 0}
     <div class="track-footer">
       <span class="marker-count">
-        <i class="fas fa-flag"></i>
+        <i class="fas fa-flag" aria-hidden="true"></i>
         {beatMarkers.length} custom marker{beatMarkers.length !== 1 ? "s" : ""}
       </span>
     </div>
@@ -214,8 +218,8 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
   }
 
@@ -231,18 +235,18 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0.3rem 0.6rem;
-    background: rgba(251, 191, 36, 0.15);
-    border: 1px solid rgba(251, 191, 36, 0.35);
+    background: rgba(251, 191, 36, 0.5);
+    border: 1px solid rgba(251, 191, 36, 0.6);
     border-radius: 5px;
-    color: rgba(251, 191, 36, 0.95);
-    font-size: 0.75rem;
+    color: white;
+    font-size: var(--font-size-compact, 12px);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .add-marker-btn:hover:not(:disabled) {
-    background: rgba(251, 191, 36, 0.25);
-    border-color: rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.6);
+    border-color: rgba(251, 191, 36, 0.7);
   }
 
   .add-marker-btn:disabled {
@@ -299,8 +303,8 @@
     justify-content: center;
     gap: 0.5rem;
     height: 100%;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: var(--font-size-min, 14px);
   }
 
   .no-beats i {
@@ -324,17 +328,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(251, 191, 36, 0.25);
-    border: 1px solid rgba(251, 191, 36, 0.6);
+    background: rgba(251, 191, 36, 0.5);
+    border: 1px solid rgba(251, 191, 36, 0.7);
     border-radius: 50%;
-    color: rgba(251, 191, 36, 1);
-    font-size: 0.65rem;
+    color: white;
+    font-size: var(--font-size-compact, 12px);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .custom-marker:hover {
-    background: rgba(251, 191, 36, 0.4);
+    background: rgba(251, 191, 36, 0.6);
     border-color: rgba(251, 191, 36, 0.9);
     transform: translate(-50%, -50%) scale(1.15);
   }
@@ -362,11 +366,12 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.7rem;
-    color: rgba(251, 191, 36, 0.8);
+    font-size: var(--font-size-compact, 12px);
+    color: white;
   }
 
   .marker-count i {
-    font-size: 0.65rem;
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(251, 191, 36, 0.9);
   }
 </style>

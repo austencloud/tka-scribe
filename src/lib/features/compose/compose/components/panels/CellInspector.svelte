@@ -82,7 +82,7 @@
         title="Deselect cell"
         aria-label="Deselect cell"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -99,7 +99,7 @@
               title={option.label}
               aria-label={option.label}
             >
-              <i class="fas {option.icon}"></i>
+              <i class="fas {option.icon}" aria-hidden="true"></i>
             </button>
           {/each}
         </div>
@@ -116,7 +116,7 @@
 
         {#if cell.sequences.length === 0}
           <button class="add-sequence-btn" onclick={handleBrowseSequences}>
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-plus" aria-hidden="true"></i>
             <span>Add</span>
           </button>
         {:else}
@@ -132,7 +132,7 @@
                   title="Remove"
                   aria-label="Remove {sequence.name}"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             {/each}
@@ -144,7 +144,7 @@
                 title="Add sequence"
                 aria-label="Add sequence"
               >
-                <i class="fas fa-plus"></i>
+                <i class="fas fa-plus" aria-hidden="true"></i>
               </button>
             {/if}
           </div>
@@ -171,6 +171,7 @@
                 <i
                   class="fas fa-arrow-up"
                   style:transform="rotate({rotation}deg)"
+                  aria-hidden="true"
                 ></i>
               </button>
             {/each}
@@ -181,14 +182,14 @@
       <!-- Clear Action -->
       {#if cell.sequences.length > 0}
         <button class="clear-btn" onclick={handleClearCell}>
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt" aria-hidden="true"></i>
           Clear
         </button>
       {/if}
     </div>
   {:else}
     <div class="no-selection">
-      <i class="fas fa-mouse-pointer"></i>
+      <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
       <p>Select a cell to configure</p>
     </div>
   {/if}

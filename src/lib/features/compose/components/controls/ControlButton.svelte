@@ -32,7 +32,7 @@
   aria-label={ariaLabel}
   {onclick}
 >
-  <i class="fas {icon}"></i>
+  <i class="fas {icon}" aria-hidden="true"></i>
 </button>
 
 <style>

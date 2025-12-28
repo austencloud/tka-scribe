@@ -120,11 +120,15 @@
 <div class="manual-beat-tapper" class:active={isTapMode}>
   <div class="tapper-header">
     <div class="header-left">
-      <i class="fas fa-hand-pointer"></i>
+      <i class="fas fa-hand-pointer" aria-hidden="true"></i>
       <span class="title">Manual Beat Tapping</span>
     </div>
     <label class="tap-mode-toggle">
-      <input type="checkbox" bind:checked={isTapMode} />
+      <input
+        type="checkbox"
+        bind:checked={isTapMode}
+        aria-label="Enable manual beat tap mode"
+      />
       <span class="toggle-track"></span>
       <span class="toggle-label">{isTapMode ? "Active" : "Inactive"}</span>
     </label>
@@ -140,7 +144,7 @@
           onclick={handleTap}
           disabled={duration <= 0}
         >
-          <i class="fas fa-drum"></i>
+          <i class="fas fa-drum" aria-hidden="true"></i>
           <span>TAP</span>
         </button>
         <div class="tap-hint">
@@ -178,7 +182,7 @@
                 title="Remove last tap"
                 aria-label="Remove last tap"
               >
-                <i class="fas fa-undo"></i>
+                <i class="fas fa-undo" aria-hidden="true"></i>
               </button>
               <button
                 class="action-btn danger"
@@ -186,7 +190,7 @@
                 title="Clear all taps"
                 aria-label="Clear all taps"
               >
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -203,7 +207,7 @@
                   title="Remove this tap"
                   aria-label="Remove this tap"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             {/each}
@@ -214,7 +218,7 @@
       <!-- Instructions -->
       <div class="instructions">
         <p>
-          <i class="fas fa-info-circle"></i>
+          <i class="fas fa-info-circle" aria-hidden="true"></i>
           Play the audio and tap along with the beats. The average BPM will be calculated
           from your taps.
         </p>
@@ -343,12 +347,12 @@
     height: 80px;
     background: linear-gradient(
       135deg,
-      rgba(251, 191, 36, 0.3) 0%,
-      rgba(245, 158, 11, 0.3) 100%
+      rgba(251, 191, 36, 0.5) 0%,
+      rgba(245, 158, 11, 0.5) 100%
     );
-    border: 2px solid rgba(251, 191, 36, 0.5);
+    border: 2px solid rgba(251, 191, 36, 0.6);
     border-radius: 50%;
-    color: rgba(251, 191, 36, 1);
+    color: white;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -384,8 +388,8 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .tap-hint kbd {
@@ -413,8 +417,8 @@
   }
 
   .stat-label {
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -437,8 +441,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .recent-actions {
@@ -491,13 +495,13 @@
   }
 
   .tap-beat {
-    color: rgba(251, 191, 36, 0.8);
+    color: white;
     font-weight: 500;
     min-width: 50px;
   }
 
   .tap-time {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.75);
     font-family: monospace;
     flex: 1;
   }
@@ -510,8 +514,8 @@
     height: 18px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact, 12px);
     cursor: pointer;
     opacity: 0;
     transition: all 0.2s ease;
@@ -537,8 +541,8 @@
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .instructions i {
@@ -554,13 +558,13 @@
 
   .inactive-message p {
     margin: 0;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-min, 14px);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .inactive-message .hint {
     margin-top: 0.25rem;
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.45);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
   }
 </style>

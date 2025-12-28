@@ -9,7 +9,7 @@
 import type { TimelineClip } from "../../domain/timeline-types";
 import { pixelsToTime } from "../../domain/timeline-types";
 import { getTimelineState } from "../../state/timeline-state.svelte";
-import { getTimelineSnapService } from "../../services/implementations/TimelineSnapService";
+import { getTimelineSnapper } from "../../services/implementations/TimelineSnapService";
 
 export interface ClipMoveHandlers {
   handleMoveStart: (e: MouseEvent) => void;
@@ -39,7 +39,7 @@ export function createClipMove(
   }
 
   function getSnapService() {
-    return getTimelineSnapService();
+    return getTimelineSnapper();
   }
 
   /** Get clip by ID from state (survives component remount) */

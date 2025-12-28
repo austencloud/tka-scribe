@@ -13,7 +13,7 @@
 </script>
 
 <div class="search-bar">
-	<i class="fas fa-search"></i>
+	<i class="fas fa-search" aria-hidden="true"></i>
 	<input
 		type="text"
 		placeholder="Search..."
@@ -27,11 +27,11 @@
 		title="Favorites"
 		aria-label="Toggle favorites filter"
 	>
-		<i class="fas fa-heart"></i>
+		<i class="fas fa-heart" aria-hidden="true"></i>
 	</button>
 	{#if searchQuery}
 		<button class="clear-btn" onclick={() => onSearchChange('')} aria-label="Clear search">
-			<i class="fas fa-times"></i>
+			<i class="fas fa-times" aria-hidden="true"></i>
 		</button>
 	{/if}
 </div>
@@ -67,8 +67,8 @@
 	}
 
 	.favorites-btn {
-		width: 32px;
-		height: 32px;
+		width: 48px; /* WCAG AAA touch target */
+		height: 48px;
 		border-radius: 50%;
 		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
 		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
@@ -102,8 +102,8 @@
 	}
 
 	.clear-btn {
-		width: 20px;
-		height: 20px;
+		width: 48px; /* WCAG AAA touch target */
+		height: 48px;
 		border-radius: 50%;
 		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
 		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
@@ -112,7 +112,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 9px;
+		font-size: 12px;
 		transition: all 0.2s ease;
 	}
 

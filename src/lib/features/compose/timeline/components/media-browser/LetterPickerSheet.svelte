@@ -28,12 +28,13 @@
 	onkeydown={handleKeydown}
 	role="button"
 	tabindex="0"
+	aria-label="Close letter picker"
 >
 	<div class="letter-sheet" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="dialog" tabindex="-1">
 		<div class="sheet-header">
 			<span>Starting Letter</span>
 			<button class="close-btn" onclick={onClose} aria-label="Close letter picker">
-				<i class="fas fa-times"></i>
+				<i class="fas fa-times" aria-hidden="true"></i>
 			</button>
 		</div>
 		<div class="letter-grid">
@@ -111,8 +112,8 @@
 	}
 
 	.close-btn {
-		width: 32px;
-		height: 32px;
+		width: 48px; /* WCAG AAA touch target */
+		height: 48px;
 		border-radius: 50%;
 		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
 		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));

@@ -14,10 +14,13 @@
 </script>
 
 <!-- Stop propagation to prevent clicks triggering playhead movement -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<div class="empty-state" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="region" aria-label="Empty timeline state">
+<div
+  class="empty-state"
+  onclick={(e) => e.stopPropagation()}
+  role="presentation"
+>
   <div class="empty-icon">
-    <i class="fa-solid fa-film"></i>
+    <i class="fa-solid fa-film" aria-hidden="true"></i>
   </div>
 
   <h3 class="empty-title">No sequences on timeline</h3>
@@ -35,7 +38,7 @@
           onBrowseLibrary();
         }}
       >
-        <i class="fa-solid fa-folder-open"></i>
+        <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
         Browse Library
       </button>
     {/if}
@@ -43,11 +46,11 @@
 
   <div class="empty-hints">
     <div class="hint">
-      <i class="fa-solid fa-lightbulb"></i>
+      <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
       <span>Drag sequences from the Library to add them here</span>
     </div>
     <div class="hint">
-      <i class="fa-solid fa-keyboard"></i>
+      <i class="fa-solid fa-keyboard" aria-hidden="true"></i>
       <span>Press <kbd>Space</kbd> to play/pause</span>
     </div>
   </div>
@@ -146,12 +149,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .hint i {
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px);
     opacity: 0.7;
   }
 
@@ -161,7 +164,7 @@
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
     border-radius: 4px;
     font-family: monospace;
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 600;
   }
 </style>

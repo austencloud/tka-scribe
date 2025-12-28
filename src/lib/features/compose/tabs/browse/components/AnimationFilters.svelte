@@ -106,7 +106,7 @@ Features:
             : currentFilter.mode === option.value}
           onclick={() => handleModeChange(option.value)}
         >
-          <i class="fas {option.icon}"></i>
+          <i class="fas {option.icon}" aria-hidden="true"></i>
           <span>{option.label}</span>
         </button>
       {/each}
@@ -123,7 +123,7 @@ Features:
       aria-label="Filter favorites"
       title={currentFilter.favorites ? "Show all" : "Show favorites only"}
     >
-      <i class="fas fa-heart"></i>
+      <i class="fas fa-heart" aria-hidden="true"></i>
       <span>Favorites</span>
     </button>
 
@@ -150,10 +150,9 @@ Features:
           : "Sort ascending"}
         title={sortDirection === "asc" ? "Sort descending" : "Sort ascending"}
       >
-        <i
-          class="fas {sortDirection === 'asc'
+        <i class="fas {sortDirection === 'asc'
             ? 'fa-arrow-up'
-            : 'fa-arrow-down'}"
+            : 'fa-arrow-down'}" aria-hidden="true"
         ></i>
       </button>
     </div>
@@ -298,8 +297,8 @@ Features:
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     padding: 0;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

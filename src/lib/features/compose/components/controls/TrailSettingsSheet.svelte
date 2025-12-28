@@ -41,7 +41,7 @@
         aria-label="Close"
         type="button"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
     <div class="sheet-body">

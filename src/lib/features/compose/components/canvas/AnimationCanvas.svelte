@@ -52,16 +52,11 @@
   let playbackMode = $state<"live" | "video">("live");
 
   function handleVideoReady(result: VideoRenderResult) {
-    console.log(
-      "🎬 Video ready:",
-      result.sequenceId,
-      `(${result.duration?.toFixed(1)}s)`
-    );
+    // Video render complete - result available
   }
 
   function handleModeChange(mode: "live" | "video") {
     playbackMode = mode;
-    console.log("🔄 Playback mode changed to:", mode);
   }
 </script>
 

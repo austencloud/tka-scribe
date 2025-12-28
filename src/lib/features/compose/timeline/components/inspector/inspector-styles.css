@@ -24,7 +24,7 @@
   font-weight: 600;
   color: var(--theme-text, rgba(255, 255, 255, 0.85));
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1.5px;
 }
 
 .section-header i {
@@ -56,7 +56,7 @@
   background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
   border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--theme-text, rgba(255, 255, 255, 0.9));
   text-align: center;
 }
@@ -92,7 +92,7 @@
   background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
   border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--theme-text, rgba(255, 255, 255, 0.8));
   cursor: pointer;
   transition: all 0.15s ease;

@@ -28,7 +28,7 @@
 
 <section class="section">
   <div class="section-header">
-    <i class="fa-solid fa-scissors"></i>
+    <i class="fa-solid fa-scissors" aria-hidden="true"></i>
     <span>Trim</span>
   </div>
 
@@ -82,7 +82,7 @@
   </div>
 
   <button class="action-btn" onclick={onResetTrim}>
-    <i class="fa-solid fa-expand"></i>
+    <i class="fa-solid fa-expand" aria-hidden="true"></i>
     Reset Trim
   </button>
 </section>
@@ -148,7 +148,7 @@
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.15s ease;
@@ -167,7 +167,7 @@
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.3px;
@@ -175,7 +175,7 @@
 
   .value-label {
     min-width: 40px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
     text-align: right;
   }

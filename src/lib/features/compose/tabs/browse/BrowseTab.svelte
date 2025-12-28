@@ -141,10 +141,10 @@ Features:
   <div class="grid-section">
     {#if browseState.error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle error-icon"></i>
+        <i class="fas fa-exclamation-triangle error-icon" aria-hidden="true"></i>
         <p class="error-message">{browseState.error}</p>
         <button class="retry-btn" onclick={() => browseState.loadAnimations()}>
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
           Try Again
         </button>
       </div>

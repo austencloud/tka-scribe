@@ -143,8 +143,6 @@ export function createArrangeTabState(): ArrangeTabState {
       // Clear sequence slots when mode changes
       sequenceSlots = new Map();
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, {});
-
-      console.log("🎨 ArrangeTabState: Mode selected:", mode);
     },
 
     // Sequence slot management
@@ -154,10 +152,6 @@ export function createArrangeTabState(): ArrangeTabState {
       sequenceSlots = newSlots;
 
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, mapToObject(sequenceSlots));
-      console.log(
-        `🎨 ArrangeTabState: Sequence set for slot ${slotId}:`,
-        sequence?.name
-      );
     },
 
     clearSlot(slotId: string) {
@@ -166,22 +160,13 @@ export function createArrangeTabState(): ArrangeTabState {
       sequenceSlots = newSlots;
 
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, mapToObject(sequenceSlots));
-      console.log(`🎨 ArrangeTabState: Cleared slot ${slotId}`);
     },
 
     // Start playback (this would transition to the selected mode with configured sequences)
     startPlayback() {
       if (!isConfigurationComplete()) {
-        console.warn(
-          "🎨 ArrangeTabState: Cannot start playback - configuration incomplete"
-        );
         return;
       }
-
-      console.log(
-        "🎨 ArrangeTabState: Starting playback with mode:",
-        selectedMode
-      );
       // The parent component will handle the actual transition
     },
 
@@ -192,8 +177,6 @@ export function createArrangeTabState(): ArrangeTabState {
 
       saveToStorage(STORAGE_KEYS.SELECTED_MODE, null);
       saveToStorage(STORAGE_KEYS.SEQUENCE_SLOTS, {});
-
-      console.log("🎨 ArrangeTabState: Reset");
     },
   };
 }

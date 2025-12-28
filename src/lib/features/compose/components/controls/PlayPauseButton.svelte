@@ -29,7 +29,7 @@
   aria-label={isPlaying ? "Pause animation" : "Play animation"}
   aria-pressed={isPlaying}
 >
-  <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+  <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
 </button>
 
 <style>

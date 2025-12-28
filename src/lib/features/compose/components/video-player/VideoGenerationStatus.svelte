@@ -16,9 +16,9 @@
   } = $props();
 </script>
 
-<div class="video-generation-status">
+<div class="video-generation-status" role="status" aria-live="polite">
   <div class="status-content">
-    <div class="spinner"></div>
+    <div class="spinner" aria-hidden="true"></div>
     <div class="status-text">
       {#if progress.phase === "rendering"}
         Generating video... {progress.percent.toFixed(0)}%
@@ -30,7 +30,7 @@
     </div>
     <button class="cancel-btn" onclick={onCancel}>Cancel</button>
   </div>
-  <div class="progress-bar">
+  <div class="progress-bar" role="progressbar" aria-valuenow={progress.percent} aria-valuemin={0} aria-valuemax={100}>
     <div class="progress-fill" style="width: {progress.percent}%"></div>
   </div>
   <div class="status-detail">
@@ -80,7 +80,7 @@
   }
 
   .status-detail {
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     color: rgba(255, 255, 255, 0.6);
     margin-top: 6px;
   }

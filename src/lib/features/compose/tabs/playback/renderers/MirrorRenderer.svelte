@@ -40,12 +40,12 @@
     <!-- Original Side -->
     <div class="canvas-panel original">
       <div class="panel-label">
-        <i class="fas fa-user"></i>
+        <i class="fas fa-user" aria-hidden="true"></i>
         Original
       </div>
       <div class="canvas-area">
         <div class="placeholder-visual">
-          <i class="fas fa-person-walking"></i>
+          <i class="fas fa-person-walking" aria-hidden="true"></i>
         </div>
       </div>
     </div>
@@ -54,10 +54,9 @@
     <div class="split-divider">
       <div class="divider-line"></div>
       <div class="divider-icon">
-        <i
-          class="fas fa-{axis === 'vertical'
+        <i class="fas fa-{axis === 'vertical'
             ? 'arrows-left-right'
-            : 'arrows-up-down'}"
+            : 'arrows-up-down'}" aria-hidden="true"
         ></i>
       </div>
       <div class="divider-line"></div>
@@ -66,7 +65,7 @@
     <!-- Mirrored Side -->
     <div class="canvas-panel mirrored">
       <div class="panel-label">
-        <i class="fas fa-clone"></i>
+        <i class="fas fa-clone" aria-hidden="true"></i>
         Mirrored
       </div>
       <div class="canvas-area">
@@ -74,7 +73,7 @@
           class="placeholder-visual"
           style="transform: scale{axis === 'vertical' ? 'X' : 'Y'}(-1);"
         >
-          <i class="fas fa-person-walking"></i>
+          <i class="fas fa-person-walking" aria-hidden="true"></i>
         </div>
       </div>
     </div>

@@ -179,7 +179,7 @@
     </div>
   {:else if !authState.isAuthenticated}
     <div class="auth-required">
-      <i class="fas fa-lock"></i>
+      <i class="fas fa-lock" aria-hidden="true"></i>
       <h3>Sign In Required</h3>
       <p>Sign in to track your achievements and progress</p>
     </div>
@@ -187,7 +187,7 @@
     <!-- Stats Grid -->
     <div class="stats-grid" class:compact={isCompact}>
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-star"></i></div>
+        <div class="stat-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
         <div class="stat-content">
           <div class="stat-value">{stats?.currentLevel || 0}</div>
           <div class="stat-label">Level</div>
@@ -195,7 +195,7 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-magic-wand-sparkles"></i></div>
+        <div class="stat-icon"><i class="fas fa-magic-wand-sparkles" aria-hidden="true"></i></div>
         <div class="stat-content">
           <div class="stat-value">{stats?.totalXP.toLocaleString() || 0}</div>
           <div class="stat-label">Total XP</div>
@@ -203,7 +203,7 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+        <div class="stat-icon"><i class="fas fa-trophy" aria-hidden="true"></i></div>
         <div class="stat-content">
           <div class="stat-value">
             {stats?.achievementsUnlocked || 0}/{stats?.totalAchievements || 0}
@@ -213,7 +213,7 @@
       </div>
 
       <div class="stat-card glass-surface">
-        <div class="stat-icon"><i class="fas fa-fire"></i></div>
+        <div class="stat-icon"><i class="fas fa-fire" aria-hidden="true"></i></div>
         <div class="stat-content">
           <div class="stat-value">{currentStreak}</div>
           <div class="stat-label">Day Streak</div>
@@ -225,7 +225,7 @@
     {#if hasRanks}
       <div class="rankings-section">
         <div class="section-header">
-          <h3><i class="fas fa-chart-line"></i> Your Rankings</h3>
+          <h3><i class="fas fa-chart-line" aria-hidden="true"></i> Your Rankings</h3>
         </div>
         <div class="rankings-grid" class:compact={isCompact}>
           {#if userRanks.xp !== null}
@@ -263,7 +263,7 @@
     {:else if isLoadingRanks}
       <div class="rankings-section">
         <div class="section-header">
-          <h3><i class="fas fa-chart-line"></i> Your Rankings</h3>
+          <h3><i class="fas fa-chart-line" aria-hidden="true"></i> Your Rankings</h3>
         </div>
         <div class="rankings-loading">
           <span>Loading rankings...</span>
@@ -274,15 +274,15 @@
     <!-- Recent Achievements -->
     <div class="recent-section">
       <div class="section-header">
-        <h3><i class="fas fa-trophy"></i> Recent Achievements</h3>
+        <h3><i class="fas fa-trophy" aria-hidden="true"></i> Recent Achievements</h3>
         <button class="view-all-button" onclick={openBrowser}>
-          View All <i class="fas fa-arrow-right"></i>
+          View All <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </button>
       </div>
 
       {#if recentAchievements.length === 0}
         <div class="empty-state">
-          <i class="fas fa-trophy"></i>
+          <i class="fas fa-trophy" aria-hidden="true"></i>
           <p>No achievements unlocked yet</p>
           <p class="hint">
             Complete challenges to earn your first achievement!
@@ -293,7 +293,7 @@
           {#each recentAchievements as achievement}
             <div class="achievement-item glass-surface">
               <div class="achievement-icon">
-                <i class="fas {achievement.icon}"></i>
+                <i class="fas {achievement.icon}" aria-hidden="true"></i>
               </div>
               <div class="achievement-info">
                 <h4>{achievement.title}</h4>

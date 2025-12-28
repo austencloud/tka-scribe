@@ -188,7 +188,7 @@
   </div>
 
   <!-- Main clip body -->
-  <div class="clip-body" onmousedown={handleMoveStart} role="button" tabindex="-1">
+  <div class="clip-body" onmousedown={handleMoveStart} role="button" tabindex="0" aria-label="Drag to move clip">
     <div class="clip-preview">
       {#if clip.sequence.thumbnails?.[0]}
         <img src={clip.sequence.thumbnails[0]} alt="" draggable="false" />
@@ -216,7 +216,7 @@
         {#if speedLabel}<span class="badge speed">{speedLabel}</span>{/if}
         {#if trimLabel}<span class="badge trim">{trimLabel}</span>{/if}
         {#if clip.loop}<span class="badge loop" title="Looping"
-            ><i class="fa-solid fa-repeat"></i></span
+            ><i class="fa-solid fa-repeat" aria-hidden="true"></i></span
           >{/if}
       </div>
     </div>
@@ -347,6 +347,11 @@
     cursor: grabbing;
   }
 
+  .clip-body:focus-visible {
+    outline: 2px solid var(--primary-color, #6366f1);
+    outline-offset: 2px;
+  }
+
   .clip-preview {
     position: absolute;
     inset: 0;
@@ -421,7 +426,7 @@
   }
 
   .badge {
-    font-size: 10px;
+    font-size: 12px;
     padding: 2px 5px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.5);

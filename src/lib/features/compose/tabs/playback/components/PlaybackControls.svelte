@@ -73,11 +73,11 @@
       onclick={handlePlayPause}
       aria-label={isPlaying ? "Pause" : "Play"}
     >
-      <i class="fas fa-{isPlaying ? 'pause' : 'play'}"></i>
+      <i class="fas fa-{isPlaying ? 'pause' : 'play'}" aria-hidden="true"></i>
     </button>
 
     <button class="control-btn stop-btn" onclick={onStop} aria-label="Stop">
-      <i class="fas fa-stop"></i>
+      <i class="fas fa-stop" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -110,7 +110,7 @@
         : "Enable step mode"}
       title={isPlaying ? "Pause playback to change mode" : "Toggle step mode"}
     >
-      <i class="fas fa-shoe-prints"></i>
+      <i class="fas fa-shoe-prints" aria-hidden="true"></i>
       <span class="mode-label">Step</span>
     </button>
 
@@ -147,7 +147,7 @@
       onclick={handleLoopClick}
       aria-label={shouldLoop ? "Disable loop" : "Enable loop"}
     >
-      <i class="fas fa-repeat"></i>
+      <i class="fas fa-repeat" aria-hidden="true"></i>
       <span class="loop-label">Loop</span>
     </button>
   </div>
@@ -307,7 +307,7 @@
 
   .speed-btn {
     min-width: var(--min-touch-target);
-    height: 36px;
+    min-height: var(--min-touch-target); /* WCAG AAA touch target */
     padding: 0 0.75rem;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -366,8 +366,7 @@
     }
 
     .speed-btn {
-      min-width: 44px;
-      height: 32px;
+      /* Touch target remains 48px for WCAG AAA */
       font-size: 0.75rem;
     }
 
@@ -376,8 +375,7 @@
     }
 
     .control-btn {
-      min-width: 44px;
-      height: 44px;
+      /* Touch target remains 48px for WCAG AAA */
       padding: 0 0.75rem;
     }
   }
@@ -398,8 +396,7 @@
     }
 
     .speed-btn {
-      min-width: 40px;
-      height: 30px;
+      /* Touch target remains 48px for WCAG AAA */
       font-size: 0.7rem;
     }
   }

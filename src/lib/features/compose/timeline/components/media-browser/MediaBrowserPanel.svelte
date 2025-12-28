@@ -75,7 +75,7 @@
 <div class="media-browser-panel">
 	<!-- Header -->
 	<div class="panel-header">
-		<i class="fas fa-photo-film header-icon"></i>
+		<i class="fas fa-photo-film header-icon" aria-hidden="true"></i>
 		<span class="header-title">Media</span>
 		<span class="sequence-count">
 			{state.filteredSequences.length}
@@ -180,7 +180,7 @@
 
 	.sequence-count {
 		margin-left: auto;
-		font-size: 11px;
+		font-size: 12px;
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
 		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
 		padding: 3px 8px;

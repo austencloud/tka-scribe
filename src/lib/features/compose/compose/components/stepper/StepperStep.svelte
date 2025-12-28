@@ -31,13 +31,13 @@
 >
   <div class="step-indicator">
     {#if isCompleted && !isActive}
-      <i class="fas fa-check"></i>
+      <i class="fas fa-check" aria-hidden="true"></i>
     {:else}
       <span class="step-number">{stepNumber}</span>
     {/if}
   </div>
   <div class="step-content">
-    <i class={icon}></i>
+    <i class={icon} aria-hidden="true"></i>
     <span class="step-label">{label}</span>
   </div>
 </button>

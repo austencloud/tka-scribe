@@ -157,14 +157,20 @@ export class Canvas2DTrailRenderer {
   ): void {
     if (points.length < 2) return;
 
-    // Separate points by endType if tracking both ends
-    const pointSets: TrailPoint[][] =
-      settings.trackingMode === TrackingMode.BOTH_ENDS
-        ? [
-            points.filter((p) => p.endType === 0), // Left end
-            points.filter((p) => p.endType === 1), // Right end
-          ]
-        : [points]; // Single end (left or right)
+    // Separate points by endType if tracking both ends (single-pass to avoid 2 array allocations)
+    let pointSets: TrailPoint[][];
+    if (settings.trackingMode === TrackingMode.BOTH_ENDS) {
+      const leftPoints: TrailPoint[] = [];
+      const rightPoints: TrailPoint[] = [];
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i]!;
+        if (p.endType === 0) leftPoints.push(p);
+        else rightPoints.push(p);
+      }
+      pointSets = [leftPoints, rightPoints];
+    } else {
+      pointSets = [points]; // Single end (left or right)
+    }
 
     for (const pointSet of pointSets) {
       if (pointSet.length < 2) continue;
@@ -178,6 +184,9 @@ export class Canvas2DTrailRenderer {
     }
   }
 
+  // Reusable control points array to avoid allocations in render loop
+  private controlPointsBuffer: Point2D[] = [];
+
   private renderSmoothTrail(
     ctx: CanvasRenderingContext2D,
     points: TrailPoint[],
@@ -187,8 +196,18 @@ export class Canvas2DTrailRenderer {
   ): void {
     if (points.length < 2) return;
 
-    // Convert trail points to Point2D for spline interpolation
-    const controlPoints: Point2D[] = points.map((p) => ({ x: p.x, y: p.y }));
+    // Reuse control points buffer (avoid creating 500+ objects per frame)
+    const controlPoints = this.controlPointsBuffer;
+    controlPoints.length = points.length; // Resize if needed
+    for (let i = 0; i < points.length; i++) {
+      const p = points[i]!;
+      if (controlPoints[i]) {
+        controlPoints[i]!.x = p.x;
+        controlPoints[i]!.y = p.y;
+      } else {
+        controlPoints[i] = { x: p.x, y: p.y };
+      }
+    }
 
     // Adaptive subdivision based on point count
     const subdivisionsPerSegment = Math.max(

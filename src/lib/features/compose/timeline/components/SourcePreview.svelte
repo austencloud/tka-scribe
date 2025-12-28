@@ -235,7 +235,7 @@
       </div>
     {:else if error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <span>{error}</span>
       </div>
     {:else if sequence && bluePropState && redPropState}
@@ -260,12 +260,12 @@
       <!-- Playback status overlay -->
       {#if isPlaying}
         <div class="playback-status">
-          <i class="fas fa-play"></i>
+          <i class="fas fa-play" aria-hidden="true"></i>
         </div>
       {/if}
     {:else}
       <div class="empty-state">
-        <i class="fas fa-photo-film"></i>
+        <i class="fas fa-photo-film" aria-hidden="true"></i>
         <span>No source loaded</span>
         <span class="hint">Select a sequence from the library to preview</span>
       </div>
@@ -293,26 +293,26 @@
       <!-- Centered transport buttons -->
       <div class="control-buttons">
         <button class="transport-btn" onclick={goToStart} title="Go to start" aria-label="Go to start" disabled={!sequence}>
-          <i class="fas fa-backward-fast"></i>
+          <i class="fas fa-backward-fast" aria-hidden="true"></i>
         </button>
         <button class="transport-btn" onclick={stepBackward} title="Previous beat" aria-label="Previous beat" disabled={!sequence}>
-          <i class="fas fa-backward-step"></i>
+          <i class="fas fa-backward-step" aria-hidden="true"></i>
         </button>
         <button class="transport-btn play-btn" onclick={togglePlayback} title={isPlaying ? "Pause" : "Play"} aria-label={isPlaying ? "Pause" : "Play"} disabled={!sequence}>
-          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+          <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
         </button>
         <button class="transport-btn" onclick={stepForward} title="Next beat" aria-label="Next beat" disabled={!sequence}>
-          <i class="fas fa-forward-step"></i>
+          <i class="fas fa-forward-step" aria-hidden="true"></i>
         </button>
         <button class="transport-btn" onclick={goToEnd} title="Go to end" aria-label="Go to end" disabled={!sequence}>
-          <i class="fas fa-forward-fast"></i>
+          <i class="fas fa-forward-fast" aria-hidden="true"></i>
         </button>
       </div>
 
       <!-- Add to timeline button (only when sequence loaded) -->
       {#if sequence}
         <button class="add-btn" onclick={handleAddToTimeline} title="Add to timeline at playhead">
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
           <span>Add</span>
         </button>
       {/if}
@@ -387,7 +387,7 @@
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(4px);
   }
@@ -412,7 +412,7 @@
   }
 
   .empty-state .hint {
-    font-size: 11px;
+    font-size: 12px;
     opacity: 0.6;
   }
 
@@ -442,7 +442,7 @@
     border-radius: 50%;
     backdrop-filter: blur(4px);
     color: #ffd43b;
-    font-size: 10px;
+    font-size: 12px;
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -513,8 +513,8 @@
   }
 
   .transport-btn {
-    width: 28px;
-    height: 28px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 4px;
     border: none;
     background: rgba(255, 255, 255, 0.05);
@@ -523,7 +523,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 12px;
     transition: all 0.15s ease;
   }
 
@@ -538,8 +538,8 @@
   }
 
   .transport-btn.play-btn {
-    width: 36px;
-    height: 36px;
+    width: 52px; /* WCAG AAA touch target - slightly larger for primary */
+    height: 52px;
     background: rgba(255, 212, 59, 0.2);
     color: #ffd43b;
     font-size: 14px;
@@ -572,7 +572,7 @@
   }
 
   .add-btn i {
-    font-size: 10px;
+    font-size: 12px;
   }
 </style>
 

@@ -22,7 +22,7 @@
 
 <section class="section">
   <div class="section-header">
-    <i class="fa-solid fa-info-circle"></i>
+    <i class="fa-solid fa-info-circle" aria-hidden="true"></i>
     <span>Info</span>
   </div>
 
@@ -90,7 +90,7 @@
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
     letter-spacing: 0.3px;

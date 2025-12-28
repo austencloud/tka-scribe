@@ -214,14 +214,14 @@
     <div class="browser-header">
       {#if selectedSequence}
         <button class="back-button" onclick={handleBack} aria-label="Back">
-          <i class="fas fa-arrow-left"></i>
+          <i class="fas fa-arrow-left" aria-hidden="true"></i>
         </button>
         <h2 id="media-browser-title">Import Media</h2>
       {:else}
         <h2 id="media-browser-title">Add to Timeline</h2>
       {/if}
       <button class="close-button" onclick={onClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -237,7 +237,7 @@
               />
             {:else}
               <div class="placeholder-thumb">
-                <i class="fas fa-film"></i>
+                <i class="fas fa-film" aria-hidden="true"></i>
               </div>
             {/if}
           </div>
@@ -255,7 +255,7 @@
                 onclick={handlePreview}
                 title="Preview in Source Monitor"
               >
-                <i class="fas fa-eye"></i>
+                <i class="fas fa-eye" aria-hidden="true"></i>
                 <span>Preview</span>
               </button>
             {/if}
@@ -274,7 +274,7 @@
             disabled={!hasAnimation(selectedSequence)}
           >
             <div class="option-icon animation">
-              <i class="fas fa-play-circle"></i>
+              <i class="fas fa-play-circle" aria-hidden="true"></i>
             </div>
             <div class="option-content">
               <span class="option-label">Animation</span>
@@ -287,7 +287,7 @@
               </span>
             </div>
             {#if hasAnimation(selectedSequence)}
-              <i class="fas fa-chevron-right option-arrow"></i>
+              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"></i>
             {/if}
           </button>
 
@@ -299,7 +299,7 @@
             disabled={!hasImage(selectedSequence)}
           >
             <div class="option-icon image">
-              <i class="fas fa-image"></i>
+              <i class="fas fa-image" aria-hidden="true"></i>
             </div>
             <div class="option-content">
               <span class="option-label">Image</span>
@@ -312,7 +312,7 @@
               </span>
             </div>
             {#if hasImage(selectedSequence)}
-              <i class="fas fa-chevron-right option-arrow"></i>
+              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"></i>
             {/if}
           </button>
 
@@ -325,7 +325,7 @@
             disabled={!hasRecording(selectedSequence)}
           >
             <div class="option-icon recording">
-              <i class="fas fa-video"></i>
+              <i class="fas fa-video" aria-hidden="true"></i>
             </div>
             <div class="option-content">
               <span class="option-label">Recording</span>
@@ -338,7 +338,7 @@
               </span>
             </div>
             {#if hasRecording(selectedSequence)}
-              <i class="fas fa-chevron-right option-arrow"></i>
+              <i class="fas fa-chevron-right option-arrow" aria-hidden="true"></i>
             {/if}
           </button>
         </div>
@@ -348,7 +348,7 @@
 
       <!-- Search Bar -->
       <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
+        <i class="fas fa-search search-icon" aria-hidden="true"></i>
         <input
           type="text"
           class="search-input"
@@ -361,7 +361,7 @@
             onclick={() => (searchQuery = "")}
             aria-label="Clear search"
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
@@ -373,7 +373,7 @@
           class:active={filterMode === "all"}
           onclick={() => (filterMode = "all")}
         >
-          <i class="fas fa-th"></i>
+          <i class="fas fa-th" aria-hidden="true"></i>
           All Sequences
         </button>
         <button
@@ -381,7 +381,7 @@
           class:active={filterMode === "with-recordings"}
           onclick={() => (filterMode = "with-recordings")}
         >
-          <i class="fas fa-video"></i>
+          <i class="fas fa-video" aria-hidden="true"></i>
           With Recordings
         </button>
       </div>
@@ -403,20 +403,20 @@
           </div>
         {:else if error}
           <div class="error-state">
-            <i class="fas fa-exclamation-triangle"></i>
+            <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
             <p>{error}</p>
             <button onclick={loadSequences}>Retry</button>
           </div>
         {:else if filteredSequences.length === 0}
           <div class="empty-state">
             {#if filterMode === "with-recordings"}
-              <i class="fas fa-video-slash"></i>
+              <i class="fas fa-video-slash" aria-hidden="true"></i>
               <p>No sequences with recordings</p>
               <span class="empty-hint"
                 >Record a performance in the Create module</span
               >
             {:else}
-              <i class="fas fa-search"></i>
+              <i class="fas fa-search" aria-hidden="true"></i>
               <p>No sequences found</p>
             {/if}
           </div>
@@ -433,7 +433,7 @@
                 />
                 {#if hasVideo}
                   <div class="video-badge" title="Has recording">
-                    <i class="fas fa-video"></i>
+                    <i class="fas fa-video" aria-hidden="true"></i>
                   </div>
                 {/if}
               </div>
@@ -671,7 +671,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px);
     color: white;
     z-index: 2;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -821,7 +821,7 @@
   }
 
   .preview-button i {
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
   }
 
   .media-options {

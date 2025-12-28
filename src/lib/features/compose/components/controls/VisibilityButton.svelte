@@ -100,12 +100,9 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  /* Responsive adjustments */
+  /* Responsive adjustments - maintain 48px touch target for WCAG AAA */
   @media (max-width: 375px) and (max-height: 670px) {
     .vis-btn {
-      min-height: 44px;
-      min-width: 44px;
-      width: 44px;
       font-size: 15px;
     }
   }

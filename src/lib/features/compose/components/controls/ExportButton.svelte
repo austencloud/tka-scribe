@@ -21,7 +21,7 @@
 </script>
 
 <button class="export-btn" {onclick} aria-label={computedAriaLabel}>
-  <i class="fas {icon}"></i>
+  <i class="fas {icon}" aria-hidden="true"></i>
   <span class="export-label">{label}</span>
 </button>
 

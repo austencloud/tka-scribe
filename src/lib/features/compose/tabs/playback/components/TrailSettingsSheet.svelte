@@ -55,12 +55,10 @@
   const isModified = $derived(!activePreset && trailSettings.enabled);
 
   // Local state for smooth slider interactions
-  // svelte-ignore state_referenced_locally - intentional: $effect below syncs prop changes
-  let fadeDuration = $state(trailSettings.fadeDurationMs / 1000);
-  // svelte-ignore state_referenced_locally
-  let lineWidth = $state(trailSettings.lineWidth);
-  // svelte-ignore state_referenced_locally
-  let opacity = $state(trailSettings.maxOpacity);
+  // Initialize with defaults - $effect below syncs prop changes
+  let fadeDuration = $state(1);
+  let lineWidth = $state(3);
+  let opacity = $state(0.8);
 
   // Sync from parent
   $effect(() => {
@@ -121,7 +119,7 @@
     <header class="panel-header">
       <h3 class="panel-title">Trail Settings</h3>
       <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -136,7 +134,7 @@
             onclick={() => handlePresetSelect(preset.id)}
           >
             <div class="preset-icon">
-              <i class="fas {preset.icon}"></i>
+              <i class="fas {preset.icon}" aria-hidden="true"></i>
             </div>
             <div class="preset-info">
               <span class="preset-name">{preset.name}</span>
@@ -144,7 +142,7 @@
             </div>
             {#if activePreset?.id === preset.id}
               <div class="check-indicator">
-                <i class="fas fa-check"></i>
+                <i class="fas fa-check" aria-hidden="true"></i>
               </div>
             {/if}
           </button>
@@ -162,9 +160,9 @@
           {#if isModified}
             <span class="modified-badge">Modified</span>
           {/if}
-          <i class="fas fa-sliders"></i>
+          <i class="fas fa-sliders" aria-hidden="true"></i>
           <span>Advanced Settings</span>
-          <i class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}"></i>
+          <i class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -310,7 +308,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
     margin: 0 0 12px 0;
   }
 
@@ -381,7 +379,7 @@
 
   .preset-description {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .check-indicator {
@@ -432,10 +430,10 @@
   }
 
   .modified-badge {
-    font-size: 0.7rem;
+    font-size: var(--font-size-compact, 12px);
     padding: 3px 8px;
-    background: rgba(251, 191, 36, 0.2);
-    color: rgba(251, 191, 36, 0.9);
+    background: rgba(251, 191, 36, 0.5);
+    color: white;
     border-radius: 6px;
     font-weight: 600;
   }

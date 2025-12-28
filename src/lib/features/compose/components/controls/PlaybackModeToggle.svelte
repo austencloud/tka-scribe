@@ -83,7 +83,7 @@
   }
 
   .mode-btn i {
-    font-size: 11px;
+    font-size: 12px;
     flex-shrink: 0;
   }
 

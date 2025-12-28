@@ -35,13 +35,13 @@
       onclick={onPlayPause}
       aria-label={isPlaying ? "Pause" : "Play"}
     >
-      <i class="fas fa-{isPlaying ? 'pause' : 'play'}"></i>
+      <i class="fas fa-{isPlaying ? 'pause' : 'play'}" aria-hidden="true"></i>
     </button>
   </div>
 
   <div class="toolbar-right">
     <button class="close-btn" onclick={onClose} aria-label="Close playback">
-      <i class="fas fa-chevron-down"></i>
+      <i class="fas fa-chevron-down" aria-hidden="true"></i>
     </button>
   </div>
 </div>

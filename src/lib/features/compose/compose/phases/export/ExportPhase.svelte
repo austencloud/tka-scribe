@@ -84,7 +84,6 @@
     };
 
     // TODO: Wire to actual export service
-    console.log("🎬 Export requested:", options);
     onExport?.(options);
 
     // Simulate export completion
@@ -103,7 +102,7 @@
       <!-- No Content Warning -->
       <div class="empty-state">
         <div class="empty-icon">
-          <i class="fas fa-layer-group"></i>
+          <i class="fas fa-layer-group" aria-hidden="true"></i>
         </div>
         <h3>Nothing to export</h3>
         <p>Add sequences to your composition first</p>
@@ -124,7 +123,7 @@
                 class:selected={format === fmt.value}
                 onclick={() => (format = fmt.value)}
               >
-                <i class={fmt.icon}></i>
+                <i class={fmt.icon} aria-hidden="true"></i>
                 <span class="format-label">{fmt.label}</span>
                 <span class="format-desc">{fmt.description}</span>
               </button>
@@ -154,7 +153,11 @@
           <h3>Audio</h3>
           {#if canIncludeAudio}
             <label class="audio-toggle">
-              <input type="checkbox" bind:checked={includeAudio} />
+              <input
+                type="checkbox"
+                bind:checked={includeAudio}
+                aria-label="Include audio in export"
+              />
               <span class="toggle-track"></span>
               <span class="toggle-label">
                 Include audio ({audioState.fileName})
@@ -162,12 +165,12 @@
             </label>
           {:else if format === "gif"}
             <p class="audio-note">
-              <i class="fas fa-info-circle"></i>
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
               GIF format doesn't support audio
             </p>
           {:else}
             <p class="audio-note">
-              <i class="fas fa-info-circle"></i>
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
               No audio loaded. Add audio in the Audio phase.
             </p>
           {/if}
@@ -183,7 +186,7 @@
               disabled={loopCount <= 1}
               aria-label="Decrease loop count"
             >
-              <i class="fas fa-minus"></i>
+              <i class="fas fa-minus" aria-hidden="true"></i>
             </button>
             <span class="loop-count">{loopCount}x</span>
             <button
@@ -192,7 +195,7 @@
               disabled={loopCount >= 10}
               aria-label="Increase loop count"
             >
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
           </div>
         </section>
@@ -205,10 +208,10 @@
             disabled={isExporting}
           >
             {#if isExporting}
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
               Exporting...
             {:else}
-              <i class="fas fa-download"></i>
+              <i class="fas fa-download" aria-hidden="true"></i>
               Export {format.toUpperCase()}
             {/if}
           </button>
@@ -466,8 +469,8 @@
   }
 
   .loop-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

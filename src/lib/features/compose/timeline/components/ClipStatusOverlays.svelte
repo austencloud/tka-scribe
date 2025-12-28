@@ -13,13 +13,13 @@
 
 {#if muted}
   <div class="status-overlay muted">
-    <i class="fa-solid fa-volume-xmark"></i>
+    <i class="fa-solid fa-volume-xmark" aria-hidden="true"></i>
   </div>
 {/if}
 
 {#if locked}
   <div class="status-overlay locked">
-    <i class="fa-solid fa-lock"></i>
+    <i class="fa-solid fa-lock" aria-hidden="true"></i>
   </div>
 {/if}
 

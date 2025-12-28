@@ -95,13 +95,13 @@
     </div>
   {:else if !authState.isAuthenticated}
     <div class="auth-required">
-      <i class="fas fa-lock"></i>
+      <i class="fas fa-lock" aria-hidden="true"></i>
       <h3>Sign In Required</h3>
       <p>Sign in to access daily challenges and quests</p>
     </div>
   {:else if !dailyChallenge}
     <div class="empty-state">
-      <i class="fas fa-calendar-check"></i>
+      <i class="fas fa-calendar-check" aria-hidden="true"></i>
       <h3>No Challenge Today</h3>
       <p>Check back tomorrow for a new daily challenge!</p>
     </div>
@@ -109,7 +109,7 @@
     <!-- Daily Challenge Card -->
     <div class="daily-challenge glass-surface">
       <div class="challenge-header">
-        <h3><i class="fas fa-bullseye"></i> Daily Challenge</h3>
+        <h3><i class="fas fa-bullseye" aria-hidden="true"></i> Daily Challenge</h3>
         <span class="difficulty-badge {dailyChallenge.difficulty}">
           {dailyChallenge.difficulty}
         </span>
@@ -132,15 +132,15 @@
       </div>
 
       <div class="challenge-reward">
-        <i class="fas fa-trophy"></i> +{dailyChallenge.xpReward} XP
+        <i class="fas fa-trophy" aria-hidden="true"></i> +{dailyChallenge.xpReward} XP
       </div>
     </div>
 
     <!-- Active Quests (Coming Soon) -->
     <div class="quests-section">
-      <h3><i class="fas fa-scroll"></i> Active Quests</h3>
+      <h3><i class="fas fa-scroll" aria-hidden="true"></i> Active Quests</h3>
       <div class="coming-soon">
-        <i class="fas fa-hourglass-half"></i>
+        <i class="fas fa-hourglass-half" aria-hidden="true"></i>
         <p>Quest system coming soon!</p>
         <p class="hint">Complete longer challenges for bigger rewards</p>
       </div>

@@ -14,8 +14,7 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { getTimelinePlaybackService } from "../services/implementations/TimelinePlaybackService";
-  import { getTimelineState } from "../state/timeline-state.svelte";
+  import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import type { TimelineClip } from "../domain/timeline-types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { ISequenceAnimationOrchestrator } from "../../services/contracts/ISequenceAnimationOrchestrator";
@@ -30,6 +29,8 @@
     isPlaying: boolean;
     /** Pixels per second (for display info) */
     pixelsPerSecond?: number;
+    /** Total timeline duration for scrubber */
+    totalDuration?: number;
     /** BPM for playback sync */
     bpm?: number;
   }
@@ -39,20 +40,14 @@
     clips = [],
     isPlaying = false,
     pixelsPerSecond = 50,
+    totalDuration = 60,
     bpm = 60,
   }: Props = $props();
 
   // Playback service access
   function getPlayback() {
-    return getTimelinePlaybackService();
+    return getTimelinePlayer();
   }
-
-  function getState() {
-    return getTimelineState();
-  }
-
-  // Total duration for scrubber
-  const totalDuration = $derived(getState().totalDuration || 60);
 
   // Animation orchestrator for calculating prop states
   let animationOrchestrator = $state<ISequenceAnimationOrchestrator | null>(null);
@@ -80,17 +75,6 @@
       if (playheadPosition >= clip.startTime && playheadPosition < clipEnd) {
         return clip;
       }
-    }
-
-    // Debug: log when no clip is found but clips exist
-    const firstClip = clips[0];
-    if (clips.length > 0 && firstClip) {
-      console.log('[TimelinePreview] No clip at playhead:', {
-        playheadPosition,
-        firstClipStartTime: firstClip.startTime,
-        firstClipEnd: firstClip.startTime + firstClip.duration,
-        clipCount: clips.length
-      });
     }
 
     return null;
@@ -168,7 +152,6 @@
 
       // Resolve the animation orchestrator
       animationOrchestrator = resolve(TYPES.ISequenceAnimationOrchestrator) as ISequenceAnimationOrchestrator;
-      console.log('[TimelinePreview] Orchestrator instance:', animationOrchestrator);
       initialized = true;
       loading = false;
     } catch (err) {
@@ -283,7 +266,7 @@
       </div>
     {:else if error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <span>{error}</span>
       </div>
     {:else if activeClip && currentSequence && bluePropState && redPropState}
@@ -308,12 +291,12 @@
       <!-- Playback status overlay -->
       {#if isPlaying}
         <div class="playback-status">
-          <i class="fas fa-play"></i>
+          <i class="fas fa-play" aria-hidden="true"></i>
         </div>
       {/if}
     {:else}
       <div class="empty-state">
-        <i class="fas fa-film"></i>
+        <i class="fas fa-film" aria-hidden="true"></i>
         <span>No clip at playhead</span>
         <span class="hint">Position the playhead over a clip to preview</span>
       </div>
@@ -338,19 +321,19 @@
     <!-- Control buttons -->
     <div class="control-buttons">
       <button class="transport-btn" onclick={() => getPlayback().goToStart()} title="Go to start (Home)" aria-label="Go to start">
-        <i class="fas fa-backward-fast"></i>
+        <i class="fas fa-backward-fast" aria-hidden="true"></i>
       </button>
       <button class="transport-btn" onclick={() => getPlayback().stepBackward(1)} title="Previous frame (←)" aria-label="Previous frame">
-        <i class="fas fa-backward-step"></i>
+        <i class="fas fa-backward-step" aria-hidden="true"></i>
       </button>
       <button class="transport-btn play-btn" onclick={() => getPlayback().togglePlayPause()} title={isPlaying ? "Pause (Space)" : "Play (Space)"} aria-label={isPlaying ? "Pause" : "Play"}>
-        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
       </button>
       <button class="transport-btn" onclick={() => getPlayback().stepForward(1)} title="Next frame (→)" aria-label="Next frame">
-        <i class="fas fa-forward-step"></i>
+        <i class="fas fa-forward-step" aria-hidden="true"></i>
       </button>
       <button class="transport-btn" onclick={() => getPlayback().goToEnd()} title="Go to end (End)" aria-label="Go to end">
-        <i class="fas fa-forward-fast"></i>
+        <i class="fas fa-forward-fast" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -431,7 +414,7 @@
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     color: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(4px);
   }
@@ -456,7 +439,7 @@
   }
 
   .empty-state .hint {
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     opacity: 0.6;
   }
 
@@ -486,7 +469,7 @@
     border-radius: 50%;
     backdrop-filter: blur(4px);
     color: #51cf66;
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px);
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -541,8 +524,8 @@
   }
 
   .transport-btn {
-    width: 28px;
-    height: 28px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 4px;
     border: none;
     background: rgba(255, 255, 255, 0.05);
@@ -551,7 +534,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     transition: all 0.15s ease;
   }
 
@@ -561,8 +544,8 @@
   }
 
   .transport-btn.play-btn {
-    width: 36px;
-    height: 36px;
+    width: 52px; /* WCAG AAA touch target - slightly larger for primary */
+    height: 52px;
     background: rgba(74, 158, 255, 0.2);
     color: var(--theme-accent, #4a9eff);
     font-size: 14px;

@@ -63,11 +63,11 @@
                     >
                       {#if cellDefault?.type === "tunnel"}
                         <span class="tunnel-indicator">
-                          <i class="fas fa-layer-group"></i>
+                          <i class="fas fa-layer-group" aria-hidden="true"></i>
                         </span>
                       {:else if cellDefault?.isMirrored}
                         <span class="mirror-indicator">
-                          <i class="fas fa-clone"></i>
+                          <i class="fas fa-clone" aria-hidden="true"></i>
                         </span>
                       {:else if cellDefault?.rotationOffset}
                         <span class="rotation-indicator">
@@ -96,13 +96,14 @@
           class="section-toggle"
           onclick={() => (showAdvanced = !showAdvanced)}
           aria-expanded={showAdvanced}
+          aria-controls="advanced-templates-grid"
         >
           <h3 class="section-title">Advanced</h3>
-          <i class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}"></i>
+          <i class="fas fa-chevron-{showAdvanced ? 'up' : 'down'}" aria-hidden="true"></i>
         </button>
 
         {#if showAdvanced}
-          <div class="templates-grid">
+          <div class="templates-grid" id="advanced-templates-grid">
             {#each advancedTemplates as template (template.id)}
               <button
                 class="template-card"
@@ -120,7 +121,7 @@
                           class:tunnel={cellDefault?.type === "tunnel"}
                         >
                           {#if cellDefault?.type === "tunnel"}
-                            <i class="fas fa-layer-group"></i>
+                            <i class="fas fa-layer-group" aria-hidden="true"></i>
                           {/if}
                         </div>
                       {/each}
@@ -143,7 +144,7 @@
 
     <!-- Custom Layout Hint -->
     <div class="custom-hint">
-      <i class="fas fa-info-circle"></i>
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
       <span>Use the layout picker in controls to build custom grids</span>
     </div>
   </div>

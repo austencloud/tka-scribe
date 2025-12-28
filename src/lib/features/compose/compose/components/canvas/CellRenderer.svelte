@@ -185,7 +185,7 @@
     </div>
   {:else if error}
     <div class="error-state">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span>{error}</span>
     </div>
   {:else if hasSequence && animationState.sequenceData}
@@ -211,7 +211,7 @@
     {/if}
   {:else}
     <div class="empty-state">
-      <i class="fas fa-film"></i>
+      <i class="fas fa-film" aria-hidden="true"></i>
     </div>
   {/if}
 </div>

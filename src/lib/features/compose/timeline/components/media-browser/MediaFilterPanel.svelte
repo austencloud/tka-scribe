@@ -83,11 +83,11 @@
 				disabled={!currentLength || currentLength <= 1}
 				aria-label="Decrease sequence length"
 			>
-				<i class="fas fa-minus"></i>
+				<i class="fas fa-minus" aria-hidden="true"></i>
 			</button>
 			<span class="length-display">{currentLength ?? '–'}</span>
 			<button class="stepper-btn" onclick={incrementLength} aria-label="Increase sequence length">
-				<i class="fas fa-plus"></i>
+				<i class="fas fa-plus" aria-hidden="true"></i>
 			</button>
 		</div>
 	</div>
@@ -97,16 +97,16 @@
 		<span class="filter-label">Letter</span>
 		<div class="filter-control">
 			<button class="letter-select-btn" onclick={onOpenLetterPicker}>
-				<i class="fas fa-font"></i>
+				<i class="fas fa-font" aria-hidden="true"></i>
 				<span>{currentLetter || 'All'}</span>
-				<i class="fas fa-chevron-down"></i>
+				<i class="fas fa-chevron-down" aria-hidden="true"></i>
 			</button>
 		</div>
 	</div>
 
 	{#if hasActiveFilter}
 		<button class="clear-filters-compact" onclick={onClearFilters}>
-			<i class="fas fa-times"></i>
+			<i class="fas fa-times" aria-hidden="true"></i>
 			Clear filters
 		</button>
 	{/if}
@@ -130,7 +130,7 @@
 	}
 
 	.filter-label {
-		font-size: 11px;
+		font-size: 12px;
 		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
@@ -265,7 +265,7 @@
 	}
 
 	.letter-select-btn i:first-child {
-		font-size: 11px;
+		font-size: 12px;
 	}
 
 	.letter-select-btn span {
@@ -274,7 +274,7 @@
 	}
 
 	.letter-select-btn i:last-child {
-		font-size: 9px;
+		font-size: 12px;
 		opacity: 0.6;
 	}
 

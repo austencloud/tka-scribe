@@ -30,10 +30,10 @@
 >
   {#if isShowingGrid}
     <!-- Show sliders icon to indicate "switch to controls" -->
-    <i class="fas fa-sliders-h"></i>
+    <i class="fas fa-sliders-h" aria-hidden="true"></i>
   {:else}
     <!-- Show grid icon to indicate "switch to beat grid" -->
-    <i class="fas fa-th"></i>
+    <i class="fas fa-th" aria-hidden="true"></i>
   {/if}
 </button>
 

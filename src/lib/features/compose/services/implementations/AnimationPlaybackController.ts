@@ -12,7 +12,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import { TYPES } from "$lib/shared/inversify/types";
 import type { PropState } from "../../shared/domain/types/PropState";
 import type { AnimationPanelState } from "../../state/animation-panel-state.svelte";
-import type { IAnimationLoopService } from "../contracts/IAnimationLoopService";
+import type { IAnimationLoop } from "../contracts/IAnimationLoop";
 import type { IAnimationPlaybackController } from "../contracts/IAnimationPlaybackController";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { ISequenceLoopabilityChecker } from "../contracts/ISequenceLoopabilityChecker";
@@ -39,8 +39,8 @@ export class AnimationPlaybackController
   constructor(
     @inject(TYPES.ISequenceAnimationOrchestrator)
     private readonly animationEngine: ISequenceAnimationOrchestrator,
-    @inject(TYPES.IAnimationLoopService)
-    private readonly loopService: IAnimationLoopService,
+    @inject(TYPES.IAnimationLoop)
+    private readonly loopService: IAnimationLoop,
     @inject(TYPES.ISequenceLoopabilityChecker)
     private readonly loopabilityChecker: ISequenceLoopabilityChecker
   ) {}

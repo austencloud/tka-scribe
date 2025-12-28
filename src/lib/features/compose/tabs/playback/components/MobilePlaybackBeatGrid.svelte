@@ -38,7 +38,7 @@
 <div class="mobile-beat-grid">
   {#if beats().length === 0}
     <div class="empty-state">
-      <i class="fas fa-layer-group"></i>
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
       <span>No sequence loaded</span>
     </div>
   {:else}

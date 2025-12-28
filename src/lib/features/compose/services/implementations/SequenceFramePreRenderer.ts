@@ -139,10 +139,6 @@ export class SequenceFramePreRenderer {
     // Initialize with offscreen container
     await offscreenRenderer.initialize(this.offscreenContainer, size, 1.0);
 
-    console.log(
-      `✅ Created offscreen renderer (${size}x${size}) for pre-rendering`
-    );
-
     return offscreenRenderer;
   }
 
@@ -209,9 +205,6 @@ export class SequenceFramePreRenderer {
 
       // Mark as loaded
       this.loadedGlyphs.add(letter);
-      console.log(
-        `✅ [SequenceFramePreRenderer] Loaded glyph texture for letter "${letter}"`
-      );
     } catch (error) {
       console.error(
         `[SequenceFramePreRenderer] Error loading glyph for letter ${letter}:`,
@@ -259,12 +252,6 @@ export class SequenceFramePreRenderer {
       const frameTimeMs = 1000 / fullConfig.fps;
       const totalFrames = Math.ceil(totalDurationMs / frameTimeMs);
 
-      console.log(
-        `🎬 Pre-rendering sequence: ${sequenceData.word || sequenceData.id}`
-      );
-      console.log(`   Frames: ${totalFrames} @ ${fullConfig.fps} FPS`);
-      console.log(`   Duration: ${totalDurationMs}ms (${totalBeats} beats)`);
-
       const frames: PreRenderedFrame[] = [];
       const startTime = performance.now();
 
@@ -308,14 +295,6 @@ export class SequenceFramePreRenderer {
           onProgress
         );
       }
-
-      const renderTime = performance.now() - startTime;
-      console.log(
-        `✅ Pre-render complete in ${(renderTime / 1000).toFixed(2)}s`
-      );
-      console.log(
-        `   Average: ${(renderTime / totalFrames).toFixed(2)}ms per frame`
-      );
 
       this.currentRender = {
         sequenceId: sequenceData.id,
@@ -598,7 +577,6 @@ export class SequenceFramePreRenderer {
     this.loopCount++;
 
     if (this.loopCount >= this.MAX_LOOPS_BEFORE_CLEANUP) {
-      console.log(`🔄 [SequenceFramePreRenderer] Auto-cleanup after ${this.loopCount} loops to free memory`);
       this.clear();
       this.loopCount = 0;
       return true;
@@ -696,7 +674,5 @@ export class SequenceFramePreRenderer {
 
     // Clear all resources
     this.clear();
-
-    console.log('[SequenceFramePreRenderer] Disposed');
   }
 }

@@ -219,7 +219,7 @@
     background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--theme-text, white);
     white-space: nowrap;

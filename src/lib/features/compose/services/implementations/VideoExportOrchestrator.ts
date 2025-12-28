@@ -23,7 +23,7 @@ import type {
   IVideoExportOrchestrator,
   VideoExportProgress,
 } from "../contracts/IVideoExportOrchestrator";
-import type { IVideoExportService } from "../contracts/IVideoExportService";
+import type { IVideoExporter } from "../contracts/IVideoExporter";
 import type { ICompositeVideoRenderer } from "../contracts/ICompositeVideoRenderer";
 
 interface LetterOverlayAssets {
@@ -40,8 +40,8 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
   private letterGlyphCache = new Map<Letter, LetterOverlayAssets>();
 
   constructor(
-    @inject(TYPES.IVideoExportService)
-    private readonly videoExportService: IVideoExportService,
+    @inject(TYPES.IVideoExporter)
+    private readonly VideoExporter: IVideoExporter,
     @inject(TYPES.ICanvasRenderer)
     private readonly canvasRenderer: ICanvasRenderer,
     @inject(TYPES.ISvgImageConverter)
@@ -84,7 +84,7 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
     );
 
     // Create video exporter
-    const exporter = await this.videoExportService.createManualExporter(
+    const exporter = await this.VideoExporter.createManualExporter(
       canvas.width,
       canvas.height,
       {
@@ -369,7 +369,7 @@ export class VideoExportOrchestrator implements IVideoExportOrchestrator {
   cancelExport(): void {
     console.log("🛑 VideoExportOrchestrator.cancelExport() called");
     this.shouldCancel = true;
-    this.videoExportService.cancelExport();
+    this.VideoExporter.cancelExport();
     this._isExporting = false;
   }
 

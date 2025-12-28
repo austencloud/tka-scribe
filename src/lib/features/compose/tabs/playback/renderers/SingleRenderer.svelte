@@ -213,7 +213,7 @@
     </div>
   {:else if error}
     <div class="error-message">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       <p>{error}</p>
     </div>
   {:else if sequence}
@@ -231,7 +231,7 @@
     />
   {:else}
     <div class="empty-message">
-      <i class="fas fa-video"></i>
+      <i class="fas fa-video" aria-hidden="true"></i>
       <p>No sequence loaded</p>
     </div>
   {/if}

@@ -89,7 +89,7 @@
         title={isPlaying ? "Pause" : "Play"}
         aria-label={isPlaying ? "Pause playback" : "Start playback"}
       >
-        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+        <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
       </button>
 
       <button
@@ -99,7 +99,7 @@
         title="Stop"
         aria-label="Stop playback"
       >
-        <i class="fas fa-stop"></i>
+        <i class="fas fa-stop" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -113,7 +113,7 @@
         aria-label="Toggle preview mode"
         aria-pressed={isPreviewing}
       >
-        <i class="fas {isPreviewing ? 'fa-eye' : 'fa-eye-slash'}"></i>
+        <i class="fas {isPreviewing ? 'fa-eye' : 'fa-eye-slash'}" aria-hidden="true"></i>
         <span class="preview-label">{isPreviewing ? "Live" : "Static"}</span>
       </button>
     </div>
@@ -128,14 +128,15 @@
           title="Change grid layout"
           aria-label="Change grid layout"
           aria-expanded={showLayoutDropdown}
+          aria-controls="layout-dropdown-menu"
         >
-          <i class="fas fa-th"></i>
+          <i class="fas fa-th" aria-hidden="true"></i>
           <span>{layout.rows}×{layout.cols}</span>
-          <i class="fas fa-chevron-down"></i>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
         </button>
 
         {#if showLayoutDropdown}
-          <div class="dropdown layout-dropdown">
+          <div class="dropdown layout-dropdown" id="layout-dropdown-menu">
             {#each Object.entries(LAYOUT_PRESETS) as [key, preset]}
               <button
                 class="dropdown-item"
@@ -165,7 +166,7 @@
         title="Browse templates"
         aria-label="Open templates"
       >
-        <i class="fas fa-magic"></i>
+        <i class="fas fa-magic" aria-hidden="true"></i>
         <span class="templates-label">Templates</span>
       </button>
 
@@ -176,7 +177,7 @@
         title="Enter fullscreen"
         aria-label="Enter fullscreen mode"
       >
-        <i class="fas fa-expand"></i>
+        <i class="fas fa-expand" aria-hidden="true"></i>
       </button>
     </div>
   </div>

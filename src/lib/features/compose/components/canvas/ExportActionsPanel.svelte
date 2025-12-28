@@ -31,12 +31,10 @@
 
   function handleSaveClick() {
     if (isExporting) return;
-    console.log("💾 ExportActionsPanel: Save button clicked");
     onExportVideo();
   }
 
   function handleCancelClick() {
-    console.log("❌ ExportActionsPanel: Cancel button clicked");
     onCancelExport();
   }
 
@@ -91,7 +89,7 @@
         type="button"
         aria-label="Cancel export"
       >
-        <i class="fas main-icon fa-times"></i>
+        <i class="fas main-icon fa-times" aria-hidden="true"></i>
         <span class="btn-label">Cancel</span>
         <span class="btn-hint">Tap to stop export</span>
 
@@ -117,6 +115,7 @@
           class="fas main-icon"
           class:fa-download={exportProgress?.stage !== "complete"}
           class:fa-check={exportProgress?.stage === "complete"}
+          aria-hidden="true"
         ></i>
         <span class="btn-label">{buttonText()}</span>
         <span class="btn-hint">{buttonHint()}</span>
@@ -132,7 +131,7 @@
       disabled={isExporting}
       aria-label="Export settings"
     >
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
   </div>
 </div>
@@ -157,7 +156,7 @@
         aria-label="Close"
         type="button"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -166,7 +165,7 @@
       {#if isCircular}
         <section class="settings-section">
           <div class="section-header">
-            <i class="fas fa-infinity section-icon"></i>
+            <i class="fas fa-infinity section-icon" aria-hidden="true"></i>
             <div class="section-info">
               <h4 class="section-title">Loop Count</h4>
               <p class="section-desc">This sequence loops seamlessly</p>
@@ -189,7 +188,7 @@
       {:else}
         <section class="settings-section">
           <div class="section-header">
-            <i class="fas fa-info-circle section-icon muted"></i>
+            <i class="fas fa-info-circle section-icon muted" aria-hidden="true"></i>
             <div class="section-info">
               <h4 class="section-title muted">Loop Count</h4>
               <p class="section-desc">
@@ -204,7 +203,7 @@
       <!--
       <section class="settings-section">
         <div class="section-header">
-          <i class="fas fa-film section-icon"></i>
+          <i class="fas fa-film section-icon" aria-hidden="true"></i>
           <div class="section-info">
             <h4 class="section-title">Quality</h4>
             <p class="section-desc">Video bitrate and resolution</p>
@@ -464,8 +463,8 @@
   }
 
   .sheet-close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

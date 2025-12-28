@@ -9,7 +9,7 @@
   import { onDestroy } from "svelte";
   import WaveSurfer from "wavesurfer.js";
   import { getTimelineState } from "../state/timeline-state.svelte";
-  import { getTimelinePlaybackService } from "../services/implementations/TimelinePlaybackService";
+  import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import { generateBeatTimestamps } from "$lib/features/compose/compose/phases/audio/bpm-analyzer";
   import { timeToPixels } from "../domain/timeline-types";
 
@@ -24,7 +24,7 @@
     return getTimelineState();
   }
   function getPlayback() {
-    return getTimelinePlaybackService();
+    return getTimelinePlayer();
   }
 
   let waveformContainer = $state<HTMLDivElement>();
@@ -250,7 +250,7 @@
   <!-- Header (fixed left) -->
   <div class="audio-header" style="width: {headerWidth}px">
     <div class="header-content">
-      <i class="fa-solid fa-waveform-lines"></i>
+      <i class="fa-solid fa-waveform-lines" aria-hidden="true"></i>
       <span class="track-name">Audio</span>
     </div>
 
@@ -277,12 +277,12 @@
           title="Remove audio"
           aria-label="Remove audio"
         >
-          <i class="fa-solid fa-trash"></i>
+          <i class="fa-solid fa-trash" aria-hidden="true"></i>
         </button>
       {:else}
         <!-- Add audio button -->
         <label class="add-audio-btn">
-          <i class="fa-solid fa-plus"></i>
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
           <input
             type="file"
             accept="audio/*"
@@ -326,7 +326,7 @@
         <!-- Loading overlay -->
         {#if isLoadingAudio}
           <div class="loading-overlay">
-            <i class="fa-solid fa-spinner fa-spin"></i>
+            <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
             <span>Loading audio...</span>
           </div>
         {/if}
@@ -334,7 +334,7 @@
     {:else}
       <!-- Empty state / drop zone -->
       <div class="empty-state">
-        <i class="fa-solid fa-music"></i>
+        <i class="fa-solid fa-music" aria-hidden="true"></i>
         <span>Drop audio file here or click + to add</span>
       </div>
     {/if}
@@ -401,7 +401,7 @@
   .bpm-input {
     width: 48px;
     padding: 2px 4px;
-    font-size: 11px;
+    font-size: 12px;
     background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
@@ -448,7 +448,7 @@
     border-radius: 4px;
     color: white;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 12px;
     transition: all 0.15s ease;
   }
 
@@ -491,7 +491,7 @@
     position: absolute;
     top: 2px;
     left: 4px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
     color: rgba(139, 92, 246, 0.8);
     user-select: none;
@@ -538,7 +538,7 @@
   }
 
   .file-name {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
     overflow: hidden;
     text-overflow: ellipsis;
@@ -549,7 +549,7 @@
     padding: 1px 6px;
     background: rgba(139, 92, 246, 0.25);
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     color: rgba(167, 139, 250, 0.95);
   }

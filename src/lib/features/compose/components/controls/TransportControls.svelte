@@ -55,7 +55,7 @@
     aria-label={isPlaying ? "Pause animation" : "Play animation"}
     type="button"
   >
-    <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}"></i>
+    <i class="fas {isPlaying ? 'fa-pause' : 'fa-play'}" aria-hidden="true"></i>
   </button>
 
   <!-- Half Beat Forward -->
@@ -87,13 +87,13 @@
     gap: 6px;
   }
 
-  /* Step buttons */
+  /* Step buttons - 48px for WCAG AAA touch target */
   .step-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
@@ -105,10 +105,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Full beat step buttons - slightly more prominent */
+  /* Full beat step buttons - same 48px touch target, slightly more prominent styling */
   .step-btn.step-full {
-    width: 40px;
-    height: 40px;
     font-size: 14px;
     color: var(--theme-text, rgba(255, 255, 255, 0.7));
   }
@@ -216,52 +214,39 @@
       gap: 4px;
     }
 
+    /* Touch targets must remain 48px on mobile for WCAG AAA */
     .step-btn {
-      width: 32px;
-      height: 32px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .step-btn.step-full {
-      width: 36px;
-      height: 36px;
       font-size: 12px;
     }
 
     .play-pause-btn {
-      width: var(--min-touch-target);
-      height: var(--min-touch-target);
       font-size: 15px;
     }
   }
 
-  /* Extra small devices (iPhone SE) - ultra compact */
+  /* Extra small devices (iPhone SE) - maintain 48px touch targets for WCAG AAA */
   @media (max-width: 375px) and (max-height: 670px) {
     .transport-controls {
       gap: 3px;
     }
 
     .step-btn {
-      width: 30px;
-      height: 30px;
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .step-btn.step-full {
-      width: 34px;
-      height: 34px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .play-pause-btn {
-      width: 44px;
-      height: 44px;
       font-size: 14px;
     }
 
     .play-pause-btn.large {
-      width: 44px;
-      height: 44px;
       font-size: 15px;
     }
   }

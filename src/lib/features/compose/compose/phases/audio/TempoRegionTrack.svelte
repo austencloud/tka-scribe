@@ -120,7 +120,7 @@
 <div class="tempo-region-track">
   <div class="track-header">
     <span class="track-label">
-      <i class="fas fa-tachometer-alt"></i>
+      <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
       Tempo Regions
     </span>
     <span class="current-bpm">
@@ -133,7 +133,7 @@
         disabled={duration <= 0}
         title="Add tempo region at playhead"
       >
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         Add Region
       </button>
     {/if}
@@ -166,6 +166,7 @@
         }}
         role="button"
         tabindex="0"
+        aria-label="Edit tempo region: {region.bpm} BPM"
         title="{region.bpm} BPM ({region.startTime.toFixed(
           1
         )}s - {region.endTime.toFixed(1)}s)"
@@ -181,7 +182,7 @@
             title="Remove region"
             aria-label="Remove region"
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
@@ -239,13 +240,13 @@
       <div class="form-actions">
         {#if isAddingRegion}
           <button class="confirm-btn" onclick={confirmAddRegion}>
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             Add
           </button>
           <button class="cancel-btn" onclick={cancelAddRegion}> Cancel </button>
         {:else}
           <button class="confirm-btn" onclick={saveEdit}>
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             Save
           </button>
           <button class="cancel-btn" onclick={cancelEdit}> Cancel </button>

@@ -13,13 +13,13 @@
 
 <button class="library-source-btn" {onclick}>
   <div class="icon-container">
-    <i class="fas fa-folder-open"></i>
+    <i class="fas fa-folder-open" aria-hidden="true"></i>
   </div>
   <div class="content">
     <div class="title">My Library</div>
     <div class="description">Select from previously uploaded audio</div>
   </div>
-  <i class="fas fa-chevron-right arrow"></i>
+  <i class="fas fa-chevron-right arrow" aria-hidden="true"></i>
 </button>
 
 <style>

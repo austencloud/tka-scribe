@@ -52,13 +52,13 @@
 		</div>
 	{:else if error}
 		<div class="state-message error">
-			<i class="fas fa-exclamation-triangle"></i>
+			<i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
 			<span>{error}</span>
 			<button onclick={onRetry}>Retry</button>
 		</div>
 	{:else if sequences.length === 0}
 		<div class="state-message">
-			<i class="fas fa-search"></i>
+			<i class="fas fa-search" aria-hidden="true"></i>
 			<span>No sequences found</span>
 			{#if hasActiveFilter}
 				<button onclick={onClearFilters}>Clear filters</button>

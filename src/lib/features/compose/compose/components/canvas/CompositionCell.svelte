@@ -78,14 +78,14 @@
 
           <!-- Cell type badge -->
           <div class="type-badge">
-            <i class="fas {typeIcon}"></i>
+            <i class="fas {typeIcon}" aria-hidden="true"></i>
             <span>{typeLabel}</span>
           </div>
 
           <!-- Rotation badge (if rotated) -->
           {#if hasRotation}
             <div class="rotation-badge">
-              <i class="fas fa-sync-alt"></i>
+              <i class="fas fa-sync-alt" aria-hidden="true"></i>
               <span>{rotationLabel}</span>
             </div>
           {/if}
@@ -99,7 +99,7 @@
     <!-- Empty cell -->
     <div class="empty-state">
       <div class="empty-icon">
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
       </div>
       <span class="empty-label">Add Sequence</span>
     </div>

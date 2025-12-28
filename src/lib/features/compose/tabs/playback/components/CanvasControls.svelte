@@ -25,7 +25,7 @@
     aria-label="Canvas settings"
     title="Trail & display settings"
   >
-    <i class="fas fa-cog"></i>
+    <i class="fas fa-cog" aria-hidden="true"></i>
   </button>
 </div>
 

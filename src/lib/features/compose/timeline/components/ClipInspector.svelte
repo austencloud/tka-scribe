@@ -126,7 +126,7 @@
   <div class="clip-inspector">
     <div class="inspector-header">
       <div class="header-title">
-        <i class="fa-solid fa-sliders"></i>
+        <i class="fa-solid fa-sliders" aria-hidden="true"></i>
         <span>Clip Inspector</span>
       </div>
       <button
@@ -135,7 +135,7 @@
         title="Close inspector"
         aria-label="Close inspector"
       >
-        <i class="fa-solid fa-xmark"></i>
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -230,8 +230,8 @@
   }
 
   .close-btn {
-    width: 30px;
-    height: 30px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

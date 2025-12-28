@@ -154,7 +154,7 @@
 
   <div class="mode-meta">
     <span class="slot-count">
-      <i class="fas fa-layer-group"></i>
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
       {slotCount}
       {slotCount === 1 ? "sequence" : "sequences"}
     </span>

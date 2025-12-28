@@ -1,12 +1,12 @@
-import type { IVideoPlaybackService } from "../contracts/IVideoPlaybackService";
+import type { IVideoPlayer } from "../contracts/IVideoPlayer";
 
 /**
- * VideoPlaybackService
+ * VideoPlayer
  *
  * Manages video element state, playback synchronization, and beat tracking.
  * Assumes videos are generated at 60 BPM (1 beat = 1 second).
  */
-export class VideoPlaybackService implements IVideoPlaybackService {
+export class VideoPlayer implements IVideoPlayer {
   private videoElement: HTMLVideoElement | null = null;
   private beatTrackingFrameId: number | null = null;
   private beatChangeCallback: ((beat: number) => void) | null = null;
@@ -102,11 +102,11 @@ export class VideoPlaybackService implements IVideoPlaybackService {
 }
 
 // Singleton instance
-let instance: VideoPlaybackService | null = null;
+let instance: VideoPlayer | null = null;
 
-export function getVideoPlaybackService(): VideoPlaybackService {
+export function getVideoPlayer(): VideoPlayer {
   if (!instance) {
-    instance = new VideoPlaybackService();
+    instance = new VideoPlayer();
   }
   return instance;
 }
