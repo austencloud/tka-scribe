@@ -113,7 +113,7 @@
   .recommendation {
     font-size: 0.8125rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 6px;

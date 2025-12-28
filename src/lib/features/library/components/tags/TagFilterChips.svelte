@@ -212,7 +212,7 @@
     align-items: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     font-size: var(--font-size-compact);
   }
 

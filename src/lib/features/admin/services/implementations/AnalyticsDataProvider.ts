@@ -64,10 +64,15 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
    * Silent check - returns false gracefully without logging
    */
   private async isFirestoreAvailable(): Promise<boolean> {
-    const firestore = await getFirestoreInstance();
-    return (
-      firestore !== null && firestore !== undefined && auth.currentUser !== null
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      return (
+        firestore !== null && firestore !== undefined && auth.currentUser !== null
+      );
+    } catch {
+      // Silent failure - just means Firebase isn't available
+      return false;
+    }
   }
 
   /**
@@ -85,9 +90,10 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
       return this.getEmptySummaryMetrics();
     }
 
-    // Get all user data from unified system state
-    const systemState = await this.systemStateManager.getSystemState();
-    const users = systemState.users;
+    try {
+      // Get all user data from unified system state
+      const systemState = await this.systemStateManager.getSystemState();
+      const users = systemState.users;
     const totalUsers = users.length;
 
     // Calculate active users today/yesterday from cached data

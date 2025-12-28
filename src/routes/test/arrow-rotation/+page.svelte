@@ -271,7 +271,7 @@
 
   .subtitle {
     text-align: center;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin: 0 0 24px;
   }
 
@@ -279,13 +279,13 @@
     text-align: center;
     margin-bottom: 24px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
   }
 
   .legend code {
     font-family: monospace;
-    color: #10b981;
+    color: var(--semantic-success);
   }
 
   .grid {
@@ -297,8 +297,8 @@
   }
 
   .cell {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 16px;
     text-align: center;
@@ -313,7 +313,7 @@
 
   .description {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     margin-bottom: 12px;
   }
 
@@ -332,18 +332,18 @@
     flex-direction: column;
     gap: 4px;
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .info strong {
-    color: #10b981;
+    color: var(--semantic-success);
   }
 
   .instructions {
     max-width: 700px;
     margin: 0 auto;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 12px;
   }
 

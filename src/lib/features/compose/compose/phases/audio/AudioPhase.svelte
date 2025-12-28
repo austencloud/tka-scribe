@@ -510,7 +510,7 @@
   .drop-zone .formats {
     margin-top: 1rem;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .drop-zone .divider {
@@ -531,7 +531,7 @@
 
   .drop-zone .divider span {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -618,7 +618,7 @@
   }
 
   .bpm-controls .source {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     font-size: 0.8rem;
   }
 

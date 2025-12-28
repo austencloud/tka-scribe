@@ -99,7 +99,7 @@
   }
 
   .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA compliant */
   }
 
   .clear-btn {

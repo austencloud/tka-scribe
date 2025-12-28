@@ -148,7 +148,7 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.06);
     border: 2px solid var(--theme-stroke);
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 200ms ease;

@@ -59,7 +59,7 @@
     padding: 16px 32px;
     font-size: 16px;
     font-weight: 600;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
     border: none;
     border-radius: 12px;
@@ -75,9 +75,9 @@
   .last-recording {
     margin-top: 32px;
     padding: 24px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .last-recording h2 {

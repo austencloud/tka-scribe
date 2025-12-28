@@ -185,14 +185,14 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .spinner {
     width: 2rem;
     height: 2rem;
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    border-top-color: var(--theme-accent, #3b82f6);
+    border: 3px solid var(--theme-stroke);
+    border-top-color: var(--theme-accent, var(--semantic-info));
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
   }
@@ -215,18 +215,18 @@
   .profile-card {
     max-width: 600px;
     margin: 0 auto;
-    background: var(--theme-panel-elevated-bg, rgba(20, 20, 28, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-elevated-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 1rem;
-    box-shadow: var(--theme-panel-shadow, 0 20px 60px rgba(0, 0, 0, 0.3));
+    box-shadow: var(--theme-panel-shadow, 0 20px 60px var(--theme-shadow));
     overflow: hidden;
   }
 
   .profile-header {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #667eea) 0%,
-      var(--theme-accent-strong, #764ba2) 100%
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
     );
     padding: 3rem 2rem 2rem;
     text-align: center;
@@ -288,7 +288,7 @@
   .profile-details h2 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 1.5rem 0;
   }
 
@@ -297,7 +297,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-bottom: 1px solid var(--theme-stroke);
     gap: 1rem;
   }
 
@@ -307,12 +307,12 @@
 
   .detail-label {
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
   }
 
   .detail-value {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-size: 0.875rem;
     text-align: right;
     display: flex;
@@ -322,7 +322,7 @@
 
   .user-id {
     font-family: monospace;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
     font-size: 0.75rem;
@@ -332,7 +332,7 @@
     padding: 0.25rem;
     background: transparent;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     border-radius: 0.25rem;
     transition: all 0.2s ease;
@@ -341,22 +341,22 @@
   }
 
   .copy-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-accent, #3b82f6);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   .verified {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
     font-weight: 600;
   }
 
   .unverified {
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .profile-actions {
     padding: 1.5rem 2rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.12));
+    background: var(--theme-panel-bg);
     display: flex;
     gap: 1rem;
   }
@@ -375,13 +375,13 @@
   }
 
   .button-secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    color: var(--theme-text, var(--theme-text));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .button-secondary:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
   }
 
   /* Responsive adjustments */

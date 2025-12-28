@@ -76,6 +76,6 @@
 
   .arrow {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 </style>

@@ -424,7 +424,7 @@
     gap: 8px;
     padding: 14px 20px;
     background: transparent;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: var(--theme-text-secondary, var(--theme-text-dim));
     font-size: var(--font-size-min);
@@ -436,7 +436,7 @@
 
   .add-custom-button:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     color: var(--theme-text, var(--theme-text));
   }
 
@@ -482,7 +482,7 @@
   }
 
   .custom-input::placeholder {
-    color: var(--theme-text-tertiary);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .input-action-button {

@@ -310,7 +310,7 @@
     gap: 10px;
     padding: 30px 16px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .empty-state i {

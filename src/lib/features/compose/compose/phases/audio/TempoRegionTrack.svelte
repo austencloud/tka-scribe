@@ -344,7 +344,7 @@
     left: 4px;
     top: -8px;
     font-size: 0.6rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   /* Tempo regions */
@@ -427,7 +427,7 @@
     align-items: center;
     justify-content: center;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     pointer-events: none;
   }
 

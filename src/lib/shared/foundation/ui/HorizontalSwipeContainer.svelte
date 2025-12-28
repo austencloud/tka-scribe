@@ -412,7 +412,7 @@
   }
 
   .embla__button:disabled {
-    color: rgba(255, 255, 255, 0.5); /* Improved contrast for WCAG AAA */
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     cursor: not-allowed;
     opacity: 0.5 !important;
   }

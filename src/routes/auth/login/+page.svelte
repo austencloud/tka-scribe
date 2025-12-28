@@ -313,13 +313,13 @@
   }
 
   .login-card {
-    background: var(--theme-panel-elevated-bg, rgba(20, 20, 28, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-elevated-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 1rem;
     padding: 2rem;
     width: 100%;
     max-width: 400px;
-    box-shadow: var(--theme-panel-shadow, 0 20px 60px rgba(0, 0, 0, 0.3));
+    box-shadow: var(--theme-panel-shadow, 0 20px 60px var(--theme-shadow));
   }
 
   .login-header {
@@ -330,12 +330,12 @@
   .login-header h1 {
     font-size: 1.875rem;
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 0.5rem 0;
   }
 
   .login-header p {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     font-size: 1rem;
   }
@@ -353,8 +353,8 @@
     width: 48px;
     height: 48px;
     border: 4px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
-    border-top-color: var(--theme-accent, #6366f1);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+    border-top-color: var(--theme-accent, var(--theme-accent));
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -366,7 +366,7 @@
   }
 
   .loading-state p {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.95rem;
     margin: 0;
   }
@@ -376,11 +376,11 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem;
-    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    background: var(--semantic-error-dim);
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 0.5rem;
-    color: var(--semantic-error, #dc2626);
+    color: var(--semantic-error, var(--semantic-error));
     font-size: 0.875rem;
     margin-bottom: 1.5rem;
   }
@@ -407,19 +407,19 @@
   .divider::after {
     content: "";
     flex: 1;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .divider span {
     padding: 0 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
   }
 
   .auth-mode-toggle {
     display: flex;
     gap: 0.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     padding: 0.25rem;
     border-radius: 0.5rem;
   }
@@ -432,20 +432,20 @@
     border-radius: 0.375rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .auth-mode-toggle button:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text);
   }
 
   .auth-mode-toggle button.active {
-    background: var(--theme-panel-elevated-bg, rgba(20, 20, 28, 0.98));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-panel-elevated-bg);
+    color: var(--theme-text);
     box-shadow: 0 1px 3px
-      color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
+      color-mix(in srgb, var(--theme-shadow) 25%, transparent);
   }
 
   .login-footer {
@@ -454,14 +454,14 @@
   }
 
   .login-footer p {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.75rem;
     margin: 0;
     line-height: 1.5;
   }
 
   .login-footer a {
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
     text-decoration: none;
   }
 

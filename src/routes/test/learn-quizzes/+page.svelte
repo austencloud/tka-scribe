@@ -169,7 +169,7 @@
 	}
 
 	.subtitle {
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim);
 		margin: 0 0 2rem 0;
 	}
 
@@ -185,7 +185,7 @@
 
 	.category-desc {
 		font-size: 0.875rem;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim);
 		margin: 0 0 1rem 0;
 	}
 
@@ -198,7 +198,7 @@
 	.quiz-card {
 		padding: 1rem;
 		border-radius: 10px;
-		border: 1px solid rgba(255, 255, 255, 0.15);
+		border: 1px solid var(--theme-stroke-strong);
 		font-size: 0.9375rem;
 		font-weight: 600;
 		cursor: pointer;
@@ -244,8 +244,8 @@
 	}
 
 	.back-btn {
-		background: rgba(255, 255, 255, 0.08);
-		border: 1px solid rgba(255, 255, 255, 0.15);
+		background: var(--theme-card-bg);
+		border: 1px solid var(--theme-stroke-strong);
 		border-radius: 8px;
 		padding: 0.5rem 1rem;
 		color: white;
@@ -266,7 +266,7 @@
 
 	.quiz-wrapper {
 		background: rgba(255, 255, 255, 0.02);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: 1px solid var(--theme-stroke);
 		border-radius: 16px;
 		padding: 1.5rem;
 		min-height: 400px;

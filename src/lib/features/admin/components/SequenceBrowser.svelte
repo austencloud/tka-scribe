@@ -137,7 +137,7 @@
   }
 
   .search-box input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .sequence-count {
@@ -201,7 +201,7 @@
 
   .sequence-list-item:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     transform: translateX(4px);
   }
 

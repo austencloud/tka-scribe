@@ -59,11 +59,17 @@
   import ShortcutsHelp from "./keyboard/components/ShortcutsHelp.svelte";
   import KeyboardShortcutCoordinator from "./keyboard/coordinators/KeyboardShortcutCoordinator.svelte";
 
+  // 🚀 Performance: Module prefetching
+  import {
+    preloadCriticalModules,
+    prefetchLikelyNextModules,
+  } from "./navigation/utils/module-prefetch";
+
   // Debug tools
-  import PreviewModeBanner from "./debug/components/PreviewModeBanner.svelte";
+  import AdminToolbar from "./debug/components/AdminToolbar.svelte";
   import { initUserPreviewContext } from "./debug/context/user-preview-context";
   import { userPreviewState } from "./debug/state/user-preview-state.svelte";
-  import { roleSwitcherState } from "./debug/state/role-switcher-state.svelte";
+  import { adminToolbarState } from "./debug/state/admin-toolbar-state.svelte";
   import { featureFlagService } from "./auth/services/FeatureFlagService.svelte";
   import ToastContainer from "./toast/components/ToastContainer.svelte";
   import ReleaseNotesDrawer from "./settings/components/ReleaseNotesDrawer.svelte";
@@ -76,10 +82,10 @@
   // Reactive state
   const activeModule = $derived(getActiveTab()); // Using legacy getActiveTab for now
   const isModuleLoading = $derived(activeModule === null);
-  // Show banner offset when user preview, role override, OR role switcher is open
+  // Show banner offset when user preview OR admin toolbar is open
   const isAdmin = $derived(featureFlagService.userRole === "admin");
   const isPreviewMode = $derived(
-    isAdmin && (userPreviewState.isActive || roleSwitcherState.isOpen)
+    isAdmin && (userPreviewState.isActive || adminToolbarState.isOpen)
   );
 
   // Desktop sidebar visibility management
@@ -149,9 +155,20 @@
     void handleModuleChange("dashboard");
   };
 
+  // 🚀 Prefetch likely next modules when current module changes
+  $effect(() => {
+    const module = currentModule();
+    if (module) {
+      prefetchLikelyNextModules(module);
+    }
+  });
+
   onMount(() => {
     if (typeof window === "undefined") return;
     // handleHMRInit(); // Disabled - causing HMR verification loops
+
+    // 🚀 PERFORMANCE: Preload critical modules during idle time
+    preloadCriticalModules();
 
     // Enable native back/forward by wiring navigation state to history
     initializeNavigationHistory();
@@ -193,8 +210,8 @@
 <!-- Skip to main content link for keyboard/screen reader users -->
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<!-- Global Preview Banner -->
-<PreviewModeBanner />
+<!-- Admin Toolbar (F9) -->
+<AdminToolbar />
 
 <div
   class="main-interface"
@@ -279,7 +296,7 @@
     left: 16px;
     z-index: 9999;
     padding: 12px 24px;
-    background: var(--theme-panel-bg, #1a1a2e);
+    background: var(--theme-panel-bg);
     color: var(--theme-text, white);
     border-radius: 8px;
     text-decoration: none;

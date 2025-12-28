@@ -45,7 +45,7 @@
     left: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75)); /* WCAG AAA */
     pointer-events: none;
   }
 
@@ -67,6 +67,6 @@
   }
 
   .user-search__input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA compliant */
   }
 </style>

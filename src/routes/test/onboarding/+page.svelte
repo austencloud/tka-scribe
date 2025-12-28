@@ -114,7 +114,7 @@
     backdrop-filter: blur(10px);
     padding: 16px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -127,7 +127,7 @@
     font-weight: 600;
     margin: 0;
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .status {
@@ -146,7 +146,7 @@
   }
 
   .status .value.active {
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .buttons {
@@ -162,7 +162,7 @@
     justify-content: center;
     gap: 8px;
     padding: 10px 16px;
-    background: #6366f1;
+    background: var(--theme-accent);
     color: white;
     border: none;
     border-radius: 8px;
@@ -184,12 +184,12 @@
   .controls button.danger {
     background: transparent;
     border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .controls button.danger:hover {
     background: rgba(239, 68, 68, 0.1);
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
   }
 
   .hint {
@@ -212,15 +212,15 @@
   .completion-card {
     text-align: center;
     padding: 48px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     max-width: 400px;
   }
 
   .completion-card i {
     font-size: 64px;
-    color: #22c55e;
+    color: var(--semantic-success);
     margin-bottom: 16px;
   }
 
@@ -231,7 +231,7 @@
   }
 
   .completion-card p {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: 1rem;
     margin: 0;
     line-height: 1.6;

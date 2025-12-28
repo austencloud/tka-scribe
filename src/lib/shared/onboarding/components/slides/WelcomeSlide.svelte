@@ -76,8 +76,8 @@
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    font-size: var(--font-size-compact, 0.875rem); /* WCAG AAA: 12px minimum */
-    color: rgba(255, 255, 255, 0.5); /* Improved contrast for WCAG AAA */
+    font-size: var(--font-size-compact, 0.875rem);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     margin-top: 1.5rem;
   }
 

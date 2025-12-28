@@ -116,7 +116,7 @@
 
   .mobile-control-button:hover {
     background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .mobile-control-button:active {
@@ -142,7 +142,7 @@
 
   .advanced-filter-button:hover {
     background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .advanced-filter-button:active {

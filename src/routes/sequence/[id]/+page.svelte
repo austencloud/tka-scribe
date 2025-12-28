@@ -99,7 +99,7 @@
 <style>
   .sequence-page {
     min-height: 100vh;
-    background: var(--color-background, var(--theme-panel-bg, #0f0f0f));
+    background: var(--color-background, var(--theme-panel-bg));
   }
 
   .error-container {
@@ -113,32 +113,32 @@
   .error-card {
     text-align: center;
     padding: 2rem;
-    background: var(--color-surface, var(--theme-panel-elevated-bg, #1a1a1a));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--color-surface, var(--theme-panel-elevated-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 1rem;
     max-width: 400px;
   }
 
   .error-icon {
-    color: var(--color-error, var(--semantic-error, #ef4444));
+    color: var(--color-error, var(--semantic-error, var(--semantic-error)));
     margin-bottom: 1rem;
   }
 
   .error-card h1 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--color-text, var(--theme-text, #fff));
+    color: var(--color-text, var(--theme-text));
     margin: 0 0 0.5rem 0;
   }
 
   .error-card p {
-    color: var(--color-text-muted, var(--theme-text-dim, #888));
+    color: var(--color-text-muted, var(--theme-text-dim));
     margin: 0 0 1.5rem 0;
   }
 
   .home-button {
     padding: 0.75rem 1.5rem;
-    background: var(--color-primary, var(--theme-accent, #3b82f6));
+    background: var(--color-primary, var(--theme-accent, var(--semantic-info)));
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -148,6 +148,6 @@
   }
 
   .home-button:hover {
-    background: var(--color-primary-hover, var(--theme-accent-strong, #2563eb));
+    background: var(--color-primary-hover, var(--theme-accent-strong));
   }
 </style>

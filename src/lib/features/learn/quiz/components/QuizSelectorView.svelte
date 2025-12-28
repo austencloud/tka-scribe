@@ -207,7 +207,7 @@ Features a welcoming header, mode toggle, and game cards.
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     align-self: flex-start;
     padding-left: 4px;
   }

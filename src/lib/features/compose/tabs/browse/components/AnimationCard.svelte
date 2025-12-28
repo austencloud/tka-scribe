@@ -279,7 +279,7 @@ Features:
   }
 
   .animation-card:focus {
-    outline: 2px solid rgba(255, 255, 255, 0.4);
+    outline: 2px solid rgba(255, 255, 255, 0.75); /* WCAG AAA */
     outline-offset: 2px;
   }
 

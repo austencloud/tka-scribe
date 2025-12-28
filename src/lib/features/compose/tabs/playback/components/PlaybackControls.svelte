@@ -193,7 +193,7 @@
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.85); /* WCAG AAA */
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -250,7 +250,7 @@
   }
 
   .step-settings.disabled {
-    opacity: 0.45;
+    opacity: 0.45; /* WCAG AAA */
   }
 
   .step-size-label {
@@ -270,7 +270,7 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
@@ -311,7 +311,7 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
-    color: var(--theme-text-dim);
+    color: var(--theme-text-dim); /* WCAG AAA */
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;

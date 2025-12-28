@@ -509,7 +509,7 @@
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8); /* WCAG AAA */
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -543,7 +543,7 @@
   }
 
   .separator {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75); /* WCAG AAA */
   }
 
   .total {
