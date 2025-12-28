@@ -94,32 +94,32 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
       // Get all user data from unified system state
       const systemState = await this.systemStateManager.getSystemState();
       const users = systemState.users;
-    const totalUsers = users.length;
+      const totalUsers = users.length;
 
-    // Calculate active users today/yesterday from cached data
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const yesterdayStart = new Date(todayStart);
-    yesterdayStart.setDate(yesterdayStart.getDate() - 1);
+      // Calculate active users today/yesterday from cached data
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const yesterdayStart = new Date(todayStart);
+      yesterdayStart.setDate(yesterdayStart.getDate() - 1);
 
-    let activeToday = 0;
-    let previousActiveToday = 0;
-    let totalSequences = 0;
-    let totalChallenges = 0;
+      let activeToday = 0;
+      let previousActiveToday = 0;
+      let totalSequences = 0;
+      let totalChallenges = 0;
 
-    for (const user of users) {
-      // Count active users
-      if (user.lastActivityDate) {
-        if (user.lastActivityDate >= todayStart) {
-          activeToday++;
-        } else if (user.lastActivityDate >= yesterdayStart) {
-          previousActiveToday++;
+      for (const user of users) {
+        // Count active users
+        if (user.lastActivityDate) {
+          if (user.lastActivityDate >= todayStart) {
+            activeToday++;
+          } else if (user.lastActivityDate >= yesterdayStart) {
+            previousActiveToday++;
+          }
         }
+        // Sum totals
+        totalSequences += user.sequenceCount;
+        totalChallenges += user.challengesCompleted;
       }
-      // Sum totals
-      totalSequences += user.sequenceCount;
-      totalChallenges += user.challengesCompleted;
-    }
 
       return {
         totalUsers,
@@ -279,36 +279,43 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
    * OPTIMIZED: Uses SystemStateManager for unified data hub
    */
   async getContentStatistics(): Promise<ContentStatistics> {
-    if (!(await this.isFirestoreAvailable())) {
-      return {
-        totalSequences: 0,
-        publicSequences: 0,
-        totalViews: 0,
-        totalShares: 0,
-      };
-    }
-
-    const systemState = await this.systemStateManager.getSystemState();
-    const users = systemState.users;
-
-    let totalSequences = 0;
-    let publicSequences = 0;
-    let totalViews = 0;
-    let totalShares = 0;
-
-    for (const user of users) {
-      totalSequences += user.sequenceCount;
-      publicSequences += user.publicSequenceCount;
-      totalViews += user.totalViews;
-      totalShares += user.shareCount;
-    }
-
-    return {
-      totalSequences,
-      publicSequences,
-      totalViews,
-      totalShares,
+    const emptyStats = {
+      totalSequences: 0,
+      publicSequences: 0,
+      totalViews: 0,
+      totalShares: 0,
     };
+
+    if (!(await this.isFirestoreAvailable())) {
+      return emptyStats;
+    }
+
+    try {
+      const systemState = await this.systemStateManager.getSystemState();
+      const users = systemState.users;
+
+      let totalSequences = 0;
+      let publicSequences = 0;
+      let totalViews = 0;
+      let totalShares = 0;
+
+      for (const user of users) {
+        totalSequences += user.sequenceCount;
+        publicSequences += user.publicSequenceCount;
+        totalViews += user.totalViews;
+        totalShares += user.shareCount;
+      }
+
+      return {
+        totalSequences,
+        publicSequences,
+        totalViews,
+        totalShares,
+      };
+    } catch (error) {
+      console.error("[AnalyticsDataProvider] Failed to get content statistics:", error);
+      return emptyStats;
+    }
   }
 
   /**

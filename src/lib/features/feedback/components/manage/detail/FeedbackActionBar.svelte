@@ -14,6 +14,15 @@
   function handleCancelDelete() {
     detailState.showDeleteConfirm = false;
   }
+
+  function handleDeleteClick(event: MouseEvent) {
+    // Stop propagation to prevent the click from reaching the dialog backdrop
+    event.stopPropagation();
+    // Use microtask to ensure click event fully completes before dialog opens
+    queueMicrotask(() => {
+      detailState.showDeleteConfirm = true;
+    });
+  }
 </script>
 
 {#if !readOnly}
@@ -22,7 +31,7 @@
     <button
       type="button"
       class="delete-btn"
-      onclick={() => (detailState.showDeleteConfirm = true)}
+      onclick={handleDeleteClick}
       disabled={detailState.isDeleting}
     >
       {#if detailState.isDeleting}
