@@ -121,17 +121,21 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
       totalChallenges += user.challengesCompleted;
     }
 
-    return {
-      totalUsers,
-      activeToday,
-      sequencesCreated: totalSequences,
-      challengesCompleted: totalChallenges,
-      // No historical comparison available for these metrics
-      previousTotalUsers: totalUsers,
-      previousActiveToday,
-      previousSequencesCreated: totalSequences,
-      previousChallengesCompleted: totalChallenges,
-    };
+      return {
+        totalUsers,
+        activeToday,
+        sequencesCreated: totalSequences,
+        challengesCompleted: totalChallenges,
+        // No historical comparison available for these metrics
+        previousTotalUsers: totalUsers,
+        previousActiveToday,
+        previousSequencesCreated: totalSequences,
+        previousChallengesCompleted: totalChallenges,
+      };
+    } catch (error) {
+      console.error("[AnalyticsDataProvider] Failed to get summary metrics:", error);
+      return this.getEmptySummaryMetrics();
+    }
   }
 
   /**

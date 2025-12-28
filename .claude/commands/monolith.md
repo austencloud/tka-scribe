@@ -5,7 +5,14 @@ First, run the detection script:
 node scripts/find-monoliths.cjs
 ```
 
-Show the results to the user and identify the top candidate for decomposition.
+Show the results summary to the user, then **automatically read the top candidate file** and provide a full analysis:
+
+1. **Read the file** - Don't ask permission, just read it
+2. **Identify responsibilities** - List each distinct thing the file does
+3. **Propose decomposition** - Suggest specific services to extract with names following CLAUDE.md conventions (no "Service" suffix)
+4. **Estimate complexity** - Simple (1 session), Medium (2-3 extractions), Complex (major refactor)
+
+Present your analysis and recommendations, then ask if the user wants to proceed with decomposition.
 
 ## Decomposition Philosophy
 
