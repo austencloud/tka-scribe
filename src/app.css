@@ -28,6 +28,8 @@ body {
 }
 
 body {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family:
@@ -585,8 +587,14 @@ body {
   background: var(--gradient-cosmic);
   background-attachment: fixed;
   background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
   color: var(--foreground);
+}
+
+/* Background gradient animation - disabled for reduced motion users */
+@media (prefers-reduced-motion: no-preference) {
+  body {
+    animation: gradientShift 15s ease infinite;
+  }
 }
 
 /* ::after pseudo-element for smooth gradient transitions (using ::after to avoid conflicts with animation ::before effects) */
@@ -600,11 +608,17 @@ body::after {
   background: var(--gradient-next, transparent);
   background-attachment: fixed;
   background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
   opacity: 0;
   z-index: 1;
   pointer-events: none;
   transition: opacity 1s ease-in-out;
+}
+
+/* Animate only when motion is OK */
+@media (prefers-reduced-motion: no-preference) {
+  body::after {
+    animation: gradientShift 15s ease infinite;
+  }
 }
 
 /* Trigger transition by toggling this class on body when gradient changes */
@@ -647,10 +661,16 @@ body.star-twinkle::before {
     radial-gradient(2px 2px at 252px 60px, #e1bee7, transparent);
   background-repeat: repeat;
   background-size: 280px 180px;
-  animation: star-twinkle-animation 3s ease-in-out infinite;
   opacity: 0.9;
   pointer-events: none;
   z-index: -1;
+}
+
+/* Star twinkle animation - disabled for reduced motion users */
+@media (prefers-reduced-motion: no-preference) {
+  body.star-twinkle::before {
+    animation: star-twinkle-animation 3s ease-in-out infinite;
+  }
 }
 
 /* Removed moon/sun from body.star-twinkle::after - it was appearing on all backgrounds */
@@ -658,7 +678,13 @@ body.star-twinkle::before {
 body.aurora-flow {
   /* Aurora uses the --gradient-cosmic variable, no hardcoded gradient here */
   background-size: 400% 400%;
-  animation: aurora-animation 8s ease-in-out infinite;
+}
+
+/* Aurora animation - disabled for reduced motion users */
+@media (prefers-reduced-motion: no-preference) {
+  body.aurora-flow {
+    animation: aurora-animation 8s ease-in-out infinite;
+  }
 }
 
 /* CSS snowfall removed - now using canvas-based snowfall system with enhanced features:
@@ -671,7 +697,7 @@ body.aurora-flow {
 /* Deep Ocean Flow */
 body.deep-ocean-flow {
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 body.deep-ocean-flow::before {
@@ -693,10 +719,16 @@ body.deep-ocean-flow::before {
       transparent 50%
     );
   background-size: 252px 200px;
-  animation: bubble-rise 8s ease-in-out infinite;
   opacity: 0.8;
   pointer-events: none;
   z-index: -1;
+}
+
+/* Bubble rise animation - disabled for reduced motion users */
+@media (prefers-reduced-motion: no-preference) {
+  body.deep-ocean-flow::before {
+    animation: bubble-rise 8s ease-in-out infinite;
+  }
 }
 
 /* Ember Glow - Canvas handles all embers */
@@ -793,7 +825,10 @@ body.sakura-drift {
   }
 }
 
-/* Accessibility - Only disable decorative animations, keep essential UI transitions */
+/* ========================================
+   ACCESSIBILITY - Reduced Motion (WCAG AAA)
+   For users with vestibular disorders
+   ======================================== */
 @media (prefers-reduced-motion: reduce) {
   /* Disable decorative animations but preserve essential UI transitions */
   .fa-spin,
@@ -818,14 +853,52 @@ body.sakura-drift {
     transition-duration: 0.01ms !important;
   }
 
+  /* Global reduction for all transform animations (WCAG AAA vestibular safety) */
+  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(.modal):not(.sheet),
+  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(.modal):not(.sheet)::before,
+  *:not(.toast):not(.notification):not([role="alert"]):not(.drawer):not(.modal):not(.sheet)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Allow opacity transitions for essential feedback (toasts, notifications, alerts) */
+  .toast,
+  .notification,
+  [role="alert"],
+  [role="status"] {
+    transition-duration: 0.2s !important;
+    transition-property: opacity !important;
+  }
+
   /* Preserve essential UI transitions like drawers, modals, navigation */
-  /* These are necessary for usability and should not be disabled */
+  /* These are necessary for usability - use reduced but not eliminated timing */
+  .drawer,
+  .modal,
+  .sheet,
+  [role="dialog"] {
+    transition-duration: 0.15s !important;
+  }
 }
 
 /* Focus styles for accessibility */
 :focus-visible {
   outline: 2px solid var(--primary-color);
   outline-offset: 2px;
+}
+
+/* Screen reader only utility - visually hidden but accessible */
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ========================================
