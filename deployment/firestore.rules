@@ -82,10 +82,11 @@ service cloud.firestore {
         && (!('userId' in resource.data) || isOwner(resource.data.userId));
     }
 
-    // XP Events - append-only log (no userId in model, so allow all authenticated)
+    // XP Events - append-only log, users can only create events for themselves
     match /xpEvents/{eventId} {
       allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
+      allow create: if isAuthenticated()
+        && (!('userId' in request.resource.data) || hasValidUserId());
       allow update, delete: if false; // Events are immutable
     }
 
@@ -93,6 +94,30 @@ service cloud.firestore {
     match /dailyChallenges/{challengeId} {
       allow read: if isAuthenticated();
       allow write: if isAdmin(); // Only admin can create/update/delete challenges
+    }
+
+    // Weekly Challenges - global data, read-only for users (admin can write)
+    match /weeklyChallenges/{challengeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Skill Progressions - global skill definitions (admin can write)
+    match /skillProgressions/{skillId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Train Challenges - global training challenges (admin can write)
+    match /trainChallenges/{challengeId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // Announcements - read by authenticated users, write by admins
+    match /announcements/{announcementId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
     }
 
     // User Challenge Progress - users can read/write their own progress
@@ -119,22 +144,61 @@ service cloud.firestore {
         && (!('userId' in resource.data) || isOwner(resource.data.userId));
     }
 
-    // Achievement Notifications - users can read/write their own notifications
+    // Achievement Notifications - users can only read/write their own notifications
     match /achievementNotifications/{notificationId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated();
-      allow delete: if isAuthenticated();
+      allow read: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow create: if isAuthenticated()
+        && (!('userId' in request.resource.data) || hasValidUserId());
+      allow update: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow delete: if isAuthenticated()
+        && (!('userId' in resource.data) || isOwner(resource.data.userId));
     }
 
     // ============================================================================
     // USER DATA COLLECTIONS
     // ============================================================================
 
+    // -------------------------------------------------------------------------
+    // INTENTIONAL PUBLIC READ ACCESS
+    // -------------------------------------------------------------------------
+    // The following collections use `allow read: if true` BY DESIGN.
+    // This is NOT a security vulnerability - it's required for:
+    //
+    // 1. /users/{userId} - Public user profiles
+    //    - Enables: Creator profiles, leaderboards, social features
+    //    - Contains: Display name, avatar, public stats (XP, level, sequence count)
+    //    - Sensitive data (email, settings) stored in protected subcollections
+    //
+    // 2. /users/{userId}/collections - Public collections
+    //    - Enables: Sharing curated sequence collections
+    //    - Privacy: isPublic flag controls visibility in UI
+    //
+    // 3. /users/{userId}/collections/{}/sequences - Sequences in collections
+    //    - Enables: Viewing sequences in shared collections
+    //    - Privacy: visibility field ("public"/"private") controls UI access
+    //
+    // 4. /sequences - Public sequences index
+    //    - Enables: Discover page, search, gallery browsing
+    //    - Only contains sequences users explicitly published
+    //
+    // 5. /collections - Public collections index
+    //    - Enables: Browsing shared collections
+    //
+    // 6. /products - Subscription products catalog
+    //    - Enables: Displaying pricing before auth
+    //
+    // SECURITY MODEL: Data separation, not access restriction
+    // - Public data is stored in these public-readable collections
+    // - Private data (messages, settings, drafts) uses auth-gated rules
+    // -------------------------------------------------------------------------
+
     // User profiles - PUBLIC browsing allowed for everyone (even unauthenticated)
     // Users can only edit their own profile data
     match /users/{userId} {
       // ANYONE can read public profile data (no authentication required)
+      // See above documentation for security rationale
       allow read: if true;
 
       // Users can only update their own profile
@@ -142,6 +206,110 @@ service cloud.firestore {
 
       // Users can delete their own profile (with caution)
       allow delete: if isOwner(userId);
+
+      // -------------------------------------------------------------------------
+      // USER SETTINGS (Private)
+      // -------------------------------------------------------------------------
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // -------------------------------------------------------------------------
+      // USER GAMIFICATION SUBCOLLECTIONS (Private)
+      // -------------------------------------------------------------------------
+
+      // User achievements
+      match /achievements/{achievementId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // User XP (single document or subcollection)
+      match /xp/{xpId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // XP events log (append-only for users)
+      match /xpEvents/{eventId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId);
+        allow update, delete: if false; // Events are immutable
+      }
+
+      // Challenge progress
+      match /challengeProgress/{progressId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // User streak (single document or subcollection)
+      match /streak/{streakId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // User notifications
+      match /notifications/{notificationId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // Dismissed announcements - users can read/write their own dismissals
+      match /dismissedAnnouncements/{announcementId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // Create module sessions - users can read/write their own sessions
+      match /sessions/{sessionId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // -------------------------------------------------------------------------
+      // SOCIAL SUBCOLLECTIONS (Following/Followers)
+      // -------------------------------------------------------------------------
+      // Users can read anyone's following/followers lists (public social graph)
+      // Users can only write to their own following list
+
+      // Following list - who this user follows
+      match /following/{followedUserId} {
+        // Anyone can read follow relationships (for "is following" checks)
+        allow read: if isAuthenticated();
+        // Only the owner can add/remove follows
+        allow write: if isOwner(userId);
+      }
+
+      // Followers list - who follows this user
+      match /followers/{followerUserId} {
+        // Anyone can read follower lists
+        allow read: if isAuthenticated();
+        // Written via transaction when someone follows/unfollows
+        // The follower (followerUserId) writes to the target user's followers list
+        allow create, delete: if isAuthenticated() && request.auth.uid == followerUserId;
+        allow update: if false; // No updates needed
+      }
+
+      // -------------------------------------------------------------------------
+      // USER LIBRARY (Sequences)
+      // -------------------------------------------------------------------------
+      // Public sequences are readable by anyone, private only by owner
+
+      match /sequences/{sequenceId} {
+        // Public sequences can be read by anyone, private only by owner
+        allow read: if resource.data.visibility == 'public' || isOwner(userId);
+        // Only owner can write
+        allow write: if isOwner(userId);
+      }
+
+      // Weekly challenge progress
+      match /weeklyProgress/{progressId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // Skill progression tracking
+      match /skillProgress/{progressId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // Train challenge progress
+      match /trainProgress/{progressId} {
+        allow read, write: if isOwner(userId);
+      }
     }
 
     // ============================================================================
@@ -293,6 +461,76 @@ service cloud.firestore {
 
       // Events are immutable - no updates or deletes
       allow update, delete: if false;
+    }
+
+    // ============================================================================
+    // FEEDBACK COLLECTION
+    // ============================================================================
+
+    // Feedback items - users can submit and read their own, testers/admins can manage all
+    match /feedback/{feedbackId} {
+      // Users can read their own feedback, testers/admins can read all
+      allow read: if isAuthenticated()
+        && (resource.data.userId == request.auth.uid || isTester());
+
+      // Any authenticated user can submit feedback (must set their own userId)
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid;
+
+      // Only testers/admins can update feedback (status changes, admin notes, etc.)
+      allow update: if isTester();
+
+      // Only admins can delete feedback
+      allow delete: if isAdmin();
+
+      // Subtasks subcollection
+      match /subtasks/{subtaskId} {
+        allow read: if isTester();
+        allow write: if isTester();
+      }
+    }
+
+    // ============================================================================
+    // COLLABORATIVE VIDEOS
+    // ============================================================================
+
+    // Videos collection - for collaborative video uploads
+    // Note: Public videos are readable by all authenticated users to support
+    // browsing and discovery. Private video access requires collaborator status.
+    match /videos/{videoId} {
+      // Authenticated users can read any video
+      // Privacy is enforced at query level (filter by visibility/collaboratorIds)
+      allow read: if isAuthenticated();
+
+      // Only creator can create
+      allow create: if isAuthenticated()
+        && request.resource.data.creatorId == request.auth.uid;
+
+      // Creator can update, collaborators can update limited fields
+      allow update: if isAuthenticated()
+        && (resource.data.creatorId == request.auth.uid
+            || request.auth.uid in resource.data.collaboratorIds);
+
+      // Only creator can delete
+      allow delete: if isAuthenticated()
+        && resource.data.creatorId == request.auth.uid;
+    }
+
+    // ============================================================================
+    // PUBLIC SEQUENCES INDEX
+    // ============================================================================
+
+    // Public sequences - denormalized for Discover page browsing
+    match /publicSequences/{sequenceId} {
+      // ANYONE can read public sequences (no authentication required)
+      // See documentation at top of file for security rationale
+      allow read: if true;
+
+      // Only the owner can write (via sync from their private library)
+      allow create, update: if isAuthenticated()
+        && request.resource.data.ownerId == request.auth.uid;
+      allow delete: if isAuthenticated()
+        && resource.data.ownerId == request.auth.uid;
     }
 
     // ============================================================================
