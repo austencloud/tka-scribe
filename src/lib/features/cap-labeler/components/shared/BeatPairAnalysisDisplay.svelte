@@ -21,8 +21,15 @@
 
   let { beatPairs, beatPairGroups, collapsed = false, isAxisAlternating = false, axisAlternatingPattern = null }: Props = $props();
 
-  // svelte-ignore state_referenced_locally - intentional: initial expanded state from prop
-  let isExpanded = $state(!collapsed);
+  // Initialize as expanded (true), then apply collapsed prop via effect
+  let isExpanded = $state(true);
+
+  // Apply initial collapsed state on mount
+  $effect(() => {
+    if (collapsed && isExpanded) {
+      isExpanded = false;
+    }
+  });
 
   // Color coding for different transformation types
   const transformationColors: Record<string, string> = {
@@ -503,7 +510,7 @@
   .transform-tag {
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
   }
@@ -522,7 +529,7 @@
   }
 
   .also-label {
-    font-size: 9px;
+    font-size: 12px;
     color: var(--muted-foreground);
     font-style: italic;
     opacity: 0.7;
@@ -552,7 +559,7 @@
   .letter-tag {
     padding: 2px 8px;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     white-space: nowrap;
     background: color-mix(in srgb, var(--letter-color) 20%, transparent);

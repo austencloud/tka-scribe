@@ -108,15 +108,6 @@ export class LayeredPathDetector implements ILayeredPathDetector {
     const blueCycle = this.analyzeHandPath(rawSequence, "blue");
     const redCycle = this.analyzeHandPath(rawSequence, "red");
 
-    console.log("[LayeredPathDetection] Hand cycle analysis:", {
-      blue: blueCycle
-        ? { length: blueCycle.cycleLength, repeats: blueCycle.repeatCount }
-        : null,
-      red: redCycle
-        ? { length: redCycle.cycleLength, repeats: redCycle.repeatCount }
-        : null,
-    });
-
     // Both hands need detectable cycles for layered path
     if (!blueCycle && !redCycle) {
       return this.noLayeredPathResult("No hand path cycles detected");
@@ -226,14 +217,6 @@ export class LayeredPathDetector implements ILayeredPathDetector {
           repeatCount
         );
 
-        console.log(`[LayeredPathDetection] ${hand} cycle found:`, {
-          cycleLength,
-          repeatCount,
-          pathSequence: pathSequence.slice(0, cycleLength),
-          isClosedLoop,
-          confidence,
-        });
-
         return {
           hand,
           cycleLength,
@@ -253,12 +236,6 @@ export class LayeredPathDetector implements ILayeredPathDetector {
 
       if (motionRepeats) {
         const repeatCount = length / cycleLength;
-
-        console.log(`[LayeredPathDetection] ${hand} motion-only cycle found:`, {
-          cycleLength,
-          repeatCount,
-          motionPattern: motionPattern.slice(0, cycleLength),
-        });
 
         return {
           hand,
@@ -356,13 +333,6 @@ export class LayeredPathDetector implements ILayeredPathDetector {
         .map(([cat]) => cat);
       summary = `Partial coverage: first half missing ${missingFirst.join(", ") || "none"}, second half missing ${missingSecond.join(", ") || "none"}`;
     }
-
-    console.log("[LayeredPathDetection] Zone coverage:", {
-      firstHalf,
-      secondHalf,
-      hasCompleteCoverage,
-      hasLatinSquarePattern,
-    });
 
     return {
       perHalf: { first: firstHalf, second: secondHalf },

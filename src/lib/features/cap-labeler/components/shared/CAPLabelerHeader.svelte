@@ -103,6 +103,8 @@
       class="sync-status"
       class:syncing={syncStatus === "syncing"}
       class:error={syncStatus === "error"}
+      aria-live="polite"
+      aria-atomic="true"
     >
       {#if syncStatus === "syncing"}
         <FontAwesomeIcon icon="spinner" size="0.85em" /> Syncing...
@@ -127,6 +129,7 @@
         type="text"
         class="search-input"
         placeholder="Search sequences..."
+        aria-label="Search sequences"
         value={searchQuery}
         oninput={handleSearchInput}
         onkeydown={handleSearchKeydown}
@@ -178,7 +181,8 @@
         type="file"
         accept=".json"
         onchange={handleImportFile}
-        style="display: none"
+        aria-label="Import labels JSON file"
+        class="sr-only"
       />
     </label>
     <button class="btn-sync" onclick={onSyncLocalStorage}>
@@ -441,5 +445,17 @@
   .browse-btn:hover {
     background: rgba(99, 102, 241, 0.3);
     border-color: rgba(99, 102, 241, 0.6);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

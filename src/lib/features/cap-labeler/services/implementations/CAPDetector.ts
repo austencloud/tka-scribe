@@ -41,12 +41,7 @@ export class CAPDetector implements ICAPDetector {
 		@inject(CAPLabelerTypes.ILayeredPathDetector)
 		@optional()
 		private layeredPathService?: ILayeredPathDetector
-	) {
-		console.log(
-			'[CAPDetector] Constructed with services:',
-			{ polyrhythmic: !!polyrhythmicService, layeredPath: !!layeredPathService }
-		);
-	}
+	) {}
 
 	isCircular(sequence: SequenceEntry): boolean {
 		const beats = sequence.fullMetadata?.sequence?.filter(
@@ -64,8 +59,6 @@ export class CAPDetector implements ICAPDetector {
 	}
 
 	detectCAP(sequence: SequenceEntry): CAPDetectionResult {
-		console.log('[CAPDetector] detectCAP called for:', sequence.word);
-
 		const circular = this.isCircular(sequence);
 		const beats = this.comparisonOrchestrator.extractBeats(sequence);
 
@@ -96,14 +89,6 @@ export class CAPDetector implements ICAPDetector {
 			description: 'Layered path detection not available',
 			confidence: 0
 		};
-
-		console.log('[CAPDetector] Initial analysis:', {
-			word: sequence.word,
-			isCircular: circular,
-			beatCount: beats.length,
-			polyrhythmic: polyrhythmic.isPolyrhythmic ? polyrhythmic.polyrhythm : 'none',
-			layeredPath: layeredPath.isLayeredPath ? layeredPath.rhythmType : 'none'
-		});
 
 		// Non-circular or too short
 		if (!circular || beats.length < 2) {

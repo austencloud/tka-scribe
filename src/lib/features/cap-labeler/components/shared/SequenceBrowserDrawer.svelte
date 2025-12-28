@@ -230,8 +230,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: transparent;
     border: none;
     color: var(--muted);
@@ -414,7 +414,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.1);
     color: var(--muted);
@@ -449,7 +449,7 @@
   }
 
   .card-meta {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     flex-shrink: 0;
   }

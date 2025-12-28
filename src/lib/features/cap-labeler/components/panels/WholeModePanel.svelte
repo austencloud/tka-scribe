@@ -198,7 +198,7 @@
     justify-content: center;
     background: var(--component-color);
     border-radius: 50%;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     color: #000;
   }

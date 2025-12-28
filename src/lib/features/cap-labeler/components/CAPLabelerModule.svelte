@@ -14,7 +14,7 @@
   import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
   import type { IBeatDataConverter } from "../services/contracts/IBeatDataConverter";
   import type { ICAPDetector, CAPDetectionResult } from "../services/contracts/ICAPDetector";
-  import { capLabelerState } from "../state/cap-labeler-state.svelte";
+  import { capLabelerState, capLabelerController } from "../state/cap-labeler-state.svelte";
   import { createSectionModeState } from "../state/section-mode-state.svelte";
   import { createBeatPairModeState } from "../state/beatpair-mode-state.svelte";
   import { createWholeModeState } from "../state/whole-mode-state.svelte";
@@ -26,13 +26,16 @@
   import CAPLabelerHeader from "./shared/CAPLabelerHeader.svelte";
   import SequencePreviewPanel from "./panels/SequencePreviewPanel.svelte";
   import DesignationsPanel from "./panels/DesignationsPanel.svelte";
-  import ComponentSelectionPanel from "./panels/ComponentSelectionPanel.svelte";
-  import SectionModePanel from "./panels/SectionModePanel.svelte";
-  import BeatPairModePanel from "./panels/BeatPairModePanel.svelte";
-  import WholeModePanel from "./panels/WholeModePanel.svelte";
   import NotesInput from "./shared/NotesInput.svelte";
   import SequenceBrowserDrawer from "./shared/SequenceBrowserDrawer.svelte";
   import SequenceBrowserSidebar from "./shared/SequenceBrowserSidebar.svelte";
+
+  // Extracted UI components
+  import NavigationFooter from "./shared/NavigationFooter.svelte";
+  import CAPLabelerLoadingState from "./shared/CAPLabelerLoadingState.svelte";
+  import CAPLabelerEmptyState from "./shared/CAPLabelerEmptyState.svelte";
+  import ViewOnlyNotice from "./shared/ViewOnlyNotice.svelte";
+  import ManualBuilderSection from "./shared/ManualBuilderSection.svelte";
 
   // Lifecycle
   let isReady = $state(false);
@@ -81,7 +84,7 @@
       );
 
       // Pre-cache all services to ensure they're available for subsequent operations
-      capLabelerState.cacheServices();
+      capLabelerController.cacheServices();
 
       // Create mode states AFTER services are registered
       sectionState = createSectionModeState();
@@ -91,7 +94,7 @@
       // Only run full initialization if we don't have existing data
       // This prevents re-loading when HMR preserves state
       if (!hasExistingData) {
-        await capLabelerState.initialize();
+        await capLabelerController.initialize();
       } else {
         // Just ensure loading is false since we have data
         capLabelerState.setLoading(false);
@@ -102,7 +105,7 @@
 
     // Return cleanup function
     return () => {
-      capLabelerState.dispose();
+      capLabelerController.dispose();
     };
   });
 
@@ -302,7 +305,7 @@
   // ============================================================
 
   function handleFilterChange(mode: FilterMode) {
-    capLabelerState.setFilterMode(mode);
+    capLabelerController.setFilterMode(mode);
   }
 
   function handleBeatClick(beatNumber: number) {
@@ -363,8 +366,8 @@
         beatPairs: currentLabel?.beatPairs || [],
         beatPairGroups: currentComputedDetection.beatPairGroups,
       };
-      await capLabelerState.saveLabel(updatedLabel);
-      capLabelerState.nextSequence();
+      await capLabelerController.saveLabel(updatedLabel);
+      capLabelerController.nextSequence();
       return;
     }
 
@@ -375,7 +378,7 @@
       notes,
       derivedCapType
     );
-    capLabelerState.nextSequence();
+    capLabelerController.nextSequence();
   }
 
   async function handleMarkUnknown() {
@@ -395,8 +398,8 @@
       beatPairs: currentLabel?.beatPairs || [],
     };
 
-    await capLabelerState.saveLabel(updatedLabel);
-    capLabelerState.nextSequence();
+    await capLabelerController.saveLabel(updatedLabel);
+    capLabelerController.nextSequence();
   }
 
   function handleCopyJson() {
@@ -427,12 +430,12 @@
 
   async function handleDeleteLabel() {
     if (!currentSequence) return;
-    await capLabelerState.deleteLabel(currentSequence.word);
+    await capLabelerController.removeLabel(currentSequence.word);
   }
 
   async function handleDeleteSequence() {
     if (!currentSequence) return;
-    const result = await capLabelerState.deleteSequenceFromDatabase(
+    const result = await capLabelerController.deleteSequenceFromDatabase(
       currentSequence.id,
       currentSequence.word
     );
@@ -463,7 +466,7 @@
       beatPairs: currentLabel?.beatPairs || [],
     };
 
-    await capLabelerState.saveLabel(updatedLabel);
+    await capLabelerController.saveLabel(updatedLabel);
     // NOTE: Do NOT call nextSequence() here!
     // When in "Needs Review" filter, the verified item is removed from the list,
     // so the selection naturally moves to the next item.
@@ -491,7 +494,6 @@
    */
   function handleConfirmCandidate(_index: number) {
     // No-op - individual confirmations not needed with computed designations
-    console.log("[CAPLabeler] Individual candidate confirmation deprecated - use Verify button");
   }
 
   /**
@@ -520,7 +522,7 @@
       beatPairs: currentLabel?.beatPairs || [],
     };
 
-    await capLabelerState.saveLabel(updatedLabel);
+    await capLabelerController.saveLabel(updatedLabel);
   }
 
   // Keyboard event handling (shift key for section selection)
@@ -540,17 +542,9 @@
 <svelte:window onkeydown={handleKeyDown} onkeyup={handleKeyUp} />
 
 {#if !isReady || loading}
-  <div class="loading">
-    <div class="spinner"></div>
-    <p>Loading CAP Labeler...</p>
-  </div>
+  <CAPLabelerLoadingState />
 {:else if filteredSequences.length === 0}
-  <div class="empty-state">
-    <p>No sequences to label with current filters.</p>
-    <button onclick={() => handleFilterChange("all")}>
-      Show All Sequences
-    </button>
-  </div>
+  <CAPLabelerEmptyState onShowAll={() => handleFilterChange("all")} />
 {:else}
   <div class="cap-labeler-module">
     <div class="layout-container">
@@ -560,7 +554,7 @@
         labels={capLabelerState.labels}
         currentSequenceId={currentSequence?.id ?? null}
         {filterMode}
-        onSelectSequence={(id) => capLabelerState.jumpToSequence(id)}
+        onSelectSequence={(id) => capLabelerController.jumpToSequence(id)}
         onFilterChange={handleFilterChange}
       />
 
@@ -570,14 +564,14 @@
           {stats}
           {filterMode}
           onFilterChange={handleFilterChange}
-          onExportToggle={() => capLabelerState.setShowExport(!showExport)}
-          onExportLabels={() => capLabelerState.exportLabels()}
-          onImportFile={(file) => capLabelerState.importLabels(file)}
-          onSyncLocalStorage={() => capLabelerState.syncLocalStorageToFirebase()}
+          onExportToggle={() => capLabelerController.setShowExport(!showExport)}
+          onExportLabels={() => capLabelerController.exportLabels()}
+          onImportFile={(file) => capLabelerController.importLabels(file)}
+          onSyncLocalStorage={() => capLabelerController.syncLocalStorageToFirebase()}
           {showExport}
           {syncStatus}
           sequences={capLabelerState.circularSequences}
-          onJumpToSequence={(id) => capLabelerState.jumpToSequence(id)}
+          onJumpToSequence={(id) => capLabelerController.jumpToSequence(id)}
           onOpenBrowser={() => (showBrowserDrawer = true)}
         />
 
@@ -587,7 +581,7 @@
           labels={capLabelerState.labels}
           currentSequenceId={currentSequence?.id ?? null}
           onClose={() => (showBrowserDrawer = false)}
-          onSelectSequence={(id) => capLabelerState.jumpToSequence(id)}
+          onSelectSequence={(id) => capLabelerController.jumpToSequence(id)}
         />
 
         <div class="main-content">
@@ -601,8 +595,8 @@
         {showStartPosition}
         {manualColumnCount}
         onShowStartPositionChange={(val) =>
-          capLabelerState.setShowStartPosition(val)}
-        onColumnCountChange={(val) => capLabelerState.setManualColumnCount(val)}
+          capLabelerController.setShowStartPosition(val)}
+        onColumnCountChange={(val) => capLabelerController.setManualColumnCount(val)}
         onBeatClick={handleBeatClick}
         {highlightedBeats}
         {labelingMode}
@@ -657,100 +651,41 @@
 
         <!-- Manual designation builder - hidden behind toggle -->
         {#if !isVerified || isEditMode}
-          {#if showManualBuilder}
-            <div class="manual-builder-section">
-              <button
-                class="collapse-builder-btn"
-                onclick={() => (showManualBuilder = false)}
-              >
-                <span>Hide Manual Builder</span>
-                <span class="chevron">▲</span>
-              </button>
-
-              <!-- Mode Toggle -->
-              <ComponentSelectionPanel
-                {labelingMode}
-                onLabelingModeChange={(mode) => capLabelerState.setLabelingMode(mode)}
-              />
-
-              <!-- Mode-specific builder panels -->
-              {#if labelingMode === "section" && sectionState}
-                <SectionModePanel
-                  selectedBeats={sectionState.selectedBeats}
-                  selectedComponents={sectionState.selectedComponents}
-                  savedSections={sectionState.savedSections}
-                  selectedBaseWord={sectionState.selectedBaseWord}
-                  onBaseWordChange={(bw) => sectionState!.actions.setBaseWord(bw)}
-                  onAddSection={handleAddSection}
-                  onRemoveSection={handleRemoveSection}
-                  onMarkUnknown={handleMarkUnknown}
-                  onNext={() => capLabelerState.nextSequence()}
-                  canProceed={sectionState.selectedBeats.size === 0 &&
-                    sectionState.selectedComponents.size === 0}
-                />
-              {:else if labelingMode === "beatpair" && beatPairState}
-                <BeatPairModePanel
-                  firstBeat={beatPairState.firstBeat}
-                  secondBeat={beatPairState.secondBeat}
-                  selectedComponents={beatPairState.selectedComponents}
-                  transformationIntervals={beatPairState.transformationIntervals}
-                  onClearSelection={() => beatPairState!.actions.clearSelection()}
-                  onToggleComponent={(c) => beatPairState!.actions.toggleComponent(c)}
-                  onSetInterval={(key, val) =>
-                    beatPairState!.actions.setTransformationInterval(key, val)}
-                  onAddBeatPair={() => beatPairState!.actions.addBeatPair()}
-                />
-              {:else if labelingMode === "whole" && wholeState}
-                <WholeModePanel
-                  selectedComponents={wholeState.selectedComponents}
-                  transformationIntervals={wholeState.transformationIntervals}
-                  onToggleComponent={(c) => wholeState!.actions.toggleComponent(c)}
-                  onSetInterval={(key, val) =>
-                    wholeState!.actions.setTransformationInterval(key, val)}
-                  onAddDesignation={handleAddDesignation}
-                />
-              {/if}
-            </div>
-          {:else}
-            <button
-              class="show-builder-btn"
-              onclick={() => (showManualBuilder = true)}
-            >
-              <span>+ Add Manual Designation</span>
-              <span class="chevron">▼</span>
-            </button>
-          {/if}
+          <ManualBuilderSection
+            {showManualBuilder}
+            {labelingMode}
+            {sectionState}
+            {beatPairState}
+            {wholeState}
+            {derivedCapType}
+            {notes}
+            onToggleBuilder={(show) => (showManualBuilder = show)}
+            onLabelingModeChange={(mode) => capLabelerController.setLabelingMode(mode)}
+            onAddSection={handleAddSection}
+            onRemoveSection={handleRemoveSection}
+            onMarkUnknown={handleMarkUnknown}
+            onNext={() => capLabelerController.nextSequence()}
+            onAddDesignation={handleAddDesignation}
+          />
         {:else}
-          <!-- View-only mode for verified sequences -->
-          <div class="view-only-notice">
-            <span class="verified-badge">Verified</span>
-            <button class="edit-button" onclick={() => (isEditMode = true)}>
-              Edit Label
-            </button>
-          </div>
+          <ViewOnlyNotice onEdit={() => (isEditMode = true)} />
         {/if}
 
         <NotesInput
           value={notes}
-          onInput={(val) => capLabelerState.setNotes(val)}
+          onInput={(val) => capLabelerController.setNotes(val)}
           placeholder="Optional notes about this sequence..."
         />
       </div>
     </div>
 
         <!-- Navigation -->
-        <div class="navigation">
-          <button
-            onclick={() => capLabelerState.previousSequence()}
-            disabled={capLabelerState.currentIndex === 0}
-          >
-            Previous
-          </button>
-          <button onclick={() => capLabelerState.skipSequence()}> Skip </button>
-          <span class="position">
-            {capLabelerState.currentIndex + 1} / {filteredSequences.length}
-          </span>
-        </div>
+        <NavigationFooter
+          currentIndex={capLabelerState.currentIndex}
+          totalCount={filteredSequences.length}
+          onPrevious={() => capLabelerController.previousSequence()}
+          onSkip={() => capLabelerController.skipSequence()}
+        />
       </div>
       <!-- End main-area -->
     </div>
@@ -796,51 +731,6 @@
     width: 100%;
   }
 
-  .loading,
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--spacing-lg);
-    height: 100vh;
-    font-size: var(--font-size-lg);
-    color: var(--muted);
-  }
-
-  .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-top-color: var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .empty-state button {
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: var(--gradient-primary);
-    color: var(--foreground);
-    border: none;
-    border-radius: 8px;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-fast);
-    min-height: var(--min-touch-target);
-  }
-
-  .empty-state button:hover {
-    transform: translateY(var(--hover-lift-sm));
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-  }
-
   .main-content {
     display: grid;
     grid-template-columns: 1fr 400px;
@@ -875,43 +765,6 @@
     background: rgba(255, 255, 255, 0.25);
   }
 
-  .navigation {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--surface-glass);
-  }
-
-  .navigation button {
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: var(--surface-color);
-    color: var(--foreground);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: 8px;
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: var(--transition-fast);
-    min-height: var(--min-touch-target);
-  }
-
-  .navigation button:hover:not(:disabled) {
-    background: var(--surface-hover);
-    border-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .navigation button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
-  .position {
-    margin-left: auto;
-    font-size: var(--font-size-sm);
-    color: var(--muted);
-  }
-
   @media (max-width: 1024px) {
     .main-content {
       grid-template-columns: 1fr;
@@ -921,92 +774,5 @@
     .labeling-panel {
       max-height: 400px;
     }
-  }
-
-  /* View-only mode for verified sequences */
-  .view-only-notice {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: var(--spacing-md);
-    background: var(--surface-dark, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-radius: 12px;
-  }
-
-  .verified-badge {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.4);
-    border-radius: 8px;
-    font-size: var(--font-size-sm);
-    font-weight: 600;
-    color: #22c55e;
-  }
-
-  .edit-button {
-    padding: var(--spacing-xs) var(--spacing-md);
-    background: transparent;
-    color: var(--muted-foreground);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    border-radius: 8px;
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: var(--transition-fast);
-  }
-
-  .edit-button:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: var(--foreground);
-  }
-
-  /* Manual builder toggle */
-  .show-builder-btn,
-  .collapse-builder-btn {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    border-radius: 10px;
-    color: var(--muted-foreground);
-    font-size: var(--font-size-sm);
-    cursor: pointer;
-    transition: var(--transition-fast);
-  }
-
-  .show-builder-btn:hover,
-  .collapse-builder-btn:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: var(--foreground);
-  }
-
-  .collapse-builder-btn {
-    background: rgba(99, 102, 241, 0.08);
-    border-style: solid;
-    border-color: rgba(99, 102, 241, 0.3);
-    color: var(--foreground);
-  }
-
-  .chevron {
-    font-size: 0.75em;
-    opacity: 0.6;
-  }
-
-  .manual-builder-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-sm);
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    border-radius: 12px;
   }
 </style>

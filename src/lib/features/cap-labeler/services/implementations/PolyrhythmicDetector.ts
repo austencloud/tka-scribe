@@ -201,13 +201,6 @@ export class PolyrhythmicDetector {
       return this.noPolyrhythmResult("No periodic patterns found");
     }
 
-    console.log("[PolyrhythmicDetection] All period analyses:", analyses.map(a => ({
-      period: a.period,
-      score: a.consistencyScore,
-      type: a.dominantPropertyType,
-      props: a.consistentProperties.map(p => p.property),
-    })));
-
     // NEW APPROACH: Find valid polyrhythm pairs first, then check motion/spatial
     // A valid pair has LCM(p1, p2) = sequence length
     const validPairs: Array<{ p1: PeriodAnalysis; p2: PeriodAnalysis; lcmValue: number }> = [];
@@ -233,12 +226,6 @@ export class PolyrhythmicDetector {
           const p2IsStandard = isStandardCAPInterval(p2.period);
 
           if (p1IsStandard && p2IsStandard) {
-            console.log("[PolyrhythmicDetection] Skipping pair - both are standard CAP intervals:", {
-              p1Period: p1.period,
-              p2Period: p2.period,
-              halvedPeriod,
-              quarteredPeriod,
-            });
             continue;
           }
 
@@ -246,12 +233,6 @@ export class PolyrhythmicDetector {
           // A repeated word (like 5-letter word repeated 4 times = 20 beats) is NOT polyrhythmic
           if (p1.period === halvedPeriod || p2.period === halvedPeriod ||
               p1.period === quarteredPeriod || p2.period === quarteredPeriod) {
-            console.log("[PolyrhythmicDetection] Skipping pair - contains standard CAP interval:", {
-              p1Period: p1.period,
-              p2Period: p2.period,
-              halvedPeriod,
-              quarteredPeriod,
-            });
             continue;
           }
 
@@ -259,11 +240,6 @@ export class PolyrhythmicDetector {
         }
       }
     }
-
-    console.log("[PolyrhythmicDetection] Valid polyrhythm pairs:", validPairs.map(pair => ({
-      periods: [pair.p1.period, pair.p2.period],
-      types: [pair.p1.dominantPropertyType, pair.p2.dominantPropertyType],
-    })));
 
     // Find the best pair where one is motion-dominant and one is spatial-dominant
     // Priority: 1) Pure motion + pure spatial, 2) Smaller period values, 3) Higher consistency
@@ -310,13 +286,6 @@ export class PolyrhythmicDetector {
 
       // Pick the best assignment for this pair
       for (const { motion, spatial, score } of assignments) {
-        console.log("[PolyrhythmicDetection] Evaluating pair:", {
-          motionPeriod: motion.period,
-          spatialPeriod: spatial.period,
-          motionType: motion.dominantPropertyType,
-          spatialType: spatial.dominantPropertyType,
-          score,
-        });
         if (score > bestScore) {
           bestScore = score;
           bestPair = { motionPeriod: motion, spatialPeriod: spatial };
@@ -331,15 +300,8 @@ export class PolyrhythmicDetector {
           ? [motionPeriod.period, spatialPeriod.period]
           : [spatialPeriod.period, motionPeriod.period];
 
-      console.log("[PolyrhythmicDetection] Found polyrhythm!", {
-        polyrhythm: `${smaller}:${larger}`,
-        motionPeriod: motionPeriod.period,
-        spatialPeriod: spatialPeriod.period,
-      });
-
       // Compute zone coverage for the sequence
       const zoneCoverage = analyzeZoneCoverage(endPositions);
-      console.log("[PolyrhythmicDetection] Zone coverage:", zoneCoverage.summary);
 
       return {
         isPolyrhythmic: true,
@@ -352,8 +314,6 @@ export class PolyrhythmicDetector {
         zoneCoverage,
       };
     }
-
-    console.log("[PolyrhythmicDetection] No valid polyrhythm pair found");
 
     // Check for single-period patterns (still interesting but not polyrhythmic)
     const bestPeriod = analyses.reduce((best, curr) =>
