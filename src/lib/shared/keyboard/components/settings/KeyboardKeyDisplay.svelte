@@ -207,7 +207,7 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    font-size: 11px;
+    font-size: 12px;
     border-radius: 5px;
     border-bottom-width: 2px;
     font-weight: 600;

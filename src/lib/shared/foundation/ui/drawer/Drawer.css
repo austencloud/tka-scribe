@@ -248,11 +248,12 @@
    */
   .drawer-handle {
     position: relative;
-    width: 40px;
+    width: 48px;
     height: 4px;
+    min-height: 48px; /* WCAG AAA touch target */
     margin: 10px auto 8px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.45);
     flex-shrink: 0;
   }
 
@@ -266,7 +267,7 @@
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.45);
   }
 
   /* Handle for left placement - vertical on right edge */
@@ -279,14 +280,15 @@
     margin: 0;
     border-radius: 999px;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.45);
   }
 
   /* Handle for top placement - horizontal on bottom edge */
   .drawer-content[data-placement="top"] .drawer-handle {
     position: relative;
-    width: 40px;
+    width: 48px;
     height: 4px;
+    min-height: 48px; /* WCAG AAA touch target */
     margin: 8px auto 10px;
     order: 1; /* Place below content */
   }
@@ -295,8 +297,9 @@
   .drawer-content[data-placement="bottom"]:not(.side-by-side-layout)
     .drawer-handle {
     position: relative;
-    width: 40px;
+    width: 48px;
     height: 4px;
+    min-height: 48px; /* WCAG AAA touch target */
     margin: 10px auto 8px;
   }
 

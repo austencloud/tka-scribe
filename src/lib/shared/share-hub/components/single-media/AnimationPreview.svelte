@@ -34,10 +34,11 @@
   let servicesReady = $state(false);
 
   // Trail settings from global animation settings
-  let trailSettings = $state(animationSettings.settings.trail);
-  $effect(() => {
-    trailSettings = animationSettings.settings.trail;
-  });
+  // NUCLEAR TEST: Disabled to check if trail settings is causing infinite loop
+  // let trailSettings = $state(animationSettings.settings.trail);
+  // $effect(() => {
+  //   trailSettings = animationSettings.settings.trail;
+  // });
 
   // Derived: Total beats for display
   const totalBeats = $derived(hubState.sequence?.beats?.length ?? 0);
@@ -97,37 +98,40 @@
   });
 
   // Initialize animation when sequence changes
-  $effect(() => {
-    if (!hubState.sequence || !playbackController || !servicesReady) return;
+  // NUCLEAR TEST: Disabled to check if animation initialization is causing infinite loop
+  // $effect(() => {
+  //   if (!hubState.sequence || !playbackController || !servicesReady) return;
 
-    const initAnimation = async () => {
-      try {
-        const success = playbackController!.initialize(hubState.sequence!, animationState);
-        if (!success) {
-          error = 'Failed to initialize animation';
-        }
-      } catch (err) {
-        console.error('Animation init error:', err);
-        error = err instanceof Error ? err.message : 'Animation error';
-      }
-    };
+  //   const initAnimation = async () => {
+  //     try {
+  //       const success = playbackController!.initialize(hubState.sequence!, animationState);
+  //       if (!success) {
+  //         error = 'Failed to initialize animation';
+  //       }
+  //     } catch (err) {
+  //       console.error('Animation init error:', err);
+  //       error = err instanceof Error ? err.message : 'Animation error';
+  //     }
+  //   };
 
-    initAnimation();
-  });
+  //   initAnimation();
+  // });
 
   // Sync hub playing state with animation state
-  $effect(() => {
-    if (!playbackController || !animationState.sequenceData) return;
+  // NUCLEAR TEST: Disabled to check if playing state sync is causing infinite loop
+  // $effect(() => {
+  //   if (!playbackController || !animationState.sequenceData) return;
 
-    if (hubState.isPlaying !== animationState.isPlaying) {
-      playbackController.togglePlayback();
-    }
-  });
+  //   if (hubState.isPlaying !== animationState.isPlaying) {
+  //     playbackController.togglePlayback();
+  //   }
+  // });
 
   // Sync current beat back to hub state
-  $effect(() => {
-    hubState.currentBeat = animationState.currentBeat;
-  });
+  // NUCLEAR TEST: Disabled to check if beat sync is causing infinite loop
+  // $effect(() => {
+  //   hubState.currentBeat = animationState.currentBeat;
+  // });
 
   // Toggle play/pause
   function handlePlayToggle(playing: boolean) {
@@ -151,12 +155,12 @@
       </div>
     {:else if error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <p>{error}</p>
       </div>
     {:else if !hubState.sequence}
       <div class="empty-state">
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
         <p>No sequence loaded</p>
       </div>
     {:else if servicesReady}
@@ -169,7 +173,6 @@
         beatData={currentBeatData}
         currentBeat={animationState.currentBeat}
         sequenceData={animationState.sequenceData}
-        {trailSettings}
       />
     {/if}
   </div>
@@ -182,17 +185,17 @@
     />
 
     <div class="beat-indicator">
-      <i class="fas fa-music"></i>
+      <i class="fas fa-music" aria-hidden="true"></i>
       <span>Beat {Math.floor(animationState.currentBeat) + 1} / {totalBeats}</span>
     </div>
 
     <div class="control-group">
-      <i class="fas fa-tachometer-alt"></i>
+      <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
       <span>{hubState.animationSettings.fps} FPS</span>
     </div>
 
     <div class="control-group">
-      <i class="fas fa-redo"></i>
+      <i class="fas fa-redo" aria-hidden="true"></i>
       <span>{hubState.animationSettings.loopCount}x</span>
     </div>
 
@@ -201,7 +204,7 @@
       onclick={handleSettingsClick}
       aria-label="Animation settings"
     >
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
   </div>
 </div>

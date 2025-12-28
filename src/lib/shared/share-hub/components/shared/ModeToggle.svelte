@@ -37,6 +37,7 @@
 
 <div class="mode-toggle" role="tablist" aria-label="Export mode selection">
   <button
+    id="tab-single-media"
     class="mode-option"
     class:active={mode === 'single'}
     role="tab"
@@ -46,11 +47,12 @@
     onclick={() => handleModeChange('single')}
     onkeydown={(e) => handleKeydown(e, 'single')}
   >
-    <i class="fas fa-image"></i>
+    <i class="fas fa-image" aria-hidden="true"></i>
     <span>Single Media</span>
   </button>
 
   <button
+    id="tab-composite"
     class="mode-option"
     class:active={mode === 'composite'}
     role="tab"
@@ -60,7 +62,7 @@
     onclick={() => handleModeChange('composite')}
     onkeydown={(e) => handleKeydown(e, 'composite')}
   >
-    <i class="fas fa-th"></i>
+    <i class="fas fa-th" aria-hidden="true"></i>
     <span>Composite</span>
   </button>
 

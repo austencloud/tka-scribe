@@ -75,7 +75,7 @@
       <!-- Icon -->
       <div class="skill-icon">
         {#if skill.icon.startsWith("fa-")}
-          <i class="fas {skill.icon}"></i>
+          <i class="fas {skill.icon}" aria-hidden="true"></i>
         {:else}
           <span class="letter-icon">{skill.icon}</span>
         {/if}
@@ -105,7 +105,7 @@
           </div>
           <span class="progress-text">
             {#if isCompleted}
-              <i class="fas fa-check"></i> Complete
+              <i class="fas fa-check" aria-hidden="true"></i> Complete
             {:else if progress}
               Level {progress.currentLevel}/{skill.totalLevels}
             {:else}
@@ -117,7 +117,7 @@
 
       <!-- XP Reward -->
       <div class="skill-xp">
-        <i class="fas fa-star"></i>
+        <i class="fas fa-star" aria-hidden="true"></i>
         <span>{skill.xpPerLevel * skill.totalLevels}</span>
       </div>
     </button>
@@ -125,7 +125,7 @@
 
   {#if skills.length === 0}
     <div class="empty-state">
-      <i class="fas fa-medal"></i>
+      <i class="fas fa-medal" aria-hidden="true"></i>
       <p>No skills to display</p>
     </div>
   {/if}
@@ -230,7 +230,7 @@
 
   .level-badge {
     padding: 1px 6px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 500;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.1);
@@ -245,7 +245,7 @@
 
   .skill-description {
     margin: 0;
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     line-height: 1.3;
     overflow: hidden;
@@ -279,7 +279,7 @@
   }
 
   .progress-text {
-    font-size: 10px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
   }
@@ -297,7 +297,7 @@
     background: rgba(245, 158, 11, 0.15);
     border-radius: 12px;
     color: #f59e0b;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     flex-shrink: 0;
   }
@@ -380,7 +380,7 @@
 
     .level-badge {
       padding: 2px 7px;
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .skill-description {
@@ -397,13 +397,13 @@
     }
 
     .progress-text {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .skill-xp {
       gap: 4px;
       padding: 4px 8px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .empty-state {
@@ -479,7 +479,7 @@
 
     .level-badge {
       padding: 2px 8px;
-      font-size: 11px;
+      font-size: 12px;
       border-radius: 4px;
     }
 
@@ -505,7 +505,7 @@
     }
 
     .progress-text {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .progress-text i {

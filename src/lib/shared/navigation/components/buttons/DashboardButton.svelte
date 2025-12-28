@@ -107,7 +107,7 @@
           .toUpperCase()}
       </div>
     {:else}
-      <i class="fas fa-home"></i>
+      <i class="fas fa-home" aria-hidden="true"></i>
     {/if}
 
     <!-- Notification Badge -->

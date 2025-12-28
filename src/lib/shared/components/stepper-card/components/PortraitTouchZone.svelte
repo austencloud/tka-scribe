@@ -11,8 +11,9 @@ Covers top or bottom half of the card for increment/decrement
     onkeydown: (e: KeyboardEvent) => void;
   }>();
 
-  const ariaLabel =
-    type === "increment" ? `Increase ${title}` : `Decrease ${title}`;
+  const ariaLabel = $derived(
+    type === "increment" ? `Increase ${title}` : `Decrease ${title}`
+  );
 </script>
 
 <button

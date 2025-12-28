@@ -112,9 +112,14 @@ export interface IAnimationPrecomputer {
   getFramePreRenderer(): SequenceFramePreRenderer | null;
 
   /**
-   * Clear all caches
+   * Clear all caches (paths + frames)
    */
   clearCaches(): void;
+
+  /**
+   * Clear only pre-rendered frames (preserves path cache)
+   */
+  clearPreRenderedFrames(): void;
 
   /**
    * Clean up resources

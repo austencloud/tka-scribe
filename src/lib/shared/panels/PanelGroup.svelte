@@ -30,6 +30,7 @@
 </script>
 
 <script lang="ts">
+  import { untrack } from "svelte";
   import ResizeHandle from "./ResizeHandle.svelte";
 
   interface Props {
@@ -57,11 +58,15 @@
   let dragStartSizes = $state<number[]>([]);
   let activeDragIndex = $state<number | null>(null);
 
-  // Initialize sizes from panel defaults
+  // Initialize sizes from panel defaults - only when panel count changes
+  // Use untrack to prevent reactive cascade when sizes is bindable
   $effect(() => {
-    if (sizes.length !== panels.length) {
-      sizes = panels.map((p) => p.defaultSize ?? 1);
-    }
+    const panelCount = panels.length;
+    untrack(() => {
+      if (sizes.length !== panelCount) {
+        sizes = panels.map((p) => p.defaultSize ?? 1);
+      }
+    });
   });
 
   // Handle resize start

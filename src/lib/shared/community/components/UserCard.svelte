@@ -43,14 +43,13 @@
   }
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
   class="user-card"
   style="--card-accent: {accentColor}"
   {onclick}
   role="button"
   tabindex="0"
+  aria-label="View profile of {user.displayName}"
   onkeydown={(e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -69,12 +68,12 @@
         onload={(e) => onAvatarLoad?.(e.currentTarget as HTMLImageElement)}
         onerror={(e) => onAvatarError?.(e.currentTarget as HTMLImageElement)}
       />
-      <div class="avatar-placeholder" style="display: none;">
-        <i class="fas fa-user"></i>
+      <div class="avatar-placeholder" style="display: none;" aria-hidden="true">
+        <i class="fas fa-user" aria-hidden="true"></i>
       </div>
     {:else}
-      <div class="avatar-placeholder">
-        <i class="fas fa-user"></i>
+      <div class="avatar-placeholder" aria-hidden="true">
+        <i class="fas fa-user" aria-hidden="true"></i>
       </div>
     {/if}
 
@@ -85,7 +84,7 @@
         title={ROLE_DISPLAY[user.role]?.label}
         style="background: {getRoleColor(user.role)}"
       >
-        <i class="fas {getRoleIcon(user.role)}"></i>
+        <i class="fas {getRoleIcon(user.role)}" aria-hidden="true"></i>
       </span>
     {/if}
   </div>
@@ -98,15 +97,15 @@
     <!-- Stats -->
     <div class="user-stats">
       <div class="stat">
-        <i class="fas fa-list"></i>
+        <i class="fas fa-list" aria-hidden="true"></i>
         <span>{user.sequenceCount ?? 0}</span>
       </div>
       <div class="stat">
-        <i class="fas fa-folder"></i>
+        <i class="fas fa-folder" aria-hidden="true"></i>
         <span>{user.collectionCount ?? 0}</span>
       </div>
       <div class="stat">
-        <i class="fas fa-users"></i>
+        <i class="fas fa-users" aria-hidden="true"></i>
         <span>{user.followerCount ?? 0}</span>
       </div>
     </div>
@@ -120,13 +119,14 @@
         class:following={isFollowing}
         class:loading={isFollowLoading}
         disabled={isFollowLoading}
+        aria-busy={isFollowLoading}
         onclick={(e) => {
           e.stopPropagation();
           onFollowToggle?.();
         }}
       >
         {#if isFollowLoading}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {:else}
           {isFollowing ? "Following" : "Follow"}
         {/if}
@@ -232,7 +232,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 12px;
     color: #000;
     border: 2px solid #1a1a2e;
     z-index: 1;
@@ -275,12 +275,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.65);
   }
 
   .stat i {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--card-accent);
     opacity: 0.75;
     transition:

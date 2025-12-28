@@ -10,6 +10,10 @@ import {
   orderBy,
   limit,
   getDocs,
+  getDoc,
+  doc,
+  where,
+  getCountFromServer,
   onSnapshot,
   type Unsubscribe,
   type QueryDocumentSnapshot,
@@ -224,23 +228,62 @@ export class LeaderboardManager implements ILeaderboardManager {
       const firestore = await getFirestoreInstance();
       const orderByField = this.getOrderByField(category);
 
-      // Get all users ordered by the metric
-      const usersRef = collection(firestore, "users");
-      const q = query(usersRef, orderBy(orderByField, "desc"));
-      const snapshot = await getDocs(q);
+      // First, get the user's current metric value (1 read)
+      const userDocRef = doc(firestore, "users", userId);
+      const userDoc = await getDoc(userDocRef);
 
-      let rank = 1;
-      for (const doc of snapshot.docs) {
-        if (doc.id === userId) {
-          return rank;
-        }
-        rank++;
+      if (!userDoc.exists()) {
+        return null;
       }
 
-      return null;
+      const userData = userDoc.data() as FirestoreUserData;
+      const userMetricValue = this.getMetricValue(userData, category);
+
+      // If user has no value for this metric, they're unranked
+      if (userMetricValue === 0 || userMetricValue === undefined) {
+        return null;
+      }
+
+      // Count how many users have a HIGHER value (1 aggregation query)
+      const usersRef = collection(firestore, "users");
+      const countQuery = query(
+        usersRef,
+        where(orderByField, ">", userMetricValue)
+      );
+
+      const countSnapshot = await getCountFromServer(countQuery);
+      const usersAhead = countSnapshot.data().count;
+
+      // Rank = users ahead + 1
+      return usersAhead + 1;
     } catch (error) {
       console.error("LeaderboardManager: Error fetching user rank", error);
       return null;
+    }
+  }
+
+  /**
+   * Get the metric value from user data based on category
+   */
+  private getMetricValue(
+    data: FirestoreUserData,
+    category: LeaderboardCategory
+  ): number {
+    switch (category) {
+      case "xp":
+        return data.totalXP ?? 0;
+      case "level":
+        return data.currentLevel ?? 0;
+      case "sequences":
+        return data.sequenceCount ?? 0;
+      case "achievements":
+        return data.achievementCount ?? 0;
+      case "streak":
+        return data.currentStreak ?? 0;
+      case "weekly_challenges":
+        return data.weeklyChallengesCompleted ?? 0;
+      case "skill_mastery":
+        return data.skillsCompleted ?? 0;
     }
   }
 
@@ -249,9 +292,12 @@ export class LeaderboardManager implements ILeaderboardManager {
     callback: (data: LeaderboardData) => void,
     options?: LeaderboardQueryOptions
   ): () => void {
-    try {
-      // Use async IIFE to get firestore instance
-      void (async () => {
+    // Store unsubscribe function for cleanup
+    let unsubscribe: Unsubscribe | null = null;
+
+    // Use async IIFE to get firestore instance
+    void (async () => {
+      try {
         const firestore = await getFirestoreInstance();
         const auth = getAuth();
         const currentUserId = auth.currentUser?.uid;
@@ -266,7 +312,7 @@ export class LeaderboardManager implements ILeaderboardManager {
           limit(limitCount)
         );
 
-        const unsubscribe: Unsubscribe = onSnapshot(
+        unsubscribe = onSnapshot(
           q,
           (snapshot) => {
             const entries: LeaderboardEntry[] = [];
@@ -306,18 +352,20 @@ export class LeaderboardManager implements ILeaderboardManager {
             );
           }
         );
+      } catch (error) {
+        console.error(
+          "LeaderboardManager: Error subscribing to leaderboard",
+          error
+        );
+      }
+    })();
 
-        return unsubscribe;
-      })();
-
-      return () => {};
-    } catch (error) {
-      console.error(
-        "LeaderboardManager: Error subscribing to leaderboard",
-        error
-      );
-      return () => {};
-    }
+    // Return cleanup function that calls unsubscribe when available
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }
 
   getRankHistory(

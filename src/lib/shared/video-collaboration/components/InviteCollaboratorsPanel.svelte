@@ -171,11 +171,11 @@
     <!-- Header -->
     <header class="invite-panel__header">
       <div class="header-content">
-        <i class="fas fa-user-plus header-icon"></i>
+        <i class="fas fa-user-plus header-icon" aria-hidden="true"></i>
         <h2 id="invite-collaborators-title">Invite Collaborators</h2>
       </div>
       <button class="close-button" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -193,7 +193,7 @@
     <!-- Message Selection -->
     <section class="message-section">
       <h3 class="section-title">
-        <i class="fas fa-comment-dots"></i>
+        <i class="fas fa-comment-dots" aria-hidden="true"></i>
         Invite Message
       </h3>
       <div class="message-controls">
@@ -230,7 +230,7 @@
     <!-- Error Message -->
     {#if inviteError}
       <div class="error-banner">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <span>{inviteError}</span>
       </div>
     {/if}
@@ -238,7 +238,7 @@
     <!-- Current Collaborators -->
     <section class="section">
       <h3 class="section-title">
-        <i class="fas fa-users"></i>
+        <i class="fas fa-users" aria-hidden="true"></i>
         Current Collaborators ({video.collaborators.length})
       </h3>
       <div class="collaborators-list">
@@ -258,7 +258,7 @@
             </div>
             {#if collaborator.role === "creator"}
               <span class="creator-badge">
-                <i class="fas fa-crown"></i>
+                <i class="fas fa-crown" aria-hidden="true"></i>
               </span>
             {/if}
           </div>
@@ -270,21 +270,21 @@
     {#if video.pendingInvites.filter((i) => i.status === "pending").length > 0}
       <section class="section">
         <h3 class="section-title">
-          <i class="fas fa-clock"></i>
+          <i class="fas fa-clock" aria-hidden="true"></i>
           Pending Invites
         </h3>
         <div class="collaborators-list">
           {#each video.pendingInvites.filter((i) => i.status === "pending") as invite}
             <div class="collaborator-item pending">
               <div class="user-avatar">
-                <i class="fas fa-user"></i>
+                <i class="fas fa-user" aria-hidden="true"></i>
               </div>
               <div class="user-info">
                 <span class="user-name">{invite.displayName || "User"}</span>
                 <span class="user-role">Invite pending</span>
               </div>
               <span class="pending-badge">
-                <i class="fas fa-hourglass-half"></i>
+                <i class="fas fa-hourglass-half" aria-hidden="true"></i>
               </span>
             </div>
           {/each}
@@ -295,11 +295,11 @@
     <!-- Search Input -->
     <section class="section">
       <h3 class="section-title">
-        <i class="fas fa-search"></i>
+        <i class="fas fa-search" aria-hidden="true"></i>
         Find Collaborators
       </h3>
       <div class="search-input-wrapper">
-        <i class="fas fa-search search-icon"></i>
+        <i class="fas fa-search search-icon" aria-hidden="true"></i>
         <input
           type="text"
           bind:value={searchQuery}
@@ -308,7 +308,7 @@
           autocapitalize="off"
         />
         {#if isSearching}
-          <i class="fas fa-spinner fa-spin loading-icon"></i>
+          <i class="fas fa-spinner fa-spin loading-icon" aria-hidden="true"></i>
         {/if}
       </div>
       {#if searchQuery.trim()}
@@ -320,7 +320,7 @@
                   {#if user.avatar}
                     <img src={user.avatar} alt="" />
                   {:else}
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-user" aria-hidden="true"></i>
                   {/if}
                 </div>
                 <div class="user-info">
@@ -335,9 +335,9 @@
                   disabled={sendingInviteTo === user.id}
                 >
                   {#if sendingInviteTo === user.id}
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                   {:else}
-                    <i class="fas fa-plus"></i>
+                    <i class="fas fa-plus" aria-hidden="true"></i>
                     Invite
                   {/if}
                 </button>

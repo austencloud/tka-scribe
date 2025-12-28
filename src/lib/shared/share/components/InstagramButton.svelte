@@ -77,7 +77,7 @@ Shows different states: no link, has link, opening link.
     onclick={handleClick}
     {disabled}
   >
-    <i class="fa-brands fa-instagram"></i>
+    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
     <span class="button-text">{buttonText()}</span>
   </button>
 
@@ -88,7 +88,7 @@ Shows different states: no link, has link, opening link.
       aria-label="Edit Instagram link"
       title="Edit Instagram link"
     >
-      <i class="fa-solid fa-pencil"></i>
+      <i class="fa-solid fa-pencil" aria-hidden="true"></i>
     </button>
   {/if}
 </div>

@@ -30,7 +30,7 @@
     class="action-button primary"
     onclick={() => onAction("open-in-create")}
   >
-    <i class="fas fa-pen-to-square"></i>
+    <i class="fas fa-pen-to-square" aria-hidden="true"></i>
     Open in Create
   </button>
 
@@ -42,20 +42,20 @@
       disabled={isSaving}
     >
       {#if isSaving}
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         Saving...
       {:else if isSavedToLibrary}
-        <i class="fas fa-check"></i>
+        <i class="fas fa-check" aria-hidden="true"></i>
         Saved
       {:else}
-        <i class="fas fa-bookmark"></i>
+        <i class="fas fa-bookmark" aria-hidden="true"></i>
         Save to Library
       {/if}
     </button>
   {/if}
 
   <button class="action-button" onclick={() => onAction("share")}>
-    <i class="fas fa-share-alt"></i>
+    <i class="fas fa-share-alt" aria-hidden="true"></i>
     Share
   </button>
 
@@ -65,7 +65,7 @@
       class:active={isFavorite}
       onclick={() => onAction("favorite")}
     >
-      <i class={isFavorite ? "fas fa-heart" : "far fa-heart"}></i>
+      <i class={isFavorite ? "fas fa-heart" : "far fa-heart"} aria-hidden="true"></i>
       Favorite
     </button>
   {/if}
@@ -73,7 +73,7 @@
 
 {#if saveError}
   <div class="save-error">
-    <i class="fas fa-exclamation-circle"></i>
+    <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
     {saveError}
   </div>
 {/if}

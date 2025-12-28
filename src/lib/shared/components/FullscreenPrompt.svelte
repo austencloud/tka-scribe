@@ -116,11 +116,10 @@ the actual fullscreen state rather than inferring from viewport size.
 </script>
 
 {#if showPrompt}
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
     class="fullscreen-prompt-overlay"
     onclick={requestFullscreen}
+    onkeydown={(e) => (e.key === "Enter" || e.key === " ") && requestFullscreen()}
     role="button"
     tabindex="0"
     aria-label="Enter fullscreen to start building"
@@ -233,7 +232,13 @@ the actual fullscreen state rather than inferring from viewport size.
     text-align: center;
     line-height: 1.3;
     letter-spacing: 0.5px;
-    animation: glow 2s ease-in-out infinite;
+  }
+
+  /* Glow animation - only when motion is OK */
+  @media (prefers-reduced-motion: no-preference) {
+    .prompt-title {
+      animation: glow 2s ease-in-out infinite;
+    }
   }
 
   @keyframes glow {

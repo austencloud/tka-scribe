@@ -28,6 +28,7 @@
   import StaticSettingsPanel from './settings/StaticSettings.svelte';
   import PerformanceSettingsPanel from './settings/PerformanceSettings.svelte';
   import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+  import { untrack } from 'svelte';
 
   import type { ExportSettings } from '../domain/models/ExportSettings';
 
@@ -49,11 +50,23 @@
   const hubState = createShareHubState();
 
   // Sync sequence to state when it changes
-  $effect(() => {
-    if (sequence !== undefined) {
-      hubState.setSequence(sequence ?? null);
-    }
-  });
+  // COMPLETELY DISABLED to test if this is causing the loop
+  // $effect(() => {
+  //   if (sequence !== undefined) {
+  //     const currentSequence = untrack(() => hubState.sequence);
+  //     if (sequence !== currentSequence) {
+  //       hubState.setSequence(sequence ?? null);
+  //     }
+  //   }
+  // });
+
+  // Alternative: Set sequence once on mount, don't sync reactively
+  // ALSO DISABLED - testing if ANY sequence sync causes loop
+  // $effect(() => {
+  //   if (sequence !== undefined && hubState.sequence === null) {
+  //     hubState.setSequence(sequence ?? null);
+  //   }
+  // });
 
   // Settings panel title based on context
   const settingsTitle = $derived(

@@ -80,12 +80,12 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
         type="button"
       >
         <div class="type-icon">
-          <i class={contentType.icon}></i>
+          <i class={contentType.icon} aria-hidden="true"></i>
         </div>
         <span class="type-label">{contentType.label}</span>
         {#if selectedTypes.includes(contentType.type)}
           <div class="selection-indicator">
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           </div>
         {/if}
       </button>
@@ -262,13 +262,13 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     }
 
     .type-label {
-      font-size: 10px;
+      font-size: var(--font-size-compact, 12px);
     }
 
     .selection-indicator {
       width: 14px;
       height: 14px;
-      font-size: 7px;
+      font-size: var(--font-size-compact, 12px);
       top: 4px;
       right: 4px;
     }

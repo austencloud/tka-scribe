@@ -225,7 +225,7 @@
   }
 
   .nav-label {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     text-align: center;
     white-space: nowrap;
@@ -250,7 +250,7 @@
     background: var(--semantic-error, #ef4444);
     border-radius: 8px;
     color: white;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 16px;
     text-align: center;

@@ -98,11 +98,11 @@
             class:verifying={linkingState.currentStep === "verifying"}
           >
             {#if linkingState.currentStep === "success"}
-              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
             {:else if linkingState.currentStep === "verifying"}
-              <i class="fas fa-envelope-open-text"></i>
+              <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
             {:else}
-              <i class="fas fa-envelope"></i>
+              <i class="fas fa-envelope" aria-hidden="true"></i>
             {/if}
           </div>
           <div class="header-content">
@@ -129,7 +129,7 @@
           </div>
           {#if linkingState.canClose}
             <button class="close-btn" onclick={handleClose} aria-label="Close">
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           {/if}
         </div>
@@ -321,8 +321,8 @@
   }
 
   .close-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

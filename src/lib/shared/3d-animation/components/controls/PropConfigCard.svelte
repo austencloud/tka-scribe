@@ -32,8 +32,8 @@
 
   let { color, config, visible, onConfigChange, onVisibilityChange }: Props = $props();
 
-  // Use semantic prop colors from CSS variables
-  const colorLabel = color === "blue" ? "Blue" : "Red";
+  // Use semantic prop colors from CSS variables - derived from prop
+  const colorLabel = $derived(color === "blue" ? "Blue" : "Red");
 
   function updateConfig(partial: Partial<MotionConfig3D>) {
     onConfigChange({ ...config, ...partial });

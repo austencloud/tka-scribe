@@ -28,7 +28,7 @@
     disabled={!hasPrevious}
     aria-label="Previous variation"
   >
-    <i class="fas fa-chevron-left"></i>
+    <i class="fas fa-chevron-left" aria-hidden="true"></i>
   </button>
   <span class="variation-indicator">
     {currentIndex + 1} / {total}
@@ -39,7 +39,7 @@
     disabled={!hasNext}
     aria-label="Next variation"
   >
-    <i class="fas fa-chevron-right"></i>
+    <i class="fas fa-chevron-right" aria-hidden="true"></i>
   </button>
 </div>
 

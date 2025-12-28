@@ -35,7 +35,7 @@
 <div class="verification-content">
   <div class="verification-animation">
     <div class="email-icon-container">
-      <i class="fas fa-envelope"></i>
+      <i class="fas fa-envelope" aria-hidden="true"></i>
       <div class="pulse-ring"></div>
       <div class="pulse-ring delay"></div>
     </div>
@@ -48,7 +48,7 @@
 
   <div class="verification-status">
     <div class="status-indicator">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <span>Waiting for verification...</span>
     </div>
     <div class="progress-bar">
@@ -60,10 +60,10 @@
     <p>Didn't receive the email?</p>
     <button class="resend-btn" onclick={onResend} disabled={!canResend}>
       {#if resendCooldown > 0}
-        <i class="fas fa-clock"></i>
+        <i class="fas fa-clock" aria-hidden="true"></i>
         <span>Resend in {resendCooldown}s</span>
       {:else}
-        <i class="fas fa-paper-plane"></i>
+        <i class="fas fa-paper-plane" aria-hidden="true"></i>
         <span>Resend Verification Email</span>
       {/if}
     </button>
@@ -71,7 +71,7 @@
 
   {#if formError}
     <div class="form-error" role="alert">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span>{formError}</span>
     </div>
   {/if}

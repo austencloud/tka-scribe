@@ -100,7 +100,7 @@
       in:fly={{ y: -20, duration: 400, delay: 100, easing: cubicOut }}
     >
       <div class="logo-container">
-        <i class="fas fa-infinity logo-icon"></i>
+        <i class="fas fa-infinity logo-icon" aria-hidden="true"></i>
       </div>
       <h1>TKA Scribe</h1>
       <p class="tagline">The visual language for flow arts</p>
@@ -122,7 +122,7 @@
           }}
         >
           <div class="feature-icon">
-            <i class="fas {feature.icon}"></i>
+            <i class="fas {feature.icon}" aria-hidden="true"></i>
           </div>
           <div class="feature-text">
             <h3>{feature.title}</h3>
@@ -148,7 +148,7 @@
 
         {#if !showEmailAuth}
           <button class="email-toggle" onclick={() => (showEmailAuth = true)}>
-            <i class="fas fa-envelope"></i>
+            <i class="fas fa-envelope" aria-hidden="true"></i>
             <span>Continue with email</span>
           </button>
         {:else}
@@ -179,7 +179,7 @@
     aria-label="Change background theme"
     in:fade={{ duration: 400, delay: 600 }}
   >
-    <i class="fas {backgrounds[currentBgIndex]?.icon}"></i>
+    <i class="fas {backgrounds[currentBgIndex]?.icon}" aria-hidden="true"></i>
   </button>
 </div>
 

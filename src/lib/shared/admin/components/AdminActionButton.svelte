@@ -36,9 +36,9 @@
   disabled={disabled || loading}
 >
   {#if loading}
-    <i class="fas fa-spinner fa-spin"></i>
+    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
   {:else if icon}
-    <i class="fas {icon}"></i>
+    <i class="fas {icon}" aria-hidden="true"></i>
   {/if}
   <span>{@render children()}</span>
 </button>

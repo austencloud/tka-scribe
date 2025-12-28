@@ -41,7 +41,7 @@
       aria-label={copied ? "Copied!" : "Copy release notes"}
       title={copied ? "Copied!" : "Copy release notes"}
     >
-      <i class="fas {copied ? 'fa-check' : 'fa-copy'}"></i>
+      <i class="fas {copied ? 'fa-check' : 'fa-copy'}" aria-hidden="true"></i>
     </button>
   {/if}
 
@@ -51,7 +51,7 @@
     onclick={onClose}
     aria-label="Close version details"
   >
-    <i class="fas fa-times"></i>
+    <i class="fas fa-times" aria-hidden="true"></i>
   </button>
 
   <div class="version-badge" class:pre-release={isPreRelease}>

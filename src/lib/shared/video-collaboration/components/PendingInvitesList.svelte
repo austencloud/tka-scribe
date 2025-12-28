@@ -57,21 +57,21 @@
 <div class="pending-invites">
   {#if loading}
     <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <span>Loading invites...</span>
     </div>
   {:else if error}
     <div class="error-state">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span>{error}</span>
       <button class="retry-button" onclick={loadPendingInvites}>
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
         Retry
       </button>
     </div>
   {:else if pendingVideos.length === 0}
     <div class="empty-state">
-      <i class="fas fa-inbox"></i>
+      <i class="fas fa-inbox" aria-hidden="true"></i>
       <span>No pending invites</span>
     </div>
   {:else}

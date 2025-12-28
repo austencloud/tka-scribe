@@ -249,7 +249,7 @@
             onclick={() => (panelOpen = !panelOpen)}
             aria-label={panelOpen ? "Hide panel" : "Show panel"}
           >
-            <i class="fas" class:fa-chevron-right={panelOpen} class:fa-chevron-left={!panelOpen}></i>
+            <i class="fas" class:fa-chevron-right={panelOpen} class:fa-chevron-left={!panelOpen} aria-hidden="true"></i>
           </button>
         {/snippet}
       </SceneOverlayControls>

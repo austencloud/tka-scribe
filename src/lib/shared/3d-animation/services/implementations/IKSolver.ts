@@ -44,9 +44,6 @@ export class IKSolver implements IIKSolver {
     }
   }
 
-  // Debug counter
-  private debugCounter = 0;
-
   solveAndApply(
     chain: BoneChain,
     target: IKTarget,
@@ -56,20 +53,6 @@ export class IKSolver implements IIKSolver {
     const rootRotation = solution.rotations[0];
     const middleRotation = solution.rotations[1];
 
-    // Debug: Always log occasionally to diagnose failures
-    this.debugCounter++;
-    const shouldDebug = this.debugCounter % 180 === 1;
-
-    if (shouldDebug && !solution.success) {
-      const shoulderPos = new Vector3();
-      chain.root.getWorldPosition(shoulderPos);
-      const dist = shoulderPos.distanceTo(target.position);
-      console.log(`[IK] ${chain.root.name} UNREACHABLE:`);
-      console.log(`     Shoulder: (${shoulderPos.x.toFixed(0)}, ${shoulderPos.y.toFixed(0)}, ${shoulderPos.z.toFixed(0)})`);
-      console.log(`     Target:   (${target.position.x.toFixed(0)}, ${target.position.y.toFixed(0)}, ${target.position.z.toFixed(0)})`);
-      console.log(`     Distance: ${dist.toFixed(1)} | Arm reach: ${chain.totalLength.toFixed(1)}`);
-    }
-
     // Apply rotations even if target is unreachable - we still point toward it
     if (rootRotation && middleRotation) {
       chain.root.quaternion.copy(rootRotation);
@@ -77,24 +60,6 @@ export class IKSolver implements IIKSolver {
 
       // Update matrices from root down
       chain.root.updateMatrixWorld(true);
-
-      // Debug logging
-      if (shouldDebug) {
-        const effectorPos = new Vector3();
-        chain.effector.getWorldPosition(effectorPos);
-
-        // Calculate actual error
-        const actualError = effectorPos.distanceTo(target.position);
-
-        console.log(`[IK] ${chain.root.name}:`);
-        console.log(`     Target:   (${target.position.x.toFixed(0)}, ${target.position.y.toFixed(0)}, ${target.position.z.toFixed(0)})`);
-        console.log(`     Effector: (${effectorPos.x.toFixed(0)}, ${effectorPos.y.toFixed(0)}, ${effectorPos.z.toFixed(0)})`);
-        console.log(`     Error: ${actualError.toFixed(1)} | Reachable: ${solution.success}`);
-        console.log(`     Shoulder rot: (${rootRotation.x.toFixed(2)}, ${rootRotation.y.toFixed(2)}, ${rootRotation.z.toFixed(2)}, ${rootRotation.w.toFixed(2)})`);
-        console.log(`     Elbow rot: (${middleRotation.x.toFixed(2)}, ${middleRotation.y.toFixed(2)}, ${middleRotation.z.toFixed(2)}, ${middleRotation.w.toFixed(2)})`);
-      }
-    } else if (shouldDebug) {
-      console.log(`[IK] ${chain.root.name} FAILED - rotations array incomplete`);
     }
   }
 

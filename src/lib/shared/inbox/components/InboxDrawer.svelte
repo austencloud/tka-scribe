@@ -7,7 +7,7 @@
    * Includes bottom navigation on mobile for app navigation.
    */
 
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { inboxState } from "../state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
@@ -40,6 +40,12 @@
   // Haptic feedback service
   let hapticService: IHapticFeedback | undefined;
 
+  // Media query for responsive behavior
+  let mediaQuery: MediaQueryList | null = null;
+  function handleMediaChange(e: MediaQueryListEvent) {
+    isMobile = e.matches;
+  }
+
   // Create a derived value that tracks preview mode (View As feature)
   // Moved up to be available for effects
   const currentUserId = $derived(
@@ -53,11 +59,13 @@
       TYPES.IHapticFeedback
     );
 
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    mediaQuery = window.matchMedia("(max-width: 768px)");
     isMobile = mediaQuery.matches;
-    mediaQuery.addEventListener("change", (e) => {
-      isMobile = e.matches;
-    });
+    mediaQuery.addEventListener("change", handleMediaChange);
+  });
+
+  onDestroy(() => {
+    mediaQuery?.removeEventListener("change", handleMediaChange);
   });
 
   // Handle pending navigation from dashboard widgets
@@ -343,7 +351,7 @@
         {:else}
           <!-- Loading state while conversation loads -->
           <div class="thread-loading">
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             <span>Loading conversation...</span>
           </div>
         {/if}

@@ -8,7 +8,7 @@
 
 import type { IFileDownloader } from "../../../foundation/services/contracts/IFileDownloader";
 import { TYPES } from "../../../inversify/di";
-import * as pkg from "file-saver";
+import { saveAs } from "file-saver";
 import { inject, injectable } from "inversify";
 import type { IImageFormatConverter } from "../contracts/IImageFormatConverter";
 
@@ -24,7 +24,6 @@ interface OptimizationSettings {
   quality: number;
   progressive?: boolean;
 }
-const { saveAs } = pkg;
 
 @injectable()
 export class ImageFormatConverter

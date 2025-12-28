@@ -61,7 +61,7 @@
       disabled={value <= min}
       aria-label="Decrease turns"
     >
-      <i class="fas fa-minus"></i>
+      <i class="fas fa-minus" aria-hidden="true"></i>
     </button>
 
     <span class="value">{displayValue}</span>
@@ -73,7 +73,7 @@
       disabled={value >= max}
       aria-label="Increase turns"
     >
-      <i class="fas fa-plus"></i>
+      <i class="fas fa-plus" aria-hidden="true"></i>
     </button>
   </div>
 </div>
@@ -104,8 +104,8 @@
   }
 
   .btn {
-    width: 44px;
-    height: 44px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     flex-shrink: 0;
     display: flex;
     align-items: center;

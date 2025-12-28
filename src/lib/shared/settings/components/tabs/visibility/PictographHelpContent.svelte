@@ -114,7 +114,7 @@
           type="button"
         >
           <div class="element-icon">
-            <i class="fas {element.icon}"></i>
+            <i class="fas {element.icon}" aria-hidden="true"></i>
           </div>
           <div class="element-info">
             <span class="element-label">{element.label}</span>
@@ -127,7 +127,7 @@
 
   <!-- Learn More -->
   <div class="learn-more">
-    <i class="fas fa-lightbulb"></i>
+    <i class="fas fa-lightbulb" aria-hidden="true"></i>
     <span
       >Visit the <strong>Learn</strong> module for detailed pictograph tutorials.</span
     >

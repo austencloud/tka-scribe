@@ -44,8 +44,9 @@
     class:expanded={isExpanded}
     onclick={toggle}
     aria-expanded={isExpanded}
+    aria-controls="shortcut-section-content-{context}"
   >
-    <i class="fas {icon} section-icon"></i>
+    <i class="fas {icon} section-icon" aria-hidden="true"></i>
     <span class="section-label">{label}</span>
 
     <div class="section-meta">
@@ -55,11 +56,11 @@
       <span class="count">{shortcuts.length}</span>
     </div>
 
-    <i class="fas fa-chevron-right chevron"></i>
+    <i class="fas fa-chevron-right chevron" aria-hidden="true"></i>
   </button>
 
   {#if isExpanded}
-    <div class="section-content" transition:slide={{ duration: 150 }}>
+    <div id="shortcut-section-content-{context}" class="section-content" transition:slide={{ duration: 150 }}>
       {#each shortcuts as item (item.shortcut.id)}
         <ShortcutRow
           {item}
@@ -125,7 +126,7 @@
   }
 
   .custom-count {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     padding: 4px 10px;

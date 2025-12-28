@@ -44,7 +44,7 @@
     aria-label={isSettingsActive ? "Exit Settings" : "Settings"}
   >
     <div class="button-icon">
-      <i class="fas {isSettingsActive ? 'fa-arrow-left' : 'fa-cog'}"></i>
+      <i class="fas {isSettingsActive ? 'fa-arrow-left' : 'fa-cog'}" aria-hidden="true"></i>
     </div>
     {#if !isCollapsed}
       <span class="button-label">{isSettingsActive ? "Back" : "Settings"}</span>
@@ -204,7 +204,7 @@
     align-items: center;
     text-align: center;
     padding: 4px 8px;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 500;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     letter-spacing: 0.3px;
@@ -230,7 +230,7 @@
 
   .version-badge.collapsed {
     padding: 4px 0;
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
   }
 
   .version-number,

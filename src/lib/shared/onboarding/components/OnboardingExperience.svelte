@@ -144,7 +144,7 @@
     <!-- Step 0: Welcome -->
     <div class="step-content step-welcome">
       <div class="logo-container anim-item" style="--anim-order: 0">
-        <i class="fas fa-infinity"></i>
+        <i class="fas fa-infinity" aria-hidden="true"></i>
       </div>
 
       <h1 class="title anim-item" style="--anim-order: 1">
@@ -166,7 +166,7 @@
         style="--anim-order: 4"
         onclick={handleNext}
       >
-        Let's go <i class="fas fa-arrow-right"></i>
+        Let's go <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
     </div>
   {:else if step === 1}
@@ -183,7 +183,7 @@
       <div class="modules-grid anim-item" style="--anim-order: 2">
         {#each modules as mod, i}
           <div class="module-card" style="--module-color: {mod.color}">
-            <i class="fas {mod.icon}"></i>
+            <i class="fas {mod.icon}" aria-hidden="true"></i>
             <span class="module-name">{mod.name}</span>
             <span class="module-tagline">{mod.tagline}</span>
           </div>
@@ -192,10 +192,10 @@
 
       <div class="nav-buttons anim-item" style="--anim-order: 3">
         <button class="back-button" onclick={handleBack} aria-label="Go back">
-          <i class="fas fa-arrow-left"></i>
+          <i class="fas fa-arrow-left" aria-hidden="true"></i>
         </button>
         <button class="next-button" onclick={handleNext}>
-          Next <i class="fas fa-arrow-right"></i>
+          Next <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -218,7 +218,7 @@
             onclick={() => handleModuleSelect(mod.id)}
           >
             <div class="choice-icon">
-              <i class="fas {mod.icon}"></i>
+              <i class="fas {mod.icon}" aria-hidden="true"></i>
             </div>
             <div class="choice-text">
               <span class="choice-name">{mod.name}</span>
@@ -233,7 +233,7 @@
         style="--anim-order: 3"
         onclick={handleBack}
       >
-        <i class="fas fa-arrow-left"></i> Back
+        <i class="fas fa-arrow-left" aria-hidden="true"></i> Back
       </button>
     </div>
   {/if}

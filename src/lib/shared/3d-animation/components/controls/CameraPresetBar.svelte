@@ -80,7 +80,7 @@
     }
 
     .preset-btn {
-      min-width: 44px;
+      /* Touch target remains 48px for WCAG AAA */
       padding: 0 0.5rem;
       font-size: var(--font-size-compact, 0.75rem);
     }

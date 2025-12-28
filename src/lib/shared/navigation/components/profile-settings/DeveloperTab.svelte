@@ -156,16 +156,17 @@ ${
             type="checkbox"
             bind:checked={hmrEnabled}
             onchange={toggleHMR}
+            aria-label="Toggle Hot Module Replacement"
           />
           <span class="slider"></span>
         </label>
       </div>
       <div class="setting-status" class:active={hmrEnabled}>
         {#if hmrEnabled}
-          <i class="fas fa-fire"></i>
+          <i class="fas fa-fire" aria-hidden="true"></i>
           <span>Active - Changes will hot-reload</span>
         {:else}
-          <i class="fas fa-snowflake"></i>
+          <i class="fas fa-snowflake" aria-hidden="true"></i>
           <span>Disabled - Manual refresh required</span>
         {/if}
       </div>
@@ -183,6 +184,7 @@ ${
     >
       <i
         class="fas fa-{showCacheDiagnostics ? 'chevron-down' : 'chevron-right'}"
+        aria-hidden="true"
       ></i>
       <span>🔧 Cache Diagnostics</span>
       {#if !showCacheDiagnostics}
@@ -645,7 +647,7 @@ ${
   }
 
   .badge {
-    font-size: 10px;
+    font-size: 12px;
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 600;

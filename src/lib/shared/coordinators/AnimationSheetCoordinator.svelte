@@ -26,7 +26,7 @@
     VideoExportProgress,
     VideoExportFormat,
   } from "$lib/features/compose/services/contracts/IVideoExportOrchestrator";
-  import type { IVideoExportService } from "$lib/features/compose/services/contracts/IVideoExportService";
+  import type { IVideoExporter } from "$lib/features/compose/services/contracts/IVideoExporter";
   import type { ISequenceLoopabilityChecker } from "$lib/features/compose/services/contracts/ISequenceLoopabilityChecker";
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { ISequenceRepository } from "$lib/features/create/shared/services/contracts/ISequenceRepository";
@@ -45,6 +45,7 @@
     AnimationPanelState,
   } from "../navigation/services/contracts/ISheetRouter";
   import { createComponentLogger } from "../utils/debug-logger";
+  import { setAnimationPlaybackRef } from "./animation-playback-ref.svelte";
 
   const debug = createComponentLogger("AnimationSheetCoordinator");
 
@@ -66,7 +67,7 @@
   let playbackController: IAnimationPlaybackController | null = null;
   let hapticService: IHapticFeedback | null = null;
   let videoExportOrchestrator: IVideoExportOrchestrator | null = null;
-  let videoExportService: IVideoExportService | null = null;
+  let VideoExporter: IVideoExporter | null = null;
   let sheetRouterService: ISheetRouter | null = null;
   let loopabilityChecker: ISequenceLoopabilityChecker | null = null;
   let animationCanvas: HTMLCanvasElement | null = null;
@@ -202,13 +203,11 @@
     (async () => {
       // Resolve core services immediately (Tier 1 - navigation module)
       try {
-        sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
-        hapticService = resolve<IHapticFeedback>(
-          TYPES.IHapticFeedback
+        sequenceService = resolve<ISequenceRepository>(
+          TYPES.ISequenceRepository
         );
-        sheetRouterService = resolve<ISheetRouter>(
-          TYPES.ISheetRouter
-        );
+        hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
+        sheetRouterService = resolve<ISheetRouter>(TYPES.ISheetRouter);
         debug.success("Core services resolved");
       } catch (error) {
         console.error("❌ Failed to resolve core services:", error);
@@ -225,12 +224,13 @@
         videoExportOrchestrator = resolve<IVideoExportOrchestrator>(
           TYPES.IVideoExportOrchestrator
         );
-        videoExportService = resolve<IVideoExportService>(
-          TYPES.IVideoExportService
-        );
+        VideoExporter = resolve<IVideoExporter>(TYPES.IVideoExporter);
         loopabilityChecker = resolve<ISequenceLoopabilityChecker>(
           TYPES.ISequenceLoopabilityChecker
         );
+
+        // Expose playback controller for keyboard shortcuts
+        setAnimationPlaybackRef(playbackController);
 
         servicesReady = true;
         debug.success(
@@ -449,11 +449,18 @@
 
   /**
    * Restore animation state from URL parameters
+   * IMPORTANT: Only restores state on initial load, not during active playback
+   * to prevent the URL sync from fighting with the animation loop.
    */
   function restoreAnimationState(urlState: AnimationPanelState) {
     if (!playbackController) return;
 
-    // Restore speed if specified
+    // CRITICAL: Don't restore beat position if animation is currently playing
+    // This prevents the URL sync effect from snapping the beat back to an integer
+    // while the animation loop is continuously updating the fractional beat position.
+    const isAnimationActive = animationPanelState.isPlaying;
+
+    // Restore speed if specified (safe to do while playing)
     if (
       urlState.speed !== undefined &&
       urlState.speed !== animationPanelState.speed
@@ -461,10 +468,12 @@
       playbackController.setSpeed(urlState.speed);
     }
 
-    // Restore current beat if specified
+    // Only restore current beat on initial load (when not playing)
+    // During playback, the animation loop controls beat position
     if (
+      !isAnimationActive &&
       urlState.currentBeat !== undefined &&
-      urlState.currentBeat !== animationPanelState.currentBeat
+      Math.floor(urlState.currentBeat) !== Math.floor(animationPanelState.currentBeat)
     ) {
       animationPanelState.setCurrentBeat(urlState.currentBeat);
     }
@@ -506,23 +515,23 @@
   });
 
   // Update URL state when animation state changes (without pushing new history)
+  // NOTE: We intentionally DON'T sync currentBeat during active playback to avoid
+  // rapid URL updates and the route-change event triggering restoreAnimationState.
   let previousSpeed = animationPanelState.speed;
-  let previousBeat = animationPanelState.currentBeat;
   let previousPlaying = animationPanelState.isPlaying;
 
   $effect(() => {
     // CRITICAL: Only update if animation panel is actually open in URL (prevents error spam)
     if (isOpen && sequence && !isRespondingToRouteChange) {
       const currentSpeed = animationPanelState.speed;
-      const currentBeat = animationPanelState.currentBeat;
       const currentPlaying = animationPanelState.isPlaying;
 
-      // Only update URL if state has changed (to avoid infinite loops)
-      if (
-        currentSpeed !== previousSpeed ||
-        Math.floor(currentBeat) !== Math.floor(previousBeat) ||
-        currentPlaying !== previousPlaying
-      ) {
+      // Only sync speed and playing state changes to URL
+      // We skip currentBeat syncing during playback because:
+      // 1. It changes ~60 times/second, causing excessive URL updates
+      // 2. The route-change event can interfere with the animation loop
+      // 3. Beat position during playback isn't meaningful to bookmark
+      if (currentSpeed !== previousSpeed || currentPlaying !== previousPlaying) {
         // Double-check that the current route is actually showing animation sheet
         // This prevents "Cannot update animation panel state when animation sheet is not open" errors
         const currentState =
@@ -530,12 +539,10 @@
         if (currentState !== null) {
           sheetRouterService?.updateAnimationPanelState({
             speed: currentSpeed,
-            currentBeat: Math.floor(currentBeat),
             isPlaying: currentPlaying,
           });
 
           previousSpeed = currentSpeed;
-          previousBeat = currentBeat;
           previousPlaying = currentPlaying;
         }
       }
@@ -555,6 +562,7 @@
     return () => {
       if (playbackController) {
         playbackController.dispose();
+        setAnimationPlaybackRef(null);
       }
     };
   });
@@ -565,6 +573,7 @@
 
     if (playbackController) {
       playbackController.dispose();
+      setAnimationPlaybackRef(null);
     }
 
     // Close the sheet route (this will trigger the route change listener which will set isOpen = false)
@@ -644,7 +653,7 @@
 
   function handleExportVideo() {
     // Use the best available video format (MP4 preferred for universal compatibility)
-    const bestFormat = videoExportService?.getBestFormat() ?? "webm";
+    const bestFormat = VideoExporter?.getBestFormat() ?? "webm";
     console.log(
       `🎬 AnimationSheetCoordinator: handleExportVideo called, using ${bestFormat}`
     );

@@ -182,14 +182,14 @@
   <!-- Error Message -->
   {#if errorMessage}
     <div class="error-banner" role="alert">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span>{errorMessage}</span>
       <button
         class="dismiss-btn"
         onclick={dismissError}
         aria-label="Dismiss error"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
   {/if}
@@ -214,7 +214,7 @@
               type="button"
             >
               <div class="provider-icon">
-                <i class={config.icon}></i>
+                <i class={config.icon} aria-hidden="true"></i>
               </div>
               <div class="provider-info">
                 <span class="provider-name">{config.name}</span>
@@ -225,12 +225,12 @@
               <div class="provider-status">
                 {#if providerId === "password" && !isEmailVerified}
                   <span class="verification-badge pending">
-                    <i class="fas fa-clock"></i>
+                    <i class="fas fa-clock" aria-hidden="true"></i>
                     <span class="badge-text">Unverified</span>
                   </span>
                 {:else}
                   <span class="connected-badge">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fas fa-check-circle" aria-hidden="true"></i>
                     <span class="badge-text">Connected</span>
                   </span>
                 {/if}
@@ -240,13 +240,14 @@
                 <span
                   class="unlink-btn desktop-only"
                   role="button"
-                  tabindex="-1"
+                  tabindex="0"
                   onclick={(e) => {
                     e.stopPropagation();
                     unlinkProvider(providerId as ProviderId);
                   }}
                   onkeydown={(e) => {
-                    if (e.key === "Enter") {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
                       e.stopPropagation();
                       unlinkProvider(providerId as ProviderId);
                     }
@@ -254,15 +255,15 @@
                   aria-label="Disconnect {config.name}"
                 >
                   {#if isUnlinking}
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                   {:else}
-                    <i class="fas fa-unlink"></i>
+                    <i class="fas fa-unlink" aria-hidden="true"></i>
                   {/if}
                 </span>
               {/if}
               <!-- Mobile: show chevron hint -->
               <span class="mobile-chevron">
-                <i class="fas fa-chevron-right"></i>
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
               </span>
             </button>
           {/if}
@@ -270,7 +271,7 @@
       </div>
       {#if !canUnlink}
         <p class="hint">
-          <i class="fas fa-info-circle"></i>
+          <i class="fas fa-info-circle" aria-hidden="true"></i>
           Link another account to enable disconnecting
         </p>
       {/if}
@@ -297,7 +298,7 @@
               disabled={linkingProvider !== null}
             >
               <div class="provider-icon">
-                <i class={config.icon}></i>
+                <i class={config.icon} aria-hidden="true"></i>
               </div>
               <div class="provider-info">
                 <span class="provider-name">Add Email & Password</span>
@@ -306,7 +307,7 @@
                 </span>
               </div>
               <div class="link-icon">
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
               </div>
             </button>
           {:else}
@@ -318,9 +319,9 @@
             >
               <div class="provider-icon">
                 {#if isLinking}
-                  <i class="fas fa-spinner fa-spin"></i>
+                  <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                 {:else}
-                  <i class={config.icon}></i>
+                  <i class={config.icon} aria-hidden="true"></i>
                 {/if}
               </div>
               <div class="provider-info">
@@ -334,7 +335,7 @@
                 </span>
               </div>
               <div class="link-icon">
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
               </div>
             </button>
           {/if}
@@ -346,7 +347,7 @@
   <!-- Empty State -->
   {#if !linkedProviders.length}
     <div class="empty-state">
-      <i class="fas fa-link"></i>
+      <i class="fas fa-link" aria-hidden="true"></i>
       <p>No accounts connected</p>
     </div>
   {/if}
@@ -571,8 +572,8 @@
 
   /* Unlink Button - Desktop only */
   .unlink-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -688,7 +689,7 @@
     .connected-badge,
     .verification-badge {
       padding: 5px 8px;
-      font-size: 11px;
+      font-size: 12px;
       gap: 4px;
     }
 

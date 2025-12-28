@@ -105,24 +105,27 @@
 
 {#if error}
   {@const config = getConfig(error.severity)}
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="error-overlay" onclick={handleDismiss}>
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="error-overlay"
+    onclick={handleDismiss}
+    onkeydown={(e) => e.key === "Escape" && handleDismiss()}
+    role="button"
+    tabindex="0"
+    aria-label="Close error dialog"
+  >
     <div
       class="error-modal"
       style="--error-color: {config.color}; --error-bg: {config.bg}"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="alertdialog"
       aria-modal="true"
       aria-labelledby="error-title"
       aria-describedby="error-message"
-      tabindex="-1"
     >
       <div class="error-header">
         <div class="error-icon-wrapper">
-          <i class="fas {config.icon} error-icon"></i>
+          <i class="fas {config.icon} error-icon" aria-hidden="true"></i>
         </div>
         <h2 id="error-title" class="error-title">{config.title}</h2>
         <button
@@ -130,7 +133,7 @@
           onclick={handleDismiss}
           aria-label="Dismiss error"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -141,13 +144,13 @@
           <div class="error-context">
             {#if error.context.module}
               <span class="context-chip">
-                <i class="fas fa-cube"></i>
+                <i class="fas fa-cube" aria-hidden="true"></i>
                 {error.context.module}
               </span>
             {/if}
             {#if error.context.action}
               <span class="context-chip">
-                <i class="fas fa-bolt"></i>
+                <i class="fas fa-bolt" aria-hidden="true"></i>
                 {error.context.action}
               </span>
             {/if}
@@ -158,13 +161,15 @@
           <button
             class="details-toggle"
             onclick={() => (showDetails = !showDetails)}
+            aria-expanded={showDetails}
+            aria-controls="error-technical-details"
           >
-            <i class="fas fa-chevron-{showDetails ? 'up' : 'down'}"></i>
+            <i class="fas fa-chevron-{showDetails ? 'up' : 'down'}" aria-hidden="true"></i>
             {showDetails ? "Hide" : "Show"} technical details
           </button>
 
           {#if showDetails}
-            <div class="technical-details">
+            <div id="error-technical-details" class="technical-details">
               {#if error.technicalDetails}
                 <p class="detail-text">{error.technicalDetails}</p>
               {/if}
@@ -197,12 +202,13 @@
             class="action-button report-button"
             onclick={handleReportBug}
             disabled={isReporting}
+            aria-busy={isReporting}
           >
             {#if isReporting}
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
               Reporting...
             {:else}
-              <i class="fas fa-bug"></i>
+              <i class="fas fa-bug" aria-hidden="true"></i>
               Report Bug
             {/if}
           </button>
@@ -296,8 +302,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -342,7 +348,7 @@
   }
 
   .context-chip i {
-    font-size: 10px;
+    font-size: 12px;
     opacity: 0.7;
   }
 
@@ -383,7 +389,7 @@
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
     font-family: "Fira Code", "Consolas", monospace;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.4;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     overflow-x: auto;

@@ -120,15 +120,15 @@
   <div class="content">
     {#if loading}
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <span>Loading your videos...</span>
       </div>
     {:else if error}
       <div class="error-state">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <span>{error}</span>
         <button class="retry-btn" onclick={loadLibrary}>
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
           Retry
         </button>
       </div>
@@ -136,7 +136,7 @@
       <!-- Pending Invites -->
       {#if pendingCount === 0}
         <div class="empty-state">
-          <i class="fas fa-inbox"></i>
+          <i class="fas fa-inbox" aria-hidden="true"></i>
           <span>No pending invites</span>
         </div>
       {:else}
@@ -152,7 +152,7 @@
       {/if}
     {:else if displayedVideos().length === 0}
       <div class="empty-state">
-        <i class="fas fa-video-slash"></i>
+        <i class="fas fa-video-slash" aria-hidden="true"></i>
         <span>
           {#if currentTab === "created"}
             You haven't created any videos yet

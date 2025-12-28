@@ -80,6 +80,7 @@
   onclick={handleClick}
   aria-label={module.label}
   aria-expanded={isExpanded}
+  aria-controls="module-sections-{module.id}"
   aria-current={isActive ? "page" : undefined}
   aria-disabled={isDisabled}
   disabled={isDisabled}
@@ -112,7 +113,7 @@
     {:else if !isExpanded && hasSections}
       <!-- Only show chevron when collapsed AND has sections to expand -->
       <span class="expand-icon">
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
       </span>
     {/if}
   {/if}
@@ -340,7 +341,7 @@
   }
 
   .expand-icon {
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     opacity: 0.5;
     transition: all 0.25s ease;
   }
@@ -372,7 +373,7 @@
   }
 
   .disabled-badge {
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
     text-transform: uppercase;
     padding: 3px 8px;

@@ -50,14 +50,20 @@ Landscape: Left half decrements, right half increments (horizontal layout)
   let hapticService: IHapticFeedback;
   let rippleService: IRippleEffect;
   let cardElement: HTMLDivElement | null = $state(null);
-  let previousColor = $state(color);
+  let previousColor = $state("");
+
+  // Sync previousColor on mount
+  $effect(() => {
+    if (previousColor === "") {
+      previousColor = color;
+    }
+  });
 
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(
       TYPES.IHapticFeedback
     );
     rippleService = resolve<IRippleEffect>(TYPES.IRippleEffect);
-    previousColor = color; // Initialize on mount
 
     // Attach ripple effect
     if (cardElement) {

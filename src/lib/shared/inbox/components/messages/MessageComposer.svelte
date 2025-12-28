@@ -111,11 +111,11 @@
         : "Send message"}
   >
     {#if isSending}
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
     {:else if sendSuccess}
-      <i class="fas fa-check"></i>
+      <i class="fas fa-check" aria-hidden="true"></i>
     {:else}
-      <i class="fas fa-paper-plane"></i>
+      <i class="fas fa-paper-plane" aria-hidden="true"></i>
     {/if}
   </button>
 </div>

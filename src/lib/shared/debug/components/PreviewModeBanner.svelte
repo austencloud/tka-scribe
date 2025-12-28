@@ -140,7 +140,7 @@
       <!-- Left: Search -->
       <div class="search-section">
         <div class="banner-icon">
-          <i class="fas fa-eye"></i>
+          <i class="fas fa-eye" aria-hidden="true"></i>
         </div>
         <div class="search-container">
           <UserSearchInput
@@ -168,7 +168,7 @@
                 <img src={user.photoURL} alt="" class="chip-avatar" />
               {:else}
                 <span class="chip-avatar-placeholder">
-                  <i class="fas fa-user"></i>
+                  <i class="fas fa-user" aria-hidden="true"></i>
                 </span>
               {/if}
               <span class="chip-name">{user.displayName}</span>
@@ -189,7 +189,7 @@
           </div>
 
           <span class="read-only-badge">
-            <i class="fas fa-lock"></i>
+            <i class="fas fa-lock" aria-hidden="true"></i>
           </span>
 
           {#if isCurrentUserInQuickAccess}
@@ -199,7 +199,7 @@
               onclick={() => removeFromQuickAccess(profile.uid)}
               title="Remove from quick access"
             >
-              <i class="fas fa-bookmark"></i>
+              <i class="fas fa-bookmark" aria-hidden="true"></i>
             </button>
           {:else}
             <button
@@ -208,17 +208,17 @@
               onclick={addToQuickAccess}
               title="Save to quick access"
             >
-              <i class="far fa-bookmark"></i>
+              <i class="far fa-bookmark" aria-hidden="true"></i>
             </button>
           {/if}
 
           <button class="clear-btn" onclick={handleClearPreview} title="Exit preview">
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         {:else}
           <span class="hint-text">Select a user to preview</span>
           <button class="close-btn" onclick={handleClose} title="Close (F9)">
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
@@ -264,7 +264,7 @@
     height: 32px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 8px;
-    color: #93c5fd;
+    color: white;
     font-size: 14px;
     flex-shrink: 0;
   }
@@ -288,7 +288,7 @@
   }
 
   .search-container :global(.search-input::placeholder) {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .search-container :global(.search-input:focus) {
@@ -297,7 +297,7 @@
   }
 
   .search-container :global(.search-icon) {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
     left: 12px;
   }
 
@@ -365,7 +365,7 @@
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.6);
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
   }
 
   .chip-name {
@@ -393,7 +393,7 @@
 
   .preview-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .preview-name {
@@ -408,13 +408,13 @@
 
   .role-badge {
     padding: 2px 6px;
-    background: rgba(251, 191, 36, 0.2);
-    border: 1px solid rgba(251, 191, 36, 0.4);
+    background: rgba(251, 191, 36, 0.5);
+    border: 1px solid rgba(251, 191, 36, 0.6);
     border-radius: 4px;
-    font-size: 10px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
     text-transform: uppercase;
-    color: #fcd34d;
+    color: white;
   }
 
   .read-only-badge {
@@ -423,16 +423,16 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.5);
+    border: 1px solid rgba(239, 68, 68, 0.6);
     border-radius: 6px;
-    color: #fca5a5;
-    font-size: 11px;
+    color: white;
+    font-size: var(--font-size-compact, 12px);
   }
 
   .hint-text {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
     font-style: italic;
   }
 
@@ -440,8 +440,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 6px;
@@ -457,8 +457,9 @@
   }
 
   .action-btn.saved {
-    color: #fbbf24;
-    border-color: rgba(251, 191, 36, 0.4);
+    color: white;
+    background: rgba(251, 191, 36, 0.5);
+    border-color: rgba(251, 191, 36, 0.6);
   }
 
   .clear-btn,
@@ -466,8 +467,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 6px;

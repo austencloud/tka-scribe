@@ -61,12 +61,12 @@
         onclick={onClose}
         aria-label="Close detail panel"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
 
       {#if icon}
         <div class="header-icon">
-          <i class="fas {icon}"></i>
+          <i class="fas {icon}" aria-hidden="true"></i>
         </div>
       {/if}
 
@@ -241,8 +241,8 @@
     .close-btn {
       top: 12px;
       right: 12px;
-      width: 36px;
-      height: 36px;
+      width: 48px; /* WCAG AAA touch target */
+      height: 48px;
     }
 
     .detail-content {

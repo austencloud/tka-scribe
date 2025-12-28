@@ -205,14 +205,13 @@
     return service.createFadeOutTransition();
   };
 
-  // Create pictograph state with reactive data management
-  // svelte-ignore state_referenced_locally - intentional: $effect below calls updatePictographData
-  const pictographState = createPictographState(pictographData);
+  // Create pictograph state with null - $effect below handles initial data and updates
+  const pictographState = createPictographState(null);
 
   // Track if component is mounted (services are ready)
   let isMounted = $state(false);
 
-  // Update pictograph state when props change
+  // Update pictograph state when props change (handles both initial and subsequent updates)
   $effect(() => {
     pictographState.updatePictographData(pictographData);
   });

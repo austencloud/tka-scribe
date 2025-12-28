@@ -1,7 +1,7 @@
 import type { ContainerModuleLoadOptions } from "inversify";
 import { ContainerModule } from "inversify";
 import { AngleCalculator } from "../../../features/compose/services/implementations/AngleCalculator";
-import { AnimationLoopService } from "../../../features/compose/services/implementations/AnimationLoopService";
+import { AnimationLoop } from "../../../features/compose/services/implementations/AnimationLoopService";
 import { AnimationPlaybackController } from "../../../features/compose/services/implementations/AnimationPlaybackController";
 import { AnimationStateManager as AnimationStateService } from "../../../features/compose/services/implementations/AnimationStateManager";
 import { BeatCalculator as BeatCalculationService } from "../../../features/compose/services/implementations/BeatCalculator";
@@ -9,14 +9,14 @@ import { CanvasRenderer } from "../../../features/compose/services/implementatio
 import { CoordinateUpdater } from "../../../features/compose/services/implementations/CoordinateUpdater";
 import { EndpointCalculator } from "../../../features/compose/services/implementations/EndpointCalculator";
 import { VideoExportOrchestrator } from "../../../features/compose/services/implementations/VideoExportOrchestrator";
-import { VideoExportService } from "../../../features/compose/services/implementations/VideoExportService";
+import { VideoExporter } from "../../../features/compose/services/implementations/VideoExporter";
 import { CompositeVideoRenderer } from "../../../features/compose/services/implementations/CompositeVideoRenderer";
 import { MotionCalculator } from "../../../features/compose/services/implementations/MotionCalculator";
 // Canvas2DAnimationRenderer loaded on-demand via animation module
 import { PropInterpolator as PropInterpolationService } from "../../../features/compose/services/implementations/PropInterpolator";
 import { SequenceAnimationOrchestrator } from "../../../features/compose/services/implementations/SequenceAnimationOrchestrator";
 import { SequenceLoopabilityChecker } from "../../../features/compose/services/implementations/SequenceLoopabilityChecker";
-// SequenceNormalizationService moved to data.module.ts (Tier 1) - required by ISequenceRepository
+// SequenceNormalizer moved to data.module.ts (Tier 1) - required by ISequenceRepository
 import { SVGGenerator } from "../../../features/compose/services/implementations/SVGGenerator";
 import { TrailCapturer } from "../../../features/compose/services/implementations/TrailCapturer";
 import { TunnelModeSequenceManager } from "../../../features/compose/services/implementations/TunnelModeSequenceManager";
@@ -28,7 +28,7 @@ export const animatorModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // === CORE ANIMATION SERVICES ===
     options.bind(TYPES.IAnimator).to(Animator);
-    options.bind(TYPES.IAnimationLoopService).to(AnimationLoopService);
+    options.bind(TYPES.IAnimationLoop).to(AnimationLoop);
     options
       .bind(TYPES.IAnimationPlaybackController)
       .to(AnimationPlaybackController);
@@ -52,7 +52,7 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ICanvasRenderer).to(CanvasRenderer);
     // IAnimationRenderer loaded on-demand via animation module when animation canvas is used
     options.bind(TYPES.ISVGGenerator).to(SVGGenerator);
-    options.bind(TYPES.IVideoExportService).to(VideoExportService);
+    options.bind(TYPES.IVideoExporter).to(VideoExporter);
     options.bind(TYPES.IVideoExportOrchestrator).to(VideoExportOrchestrator);
     options.bind(TYPES.ICompositeVideoRenderer).to(CompositeVideoRenderer);
 
@@ -60,7 +60,7 @@ export const animatorModule = new ContainerModule(
     options.bind(TYPES.ITrailCapturer).to(TrailCapturer);
 
     // === MODE-SPECIFIC SERVICES ===
-    // ISequenceNormalizationService moved to data.module.ts (Tier 1) - required by ISequenceRepository
+    // ISequenceNormalizer moved to data.module.ts (Tier 1) - required by ISequenceRepository
     options
       .bind(TYPES.ITunnelModeSequenceManager)
       .to(TunnelModeSequenceManager);

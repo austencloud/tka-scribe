@@ -28,7 +28,7 @@
 <div class="preview-fullscreen">
   <section class="preview-header">
     <button class="back-button" onclick={handleBack}>
-      <i class="fas fa-chevron-left"></i>
+      <i class="fas fa-chevron-left" aria-hidden="true"></i>
       <span>Back</span>
     </button>
     <h3>Preview & Options</h3>

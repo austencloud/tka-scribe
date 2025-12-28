@@ -54,7 +54,7 @@
   <!-- Header -->
   <div class="card-header">
     <div class="challenge-icon">
-      <i class="fas fa-sun"></i>
+      <i class="fas fa-sun" aria-hidden="true"></i>
     </div>
     <div class="challenge-title">
       <h3>{challenge.title}</h3>
@@ -65,7 +65,7 @@
       {/if}
     </div>
     <div class="xp-reward">
-      <i class="fas fa-star"></i>
+      <i class="fas fa-star" aria-hidden="true"></i>
       <span>{xpReward} XP</span>
     </div>
   </div>
@@ -86,12 +86,12 @@
     </div>
     <div class="progress-text">
       {#if isComplete}
-        <i class="fas fa-check-circle"></i>
+        <i class="fas fa-check-circle" aria-hidden="true"></i>
         <span>Completed!</span>
       {:else}
         <span>{currentProgress} / {targetProgress}</span>
         <span class="time-remaining">
-          <i class="fas fa-clock"></i>
+          <i class="fas fa-clock" aria-hidden="true"></i>
           {timeRemaining.hours}h {timeRemaining.minutes}m left
         </span>
       {/if}
@@ -176,7 +176,7 @@
     display: inline-flex;
     align-items: center;
     padding: 1px 6px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -194,14 +194,14 @@
     background: rgba(245, 158, 11, 0.15);
     border-radius: 16px;
     color: #f59e0b;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     flex-shrink: 0;
   }
 
   .compact .xp-reward {
     padding: 3px 6px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .challenge-description {
@@ -244,7 +244,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     gap: 8px;
   }
@@ -263,7 +263,7 @@
   }
 
   .time-remaining i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   /* ============================================================================
@@ -312,7 +312,7 @@
 
     .difficulty-badge {
       padding: 2px 7px;
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .xp-reward {
@@ -323,7 +323,7 @@
 
     .compact .xp-reward {
       padding: 4px 8px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .challenge-description {
@@ -344,7 +344,7 @@
     }
 
     .time-remaining i {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 
@@ -388,7 +388,7 @@
 
     .difficulty-badge {
       padding: 2px 8px;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 0.5px;
       border-radius: 4px;
     }

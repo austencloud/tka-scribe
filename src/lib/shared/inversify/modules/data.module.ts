@@ -17,7 +17,7 @@ import { SequenceRepository } from "../../../features/create/shared/services/imp
 import { SequenceDomainManager } from "../../../features/create/shared/services/implementations/SequenceDomainManager";
 import { ReversalDetector } from "../../../features/create/shared/services/implementations/ReversalDetector";
 import { SequenceImporter } from "../../../features/create/shared/services/implementations/SequenceImporter";
-import { SequenceNormalizationService } from "../../../features/compose/services/implementations/SequenceNormalizationService";
+import { SequenceNormalizer } from "../../../features/compose/services/implementations/SequenceNormalizer";
 
 export const dataModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -46,10 +46,10 @@ export const dataModule = new ContainerModule(
     options.bind(TYPES.ISequenceDomainManager).to(SequenceDomainManager);
     options.bind(TYPES.IReversalDetector).to(ReversalDetector);
     options.bind(TYPES.ISequenceImporter).to(SequenceImporter);
-    // ISequenceNormalizationService moved here - required by ISequenceRepository
+    // ISequenceNormalizer moved here - required by ISequenceRepository
     options
-      .bind(TYPES.ISequenceNormalizationService)
-      .to(SequenceNormalizationService);
+      .bind(TYPES.ISequenceNormalizer)
+      .to(SequenceNormalizer);
 
     // === BACKGROUND SERVICES ===
     options.bind(TYPES.IBackgroundManager).to(BackgroundManager);

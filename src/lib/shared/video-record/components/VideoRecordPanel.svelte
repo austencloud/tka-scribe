@@ -275,11 +275,11 @@
 <div class="video-record-panel">
   {#if cameraError}
     <div class="error-state">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       <p>Camera Error</p>
       <p class="error-detail">{cameraError}</p>
       <button class="retry-btn" onclick={() => window.location.reload()}>
-        <i class="fas fa-redo"></i> Retry
+        <i class="fas fa-redo" aria-hidden="true"></i> Retry
       </button>
     </div>
   {:else if !cameraInitialized}
@@ -294,7 +294,7 @@
       onclick={() => (settingsOpen = true)}
       aria-label="Settings"
     >
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
 
     <!-- Main Content: Split View -->
@@ -302,13 +302,12 @@
       <!-- Camera Section -->
       <div class="media-panel camera-panel">
         <div class="panel-label">
-          <i class="fas fa-video"></i>
+          <i class="fas fa-video" aria-hidden="true"></i>
           Camera
         </div>
         <div class="video-wrapper">
           <div class="square-crop">
             {#if recordedVideo}
-              <!-- svelte-ignore a11y_media_has_caption -->
               <video
                 bind:this={playbackVideoElement}
                 src={recordedVideo.blobUrl}
@@ -316,15 +315,16 @@
                 autoplay
                 loop
                 class="video-preview"
+                aria-label="Recorded performance video"
               ></video>
             {:else}
-              <!-- svelte-ignore a11y_media_has_caption -->
               <video
                 bind:this={videoElement}
                 autoplay
                 playsinline
                 muted
                 class="video-preview mirror"
+                aria-hidden="true"
               ></video>
             {/if}
           </div>
@@ -339,6 +339,7 @@
               class="fas {activeReferenceView === 'animation'
                 ? 'fa-play-circle'
                 : 'fa-th'}"
+              aria-hidden="true"
             ></i>
             {activeReferenceView === "animation" ? "Animation" : "Grid"}
           </div>
@@ -378,7 +379,7 @@
               onclick={discardRecording}
               aria-label="Record Again"
             >
-              <i class="fas fa-redo"></i>
+              <i class="fas fa-redo" aria-hidden="true"></i>
             </button>
             <button
               class="control-btn primary"
@@ -390,6 +391,7 @@
                 class="fas {isSharing
                   ? 'fa-spinner fa-spin'
                   : 'fa-share-nodes'}"
+                aria-hidden="true"
               ></i>
             </button>
             <button
@@ -397,7 +399,7 @@
               onclick={saveRecording}
               aria-label="Save"
             >
-              <i class="fas fa-download"></i>
+              <i class="fas fa-download" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -414,7 +416,7 @@
         <!-- Recording -->
         <div class="control-group">
           <span class="duration-badge recording">
-            <i class="fas fa-circle pulse"></i>
+            <i class="fas fa-circle pulse" aria-hidden="true"></i>
             {formatDuration(recordingDuration)}
           </span>
           <div class="control-buttons">
@@ -423,21 +425,21 @@
               onclick={pauseRecording}
               aria-label="Pause"
             >
-              <i class="fas fa-pause"></i>
+              <i class="fas fa-pause" aria-hidden="true"></i>
             </button>
             <button
               class="control-btn primary"
               onclick={stopRecording}
               aria-label="Stop"
             >
-              <i class="fas fa-stop"></i>
+              <i class="fas fa-stop" aria-hidden="true"></i>
             </button>
             <button
               class="control-btn danger"
               onclick={cancelRecording}
               aria-label="Cancel"
             >
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -445,7 +447,7 @@
         <!-- Paused -->
         <div class="control-group">
           <span class="duration-badge paused">
-            <i class="fas fa-pause"></i>
+            <i class="fas fa-pause" aria-hidden="true"></i>
             {formatDuration(recordingDuration)}
           </span>
           <div class="control-buttons">
@@ -454,21 +456,21 @@
               onclick={resumeRecording}
               aria-label="Resume"
             >
-              <i class="fas fa-play"></i>
+              <i class="fas fa-play" aria-hidden="true"></i>
             </button>
             <button
               class="control-btn primary"
               onclick={stopRecording}
               aria-label="Stop"
             >
-              <i class="fas fa-stop"></i>
+              <i class="fas fa-stop" aria-hidden="true"></i>
             </button>
             <button
               class="control-btn danger"
               onclick={cancelRecording}
               aria-label="Cancel"
             >
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -510,8 +512,8 @@
     top: 12px;
     right: 12px;
     z-index: 10;
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -572,7 +574,7 @@
     background: var(--theme-card-bg, rgba(0, 0, 0, 0.6));
     backdrop-filter: blur(4px);
     border-radius: 6px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     text-transform: uppercase;
@@ -580,7 +582,7 @@
   }
 
   .panel-label i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .video-wrapper,
@@ -679,8 +681,8 @@
   }
 
   .control-btn {
-    width: 44px;
-    height: 44px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -716,10 +718,10 @@
   }
 
   .control-btn.danger {
-    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.2));
+    background: var(--semantic-error, #ef4444);
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
-    color: var(--semantic-error, #ef4444);
+      color-mix(in srgb, var(--semantic-error, #ef4444) 80%, black);
+    color: white;
   }
 
   .control-btn:hover:not(:disabled) {
@@ -864,8 +866,8 @@
     }
 
     .control-btn {
-      width: 36px;
-      height: 36px;
+      width: 48px; /* WCAG AAA touch target */
+      height: 48px;
       font-size: 14px;
     }
 

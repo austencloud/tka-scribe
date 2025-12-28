@@ -60,7 +60,7 @@
   <div class="header">
     <div class="title-row">
       <div class="title">
-        <i class="fas fa-fingerprint"></i>
+        <i class="fas fa-fingerprint" aria-hidden="true"></i>
         <span>Passkeys (recommended)</span>
       </div>
       <span class="status" class:enabled={isEnabled}>
@@ -83,7 +83,7 @@
       onclick={handleAdd}
       disabled={loading}
     >
-      <i class="fas fa-plus"></i>
+      <i class="fas fa-plus" aria-hidden="true"></i>
       {loading ? "Working..." : "Add Passkey"}
     </button>
     <button
@@ -92,14 +92,14 @@
       onclick={refresh}
       disabled={loading}
     >
-      <i class="fas fa-rotate"></i>
+      <i class="fas fa-rotate" aria-hidden="true"></i>
       Refresh
     </button>
   </div>
 
   {#if error}
     <p class="error-message">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       {error}
     </p>
   {/if}
@@ -257,7 +257,7 @@
   }
 
   .badge {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     padding: 6px 10px;
     border-radius: 999px;

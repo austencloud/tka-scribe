@@ -44,6 +44,7 @@
   role="button"
   tabindex="0"
   title={item.shortcut.description || item.shortcut.label}
+  aria-label="Edit shortcut for {item.shortcut.label}"
 >
   <!-- Key combo - left aligned, fixed width -->
   <div class="key-section" class:muted={item.isDisabled}>
@@ -63,7 +64,7 @@
         title="Reset to default"
         aria-label="Reset to default"
       >
-        <i class="fas fa-undo"></i>
+        <i class="fas fa-undo" aria-hidden="true"></i>
       </button>
     {/if}
     {#if item.isDisabled}
@@ -72,7 +73,7 @@
   </div>
 
   <!-- Edit indicator -->
-  <i class="fas fa-pen edit-icon"></i>
+  <i class="fas fa-pen edit-icon" aria-hidden="true"></i>
 </div>
 
 <style>
@@ -158,7 +159,7 @@
     border: none;
     border-radius: 4px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
-    font-size: 10px;
+    font-size: 12px;
     cursor: pointer;
     opacity: 0;
     transition: all 0.1s ease;
@@ -174,7 +175,7 @@
   }
 
   .off-badge {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     padding: 2px 6px;
@@ -186,7 +187,7 @@
   /* Edit icon - subtle, shows on hover */
   .edit-icon {
     flex-shrink: 0;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.2));
     opacity: 0;
     transition: opacity 0.1s ease;

@@ -53,7 +53,7 @@
         aria-label="Close help"
         type="button"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -61,7 +61,7 @@
       <!-- Keyboard Shortcuts Section -->
       <section class="help-section">
         <h4 class="section-title">
-          <i class="fas fa-keyboard"></i>
+          <i class="fas fa-keyboard" aria-hidden="true"></i>
           Keyboard Shortcuts
         </h4>
         <div class="shortcuts-list">
@@ -80,7 +80,7 @@
       <!-- Usage Tips Section -->
       <section class="help-section">
         <h4 class="section-title">
-          <i class="fas fa-lightbulb"></i>
+          <i class="fas fa-lightbulb" aria-hidden="true"></i>
           Tips
         </h4>
         <ul class="tips-list">
@@ -142,8 +142,8 @@
   }
 
   .close-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

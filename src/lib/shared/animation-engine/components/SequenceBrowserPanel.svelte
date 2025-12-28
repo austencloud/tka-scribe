@@ -18,7 +18,7 @@
   import { onMount } from "svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { IDiscoverThumbnailProvider } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
-  import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
+  import type { ISequenceNormalizer } from "$lib/features/compose/services/contracts/ISequenceNormalizer";
   import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
 
   // Props
@@ -41,7 +41,7 @@
   // Services - resolved lazily after module is loaded
   let loaderService = $state<IDiscoverLoader | null>(null);
   let thumbnailService = $state<IDiscoverThumbnailProvider | null>(null);
-  let normalizationService = $state<ISequenceNormalizationService | null>(null);
+  let normalizationService = $state<ISequenceNormalizer | null>(null);
   let servicesReady = $state(false);
 
   // Auto-detect placement based on screen size if not provided
@@ -108,8 +108,8 @@
       thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
         TYPES.IDiscoverThumbnailProvider
       );
-      normalizationService = tryResolve<ISequenceNormalizationService>(
-        TYPES.ISequenceNormalizationService
+      normalizationService = tryResolve<ISequenceNormalizer>(
+        TYPES.ISequenceNormalizer
       );
 
       servicesReady = !!(loaderService && thumbnailService);
@@ -251,13 +251,13 @@
     <div class="browser-header">
       <h2 id="sequence-browser-title">{modeLabel}</h2>
       <button class="close-button" onclick={onClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
     <!-- Search Bar -->
     <div class="search-container">
-      <i class="fas fa-search search-icon"></i>
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
       <input
         type="text"
         class="search-input"
@@ -270,7 +270,7 @@
           onclick={() => (searchQuery = "")}
           aria-label="Clear search"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </div>
@@ -278,15 +278,15 @@
     <!-- Beat Count Filter Info -->
     {#if beatCountMessage}
       <div class="filter-info">
-        <i class="fas fa-filter"></i>
+        <i class="fas fa-filter" aria-hidden="true"></i>
         <span>{beatCountMessage}</span>
       </div>
     {/if}
 
     <!-- Loading overlay when selecting sequence -->
     {#if isSelectingSequence}
-      <div class="selecting-overlay">
-        <div class="spinner"></div>
+      <div class="selecting-overlay" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Loading sequence...</p>
       </div>
     {/if}
@@ -294,19 +294,19 @@
     <!-- Sequence Grid -->
     <div class="sequence-grid-container" class:disabled={isSelectingSequence}>
       {#if isLoading}
-        <div class="loading-state">
-          <div class="spinner"></div>
+        <div class="loading-state" role="status" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
           <p>Loading sequences...</p>
         </div>
       {:else if error}
-        <div class="error-state">
-          <i class="fas fa-exclamation-triangle"></i>
+        <div class="error-state" role="alert" aria-live="assertive">
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
           <p>{error}</p>
           <button onclick={loadSequences}>Retry</button>
         </div>
       {:else if filteredSequences.length === 0}
-        <div class="empty-state">
-          <i class="fas fa-search"></i>
+        <div class="empty-state" role="status" aria-live="polite">
+          <i class="fas fa-search" aria-hidden="true"></i>
           <p>No sequences found</p>
         </div>
       {:else}

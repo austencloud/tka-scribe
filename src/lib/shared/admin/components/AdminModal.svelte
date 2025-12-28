@@ -49,11 +49,13 @@
   }
 </script>
 
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
   class="modal-overlay"
   onclick={handleBackdropClick}
   onkeydown={handleKeydown}
+  role="button"
+  tabindex="0"
+  aria-label="Close modal"
 >
   <div
     class="admin-modal variant-{variant} {className}"
@@ -82,7 +84,7 @@
         disabled={loading}
       >
         {#if loading}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {:else}
           {confirmLabel}
         {/if}

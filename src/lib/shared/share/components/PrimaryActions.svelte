@@ -18,13 +18,13 @@
     {#if isDownloading}
       <span class="btn-spinner"></span>
     {:else}
-      <i class="fas fa-download"></i>
+      <i class="fas fa-download" aria-hidden="true"></i>
     {/if}
     <span>Download</span>
   </button>
 
   <button class="action-btn secondary" disabled={!canShare} onclick={onShare}>
-    <i class="fas fa-share-nodes"></i>
+    <i class="fas fa-share-nodes" aria-hidden="true"></i>
     <span>Share via Device</span>
   </button>
 </div>

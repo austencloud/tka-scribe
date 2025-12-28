@@ -119,7 +119,7 @@
   </div>
 
   <div class="arrow-icon">
-    <i class="fas fa-chevron-right"></i>
+    <i class="fas fa-chevron-right" aria-hidden="true"></i>
   </div>
 </button>
 

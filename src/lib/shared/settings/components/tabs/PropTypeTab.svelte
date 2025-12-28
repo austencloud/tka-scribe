@@ -38,16 +38,12 @@
     setTimeout(() => (isVisible = true), 30);
   });
 
-  // Current selections
-  let selectedBluePropType = $state(
-    settings.bluePropType || settings.propType || PropType.STAFF
-  );
-  let selectedRedPropType = $state(
-    settings.redPropType || settings.propType || PropType.STAFF
-  );
+  // Current selections - initialized with defaults, synced from settings via $effect below
+  let selectedBluePropType = $state(PropType.STAFF);
+  let selectedRedPropType = $state(PropType.STAFF);
 
   // CatDog Mode
-  let catDogMode = $state(settings.catDogMode ?? false);
+  let catDogMode = $state(false);
   let rememberedRedProp = $state<PropType | null>(null);
 
   // Sheet state
@@ -55,10 +51,19 @@
   let selectingHand = $state<"blue" | "red">("blue");
 
   // Preset state (fixed 3 slots)
-  let propPresets = $state<PropPreset[]>(settings.propPresets || []);
-  let selectedPresetIndex = $state(settings.selectedPresetIndex ?? -1);
+  let propPresets = $state<PropPreset[]>([]);
+  let selectedPresetIndex = $state(-1);
 
-  // Watch for settings changes
+  // Sync from settings prop
+  $effect(() => {
+    selectedBluePropType = settings.bluePropType || settings.propType || PropType.STAFF;
+    selectedRedPropType = settings.redPropType || settings.propType || PropType.STAFF;
+    catDogMode = settings.catDogMode ?? false;
+    propPresets = settings.propPresets || [];
+    selectedPresetIndex = settings.selectedPresetIndex ?? -1;
+  });
+
+  // Watch for settings changes and sync internal state
   $effect(() => {
     const newBlueProp =
       settings.bluePropType || settings.propType || PropType.STAFF;
@@ -248,7 +253,7 @@
 <div class="prop-type-tab" class:visible={isVisible}>
   <section class="settings-panel">
     <header class="panel-header">
-      <span class="panel-icon"><i class="fas fa-wand-sparkles"></i></span>
+      <span class="panel-icon"><i class="fas fa-wand-sparkles" aria-hidden="true"></i></span>
       <div class="panel-header-text">
         <h3 class="panel-title">Prop Type</h3>
         <p class="panel-subtitle">Choose your flow props</p>
@@ -310,7 +315,7 @@
               tabindex="0"
               aria-label="Toggle variation"
             >
-              <i class="fas fa-sync-alt"></i>
+              <i class="fas fa-sync-alt" aria-hidden="true"></i>
             </span>
           {/if}
         </button>
@@ -346,7 +351,7 @@
               tabindex="0"
               aria-label="Toggle variation"
             >
-              <i class="fas fa-sync-alt"></i>
+              <i class="fas fa-sync-alt" aria-hidden="true"></i>
             </span>
           {/if}
         </button>
@@ -375,7 +380,7 @@
               tabindex="0"
               aria-label="Toggle variation"
             >
-              <i class="fas fa-sync-alt"></i>
+              <i class="fas fa-sync-alt" aria-hidden="true"></i>
             </span>
           {/if}
         </button>
@@ -425,7 +430,6 @@
     gap: clamp(16px, 2cqi, 20px);
     padding: clamp(16px, 2.5cqi, 24px);
     background: var(--theme-card-bg);
-    backdrop-filter: blur(12px);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     flex: 1;
@@ -626,17 +630,19 @@
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 28px;
-    height: 28px;
+    width: 36px;
+    height: 36px;
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
-    border-radius: 8px;
+    border-radius: 10px;
     color: var(--theme-text-dim);
     cursor: pointer;
-    font-size: 11px;
+    font-size: var(--font-size-compact, 12px);
     transition: all 0.2s ease;
   }
 

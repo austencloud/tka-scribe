@@ -88,7 +88,7 @@
 <div class="videos-section">
   <div class="section-header">
     <h3>
-      <i class="fas fa-video"></i>
+      <i class="fas fa-video" aria-hidden="true"></i>
       Videos
       {#if hasVideos}
         <span class="count">({videos.length})</span>
@@ -96,7 +96,7 @@
     </h3>
     {#if onUploadClick}
       <button class="upload-btn" onclick={handleUploadClick}>
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         <span>Add</span>
       </button>
     {/if}
@@ -105,11 +105,11 @@
   <div class="section-content">
     {#if loading}
       <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
     {:else if error}
       <div class="error">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <span>{error}</span>
       </div>
     {:else if !hasVideos}
@@ -117,7 +117,7 @@
         <p>No videos yet</p>
         {#if onUploadClick}
           <button class="empty-upload-btn" onclick={handleUploadClick}>
-            <i class="fas fa-video"></i>
+            <i class="fas fa-video" aria-hidden="true"></i>
             Record your performance
           </button>
         {/if}
@@ -131,7 +131,7 @@
                 <img src={video.thumbnailUrl} alt="" />
               {:else}
                 <div class="thumbnail-placeholder">
-                  <i class="fas fa-play"></i>
+                  <i class="fas fa-play" aria-hidden="true"></i>
                 </div>
               {/if}
               <span class="duration">{formatDuration(video.duration)}</span>

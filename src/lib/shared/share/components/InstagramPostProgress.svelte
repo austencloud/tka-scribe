@@ -64,7 +64,7 @@
   <!-- Header -->
   <div class="progress-header">
     <div class="status-icon" class:spinning={isProcessing}>
-      <i class="fas {statusIcon}"></i>
+      <i class="fas {statusIcon}" aria-hidden="true"></i>
     </div>
     <h3 class="status-title">
       {#if isProcessing}
@@ -92,7 +92,7 @@
   {#if isFailed && status.error}
     <div class="error-details">
       <div class="error-header">
-        <i class="fas fa-bug"></i>
+        <i class="fas fa-bug" aria-hidden="true"></i>
         <span>Error Details</span>
       </div>
       <p class="error-message">{status.error}</p>
@@ -103,12 +103,12 @@
   {#if isComplete && status.postUrl}
     <div class="success-actions">
       <button class="view-post-button" onclick={handleViewPost}>
-        <i class="fab fa-instagram"></i>
+        <i class="fab fa-instagram" aria-hidden="true"></i>
         View on Instagram
       </button>
       {#if onClose}
         <button class="close-button" onclick={onClose}>
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
           Close
         </button>
       {/if}
@@ -120,13 +120,13 @@
     <div class="error-actions">
       {#if onRetry}
         <button class="retry-button" onclick={onRetry}>
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
           Try Again
         </button>
       {/if}
       {#if onClose}
         <button class="cancel-button" onclick={onClose}>
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
           Close
         </button>
       {/if}
@@ -137,7 +137,7 @@
   {#if isProcessing && onCancel}
     <div class="processing-actions">
       <button class="cancel-button" onclick={onCancel}>
-        <i class="fas fa-stop"></i>
+        <i class="fas fa-stop" aria-hidden="true"></i>
         Cancel
       </button>
     </div>

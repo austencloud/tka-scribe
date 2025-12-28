@@ -70,7 +70,7 @@
   <div class="preview-content">
     {#if !hubState.sequence}
       <div class="placeholder-preview">
-        <i class="fas {formatIcon}"></i>
+        <i class="fas {formatIcon}" aria-hidden="true"></i>
         <p>No sequence</p>
       </div>
     {:else if format === 'animation'}
@@ -82,12 +82,12 @@
             disableContentTransitions={true}
           />
           <div class="play-overlay">
-            <i class="fas fa-play"></i>
+            <i class="fas fa-play" aria-hidden="true"></i>
           </div>
         </div>
       {:else}
         <div class="placeholder-preview">
-          <i class="fas fa-play-circle"></i>
+          <i class="fas fa-play-circle" aria-hidden="true"></i>
           <p>No beats</p>
         </div>
       {/if}
@@ -102,7 +102,7 @@
         </div>
       {:else}
         <div class="placeholder-preview">
-          <i class="fas fa-image"></i>
+          <i class="fas fa-image" aria-hidden="true"></i>
           <p>No beats</p>
         </div>
       {/if}
@@ -121,14 +121,14 @@
         </div>
       {:else}
         <div class="placeholder-preview">
-          <i class="fas fa-th"></i>
+          <i class="fas fa-th" aria-hidden="true"></i>
           <p>No beats</p>
         </div>
       {/if}
     {:else if format === 'performance'}
       <!-- Performance: camera/video placeholder -->
       <div class="placeholder-preview">
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
         <p>Performance</p>
       </div>
     {/if}
@@ -136,7 +136,7 @@
 
   <!-- Format Label (bottom-left) -->
   <div class="format-label">
-    <i class="fas {formatIcon}"></i>
+    <i class="fas {formatIcon}" aria-hidden="true"></i>
     <span>{label}</span>
   </div>
 
@@ -147,7 +147,7 @@
     onclick={handleSettingsClick}
     aria-label="Settings for {label}"
   >
-    <i class="fas fa-cog"></i>
+    <i class="fas fa-cog" aria-hidden="true"></i>
   </button>
 </div>
 
@@ -278,8 +278,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));

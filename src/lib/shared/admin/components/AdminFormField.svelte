@@ -37,8 +37,8 @@
     class: className = "",
   }: AdminFormFieldProps = $props();
 
-  // Generate unique ID for accessibility
-  const fieldId = `field-${label.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`;
+  // Generate unique ID for accessibility - derived from label prop
+  const fieldId = $derived(`field-${label.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`);
 
   function handleChange(e: Event) {
     const target = e.target as
@@ -78,6 +78,8 @@
       {placeholder}
       {required}
       {disabled}
+      aria-required={required}
+      aria-invalid={!!error}
       onchange={handleChange}
     />
   {:else if type === "textarea"}
@@ -88,6 +90,8 @@
       {placeholder}
       {required}
       {disabled}
+      aria-required={required}
+      aria-invalid={!!error}
       onchange={handleChange}
       rows="3"
     ></textarea>
@@ -109,11 +113,12 @@
     <label class="field-toggle">
       <input
         type="checkbox"
+        aria-label={label}
         checked={value}
         {disabled}
         onchange={handleChange}
       />
-      <span class="toggle-slider"></span>
+      <span class="toggle-slider" aria-hidden="true"></span>
     </label>
   {/if}
 
@@ -122,7 +127,7 @@
   {/if}
 
   {#if error}
-    <span class="field-error">{error}</span>
+    <span class="field-error" role="alert">{error}</span>
   {/if}
 </div>
 

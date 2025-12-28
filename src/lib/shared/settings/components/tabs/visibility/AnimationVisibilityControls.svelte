@@ -55,7 +55,7 @@
         class:active={gridVisible}
         onclick={onToggleGrid}
       >
-        <i class="fas fa-th"></i>
+        <i class="fas fa-th" aria-hidden="true"></i>
         <span>Grid</span>
       </button>
 
@@ -64,7 +64,7 @@
         class:active={beatNumbersVisible}
         onclick={onToggleBeatNumbers}
       >
-        <i class="fas fa-hashtag"></i>
+        <i class="fas fa-hashtag" aria-hidden="true"></i>
         <span>Beat #s</span>
       </button>
 
@@ -73,7 +73,7 @@
         class:active={propsVisible}
         onclick={onToggleProps}
       >
-        <i class="fas fa-circle"></i>
+        <i class="fas fa-circle" aria-hidden="true"></i>
         <span>Props</span>
       </button>
 
@@ -82,7 +82,7 @@
         class:active={trailsVisible}
         onclick={onToggleTrails}
       >
-        <i class="fas fa-route"></i>
+        <i class="fas fa-route" aria-hidden="true"></i>
         <span>Trails</span>
       </button>
     </div>
@@ -106,7 +106,7 @@
         class:active={turnNumbersVisible}
         onclick={onToggleTurnNumbers}
       >
-        <i class="fas fa-sort-numeric-down"></i>
+        <i class="fas fa-sort-numeric-down" aria-hidden="true"></i>
         <span>Turns</span>
       </button>
 
@@ -124,7 +124,7 @@
         class:active={blueMotionVisible}
         onclick={onToggleBlueMotion}
       >
-        <i class="fas fa-circle"></i>
+        <i class="fas fa-circle" aria-hidden="true"></i>
         <span>Blue</span>
       </button>
 
@@ -133,7 +133,7 @@
         class:active={redMotionVisible}
         onclick={onToggleRedMotion}
       >
-        <i class="fas fa-circle"></i>
+        <i class="fas fa-circle" aria-hidden="true"></i>
         <span>Red</span>
       </button>
     </div>
@@ -361,7 +361,7 @@
     .control-btn {
       min-height: 60px;
       padding: 10px 6px;
-      font-size: 11px;
+      font-size: 12px;
       border-radius: 10px;
     }
 

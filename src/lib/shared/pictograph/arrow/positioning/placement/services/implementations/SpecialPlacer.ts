@@ -15,7 +15,8 @@
 
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import { resolve, TYPES } from "../../../../../../inversify/bootstrap";
+import { resolve } from "../../../../../../inversify/resolve-utils";
+import { TYPES } from "../../../../../../inversify/types";
 import type { IGridModeDeriver } from "../../../../../grid/services/contracts/IGridModeDeriver";
 import { GridMode } from "../../../../../grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../../shared/domain/models/PictographData";

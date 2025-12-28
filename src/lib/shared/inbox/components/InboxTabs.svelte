@@ -125,6 +125,7 @@
         ? inboxState.unreadMessageCount
         : inboxState.unreadNotificationCount}
     <button
+      id="inbox-tab-{tab.id}"
       class="tab"
       class:active={inboxState.activeTab === tab.id}
       onclick={() => handleTabClick(tab.id)}

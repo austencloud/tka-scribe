@@ -41,7 +41,7 @@
   <div class="form-group">
     <label for="email-link-email">Email Address</label>
     <div class="input-wrapper">
-      <i class="fas fa-envelope input-icon"></i>
+      <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
       <input
         id="email-link-email"
         type="email"
@@ -59,7 +59,7 @@
   <div class="form-group">
     <label for="email-link-password">Password</label>
     <div class="input-wrapper">
-      <i class="fas fa-lock input-icon"></i>
+      <i class="fas fa-lock input-icon" aria-hidden="true"></i>
       <input
         id="email-link-password"
         type={showPassword ? "text" : "password"}
@@ -80,17 +80,17 @@
         disabled={isSubmitting}
         tabindex={-1}
       >
-        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
+        <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
       </button>
     </div>
     <span class="field-hint">
-      <i class="fas fa-eye"></i> Use the eye icon to verify your password
+      <i class="fas fa-eye" aria-hidden="true"></i> Use the eye icon to verify your password
     </span>
   </div>
 
   {#if formError}
     <div class="form-error" role="alert">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span>{formError}</span>
     </div>
   {/if}
@@ -111,10 +111,10 @@
       aria-busy={isSubmitting}
     >
       {#if isSubmitting}
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <span>Linking...</span>
       {:else}
-        <i class="fas fa-link"></i>
+        <i class="fas fa-link" aria-hidden="true"></i>
         <span>Link Email</span>
       {/if}
     </button>
@@ -188,9 +188,9 @@
 
   .toggle-password {
     position: absolute;
-    right: 10px;
-    width: 36px;
-    height: 36px;
+    right: 4px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

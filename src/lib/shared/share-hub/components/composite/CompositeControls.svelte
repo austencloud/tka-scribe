@@ -38,15 +38,15 @@
   <!-- Orientation Toggle -->
   <div class="control-group">
     <span class="control-label">
-      <i class="fas fa-arrows-alt"></i>
+      <i class="fas fa-arrows-alt" aria-hidden="true"></i>
       Layout
     </span>
     <button class="orientation-toggle" onclick={toggleOrientation} aria-label="Toggle orientation">
       {#if hubState.compositeLayout.orientation === 'horizontal'}
-        <i class="fas fa-grip-horizontal"></i>
+        <i class="fas fa-grip-horizontal" aria-hidden="true"></i>
         <span>Horizontal</span>
       {:else}
-        <i class="fas fa-grip-vertical"></i>
+        <i class="fas fa-grip-vertical" aria-hidden="true"></i>
         <span>Vertical</span>
       {/if}
     </button>
@@ -55,7 +55,7 @@
   <!-- Piece 1 Selector -->
   <div class="control-group">
     <span class="control-label">
-      <i class="fas fa-play-circle"></i>
+      <i class="fas fa-play-circle" aria-hidden="true"></i>
       Piece 1
     </span>
     <div class="piece-selector" role="group" aria-label="Piece 1 format">
@@ -65,7 +65,7 @@
         onclick={() => handlePiece1Change('animation')}
         aria-pressed={hubState.compositeLayout.piece1 === 'animation'}
       >
-        <i class="fas fa-play-circle"></i>
+        <i class="fas fa-play-circle" aria-hidden="true"></i>
         <span>Animation</span>
       </button>
       <button
@@ -74,7 +74,7 @@
         onclick={() => handlePiece1Change('static')}
         aria-pressed={hubState.compositeLayout.piece1 === 'static'}
       >
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
         <span>Static</span>
       </button>
     </div>
@@ -83,7 +83,7 @@
   <!-- Piece 2 Selector -->
   <div class="control-group">
     <span class="control-label">
-      <i class="fas fa-th"></i>
+      <i class="fas fa-th" aria-hidden="true"></i>
       Piece 2
     </span>
     <div class="piece-selector" role="group" aria-label="Piece 2 format">
@@ -93,7 +93,7 @@
         onclick={() => handlePiece2Change('grid')}
         aria-pressed={hubState.compositeLayout.piece2 === 'grid'}
       >
-        <i class="fas fa-th"></i>
+        <i class="fas fa-th" aria-hidden="true"></i>
         <span>Grid</span>
       </button>
       <button
@@ -102,7 +102,7 @@
         onclick={() => handlePiece2Change('performance')}
         aria-pressed={hubState.compositeLayout.piece2 === 'performance'}
       >
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
         <span>Performance</span>
       </button>
     </div>

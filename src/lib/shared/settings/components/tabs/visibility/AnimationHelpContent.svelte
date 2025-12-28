@@ -56,7 +56,7 @@
   <!-- Hero Preview -->
   <div class="hero-preview">
     <div class="preview-visual">
-      <i class="fas fa-play-circle"></i>
+      <i class="fas fa-play-circle" aria-hidden="true"></i>
     </div>
     <div class="preview-info">
       <span class="preview-title">Animation Preview</span>
@@ -73,7 +73,7 @@
       {#each elements as element (element.id)}
         <div class="element-card" style="--element-color: {element.color}">
           <div class="element-icon">
-            <i class="fas {element.icon}"></i>
+            <i class="fas {element.icon}" aria-hidden="true"></i>
           </div>
           <div class="element-info">
             <span class="element-label">{element.label}</span>
@@ -86,7 +86,7 @@
 
   <!-- Tips -->
   <div class="tips-section">
-    <i class="fas fa-lightbulb"></i>
+    <i class="fas fa-lightbulb" aria-hidden="true"></i>
     <div class="tips-content">
       <span class="tips-title">Tips</span>
       <ul class="tips-list">

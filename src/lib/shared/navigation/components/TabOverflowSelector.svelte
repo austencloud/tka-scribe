@@ -72,11 +72,12 @@
   popovertarget="tab-overflow-popover"
   aria-label="Select tab"
   aria-expanded={isOpen}
+  aria-controls="tab-overflow-popover"
   onclick={handleTriggerClick}
 >
   <span class="current-tab-icon">{@html currentSectionData?.icon || ""}</span>
   <span class="current-tab-label">{currentSectionData?.label || "Select"}</span>
-  <i class="fas fa-chevron-down chevron" class:rotated={isOpen}></i>
+  <i class="fas fa-chevron-down chevron" class:rotated={isOpen} aria-hidden="true"></i>
 </button>
 
 <!-- Popover with all tabs -->
@@ -102,7 +103,7 @@
         <span class="tab-icon">{@html section.icon}</span>
         <span class="tab-label">{section.label}</span>
         {#if currentSection === section.id}
-          <i class="fas fa-check check-mark"></i>
+          <i class="fas fa-check check-mark" aria-hidden="true"></i>
         {/if}
       </button>
     {/each}
@@ -179,7 +180,7 @@
   }
 
   .chevron {
-    font-size: 11px;
+    font-size: 12px;
     opacity: 0.6;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }

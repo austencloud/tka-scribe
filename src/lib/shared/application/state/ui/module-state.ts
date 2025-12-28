@@ -8,10 +8,20 @@ import {
   setActiveModule,
   setIsTransitioning,
 } from "./ui-state.svelte";
-import {
-  loadFeatureModule,
-  ensureContainerInitialized,
-} from "../../../inversify/di";
+
+// Dynamic imports to avoid circular dependencies with DI system
+// These are loaded at runtime, not at module load time
+async function loadFeatureModule(feature: string): Promise<void> {
+  const { loadFeatureModule: load } = await import("../../../inversify/di");
+  return load(feature);
+}
+
+async function ensureContainerInitialized(): Promise<void> {
+  const { ensureContainerInitialized: ensure } = await import(
+    "../../../inversify/di"
+  );
+  return ensure();
+}
 
 const LOCAL_STORAGE_KEY = "tka-active-module-cache";
 const TRANSITION_RESET_DELAY = 300;

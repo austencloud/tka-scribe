@@ -43,7 +43,7 @@
   </div>
 
   <p class="preset-hint">
-    <i class="fas fa-info-circle"></i>
+    <i class="fas fa-info-circle" aria-hidden="true"></i>
     Tap empty slot to save. Select a preset, then change props to update it.
   </p>
 </div>

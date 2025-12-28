@@ -63,6 +63,7 @@
     class="avatar-button"
     aria-label="User menu"
     aria-expanded={showMenu}
+    aria-controls="user-menu-dropdown"
   >
     {#if avatarUrl}
       <img src={avatarUrl} alt={displayName} class="avatar-image" />
@@ -74,15 +75,15 @@
   </button>
 
   {#if showMenu}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="menu-backdrop"
       onclick={closeMenu}
+      onkeydown={(e) => e.key === "Escape" && closeMenu()}
       role="button"
-      tabindex="-1"
+      tabindex="0"
+      aria-label="Close menu"
     ></div>
-    <div class="menu-dropdown">
+    <div id="user-menu-dropdown" class="menu-dropdown">
       <div class="menu-header">
         <p class="user-name">{displayName}</p>
         <p class="user-email">{authState.user?.email || ""}</p>

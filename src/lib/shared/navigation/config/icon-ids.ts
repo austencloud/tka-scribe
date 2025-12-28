@@ -76,5 +76,5 @@ export const ADMIN_TAB_ICONS = {
  */
 export function iconHtml(iconId: string, color?: string): string {
   const style = color ? ` style="color: ${color};"` : "";
-  return `<i class="fas ${iconId}"${style}></i>`;
+  return `<i class="fas ${iconId}"${style} aria-hidden="true"></i>`;
 }

@@ -133,17 +133,17 @@
   <div class="preview-canvas">
     {#if !hubState.sequence}
       <div class="empty-state">
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
         <p>No sequence loaded</p>
       </div>
     {:else if isLoading || !renderService}
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Generating preview...</p>
       </div>
     {:else if previewError}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <p>{previewError}</p>
       </div>
     {:else if previewDataUrl}
@@ -154,7 +154,7 @@
       />
     {:else}
       <div class="empty-state">
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
         <p>No preview available</p>
       </div>
     {/if}

@@ -91,7 +91,7 @@
       <img src={video.thumbnailUrl} alt="Video thumbnail" />
     {:else}
       <div class="thumbnail-placeholder">
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
       </div>
     {/if}
   </div>
@@ -99,7 +99,7 @@
   <!-- Info -->
   <div class="info">
     <div class="invite-header">
-      <i class="fas fa-user-plus invite-icon"></i>
+      <i class="fas fa-user-plus invite-icon" aria-hidden="true"></i>
       <span class="invite-label">Collaboration Invite</span>
     </div>
 
@@ -113,7 +113,7 @@
 
     {#if error}
       <p class="error-message">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         {error}
       </p>
     {/if}
@@ -126,9 +126,9 @@
         disabled={isProcessing}
       >
         {#if isProcessing}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {:else}
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
           Accept
         {/if}
       </button>
@@ -137,7 +137,7 @@
         onclick={handleDecline}
         disabled={isProcessing}
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
         Decline
       </button>
     </div>

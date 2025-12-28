@@ -47,7 +47,7 @@
 
 <div class="change-group">
   <h4 class="group-title {category}">
-    <i class="fas {CATEGORY_ICONS[category]}"></i>
+    <i class="fas {CATEGORY_ICONS[category]}" aria-hidden="true"></i>
     {CATEGORY_LABELS[category]}
     <span class="count">{entries.length}</span>
   </h4>
@@ -84,7 +84,7 @@
             onclick={() => void onConfirmAdd()}
             disabled={!newEntryText.trim()}
           >
-            <i class="fas fa-plus"></i> Add
+            <i class="fas fa-plus" aria-hidden="true"></i> Add
           </button>
           <button type="button" class="glass-btn" onclick={onCancelAdd}
             >Cancel</button
@@ -94,7 +94,7 @@
     {:else if isAdmin}
       <li>
         <button type="button" class="add-entry-btn" onclick={onStartAdd}>
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
           {CATEGORY_ADD_LABELS[category]}
         </button>
       </li>

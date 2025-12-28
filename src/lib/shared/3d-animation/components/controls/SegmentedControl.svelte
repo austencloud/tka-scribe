@@ -56,7 +56,7 @@
       onclick={() => handleSelect(option.value)}
     >
       {#if option.icon}
-        <i class={option.icon}></i>
+        <i class={option.icon} aria-hidden="true"></i>
       {:else}
         {option.label}
       {/if}
@@ -97,7 +97,7 @@
 
   .segment {
     flex: 1;
-    min-height: 44px;
+    min-height: 48px; /* WCAG AAA touch target */
     min-width: 0;
     padding: 0.5rem 0.5rem;
     background: none;
@@ -117,7 +117,7 @@
   }
 
   .sm .segment {
-    min-height: 44px;
+    /* Touch target remains 48px for WCAG AAA */
     padding: 0.4rem 0.35rem;
     font-size: var(--font-size-compact, 0.75rem);
   }

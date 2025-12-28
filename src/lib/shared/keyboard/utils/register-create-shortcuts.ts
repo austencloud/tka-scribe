@@ -9,6 +9,7 @@
 import type { IKeyboardShortcutManager } from "../services/contracts/IKeyboardShortcutManager";
 import type { createKeyboardShortcutState } from "../state/keyboard-shortcut-state.svelte";
 import { getCreateModuleRef } from "$lib/features/create/shared/state/create-module-state-ref.svelte";
+import { getAnimationPlaybackRef } from "$lib/shared/coordinators/animation-playback-ref.svelte";
 import { executeClearSequenceWorkflow } from "$lib/features/create/shared/utils/clearSequenceWorkflow";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
@@ -20,27 +21,63 @@ export function registerCreateShortcuts(
 ) {
   // ==================== Animation Control ====================
 
-  // Space - Play/Pause animation
-  // NOTE: This requires animation service to support pause functionality
+  // Space - Open animation panel OR toggle play/pause if already open
   service.register({
-    id: "create.toggle-playback",
+    id: "create.toggle-animation",
     label: "Play/Pause Animation",
-    description: "Toggle animation playback",
-    key: " ", // Space key
+    description: "Open animation viewer or toggle play/pause",
+    key: "Space", // Normalized key name (not " ")
     modifiers: [],
-    context: "create",
+    context: ["create", "animation-panel"], // Works in both contexts
     scope: "animation",
     priority: "high",
     condition: () => {
-      // Only enable if settings allow single-key shortcuts
-      return state.settings.enableSingleKeyShortcuts;
+      if (!state.settings.enableSingleKeyShortcuts) return false;
+      // Only enable if there's a sequence to animate
+      const ref = getCreateModuleRef();
+      if (!ref) return false;
+      const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
+      return sequenceState?.hasSequence() ?? false;
     },
     action: () => {
-      // TODO: Integrate with animation service when pause is implemented
-      debug.log("Space pressed - Play/Pause (not yet implemented)");
-      // This will need to call something like:
-      // const animService = getAnimator();
-      // animService.togglePlayback();
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      const { panelState } = ref;
+
+      if (panelState.isAnimationPanelOpen) {
+        // Panel is open - toggle play/pause
+        const playbackController = getAnimationPlaybackRef();
+        if (playbackController) {
+          playbackController.togglePlayback();
+        }
+      } else {
+        // Panel is closed - open it
+        panelState.openAnimationPanel();
+      }
+    },
+  });
+
+  // Escape - Close animation panel
+  service.register({
+    id: "create.close-animation",
+    label: "Close Animation",
+    description: "Close the animation viewer",
+    key: "Escape",
+    modifiers: [],
+    context: ["create", "animation-panel"], // Works in both contexts
+    scope: "animation",
+    priority: "high",
+    condition: () => {
+      // Only when animation panel is open
+      const ref = getCreateModuleRef();
+      return ref?.panelState.isAnimationPanelOpen ?? false;
+    },
+    action: () => {
+      const ref = getCreateModuleRef();
+      if (!ref) return;
+
+      ref.panelState.closeAnimationPanel();
     },
   });
 
@@ -322,10 +359,6 @@ export function registerCreateShortcuts(
             CreateModuleState,
             constructTabState,
             panelState,
-            resetCreationMethodSelection: () => {
-              // Keep creation method selected when clearing via keyboard
-            },
-            shouldResetCreationMethod: false, // Keep creation mode selected, just reset to start position picker
           });
 
           // Close edit panel if it's open

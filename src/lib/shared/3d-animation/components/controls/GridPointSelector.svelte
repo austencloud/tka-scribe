@@ -145,7 +145,7 @@
   }
 
   .point-label {
-    font-size: 6px;
+    font-size: 12px;
     fill: var(--theme-text, rgba(255, 255, 255, 0.92));
     text-anchor: middle;
     dominant-baseline: central;

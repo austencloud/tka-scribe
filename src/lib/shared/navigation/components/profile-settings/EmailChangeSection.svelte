@@ -97,7 +97,7 @@
     />
     {#if emailError}
       <p id="new-email-error" class="error-message" role="alert">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         {emailError}
       </p>
     {/if}
@@ -120,7 +120,7 @@
     />
     {#if passwordError}
       <p id="verify-password-error" class="error-message" role="alert">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         {passwordError}
       </p>
     {/if}
@@ -133,7 +133,7 @@
       onclick={handleCancel}
       disabled={uiState.changingEmail}
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
       Cancel
     </button>
     <button
@@ -142,7 +142,7 @@
       disabled={uiState.changingEmail}
       aria-busy={uiState.changingEmail}
     >
-      <i class="fas fa-paper-plane"></i>
+      <i class="fas fa-paper-plane" aria-hidden="true"></i>
       {uiState.changingEmail ? "Sending..." : "Send Verification Email"}
     </button>
   </div>
@@ -307,7 +307,7 @@
   }
 
   .email-change-section.very-compact .error-message {
-    font-size: 11px;
+    font-size: 12px;
     margin: 3px 0 0 0;
   }
 

@@ -1,10 +1,13 @@
 /**
- * InversifyJS dependency injection system - Service Resolution and HMR Management
+ * InversifyJS dependency injection system - Service Resolution
  *
  * This module provides the main DI functionality including:
  * - Service resolution (resolve, tryResolve, resolveAsync)
- * - HMR-safe container management
- * - Container initialization and lifecycle
+ * - Lazy container initialization
+ * - Feature module loading
+ *
+ * HMR RESILIENCE: All resolution is delegated to HMRContainerManager in container.ts
+ * which provides zero-downtime HMR with shadow container pattern.
  *
  * PERFORMANCE FIX: All container access is now dynamic to enable proper code-splitting
  */
@@ -17,253 +20,166 @@ export { TYPES };
 // They require reflect-metadata to be loaded first and break SSR.
 // Import them directly from "inversify" in service implementations.
 import type { Container as InversifyContainer } from "inversify";
-import { debugHMR, debugHMRError } from "../utils/hmr-debug";
+import type { HMRContainerManager } from "./hmr/HMRContainerManager";
 
 // ============================================================================
-// HMR-SAFE CONTAINER MANAGEMENT
+// GLOBAL TYPE AUGMENTATION
 // ============================================================================
 
-// Global container state that persists across HMR
 declare global {
   // eslint-disable-next-line no-var
   var __TKA_CONTAINER__: InversifyContainer | undefined;
   // eslint-disable-next-line no-var
-  var __TKA_CONTAINER_PROMISE__: Promise<InversifyContainer> | undefined;
-  // eslint-disable-next-line no-var
   var __TKA_CONTAINER_INITIALIZED__: boolean | undefined;
+  // eslint-disable-next-line no-var
+  var __TKA_HMR_MANAGER__: HMRContainerManager | undefined;
 }
 
-// HMR-safe container state management
-function getGlobalContainer(): InversifyContainer | null {
-  if (globalThis.__TKA_CONTAINER__) {
-    return globalThis.__TKA_CONTAINER__;
-  }
-  return null;
-}
-
-function setGlobalContainer(container: InversifyContainer | null): void {
-  if (typeof globalThis !== "undefined") {
-    if (container) {
-      globalThis.__TKA_CONTAINER__ = container;
-      globalThis.__TKA_CONTAINER_INITIALIZED__ = true;
-    } else {
-      globalThis.__TKA_CONTAINER__ = undefined;
-      globalThis.__TKA_CONTAINER_INITIALIZED__ = false;
-    }
-  }
-}
-
-function getGlobalPromise(): Promise<InversifyContainer> | null {
-  if (globalThis.__TKA_CONTAINER_PROMISE__) {
-    return globalThis.__TKA_CONTAINER_PROMISE__;
-  }
-  return null;
-}
-
-function setGlobalPromise(promise: Promise<InversifyContainer> | null): void {
-  if (typeof globalThis !== "undefined") {
-    globalThis.__TKA_CONTAINER_PROMISE__ = promise || undefined;
-  }
-}
-
-// Use global state to persist across HMR
-let _cachedContainer: InversifyContainer | null = getGlobalContainer();
-let _containerPromise: Promise<InversifyContainer> | null = getGlobalPromise();
-
-// HMR support - preserve container across reloads
-if (import.meta.hot) {
-  import.meta.hot.accept(() => {
-    console.log("🔄 HMR: Preserving container state across reload");
-    debugHMR("HMR accept triggered");
-
-    // Restore from global state
-    _cachedContainer = getGlobalContainer();
-    _containerPromise = getGlobalPromise();
-
-    if (_cachedContainer) {
-      console.log("✅ HMR: Container restored from global state");
-      debugHMR("Container successfully restored");
-    } else {
-      console.log("⚠️ HMR: No container found in global state");
-      debugHMR("No container found in global state");
-    }
-  });
-
-  import.meta.hot.dispose(() => {
-    console.log("🔄 HMR: Saving container state to global");
-    debugHMR("HMR dispose triggered");
-
-    // Save to global state before disposal
-    setGlobalContainer(_cachedContainer);
-    setGlobalPromise(_containerPromise);
-
-    if (_cachedContainer) {
-      console.log("✅ HMR: Container saved to global state");
-      debugHMR("Container successfully saved to global state");
-    } else {
-      debugHMR("No container to save during dispose");
-    }
-  });
-}
+// Browser detection
+const isBrowser = typeof window !== "undefined";
 
 // ============================================================================
-// HMR-SAFE SERVICE RESOLUTION
+// HMR-RESILIENT SERVICE RESOLUTION
 // ============================================================================
 
+/**
+ * Resolve a service from the DI container.
+ *
+ * This function delegates to HMRContainerManager for zero-downtime HMR support.
+ * During HMR, it will:
+ * 1. Try the active container
+ * 2. Fall back to cached singletons
+ * 3. Try the shadow container (if swapping)
+ * 4. Throw with helpful message if service unavailable
+ *
+ * @throws Error if service not found and no fallback available
+ */
 export function resolve<T>(serviceIdentifier: symbol): T {
-  // Try to get container from cache first
-  if (!_cachedContainer) {
-    _cachedContainer = getGlobalContainer();
-  }
-
-  if (!_cachedContainer) {
+  if (!isBrowser) {
     throw new Error(
-      `Container not initialized. Call ensureContainerInitialized() before resolving services. This usually means a component is trying to resolve services before the app is fully loaded.`
+      `Cannot resolve service ${String(serviceIdentifier)} during server-side rendering.`
     );
   }
 
-  try {
-    return _cachedContainer.get<T>(serviceIdentifier);
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    console.error("❌ Service resolution failed:", {
-      symbol: serviceIdentifier,
-      symbolString: serviceIdentifier.toString(),
-      error: error,
-    });
-
-    // Check if this is a "no bindings found" error (missing module)
-    if (errorMessage.includes("No bindings found")) {
-      console.error(
-        `\n💡 HINT: The service "${serviceIdentifier.toString()}" is not bound in the container.\n` +
-          `This usually means:\n` +
-          `  1. The feature module containing this service hasn't been loaded yet\n` +
-          `  2. An HMR update cleared the container but didn't restore the module\n` +
-          `  3. The service binding is missing from the module configuration\n`
-      );
-    }
-
-    // HMR recovery: try to reinitialize container
-    console.warn(
-      "🔄 HMR: Service resolution failed, attempting container recovery"
+  // Delegate to container.ts which uses HMRContainerManager
+  // Dynamic import would break sync resolution, so we use the global
+  const container = globalThis.__TKA_CONTAINER__;
+  if (!container) {
+    throw new Error(
+      `Container not initialized. Call ensureContainerInitialized() before resolving services. ` +
+        `This usually means a component is trying to resolve services before the app is fully loaded.`
     );
-    debugHMRError(error as Error, "Service resolution failed");
-
-    _cachedContainer = getGlobalContainer();
-
-    if (_cachedContainer) {
-      try {
-        const result = _cachedContainer.get<T>(serviceIdentifier);
-        debugHMR("Container recovery successful");
-        return result;
-      } catch (retryError) {
-        console.error("❌ HMR: Container recovery failed", retryError);
-        debugHMRError(retryError as Error, "Container recovery failed");
-        throw retryError;
-      }
-    }
-
-    debugHMRError(error as Error, "No container available for recovery");
-    throw error;
   }
+
+  // Try HMR manager first if available (provides fallbacks during HMR)
+  const hmrManager = globalThis.__TKA_HMR_MANAGER__;
+  if (hmrManager) {
+    return hmrManager.resolve<T>(serviceIdentifier);
+  }
+
+  // Fall back to direct container access
+  return container.get<T>(serviceIdentifier);
 }
 
-// HMR-safe resolve with fallback
-export function resolveHMRSafe<T>(serviceIdentifier: symbol): T | null {
-  try {
-    return resolve<T>(serviceIdentifier);
-  } catch (error) {
-    console.warn("⚠️ HMR: Service resolution failed, returning null", error);
-    return null;
-  }
-}
-
-// Silent resolve - returns null if service not found, no error logging
-// Useful for optional dependencies during HMR or when services may not be bound
-export function tryResolve<T>(serviceIdentifier: symbol): T | null {
-  if (!_cachedContainer) {
-    _cachedContainer = getGlobalContainer();
+/**
+ * Resolve a service asynchronously, waiting for HMR to complete if in progress.
+ *
+ * Use this when you can handle async resolution and want guaranteed availability.
+ */
+export async function resolveAsync<T>(serviceIdentifier: symbol): Promise<T> {
+  if (!isBrowser) {
+    throw new Error(
+      `Cannot resolve service ${String(serviceIdentifier)} during server-side rendering.`
+    );
   }
 
-  if (!_cachedContainer) {
-    // Silently return null - this is expected during HMR or early initialization
-    return null;
-  }
-
-  try {
-    return _cachedContainer.get<T>(serviceIdentifier);
-  } catch {
-    // Silently return null - the caller expects this for optional dependencies
-    return null;
-  }
-}
-
-// ============================================================================
-// HMR-SAFE CONTAINER INITIALIZATION
-// ============================================================================
-
-export async function ensureContainerInitialized(): Promise<void> {
-  // Check if we already have a container from global state
-  if (!_cachedContainer) {
-    _cachedContainer = getGlobalContainer();
-  }
-
-  if (!_cachedContainer) {
-    if (!_containerPromise) {
-      _containerPromise = getGlobalPromise();
-    }
-
-    if (!_containerPromise) {
-      _containerPromise = import("./container").then(
-        async ({ container, ensureContainerInitialized }) => {
-          await ensureContainerInitialized();
-          return container;
-        }
-      );
-      // Save promise to global state
-      setGlobalPromise(_containerPromise);
-    }
-
-    _cachedContainer = await _containerPromise;
-    // Save container to global state
-    setGlobalContainer(_cachedContainer);
-  }
-}
-
-// Check if container is ready for synchronous access
-export function isContainerReady(): boolean {
-  return _cachedContainer !== null;
-}
-
-// HMR utility - reset container state
-export function resetContainer(): void {
-  _cachedContainer = null;
-  _containerPromise = null;
-  // Clear global state
-  setGlobalContainer(null);
-  setGlobalPromise(null);
-}
-
-// Legacy exports for backward compatibility
-export const getContainer = async () => {
-  // Use the HMR-safe initialization
   await ensureContainerInitialized();
-  return _cachedContainer;
-};
 
-// Removed duplicate - using the one above
-
-// DEPRECATED: Use resolve() instead - kept for backward compatibility
-export const resolveSyncUnsafe = <T>(serviceIdentifier: symbol): T => {
-  if (!_cachedContainer) {
-    throw new Error("Container not initialized. Use async resolve() instead.");
+  const hmrManager = globalThis.__TKA_HMR_MANAGER__;
+  if (hmrManager) {
+    return hmrManager.resolveAsync<T>(serviceIdentifier);
   }
-  return _cachedContainer.get<T>(serviceIdentifier);
-};
 
-// DEPRECATED: Use resolve() instead - kept for backward compatibility
-export const resolveAsync = resolve;
+  const container = globalThis.__TKA_CONTAINER__;
+  if (!container) {
+    throw new Error("Container not initialized after ensureContainerInitialized()");
+  }
+
+  return container.get<T>(serviceIdentifier);
+}
+
+/**
+ * Try to resolve a service - returns null instead of throwing.
+ *
+ * Safe to use during HMR or when service might not be bound.
+ * No error logging - the caller expects this for optional dependencies.
+ */
+export function tryResolve<T>(serviceIdentifier: symbol): T | null {
+  if (!isBrowser) return null;
+
+  // Try HMR manager first if available
+  const hmrManager = globalThis.__TKA_HMR_MANAGER__;
+  if (hmrManager) {
+    return hmrManager.tryResolve<T>(serviceIdentifier);
+  }
+
+  // Fall back to direct container access
+  const container = globalThis.__TKA_CONTAINER__;
+  if (!container) return null;
+
+  try {
+    return container.get<T>(serviceIdentifier);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Resolve with HMR-safe fallback - returns null on failure.
+ * @deprecated Use tryResolve() instead
+ */
+export function resolveHMRSafe<T>(serviceIdentifier: symbol): T | null {
+  return tryResolve<T>(serviceIdentifier);
+}
+
+// ============================================================================
+// CONTAINER INITIALIZATION
+// ============================================================================
+
+let _initPromise: Promise<void> | null = null;
+
+/**
+ * Ensure the DI container is initialized.
+ * Safe to call multiple times - only initializes once.
+ */
+export async function ensureContainerInitialized(): Promise<void> {
+  if (globalThis.__TKA_CONTAINER_INITIALIZED__) return;
+
+  if (!_initPromise) {
+    _initPromise = import("./container").then(
+      async ({ ensureContainerInitialized: init }) => {
+        await init();
+      }
+    );
+  }
+
+  await _initPromise;
+}
+
+/**
+ * Check if container is ready for synchronous access.
+ */
+export function isContainerReady(): boolean {
+  return globalThis.__TKA_CONTAINER_INITIALIZED__ === true;
+}
+
+/**
+ * Check if HMR is currently in progress.
+ */
+export function isHMRInProgress(): boolean {
+  const hmrManager = globalThis.__TKA_HMR_MANAGER__;
+  return hmrManager ? hmrManager.isHMRInProgress() : false;
+}
 
 // ============================================================================
 // LAZY FEATURE MODULE LOADING (prevents static import of container.ts)
@@ -334,10 +250,15 @@ export const loadPixiModule = loadAnimationModule;
 /**
  * Get the container instance. Use sparingly - prefer resolve() for service access.
  * This is provided for cases where direct container access is absolutely necessary.
+ *
+ * IMPORTANT: This waits for container initialization to complete before returning.
+ * The container will have all Tier 1 (critical) modules loaded.
  */
 export async function getContainerInstance(): Promise<
   (typeof import("./container"))["container"]
 > {
+  // Wait for initialization to complete before returning the container
+  await ensureContainerInitialized();
   const { container } = await import("./container");
   return container;
 }
@@ -349,13 +270,34 @@ export const container = {
     return resolve<T>(serviceIdentifier);
   },
   // Proxy other methods through resolve for backward compatibility
-  isBound: (_serviceIdentifier: symbol): boolean => {
-    console.warn(
-      "container.isBound() called on lazy proxy - use tryResolve() instead"
-    );
-    return _cachedContainer !== null;
+  isBound: (serviceIdentifier: symbol): boolean => {
+    // Use tryResolve as the safest way to check binding
+    return tryResolve(serviceIdentifier) !== null;
   },
 };
 
 // Alias for convenience in components
 export const di = container;
+
+// ============================================================================
+// LEGACY EXPORTS (backward compatibility)
+// ============================================================================
+
+/**
+ * @deprecated Use resolve() instead
+ */
+export const resolveSyncUnsafe = resolve;
+
+/**
+ * @deprecated Use getContainerInstance() instead
+ */
+export const getContainer = getContainerInstance;
+
+/**
+ * Reset container state - primarily for testing
+ */
+export function resetContainer(): void {
+  // Reset is handled by HMRContainerManager
+  // This is kept for backward compatibility but is mostly a no-op
+  _initPromise = null;
+}

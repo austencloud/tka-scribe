@@ -16,7 +16,7 @@ export const ExportTypes = {
   IFirebaseVideoUploader: Symbol.for("IFirebaseVideoUploader"),
   IRecordingPersister: Symbol.for("IRecordingPersister"),
   ICollaborativeVideoManager: Symbol.for("ICollaborativeVideoManager"),
-  IVideoExportService: Symbol.for("IVideoExportService"),
+  IVideoExporter: Symbol.for("IVideoExporter"),
   IVideoExportOrchestrator: Symbol.for("IVideoExportOrchestrator"),
   ICompositeVideoRenderer: Symbol.for("ICompositeVideoRenderer"),
 

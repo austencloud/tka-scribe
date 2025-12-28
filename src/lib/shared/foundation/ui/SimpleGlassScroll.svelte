@@ -78,7 +78,7 @@
 
   /* Secondary Glass Scrollbar */
   .glass-scrollable.secondary::-webkit-scrollbar {
-    width: 10px;
+    width: 16px; /* WCAG AAA touch accessibility */
   }
 
   .glass-scrollable.secondary::-webkit-scrollbar-track {
@@ -105,7 +105,7 @@
 
   /* Minimal Glass Scrollbar */
   .glass-scrollable.minimal::-webkit-scrollbar {
-    width: 6px;
+    width: 16px; /* WCAG AAA touch accessibility */
   }
 
   .glass-scrollable.minimal::-webkit-scrollbar-track {
@@ -233,16 +233,16 @@
     scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
   }
 
-  /* Responsive */
+  /* Responsive - maintain touch-friendly sizes on mobile */
   @media (max-width: 768px) {
     .glass-scrollable.primary::-webkit-scrollbar,
     .glass-scrollable.secondary::-webkit-scrollbar,
     .glass-scrollable.gradient::-webkit-scrollbar {
-      width: 8px;
+      width: 16px; /* WCAG AAA touch accessibility */
     }
 
     .glass-scrollable.minimal::-webkit-scrollbar {
-      width: 4px;
+      width: 16px; /* WCAG AAA touch accessibility */
     }
   }
 </style>

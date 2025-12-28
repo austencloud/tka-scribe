@@ -57,6 +57,7 @@
     class="disclosure-button"
     onclick={toggleExpanded}
     aria-expanded={isExpanded}
+    aria-controls="danger-zone-content"
   >
     <i
       class="fas fa-chevron-right"
@@ -67,7 +68,7 @@
   </button>
 
   {#if isExpanded}
-    <div class="danger-content">
+    <div id="danger-zone-content" class="danger-content">
       <p class="warning-text">
         <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         Deleting your account is permanent and cannot be undone. All your progress

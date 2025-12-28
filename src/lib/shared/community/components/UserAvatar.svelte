@@ -90,7 +90,7 @@
       title={getRoleLabel(role)}
       style="background: {getRoleColor(role)}"
     >
-      <i class="fas {getRoleIcon(role)}"></i>
+      <i class="fas {getRoleIcon(role)}" aria-hidden="true"></i>
     </span>
   {/if}
 </div>
@@ -138,7 +138,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
     color: #000;
     border: 2px solid rgba(10, 10, 15, 0.9);
     z-index: 1;

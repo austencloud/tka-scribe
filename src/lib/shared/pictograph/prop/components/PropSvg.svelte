@@ -40,8 +40,8 @@ Now with smooth transitions when position or orientation changes!
     Orientation.CLOCK,
   ];
 
-  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
-  let displayedRotation = $state<number>(propPosition?.rotation ?? 0);
+  // Initialize with 0, $effect below handles initial and subsequent prop changes
+  let displayedRotation = $state<number>(0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
 

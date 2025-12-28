@@ -53,7 +53,7 @@
       onclick={() => handleFormatSelect(format.id)}
       onkeydown={(e) => handleKeydown(e, format.id)}
     >
-      <i class="fas {format.icon}"></i>
+      <i class="fas {format.icon}" aria-hidden="true"></i>
       <span>{format.label}</span>
     </button>
   {/each}

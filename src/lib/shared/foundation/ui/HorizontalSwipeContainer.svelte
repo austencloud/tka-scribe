@@ -43,8 +43,8 @@
   // Embla state
   let emblaApi: EmblaCarouselType;
   let emblaNode: HTMLElement;
-  // svelte-ignore state_referenced_locally - intentional: initial value only, emblaApi handles subsequent navigation
-  let currentIndex = $state(initialPanelIndex);
+  // Initialize to 0, emblaApi.scrollTo(initialPanelIndex) handles initial position
+  let currentIndex = $state(0);
   let canScrollPrev = $state(false);
   let canScrollNext = $state(false);
   let slides = $state<HTMLElement[]>([]);
@@ -77,7 +77,7 @@
   );
 
   // Arrow dimensions for content area calculation
-  const DEFAULT_ARROW_WIDTH = 44; // Matches CSS button size
+  const DEFAULT_ARROW_WIDTH = 48; // Matches CSS button size (WCAG AAA compliant)
   const ARROW_SPACING = 0; // Additional spacing buffer if needed
 
   let measuredArrowWidth = $state(DEFAULT_ARROW_WIDTH);
@@ -369,9 +369,9 @@
     border: none;
     padding: 0;
     margin: 0;
-    /* Secondary navigation - 44px is WCAG AA compliant, smaller to maximize content area */
-    width: 44px;
-    height: 44px;
+    /* Secondary navigation - 48px for WCAG AAA compliance */
+    width: 48px;
+    height: 48px;
     z-index: 1;
     border-radius: 50%;
     position: absolute;
@@ -430,11 +430,11 @@
     height: 40%;
   }
 
-  /* Mobile: same 44px - swiping is primary, arrows are secondary */
+  /* Mobile: same 48px for WCAG AAA compliance - swiping is primary, arrows are secondary */
   @media (max-width: 768px) {
     .embla__button {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
     }
   }
 

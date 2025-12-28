@@ -16,7 +16,7 @@
 <div class="sequence-badge">
   <span class="name">{name}</span>
   <button class="clear-btn" onclick={onClear} aria-label="Clear sequence">
-    <i class="fas fa-times"></i>
+    <i class="fas fa-times" aria-hidden="true"></i>
   </button>
 </div>
 
@@ -43,8 +43,8 @@
   }
 
   .clear-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -17,7 +17,7 @@ import type {
 } from "../../domain/types/keyboard-types";
 import { Shortcut } from "../../domain/models/Shortcut";
 import { NormalizedKeyboardEvent } from "../../domain/models/KeyboardEvent";
-import { TYPES } from "../../../inversify/bootstrap";
+import { TYPES } from "../../../inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const debug = createComponentLogger("KeyboardShortcutManager");

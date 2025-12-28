@@ -350,7 +350,7 @@
   <header class="viewer-header">
     <h1 class="viewer-title">{viewerTitle}</h1>
     <button class="close-button" onclick={handleClose} aria-label="Close">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </header>
 
@@ -363,7 +363,7 @@
       </div>
     {:else if viewerState.error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <p>{viewerState.error}</p>
         <button onclick={handleClose}>Go Back</button>
       </div>
@@ -378,7 +378,7 @@
           />
         {:else}
           <div class="thumbnail-placeholder">
-            <i class="fas fa-image"></i>
+            <i class="fas fa-image" aria-hidden="true"></i>
           </div>
         {/if}
 

@@ -3,6 +3,7 @@ import type {
   Dimensions,
   QualityLevel,
 } from "$lib/shared/background/shared/domain/types/background-types";
+import type { AccessibilitySettings } from "$lib/shared/background/shared/domain/models/background-models";
 import {
   FIREFLY_COUNTS,
   FIREFLY_PHYSICS,
@@ -129,24 +130,31 @@ export function createFireflySystem() {
   function update(
     fireflies: Firefly[],
     dimensions: Dimensions,
-    frameMultiplier: number = 1.0
+    frameMultiplier: number = 1.0,
+    a11y?: AccessibilitySettings
   ): Firefly[] {
     const zoneTop = dimensions.height * FIREFLY_PHYSICS.ZONE_TOP;
     const zoneBottom = dimensions.height * FIREFLY_PHYSICS.ZONE_BOTTOM;
+    const reducedMotion = a11y?.reducedMotion ?? false;
+
+    // For reduced motion: 95% reduction in movement, static glow (no blinking)
+    const effectiveMultiplier = reducedMotion
+      ? frameMultiplier * 0.05
+      : frameMultiplier;
 
     return fireflies.map((firefly) => {
       // Update wander angle with smooth random changes
       const angleChange =
         (Math.random() - 0.5) *
         FIREFLY_PHYSICS.WANDER_ANGLE_RANGE *
-        frameMultiplier;
+        effectiveMultiplier;
       let newWanderAngle = firefly.wanderAngle + angleChange;
 
       // Soft boundary correction - steer back toward center if near edges
       if (firefly.y < zoneTop + 50) {
-        newWanderAngle += 0.05 * frameMultiplier; // Steer down
+        newWanderAngle += 0.05 * effectiveMultiplier; // Steer down
       } else if (firefly.y > zoneBottom - 50) {
-        newWanderAngle -= 0.05 * frameMultiplier; // Steer up
+        newWanderAngle -= 0.05 * effectiveMultiplier; // Steer up
       }
 
       // Calculate new velocities from wander angle
@@ -154,27 +162,35 @@ export function createFireflySystem() {
       const newVy = Math.sin(newWanderAngle) * firefly.wanderSpeed;
 
       // Update position
-      let newX = firefly.x + newVx * frameMultiplier;
-      let newY = firefly.y + newVy * frameMultiplier;
+      let newX = firefly.x + newVx * effectiveMultiplier;
+      let newY = firefly.y + newVy * effectiveMultiplier;
 
-      // Update blink phase
-      let newBlinkPhase = firefly.blinkPhase + frameMultiplier;
-      if (newBlinkPhase >= firefly.blinkCycleLength) {
-        newBlinkPhase = 0;
-      }
-
-      // Calculate glow intensity based on blink phase
-      const blinkProgress = newBlinkPhase / firefly.blinkCycleLength;
+      let newBlinkPhase: number;
       let newGlowIntensity: number;
 
-      if (blinkProgress < FIREFLY_PHYSICS.BLINK_ON_DURATION) {
-        // Lit phase - smooth fade in/out
-        const litProgress = blinkProgress / FIREFLY_PHYSICS.BLINK_ON_DURATION;
-        // Use sine for smooth fade: 0 -> 1 -> 0
-        newGlowIntensity = Math.sin(litProgress * Math.PI);
+      if (reducedMotion) {
+        // Reduced motion: disable blinking, keep static glow
+        newBlinkPhase = 0;
+        newGlowIntensity = 0.7; // Constant gentle glow
       } else {
-        // Dark phase
-        newGlowIntensity = 0;
+        // Update blink phase
+        newBlinkPhase = firefly.blinkPhase + frameMultiplier;
+        if (newBlinkPhase >= firefly.blinkCycleLength) {
+          newBlinkPhase = 0;
+        }
+
+        // Calculate glow intensity based on blink phase
+        const blinkProgress = newBlinkPhase / firefly.blinkCycleLength;
+
+        if (blinkProgress < FIREFLY_PHYSICS.BLINK_ON_DURATION) {
+          // Lit phase - smooth fade in/out
+          const litProgress = blinkProgress / FIREFLY_PHYSICS.BLINK_ON_DURATION;
+          // Use sine for smooth fade: 0 -> 1 -> 0
+          newGlowIntensity = Math.sin(litProgress * Math.PI);
+        } else {
+          // Dark phase
+          newGlowIntensity = 0;
+        }
       }
 
       // Wrap horizontally

@@ -157,7 +157,7 @@
     }
 
     .section-title {
-      font-size: 11px;
+      font-size: 12px;
       margin-bottom: -2px;
     }
 
@@ -173,7 +173,7 @@
     }
 
     .section-title {
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .chips-grid {

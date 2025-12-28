@@ -65,7 +65,7 @@
       aria-label={showFigure ? "Hide figure" : "Show figure"}
       title={showFigure ? "Hide stick figure" : "Show stick figure"}
     >
-      <i class="fas fa-person"></i>
+      <i class="fas fa-person" aria-hidden="true"></i>
     </button>
 
     <!-- Settings button (only visible when figure is shown) -->
@@ -77,7 +77,7 @@
         aria-label="Customize avatar"
         title="Customize avatar"
       >
-        <i class="fas fa-sliders"></i>
+        <i class="fas fa-sliders" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -131,7 +131,7 @@
   }
 
   .settings-btn {
-    width: 36px;
+    width: 48px; /* WCAG AAA touch target */
     height: 48px;
     font-size: 0.85rem;
     border-radius: 8px;

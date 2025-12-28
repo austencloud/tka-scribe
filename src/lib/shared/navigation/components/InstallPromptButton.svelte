@@ -42,7 +42,7 @@
 
 <button class="install-button" onclick={handleInstallClick}>
   <span class="item-icon install-icon">
-    <i class="fas fa-plus-circle"></i>
+    <i class="fas fa-plus-circle" aria-hidden="true"></i>
   </span>
   <div class="item-info">
     <span class="item-label">

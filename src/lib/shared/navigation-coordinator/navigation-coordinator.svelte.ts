@@ -107,11 +107,6 @@ export function moduleSections() {
 
   // Create module section filtering
   if (module === "create") {
-    // Hide all tabs when creation method selector is visible
-    if (navigationState.isCreationMethodSelectorVisible) {
-      return [];
-    }
-
     // Filter sections based on user's feature access (role-based)
     const availableSections = baseSections.filter((section: { id: string }) => {
       return featureFlagService.canAccessTab("create", section.id);

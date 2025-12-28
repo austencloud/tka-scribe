@@ -35,11 +35,10 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   let baseGridSvg = $state<string>("");
 
   // Track cumulative rotation for beautiful animation (ephemeral UI state)
-  // Initialize based on starting gridMode: box mode starts at 45°, diamond at 0°
-  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
-  let cumulativeRotation = $state(gridMode === GridMode.BOX ? 45 : 0);
-  // svelte-ignore state_referenced_locally - intentional: tracking previous value for animation
-  let previousGridMode = $state(gridMode);
+  // Initialize to 0; $effect below sets correct initial value and handles changes
+  let cumulativeRotation = $state(0);
+  // Track previous gridMode for change detection (null = first render)
+  let previousGridMode: GridMode | null = null;
 
   // Get SVG preload service
   const SvgPreloader = resolve(
@@ -230,50 +229,58 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   // Increment cumulative rotation by 45° with smooth animation whenever gridMode changes
   // Use global rotation direction to determine clockwise (+45) or counterclockwise (-45)
   $effect(() => {
-    if (gridMode !== previousGridMode) {
-      const previousRotation = cumulativeRotation;
-      const direction = getGridRotationDirection();
-      const newRotation = cumulativeRotation + 45 * direction;
+    // First render - set initial rotation without animation
+    if (previousGridMode === null) {
+      cumulativeRotation = gridMode === GridMode.BOX ? 45 : 0;
+      previousGridMode = gridMode;
+      return;
+    }
 
-      // Animate rotation smoothly if element is available
-      if (gridContainerElement) {
-        // Capture element reference for use in animate callback
-        const element = gridContainerElement;
-        // Use requestAnimationFrame for smooth SVG transform animation
-        const startTime = performance.now();
-        const duration = 200; // ms - matches arrow/prop transition duration
+    // No change - do nothing
+    if (gridMode === previousGridMode) return;
 
-        const animate = (currentTime: number) => {
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          // Standard CSS "ease" timing function: cubic-bezier(0.25, 0.1, 0.25, 1.0)
-          // Matches the easing used by arrows and props
-          const eased = cubicBezier(progress, 0.25, 0.1, 0.25, 1.0);
+    const previousRotation = cumulativeRotation;
+    const direction = getGridRotationDirection();
+    const newRotation = cumulativeRotation + 45 * direction;
 
-          const currentRotation =
-            previousRotation + (newRotation - previousRotation) * eased;
+    // Animate rotation smoothly if element is available
+    if (gridContainerElement) {
+      // Capture element reference for use in animate callback
+      const element = gridContainerElement;
+      // Use requestAnimationFrame for smooth SVG transform animation
+      const startTime = performance.now();
+      const duration = 200; // ms - matches arrow/prop transition duration
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Standard CSS "ease" timing function: cubic-bezier(0.25, 0.1, 0.25, 1.0)
+        // Matches the easing used by arrows and props
+        const eased = cubicBezier(progress, 0.25, 0.1, 0.25, 1.0);
+
+        const currentRotation =
+          previousRotation + (newRotation - previousRotation) * eased;
+        element.setAttribute(
+          "transform",
+          `rotate(${currentRotation}, 475, 475)`
+        );
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Ensure final value is exact
           element.setAttribute(
             "transform",
-            `rotate(${currentRotation}, 475, 475)`
+            `rotate(${newRotation}, 475, 475)`
           );
+        }
+      };
 
-          if (progress < 1) {
-            requestAnimationFrame(animate);
-          } else {
-            // Ensure final value is exact
-            element.setAttribute(
-              "transform",
-              `rotate(${newRotation}, 475, 475)`
-            );
-          }
-        };
-
-        requestAnimationFrame(animate);
-      }
-
-      cumulativeRotation = newRotation;
-      previousGridMode = gridMode;
+      requestAnimationFrame(animate);
     }
+
+    cumulativeRotation = newRotation;
+    previousGridMode = gridMode;
   });
 </script>
 
@@ -386,5 +393,11 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   /* Click overlay for non-radial points */
   .non-radial-click-overlay {
     cursor: pointer;
+  }
+
+  /* Focus styles for accessibility */
+  .non-radial-click-overlay:focus-visible {
+    outline: 2px solid var(--primary-color, #6366f1);
+    outline-offset: 2px;
   }
 </style>

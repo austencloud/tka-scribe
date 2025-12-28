@@ -48,6 +48,7 @@ Uses 4x4 pictograph grid with all 16 variations
     class="section-header"
     onclick={toggleExpanded}
     aria-expanded={isExpanded}
+    aria-controls="position-section-content"
     aria-disabled={disabled}
     type="button"
     {disabled}
@@ -93,7 +94,7 @@ Uses 4x4 pictograph grid with all 16 variations
   </button>
 
   {#if isExpanded && !disabled}
-    <div class="section-content">
+    <div id="position-section-content" class="section-content">
       <PositionPickerGrid {currentPosition} {onPositionChange} {gridMode} />
     </div>
   {/if}

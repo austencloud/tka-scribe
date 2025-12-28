@@ -174,6 +174,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     class="section-header"
     onclick={toggleExpanded}
     aria-expanded={isExpanded}
+    aria-controls="letter-constraints-content"
   >
     <div class="header-content">
       <h3 class="section-title">Letter Constraints</h3>
@@ -199,7 +200,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
   </button>
 
   {#if isExpanded}
-    <div class="section-content">
+    <div id="letter-constraints-content" class="section-content">
       <!-- Tab switcher -->
       <div class="tab-switcher">
         <button

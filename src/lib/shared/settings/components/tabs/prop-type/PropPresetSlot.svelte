@@ -62,7 +62,7 @@
   <span class="slot-number">{index + 1}</span>
 
   {#if isEmpty}
-    <i class="fas fa-plus empty-icon"></i>
+    <i class="fas fa-plus empty-icon" aria-hidden="true"></i>
   {:else if isCatDog && blueInfo && redInfo}
     <div class="dual-props">
       <img src={blueInfo.image} alt={blueInfo.label} class="prop-icon" />
@@ -147,7 +147,7 @@
     padding: 0 3px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.4);
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.6);
     display: flex;

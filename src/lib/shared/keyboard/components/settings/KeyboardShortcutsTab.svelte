@@ -179,7 +179,7 @@
   <!-- Search -->
   <div class="search-section">
     <div class="search-wrapper">
-      <i class="fas fa-search search-icon"></i>
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
       <input
         type="text"
         class="search-input"
@@ -193,7 +193,7 @@
           onclick={clearSearch}
           aria-label="Clear search"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </div>
@@ -209,7 +209,7 @@
   <div class="shortcuts-list">
     {#if filteredShortcuts().length === 0}
       <div class="empty-state">
-        <i class="fas fa-keyboard"></i>
+        <i class="fas fa-keyboard" aria-hidden="true"></i>
         <p>No shortcuts found</p>
         {#if searchQuery}
           <span>Try a different search term</span>
@@ -329,8 +329,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     padding: 0;
     background: rgba(255, 255, 255, 0.1);
     border: none;

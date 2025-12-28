@@ -73,7 +73,7 @@
             >{tabs.find((t: (typeof tabs)[0]) => t.id === activeTab)?.label ||
               ""}</span
           >
-          <i class="fas fa-chevron-down dropdown-arrow"></i>
+          <i class="fas fa-chevron-down dropdown-arrow" aria-hidden="true"></i>
         </button>
         <!-- Dropdown menu will be implemented when needed -->
       </div>
@@ -228,7 +228,7 @@
     content: "\f054"; /* FontAwesome chevron-right */
     font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
     font-weight: 900;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
     opacity: 0;
     transform: translateX(-4px);
@@ -329,7 +329,7 @@
     }
 
     .sidebar-label {
-      font-size: 11px; /* Compact but readable */
+      font-size: 12px; /* Compact but readable */
     }
   }
 
@@ -351,7 +351,7 @@
     }
 
     .sidebar-label {
-      font-size: 10px; /* Minimum readable size */
+      font-size: 12px; /* Minimum readable size */
     }
   }
 
@@ -376,7 +376,7 @@
     }
 
     .sidebar-label {
-      font-size: 10px;
+      font-size: 12px;
     }
   }
 

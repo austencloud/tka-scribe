@@ -30,7 +30,7 @@
       onclick={() => (value = filter.value)}
     >
       {#if filter.icon}
-        <i class="fas {filter.icon}"></i>
+        <i class="fas {filter.icon}" aria-hidden="true"></i>
       {/if}
       {filter.label}
     </button>
@@ -71,6 +71,6 @@
   }
 
   .filter-btn i {
-    font-size: 11px;
+    font-size: 12px;
   }
 </style>

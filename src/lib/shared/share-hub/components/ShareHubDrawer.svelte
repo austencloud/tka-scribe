@@ -13,6 +13,7 @@
   import ShareHubPanel from './ShareHubPanel.svelte';
   import type { ExportSettings } from '../domain/models/ExportSettings';
   import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+  import { tryGetCreateModuleContext } from '$lib/features/create/shared/context/create-module-context';
 
   let {
     isOpen = $bindable(false),
@@ -32,6 +33,14 @@
     onExport?: (mode: 'single' | 'composite', settings?: ExportSettings) => Promise<void>;
   } = $props();
 
+  // Try to get Create module context for measured tool panel width
+  const createModuleContext = tryGetCreateModuleContext();
+
+  // Get measured tool panel width (if available from Create module)
+  const toolPanelWidth = $derived.by(() =>
+    createModuleContext ? createModuleContext.panelState.toolPanelWidth : 0
+  );
+
   // Detect viewport width for placement (simple media query approach)
   let isDesktop = $state(false);
 
@@ -47,30 +56,62 @@
 
   const placement = $derived(isDesktop ? 'right' : 'bottom');
 
+  // Dynamic inline style to set measured width CSS variable
+  // If measured width is available, use it; otherwise CSS will use fallback clamp value
+  const drawerStyle = $derived.by(() => {
+    if (toolPanelWidth > 0) {
+      return `--measured-panel-width: ${toolPanelWidth}px`;
+    }
+    return null; // Use null instead of empty string so {#if} block doesn't render
+  });
+
   function handleClose() {
     isOpen = false;
     onClose?.();
   }
 </script>
 
-<Drawer
-  bind:isOpen
-  ariaLabel="Share Hub - Choose export format"
-  onclose={handleClose}
-  closeOnBackdrop={false}
-  showHandle={!isDesktop}
-  dismissible={true}
-  respectLayoutMode={true}
-  placement={placement}
-  class="share-hub-drawer"
-  backdropClass="share-hub-backdrop"
-  trapFocus={false}
-  preventScroll={true}
->
-  <div class="share-hub-content">
-    <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
+{#if drawerStyle !== null}
+  <div style={drawerStyle}>
+    <Drawer
+      bind:isOpen
+      ariaLabel="Share Hub - Choose export format"
+      onclose={handleClose}
+      closeOnBackdrop={false}
+      showHandle={!isDesktop}
+      dismissible={true}
+      respectLayoutMode={true}
+      placement={placement}
+      class="share-hub-drawer"
+      backdropClass="share-hub-backdrop"
+      trapFocus={false}
+      preventScroll={true}
+    >
+      <div class="share-hub-content">
+        <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
+      </div>
+    </Drawer>
   </div>
-</Drawer>
+{:else}
+  <Drawer
+    bind:isOpen
+    ariaLabel="Share Hub - Choose export format"
+    onclose={handleClose}
+    closeOnBackdrop={false}
+    showHandle={!isDesktop}
+    dismissible={true}
+    respectLayoutMode={true}
+    placement={placement}
+    class="share-hub-drawer"
+    backdropClass="share-hub-backdrop"
+    trapFocus={false}
+    preventScroll={true}
+  >
+    <div class="share-hub-content">
+      <ShareHubPanel {sequence} {isSequenceSaved} {isMobile} {onExport} />
+    </div>
+  </Drawer>
+{/if}
 
 <style>
   /* Drawer container styling - NO BLUR to keep content behind visible */
@@ -92,13 +133,11 @@
 
   /* Desktop (right placement) - match Create module panel width */
   :global(.drawer-content.share-hub-drawer[data-placement="right"]) {
-    /* Match CreatePanelDrawer width: clamp(360px, 44.44vw, 900px) */
-    width: clamp(360px, 44.44vw, 900px);
+    /* Use measured tool panel width when available (from Create module context) */
+    width: var(--measured-panel-width, clamp(360px, 50vw, 1600px));
     max-width: 100vw;
     height: 100dvh;
-    /* Align with Create module positioning */
-    top: var(--create-panel-top, 64px);
-    bottom: var(--create-panel-bottom, 0);
+    /* Full viewport height - ShareHub is an overlay, not a Create module tool panel */
   }
 
   /* Mobile (bottom placement) */

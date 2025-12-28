@@ -77,7 +77,6 @@
 
     const feedbackId = attachment.metadata?.feedbackId;
     if (!feedbackId) {
-      console.log("[FeedbackMessageCard] No feedbackId in metadata");
       return;
     }
 
@@ -104,7 +103,7 @@
     <!-- Deleted state -->
     <div class="card-header">
       <div class="deleted-badge">
-        <i class="fas fa-trash-alt"></i>
+        <i class="fas fa-trash-alt" aria-hidden="true"></i>
         <span>Deleted</span>
       </div>
     </div>
@@ -122,11 +121,11 @@
     >
       <div class="card-header">
         <div class="type-badge" style:--badge-color={typeConfig.color}>
-          <i class="fas {typeConfig.icon}"></i>
+          <i class="fas {typeConfig.icon}" aria-hidden="true"></i>
           <span>{typeConfig.label}</span>
         </div>
         <div class="status-badge" style:--status-color={statusConfig.color}>
-          <i class="fas {statusConfig.icon}"></i>
+          <i class="fas {statusConfig.icon}" aria-hidden="true"></i>
           <span>{statusConfig.label}</span>
         </div>
       </div>
@@ -147,12 +146,12 @@
       <div class="card-footer">
         {#if isChecking}
           <span class="checking-hint">
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             Checking...
           </span>
         {:else}
           <span class="tap-hint">
-            <i class="fas fa-external-link-alt"></i>
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             Tap to view
           </span>
         {/if}

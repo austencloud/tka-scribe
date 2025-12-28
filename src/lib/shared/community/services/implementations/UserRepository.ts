@@ -18,6 +18,7 @@ import {
   onSnapshot,
   runTransaction,
   serverTimestamp,
+  documentId,
 } from "firebase/firestore";
 import type { Timestamp, DocumentData } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
@@ -142,10 +143,12 @@ export class UserRepository implements IUserRepository {
         const data = docSnap.data() as FirestoreUserData;
         const isFollowing =
           currentUserId !== docSnap.id && followingSet.has(docSnap.id);
+        // Skip achievements fetch in list views to avoid N+1 queries
         const user = await this.mapFirestoreToEnhancedProfile(
           docSnap.id,
           data,
-          isFollowing
+          isFollowing,
+          true // skipAchievements
         );
         if (user) {
           users.push(user);
@@ -181,6 +184,9 @@ export class UserRepository implements IUserRepository {
     options?: CreatorQueryOptions,
     currentUserId?: string
   ): () => void {
+    // Store unsubscribe function for cleanup
+    let unsubscribe: (() => void) | null = null;
+
     // Use async IIFE to get firestore instance
     void (async () => {
       const firestore = await getFirestoreInstance();
@@ -188,7 +194,7 @@ export class UserRepository implements IUserRepository {
       const limitValue = options?.limit ?? 100;
       const q = query(usersRef, firestoreLimit(limitValue));
 
-      const unsubscribe = onSnapshot(
+      unsubscribe = onSnapshot(
         q,
         (querySnapshot) => {
           // Process async operations without blocking
@@ -205,10 +211,12 @@ export class UserRepository implements IUserRepository {
               const data = docSnap.data() as FirestoreUserData;
               const isFollowing =
                 currentUserId !== docSnap.id && followingSet.has(docSnap.id);
+              // Skip achievements fetch in list views to avoid N+1 queries
               const user = await this.mapFirestoreToEnhancedProfile(
                 docSnap.id,
                 data,
-                isFollowing
+                isFollowing,
+                true // skipAchievements
               );
               if (user) {
                 users.push(user);
@@ -226,11 +234,14 @@ export class UserRepository implements IUserRepository {
           console.error("[UserRepository] Real-time subscription error:", error);
         }
       );
-
-      return unsubscribe;
     })();
 
-    return () => {};
+    // Return cleanup function that calls unsubscribe when available
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }
 
   /**
@@ -438,6 +449,7 @@ export class UserRepository implements IUserRepository {
 
   /**
    * Get list of users that a user is following
+   * Uses batch query to avoid N+1 pattern
    */
   async getFollowing(userId: string, limit = 50): Promise<UserProfile[]> {
     try {
@@ -449,15 +461,15 @@ export class UserRepository implements IUserRepository {
       const q = query(followingRef, firestoreLimit(limit));
       const querySnapshot = await getDocs(q);
 
-      const users: UserProfile[] = [];
-      for (const docSnap of querySnapshot.docs) {
-        const userProfile = await this.getUserProfile(docSnap.id);
-        if (userProfile) {
-          users.push(userProfile);
-        }
+      if (querySnapshot.empty) {
+        return [];
       }
 
-      return users;
+      // Get all user IDs first
+      const userIds = querySnapshot.docs.map((docSnap) => docSnap.id);
+
+      // Batch fetch users (Firestore 'in' query supports up to 30 items)
+      return this.batchFetchUserProfiles(firestore, userIds);
     } catch (error) {
       console.error(`[UserRepository] Error getting following list:`, error);
       return [];
@@ -466,6 +478,7 @@ export class UserRepository implements IUserRepository {
 
   /**
    * Get list of users following a user
+   * Uses batch query to avoid N+1 pattern
    */
   async getFollowers(userId: string, limit = 50): Promise<UserProfile[]> {
     try {
@@ -477,19 +490,55 @@ export class UserRepository implements IUserRepository {
       const q = query(followersRef, firestoreLimit(limit));
       const querySnapshot = await getDocs(q);
 
-      const users: UserProfile[] = [];
-      for (const docSnap of querySnapshot.docs) {
-        const userProfile = await this.getUserProfile(docSnap.id);
-        if (userProfile) {
-          users.push(userProfile);
-        }
+      if (querySnapshot.empty) {
+        return [];
       }
 
-      return users;
+      // Get all user IDs first
+      const userIds = querySnapshot.docs.map((docSnap) => docSnap.id);
+
+      // Batch fetch users (Firestore 'in' query supports up to 30 items)
+      return this.batchFetchUserProfiles(firestore, userIds);
     } catch (error) {
       console.error(`[UserRepository] Error getting followers list:`, error);
       return [];
     }
+  }
+
+  /**
+   * Batch fetch user profiles by IDs using 'in' query
+   * Chunks into batches of 30 (Firestore limit for 'in' queries)
+   */
+  private async batchFetchUserProfiles(
+    firestore: Awaited<ReturnType<typeof getFirestoreInstance>>,
+    userIds: string[]
+  ): Promise<UserProfile[]> {
+    const users: UserProfile[] = [];
+    const BATCH_SIZE = 30; // Firestore 'in' query limit
+
+    // Process in chunks of 30
+    for (let i = 0; i < userIds.length; i += BATCH_SIZE) {
+      const chunk = userIds.slice(i, i + BATCH_SIZE);
+      const usersRef = collection(firestore, this.USERS_COLLECTION);
+      const batchQuery = query(usersRef, where(documentId(), "in", chunk));
+      const batchSnapshot = await getDocs(batchQuery);
+
+      for (const docSnap of batchSnapshot.docs) {
+        const data = docSnap.data() as FirestoreUserData;
+        // Skip achievements for batch fetches to keep it fast
+        const user = await this.mapFirestoreToEnhancedProfile(
+          docSnap.id,
+          data,
+          false, // isFollowing - not relevant for these lists
+          true // skipAchievements
+        );
+        if (user) {
+          users.push(user);
+        }
+      }
+    }
+
+    return users;
   }
 
   /**
@@ -506,6 +555,9 @@ export class UserRepository implements IUserRepository {
       return () => {};
     }
 
+    // Store unsubscribe function for cleanup
+    let unsubscribe: (() => void) | null = null;
+
     // Use async IIFE to get firestore instance
     void (async () => {
       const firestore = await getFirestoreInstance();
@@ -514,7 +566,7 @@ export class UserRepository implements IUserRepository {
         `${this.USERS_COLLECTION}/${currentUserId}/following/${targetUserId}`
       );
 
-      const unsubscribe = onSnapshot(
+      unsubscribe = onSnapshot(
         followingRef,
         (docSnap) => {
           callback(docSnap.exists());
@@ -527,11 +579,14 @@ export class UserRepository implements IUserRepository {
           callback(false);
         }
       );
-
-      return unsubscribe;
     })();
 
-    return () => {};
+    // Return cleanup function that calls unsubscribe when available
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }
 
   // ============================================================================
@@ -540,6 +595,7 @@ export class UserRepository implements IUserRepository {
 
   /**
    * Get set of user IDs that a user is following (for batch checks)
+   * Limited to 500 to prevent excessive reads
    */
   private async getFollowingIds(userId: string): Promise<Set<string>> {
     try {
@@ -548,8 +604,10 @@ export class UserRepository implements IUserRepository {
         firestore,
         `${this.USERS_COLLECTION}/${userId}/following`
       );
-      const querySnapshot = await getDocs(followingRef);
-      return new Set(querySnapshot.docs.map((doc) => doc.id));
+      // Limit to 500 to prevent excessive reads for users following many people
+      const q = query(followingRef, firestoreLimit(500));
+      const querySnapshot = await getDocs(q);
+      return new Set(querySnapshot.docs.map((docSnap) => docSnap.id));
     } catch (error) {
       console.error(`[UserRepository] Error getting following IDs:`, error);
       return new Set();
@@ -558,11 +616,13 @@ export class UserRepository implements IUserRepository {
 
   /**
    * Map Firestore document data to EnhancedUserProfile
+   * @param skipAchievements - If true, skips fetching achievements (for list views to avoid N+1)
    */
   private async mapFirestoreToEnhancedProfile(
     userId: string,
     data: FirestoreUserData,
-    isFollowing = false
+    isFollowing = false,
+    skipAchievements = false
   ): Promise<EnhancedUserProfile | null> {
     try {
       // Base profile data
@@ -593,8 +653,10 @@ export class UserRepository implements IUserRepository {
       const role = data.role ?? "user";
       const isDisabled = data.isDisabled ?? false;
 
-      // Fetch user's actual achievements from subcollection
-      const topAchievements = await this.fetchUserTopAchievements(userId);
+      // Only fetch achievements for single profile views (avoid N+1 in list views)
+      const topAchievements = skipAchievements
+        ? []
+        : await this.fetchUserTopAchievements(userId);
 
       return {
         id: userId,

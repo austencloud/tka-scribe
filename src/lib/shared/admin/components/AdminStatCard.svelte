@@ -29,7 +29,7 @@
 
 <div class="admin-stat-card {className}" style="--accent-color: {color}">
   <div class="stat-icon">
-    <i class="fas {icon}"></i>
+    <i class="fas {icon}" aria-hidden="true"></i>
   </div>
 
   <div class="stat-content">
@@ -38,7 +38,7 @@
 
     {#if change !== undefined && changeLabel}
       <span class="stat-change trend-{trend || 'neutral'}">
-        <i class="fas fa-arrow-{change >= 0 ? 'up' : 'down'}"></i>
+        <i class="fas fa-arrow-{change >= 0 ? 'up' : 'down'}" aria-hidden="true"></i>
         {Math.abs(change)}% {changeLabel}
       </span>
     {/if}

@@ -225,7 +225,7 @@
   }
 
   .mode-elemental {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;

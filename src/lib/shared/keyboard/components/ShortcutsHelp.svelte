@@ -180,6 +180,7 @@
     }}
     role="button"
     tabindex="0"
+    aria-label="Close keyboard shortcuts help"
   >
     <div
       class="shortcuts-help"
@@ -203,7 +204,7 @@
           aria-label="Close"
           type="button"
         >
-          <i class="fa fa-times"></i>
+          <i class="fa fa-times" aria-hidden="true"></i>
         </button>
       </div>
 

@@ -17,7 +17,6 @@ import { KeyboardArrowAdjuster } from "../../../features/create/shared/services/
 import { CreateModuleInitializer } from "../../../features/create/shared/services/implementations/CreateModuleInitializer";
 import { NavigationSyncer } from "../../../features/create/shared/services/implementations/NavigationSyncer";
 import { ResponsiveLayoutManager } from "../../../features/create/shared/services/implementations/ResponsiveLayoutManager";
-import { CreationMethodPersister } from "../../../features/create/shared/services/implementations/CreationMethodPersister";
 import { CreateModuleEffectCoordinator } from "../../../features/create/shared/services/implementations/CreateModuleEffectCoordinator";
 import { DeepLinkSequenceHandler } from "../../../features/create/shared/services/implementations/DeepLinkSequenceHandler";
 
@@ -88,9 +87,6 @@ export const createModule = new ContainerModule(
     options
       .bind(TYPES.ICreateModuleEffectCoordinator)
       .to(CreateModuleEffectCoordinator);
-    options
-      .bind(TYPES.ICreationMethodPersister)
-      .to(CreationMethodPersister);
     options.bind(TYPES.IDeepLinkSequenceHandler).to(DeepLinkSequenceHandler);
     options
       .bind(TYPES.IResponsiveLayoutManager)

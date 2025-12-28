@@ -28,7 +28,7 @@
   onclick={onclick}
   aria-label={label}
 >
-  <i class={icon}></i>
+  <i class={icon} aria-hidden="true"></i>
 </button>
 
 <style>

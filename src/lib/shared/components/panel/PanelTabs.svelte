@@ -33,10 +33,13 @@
     {#each tabs as tab (tab.value)}
       <button
         type="button"
+        id="panel-tab-{tab.value}"
         class="panel-tab"
         class:panel-tab--active={activeTab === tab.value}
         role="tab"
         aria-selected={activeTab === tab.value}
+        aria-controls="panel-{tab.value}"
+        tabindex={activeTab === tab.value ? 0 : -1}
         onclick={() => onchange(tab.value)}
       >
         {#if tab.icon}

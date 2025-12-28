@@ -31,7 +31,7 @@
       onclick={() => onChange(option.id)}
     >
       {#if option.icon}
-        <i class="fas {option.icon}"></i>
+        <i class="fas {option.icon}" aria-hidden="true"></i>
       {/if}
       <span>{option.label}</span>
       {#if option.count !== undefined}
@@ -117,7 +117,7 @@
   }
 
   .count {
-    font-size: 11px;
+    font-size: 12px;
     opacity: 0.7;
     display: none;
   }

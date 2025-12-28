@@ -30,7 +30,7 @@ import {
   type User,
 } from "firebase/auth";
 import { TYPES } from "../../inversify/types";
-import { tryResolve } from "../../inversify/di";
+import { tryResolve } from "../../inversify/resolve-utils";
 
 // Service imports
 import type { IProfilePictureManager } from "../services/contracts/IProfilePictureManager";
@@ -162,8 +162,6 @@ async function initializeSubscriptionListener(user: User) {
         // Skip initial snapshot (only react to changes)
         if (snapshot.metadata.hasPendingWrites) return;
 
-        console.log("🔄 [authState] Subscription changed, refreshing token...");
-
         try {
           // Force token refresh to get updated custom claims from server
           const idTokenResult = await user.getIdTokenResult(true);
@@ -172,10 +170,6 @@ async function initializeSubscriptionListener(user: User) {
 
           // Only update if role actually changed
           if (newRole !== _state.role || newIsAdmin !== _state.isAdmin) {
-            console.log(
-              `✅ [authState] Role synced: ${_state.role} → ${newRole}`
-            );
-
             _state = {
               ..._state,
               role: newRole,

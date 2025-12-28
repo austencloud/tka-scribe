@@ -69,7 +69,7 @@
   <div class="setting-group">
     <div class="setting-header">
       <span class="setting-label">
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
         Video Source
       </span>
     </div>
@@ -79,7 +79,7 @@
         class:active={hubState.performanceSettings.mode === 'record'}
         onclick={handleModeToggle}
       >
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
         <div>
           <span class="mode-title">Record Live</span>
           <span class="mode-description">Capture performance with your camera</span>
@@ -90,7 +90,7 @@
         class:active={hubState.performanceSettings.mode === 'upload'}
         onclick={handleModeToggle}
       >
-        <i class="fas fa-cloud-upload-alt"></i>
+        <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
         <div>
           <span class="mode-title">Upload Video</span>
           <span class="mode-description">Use a pre-recorded video file</span>
@@ -104,23 +104,23 @@
     <div class="setting-group">
       <div class="setting-header">
         <label for="camera-select">
-          <i class="fas fa-camera"></i>
+          <i class="fas fa-camera" aria-hidden="true"></i>
           Camera Selection
         </label>
       </div>
 
       {#if !cameraPermissionGranted}
         <div class="permission-prompt">
-          <i class="fas fa-exclamation-circle"></i>
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <p>Camera access required to record performance video</p>
           <button class="permission-button" onclick={requestCameraPermission}>
-            <i class="fas fa-video"></i>
+            <i class="fas fa-video" aria-hidden="true"></i>
             Grant Camera Access
           </button>
         </div>
       {:else if availableCameras.length === 0}
         <div class="no-cameras-message">
-          <i class="fas fa-video-slash"></i>
+          <i class="fas fa-video-slash" aria-hidden="true"></i>
           <p>No cameras detected</p>
         </div>
       {:else}
@@ -145,7 +145,7 @@
     <div class="setting-group">
       <div class="setting-header">
         <label for="file-upload">
-          <i class="fas fa-file-video"></i>
+          <i class="fas fa-file-video" aria-hidden="true"></i>
           Upload Video File
         </label>
       </div>
@@ -156,11 +156,11 @@
           type="file"
           accept="video/*"
           onchange={handleFileUpload}
-          style="display: none;"
+          class="sr-only"
         />
         {#if hubState.performanceSettings.uploadedFile}
           <div class="uploaded-file-info">
-            <i class="fas fa-check-circle"></i>
+            <i class="fas fa-check-circle" aria-hidden="true"></i>
             <div>
               <p class="file-name">{hubState.performanceSettings.uploadedFile.name}</p>
               <p class="file-size">
@@ -169,7 +169,7 @@
             </div>
           </div>
         {:else}
-          <i class="fas fa-cloud-upload-alt"></i>
+          <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
           <p>Click to upload video</p>
           <span class="upload-hint">MP4, WebM, or MOV files accepted</span>
         {/if}
@@ -433,5 +433,17 @@
     .permission-button:hover {
       transform: none;
     }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

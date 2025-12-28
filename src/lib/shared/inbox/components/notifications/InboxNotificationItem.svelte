@@ -188,7 +188,7 @@
 >
   <!-- Icon -->
   <div class="icon" style="--icon-color: {getColor(notification.type)}">
-    <i class="fas {getIcon(notification.type)}"></i>
+    <i class="fas {getIcon(notification.type)}" aria-hidden="true"></i>
   </div>
 
   <!-- Content -->

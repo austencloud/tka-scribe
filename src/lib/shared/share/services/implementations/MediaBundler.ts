@@ -15,7 +15,7 @@ import {
   INSTAGRAM_MEDIA_CONSTRAINTS,
   validateMediaItem,
 } from "../../domain/models/InstagramMedia";
-import { TYPES } from "../../../inversify/bootstrap";
+import { TYPES } from "../../../inversify/types";
 
 @injectable()
 export class MediaBundler implements IMediaBundler {

@@ -251,7 +251,7 @@
   <section class="preview-section">
     {#if !currentSequence || currentSequence.beats?.length === 0}
       <div class="preview-empty">
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
         <span>Add beats to preview</span>
       </div>
     {:else if shareState?.isGeneratingPreview}
@@ -261,7 +261,7 @@
       </div>
     {:else if shareState?.previewError}
       <div class="preview-error">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <span>Preview failed</span>
         <button onclick={handleRetryPreview}>Retry</button>
       </div>
@@ -273,7 +273,7 @@
         title="Regenerate"
         aria-label="Regenerate preview"
       >
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
     {/if}
   </section>
@@ -288,7 +288,7 @@
           onclick={() => handleToggle(opt.key)}
           disabled={!canShare()}
         >
-          <i class="fas {opt.icon}"></i>
+          <i class="fas {opt.icon}" aria-hidden="true"></i>
           <span>{opt.label}</span>
         </button>
       {/each}
@@ -306,7 +306,7 @@
         {#if shareState?.isDownloading}
           <span class="btn-spinner"></span>
         {:else}
-          <i class="fas fa-download"></i>
+          <i class="fas fa-download" aria-hidden="true"></i>
         {/if}
         <span class="btn-label">Download</span>
         <span class="btn-hint">Save to device</span>
@@ -317,7 +317,7 @@
         disabled={!canShare()}
         onclick={handleShareViaDevice}
       >
-        <i class="fas fa-share-nodes"></i>
+        <i class="fas fa-share-nodes" aria-hidden="true"></i>
         <span class="btn-label">Share</span>
         <span class="btn-hint">Send to others</span>
       </button>
@@ -329,7 +329,7 @@
         disabled={!canShare() || isCopyingLink}
         onclick={handleCopyLink}
       >
-        <i class="fas {isCopyingLink ? 'fa-check' : 'fa-link'}"></i>
+        <i class="fas {isCopyingLink ? 'fa-check' : 'fa-link'}" aria-hidden="true"></i>
         <span class="btn-label">{isCopyingLink ? "Copied!" : "Copy Link"}</span>
         <span class="btn-hint">Share via URL</span>
       </button>
@@ -339,7 +339,7 @@
         disabled={!canShare()}
         onclick={handleInstagramPost}
       >
-        <i class="fab fa-instagram"></i>
+        <i class="fab fa-instagram" aria-hidden="true"></i>
         <span class="btn-label">Instagram</span>
         <span class="btn-hint">Post to story</span>
       </button>

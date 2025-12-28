@@ -60,12 +60,6 @@
       TYPES.ICollaborativeVideoManager
     );
     hapticService = tryResolve<IHapticFeedback>(TYPES.IHapticFeedback);
-
-    console.log("[VideoUploadSheet] Services resolved:", {
-      uploadService: !!uploadService,
-      videoService: !!videoService,
-      hapticService: !!hapticService,
-    });
   });
 
   // State
@@ -129,12 +123,6 @@
     extractVideoThumbnail(file)
       .then((result) => {
         thumbnail = result;
-        console.log(
-          "[VideoUploadSheet] Thumbnail extracted:",
-          result.width,
-          "x",
-          result.height
-        );
       })
       .catch((e) => {
         console.warn("Could not extract thumbnail:", e);
@@ -201,7 +189,6 @@
           );
           thumbnailUrl = thumbnailResult.url;
           uploadProgress = 100;
-          console.log("[VideoUploadSheet] Thumbnail uploaded:", thumbnailUrl);
         } catch (e) {
           console.warn("Thumbnail upload failed, continuing without:", e);
         }
@@ -285,12 +272,12 @@
     <!-- Header -->
     <header class="upload-sheet__header">
       <div class="header-content">
-        <i class="fas fa-video header-icon"></i>
+        <i class="fas fa-video header-icon" aria-hidden="true"></i>
         <h2 id="video-upload-title">Upload Video</h2>
       </div>
       {#if !isUploading}
         <button class="close-button" onclick={handleClose} aria-label="Close">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </header>
@@ -314,7 +301,7 @@
 
       {#if !selectedFile}
         <button class="file-drop-zone" onclick={handleBrowseClick}>
-          <i class="fas fa-cloud-upload-alt"></i>
+          <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
           <span class="drop-text">Select Video</span>
           <span class="drop-hint">MP4, WebM, MOV up to 100MB</span>
         </button>
@@ -337,7 +324,7 @@
           </div>
           {#if !isUploading}
             <button class="change-btn" onclick={handleBrowseClick}>
-              <i class="fas fa-exchange-alt"></i>
+              <i class="fas fa-exchange-alt" aria-hidden="true"></i>
               Change
             </button>
           {/if}
@@ -360,7 +347,7 @@
                 class:active={visibility === "public"}
                 onclick={() => (visibility = "public")}
               >
-                <i class="fas fa-globe"></i>
+                <i class="fas fa-globe" aria-hidden="true"></i>
                 Public
               </button>
               <button
@@ -368,7 +355,7 @@
                 class:active={visibility === "collaborators-only"}
                 onclick={() => (visibility = "collaborators-only")}
               >
-                <i class="fas fa-user-friends"></i>
+                <i class="fas fa-user-friends" aria-hidden="true"></i>
                 Collaborators
               </button>
               <button
@@ -376,7 +363,7 @@
                 class:active={visibility === "private"}
                 onclick={() => (visibility = "private")}
               >
-                <i class="fas fa-lock"></i>
+                <i class="fas fa-lock" aria-hidden="true"></i>
                 Private
               </button>
             </div>
@@ -412,7 +399,7 @@
       <!-- Error -->
       {#if uploadError}
         <div class="error-banner">
-          <i class="fas fa-exclamation-circle"></i>
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <span>{uploadError}</span>
         </div>
       {/if}
@@ -431,10 +418,10 @@
         disabled={!canUpload}
       >
         {#if isUploading}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           Uploading...
         {:else}
-          <i class="fas fa-upload"></i>
+          <i class="fas fa-upload" aria-hidden="true"></i>
           Upload Video
         {/if}
       </button>

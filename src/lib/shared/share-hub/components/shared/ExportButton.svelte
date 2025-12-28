@@ -40,10 +40,10 @@
   aria-busy={loading}
 >
   {#if loading}
-    <i class="fas fa-spinner fa-spin"></i>
+    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
     <span>Exporting...</span>
   {:else}
-    <i class="fas fa-download"></i>
+    <i class="fas fa-download" aria-hidden="true"></i>
     <span>{label}</span>
   {/if}
 

@@ -30,7 +30,7 @@
 
 {#if isVisible}
   <div class="toast" role="status" aria-live="polite">
-    <i class="fas fa-check-circle"></i>
+    <i class="fas fa-check-circle" aria-hidden="true"></i>
     <span>{message}</span>
   </div>
 {/if}
@@ -57,7 +57,7 @@
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     font-size: 15px; /* iOS footnote size */
     font-weight: 600; /* iOS semibold */
-    line-height: 20px; /* iOS line-height: 1.33333 ratio */
+    line-height: 1.5; /* WCAG AAA compliant */
     letter-spacing: -0.24px; /* iOS footnote tracking - exact spec */
     box-shadow:
       0 8px 20px rgba(0, 0, 0, 0.2),

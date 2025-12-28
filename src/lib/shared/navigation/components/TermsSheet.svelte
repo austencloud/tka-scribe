@@ -47,7 +47,7 @@
         onclick={handleClose}
         aria-label="Close terms"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 

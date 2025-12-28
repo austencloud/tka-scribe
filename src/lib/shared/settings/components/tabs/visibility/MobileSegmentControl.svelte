@@ -21,7 +21,7 @@
     class:active={currentMode === "pictograph"}
     onclick={() => onModeChange("pictograph")}
   >
-    <i class="fas fa-image"></i>
+    <i class="fas fa-image" aria-hidden="true"></i>
     <span>Pictograph</span>
   </button>
   <button
@@ -29,7 +29,7 @@
     class:active={currentMode === "animation"}
     onclick={() => onModeChange("animation")}
   >
-    <i class="fas fa-film"></i>
+    <i class="fas fa-film" aria-hidden="true"></i>
     <span>Animation</span>
   </button>
   <button
@@ -37,7 +37,7 @@
     class:active={currentMode === "image"}
     onclick={() => onModeChange("image")}
   >
-    <i class="fas fa-download"></i>
+    <i class="fas fa-download" aria-hidden="true"></i>
     <span>Image</span>
   </button>
 </div>

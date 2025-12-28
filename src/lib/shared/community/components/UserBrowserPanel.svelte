@@ -199,7 +199,7 @@
         {@render headerContent()}
       {:else}
         <h2 class="panel-title">
-          <i class="fas {icon}"></i>
+          <i class="fas {icon}" aria-hidden="true"></i>
           {title}
         </h2>
       {/if}

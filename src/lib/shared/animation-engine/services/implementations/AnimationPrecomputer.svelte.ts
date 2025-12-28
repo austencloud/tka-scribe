@@ -229,6 +229,11 @@ export class AnimationPrecomputer implements IAnimationPrecomputer {
     this.state.preRenderedFramesReady = false;
   }
 
+  clearPreRenderedFrames(): void {
+    this.framePreRenderer?.clear();
+    this.state.preRenderedFramesReady = false;
+  }
+
   dispose(): void {
     this.clearCaches();
     this.orchestrator = null;

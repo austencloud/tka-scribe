@@ -70,7 +70,7 @@
 >
   <div class="banner-content">
     <div class="banner-icon">
-      <i class="fas {config.icon}"></i>
+      <i class="fas {config.icon}" aria-hidden="true"></i>
     </div>
 
     <div class="banner-message">
@@ -88,7 +88,7 @@
 
     <div class="banner-actions">
       <button class="update-button" onclick={handleGoToNewSite}>
-        <i class="fas fa-external-link-alt"></i>
+        <i class="fas fa-external-link-alt" aria-hidden="true"></i>
         <span>Update Now</span>
       </button>
 
@@ -100,7 +100,7 @@
           onclick={handleDismiss}
           title="Remind me later ({remindersRemaining} left)"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </div>
@@ -210,8 +210,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 4px;

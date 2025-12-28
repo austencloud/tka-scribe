@@ -22,7 +22,7 @@
 
 <div class="static-settings">
   <div class="info-section">
-    <i class="fas fa-info-circle"></i>
+    <i class="fas fa-info-circle" aria-hidden="true"></i>
     <div class="info-content">
       <h4>Export Settings</h4>
       <p>Images are exported as high-quality PNG files with a white background.</p>

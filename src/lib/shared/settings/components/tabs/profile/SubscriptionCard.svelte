@@ -89,21 +89,21 @@
     <div class="subscribed-status">
       <div class="status-header">
         <div class="premium-badge">
-          <i class="fas fa-star"></i>
+          <i class="fas fa-star" aria-hidden="true"></i>
         </div>
         <div class="premium-info">
           <span class="premium-label">TKA Premium</span>
           <span class="premium-status">Active</span>
         </div>
         <div class="active-badge">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
         </div>
       </div>
 
       <div class="billing-info">
         {#if subscriptionInfo?.cancelAtPeriodEnd}
           <p class="cancel-notice">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
             Cancels on {formattedBillingDate}
           </p>
         {:else}
@@ -117,9 +117,9 @@
         disabled={isLoading}
       >
         {#if isLoading}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         {:else}
-          <i class="fas fa-cog"></i>
+          <i class="fas fa-cog" aria-hidden="true"></i>
         {/if}
         <span>Manage Subscription</span>
       </button>
@@ -128,7 +128,7 @@
     <!-- Not Subscribed - Show Learn More Button -->
     <button class="subscribe-btn" onclick={handleLearnMore}>
       <div class="subscribe-content">
-        <i class="fas fa-crown"></i>
+        <i class="fas fa-crown" aria-hidden="true"></i>
         <span class="subscribe-text">Go Premium</span>
         <span class="subscribe-price">$10/mo</span>
       </div>
@@ -230,7 +230,7 @@
   }
 
   .premium-label {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;

@@ -1,6 +1,13 @@
 <script lang="ts">
-  export let title: string;
-  export let eyebrow: string;
+  import type { Snippet } from "svelte";
+
+  interface Props {
+    title: string;
+    eyebrow: string;
+    children?: Snippet;
+  }
+
+  let { title, eyebrow, children }: Props = $props();
 </script>
 
 <div class="panel">
@@ -10,7 +17,7 @@
       <h3>{title}</h3>
     </div>
   </div>
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

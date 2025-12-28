@@ -12,9 +12,6 @@ export const CreateTypes = {
     "ICreateModuleInitializer"
   ),
   ICreateModuleEffectCoordinator: Symbol.for("ICreateModuleEffectCoordinator"),
-  ICreationMethodPersister: Symbol.for(
-    "ICreationMethodPersister"
-  ),
   IDeepLinkSequenceHandler: Symbol.for("IDeepLinkSequenceHandler"),
   ICreateModuleLayoutManager: Symbol.for("ICreateModuleLayoutManager"),
   IResponsiveLayoutManager: Symbol.for("IResponsiveLayoutManager"),

@@ -42,13 +42,13 @@
 <div class="collaborators-detail">
   <div class="header">
     <h3>
-      <i class="fas fa-users"></i>
+      <i class="fas fa-users" aria-hidden="true"></i>
       Contributors
       <span class="count">({video.collaborators.length})</span>
     </h3>
     {#if isCreator}
       <button class="invite-btn" onclick={onInviteClick}>
-        <i class="fas fa-user-plus"></i>
+        <i class="fas fa-user-plus" aria-hidden="true"></i>
         Invite
       </button>
     {/if}
@@ -72,7 +72,7 @@
             <span class="name">{collaborator.displayName || "Unknown"}</span>
             {#if collaborator.role === "creator"}
               <span class="role-badge creator">
-                <i class="fas fa-crown"></i>
+                <i class="fas fa-crown" aria-hidden="true"></i>
                 Creator
               </span>
             {:else}
@@ -90,7 +90,7 @@
               ? "Leave collaboration"
               : "Remove collaborator"}
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
@@ -101,21 +101,21 @@
   {#if video.pendingInvites.filter((i) => i.status === "pending").length > 0 && isCreator}
     <div class="pending-section">
       <h4>
-        <i class="fas fa-clock"></i>
+        <i class="fas fa-clock" aria-hidden="true"></i>
         Pending Invites
       </h4>
       <div class="pending-list">
         {#each video.pendingInvites.filter((i) => i.status === "pending") as invite}
           <div class="pending-row">
             <div class="avatar pending">
-              <i class="fas fa-user"></i>
+              <i class="fas fa-user" aria-hidden="true"></i>
             </div>
             <div class="info">
               <span class="name">{invite.displayName || "User"}</span>
               <span class="joined">Invited {formatDate(invite.invitedAt)}</span>
             </div>
             <span class="pending-badge">
-              <i class="fas fa-hourglass-half"></i>
+              <i class="fas fa-hourglass-half" aria-hidden="true"></i>
             </span>
           </div>
         {/each}
@@ -279,8 +279,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: none;
     border-radius: 6px;

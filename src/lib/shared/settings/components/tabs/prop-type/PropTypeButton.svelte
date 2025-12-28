@@ -23,8 +23,8 @@
     onImageLoad?: (propType: PropType, width: number, height: number) => void;
   }>();
 
-  // svelte-ignore state_referenced_locally - intentional: component is recreated when propType changes
-  const displayInfo = getPropTypeDisplayInfo(propType);
+  // Reactive display info - recalculates when propType changes
+  const displayInfo = $derived(getPropTypeDisplayInfo(propType));
 
   let svgContent = $state("");
   let viewBox = $state("0 0 100 100");
@@ -214,18 +214,18 @@
       {#if selected}
         <!-- Single selection mode: show checkmark matching the color prop -->
         <div class="ios-checkmark {color}">
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
         </div>
       {:else}
         <!-- Dual selection mode (both props shown, rare case) -->
         {#if selectedBlue}
           <div class="ios-checkmark blue">
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           </div>
         {/if}
         {#if selectedRed}
           <div class="ios-checkmark red" class:offset={selectedBlue}>
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           </div>
         {/if}
       {/if}
@@ -321,7 +321,7 @@
   }
 
   .prop-loading {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
@@ -385,7 +385,7 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     animation: ios-checkmark-pop 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }

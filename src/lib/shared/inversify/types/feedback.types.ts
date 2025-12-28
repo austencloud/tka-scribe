@@ -5,8 +5,11 @@
  */
 
 export const FeedbackTypes = {
-  IFeedbackSortingService: Symbol.for("IFeedbackSortingService"),
-  IFeedbackEditingService: Symbol.for("IFeedbackEditingService"),
-  IFeedbackSubtaskService: Symbol.for("IFeedbackSubtaskService"),
-  IFeedbackFormattingService: Symbol.for("IFeedbackFormattingService"),
+  IFeedbackSorter: Symbol.for("IFeedbackSorter"),
+  IFeedbackEditor: Symbol.for("IFeedbackEditor"),
+  IFeedbackSubtaskManager: Symbol.for("IFeedbackSubtaskManager"),
+  IFeedbackFormatter: Symbol.for("IFeedbackFormatter"),
+  IVoiceTranscriptCoordinator: Symbol.for("IVoiceTranscriptCoordinator"),
+  IFormDraftPersister: Symbol.for("IFormDraftPersister"),
+  IFeedbackTypeResolver: Symbol.for("IFeedbackTypeResolver"),
 } as const;

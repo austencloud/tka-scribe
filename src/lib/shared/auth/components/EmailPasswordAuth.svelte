@@ -209,7 +209,7 @@
           onclick={() => (showPassword = !showPassword)}
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
+          <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
         </button>
       </div>
     </label>
@@ -283,8 +283,8 @@
   .toggle {
     position: absolute;
     right: 6px;
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     border-radius: 10px;
     background: transparent;

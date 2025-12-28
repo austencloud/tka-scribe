@@ -120,7 +120,7 @@
       <span class="card-value">{displayLabel}</span>
     </div>
 
-    <i class="fas fa-chevron-right card-chevron"></i>
+    <i class="fas fa-chevron-right card-chevron" aria-hidden="true"></i>
   </button>
 
   {#if showVariations}
@@ -139,7 +139,7 @@
         {/each}
       </span>
       <span class="variation-text">{variationText}</span>
-      <i class="fas fa-sync-alt"></i>
+      <i class="fas fa-sync-alt" aria-hidden="true"></i>
     </button>
   {/if}
 </div>

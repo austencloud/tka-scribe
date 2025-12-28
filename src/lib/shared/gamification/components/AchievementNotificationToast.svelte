@@ -68,17 +68,17 @@
 
 {#if activeNotification}
   <div class="toast-container" class:visible={isVisible}>
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="toast glass-surface {activeNotification.type}"
       onclick={handleClick}
+      onkeydown={(e) => (e.key === "Enter" || e.key === " ") && handleClick()}
       role="button"
       aria-live="polite"
+      aria-label="Dismiss notification: {activeNotification.title}"
       tabindex="0"
     >
       <div class="toast-icon">
-        <i class="fas {activeNotification.icon || 'fa-party-horn'}"></i>
+        <i class="fas {activeNotification.icon || 'fa-party-horn'}" aria-hidden="true"></i>
       </div>
       <div class="toast-content">
         <div class="toast-title">{activeNotification.title}</div>

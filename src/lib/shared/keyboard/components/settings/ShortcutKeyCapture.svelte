@@ -143,7 +143,7 @@
           type="button"
           aria-label="Close"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </header>
 
@@ -231,14 +231,21 @@
 {:else}
   <!-- Desktop: Inline Modal -->
   {#if isOpen && item}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="capture-overlay"
       onclick={handleCancel}
       onkeydown={(e) => e.key === "Escape" && handleCancel()}
+      role="button"
+      tabindex="0"
+      aria-label="Close shortcut editor"
     >
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <div class="capture-modal" onclick={(e) => e.stopPropagation()}>
+      <div
+        class="capture-modal"
+        onclick={(e) => e.stopPropagation()}
+        onkeydown={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
         <header class="capture-header">
           <h3 class="capture-title">Edit Shortcut</h3>
           <button
@@ -247,7 +254,7 @@
             type="button"
             aria-label="Close"
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </header>
 
@@ -392,8 +399,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     padding: 0;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));

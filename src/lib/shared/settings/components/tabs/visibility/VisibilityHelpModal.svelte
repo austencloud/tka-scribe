@@ -115,7 +115,7 @@
       <header class="help-header">
         {#if meta}
           <span class="help-icon" style="--icon-color: {meta.color}">
-            <i class="fas {meta.icon}"></i>
+            <i class="fas {meta.icon}" aria-hidden="true"></i>
           </span>
           <h3 class="help-title">{meta.title}</h3>
         {/if}
@@ -125,7 +125,7 @@
           type="button"
           aria-label="Close"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </header>
 
@@ -143,22 +143,25 @@
 {:else}
   <!-- Desktop: Centered Modal -->
   {#if isOpen && meta}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div class="modal-overlay" onclick={handleBackdropClick}>
-      <!-- svelte-ignore a11y_click_events_have_key_events -->
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="modal-overlay"
+      onclick={handleBackdropClick}
+      onkeydown={(e) => e.key === "Escape" && handleClose()}
+      role="button"
+      tabindex="0"
+      aria-label="Close help modal"
+    >
       <div
         class="modal-container"
         onclick={(e) => e.stopPropagation()}
+        onkeydown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="help-modal-title"
-        tabindex="-1"
       >
         <header class="help-header">
           <span class="help-icon" style="--icon-color: {meta.color}">
-            <i class="fas {meta.icon}"></i>
+            <i class="fas {meta.icon}" aria-hidden="true"></i>
           </span>
           <h3 id="help-modal-title" class="help-title">{meta.title}</h3>
           <button
@@ -167,7 +170,7 @@
             type="button"
             aria-label="Close"
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </header>
 
@@ -299,8 +302,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     padding: 0;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);

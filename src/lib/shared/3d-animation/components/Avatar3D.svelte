@@ -101,63 +101,39 @@
 
     // Skip if already loaded for this body type
     if (currentLoadedBodyType === targetBodyType) {
-      console.log("[Avatar3D] Model already loaded for", targetBodyType);
       return;
     }
 
     isLoading = true;
-    console.log("[Avatar3D] Loading model for", targetBodyType, ":", url, "height:", height);
 
     try {
       // Dispose old model if any
       if (currentLoadedBodyType !== null) {
-        console.log("[Avatar3D] Disposing old model...");
         skeletonService.dispose();
       }
 
       await skeletonService.loadModel(url);
-      console.log("[Avatar3D] Model loaded successfully!");
 
       // Scale model to match our scene units
       // Height is in scene units (1 unit = 0.5 cm)
       // Masculine: 188cm = 376 units, Feminine: 178cm = 356 units
       skeletonService.setHeight(height);
-      console.log("[Avatar3D] Model scaled to", height, "units");
 
       currentLoadedBodyType = targetBodyType;
       modelLoaded = true;
       useProceduralFallback = false;
 
-      // Debug: Log arm chain status
+      // Verify arm chains are ready
       const leftChain = skeletonService.getLeftArmChain();
       const rightChain = skeletonService.getRightArmChain();
 
-      if (leftChain) {
-        console.log("[Avatar3D] Left arm chain ready:");
-        console.log(`  Bones: ${leftChain.root.name} → ${leftChain.middle.name} → ${leftChain.effector.name}`);
-        console.log(`  Lengths: upper=${leftChain.upperLength.toFixed(1)}, lower=${leftChain.lowerLength.toFixed(1)}, total=${leftChain.totalLength.toFixed(1)}`);
-        console.log(`  Root rest dir: (${leftChain.rootRestDir.x.toFixed(2)}, ${leftChain.rootRestDir.y.toFixed(2)}, ${leftChain.rootRestDir.z.toFixed(2)})`);
-        console.log(`  Middle rest dir: (${leftChain.middleRestDir.x.toFixed(2)}, ${leftChain.middleRestDir.y.toFixed(2)}, ${leftChain.middleRestDir.z.toFixed(2)})`);
-      } else {
+      if (!leftChain) {
         console.warn("[Avatar3D] Left arm chain NOT FOUND");
       }
 
-      if (rightChain) {
-        console.log("[Avatar3D] Right arm chain ready:");
-        console.log(`  Bones: ${rightChain.root.name} → ${rightChain.middle.name} → ${rightChain.effector.name}`);
-        console.log(`  Lengths: upper=${rightChain.upperLength.toFixed(1)}, lower=${rightChain.lowerLength.toFixed(1)}, total=${rightChain.totalLength.toFixed(1)}`);
-        console.log(`  Root rest dir: (${rightChain.rootRestDir.x.toFixed(2)}, ${rightChain.rootRestDir.y.toFixed(2)}, ${rightChain.rootRestDir.z.toFixed(2)})`);
-        console.log(`  Middle rest dir: (${rightChain.middleRestDir.x.toFixed(2)}, ${rightChain.middleRestDir.y.toFixed(2)}, ${rightChain.middleRestDir.z.toFixed(2)})`);
-      } else {
+      if (!rightChain) {
         console.warn("[Avatar3D] Right arm chain NOT FOUND");
       }
-
-      // Log positioning info
-      const yOffset = getModelYOffset(targetBodyType);
-      console.log(`[Avatar3D] Model positioning:`);
-      console.log(`  Y offset: ${yOffset.toFixed(1)} (shoulders at Y≈0)`);
-      console.log(`  Z position: ${FIGURE_Z} (in front of grid)`);
-      console.log(`  Avatar should face -Z toward props at Z=0`);
     } catch (err) {
       console.warn("[Avatar3D] Failed to load avatar model, using procedural fallback:", err);
       useProceduralFallback = true;
@@ -170,16 +146,12 @@
   onMount(async () => {
     // If not using GLTF, just use procedural fallback
     if (!useGLTF) {
-      console.log("[Avatar3D] useGLTF=false, using procedural fallback");
       useProceduralFallback = true;
       return;
     }
 
-    console.log("[Avatar3D] Initializing GLTF avatar...");
-
     try {
       await loadFeatureModule("3d-viewer");
-      console.log("[Avatar3D] Feature module loaded");
 
       skeletonService = container.get<IAvatarSkeletonBuilder>(
         ANIMATION_3D_TYPES.IAvatarSkeletonBuilder
@@ -195,7 +167,6 @@
       );
 
       servicesReady = true;
-      console.log("[Avatar3D] Services ready");
 
       // Load initial model for current body type
       await loadModelForBodyType(bodyType);
@@ -209,13 +180,9 @@
   $effect(() => {
     // Only react after initial mount and services are ready
     if (servicesReady && useGLTF && bodyType !== currentLoadedBodyType && !isLoading) {
-      console.log("[Avatar3D] Body type changed to:", bodyType);
       loadModelForBodyType(bodyType);
     }
   });
-
-  // Debug frame counter to limit logging
-  let debugFrameCount = 0;
 
   // Update animation each frame
   useTask((delta) => {
@@ -226,17 +193,6 @@
 
     // Update animation (applies IK)
     animationService.update(delta);
-
-    // Debug: Log periodically
-    debugFrameCount++;
-    if (debugFrameCount % 120 === 1) { // Every ~2 seconds at 60fps
-      const pose = animationService.getCurrentPose();
-      console.log("[Avatar3D] IK running, left target:", {
-        x: pose.leftHand.targetPosition.x.toFixed(1),
-        y: pose.leftHand.targetPosition.y.toFixed(1),
-        z: pose.leftHand.targetPosition.z.toFixed(1),
-      });
-    }
   });
 
   // Sync customization changes (only when using GLTF mode, not procedural fallback)

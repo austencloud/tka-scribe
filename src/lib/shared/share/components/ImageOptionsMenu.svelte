@@ -48,10 +48,10 @@
     aria-controls="image-options-content"
   >
     <div class="header-content">
-      <i class="fas fa-sliders header-icon"></i>
+      <i class="fas fa-sliders header-icon" aria-hidden="true"></i>
       <span class="header-title">Image Options</span>
     </div>
-    <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} chevron-icon"></i>
+    <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} chevron-icon" aria-hidden="true"></i>
   </button>
 
   {#if isExpanded && options && onOptionsChange}

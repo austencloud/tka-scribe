@@ -20,8 +20,13 @@
     onEndEdit?: () => void;
   } = $props();
 
-  let editText = $state(text);
+  let editText = $state("");
   let isSaving = $state(false);
+
+  // Sync editText when text prop changes
+  $effect(() => {
+    editText = text;
+  });
   let error = $state<string | null>(null);
   let textareaElement = $state<HTMLTextAreaElement | null>(null);
 
@@ -40,6 +45,13 @@
     editText;
     if (textareaElement) {
       autoResizeTextarea(textareaElement);
+    }
+  });
+
+  // Focus textarea when entering edit mode (proper alternative to autofocus attribute)
+  $effect(() => {
+    if (isEditing && textareaElement) {
+      textareaElement.focus();
     }
   });
 
@@ -97,14 +109,12 @@
 {#if isEditing}
   <!-- Edit Mode -->
   <div class="edit-container">
-    <!-- svelte-ignore a11y_autofocus -->
     <textarea
       bind:this={textareaElement}
       bind:value={editText}
       onkeydown={handleKeydown}
       placeholder="Enter release notes..."
       disabled={isSaving}
-      autofocus
     ></textarea>
 
     {#if error}
@@ -127,10 +137,10 @@
           disabled={isSaving}
         >
           {#if isSaving}
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             Saving...
           {:else}
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             Save
           {/if}
         </button>
@@ -141,7 +151,7 @@
           onclick={cancelEdit}
           disabled={isSaving}
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
           Cancel
         </button>
       </div>
@@ -244,7 +254,7 @@
   }
 
   .hint {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     padding: 4px 8px;
   }
@@ -256,7 +266,7 @@
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
     border-radius: 3px;
     font-family: monospace;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 

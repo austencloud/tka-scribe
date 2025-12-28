@@ -24,7 +24,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "dashboard",
     label: "Dashboard",
-    icon: '<i class="fas fa-home" style="color: #10b981;"></i>',
+    icon: '<i class="fas fa-home" style="color: #10b981;" aria-hidden="true"></i>',
     color: "#10b981", // Emerald - home/dashboard
     description: "Your TKA Scribe home",
     isMain: true,
@@ -33,7 +33,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "create",
     label: "Create",
-    icon: '<i class="fas fa-tools" style="color: #f59e0b;"></i>',
+    icon: '<i class="fas fa-tools" style="color: #f59e0b;" aria-hidden="true"></i>',
     color: "#f59e0b", // Amber - construction/creation
     description: "Construct and generate sequences",
     isMain: true,
@@ -42,7 +42,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "discover",
     label: "Discover",
-    icon: '<i class="fas fa-compass" style="color: #a855f7;"></i>',
+    icon: '<i class="fas fa-compass" style="color: #a855f7;" aria-hidden="true"></i>',
     color: "#a855f7", // Purple - discovery/exploration
     description: "Discover sequences and creators",
     isMain: true,
@@ -52,7 +52,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "learn",
     label: "Learn",
-    icon: '<i class="fas fa-graduation-cap" style="color: #3b82f6;"></i>',
+    icon: '<i class="fas fa-graduation-cap" style="color: #3b82f6;" aria-hidden="true"></i>',
     color: "#3b82f6", // Blue - education/knowledge
     description: "Study and practice TKA",
     isMain: true,
@@ -61,7 +61,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "premium",
     label: "Go Premium",
-    icon: '<i class="fas fa-crown" style="color: #fbbf24;"></i>',
+    icon: '<i class="fas fa-crown" style="color: #fbbf24;" aria-hidden="true"></i>',
     color: "#fbbf24", // Gold - premium/upgrade
     description: "Support TKA and unlock premium features",
     isMain: true, // Visibility controlled by getModuleDefinitions() - only shown to non-premium users
@@ -70,7 +70,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "compose",
     label: "Compose",
-    icon: '<i class="fas fa-photo-film" style="color: #ec4899;"></i>',
+    icon: '<i class="fas fa-photo-film" style="color: #ec4899;" aria-hidden="true"></i>',
     color: "#ec4899", // Pink - composition/choreography
     description: "Compose sequences into animations",
     isMain: true,
@@ -79,7 +79,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "train",
     label: "Train",
-    icon: '<i class="fas fa-running" style="color: #ef4444;"></i>',
+    icon: '<i class="fas fa-running" style="color: #ef4444;" aria-hidden="true"></i>',
     color: "#ef4444", // Red - action/training
     description: "Practice with real-time scoring",
     isMain: true,
@@ -88,7 +88,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "library",
     label: "Library",
-    icon: '<i class="fas fa-book" style="color: #0891b2;"></i>',
+    icon: '<i class="fas fa-book" style="color: #0891b2;" aria-hidden="true"></i>',
     color: "#0891b2", // Cyan - personal collection
     description: "Your sequences, collections, and compositions",
     isMain: true,
@@ -102,7 +102,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "feedback",
     label: "Feedback",
-    icon: '<i class="fas fa-comment-dots" style="color: #14b8a6;"></i>',
+    icon: '<i class="fas fa-comment-dots" style="color: #14b8a6;" aria-hidden="true"></i>',
     color: "#14b8a6", // Teal - feedback/communication
     description: "Submit and manage feedback",
     isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
@@ -111,7 +111,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "ml-training",
     label: "ML Training",
-    icon: '<i class="fas fa-brain" style="color: #8b5cf6;"></i>',
+    icon: '<i class="fas fa-brain" style="color: #8b5cf6;" aria-hidden="true"></i>',
     color: "#8b5cf6", // Purple - AI/ML
     description: "Train prop detection models",
     isMain: true, // Visibility controlled by getModuleDefinitions() based on tester status
@@ -120,7 +120,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "admin",
     label: "Admin",
-    icon: '<i class="fas fa-crown" style="color: #ffd700;"></i>',
+    icon: '<i class="fas fa-crown" style="color: #ffd700;" aria-hidden="true"></i>',
     color: "#ffd700", // Gold - admin/privileged
     description: "System management & configuration",
     isMain: true, // Visibility controlled by getModuleDefinitions() based on admin status
@@ -129,7 +129,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "3d-viewer",
     label: "3D Viewer",
-    icon: '<i class="fas fa-cube" style="color: #06b6d4;"></i>',
+    icon: '<i class="fas fa-cube" style="color: #06b6d4;" aria-hidden="true"></i>',
     color: "#06b6d4", // Cyan - 3D/spatial
     description: "Explore sequences in 3D space",
     isMain: true, // Visibility controlled by feature flags (admin-only)
@@ -138,7 +138,7 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   {
     id: "settings",
     label: "Settings",
-    icon: '<i class="fas fa-cog" style="color: #64748b;"></i>',
+    icon: '<i class="fas fa-cog" style="color: #64748b;" aria-hidden="true"></i>',
     color: "#64748b", // Slate - neutral settings color
     description: "Configure app preferences",
     isMain: true, // Main module button on dashboard

@@ -62,7 +62,7 @@
       disabled={!canGoPrev}
       aria-label="Previous beat"
     >
-      <i class="fas fa-step-backward"></i>
+      <i class="fas fa-step-backward" aria-hidden="true"></i>
     </button>
 
     <span class="beat-indicator">
@@ -75,18 +75,18 @@
       disabled={!canGoNext}
       aria-label="Next beat"
     >
-      <i class="fas fa-step-forward"></i>
+      <i class="fas fa-step-forward" aria-hidden="true"></i>
     </button>
 
     <div class="divider"></div>
   {/if}
 
   <button class="play-btn" onclick={onReset} aria-label="Reset">
-    <i class="fas fa-undo"></i>
+    <i class="fas fa-undo" aria-hidden="true"></i>
   </button>
 
   <button class="play-btn primary" onclick={onTogglePlay} aria-label={isPlaying ? "Pause" : "Play"}>
-    <i class="fas" class:fa-pause={isPlaying} class:fa-play={!isPlaying}></i>
+    <i class="fas" class:fa-pause={isPlaying} class:fa-play={!isPlaying} aria-hidden="true"></i>
   </button>
 
   <input
@@ -108,7 +108,7 @@
     onclick={() => onLoopChange(!loop)}
     aria-label={loop ? "Disable loop" : "Enable loop"}
   >
-    <i class="fas fa-sync"></i>
+    <i class="fas fa-sync" aria-hidden="true"></i>
   </button>
 </div>
 
@@ -207,11 +207,7 @@
       justify-content: center;
     }
 
-    .play-btn {
-      width: 44px;
-      height: 44px;
-    }
-
+    /* Touch targets remain 48px for WCAG AAA */
     .play-btn.primary {
       width: 52px;
       height: 52px;

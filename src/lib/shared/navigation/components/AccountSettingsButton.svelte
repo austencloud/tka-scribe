@@ -4,7 +4,7 @@
   Shows user profile info and provides access to sign in/out:
   - When signed in: Shows profile picture + user name, opens profile popover
   - When signed out: Shows user icon + "Sign In", triggers sign-in flow
-  - 44px minimum touch target (WCAG AAA)
+  - 48px minimum touch target (WCAG AAA)
 -->
 <script lang="ts">
   import { authState } from "$lib/shared/auth/state/authState.svelte";
@@ -86,6 +86,7 @@
     onclick={handleClick}
     aria-label={ariaLabel}
     aria-expanded={showPopover}
+    aria-controls="account-profile-popover"
     aria-haspopup="true"
   >
     <!-- Icon/Avatar Section -->
@@ -125,7 +126,7 @@
         </div>
       {:else}
         <!-- User Icon (signed out) -->
-        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
       {/if}
     </div>
 
@@ -137,7 +138,7 @@
 
   <!-- Profile Popover (shown when signed in and clicked) -->
   {#if showPopover && authState.isAuthenticated}
-    <div class="profile-popover">
+    <div id="account-profile-popover" class="profile-popover">
       <div class="popover-header">
         <div class="user-info">
           <span class="user-name">{authState.user?.displayName || "User"}</span>
@@ -146,7 +147,7 @@
       </div>
       <div class="popover-divider"></div>
       <button class="popover-action sign-out" onclick={handleSignOut}>
-        <i class="fas fa-sign-out-alt"></i>
+        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
         <span>Sign Out</span>
       </button>
     </div>
@@ -195,10 +196,10 @@
      ICON WRAPPER
      ============================================================================ */
   .icon-wrapper {
-    width: 44px;
-    height: 44px;
-    min-width: 44px;
-    min-height: 44px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
     border-radius: 50%;
     overflow: visible; /* Changed from hidden to allow badge to overflow */
     display: flex;

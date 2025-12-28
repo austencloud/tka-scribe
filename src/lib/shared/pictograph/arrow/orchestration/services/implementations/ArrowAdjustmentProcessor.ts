@@ -7,7 +7,7 @@
 
 import { Point } from "fabric";
 import { injectable, inject } from "inversify";
-import { TYPES } from "../../../../../inversify/bootstrap";
+import { TYPES } from "../../../../../inversify/types";
 import type { GridLocation } from "../../../../grid/domain/enums/grid-enums";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import { MotionType } from "../../../../shared/domain/enums/pictograph-enums";

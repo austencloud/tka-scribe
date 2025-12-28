@@ -58,7 +58,7 @@
         {/if}
         {#if collaborator.role === "creator"}
           <span class="creator-indicator">
-            <i class="fas fa-crown"></i>
+            <i class="fas fa-crown" aria-hidden="true"></i>
           </span>
         {/if}
       </div>

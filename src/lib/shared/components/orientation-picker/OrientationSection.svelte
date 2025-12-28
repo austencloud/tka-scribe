@@ -50,6 +50,7 @@ Uses 2x2 grid with all 4 orientation options
     class="section-header"
     onclick={toggleExpanded}
     aria-expanded={isExpanded}
+    aria-controls="orientation-section-content"
     type="button"
   >
     <div class="header-content">
@@ -77,7 +78,7 @@ Uses 2x2 grid with all 4 orientation options
   </button>
 
   {#if isExpanded}
-    <div class="section-content">
+    <div id="orientation-section-content" class="section-content">
       <OrientationPickerGrid {currentOrientation} {onOrientationChange} />
     </div>
   {/if}

@@ -5,7 +5,7 @@
   Includes grid mode, trail style, and overlay toggles.
 -->
 <script lang="ts">
-  import AnimationPreviewWithPlayback from "./AnimationPreviewWithPlayback.svelte";
+  import AnimationPreviewController from "./AnimationPreviewController.svelte";
   import CyclingButton from "./CyclingButton.svelte";
   import type { TrailStyle, PlaybackMode } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
@@ -49,7 +49,7 @@
 <section class="settings-panel animation-panel" class:mobile-hidden={isMobileHidden}>
   <header class="panel-header">
     <span class="panel-icon animation-icon">
-      <i class="fas fa-film"></i>
+      <i class="fas fa-film" aria-hidden="true"></i>
     </span>
     <h3 class="panel-title">Animation</h3>
     <button
@@ -58,12 +58,12 @@
       aria-label="Learn about animation options"
       type="button"
     >
-      <i class="fas fa-info-circle"></i>
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
     </button>
   </header>
 
   <div class="preview-frame animation-preview">
-    <AnimationPreviewWithPlayback />
+    <AnimationPreviewController />
   </div>
 
   <div class="panel-controls">
@@ -163,8 +163,6 @@
     gap: 14px;
     padding: clamp(14px, 2.5cqi, 20px);
     background: var(--theme-card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     flex: 1;
@@ -232,15 +230,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     padding: 0;
     margin-left: auto;
     background: color-mix(in srgb, #f472b6 15%, transparent);
     border: 1px solid color-mix(in srgb, #f472b6 30%, transparent);
     border-radius: 50%;
     color: #f472b6;
-    font-size: 20px;
+    font-size: var(--font-size-min, 14px);
     cursor: pointer;
     transition: all 0.15s ease;
     -webkit-tap-highlight-color: transparent;
@@ -285,7 +283,7 @@
   }
 
   .group-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;

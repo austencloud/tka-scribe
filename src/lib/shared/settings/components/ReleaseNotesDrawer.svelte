@@ -65,11 +65,11 @@
   <div class="drawer-content-wrapper">
     <header class="drawer-header">
       <div class="header-content">
-        <i class="fas fa-gift"></i>
+        <i class="fas fa-gift" aria-hidden="true"></i>
         <h2>What's New in v{__APP_VERSION__}</h2>
       </div>
       <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -81,7 +81,7 @@
         </div>
       {:else if error}
         <div class="error-state">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
           <p>{error}</p>
         </div>
       {:else if version}
@@ -98,7 +98,7 @@
             {#if groupedChangelog[cat.key].length > 0}
               <section class="changelog-section">
                 <h3 style="--cat-color: {cat.color}">
-                  <i class="fas {cat.icon}"></i>
+                  <i class="fas {cat.icon}" aria-hidden="true"></i>
                   {cat.label}
                 </h3>
                 <ul>
@@ -119,7 +119,7 @@
 
     <footer class="drawer-footer">
       <button class="view-all-btn" onclick={handleViewAllReleases}>
-        <i class="fas fa-history"></i>
+        <i class="fas fa-history" aria-hidden="true"></i>
         View All Releases
       </button>
     </footer>
@@ -170,8 +170,8 @@
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

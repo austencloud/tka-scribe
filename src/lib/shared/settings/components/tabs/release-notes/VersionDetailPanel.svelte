@@ -322,11 +322,9 @@
   ariaLabel={version ? `Version ${version.version} details` : "Version details"}
 >
   {#if version}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="version-detail-body"
       onclick={handlePanelClick}
-      onkeydown={() => {}}
       role="presentation"
     >
       <VersionHeader

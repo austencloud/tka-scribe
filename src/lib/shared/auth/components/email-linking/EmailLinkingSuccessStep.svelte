@@ -16,20 +16,20 @@
 <div class="success-content">
   <div class="success-animation">
     <div class="success-checkmark">
-      <i class="fas fa-check"></i>
+      <i class="fas fa-check" aria-hidden="true"></i>
     </div>
   </div>
 
   <div class="success-message">
     <p>You can now sign in using:</p>
     <div class="credential-display">
-      <i class="fas fa-envelope"></i>
+      <i class="fas fa-envelope" aria-hidden="true"></i>
       <span>{email}</span>
     </div>
   </div>
 
   <button class="done-btn" onclick={onComplete}>
-    <i class="fas fa-check"></i>
+    <i class="fas fa-check" aria-hidden="true"></i>
     <span>Done</span>
   </button>
 </div>

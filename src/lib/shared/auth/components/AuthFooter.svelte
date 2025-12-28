@@ -99,7 +99,7 @@
     }
 
     .auth-footer__text {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

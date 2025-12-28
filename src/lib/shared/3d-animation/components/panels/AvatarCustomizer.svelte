@@ -42,7 +42,7 @@
         onclick={() => onBodyTypeChange("masculine")}
         aria-pressed={bodyType === "masculine"}
       >
-        <i class="fas fa-mars"></i>
+        <i class="fas fa-mars" aria-hidden="true"></i>
         <span>Masculine</span>
       </button>
       <button
@@ -51,7 +51,7 @@
         onclick={() => onBodyTypeChange("feminine")}
         aria-pressed={bodyType === "feminine"}
       >
-        <i class="fas fa-venus"></i>
+        <i class="fas fa-venus" aria-hidden="true"></i>
         <span>Feminine</span>
       </button>
     </div>
@@ -71,7 +71,7 @@
           title={tone.name}
         >
           {#if skinTone === tone.color}
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           {/if}
         </button>
       {/each}
@@ -153,8 +153,8 @@
   }
 
   .skin-swatch {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 50%;
     border: 2px solid transparent;
     cursor: pointer;

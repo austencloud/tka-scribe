@@ -43,16 +43,21 @@
 </script>
 
 {#if isOpen}
-  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
-  <div class="picker-overlay" role="presentation" onclick={onClose}>
-    <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
+  <div
+    class="picker-overlay"
+    onclick={onClose}
+    onkeydown={(e) => e.key === "Escape" && onClose()}
+    role="button"
+    tabindex="0"
+    aria-label="Close prop picker"
+  >
     <div
       class="picker-panel"
       role="dialog"
       aria-modal="true"
       aria-label="Select prop type"
-      tabindex="-1"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
     >
       <!-- Header -->
       <div class="picker-header">
@@ -62,7 +67,7 @@
           onclick={onClose}
           aria-label="Close picker"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
 

@@ -99,7 +99,7 @@
           <!-- Daily Challenge Preview -->
           <div class="challenge-section">
             <div class="section-header">
-              <i class="fas fa-sun"></i>
+              <i class="fas fa-sun" aria-hidden="true"></i>
               <h3>Today's Challenge</h3>
             </div>
             {#if dashboard.daily.challenge}
@@ -110,7 +110,7 @@
               />
             {:else}
               <div class="no-challenge">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
                 <p>No daily challenge available</p>
               </div>
             {/if}
@@ -119,7 +119,7 @@
           <!-- Weekly Challenge Preview -->
           <div class="challenge-section">
             <div class="section-header">
-              <i class="fas fa-calendar-week"></i>
+              <i class="fas fa-calendar-week" aria-hidden="true"></i>
               <h3>This Week's Challenge</h3>
             </div>
             {#if dashboard.weekly.challenge}
@@ -130,7 +130,7 @@
               />
             {:else}
               <div class="no-challenge">
-                <i class="fas fa-calendar-times"></i>
+                <i class="fas fa-calendar-times" aria-hidden="true"></i>
                 <p>No weekly challenge available</p>
               </div>
             {/if}
@@ -139,7 +139,7 @@
           <!-- Skills in Progress -->
           <div class="challenge-section">
             <div class="section-header">
-              <i class="fas fa-medal"></i>
+              <i class="fas fa-medal" aria-hidden="true"></i>
               <h3>Skills in Progress</h3>
             </div>
             {#if dashboard.skills.inProgressSkills.length > 0}
@@ -150,7 +150,7 @@
               />
             {:else}
               <div class="no-challenge">
-                <i class="fas fa-star"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
                 <p>Start a skill to track your progress</p>
               </div>
             {/if}

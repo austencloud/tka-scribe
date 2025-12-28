@@ -22,7 +22,7 @@
 
 <div class="conflict-warning" class:error={isError} class:warning={!isError}>
   <div class="conflict-icon">
-    <i class="fas fa-exclamation-triangle"></i>
+    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
   </div>
   <div class="conflict-info">
     <span class="conflict-title">

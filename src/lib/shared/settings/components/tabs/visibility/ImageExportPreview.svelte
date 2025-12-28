@@ -10,12 +10,15 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IImageComposer } from "$lib/shared/render/services/contracts/IImageComposer";
+  import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
 
   interface Props {
     beatData: BeatData;
   }
 
   let { beatData }: Props = $props();
+
+  const compositionManager = getImageCompositionManager();
 
   let previewImageUrl = $state<string | null>(null);
   let isGenerating = $state(false);
@@ -45,11 +48,11 @@
         {
           beatSize: 300,
           beatScale: 1,
-          addWord: false,
-          addBeatNumbers: false,
-          addUserInfo: false,
-          addDifficultyLevel: false,
-          includeStartPosition: false,
+          addWord: compositionManager.addWord,
+          addBeatNumbers: compositionManager.addBeatNumbers,
+          addUserInfo: compositionManager.addUserInfo,
+          addDifficultyLevel: compositionManager.addDifficultyLevel,
+          includeStartPosition: compositionManager.includeStartPosition,
         }
       );
 
@@ -76,10 +79,17 @@
   onMount(() => {
     generatePreview();
 
+    // Subscribe to composition settings changes
+    const handleSettingsChange = () => {
+      generatePreview();
+    };
+    compositionManager.registerObserver(handleSettingsChange);
+
     return () => {
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
       }
+      compositionManager.unregisterObserver(handleSettingsChange);
     };
   });
 
@@ -93,14 +103,14 @@
 
 {#if isGenerating}
   <div class="preview-loading">
-    <i class="fas fa-spinner fa-spin"></i>
+    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
     <span>Generating...</span>
   </div>
 {:else if previewImageUrl}
   <img src={previewImageUrl} alt="Export preview" class="preview-image" />
 {:else}
   <div class="preview-error">
-    <i class="fas fa-exclamation-triangle"></i>
+    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
     <span>Preview unavailable</span>
   </div>
 {/if}

@@ -13,6 +13,7 @@ import type {
   ImpersonatedUser,
 } from "../contracts/IImpersonator";
 import type { UserRole } from "../../domain/models/UserRole";
+import { isAdmin } from "../../state/authState.svelte";
 
 @injectable()
 export class Impersonator implements IImpersonator {
@@ -25,6 +26,11 @@ export class Impersonator implements IImpersonator {
    * @returns Promise with impersonated user data
    */
   async startImpersonation(userId: string): Promise<ImpersonatedUser> {
+    // SECURITY: Only admins can impersonate users
+    if (!isAdmin()) {
+      throw new Error("Unauthorized: Only admins can impersonate users");
+    }
+
     try {
       const firestore = await getFirestoreInstance();
       const userDocRef = doc(firestore, `users/${userId}`);

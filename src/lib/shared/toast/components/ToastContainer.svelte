@@ -54,14 +54,14 @@
         style="--toast-color: {config.color}; --toast-bg: {config.bg}"
         role="alert"
       >
-        <i class="fas {config.icon} toast-icon"></i>
+        <i class="fas {config.icon} toast-icon" aria-hidden="true"></i>
         <span class="toast-message">{toast.message}</span>
         <button
           class="toast-close"
           onclick={() => removeToast(toast.id)}
           aria-label="Dismiss"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
     {/each}

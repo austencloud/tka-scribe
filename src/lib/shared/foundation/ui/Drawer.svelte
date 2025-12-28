@@ -201,11 +201,11 @@
   });
 
   // Focus trap handler for accessibility
-  // svelte-ignore state_referenced_locally - intentional: configuration set once at creation
+  // Initialize with defaults - $effect below syncs actual prop values
   let focusTrap = new FocusTrap({
-    initialFocus: initialFocusElement,
-    returnFocusOnDeactivate: returnFocusOnClose,
-    setInertOnSiblings: setInertOnSiblings,
+    initialFocus: undefined,
+    returnFocusOnDeactivate: true,
+    setInertOnSiblings: true,
   });
 
   // Snap points handler (only created when snapPoints are provided)
@@ -214,10 +214,10 @@
   let currentSnapIndex = $state<number | null>(null);
 
   // Drawer effects
-  // svelte-ignore state_referenced_locally - intentional: configuration set once at creation
+  // Initialize with defaults - $effect below syncs actual prop values
   let drawerEffects = new DrawerEffects({
-    scaleBackground,
-    preventScroll,
+    scaleBackground: false,
+    preventScroll: true,
     isAnimatedOpen: false,
   });
 

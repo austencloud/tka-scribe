@@ -81,13 +81,19 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen}
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div class="sheet-backdrop" onclick={handleBackdropClick} role="presentation">
+  <div
+    class="sheet-backdrop"
+    onclick={handleBackdropClick}
+    onkeydown={(e) => e.key === "Escape" && onClose()}
+    role="button"
+    tabindex="0"
+    aria-label="Close settings"
+  >
     <div class="sheet-content" role="dialog" aria-modal="true">
       <div class="sheet-header">
         <h3>Recording Settings</h3>
         <button class="close-btn" onclick={onClose} aria-label="Close">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -106,7 +112,7 @@
                 class:active={referenceView === "none"}
                 onclick={() => onReferenceViewChange("none")}
               >
-                <i class="fas fa-video"></i>
+                <i class="fas fa-video" aria-hidden="true"></i>
                 <span>Camera Only</span>
               </button>
             {/if}
@@ -115,7 +121,7 @@
               class:active={referenceView === "animation"}
               onclick={() => onReferenceViewChange("animation")}
             >
-              <i class="fas fa-play-circle"></i>
+              <i class="fas fa-play-circle" aria-hidden="true"></i>
               <span>Animation</span>
             </button>
             <button
@@ -123,7 +129,7 @@
               class:active={referenceView === "grid"}
               onclick={() => onReferenceViewChange("grid")}
             >
-              <i class="fas fa-th"></i>
+              <i class="fas fa-th" aria-hidden="true"></i>
               <span>Grid</span>
             </button>
           </div>
@@ -246,8 +252,8 @@
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

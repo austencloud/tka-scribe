@@ -129,7 +129,7 @@
     <!-- Header -->
     <header class="instagram-sheet__header">
       <div class="header-content">
-        <i class="fa-brands fa-instagram instagram-icon"></i>
+        <i class="fa-brands fa-instagram instagram-icon" aria-hidden="true"></i>
         <h2 id="instagram-link-title">
           {isEditing() ? "Edit Instagram Link" : "Link Instagram Video"}
         </h2>
@@ -139,7 +139,7 @@
         onclick={handleClose}
         aria-label="Close Instagram link sheet"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -159,7 +159,7 @@
         />
         {#if validationError}
           <p class="error-message">
-            <i class="fas fa-exclamation-circle"></i>
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
             {validationError}
           </p>
         {/if}
@@ -189,7 +189,7 @@
         {#if validation.isValid}
           <div class="preview-card">
             <div class="preview-header">
-              <i class="fa-brands fa-instagram"></i>
+              <i class="fa-brands fa-instagram" aria-hidden="true"></i>
               <span>Preview</span>
             </div>
             <div class="preview-content">
@@ -211,7 +211,7 @@
       <div class="button-group">
         {#if isEditing()}
           <button class="btn btn-danger" onclick={handleRemove}>
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-trash" aria-hidden="true"></i>
             Remove Link
           </button>
         {/if}
@@ -220,7 +220,7 @@
           onclick={handleSave}
           disabled={!isValid()}
         >
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
           {isEditing() ? "Update Link" : "Save Link"}
         </button>
       </div>

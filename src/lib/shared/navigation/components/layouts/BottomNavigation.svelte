@@ -174,7 +174,7 @@
     onclick={handlePeekTap}
     aria-label="Show navigation"
   >
-    <i class="fas fa-chevron-up"></i>
+    <i class="fas fa-chevron-up" aria-hidden="true"></i>
   </button>
 {/if}
 
@@ -227,7 +227,7 @@
         onpointercancel={clearBackButtonLongPress}
         aria-label="Go back"
       >
-        <i class="fas fa-chevron-left"></i>
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
       </button>
     {:else if showSettings}
       <!-- Settings Button - shown when not in settings -->

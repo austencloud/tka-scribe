@@ -53,7 +53,7 @@
   <header class="tab-header">
     <div class="header-content">
       <h2>
-        <i class="fas fa-gift"></i>
+        <i class="fas fa-gift" aria-hidden="true"></i>
         Release Notes
       </h2>
     </div>
@@ -68,7 +68,7 @@
       </div>
     {:else if versionState.error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <p>{versionState.error}</p>
         <button type="button" onclick={() => versionState.loadVersions()}>
           Try Again
@@ -76,7 +76,7 @@
       </div>
     {:else if versionState.versions.length === 0}
       <div class="empty-state">
-        <i class="fas fa-rocket"></i>
+        <i class="fas fa-rocket" aria-hidden="true"></i>
         <h3>No Releases Yet</h3>
         <p>Check back soon for updates!</p>
       </div>

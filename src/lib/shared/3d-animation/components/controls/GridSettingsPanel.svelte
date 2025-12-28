@@ -34,7 +34,7 @@
       class:active={gridMode === "diamond"}
       onclick={() => onGridModeChange("diamond")}
     >
-      <i class="fas fa-diamond"></i>
+      <i class="fas fa-diamond" aria-hidden="true"></i>
       Diamond
     </button>
     <button
@@ -42,7 +42,7 @@
       class:active={gridMode === "box"}
       onclick={() => onGridModeChange("box")}
     >
-      <i class="fas fa-square"></i>
+      <i class="fas fa-square" aria-hidden="true"></i>
       Box
     </button>
   </div>
@@ -94,7 +94,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    min-height: 40px;
+    min-height: 48px; /* WCAG AAA touch target */
     background: transparent;
     border: none;
     border-radius: 8px;

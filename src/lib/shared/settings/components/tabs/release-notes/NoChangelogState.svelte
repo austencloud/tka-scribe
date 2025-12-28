@@ -4,7 +4,7 @@
 
 <section class="no-changelog-section">
   <div class="no-changelog-content">
-    <i class="fas fa-clipboard-list"></i>
+    <i class="fas fa-clipboard-list" aria-hidden="true"></i>
     <h3>No Changelog Available</h3>
     <p>Detailed changes for this version weren't recorded.</p>
   </div>

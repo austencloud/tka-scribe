@@ -129,7 +129,7 @@
         onclick={closeDrawer}
         aria-label="Close menu"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 

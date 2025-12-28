@@ -7,7 +7,7 @@
 
 import type { MotionColor } from "../domain/enums/pictograph-enums";
 import { GridMode } from "../../grid/domain/enums/grid-enums";
-import { resolve } from "../../../inversify/bootstrap";
+import { resolve } from "../../../inversify/resolve-utils";
 import { TYPES } from "../../../inversify/types";
 import type { IArrowPositioningOrchestrator } from "../../arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
 import type { IGridModeDeriver } from "../../grid/services/contracts/IGridModeDeriver";

@@ -80,7 +80,8 @@
     type="file"
     accept="image/*"
     onchange={handlePhotoUpload}
-    style="display: none;"
+    aria-label="Upload profile photo"
+    class="sr-only"
   />
 </div>
 
@@ -282,7 +283,7 @@
   }
 
   .photo-container.compact .photo-overlay span {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .photo-container.very-compact .photo-overlay i {
@@ -290,7 +291,7 @@
   }
 
   .photo-container.very-compact .photo-overlay span {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .photo-title {
@@ -351,5 +352,17 @@
     .photo-wrapper:focus-visible {
       outline: 3px solid white;
     }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

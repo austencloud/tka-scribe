@@ -15,12 +15,12 @@
     disabled={!canShare}
     onclick={onInstagramPost}
   >
-    <i class="fab fa-instagram"></i>
+    <i class="fab fa-instagram" aria-hidden="true"></i>
     <span>Post to Instagram</span>
   </button>
 
   <button class="action-btn social facebook" disabled>
-    <i class="fab fa-facebook"></i>
+    <i class="fab fa-facebook" aria-hidden="true"></i>
     <span>Post to Facebook</span>
   </button>
 </div>

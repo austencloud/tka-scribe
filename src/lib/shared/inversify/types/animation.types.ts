@@ -7,7 +7,7 @@
 export const AnimationTypes = {
   // Orchestration
   ISequenceAnimationOrchestrator: Symbol.for("ISequenceAnimationOrchestrator"),
-  IAnimationLoopService: Symbol.for("IAnimationLoopService"),
+  IAnimationLoop: Symbol.for("IAnimationLoop"),
   IAnimationPlaybackController: Symbol.for("IAnimationPlaybackController"),
   IAnimationStateService: Symbol.for("IAnimationStateService"),
   IAnimationStorageManager: Symbol.for("IAnimationStorageManager"),
@@ -39,7 +39,7 @@ export const AnimationTypes = {
   ITrailCapturer: Symbol.for("ITrailCapturer"),
 
   // Mode-Specific
-  ISequenceNormalizationService: Symbol.for("ISequenceNormalizationService"),
+  ISequenceNormalizer: Symbol.for("ISequenceNormalizer"),
   ITunnelModeSequenceManager: Symbol.for("ITunnelModeSequenceManager"),
 
   // Data

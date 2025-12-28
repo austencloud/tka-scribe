@@ -21,7 +21,7 @@
   <!-- Steps Section -->
   <div class="steps-section">
     <h3 class="section-heading" class:compact>
-      <i class="fas fa-list-ol"></i>
+      <i class="fas fa-list-ol" aria-hidden="true"></i>
       <span>Follow These Steps</span>
     </h3>
     <div class="steps-grid">
@@ -34,13 +34,13 @@
   <!-- Benefits Section -->
   <div class="benefits-section" class:compact>
     <h3 class="section-heading" class:compact>
-      <i class="fas fa-star"></i>
+      <i class="fas fa-star" aria-hidden="true"></i>
       <span>Why Install?</span>
     </h3>
     <div class="benefits-grid" class:compact>
       {#each instructions.benefits as benefit}
         <div class="benefit-item" class:compact>
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
           <span>{benefit}</span>
         </div>
       {/each}

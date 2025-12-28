@@ -11,6 +11,9 @@ import { RippleEffect } from "../../application/services/implementations/RippleE
 import { Authenticator } from "../../auth/services/implementations/Authenticator";
 import { ProfilePictureManager } from "../../auth/services/implementations/ProfilePictureManager";
 import { UserDocumentManager } from "../../auth/services/implementations/UserDocumentManager";
+import { ProfileApiClient } from "../../auth/services/implementations/ProfileApiClient";
+import { StepUpAuthCoordinator } from "../../auth/services/implementations/StepUpAuthCoordinator.svelte";
+import { AccountManager } from "../../auth/services/implementations/AccountManager";
 import { SubscriptionManager } from "../../subscription/services/implementations/SubscriptionManager";
 import { createAppState } from "../../application/state/app-state-factory.svelte";
 import { createPerformanceMetricsState } from "../../application/state/PerformanceMetricsState.svelte";
@@ -26,7 +29,7 @@ import { PlatformDetector } from "../../mobile/services/implementations/Platform
 import { GestureHandler } from "../../mobile/services/implementations/GestureHandler";
 import { PWAEngagementTracker } from "../../mobile/services/implementations/PWAEngagementTracker";
 import { PWAInstallDismissalManager } from "../../mobile/services/implementations/PWAInstallDismissalManager";
-import { SettingsState } from "../../settings/state/SettingsState.svelte.js";
+import { SettingsState } from "../../settings/state/SettingsState.svelte";
 import { FirebaseSettingsPersister } from "../../settings/services/implementations/FirebaseSettingsPersister";
 import { OnboardingPersister } from "../../onboarding/services/implementations/OnboardingPersister";
 import { TagManager } from "../../../features/library/services/implementations/TagManager";
@@ -58,6 +61,12 @@ export const coreModule = new ContainerModule(
       .bind(TYPES.ISubscriptionManager)
       .to(SubscriptionManager)
       .inSingletonScope();
+    options.bind(TYPES.IProfileApiClient).to(ProfileApiClient);
+    options
+      .bind(TYPES.IStepUpAuthCoordinator)
+      .to(StepUpAuthCoordinator)
+      .inSingletonScope();
+    options.bind(TYPES.IAccountManager).to(AccountManager);
 
     // === MOBILE SERVICES ===
     options.bind(TYPES.IMobileFullscreenManager).to(MobileFullscreenManager);
@@ -79,7 +88,8 @@ export const coreModule = new ContainerModule(
     options.bind(TYPES.ISvgImageConverter).to(SvgImageConverter);
 
     // === SETTINGS SERVICES ===
-    options.bind(TYPES.ISettingsState).to(SettingsState);
+    console.log("🔧 [core.module] Binding ISettingsState to SettingsState:", SettingsState);
+    options.bind(TYPES.ISettingsState).to(SettingsState).inSingletonScope();
     options
       .bind(TYPES.ISettingsPersister)
       .to(FirebaseSettingsPersister)

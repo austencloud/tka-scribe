@@ -24,7 +24,7 @@
 </script>
 
 <div class="admin-empty-state {className}">
-  <i class="fas {icon} empty-icon"></i>
+  <i class="fas {icon} empty-icon" aria-hidden="true"></i>
   <h3 class="empty-title">{title}</h3>
   {#if message}
     <p class="empty-message">{message}</p>

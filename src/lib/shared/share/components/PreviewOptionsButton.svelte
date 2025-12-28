@@ -10,9 +10,9 @@
 </script>
 
 <button class="preview-options-button" onclick={onClick} disabled={!canShare}>
-  <i class="fas fa-eye"></i>
+  <i class="fas fa-eye" aria-hidden="true"></i>
   <span>Preview & Options</span>
-  <i class="fas fa-chevron-right"></i>
+  <i class="fas fa-chevron-right" aria-hidden="true"></i>
 </button>
 
 <style>

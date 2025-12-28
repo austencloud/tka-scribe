@@ -38,7 +38,7 @@
   <div class="setting-group">
     <div class="setting-header">
       <label for="fps-slider">
-        <i class="fas fa-tachometer-alt"></i>
+        <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
         Frame Rate
       </label>
       <span class="setting-value">{hubState.animationSettings.fps} FPS</span>
@@ -63,7 +63,7 @@
   <div class="setting-group">
     <div class="setting-header">
       <label for="loop-slider">
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
         Loop Count
       </label>
       <span class="setting-value">{hubState.animationSettings.loopCount}x</span>
@@ -88,7 +88,7 @@
   <div class="setting-group">
     <div class="toggle-row">
       <div class="toggle-label">
-        <i class="fas fa-layer-group"></i>
+        <i class="fas fa-layer-group" aria-hidden="true"></i>
         <div>
           <span class="toggle-title">Show Overlays</span>
           <span class="toggle-description">Display grid lines and beat markers</span>

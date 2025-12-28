@@ -8,7 +8,7 @@
 import type { ArrowPlacementData } from "../../../positioning/placement/domain/ArrowPlacementData";
 import type { Point } from "fabric";
 import { inject, injectable } from "inversify";
-import { TYPES } from "../../../../../inversify/bootstrap";
+import { TYPES } from "../../../../../inversify/types";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../../shared/domain/models/PictographData";
 import type { IArrowGridCoordinator } from "../contracts/IArrowGridCoordinator";

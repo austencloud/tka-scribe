@@ -134,7 +134,7 @@
     }
 
     .xp-label {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

@@ -61,8 +61,8 @@ Now with intelligent rotation animation matching prop behavior!
   const EPSILON = 0.0001;
 
   // Track rotation state for intelligent animation
-  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
-  let displayedRotation = $state<number>(arrowPosition?.rotation ?? 0);
+  // Initialize with 0, $effect below handles initial and subsequent prop changes
+  let displayedRotation = $state<number>(0);
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
 
@@ -284,15 +284,15 @@ Now with intelligent rotation animation matching prop behavior!
 </script>
 
 {#if showArrow}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <g
     class="arrow-svg {motionData.color}-arrow-svg"
     class:mirrored={shouldMirror}
     class:clickable={isClickable}
     class:selected={isSelected}
-    onclick={handleArrowClick}
-    role={isClickable ? "button" : null}
-    tabindex={isClickable ? 0 : -1}
+    onclick={isClickable ? handleArrowClick : undefined}
+    onkeydown={isClickable ? (e) => (e.key === "Enter" || e.key === " ") && handleArrowClick(e) : undefined}
+    role={isClickable ? "button" : undefined}
+    tabindex={isClickable ? 0 : undefined}
     aria-label={isClickable
       ? `${color} arrow - ${motionData.motion} ${motionData.turns}`
       : undefined}

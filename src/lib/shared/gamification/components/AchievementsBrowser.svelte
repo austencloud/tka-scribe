@@ -217,7 +217,7 @@
         <!-- Stats Section -->
         <div class="stats-section">
           <div class="stat-card glass-surface">
-            <div class="stat-icon"><i class="fas fa-star"></i></div>
+            <div class="stat-icon"><i class="fas fa-star" aria-hidden="true"></i></div>
             <div class="stat-content">
               <div class="stat-value">{stats?.currentLevel || 0}</div>
               <div class="stat-label">Level</div>
@@ -226,7 +226,7 @@
 
           <div class="stat-card glass-surface">
             <div class="stat-icon">
-              <i class="fas fa-magic-wand-sparkles"></i>
+              <i class="fas fa-magic-wand-sparkles" aria-hidden="true"></i>
             </div>
             <div class="stat-content">
               <div class="stat-value">
@@ -237,7 +237,7 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+            <div class="stat-icon"><i class="fas fa-bullseye" aria-hidden="true"></i></div>
             <div class="stat-content">
               <div class="stat-value">
                 {stats?.achievementsUnlocked || 0}/{stats?.totalAchievements ||
@@ -248,7 +248,7 @@
           </div>
 
           <div class="stat-card glass-surface">
-            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+            <div class="stat-icon"><i class="fas fa-fire" aria-hidden="true"></i></div>
             <div class="stat-content">
               <div class="stat-value">{currentStreak}</div>
               <div class="stat-label">Day Streak</div>
@@ -260,7 +260,7 @@
         {#if dailyChallenge}
           <div class="daily-challenge glass-surface">
             <div class="challenge-header">
-              <h3><i class="fas fa-bullseye"></i> Daily Challenge</h3>
+              <h3><i class="fas fa-bullseye" aria-hidden="true"></i> Daily Challenge</h3>
               <span class="difficulty-badge {dailyChallenge.difficulty}"
                 >{dailyChallenge.difficulty}</span
               >
@@ -299,6 +299,7 @@
                   class="fas {categoryIcons[
                     category as Achievement['category']
                   ]}"
+                  aria-hidden="true"
                 ></i></span
               >
               <span class="tab-name">{name}</span>
@@ -321,7 +322,7 @@
               class:completed={isCompleted}
             >
               <div class="achievement-icon">
-                <i class="fas {achievement.icon}"></i>
+                <i class="fas {achievement.icon}" aria-hidden="true"></i>
               </div>
               <div class="achievement-content">
                 <div class="achievement-header">

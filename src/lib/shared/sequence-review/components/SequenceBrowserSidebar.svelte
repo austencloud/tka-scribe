@@ -200,7 +200,7 @@
 		padding: 0 6px;
 		background: rgba(255, 255, 255, 0.1);
 		border-radius: 10px;
-		font-size: 10px;
+		font-size: 12px;
 	}
 
 	.sequence-list {

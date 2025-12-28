@@ -50,7 +50,7 @@
     ? `, ${badgeCount} unread notifications`
     : ''}"
 >
-  <i class="fas fa-bars menu-icon"></i>
+  <i class="fas fa-bars menu-icon" aria-hidden="true"></i>
   <!-- Inbox unread badge -->
   {#if badgeCount > 0}
     <span class="unread-badge" aria-hidden="true">
@@ -119,7 +119,7 @@
     background: var(--semantic-error, #ef4444);
     border-radius: 9px;
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 18px;
     text-align: center;

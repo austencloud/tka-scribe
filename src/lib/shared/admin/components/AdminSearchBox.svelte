@@ -31,7 +31,7 @@
 </script>
 
 <div class="admin-search-box {className}">
-  <i class="fas {icon} search-icon"></i>
+  <i class="fas {icon} search-icon" aria-hidden="true"></i>
   <input
     type="text"
     bind:value
@@ -42,7 +42,7 @@
   />
   {#if value}
     <button class="clear-btn" onclick={handleClear} aria-label="Clear search">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   {/if}
 </div>

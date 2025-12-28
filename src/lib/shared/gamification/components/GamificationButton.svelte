@@ -108,7 +108,7 @@
       </div>
     {:else}
       <!-- Simple trophy icon - minimal design -->
-      <i class="fas fa-trophy icon-minimal"></i>
+      <i class="fas fa-trophy icon-minimal" aria-hidden="true"></i>
       <!-- Optional: Small level badge for levels > 1 -->
       {#if levelProgress && levelProgress.currentLevel > 1}
         <span class="level-badge-minimal">{levelProgress.currentLevel}</span>
@@ -192,7 +192,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 9px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
     color: var(--theme-text, white);
     box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.3));

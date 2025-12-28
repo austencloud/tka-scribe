@@ -31,7 +31,7 @@
         <img src={step.image} alt="Step {index + 1}" class="step-image" />
       {:else}
         <div class="image-placeholder">
-          <i class="fas fa-image"></i>
+          <i class="fas fa-image" aria-hidden="true"></i>
           <span class="placeholder-text">Screenshot coming soon</span>
         </div>
       {/if}

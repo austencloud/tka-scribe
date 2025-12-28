@@ -304,7 +304,7 @@
 
   .section-title {
     margin: 0 0 16px 4px; /* More space before grid for better visual hierarchy */
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.2px;
@@ -499,7 +499,7 @@
     position: absolute;
     top: 6px;
     right: 6px;
-    font-size: 8px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 700;
     text-transform: uppercase;
     padding: 2px 5px;
@@ -524,7 +524,7 @@
     background: var(--semantic-error, #ef4444);
     border-radius: 9px;
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 18px;
     text-align: center;

@@ -141,8 +141,9 @@ export class ParallaxStarSystem {
 
         L.stars.forEach((s: Star) => {
           // Apply frame multiplier to drift for consistent animation speed
+          // 95% reduction for users with vestibular disorders (WCAG AAA)
           const effectiveDrift =
-            frameMultiplier * (a11y.reducedMotion ? 0.3 : 1);
+            frameMultiplier * (a11y.reducedMotion ? 0.05 : 1);
           s.x = (s.x + L.driftX * effectiveDrift + dim.width) % dim.width;
           s.y = (s.y + L.driftY * effectiveDrift + dim.height) % dim.height;
 

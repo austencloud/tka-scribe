@@ -3,11 +3,21 @@
   import AnnouncementItem from "./AnnouncementItem.svelte";
   import NotificationsSectionShell from "./NotificationsSectionShell.svelte";
 
-  export let announcements: Announcement[] = [];
-  export let isLoading = false;
-  export let dismissedAnnouncements = new Set<string>();
-  export let severityColor: (severity: Announcement["severity"]) => string;
-  export let formatDate: (date: Date) => string;
+  interface Props {
+    announcements?: Announcement[];
+    isLoading?: boolean;
+    dismissedAnnouncements?: Set<string>;
+    severityColor: (severity: Announcement["severity"]) => string;
+    formatDate: (date: Date) => string;
+  }
+
+  let {
+    announcements = [],
+    isLoading = false,
+    dismissedAnnouncements = new Set<string>(),
+    severityColor,
+    formatDate
+  }: Props = $props();
 </script>
 
 <NotificationsSectionShell
@@ -16,12 +26,12 @@
 >
   {#if isLoading}
     <div class="loading-state panel-shell">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <p>Loading announcements...</p>
     </div>
   {:else if announcements.length === 0}
     <div class="empty-state panel-shell">
-      <i class="fas fa-inbox"></i>
+      <i class="fas fa-inbox" aria-hidden="true"></i>
       <p>No announcements right now</p>
       <span>We’ll post important updates here.</span>
     </div>

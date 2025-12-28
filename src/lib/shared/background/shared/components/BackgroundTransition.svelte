@@ -13,18 +13,17 @@ Uses a crossfade technique with two layers to animate between gradients
 
   // Track previous and current gradients for crossfade
   let previousGradient = $state<string>("");
-  let currentGradient = $state<string>(
-    BACKGROUND_GRADIENTS[currentBackground as BackgroundType] || ""
-  );
+  let currentGradient = $state<string>("");
   let isTransitioning = $state(false);
   let transitionKey = $state(0);
 
-  // Watch for background changes
+  // Watch for background changes and set initial value
   $effect(() => {
     const newGradient =
       BACKGROUND_GRADIENTS[currentBackground as BackgroundType] || "";
 
-    if (newGradient !== currentGradient) {
+    // First render or change - update gradient
+    if (currentGradient === "" || newGradient !== currentGradient) {
       // Store previous gradient
       previousGradient = currentGradient;
       currentGradient = newGradient;
@@ -81,7 +80,13 @@ Uses a crossfade technique with two layers to animate between gradients
     bottom: 0;
     background-attachment: fixed;
     background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
+  }
+
+  /* Gradient shift animation - only when motion is OK */
+  @media (prefers-reduced-motion: no-preference) {
+    .background-layer {
+      animation: gradientShift 15s ease infinite;
+    }
   }
 
   .background-layer.previous {

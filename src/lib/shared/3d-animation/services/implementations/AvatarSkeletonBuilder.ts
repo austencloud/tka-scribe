@@ -107,9 +107,6 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
     this.buildArmChains();
 
     this.state.isLoaded = true;
-    console.log(
-      `Avatar loaded: ${this.state.meshes.length} meshes, ${this.state.bones.size} mapped bones`
-    );
   }
 
   private mapBone(bone: Bone): void {
@@ -127,7 +124,6 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
         // Use exact match first, then contains as fallback
         if (boneName === alias.toLowerCase()) {
           this.state.bones.set(standardName as BoneName, bone);
-          console.log(`[Skeleton] Mapped bone "${bone.name}" to ${standardName} (exact)`);
           return;
         }
       }
@@ -139,7 +135,6 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
       for (const alias of aliases) {
         if (boneName.includes(alias.toLowerCase())) {
           this.state.bones.set(standardName as BoneName, bone);
-          console.log(`[Skeleton] Mapped bone "${bone.name}" to ${standardName} (contains)`);
           return;
         }
       }
@@ -159,9 +154,6 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
       // Compute rest directions in local space (direction bone points in T-pose)
       const rootRestDir = this.computeRestDirection(leftShoulder, leftElbow);
       const middleRestDir = this.computeRestDirection(leftElbow, leftHand);
-
-      console.log(`[Skeleton] Left arm root rest dir: (${rootRestDir.x.toFixed(2)}, ${rootRestDir.y.toFixed(2)}, ${rootRestDir.z.toFixed(2)})`);
-      console.log(`[Skeleton] Left arm middle rest dir: (${middleRestDir.x.toFixed(2)}, ${middleRestDir.y.toFixed(2)}, ${middleRestDir.z.toFixed(2)})`);
 
       this.state.leftArmChain = {
         root: leftShoulder,
@@ -187,9 +179,6 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
       // Compute rest directions in local space
       const rootRestDir = this.computeRestDirection(rightShoulder, rightElbow);
       const middleRestDir = this.computeRestDirection(rightElbow, rightHand);
-
-      console.log(`[Skeleton] Right arm root rest dir: (${rootRestDir.x.toFixed(2)}, ${rootRestDir.y.toFixed(2)}, ${rootRestDir.z.toFixed(2)})`);
-      console.log(`[Skeleton] Right arm middle rest dir: (${middleRestDir.x.toFixed(2)}, ${middleRestDir.y.toFixed(2)}, ${middleRestDir.z.toFixed(2)})`);
 
       this.state.rightArmChain = {
         root: rightShoulder,

@@ -138,7 +138,7 @@
           {/each}
         </span>
         <span class="variation-text">{variationLabel}</span>
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
       </button>
     {/if}
   </header>
@@ -239,7 +239,7 @@
   }
 
   .variation-toggle i {
-    font-size: 10px;
+    font-size: 12px;
     opacity: 0.7;
   }
 </style>

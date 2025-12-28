@@ -25,8 +25,13 @@
     onEndEdit?: () => void;
   } = $props();
 
-  let editText = $state(entry.text);
+  let editText = $state("");
   let isSaving = $state(false);
+
+  // Sync editText when entry changes
+  $effect(() => {
+    editText = entry.text;
+  });
   let isDeleting = $state(false);
   let showDeleteConfirm = $state(false);
   let error = $state<string | null>(null);
@@ -47,6 +52,13 @@
     editText; // Track changes
     if (textareaElement) {
       autoResizeTextarea(textareaElement);
+    }
+  });
+
+  // Focus textarea when entering edit mode (proper alternative to autofocus)
+  $effect(() => {
+    if (isEditing && textareaElement) {
+      textareaElement.focus();
     }
   });
 
@@ -138,14 +150,12 @@
 {#if isEditing}
   <!-- Edit Mode -->
   <div class="edit-container">
-    <!-- svelte-ignore a11y_autofocus -->
     <textarea
       bind:this={textareaElement}
       bind:value={editText}
       onkeydown={handleKeydown}
       placeholder="Enter changelog text..."
       disabled={isSaving}
-      autofocus
     ></textarea>
 
     {#if error}
@@ -167,9 +177,9 @@
             disabled={isDeleting}
           >
             {#if isDeleting}
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             {:else}
-              <i class="fas fa-trash"></i>
+              <i class="fas fa-trash" aria-hidden="true"></i>
             {/if}
             Yes
           </button>
@@ -192,7 +202,7 @@
             onclick={() => (showDeleteConfirm = true)}
             disabled={isSaving}
           >
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-trash" aria-hidden="true"></i>
             Delete
           </button>
         {/if}
@@ -205,9 +215,9 @@
             disabled={isSaving}
           >
             {#if isSaving}
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             {:else}
-              <i class="fas fa-check"></i>
+              <i class="fas fa-check" aria-hidden="true"></i>
             {/if}
             Save
           </button>
@@ -219,7 +229,7 @@
           onclick={cancelEdit}
           disabled={isSaving}
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
           {hasChanges ? "Cancel" : "Close"}
         </button>
       </div>
@@ -255,7 +265,7 @@
         aria-label="View linked feedback"
         title="View linked feedback"
       >
-        <i class="fas fa-external-link-alt"></i>
+        <i class="fas fa-external-link-alt" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -333,8 +343,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 36px;
-    height: 36px;
+    min-width: 48px; /* WCAG AAA touch target */
+    height: 48px;
   }
 
   .feedback-link-icon:hover {
@@ -408,7 +418,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    height: 36px;
+    min-height: 48px; /* WCAG AAA touch target */
     padding: 0 14px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     backdrop-filter: blur(8px);
@@ -525,7 +535,7 @@
   .confirm-text .hint {
     font-weight: 400;
     opacity: 0.7;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .confirm-actions {

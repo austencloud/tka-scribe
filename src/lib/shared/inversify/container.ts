@@ -1,25 +1,60 @@
+/**
+ * InversifyJS Container - Zero-Downtime HMR Support
+ *
+ * This module provides the dependency injection container with bulletproof
+ * Hot Module Replacement (HMR) resilience.
+ *
+ * Key Features:
+ * - Shadow Container Pattern: Rebuild in background while active serves requests
+ * - Atomic Container Swap: Switch only when rebuild is 100% complete
+ * - Deferred Resolution: Queue requests during rebuild, auto-resolve when ready
+ * - Singleton Caching: Preserve singleton state across HMR
+ *
+ * @module container
+ */
+
 import { Container } from "inversify";
 import type { ContainerModule } from "inversify";
+import { HMRContainerManager } from "./hmr/HMRContainerManager";
 
 // Export TYPES immediately to avoid circular dependency
 export { TYPES } from "./types";
 
-// Create container
-const container = new Container();
+// ============================================================================
+// GLOBAL TYPE AUGMENTATION
+// ============================================================================
 
-// Export container and resolve function immediately
-export { container };
+declare global {
+  // eslint-disable-next-line no-var
+  var __TKA_CONTAINER__: Container | undefined;
+  // eslint-disable-next-line no-var
+  var __TKA_CONTAINER_INITIALIZED__: boolean | undefined;
+  // eslint-disable-next-line no-var
+  var __TKA_HMR_MANAGER__: HMRContainerManager | undefined;
+}
+
+// ============================================================================
+// HMR MANAGER SETUP
+// ============================================================================
+
+const hmrManager = HMRContainerManager.getInstance({
+  resolutionTimeout: 5000,
+  preserveSingletons: true,
+  debug: import.meta.env.DEV,
+  maxDeferredQueue: 100,
+});
+
+// Export the container from the manager
+export const container = hmrManager.getContainer();
 export const inversifyContainer = container;
 
-// Track initialization state
-let isInitialized = false;
-let initializationPromise: Promise<void> | null = null;
-let isHMRRecovering = false; // Track HMR recovery state
+// ============================================================================
+// MODULE TRACKING
+// ============================================================================
 
 // Track loaded modules to prevent duplicate loading
-// Use HMR data to persist across module reloads, otherwise use fresh set
+// Use HMR data to persist across module reloads
 const loadedModules: Set<string> = import.meta.hot?.data?.loadedModules ?? new Set<string>();
-// Track modules currently being loaded to prevent race conditions
 const pendingModules = new Map<string, Promise<void>>();
 let tier1Loaded = import.meta.hot?.data?.tier1Loaded ?? false;
 let tier2Loaded = import.meta.hot?.data?.tier2Loaded ?? false;
@@ -28,198 +63,153 @@ let tier2Promise: Promise<void> | null = null;
 // Browser detection utility
 const isBrowser = typeof window !== "undefined";
 
-// Handle HMR (Hot Module Replacement) - Full container rebuild
-if (import.meta.hot) {
-  import.meta.hot.accept(() => {
-    console.log("🔄 HMR: Rebuilding InversifyJS container...");
-    isHMRRecovering = true;
+// Track initialization state
+let isInitialized = false;
+let initializationPromise: Promise<void> | null = null;
 
-    // loadedModules is already restored from HMR data (see line 21)
-    // Extract feature modules (non-tier1/tier2) that need to be re-registered
+// ============================================================================
+// HMR LIFECYCLE HANDLERS
+// ============================================================================
+
+if (import.meta.hot) {
+  import.meta.hot.accept(async () => {
+    console.log("🔄 HMR: Container module updated - rebuilding with zero downtime...");
+
+    // Restore module state from HMR data
     const featureModulesToRestore = Array.from(loadedModules).filter(
-      (module) =>
-        ![
-          // Tier 1: Core infrastructure
-          "core",
-          "navigation",
-          "data",
-          "keyboard",
-          "analytics",
-          "presence",
-          // Tier 2: Shared services
-          "render",
-          "pictograph",
-          "admin",
-          "feedback",
-          "share",
-          "community",
-        ].includes(module)
+      (module) => !getTierModuleNames().includes(module)
     );
 
-    try {
-      // Clear all existing bindings
-      void container.unbindAll();
+    // Trigger HMR rebuild through manager
+    await hmrManager.onHMRAccept();
 
-      // Reset initialization state
-      isInitialized = false;
-      initializationPromise = null;
-
-      // Clear the module tracking - they'll be re-added as modules load
-      // (tier1Loaded/tier2Loaded are already set from HMR data if available)
-      tier2Promise = null;
-      loadedModules.clear();
-      pendingModules.clear();
-
-      // Rebuild the container
-      initializeContainer()
-        .then(async () => {
-          // Restore previously loaded feature modules
-          console.log(
-            `🔄 HMR: Restoring feature modules: ${featureModulesToRestore.join(", ") || "(none)"}`
-          );
-          for (const module of featureModulesToRestore) {
-            try {
-              await loadFeatureModule(module);
-              console.log(`✅ HMR: Restored feature module "${module}"`);
-            } catch (error) {
-              console.error(
-                `❌ HMR: Failed to restore feature module "${module}":`,
-                error
-              );
-            }
-          }
-
-          isHMRRecovering = false;
-          console.log("✅ HMR: Container successfully rebuilt");
-        })
-        .catch((error) => {
-          console.error("❌ HMR: Container rebuild failed:", error);
-          isHMRRecovering = false;
-        });
-    } catch (error) {
-      console.error("❌ HMR: Container unbind failed:", error);
-      isHMRRecovering = false;
+    // Restore feature modules
+    for (const module of featureModulesToRestore) {
+      try {
+        await loadFeatureModule(module);
+        console.log(`✅ HMR: Restored feature module "${module}"`);
+      } catch (error) {
+        console.warn(`⚠️ HMR: Failed to restore "${module}":`, error);
+      }
     }
+
+    // Reset state after successful rebuild
+    isInitialized = true;
+    console.log("✅ HMR: Container rebuilt with zero downtime");
   });
 
-  // Clean up on module disposal - preserve loaded modules state for next version
   import.meta.hot.dispose((data) => {
-    console.log("🧹 HMR: Disposing container...");
+    console.log("🔄 HMR: Preparing for container rebuild...");
 
-    // Save loaded modules to HMR data so next version can restore them
+    // Save state for next version
     data.loadedModules = new Set(loadedModules);
     data.tier1Loaded = tier1Loaded;
     data.tier2Loaded = tier2Loaded;
 
-    try {
-      void container.unbindAll();
-    } catch (error) {
-      console.error("❌ HMR: Container disposal failed:", error);
-    }
-    isInitialized = false;
-    initializationPromise = null;
-    tier2Promise = null;
-    pendingModules.clear();
+    // Trigger dispose on manager (caches singletons, prepares for rebuild)
+    hmrManager.onHMRDispose();
+
+    // DON'T call unbindAll() here - manager handles it during atomic swap
   });
 }
 
-// Primary synchronous resolve used throughout the app
-// Throws if the container is not yet initialized; call ensureContainerInitialized() early
+/**
+ * Get names of tier 1 and tier 2 modules
+ */
+function getTierModuleNames(): string[] {
+  return [
+    // Tier 1: Core infrastructure
+    "core",
+    "navigation",
+    "data",
+    "keyboard",
+    "analytics",
+    "presence",
+    // Tier 2: Shared services
+    "render",
+    "pictograph",
+    "admin",
+    "feedback",
+    "share",
+    "community",
+  ];
+}
+
+// ============================================================================
+// SYNC TO GLOBAL STATE
+// ============================================================================
+
+function syncContainerToGlobal(): void {
+  if (typeof globalThis !== "undefined") {
+    globalThis.__TKA_CONTAINER__ = hmrManager.getContainer();
+    globalThis.__TKA_CONTAINER_INITIALIZED__ = isInitialized;
+  }
+}
+
+// ============================================================================
+// RESOLUTION FUNCTIONS (HMR-RESILIENT)
+// ============================================================================
+
+/**
+ * Resolve a service synchronously.
+ * During HMR, uses fallbacks (cached singletons, shadow container).
+ * Throws only if service is truly unavailable.
+ */
 export function resolve<T>(serviceType: symbol): T {
-  // Don't resolve services during SSR
   if (!isBrowser) {
     throw new Error(
-      `Cannot resolve service ${String(serviceType)} during server-side rendering. Use tryResolve() or ensure this code only runs in browser.`
+      `Cannot resolve service ${String(serviceType)} during server-side rendering.`
     );
   }
 
-  // If we're in HMR recovery mode, wait a bit for auto-recovery
-  if (isHMRRecovering) {
-    // Small delay to allow HMR recovery to complete
-    setTimeout(() => {}, 10);
-  }
-
-  if (!isInitialized) {
-    // During HMR, try to auto-recover by re-initializing silently
-    if (import.meta.hot && !isHMRRecovering) {
-      isHMRRecovering = true;
-      // Start initialization in background but throw for now - next call should work
-      initializeContainer()
-        .then(() => {
-          isHMRRecovering = false;
-        })
-        .catch((error) => {
-          console.error("❌ HMR: Container recovery failed:", error);
-          isHMRRecovering = false;
-        });
-    }
-
-    throw new Error(
-      `Container not initialized. Service ${String(serviceType)} cannot be resolved before container initialization completes.`
-    );
-  }
-
-  try {
-    return container.get<T>(serviceType);
-  } catch (error) {
-    // During HMR, container might have stale bindings
-    if (import.meta.hot && !isHMRRecovering) {
-      isHMRRecovering = true;
-      initializeContainer()
-        .then(() => {
-          isHMRRecovering = false;
-        })
-        .catch((err) => {
-          console.error("HMR re-initialization failed:", err);
-          isHMRRecovering = false;
-        });
-    }
-    throw error;
-  }
+  // Use HMR manager for resilient resolution
+  return hmrManager.resolve<T>(serviceType);
 }
 
-// Safe resolve function that returns null if container is not ready
+/**
+ * Try to resolve a service - returns null instead of throwing.
+ * Safe to use during HMR or when service might not be bound.
+ */
 export function tryResolve<T>(serviceType: symbol): T | null {
-  // Return null during SSR
-  if (!isBrowser) {
-    return null;
-  }
-
-  if (!isInitialized) {
-    return null;
-  }
-  try {
-    return container.get<T>(serviceType);
-  } catch (error) {
-    // Suppress warnings during HMR recovery - they're expected
-    if (!isHMRRecovering) {
-      console.warn(`[tryResolve] Failed to resolve: ${String(serviceType)}`, error);
-    }
-    return null;
-  }
+  if (!isBrowser) return null;
+  return hmrManager.tryResolve<T>(serviceType);
 }
 
-// Async resolve preserved for callers that want to await initialization explicitly
+/**
+ * Resolve a service asynchronously.
+ * Waits for HMR to complete if in progress.
+ */
 export async function resolveAsync<T>(serviceType: symbol): Promise<T> {
   await ensureContainerInitialized();
-  return container.get<T>(serviceType);
+  return hmrManager.resolveAsync<T>(serviceType);
 }
 
-// Check if container is initialized
+// ============================================================================
+// INITIALIZATION FUNCTIONS
+// ============================================================================
+
+/**
+ * Check if container is initialized
+ */
 export function isContainerInitialized(): boolean {
   return isInitialized;
 }
 
-// Get container status for debugging
+/**
+ * Get container status for debugging
+ */
 export function getContainerStatus() {
   return {
     isInitialized,
     hasInitializationPromise: initializationPromise !== null,
     containerExists: container !== null,
+    hmrPhase: hmrManager.isHMRInProgress() ? "rebuilding" : "ready",
   };
 }
 
-// Ensure container is initialized
+/**
+ * Ensure container is initialized
+ */
 export async function ensureContainerInitialized(): Promise<void> {
   if (isInitialized) return;
   if (initializationPromise) {
@@ -229,9 +219,13 @@ export async function ensureContainerInitialized(): Promise<void> {
   await initializeContainer();
 }
 
+// ============================================================================
+// TIER 1: CRITICAL INFRASTRUCTURE MODULES
+// ============================================================================
+
 /**
- * TIER 1: Load critical infrastructure modules (auth, navigation, persistence)
- * ⏱️ Target: <500ms - Essential for app shell to become interactive
+ * Load critical infrastructure modules (blocking).
+ * Target: <500ms - Essential for app shell to become interactive
  */
 export async function loadCriticalModules(): Promise<void> {
   if (tier1Loaded) return;
@@ -253,34 +247,27 @@ export async function loadCriticalModules(): Promise<void> {
       import("./modules/presence.module"),
     ]);
 
-    if (!coreModule) {
-      throw new Error("coreModule is undefined");
-    }
-    if (!navigationModule) {
-      throw new Error("navigationModule is undefined");
-    }
-    if (!dataModule) {
-      throw new Error("dataModule is undefined");
-    }
-    if (!keyboardModule) {
-      throw new Error("keyboardModule is undefined");
-    }
-    if (!analyticsModule) {
-      throw new Error("analyticsModule is undefined");
-    }
-    if (!presenceModule) {
-      throw new Error("presenceModule is undefined");
-    }
-
-    await container.load(
+    // Register modules with HMR manager for rebuild
+    hmrManager.registerTier1Modules([
       coreModule,
       navigationModule,
       dataModule,
       keyboardModule,
       analyticsModule,
-      presenceModule
-    );
+      presenceModule,
+    ]);
 
+    // Load into container
+    await hmrManager.loadModules([
+      coreModule,
+      navigationModule,
+      dataModule,
+      keyboardModule,
+      analyticsModule,
+      presenceModule,
+    ]);
+
+    // Track loaded modules
     loadedModules.add("core");
     loadedModules.add("navigation");
     loadedModules.add("data");
@@ -288,33 +275,30 @@ export async function loadCriticalModules(): Promise<void> {
     loadedModules.add("analytics");
     loadedModules.add("presence");
     tier1Loaded = true;
+
   } catch (error) {
     console.error("❌ Failed to load Tier 1 modules:", error);
     throw error;
   }
 }
 
+// ============================================================================
+// TIER 2: SHARED SERVICE MODULES
+// ============================================================================
+
 /**
- * TIER 2: Load shared service modules (rendering, pictographs, admin, share)
- * ⏱️ Non-blocking - Loads in background while user reads content
- * Only truly shared modules that are needed across ALL features
+ * Load shared service modules (non-blocking background).
+ * Loads in background while user reads content.
  */
 export async function loadSharedModules(): Promise<void> {
   if (tier2Loaded) return;
-
-  // If already loading, wait for the existing promise
   if (tier2Promise) {
     await tier2Promise;
     return;
   }
 
-  // Start loading and cache the promise
   tier2Promise = (async () => {
     try {
-      // Only load modules that are truly needed everywhere
-      // NOTE: shareModule is included because CreateModuleInitializer
-      // (in build.module) depends on ISharer - must be available for HMR recovery
-      // NOTE: communityModule is included because Dashboard's FollowingFeedWidget needs it
       const [
         { renderModule },
         { pictographModule },
@@ -331,14 +315,25 @@ export async function loadSharedModules(): Promise<void> {
         import("./modules/community.module"),
       ]);
 
-      await container.load(
+      // Register modules with HMR manager for rebuild
+      hmrManager.registerTier2Modules([
         renderModule,
         pictographModule,
         adminModule,
         feedbackModule,
         shareModule,
-        communityModule
-      );
+        communityModule,
+      ]);
+
+      // Load into container
+      await hmrManager.loadModules([
+        renderModule,
+        pictographModule,
+        adminModule,
+        feedbackModule,
+        shareModule,
+        communityModule,
+      ]);
 
       loadedModules.add("render");
       loadedModules.add("pictograph");
@@ -347,96 +342,79 @@ export async function loadSharedModules(): Promise<void> {
       loadedModules.add("share");
       loadedModules.add("community");
       tier2Loaded = true;
+
     } catch (error) {
       console.error("❌ Failed to load Tier 2 modules:", error);
-      // Reset promise so it can be retried
       tier2Promise = null;
-      // Non-critical, don't throw
     }
   })();
 
   await tier2Promise;
 }
 
+// ============================================================================
+// TIER 3: FEATURE MODULES (ON-DEMAND)
+// ============================================================================
+
 /**
- * TIER 3: Load feature modules on-demand (user tabs)
- * ⏱️ Load when tab is clicked OR when user hovers >50ms (preloading)
+ * Load a feature module on-demand.
  *
- * @param feature - Tab name: 'create', 'discover', 'community', 'learn', 'animate', 'edit', 'collect', 'about', 'word_card', 'write', 'admin', 'share', 'compose'
+ * @param feature - Tab name: 'create', 'discover', 'compose', etc.
  */
 export async function loadFeatureModule(feature: string): Promise<void> {
-  // Check if already loaded
-  if (loadedModules.has(feature)) {
-    return;
-  }
+  if (loadedModules.has(feature)) return;
+
+  // Helper to load a module only if not already loaded
+  const loadIfNeeded = async (
+    name: string,
+    importFn: () => Promise<{ [key: string]: ContainerModule }>
+  ): Promise<void> => {
+    if (loadedModules.has(name)) return;
+
+    const pending = pendingModules.get(name);
+    if (pending) return pending;
+
+    const loadPromise = (async () => {
+      try {
+        const moduleExports = await importFn();
+        const module = Object.values(moduleExports)[0] as ContainerModule;
+        if (!module) throw new Error(`Module ${name} export is undefined`);
+
+        // Register with HMR manager for rebuild
+        hmrManager.registerFeatureModule(name, async () => {
+          const exports = await importFn();
+          return Object.values(exports)[0] as ContainerModule;
+        });
+
+        await hmrManager.loadModules([module]);
+        loadedModules.add(name);
+      } finally {
+        pendingModules.delete(name);
+      }
+    })();
+
+    pendingModules.set(name, loadPromise);
+    return loadPromise;
+  };
 
   try {
-    // Helper to load a module only if not already loaded
-    // Uses pendingModules map to prevent race conditions during parallel loads
-    const loadIfNeeded = async (
-      name: string,
-      importFn: () => Promise<{ [key: string]: ContainerModule }>
-    ): Promise<void> => {
-      // Already loaded - return immediately
-      if (loadedModules.has(name)) return;
-
-      // Currently loading - wait for the existing promise
-      const pending = pendingModules.get(name);
-      if (pending) return pending;
-
-      // Start loading and track the promise
-      const loadPromise = (async () => {
-        try {
-          const moduleExports = await importFn();
-          const module = Object.values(moduleExports)[0] as ContainerModule;
-          if (!module) {
-            throw new Error(`Module ${name} export is undefined`);
-          }
-          await container.load(module);
-          loadedModules.add(name);
-        } finally {
-          pendingModules.delete(name);
-        }
-      })();
-
-      pendingModules.set(name, loadPromise);
-      return loadPromise;
-    };
-
-    // Load only the modules needed for each feature
     switch (feature) {
       case "create":
-        // Create needs build (create), animator, and gamification
-        // NOTE: share is loaded in Tier 2, so we must wait for Tier 2 to complete
-        // before loading build.module (which depends on ISharer)
-        if (tier2Promise) {
-          await tier2Promise;
-        }
+        if (tier2Promise) await tier2Promise;
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),
-          loadIfNeeded(
-            "gamification",
-            () => import("./modules/gamification.module")
-          ),
+          loadIfNeeded("gamification", () => import("./modules/gamification.module")),
         ]);
         break;
 
       case "discover":
-        // Discover needs community module for CreatorsPanel (IUserRepository)
-        // Community module is loaded in Tier 2, wait for it
-        if (tier2Promise) {
-          await tier2Promise;
-        }
+        if (tier2Promise) await tier2Promise;
         await loadIfNeeded("discover", () => import("./modules/discover.module"));
         break;
 
       case "community":
-        // Library needs create module for OrientationCycleDetector (used by LibraryService)
-        // Community module is loaded in Tier 2, wait for it
-        if (tier2Promise) {
-          await tier2Promise;
-        }
+        if (tier2Promise) await tier2Promise;
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("discover", () => import("./modules/discover.module")),
@@ -458,7 +436,6 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "compose":
       case "animate":
-        // Compose/Animate needs discover (for sequence browser) and animator
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),
@@ -466,16 +443,11 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "edit":
-        // Edit uses discover services for sequence browser
-        await loadIfNeeded(
-          "discover",
-          () => import("./modules/discover.module")
-        );
+        await loadIfNeeded("discover", () => import("./modules/discover.module"));
         break;
 
       case "collect":
       case "library":
-        // Library needs create module for OrientationCycleDetector (used by LibraryService)
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
@@ -484,8 +456,6 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "account":
       case "settings":
-        // Account/Settings uses library services for user stats
-        // Library needs create module for OrientationCycleDetector (used by LibraryService)
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
@@ -494,15 +464,10 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "about":
       case "dashboard":
-        // About and Dashboard use no additional DI services beyond Tier 2
-        // (community module is loaded in Tier 2 for Dashboard's FollowingFeedWidget)
         break;
 
       case "feedback":
-        // Feedback is loaded in Tier 2, just wait for it
-        if (tier2Promise) {
-          await tier2Promise;
-        }
+        if (tier2Promise) await tier2Promise;
         break;
 
       case "word_card":
@@ -517,8 +482,6 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "admin":
-        // Admin module is loaded in Tier 2, only load its dependencies here
-        // Library needs create module for OrientationCycleDetector (used by LibraryService)
         await Promise.all([
           loadIfNeeded("create", () => import("./modules/build.module")),
           loadIfNeeded("library", () => import("./modules/library.module")),
@@ -528,58 +491,40 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         break;
 
       case "share":
-        // Share is now loaded in Tier 2, just wait for it to complete
-        if (tier2Promise) {
-          await tier2Promise;
-        }
+        if (tier2Promise) await tier2Promise;
         break;
 
       case "gamification":
-        await loadIfNeeded(
-          "gamification",
-          () => import("./modules/gamification.module")
-        );
+        await loadIfNeeded("gamification", () => import("./modules/gamification.module"));
         break;
 
       case "messaging":
-        await loadIfNeeded(
-          "messaging",
-          () => import("./modules/messaging.module")
-        );
+        await loadIfNeeded("messaging", () => import("./modules/messaging.module"));
         break;
 
       case "inbox":
-        // Inbox uses messaging and notification services (loaded in Tier 2)
         await loadIfNeeded("inbox", () => import("./modules/inbox.module"));
         break;
 
       case "cap-labeler":
-        // CAP labeler needs ISequenceAnalyzer from build.module
         await loadIfNeeded("create", () => import("./modules/build.module"));
-        await loadIfNeeded(
-          "cap-labeler",
-          () => import("./modules/cap-labeler.module")
-        );
+        await loadIfNeeded("cap-labeler", () => import("./modules/cap-labeler.module"));
         break;
 
       case "3d-viewer":
-        // 3D viewer needs discover (for sequence browser) and animation-3d services
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
-          loadIfNeeded(
-            "animation-3d",
-            () => import("../../shared/3d-animation/inversify/animation-3d.module")
+          loadIfNeeded("animation-3d", () =>
+            import("../../shared/3d-animation/inversify/animation-3d.module")
           ),
         ]);
         break;
 
       default:
-        // Silently skip unknown modules (e.g., removed/renamed modules from old persistence data)
         console.warn(`Unknown feature module: ${feature}`);
         return;
     }
 
-    // Always mark the feature itself as loaded
     loadedModules.add(feature);
   } catch (error) {
     console.error(`❌ Failed to load feature module '${feature}':`, error);
@@ -588,8 +533,7 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 }
 
 /**
- * Preload a feature module in the background (for hover-based preloading)
- * Non-blocking, errors are logged but don't throw
+ * Preload a feature module in the background (non-blocking)
  */
 export function preloadFeatureModule(feature: string): void {
   loadFeatureModule(feature).catch((error) => {
@@ -597,44 +541,37 @@ export function preloadFeatureModule(feature: string): void {
   });
 }
 
+// ============================================================================
+// CONTAINER INITIALIZATION
+// ============================================================================
+
 /**
- * Initialize the DI container with three-tier loading strategy
+ * Initialize the DI container with three-tier loading strategy.
  *
  * TIER 1: Critical modules (blocking) - Auth, navigation, persistence
- * TIER 2: Shared services (non-blocking background) - Rendering, animation, pictographs
+ * TIER 2: Shared services (non-blocking) - Rendering, animation, pictographs
  * TIER 3: Feature modules (on-demand) - User tabs loaded when accessed
- *
- * This reduces initial load time from 4-5s to ~1.5-2s
  */
-function initializeContainer() {
-  // Don't initialize during SSR
-  if (!isBrowser) {
-    return Promise.resolve();
-  }
-
-  if (initializationPromise) {
-    return initializationPromise;
-  }
+function initializeContainer(): Promise<void> {
+  if (!isBrowser) return Promise.resolve();
+  if (initializationPromise) return initializationPromise;
 
   initializationPromise = (async () => {
     try {
-      // TIER 1: Load critical infrastructure (BLOCKING - must complete)
-      // This makes the app shell interactive quickly
+      // TIER 1: Load critical infrastructure (BLOCKING)
       await loadCriticalModules();
 
       // TIER 2: Start loading shared services in background (NON-BLOCKING)
-      // Animation, rendering, pictographs used across all features
-      // Don't await - let it load in parallel while user explores
       tier2Promise = loadSharedModules();
 
-      // TIER 3: Feature modules loaded on-demand when user clicks/hovers tabs
-      // Preload the cached module to prevent UI flicker
+      // Preload cached feature module
       preloadCachedFeatureModule();
 
       isInitialized = true;
+      syncContainerToGlobal();
+
     } catch (error) {
-      console.error("❌ TKA Container: Failed to load modules:", error);
-      // Reset state so we can try again
+      console.error("❌ Container initialization failed:", error);
       isInitialized = false;
       initializationPromise = null;
       tier1Loaded = false;
@@ -649,8 +586,7 @@ function initializeContainer() {
 }
 
 /**
- * Preload the cached feature module to prevent UI flicker
- * Reads from localStorage and starts loading the user's last active module
+ * Preload the cached feature module from localStorage
  */
 function preloadCachedFeatureModule(): void {
   if (!isBrowser) return;
@@ -660,28 +596,25 @@ function preloadCachedFeatureModule(): void {
     if (cached) {
       const parsed = JSON.parse(cached);
       if (parsed?.moduleId && typeof parsed.moduleId === "string") {
-        const moduleId = parsed.moduleId as string;
-
-        // Start loading in background (non-blocking)
-        loadFeatureModule(moduleId).catch((error) => {
-          console.warn(
-            `⚠️ Failed to preload cached module "${moduleId}":`,
-            error
-          );
+        loadFeatureModule(parsed.moduleId).catch((error) => {
+          console.warn(`⚠️ Failed to preload cached module:`, error);
         });
       }
     }
-  } catch (error) {
-    // Ignore errors - this is just an optimization
+  } catch {
+    // Ignore errors - optimization only
   }
 }
 
-// Initialize the container asynchronously without blocking exports (browser-only)
+// ============================================================================
+// AUTO-INITIALIZATION (Browser Only)
+// ============================================================================
+
 if (isBrowser) {
   initializeContainer().catch((error) => {
     console.error("💥 FATAL: Container initialization failed:", error);
   });
 }
 
-// Export module initialization function for testing or manual control
+// Export initialization function for testing/manual control
 export { initializeContainer };

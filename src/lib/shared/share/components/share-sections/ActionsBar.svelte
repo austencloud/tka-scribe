@@ -73,7 +73,7 @@
         {#if isDownloading}
           <span class="btn-spinner"></span>
         {:else}
-          <i class="fas fa-download"></i>
+          <i class="fas fa-download" aria-hidden="true"></i>
         {/if}
       </span>
       <span class="btn-label">Download</span>
@@ -85,7 +85,7 @@
       disabled={!canShare}
       onclick={handleShare}
     >
-      <span class="btn-icon"><i class="fas fa-share-nodes"></i></span>
+      <span class="btn-icon"><i class="fas fa-share-nodes" aria-hidden="true"></i></span>
       <span class="btn-label">Share</span>
       <span class="btn-shine"></span>
     </button>
@@ -97,9 +97,9 @@
     >
       <span class="btn-icon">
         {#if isCopyingLink}
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
         {:else}
-          <i class="fas fa-link"></i>
+          <i class="fas fa-link" aria-hidden="true"></i>
         {/if}
       </span>
       <span class="btn-label">{isCopyingLink ? "Copied!" : "Copy Link"}</span>
@@ -114,7 +114,7 @@
       disabled={!canShare}
       onclick={handleInstagram}
     >
-      <span class="btn-icon"><i class="fab fa-instagram"></i></span>
+      <span class="btn-icon"><i class="fab fa-instagram" aria-hidden="true"></i></span>
       <span class="btn-label">Instagram</span>
       <span class="btn-shine"></span>
     </button>
@@ -128,10 +128,10 @@
       disabled={!canShare}
     >
       <span class="preview-left">
-        <i class="fas fa-sliders"></i>
+        <i class="fas fa-sliders" aria-hidden="true"></i>
         <span>Preview & Options</span>
       </span>
-      <i class="fas fa-chevron-right chevron"></i>
+      <i class="fas fa-chevron-right chevron" aria-hidden="true"></i>
     </button>
   {/if}
 </section>

@@ -18,8 +18,8 @@
   aria-label="Toggle CatDog Mode - different props per hand"
 >
   <span class="chip-icons">
-    <i class="fas fa-cat"></i>
-    <i class="fas fa-dog"></i>
+    <i class="fas fa-cat" aria-hidden="true"></i>
+    <i class="fas fa-dog" aria-hidden="true"></i>
   </span>
   <span class="chip-label">Cat Dog</span>
 </button>

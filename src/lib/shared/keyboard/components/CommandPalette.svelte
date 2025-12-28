@@ -138,20 +138,25 @@
 </script>
 
 {#if commandPaletteState.isOpen}
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="command-palette-overlay" onclick={close}>
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <div
+    class="command-palette-overlay"
+    onclick={close}
+    onkeydown={(e) => e.key === "Escape" && close()}
+    role="button"
+    tabindex="0"
+    aria-label="Close command palette"
+  >
     <div
       class="command-palette"
       onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
       role="dialog"
       aria-label="Command Palette"
       tabindex="-1"
     >
       <!-- Search Input -->
       <div class="command-palette__search">
-        <i class="fa fa-search command-palette__search-icon"></i>
+        <i class="fa fa-search command-palette__search-icon" aria-hidden="true"></i>
         <input
           bind:this={inputElement}
           type="text"
@@ -192,7 +197,7 @@
                   type="button"
                 >
                   {#if item.icon}
-                    <i class="fa {item.icon} command-palette__item-icon"></i>
+                    <i class="fa {item.icon} command-palette__item-icon" aria-hidden="true"></i>
                   {/if}
                   <div class="command-palette__item-content">
                     <div class="command-palette__item-label">{item.label}</div>

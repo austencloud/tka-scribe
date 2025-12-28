@@ -72,17 +72,22 @@
 
 <!-- Modal overlay -->
 {#if show}
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="modal-overlay"
     onclick={handleBackdropClick}
     onkeydown={handleKeydown}
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title"
-    tabindex="-1"
+    role="button"
+    tabindex="0"
+    aria-label="Close share options"
   >
-    <div class="modal-content">
+    <div
+      class="modal-content"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
+    >
       <!-- Modal Header -->
       <div class="modal-header">
         <h3 id="modal-title" class="modal-title">Customize Share Options</h3>

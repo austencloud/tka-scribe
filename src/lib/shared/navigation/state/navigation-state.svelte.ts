@@ -15,7 +15,7 @@
  */
 
 import type { ModuleDefinition, ModuleId, Section } from "../domain/types";
-import { tryResolve } from "../../inversify/di";
+import { tryResolve } from "../../inversify/resolve-utils";
 import { TYPES } from "../../inversify/types";
 import type { IActivityLogger } from "../../analytics/services/contracts/IActivityLogger";
 import type { IPresenceTracker } from "../../presence/services/contracts/IPresenceTracker";
@@ -89,9 +89,6 @@ export function createNavigationState() {
   // Panel persistence per tab (e.g., animation panel open in construct tab)
   // Key format: "moduleId:tabId" (e.g., "create:constructor", "create:assembler")
   let lastPanelByTab = $state<Record<string, string | null>>({});
-
-  // Creation method selector visibility (for hiding tabs when selector is shown)
-  let isCreationMethodSelectorVisible = $state<boolean>(false);
 
   // Track when user reaches the choice step of the Create tutorial
   // At this point, tabs should animate in to show they're available
@@ -639,18 +636,6 @@ export function createNavigationState() {
     getTabsForModule,
     getModuleDefinition,
     updateTabAccessibility,
-
-    // Creation method selector visibility
-    get isCreationMethodSelectorVisible() {
-      return isCreationMethodSelectorVisible;
-    },
-    setCreationMethodSelectorVisible(visible: boolean) {
-      isCreationMethodSelectorVisible = visible;
-      // Reset choice step when tutorial visibility changes
-      if (!visible) {
-        isCreateTutorialOnChoiceStep = false;
-      }
-    },
 
     // Track when user reaches the choice step of the Create tutorial
     get isCreateTutorialOnChoiceStep() {

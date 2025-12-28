@@ -141,7 +141,7 @@
   {#if showSpinner()}
     <span class="loading-spinner"></span>
   {:else}
-    <i class="fas fa-share-nodes"></i>
+    <i class="fas fa-share-nodes" aria-hidden="true"></i>
   {/if}
   <span class="btn-text">Share</span>
 </button>

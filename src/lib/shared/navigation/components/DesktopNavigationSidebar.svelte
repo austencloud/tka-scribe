@@ -50,8 +50,8 @@
   // Ref to sidebar element
   let sidebarElement = $state<HTMLElement | null>(null);
 
-  // Track which modules are expanded
-  let expandedModules = $state<Set<string>>(new Set([currentModule]));
+  // Track which modules are expanded - initialized empty, synced from currentModule via $effect below
+  let expandedModules = $state<Set<string>>(new Set());
 
   // Keep expandedModules in sync with currentModule when it changes
   // This ensures the correct module is expanded after page restoration or external navigation
@@ -76,12 +76,11 @@
     return localStorage.getItem("tka-create-method-selected") === "true";
   });
 
-  // Tutorial is active when in Create module AND (selector visible OR tutorial not completed yet)
+  // Tutorial is active when in Create module AND tutorial not completed yet
   // This prevents the flash of tabs on initial load
   const isCreateTutorialActive = $derived(
     navigationState.currentModule === "create" &&
-      (navigationState.isCreationMethodSelectorVisible ||
-        !hasCompletedCreateTutorial())
+      !hasCompletedCreateTutorial()
   );
   const isOnTutorialChoiceStep = $derived(
     navigationState.isCreateTutorialOnChoiceStep
@@ -291,6 +290,7 @@
   class:collapsed={isCollapsed}
   bind:this={sidebarElement}
   style="view-transition-name: sidebar"
+  aria-label="Main navigation"
 >
   <!-- Sidebar Header/Branding -->
   <SidebarHeader
@@ -317,7 +317,7 @@
           aria-label="Back to modules"
         >
           <div class="back-icon">
-            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
           </div>
           {#if !isCollapsed}
             <span class="back-label">Back</span>

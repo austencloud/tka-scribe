@@ -81,11 +81,11 @@
 
     <div class="guide-header">
       <div class="header-title">
-        <i class="{instructions.icon} title-icon"></i>
+        <i class="{instructions.icon} title-icon" aria-hidden="true"></i>
         <h2>{instructions.title}</h2>
       </div>
       <button class="close-btn" onclick={handleClose} aria-label="Close guide">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -99,7 +99,7 @@
     <!-- Sticky Footer -->
     <div class="guide-footer">
       <button class="got-it-btn" onclick={handleClose}>
-        <i class="fas fa-check"></i>
+        <i class="fas fa-check" aria-hidden="true"></i>
         <span>Got It</span>
       </button>
     </div>

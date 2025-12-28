@@ -181,7 +181,7 @@ ${caption}
     <!-- Step 1: Upload video -->
     <div class="upload-section">
       <div class="instagram-icon">
-        <i class="fab fa-instagram"></i>
+        <i class="fab fa-instagram" aria-hidden="true"></i>
       </div>
       <h3>Share to Instagram</h3>
       <p class="subtitle">
@@ -203,16 +203,16 @@ ${caption}
         disabled={isBundling}
       >
         {#if isBundling}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           Preparing media...
         {:else}
-          <i class="fas fa-upload"></i>
+          <i class="fas fa-upload" aria-hidden="true"></i>
           Upload Performance Video
         {/if}
       </button>
 
       <div class="info-box">
-        <i class="fas fa-info-circle"></i>
+        <i class="fas fa-info-circle" aria-hidden="true"></i>
         <p>Works with ANY Instagram account - personal, business, or creator</p>
       </div>
     </div>
@@ -226,7 +226,7 @@ ${caption}
           onclick={handleReset}
           aria-label="Start over"
         >
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -272,17 +272,17 @@ ${caption}
         disabled={isSharing}
       >
         {#if isSharing}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           Sharing...
         {:else}
-          <i class="fab fa-instagram"></i>
+          <i class="fab fa-instagram" aria-hidden="true"></i>
           {hasNativeShare ? "Open Instagram" : "Download Files"}
         {/if}
       </button>
 
       {#if !hasNativeShare}
         <p class="desktop-note">
-          <i class="fas fa-desktop"></i>
+          <i class="fas fa-desktop" aria-hidden="true"></i>
           Desktop detected - files will download. Transfer to your phone to post!
         </p>
       {/if}

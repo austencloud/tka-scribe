@@ -62,9 +62,9 @@ export class AutumnDriftBackgroundSystem implements IBackgroundSystem {
       this.leafSystem.resize(dimensions.width, dimensions.height);
     }
 
-    // Slow down animation for reduced motion
+    // 95% reduction for users with vestibular disorders (WCAG AAA)
     const effectiveMultiplier = this.reducedMotion
-      ? frameMultiplier * 0.3
+      ? frameMultiplier * 0.05
       : frameMultiplier;
 
     // Update wind system

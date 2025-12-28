@@ -128,25 +128,25 @@
 </script>
 
 {#if isOpen}
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     class="modal-backdrop"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="passkey-modal-title"
-    tabindex="-1"
+    onclick={handleCancel}
     onkeydown={(e) => e.key === "Escape" && handleCancel()}
+    role="button"
+    tabindex="0"
+    aria-label="Close verification dialog"
   >
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       class="modal-content"
       onclick={(e) => e.stopPropagation()}
-      role="document"
+      onkeydown={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="passkey-modal-title"
     >
       <header class="modal-header">
         <div class="header-icon">
-          <i class="fas fa-fingerprint"></i>
+          <i class="fas fa-fingerprint" aria-hidden="true"></i>
         </div>
         <div class="header-text">
           <h2 id="passkey-modal-title">Verify it’s you</h2>
@@ -172,7 +172,7 @@
               onclick={handleCreatePasskey}
               disabled={isSubmitting}
             >
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
               Create Passkey
             </button>
           </div>
@@ -200,7 +200,7 @@
                 disabled={isSubmitting}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                <i class="fas {showPassword ? 'fa-eye-slash' : 'fa-eye'}" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -208,7 +208,7 @@
 
         {#if error}
           <p class="error-message">
-            <i class="fas fa-exclamation-circle"></i>
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
             {error}
           </p>
         {/if}
@@ -375,8 +375,8 @@
   .pw-toggle {
     position: absolute;
     right: 6px;
-    width: 38px;
-    height: 38px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 10px;
     border: none;
     background: transparent;

@@ -34,7 +34,7 @@
 <section class="settings-panel image-panel" class:mobile-hidden={isMobileHidden}>
   <header class="panel-header">
     <span class="panel-icon image-icon">
-      <i class="fas fa-download"></i>
+      <i class="fas fa-download" aria-hidden="true"></i>
     </span>
     <h3 class="panel-title">Image Export</h3>
     <button
@@ -43,7 +43,7 @@
       aria-label="Learn about image export options"
       type="button"
     >
-      <i class="fas fa-info-circle"></i>
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
     </button>
   </header>
 
@@ -93,8 +93,6 @@
     gap: 14px;
     padding: clamp(14px, 2.5cqi, 20px);
     background: var(--theme-card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     flex: 1;
@@ -162,15 +160,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     padding: 0;
     margin-left: auto;
     background: color-mix(in srgb, #34d399 15%, transparent);
     border: 1px solid color-mix(in srgb, #34d399 30%, transparent);
     border-radius: 50%;
     color: #34d399;
-    font-size: 20px;
+    font-size: var(--font-size-min, 14px);
     cursor: pointer;
     transition: all 0.15s ease;
     -webkit-tap-highlight-color: transparent;
@@ -215,7 +213,7 @@
   }
 
   .group-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;

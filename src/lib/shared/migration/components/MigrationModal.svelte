@@ -41,7 +41,7 @@
     <!-- Header with app icon -->
     <div class="modal-header">
       <div class="app-icon">
-        <i class="fas fa-feather-alt"></i>
+        <i class="fas fa-feather-alt" aria-hidden="true"></i>
       </div>
     </div>
 
@@ -66,7 +66,7 @@
     <!-- Actions - always visible -->
     <div class="modal-footer">
       <button class="primary-button" onclick={handleUpdate}>
-        <i class="fas fa-arrow-right"></i>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
         Update Now
       </button>
 

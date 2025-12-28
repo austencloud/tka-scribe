@@ -70,9 +70,10 @@
           class="collapse-toggle"
           onclick={toggleCollapse}
           aria-expanded={!collapsed}
+          aria-controls="panel-content"
           aria-label={collapsed ? "Expand panel" : "Collapse panel"}
         >
-          <i class="fa-solid fa-chevron-{collapsed ? 'right' : 'down'}"></i>
+          <i class="fa-solid fa-chevron-{collapsed ? 'right' : 'down'}" aria-hidden="true"></i>
         </button>
       {/if}
 
@@ -88,7 +89,7 @@
     </div>
   {/if}
 
-  <div class="panel-content" class:hidden={collapsed}>
+  <div id="panel-content" class="panel-content" class:hidden={collapsed}>
     {@render children()}
   </div>
 </div>
@@ -128,7 +129,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 12px;
     transition: all 0.15s ease;
   }
 

@@ -157,7 +157,7 @@ Usage:
     padding: 4px 8px;
     border-radius: 4px;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }

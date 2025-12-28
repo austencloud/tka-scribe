@@ -73,7 +73,7 @@
   let cameraTarget = $derived(customCameraTarget ?? [0, 0, 0] as [number, number, number]);
 
   // Track if we should use custom position (set to false when preset changes)
-  let useCustom = $state(!!customCameraPosition);
+  let useCustom = $state(false);
 
   // Reset custom tracking when preset changes explicitly
   $effect(() => {

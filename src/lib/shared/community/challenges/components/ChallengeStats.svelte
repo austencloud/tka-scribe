@@ -56,7 +56,7 @@
   {#each stats as stat}
     <div class="stat-card" style="--stat-color: {stat.color}">
       <div class="stat-icon">
-        <i class="fas {stat.icon}"></i>
+        <i class="fas {stat.icon}" aria-hidden="true"></i>
       </div>
       <div class="stat-content">
         <div class="stat-value">
@@ -116,7 +116,7 @@
   }
 
   .stat-label {
-    font-size: 10px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
     overflow: hidden;
@@ -153,7 +153,7 @@
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

@@ -135,10 +135,10 @@
   }
 
   .badge {
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 400;
     color: rgba(255, 193, 7, 0.9);
-    line-height: 1;
+    line-height: 1.5;
   }
 
   /* Focus State */
@@ -161,7 +161,7 @@
     }
 
     .badge {
-      font-size: 8px;
+      font-size: 12px;
     }
   }
 
@@ -175,11 +175,11 @@
     }
 
     .chip-label {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .badge {
-      font-size: 7px;
+      font-size: 12px;
     }
   }
 

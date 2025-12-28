@@ -52,7 +52,7 @@
       <img src={video.thumbnailUrl} alt="" />
     {:else}
       <div class="thumbnail-placeholder">
-        <i class="fas fa-video"></i>
+        <i class="fas fa-video" aria-hidden="true"></i>
       </div>
     {/if}
 
@@ -64,14 +64,14 @@
     <!-- Collab Badge -->
     {#if isCollab}
       <span class="collab-badge">
-        <i class="fas fa-users"></i>
+        <i class="fas fa-users" aria-hidden="true"></i>
         Collab
       </span>
     {/if}
 
     <!-- Play Overlay -->
     <div class="play-overlay">
-      <i class="fas fa-play"></i>
+      <i class="fas fa-play" aria-hidden="true"></i>
     </div>
   </div>
 
@@ -103,9 +103,9 @@
   {#if video.visibility !== "public"}
     <span class="visibility-badge" title={video.visibility}>
       {#if video.visibility === "private"}
-        <i class="fas fa-lock"></i>
+        <i class="fas fa-lock" aria-hidden="true"></i>
       {:else}
-        <i class="fas fa-user-friends"></i>
+        <i class="fas fa-user-friends" aria-hidden="true"></i>
       {/if}
     </span>
   {/if}

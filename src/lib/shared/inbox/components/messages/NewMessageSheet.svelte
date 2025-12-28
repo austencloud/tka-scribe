@@ -141,7 +141,7 @@
     <!-- Pre-selected recipient or creating - show loading -->
     <div class="loading-state">
       <div class="spinner-container">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
       <span
         >Starting conversation with {recipientName ||
@@ -166,7 +166,7 @@
     <!-- Suggestions Section -->
     {#if isLoadingSuggestions}
       <div class="suggestions-loading">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <span>Loading suggestions...</span>
       </div>
     {:else if hasSuggestions}
@@ -175,7 +175,7 @@
         {#if followedUsers.length > 0}
           <div class="suggestion-group">
             <h3 class="suggestion-heading">
-              <i class="fas fa-user-friends"></i>
+              <i class="fas fa-user-friends" aria-hidden="true"></i>
               People You Follow
             </h3>
             <div class="suggestion-grid">
@@ -206,7 +206,7 @@
         {#if recentUsers.length > 0}
           <div class="suggestion-group">
             <h3 class="suggestion-heading">
-              <i class="fas fa-clock"></i>
+              <i class="fas fa-clock" aria-hidden="true"></i>
               Recent Conversations
             </h3>
             <div class="suggestion-list">
@@ -224,7 +224,7 @@
                     customSize={40}
                   />
                   <span class="suggestion-row-name">{user.displayName}</span>
-                  <i class="fas fa-chevron-right suggestion-arrow"></i>
+                  <i class="fas fa-chevron-right suggestion-arrow" aria-hidden="true"></i>
                 </button>
               {/each}
             </div>
@@ -234,7 +234,7 @@
     {:else}
       <!-- No suggestions available -->
       <div class="no-suggestions">
-        <i class="fas fa-search"></i>
+        <i class="fas fa-search" aria-hidden="true"></i>
         <p>Use the search bar above to find users</p>
       </div>
     {/if}

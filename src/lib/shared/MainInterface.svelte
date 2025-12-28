@@ -88,19 +88,9 @@
   > | null = null;
   const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
 
-  // Primary navigation visibility - hide during:
-  // 1. Explorer module during scroll
-  // 2. Create module tutorial (onboarding selector visible)
+  // Primary navigation visibility - hide during Discover module scroll
   const isPrimaryNavVisible = $derived(() => {
     const module = currentModule();
-    // Hide during Create module onboarding tutorial
-    if (
-      module === "create" &&
-      navigationState.isCreationMethodSelectorVisible
-    ) {
-      return false;
-    }
-    // Hide during Discover module scroll
     if (module === "discover") {
       return discoverScrollState.isUIVisible;
     }
@@ -200,6 +190,9 @@
   });
 </script>
 
+<!-- Skip to main content link for keyboard/screen reader users -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <!-- Global Preview Banner -->
 <PreviewModeBanner />
 
@@ -225,6 +218,7 @@
   <div class="content-wrapper">
     <!-- Main Content Area -->
     <main
+      id="main-content"
       class="content-area"
       class:nav-hidden={!isPrimaryNavVisible()}
       class:nav-landscape={layoutState.isPrimaryNavLandscape}
@@ -278,6 +272,24 @@
 </div>
 
 <style>
+  /* Skip link - visually hidden until focused */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    z-index: 9999;
+    padding: 12px 24px;
+    background: var(--theme-panel-bg, #1a1a2e);
+    color: var(--theme-text, white);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .skip-link:focus {
+    top: 16px;
+  }
+
   .main-interface {
     display: flex;
     flex-direction: column;

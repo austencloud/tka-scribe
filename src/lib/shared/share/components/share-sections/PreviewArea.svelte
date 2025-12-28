@@ -17,7 +17,7 @@
   {#if !currentSequence}
     <div class="preview-placeholder">
       <div class="placeholder-icon">
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
       </div>
       <p>No sequence selected</p>
       <span>Create or select a sequence to see preview</span>
@@ -25,7 +25,7 @@
   {:else if currentSequence.beats?.length === 0}
     <div class="preview-placeholder">
       <div class="placeholder-icon">
-        <i class="fas fa-plus-circle"></i>
+        <i class="fas fa-plus-circle" aria-hidden="true"></i>
       </div>
       <p>Empty sequence</p>
       <span>Add beats to generate preview</span>
@@ -40,12 +40,12 @@
   {:else if shareState?.previewError}
     <div class="preview-error">
       <div class="error-icon">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       </div>
       <p>Preview failed</p>
       <span>{shareState.previewError}</span>
       <button class="retry-button" onclick={onRetry}>
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
         Try Again
       </button>
     </div>
@@ -61,14 +61,14 @@
         onclick={onRetry}
         title="Force regenerate preview (bypass cache)"
       >
-        <i class="fas fa-sync-alt"></i>
+        <i class="fas fa-sync-alt" aria-hidden="true"></i>
         <span>Refresh</span>
       </button>
     </div>
   {:else}
     <div class="preview-placeholder">
       <div class="placeholder-icon pulse">
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
       </div>
       <p>Preview will appear here</p>
     </div>

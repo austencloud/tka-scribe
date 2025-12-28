@@ -250,23 +250,24 @@
         </div>
       {:else if error}
         <div class="error-state">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
           <p>{error}</p>
           <button class="retry-button" onclick={initializeCamera}>
-            <i class="fas fa-redo"></i> Retry
+            <i class="fas fa-redo" aria-hidden="true"></i> Retry
           </button>
         </div>
       {:else if recordedVideo}
         <!-- Recorded video playback -->
         <div class="video-container">
-          <!-- svelte-ignore a11y_media_has_caption -->
           <video
             bind:this={playbackVideoElement}
             src={recordedVideo.blobUrl}
             controls
             autoplay
+            muted
             loop
             class="video-preview"
+            aria-label="Recorded performance video"
           ></video>
         </div>
       {:else if cameraInitialized}
@@ -274,17 +275,17 @@
         <div class="video-container">
           {#if recordingState === 'recording'}
             <div class="recording-indicator">
-              <i class="fas fa-circle"></i>
+              <i class="fas fa-circle" aria-hidden="true"></i>
               <span>{formatDuration(recordingDuration)}</span>
             </div>
           {/if}
-          <!-- svelte-ignore a11y_media_has_caption -->
           <video
             bind:this={videoElement}
             autoplay
             playsinline
             muted
             class="video-preview mirror"
+            aria-hidden="true"
           ></video>
         </div>
       {/if}
@@ -292,19 +293,19 @@
       <!-- Upload Mode -->
       {#if uploadedVideoUrl}
         <div class="video-container">
-          <!-- svelte-ignore a11y_media_has_caption -->
           <video
             src={uploadedVideoUrl}
             controls
             class="video-preview"
+            aria-label="Uploaded performance video"
           ></video>
           <button class="clear-upload" onclick={clearUploadedFile} aria-label="Remove video">
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
       {:else}
         <button class="upload-dropzone" onclick={triggerFileSelect}>
-          <i class="fas fa-cloud-upload-alt"></i>
+          <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
           <p>Click to upload a video</p>
           <span class="hint">MP4, WebM, MOV (max 100MB)</span>
         </button>
@@ -315,7 +316,7 @@
   <!-- Inline Controls -->
   <div class="inline-controls">
     <button class="control-button mode-toggle" onclick={toggleMode}>
-      <i class="fas {modeIcon}"></i>
+      <i class="fas {modeIcon}" aria-hidden="true"></i>
       <span>{modeLabel}</span>
     </button>
 
@@ -323,32 +324,32 @@
       {#if recordedVideo}
         <!-- Playback controls -->
         <button class="control-button secondary" onclick={discardRecording}>
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
           <span>Re-record</span>
         </button>
       {:else if recordingState === 'idle'}
         <button class="control-button record-button" onclick={startRecording} disabled={!cameraInitialized}>
-          <i class="fas fa-circle"></i>
+          <i class="fas fa-circle" aria-hidden="true"></i>
           <span>Record</span>
         </button>
       {:else if recordingState === 'recording'}
         <div class="recording-controls">
           <span class="duration-badge">
-            <i class="fas fa-circle pulse"></i>
+            <i class="fas fa-circle pulse" aria-hidden="true"></i>
             {formatDuration(recordingDuration)}
           </span>
           <button class="control-button stop-button" onclick={stopRecording} aria-label="Stop recording">
-            <i class="fas fa-stop"></i>
+            <i class="fas fa-stop" aria-hidden="true"></i>
           </button>
           <button class="control-button cancel-button" onclick={cancelRecording} aria-label="Cancel recording">
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
       {/if}
     {:else}
       {#if !uploadedVideoUrl}
         <button class="control-button upload-button" onclick={triggerFileSelect}>
-          <i class="fas fa-folder-open"></i>
+          <i class="fas fa-folder-open" aria-hidden="true"></i>
           <span>Browse</span>
         </button>
       {/if}
@@ -359,7 +360,7 @@
       onclick={handleSettingsClick}
       aria-label="Performance video settings"
     >
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
   </div>
 </div>
@@ -431,7 +432,7 @@
   }
 
   .recording-indicator i {
-    font-size: 10px;
+    font-size: 12px;
     animation: blink 1s ease-in-out infinite;
   }
 
@@ -440,8 +441,8 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

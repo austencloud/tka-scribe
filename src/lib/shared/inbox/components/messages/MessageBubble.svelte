@@ -72,9 +72,9 @@
           aria-label={readStatus === "read" ? "Read" : "Sent"}
         >
           {#if readStatus === "read"}
-            <i class="fas fa-check-double"></i>
+            <i class="fas fa-check-double" aria-hidden="true"></i>
           {:else}
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           {/if}
         </span>
       {/if}

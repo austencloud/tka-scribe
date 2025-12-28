@@ -370,9 +370,10 @@
       </button>
 
       <!-- Step dots -->
-      <div class="step-dots" role="tablist">
+      <div class="step-dots" role="tablist" aria-label="Onboarding steps">
         {#each steps as stepItem, index}
           <button
+            id="step-dot-{moduleId}-{index}"
             class="dot"
             class:active={index === currentStep}
             class:visited={index < currentStep}
@@ -380,6 +381,8 @@
             onclick={() => goToStep(index)}
             role="tab"
             aria-selected={index === currentStep}
+            aria-controls="step-panel-{moduleId}-{index}"
+            tabindex={index === currentStep ? 0 : -1}
             aria-label="{stepItem.title}, step {index + 1} of {steps.length}"
           >
             <i class="fas {stepItem.icon}" aria-hidden="true"></i>
@@ -574,8 +577,11 @@
     margin-top: 1.5rem;
   }
 
-  .swipe-hint i {
-    animation: swipeHint 2s ease-in-out infinite;
+  /* Swipe animation - only when motion is OK */
+  @media (prefers-reduced-motion: no-preference) {
+    .swipe-hint i {
+      animation: swipeHint 2s ease-in-out infinite;
+    }
   }
 
   .touch-hint {
@@ -682,7 +688,13 @@
     text-align: left;
     position: relative;
     overflow: hidden;
-    animation: buttonPulse 2.5s ease-in-out infinite;
+  }
+
+  /* Button pulse animation - only when motion is OK */
+  @media (prefers-reduced-motion: no-preference) {
+    .choice-button {
+      animation: buttonPulse 2.5s ease-in-out infinite;
+    }
   }
 
   .choice-button::before {
@@ -696,8 +708,14 @@
     );
     border-radius: 14px;
     opacity: 0;
-    animation: glowPulse 2.5s ease-in-out infinite;
     z-index: -1;
+  }
+
+  /* Glow pulse animation - only when motion is OK */
+  @media (prefers-reduced-motion: no-preference) {
+    .choice-button::before {
+      animation: glowPulse 2.5s ease-in-out infinite;
+    }
   }
 
   @keyframes buttonPulse {
@@ -786,7 +804,13 @@
     color: var(--tab-color);
     font-size: 1rem;
     transition: all 200ms ease;
-    animation: arrowBounce 1.25s ease-in-out infinite;
+  }
+
+  /* Arrow bounce animation - only when motion is OK */
+  @media (prefers-reduced-motion: no-preference) {
+    .choice-arrow {
+      animation: arrowBounce 1.25s ease-in-out infinite;
+    }
   }
 
   @keyframes arrowBounce {

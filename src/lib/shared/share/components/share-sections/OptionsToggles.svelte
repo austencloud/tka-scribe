@@ -59,7 +59,7 @@
           onclick={() => handleToggle(option.key)}
           aria-pressed={isActive}
         >
-          <i class="fas {option.icon}"></i>
+          <i class="fas {option.icon}" aria-hidden="true"></i>
           <span>{option.label}</span>
         </button>
       {/each}
@@ -170,11 +170,11 @@
     }
 
     .toggle-chip span {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .toggle-chip i {
-      font-size: 10px;
+      font-size: 12px;
     }
   }
 </style>

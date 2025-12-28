@@ -74,7 +74,7 @@
   <!-- Header -->
   <div class="card-header">
     <div class="challenge-icon">
-      <i class="fas fa-calendar-week"></i>
+      <i class="fas fa-calendar-week" aria-hidden="true"></i>
     </div>
     <div class="challenge-title">
       <h3>{challenge.title}</h3>
@@ -94,12 +94,12 @@
     </div>
     <div class="xp-rewards">
       <div class="xp-reward">
-        <i class="fas fa-star"></i>
+        <i class="fas fa-star" aria-hidden="true"></i>
         <span>{xpReward} XP</span>
       </div>
       {#if bonusXP > 0 && !isComplete}
         <div class="bonus-reward" class:expired={!bonusTimeRemaining}>
-          <i class="fas fa-bolt"></i>
+          <i class="fas fa-bolt" aria-hidden="true"></i>
           <span>+{bonusXP}</span>
         </div>
       {/if}
@@ -123,7 +123,7 @@
     <div class="progress-text">
       {#if isComplete}
         <div class="completion-status">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
           <span>Completed!</span>
           {#if bonusEarned}
             <span class="bonus-badge">Bonus Earned!</span>
@@ -140,7 +140,7 @@
     <div class="time-info">
       {#if timeRemaining}
         <div class="time-block">
-          <i class="fas fa-clock"></i>
+          <i class="fas fa-clock" aria-hidden="true"></i>
           <span>
             {timeRemaining.days}d {timeRemaining.hours}h remaining
           </span>
@@ -148,14 +148,14 @@
       {/if}
       {#if bonusTimeRemaining && bonusXP > 0}
         <div class="bonus-time-block">
-          <i class="fas fa-bolt"></i>
+          <i class="fas fa-bolt" aria-hidden="true"></i>
           <span>
             Bonus: {bonusTimeRemaining.days}d {bonusTimeRemaining.hours}h left
           </span>
         </div>
       {:else if bonusXP > 0}
         <div class="bonus-time-block expired">
-          <i class="fas fa-times-circle"></i>
+          <i class="fas fa-times-circle" aria-hidden="true"></i>
           <span>Bonus expired</span>
         </div>
       {/if}
@@ -246,7 +246,7 @@
     display: inline-flex;
     align-items: center;
     padding: 1px 6px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -259,7 +259,7 @@
     display: inline-flex;
     align-items: center;
     padding: 1px 6px;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 500;
     border-radius: 3px;
     background: rgba(139, 92, 246, 0.2);
@@ -282,7 +282,7 @@
     background: rgba(139, 92, 246, 0.15);
     border-radius: 16px;
     color: #a78bfa;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
   }
 
@@ -294,7 +294,7 @@
     background: rgba(245, 158, 11, 0.15);
     border-radius: 16px;
     color: #f59e0b;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
   }
 
@@ -305,7 +305,7 @@
 
   .compact .xp-reward {
     padding: 3px 6px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .challenge-description {
@@ -348,7 +348,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     gap: 8px;
   }
@@ -369,7 +369,7 @@
     background: rgba(245, 158, 11, 0.2);
     border-radius: 3px;
     color: #f59e0b;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
   }
 
@@ -386,7 +386,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 10px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
   }
 
@@ -449,7 +449,7 @@
     .difficulty-badge,
     .week-badge {
       padding: 2px 7px;
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .xp-rewards {
@@ -464,12 +464,12 @@
 
     .bonus-reward {
       padding: 4px 8px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .compact .xp-reward {
       padding: 4px 8px;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .challenge-description {
@@ -495,7 +495,7 @@
 
     .bonus-badge {
       padding: 2px 7px;
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .time-info {
@@ -506,7 +506,7 @@
     .time-block,
     .bonus-time-block {
       gap: 6px;
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 
@@ -559,7 +559,7 @@
     .difficulty-badge,
     .week-badge {
       padding: 2px 8px;
-      font-size: 11px;
+      font-size: 12px;
       letter-spacing: 0.5px;
       border-radius: 4px;
     }
@@ -607,7 +607,7 @@
 
     .bonus-badge {
       padding: 2px 8px;
-      font-size: 11px;
+      font-size: 12px;
       border-radius: 4px;
     }
 

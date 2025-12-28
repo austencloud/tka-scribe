@@ -55,7 +55,7 @@
   <!-- Load Sequence Button -->
   <div class="load-section">
     <button class="load-btn" onclick={onLoadSequence}>
-      <i class="fas fa-folder-open"></i>
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
       Load Sequence
     </button>
   </div>
@@ -67,7 +67,7 @@
     </div>
   {:else}
     <div class="empty-state">
-      <i class="fas fa-film"></i>
+      <i class="fas fa-film" aria-hidden="true"></i>
       <p>Load a sequence to begin</p>
     </div>
   {/if}

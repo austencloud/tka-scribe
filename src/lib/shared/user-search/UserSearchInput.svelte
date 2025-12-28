@@ -196,9 +196,9 @@
   }
 </script>
 
-<div class="user-search">
+<div class="user-search" role="search">
   <div class="search-input-wrapper">
-    <i class="fas fa-search search-icon"></i>
+    <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="search"
       class="search-input"
@@ -211,12 +211,13 @@
       {placeholder}
       {disabled}
       autocomplete="off"
+      aria-label="Search users"
       data-1p-ignore
       data-lpignore="true"
       data-form-type="other"
     />
     {#if isSearching}
-      <i class="fas fa-spinner fa-spin loading-icon"></i>
+      <i class="fas fa-spinner fa-spin loading-icon" aria-hidden="true"></i>
     {:else if searchQuery && !disabled}
       <button
         type="button"
@@ -224,7 +225,7 @@
         onclick={clearSelection}
         aria-label="Clear search"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -235,12 +236,16 @@
       class:fixed-position={useFixedPosition}
       class:inline={inlineResults}
       style={inlineResults ? "" : dropdownStyle}
+      role="listbox"
+      aria-label="Search results"
     >
       {#each searchResults as user (user.uid)}
         <button
           type="button"
           class="result-item"
           class:selected={user.uid === selectedUserId}
+          role="option"
+          aria-selected={user.uid === selectedUserId}
           onclick={() => handleSelectUser(user)}
         >
           <RobustAvatar
@@ -253,7 +258,7 @@
             <span class="result-name">{user.displayName || "No name"}</span>
             <span class="result-email">{user.email}</span>
           </div>
-          <i class="fas fa-check result-check"></i>
+          <i class="fas fa-check result-check" aria-hidden="true"></i>
         </button>
       {/each}
     </div>
@@ -267,7 +272,7 @@
       style={inlineResults ? "" : dropdownStyle}
     >
       <div class="no-results">
-        <i class="fas fa-user-slash"></i>
+        <i class="fas fa-user-slash" aria-hidden="true"></i>
         No users found
       </div>
     </div>
@@ -289,7 +294,7 @@
   .search-icon {
     position: absolute;
     left: 16px;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 14px;
     pointer-events: none;
   }
@@ -365,7 +370,7 @@
   }
 
   .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .search-input:disabled {
@@ -453,7 +458,7 @@
   }
 
   .result-email {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
@@ -481,7 +486,7 @@
   .no-results {
     padding: 32px 16px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 14px;
     display: flex;
     flex-direction: column;

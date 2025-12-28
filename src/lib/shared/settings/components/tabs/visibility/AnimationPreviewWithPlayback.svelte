@@ -273,7 +273,7 @@
   </div>
 {:else if error}
   <div class="preview-error">
-    <i class="fas fa-exclamation-triangle"></i>
+    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
     <span>{error}</span>
   </div>
 {:else if sequenceData}
@@ -289,7 +289,7 @@
   />
 {:else}
   <div class="preview-error">
-    <i class="fas fa-video-slash"></i>
+    <i class="fas fa-video-slash" aria-hidden="true"></i>
     <span>No sequence available</span>
   </div>
 {/if}

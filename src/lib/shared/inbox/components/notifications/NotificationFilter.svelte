@@ -75,7 +75,7 @@
         onclick={() => (filters.searchQuery = "")}
         aria-label="Clear search"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -145,16 +145,17 @@
         isTypeSheetOpen = false;
       }
     }}
-    role="presentation"
+    role="button"
+    tabindex="0"
+    aria-label="Close notification type selector"
   >
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="sheet"
       onclick={(e) => e.stopPropagation()}
       onkeydown={(e) => e.stopPropagation()}
       role="dialog"
+      aria-modal="true"
       aria-label="Select notification type"
-      tabindex="-1"
     >
       <div class="sheet-header">
         <h3>Notification Type</h3>
@@ -163,7 +164,7 @@
           onclick={() => (isTypeSheetOpen = false)}
           aria-label="Close"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
       <div class="sheet-content">
@@ -455,8 +456,8 @@
   }
 
   .close-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;

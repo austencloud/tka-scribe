@@ -49,7 +49,7 @@
   <!-- Hero Preview -->
   <div class="hero-preview">
     <div class="preview-visual">
-      <i class="fas fa-file-image"></i>
+      <i class="fas fa-file-image" aria-hidden="true"></i>
     </div>
     <div class="preview-info">
       <span class="preview-title">Image Export</span>
@@ -66,7 +66,7 @@
       {#each elements as element (element.id)}
         <div class="element-card" style="--element-color: {element.color}">
           <div class="element-icon">
-            <i class="fas {element.icon}"></i>
+            <i class="fas {element.icon}" aria-hidden="true"></i>
           </div>
           <div class="element-info">
             <span class="element-label">{element.label}</span>
@@ -79,7 +79,7 @@
 
   <!-- Use Cases -->
   <div class="use-cases">
-    <i class="fas fa-share-alt"></i>
+    <i class="fas fa-share-alt" aria-hidden="true"></i>
     <div class="use-cases-content">
       <span class="use-cases-title">Sharing Tips</span>
       <div class="use-case-grid">

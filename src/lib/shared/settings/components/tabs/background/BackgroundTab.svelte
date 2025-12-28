@@ -12,7 +12,7 @@
   import type { IDeviceDetector } from "../../../../device/services/contracts/IDeviceDetector";
   import type { IViewportManager } from "../../../../device/services/contracts/IViewportManager";
   import { onMount } from "svelte";
-  import IOSBackgroundCard from "./IOSBackgroundCard.svelte";
+  import BackgroundCard from "./BackgroundCard.svelte";
   import { backgroundsConfig } from "./background-config";
   import { applyThemeFromColors } from "../../../utils/background-theme-calculator";
 
@@ -31,18 +31,26 @@
   // Entry animation
   let isVisible = $state(false);
 
-  // Background settings state
+  // Background settings state - initialized with defaults, synced from settings via $effect
   let backgroundSettings = $state({
-    backgroundEnabled: settings?.backgroundEnabled ?? true,
-    backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
-    backgroundQuality: settings?.backgroundQuality || "medium",
-    backgroundColor: settings?.backgroundColor || "#000000",
-    gradientColors: settings?.gradientColors || [
-      "#0d1117",
-      "#161b22",
-      "#21262d",
-    ],
-    gradientDirection: settings?.gradientDirection || 135,
+    backgroundEnabled: true,
+    backgroundType: BackgroundType.NIGHT_SKY,
+    backgroundQuality: "medium" as string,
+    backgroundColor: "#000000",
+    gradientColors: ["#0d1117", "#161b22", "#21262d"],
+    gradientDirection: 135,
+  });
+
+  // Sync from settings prop
+  $effect(() => {
+    backgroundSettings = {
+      backgroundEnabled: settings?.backgroundEnabled ?? true,
+      backgroundType: settings?.backgroundType || BackgroundType.NIGHT_SKY,
+      backgroundQuality: settings?.backgroundQuality || "medium",
+      backgroundColor: settings?.backgroundColor || "#000000",
+      gradientColors: settings?.gradientColors || ["#0d1117", "#161b22", "#21262d"],
+      gradientDirection: settings?.gradientDirection || 135,
+    };
   });
 
   // Split backgrounds into categories
@@ -132,7 +140,7 @@
     <!-- Main Glass Panel -->
     <section class="settings-panel">
       <header class="panel-header">
-        <span class="panel-icon"><i class="fas fa-palette"></i></span>
+        <span class="panel-icon"><i class="fas fa-palette" aria-hidden="true"></i></span>
         <div class="panel-header-text">
           <h3 class="panel-title">Background Theme</h3>
           <p class="panel-subtitle">Choose your visual environment</p>
@@ -143,13 +151,13 @@
       <div class="category-section">
         <div class="category-header">
           <span class="category-icon"
-            ><i class="fas fa-wand-magic-sparkles"></i></span
+            ><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i></span
           >
           <span class="category-label">Animated</span>
         </div>
         <div class="card-grid animated-grid">
           {#each animatedBackgrounds as background}
-            <IOSBackgroundCard
+            <BackgroundCard
               {background}
               isSelected={backgroundSettings.backgroundType === background.type}
               onSelect={handleBackgroundSelect}
@@ -162,12 +170,12 @@
       <!-- Simple Backgrounds Section -->
       <div class="category-section">
         <div class="category-header">
-          <span class="category-icon"><i class="fas fa-circle"></i></span>
+          <span class="category-icon"><i class="fas fa-circle" aria-hidden="true"></i></span>
           <span class="category-label">Simple</span>
         </div>
         <div class="card-grid simple-grid">
           {#each simpleBackgrounds as background}
-            <IOSBackgroundCard
+            <BackgroundCard
               {background}
               isSelected={backgroundSettings.backgroundType === background.type}
               onSelect={handleBackgroundSelect}
@@ -220,8 +228,6 @@
     gap: clamp(12px, 2cqi, 20px);
     padding: clamp(12px, 2cqi, 20px);
     background: var(--theme-card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     transition:
@@ -289,7 +295,7 @@
   }
 
   .panel-subtitle {
-    font-size: clamp(11px, 2.5cqi, 13px);
+    font-size: clamp(12px, 2.5cqi, 13px);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     margin: 2px 0 0 0;
   }
@@ -340,9 +346,9 @@
     width: 100%;
   }
 
-  /* Default: 3 columns for animated, 2 for simple */
+  /* Default: 2 columns for mobile */
   .animated-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .simple-grid {
@@ -350,14 +356,24 @@
     align-items: start;
   }
 
-  /* Medium containers: 2 columns for all */
-  @container background-tab (max-width: 500px) {
+  /* Medium containers (tablet): 3 columns for animated */
+  @container background-tab (min-width: 400px) {
     .animated-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  /* Never go to single column - always maintain 2 columns minimum */
+  /* Large containers (desktop): 4 columns for animated to fit everything */
+  @container background-tab (min-width: 600px) {
+    .animated-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .simple-grid {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 50%; /* Keep simple cards from stretching too wide */
+    }
+  }
 
   /* ========================================
      SCROLLBAR

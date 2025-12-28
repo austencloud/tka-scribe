@@ -102,7 +102,7 @@
         aria-label="Keyboard shortcuts"
         title="Keyboard shortcuts (Shift+?)"
       >
-        <i class="fas fa-keyboard"></i>
+        <i class="fas fa-keyboard" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -163,8 +163,8 @@
   }
 
   .help-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -191,9 +191,6 @@
       gap: 0.25rem;
     }
 
-    .help-btn {
-      width: 32px;
-      height: 32px;
-    }
+    /* Touch targets remain 48px on mobile for WCAG AAA */
   }
 </style>

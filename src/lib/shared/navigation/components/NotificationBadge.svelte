@@ -38,7 +38,7 @@
     /* Styling */
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     border-radius: 10px;
     border: 2px solid var(--theme-panel-bg, rgba(0, 0, 0, 0.3));

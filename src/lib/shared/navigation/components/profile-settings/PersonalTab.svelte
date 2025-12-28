@@ -60,7 +60,7 @@
   <!-- Scrollable form content -->
   <div class="form-content">
     <h3 class="section-title">
-      <i class="fas fa-user"></i>
+      <i class="fas fa-user" aria-hidden="true"></i>
       Personal Information
     </h3>
 
@@ -412,7 +412,7 @@
   }
 
   .section.very-compact :global(.hint) {
-    font-size: 11px;
+    font-size: 12px;
     margin: 3px 0 0 0;
   }
 

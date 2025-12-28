@@ -42,14 +42,6 @@
     } catch {
       // Service not available
     }
-
-    // Debug auth state
-    console.log("[ProfileButton] Auth state:", {
-      isAuthenticated: authState.isAuthenticated,
-      hasUser: !!authState.user,
-      displayName: authState.user?.displayName,
-      photoURL: authState.user?.photoURL,
-    });
   });
 
   function handleProfileClick() {
@@ -108,7 +100,7 @@
           .toUpperCase()}
       </div>
     {:else}
-      <i class="fas fa-user-circle"></i>
+      <i class="fas fa-user-circle" aria-hidden="true"></i>
     {/if}
   </div>
   {#if showLabel && !isCollapsed}

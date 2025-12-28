@@ -1,10 +1,14 @@
 <script lang="ts">
   import type { Announcement } from "$lib/features/admin/domain/models/announcement-models";
 
-  export let announcement: Announcement;
-  export let dismissed = false;
-  export let severityColor: (severity: Announcement["severity"]) => string;
-  export let formatDate: (date: Date) => string;
+  interface Props {
+    announcement: Announcement;
+    dismissed?: boolean;
+    severityColor: (severity: Announcement["severity"]) => string;
+    formatDate: (date: Date) => string;
+  }
+
+  let { announcement, dismissed = false, severityColor, formatDate }: Props = $props();
 </script>
 
 <div class="announcement-item" class:dismissed>
@@ -31,13 +35,13 @@
       rel="noopener noreferrer"
     >
       {announcement.actionLabel || "Learn More"}
-      <i class="fas fa-external-link-alt"></i>
+      <i class="fas fa-external-link-alt" aria-hidden="true"></i>
     </a>
   {/if}
 
   {#if dismissed}
     <div class="dismissed-badge">
-      <i class="fas fa-check"></i>
+      <i class="fas fa-check" aria-hidden="true"></i>
       Dismissed
     </div>
   {/if}
@@ -74,7 +78,7 @@
 
   .severity-badge {
     padding: 4px 10px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     color: white;
@@ -142,7 +146,7 @@
     border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 10px;
     color: #34d399;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     margin-top: 8px;
   }

@@ -128,7 +128,7 @@
   <div class="subtle-banner" transition:slide={{ duration: 300 }}>
     <div class="banner-content">
       <span class="banner-icon">
-        <i class="fas fa-mobile-alt"></i>
+        <i class="fas fa-mobile-alt" aria-hidden="true"></i>
       </span>
       <span class="banner-text"
         >Install for a distraction-free, fullscreen-like experience!</span
@@ -141,12 +141,12 @@
             onclick={handleInstall}
             disabled={isInstalling}
           >
-            <i class="fas fa-download"></i>
+            <i class="fas fa-download" aria-hidden="true"></i>
             <span>{isInstalling ? "Installing..." : "Install"}</span>
           </button>
         {:else}
           <button class="learn-btn" onclick={handleOpenGuide}>
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
             <span>Learn How</span>
           </button>
         {/if}
@@ -155,7 +155,7 @@
           onclick={handleDismiss}
           aria-label="Dismiss"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -375,7 +375,7 @@
     .install-btn,
     .learn-btn {
       padding: 6px 12px;
-      font-size: 11px;
+      font-size: 12px;
       min-height: var(--min-touch-target);
     }
 

@@ -44,7 +44,7 @@
 <div class="animation-beat-grid">
   {#if beats().length === 0}
     <div class="empty-state">
-      <i class="fas fa-layer-group"></i>
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
       <span>No sequence loaded</span>
     </div>
   {:else}
@@ -84,7 +84,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     font-size: 0.85rem;
   }
 
@@ -140,14 +140,14 @@
     position: absolute;
     bottom: 2px;
     right: 4px;
-    font-size: 0.6rem;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.75);
     font-variant-numeric: tabular-nums;
   }
 
   .beat-cell.current .beat-number {
-    color: rgba(251, 191, 36, 0.9);
+    color: white;
   }
 
   /* Responsive sizing */

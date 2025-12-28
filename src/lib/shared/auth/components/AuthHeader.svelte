@@ -27,7 +27,7 @@
     onclick={onClose}
     aria-label={mode === "signin" ? "Close sign in" : "Close sign up"}
   >
-    <i class="fas fa-times"></i>
+    <i class="fas fa-times" aria-hidden="true"></i>
   </button>
 </header>
 

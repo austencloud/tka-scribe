@@ -79,14 +79,13 @@ Used by both Generate and Discover for consistent Bento card styling
   }
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
   bind:this={cardElement}
   class="parameter-card"
   class:clickable
   class:disabled
   role={clickable ? "button" : "group"}
-  tabindex={clickable ? 0 : -1}
+  tabindex={clickable ? 0 : undefined}
   aria-disabled={disabled}
   onclick={handleClick}
   onkeydown={handleKeydown}
