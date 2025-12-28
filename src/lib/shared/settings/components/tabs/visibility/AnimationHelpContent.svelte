@@ -19,7 +19,7 @@
       label: "Beat Numbers",
       description: "Current beat number during playback.",
       icon: "fa-hashtag",
-      color: "#60a5fa",
+      color: "var(--semantic-info)",
     },
     {
       id: "trails",
@@ -40,7 +40,7 @@
       label: "Reversal Indicators",
       description: "Direction change markers.",
       icon: "fa-undo",
-      color: "#fbbf24",
+      color: "var(--semantic-warning)",
     },
     {
       id: "turnNumbers",
@@ -140,7 +140,7 @@
   }
 
   .preview-visual i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     color: #f472b6;
     filter: drop-shadow(0 0 16px rgba(244, 114, 182, 0.4));
   }
@@ -157,15 +157,15 @@
 
   .preview-title {
     display: block;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin-bottom: 6px;
   }
 
   .preview-subtitle {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     max-width: 280px;
     line-height: 1.5;
@@ -176,9 +176,9 @@
      ======================================== */
   .section-title {
     margin: 0 0 16px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -225,7 +225,7 @@
     border: 1px solid color-mix(in srgb, var(--element-color) 30%, transparent);
     border-radius: 10px;
     color: var(--element-color);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .element-info {
@@ -235,15 +235,15 @@
 
   .element-label {
     display: block;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin-bottom: 4px;
   }
 
   .element-description {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
     margin: 0;
   }
@@ -263,7 +263,7 @@
 
   .tips-section > i {
     color: #f472b6;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     margin-top: 2px;
     flex-shrink: 0;
   }
@@ -275,7 +275,7 @@
 
   .tips-title {
     display: block;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: #f472b6;
     margin-bottom: 8px;
@@ -284,8 +284,8 @@
   .tips-list {
     margin: 0;
     padding-left: 18px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.6;
   }
 
@@ -298,6 +298,6 @@
   }
 
   .tips-list strong {
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 </style>

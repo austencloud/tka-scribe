@@ -152,8 +152,8 @@ Matches the desktop Python app navigation pattern exactly.
     flex-direction: column;
     height: 100%;
     padding: clamp(0.75rem, 2vw, 1.25rem);
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.1));
-    border-right: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border-right: 1px solid var(--theme-stroke-strong);
     width: clamp(80px, 10vw, 160px);
     flex-shrink: 0;
     overflow: hidden;
@@ -186,7 +186,7 @@ Matches the desktop Python app navigation pattern exactly.
     flex-shrink: 0;
     padding-right: 12px;
     margin-right: 12px;
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-right: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .header-text {
@@ -209,7 +209,7 @@ Matches the desktop Python app navigation pattern exactly.
     font-weight: 600;
     text-align: left;
     white-space: nowrap;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -242,8 +242,8 @@ Matches the desktop Python app navigation pattern exactly.
   }
 
   .nav-button {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
     padding: clamp(0.75rem, 2vw, 1rem) clamp(0.5rem, 1.5vw, 0.75rem);
     border-radius: 6px;
@@ -268,12 +268,12 @@ Matches the desktop Python app navigation pattern exactly.
     flex-shrink: 0;
     white-space: nowrap;
     border-radius: 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .nav-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(in srgb, var(--theme-text, white) 50%, transparent);
     transform: translateY(-1px);
   }
@@ -299,7 +299,7 @@ Matches the desktop Python app navigation pattern exactly.
   }
 
   .nav-buttons::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 2px;
   }
 

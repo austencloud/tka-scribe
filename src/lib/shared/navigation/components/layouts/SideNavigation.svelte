@@ -106,7 +106,7 @@
       color-mix(
           in srgb,
           var(--module-color, #667eea) 12%,
-          rgba(255, 255, 255, 0.08)
+          var(--theme-card-bg)
         )
         0%,
       color-mix(
@@ -194,8 +194,8 @@
     max-width: var(--min-touch-target);
     padding: 0;
     /* Glass background to make button clearly tappable */
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     /* Ensure proper touch handling */
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -205,15 +205,15 @@
   }
 
   .side-navigation :global(.nav-button.special:hover) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .side-navigation :global(.nav-button.special.active) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     /* Override the section-style top border indicator */
-    border-top: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    border-top: 1px solid var(--theme-stroke-strong);
     padding-top: 0;
   }
 
@@ -233,7 +233,7 @@
     }
 
     .side-navigation :global(.nav-button.active) {
-      background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+      background: var(--theme-stroke-strong);
     }
   }
 </style>

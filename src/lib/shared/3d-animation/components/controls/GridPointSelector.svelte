@@ -86,7 +86,7 @@
   .label {
     font-size: var(--font-size-compact, 0.75rem);
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     letter-spacing: 0.05em;
   }
 
@@ -100,12 +100,12 @@
 
   .grid-circle {
     fill: none;
-    stroke: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    stroke: var(--theme-stroke);
     stroke-width: 1;
   }
 
   .center-dot {
-    fill: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    fill: var(--theme-text-dim);
   }
 
   .point-group {
@@ -114,12 +114,12 @@
   }
 
   .blue .point-group:focus .point-dot {
-    stroke: var(--prop-blue, #2e3192);
+    stroke: var(--prop-blue);
     stroke-width: 2;
   }
 
   .red .point-group:focus .point-dot {
-    stroke: var(--prop-red, #ed1c24);
+    stroke: var(--prop-red);
     stroke-width: 2;
   }
 
@@ -128,25 +128,25 @@
   }
 
   .point-dot {
-    fill: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    fill: var(--theme-text-dim);
     transition: all 0.15s ease;
   }
 
   .point-group:hover .point-dot {
-    fill: var(--theme-text, rgba(255, 255, 255, 0.92));
+    fill: var(--theme-text);
   }
 
   .blue .point-group.selected .point-dot {
-    fill: var(--prop-blue, #2e3192);
+    fill: var(--prop-blue);
   }
 
   .red .point-group.selected .point-dot {
-    fill: var(--prop-red, #ed1c24);
+    fill: var(--prop-red);
   }
 
   .point-label {
-    font-size: 12px;
-    fill: var(--theme-text, rgba(255, 255, 255, 0.92));
+    font-size: var(--font-size-compact);
+    fill: var(--theme-text);
     text-anchor: middle;
     dominant-baseline: central;
     pointer-events: none;

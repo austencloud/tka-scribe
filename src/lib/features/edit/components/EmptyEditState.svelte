@@ -100,20 +100,20 @@
   }
 
   .icon-container i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     color: #06b6d4;
   }
 
   .title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0 0 12px 0;
   }
 
   .description {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin: 0 0 32px 0;
     line-height: 1.5;
   }
@@ -139,8 +139,8 @@
     gap: 4px;
     padding: 16px 24px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--theme-stroke);
+    background: var(--theme-card-bg);
     cursor: pointer;
     transition: all 0.2s ease;
     min-width: 160px;
@@ -173,31 +173,31 @@
   }
 
   .action-btn.create i {
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .action-btn i {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     margin-bottom: 4px;
   }
 
   .action-btn span {
     font-size: 0.95rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .btn-hint {
     font-size: 0.8rem !important;
     font-weight: 400 !important;
-    color: rgba(255, 255, 255, 0.5) !important;
+    color: var(--theme-text-dim) !important;
   }
 
   .info-section {
     padding: 20px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     text-align: left;
   }
 
@@ -222,7 +222,7 @@
     align-items: flex-start;
     gap: 10px;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     line-height: 1.4;
   }
 

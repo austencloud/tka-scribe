@@ -98,14 +98,14 @@
 
   function getNotificationColor(type: UserNotification["type"]): string {
     switch (type) {
-      case "feedback-resolved": return "#10b981";
-      case "feedback-in-progress": return "#f59e0b";
-      case "feedback-needs-info": return "#8b5cf6";
-      case "feedback-response": return "#3b82f6";
+      case "feedback-resolved": return "var(--semantic-success)";
+      case "feedback-in-progress": return "var(--semantic-warning)";
+      case "feedback-needs-info": return "var(--theme-accent-strong)";
+      case "feedback-response": return "var(--semantic-info)";
       case "sequence-liked": return "#ec4899";
       case "user-followed": return "#06b6d4";
-      case "achievement-unlocked": return "#f59e0b";
-      case "message-received": return "#8b5cf6";
+      case "achievement-unlocked": return "var(--semantic-warning)";
+      case "message-received": return "var(--theme-accent-strong)";
       default: return "#6366f1";
     }
   }
@@ -195,11 +195,10 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 16px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     overflow: hidden;
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }
@@ -224,25 +223,25 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
+    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, var(--theme-card-bg));
     border-radius: 10px;
-    color: var(--semantic-info, #3b82f6);
-    font-size: 14px;
+    color: var(--semantic-info, var(--semantic-info));
+    font-size: var(--font-size-sm);
   }
 
   .widget-header h3 {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .clear-all-btn {
     padding: 4px 10px;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.6875rem;
     font-weight: 500;
     cursor: pointer;
@@ -250,9 +249,9 @@
   }
 
   .clear-all-btn:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
+    border-color: var(--theme-stroke);
   }
 
   .widget-content {
@@ -275,19 +274,19 @@
   }
 
   .empty-state i {
-    font-size: 24px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: var(--font-size-2xl);
+    color: var(--theme-text-dim);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty-hint {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .alerts-list {
@@ -304,7 +303,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
     border-radius: 10px;
     cursor: pointer;
@@ -317,26 +316,26 @@
   }
 
   .alert-item:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke));
   }
 
   .alert-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, var(--theme-card-bg, rgba(0, 0, 0, 0.2)));
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, var(--theme-card-bg));
+    border-color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
   }
 
   .alert-icon {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: color-mix(in srgb, var(--icon-color, #3b82f6) 20%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
+    background: color-mix(in srgb, var(--icon-color, var(--semantic-info)) 20%, var(--theme-card-bg));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: var(--icon-color, #3b82f6);
-    font-size: 13px;
+    color: var(--icon-color, var(--semantic-info));
+    font-size: var(--font-size-compact);
   }
 
   .alert-content {
@@ -349,7 +348,7 @@
 
   .alert-message {
     font-size: 0.75rem;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -357,13 +356,13 @@
 
   .alert-time {
     font-size: 0.6875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .unread-dot {
     width: 8px;
     height: 8px;
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -376,10 +375,10 @@
     min-height: 40px;
     padding: 10px 16px;
     margin-top: 8px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
@@ -388,12 +387,12 @@
   }
 
   .view-all-btn:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .view-all-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   @media (max-width: 768px) {
@@ -405,7 +404,7 @@
     .header-icon {
       width: 32px;
       height: 32px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .widget-header h3 {

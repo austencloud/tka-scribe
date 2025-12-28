@@ -174,9 +174,9 @@ ProspinPage - Page 3: Prospin rotation concept
 
   .example-description {
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
   }
 
@@ -188,7 +188,7 @@ ProspinPage - Page 3: Prospin rotation concept
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -248,13 +248,13 @@ ProspinPage - Page 3: Prospin rotation concept
     align-items: center;
     gap: 0.25rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
   }
 
   .formula-label {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
   }
 
@@ -285,7 +285,6 @@ ProspinPage - Page 3: Prospin rotation concept
       rgba(34, 211, 238, 0.3) 0%,
       rgba(6, 182, 212, 0.3) 100%
     );
-    backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
     color: white;

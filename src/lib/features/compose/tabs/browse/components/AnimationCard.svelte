@@ -59,11 +59,11 @@ Features:
 
   // Mode accent colors
   const modeAccents: Record<ComposeMode, string> = {
-    single: "#3b82f6",
+    single: "var(--semantic-info)",
     mirror: "#8b5cf6",
     tunnel: "#ec4899",
-    grid: "#f59e0b",
-    "side-by-side": "#10b981",
+    grid: "var(--semantic-warning)",
+    "side-by-side": "var(--semantic-success)",
   };
 
   // Truncate title to 24 characters
@@ -286,11 +286,11 @@ Features:
   .animation-card.selected {
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 80%,
+      var(--theme-accent, var(--theme-accent)) 80%,
       transparent
     );
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   /* Card Media */
@@ -367,7 +367,7 @@ Features:
   }
 
   .mode-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -387,9 +387,9 @@ Features:
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--theme-stroke);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text);
   }
 
   /* Favorite badge */
@@ -406,8 +406,8 @@ Features:
     backdrop-filter: blur(8px);
     border-radius: 6px;
     border: 1px solid rgba(239, 68, 68, 0.4);
-    font-size: 14px;
-    color: #ef4444;
+    font-size: var(--font-size-sm);
+    color: var(--semantic-error);
   }
 
   /* Card Footer */
@@ -424,7 +424,7 @@ Features:
   }
 
   .animation-title {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
@@ -436,8 +436,8 @@ Features:
   .card-meta {
     display: flex;
     gap: 12px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .card-meta span {
@@ -447,7 +447,7 @@ Features:
   }
 
   .card-meta i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
   }
 
@@ -459,11 +459,11 @@ Features:
     }
 
     .animation-title {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .card-meta {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       gap: 8px;
     }
 
@@ -471,11 +471,11 @@ Features:
     .favorite-badge {
       width: 28px;
       height: 28px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .placeholder-icon {
-      font-size: 36px;
+      font-size: var(--font-size-3xl);
     }
   }
 

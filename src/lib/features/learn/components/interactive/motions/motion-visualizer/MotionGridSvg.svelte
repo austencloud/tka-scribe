@@ -46,13 +46,13 @@ MotionGridSvg - SVG grid with motion arrows and hand positions
 	<polygon
 		points="50,15 85,50 50,85 15,50"
 		fill="none"
-		stroke="rgba(255, 255, 255, 0.15)"
+		stroke="var(--theme-stroke-strong)"
 		stroke-width="0.5"
 	/>
 
 	<!-- Grid lines -->
-	<line x1="50" y1="15" x2="50" y2="85" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" />
-	<line x1="15" y1="50" x2="85" y2="50" stroke="rgba(255, 255, 255, 0.1)" stroke-width="0.5" />
+	<line x1="50" y1="15" x2="50" y2="85" stroke="var(--theme-stroke)" stroke-width="0.5" />
+	<line x1="15" y1="50" x2="85" y2="50" stroke="var(--theme-stroke)" stroke-width="0.5" />
 
 	<!-- Arrow markers -->
 	<defs>
@@ -111,7 +111,7 @@ MotionGridSvg - SVG grid with motion arrows and hand positions
 	{/each}
 
 	<!-- Center point -->
-	<circle cx="50" cy="50" r="2" fill="rgba(255, 255, 255, 0.15)" />
+	<circle cx="50" cy="50" r="2" fill="var(--theme-stroke-strong)" />
 
 	<!-- Left hand -->
 	<circle cx={leftCurrentPos.x} cy={leftCurrentPos.y} r="10" fill={LEFT_HAND_COLOR} class="hand-glow" />

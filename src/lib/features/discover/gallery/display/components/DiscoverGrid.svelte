@@ -6,6 +6,15 @@
   import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import SequenceCard from "./SequenceCard/SequenceCard.svelte";
   import SectionHeader from "./SectionHeader.svelte";
+  import VirtualizedSequenceGrid from "./VirtualizedSequenceGrid.svelte";
+
+  /**
+   * 🚀 PERFORMANCE: Virtualization threshold
+   * Lists with more than this many items use virtual scrolling
+   * to avoid rendering 100+ DOM nodes at once.
+   * Below this threshold, we use animate-css-grid for smooth FLIP animations.
+   */
+  const VIRTUALIZATION_THRESHOLD = 50;
 
   // ✅ PURE RUNES: Props using modern Svelte 5 runes
   const {
@@ -23,6 +32,12 @@
     showSections?: boolean;
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
+
+  // Determine if we should use virtualization
+  // Only virtualize flat grids (not sections) with many items
+  const useVirtualization = $derived(
+    !showSections && sequences.length > VIRTUALIZATION_THRESHOLD && viewMode === "grid"
+  );
 
   // Grid element refs for animate-css-grid
   let sectionGridRefs = $state<HTMLElement[]>([]);
@@ -125,7 +140,14 @@
   }
 </script>
 
-{#if showSections && sections.length > 0}
+{#if useVirtualization}
+  <!-- 🚀 VIRTUALIZED: Large flat list with 50+ items -->
+  <VirtualizedSequenceGrid
+    {sequences}
+    {thumbnailService}
+    {onAction}
+  />
+{:else if showSections && sections.length > 0}
   <!-- Section-based organization (desktop app style) -->
   <div class="sections-container">
     {#each sections as section, sectionIndex (section.id)}

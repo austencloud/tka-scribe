@@ -12,7 +12,7 @@ Provides consistent styling matching the Generate tab's card aesthetic
   let {
     title,
     currentValue,
-    color = "#3b82f6",
+    color = "var(--semantic-info)",
     shadowColor = "220deg 60% 30%",
     clickable = true,
     gridColumnSpan = 2,
@@ -178,7 +178,7 @@ Provides consistent styling matching the Generate tab's card aesthetic
     background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.25) 0%,
-      rgba(255, 255, 255, 0.12) 40%,
+      var(--theme-card-hover-bg) 40%,
       rgba(255, 255, 255, 0.04) 70%,
       rgba(255, 255, 255, 0) 100%
     );
@@ -236,7 +236,7 @@ Provides consistent styling matching the Generate tab's card aesthetic
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .card-value {

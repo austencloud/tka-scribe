@@ -64,27 +64,27 @@
     background: transparent;
     border: 1px dashed rgba(255, 255, 255, 0.2);
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .expand-chip:hover {
     border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.9);
-    background: rgba(255, 255, 255, 0.05);
+    color: var(--theme-text);
+    background: var(--theme-card-bg);
   }
 
   .expand-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .expandable-field {
     width: 100%;
     padding: 12px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
     margin-top: 4px;
   }
@@ -97,9 +97,9 @@
   }
 
   .field-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .collapse-btn {
@@ -109,7 +109,7 @@
     background: transparent;
     border: none;
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -119,6 +119,6 @@
 
   .collapse-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 </style>

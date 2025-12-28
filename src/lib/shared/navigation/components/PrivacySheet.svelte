@@ -247,14 +247,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     flex-shrink: 0;
   }
 
   .privacy-sheet__title {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
@@ -265,9 +265,9 @@
     min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 20px;
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-xl);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -277,7 +277,7 @@
   }
 
   .privacy-sheet__close:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.16));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.05);
   }
 
@@ -305,8 +305,8 @@
   }
 
   .last-updated {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     margin: 0 0 24px 0;
   }
 
@@ -315,20 +315,20 @@
   }
 
   h3 {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 12px 0;
   }
 
   p {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     line-height: 1.6;
     margin: 0 0 12px 0;
   }
 
   ul {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     line-height: 1.6;
     margin: 0 0 12px 0;
     padding-left: 24px;
@@ -339,7 +339,7 @@
   }
 
   strong {
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-weight: 600;
   }
 
@@ -352,7 +352,7 @@
     }
 
     .privacy-sheet__title {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .privacy-sheet__content {
@@ -360,12 +360,12 @@
     }
 
     h3 {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     p,
     ul {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 

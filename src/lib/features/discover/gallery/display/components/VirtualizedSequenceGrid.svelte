@@ -1,0 +1,241 @@
+<script lang="ts">
+  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { createVirtualizer, type VirtualItem } from "@tanstack/svelte-virtual";
+  import { onMount, untrack } from "svelte";
+  import { get } from "svelte/store";
+  import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
+  import SequenceCard from "./SequenceCard/SequenceCard.svelte";
+
+  /**
+   * VirtualizedSequenceGrid - High-performance grid for large sequence lists
+   *
+   * Uses TanStack Virtual to render only visible items, dramatically improving
+   * performance for lists with 100+ sequences.
+   *
+   * Key features:
+   * - Dynamic column count based on container width
+   * - Virtual rows with configurable overscan
+   * - Smooth scrolling with estimated item size
+   */
+
+  const {
+    sequences = [],
+    thumbnailService,
+    onAction = () => {},
+  } = $props<{
+    sequences: SequenceData[];
+    thumbnailService: IDiscoverThumbnailProvider | null;
+    onAction?: (action: string, sequence: SequenceData) => void;
+  }>();
+
+  // Container and scroll element refs
+  let scrollElement = $state<HTMLDivElement | null>(null);
+  let containerWidth = $state(0);
+
+  // Reactive state for virtualizer data
+  let virtualRows = $state<VirtualItem[]>([]);
+  let totalHeight = $state(0);
+
+  // Dynamic column count based on container width
+  const columnCount = $derived.by(() => {
+    if (containerWidth === 0) return 2;
+    if (containerWidth >= 1600) return 6;
+    if (containerWidth >= 1200) return 5;
+    if (containerWidth >= 800) return 4;
+    if (containerWidth >= 481) return 3;
+    return 2;
+  });
+
+  // Calculate row count based on sequences and columns
+  const rowCount = $derived(Math.ceil(sequences.length / columnCount));
+
+  // Estimated row height (card height + gap)
+  const estimatedRowHeight = $derived.by(() => {
+    if (containerWidth === 0) return 200;
+    const cardWidth = (containerWidth - (columnCount - 1) * 16) / columnCount;
+    // Assuming ~1.3 aspect ratio for cards (height = width * 1.3)
+    return cardWidth * 1.3 + 16; // +16 for gap
+  });
+
+  // Get sequences for a specific row
+  function getRowSequences(rowIndex: number): SequenceData[] {
+    const startIndex = rowIndex * columnCount;
+    const endIndex = Math.min(startIndex + columnCount, sequences.length);
+    return sequences.slice(startIndex, endIndex);
+  }
+
+  function getCoverUrl(sequence: SequenceData) {
+    const firstThumbnail = sequence?.thumbnails?.[0];
+    if (!firstThumbnail || !thumbnailService) return undefined;
+    try {
+      return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
+    } catch {
+      return undefined;
+    }
+  }
+
+  function handleSequenceAction(action: string, sequence: SequenceData) {
+    onAction(action, sequence);
+  }
+
+  // Initialize virtualizer and subscribe to updates
+  onMount(() => {
+    if (!scrollElement) return;
+
+    // Create virtualizer store
+    const virtualizerStore = createVirtualizer({
+      count: rowCount,
+      getScrollElement: () => scrollElement,
+      estimateSize: () => estimatedRowHeight,
+      overscan: 3, // Render 3 extra rows above/below viewport
+    });
+
+    // Subscribe to virtualizer updates
+    const unsubscribe = virtualizerStore.subscribe((v) => {
+      virtualRows = v.getVirtualItems();
+      totalHeight = v.getTotalSize();
+    });
+
+    // ResizeObserver to track container width
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const width = entry.contentRect.width;
+        if (width > 0) {
+          containerWidth = width;
+          // Force virtualizer to recalculate
+          const v = get(virtualizerStore);
+          v.measure();
+        }
+      }
+    });
+
+    resizeObserver.observe(scrollElement);
+
+    // Initial measurement
+    requestAnimationFrame(() => {
+      if (scrollElement) {
+        const width = scrollElement.getBoundingClientRect().width;
+        if (width > 0) containerWidth = width;
+      }
+    });
+
+    return () => {
+      unsubscribe();
+      resizeObserver.disconnect();
+    };
+  });
+
+  // Reconfigure virtualizer when rowCount or estimatedRowHeight changes
+  $effect(() => {
+    // Capture reactive dependencies
+    const count = rowCount;
+    const height = estimatedRowHeight;
+
+    // Run update outside reactive tracking
+    untrack(() => {
+      if (!scrollElement) return;
+
+      // Create new virtualizer with updated config
+      const virtualizerStore = createVirtualizer({
+        count,
+        getScrollElement: () => scrollElement,
+        estimateSize: () => height,
+        overscan: 3,
+      });
+
+      // Subscribe to updates
+      const unsubscribe = virtualizerStore.subscribe((v) => {
+        virtualRows = v.getVirtualItems();
+        totalHeight = v.getTotalSize();
+      });
+
+      // Cleanup previous subscription on next effect run
+      return unsubscribe;
+    });
+  });
+</script>
+
+<div
+  bind:this={scrollElement}
+  class="virtual-scroll-container"
+  role="grid"
+  aria-rowcount={rowCount}
+>
+  <div
+    class="virtual-content"
+    style:height="{totalHeight}px"
+  >
+    {#each virtualRows as virtualRow (virtualRow.key)}
+      <div
+        class="virtual-row"
+        style:position="absolute"
+        style:top="{virtualRow.start}px"
+        style:width="100%"
+        style:display="grid"
+        style:grid-template-columns="repeat({columnCount}, 1fr)"
+        style:gap="var(--spacing-lg, 16px)"
+        role="row"
+        aria-rowindex={virtualRow.index + 1}
+      >
+        {#each getRowSequences(virtualRow.index) as sequence, colIndex (sequence.id)}
+          <div role="gridcell" aria-colindex={colIndex + 1}>
+            <SequenceCard
+              {sequence}
+              coverUrl={getCoverUrl(sequence)}
+              onPrimaryAction={(seq) => handleSequenceAction("view-detail", seq)}
+            />
+          </div>
+        {/each}
+      </div>
+    {/each}
+  </div>
+</div>
+
+<style>
+  .virtual-scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* Smooth scrolling for virtual lists */
+    scroll-behavior: smooth;
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-accent) transparent;
+  }
+
+  .virtual-scroll-container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .virtual-scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .virtual-scroll-container::-webkit-scrollbar-thumb {
+    background: var(--theme-accent);
+    border-radius: 4px;
+  }
+
+  .virtual-content {
+    position: relative;
+    width: 100%;
+  }
+
+  .virtual-row {
+    padding: 0 var(--spacing-sm, 4px);
+    box-sizing: border-box;
+  }
+
+  /* Responsive gap adjustments matching original grid */
+  @container (max-width: 480px) {
+    .virtual-row {
+      gap: 8px !important;
+    }
+  }
+
+  @container (min-width: 481px) and (max-width: 1199px) {
+    .virtual-row {
+      gap: var(--spacing-md, 12px) !important;
+    }
+  }
+</style>

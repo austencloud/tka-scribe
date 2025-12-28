@@ -161,7 +161,7 @@
     flex-shrink: 0;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #667eea) 0%,
+      var(--semantic-info) 0%,
       #764ba2 100%
     );
   }

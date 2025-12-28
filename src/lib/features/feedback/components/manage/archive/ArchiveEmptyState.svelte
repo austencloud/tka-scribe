@@ -24,21 +24,21 @@
   }
 
   .empty-state i {
-    font-size: 48px;
-    color: color-mix(in srgb, var(--theme-text-dim, #6b7280) 40%, transparent);
+    font-size: var(--font-size-3xl);
+    color: color-mix(in srgb, var(--theme-text-dim) 40%, transparent);
     margin-bottom: 16px;
   }
 
   .empty-state h3 {
     margin: 0 0 8px 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 </style>

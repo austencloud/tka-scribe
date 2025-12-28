@@ -27,7 +27,8 @@
   import TurnPatternDrawer from "./TurnPatternDrawer.svelte";
   import RotationDirectionDrawer from "./RotationDirectionDrawer.svelte";
   import AutocompleteDrawer from "./AutocompleteDrawer.svelte";
-  import BeatGrid from "../../workspace-panel/sequence-display/components/BeatGrid.svelte";
+  import BeatGridSection from "./BeatGridSection.svelte";
+  import ShiftStartConfirmDialog from "./ShiftStartConfirmDialog.svelte";
   import { setGridRotationDirection } from "$lib/shared/pictograph/grid/state/grid-rotation-state.svelte";
 
   interface Props {
@@ -133,87 +134,35 @@
     }
   });
 
-  // Transform handlers
-  async function handleMirror() {
+  // Transform helper - eliminates boilerplate across all transform handlers
+  async function withTransform(action: () => Promise<void>, beforeAction?: () => void) {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
+    beforeAction?.();
     try {
-      await activeSequenceState.mirrorSequence();
+      await action();
     } finally {
       isTransforming = false;
     }
   }
 
-  async function handleRotateCW() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-    hapticService?.trigger("selection");
-    // Set grid rotation direction for animation
-    setGridRotationDirection(1);
-    try {
-      await activeSequenceState.rotateSequence("clockwise");
-    } finally {
-      isTransforming = false;
-    }
-  }
+  // Transform handlers - clean one-liners using the helper
+  const handleMirror = () => withTransform(() => activeSequenceState.mirrorSequence());
+  const handleSwap = () => withTransform(() => activeSequenceState.swapColors());
+  const handleRewind = () => withTransform(() => activeSequenceState.rewindSequence());
+  const handleFlip = () => withTransform(() => activeSequenceState.flipSequence());
+  const handleInvert = () => withTransform(() => activeSequenceState.invertSequence());
 
-  async function handleRotateCCW() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-    hapticService?.trigger("selection");
-    // Set grid rotation direction for animation
-    setGridRotationDirection(-1);
-    try {
-      await activeSequenceState.rotateSequence("counterclockwise");
-    } finally {
-      isTransforming = false;
-    }
-  }
-
-  async function handleSwap() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-    hapticService?.trigger("selection");
-    try {
-      await activeSequenceState.swapColors();
-    } finally {
-      isTransforming = false;
-    }
-  }
-
-  async function handleRewind() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-    hapticService?.trigger("selection");
-    try {
-      await activeSequenceState.rewindSequence();
-    } finally {
-      isTransforming = false;
-    }
-  }
-
-  async function handleFlip() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-    hapticService?.trigger("selection");
-    try {
-      await activeSequenceState.flipSequence();
-    } finally {
-      isTransforming = false;
-    }
-  }
-
-  async function handleInvert() {
-    if (!sequence || isTransforming) return;
-    isTransforming = true;
-    hapticService?.trigger("selection");
-    try {
-      await activeSequenceState.invertSequence();
-    } finally {
-      isTransforming = false;
-    }
-  }
+  // Rotation handlers set grid animation direction before transform
+  const handleRotateCW = () => withTransform(
+    () => activeSequenceState.rotateSequence("clockwise"),
+    () => setGridRotationDirection(1)
+  );
+  const handleRotateCCW = () => withTransform(
+    () => activeSequenceState.rotateSequence("counterclockwise"),
+    () => setGridRotationDirection(-1)
+  );
 
   function handlePreview() {
     if (!sequence) return;
@@ -536,27 +485,20 @@
 
     <!-- Beat grid display: shows on mobile at 50% height -->
     {#if hasSequence && isSideBySideLayout === false && sequence}
-      <div class="beat-grid-section" class:shift-mode={isShiftStartMode}>
-        {#if isShiftStartMode}
-          <div class="shift-mode-banner">
-            <span>Tap the beat to play first — it becomes Beat 1</span>
-            <button class="cancel-btn" onclick={cancelShiftStart}>Cancel</button
-            >
-          </div>
-        {/if}
-        <BeatGrid
-          beats={sequence.beats}
-          startPosition={sequence.startPosition ||
-            sequence.startingPositionBeat ||
-            null}
-          {selectedBeatNumber}
-          onBeatClick={isShiftStartMode
-            ? handleShiftStartBeatSelect
-            : handleBeatSelect}
-          onStartClick={() => (isShiftStartMode ? null : handleBeatSelect(0))}
-          onBeatLongPress={isShiftStartMode ? undefined : handlePreview}
-        />
-      </div>
+      <BeatGridSection
+        beats={sequence.beats}
+        startPosition={sequence.startPosition ||
+          sequence.startingPositionBeat ||
+          null}
+        {selectedBeatNumber}
+        isShiftMode={isShiftStartMode}
+        onBeatClick={isShiftStartMode
+          ? handleShiftStartBeatSelect
+          : handleBeatSelect}
+        onStartClick={() => (isShiftStartMode ? null : handleBeatSelect(0))}
+        onBeatLongPress={handlePreview}
+        onCancelShiftMode={cancelShiftStart}
+      />
     {/if}
 
     <div class="controls-content">
@@ -625,6 +567,7 @@
   bind:isOpen={showAutocompleteDrawer}
   analysis={autocompleteAnalysis}
   isApplying={isAutocompleting}
+  toolPanelWidth={panelState.toolPanelWidth}
   onClose={() => {
     showAutocompleteDrawer = false;
     autocompleteAnalysis = null;
@@ -633,31 +576,12 @@
 />
 
 <!-- Shift Start Confirmation Dialog (non-circular sequences) -->
-{#if showShiftConfirmDialog && pendingShiftBeatNumber !== null}
-  <div class="shift-confirm-overlay" role="dialog" aria-modal="true">
-    <div class="shift-confirm-dialog">
-      <h3>Shift Start Position</h3>
-      <p>
-        This will permanently remove beat{pendingShiftBeatNumber - 1 > 1
-          ? "s"
-          : ""} 1{pendingShiftBeatNumber - 1 > 1
-          ? `-${pendingShiftBeatNumber - 1}`
-          : ""}.
-      </p>
-      <div class="dialog-actions">
-        <button class="dialog-btn cancel" onclick={cancelShiftStart}>
-          Cancel
-        </button>
-        <button
-          class="dialog-btn confirm"
-          onclick={() => executeShiftStart(pendingShiftBeatNumber!)}
-        >
-          Shift Start
-        </button>
-      </div>
-    </div>
-  </div>
-{/if}
+<ShiftStartConfirmDialog
+  show={showShiftConfirmDialog && pendingShiftBeatNumber !== null}
+  beatNumber={pendingShiftBeatNumber ?? 1}
+  onConfirm={() => executeShiftStart(pendingShiftBeatNumber!)}
+  onCancel={cancelShiftStart}
+/>
 
 <style>
   .editor-panel {
@@ -676,7 +600,7 @@
     gap: 8px;
     padding: 8px 12px;
     background: rgba(15, 20, 30, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     height: var(--min-touch-target);
     flex-shrink: 0;
   }
@@ -685,7 +609,7 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .header-actions {
@@ -703,9 +627,9 @@
     height: var(--min-touch-target);
     border-radius: 50%;
     cursor: pointer;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     transition: all 0.15s ease;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .icon-btn.copy {
@@ -721,13 +645,13 @@
   }
 
   .icon-btn.help {
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.6);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
   }
 
   .icon-btn.help:hover {
     background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .icon-btn.close {
@@ -756,125 +680,8 @@
     .icon-btn {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
-  }
-
-  /* Beat grid section - visible on mobile only, takes 50% height */
-  .beat-grid-section {
-    flex: 0 0 40%;
-    min-height: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.02);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .beat-grid-section.shift-mode {
-    border-color: rgba(6, 182, 212, 0.5);
-    background: rgba(6, 182, 212, 0.05);
-  }
-
-  .shift-mode-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 12px;
-    background: rgba(6, 182, 212, 0.15);
-    border-bottom: 1px solid rgba(6, 182, 212, 0.3);
-    color: #06b6d4;
-    font-size: 0.85rem;
-    font-weight: 500;
-    flex-shrink: 0;
-  }
-
-  .shift-mode-banner .cancel-btn {
-    padding: 4px 12px;
-    border-radius: 6px;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-
-  .shift-mode-banner .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  /* Shift confirm dialog */
-  .shift-confirm-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-    padding: 16px;
-  }
-
-  .shift-confirm-dialog {
-    background: rgba(30, 35, 45, 0.98);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    padding: 24px;
-    max-width: 320px;
-    width: 100%;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  }
-
-  .shift-confirm-dialog h3 {
-    margin: 0 0 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #06b6d4;
-  }
-
-  .shift-confirm-dialog p {
-    margin: 0 0 20px;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    line-height: 1.5;
-  }
-
-  .dialog-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-  }
-
-  .dialog-btn {
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    min-width: 80px;
-  }
-
-  .dialog-btn.cancel {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-  }
-
-  .dialog-btn.cancel:hover {
-    background: rgba(255, 255, 255, 0.15);
-  }
-
-  .dialog-btn.confirm {
-    background: linear-gradient(135deg, #06b6d4, #0891b2);
-    border: none;
-    color: white;
-  }
-
-  .dialog-btn.confirm:hover {
-    background: linear-gradient(135deg, #22d3ee, #06b6d4);
   }
 
   /* Note: Beat grid visibility is controlled by isSideBySideLayout in the template,

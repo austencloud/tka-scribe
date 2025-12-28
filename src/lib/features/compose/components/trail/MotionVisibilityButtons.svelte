@@ -62,11 +62,11 @@
     min-width: var(--min-touch-target);
     padding: 0;
     width: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 17px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
@@ -77,9 +77,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .vis-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.6));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text, var(--theme-text-dim));
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.12),
@@ -95,38 +95,38 @@
   .vis-btn.active.blue-vis-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent) 0%,
-      color-mix(in srgb, var(--prop-blue, #2e3192) 16%, transparent) 100%
+      color-mix(in srgb, var(--prop-blue) 22%, transparent) 0%,
+      color-mix(in srgb, var(--prop-blue) 16%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--prop-blue, #2e3192) 55%,
+      var(--prop-blue) 55%,
       transparent
     );
-    color: color-mix(in srgb, var(--prop-blue, #2e3192) 35%, white);
+    color: color-mix(in srgb, var(--prop-blue) 35%, white);
     box-shadow:
-      0 2px 12px color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent),
-      0 0 16px color-mix(in srgb, var(--prop-blue, #2e3192) 16%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 2px 12px color-mix(in srgb, var(--prop-blue) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--prop-blue) 16%, transparent),
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .vis-btn.active.blue-vis-btn:hover {
       background: linear-gradient(
         135deg,
-        color-mix(in srgb, var(--prop-blue, #2e3192) 32%, transparent) 0%,
-        color-mix(in srgb, var(--prop-blue, #2e3192) 24%, transparent) 100%
+        color-mix(in srgb, var(--prop-blue) 32%, transparent) 0%,
+        color-mix(in srgb, var(--prop-blue) 24%, transparent) 100%
       );
       border-color: color-mix(
         in srgb,
-        var(--prop-blue, #2e3192) 70%,
+        var(--prop-blue) 70%,
         transparent
       );
       box-shadow:
         0 4px 16px
-          color-mix(in srgb, var(--prop-blue, #2e3192) 30%, transparent),
-        0 0 20px color-mix(in srgb, var(--prop-blue, #2e3192) 22%, transparent),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+          color-mix(in srgb, var(--prop-blue) 30%, transparent),
+        0 0 20px color-mix(in srgb, var(--prop-blue) 22%, transparent),
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
@@ -134,33 +134,33 @@
   .vis-btn.active.red-vis-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent) 0%,
-      color-mix(in srgb, var(--prop-red, #ed1c24) 16%, transparent) 100%
+      color-mix(in srgb, var(--prop-red) 22%, transparent) 0%,
+      color-mix(in srgb, var(--prop-red) 16%, transparent) 100%
     );
-    border-color: color-mix(in srgb, var(--prop-red, #ed1c24) 55%, transparent);
-    color: color-mix(in srgb, var(--prop-red, #ed1c24) 35%, white);
+    border-color: color-mix(in srgb, var(--prop-red) 55%, transparent);
+    color: color-mix(in srgb, var(--prop-red) 35%, white);
     box-shadow:
-      0 2px 12px color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent),
-      0 0 16px color-mix(in srgb, var(--prop-red, #ed1c24) 16%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 2px 12px color-mix(in srgb, var(--prop-red) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--prop-red) 16%, transparent),
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .vis-btn.active.red-vis-btn:hover {
       background: linear-gradient(
         135deg,
-        color-mix(in srgb, var(--prop-red, #ed1c24) 32%, transparent) 0%,
-        color-mix(in srgb, var(--prop-red, #ed1c24) 24%, transparent) 100%
+        color-mix(in srgb, var(--prop-red) 32%, transparent) 0%,
+        color-mix(in srgb, var(--prop-red) 24%, transparent) 100%
       );
       border-color: color-mix(
         in srgb,
-        var(--prop-red, #ed1c24) 70%,
+        var(--prop-red) 70%,
         transparent
       );
       box-shadow:
-        0 4px 16px color-mix(in srgb, var(--prop-red, #ed1c24) 30%, transparent),
-        0 0 20px color-mix(in srgb, var(--prop-red, #ed1c24) 22%, transparent),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        0 4px 16px color-mix(in srgb, var(--prop-red) 30%, transparent),
+        0 0 20px color-mix(in srgb, var(--prop-red) 22%, transparent),
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 

@@ -48,7 +48,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    color: #3b82f6;
+    color: var(--semantic-info);
     font-size: var(--font-size-sm);
     font-weight: 500;
   }
@@ -84,7 +84,7 @@
     height: 22px;
     border-radius: 6px;
     font-weight: 700;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .interval-badge.quartered {

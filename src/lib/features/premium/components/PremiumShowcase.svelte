@@ -247,13 +247,13 @@
     font-weight: 600;
     text-align: center;
     margin: 0 0 var(--spacing-md, 16px);
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .support-note {
     text-align: center;
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: var(--spacing-md, 16px) 0 0;
   }
 
@@ -266,16 +266,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 150ms ease;
   }
 
   .close-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 </style>

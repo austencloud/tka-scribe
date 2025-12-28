@@ -151,11 +151,11 @@
     width: 100%;
     padding: 16px 20px;
     min-height: var(--min-touch-target);
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%);
     border: none;
     border-radius: 12px;
     color: white;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 150ms ease;
@@ -182,7 +182,7 @@
   }
 
   .subscribe-content i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .subscribe-text {
@@ -193,7 +193,7 @@
     padding: 4px 10px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 6px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   /* Subscribed State */
@@ -215,10 +215,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%);
     border-radius: 10px;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     flex-shrink: 0;
   }
 
@@ -230,14 +230,14 @@
   }
 
   .premium-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .premium-status {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--theme-text);
   }
@@ -251,12 +251,12 @@
     background: rgba(34, 197, 94, 0.15);
     border-radius: 50%;
     color: #4ade80;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
   .billing-info {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
   }
 
@@ -268,7 +268,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .manage-btn {
@@ -283,7 +283,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 10px;
     color: var(--theme-text);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 150ms ease;

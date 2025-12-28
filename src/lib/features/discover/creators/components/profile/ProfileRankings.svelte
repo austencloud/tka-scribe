@@ -89,15 +89,15 @@
     justify-content: center;
     gap: 8px;
     margin: 0 0 12px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .rankings-title i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .rankings-badges {
@@ -113,22 +113,22 @@
     align-items: center;
     justify-content: center;
     padding: 12px 18px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     min-width: 80px;
   }
 
   .rank-value {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
     color: var(--theme-text, white);
     line-height: 1.2;
   }
 
   .rank-label {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -139,8 +139,8 @@
     align-items: center;
     justify-content: center;
     padding: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
   }
 
   @media (prefers-reduced-motion: reduce) {

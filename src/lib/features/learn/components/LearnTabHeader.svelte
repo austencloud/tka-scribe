@@ -88,7 +88,7 @@ Features:
     gap: 1rem;
     padding: 0.75rem 1rem;
     background: var(--surface, #242424);
-    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--border-color, var(--theme-stroke));
     position: relative;
     z-index: 10;
   }
@@ -115,7 +115,7 @@ Features:
     padding: 0.5rem 1rem;
     background: transparent;
     border: none;
-    color: var(--foreground-muted, rgba(255, 255, 255, 0.6));
+    color: var(--foreground-muted, var(--theme-text-dim));
     cursor: pointer;
     transition: all 200ms ease;
     border-radius: 8px;

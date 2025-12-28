@@ -25,7 +25,7 @@ Click to open length selection sheet
 <FilterBaseCard
   title="Length"
   currentValue={displayValue}
-  color="linear-gradient(135deg, #f59e0b, #d97706)"
+  color="linear-gradient(135deg, var(--semantic-warning), #d97706)"
   shadowColor="38deg 92% 50%"
   {gridColumnSpan}
   {cardIndex}
@@ -85,14 +85,14 @@ Click to open length selection sheet
   }
 
   .more {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin-left: 2px;
   }
 
   .length-hint {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   @media (prefers-reduced-motion: reduce) {

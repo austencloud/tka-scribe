@@ -75,7 +75,7 @@
     flex-direction: column;
     gap: 8px;
     padding: 16px 12px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .sidebar-footer.collapsed {
@@ -93,20 +93,20 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
   }
 
   .settings-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .settings-button.active {
@@ -133,9 +133,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     border-radius: 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     transition: all 0.2s ease;
   }
 
@@ -147,7 +147,7 @@
   }
 
   .settings-button:hover .button-icon {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
   }
 
   .settings-button.active .button-icon {
@@ -204,9 +204,9 @@
     align-items: center;
     text-align: center;
     padding: 4px 8px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     letter-spacing: 0.3px;
     opacity: 0.7;
     transition: all 0.2s ease;
@@ -219,8 +219,8 @@
 
   .version-badge:hover {
     opacity: 1;
-    color: var(--theme-accent, #a78bfa);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    color: var(--theme-accent);
+    background: var(--theme-card-bg);
   }
 
   .version-badge:focus-visible {
@@ -230,7 +230,7 @@
 
   .version-badge.collapsed {
     padding: 4px 0;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
   }
 
   .version-number,

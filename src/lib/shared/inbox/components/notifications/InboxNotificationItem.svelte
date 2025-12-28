@@ -78,21 +78,21 @@
   function getColor(type: UserNotification["type"]): string {
     switch (type) {
       case "feedback-resolved":
-        return "var(--semantic-success, #22c55e)";
+        return "var(--semantic-success, var(--semantic-success))";
       case "feedback-in-progress":
-        return "var(--semantic-warning, #f59e0b)";
+        return "var(--semantic-warning, var(--semantic-warning))";
       case "feedback-needs-info":
-        return "var(--semantic-info, #3b82f6)";
+        return "var(--semantic-info, var(--semantic-info))";
       case "sequence-liked":
-        return "#ef4444";
+        return "var(--semantic-error)";
       case "user-followed":
-        return "var(--theme-accent, #3b82f6)";
+        return "var(--theme-accent, var(--semantic-info))";
       case "achievement-unlocked":
-        return "#f59e0b";
+        return "var(--semantic-warning)";
       case "message-received":
-        return "#8b5cf6";
+        return "var(--theme-accent-strong)";
       default:
-        return "var(--theme-text-dim, rgba(255, 255, 255, 0.6))";
+        return "var(--theme-text-dim)";
     }
   }
 
@@ -215,7 +215,7 @@
     padding: 16px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--theme-stroke);
     text-align: left;
     cursor: pointer;
     transition:
@@ -224,7 +224,7 @@
   }
 
   .notification-item:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
   }
 
   .notification-item:active {
@@ -233,7 +233,7 @@
 
   .notification-item:focus-visible {
     outline: none;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-hover-bg);
     box-shadow: inset 0 0 0 2px
       color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
@@ -276,7 +276,7 @@
     justify-content: center;
     background: color-mix(in srgb, var(--icon-color) 15%, transparent);
     border-radius: 50%;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--icon-color);
     transition: transform 0.2s ease;
   }
@@ -293,9 +293,9 @@
 
   .message {
     margin: 0 0 4px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     line-height: 1.4;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     transition: font-weight 0.3s ease;
   }
 
@@ -317,8 +317,8 @@
   }
 
   .time {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Chevron indicator */
@@ -329,13 +329,13 @@
     justify-content: center;
     width: 20px;
     height: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     transition: all 0.2s ease;
   }
 
   .notification-item:hover .chevron {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
     transform: translateX(2px);
   }
 

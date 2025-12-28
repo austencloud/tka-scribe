@@ -114,8 +114,8 @@ Modern, touch-friendly interface for selecting view presets
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -123,19 +123,19 @@ Modern, touch-friendly interface for selecting view presets
   }
 
   .preset-option:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .preset-option.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #667eea) 15%,
+      var(--theme-accent) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #667eea) 40%,
+      var(--theme-accent) 40%,
       transparent
     );
   }
@@ -148,18 +148,18 @@ Modern, touch-friendly interface for selecting view presets
     height: var(--min-touch-target);
     background: color-mix(in srgb, var(--theme-text, white) 10%, transparent);
     border-radius: 12px;
-    font-size: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-xl);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
   .preset-option.active .preset-icon {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #667eea) 30%,
+      var(--theme-accent) 30%,
       transparent
     );
-    color: var(--theme-accent, #667eea);
+    color: var(--theme-accent);
   }
 
   .preset-content {
@@ -168,15 +168,15 @@ Modern, touch-friendly interface for selecting view presets
   }
 
   .preset-label {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin-bottom: 4px;
   }
 
   .preset-description {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -186,8 +186,8 @@ Modern, touch-friendly interface for selecting view presets
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: var(--theme-accent, #667eea);
-    font-size: 16px;
+    color: var(--theme-accent);
+    font-size: var(--font-size-base);
     flex-shrink: 0;
   }
 

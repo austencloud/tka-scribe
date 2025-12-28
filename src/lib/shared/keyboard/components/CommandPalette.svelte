@@ -138,13 +138,11 @@
 </script>
 
 {#if commandPaletteState.isOpen}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="command-palette-overlay"
     onclick={close}
-    onkeydown={(e) => e.key === "Escape" && close()}
-    role="button"
-    tabindex="0"
-    aria-label="Close command palette"
+    aria-hidden="true"
   >
     <div
       class="command-palette"
@@ -243,8 +241,7 @@
   .command-palette-overlay {
     position: fixed;
     inset: 0;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 60%, transparent);
-    backdrop-filter: blur(4px);
+    background: color-mix(in srgb, var(--theme-shadow) 60%, transparent);
     z-index: 9999;
     display: flex;
     align-items: flex-start;
@@ -255,10 +252,10 @@
   .command-palette {
     width: 90%;
     max-width: 640px;
-    background: var(--theme-panel-bg, #1e1e1e);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
-    box-shadow: 0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.5));
+    box-shadow: 0 20px 60px var(--theme-shadow);
     display: flex;
     flex-direction: column;
     max-height: 70vh;
@@ -269,12 +266,12 @@
     display: flex;
     align-items: center;
     padding: 1rem;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     gap: 0.75rem;
   }
 
   .command-palette__search-icon {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 1.125rem;
   }
 
@@ -283,20 +280,20 @@
     background: transparent;
     border: none;
     outline: none;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
     font-size: 1.125rem;
     padding: 0;
   }
 
   .command-palette__input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
   }
 
   .command-palette__hint {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
     padding: 0.25rem 0.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 4px;
   }
 
@@ -314,7 +311,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     padding: 0.5rem 0.75rem;
     letter-spacing: 0.5px;
   }
@@ -328,7 +325,7 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
     cursor: pointer;
     transition: background 0.1s;
     text-align: left;
@@ -336,14 +333,14 @@
 
   .command-palette__item:hover,
   .command-palette__item--selected {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
   }
 
   .command-palette__item-icon {
     font-size: 1.125rem;
     width: 1.5rem;
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .command-palette__item-content {
@@ -358,7 +355,7 @@
 
   .command-palette__item-description {
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -367,9 +364,9 @@
   .command-palette__item-shortcut {
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg, var(--theme-card-hover-bg));
     border-radius: 4px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-family: monospace;
   }
 
@@ -377,21 +374,21 @@
   .command-palette__empty {
     text-align: center;
     padding: 2rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .command-palette__footer {
     display: flex;
     gap: 1.5rem;
     padding: 0.75rem 1rem;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .command-palette__footer kbd {
     padding: 0.125rem 0.375rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 3px;
     font-family: monospace;
     font-size: 0.7rem;

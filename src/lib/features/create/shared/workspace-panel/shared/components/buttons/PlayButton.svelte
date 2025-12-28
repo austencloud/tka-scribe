@@ -44,12 +44,11 @@
     background: linear-gradient(
       135deg,
       #a78bfa 0%,
-      color-mix(in srgb, #a78bfa 85%, #8b5cf6) 100%
+      color-mix(in srgb, #a78bfa 85%, var(--theme-accent-strong)) 100%
     ); /* Purple gradient */
     border: 1px solid color-mix(in srgb, #a78bfa 30%, transparent);
-    backdrop-filter: blur(10px);
     border-radius: 50%;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     box-shadow: 0 4px 12px color-mix(in srgb, #a78bfa 40%, transparent);
@@ -59,7 +58,7 @@
     background: linear-gradient(
       135deg,
       color-mix(in srgb, #a78bfa 85%, #8b5cf6) 0%,
-      color-mix(in srgb, #a78bfa 70%, #8b5cf6) 100%
+      color-mix(in srgb, #a78bfa 70%, var(--theme-accent-strong)) 100%
     );
     transform: scale(1.05);
     box-shadow: 0 6px 16px color-mix(in srgb, #a78bfa 60%, transparent);
@@ -71,12 +70,12 @@
   }
 
   .play-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .play-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   /* Mobile responsive adjustments - ALWAYS 48px minimum per iOS/Android guidelines */
@@ -84,7 +83,7 @@
     .play-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -93,11 +92,11 @@
     .play-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .play-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -105,11 +104,11 @@
     .play-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .play-button i {
-      font-size: 14px; /* Slightly smaller icon, but same touch target */
+      font-size: var(--font-size-sm); /* Slightly smaller icon, but same touch target */
     }
   }
 
@@ -123,7 +122,7 @@
     }
 
     .play-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 

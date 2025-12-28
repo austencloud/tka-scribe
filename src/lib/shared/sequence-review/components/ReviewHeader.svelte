@@ -78,7 +78,7 @@
 		gap: var(--spacing-lg);
 		padding: var(--spacing-md) var(--spacing-lg);
 		background: var(--surface-glass);
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+		border-bottom: 1px solid var(--theme-stroke);
 		flex-shrink: 0;
 	}
 
@@ -128,7 +128,7 @@
 	.stat-divider {
 		width: 1px;
 		height: 32px;
-		background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		background: var(--theme-stroke);
 	}
 
 	.header-center {

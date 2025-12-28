@@ -125,10 +125,10 @@
 
 <style>
   .section {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 12px;
     padding: 20px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .section-header {
@@ -140,21 +140,21 @@
 
   .section-header h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .section-header h3 i {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .cache-indicator {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     display: flex;
     align-items: center;
     gap: 4px;
@@ -167,14 +167,14 @@
   }
 
   .metric-card {
-    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-panel-bg);
     border-radius: 10px;
     padding: 16px;
     text-align: center;
   }
 
   .metric-value {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     color: var(--theme-text, white);
     line-height: 1;
@@ -182,20 +182,20 @@
   }
 
   .metric-label {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   /* Skeleton loading */
   .metric-card.skeleton {
-    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-panel-bg);
   }
 
   .skeleton-value {
     width: 48px;
     height: 28px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 4px;
     margin: 0 auto 8px;
     animation: pulse 1.5s ease-in-out infinite;
@@ -204,7 +204,7 @@
   .skeleton-label {
     width: 80px;
     height: 14px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-stroke, var(--theme-card-bg));
     border-radius: 3px;
     margin: 0 auto;
     animation: pulse 1.5s ease-in-out infinite;

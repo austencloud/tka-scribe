@@ -44,7 +44,7 @@ Type1PictographDisplay - Pictograph visualizer with loading state
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .loading-state,
@@ -75,7 +75,7 @@ Type1PictographDisplay - Pictograph visualizer with loading state
 
   .error-state {
     background: rgba(239, 68, 68, 0.05);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .error-icon {

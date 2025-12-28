@@ -132,9 +132,9 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke-strong);
+    color: var(--theme-text-dim);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -144,7 +144,7 @@
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     transform: scale(1.05);
   }
 

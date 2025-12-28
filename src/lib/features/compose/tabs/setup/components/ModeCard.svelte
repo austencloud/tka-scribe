@@ -259,7 +259,7 @@
 
   .mode-card:hover {
     transform: translateY(-2px) scale(1.01);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 32px var(--theme-shadow);
   }
 
   .mode-card:active {

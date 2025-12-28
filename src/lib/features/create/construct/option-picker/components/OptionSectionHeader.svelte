@@ -75,7 +75,7 @@ Single responsibility: Display the section type label (e.g., "Type 1 - Dual-Shif
     border-radius: 8px;
     padding: 6px;
     font-weight: 600;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     min-width: 160px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -88,7 +88,7 @@ Single responsibility: Display the section type label (e.g., "Type 1 - Dual-Shif
 
   @media (max-height: 800px) {
     .type-label {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       padding: 4px;
       min-width: 140px;
     }
@@ -96,7 +96,7 @@ Single responsibility: Display the section type label (e.g., "Type 1 - Dual-Shif
 
   @media (max-height: 700px) {
     .type-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 3px;
       min-width: 120px;
     }

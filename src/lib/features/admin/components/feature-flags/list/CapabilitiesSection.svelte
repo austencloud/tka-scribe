@@ -51,7 +51,7 @@
   }
 
   .section-header i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: var(--accent-2026-amber);
   }
 

@@ -50,7 +50,7 @@
     gap: 8px;
     padding: 10px 16px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -68,8 +68,8 @@
 
   /* Primary variant - uses theme accent */
   .panel-btn--primary {
-    background: var(--theme-accent, #06b6d4);
-    border: 1px solid var(--theme-accent, #06b6d4);
+    background: var(--theme-accent);
+    border: 1px solid var(--theme-accent);
     color: white;
   }
 
@@ -79,14 +79,14 @@
 
   /* Secondary variant - ghost style */
   .panel-btn--secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     color: var(--theme-text, white);
   }
 
   .panel-btn--secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   @media (prefers-reduced-motion: reduce) {

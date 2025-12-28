@@ -142,21 +142,21 @@ PointQuizSection - Click on the correct grid point
   .quiz-title {
     font-size: 1.375rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin: 0;
     text-align: center;
   }
 
   .quiz-subtitle {
     font-size: 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin: 0;
     text-align: center;
   }
 
   .direction-hint {
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   .grid-display {
@@ -164,13 +164,13 @@ PointQuizSection - Click on the correct grid point
     max-width: 280px;
     aspect-ratio: 1;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 2px solid var(--theme-stroke);
   }
 
   .grid-display.interactive {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.3));
+    border-color: var(--theme-accent);
   }
 
   .quiz-grid {

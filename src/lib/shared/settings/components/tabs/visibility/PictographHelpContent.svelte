@@ -54,7 +54,7 @@
       description:
         "Start → End position indicator at the top of the pictograph.",
       icon: "fa-map-marker-alt",
-      color: "#fbbf24",
+      color: "var(--semantic-warning)",
     },
     {
       id: "reversals",
@@ -69,7 +69,7 @@
       description:
         "Rotation counts shown beside the TKA glyph. Only visible when glyph is on.",
       icon: "fa-hashtag",
-      color: "#60a5fa",
+      color: "var(--semantic-info)",
     },
     {
       id: "nonRadial",
@@ -167,8 +167,8 @@
   }
 
   .preview-hint {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     text-align: center;
   }
@@ -178,9 +178,9 @@
      ======================================== */
   .section-title {
     margin: 0 0 16px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -228,7 +228,7 @@
 
   .element-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .element-card.selected {
@@ -249,7 +249,7 @@
     border: 1px solid color-mix(in srgb, var(--element-color) 30%, transparent);
     border-radius: 10px;
     color: var(--element-color);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: all 150ms ease;
   }
 
@@ -267,9 +267,9 @@
 
   .element-label {
     display: block;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin-bottom: 4px;
     transition: color 150ms ease;
   }
@@ -279,8 +279,8 @@
   }
 
   .element-description {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
     margin: 0;
   }
@@ -295,23 +295,23 @@
     padding: 14px 16px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 10%,
+      var(--theme-accent, var(--theme-accent)) 10%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
     border-radius: 12px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .learn-more i {
-    color: var(--theme-accent, #a78bfa);
-    font-size: 14px;
+    color: var(--theme-accent);
+    font-size: var(--font-size-sm);
   }
 
   .learn-more strong {
-    color: var(--theme-accent, #a78bfa);
+    color: var(--theme-accent);
   }
 
   /* ========================================

@@ -116,7 +116,7 @@ Filter-specific card (not used in Generate)
       0 1px 2px hsl(220deg 13% 20% / 0.15),
       0 2px 4px hsl(220deg 13% 20% / 0.12),
       0 4px 8px hsl(220deg 13% 20% / 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
 
     transition:
       box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -159,7 +159,7 @@ Filter-specific card (not used in Generate)
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      var(--theme-card-bg) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;
@@ -176,7 +176,7 @@ Filter-specific card (not used in Generate)
         0 4px 8px hsl(220deg 13% 20% / 0.1),
         0 8px 16px hsl(220deg 13% 20% / 0.08),
         0 16px 24px hsl(220deg 13% 20% / 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--theme-stroke);
     }
 
     .favorites-card.active:not(.disabled):hover {
@@ -236,7 +236,7 @@ Filter-specific card (not used in Generate)
   .heart-icon {
     width: clamp(32px, 10cqw, 50px);
     height: clamp(32px, 10cqw, 50px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -263,12 +263,12 @@ Filter-specific card (not used in Generate)
     z-index: 2;
     font-size: clamp(10px, 2.5cqw, 13px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin-top: clamp(4px, 1cqh, 8px);
   }
 
   .favorites-card.active .status-text {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   @media (prefers-reduced-motion: reduce) {

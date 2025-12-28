@@ -57,11 +57,37 @@
   }: Props = $props();
 
   const disabled = $derived(isTransforming || isAutocompleting || !hasSequence);
+
+  // Calculate how many items are in each section for dynamic flex ratios
+  // Transform: always 6 items
+  const transformItemCount = 6;
+
+  // Patterns: Turn Pattern + Direction + Rewind (always) + Autocomplete (conditional) + Shift Start (conditional)
+  const patternsItemCount = $derived(
+    3 + // Turn Pattern, Direction, Rewind (always present)
+    (onAutocomplete && canAutocomplete ? 1 : 0) +
+    (onShiftStart ? 1 : 0)
+  );
+
+  // Edit: Edit Turns (always) + Constructor (conditional)
+  const editItemCount = $derived(1 + (showEditInConstructor ? 1 : 0));
+
+  // Calculate row counts based on grid columns
+  // Desktop: 2 columns, Mobile: 3 columns
+  const getRowCount = (items: number, cols: number) => Math.ceil(items / cols);
+
+  // Column count depends on mode (mobile=3, desktop=2)
+  const gridCols = $derived(isDesktopPanel ? 2 : 3);
+
+  // Dynamic flex values based on row counts
+  const transformFlex = $derived(getRowCount(transformItemCount, gridCols));
+  const patternsFlex = $derived(getRowCount(patternsItemCount, gridCols));
+  const editFlex = $derived(getRowCount(editItemCount, gridCols));
 </script>
 
 <div class="actions-container" class:disabled class:desktop={isDesktopPanel} class:mobile={!isDesktopPanel} class:compact={compactMode}>
   <!-- TRANSFORM Section -->
-  <section class="section transform-section">
+  <section class="section transform-section" style:flex={transformFlex}>
     <span class="section-label">Transform</span>
     <div class="section-grid">
       <button class="grid-btn mirror" onclick={onMirror} {disabled} aria-label="Mirror sequence: flip left and right">
@@ -110,7 +136,7 @@
   </section>
 
   <!-- PATTERNS Section -->
-  <section class="section patterns-section">
+  <section class="section patterns-section" style:flex={patternsFlex}>
     <span class="section-label">Patterns</span>
     <div class="section-grid">
       <button
@@ -187,7 +213,7 @@
   </section>
 
   <!-- EDIT Section -->
-  <section class="section edit-section">
+  <section class="section edit-section" style:flex={editFlex}>
     <span class="section-label">Edit</span>
     <div class="section-grid">
       <button
@@ -246,21 +272,11 @@
     flex-direction: column;
     gap: 4px;
     min-height: 0;
-  }
-
-  /* Proportional flex based on row count (desktop 2-col): Transform 3 rows, Patterns 3 rows, Edit 1 row */
-  .transform-section {
-    flex: 3;
-  }
-  .patterns-section {
-    flex: 3;
-  }
-  .edit-section {
-    flex: 1;
+    /* flex is applied dynamically via inline style based on item count */
   }
 
   .section-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -280,15 +296,7 @@
   }
 
   /* ===== MOBILE MODE: 3 columns, compact buttons ===== */
-  .actions-container.mobile .transform-section {
-    flex: 2;
-  }
-  .actions-container.mobile .patterns-section {
-    flex: 2;
-  }
-  .actions-container.mobile .edit-section {
-    flex: 1;
-  }
+  /* Note: flex values are applied dynamically via inline styles based on item count */
   .actions-container.mobile .section-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 4px;
@@ -327,7 +335,7 @@
     width: 42px;
     height: 42px;
     border-radius: 10px;
-    font-size: 19px;
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
     color: white;
   }
@@ -371,7 +379,7 @@
   .actions-container.mobile .btn-icon {
     width: 36px;
     height: 36px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
   .actions-container.mobile .btn-label {
     font-size: 0.75rem;
@@ -382,7 +390,7 @@
     .btn-icon {
       width: 48px;
       height: 48px;
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
     .btn-label {
       font-size: 0.95rem;
@@ -487,7 +495,7 @@
   .actions-container.compact .btn-icon {
     width: 26px;
     height: 26px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     border-radius: 6px;
   }
 

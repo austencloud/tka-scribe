@@ -703,11 +703,11 @@
     right: 12px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 98%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, #dc2626) 98%, transparent) 100%
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 98%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 98%, transparent) 100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #f87171) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 12px;
     padding: 0.75rem 1rem;
     display: flex;
@@ -717,7 +717,7 @@
     z-index: 150;
     animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
   }
 
   @keyframes slideUp {
@@ -746,7 +746,7 @@
     height: 48px;
     min-width: 48px;
     min-height: 48px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     border: none;
     border-radius: 8px;
     color: var(--theme-text, white);

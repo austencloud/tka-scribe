@@ -169,11 +169,11 @@
     align-items: center;
     gap: 6px;
     padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -185,7 +185,7 @@
   }
 
   .toggle-btn.active {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
     border-color: transparent;
   }
@@ -199,7 +199,7 @@
   }
 
   .control-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
   }
@@ -219,7 +219,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -242,8 +242,8 @@
   }
 
   .no-sequence p {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
   }
 
   /* Responsive */
@@ -255,7 +255,7 @@
 
     .toggle-btn {
       padding: 8px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

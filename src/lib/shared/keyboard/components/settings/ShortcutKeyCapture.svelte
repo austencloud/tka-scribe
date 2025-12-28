@@ -361,9 +361,9 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
-    box-shadow: 0 24px 80px var(--theme-shadow, rgba(0, 0, 0, 0.5));
+    box-shadow: 0 24px 80px var(--theme-shadow);
     overflow: hidden;
   }
 
@@ -381,7 +381,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .capture-sheet .capture-header {
@@ -390,9 +390,9 @@
 
   .capture-title {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .close-btn {
@@ -402,17 +402,17 @@
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     padding: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 150ms ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .capture-content {
@@ -436,14 +436,14 @@
   }
 
   .shortcut-name {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .shortcut-description {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
     max-width: 320px;
   }
@@ -456,8 +456,8 @@
   }
 
   .binding-label {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .capture-area {
@@ -466,9 +466,9 @@
     justify-content: center;
     min-height: 80px;
     padding: 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border: 2px dashed
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
     border-radius: 12px;
     cursor: pointer;
     transition: all 200ms ease;
@@ -477,22 +477,22 @@
   .capture-area:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 5%,
+      var(--theme-accent-strong) 5%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 60%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
       transparent
     );
   }
 
   .capture-area.capturing {
     border-style: solid;
-    border-color: var(--theme-accent-strong, #8b5cf6);
+    border-color: var(--theme-accent-strong, var(--theme-accent-strong));
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 8%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 8%,
       transparent
     );
     animation: pulse-glow 1.5s ease-in-out infinite;
@@ -502,7 +502,7 @@
     0%,
     100% {
       box-shadow: 0 0 0 0
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
     }
     50% {
       box-shadow: 0 0 0 8px transparent;
@@ -513,25 +513,25 @@
     border-style: solid;
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 50%,
+      var(--semantic-success, var(--semantic-success)) 50%,
       transparent
     );
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 5%,
+      var(--semantic-success, var(--semantic-success)) 5%,
       transparent
     );
   }
 
   .capture-prompt {
-    font-size: 14px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     font-weight: 500;
   }
 
   .capture-placeholder {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   .capture-input {
@@ -545,8 +545,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .capture-footer {
@@ -554,7 +554,7 @@
     align-items: center;
     gap: 8px;
     padding: 16px 20px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .capture-sheet .capture-footer {
@@ -568,14 +568,14 @@
   .btn {
     padding: 10px 16px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 150ms ease;
   }
 
   .btn-primary {
-    background: var(--theme-accent-strong, #8b5cf6);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
     border: none;
     color: var(--theme-text, white);
   }
@@ -583,7 +583,7 @@
   .btn-primary:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 85%,
+      var(--theme-accent-strong) 85%,
       #000
     );
   }
@@ -594,13 +594,13 @@
   }
 
   .btn-secondary {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .btn-secondary:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 </style>

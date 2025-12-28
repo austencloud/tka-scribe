@@ -284,13 +284,13 @@ Allows user to set name, visibility, tags, collections, and notes.
     border: none;
     border-radius: 50%;
     background: var(--sheet-close-bg);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     cursor: pointer;
     transition: all var(--sheet-transition-smooth);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     z-index: 10;
   }
 
@@ -312,15 +312,15 @@ Allows user to set name, visibility, tags, collections, and notes.
 
   .dialog-header h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .subtitle {
     margin: 4px 0 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Body */
@@ -344,13 +344,13 @@ Allows user to set name, visibility, tags, collections, and notes.
   .form-label {
     display: block;
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .required {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   /* Input Fields */
@@ -358,11 +358,11 @@ Allows user to set name, visibility, tags, collections, and notes.
   .textarea-field {
     width: 100%;
     padding: 12px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     font-family: inherit;
     transition: all 0.2s ease;
     box-sizing: border-box;
@@ -371,7 +371,7 @@ Allows user to set name, visibility, tags, collections, and notes.
   .input-field:focus,
   .textarea-field:focus {
     outline: none;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     box-shadow: 0 0 0 3px
       color-mix(in srgb, var(--theme-accent) 10%, transparent);
@@ -381,7 +381,7 @@ Allows user to set name, visibility, tags, collections, and notes.
   .textarea-field::placeholder {
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%,
+      var(--theme-text-dim) 70%,
       transparent
     );
   }
@@ -397,11 +397,11 @@ Allows user to set name, visibility, tags, collections, and notes.
     align-items: center;
     gap: 8px;
     padding: 12px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     margin-bottom: 24px;
   }
 
@@ -429,13 +429,13 @@ Allows user to set name, visibility, tags, collections, and notes.
     flex-shrink: 0;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 8px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -446,12 +446,12 @@ Allows user to set name, visibility, tags, collections, and notes.
   .add-tag-button:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 30%,
+      var(--theme-accent-strong) 30%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 50%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 50%,
       transparent
     );
   }
@@ -476,14 +476,14 @@ Allows user to set name, visibility, tags, collections, and notes.
     padding: 6px 12px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 16px;
-    color: var(--theme-accent-strong, #8b5cf6);
-    font-size: 13px;
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
+    font-size: var(--font-size-compact);
   }
 
   .tag-text {
@@ -517,22 +517,22 @@ Allows user to set name, visibility, tags, collections, and notes.
     padding: 12px 16px;
     background: color-mix(
       in srgb,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 45%,
+      var(--theme-card-bg, var(--theme-card-bg)) 45%,
       transparent
     );
     border: 1px dashed
       color-mix(
         in srgb,
-        var(--theme-stroke, rgba(255, 255, 255, 0.1)) 70%,
+        var(--theme-stroke, var(--theme-stroke)) 70%,
         transparent
       );
     border-radius: 8px;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 70%,
+      var(--theme-text-dim, var(--theme-text-dim)) 70%,
       transparent
     );
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     margin: 0;
   }
 
@@ -550,7 +550,7 @@ Allows user to set name, visibility, tags, collections, and notes.
     padding: 12px 24px;
     border: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -561,35 +561,35 @@ Allows user to set name, visibility, tags, collections, and notes.
   }
 
   .button-secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .button-secondary:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .button-primary {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
-      var(--theme-accent-strong, #7c3aed) 100%
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
+      var(--theme-accent-strong) 100%
     );
     color: white;
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
   }
 
   .button-primary:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #7c3aed) 0%,
-      var(--theme-accent-strong, #6d28d9) 100%
+      var(--theme-accent-strong) 0%,
+      var(--theme-accent-strong) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
     transform: translateY(-1px);
   }
 
@@ -610,7 +610,7 @@ Allows user to set name, visibility, tags, collections, and notes.
     }
 
     .dialog-header h2 {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .dialog-body {

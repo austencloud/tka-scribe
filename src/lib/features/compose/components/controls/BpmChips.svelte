@@ -321,7 +321,7 @@
     transition: all 0.15s ease;
     box-shadow:
       0 0 20px rgba(139, 92, 246, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -345,7 +345,7 @@
   .bpm-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -353,7 +353,7 @@
   .bpm-label {
     font-size: 0.6rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -370,10 +370,10 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     flex-shrink: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -385,9 +385,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .adjust-btn:hover:not(:disabled) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.85));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
       transform: scale(1.05);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.15),
@@ -419,10 +419,10 @@
     min-width: 0;
     min-height: var(--min-touch-target);
     padding: 10px 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     font-weight: 600;
     cursor: pointer;
@@ -450,15 +450,15 @@
     box-shadow:
       0 0 20px rgba(139, 92, 246, 0.25),
       0 2px 8px rgba(139, 92, 246, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   @media (hover: hover) and (pointer: fine) {
     /* Hover for non-active chips only */
     .preset-chip:hover:not(:disabled):not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.85));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.15),
@@ -478,7 +478,7 @@
       box-shadow:
         0 0 24px rgba(139, 92, 246, 0.3),
         0 4px 12px rgba(139, 92, 246, 0.25),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
@@ -509,7 +509,7 @@
     min-width: 200px;
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.1),
+      0 0 0 1px var(--theme-stroke),
       0 0 24px rgba(139, 92, 246, 0.5);
     backdrop-filter: blur(20px);
     animation: popoverSlide 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -530,11 +530,11 @@
   .popover-header {
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0 4px 8px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 8px;
   }
 
@@ -550,10 +550,10 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.15s ease;
     font-size: 0.75rem;
@@ -598,7 +598,7 @@
   .bpm-number {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -606,7 +606,7 @@
   .bpm-unit {
     font-size: 0.55rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;

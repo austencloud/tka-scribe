@@ -97,11 +97,11 @@
     justify-content: space-between;
     padding: 1rem;
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
+    background: var(--theme-panel-elevated-bg);
     box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .main-controls {
@@ -131,7 +131,7 @@
   .btn-record {
     width: 72px !important;
     height: 72px !important;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
     color: white;
     box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
   }
@@ -142,28 +142,28 @@
   }
 
   .btn-pause {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--semantic-warning), #d97706);
     color: white;
   }
 
   .btn-snapshot {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     color: white;
   }
 
   .btn-stop {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 22%,
-      var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65))
+      var(--semantic-error, var(--semantic-error)) 22%,
+      var(--theme-panel-elevated-bg)
     );
     border: 1px solid
       color-mix(
         in srgb,
-        var(--semantic-error, #ef4444) 35%,
-        var(--theme-stroke, rgba(255, 255, 255, 0.08))
+        var(--semantic-error, var(--semantic-error)) 35%,
+        var(--theme-stroke, var(--theme-card-bg))
       );
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   }
 
@@ -173,18 +173,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     font-size: 1.1rem;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .btn-settings:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, #fff);
+    background: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .prop-indicator {
@@ -196,12 +196,12 @@
     padding: 0.4rem 0.875rem;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 20%,
+      var(--theme-accent, var(--theme-accent)) 20%,
       transparent
     );
     border-radius: 20px;
     font-size: 0.85rem;
-    color: var(--theme-accent, #a5b4fc);
+    color: var(--theme-accent);
     text-transform: capitalize;
   }
 

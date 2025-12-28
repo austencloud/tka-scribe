@@ -102,7 +102,7 @@
 <style>
   .calendar {
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 1.5rem;
   }
@@ -126,8 +126,8 @@
   }
 
   .calendar-day {
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke);
     border-radius: 8px;
     padding: 1rem;
     cursor: pointer;
@@ -162,7 +162,7 @@
     align-items: center;
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .day-label {
@@ -211,7 +211,7 @@
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 4px;
     padding: 4px 8px;
-    color: #ef4444;
+    color: var(--semantic-error);
     cursor: pointer;
     opacity: 0;
     transition: all 0.2s ease;

@@ -56,10 +56,9 @@ Handles click events and accessibility.
     border-radius: 999px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #11111f) 70%,
+      var(--theme-panel-bg) 70%,
       transparent
     );
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     color: var(--theme-text, white);
     font-size: 1.25rem;
@@ -67,7 +66,7 @@ Handles click events and accessibility.
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
     transition:
       background 0.2s ease,
       transform 0.2s ease,
@@ -76,9 +75,9 @@ Handles click events and accessibility.
 
   .favorite:hover,
   .favorite:focus-visible {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.1);
-    box-shadow: 0 6px 16px var(--theme-shadow, rgba(0, 0, 0, 0.4));
+    box-shadow: 0 6px 16px var(--theme-shadow);
     outline: none;
   }
 

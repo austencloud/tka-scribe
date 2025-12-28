@@ -128,7 +128,7 @@
   }
 
   .error-icon {
-    color: #ef4444;
+    color: var(--semantic-error);
     margin-bottom: var(--spacing-lg);
   }
 

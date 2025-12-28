@@ -291,9 +291,9 @@
 
   .section-label {
     margin: 0;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     display: flex;
@@ -302,9 +302,9 @@
   }
 
   .selection-count {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-accent-strong, #8b5cf6);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     text-transform: none;
     letter-spacing: normal;
   }
@@ -322,17 +322,17 @@
     justify-content: center;
     gap: 10px;
     padding: 24px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px dashed var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.4));
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-style: italic;
     min-height: 60px;
   }
 
   .empty-state i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     opacity: 0.5;
   }
 
@@ -343,33 +343,33 @@
     gap: 6px;
     padding: 12px 16px;
     border-radius: 24px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 48px; /* WCAG 2.1 AA touch target minimum */
     box-sizing: border-box;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .tag-chip:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke);
     transform: translateY(-1px);
   }
 
   /* Selected tags - colored to indicate selection */
   .tag-chip.selected {
-    background: color-mix(in srgb, var(--tag-color, #8b5cf6) 20%, transparent);
-    border: 1px solid color-mix(in srgb, var(--tag-color, #8b5cf6) 50%, transparent);
-    color: var(--tag-color, #8b5cf6);
+    background: color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 20%, transparent);
+    border: 1px solid color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 50%, transparent);
+    color: var(--tag-color, var(--theme-accent-strong));
   }
 
   .tag-chip.selected:hover {
     background: color-mix(in srgb, var(--tag-color, #8b5cf6) 30%, transparent);
-    border-color: var(--tag-color, #8b5cf6);
+    border-color: var(--tag-color, var(--theme-accent-strong));
     transform: translateY(-1px);
   }
 
@@ -382,12 +382,12 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background-color: var(--tag-color, #8b5cf6);
+    background-color: var(--tag-color, var(--theme-accent-strong));
     flex-shrink: 0;
   }
 
   .tag-icon {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
@@ -398,16 +398,16 @@
   .tag-count {
     margin-left: auto;
     padding: 4px 8px;
-    background: color-mix(in srgb, var(--tag-color, #8b5cf6) 20%, transparent);
+    background: color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 20%, transparent);
     border-radius: 10px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     opacity: 0.8;
   }
 
   .tag-check-icon {
     margin-left: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.8;
     transition: all 0.2s ease;
   }
@@ -426,8 +426,8 @@
     background: transparent;
     border: 1px dashed rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text-secondary, var(--theme-text-dim));
+    font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.2s ease;
     min-height: 48px;
@@ -437,7 +437,7 @@
   .add-custom-button:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.03);
     border-color: rgba(255, 255, 255, 0.3);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .add-custom-button:disabled {
@@ -446,7 +446,7 @@
   }
 
   .add-custom-button i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Custom Tag Creator */
@@ -465,11 +465,11 @@
   .custom-input {
     flex: 1;
     padding: 14px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, #ffffff);
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text);
+    font-size: var(--font-size-min);
     outline: none;
     transition: all 0.2s ease;
     min-height: 48px;
@@ -477,12 +477,12 @@
   }
 
   .custom-input:focus {
-    border-color: var(--theme-accent-strong, #8b5cf6);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-accent-strong);
+    background: var(--theme-card-hover-bg);
   }
 
   .custom-input::placeholder {
-    color: var(--theme-text-tertiary, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-tertiary);
   }
 
   .input-action-button {
@@ -496,12 +496,12 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
   .input-action-button.confirm {
-    background: var(--semantic-success, #22c55e);
+    background: var(--semantic-success, var(--semantic-success));
     color: white;
   }
 
@@ -516,13 +516,13 @@
   }
 
   .input-action-button.cancel {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .input-action-button.cancel:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   /* Color Picker */
@@ -534,9 +534,9 @@
   }
 
   .color-picker-label {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .color-options {
@@ -565,12 +565,12 @@
   }
 
   .color-option.selected {
-    border-color: rgba(255, 255, 255, 0.6);
+    border-color: var(--theme-text-dim);
     box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
   }
 
   .color-option i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
@@ -582,14 +582,14 @@
     gap: 8px;
     margin: 0;
     padding: 10px 12px;
-    background: color-mix(in srgb, var(--semantic-warning, #eab308) 10%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
+    background: color-mix(in srgb, var(--semantic-warning) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     border-radius: 8px;
-    color: var(--semantic-warning, #eab308);
-    font-size: var(--font-size-compact, 12px);
+    color: var(--semantic-warning);
+    font-size: var(--font-size-compact);
   }
 
   .max-tags-message i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 </style>

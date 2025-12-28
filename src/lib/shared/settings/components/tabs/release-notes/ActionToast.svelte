@@ -35,12 +35,11 @@
     gap: 12px;
     padding: 12px 16px;
     background: rgba(30, 30, 35, 0.95);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 10px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    font-size: 13px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text, var(--theme-text));
     z-index: 1000;
     animation: slideUp 0.2s ease-out;
   }
@@ -60,14 +59,14 @@
     padding: 6px 12px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 20%,
+      var(--theme-accent, var(--theme-accent-strong)) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 40%, transparent);
     border-radius: 6px;
-    color: var(--theme-accent, #c4b5fd);
-    font-size: 12px;
+    color: var(--theme-accent);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s;
@@ -76,9 +75,9 @@
   .toast-btn:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent) 30%,
       transparent
     );
-    color: var(--theme-accent-strong, #ddd6fe);
+    color: var(--theme-accent-strong);
   }
 </style>

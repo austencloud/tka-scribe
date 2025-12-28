@@ -125,11 +125,11 @@ Positions are enabled/disabled based on grid mode:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 2px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 2px dashed var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.2));
-    font-size: 24px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-2xl);
     opacity: 0.3;
   }
 

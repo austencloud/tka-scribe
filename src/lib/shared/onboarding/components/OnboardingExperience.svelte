@@ -51,21 +51,21 @@
       icon: "fa-graduation-cap",
       name: "Learn",
       tagline: "Master notation",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
     },
     {
       id: "compose",
       icon: "fa-play",
       name: "Compose",
       tagline: "Animate your flow",
-      color: "#22c55e",
+      color: "var(--semantic-success)",
     },
     {
       id: "train",
       icon: "fa-bullseye",
       name: "Train",
       tagline: "Practice & track",
-      color: "#ef4444",
+      color: "var(--semantic-error)",
     },
   ];
 
@@ -292,7 +292,7 @@
 
   .progress-fill {
     height: 100%;
-    background: var(--theme-accent-strong, #8b5cf6);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
     transition: width 0.3s ease;
   }
 
@@ -307,7 +307,7 @@
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -315,7 +315,7 @@
 
   .skip-button:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     border-color: rgba(255, 255, 255, 0.3);
   }
 
@@ -365,12 +365,12 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       transparent
     );
     border-radius: 24px;
-    font-size: 48px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    font-size: var(--font-size-3xl);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 
   /* Title */
@@ -386,7 +386,7 @@
   .subtitle {
     font-size: 1.1rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -394,7 +394,7 @@
   .description {
     font-size: 1rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -432,7 +432,7 @@
   }
 
   .module-card i {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     color: var(--module-color);
   }
 
@@ -444,7 +444,7 @@
 
   .module-tagline {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* ============================================
@@ -489,7 +489,7 @@
     justify-content: center;
     background: color-mix(in srgb, var(--module-color) 20%, transparent);
     border-radius: 10px;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     color: var(--module-color);
     flex-shrink: 0;
   }
@@ -508,7 +508,7 @@
 
   .choice-tagline {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .back-link {
@@ -518,7 +518,7 @@
     padding: 10px 16px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.9rem;
     cursor: pointer;
     transition: color 0.2s ease;
@@ -545,13 +545,13 @@
     padding: 14px 28px;
     background: color-mix(
       in srgb,
-      var(--btn-color, var(--theme-accent-strong, #8b5cf6)) 40%,
+      var(--btn-color, var(--theme-accent-strong, var(--theme-accent-strong))) 40%,
       transparent
     );
     border: 2px solid
       color-mix(
         in srgb,
-        var(--btn-color, var(--theme-accent-strong, #8b5cf6)) 60%,
+        var(--btn-color, var(--theme-accent-strong)) 60%,
         transparent
       );
     border-radius: 12px;
@@ -565,18 +565,18 @@
   .next-button:hover {
     background: color-mix(
       in srgb,
-      var(--btn-color, var(--theme-accent-strong, #8b5cf6)) 50%,
+      var(--btn-color, var(--theme-accent-strong, var(--theme-accent-strong))) 50%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--btn-color, var(--theme-accent-strong, #8b5cf6)) 80%,
+      var(--btn-color, var(--theme-accent-strong, var(--theme-accent-strong))) 80%,
       transparent
     );
     box-shadow: 0 8px 24px
       color-mix(
         in srgb,
-        var(--btn-color, var(--theme-accent-strong, #8b5cf6)) 30%,
+        var(--btn-color, var(--theme-accent-strong)) 30%,
         transparent
       );
   }
@@ -591,10 +591,10 @@
     justify-content: center;
     width: 48px;
     height: 48px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -631,7 +631,7 @@
   }
 
   .dot.active {
-    background: var(--theme-accent-strong, #8b5cf6);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
     transform: scale(1.2);
   }
 
@@ -650,7 +650,7 @@
     .logo-container {
       width: 80px;
       height: 80px;
-      font-size: 36px;
+      font-size: var(--font-size-3xl);
     }
 
     .title {
@@ -675,7 +675,7 @@
     }
 
     .module-card i {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .module-name {
@@ -693,7 +693,7 @@
     .choice-icon {
       width: 40px;
       height: 40px;
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .choice-name {

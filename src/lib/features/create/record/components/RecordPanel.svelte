@@ -235,8 +235,8 @@ Combines video feed with playback controls for practicing sequences.
       --gradient-primary,
       linear-gradient(
         90deg,
-        var(--theme-accent, #3b82f6),
-        var(--theme-accent-strong, #8b5cf6)
+        var(--theme-accent, var(--semantic-info)),
+        var(--theme-accent-strong, var(--theme-accent-strong))
       )
     );
     transition: width 0.3s ease;
@@ -244,10 +244,10 @@ Combines video feed with playback controls for practicing sequences.
 
   .progress-text {
     text-align: center;
-    font-size: var(--font-size-sm, 14px);
+    font-size: var(--font-size-sm);
     color: var(
       --theme-text-dim,
-      var(--foreground-muted, rgba(255, 255, 255, 0.7))
+      var(--foreground-muted, var(--theme-text-dim))
     );
     font-weight: 600;
   }
@@ -264,22 +264,22 @@ Combines video feed with playback controls for practicing sequences.
   }
 
   .empty-icon {
-    font-size: 96px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
     margin-bottom: var(--spacing-lg, 24px);
   }
 
   .empty-state h3 {
-    font-size: var(--font-size-xl, 24px);
+    font-size: var(--font-size-xl);
     font-weight: 700;
     margin-bottom: var(--spacing-md, 16px);
   }
 
   .empty-state p {
-    font-size: var(--font-size-md, 16px);
+    font-size: var(--font-size-md);
     color: var(
       --theme-text-dim,
-      var(--foreground-muted, rgba(255, 255, 255, 0.7))
+      var(--foreground-muted, var(--theme-text-dim))
     );
     max-width: 500px;
     line-height: 1.6;

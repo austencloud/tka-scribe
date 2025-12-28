@@ -44,7 +44,7 @@ StaffQuizTypeBadge - Question type indicator badge
 
   .question-type-badge.thumb {
     background: rgba(59, 130, 246, 0.15);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .question-type-badge.rotation {

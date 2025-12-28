@@ -68,24 +68,24 @@
     align-items: center;
     gap: var(--spacing-xs, 4px);
     padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-decoration: none;
     transition: all var(--transition-fast, 150ms ease);
   }
 
   a.badge:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, #ffffff);
-    border-color: var(--theme-accent, #6366f1);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
+    border-color: var(--theme-accent, var(--theme-accent));
   }
 
   .badge i {
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-min);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   .badge img {

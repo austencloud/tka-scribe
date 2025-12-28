@@ -41,29 +41,29 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
     background: linear-gradient(
       135deg,
-      var(--semantic-success, #22c55e) 0%,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #16a34a) 100%
+      var(--semantic-success, var(--semantic-success)) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #16a34a) 100%
     );
     border-radius: 50%;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
   }
 
   .sequence-actions-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #16a34a) 0%,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 70%, #16a34a) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #16a34a) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 70%, #16a34a) 100%
     );
     transform: scale(1.05);
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
   }
 
   .sequence-actions-button:active {
@@ -72,12 +72,12 @@
   }
 
   .sequence-actions-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .sequence-actions-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -85,7 +85,7 @@
     .sequence-actions-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -93,7 +93,7 @@
     .sequence-actions-button {
       width: var(--min-touch-target); /* Maintain 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -101,7 +101,7 @@
     .sequence-actions-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -115,15 +115,15 @@
     }
 
     .sequence-actions-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .sequence-actions-button {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
-      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.5));
+      background: var(--theme-card-hover-bg);
+      border: 2px solid var(--theme-stroke-strong);
     }
   }
 

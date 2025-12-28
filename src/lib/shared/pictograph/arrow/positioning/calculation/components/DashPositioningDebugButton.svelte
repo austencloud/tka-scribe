@@ -112,13 +112,13 @@ Usage:
     padding: 8px 16px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #667eea) 0%,
-      var(--theme-accent-strong, #764ba2) 100%
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
     );
     color: white;
     border: none;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -144,7 +144,7 @@ Usage:
 
   .debug-info {
     margin-top: 8px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .motion-info {
@@ -157,7 +157,7 @@ Usage:
     padding: 4px 8px;
     border-radius: 4px;
     font-weight: 600;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -165,18 +165,18 @@ Usage:
   .badge.blue {
     background: rgba(59, 130, 246, 0.2);
     color: #1e40af;
-    border: 1px solid #3b82f6;
+    border: 1px solid var(--semantic-info);
   }
 
   .badge.red {
     background: rgba(239, 68, 68, 0.2);
     color: #991b1b;
-    border: 1px solid #ef4444;
+    border: 1px solid var(--semantic-error);
   }
 
   .badge.warning {
     background: rgba(245, 158, 11, 0.2);
     color: #92400e;
-    border: 1px solid #f59e0b;
+    border: 1px solid var(--semantic-warning);
   }
 </style>

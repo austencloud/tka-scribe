@@ -42,7 +42,7 @@ QuizLetterCard - Question letter display
       color-mix(in srgb, var(--theme-accent) 15%, transparent)
     );
     border-radius: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--theme-stroke-strong);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.12),
       0 0 0 1px rgba(255, 255, 255, 0.08),

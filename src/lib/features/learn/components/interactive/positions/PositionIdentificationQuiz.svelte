@@ -135,7 +135,7 @@ Shows hand positions on grid, user identifies the type
 		gap: 1.5rem;
 		padding: 1.5rem;
 		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: 1px solid var(--theme-stroke);
 		border-radius: 16px;
 	}
 
@@ -168,7 +168,7 @@ Shows hand positions on grid, user identifies the type
 
 	.quiz-subtitle {
 		font-size: 1rem;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim);
 		margin: 0;
 		text-align: center;
 	}

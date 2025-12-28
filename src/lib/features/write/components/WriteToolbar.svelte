@@ -158,7 +158,7 @@
   .save-as-button {
     background: rgba(60, 60, 70, 0.8);
     border: 1px solid rgba(100, 100, 120, 0.4);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .save-button:hover:not(:disabled),

@@ -295,8 +295,8 @@
   .search-icon {
     position: absolute;
     left: 14px;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     pointer-events: none;
   }
 
@@ -305,22 +305,22 @@
     height: 48px;
     padding: 0 44px 0 42px;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 15px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     outline: none;
     transition: all 0.15s ease;
   }
 
   .search-input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .search-input:focus {
-    border-color: var(--theme-accent, #6366f1);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    border-color: var(--theme-accent);
+    background: var(--theme-card-bg);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
   }
 
   .clear-btn {
@@ -335,34 +335,34 @@
     background: rgba(255, 255, 255, 0.1);
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.1s ease;
   }
 
   .clear-btn:hover {
     background: rgba(255, 255, 255, 0.15);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .reset-all-btn {
     flex-shrink: 0;
     padding: 12px 18px;
     height: 48px;
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 12px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--semantic-error, #f87171);
+    color: var(--semantic-error, var(--semantic-error));
     cursor: pointer;
     transition: all 0.15s ease;
     white-space: nowrap;
   }
 
   .reset-all-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 45%, transparent);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 45%, transparent);
     transform: translateY(-1px);
   }
 
@@ -386,20 +386,20 @@
   }
 
   .empty-state i {
-    font-size: 32px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.25));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-text-dim);
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty-state span {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   /* Mobile */

@@ -132,7 +132,7 @@
   }
 
   .no-act-state p {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: var(--font-size-base);
     margin: 0;
     line-height: 1.5;

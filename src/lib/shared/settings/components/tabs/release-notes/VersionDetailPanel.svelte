@@ -425,17 +425,17 @@
 
   section h3 {
     margin: 0 0 12px 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .hint {
     margin: 0 0 16px 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
   }
 

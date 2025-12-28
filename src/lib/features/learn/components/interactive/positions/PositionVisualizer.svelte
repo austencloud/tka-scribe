@@ -284,7 +284,7 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
             y={point.y + (point.y < 50 ? -10 : 14)}
             text-anchor="middle"
             class="point-label"
-            fill="rgba(255, 255, 255, 0.5)"
+            fill="var(--theme-text-dim)"
             font-size="5"
             font-weight="600"
           >
@@ -329,7 +329,7 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
     gap: 1rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
   }
 
@@ -437,12 +437,12 @@ Visualizes Alpha (opposite), Beta (same), and Gamma (right angle) positions
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.8125rem;
   }
 

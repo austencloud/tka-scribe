@@ -420,7 +420,7 @@ Renders a section with:
     border-radius: 8px;
     padding: 6px 6px;
     font-weight: 600;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     min-width: 160px;
     text-align: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -429,7 +429,7 @@ Renders a section with:
   /* Responsive header sizing for constrained screens */
   @media (max-height: 800px) {
     .type-label {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       padding: 4px 4px;
       min-width: 140px;
     }
@@ -437,7 +437,7 @@ Renders a section with:
 
   @media (max-height: 700px) {
     .type-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 3px 3px;
       min-width: 120px;
     }
@@ -445,7 +445,7 @@ Renders a section with:
 
   @media (max-height: 600px) {
     .type-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 2px 2px;
       min-width: 100px;
     }

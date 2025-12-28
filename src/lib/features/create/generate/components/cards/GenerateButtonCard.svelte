@@ -67,13 +67,13 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     /* 🟢 PURE GREEN MONOCHROMATIC: Green = GO psychology (no gold/yellow distraction) */
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 0%,
-      /* Deep green */ var(--semantic-success, #22c55e) 25%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #065f46) 0%,
+      /* Deep green */ var(--semantic-success, var(--semantic-success)) 25%,
       /* Main green */
-        color-mix(in srgb, var(--semantic-success, #22c55e) 100%, #a7f3d0) 50%,
-      /* Bright green */ var(--semantic-success, #22c55e) 75%,
+        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 100%, #a7f3d0) 50%,
+      /* Bright green */ var(--semantic-success, var(--semantic-success)) 75%,
       /* Main green */
-        color-mix(in srgb, var(--semantic-success, #22c55e) 85%, #065f46) 100%
+        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 85%, #065f46) 100%
         /* Deep green */
     );
 
@@ -82,7 +82,7 @@ Integrates the "Generate New" button into the card grid layout so it scales with
       meshGradientFlow 8s ease infinite,
       subtlePulse 2s ease-in-out infinite;
 
-    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
+    border: 3px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
     border-radius: 20px;
 
@@ -101,10 +101,10 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     /* 🔥 CONTAINED glow - stays within button boundaries */
     box-shadow:
       0 4px 12px
-        color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent),
-      0 2px 6px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent),
+      0 2px 6px var(--theme-shadow),
+      inset 0 1px 0 var(--theme-stroke-strong),
+      inset 0 -1px 0 var(--theme-shadow);
   }
 
   .button-content {
@@ -123,15 +123,15 @@ Integrates the "Generate New" button into the card grid layout so it scales with
     /* 🌟 ENHANCED but CONTAINED glow - no overlay on other cards */
     box-shadow:
       0 8px 20px
-        color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent),
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.4)),
-      inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+        color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent),
+      0 4px 12px var(--theme-shadow),
+      inset 0 1px 0 var(--theme-stroke-strong),
+      inset 0 -1px 0 var(--theme-shadow);
 
     /* Enhance text glow on hover */
     text-shadow:
       0 2px 6px rgba(0, 0, 0, 0.6),
-      0 0 25px color-mix(in srgb, var(--theme-text, #fff) 40%, transparent);
+      0 0 25px color-mix(in srgb, var(--theme-text) 40%, transparent);
 
     /* Speed up animations on hover for urgency */
     animation-duration: 6s, 1.5s;

@@ -57,8 +57,8 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     background: linear-gradient(
       135deg,
@@ -85,7 +85,7 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -105,7 +105,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -113,7 +113,7 @@
     .panel-button {
       width: var(--min-touch-target); /* Keep 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -121,7 +121,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px; /* Smaller icon, same touch target */
+      font-size: var(--font-size-sm); /* Smaller icon, same touch target */
     }
   }
 
@@ -131,7 +131,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

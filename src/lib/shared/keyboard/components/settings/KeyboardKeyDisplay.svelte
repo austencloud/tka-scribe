@@ -107,7 +107,7 @@
   }
 
   .separator {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim);
     font-size: 0.7em;
     margin: 0 1px;
     font-weight: 500;
@@ -123,24 +123,24 @@
     padding: 0 8px;
 
     /* Subtle glass effect */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    border-bottom: 2px solid var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-bottom: 2px solid var(--theme-shadow);
     border-radius: 6px;
 
     /* Text styling */
     font-family:
       ui-monospace, "SF Mono", "Menlo", "Monaco", "Cascadia Code", monospace;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.3px;
     white-space: nowrap;
 
     /* Subtle depth */
     box-shadow:
-      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
+      0 1px 3px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
     transition: all 0.15s ease;
@@ -150,20 +150,20 @@
   .kbd.modifier {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 25%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 25%,
       transparent
     );
     border-bottom-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 30%,
-      rgba(0, 0, 0, 0.2)
+      var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
+      var(--theme-shadow)
     );
-    color: var(--theme-accent-strong, #a78bfa);
+    color: var(--theme-accent-strong);
   }
 
   /* Wide keys (Space, Enter, etc.) */
@@ -180,25 +180,25 @@
   .kbd.pressable:hover {
     transform: translateY(-2px);
     box-shadow:
-      0 6px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
-      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+      0 6px 12px var(--theme-shadow, var(--theme-shadow)),
+      0 2px 4px var(--theme-shadow, var(--theme-shadow)),
       inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    border-color: var(--theme-stroke-strong);
   }
 
   .kbd.pressable:active {
     transform: translateY(1px);
     border-bottom-width: 1px;
     box-shadow:
-      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
-      inset 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+      0 1px 2px var(--theme-shadow, var(--theme-shadow)),
+      inset 0 2px 4px var(--theme-shadow);
   }
 
   .kbd.modifier.pressable:hover {
     box-shadow:
       0 6px 16px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, transparent),
-      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+        color-mix(in srgb, var(--theme-accent-strong) 35%, transparent),
+      0 2px 4px var(--theme-shadow, var(--theme-shadow)),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
@@ -207,7 +207,7 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     border-radius: 5px;
     border-bottom-width: 2px;
     font-weight: 600;
@@ -226,7 +226,7 @@
     min-width: 38px;
     height: 38px;
     padding: 0 14px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     border-radius: 9px;
     border-bottom-width: 4px;
   }

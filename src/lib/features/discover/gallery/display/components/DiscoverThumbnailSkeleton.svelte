@@ -53,8 +53,8 @@ Optimized for mobile performance with CSS-only animations.
   }
 
   .skeleton-thumbnail {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     padding: 16px;
     position: relative;
@@ -72,7 +72,7 @@ Optimized for mobile performance with CSS-only animations.
     background: linear-gradient(
       90deg,
       transparent,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1)),
+      var(--theme-card-hover-bg),
       transparent
     );
     animation: shimmer 2s infinite;
@@ -90,7 +90,7 @@ Optimized for mobile performance with CSS-only animations.
   .skeleton-image {
     width: 100%;
     aspect-ratio: 16 / 9;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 8px;
     margin-bottom: 12px;
   }
@@ -101,7 +101,7 @@ Optimized for mobile performance with CSS-only animations.
 
   .skeleton-title {
     height: 20px;
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke-strong);
     border-radius: 4px;
     margin-bottom: 8px;
     width: 70%;
@@ -109,7 +109,7 @@ Optimized for mobile performance with CSS-only animations.
 
   .skeleton-subtitle {
     height: 16px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 4px;
     width: 50%;
   }
@@ -123,7 +123,7 @@ Optimized for mobile performance with CSS-only animations.
   .skeleton-button {
     width: 32px;
     height: 32px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 6px;
   }
 

@@ -60,7 +60,7 @@
 
   .action-btn.freeform {
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     color: var(--muted-foreground);
     font-weight: 500;
   }

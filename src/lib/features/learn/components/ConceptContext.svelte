@@ -63,30 +63,30 @@ Simple inline display showing journey position
 
   .context-side i {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   .context-side .name {
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     font-weight: 500;
   }
 
   .prev .name {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   .connector {
     display: flex;
     align-items: center;
     gap: 0.375rem;
-    color: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    color: var(--theme-stroke);
   }
 
   .connector .line {
     width: 20px;
     height: 1px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-stroke, var(--theme-card-bg));
   }
 
   .connector i {

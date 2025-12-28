@@ -237,7 +237,7 @@ Controls moved below the grid for better UX
     flex: 1;
     font-size: clamp(1.25rem, 3vmin, 1.75rem);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     text-align: center;
     margin: 0;
     letter-spacing: 0.02em;
@@ -308,14 +308,14 @@ Controls moved below the grid for better UX
     padding: 10px 20px;
 
     /* Theme-aware styling */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 12px;
 
     /* Typography */
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     letter-spacing: 0.3px;
 
     /* Interaction */
@@ -345,10 +345,10 @@ Controls moved below the grid for better UX
   /* Hover state */
   @media (hover: hover) {
     .control-button:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+      box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
     }
 
     .control-button:hover .control-icon {
@@ -364,7 +364,7 @@ Controls moved below the grid for better UX
 
   /* Focus state */
   .control-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -388,7 +388,7 @@ Controls moved below the grid for better UX
 
     .control-button {
       padding: 8px 14px;
-      font-size: var(--font-size-compact, 13px);
+      font-size: var(--font-size-compact);
     }
 
     .control-icon {

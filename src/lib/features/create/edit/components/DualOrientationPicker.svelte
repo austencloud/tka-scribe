@@ -135,10 +135,10 @@
 
   .orientation-section {
     flex: 1;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: var(--border-radius);
     padding: var(--spacing-md);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .blue-section {
@@ -157,7 +157,7 @@
     align-items: center;
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-sm);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .section-header h4 {
@@ -186,7 +186,7 @@
     padding: var(--spacing-md);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     color: var(--foreground);
     font-size: var(--font-size-sm);
     font-weight: 500;

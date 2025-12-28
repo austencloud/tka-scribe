@@ -84,8 +84,8 @@
     gap: 0.75rem;
     padding: 1.5rem;
     text-align: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px dashed var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg);
+    border: 1px dashed var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 12px;
   }
 
@@ -97,20 +97,20 @@
     height: var(--min-touch-target);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, transparent);
     border-radius: 12px;
-    color: color-mix(in srgb, var(--semantic-info, #60a5fa) 80%, transparent);
+    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
     font-size: 1.25rem;
   }
 
   .empty-text {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .browse-btn {
@@ -121,13 +121,13 @@
     padding: 0.5rem 1rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     border-radius: 8px;
-    color: color-mix(in srgb, var(--semantic-info, #93c5fd) 90%, white);
+    color: color-mix(in srgb, var(--semantic-info) 90%, white);
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
@@ -137,12 +137,12 @@
   .browse-btn:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 50%,
+      var(--semantic-info, var(--semantic-info)) 50%,
       transparent
     );
     transform: translateY(-1px);

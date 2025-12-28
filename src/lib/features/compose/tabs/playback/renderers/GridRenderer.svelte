@@ -49,7 +49,7 @@
       label: "Top-Right",
       shortLabel: "TR",
       rotation: 90,
-      color: "var(--theme-accent-strong, #8b5cf6)",
+      color: "var(--theme-accent-strong)",
     },
     {
       index: 2 as const,
@@ -63,7 +63,7 @@
       label: "Bottom-Right",
       shortLabel: "BR",
       rotation: 270,
-      color: "#10b981",
+      color: "var(--semantic-success)",
     },
   ];
 </script>
@@ -171,8 +171,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 2px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.2s ease;
@@ -193,8 +193,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .rotation-badge {
@@ -206,7 +206,7 @@
     border: 1px solid
       var(
         --cell-color,
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent)
+        color-mix(in srgb, var(--theme-accent-strong) 40%, transparent)
       );
     border-radius: 6px;
     font-size: 0.75rem;
@@ -223,7 +223,7 @@
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 6px;
-    color: #f87171;
+    color: var(--semantic-error);
     cursor: pointer;
     opacity: 0;
     transition: all 0.2s ease;
@@ -283,10 +283,10 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.6rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -323,7 +323,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: 2px dashed rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     font-size: 1.5rem;

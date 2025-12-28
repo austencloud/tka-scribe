@@ -157,7 +157,7 @@
   }
 
   .loading-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
   }
 
   .user-avatar {
@@ -179,21 +179,21 @@
   }
 
   .initials {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text);
   }
 
   .user-info h4 {
     margin: 0 0 4px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--theme-text);
   }
 
   .user-email {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
   }
 
@@ -203,7 +203,7 @@
     gap: 4px;
     padding: 4px 8px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     text-transform: capitalize;
   }

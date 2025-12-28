@@ -159,8 +159,8 @@
     align-items: center;
     gap: clamp(16px, 2.5cqw, 20px);
     padding: clamp(20px, 2.5cqh, 28px) clamp(20px, 3cqw, 28px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.16));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
@@ -172,7 +172,7 @@
 
   .selection-card:active {
     transform: scale(0.98);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-hover-bg);
   }
 
   .selection-card.blue {
@@ -253,7 +253,7 @@
   .card-label {
     font-size: clamp(12px, 1.75cqw, 14px);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     letter-spacing: -0.01em;
     white-space: nowrap;
   }
@@ -272,7 +272,7 @@
   .card-chevron {
     flex-shrink: 0;
     margin-left: auto;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
+    color: var(--theme-text-dim);
     font-size: clamp(14px, 2cqw, 16px);
   }
 
@@ -285,10 +285,10 @@
     min-height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     padding: clamp(10px, 1.5cqh, 14px) clamp(16px, 2.5cqw, 24px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: clamp(13px, 1.8cqw, 15px);
     font-weight: 600;
     cursor: pointer;
@@ -298,18 +298,18 @@
   }
 
   .variation-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .variation-toggle:active {
     transform: scale(0.97);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg, var(--theme-card-hover-bg));
   }
 
   .variation-toggle:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -323,14 +323,14 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: var(--theme-text-dim, rgba(255, 255, 255, 0.25));
+    background: var(--theme-text-dim);
     transition: all 0.2s ease;
   }
 
   .variation-dot.active {
-    background: var(--theme-accent, rgba(99, 102, 241, 0.9));
+    background: var(--theme-accent);
     box-shadow: 0 0 6px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
   }
 
   .variation-text {

@@ -15,7 +15,7 @@
   <div class="stat-card">
     <div
       class="stat-icon"
-      style="background: color-mix(in srgb, var(--theme-accent) 20%, transparent); color: var(--theme-accent, #667eea);"
+      style="background: color-mix(in srgb, var(--theme-accent) 20%, transparent); color: var(--theme-accent);"
     >
       <i class="fas fa-calendar-check" aria-hidden="true"></i>
     </div>
@@ -39,7 +39,7 @@
   <div class="stat-card">
     <div
       class="stat-icon"
-      style="background: rgba(251, 191, 36, 0.2); color: #fbbf24;"
+      style="background: rgba(251, 191, 36, 0.2); color: var(--semantic-warning);"
     >
       <i class="fas fa-calendar-week" aria-hidden="true"></i>
     </div>

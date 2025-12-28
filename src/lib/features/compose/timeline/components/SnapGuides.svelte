@@ -156,21 +156,21 @@
   .snap-guide.beat {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #4a9eff) 15%,
+      var(--semantic-info) 15%,
       transparent
     );
   }
 
   /* Grid guides - subtle theme stroke */
   .snap-guide.grid {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    background: var(--theme-stroke, var(--theme-card-bg));
   }
 
   /* Clip edge guides - accent */
   .snap-guide.clip {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #4a9eff) 15%,
+      var(--theme-accent) 15%,
       transparent
     );
   }
@@ -182,30 +182,30 @@
   }
 
   .snap-guide.active.beat {
-    background: color-mix(in srgb, var(--semantic-info, #4a9eff) 80%, white);
+    background: color-mix(in srgb, var(--semantic-info) 80%, white);
     box-shadow:
       0 0 10px
-        color-mix(in srgb, var(--semantic-info, #4a9eff) 60%, transparent),
+        color-mix(in srgb, var(--semantic-info) 60%, transparent),
       0 0 20px
-        color-mix(in srgb, var(--semantic-info, #4a9eff) 30%, transparent);
+        color-mix(in srgb, var(--semantic-info) 30%, transparent);
   }
 
   .snap-guide.active.clip {
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     box-shadow:
-      0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 60%, transparent),
-      0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+      0 0 10px color-mix(in srgb, var(--theme-accent) 60%, transparent),
+      0 0 20px color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .snap-guide.active.grid {
-    background: var(--theme-text, rgba(255, 255, 255, 0.6));
+    background: var(--theme-text);
     box-shadow:
       0 0 8px color-mix(in srgb, var(--theme-text, white) 40%, transparent),
       0 0 16px color-mix(in srgb, var(--theme-text, white) 20%, transparent);
   }
 
   .snap-guide.active.playhead {
-    background: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-text);
     box-shadow:
       0 0 10px color-mix(in srgb, var(--theme-text, white) 60%, transparent),
       0 0 20px color-mix(in srgb, var(--theme-text, white) 30%, transparent);
@@ -216,15 +216,14 @@
     top: 4px;
     left: 6px;
     padding: 3px 8px;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-elevated-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: var(--theme-text, white);
     white-space: nowrap;
-    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px var(--theme-shadow);
   }
 </style>

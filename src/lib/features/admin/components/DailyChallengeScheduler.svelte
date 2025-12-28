@@ -327,7 +327,7 @@
 
   .view-toggle {
     display: flex;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
     padding: 4px;
   }
@@ -336,7 +336,7 @@
     padding: 0.5rem 1rem;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     border-radius: 6px;
     display: flex;

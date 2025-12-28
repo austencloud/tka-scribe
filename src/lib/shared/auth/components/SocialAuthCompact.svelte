@@ -88,8 +88,8 @@
   }
 
   .social-compact-label {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     font-weight: 500;
   }
@@ -110,12 +110,12 @@
     min-height: var(--min-touch-target);
     padding: 10px 16px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     border: none;
-    box-shadow: 0 2px 6px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 6px var(--theme-shadow);
   }
 
   .social-compact-button:disabled {
@@ -149,7 +149,7 @@
 
   .error-message {
     margin: 0;
-    font-size: 13px;
-    color: var(--semantic-error, #ef4444);
+    font-size: var(--font-size-compact);
+    color: var(--semantic-error, var(--semantic-error));
   }
 </style>

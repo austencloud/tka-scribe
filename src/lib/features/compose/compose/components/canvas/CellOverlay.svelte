@@ -96,7 +96,7 @@
     gap: clamp(2px, 1cqi, 6px);
     padding: clamp(2px, 1cqi, 6px);
     background: rgba(20, 20, 35, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: clamp(4px, 2cqi, 10px);
     opacity: 0;
     pointer-events: none;
@@ -190,7 +190,7 @@
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: clamp(4px, 2cqi, 10px);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: clamp(0.7rem, 5cqi, 1rem);
     cursor: pointer;
     transition: all 0.15s ease;

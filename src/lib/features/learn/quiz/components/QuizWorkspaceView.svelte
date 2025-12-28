@@ -284,9 +284,9 @@
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     backdrop-filter: blur(10px);
     color: #94a3b8;
     font-size: 1.125rem;
@@ -305,7 +305,7 @@
   .loading-spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 4px solid rgba(255, 255, 255, 0.1);
+    border: 4px solid var(--theme-stroke);
     border-left: 4px solid #667eea;
     border-radius: 50%;
     animation: spin 1s linear infinite;

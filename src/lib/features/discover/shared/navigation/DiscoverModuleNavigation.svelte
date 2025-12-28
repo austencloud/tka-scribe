@@ -64,7 +64,7 @@ Tabs: Gallery, Collections, Creators
     width: 100%;
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none; /* Firefox */
@@ -88,10 +88,10 @@ Tabs: Gallery, Collections, Creators
     gap: 8px;
     padding: 10px 16px;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -102,14 +102,14 @@ Tabs: Gallery, Collections, Creators
   .tab-button:hover:not(.disabled) {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .tab-button.active {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
     color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .tab-button.disabled {
@@ -118,7 +118,7 @@ Tabs: Gallery, Collections, Creators
   }
 
   .tab-button i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   /* Mobile optimization - hide labels on very small screens */
@@ -141,7 +141,7 @@ Tabs: Gallery, Collections, Creators
 
     .tab-button {
       padding: 12px 20px;
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

@@ -240,7 +240,7 @@ Allows viewing, continuing, or deleting sessions.
   .btn-refresh {
     padding: 0.5rem;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     color: inherit;
     cursor: pointer;
@@ -248,7 +248,7 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-refresh:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
   }
 
   .loading,
@@ -275,8 +275,8 @@ Allows viewing, continuing, or deleting sessions.
   .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.3));
-    border-top-color: var(--theme-text, #fff);
+    border: 3px solid var(--theme-stroke);
+    border-top-color: var(--theme-text);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -297,20 +297,20 @@ Allows viewing, continuing, or deleting sessions.
 
   .session-card {
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .session-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .session-card.selected {
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
@@ -330,23 +330,23 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .prop-badge.club {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
   }
 
   .prop-badge.staff {
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
   }
 
   .prop-badge.fan {
-    background: var(--semantic-success, #10b981);
+    background: var(--semantic-success, var(--semantic-success));
   }
 
   .prop-badge.hoop {
-    background: var(--semantic-warning, #f59e0b);
+    background: var(--semantic-warning, var(--semantic-warning));
   }
 
   .prop-badge.buugeng {
-    background: var(--theme-accent-strong, #8b5cf6);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 
   .session-date {
@@ -379,7 +379,7 @@ Allows viewing, continuing, or deleting sessions.
 
   .progress-bar {
     height: 6px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 3px;
     overflow: hidden;
     margin-bottom: 0.35rem;
@@ -389,8 +389,8 @@ Allows viewing, continuing, or deleting sessions.
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--semantic-success, #10b981),
-      color-mix(in srgb, var(--semantic-success, #10b981) 80%, white)
+      var(--semantic-success, var(--semantic-success)),
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white)
     );
     border-radius: 3px;
     transition: width 0.3s ease;
@@ -420,27 +420,27 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-label {
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     color: white;
   }
 
   .btn-label:hover {
-    background: var(--theme-accent, #2563eb);
+    background: var(--theme-accent);
   }
 
   .btn-delete {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 20%,
+      var(--semantic-error, var(--semantic-error)) 20%,
       transparent
     );
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .btn-delete:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
   }
@@ -453,12 +453,12 @@ Allows viewing, continuing, or deleting sessions.
   }
 
   .btn-confirm-delete {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     color: white;
   }
 
   .btn-cancel-delete {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: inherit;
   }
 </style>

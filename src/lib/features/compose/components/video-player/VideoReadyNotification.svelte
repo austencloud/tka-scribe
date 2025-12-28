@@ -24,11 +24,11 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
     color: white;
     padding: 10px 16px;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     z-index: 20;
     display: flex;
     align-items: center;
@@ -55,7 +55,7 @@
     min-height: var(--min-touch-target);
     border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 

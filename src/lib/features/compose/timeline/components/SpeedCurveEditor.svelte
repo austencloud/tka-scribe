@@ -161,7 +161,7 @@
     ctx.clearRect(0, 0, width, height);
 
     // Draw grid
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.strokeStyle = "var(--theme-stroke)";
     ctx.lineWidth = 1;
 
     // Horizontal grid (speed levels)
@@ -217,7 +217,7 @@
       const hoverY = height - (hoverSpeed / maxSpeed) * height;
 
       // Vertical line
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+      ctx.strokeStyle = "var(--theme-text-dim)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(hoverX, 0);
@@ -339,8 +339,8 @@
 <style>
   .speed-curve-editor {
     width: 300px;
-    background: var(--theme-panel-bg, rgba(20, 20, 20, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -352,16 +352,16 @@
     justify-content: space-between;
     padding: 12px 14px;
     background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .header-title {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .header-title i {
@@ -377,14 +377,14 @@
     background: transparent;
     border: none;
     border-radius: 4px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .editor-content {
@@ -394,9 +394,9 @@
   .presets-section h4,
   .preview-section h4 {
     margin: 0 0 10px 0;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-muted, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -413,39 +413,39 @@
     flex-direction: column;
     align-items: center;
     padding: 10px 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .preset-card:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke);
   }
 
   .preset-card.selected {
     background: rgba(74, 158, 255, 0.15);
-    border-color: var(--theme-accent, #4a9eff);
+    border-color: var(--theme-accent);
   }
 
   .preset-card i {
-    font-size: 16px;
-    color: var(--theme-accent, #4a9eff);
+    font-size: var(--font-size-base);
+    color: var(--theme-accent);
     margin-bottom: 6px;
   }
 
   .preset-name {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     margin-bottom: 2px;
   }
 
   .preset-desc {
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
     text-align: center;
     line-height: 1.5;
   }
@@ -457,7 +457,7 @@
   .canvas-wrapper {
     position: relative;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
     overflow: hidden;
   }
@@ -472,8 +472,8 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .axis-labels .label {
@@ -504,8 +504,8 @@
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     margin-top: 6px;
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
   }
 
   .info-box {
@@ -515,13 +515,13 @@
     background: rgba(74, 158, 255, 0.1);
     border: 1px solid rgba(74, 158, 255, 0.2);
     border-radius: 6px;
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
     line-height: 1.5;
   }
 
   .info-box i {
-    color: var(--theme-accent, #4a9eff);
+    color: var(--theme-accent);
     flex-shrink: 0;
     margin-top: 2px;
   }

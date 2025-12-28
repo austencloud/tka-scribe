@@ -128,9 +128,9 @@
 
   .video-card:hover {
     background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--theme-stroke);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 24px var(--theme-shadow);
   }
 
   .video-card:hover .play-overlay {
@@ -182,7 +182,7 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
     border-radius: 4px;
     font-size: 0.7rem;
     font-weight: 600;
@@ -253,7 +253,7 @@
   }
 
   .collab-count {
-    color: #3b82f6;
+    color: var(--semantic-info);
     font-weight: 600;
   }
 

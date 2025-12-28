@@ -27,7 +27,7 @@
 <div class="stats-grid">
   <div
     class="stat-card"
-    style="--gradient: linear-gradient(135deg, var(--semantic-info, #3b82f6) 0%, color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, white) 100%)"
+    style="--gradient: linear-gradient(135deg, var(--semantic-info, var(--semantic-info)) 0%, color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, white) 100%)"
   >
     <i class="fas fa-calendar-check" aria-hidden="true"></i>
     <div class="stat-content">
@@ -38,7 +38,7 @@
 
   <div
     class="stat-card"
-    style="--gradient: linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, white) 100%)"
+    style="--gradient: linear-gradient(135deg, var(--theme-accent-strong) 0%, color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 80%, white) 100%)"
   >
     <i class="fas fa-clock" aria-hidden="true"></i>
     <div class="stat-content">
@@ -49,7 +49,7 @@
 
   <div
     class="stat-card"
-    style="--gradient: linear-gradient(135deg, var(--semantic-success, #22c55e) 0%, color-mix(in srgb, var(--semantic-success, #22c55e) 70%, #000) 100%)"
+    style="--gradient: linear-gradient(135deg, var(--semantic-success, var(--semantic-success)) 0%, color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 70%, #000) 100%)"
   >
     <i class="fas fa-bullseye" aria-hidden="true"></i>
     <div class="stat-content">
@@ -60,7 +60,7 @@
 
   <div
     class="stat-card"
-    style="--gradient: linear-gradient(135deg, var(--semantic-warning, #f59e0b) 0%, color-mix(in srgb, var(--semantic-warning, #f59e0b) 70%, #000) 100%)"
+    style="--gradient: linear-gradient(135deg, var(--semantic-warning, var(--semantic-warning)) 0%, color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 70%, #000) 100%)"
   >
     <i class="fas fa-fire" aria-hidden="true"></i>
     <div class="stat-content">
@@ -84,7 +84,7 @@
     padding: 1.5rem;
     background: var(--gradient);
     border-radius: 1rem;
-    box-shadow: 0 4px 6px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 4px 6px var(--theme-shadow);
     transition: transform 0.2s;
   }
 

@@ -128,11 +128,11 @@
     justify-content: center;
     gap: 16px;
     padding: 48px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .loading-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
   }
 
   /* ============================================================================
@@ -146,7 +146,7 @@
   }
 
   .management-header h2 {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
@@ -159,13 +159,13 @@
     padding: 12px 20px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
-      var(--theme-accent, #6366f1) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white) 0%,
+      var(--theme-accent, var(--theme-accent)) 100%
     );
     border: none;
     border-radius: 10px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -174,7 +174,7 @@
   .create-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .create-button:active {
@@ -217,7 +217,7 @@
     }
 
     .management-header h2 {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
   }
 </style>

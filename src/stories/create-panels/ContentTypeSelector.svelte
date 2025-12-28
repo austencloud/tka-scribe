@@ -87,33 +87,33 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .type-button:hover:not(.disabled) {
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.05)
+      var(--theme-card-bg)
     );
     border-color: var(--type-color);
     transform: translateY(-3px);
     box-shadow:
       0 6px 20px rgba(0, 0, 0, 0.15),
       0 0 30px color-mix(in srgb, var(--type-color) 20%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      inset 0 1px 0 var(--theme-stroke-strong);
   }
 
   .type-button.selected {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
+      var(--theme-card-hover-bg),
       rgba(255, 255, 255, 0.06)
     );
     border-color: var(--type-color);
     border-width: 2px;
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 4px 16px var(--theme-shadow),
       0 0 40px color-mix(in srgb, var(--type-color) 25%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
@@ -155,7 +155,7 @@
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.15),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-bg)
     );
     border-radius: 14px;
     font-size: 26px;
@@ -170,7 +170,7 @@
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.2),
-      rgba(255, 255, 255, 0.12)
+      var(--theme-card-hover-bg)
     );
     transform: scale(1.05);
   }
@@ -179,7 +179,7 @@
     background: var(--type-color);
     color: white;
     box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 4px 12px var(--theme-shadow),
       0 0 20px var(--type-color);
   }
 
@@ -198,7 +198,7 @@
 
   .type-description {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .selection-indicator {

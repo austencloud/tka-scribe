@@ -79,9 +79,9 @@ Displays A-Z grid with clear option
 
   .sheet-title {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .clear-btn {
@@ -90,7 +90,7 @@ Displays A-Z grid with clear option
     border: none;
     border-radius: 100px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -122,7 +122,7 @@ Displays A-Z grid with clear option
     border: 1px solid transparent;
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.85);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -130,12 +130,12 @@ Displays A-Z grid with clear option
 
   .letter-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--theme-stroke);
     transform: translateY(-1px);
   }
 
   .letter-btn.selected {
-    background: #10b981;
+    background: var(--semantic-success);
     color: white;
     border-color: transparent;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);

@@ -40,7 +40,7 @@
       description: "Side-by-side mirrored copy",
       slotCount: 1,
       gradient:
-        "linear-gradient(135deg, var(--theme-accent-strong, #8b5cf6) 0%, #7c3aed 100%)", // Purple
+        "linear-gradient(135deg, var(--theme-accent-strong) 0%, #7c3aed 100%)", // Purple
     },
     {
       id: "tunnel" as ComposeMode,
@@ -48,14 +48,14 @@
       description: "Two sequences overlaid",
       slotCount: 2,
       gradient:
-        "linear-gradient(135deg, var(--theme-accent, #6366f1) 0%, var(--theme-accent-strong, #4f46e5) 100%)", // Blue
+        "linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%)", // Blue
     },
     {
       id: "grid" as ComposeMode,
       title: "Grid",
       description: "Multiple in grid layout",
       slotCount: 4,
-      gradient: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", // Orange
+      gradient: "linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%)", // Orange
     },
   ];
 

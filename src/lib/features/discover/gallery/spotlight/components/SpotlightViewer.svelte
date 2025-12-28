@@ -573,22 +573,21 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border-radius: 50%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 10000;
     pointer-events: auto; /* Allow clicks on button */
   }
 
   .rotate-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     transform: scale(1.05);
   }
@@ -610,22 +609,21 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border-radius: 50%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     z-index: 10000;
     pointer-events: auto;
   }
 
   .column-picker-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
     transform: scale(1.05);
   }
@@ -655,11 +653,10 @@
     position: fixed;
     bottom: 6rem;
     left: 2rem;
-    background: var(--theme-panel-bg, rgba(20, 20, 25, 0.95));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 12px;
     padding: 8px;
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 10001;
     pointer-events: auto;
@@ -680,11 +677,11 @@
   }
 
   .column-picker-header {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     padding: 8px 12px 6px;
     margin-bottom: 4px;
   }
@@ -697,7 +694,7 @@
     border: 1px solid transparent;
     color: var(--theme-text, white);
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     text-align: left;
     transition: all 0.15s ease;
@@ -727,7 +724,7 @@
     color: rgba(0, 0, 0, 0.9);
     padding: 10px 14px;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -736,7 +733,7 @@
     -webkit-backdrop-filter: blur(10px);
     z-index: 10001;
     pointer-events: none;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px var(--theme-shadow);
     animation: slideUpBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     max-width: 220px;
   }

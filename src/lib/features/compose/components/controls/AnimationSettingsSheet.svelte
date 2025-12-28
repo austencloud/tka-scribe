@@ -98,7 +98,7 @@
     flex-direction: column;
     padding: 8px 16px 16px;
     height: 100%;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
+    background: var(--theme-panel-elevated-bg);
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;

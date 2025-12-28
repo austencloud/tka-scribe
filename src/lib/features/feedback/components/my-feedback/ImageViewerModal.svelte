@@ -264,7 +264,7 @@
   }
 
   .thumbnail.active {
-    border-color: var(--theme-accent, #3b82f6);
+    border-color: var(--theme-accent, var(--semantic-info));
   }
 
   .thumbnail:hover:not(.active) {

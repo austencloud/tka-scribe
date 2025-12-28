@@ -37,7 +37,7 @@
     justify-content: space-between;
     gap: var(--spacing-md, 16px);
     padding: var(--spacing-md, 16px);
-    background: var(--gradient-primary, linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%));
+    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     z-index: 1000;
@@ -50,7 +50,7 @@
   }
 
   .price {
-    font-size: var(--font-size-xl, 20px);
+    font-size: var(--font-size-xl);
     font-weight: 700;
     color: white;
     line-height: 1;
@@ -65,10 +65,10 @@
     padding: 0 var(--spacing-xl, 32px);
     min-height: var(--min-touch-target, 48px);
     background: white;
-    color: #6366f1;
+    color: var(--theme-accent);
     border: none;
     border-radius: 24px;
-    font-size: var(--font-size-base, 16px);
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-fast, 150ms ease);

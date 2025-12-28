@@ -40,9 +40,9 @@
 
   // Difficulty colors
   const difficultyColors: Record<string, string> = {
-    easy: "#22c55e",
-    medium: "#f59e0b",
-    hard: "#ef4444",
+    easy: "var(--semantic-success)",
+    medium: "var(--semantic-warning)",
+    hard: "var(--semantic-error)",
   };
 
   const difficultyColor = $derived(
@@ -136,17 +136,17 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, #f59e0b, #f97316);
+    background: linear-gradient(135deg, var(--semantic-warning), #f97316);
     border-radius: 10px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
   .compact .challenge-icon {
     width: 32px;
     height: 32px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     border-radius: 8px;
   }
 
@@ -160,7 +160,7 @@
 
   .challenge-title h3 {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     overflow: hidden;
@@ -169,14 +169,14 @@
   }
 
   .compact .challenge-title h3 {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .difficulty-badge {
     display: inline-flex;
     align-items: center;
     padding: 1px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -193,21 +193,21 @@
     padding: 4px 8px;
     background: rgba(245, 158, 11, 0.15);
     border-radius: 16px;
-    color: #f59e0b;
-    font-size: 12px;
+    color: var(--semantic-warning);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     flex-shrink: 0;
   }
 
   .compact .xp-reward {
     padding: 3px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .challenge-description {
     margin: 0;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.4;
     display: -webkit-box;
     line-clamp: 2;
@@ -231,26 +231,26 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #f59e0b, #f97316);
+    background: linear-gradient(90deg, var(--semantic-warning), #f97316);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
 
   .progress-fill.complete {
-    background: linear-gradient(90deg, #22c55e, #16a34a);
+    background: linear-gradient(90deg, var(--semantic-success), #16a34a);
   }
 
   .progress-text {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     gap: 8px;
   }
 
   .progress-text .fa-check-circle {
-    color: #22c55e;
+    color: var(--semantic-success);
     margin-right: 4px;
   }
 
@@ -258,12 +258,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     white-space: nowrap;
   }
 
   .time-remaining i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* ============================================================================
@@ -288,14 +288,14 @@
     .challenge-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
       border-radius: 11px;
     }
 
     .compact .challenge-icon {
       width: 34px;
       height: 34px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .challenge-title {
@@ -303,31 +303,31 @@
     }
 
     .challenge-title h3 {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
 
     .compact .challenge-title h3 {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .difficulty-badge {
       padding: 2px 7px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .xp-reward {
       gap: 5px;
       padding: 5px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .compact .xp-reward {
       padding: 4px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .challenge-description {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       line-height: 1.5;
     }
 
@@ -340,11 +340,11 @@
     }
 
     .progress-text {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .time-remaining i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -366,29 +366,29 @@
     .challenge-icon {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 18px;
+      font-size: var(--font-size-lg);
       border-radius: 12px;
     }
 
     .compact .challenge-icon {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       border-radius: 10px;
     }
 
     .challenge-title h3 {
-      font-size: 16px;
+      font-size: var(--font-size-base);
       white-space: normal;
     }
 
     .compact .challenge-title h3 {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .difficulty-badge {
       padding: 2px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       letter-spacing: 0.5px;
       border-radius: 4px;
     }
@@ -396,17 +396,17 @@
     .xp-reward {
       gap: 6px;
       padding: 6px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       border-radius: 20px;
     }
 
     .compact .xp-reward {
       padding: 4px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .challenge-description {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       line-clamp: 3;
       -webkit-line-clamp: 3;
     }
@@ -421,7 +421,7 @@
     }
 
     .progress-text {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .time-remaining {
@@ -429,7 +429,7 @@
     }
 
     .time-remaining i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 

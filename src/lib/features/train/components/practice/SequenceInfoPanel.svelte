@@ -64,10 +64,10 @@
     padding: var(--space-2026-sm, 12px);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 12%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 12%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 100%
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md, 14px);
     box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
     cursor: pointer;
@@ -87,12 +87,12 @@
   .sequence-info-panel:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 25%,
+      var(--semantic-info, var(--semantic-info)) 25%,
       transparent
     );
     transform: translateY(-1px);
@@ -106,20 +106,20 @@
   .sequence-info-panel.has-sequence {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 12%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 8%, transparent) 100%
     );
   }
 
   .sequence-info-panel.has-sequence:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 25%,
+      var(--semantic-success, var(--semantic-success)) 25%,
       transparent
     );
   }
@@ -143,7 +143,7 @@
 
   .sequence-beats {
     font-size: 0.7rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 500;
   }
 

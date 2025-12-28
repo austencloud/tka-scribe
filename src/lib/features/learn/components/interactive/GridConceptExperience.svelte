@@ -291,7 +291,7 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
   .title {
     font-size: 2.5rem;
     font-weight: 800;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin: 0 0 var(--spacing-lg, 1.5rem) 0;
     text-align: center;
     letter-spacing: -0.02em;
@@ -369,39 +369,39 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     flex-direction: column;
     gap: 0.25rem;
     padding: var(--spacing-md, 1rem);
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .point-name {
     font-size: 1.1rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .point-desc {
     font-size: 0.9rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   /* Description text */
   .description {
     font-size: 1.25rem;
     line-height: 1.6;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     margin: 0;
     text-align: center;
   }
 
   .description strong {
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     font-weight: 700;
   }
 
   .description.secondary {
     font-size: 1.1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     font-style: italic;
   }
 
@@ -425,7 +425,6 @@ Uses CSS animations with staggered delays for smooth, layout-stable animations.
     justify-content: center;
     padding: 1rem 3rem;
     background: color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    backdrop-filter: blur(20px);
     border: 2px solid color-mix(in srgb, var(--theme-accent) 60%, transparent);
     border-radius: 12px;
     color: white;

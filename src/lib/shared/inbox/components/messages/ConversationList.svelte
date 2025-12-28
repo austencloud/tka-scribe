@@ -123,7 +123,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .new-message-btn {
@@ -133,11 +133,11 @@
     gap: 8px;
     min-height: var(--min-touch-target);
     padding: 12px 20px;
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     border: none;
     border-radius: 12px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition:
@@ -147,7 +147,7 @@
   }
 
   .new-message-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, white);
+    background: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, white);
     box-shadow: 0 4px 12px
       color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
@@ -173,8 +173,8 @@
     background: transparent;
     border: none;
     border-radius: 12px;
-    color: var(--theme-accent, #3b82f6);
-    font-size: 14px;
+    color: var(--theme-accent, var(--semantic-info));
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition:
       background 0.2s ease,
@@ -182,7 +182,7 @@
   }
 
   .mark-all-read:hover:not(:disabled) {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
   }
 
   .mark-all-read:disabled {

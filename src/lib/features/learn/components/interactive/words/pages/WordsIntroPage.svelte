@@ -181,7 +181,7 @@
 
   .point-content p {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .example-preview {
@@ -231,7 +231,6 @@
       rgba(80, 200, 120, 0.3) 0%,
       rgba(60, 179, 113, 0.3) 100%
     );
-    backdrop-filter: blur(20px);
     border: 2px solid rgba(80, 200, 120, 0.5);
     border-radius: 12px;
     color: white;

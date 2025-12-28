@@ -382,8 +382,8 @@
   .preview-area {
     flex: 1;
     min-height: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     overflow: hidden;
     position: relative;
@@ -425,14 +425,14 @@
     padding: 8px 16px;
     background: rgba(220, 38, 38, 0.9);
     border-radius: 20px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: white;
     z-index: 10;
   }
 
   .recording-indicator i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     animation: blink 1s ease-in-out infinite;
   }
 
@@ -469,32 +469,32 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    border: 2px dashed var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 2px dashed var(--theme-stroke);
     border-radius: 8px;
     margin: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .upload-dropzone:hover {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    border-color: var(--theme-accent);
+    background: var(--theme-card-bg);
   }
 
   .upload-dropzone i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
   .upload-dropzone p {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     margin: 0;
     font-weight: 500;
   }
 
   .upload-dropzone .hint {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     opacity: 0.7;
   }
 
@@ -505,27 +505,27 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     padding: 32px;
   }
 
   .loading-state p,
   .error-state p {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     margin: 0;
   }
 
   .error-state i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .spinner {
     width: 44px;
     height: 44px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-top-color: var(--theme-accent, #4a9eff);
+    border: 4px solid var(--theme-stroke);
+    border-top-color: var(--theme-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -535,17 +535,17 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--theme-text, white);
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .retry-button:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   /* Inline controls */
@@ -554,8 +554,8 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     flex-wrap: wrap;
   }
@@ -573,7 +573,7 @@
     padding: 8px 12px;
     background: rgba(220, 38, 38, 0.2);
     border-radius: 8px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
     color: rgb(252, 165, 165);
   }
@@ -588,10 +588,10 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 500;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -600,12 +600,12 @@
   }
 
   .control-button i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .control-button:hover:not(:disabled) {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-accent);
   }
 
   .control-button:disabled {
@@ -614,17 +614,17 @@
   }
 
   .control-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .mode-toggle {
-    background: var(--theme-accent, #4a9eff);
-    border-color: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
   }
 
   .mode-toggle:hover {
-    background: var(--theme-accent-hover, #3d8de6);
+    background: var(--theme-accent-hover);
   }
 
   .record-button {
@@ -656,8 +656,8 @@
   }
 
   .upload-button {
-    background: var(--theme-accent, rgba(74, 158, 255, 0.2));
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
   }
 
   .secondary {

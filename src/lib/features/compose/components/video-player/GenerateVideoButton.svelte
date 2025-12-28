@@ -29,7 +29,7 @@
     min-height: var(--min-touch-target);
     border-radius: 10px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     z-index: 20;
     transition: all 0.2s ease;

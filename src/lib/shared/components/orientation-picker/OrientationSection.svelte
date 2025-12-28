@@ -86,7 +86,7 @@ Uses 2x2 grid with all 4 orientation options
 
 <style>
   .orientation-section {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .section-header {
@@ -118,15 +118,15 @@ Uses 2x2 grid with all 4 orientation options
   }
 
   .section-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     margin: 0 0 4px 0;
     color: white;
   }
 
   .section-description {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -141,13 +141,13 @@ Uses 2x2 grid with all 4 orientation options
     padding: 6px 12px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 16px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   .value-any {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   .chevron {

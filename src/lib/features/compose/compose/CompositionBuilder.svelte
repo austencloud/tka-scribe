@@ -224,7 +224,7 @@
     position: fixed;
     inset: 0;
     z-index: 9999;
-    background: var(--theme-bg, #000);
+    background: var(--theme-panel-bg);
   }
 
   .composition-builder.fullscreen .phase-content {

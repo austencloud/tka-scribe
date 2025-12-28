@@ -180,21 +180,21 @@ Features:
   }
 
   .empty-icon {
-    font-size: 64px;
+    font-size: var(--font-size-3xl);
     color: rgba(255, 255, 255, 0.15);
     margin-bottom: var(--spacing-lg);
   }
 
   .empty-message {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin: 0 0 var(--spacing-sm) 0;
   }
 
   .empty-hint {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     margin: 0;
     max-width: 400px;
   }
@@ -231,14 +231,14 @@ Features:
   .skeleton-title {
     height: 16px;
     width: 70%;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 4px;
   }
 
   .skeleton-meta {
     height: 12px;
     width: 50%;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-stroke);
     border-radius: 4px;
   }
 

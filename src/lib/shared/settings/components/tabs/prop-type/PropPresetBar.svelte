@@ -73,15 +73,15 @@
 
   .preset-hint {
     margin: 0;
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     display: flex;
     align-items: center;
     gap: 6px;
   }
 
   .preset-hint i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
   }
 </style>

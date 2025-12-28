@@ -168,18 +168,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-muted, var(--theme-text-dim));
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .help-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   @media (max-width: 600px) {

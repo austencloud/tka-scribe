@@ -164,7 +164,7 @@ Provides access to the complete TKA letter codex with drill-down detail view:
     height: 100%;
     overflow: hidden;
     transition: flex 400ms cubic-bezier(0.4, 0, 0.2, 1);
-    border-left: 0 solid rgba(255, 255, 255, 0.1);
+    border-left: 0 solid var(--theme-stroke);
     transition:
       flex 400ms cubic-bezier(0.4, 0, 0.2, 1),
       border-left-width 400ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -191,7 +191,7 @@ Provides access to the complete TKA letter codex with drill-down detail view:
 
   .loading-overlay p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.9375rem;
   }
 

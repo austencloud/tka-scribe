@@ -314,7 +314,7 @@ Now with intelligent rotation animation matching prop behavior!
         cy="0"
         r="60"
         fill="none"
-        stroke="var(--color-accent, #fbbf24)"
+        stroke="var(--color-accent, var(--semantic-warning))"
         stroke-width="4"
         class="selection-glow"
         opacity="0.8"

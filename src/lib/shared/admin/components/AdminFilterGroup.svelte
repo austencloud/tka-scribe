@@ -45,7 +45,7 @@
   .admin-filter-group {
     display: flex;
     gap: 4px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     padding: 4px;
     border-radius: 10px;
     overflow-x: auto;
@@ -65,11 +65,11 @@
     padding: 8px 10px;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     display: flex;
     align-items: center;
     gap: 5px;
@@ -81,7 +81,7 @@
   @media (hover: hover) {
     .filter-btn:hover {
       color: rgba(255, 255, 255, 0.9);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--theme-card-bg);
     }
   }
 
@@ -100,14 +100,14 @@
   }
 
   .filter-btn i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* Show labels on wider screens */
   @media (min-width: 480px) {
     .filter-btn {
       padding: 8px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       gap: 6px;
     }
 
@@ -117,7 +117,7 @@
   }
 
   .count {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
     display: none;
   }
@@ -125,14 +125,14 @@
   @media (min-width: 600px) {
     .count {
       display: inline;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
   /* Tabs variant */
   .variant-tabs {
     background: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     padding: 0;
     border-radius: 0;
   }
@@ -144,6 +144,6 @@
 
   .variant-tabs .filter-btn.active {
     background: none;
-    border-bottom-color: #3b82f6;
+    border-bottom-color: var(--semantic-info);
   }
 </style>

@@ -65,7 +65,7 @@ Primarily for desktop where we have extra space to show this information.
     <!-- Blue/Left Motion Info -->
     <div class="motion-section blue-section">
       <div class="section-header">
-        <i class="fas fa-circle" style="color: #3b82f6;" aria-hidden="true"></i>
+        <i class="fas fa-circle" style="color: var(--semantic-info);" aria-hidden="true"></i>
         <span>Left Hand</span>
       </div>
 
@@ -106,7 +106,7 @@ Primarily for desktop where we have extra space to show this information.
     <!-- Red/Right Motion Info -->
     <div class="motion-section red-section">
       <div class="section-header">
-        <i class="fas fa-circle" style="color: #ef4444;" aria-hidden="true"></i>
+        <i class="fas fa-circle" style="color: var(--semantic-error);" aria-hidden="true"></i>
         <span>Right Hand</span>
       </div>
 
@@ -151,21 +151,21 @@ Primarily for desktop where we have extra space to show this information.
     flex-direction: column;
     gap: 12px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .info-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     padding-bottom: 8px;
   }
 
   .info-header h3 {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -187,30 +187,30 @@ Primarily for desktop where we have extra space to show this information.
     align-items: center;
     gap: 8px;
     font-weight: 600;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.85);
     margin-bottom: 4px;
   }
 
   .section-header i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .info-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     padding: 4px 0;
   }
 
   .info-label {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-weight: 500;
   }
 
   .info-value {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-weight: 600;
     font-family:
       "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas,
@@ -233,7 +233,7 @@ Primarily for desktop where we have extra space to show this information.
     }
 
     .info-row {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

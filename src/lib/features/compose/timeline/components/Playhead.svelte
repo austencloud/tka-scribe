@@ -95,11 +95,11 @@
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
-    color: var(--semantic-error, #ff4444);
+    color: var(--semantic-error);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6))
       drop-shadow(
         0 0 6px
-          color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent)
+          color-mix(in srgb, var(--semantic-error) 50%, transparent)
       );
     transition: all 0.2s ease;
   }
@@ -110,7 +110,7 @@
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7))
       drop-shadow(
         0 0 12px
-          color-mix(in srgb, var(--semantic-error, #ff4444) 70%, transparent)
+          color-mix(in srgb, var(--semantic-error) 70%, transparent)
       );
   }
 
@@ -120,12 +120,12 @@
     left: 0;
     width: 1px;
     height: 100%;
-    background: var(--semantic-error, #ff4444);
+    background: var(--semantic-error);
     box-shadow:
       0 0 6px
-        color-mix(in srgb, var(--semantic-error, #ff4444) 50%, transparent),
+        color-mix(in srgb, var(--semantic-error) 50%, transparent),
       0 0 12px
-        color-mix(in srgb, var(--semantic-error, #ff4444) 30%, transparent);
+        color-mix(in srgb, var(--semantic-error) 30%, transparent);
   }
 
   .playhead.dragging .playhead-line {
@@ -133,8 +133,8 @@
     left: -0.5px;
     box-shadow:
       0 0 8px
-        color-mix(in srgb, var(--semantic-error, #ff4444) 60%, transparent),
+        color-mix(in srgb, var(--semantic-error) 60%, transparent),
       0 0 16px
-        color-mix(in srgb, var(--semantic-error, #ff4444) 40%, transparent);
+        color-mix(in srgb, var(--semantic-error) 40%, transparent);
   }
 </style>

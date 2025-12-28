@@ -31,8 +31,8 @@
   .user-count {
     text-align: center;
     padding: var(--spacing-md, 16px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     margin: var(--spacing-md, 16px) 0;
   }
@@ -46,25 +46,25 @@
   }
 
   .count-badge i {
-    font-size: var(--font-size-xl, 20px);
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-xl);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   .count {
     font-size: clamp(24px, 5vw, 32px);
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .tagline {
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
   .growth {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-compact);
+    color: var(--theme-accent, var(--theme-accent));
     margin: var(--spacing-xs, 4px) 0 0;
     font-weight: 600;
   }

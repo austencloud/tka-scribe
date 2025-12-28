@@ -69,7 +69,7 @@
     font-weight: 600; /* iOS semibold */
     letter-spacing: -0.41px; /* iOS body tracking */
     line-height: 1.29; /* iOS body ratio */
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
     text-align: center;
     font-family:
@@ -82,7 +82,7 @@
     font-weight: 400;
     letter-spacing: -0.06px; /* iOS caption tracking */
     line-height: 1.3; /* iOS caption ratio */
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
     margin: 0;
     text-align: center;
@@ -97,8 +97,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
-    border: 0.33px solid var(--theme-stroke, rgba(255, 255, 255, 0.12)); /* iOS hairline border */
+    background: var(--theme-card-bg);
+    border: 0.33px solid var(--theme-stroke); /* iOS hairline border */
     border-radius: 12px; /* iOS medium corner radius */
     padding: clamp(
       6px,

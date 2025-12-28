@@ -116,7 +116,7 @@ Usage:
   }
 
   .edited-indicator {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: hsl(var(--primary));
   }
 

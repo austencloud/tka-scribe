@@ -30,11 +30,11 @@
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: 100px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 15px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     font-weight: 500;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -46,8 +46,8 @@
   }
 
   .catdog-chip:hover:not(.active) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .catdog-chip:active {
@@ -57,25 +57,25 @@
   .catdog-chip.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #34c759) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #34c759) 40%,
+      var(--theme-accent) 40%,
       transparent
     );
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     box-shadow:
-      0 0 12px color-mix(in srgb, var(--theme-accent, #34c759) 15%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 0 12px color-mix(in srgb, var(--theme-accent) 15%, transparent),
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .chip-icons {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1;
     color: inherit;
   }
@@ -85,11 +85,11 @@
   }
 
   .catdog-chip.active .chip-icons i:first-child {
-    color: var(--prop-blue, #2e3192);
+    color: var(--prop-blue);
   }
 
   .catdog-chip.active .chip-icons i:last-child {
-    color: var(--prop-red, #ed1c24);
+    color: var(--prop-red);
   }
 
   .chip-label {

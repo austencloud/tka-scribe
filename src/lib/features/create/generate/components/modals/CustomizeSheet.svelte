@@ -289,7 +289,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -314,18 +314,18 @@ Follows modern 2026 Material Design patterns with 48px touch targets
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 24px;
     color: var(--theme-text, white);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .clear-button:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
   }
 
   .clear-button:active {
@@ -338,8 +338,8 @@ Follows modern 2026 Material Design patterns with 48px touch targets
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 50%;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -347,7 +347,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
   }
 
   .close-button:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     transform: scale(1.05);
   }
 
@@ -369,7 +369,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.08));
+    background: var(--theme-card-bg);
   }
 
   /* Reduced motion */
@@ -392,7 +392,7 @@ Follows modern 2026 Material Design patterns with 48px touch targets
 
     .clear-button {
       padding: 0 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

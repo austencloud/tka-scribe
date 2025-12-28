@@ -481,10 +481,10 @@
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     padding-left: calc(var(--spacing-sm) + 1.5rem);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.875rem;
   }
 
@@ -495,7 +495,7 @@
   .search-input:focus {
     outline: none;
     border-color: rgba(16, 185, 129, 0.4);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .clear-search {
@@ -525,17 +525,17 @@
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .action-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .action-btn.active {
@@ -555,7 +555,7 @@
     right: 0;
     margin-top: var(--spacing-xs);
     background: rgba(30, 30, 40, 0.98);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: var(--border-radius-md);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     z-index: 100;
@@ -571,7 +571,7 @@
     padding: var(--spacing-sm) var(--spacing-md);
     background: none;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
     text-align: left;
     cursor: pointer;
@@ -604,10 +604,10 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -617,7 +617,7 @@
 
   .filter-tab:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     border-color: rgba(255, 255, 255, 0.2);
   }
 
@@ -657,7 +657,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.875rem;
   }
 
@@ -686,7 +686,7 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: var(--border-radius-sm);
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
@@ -723,13 +723,13 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: rgba(16, 185, 129, 0.8);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -750,7 +750,7 @@
     justify-content: center;
     height: 100%;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: var(--spacing-xl);
   }
 
@@ -764,7 +764,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   /* Empty State */
@@ -775,7 +775,7 @@
     justify-content: center;
     height: 100%;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: var(--spacing-xl);
   }
 
@@ -789,7 +789,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .empty-state p {
@@ -806,7 +806,7 @@
     justify-content: center;
     height: 100%;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: var(--spacing-xl);
   }
 
@@ -820,7 +820,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .error-state p {
@@ -837,7 +837,7 @@
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: var(--border-radius-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;

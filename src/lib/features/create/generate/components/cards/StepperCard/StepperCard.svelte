@@ -16,7 +16,7 @@ The actual implementation is now in $lib/shared/components/stepper-card
     formatValue = (val: number) => val.toString(),
     subtitle = "",
     description = "",
-    color = "#3b82f6",
+    color = "var(--semantic-info)",
     shadowColor = "0deg 0% 0%",
     textColor = "white",
     gridColumnSpan = 2,

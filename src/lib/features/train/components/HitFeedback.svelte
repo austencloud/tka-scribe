@@ -82,8 +82,8 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.75rem 1.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
   }
 
@@ -91,7 +91,7 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 600;
   }
 
@@ -110,11 +110,11 @@
     padding: 0.75rem 1.5rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 20%, transparent)
     );
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
     border-radius: 8px;
     animation: pulse-combo 0.5s ease-in-out;
   }
@@ -122,12 +122,12 @@
   .combo-display.high-combo {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #eab308) 20%, transparent),
-      color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent)
+      color-mix(in srgb, var(--semantic-warning) 20%, transparent),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-warning, #eab308) 60%,
+      var(--semantic-warning) 60%,
       transparent
     );
     animation: pulse-high-combo 0.5s ease-in-out;
@@ -136,14 +136,14 @@
   .combo-value {
     font-size: 2rem;
     font-weight: 800;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     font-variant-numeric: tabular-nums;
   }
 
   .high-combo .combo-value {
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
     text-shadow: 0 0 10px
-      color-mix(in srgb, var(--semantic-warning, #eab308) 50%, transparent);
+      color-mix(in srgb, var(--semantic-warning) 50%, transparent);
   }
 
   .combo-label {
@@ -173,25 +173,25 @@
   .feedback-popup.hit {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 30%, transparent),
-      color-mix(in srgb, var(--semantic-success, #16a34a) 30%, transparent)
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent),
+      color-mix(in srgb, var(--semantic-success) 30%, transparent)
     );
     border: 3px solid
-      color-mix(in srgb, var(--semantic-success, #22c55e) 80%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, transparent);
     box-shadow: 0 0 30px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
   }
 
   .feedback-popup.miss {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent),
-      color-mix(in srgb, var(--semantic-error, #dc2626) 30%, transparent)
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent)
     );
     border: 3px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 80%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, transparent);
     box-shadow: 0 0 30px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
   }
 
   .hit-text,
@@ -203,15 +203,15 @@
   }
 
   .hit-text {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
     text-shadow: 0 0 20px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
   }
 
   .miss-text {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     text-shadow: 0 0 20px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 60%, transparent);
   }
 
   .points-text {
@@ -236,12 +236,12 @@
     100% {
       transform: scale(1);
       box-shadow: 0 0 20px
-        color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
+        color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     }
     50% {
       transform: scale(1.1);
       box-shadow: 0 0 40px
-        color-mix(in srgb, var(--semantic-warning, #eab308) 60%, transparent);
+        color-mix(in srgb, var(--semantic-warning) 60%, transparent);
     }
   }
 

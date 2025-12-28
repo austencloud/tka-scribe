@@ -23,25 +23,25 @@
   > = {
     info: {
       icon: "fa-info-circle",
-      color: "#60a5fa",
+      color: "var(--semantic-info)",
       bg: "rgba(59, 130, 246, 0.15)",
       title: "Notice",
     },
     warning: {
       icon: "fa-exclamation-triangle",
-      color: "#fbbf24",
+      color: "var(--semantic-warning)",
       bg: "rgba(245, 158, 11, 0.15)",
       title: "Warning",
     },
     error: {
       icon: "fa-times-circle",
-      color: "#f87171",
+      color: "var(--semantic-error)",
       bg: "rgba(239, 68, 68, 0.15)",
       title: "Error",
     },
     critical: {
       icon: "fa-skull-crossbones",
-      color: "#dc2626",
+      color: "var(--semantic-error)",
       bg: "rgba(220, 38, 38, 0.2)",
       title: "Critical Error",
     },
@@ -105,13 +105,11 @@
 
 {#if error}
   {@const config = getConfig(error.severity)}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="error-overlay"
     onclick={handleDismiss}
-    onkeydown={(e) => e.key === "Escape" && handleDismiss()}
-    role="button"
-    tabindex="0"
-    aria-label="Close error dialog"
+    aria-hidden="true"
   >
     <div
       class="error-modal"
@@ -271,7 +269,7 @@
     gap: 12px;
     padding: 16px 20px;
     background: var(--error-bg);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .error-icon-wrapper {
@@ -286,14 +284,14 @@
   }
 
   .error-icon {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     color: var(--error-color);
   }
 
   .error-title {
     flex: 1;
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--error-color);
   }
@@ -307,14 +305,14 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .close-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .error-content {
@@ -323,9 +321,9 @@
 
   .error-message {
     margin: 0 0 16px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .error-context {
@@ -340,15 +338,15 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .context-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
   }
 
@@ -359,14 +357,14 @@
     padding: 8px 0;
     background: transparent;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: color 0.15s;
   }
 
   .details-toggle:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .technical-details {
@@ -374,13 +372,13 @@
     padding: 12px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 8px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke);
   }
 
   .detail-text {
     margin: 0 0 8px;
-    font-size: 13px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text, var(--theme-text-dim));
   }
 
   .stack-trace {
@@ -389,9 +387,9 @@
     background: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
     font-family: "Fira Code", "Consolas", monospace;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     overflow-x: auto;
     max-height: 150px;
     white-space: pre-wrap;
@@ -401,30 +399,30 @@
   .report-section {
     margin-top: 16px;
     padding-top: 16px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .report-prompt {
     margin: 0 0 8px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .comment-input {
     width: 100%;
     padding: 10px 12px;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     font-family: inherit;
-    font-size: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text, var(--theme-text));
     resize: vertical;
     min-height: 60px;
   }
 
   .comment-input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim);
   }
 
   .comment-input:focus {
@@ -437,7 +435,7 @@
     gap: 12px;
     padding: 16px 20px;
     background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .action-button {
@@ -449,19 +447,19 @@
     padding: 12px 16px;
     border: none;
     border-radius: 10px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .dismiss-button {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .dismiss-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     color: var(--theme-text, white);
   }
 

@@ -255,7 +255,7 @@
   ): string {
     if (!detected) return "transparent";
     if (!expected || !showExpected) return "white"; // No expectation, just show detected
-    return isCorrect(detected.quadrant, expected) ? "#22c55e" : "#ef4444"; // green or red
+    return isCorrect(detected.quadrant, expected) ? "var(--semantic-success)" : "var(--semantic-error)"; // green or red
   }
 
   // Derived correctness states
@@ -290,7 +290,7 @@
         y1={wrist.y * 100}
         x2={finger.x * 100}
         y2={finger.y * 100}
-        stroke="#3b82f6"
+        stroke="var(--semantic-info)"
         stroke-width="0.3"
         stroke-dasharray="1,1"
         opacity="0.7"
@@ -301,7 +301,7 @@
         cx={wrist.x * 100}
         cy={wrist.y * 100}
         r="1.5"
-        fill="#fbbf24"
+        fill="var(--semantic-warning)"
         stroke="#000"
         stroke-width="0.3"
       />
@@ -309,7 +309,7 @@
         x={wrist.x * 100}
         y={wrist.y * 100 - 3}
         text-anchor="middle"
-        fill="#fbbf24"
+        fill="var(--semantic-warning)"
         font-size="2.5"
         font-weight="bold">W</text
       >
@@ -319,7 +319,7 @@
         cx={finger.x * 100}
         cy={finger.y * 100}
         r="1.5"
-        fill="#22c55e"
+        fill="var(--semantic-success)"
         stroke="#000"
         stroke-width="0.3"
       />
@@ -327,7 +327,7 @@
         x={finger.x * 100}
         y={finger.y * 100 - 3}
         text-anchor="middle"
-        fill="#22c55e"
+        fill="var(--semantic-success)"
         font-size="2.5"
         font-weight="bold">F</text
       >
@@ -337,7 +337,7 @@
         cx={palm.x * 100}
         cy={palm.y * 100}
         r="2.5"
-        fill="#3b82f6"
+        fill="var(--semantic-info)"
         stroke="white"
         stroke-width="0.4"
       />
@@ -345,7 +345,7 @@
         x={palm.x * 100}
         y={palm.y * 100 - 4}
         text-anchor="middle"
-        fill="#3b82f6"
+        fill="var(--semantic-info)"
         font-size="2.5"
         font-weight="bold">P</text
       >
@@ -363,7 +363,7 @@
         y1={wrist.y * 100}
         x2={finger.x * 100}
         y2={finger.y * 100}
-        stroke="#ef4444"
+        stroke="var(--semantic-error)"
         stroke-width="0.3"
         stroke-dasharray="1,1"
         opacity="0.7"
@@ -374,7 +374,7 @@
         cx={wrist.x * 100}
         cy={wrist.y * 100}
         r="1.5"
-        fill="#fbbf24"
+        fill="var(--semantic-warning)"
         stroke="#000"
         stroke-width="0.3"
       />
@@ -382,7 +382,7 @@
         x={wrist.x * 100}
         y={wrist.y * 100 - 3}
         text-anchor="middle"
-        fill="#fbbf24"
+        fill="var(--semantic-warning)"
         font-size="2.5"
         font-weight="bold">W</text
       >
@@ -392,7 +392,7 @@
         cx={finger.x * 100}
         cy={finger.y * 100}
         r="1.5"
-        fill="#22c55e"
+        fill="var(--semantic-success)"
         stroke="#000"
         stroke-width="0.3"
       />
@@ -400,7 +400,7 @@
         x={finger.x * 100}
         y={finger.y * 100 - 3}
         text-anchor="middle"
-        fill="#22c55e"
+        fill="var(--semantic-success)"
         font-size="2.5"
         font-weight="bold">F</text
       >
@@ -410,7 +410,7 @@
         cx={palm.x * 100}
         cy={palm.y * 100}
         r="2.5"
-        fill="#ef4444"
+        fill="var(--semantic-error)"
         stroke="white"
         stroke-width="0.4"
       />
@@ -418,7 +418,7 @@
         x={palm.x * 100}
         y={palm.y * 100 - 4}
         text-anchor="middle"
-        fill="#ef4444"
+        fill="var(--semantic-error)"
         font-size="2.5"
         font-weight="bold">P</text
       >
@@ -440,10 +440,10 @@
       {#if animatedBluePos}
         {@const strokeColor =
           blueCorrect === true
-            ? "#22c55e"
+            ? "var(--semantic-success)"
             : blueCorrect === false
-              ? "#ef4444"
-              : "#3b82f6"}
+              ? "var(--semantic-error)"
+              : "var(--semantic-info)"}
         {@const fillColor =
           blueCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
         <circle
@@ -461,10 +461,10 @@
       {#if animatedRedPos}
         {@const strokeColor =
           redCorrect === true
-            ? "#22c55e"
+            ? "var(--semantic-success)"
             : redCorrect === false
-              ? "#ef4444"
-              : "#ef4444"}
+              ? "var(--semantic-error)"
+              : "var(--semantic-error)"}
         {@const fillColor =
           redCorrect === true ? "rgba(34, 197, 94, 0.2)" : "none"}
         <circle
@@ -488,7 +488,7 @@
         cx={quadrantPos.x}
         cy={quadrantPos.y}
         r="35"
-        fill="#3b82f6"
+        fill="var(--semantic-info)"
         stroke="white"
         stroke-width="4"
       />
@@ -512,7 +512,7 @@
         cx={quadrantPos.x}
         cy={quadrantPos.y}
         r="35"
-        fill="#ef4444"
+        fill="var(--semantic-error)"
         stroke="white"
         stroke-width="4"
       />

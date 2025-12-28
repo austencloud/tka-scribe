@@ -346,11 +346,11 @@ Uses organizer and sizer services for section grouping and sizing.
     justify-content: center;
     gap: 6px;
     padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 16px;
     color: rgba(255, 255, 255, 0.85);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     margin: 4px 0;
@@ -380,19 +380,19 @@ Uses organizer and sizer services for section grouping and sizing.
   }
 
   .filter-toggle i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Mobile: More compact */
   .filter-toggle.mobile {
     padding: 4px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin: 2px 0;
     border-radius: 12px;
   }
 
   .filter-toggle.mobile i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .sections-container {
@@ -430,6 +430,6 @@ Uses organizer and sizer services for section grouping and sizing.
     justify-content: center;
     height: 100%;
     color: var(--text-muted, #888);
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
   }
 </style>

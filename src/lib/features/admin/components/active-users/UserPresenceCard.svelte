@@ -106,7 +106,7 @@
 <style>
   .user-card {
     /* Dynamic color from avatar */
-    --card-accent: var(--theme-accent-strong, #8b5cf6);
+    --card-accent: var(--theme-accent-strong);
     --card-accent-light: color-mix(in srgb, var(--card-accent) 80%, #fff);
     --card-accent-glow: color-mix(in srgb, var(--card-accent) 25%, transparent);
 
@@ -135,7 +135,7 @@
   .user-card:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--card-accent) 16%, rgba(255, 255, 255, 0.05)) 0%,
+      color-mix(in srgb, var(--card-accent) 16%, var(--theme-card-bg)) 0%,
       color-mix(in srgb, var(--card-accent) 10%, rgba(255, 255, 255, 0.03)) 100%
     );
     border-color: color-mix(in srgb, var(--card-accent) 40%, transparent);
@@ -154,7 +154,7 @@
 
   /* Active user gets green accent on presence dot */
   .user-card.active {
-    border-top: 3px solid var(--semantic-success, #22c55e);
+    border-top: 3px solid var(--semantic-success, var(--semantic-success));
   }
 
   /* Avatar with colored ring */
@@ -184,14 +184,14 @@
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: var(--theme-text-secondary, rgba(255, 255, 255, 0.4));
+    background: var(--theme-text-dim);
     border: 2px solid rgba(0, 0, 0, 0.4);
     z-index: 1;
   }
 
   .presence-dot.active {
-    background: var(--semantic-success, #22c55e);
-    box-shadow: 0 0 8px var(--semantic-success, #22c55e);
+    background: var(--semantic-success, var(--semantic-success));
+    box-shadow: 0 0 8px var(--semantic-success, var(--semantic-success));
   }
 
   .info {
@@ -204,16 +204,16 @@
 
   .name {
     font-weight: 600;
-    font-size: 14px;
-    color: var(--theme-text, #fff);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .email {
-    font-size: var(--font-size-compact, 12px); /* Supplementary metadata */
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact); /* Supplementary metadata */
+    color: var(--theme-text-secondary, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -224,8 +224,8 @@
   }
 
   .location {
-    font-size: 12px;
-    color: var(--semantic-success, #22c55e);
+    font-size: var(--font-size-compact);
+    color: var(--semantic-success, var(--semantic-success));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -233,12 +233,12 @@
   }
 
   .location i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .activity-status {
-    font-size: 12px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .device-badge {
@@ -250,7 +250,7 @@
     border-radius: 6px;
     background: color-mix(in srgb, var(--card-accent) 15%, transparent);
     color: var(--card-accent);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: background 0.2s ease;
   }
 
@@ -271,17 +271,17 @@
     }
 
     .name {
-      font-size: var(--font-size-min, 14px); /* Essential text */
+      font-size: var(--font-size-min); /* Essential text */
     }
 
     .email {
-      font-size: var(--font-size-compact, 12px); /* Supplementary minimum */
+      font-size: var(--font-size-compact); /* Supplementary minimum */
     }
 
     .device-badge {
       width: 24px;
       height: 24px;
-      font-size: 12px; /* Icon only, not text */
+      font-size: var(--font-size-compact); /* Icon only, not text */
     }
   }
 

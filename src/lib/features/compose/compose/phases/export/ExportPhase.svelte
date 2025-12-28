@@ -248,7 +248,7 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .empty-icon {
@@ -257,7 +257,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 50%;
     margin-bottom: 1.5rem;
   }
@@ -270,7 +270,7 @@
   .empty-state h3 {
     margin: 0 0 0.5rem 0;
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .empty-state p {
@@ -281,7 +281,7 @@
   .empty-state .hint {
     margin-top: 0.5rem;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Export Options */
@@ -310,7 +310,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Format Grid */
@@ -335,7 +335,7 @@
 
   .format-card:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .format-card.selected {
@@ -345,7 +345,7 @@
 
   .format-card i {
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .format-card.selected i {
@@ -355,12 +355,12 @@
   .format-label {
     font-weight: 600;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .format-desc {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Quality Options */
@@ -394,12 +394,12 @@
   .quality-label {
     font-weight: 600;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .quality-res {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Audio Toggle */
@@ -454,7 +454,7 @@
     gap: 0.5rem;
     margin: 0;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .audio-note i {
@@ -474,8 +474,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
@@ -494,7 +494,7 @@
   .loop-count {
     font-size: 1.1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     min-width: 3rem;
     text-align: center;
   }

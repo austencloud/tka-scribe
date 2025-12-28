@@ -190,10 +190,10 @@
     left: clamp(8px, 1.6vw, 10px);
     right: clamp(8px, 1.6vw, 10px);
     height: clamp(6px, 1.2vw, 8px);
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg);
     border-radius: clamp(3px, 0.6vw, 4px);
     overflow: hidden;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px var(--theme-shadow);
   }
 
   .slider-fill {
@@ -285,8 +285,8 @@
   .modern-slider.dragging .thumb-inner {
     box-shadow:
       0 4px 12px rgba(59, 130, 246, 0.5),
-      0 2px 4px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      0 2px 4px var(--theme-shadow),
+      inset 0 1px 0 var(--theme-text);
   }
 
   /* Thumb shine effect */
@@ -313,8 +313,8 @@
       transform: scale(1.08);
       box-shadow:
         0 3px 10px rgba(59, 130, 246, 0.4),
-        0 1px 3px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        0 1px 3px var(--theme-shadow),
+        inset 0 1px 0 var(--theme-text);
     }
   }
 

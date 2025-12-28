@@ -103,7 +103,7 @@
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
-    color: #ef4444;
+    color: var(--semantic-error);
     font-size: var(--font-size-xs);
     font-weight: 600;
     cursor: pointer;

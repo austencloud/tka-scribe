@@ -259,7 +259,7 @@
     height: 100%;
     min-height: 200px;
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .spinner-container {
@@ -268,13 +268,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
     border-radius: 50%;
   }
 
   .loading-state i {
-    font-size: 24px;
-    color: var(--theme-accent, #3b82f6);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   .search-section {
@@ -286,8 +286,8 @@
 
   .search-label {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Suggestions Section */
@@ -303,8 +303,8 @@
     justify-content: center;
     gap: 8px;
     padding: 32px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
   }
 
   .suggestion-group {
@@ -318,15 +318,15 @@
     align-items: center;
     gap: 8px;
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .suggestion-heading i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Grid layout for followed users */
@@ -343,8 +343,8 @@
     gap: 8px;
     min-height: 80px;
     padding: 16px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition:
@@ -354,8 +354,8 @@
   }
 
   .suggestion-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-accent, #3b82f6);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-accent, var(--semantic-info));
     transform: translateY(-2px);
   }
 
@@ -370,9 +370,9 @@
   }
 
   .suggestion-name {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -381,8 +381,8 @@
   }
 
   .suggestion-username {
-    font-size: var(--font-size-compact, 12px); /* Supplementary metadata */
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact); /* Supplementary metadata */
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* List layout for recent conversations */
@@ -406,11 +406,11 @@
   }
 
   .suggestion-row:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
   }
 
   .suggestion-row:active {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
   }
 
   .suggestion-row:focus-visible {
@@ -421,21 +421,21 @@
 
   .suggestion-row-name {
     flex: 1;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     text-align: left;
   }
 
   .suggestion-arrow {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     transition: transform 0.2s ease;
   }
 
   .suggestion-row:hover .suggestion-arrow {
     transform: translateX(2px);
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   /* No suggestions state */
@@ -447,17 +447,17 @@
     gap: 12px;
     padding: 48px 24px;
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .no-suggestions i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
   .no-suggestions p {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* Responsive adjustments */

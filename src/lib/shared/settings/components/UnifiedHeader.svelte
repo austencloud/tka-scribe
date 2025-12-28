@@ -79,7 +79,7 @@
 
   .card-header i {
     font-size: clamp(18px, 2.5vh, 22px);
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, transparent);
     flex-shrink: 0;
   }
 
@@ -96,7 +96,7 @@
     position: relative;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -121,13 +121,13 @@
     color: white;
     padding: 8px 12px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
     white-space: nowrap;
     max-width: 252px;
     white-space: normal;
     text-align: left;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
     z-index: 1000;
     pointer-events: none;
     animation: fadeIn 0.2s ease-out;
@@ -170,18 +170,18 @@
     }
 
     .card-header i {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 
   /* Accessibility - Focus Indicators */
   .help-button:focus-visible {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+      color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -198,7 +198,7 @@
   /* Accessibility - High Contrast */
   @media (prefers-contrast: high) {
     .card-header i {
-      color: var(--theme-accent, #6366f1);
+      color: var(--theme-accent);
     }
 
     .help-button:focus-visible {

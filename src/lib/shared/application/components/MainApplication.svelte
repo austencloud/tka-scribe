@@ -467,7 +467,7 @@
     min-height: 100vh;
     gap: 16px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .auth-loading-spinner {

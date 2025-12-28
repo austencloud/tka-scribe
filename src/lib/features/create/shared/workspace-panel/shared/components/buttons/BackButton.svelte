@@ -67,18 +67,18 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     /* Base button styling */
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .panel-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .panel-button:active {
@@ -87,18 +87,18 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .back-button {
-    background: var(--theme-card-bg, rgba(100, 116, 139, 0.8));
-    border-color: var(--theme-stroke, rgba(148, 163, 184, 0.3));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
   }
 
   .back-button:hover {
-    background: var(--theme-card-hover-bg, rgba(100, 116, 139, 0.9));
-    border-color: var(--theme-stroke-strong, rgba(148, 163, 184, 0.4));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -106,7 +106,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -114,7 +114,7 @@
     .panel-button {
       width: var(--min-touch-target); /* Maintain 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -122,7 +122,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -133,7 +133,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

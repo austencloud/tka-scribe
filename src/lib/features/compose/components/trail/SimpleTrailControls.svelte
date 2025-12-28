@@ -169,8 +169,8 @@
     align-items: center;
     gap: 10px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 14px;
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.1),
@@ -180,7 +180,7 @@
   .label {
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -196,10 +196,10 @@
     flex: 1;
     min-height: var(--min-touch-target);
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
@@ -212,9 +212,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .preset-btn:not(.active):hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.8));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.12),
@@ -229,21 +229,21 @@
   .preset-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 18%, transparent)
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 22%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong) 18%, transparent)
         100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 55%,
+      var(--theme-accent, var(--semantic-info)) 55%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, white);
+    color: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 35%, white);
     box-shadow:
       0 2px 12px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 22%, transparent),
-      0 0 16px color-mix(in srgb, var(--theme-accent, #3b82f6) 16%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 22%, transparent),
+      0 0 16px color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 16%, transparent),
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   /* ===========================
@@ -257,10 +257,10 @@
     gap: 6px;
     min-height: var(--min-touch-target);
     padding: 8px 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
@@ -283,9 +283,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .ends-toggle:not(.active):hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.8));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
       transform: translateY(-1px);
     }
   }
@@ -297,23 +297,23 @@
   .ends-toggle.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 22%, transparent)
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, #7c3aed) 18%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong) 18%, transparent)
         100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 55%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 55%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 35%, white);
+    color: color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 35%, white);
     box-shadow:
       0 2px 12px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 22%, transparent),
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 22%, transparent),
       0 0 16px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 16%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 16%, transparent),
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   /* ===========================

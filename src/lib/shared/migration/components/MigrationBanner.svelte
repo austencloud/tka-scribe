@@ -116,7 +116,7 @@
     z-index: 9999;
     padding: 10px 16px;
     border-bottom: 2px solid;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px var(--theme-shadow);
   }
 
   .banner-content {
@@ -136,7 +136,7 @@
     background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
@@ -144,7 +144,7 @@
     flex: 1;
     min-width: 0;
     color: white;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
   }
 
@@ -155,7 +155,7 @@
   .deadline {
     display: block;
     opacity: 0.9;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .deadline.urgent {
@@ -178,7 +178,7 @@
     border: none;
     border-radius: 6px;
     color: #1a1a2e;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -187,7 +187,7 @@
   .update-button:hover {
     background: white;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .learn-more {
@@ -196,7 +196,7 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 6px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -216,7 +216,7 @@
     border: none;
     border-radius: 4px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }

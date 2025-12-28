@@ -115,29 +115,29 @@ Contains:
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     color: #ffffff;
 
     /* Gradient background for adjustment button */
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .adjust-arrows-button:hover {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #4f46e5) 0%,
-      var(--theme-accent-strong, #7c3aed) 100%
+      var(--theme-accent-strong) 0%,
+      var(--theme-accent-strong) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 60%, transparent);
     transform: scale(1.05);
   }
 
@@ -155,7 +155,7 @@ Contains:
     .adjust-arrows-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .edit-panel-header {
@@ -175,7 +175,7 @@ Contains:
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -205,7 +205,7 @@ Contains:
     border: none;
     background: var(--sheet-close-bg);
     backdrop-filter: blur(10px);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -214,13 +214,13 @@ Contains:
     font-size: var(--font-size-lg);
 
     /* Subtle shadow for depth */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .close-button:hover {
     background: var(--sheet-close-bg-hover);
     transform: scale(1.1) rotate(90deg);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px var(--theme-shadow);
   }
 
   .close-button:active {
@@ -231,7 +231,7 @@ Contains:
   .keyboard-hint {
     padding: var(--spacing-sm) var(--spacing-xl);
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-align: right;
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(12px);

@@ -85,7 +85,7 @@
   .preview-loading,
   .preview-error {
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -94,7 +94,7 @@
 
   .placeholder-icon,
   .error-icon {
-    font-size: 50px;
+    font-size: var(--font-size-3xl);
     opacity: 0.4;
     filter: grayscale(0.3);
   }
@@ -102,16 +102,16 @@
   .preview-placeholder p,
   .preview-loading p,
   .preview-error p {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0;
   }
 
   .placeholder-hint,
   .error-message {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.5;
   }
 
@@ -119,7 +119,7 @@
   .loading-spinner {
     width: 48px;
     height: 48px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -138,12 +138,12 @@
   .retry-button {
     margin-top: 8px;
     padding: 10px 20px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: rgba(255, 255, 255, 0.98);
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
@@ -182,7 +182,7 @@
     object-fit: contain;
     border-radius: 8px;
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 4px 16px var(--theme-shadow),
       0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }

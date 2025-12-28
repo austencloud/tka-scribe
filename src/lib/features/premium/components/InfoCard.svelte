@@ -25,8 +25,8 @@
 
 <style>
   .card {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: var(--glass-border, 1px solid var(--theme-stroke));
     border-radius: 12px;
     padding: var(--spacing-lg, 24px);
   }
@@ -35,13 +35,13 @@
     font-size: clamp(18px, 2.5vw, 22px);
     font-weight: 600;
     margin: 0 0 var(--spacing-md, 16px);
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .content {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     line-height: 1.7;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
   }
 
   .content :global(p) {

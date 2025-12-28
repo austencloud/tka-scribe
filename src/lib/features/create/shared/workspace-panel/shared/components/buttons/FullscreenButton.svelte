@@ -5,6 +5,8 @@
   Handles cross-browser fullscreen API with proper state management.
 -->
 <script lang="ts">
+  // Import vendor-prefixed types
+  import "$lib/shared/types/vendor-prefixed";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { IMobileFullscreenManager } from "$lib/shared/mobile/services/contracts/IMobileFullscreenManager";
   import { resolve } from "$lib/shared/inversify/di";
@@ -93,9 +95,9 @@
       // Fallback to direct DOM checks if service is unavailable
       const supportsFullscreen = !!(
         document.fullscreenEnabled ||
-        (document as any).webkitFullscreenEnabled ||
-        (document as any).mozFullScreenEnabled ||
-        (document as any).msFullscreenEnabled
+        document.webkitFullscreenEnabled ||
+        document.mozFullScreenEnabled ||
+        document.msFullscreenEnabled
       );
       isFullscreenSupported = supportsFullscreen;
       isPWA = false;
@@ -103,9 +105,9 @@
       const handleFullscreenChange = () => {
         isFullscreen = !!(
           document.fullscreenElement ||
-          (document as any).webkitFullscreenElement ||
-          (document as any).mozFullScreenElement ||
-          (document as any).msFullscreenElement
+          document.webkitFullscreenElement ||
+          document.mozFullScreenElement ||
+          document.msFullscreenElement
         );
       };
 
@@ -160,12 +162,12 @@
           await fullscreenService.exitFullscreen();
         } else if (document.exitFullscreen) {
           await document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) {
-          await (document as any).webkitExitFullscreen();
-        } else if ((document as any).mozCancelFullScreen) {
-          await (document as any).mozCancelFullScreen();
-        } else if ((document as any).msExitFullscreen) {
-          await (document as any).msExitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+          await document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
         }
       } else {
         hapticService?.trigger("selection");
@@ -176,12 +178,12 @@
           const element = document.documentElement;
           if (element.requestFullscreen) {
             await element.requestFullscreen();
-          } else if ((element as any).webkitRequestFullscreen) {
-            await (element as any).webkitRequestFullscreen();
-          } else if ((element as any).mozRequestFullScreen) {
-            await (element as any).mozRequestFullScreen();
-          } else if ((element as any).msRequestFullscreen) {
-            await (element as any).msRequestFullscreen();
+          } else if (element.webkitRequestFullscreen) {
+            await element.webkitRequestFullscreen();
+          } else if (element.mozRequestFullScreen) {
+            await element.mozRequestFullScreen();
+          } else if (element.msRequestFullscreen) {
+            await element.msRequestFullscreen();
           }
         }
       }
@@ -249,18 +251,18 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     /* Base button styling */
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .panel-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .panel-button:active {
@@ -269,18 +271,18 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .fullscreen-button {
     background: rgba(0, 0, 0, 0.7);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-stroke-strong);
   }
 
   .fullscreen-button:hover {
     background: rgba(0, 0, 0, 0.8);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -288,7 +290,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -296,7 +298,7 @@
     .panel-button {
       width: var(--min-touch-target); /* Maintain 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -304,7 +306,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -315,7 +317,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

@@ -94,27 +94,27 @@
     background: transparent;
     border: none;
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     margin-bottom: 0; /* No margin - controlled by context group */
     /* Subtle border for differentiation */
-    box-shadow: inset 0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    box-shadow: inset 0 0 0 1px var(--theme-stroke);
   }
 
   .collapsed-module-button:hover:not(.disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
     box-shadow: inset 0 0 0 1px
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+      var(--theme-stroke-strong);
   }
 
   .collapsed-module-button.active {
-    color: var(--theme-text, rgba(255, 255, 255, 1));
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    color: var(--theme-text);
+    background: var(--theme-card-hover-bg, var(--theme-card-hover-bg));
     box-shadow: inset 0 0 0 1px
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+      var(--theme-stroke-strong);
   }
 
   /* Ghost the button when tabs are showing - tabs become the focus */
@@ -141,7 +141,7 @@
   }
 
   .module-icon {
-    font-size: 22px; /* Slightly larger icon */
+    font-size: var(--font-size-xl); /* Slightly larger icon */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -182,12 +182,11 @@
     position: absolute;
     left: 60px;
     padding: 6px 12px;
-    background: var(--theme-panel-bg, rgba(20, 20, 30, 0.95));
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 6px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 13px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     white-space: nowrap;
     pointer-events: none;
@@ -205,7 +204,7 @@
 
   /* Focus styles for keyboard navigation */
   .collapsed-module-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -214,7 +213,7 @@
      ============================================================================ */
   @media (prefers-contrast: high) {
     .collapsed-module-button.active {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
+      background: var(--theme-card-hover-bg);
       outline: 2px solid white;
     }
   }

@@ -45,25 +45,25 @@
     min-width: var(--min-touch-target);
     width: var(--min-touch-target);
     padding: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 17px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+      inset 0 1px 0 var(--theme-card-bg);
     flex-shrink: 0;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .vis-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text-dim, var(--theme-text-dim));
       transform: translateY(-1px);
     }
   }
@@ -83,7 +83,7 @@
     box-shadow:
       0 2px 12px rgba(59, 130, 246, 0.2),
       0 0 16px rgba(59, 130, 246, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .vis-btn.active.red-vis-btn {
@@ -97,13 +97,13 @@
     box-shadow:
       0 2px 12px rgba(239, 68, 68, 0.2),
       0 0 16px rgba(239, 68, 68, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   /* Responsive adjustments - maintain 48px touch target for WCAG AAA */
   @media (max-width: 375px) and (max-height: 670px) {
     .vis-btn {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

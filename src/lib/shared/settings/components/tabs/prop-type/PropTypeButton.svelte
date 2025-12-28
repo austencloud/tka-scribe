@@ -240,11 +240,11 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     position: relative;
     padding: clamp(8px, 1.5cqi, 12px) clamp(6px, 1cqi, 8px)
       clamp(6px, 1cqi, 10px);
@@ -258,9 +258,9 @@
   }
 
   .prop-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.22));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     transform: translateY(-1px) scale(1.01); /* iOS subtle lift */
     box-shadow:
       0 6px 18px rgba(0, 0, 0, 0.14),
@@ -271,36 +271,36 @@
   .prop-button.selected {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #007aff) 15%,
+      var(--theme-accent) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #007aff) 50%,
+      var(--theme-accent) 50%,
       transparent
     );
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     transform: scale(1.02); /* Slightly larger when selected */
     box-shadow:
       0 6px 20px
-        color-mix(in srgb, var(--theme-accent, #007aff) 25%, transparent),
+        color-mix(in srgb, var(--theme-accent) 25%, transparent),
       0 2px 6px
-        color-mix(in srgb, var(--theme-accent, #007aff) 15%, transparent),
+        color-mix(in srgb, var(--theme-accent) 15%, transparent),
       inset 0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #007aff) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .prop-button.selected:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #007aff) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     transform: translateY(-1px) scale(1.03);
   }
 
   .prop-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #007aff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -321,8 +321,8 @@
   }
 
   .prop-loading {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .prop-image {
@@ -361,7 +361,7 @@
     letter-spacing: -0.1px;
     line-height: 1.2;
     flex-shrink: 0;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
@@ -385,23 +385,23 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     animation: ios-checkmark-pop 0.3s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
   .ios-checkmark.blue {
-    background: var(--prop-blue, #2e3192);
+    background: var(--prop-blue);
     box-shadow:
-      0 3px 10px color-mix(in srgb, var(--prop-blue, #2e3192) 50%, transparent),
-      0 1px 3px rgba(0, 0, 0, 0.3);
+      0 3px 10px color-mix(in srgb, var(--prop-blue) 50%, transparent),
+      0 1px 3px var(--theme-shadow);
   }
 
   .ios-checkmark.red {
-    background: var(--prop-red, #ed1c24);
+    background: var(--prop-red);
     box-shadow:
-      0 3px 10px color-mix(in srgb, var(--prop-red, #ed1c24) 50%, transparent),
-      0 1px 3px rgba(0, 0, 0, 0.3);
+      0 3px 10px color-mix(in srgb, var(--prop-red) 50%, transparent),
+      0 1px 3px var(--theme-shadow);
   }
 
   /* When both checkmarks are present, offset the red one slightly */
@@ -446,14 +446,14 @@
   /* iOS Accessibility - High Contrast */
   @media (prefers-contrast: high) {
     .prop-button {
-      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
+      border: 2px solid var(--theme-stroke-strong);
     }
 
     .prop-button.selected {
-      border: 2px solid var(--theme-accent, #0a84ff);
+      border: 2px solid var(--theme-accent);
       background: color-mix(
         in srgb,
-        var(--theme-accent, #0a84ff) 15%,
+        var(--theme-accent) 15%,
         transparent
       );
     }

@@ -110,10 +110,10 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition:
       background 0.2s ease,
@@ -121,14 +121,14 @@
       color 0.2s ease,
       transform 0.15s ease,
       box-shadow 0.2s ease;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
   }
 
   .inbox-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .inbox-button:active {
@@ -160,9 +160,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     border-radius: 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     transition:
       background 0.2s ease,
       transform 0.2s ease;
@@ -176,7 +176,7 @@
   }
 
   .inbox-button:hover .button-icon {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.05);
   }
 
@@ -197,14 +197,14 @@
     min-width: 20px;
     height: 20px;
     padding: 0 6px;
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border-radius: 10px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     line-height: 20px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px var(--theme-shadow);
     animation: badgePop 0.3s ease;
   }
 

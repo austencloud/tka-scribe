@@ -220,7 +220,7 @@
 
   /* Primary - Blue */
   .action-btn.primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #1d4ed8 100%);
     color: white;
     box-shadow:
       0 4px 16px rgba(59, 130, 246, 0.35),
@@ -240,7 +240,7 @@
 
   /* Secondary - Purple */
   .action-btn.secondary {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, var(--theme-accent-strong) 0%, #6d28d9 100%);
     color: white;
     box-shadow:
       0 4px 16px rgba(139, 92, 246, 0.35),
@@ -260,7 +260,7 @@
 
   /* Tertiary - Green */
   .action-btn.tertiary {
-    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    background: linear-gradient(135deg, var(--semantic-success) 0%, #047857 100%);
     color: white;
     box-shadow:
       0 4px 16px rgba(16, 185, 129, 0.35),
@@ -352,9 +352,9 @@
       rgba(255, 255, 255, 0.06) 0%,
       rgba(255, 255, 255, 0.02) 100%
     );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--text-color, rgba(255, 255, 255, 0.9));
+    color: var(--text-color, var(--theme-text));
     font-size: clamp(13px, 1.2cqw, 15px);
     font-weight: 500;
     cursor: pointer;

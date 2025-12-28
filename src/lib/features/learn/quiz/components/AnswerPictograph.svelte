@@ -143,17 +143,17 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 30px var(--theme-shadow);
   }
 
   .answer-pictograph:active {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px var(--theme-shadow);
   }
 
   .answer-pictograph.selected {
     background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
-    border-color: var(--theme-accent, #667eea);
+    border-color: var(--theme-accent);
     box-shadow: 0 0 25px
       color-mix(in srgb, var(--theme-accent) 40%, transparent);
     transform: translateY(-2px);
@@ -168,15 +168,15 @@
 
   .answer-pictograph.incorrect {
     background: rgba(248, 113, 113, 0.3);
-    border-color: #f87171;
+    border-color: var(--semantic-error);
     box-shadow: 0 0 25px rgba(248, 113, 113, 0.4);
     animation: incorrectShake 0.8s ease-in-out;
   }
 
   .answer-pictograph.faded {
     opacity: 0.4;
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
   }
 
   .answer-pictograph.disabled {
@@ -241,7 +241,7 @@
   }
 
   .feedback-overlay.incorrect .feedback-icon {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   @keyframes correctPulse {
@@ -336,7 +336,7 @@
 
   /* Focus styles for accessibility */
   .answer-pictograph:focus {
-    outline: 3px solid var(--theme-accent, #667eea);
+    outline: 3px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

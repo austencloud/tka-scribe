@@ -60,9 +60,9 @@
 
   // Difficulty colors
   const difficultyColors: Record<string, string> = {
-    easy: "#22c55e",
-    medium: "#f59e0b",
-    hard: "#ef4444",
+    easy: "var(--semantic-success)",
+    medium: "var(--semantic-warning)",
+    hard: "var(--semantic-error)",
   };
 
   const difficultyColor = $derived(
@@ -200,17 +200,17 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(135deg, var(--theme-accent-strong), #7c3aed);
     border-radius: 10px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
   .compact .challenge-icon {
     width: 32px;
     height: 32px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     border-radius: 8px;
   }
 
@@ -224,7 +224,7 @@
 
   .challenge-title h3 {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     overflow: hidden;
@@ -233,7 +233,7 @@
   }
 
   .compact .challenge-title h3 {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .badge-row {
@@ -246,7 +246,7 @@
     display: inline-flex;
     align-items: center;
     padding: 1px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.4px;
@@ -259,7 +259,7 @@
     display: inline-flex;
     align-items: center;
     padding: 1px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     border-radius: 3px;
     background: rgba(139, 92, 246, 0.2);
@@ -282,7 +282,7 @@
     background: rgba(139, 92, 246, 0.15);
     border-radius: 16px;
     color: #a78bfa;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -293,8 +293,8 @@
     padding: 3px 6px;
     background: rgba(245, 158, 11, 0.15);
     border-radius: 16px;
-    color: #f59e0b;
-    font-size: 12px;
+    color: var(--semantic-warning);
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -305,13 +305,13 @@
 
   .compact .xp-reward {
     padding: 3px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .challenge-description {
     margin: 0;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.4;
     display: -webkit-box;
     line-clamp: 2;
@@ -335,21 +335,21 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(90deg, var(--theme-accent-strong), #7c3aed);
     border-radius: 3px;
     transition: width 0.3s ease;
   }
 
   .progress-fill.complete {
-    background: linear-gradient(90deg, #22c55e, #16a34a);
+    background: linear-gradient(90deg, var(--semantic-success), #16a34a);
   }
 
   .progress-text {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     gap: 8px;
   }
 
@@ -361,15 +361,15 @@
   }
 
   .completion-status .fa-check-circle {
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .bonus-badge {
     padding: 1px 6px;
     background: rgba(245, 158, 11, 0.2);
     border-radius: 3px;
-    color: #f59e0b;
-    font-size: 12px;
+    color: var(--semantic-warning);
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -386,12 +386,12 @@
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .bonus-time-block {
-    color: #f59e0b;
+    color: var(--semantic-warning);
   }
 
   .bonus-time-block.expired {
@@ -420,14 +420,14 @@
     .challenge-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
       border-radius: 11px;
     }
 
     .compact .challenge-icon {
       width: 34px;
       height: 34px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .challenge-title {
@@ -435,11 +435,11 @@
     }
 
     .challenge-title h3 {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
 
     .compact .challenge-title h3 {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .badge-row {
@@ -449,7 +449,7 @@
     .difficulty-badge,
     .week-badge {
       padding: 2px 7px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .xp-rewards {
@@ -459,21 +459,21 @@
     .xp-reward {
       gap: 5px;
       padding: 5px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .bonus-reward {
       padding: 4px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .compact .xp-reward {
       padding: 4px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .challenge-description {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       line-height: 1.5;
     }
 
@@ -486,7 +486,7 @@
     }
 
     .progress-text {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .completion-status {
@@ -495,7 +495,7 @@
 
     .bonus-badge {
       padding: 2px 7px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .time-info {
@@ -506,7 +506,7 @@
     .time-block,
     .bonus-time-block {
       gap: 6px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -528,14 +528,14 @@
     .challenge-icon {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 18px;
+      font-size: var(--font-size-lg);
       border-radius: 12px;
     }
 
     .compact .challenge-icon {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       border-radius: 10px;
     }
 
@@ -544,12 +544,12 @@
     }
 
     .challenge-title h3 {
-      font-size: 16px;
+      font-size: var(--font-size-base);
       white-space: normal;
     }
 
     .compact .challenge-title h3 {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .badge-row {
@@ -559,7 +559,7 @@
     .difficulty-badge,
     .week-badge {
       padding: 2px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       letter-spacing: 0.5px;
       border-radius: 4px;
     }
@@ -567,23 +567,23 @@
     .xp-reward {
       gap: 6px;
       padding: 6px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       border-radius: 20px;
     }
 
     .bonus-reward {
       gap: 4px;
       padding: 4px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .compact .xp-reward {
       padding: 4px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .challenge-description {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       line-clamp: 3;
       -webkit-line-clamp: 3;
     }
@@ -598,7 +598,7 @@
     }
 
     .progress-text {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .completion-status {
@@ -607,7 +607,7 @@
 
     .bonus-badge {
       padding: 2px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       border-radius: 4px;
     }
 
@@ -617,7 +617,7 @@
 
     .time-block,
     .bonus-time-block {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 

@@ -286,7 +286,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
 
 <style>
   .letter-section {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .section-header {
@@ -318,15 +318,15 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
   }
 
   .section-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     margin: 0 0 4px 0;
     color: white;
   }
 
   .section-description {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -341,13 +341,13 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     padding: 6px 12px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 16px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   .value-any {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   .chevron {
@@ -386,7 +386,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     border-radius: 12px;
 
     color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
 
     cursor: pointer;
@@ -411,11 +411,11 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
   .tab-button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   .tab-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
   }
 
@@ -423,7 +423,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     background: rgba(255, 255, 255, 0.2);
     padding: 2px 8px;
     border-radius: 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .letter-groups {
@@ -442,9 +442,9 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
   }
 
   .group-title {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -469,7 +469,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .summary-label {
@@ -482,11 +482,11 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
   }
 
   .summary-row.exclude .summary-label {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .summary-letters {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-family: monospace;
     letter-spacing: 0.05em;
   }
@@ -504,7 +504,7 @@ LetterConstraintsSection.svelte - Section for letter must-contain/must-not-conta
 
     .tab-button {
       padding: 10px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

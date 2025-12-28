@@ -207,7 +207,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-panel-bg);
   }
 
   .panel-header {
@@ -215,7 +215,7 @@
     justify-content: space-between;
     align-items: flex-start;
     padding: 1.5rem;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     flex-shrink: 0;
   }
 
@@ -223,13 +223,13 @@
     margin: 0 0 0.25rem;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
   }
 
   .subtitle {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .stats-row {
@@ -244,38 +244,38 @@
     gap: 0.25rem;
     padding: 0.5rem 1rem;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 0.5rem;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .stat-button:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
   }
 
   .stat-button.selected {
-    background: var(--theme-accent-bg, rgba(99, 102, 241, 0.15));
-    border-color: var(--theme-accent, #6366f1);
+    background: var(--theme-accent-bg);
+    border-color: var(--theme-accent, var(--theme-accent));
   }
 
   .stat-value {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
   }
 
   .stat-value.active {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .stat-value.inactive {
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .stat-label {
     font-size: 0.7rem;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -285,17 +285,17 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.5rem 1.5rem;
-    background: var(--theme-accent-bg, rgba(99, 102, 241, 0.1));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-accent-bg);
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .filter-label {
     font-size: 0.875rem;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .filter-label strong {
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     text-transform: capitalize;
   }
 
@@ -306,20 +306,20 @@
     padding: 0.25rem 0.5rem;
     background: transparent;
     border: none;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
     font-size: 0.75rem;
     cursor: pointer;
     transition: color 0.15s ease;
   }
 
   .clear-filter:hover {
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
   }
 
   .link-button {
     background: transparent;
     border: none;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     font-size: 0.875rem;
     cursor: pointer;
     text-decoration: underline;
@@ -327,7 +327,7 @@
   }
 
   .link-button:hover {
-    color: var(--theme-accent-hover, #818cf8);
+    color: var(--theme-accent-hover);
   }
 
   .active-users-body {
@@ -345,15 +345,15 @@
     justify-content: center;
     gap: 0.75rem;
     height: 100%;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-secondary, var(--theme-text-dim));
     text-align: center;
   }
 
   .loading .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-top-color: var(--theme-accent, #6366f1);
+    border: 3px solid var(--theme-stroke, var(--theme-stroke));
+    border-top-color: var(--theme-accent, var(--theme-accent));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -365,7 +365,7 @@
   }
 
   .error {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .empty i,

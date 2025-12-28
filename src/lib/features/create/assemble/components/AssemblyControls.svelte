@@ -182,7 +182,7 @@ Shows contextual action buttons based on current phase:
     padding: 16px;
     background: linear-gradient(
       to top,
-      var(--theme-panel-bg, rgba(0, 0, 0, 0.4)),
+      var(--theme-panel-bg),
       transparent
     );
   }
@@ -206,7 +206,7 @@ Shows contextual action buttons based on current phase:
     padding: 14px 20px;
     border: none;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -222,20 +222,20 @@ Shows contextual action buttons based on current phase:
   /* Secondary button (Undo) - themed */
   .control-button.secondary {
     flex: 0 0 auto;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim);
   }
 
   .control-button.secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   /* Primary button variants */
   .control-button.primary {
     flex: 1;
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .control-button.primary:hover:not(:disabled) {
@@ -247,7 +247,7 @@ Shows contextual action buttons based on current phase:
   }
 
   .control-button.primary.blue {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   }
 
@@ -256,7 +256,7 @@ Shows contextual action buttons based on current phase:
   }
 
   .control-button.primary.red {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
   }
 
@@ -265,7 +265,7 @@ Shows contextual action buttons based on current phase:
   }
 
   .control-button.primary.green {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   }
 
@@ -275,8 +275,8 @@ Shows contextual action buttons based on current phase:
 
   /* Hint text - themed */
   .hint-text {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     text-align: center;
   }
@@ -289,7 +289,7 @@ Shows contextual action buttons based on current phase:
 
     .control-button {
       padding: 12px 16px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .controls-row {

@@ -264,7 +264,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 20px;
     position: sticky;
     top: 0;
@@ -275,7 +275,7 @@
   .panel-title {
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
@@ -286,17 +286,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .presets-section {
@@ -334,7 +334,7 @@
 
   .preset-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .preset-card.selected {
@@ -355,7 +355,7 @@
     background: rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
@@ -410,7 +410,7 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -419,7 +419,7 @@
 
   .advanced-toggle-btn:hover {
     background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .advanced-toggle-btn .fa-chevron-up,
@@ -430,7 +430,7 @@
   }
 
   .modified-badge {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     padding: 3px 8px;
     background: rgba(251, 191, 36, 0.5);
     color: white;

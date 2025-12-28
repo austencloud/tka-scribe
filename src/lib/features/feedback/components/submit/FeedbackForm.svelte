@@ -184,7 +184,7 @@
   <form
     class="feedback-form"
     onsubmit={handleSubmit}
-    style="--active-type-color: {currentTypeConfig?.color ?? '#6366f1'}"
+    style="--active-type-color: {currentTypeConfig?.color ?? 'var(--theme-accent)'}"
   >
     <TypeSelector
       selectedType={formState.formData.type}
@@ -249,14 +249,14 @@
     gap: clamp(8px, 2.5cqi, 16px);
     width: 100%;
     padding: clamp(12px, 3cqi, 24px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: clamp(10px, 2cqi, 14px);
     transition: border-color 200ms ease;
   }
 
   .feedback-form:hover {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Reduced motion */

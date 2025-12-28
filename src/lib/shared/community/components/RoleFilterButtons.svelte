@@ -49,18 +49,18 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .filter-btn:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
     color: white;
   }
 
@@ -71,6 +71,6 @@
   }
 
   .filter-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 </style>

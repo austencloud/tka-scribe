@@ -57,29 +57,29 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 90%, transparent),
-      color-mix(in srgb, var(--semantic-error, #dc2626) 90%, transparent)
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, transparent),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, transparent)
     );
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    border: 1px solid var(--theme-stroke-strong);
     box-shadow:
       0 2px 8px
-        color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent),
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 35%, transparent),
       0 6px 18px
-        color-mix(in srgb, var(--semantic-error, #dc2626) 25%, transparent);
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent);
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
     box-shadow:
       0 4px 12px
-        color-mix(in srgb, var(--semantic-error, #ef4444) 45%, transparent),
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 45%, transparent),
       0 8px 22px
-        color-mix(in srgb, var(--semantic-error, #dc2626) 35%, transparent);
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 35%, transparent);
   }
 
   .panel-button:active:not(:disabled) {
@@ -89,7 +89,7 @@
 
   .panel-button:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 70%, white);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 70%, white);
     outline-offset: 2px;
   }
 
@@ -102,14 +102,14 @@
   .record-button.active {
     background: linear-gradient(
       135deg,
-      var(--semantic-error, #ef4444),
-      color-mix(in srgb, var(--semantic-error, #ef4444) 85%, #b91c1c)
+      var(--semantic-error, var(--semantic-error)),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #b91c1c)
     );
     box-shadow:
       0 4px 14px
-        color-mix(in srgb, var(--semantic-error, #ef4444) 55%, transparent),
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 55%, transparent),
       0 10px 26px
-        color-mix(in srgb, var(--semantic-error, #dc2626) 40%, transparent);
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
   }
 
   /* Mobile responsive - ALWAYS 48px minimum per iOS/Android guidelines */
@@ -117,7 +117,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -125,7 +125,7 @@
     .panel-button {
       width: var(--min-touch-target); /* Keep 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -133,7 +133,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px; /* Smaller icon, same touch target */
+      font-size: var(--font-size-sm); /* Smaller icon, same touch target */
     }
   }
 
@@ -143,7 +143,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

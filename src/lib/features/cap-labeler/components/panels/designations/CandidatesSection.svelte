@@ -168,14 +168,14 @@
     gap: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     transition: var(--transition-micro);
   }
 
   .candidate-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .candidate-content {
@@ -218,7 +218,7 @@
 
   .candidate-btn.confirm {
     background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .candidate-btn.confirm:hover {
@@ -228,7 +228,7 @@
 
   .candidate-btn.deny {
     background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .candidate-btn.deny:hover {
@@ -245,7 +245,7 @@
     background: rgba(34, 197, 94, 0.2);
     border: 1px solid rgba(34, 197, 94, 0.4);
     border-radius: 8px;
-    color: #22c55e;
+    color: var(--semantic-success);
     font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
@@ -299,7 +299,7 @@
     background: rgba(34, 197, 94, 0.2);
     border: 1px solid rgba(34, 197, 94, 0.4);
     border-radius: 6px;
-    color: #22c55e;
+    color: var(--semantic-success);
     font-size: var(--font-size-xs);
     font-weight: 600;
     cursor: pointer;

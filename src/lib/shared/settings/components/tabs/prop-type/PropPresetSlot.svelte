@@ -85,16 +85,16 @@
     aspect-ratio: var(--preset-slot-aspect, 1 / 1);
     min-height: var(--min-touch-target, 48px);
     padding: 4px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .preset-slot:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .preset-slot:active {
@@ -110,30 +110,30 @@
   .preset-slot.empty:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 8%,
+      var(--theme-accent) 8%,
       transparent
     );
-    border-color: var(--theme-accent, #a855f7);
+    border-color: var(--theme-accent);
   }
 
   .empty-icon {
     font-size: clamp(16px, 25%, 24px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     transition: color 0.15s ease;
   }
 
   .preset-slot.empty:hover .empty-icon {
-    color: var(--theme-accent, #a855f7);
+    color: var(--theme-accent);
   }
 
   /* Selected state */
   .preset-slot.selected {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 15%,
+      var(--theme-accent) 15%,
       transparent
     );
-    border-color: var(--theme-accent, #a855f7);
+    border-color: var(--theme-accent);
     border-style: solid;
   }
 
@@ -147,16 +147,16 @@
     padding: 0 3px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.4);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
   .preset-slot.selected .slot-number {
-    background: var(--theme-accent, #a855f7);
+    background: var(--theme-accent);
     color: white;
   }
 
@@ -198,7 +198,7 @@
 
   /* Focus state */
   .preset-slot:focus-visible {
-    outline: 2px solid var(--theme-accent, #a855f7);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

@@ -52,18 +52,18 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     /* Base button styling */
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .panel-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .panel-button:active {
@@ -72,33 +72,33 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .clear-button {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 80%,
+      var(--semantic-error, var(--semantic-error)) 80%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 40%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
   }
 
   .clear-button:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 90%,
+      var(--semantic-error, var(--semantic-error)) 90%,
       transparent
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 60%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 60%, transparent);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -106,7 +106,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -114,7 +114,7 @@
     .panel-button {
       width: var(--min-touch-target); /* Maintain 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -122,7 +122,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -133,7 +133,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

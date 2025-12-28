@@ -223,8 +223,8 @@
     padding: 0.75rem 1.25rem;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #667eea) 0%,
-      var(--theme-accent-strong, #764ba2) 100%
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
     );
     color: white;
     border: none;
@@ -242,8 +242,8 @@
   .customize-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #5a67d8) 0%,
-      var(--theme-accent, #6b46c1) 100%
+      var(--theme-accent-strong) 0%,
+      var(--theme-accent) 100%
     );
     transform: translateY(-2px);
     box-shadow: 0 6px 20px

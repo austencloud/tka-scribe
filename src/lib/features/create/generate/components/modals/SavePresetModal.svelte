@@ -123,10 +123,9 @@ Provides a beautiful, unified experience for creating new presets
     height: var(--actual-vh, 100vh);
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #000) 85%,
+      var(--theme-panel-bg) 85%,
       transparent
     );
-    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -150,11 +149,10 @@ Provides a beautiful, unified experience for creating new presets
   .modal-content {
     background: linear-gradient(
       135deg,
-      var(--theme-stroke, rgba(255, 255, 255, 0.1)) 0%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 100%
+      var(--theme-stroke) 0%,
+      var(--theme-card-bg, var(--theme-card-bg)) 100%
     );
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 16px;
     max-width: min(460px, 90vw);
     width: 100%;
@@ -169,8 +167,8 @@ Provides a beautiful, unified experience for creating new presets
     flex-shrink: 0;
     box-sizing: border-box;
     box-shadow:
-      0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
-      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.1)) inset;
+      0 20px 60px var(--theme-shadow, var(--theme-shadow)),
+      0 0 0 1px var(--theme-stroke) inset;
   }
 
   @keyframes modal-appear {
@@ -199,17 +197,17 @@ Provides a beautiful, unified experience for creating new presets
   }
 
   .modal-body::-webkit-scrollbar-track {
-    background: var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    background: var(--theme-shadow);
     border-radius: 4px;
   }
 
   .modal-body::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
     border-radius: 4px;
   }
 
   .modal-body::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--theme-text, #fff) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-text) 50%, transparent);
   }
 
   .info-banner {
@@ -219,17 +217,17 @@ Provides a beautiful, unified experience for creating new presets
     padding: 14px 16px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent),
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     border-radius: 12px;
-    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 100%, #93c5fd);
-    font-size: 14px;
+    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 100%, #93c5fd);
+    font-size: var(--font-size-sm);
     line-height: 1.5;
     box-shadow: 0 0 0 1px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent) inset;
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, transparent) inset;
   }
 
   .info-banner svg {
@@ -238,7 +236,7 @@ Provides a beautiful, unified experience for creating new presets
     flex-shrink: 0;
     filter: drop-shadow(
       0 2px 4px
-        color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent)
+        color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent)
     );
   }
 
@@ -255,7 +253,7 @@ Provides a beautiful, unified experience for creating new presets
 
     .info-banner {
       padding: 12px 14px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .info-banner svg {

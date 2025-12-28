@@ -234,7 +234,7 @@ Features:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: white;
@@ -288,13 +288,13 @@ Features:
   }
 
   .placeholder-icon {
-    font-size: 64px;
+    font-size: var(--font-size-3xl);
     color: rgba(255, 255, 255, 0.15);
   }
 
   .placeholder-text {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
     margin: 0;
   }
 
@@ -320,8 +320,8 @@ Features:
     background: rgba(59, 130, 246, 0.15);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 6px;
-    color: #3b82f6;
-    font-size: 14px;
+    color: var(--semantic-info);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     width: fit-content;
   }
@@ -339,16 +339,16 @@ Features:
   }
 
   .metadata-label {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .metadata-value {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   /* Sequence List */
@@ -359,9 +359,9 @@ Features:
   }
 
   .sequence-list-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0;
   }
 
@@ -376,8 +376,8 @@ Features:
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
   }
 
@@ -389,22 +389,22 @@ Features:
     height: 28px;
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 50%;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
     flex-shrink: 0;
   }
 
   .sequence-name {
     flex: 1;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .sequence-length {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
@@ -423,11 +423,11 @@ Features:
     justify-content: center;
     gap: 8px;
     padding: 12px 16px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -440,7 +440,7 @@ Features:
   }
 
   .action-btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     border-color: transparent;
     flex: 1;
     min-width: 120px;
@@ -451,7 +451,7 @@ Features:
   }
 
   .action-btn-danger {
-    color: #ef4444;
+    color: var(--semantic-error);
     border-color: rgba(239, 68, 68, 0.3);
   }
 
@@ -461,8 +461,8 @@ Features:
   }
 
   .action-btn.favorited {
-    color: #f87171;
-    border-color: #f87171;
+    color: var(--semantic-error);
+    border-color: var(--semantic-error);
   }
 
   /* Mobile adjustments */
@@ -478,7 +478,7 @@ Features:
 
     .action-btn {
       padding: 10px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .metadata-grid {

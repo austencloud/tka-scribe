@@ -85,7 +85,7 @@
   }
 
   .header-title {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     color: white;
     margin: 0;
@@ -119,7 +119,7 @@
     }
 
     .header-title {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
   }
 </style>

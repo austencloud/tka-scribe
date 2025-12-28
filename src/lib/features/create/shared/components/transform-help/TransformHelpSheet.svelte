@@ -244,7 +244,7 @@
       animation: scaleIn 0.25s cubic-bezier(0.32, 0.72, 0, 1);
       box-shadow:
         0 24px 80px rgba(0, 0, 0, 0.5),
-        0 8px 24px rgba(0, 0, 0, 0.3),
+        0 8px 24px var(--theme-shadow),
         0 0 0 1px rgba(255, 255, 255, 0.1);
     }
 
@@ -266,7 +266,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -286,9 +286,9 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     transition: all 0.15s ease;
   }
 

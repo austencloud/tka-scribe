@@ -36,7 +36,7 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
             bluePathLength === 0
               ? "Tap your starting position"
               : `${bluePathLength} position${bluePathLength !== 1 ? "s" : ""} • Tap to add more`,
-          color: "#3b82f6",
+          color: "var(--semantic-info)",
           step: 1,
         };
       case "red":
@@ -46,21 +46,21 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
             redPathLength === 0
               ? "Tap your starting position"
               : `${redPathLength} of ${bluePathLength} positions`,
-          color: "#ef4444",
+          color: "var(--semantic-error)",
           step: 2,
         };
       case "rotation-selection":
         return {
           title: "Choose Rotation",
           subtitle: "Select how props should rotate during shifts",
-          color: "#10b981",
+          color: "var(--semantic-success)",
           step: 3,
         };
       case "complete":
         return {
           title: "Complete!",
           subtitle: "Your sequence is ready",
-          color: "#10b981",
+          color: "var(--semantic-success)",
           step: 3,
         };
       default:
@@ -136,8 +136,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     align-items: center;
     justify-content: space-between;
     padding: 12px 16px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     gap: 12px;
   }
 
@@ -148,17 +148,17 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     border: none;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
 
   .back-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .back-placeholder {
@@ -188,14 +188,14 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   }
 
   .phase-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .phase-subtitle {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 4px 0 0 0;
     white-space: nowrap;
     overflow: hidden;
@@ -206,31 +206,31 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     display: flex;
     align-items: baseline;
     gap: 2px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
     padding: 6px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
     border-radius: 8px;
   }
 
   .step-current {
     font-weight: 700;
     color: var(--phase-color);
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .step-divider {
-    color: var(--theme-stroke, rgba(255, 255, 255, 0.3));
+    color: var(--theme-stroke);
   }
 
   .step-total {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Progress bar */
   .progress-bar-container {
     height: 3px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-stroke);
     overflow: hidden;
   }
 
@@ -247,11 +247,11 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     }
 
     .phase-title {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
 
     .phase-subtitle {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .back-button,

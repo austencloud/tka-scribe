@@ -223,14 +223,14 @@ Uses singleton state for caching - data persists across tab switches.
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   .panel-title i {
-    font-size: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-base);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .spacer {
@@ -260,7 +260,7 @@ Uses singleton state for caching - data persists across tab switches.
     }
 
     .panel-title {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 </style>

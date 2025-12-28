@@ -198,7 +198,7 @@
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
     transition: all 0.15s ease;
   }
@@ -216,9 +216,9 @@
   }
 
   .panel-title {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
     white-space: nowrap;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
@@ -238,7 +238,7 @@
     border: 1px solid color-mix(in srgb, #f472b6 30%, transparent);
     border-radius: 50%;
     color: #f472b6;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.15s ease;
     -webkit-tap-highlight-color: transparent;
@@ -265,7 +265,7 @@
     width: 100%;
     aspect-ratio: 1;
     flex-shrink: 0;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 8px var(--theme-shadow);
   }
 
   .panel-controls {
@@ -283,11 +283,11 @@
   }
 
   .group-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     padding-left: 2px;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
@@ -316,7 +316,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
@@ -326,7 +326,7 @@
   }
 
   .mode-btn i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .mode-btn:hover {
@@ -342,24 +342,24 @@
   }
 
   .mode-btn.active {
-    background: color-mix(in srgb, #fbbf24 20%, transparent);
-    border-color: color-mix(in srgb, #fbbf24 40%, transparent);
+    background: color-mix(in srgb, var(--semantic-warning) 20%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-warning) 40%, transparent);
     color: #fcd34d;
     box-shadow:
-      0 0 0 1px color-mix(in srgb, #fbbf24 15%, transparent),
-      0 4px 12px color-mix(in srgb, #fbbf24 20%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--semantic-warning) 15%, transparent),
+      0 4px 12px color-mix(in srgb, var(--semantic-warning) 20%, transparent);
   }
 
   .mode-btn.active:hover {
-    background: color-mix(in srgb, #fbbf24 30%, transparent);
-    border-color: color-mix(in srgb, #fbbf24 50%, transparent);
+    background: color-mix(in srgb, var(--semantic-warning) 30%, transparent);
+    border-color: color-mix(in srgb, var(--semantic-warning) 50%, transparent);
     box-shadow:
-      0 0 0 1px color-mix(in srgb, #fbbf24 20%, transparent),
-      0 4px 16px color-mix(in srgb, #fbbf24 30%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--semantic-warning) 20%, transparent),
+      0 4px 16px color-mix(in srgb, var(--semantic-warning) 30%, transparent);
   }
 
   .mode-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, #fbbf24 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--semantic-warning) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -376,7 +376,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
@@ -399,20 +399,20 @@
   }
 
   .bpm-btn.active {
-    background: color-mix(in srgb, #8b5cf6 25%, transparent);
-    border-color: color-mix(in srgb, #8b5cf6 45%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong) 45%, transparent);
     color: white;
     box-shadow:
-      0 0 0 1px color-mix(in srgb, #8b5cf6 15%, transparent),
-      0 4px 12px color-mix(in srgb, #8b5cf6 25%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 15%, transparent),
+      0 4px 12px color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
   }
 
   .bpm-btn.active:hover {
     background: color-mix(in srgb, #8b5cf6 35%, transparent);
-    border-color: color-mix(in srgb, #8b5cf6 55%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong) 55%, transparent);
     box-shadow:
-      0 0 0 1px color-mix(in srgb, #8b5cf6 20%, transparent),
-      0 4px 16px color-mix(in srgb, #8b5cf6 35%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent-strong) 20%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
   }
 
   .bpm-btn:focus-visible {
@@ -430,7 +430,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
@@ -454,44 +454,44 @@
   .toggle-btn.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent, var(--theme-accent)) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 45%,
+      var(--theme-accent, var(--theme-accent)) 45%,
       transparent
     );
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
   }
 
   .toggle-btn.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 35%,
+      var(--theme-accent) 35%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 55%,
+      var(--theme-accent, var(--theme-accent)) 55%,
       transparent
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
   }
 
   .toggle-btn:focus-visible,
   .help-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -514,15 +514,15 @@
     }
 
     .toggle-btn.active {
-      border-color: var(--theme-accent, #6366f1);
+      border-color: var(--theme-accent, var(--theme-accent));
     }
 
     .mode-btn.active {
-      border-color: #fbbf24;
+      border-color: var(--semantic-warning);
     }
 
     .bpm-btn.active {
-      border-color: #8b5cf6;
+      border-color: var(--theme-accent-strong);
     }
 
     .toggle-btn:focus-visible,

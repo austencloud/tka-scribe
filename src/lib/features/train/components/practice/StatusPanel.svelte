@@ -118,8 +118,8 @@
     flex-direction: column;
     gap: var(--space-2026-sm, 12px);
     padding: var(--space-2026-sm, 12px);
-    background: var(--theme-panel-bg, #1a1a24);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md, 14px);
     box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
     transition:
@@ -157,7 +157,7 @@
   }
 
   .status-item:hover {
-    background: var(--theme-card-hover-bg, #2d2d3a);
+    background: var(--theme-card-hover-bg);
   }
 
   .status-item.active {
@@ -168,16 +168,16 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--theme-text-dim, rgba(107, 114, 128, 0.8));
+    background: var(--theme-text-dim);
     transition: all var(--duration-2026-fast, 150ms)
       var(--ease-2026-out, cubic-bezier(0.33, 1, 0.68, 1));
     flex-shrink: 0;
   }
 
   .status-item.active .status-dot {
-    background: var(--semantic-success, #22c55e);
+    background: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 8px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 60%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
   }
 
   .status-label {
@@ -190,7 +190,7 @@
     flex-direction: column;
     gap: var(--space-2026-xs, 6px);
     padding: var(--space-2026-sm, 12px);
-    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 20%, transparent);
     border-radius: var(--radius-2026-sm, 10px);
     font-family: "Courier New", monospace;
     font-size: 0.7rem;
@@ -205,7 +205,7 @@
   }
 
   .stat-label {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 500;
   }
 
@@ -217,11 +217,11 @@
   }
 
   .stat-value.warn {
-    color: var(--semantic-warning, #fbbf24);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .stat-value.error {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   /* ============================================

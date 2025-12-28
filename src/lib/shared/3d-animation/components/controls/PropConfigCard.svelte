@@ -134,18 +134,18 @@
 <style>
   .config-card {
     container-type: inline-size;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     overflow: hidden;
   }
 
   .config-card.blue {
-    border-left: 3px solid var(--prop-blue, #2e3192);
+    border-left: 3px solid var(--prop-blue);
   }
 
   .config-card.red {
-    border-left: 3px solid var(--prop-red, #ed1c24);
+    border-left: 3px solid var(--prop-red);
   }
 
   .card-body {

@@ -303,8 +303,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -312,10 +312,10 @@
   }
 
   .sequence-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .sequence-thumbnail,
@@ -336,13 +336,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .sequence-thumbnail-placeholder i {
-    font-size: 32px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-text-dim);
   }
 
   .sequence-info {
@@ -353,7 +353,7 @@
 
   .sequence-name {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--theme-text, white);
     overflow: hidden;
@@ -372,12 +372,12 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .meta-item i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .user-list-grid {
@@ -391,8 +391,8 @@
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -401,8 +401,8 @@
   }
 
   .user-list-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     transform: translateX(4px);
   }
 
@@ -419,7 +419,7 @@
 
   .user-list-name {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text, white);
     overflow: hidden;
@@ -429,8 +429,8 @@
 
   .user-list-username {
     margin: 2px 0 0 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -446,24 +446,24 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .user-list-stat i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .user-list-arrow {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
     transition: transform 0.2s ease;
   }
 
   .user-list-card:hover .user-list-arrow {
     transform: translateX(4px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .user-profile-achievements-grid {
@@ -477,15 +477,15 @@
     align-items: center;
     gap: 16px;
     padding: 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .achievement-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
   }
 
@@ -497,13 +497,13 @@
     height: 60px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     border-radius: 50%;
     flex-shrink: 0;
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, #a855f7) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .achievement-icon.tier-bronze {
@@ -532,16 +532,16 @@
 
   .achievement-name {
     margin: 0 0 4px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--theme-text, white);
   }
 
   .achievement-description {
     margin: 0 0 8px 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .achievement-meta {
@@ -557,7 +557,7 @@
     gap: 4px;
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: capitalize;
   }
@@ -585,14 +585,14 @@
   .xp-badge {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
-    color: var(--theme-accent, #a855f7);
+    color: var(--theme-accent);
   }
 
   .xp-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   @media (max-width: 768px) {

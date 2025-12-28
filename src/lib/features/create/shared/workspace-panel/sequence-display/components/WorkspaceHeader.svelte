@@ -93,9 +93,9 @@
   }
 
   .contextual-header {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     text-align: center;
     padding: 8px 16px;
   }

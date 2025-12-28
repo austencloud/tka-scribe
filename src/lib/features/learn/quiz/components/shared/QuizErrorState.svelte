@@ -34,7 +34,7 @@ QuizErrorState - Error display with retry for quizzes
 
   .retry-btn {
     padding: 0.625rem 1.5rem;
-    background: var(--theme-accent, #667eea);
+    background: var(--theme-accent);
     border: none;
     border-radius: 10px;
     color: white;

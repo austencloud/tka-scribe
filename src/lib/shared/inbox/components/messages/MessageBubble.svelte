@@ -124,7 +124,7 @@
   .bubble {
     padding: 10px 14px;
     border-radius: 18px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     transition: transform 0.15s ease;
   }
 
@@ -133,7 +133,7 @@
   }
 
   .own .bubble {
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     color: white;
     border-bottom-right-radius: 6px;
   }
@@ -143,17 +143,17 @@
   }
 
   .deleted .bubble {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
     font-style: italic;
     opacity: 0.7;
   }
 
   .content {
     margin: 0 0 4px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.4;
     word-break: break-word;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .own .content {
@@ -163,7 +163,7 @@
   .attachment-content {
     margin-top: 8px;
     padding-top: 8px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .has-attachment .bubble {
@@ -174,12 +174,12 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .own .meta {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     justify-content: flex-end;
   }
 
@@ -189,13 +189,13 @@
 
   /* Read receipts */
   .read-receipt {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
     transition: color 0.2s ease;
   }
 
   .read-receipt.read {
-    color: #60a5fa;
+    color: var(--semantic-info);
     opacity: 1;
   }
 

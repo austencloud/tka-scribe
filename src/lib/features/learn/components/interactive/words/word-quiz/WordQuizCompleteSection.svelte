@@ -113,12 +113,12 @@ WordQuizCompleteSection - Score display and completion actions
 
   .score-total {
     font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .score-message {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin: 0 0 1.5rem;
     text-align: center;
   }
@@ -146,8 +146,8 @@ WordQuizCompleteSection - Score display and completion actions
   }
 
   .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     color: rgba(255, 255, 255, 0.8);
   }
 

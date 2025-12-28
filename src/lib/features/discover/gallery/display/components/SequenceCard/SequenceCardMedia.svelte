@@ -57,7 +57,7 @@ Ultra-minimal design: Clean display with responsive images.
   .media {
     position: relative;
     width: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     flex: 1;
     min-height: 0;
     display: flex;
@@ -96,10 +96,10 @@ Ultra-minimal design: Clean display with responsive images.
     justify-content: center;
     background: linear-gradient(
       135deg,
-      var(--theme-card-hover-bg, #1f2937),
-      var(--theme-panel-bg, #111827)
+      var(--theme-card-hover-bg),
+      var(--theme-panel-bg)
     );
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 4rem;
     font-weight: 700;
   }

@@ -57,8 +57,8 @@
   }
 
   .panel-shell {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px dashed var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -75,19 +75,19 @@
 
   .loading-state i,
   .empty-state i {
-    font-size: 36px;
+    font-size: var(--font-size-3xl);
     opacity: 0.6;
   }
 
   .empty-state p {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     margin: 0;
     color: var(--theme-text);
   }
 
   .empty-state span {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
   }
 </style>

@@ -115,7 +115,7 @@
   }
 
   .inline-orientation-control.blue {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.05) 0%,
@@ -124,7 +124,7 @@
   }
 
   .inline-orientation-control.red {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
   }
 
@@ -146,11 +146,11 @@
   }
 
   .inline-orientation-control.blue .side-label {
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .inline-orientation-control.red .side-label {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .current-badge {
@@ -220,11 +220,11 @@
   }
 
   .inline-orientation-control.blue .orientation-btn {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
   }
 
   .inline-orientation-control.red .orientation-btn {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
   }
 
   .orientation-btn:hover {
@@ -238,14 +238,14 @@
   }
 
   .inline-orientation-control.blue .orientation-btn.active {
-    background: #3b82f6;
+    background: var(--semantic-info);
     color: white;
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
   }
 
   .inline-orientation-control.red .orientation-btn.active {
-    background: #ef4444;
+    background: var(--semantic-error);
     color: white;
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
   }
 </style>

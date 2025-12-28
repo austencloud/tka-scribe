@@ -49,20 +49,20 @@
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs, 4px);
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim);
     margin-top: var(--spacing-sm, 8px);
   }
 
   .cancel-inline i {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   /* Badge variant (standalone section) */
   .cancel-badge {
     padding: var(--spacing-md, 16px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     margin: var(--spacing-md, 16px) 0;
   }
@@ -75,21 +75,21 @@
   }
 
   .badge-header i {
-    font-size: var(--font-size-lg, 18px);
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-lg);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   .badge-header h4 {
     margin: 0;
-    font-size: var(--font-size-base, 16px);
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .cancel-badge p {
     margin: 0;
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim);
     line-height: 1.6;
   }
 
@@ -104,8 +104,8 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm, 8px);
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim);
   }
 
   .step-number {
@@ -114,10 +114,10 @@
     justify-content: center;
     width: 24px;
     height: 24px;
-    background: var(--theme-accent, #6366f1);
+    background: var(--theme-accent, var(--theme-accent));
     color: white;
     border-radius: 50%;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     flex-shrink: 0;
   }

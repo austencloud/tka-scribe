@@ -171,7 +171,7 @@
     flex: 1;
     text-align: center;
     padding: 40px 20px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .empty-state i {
@@ -184,7 +184,7 @@
   .empty-state h3 {
     margin: 0 0 8px 0;
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .empty-state p {
@@ -201,8 +201,8 @@
   .composition-card {
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -240,7 +240,7 @@
 
   .placeholder-thumbnail i {
     font-size: 2.5rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .favorite-badge {
@@ -258,7 +258,7 @@
 
   .favorite-badge i {
     font-size: 0.75rem;
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .card-content {
@@ -279,7 +279,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .layout-label {

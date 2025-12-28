@@ -167,8 +167,8 @@
     gap: 8px;
     padding: 12px;
     border-radius: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     text-align: left;
     width: 100%;
     min-width: 200px;
@@ -177,8 +177,8 @@
   }
 
   .feedback-card.clickable:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-accent, #3b82f6);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-accent, var(--semantic-info));
     transform: translateY(-1px);
   }
 
@@ -203,14 +203,14 @@
     gap: 4px;
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .deleted-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .deleted-title {
@@ -220,8 +220,8 @@
 
   .deleted-notice {
     margin: 0;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
   }
 
@@ -258,7 +258,7 @@
     gap: 4px;
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
@@ -274,14 +274,14 @@
 
   .type-badge i,
   .status-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .feedback-title {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     line-height: 1.3;
   }
 
@@ -291,8 +291,8 @@
 
   .feedback-preview {
     margin: 0;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -304,7 +304,7 @@
     display: flex;
     justify-content: flex-end;
     padding-top: 4px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .tap-hint,
@@ -312,21 +312,21 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 12px;
-    color: var(--theme-accent, #3b82f6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-accent, var(--semantic-info));
     opacity: 0.8;
   }
 
   .checking-hint {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .own .tap-hint {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .tap-hint i,
   .checking-hint i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 </style>

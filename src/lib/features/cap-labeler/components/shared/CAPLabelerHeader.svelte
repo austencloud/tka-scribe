@@ -199,7 +199,7 @@
     align-items: center;
     margin-bottom: var(--spacing-lg);
     padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .header-title {
@@ -222,7 +222,7 @@
   .stats-divider {
     width: 1px;
     height: 20px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
   }
 
   .stat {
@@ -242,7 +242,7 @@
     border-radius: 6px;
     font-size: var(--font-size-xs);
     background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .sync-status.syncing {
@@ -253,7 +253,7 @@
 
   .sync-status.error {
     background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   @keyframes pulse {
@@ -282,7 +282,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     color: var(--foreground);
     cursor: pointer;
@@ -301,7 +301,7 @@
     margin: 0 var(--spacing-lg) var(--spacing-lg) var(--spacing-lg);
     padding: var(--spacing-md);
     background: var(--surface-glass);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     flex-wrap: wrap;
   }
@@ -335,7 +335,7 @@
     background: rgba(34, 197, 94, 0.2);
     border: 1px solid rgba(34, 197, 94, 0.4);
     border-radius: 8px;
-    color: #22c55e;
+    color: var(--semantic-success);
     cursor: pointer;
     font-size: var(--font-size-sm);
     font-weight: 600;
@@ -361,7 +361,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 8px;
     color: var(--muted);
   }
@@ -391,7 +391,7 @@
     right: 0;
     margin-top: 4px;
     background: var(--surface-glass);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 8px;
     overflow: hidden;
     z-index: 100;

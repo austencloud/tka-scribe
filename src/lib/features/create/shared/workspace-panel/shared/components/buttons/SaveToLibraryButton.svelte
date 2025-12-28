@@ -72,24 +72,24 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     /* Purple gradient matching AddToLibraryButton */
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 85%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          var(--theme-accent-strong)
         )
         100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
   }
 
   .save-button:hover:not(:disabled) {
@@ -98,19 +98,19 @@
       135deg,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 85%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          var(--theme-accent-strong)
         )
         0%,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 70%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 70%,
+          var(--theme-accent-strong)
         )
         100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
   }
 
   .save-button:active:not(:disabled) {
@@ -119,7 +119,7 @@
   }
 
   .save-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -135,16 +135,16 @@
     transform: none;
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 85%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          var(--theme-accent-strong)
         )
         100%
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -152,7 +152,7 @@
     .save-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -160,7 +160,7 @@
     .save-button {
       width: var(--min-touch-target); /* Maintain 48px minimum */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -168,7 +168,7 @@
     .save-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -179,7 +179,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

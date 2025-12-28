@@ -101,14 +101,14 @@
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 50%;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     cursor: pointer;
     pointer-events: auto;
     box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2);
+      0 4px 12px var(--theme-shadow),
+      0 2px 4px var(--theme-shadow);
     transition:
       transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
       box-shadow 0.2s ease,
@@ -124,7 +124,7 @@
   }
 
   .floating-button i {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .floating-button:hover {
@@ -132,7 +132,7 @@
     background: rgba(0, 0, 0, 0.7);
     box-shadow:
       0 6px 16px rgba(0, 0, 0, 0.4),
-      0 3px 6px rgba(0, 0, 0, 0.3);
+      0 3px 6px var(--theme-shadow);
   }
 
   .floating-button:active {
@@ -142,8 +142,8 @@
   .floating-button:focus-visible {
     outline: none;
     box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 4px 12px var(--theme-shadow),
+      0 2px 4px var(--theme-shadow),
       0 0 0 3px color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
@@ -158,11 +158,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
     border: 2px solid rgba(0, 0, 0, 0.8);
     border-radius: 9px;
     color: #ffffff;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     line-height: 1;
     animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);

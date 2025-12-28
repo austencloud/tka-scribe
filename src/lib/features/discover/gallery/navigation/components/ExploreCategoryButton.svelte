@@ -53,12 +53,12 @@
 
     if (visualType === "difficulty") {
       const colors: Record<string, string> = {
-        "1": "#10b981", // green
-        "2": "#f59e0b", // yellow
-        "3": "#ef4444", // red
-        "4": "var(--theme-accent-strong, #8b5cf6)", // purple
+        "1": "var(--semantic-success)", // green
+        "2": "var(--semantic-warning)", // yellow
+        "3": "var(--semantic-error)", // red
+        "4": "var(--theme-accent-strong, var(--theme-accent-strong))", // purple
       };
-      style += `--button-accent: ${colors[String(option.value)] || "var(--theme-accent, #6366f1)"}; `;
+      style += `--button-accent: ${colors[String(option.value)] || "var(--theme-accent)"}; `;
     }
 
     return style;
@@ -130,8 +130,8 @@
     gap: var(--spacing-xs);
 
     padding: var(--spacing-md);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     cursor: pointer;
     transition: all var(--transition-fast);
@@ -160,10 +160,10 @@
   }
 
   .category-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-color: var(--button-accent);
     box-shadow:
-      0 4px 16px var(--theme-shadow, rgba(0, 0, 0, 0.1)),
+      0 4px 16px var(--theme-shadow),
       0 0 0 1px var(--button-accent),
       0 0 20px rgba(var(--button-accent-rgb, 99, 102, 241), 0.3);
     transform: translateY(-2px);
@@ -176,7 +176,7 @@
   .category-button:active {
     transform: translateY(0);
     box-shadow:
-      0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.1)),
+      0 2px 8px var(--theme-shadow),
       0 0 0 1px var(--button-accent);
   }
 
@@ -219,7 +219,7 @@
     border-radius: 6px;
     background: white;
     padding: var(--spacing-xs);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   /* Grid mode images - same size as other images, not square */

@@ -501,10 +501,10 @@
     width: 220px;
     display: flex;
     flex-direction: column;
-    background: var(--theme-panel-bg, rgba(10, 10, 15, 0.85));
+    background: var(--theme-panel-bg);
     backdrop-filter: blur(40px) saturate(180%);
     -webkit-backdrop-filter: blur(40px) saturate(180%);
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-right: 1px solid var(--theme-stroke);
     z-index: 150;
     overflow: hidden;
     transition: width var(--duration-emphasis, 280ms)
@@ -537,7 +537,7 @@
 
     /* Custom scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke, rgba(255, 255, 255, 0.1)) transparent;
+    scrollbar-color: var(--theme-stroke) transparent;
   }
 
   /* Tabs mode - VS Code activity bar layout when sidebar is collapsed */
@@ -564,20 +564,20 @@
     gap: 12px;
     padding: 10px 12px;
     margin-bottom: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
   }
 
   .settings-back-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .settings-back-button.collapsed {
@@ -594,9 +594,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     border-radius: 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     transition: all 0.2s ease;
   }
 
@@ -608,7 +608,7 @@
   }
 
   .settings-back-button:hover .back-icon {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
   }
 
   .back-label {
@@ -644,7 +644,7 @@
     background: transparent;
     border: none;
     border-radius: clamp(8px, 5cqw, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: clamp(13px, 7.5cqw, 15px);
@@ -653,8 +653,8 @@
   }
 
   .section-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .section-button.active {

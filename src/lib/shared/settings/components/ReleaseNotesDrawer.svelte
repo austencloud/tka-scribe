@@ -91,9 +91,9 @@
 
         {#if version.changelogEntries && version.changelogEntries.length > 0}
           {#each [
-            { key: "added" as const, label: "Added", icon: "fa-plus", color: "#22c55e" },
-            { key: "improved" as const, label: "Improved", icon: "fa-arrow-up", color: "#3b82f6" },
-            { key: "fixed" as const, label: "Fixed", icon: "fa-wrench", color: "#f59e0b" }
+            { key: "added" as const, label: "Added", icon: "fa-plus", color: "var(--semantic-success)" },
+            { key: "improved" as const, label: "Improved", icon: "fa-arrow-up", color: "var(--semantic-info)" },
+            { key: "fixed" as const, label: "Fixed", icon: "fa-wrench", color: "var(--semantic-warning)" }
           ] as cat}
             {#if groupedChangelog[cat.key].length > 0}
               <section class="changelog-section">
@@ -148,7 +148,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .header-content {
@@ -158,15 +158,15 @@
   }
 
   .header-content i {
-    font-size: 20px;
-    color: var(--theme-accent, #a78bfa);
+    font-size: var(--font-size-xl);
+    color: var(--theme-accent);
   }
 
   .header-content h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .close-btn {
@@ -178,14 +178,14 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .drawer-body {
@@ -196,9 +196,9 @@
 
   .release-notes-text {
     margin: 0 0 24px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.6;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
   }
 
   .changelog-section {
@@ -210,7 +210,7 @@
     align-items: center;
     gap: 8px;
     margin: 0 0 12px 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: var(--cat-color);
     text-transform: uppercase;
@@ -225,14 +225,14 @@
 
   .changelog-section li {
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
   }
 
   .no-changelog, .no-version {
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
   }
 
@@ -244,7 +244,7 @@
 
   .skeleton {
     height: 60px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 8px;
     animation: pulse 1.5s ease-in-out infinite;
   }
@@ -263,14 +263,14 @@
   }
 
   .error-state i {
-    font-size: 32px;
-    color: #ef4444;
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-error);
     margin-bottom: 12px;
   }
 
   .drawer-footer {
     padding: 16px 24px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .view-all-btn {
@@ -280,17 +280,17 @@
     justify-content: center;
     gap: 8px;
     padding: 12px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .view-all-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
   }
 </style>

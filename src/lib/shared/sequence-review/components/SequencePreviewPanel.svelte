@@ -217,7 +217,7 @@
 		width: 48px; /* WCAG AAA touch target */
 		height: 48px;
 		background: var(--surface-color);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke));
 		border-radius: 8px;
 		color: var(--muted-foreground);
 		cursor: pointer;
@@ -285,7 +285,7 @@
 	.control-divider {
 		width: 1px;
 		height: 16px;
-		background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+		background: var(--theme-stroke);
 	}
 
 	.chip-group {
@@ -296,7 +296,7 @@
 	.control-chip {
 		padding: 6px 12px;
 		background: var(--surface-color);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
 		border-radius: 6px;
 		color: var(--muted-foreground);
 		font-size: var(--font-size-xs);

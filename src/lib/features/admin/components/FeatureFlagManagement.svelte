@@ -73,14 +73,14 @@
     background: rgba(239, 68, 68, 0.1);
     border-bottom: 1px solid rgba(239, 68, 68, 0.3);
     color: #fca5a5;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   @media (min-width: 480px) {
     .error-banner {
       gap: 12px;
       padding: 12px 24px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 

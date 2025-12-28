@@ -361,7 +361,7 @@
     border: 3px solid transparent;
     background:
       linear-gradient(transparent, transparent) padding-box,
-      linear-gradient(135deg, #fbbf24, #f59e0b, #d97706) border-box;
+      linear-gradient(135deg, var(--semantic-warning), var(--semantic-warning), #d97706) border-box;
     border-radius: 12px;
 
     /* Layered shadows for depth and premium glow */
@@ -416,7 +416,7 @@
 
   /* Practice beat styling - gold border with pulse animation */
   .beat-cell.practice-beat {
-    border: 3px solid #fbbf24;
+    border: 3px solid var(--semantic-warning);
     border-radius: 8px;
     background: rgba(251, 191, 36, 0.15);
     box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);

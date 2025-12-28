@@ -30,7 +30,7 @@
       key: "addWord" as const,
       icon: "fa-solid fa-heading",
       label: "Word/Title",
-      color: "#3b82f6", // blue
+      color: "var(--semantic-info)", // blue
     },
     {
       key: "addBeatNumbers" as const,
@@ -48,13 +48,13 @@
       key: "addDifficultyLevel" as const,
       icon: "fa-solid fa-star",
       label: "Difficulty",
-      color: "#f59e0b", // amber
+      color: "var(--semantic-warning)", // amber
     },
     {
       key: "includeStartPosition" as const,
       icon: "fa-solid fa-bullseye",
       label: "Start Pos",
-      color: "#10b981", // green
+      color: "var(--semantic-success)", // green
     },
   ];
 
@@ -163,7 +163,7 @@
 
   .toggle-btn:hover {
     background: rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: var(--theme-text-dim);
     transform: translateY(-1px);
   }
 
@@ -193,7 +193,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     line-height: 1;
     color: white;
     flex-shrink: 0;
@@ -201,7 +201,7 @@
 
   .toggle-label {
     flex: 1;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     letter-spacing: 0.3px;
     line-height: 1.2;
@@ -222,7 +222,7 @@
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.3);
     color: rgba(255, 255, 255, 0.95);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     transition: all 0.2s ease;
   }

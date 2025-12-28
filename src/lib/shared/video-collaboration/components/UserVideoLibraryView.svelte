@@ -224,7 +224,7 @@
 
   .tab.active {
     color: var(--text-primary);
-    border-bottom-color: #3b82f6;
+    border-bottom-color: var(--semantic-info);
   }
 
   .tab .count {
@@ -241,7 +241,7 @@
   }
 
   .tab .count.pending {
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
     color: white;
   }
 
@@ -287,7 +287,7 @@
   }
 
   .error-state {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .retry-btn {
@@ -295,8 +295,8 @@
     align-items: center;
     gap: 0.375rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--text-secondary);
     font-size: 0.85rem;

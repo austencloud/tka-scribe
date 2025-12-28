@@ -44,11 +44,11 @@
       /* Tiny stars */
       radial-gradient(circle at 15% 12%, white 0.5px, transparent 0.5px),
       radial-gradient(circle at 45% 8%, white 0.5px, transparent 0.5px),
-      radial-gradient(circle at 72% 15%, rgba(255,255,255,0.7) 0.5px, transparent 0.5px),
+      radial-gradient(circle at 72% 15%, var(--theme-text-dim) 0.5px, transparent 0.5px),
       radial-gradient(circle at 88% 10%, white 0.5px, transparent 0.5px),
-      radial-gradient(circle at 30% 18%, rgba(255,255,255,0.6) 0.5px, transparent 0.5px),
+      radial-gradient(circle at 30% 18%, var(--theme-text-dim) 0.5px, transparent 0.5px),
       /* Dark tree silhouette suggestion at bottom */
-      linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 15%, transparent 30%);
+      linear-gradient(to top, rgba(0,0,0,0.6) 0%, var(--theme-shadow) 15%, transparent 30%);
     animation: stars-twinkle 4s ease-in-out infinite;
   }
 

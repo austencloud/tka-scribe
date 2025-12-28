@@ -217,7 +217,7 @@
   .page-display::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .page-display::-webkit-scrollbar-thumb:hover {
@@ -239,7 +239,7 @@
   .loading-spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 4px solid rgba(255, 255, 255, 0.1);
+    border: 4px solid var(--theme-stroke);
     border-top: 4px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -257,7 +257,7 @@
 
   .error-icon,
   .empty-icon {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     margin-bottom: var(--spacing-lg);
   }
 
@@ -287,16 +287,15 @@
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-normal);
-    backdrop-filter: blur(8px);
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .retry-button:hover {
     background: var(--primary-light);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   /* Pages Container - grid layout for multiple pages side-by-side */

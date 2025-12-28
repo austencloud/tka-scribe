@@ -194,7 +194,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 20px;
   }
@@ -206,7 +206,7 @@
     height: auto;
     object-fit: contain;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px var(--theme-shadow);
   }
 
   .drawer-options {
@@ -219,7 +219,7 @@
   .preview-loading,
   .preview-error {
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -229,22 +229,22 @@
   .preview-placeholder p,
   .preview-loading p,
   .preview-error p {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0;
   }
 
   .preview-placeholder span,
   .preview-error span {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .loading-spinner {
     width: 48px;
     height: 48px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top: 3px solid rgba(59, 130, 246, 0.8);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -264,12 +264,12 @@
     padding: 10px 20px;
     min-height: var(--min-touch-target);
     min-width: var(--min-touch-target);
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
@@ -290,9 +290,9 @@
 
   .options-group h4 {
     margin: 0 0 14px 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
@@ -301,7 +301,7 @@
   }
 
   .quality-value {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: rgba(59, 130, 246, 0.9);
     font-weight: 700;
     background: linear-gradient(
@@ -376,13 +376,13 @@
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 2px 4px var(--theme-shadow),
       0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .toggle-option input[type="checkbox"]:checked + .export-option-toggle {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border-color: #3b82f6;
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
+    border-color: var(--semantic-info);
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
 
@@ -393,9 +393,9 @@
   }
 
   .toggle-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   /* Format Buttons */
@@ -409,13 +409,13 @@
     padding: 12px 20px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08),
+      var(--theme-card-bg),
       rgba(255, 255, 255, 0.04)
     );
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border: 1.5px solid var(--theme-stroke-strong);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -434,8 +434,8 @@
   }
 
   .format-btn.active {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border-color: #3b82f6;
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
+    border-color: var(--semantic-info);
     color: white;
     box-shadow:
       0 4px 12px rgba(59, 130, 246, 0.3),
@@ -467,11 +467,11 @@
     height: 6px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg),
+      var(--theme-card-bg)
     );
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .quality-slider::-webkit-slider-thumb {
@@ -479,7 +479,7 @@
     appearance: none;
     width: 20px;
     height: 20px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     border-radius: 50%;
     cursor: pointer;
     box-shadow:
@@ -501,17 +501,17 @@
     height: 6px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg),
+      var(--theme-card-bg)
     );
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .quality-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     border-radius: 50%;
     cursor: pointer;
     box-shadow:

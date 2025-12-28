@@ -61,9 +61,9 @@
     gap: 6px;
     padding: 0 12px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 500;
@@ -89,18 +89,18 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.6);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
+    color: var(--theme-text-dim);
     cursor: pointer;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     transition: all 0.15s ease;
     flex-shrink: 0;
   }
 
   .help-btn:hover {
     background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     border-color: rgba(255, 255, 255, 0.25);
   }
 

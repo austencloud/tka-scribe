@@ -151,9 +151,9 @@
      ============================================================================ */
   :global(.module-switcher-drawer) {
     /* Drawer fills viewport appropriately based on placement */
-    --sheet-bg: var(--theme-panel-bg, rgba(12, 12, 18, 0.96));
+    --sheet-bg: var(--theme-panel-bg);
     --sheet-filter: blur(24px) saturate(140%);
-    --sheet-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --sheet-border: 1px solid var(--theme-stroke);
     --sheet-radius-large: 20px;
     box-sizing: border-box !important;
   }
@@ -214,7 +214,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 16px 14px; /* Adjusted for larger close button */
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
     gap: 16px; /* More space between header content and close button */
     position: relative;
@@ -231,8 +231,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent),
       transparent
     );
   }
@@ -244,9 +244,9 @@
 
   .module-switcher-header h2 {
     margin: 0 0 4px 0;
-    font-size: 20px; /* Larger, more prominent on mobile */
+    font-size: var(--font-size-xl); /* Larger, more prominent on mobile */
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     letter-spacing: -0.01em;
   }
 
@@ -254,8 +254,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 14px; /* Increased from 12px for better mobile readability */
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm); /* Increased from 12px for better mobile readability */
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .module-name {
@@ -276,26 +276,26 @@
     ); /* Increased from 36px for proper touch target */
     border-radius: 12px; /* Slightly larger to match new size */
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    border: 1px solid var(--theme-stroke);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px; /* Slightly larger icon */
+    font-size: var(--font-size-base); /* Slightly larger icon */
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
   }
 
   .close-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke));
+    color: var(--theme-text);
   }
 
   .close-button:active {
     transform: scale(0.95);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   /* ============================================================================
@@ -315,7 +315,7 @@
 
     /* Thin scrollbar */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15))
+    scrollbar-color: var(--theme-stroke-strong)
       transparent;
   }
 
@@ -328,7 +328,7 @@
   }
 
   .module-switcher-content::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 2px;
   }
 
@@ -343,11 +343,11 @@
     }
 
     .module-switcher-header h2 {
-      font-size: 18px; /* Keep it readable in landscape */
+      font-size: var(--font-size-lg); /* Keep it readable in landscape */
     }
 
     .current-location {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .module-switcher-content {
@@ -366,11 +366,11 @@
     }
 
     .module-switcher-header h2 {
-      font-size: 19px; /* Slightly smaller on very small screens */
+      font-size: var(--font-size-lg); /* Slightly smaller on very small screens */
     }
 
     .current-location {
-      font-size: 14px; /* Maintain readability */
+      font-size: var(--font-size-sm); /* Maintain readability */
     }
 
     .module-switcher-content {

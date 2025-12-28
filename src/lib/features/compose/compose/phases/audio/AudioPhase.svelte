@@ -410,7 +410,7 @@
     justify-content: center;
     text-align: center;
     padding: 2rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .placeholder-icon {
@@ -433,7 +433,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0 0 0.5rem 0;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .mobile-placeholder p {
@@ -445,7 +445,7 @@
   .mobile-placeholder .hint {
     margin-top: 0.5rem;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Desktop Audio Editor */
@@ -498,13 +498,13 @@
     margin: 0 0 0.5rem 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .drop-zone p {
     margin: 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .drop-zone .formats {
@@ -565,7 +565,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .file-info i {
@@ -577,7 +577,7 @@
   }
 
   .duration {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.85rem;
   }
 
@@ -613,7 +613,7 @@
   }
 
   .bpm-controls .label {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-weight: 500;
   }
 
@@ -682,8 +682,8 @@
   .manual-bpm-input {
     width: 70px;
     padding: 0.35rem 0.5rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
     color: rgba(167, 139, 250, 1);
     font-size: 0.95rem;
@@ -696,7 +696,7 @@
   .manual-bpm-input:focus {
     outline: none;
     border-color: rgba(139, 92, 246, 0.5);
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg);
   }
 
   .bpm-input::-webkit-inner-spin-button,

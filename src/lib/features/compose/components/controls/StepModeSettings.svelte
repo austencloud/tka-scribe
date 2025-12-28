@@ -53,7 +53,7 @@
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border: 1.5px solid rgba(251, 191, 36, 0.15);
     border-radius: 12px;
   }
@@ -61,7 +61,7 @@
   .step-label {
     font-size: 0.8rem;
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .step-size-group {
@@ -72,10 +72,10 @@
   .step-chip {
     min-height: 36px;
     padding: 6px 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
@@ -92,9 +92,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .step-chip:hover:not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.9));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text, var(--theme-text));
     }
   }
 

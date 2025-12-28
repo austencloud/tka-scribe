@@ -149,8 +149,8 @@
   }
 
   .password-form {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 20px;
     margin-top: 16px;
@@ -162,9 +162,9 @@
 
   .label {
     display: block;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     margin-bottom: 8px;
     transition: all 0.2s ease;
   }
@@ -178,11 +178,11 @@
   .input {
     width: 100%;
     padding: 12px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 15px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     transition: all 0.2s ease;
   }
 
@@ -201,14 +201,14 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .toggle-visibility:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    color: var(--theme-text);
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .toggle-visibility:active {
@@ -216,17 +216,17 @@
   }
 
   .toggle-visibility i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .input:focus {
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 60%,
+      var(--theme-accent, var(--theme-accent)) 60%,
       transparent
     );
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .input[aria-invalid="true"] {
@@ -238,21 +238,21 @@
   }
 
   .hint-message {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: rgba(251, 191, 36, 0.9);
     margin: 6px 0 0 0;
     font-weight: 500;
   }
 
   .hint-message.subtle {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    color: var(--theme-text-dim);
     font-weight: 500;
   }
 
   .optional {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    color: var(--theme-text-dim);
     font-weight: 500;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .button-row {
@@ -277,7 +277,7 @@
     padding: clamp(10px, 3cqi, 14px) clamp(12px, 4cqi, 24px);
     min-height: var(--min-touch-target);
     border-radius: 10px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -286,47 +286,47 @@
   }
 
   .button i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .button--primary {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      var(--theme-accent-strong, #4f46e5)
+      var(--theme-accent, var(--theme-accent)),
+      var(--theme-accent-strong)
     );
     color: white;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
     filter: brightness(1.1);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .button--secondary {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
-    color: var(--theme-accent, #a5b4fc);
+    color: var(--theme-accent);
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .button--secondary:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 60%,
+      var(--theme-accent, var(--theme-accent)) 60%,
       transparent
     );
   }
@@ -343,13 +343,13 @@
 
   /* Accessibility - Focus Indicators */
   .input:focus-visible {
-    outline: 3px solid var(--theme-accent, rgba(99, 102, 241, 0.9));
+    outline: 3px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .button:focus-visible,
   .toggle-visibility:focus-visible {
-    outline: 3px solid var(--theme-accent, rgba(99, 102, 241, 0.9));
+    outline: 3px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

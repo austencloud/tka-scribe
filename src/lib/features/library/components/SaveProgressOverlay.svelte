@@ -154,8 +154,8 @@
   .progress-icon-ring {
     position: absolute;
     inset: 0;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: var(--theme-accent-strong, #8b5cf6);
+    border: 3px solid var(--theme-stroke);
+    border-top-color: var(--theme-accent-strong, var(--theme-accent-strong));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -167,8 +167,8 @@
   }
 
   .progress-icon {
-    font-size: 24px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -186,7 +186,7 @@
 
   .progress-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
@@ -227,25 +227,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     flex-shrink: 0;
     transition: all 0.3s ease;
   }
 
   .step.completed .step-indicator {
-    background: var(--semantic-success, #22c55e);
+    background: var(--semantic-success, var(--semantic-success));
     color: white;
   }
 
   .step.active .step-indicator {
-    background: var(--theme-accent-strong, #8b5cf6);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
     color: white;
   }
 
   .step.pending .step-indicator {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .step-pulse {
@@ -269,17 +269,17 @@
   }
 
   .step-number {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .step-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.8);
     transition: color 0.3s ease;
   }
 
   .step.completed .step-label {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .step.active .step-label {
@@ -307,7 +307,7 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
       #a78bfa 100%
     );
     border-radius: 4px;
@@ -316,9 +316,9 @@
   }
 
   .beat-progress-text {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-accent-strong, #8b5cf6);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     min-width: 40px;
     text-align: right;
   }
@@ -336,8 +336,8 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--theme-accent-strong, #8b5cf6),
-      var(--semantic-success, #22c55e)
+      var(--theme-accent-strong, var(--theme-accent-strong)),
+      var(--semantic-success, var(--semantic-success))
     );
     border-radius: 2px;
     transition: width 0.5s ease;
@@ -371,7 +371,7 @@
     height: 72px;
     background: linear-gradient(
       135deg,
-      var(--semantic-success, #22c55e),
+      var(--semantic-success, var(--semantic-success)),
       #16a34a
     );
     border-radius: 50%;
@@ -382,7 +382,7 @@
   }
 
   .success-circle i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     color: white;
     animation: checkPop 0.3s ease 0.2s both;
   }
@@ -401,14 +401,14 @@
 
   .success-animation h3 {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .success-animation p {
     margin: 0;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 </style>

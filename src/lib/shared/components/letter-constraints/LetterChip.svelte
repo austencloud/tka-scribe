@@ -42,7 +42,7 @@ Supports include (green) and exclude (red) modes
     border-radius: 12px;
 
     color: white;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
     font-family:
       system-ui,
@@ -68,7 +68,7 @@ Supports include (green) and exclude (red) modes
   /* Include mode (green) */
   .letter-chip.include.selected {
     background: rgba(34, 197, 94, 0.35);
-    border-color: #22c55e;
+    border-color: var(--semantic-success);
     color: #4ade80;
     box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
   }
@@ -76,8 +76,8 @@ Supports include (green) and exclude (red) modes
   /* Exclude mode (red) */
   .letter-chip.exclude.selected {
     background: rgba(239, 68, 68, 0.35);
-    border-color: #ef4444;
-    color: #f87171;
+    border-color: var(--semantic-error);
+    color: var(--semantic-error);
     box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
   }
 

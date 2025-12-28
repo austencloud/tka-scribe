@@ -168,10 +168,10 @@
     background: transparent;
     border: none;
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     /* Ensure proper box-sizing */
     box-sizing: border-box;
@@ -184,7 +184,7 @@
   }
 
   .account-settings-button:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     transform: translateX(2px);
   }
 
@@ -207,7 +207,7 @@
     justify-content: center;
     background: transparent; /* No background - let button handle it */
     border: none; /* No border on wrapper itself */
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     flex-shrink: 0;
     transition: all 0.25s ease;
     position: relative; /* For badge positioning */
@@ -219,12 +219,12 @@
 
   /* Avatar styling - add border for profile pictures */
   .account-settings-button.has-avatar .icon-wrapper {
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 2px solid var(--theme-stroke-strong);
     background: transparent;
   }
 
   .account-settings-button.has-avatar:hover .icon-wrapper {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.35));
+    border-color: var(--theme-stroke-strong);
   }
 
   .profile-avatar {
@@ -242,25 +242,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     border-radius: 50%;
   }
 
   /* User icon styling (when signed out) */
   .icon-wrapper > i {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     transition: all 0.25s ease;
   }
 
   .account-settings-button:hover .icon-wrapper > i {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     transform: scale(1.1);
   }
 
@@ -279,7 +279,7 @@
      ACCESSIBILITY
      ============================================================================ */
   .account-settings-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -301,7 +301,7 @@
 
   @media (prefers-contrast: high) {
     .account-settings-button {
-      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+      border: 2px solid var(--theme-stroke-strong);
     }
   }
 </style>

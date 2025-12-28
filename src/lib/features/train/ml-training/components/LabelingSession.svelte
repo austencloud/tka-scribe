@@ -386,8 +386,8 @@ Allows navigating through frames and labeling each one.
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .header-left {
@@ -432,10 +432,10 @@ Allows navigating through frames and labeling each one.
   }
 
   .prop-badge.club {
-    background: #ef4444;
+    background: var(--semantic-error);
   }
   .prop-badge.staff {
-    background: #3b82f6;
+    background: var(--semantic-info);
   }
 
   .header-right {
@@ -460,7 +460,7 @@ Allows navigating through frames and labeling each one.
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #10b981, #34d399);
+    background: linear-gradient(90deg, var(--semantic-success), #34d399);
     transition: width 0.3s;
   }
 
@@ -554,7 +554,7 @@ Allows navigating through frames and labeling each one.
   }
   .frame-status.labeled {
     background: rgba(245, 158, 11, 0.3);
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
   .frame-status.verified {
     background: rgba(16, 185, 129, 0.3);
@@ -609,8 +609,8 @@ Allows navigating through frames and labeling each one.
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .action-group {
@@ -642,12 +642,12 @@ Allows navigating through frames and labeling each one.
   }
 
   .btn-save {
-    background: #3b82f6;
+    background: var(--semantic-info);
     color: white;
   }
 
   .btn-verify {
-    background: #10b981;
+    background: var(--semantic-success);
     color: white;
   }
 

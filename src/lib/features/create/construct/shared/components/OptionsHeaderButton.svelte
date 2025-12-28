@@ -127,7 +127,7 @@
     justify-content: center;
     font-size: 0.95rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: visible;
   }
@@ -138,7 +138,7 @@
 
   .chevron {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center;
     line-height: 1;

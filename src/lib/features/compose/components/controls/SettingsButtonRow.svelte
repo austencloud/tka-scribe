@@ -68,11 +68,11 @@
     gap: 8px;
     min-height: var(--touch-target-min, 44px);
     padding: 10px 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
-    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -80,8 +80,8 @@
   }
 
   .settings-btn i {
-    font-size: 14px;
-    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
+    font-size: var(--font-size-sm);
+    color: var(--theme-accent);
     flex-shrink: 0;
   }
 
@@ -92,15 +92,15 @@
   .btn-summary {
     flex: 1;
     text-align: right;
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 400;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .settings-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
     }
   }
 

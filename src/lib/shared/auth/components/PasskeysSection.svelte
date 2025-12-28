@@ -133,7 +133,7 @@
     flex-direction: column;
     gap: 14px;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .title-row {
@@ -147,25 +147,25 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
     font-weight: 600;
   }
 
   .title i {
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .subtitle {
     margin: 6px 0 0;
-    font-size: 13px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.65));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.4;
   }
 
   .status {
     padding: 6px 10px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     background: rgba(239, 68, 68, 0.14);
     color: rgba(239, 68, 68, 0.95);
@@ -192,9 +192,9 @@
     padding: 10px 12px;
     border-radius: 10px;
     cursor: pointer;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text, #fff);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text);
     font-weight: 600;
     flex: 1;
     min-width: 0;
@@ -202,7 +202,7 @@
 
   .primary {
     border: none;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
   }
 
   button:disabled {
@@ -219,12 +219,12 @@
     border-radius: 10px;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
-    border: 1px solid var(--semantic-error, #ef4444);
-    color: var(--semantic-error, #ef4444);
-    font-size: 13px;
+    border: 1px solid var(--semantic-error, var(--semantic-error));
+    color: var(--semantic-error, var(--semantic-error));
+    font-size: var(--font-size-compact);
   }
 
   .list {
@@ -241,23 +241,23 @@
     padding: 12px 12px;
     border-radius: 12px;
     background: rgba(0, 0, 0, 0.18);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .row-title {
     font-weight: 600;
-    font-size: 13px;
-    color: var(--theme-text, #fff);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
   }
 
   .row-sub {
-    font-size: 12px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-secondary, var(--theme-text-dim));
     margin-top: 4px;
   }
 
   .badge {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     padding: 6px 10px;
     border-radius: 999px;

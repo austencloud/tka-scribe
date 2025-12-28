@@ -177,8 +177,7 @@
   :global(.email-modal-backdrop) {
     position: fixed;
     inset: 0;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent);
-    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--theme-shadow) 70%, transparent);
     -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
     animation: fadeIn 0.2s ease-out;
@@ -192,11 +191,11 @@
     transform: translate(-50%, -50%);
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #19191e) 98%,
+      var(--theme-panel-bg) 98%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 20px;
     padding: 32px;
     max-width: 480px;
@@ -205,10 +204,10 @@
     overflow-y: auto;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent),
-      0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.6)),
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 10%, transparent),
+      0 20px 60px var(--theme-shadow),
       0 0 100px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 10%, transparent);
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 10%, transparent);
     z-index: 1001;
     animation: modalSlideIn 0.3s ease-out;
   }
@@ -249,52 +248,52 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 14px;
     flex-shrink: 0;
   }
 
   .header-icon i {
-    font-size: 22px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    font-size: var(--font-size-xl);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 
   .header-icon.verifying {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
   }
 
   .header-icon.verifying i {
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .header-icon.success {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
   }
 
   .header-icon.success i {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .header-content {
@@ -304,15 +303,15 @@
 
   :global(.modal-title) {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   :global(.modal-subtitle) {
     margin: 6px 0 0 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
   }
 
@@ -326,22 +325,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   .close-btn:focus-visible {
-    outline: 2px solid var(--theme-accent-strong, rgba(139, 92, 246, 0.8));
+    outline: 2px solid var(--theme-accent-strong);
     outline-offset: 2px;
   }
 
@@ -362,11 +361,11 @@
     }
 
     .header-icon i {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     :global(.modal-title) {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 

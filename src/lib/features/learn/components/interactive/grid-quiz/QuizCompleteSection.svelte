@@ -86,7 +86,7 @@ QuizCompleteSection - Results display and actions
   .complete-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin: 0;
   }
 
@@ -100,22 +100,22 @@ QuizCompleteSection - Results display and actions
   .score-value {
     font-size: 3rem;
     font-weight: 800;
-    color: var(--theme-accent, #4a9eff);
+    color: var(--theme-accent);
   }
 
   .score-separator {
     font-size: 1.5rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   .score-total {
     font-size: 1.5rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   .score-message {
     font-size: 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin: 0 0 1.5rem;
     text-align: center;
   }
@@ -143,14 +143,14 @@ QuizCompleteSection - Results display and actions
   }
 
   .action-btn.secondary {
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .action-btn.secondary:hover {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .action-btn.primary {

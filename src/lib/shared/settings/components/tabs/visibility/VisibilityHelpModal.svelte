@@ -228,7 +228,7 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
     overflow: hidden;
@@ -264,7 +264,7 @@
     align-items: center;
     gap: 12px;
     padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -280,7 +280,7 @@
     width: 36px;
     height: 36px;
     border-radius: 10px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     flex-shrink: 0;
     background: color-mix(in srgb, var(--icon-color) 20%, transparent);
     border: 1px solid color-mix(in srgb, var(--icon-color) 35%, transparent);
@@ -291,9 +291,9 @@
   .help-title {
     flex: 1;
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
@@ -306,10 +306,10 @@
     height: 48px;
     padding: 0;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 150ms ease;
     -webkit-tap-highlight-color: transparent;
@@ -317,7 +317,7 @@
 
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .close-btn:active {
@@ -349,7 +349,7 @@
   .help-content::-webkit-scrollbar-thumb {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
     border-radius: 3px;
@@ -359,7 +359,7 @@
      FOCUS STATES
      ======================================== */
   .close-btn:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

@@ -107,9 +107,9 @@
     min-height: var(--min-touch-target);
     padding: 12px 16px;
     border-radius: 10px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text, #fff);
+    border: 1px solid var(--theme-stroke);
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text);
     font-weight: 700;
     cursor: pointer;
     transition:
@@ -119,7 +119,7 @@
 
   .btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .btn:disabled {
@@ -129,7 +129,7 @@
 
   .error {
     margin: 10px 0 0;
-    font-size: 13px;
-    color: var(--semantic-error, #ef4444);
+    font-size: var(--font-size-compact);
+    color: var(--semantic-error, var(--semantic-error));
   }
 </style>

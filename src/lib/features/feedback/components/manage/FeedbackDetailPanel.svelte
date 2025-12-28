@@ -316,20 +316,20 @@
     --fb-radius-md: 12px;
     --fb-radius-lg: 16px;
 
-    --fb-primary: var(--semantic-success, #10b981);
-    --fb-error: var(--semantic-error, #ef4444);
-    --fb-purple: var(--theme-accent-strong, #8b5cf6);
-    --fb-surface: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    --fb-surface-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
-    --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    --fb-primary: var(--semantic-success, var(--semantic-success));
+    --fb-error: var(--semantic-error, var(--semantic-error));
+    --fb-purple: var(--theme-accent-strong);
+    --fb-surface: var(--theme-card-bg);
+    --fb-surface-hover: var(--theme-card-hover-bg);
+    --fb-border: var(--theme-stroke);
+    --fb-text: var(--theme-text);
+    --fb-text-muted: var(--theme-text-dim);
     --fb-text-subtle: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%,
+      var(--theme-text-dim) 65%,
       transparent
     );
-    --fb-warning: #f59e0b;
+    --fb-warning: var(--semantic-warning);
 
     display: flex;
     flex-direction: column;
@@ -460,11 +460,11 @@
     padding: var(--fb-space-md);
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 8%,
+      var(--semantic-success, var(--semantic-success)) 8%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
     border-radius: var(--fb-radius-md);
   }
 
@@ -488,11 +488,11 @@
     padding: 4px 10px;
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-radius: 999px;
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
     font-size: var(--fb-text-xs);
     font-weight: 600;
     width: fit-content;

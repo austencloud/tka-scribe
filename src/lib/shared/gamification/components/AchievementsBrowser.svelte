@@ -373,10 +373,9 @@
     height: 100%;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #0f0f19) 95%,
+      var(--theme-panel-bg) 95%,
       transparent
     );
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
   }
 
@@ -387,7 +386,7 @@
     align-items: center;
     padding: clamp(12px, 3cqi, 24px);
     gap: clamp(8px, 2cqi, 16px);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .panel-title {
@@ -408,7 +407,7 @@
     height: clamp(48px, 10cqi, 48px);
     border-radius: 50%;
     border: none;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
     font-size: clamp(24px, 6cqi, 28px);
     line-height: 1;
@@ -418,7 +417,7 @@
   }
 
   .close-button:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     transform: rotate(90deg);
   }
 
@@ -444,8 +443,8 @@
   .spinner-large {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    border-top-color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    border: 4px solid var(--theme-stroke);
+    border-top-color: var(--theme-text);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -508,7 +507,7 @@
 
   .stat-label {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -520,7 +519,7 @@
     padding: clamp(12px, 3cqi, 24px);
     border-radius: clamp(12px, 3cqi, 16px);
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .challenge-header {
@@ -552,28 +551,28 @@
   .difficulty-badge.beginner {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #4caf50) 20%,
+      var(--semantic-success) 20%,
       transparent
     );
-    color: var(--semantic-success, #4caf50);
+    color: var(--semantic-success);
   }
 
   .difficulty-badge.intermediate {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #ff9800) 20%,
+      var(--semantic-warning) 20%,
       transparent
     );
-    color: var(--semantic-warning, #ff9800);
+    color: var(--semantic-warning);
   }
 
   .difficulty-badge.advanced {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #f44336) 20%,
+      var(--semantic-error) 20%,
       transparent
     );
-    color: var(--semantic-error, #f44336);
+    color: var(--semantic-error);
   }
 
   .challenge-title {
@@ -598,7 +597,7 @@
 
   .progress-bar {
     height: clamp(6px, 1.5cqi, 8px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     border-radius: clamp(3px, 0.8cqi, 4px);
     overflow: hidden;
   }
@@ -607,22 +606,22 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     transition: width var(--transition-normal);
   }
 
   .progress-text {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .challenge-reward {
     margin-top: clamp(6px, 1.5cqi, 8px);
     font-weight: 600;
     font-size: clamp(12px, 3cqi, 14px);
-    color: var(--semantic-warning, #ffd700);
+    color: var(--semantic-warning);
   }
 
   /* Category Tabs - Responsive with touch targets */
@@ -632,7 +631,7 @@
     padding: 0 clamp(12px, 3cqi, 24px) clamp(10px, 2.5cqi, 16px);
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2))
+    scrollbar-color: var(--theme-stroke-strong)
       transparent;
   }
 
@@ -641,7 +640,7 @@
   }
 
   .category-tabs::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 3px;
   }
 
@@ -653,8 +652,8 @@
     padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
     min-height: var(--min-touch-target, 48px);
     border-radius: clamp(10px, 2.5cqi, 14px);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke-strong);
+    background: var(--theme-card-bg, var(--theme-card-bg));
     color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     cursor: pointer;
     transition: var(--transition-fast);
@@ -663,8 +662,8 @@
   }
 
   .category-tab:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
   }
 
@@ -680,8 +679,8 @@
   .category-tab.active {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     border-color: transparent;
     color: var(--theme-text, white);
@@ -719,7 +718,7 @@
     flex-direction: column;
     gap: clamp(10px, 2.5cqi, 16px);
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2))
+    scrollbar-color: var(--theme-stroke-strong)
       transparent;
   }
 
@@ -728,7 +727,7 @@
   }
 
   .achievements-list::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 4px;
   }
 
@@ -742,19 +741,19 @@
   }
 
   .achievement-card:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke));
   }
 
   .achievement-card.completed {
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #4caf50) 30%,
+      var(--semantic-success) 30%,
       transparent
     );
     background: color-mix(
       in srgb,
-      var(--semantic-success, #4caf50) 5%,
+      var(--semantic-success) 5%,
       transparent
     );
   }
@@ -815,10 +814,10 @@
   .tier-badge.gold {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #ffd700) 20%,
+      var(--semantic-warning) 20%,
       transparent
     );
-    color: var(--semantic-warning, #ffd700);
+    color: var(--semantic-warning);
   }
 
   .tier-badge.platinum {
@@ -847,7 +846,7 @@
   }
 
   .completed-badge {
-    color: var(--semantic-success, #4caf50);
+    color: var(--semantic-success);
     font-weight: 600;
     font-size: clamp(11px, 2.8cqi, 14px);
     display: flex;
@@ -858,7 +857,7 @@
   .progress-bar-small {
     flex: 1;
     height: clamp(4px, 1cqi, 6px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     border-radius: clamp(2px, 0.5cqi, 3px);
     overflow: hidden;
     min-width: 60px;
@@ -868,15 +867,15 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     transition: width var(--transition-normal);
   }
 
   .progress-text-small {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
   }
 
@@ -884,7 +883,7 @@
     flex-shrink: 0;
     font-weight: 600;
     font-size: clamp(11px, 2.8cqi, 14px);
-    color: var(--semantic-warning, #ffd700);
+    color: var(--semantic-warning);
     white-space: nowrap;
   }
 
@@ -946,15 +945,15 @@
   /* High Contrast Mode */
   @media (prefers-contrast: high) {
     .panel-header {
-      border-bottom-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+      border-bottom-color: var(--theme-stroke-strong);
     }
 
     .category-tab {
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
+      border-color: var(--theme-stroke-strong);
     }
 
     .achievement-card {
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+      border-color: var(--theme-stroke-strong);
     }
   }
 </style>

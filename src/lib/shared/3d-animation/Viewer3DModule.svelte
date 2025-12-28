@@ -316,14 +316,14 @@
     height: 100%;
     min-height: 400px;
     background: #0a0a12;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     gap: 1rem;
   }
 
   .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: #64b5f6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -353,17 +353,17 @@
     display: none;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .toggle-panel-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     color: white;
   }
 

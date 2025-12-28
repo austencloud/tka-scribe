@@ -132,7 +132,7 @@
     align-items: center;
     gap: var(--fb-space-xs, 8px);
     padding: var(--fb-space-xs, 8px) 0;
-    color: var(--fb-text-muted, rgba(255, 255, 255, 0.6));
+    color: var(--fb-text-muted, var(--theme-text-dim));
     font-size: var(--fb-text-xs, 0.75rem);
   }
 
@@ -147,7 +147,7 @@
 
   .user-card-compact .time-relative {
     font-weight: 400;
-    color: var(--fb-text-muted, rgba(255, 255, 255, 0.6));
+    color: var(--fb-text-muted, var(--theme-text-dim));
   }
 
   .section.mobile {

@@ -135,6 +135,7 @@
 
   onDestroy(() => {
     playbackController?.dispose();
+    animationState.dispose();
   });
 
   // Watch for sequence changes and reload animation
@@ -350,7 +351,7 @@
   .play-btn {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     border-color: transparent;
   }
 
@@ -372,14 +373,14 @@
     gap: 12px;
     padding: 32px;
     height: 100%;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
   }
 
   .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: rgba(59, 130, 246, 0.8);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -401,7 +402,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: white;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }

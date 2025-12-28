@@ -286,15 +286,15 @@
   }
 
   .panel-header h2 {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 6px 0;
   }
 
   .subtitle {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
@@ -308,17 +308,17 @@
     align-items: center;
     gap: 10px;
     padding: 40px 18px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .loading-state i,
   .empty-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
   }
 
   .shell {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px dashed var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -336,13 +336,13 @@
     padding: 10px 16px;
     background: linear-gradient(
       135deg,
-      var(--theme-card-bg, #0f172a),
-      var(--theme-panel-bg, #0b1021)
+      var(--theme-card-bg),
+      var(--theme-panel-bg)
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 13px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition:
@@ -360,13 +360,13 @@
   }
 
   .action-button:hover:not(:disabled) {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
     box-shadow: var(--theme-shadow, 0 14px 30px rgba(0, 0, 0, 0.35));
     background: linear-gradient(
       135deg,
-      var(--theme-card-hover-bg, #131a2e),
-      var(--theme-panel-bg, #0e1426)
+      var(--theme-card-hover-bg),
+      var(--theme-panel-bg)
     );
   }
 
@@ -402,13 +402,13 @@
 
   .system-notice i {
     color: color-mix(in srgb, var(--theme-accent) 80%, transparent);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
   .system-notice p {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     line-height: 1.4;
   }
@@ -422,7 +422,7 @@
     }
 
     .panel-header h2 {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .quick-actions {

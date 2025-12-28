@@ -131,17 +131,17 @@
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px var(--theme-shadow);
   }
 
   .answer-button:active {
     transform: translateY(0);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px var(--theme-shadow);
   }
 
   .answer-button.selected {
     background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
-    border-color: var(--theme-accent, #667eea);
+    border-color: var(--theme-accent);
     box-shadow: 0 0 20px
       color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
@@ -155,15 +155,15 @@
 
   .answer-button.incorrect {
     background: rgba(248, 113, 113, 0.3);
-    border-color: #f87171;
+    border-color: var(--semantic-error);
     box-shadow: 0 0 20px rgba(248, 113, 113, 0.4);
     animation: incorrectShake 0.6s ease-in-out;
   }
 
   .answer-button.faded {
     opacity: 0.4;
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
   }
 
   .answer-button.disabled {
@@ -193,7 +193,7 @@
   }
 
   .incorrect-icon {
-    color: #f87171;
+    color: var(--semantic-error);
     text-shadow: 0 0 8px rgba(248, 113, 113, 0.8);
   }
 
@@ -280,7 +280,7 @@
 
   /* Focus styles for accessibility */
   .answer-button:focus {
-    outline: 3px solid var(--theme-accent, #667eea);
+    outline: 3px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

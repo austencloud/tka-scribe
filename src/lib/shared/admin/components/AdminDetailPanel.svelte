@@ -20,6 +20,7 @@
    * </AdminDetailPanel>
    */
 
+  import type { Snippet } from "svelte";
   import {
     ADMIN_COLORS,
     ADMIN_SPACING,
@@ -33,9 +34,9 @@
     onClose: () => void;
     variant?: "default" | "form" | "readonly";
     class?: string;
-    children: any;
-    header?: any;
-    actions?: any;
+    children: Snippet;
+    header?: Snippet;
+    actions?: Snippet;
   }
 
   let {
@@ -104,10 +105,10 @@
     text-align: center;
     background: linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.05) 0%,
+      var(--theme-card-bg) 0%,
       transparent 100%
     );
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .close-btn {
@@ -119,7 +120,7 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -148,25 +149,25 @@
     height: 64px;
     margin: 0 auto 16px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-text-dim);
   }
 
   .header-title {
     margin: 0 0 4px 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .header-subtitle {
     margin: 0;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   /* Content */
@@ -196,7 +197,7 @@
   /* Footer */
   .detail-footer {
     padding: 16px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
     background: rgba(0, 0, 0, 0.3);
     display: flex;
     gap: 12px;
@@ -226,15 +227,15 @@
       width: var(--min-touch-target);
       height: var(--min-touch-target);
       margin: 0 auto 12px;
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
 
     .header-title {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .header-subtitle {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       word-break: break-all;
     }
 

@@ -388,7 +388,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     flex-direction: column;
     height: 100%;
     background: transparent;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     overflow: hidden;
   }
 
@@ -413,7 +413,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--theme-accent, #a5b4fc);
+    color: var(--theme-accent);
   }
 
   .config-row {
@@ -440,8 +440,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .config-field input,
   .config-field select {
     padding: 0.875rem 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 10px;
     color: inherit;
     font-size: 1rem;
@@ -451,7 +451,7 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   .config-field input:focus,
   .config-field select:focus {
     outline: none;
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
@@ -466,8 +466,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
     padding: 1rem;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      var(--theme-accent-strong, #8b5cf6)
+      var(--theme-accent, var(--theme-accent)),
+      var(--theme-accent-strong, var(--theme-accent-strong))
     );
     border: none;
     border-radius: 12px;
@@ -489,8 +489,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   }
 
   :global(.drawer-content.ml-training-capture__drawer) {
-    --sheet-bg: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
-    --sheet-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --sheet-bg: var(--theme-panel-elevated-bg);
+    --sheet-border: 1px solid var(--theme-stroke);
     --sheet-filter: blur(24px) saturate(180%);
   }
 

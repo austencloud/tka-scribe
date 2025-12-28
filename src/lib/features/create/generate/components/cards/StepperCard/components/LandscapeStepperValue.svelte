@@ -30,7 +30,7 @@ LandscapeStepperValue.svelte - Centered value display for landscape stepper
     text-align: center;
     line-height: 1.2;
 
-    text-shadow: 0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    text-shadow: 0 1px 3px var(--theme-shadow);
     pointer-events: none;
     white-space: nowrap;
     z-index: 3;

@@ -174,9 +174,9 @@
 
   .sheet-header h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   /* Content */
@@ -200,19 +200,19 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 12px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .variation-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .variation-indicator {
@@ -224,14 +224,14 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--theme-text-dim, rgba(255, 255, 255, 0.25));
+    background: var(--theme-text-dim);
     transition: all 0.2s ease;
   }
 
   .variation-dot.active {
-    background: var(--theme-accent, rgba(99, 102, 241, 0.9));
+    background: var(--theme-accent);
     box-shadow: 0 0 6px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
   }
 
   .variation-text {
@@ -239,7 +239,7 @@
   }
 
   .variation-toggle i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
   }
 </style>

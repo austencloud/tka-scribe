@@ -110,8 +110,8 @@
     width: clamp(320px, 40vw, 600px);
     max-width: 100vw;
     height: 100%;
-    background: var(--theme-panel-bg, rgba(20, 20, 20, 0.98));
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-panel-bg);
+    border-left: 1px solid var(--theme-stroke);
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.5);
     animation: slideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -121,7 +121,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -138,8 +138,8 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -147,17 +147,17 @@
   }
 
   .close-button:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-accent);
   }
 
   .close-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .close-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .settings-content {

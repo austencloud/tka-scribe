@@ -125,7 +125,7 @@
   .setting-label {
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.03em;
     min-width: 40px;
@@ -135,7 +135,7 @@
   .mode-toggle {
     display: flex;
     gap: 4px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 8px;
     padding: 3px;
   }
@@ -149,24 +149,24 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .toggle-option:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   .toggle-option.active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 20%,
+      var(--semantic-info, var(--semantic-info)) 20%,
       transparent
     );
-    color: var(--semantic-info, #60a5fa);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   /* Scale Controls */
@@ -182,8 +182,8 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
     font-size: 0.75rem;
@@ -194,15 +194,15 @@
   .scale-btn:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 40%,
+      var(--semantic-info, var(--semantic-info)) 40%,
       transparent
     );
-    color: var(--semantic-info, #60a5fa);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .scale-btn:active:not(:disabled) {
@@ -219,7 +219,7 @@
     text-align: center;
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--semantic-info, #60a5fa);
+    color: var(--semantic-info, var(--semantic-info));
     font-variant-numeric: tabular-nums;
   }
 
@@ -229,17 +229,17 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.65rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .reset-btn:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
@@ -249,10 +249,10 @@
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -264,23 +264,23 @@
   }
 
   .visibility-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   .visibility-toggle.active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
-    color: var(--semantic-info, #60a5fa);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   /* Focus states */
@@ -289,7 +289,7 @@
   .reset-btn:focus-visible,
   .visibility-toggle:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 60%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 60%, transparent);
     outline-offset: 2px;
   }
 </style>

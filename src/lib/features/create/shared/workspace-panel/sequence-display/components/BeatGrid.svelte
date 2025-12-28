@@ -563,7 +563,7 @@
     justify-content: center;
     height: 100%;
     gap: 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.9rem;
   }
 
@@ -606,7 +606,7 @@
   .beat-grid-scroll::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.4);
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .beat-grid-scroll::-webkit-scrollbar-thumb:hover {
@@ -617,7 +617,7 @@
   @media (max-width: 768px) {
     .beat-grid-scroll {
       scrollbar-width: auto;
-      scrollbar-color: rgba(255, 255, 255, 0.5) rgba(255, 255, 255, 0.15);
+      scrollbar-color: var(--theme-text-dim) rgba(255, 255, 255, 0.15);
     }
 
     .beat-grid-scroll::-webkit-scrollbar {

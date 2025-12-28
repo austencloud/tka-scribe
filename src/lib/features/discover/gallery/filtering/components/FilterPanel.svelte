@@ -332,16 +332,16 @@ Follows Svelte 5 runes + microservices architecture.
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border-right: 1px solid var(--theme-stroke, var(--theme-stroke));
     color: var(--theme-text, white);
     overflow-y: auto;
   }
 
   .filter-header {
     padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .filter-header h2 {
@@ -353,8 +353,8 @@ Follows Svelte 5 runes + microservices architecture.
 
   .sort-controls {
     padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg);
   }
 
   .sort-controls label {
@@ -362,7 +362,7 @@ Follows Svelte 5 runes + microservices architecture.
     margin-bottom: var(--spacing-sm);
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
   }
 
   .sort-select-container {
@@ -374,8 +374,8 @@ Follows Svelte 5 runes + microservices architecture.
   .sort-select-container select {
     flex: 1;
     padding: var(--spacing-sm);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: var(--border-radius);
     color: var(--theme-text, white);
     font-size: 0.9rem;
@@ -394,8 +394,8 @@ Follows Svelte 5 runes + microservices architecture.
 
   .sort-direction-button {
     padding: var(--spacing-sm);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: var(--border-radius);
     color: var(--theme-text, white);
     cursor: pointer;
@@ -407,8 +407,8 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .sort-direction-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .sort-icon {
@@ -441,10 +441,10 @@ Follows Svelte 5 runes + microservices architecture.
 
   .filter-button {
     padding: var(--spacing-sm) var(--spacing-md);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: var(--border-radius);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.9rem;
@@ -454,8 +454,8 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .filter-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     color: var(--theme-text, white);
   }
 
@@ -497,7 +497,7 @@ Follows Svelte 5 runes + microservices architecture.
   .selected-letters {
     margin-top: var(--spacing-md);
     padding: var(--spacing-sm);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: var(--border-radius);
     font-size: 0.85rem;
     display: flex;
@@ -507,8 +507,8 @@ Follows Svelte 5 runes + microservices architecture.
 
   .clear-button {
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: var(--border-radius);
     color: var(--theme-text, white);
     cursor: pointer;
@@ -517,6 +517,6 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .clear-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 </style>

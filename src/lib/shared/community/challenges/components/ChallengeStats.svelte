@@ -33,14 +33,14 @@
       value: dashboard.stats.totalChallengesCompleted,
       suffix: "",
       icon: "fa-trophy",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
     },
     {
       label: "Skills Mastered",
       value: dashboard.stats.totalSkillsCompleted,
       suffix: "",
       icon: "fa-medal",
-      color: "#22c55e",
+      color: "var(--semantic-success)",
     },
     {
       label: "Skill Levels",
@@ -97,7 +97,7 @@
     background: color-mix(in srgb, var(--stat-color) 20%, transparent);
     border-radius: 8px;
     color: var(--stat-color);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
   }
 
@@ -109,15 +109,15 @@
   }
 
   .stat-value {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
     line-height: 1.2;
   }
 
   .stat-label {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -140,7 +140,7 @@
     .stat-icon {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       border-radius: 9px;
     }
 
@@ -149,11 +149,11 @@
     }
 
     .stat-value {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -175,16 +175,16 @@
     .stat-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
       border-radius: 10px;
     }
 
     .stat-value {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -208,15 +208,15 @@
     .stat-icon {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .stat-value {
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
 
     .stat-label {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

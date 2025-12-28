@@ -19,13 +19,13 @@
       135deg,
       color-mix(
           in srgb,
-          var(--active-type-color, var(--theme-accent, #3b82f6)) 8%,
+          var(--active-type-color, var(--theme-accent, var(--semantic-info))) 8%,
           rgba(255, 255, 255, 0.03)
         )
         0%,
       color-mix(
           in srgb,
-          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
+          var(--active-type-color, var(--theme-accent, var(--semantic-info))) 4%,
           rgba(255, 255, 255, 0.01)
         )
         100%
@@ -33,7 +33,7 @@
     border: 1px solid
       color-mix(
         in srgb,
-        var(--active-type-color, var(--theme-accent, #3b82f6)) 15%,
+        var(--active-type-color, var(--theme-accent, var(--semantic-info))) 15%,
         rgba(255, 255, 255, 0.06)
       );
     border-radius: clamp(8px, 1.8cqi, 10px);
@@ -45,8 +45,8 @@
     font-size: clamp(0.8rem, 2cqi, 0.9rem);
     color: color-mix(
       in srgb,
-      var(--active-type-color, var(--theme-accent, #3b82f6)) 70%,
-      rgba(255, 255, 255, 0.6)
+      var(--active-type-color, var(--theme-accent, var(--semantic-info))) 70%,
+      var(--theme-text-dim)
     );
     margin-top: 2px;
   }
@@ -56,7 +56,7 @@
     font-style: italic;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     line-height: 1.5;

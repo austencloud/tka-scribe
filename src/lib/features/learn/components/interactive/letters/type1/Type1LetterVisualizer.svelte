@@ -71,8 +71,8 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     [MotionType.PRO]: "#22D3EE", // Cyan for prospin
     [MotionType.ANTI]: "#A855F7", // Purple for antispin
     [MotionType.STATIC]: "#6B7280", // Gray for static
-    [MotionType.DASH]: "#F59E0B", // Amber for dash
-    [MotionType.FLOAT]: "#10B981", // Emerald for float
+    [MotionType.DASH]: "var(--semantic-warning)", // Amber for dash
+    [MotionType.FLOAT]: "var(--semantic-success)", // Emerald for float
   };
 
   // Position group colors
@@ -227,14 +227,14 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     gap: 0.75rem;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     transition: all 0.3s ease;
   }
 
   .type1-visualizer:hover {
     border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   /* Size variants */
@@ -275,7 +275,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     background: white;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   /* Loading state */
@@ -314,7 +314,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
     height: 100%;
     padding: 1rem;
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .error-icon {
@@ -391,7 +391,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
   /* Description */
   .description {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-align: center;
     margin: 0;
     max-width: 252px;

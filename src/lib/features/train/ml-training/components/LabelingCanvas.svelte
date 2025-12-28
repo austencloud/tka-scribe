@@ -141,7 +141,7 @@ Supports:
   function drawAnnotation(ann: PropAnnotation, selected: boolean) {
     if (!ctx) return;
 
-    const color = ann.hand === "left" ? "#3b82f6" : "#ef4444"; // Blue for left, red for right (hardcoded for canvas)
+    const color = ann.hand === "left" ? "var(--semantic-info)" : "var(--semantic-error)"; // Blue for left, red for right (hardcoded for canvas)
     const box = bboxToCanvas(ann.boundingBox);
 
     // Draw bounding box
@@ -548,14 +548,14 @@ Supports:
     padding: 0.25rem 0.5rem;
     border: none;
     border-radius: 4px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: white;
     cursor: pointer;
     font-size: 0.8rem;
   }
 
   .hand-btn.active {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
   }
 
   .annotation-count {
@@ -565,7 +565,7 @@ Supports:
 
   .btn-delete {
     padding: 0.25rem 0.5rem;
-    background: #ef4444;
+    background: var(--semantic-error);
     color: white;
     border: none;
     border-radius: 4px;
@@ -596,11 +596,11 @@ Supports:
     position: fixed;
     transform: translate(-50%, -50%);
     background: rgba(20, 20, 30, 0.95);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 1rem;
     z-index: 100;
-    box-shadow: 0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.5));
+    box-shadow: 0 8px 32px var(--theme-shadow);
   }
 
   .picker-title {
@@ -620,7 +620,7 @@ Supports:
   .hand-indicator.left {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
   }
@@ -628,7 +628,7 @@ Supports:
   .hand-indicator.right {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
   }
@@ -669,9 +669,9 @@ Supports:
   .direction-btn {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 8px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -681,10 +681,10 @@ Supports:
   .direction-btn:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 50%,
+      var(--theme-accent) 50%,
       transparent
     );
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     transform: scale(1.05);
   }
 
@@ -704,12 +704,12 @@ Supports:
   }
 
   .btn-toggle-hand {
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     color: white;
   }
 
   .btn-cancel {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: white;
   }
 </style>

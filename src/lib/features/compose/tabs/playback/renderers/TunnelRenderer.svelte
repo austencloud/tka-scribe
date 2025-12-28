@@ -124,6 +124,11 @@
       }
     };
     initialize();
+
+    return () => {
+      primaryAnimationState.dispose();
+      secondaryAnimationState.dispose();
+    };
   });
 
   // Load secondary prop textures with tunnel colors
@@ -433,7 +438,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--spacing-lg);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .loading-message p,
@@ -460,7 +465,7 @@
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 4px solid rgba(255, 255, 255, 0.1);
+    border: 4px solid var(--theme-stroke);
     border-top-color: #ec4899;
     border-radius: 50%;
     animation: spin 1s linear infinite;

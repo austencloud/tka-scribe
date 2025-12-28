@@ -59,7 +59,7 @@
   .notes-input {
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--surface-dark);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     color: var(--foreground);
     font-size: var(--font-size-sm);

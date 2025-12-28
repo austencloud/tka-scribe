@@ -101,7 +101,7 @@ Tests understanding of: Alpha/Beta/Gamma positions, Thumb orientations, Prospin/
     gap: 1.5rem;
     padding: 1.5rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
   }
 

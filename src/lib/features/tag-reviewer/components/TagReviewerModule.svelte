@@ -170,10 +170,10 @@ ${JSON.stringify(summary, null, 2)}
 					color: "#eab308",
 				};
 			}
-			return { type: "reviewed", icon: "circle-check", color: "#22c55e" };
+			return { type: "reviewed", icon: "circle-check", color: "var(--semantic-success)" };
 		}
 
-		return { type: "partial", icon: "circle-half-stroke", color: "#3b82f6" };
+		return { type: "partial", icon: "circle-half-stroke", color: "var(--semantic-info)" };
 	}
 
 	// Get secondary label for sidebar
@@ -336,7 +336,7 @@ ${JSON.stringify(summary, null, 2)}
 	.spinner {
 		width: 48px;
 		height: 48px;
-		border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 4px solid var(--theme-stroke, var(--theme-stroke));
 		border-top-color: var(--primary-color);
 		border-radius: 50%;
 		animation: spin 1s linear infinite;

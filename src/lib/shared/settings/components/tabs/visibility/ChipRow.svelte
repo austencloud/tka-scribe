@@ -50,10 +50,10 @@
     gap: 2px;
     padding: 12px 8px;
     /* Bento box frosted glass background */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     cursor: pointer;
@@ -66,9 +66,9 @@
   }
 
   .chip:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
     /* Subtle lift effect */
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
@@ -85,39 +85,39 @@
   .chip.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 15%,
+      var(--theme-accent, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 40%,
+      var(--theme-accent, var(--semantic-info)) 40%,
       transparent
     );
-    color: var(--theme-accent, #60a5fa);
+    color: var(--theme-accent, var(--semantic-info));
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   .chip.active:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 20%,
+      var(--theme-accent, var(--semantic-info)) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 50%,
+      var(--theme-accent, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--theme-accent, #93c5fd);
+    color: var(--theme-accent);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   /* Disabled State */
@@ -128,14 +128,14 @@
   }
 
   .chip-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     line-height: 1.2;
     letter-spacing: -0.08px;
   }
 
   .badge {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 400;
     color: rgba(255, 193, 7, 0.9);
     line-height: 1.5;
@@ -144,7 +144,7 @@
   /* Focus State */
   .chip:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -157,11 +157,11 @@
     }
 
     .chip-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -175,11 +175,11 @@
     }
 
     .chip-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -200,7 +200,7 @@
     }
 
     .chip.active {
-      border-color: var(--theme-accent, rgba(59, 130, 246, 0.8));
+      border-color: var(--theme-accent);
     }
   }
 </style>

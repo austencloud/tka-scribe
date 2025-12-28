@@ -382,15 +382,15 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .inbox-header h2 {
     flex: 1;
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -407,7 +407,7 @@
     background: transparent;
     border: none;
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition:
       background 0.2s ease,
@@ -417,8 +417,8 @@
 
   .back-button:hover,
   .close-button:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-bg);
+    color: var(--theme-text);
   }
 
   .back-button:active,
@@ -450,13 +450,13 @@
     justify-content: center;
     gap: 12px;
     height: 100%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
   }
 
   .thread-loading i {
-    font-size: 24px;
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   :global(.drawer-content.inbox-drawer) {

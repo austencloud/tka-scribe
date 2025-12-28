@@ -96,16 +96,16 @@
     gap: 8px;
     padding-bottom: 8px;
     margin-bottom: 12px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    font-size: var(--font-size-compact, 12px);
+    border-bottom: 1px solid var(--theme-stroke);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .section-header i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
   }
 
@@ -117,7 +117,7 @@
     flex: 1;
     height: 4px;
     appearance: none;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
     border-radius: 2px;
   }
 
@@ -125,7 +125,7 @@
     appearance: none;
     width: 14px;
     height: 14px;
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     border-radius: 50%;
     cursor: pointer;
   }
@@ -133,8 +133,8 @@
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -160,6 +160,6 @@
 
   .color-swatch.active {
     border-color: white;
-    box-shadow: 0 0 0 2px var(--theme-accent, #4a9eff);
+    box-shadow: 0 0 0 2px var(--theme-accent);
   }
 </style>

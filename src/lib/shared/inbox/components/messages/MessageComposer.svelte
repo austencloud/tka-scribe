@@ -126,8 +126,8 @@
     align-items: flex-end;
     gap: 8px;
     padding: 12px 16px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   textarea {
@@ -135,12 +135,12 @@
     min-height: var(--min-touch-target);
     max-height: 120px;
     padding: 14px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 24px;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.4;
     resize: none;
     outline: none;
@@ -150,11 +150,11 @@
   }
 
   textarea::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   textarea:focus {
-    border-color: var(--theme-accent, #3b82f6);
+    border-color: var(--theme-accent, var(--semantic-info));
     box-shadow: 0 0 0 3px
       color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
@@ -170,7 +170,7 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     padding: 0;
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     border: none;
     border-radius: 50%;
     color: white;
@@ -182,7 +182,7 @@
   }
 
   .send-button:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, white);
+    background: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, white);
     transform: scale(1.05);
     box-shadow: 0 4px 12px
       color-mix(in srgb, var(--theme-accent) 40%, transparent);
@@ -205,7 +205,7 @@
   }
 
   .send-button.success {
-    background: var(--semantic-success, #22c55e);
+    background: var(--semantic-success, var(--semantic-success));
     animation: successPop 0.3s ease;
   }
 
@@ -222,7 +222,7 @@
   }
 
   .send-button i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     transition: transform 0.2s ease;
   }
 

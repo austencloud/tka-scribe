@@ -155,7 +155,7 @@ Research-backed design for 352px portrait (Z Fold):
 
   /* Color theming */
   .simplified-orientation-control.blue {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.05) 0%,
@@ -164,24 +164,24 @@ Research-backed design for 352px portrait (Z Fold):
   }
 
   .simplified-orientation-control.red {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
   }
 
   /* Color label - left column, centered */
   .color-label {
     font-weight: 700;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     letter-spacing: 0.5px;
     justify-self: center; /* Center within the left column */
   }
 
   .simplified-orientation-control.blue .color-label {
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .simplified-orientation-control.red .color-label {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   /* Center controls container - perfectly centered */
@@ -208,18 +208,18 @@ Research-backed design for 352px portrait (Z Fold):
     justify-content: center;
     cursor: pointer;
     transition: all 0.15s ease;
-    font-size: 14px; /* Reduced from 16px */
+    font-size: var(--font-size-sm); /* Reduced from 16px */
     flex-shrink: 0;
   }
 
   .simplified-orientation-control.blue .stepper-btn {
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: var(--semantic-info);
+    color: var(--semantic-info);
   }
 
   .simplified-orientation-control.red .stepper-btn {
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: var(--semantic-error);
+    color: var(--semantic-error);
   }
 
   .stepper-btn:hover {
@@ -240,7 +240,7 @@ Research-backed design for 352px portrait (Z Fold):
 
   /* Orientation display - sized for longest text "COUNTER" */
   .orientation-display {
-    font-size: 14px; /* Reduced from 16px to fit better */
+    font-size: var(--font-size-sm); /* Reduced from 16px to fit better */
     font-weight: 700;
     color: #1a1a2e;
     --orientation-slot-width: clamp(
@@ -262,7 +262,7 @@ Research-backed design for 352px portrait (Z Fold):
     padding: 4px 8px; /* Reduced from 6px 12px */
     background: rgba(0, 0, 0, 0.08);
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.3px; /* Reduced from 0.5px */
@@ -281,12 +281,12 @@ Research-backed design for 352px portrait (Z Fold):
     }
 
     .color-label {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       min-width: var(--min-touch-target);
     }
 
     .orientation-display {
-      font-size: 16px;
+      font-size: var(--font-size-base);
       --orientation-slot-width: clamp(
         60px,
         10ch,
@@ -295,7 +295,7 @@ Research-backed design for 352px portrait (Z Fold):
     }
 
     .motion-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 4px 8px;
     }
   }

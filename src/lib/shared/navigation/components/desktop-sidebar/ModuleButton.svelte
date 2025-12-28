@@ -9,6 +9,8 @@
   import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
   import NotificationBadge from "../NotificationBadge.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
+  // 🚀 Performance: Intent-based prefetching
+  import { prefetchOnIntent } from "../../utils/module-prefetch";
 
   let {
     module,
@@ -46,6 +48,13 @@
     onClick();
   }
 
+  // 🚀 Prefetch on hover intent
+  function handleMouseEnter() {
+    if (!isActive && !isDisabled) {
+      prefetchOnIntent(module.id);
+    }
+  }
+
   const isDisabled = $derived(module.disabled ?? false);
 
   // Get effective user info (previewed user takes priority over actual user)
@@ -78,13 +87,15 @@
   class:has-sections={hasSections}
   class:inside-glass={insideGlassContainer}
   onclick={handleClick}
+  onmouseenter={handleMouseEnter}
+  onfocus={handleMouseEnter}
   aria-label={module.label}
   aria-expanded={isExpanded}
   aria-controls="module-sections-{module.id}"
   aria-current={isActive ? "page" : undefined}
   aria-disabled={isDisabled}
   disabled={isDisabled}
-  style="--module-color: {module.color || '#6366f1'};"
+  style="--module-color: {module.color || 'var(--theme-accent)'};"
 >
   <div class="icon-wrapper">
     {#if showProfilePicture}
@@ -133,7 +144,7 @@
     background: transparent;
     border: 1px solid transparent;
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -153,7 +164,7 @@
     background: linear-gradient(
       135deg,
       transparent 40%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 50%,
+      var(--theme-card-bg, var(--theme-card-bg)) 50%,
       transparent 60%
     );
     opacity: 0;
@@ -176,9 +187,9 @@
   }
 
   .module-button:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    color: var(--theme-text);
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
     transform: translateX(3px);
   }
 
@@ -189,7 +200,7 @@
 
   /* Expanded state - blends with surrounding panel, not interactive */
   .module-button.expanded {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     background: transparent;
     border-color: transparent;
     cursor: default;
@@ -207,7 +218,7 @@
 
   /* Active module indicator - glass effect with module color */
   .module-button.active {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     background: color-mix(
       in srgb,
       var(--module-color) 15%,
@@ -245,8 +256,8 @@
     border-radius: 0 3px 3px 0;
     background: linear-gradient(
       180deg,
-      var(--module-color, #6366f1),
-      color-mix(in srgb, var(--module-color, #6366f1) 50%, transparent)
+      var(--module-color, var(--theme-accent)),
+      color-mix(in srgb, var(--module-color, var(--theme-accent)) 50%, transparent)
     );
   }
 
@@ -263,9 +274,9 @@
     border-radius: 3px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--module-color, #6366f1) 50%, transparent),
-      var(--module-color, #6366f1),
-      color-mix(in srgb, var(--module-color, #6366f1) 50%, transparent)
+      color-mix(in srgb, var(--module-color, var(--theme-accent)) 50%, transparent),
+      var(--module-color, var(--theme-accent)),
+      color-mix(in srgb, var(--module-color, var(--theme-accent)) 50%, transparent)
     );
   }
 
@@ -278,7 +289,7 @@
   }
 
   .module-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -320,7 +331,7 @@
   .module-label {
     flex: 1;
     text-align: left;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     letter-spacing: -0.01em;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
@@ -341,7 +352,7 @@
   }
 
   .expand-icon {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     opacity: 0.5;
     transition: all 0.25s ease;
   }
@@ -363,8 +374,8 @@
 
   .module-button.disabled:hover {
     transform: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    background: var(--theme-card-bg);
     box-shadow: none;
   }
 
@@ -373,20 +384,20 @@
   }
 
   .disabled-badge {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     padding: 3px 8px;
     border-radius: 6px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     letter-spacing: 0.5px;
   }
 
   /* Focus styles for keyboard navigation */
   .module-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

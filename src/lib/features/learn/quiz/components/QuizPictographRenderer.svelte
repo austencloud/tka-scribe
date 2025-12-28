@@ -33,9 +33,9 @@
   .pictograph-renderer {
     position: relative;
     display: inline-block;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     overflow: hidden;
     width: 120px;
     height: 120px;
@@ -70,7 +70,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .placeholder-text {

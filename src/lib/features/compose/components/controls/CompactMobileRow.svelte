@@ -89,9 +89,9 @@
     box-shadow:
       0 2px 8px rgba(34, 197, 94, 0.15),
       0 0 16px rgba(34, 197, 94, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
     -webkit-tap-highlight-color: transparent;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .play-pause-btn.playing {
@@ -105,7 +105,7 @@
     box-shadow:
       0 2px 8px rgba(239, 68, 68, 0.15),
       0 0 16px rgba(239, 68, 68, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -120,7 +120,7 @@
       box-shadow:
         0 4px 14px rgba(34, 197, 94, 0.25),
         0 0 20px rgba(34, 197, 94, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
 
     .play-pause-btn.playing:hover {
@@ -133,7 +133,7 @@
       box-shadow:
         0 4px 14px rgba(239, 68, 68, 0.25),
         0 0 20px rgba(239, 68, 68, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
@@ -146,7 +146,7 @@
     .play-pause-btn {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -154,7 +154,7 @@
     .play-pause-btn {
       width: 44px;
       height: 44px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

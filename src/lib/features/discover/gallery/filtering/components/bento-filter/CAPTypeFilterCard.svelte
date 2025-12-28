@@ -106,7 +106,7 @@ Options: All → Non-Circular → Circular → specific CAP types
       // All - blue
       return {
         color:
-          "radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)",
+          "radial-gradient(ellipse at top left, var(--semantic-info) 0%, var(--semantic-info) 40%, #1d4ed8 100%)",
         shadowColor: "217deg 91% 60%",
       };
     }
@@ -129,7 +129,7 @@ Options: All → Non-Circular → Circular → specific CAP types
     // Specific CAP type - purple (circular patterns)
     return {
       color:
-        "radial-gradient(ellipse at top left, #a78bfa 0%, #8b5cf6 40%, #6d28d9 100%)",
+        "radial-gradient(ellipse at top left, #a78bfa 0%, var(--theme-accent-strong) 40%, #6d28d9 100%)",
       shadowColor: "263deg 70% 50%",
     };
   });

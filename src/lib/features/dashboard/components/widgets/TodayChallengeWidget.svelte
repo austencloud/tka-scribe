@@ -86,11 +86,10 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 24px;
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 12%, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 12%, var(--theme-panel-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: 24px;
     overflow: hidden;
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }
@@ -108,17 +107,17 @@
     justify-content: center;
     width: 44px;
     height: 44px;
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 25%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
+    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 25%, var(--theme-card-bg));
     border-radius: 14px;
-    color: var(--semantic-warning, #f59e0b);
-    font-size: 18px;
+    color: var(--semantic-warning, var(--semantic-warning));
+    font-size: var(--font-size-lg);
   }
 
   .widget-header h3 {
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .widget-content {
@@ -138,9 +137,9 @@
     height: 80px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 8%, transparent) 25%,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent) 50%,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 8%, transparent) 75%
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 8%, transparent) 25%,
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent) 50%,
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 8%, transparent) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -167,14 +166,14 @@
   }
 
   .empty-state i {
-    font-size: 32px;
-    color: color-mix(in srgb, var(--semantic-warning, #f59e0b) 40%, transparent);
+    font-size: var(--font-size-3xl);
+    color: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 40%, transparent);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .view-all-btn {
@@ -186,8 +185,8 @@
     padding: 14px 20px;
     background: linear-gradient(
       135deg,
-      var(--semantic-warning, #f59e0b) 0%,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 80%, black) 100%
+      var(--semantic-warning, var(--semantic-warning)) 0%,
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 80%, black) 100%
     );
     border: none;
     border-radius: 14px;
@@ -205,7 +204,7 @@
   }
 
   .view-all-btn i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   @media (max-width: 768px) {
@@ -217,7 +216,7 @@
     .header-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .widget-header h3 {

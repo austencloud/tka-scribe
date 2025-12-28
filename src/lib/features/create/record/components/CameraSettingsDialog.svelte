@@ -160,9 +160,9 @@ Settings dialog for camera configuration including mirror toggle and camera sour
   .camera-settings-dialog {
     background: var(--surface-glass, rgba(20, 20, 20, 0.95));
     backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--border-color, var(--theme-stroke));
     border-radius: var(--border-radius-lg, 12px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px var(--theme-shadow);
     width: 100%;
     max-width: 400px;
     max-height: 80vh;
@@ -174,12 +174,12 @@ Settings dialog for camera configuration including mirror toggle and camera sour
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg, 24px);
-    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--border-color, var(--theme-stroke));
   }
 
   .dialog-title {
     margin: 0;
-    font-size: var(--font-size-lg, 18px);
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: var(--foreground, #ffffff);
   }
@@ -199,11 +199,11 @@ Settings dialog for camera configuration including mirror toggle and camera sour
 
   .close-button:hover {
     background: var(--surface-light, rgba(255, 255, 255, 0.1));
-    border-color: var(--primary, #3b82f6);
+    border-color: var(--primary, var(--semantic-info));
   }
 
   .close-icon {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     color: var(--foreground, #ffffff);
   }
 
@@ -221,7 +221,7 @@ Settings dialog for camera configuration including mirror toggle and camera sour
 
   .setting-label {
     display: block;
-    font-size: var(--font-size-sm, 14px);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--foreground-muted, #cccccc);
     margin-bottom: var(--spacing-sm, 8px);
@@ -237,27 +237,27 @@ Settings dialog for camera configuration including mirror toggle and camera sour
     gap: var(--spacing-sm, 8px);
     width: 100%;
     padding: var(--spacing-md, 16px);
-    background: var(--surface-light, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    background: var(--surface-light, var(--theme-card-bg));
+    border: 1px solid var(--border-color, var(--theme-stroke));
     border-radius: var(--border-radius-md, 8px);
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: var(--font-size-base, 16px);
+    font-size: var(--font-size-base);
     color: var(--foreground, #ffffff);
   }
 
   .toggle-button:hover {
     background: var(--surface-lighter, rgba(255, 255, 255, 0.1));
-    border-color: var(--primary, #3b82f6);
+    border-color: var(--primary, var(--semantic-info));
   }
 
   .toggle-button.active {
     background: var(--primary-glass, rgba(59, 130, 246, 0.2));
-    border-color: var(--primary, #3b82f6);
+    border-color: var(--primary, var(--semantic-info));
   }
 
   .toggle-icon {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .toggle-text {
@@ -267,35 +267,35 @@ Settings dialog for camera configuration including mirror toggle and camera sour
   .camera-selector {
     width: 100%;
     padding: var(--spacing-md, 16px);
-    background: var(--surface-light, rgba(255, 255, 255, 0.05));
+    background: var(--surface-light, var(--theme-card-bg));
     color: var(--foreground, #ffffff);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--border-color, var(--theme-stroke));
     border-radius: var(--border-radius-md, 8px);
-    font-size: var(--font-size-base, 16px);
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .camera-selector:hover {
     background: var(--surface-lighter, rgba(255, 255, 255, 0.1));
-    border-color: var(--primary, #3b82f6);
+    border-color: var(--primary, var(--semantic-info));
   }
 
   .camera-selector:focus {
     outline: none;
-    border-color: var(--primary, #3b82f6);
+    border-color: var(--primary, var(--semantic-info));
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 
   .info-text {
     margin-top: var(--spacing-lg, 24px);
     padding-top: var(--spacing-lg, 24px);
-    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--border-color, var(--theme-stroke));
   }
 
   .info-text p {
     margin: 0;
-    font-size: var(--font-size-sm, 14px);
+    font-size: var(--font-size-sm);
     color: var(--foreground-muted, #cccccc);
     text-align: center;
   }

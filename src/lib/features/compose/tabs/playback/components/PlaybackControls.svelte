@@ -160,9 +160,8 @@
     justify-content: space-between;
     gap: 1.5rem;
     padding: 1rem 1.25rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    backdrop-filter: blur(10px);
+    background: var(--theme-panel-bg);
+    border-top: 1px solid var(--theme-stroke);
     -webkit-backdrop-filter: blur(10px);
     position: sticky;
     bottom: 0;
@@ -191,8 +190,8 @@
     min-width: var(--min-touch-target);
     height: var(--min-touch-target);
     padding: 0 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.85);
     font-size: 1rem;
@@ -257,7 +256,7 @@
   .step-size-label {
     font-size: 0.8rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .step-size {
@@ -280,8 +279,8 @@
 
   .mini-btn:hover:enabled {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .mini-btn.active {
@@ -295,7 +294,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     margin-right: 0.5rem;
   }
 
@@ -312,7 +311,7 @@
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -321,8 +320,8 @@
 
   .speed-btn:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .speed-btn.active {

@@ -136,7 +136,7 @@ Features frame processing loop for pose estimation and overlay support.
     position: relative;
     width: 100%;
     height: 100%;
-    background: var(--theme-panel-bg, #0a0a0a);
+    background: var(--theme-panel-bg);
     border-radius: var(--border-radius-lg, 12px);
     overflow: hidden;
   }
@@ -163,15 +163,15 @@ Features frame processing loop for pose estimation and overlay support.
     align-items: center;
     justify-content: center;
     gap: var(--spacing-md, 16px);
-    color: var(--theme-text, #ffffff);
-    background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
+    color: var(--theme-text);
+    background: color-mix(in srgb, var(--theme-shadow) 80%, transparent);
   }
 
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    border-top-color: var(--semantic-info, #3b82f6);
+    border: 3px solid var(--theme-stroke-strong);
+    border-top-color: var(--semantic-info, var(--semantic-info));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -185,7 +185,7 @@ Features frame processing loop for pose estimation and overlay support.
   .error-icon {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .error-state p {
@@ -196,17 +196,17 @@ Features frame processing loop for pose estimation and overlay support.
 
   .retry-button {
     padding: var(--spacing-sm, 8px) var(--spacing-lg, 24px);
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     color: var(--theme-text, white);
     border: none;
     border-radius: var(--border-radius-md, 8px);
     cursor: pointer;
-    font-size: var(--font-size-md, 16px);
+    font-size: var(--font-size-md);
     transition: all 0.2s ease;
   }
 
   .retry-button:hover {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 85%, #000);
+    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 85%, #000);
     transform: translateY(-2px);
   }
 

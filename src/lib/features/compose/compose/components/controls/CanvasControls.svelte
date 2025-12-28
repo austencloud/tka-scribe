@@ -194,10 +194,9 @@
     flex-direction: column;
     gap: clamp(8px, 2cqi, 12px);
     padding: clamp(6px, 1.5cqi, 12px) clamp(10px, 2cqi, 20px);
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: clamp(6px, 2cqi, 14px);
-    backdrop-filter: blur(8px);
     container-type: inline-size;
     container-name: controls;
   }
@@ -228,7 +227,7 @@
     min-height: var(--min-touch-target);
     padding: clamp(8px, 2cqi, 14px) clamp(10px, 2.5cqi, 18px);
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: clamp(4px, 1.5cqi, 10px);
     color: rgba(255, 255, 255, 0.85);
     font-size: clamp(0.75rem, 2.5cqi, 0.95rem);
@@ -303,8 +302,8 @@
   /* Fullscreen button */
   .fullscreen-btn {
     min-width: var(--min-touch-target);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .fullscreen-btn:hover {
@@ -323,15 +322,14 @@
     left: 50%;
     transform: translateX(-50%);
     margin-bottom: clamp(6px, 1.5cqi, 12px);
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: clamp(6px, 1.5cqi, 10px);
     padding: clamp(3px, 1cqi, 6px);
     box-shadow: var(
       --theme-shadow,
       0 clamp(6px, 1.5cqi, 12px) clamp(24px, 6cqi, 40px) rgba(0, 0, 0, 0.5)
     );
-    backdrop-filter: blur(12px);
     z-index: 100;
     display: grid;
     grid-template-columns: repeat(3, 1fr);

@@ -83,7 +83,7 @@
     justify-content: space-between;
     gap: 12px;
     padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: none;
     color: white;
     cursor: pointer;
@@ -119,21 +119,21 @@
   }
 
   .header-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     color: rgba(59, 130, 246, 0.9);
     flex-shrink: 0;
   }
 
   .header-title {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     letter-spacing: 0.2px;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .chevron-icon {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     transition: transform 0.2s ease;
     flex-shrink: 0;
   }

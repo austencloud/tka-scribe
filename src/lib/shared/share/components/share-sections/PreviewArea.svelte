@@ -130,7 +130,7 @@
     justify-content: center;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     margin-bottom: 8px;
   }
 
@@ -162,7 +162,7 @@
 
   .error-icon i {
     font-size: clamp(20px, 2.5cqw, 28px);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .preview-placeholder p,
@@ -177,7 +177,7 @@
   .preview-placeholder span,
   .preview-error span {
     font-size: clamp(12px, 1.2cqw, 14px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     max-width: 200px;
   }
 
@@ -202,7 +202,7 @@
     inset: 0;
     border-radius: 50%;
     border: 3px solid transparent;
-    border-top-color: #3b82f6;
+    border-top-color: var(--semantic-info);
     animation: ringRotate 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
   }
 
@@ -218,7 +218,7 @@
     align-items: center;
     gap: 8px;
     padding: clamp(10px, 1.2cqh, 14px) clamp(18px, 2.5cqw, 26px);
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #1d4ed8 100%);
     color: white;
     border: none;
     border-radius: 10px;
@@ -277,7 +277,7 @@
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 8px;
     color: white;
     font-size: clamp(11px, 1cqw, 13px);

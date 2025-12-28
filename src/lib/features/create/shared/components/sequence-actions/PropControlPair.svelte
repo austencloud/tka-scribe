@@ -147,12 +147,12 @@
      ============================================================================ */
 
   .prop-card.blue {
-    --prop-color: #3b82f6;
+    --prop-color: var(--semantic-info);
     --prop-color-rgb: 59, 130, 246;
   }
 
   .prop-card.red {
-    --prop-color: #ef4444;
+    --prop-color: var(--semantic-error);
     --prop-color-rgb: 239, 68, 68;
   }
 

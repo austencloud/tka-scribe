@@ -152,7 +152,7 @@
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -165,12 +165,12 @@
   }
 
   .dot.blue {
-    background: #3b82f6;
+    background: var(--semantic-info);
     box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
   }
 
   .dot.red {
-    background: #ef4444;
+    background: var(--semantic-error);
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
   }
 
@@ -180,9 +180,9 @@
     gap: 6px;
     padding: 6px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke-strong);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     font-size: 0.75rem;
     transition: all 0.15s ease;
@@ -194,7 +194,7 @@
   }
 
   .copied-label {
-    color: #22c55e;
+    color: var(--semantic-success);
     font-weight: 600;
   }
 
@@ -229,13 +229,13 @@
   }
 
   .data-row.override-active .val {
-    color: #22c55e;
+    color: var(--semantic-success);
     font-weight: 700;
   }
 
   .key {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -243,7 +243,7 @@
 
   .val {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-weight: 500;
     text-align: right;
     user-select: all;
@@ -256,14 +256,14 @@
   .subsection {
     margin-top: 8px;
     padding-top: 12px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    border-top: 1px dashed var(--theme-stroke);
   }
 
   .subsection h4 {
     margin: 0 0 8px 0;
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -271,8 +271,8 @@
   .empty-state {
     padding: 24px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
     font-style: italic;
-    font-size: 0.85rem;
+    font-size: var(--font-size-sm, 0.875rem); /* WCAG AAA: 14px minimum */
   }
 </style>

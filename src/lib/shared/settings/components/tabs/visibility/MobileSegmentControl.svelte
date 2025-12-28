@@ -49,7 +49,6 @@
     gap: 6px;
     padding: 6px;
     background: var(--theme-card-bg);
-    backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 16px;
     border: 1px solid var(--theme-stroke);
@@ -69,7 +68,7 @@
     border: 1px solid transparent;
     border-radius: 12px;
     color: var(--theme-text-dim);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
@@ -79,7 +78,7 @@
   }
 
   .segment-btn i {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     transition: all 150ms ease;
   }
 
@@ -92,29 +91,29 @@
   .segment-btn.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent, var(--theme-accent)) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 40%,
+      var(--theme-accent, var(--theme-accent)) 40%,
       transparent
     );
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .segment-btn.active i {
-    filter: drop-shadow(0 0 6px var(--theme-accent, #6366f1));
+    filter: drop-shadow(0 0 6px var(--theme-accent));
   }
 
   .segment-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -130,7 +129,7 @@
     }
 
     .segment-btn.active {
-      border-color: var(--theme-accent, #6366f1);
+      border-color: var(--theme-accent, var(--theme-accent));
     }
 
     .segment-btn:focus-visible {

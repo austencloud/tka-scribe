@@ -193,7 +193,7 @@
   :global(.grid-settings-backdrop) {
     background: color-mix(
       in srgb,
-      var(--theme-shadow, #000) 70%,
+      var(--theme-shadow) 70%,
       transparent
     ) !important;
   }
@@ -232,7 +232,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 16px;
   }
 
@@ -244,18 +244,18 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
   }
 
   .header-icon i {
-    font-size: 14px;
-    color: var(--semantic-info, #60a5fa);
+    font-size: var(--font-size-sm);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .header-content {
@@ -267,13 +267,13 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .panel-subtitle {
     margin: 2px 0 0 0;
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .close-btn {
@@ -283,9 +283,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -293,8 +293,8 @@
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .grid-sheet-body {
@@ -323,7 +323,7 @@
     }
 
     .header-icon i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .panel-title {
@@ -348,7 +348,7 @@
     display: block;
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -365,10 +365,10 @@
     align-items: center;
     gap: 6px;
     padding: 12px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -380,19 +380,19 @@
   }
 
   .mode-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .mode-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-info, #2563eb) 20%, transparent) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info) 20%, transparent) 100%
     );
-    border-color: var(--semantic-info, #3b82f6);
-    color: var(--semantic-info, #3b82f6);
+    border-color: var(--semantic-info, var(--semantic-info));
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .mode-hint {
@@ -400,7 +400,7 @@
     font-size: 0.7rem;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.45)) 80%,
+      var(--theme-text-dim) 80%,
       transparent
     );
     line-height: 1.3;
@@ -419,10 +419,10 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -431,11 +431,11 @@
   .scale-btn:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 20%,
+      var(--semantic-info, var(--semantic-info)) 20%,
       transparent
     );
-    border-color: var(--semantic-info, #3b82f6);
-    color: var(--semantic-info, #3b82f6);
+    border-color: var(--semantic-info, var(--semantic-info));
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .scale-btn:active:not(:disabled) {
@@ -452,7 +452,7 @@
     text-align: center;
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     font-variant-numeric: tabular-nums;
   }
 
@@ -497,10 +497,10 @@
 
   .reset-btn {
     padding: 8px 12px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.7rem;
     font-weight: 500;
     cursor: pointer;
@@ -508,8 +508,8 @@
   }
 
   .reset-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   @container (min-width: 360px) {
@@ -525,10 +525,10 @@
     justify-content: center;
     gap: 10px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -552,19 +552,19 @@
   }
 
   .toggle-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .toggle-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-info, #2563eb) 20%, transparent) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info) 20%, transparent) 100%
     );
-    border-color: var(--semantic-info, #3b82f6);
-    color: var(--semantic-info, #3b82f6);
+    border-color: var(--semantic-info, var(--semantic-info));
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   /* Safe area for mobile */
@@ -581,7 +581,7 @@
   .reset-btn:focus-visible,
   .scale-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
     outline-offset: 2px;
   }
 

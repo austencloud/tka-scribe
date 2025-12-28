@@ -197,9 +197,9 @@ rotating, mirroring, and color-swapping pictographs.
     width: 100%;
     padding: 10px 32px 10px 14px;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-family: var(
       --font-sans,
       -apple-system,
@@ -229,7 +229,7 @@ rotating, mirroring, and color-swapping pictographs.
 
   .orientation-selector option {
     background: #1e1e23;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     padding: 8px;
   }
 
@@ -238,7 +238,7 @@ rotating, mirroring, and color-swapping pictographs.
     right: 10px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     pointer-events: none;
     display: flex;
     align-items: center;
@@ -255,7 +255,7 @@ rotating, mirroring, and color-swapping pictographs.
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
@@ -274,7 +274,7 @@ rotating, mirroring, and color-swapping pictographs.
 
   .control-button:active {
     transform: translateY(0) scale(0.96);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .control-button:focus-visible {

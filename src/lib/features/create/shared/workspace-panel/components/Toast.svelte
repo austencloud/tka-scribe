@@ -48,7 +48,7 @@ Shows at the bottom center of screen, auto-dismisses after 3 seconds
     background: hsl(var(--destructive));
     color: hsl(var(--destructive-foreground));
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px var(--theme-shadow);
     pointer-events: auto;
     animation: slide-up 0.3s ease-out;
     min-width: 280px;
@@ -88,11 +88,11 @@ Shows at the bottom center of screen, auto-dismisses after 3 seconds
   }
 
   .toast-close:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
   }
 
   .toast-close:active {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
   }
 
   /* Mobile adjustments */

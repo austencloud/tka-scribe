@@ -125,8 +125,8 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    font-size: var(--font-size-compact, 12px);
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -139,7 +139,7 @@
     background: none;
     border: none;
     padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(16, 185, 129, 0.9);
     cursor: pointer;
     transition: color 0.15s ease;
@@ -161,11 +161,11 @@
     align-items: center;
     gap: 4px;
     padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 999px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.15s ease;
     white-space: nowrap;
@@ -174,7 +174,7 @@
   .tag-chip:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .tag-chip.selected {
@@ -213,7 +213,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-sm) var(--spacing-md);
     color: rgba(255, 255, 255, 0.4);
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
   }
 
   /* Responsive: Hide on very small screens if needed */

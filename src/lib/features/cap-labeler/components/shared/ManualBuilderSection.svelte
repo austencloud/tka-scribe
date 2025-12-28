@@ -123,7 +123,7 @@
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(255, 255, 255, 0.03);
-    border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px dashed var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 10px;
     color: var(--muted-foreground);
     font-size: var(--font-size-sm);
@@ -156,7 +156,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-sm);
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 </style>

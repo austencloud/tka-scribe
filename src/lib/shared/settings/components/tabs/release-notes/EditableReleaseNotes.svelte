@@ -182,12 +182,12 @@
     width: 100%;
     margin: 0;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.6;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     white-space: pre-wrap;
     text-align: left;
     cursor: default;
@@ -201,10 +201,10 @@
   }
 
   .release-notes-text.clickable:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent, var(--theme-accent-strong)) 30%,
       transparent
     );
   }
@@ -219,9 +219,9 @@
     flex-direction: column;
     gap: 8px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 12px;
   }
 
@@ -229,10 +229,10 @@
     width: 100%;
     padding: 12px;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     line-height: 1.6;
     font-family: inherit;
     resize: vertical;
@@ -243,7 +243,7 @@
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 50%,
+      var(--theme-accent, var(--theme-accent-strong)) 50%,
       transparent
     );
   }
@@ -254,27 +254,27 @@
   }
 
   .hint {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     padding: 4px 8px;
   }
 
   kbd {
     display: inline-block;
     padding: 2px 5px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 3px;
     font-family: monospace;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .error-message {
-    font-size: 12px;
-    color: var(--semantic-error, #ef4444);
+    font-size: var(--font-size-compact);
+    color: var(--semantic-error, var(--semantic-error));
     padding: 6px 8px;
-    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    background: var(--semantic-error-dim);
     border-radius: 6px;
   }
 
@@ -291,7 +291,7 @@
     padding: 8px 16px;
     border: none;
     border-radius: 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -305,31 +305,31 @@
   .action-btn.save {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 20%,
+      var(--theme-accent, var(--theme-accent-strong)) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
-    color: var(--theme-accent, #c4b5fd);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 40%, transparent);
+    color: var(--theme-accent);
   }
 
   .action-btn.save:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent) 30%,
       transparent
     );
-    color: var(--theme-accent-strong, #ddd6fe);
+    color: var(--theme-accent-strong);
   }
 
   .action-btn.cancel {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    color: var(--theme-text, var(--theme-text-dim));
   }
 
   .action-btn.cancel:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 </style>

@@ -45,15 +45,15 @@
   }
 
   .group-header h3 {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.92);
     margin: 0 0 2px 0;
   }
 
   .group-description {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin: 0;
     line-height: 1.4;
   }

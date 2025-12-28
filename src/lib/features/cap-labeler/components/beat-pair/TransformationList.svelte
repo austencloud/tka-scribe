@@ -55,7 +55,7 @@
   .transformation-option {
     padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(0, 0, 0, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 8px;
     color: var(--muted-foreground);
     font-size: var(--font-size-xs);
@@ -72,7 +72,7 @@
 
   .transformation-option.selected {
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(99, 102, 241, 0.3) 100%);
-    border-color: #8b5cf6;
+    border-color: var(--theme-accent-strong);
     color: var(--foreground);
     font-weight: 600;
   }

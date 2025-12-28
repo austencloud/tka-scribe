@@ -289,15 +289,15 @@
     max-width: 90vw;
     height: 100%;
     max-height: 100vh;
-    background: var(--theme-panel-bg, rgba(20, 25, 35, 0.98));
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border-left: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   /* Bottom sheet (mobile) styling */
   :global(.drawer-content.feedback-edit-drawer.bottom-sheet) {
     max-height: 85vh;
-    background: var(--theme-panel-bg, rgba(20, 25, 35, 0.98));
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .edit-drawer-content {
@@ -335,7 +335,7 @@
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .close-btn {
@@ -344,17 +344,17 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-stroke);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .edit-form {
@@ -373,28 +373,28 @@
     padding: 12px 14px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 10%,
+      var(--theme-accent, var(--semantic-info)) 10%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 25%, transparent);
     border-radius: 10px;
     font-size: 0.875rem;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     line-height: 1.4;
   }
 
   .append-info i {
     flex-shrink: 0;
     margin-top: 2px;
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   /* Original description display */
   .original-description {
     padding: 12px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
   }
 
@@ -415,7 +415,7 @@
   .original-description p {
     margin: 0;
     font-size: 0.9375rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
     white-space: pre-wrap;
   }
@@ -432,9 +432,9 @@
     display: flex;
     gap: 6px;
     padding: 4px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.25));
+    background: var(--theme-card-bg);
     border-radius: 10px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .segment {
@@ -448,7 +448,7 @@
     background: transparent;
     border: 1.5px solid transparent;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
@@ -456,7 +456,7 @@
   }
 
   .segment:hover:not(.selected) {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim);
     border-color: color-mix(in srgb, var(--type-color) 35%, transparent);
   }
 
@@ -465,7 +465,7 @@
   }
 
   .segment.selected {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     border-color: var(--type-color);
     background: color-mix(in srgb, var(--type-color) 15%, transparent);
   }
@@ -494,17 +494,17 @@
   .field-label {
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     flex-shrink: 0;
   }
 
   .textarea-wrapper {
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-card-bg);
     border: 1.5px solid
       color-mix(
         in srgb,
         var(--active-type-color) 20%,
-        var(--theme-stroke, rgba(255, 255, 255, 0.1))
+        var(--theme-stroke, var(--theme-stroke))
       );
     border-radius: 10px;
     transition: border-color 0.2s ease;
@@ -523,7 +523,7 @@
     padding: 12px;
     background: transparent;
     border: none;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-size: 1rem;
     font-family: inherit;
     min-height: 120px;
@@ -537,7 +537,7 @@
   }
 
   .field-textarea::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .field-hint {
@@ -550,11 +550,11 @@
   .char-count {
     font-size: 0.75rem;
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .char-count.met {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   /* Error */
@@ -565,13 +565,13 @@
     padding: 10px 12px;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 8px;
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     font-size: 0.875rem;
   }
 
@@ -600,14 +600,14 @@
   }
 
   .cancel-btn {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .cancel-btn:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-stroke);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .save-btn {

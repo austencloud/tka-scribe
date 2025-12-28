@@ -77,7 +77,7 @@ Features:
     left: 4px;
     background: rgba(0, 0, 0, 0.7);
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     padding: 2px 6px;
     border-radius: 4px;
@@ -108,7 +108,7 @@ Features:
     }
 
     .beat-number-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 1px 4px;
     }
 

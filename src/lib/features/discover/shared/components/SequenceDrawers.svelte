@@ -15,15 +15,20 @@
   import LetterSelectionSheet from "../../gallery/filtering/components/bento-filter/LetterSelectionSheet.svelte";
   import PositionOptionsSheet from "../../gallery/filtering/components/bento-filter/PositionOptionsSheet.svelte";
 
+  interface CurrentFilter {
+    type: string;
+    value: ExploreFilterValue;
+  }
+
   interface Props {
     isMobile: boolean;
     drawerWidth: string;
-    currentFilter: any;
+    currentFilter: CurrentFilter;
     currentSortMethod: ExploreSortMethod;
-    availableSections: any[];
+    availableSections: string[];
     capTypeCounts?: Record<string, number>;
     isNavVisible?: boolean;
-    onFilterChange: (type: string, value?: any) => void;
+    onFilterChange: (type: string, value?: ExploreFilterValue) => void;
     onSortMethodChange: (method: ExploreSortMethod) => void;
     onSectionClick: (sectionId: string) => void;
     onDetailPanelAction: (action: string, sequence: SequenceData) => void;
@@ -354,11 +359,11 @@
     top: 0 !important;
     height: 100vh !important;
     /* Integrated, native feel - transparent background, no hard edges */
-    background: color-mix(in srgb, var(--theme-panel-bg, #14141e) 70%, transparent) !important;
+    background: color-mix(in srgb, var(--theme-panel-bg) 70%, transparent) !important;
     backdrop-filter: blur(20px) !important;
     border: none !important;
     border-radius: 0 !important;
-    box-shadow: -2px 0 16px var(--theme-shadow, rgba(0, 0, 0, 0.15)) !important;
+    box-shadow: -2px 0 16px var(--theme-shadow) !important;
   }
 
   /* Subtle vertical grip indicator on left edge for swipe affordance */
@@ -373,8 +378,8 @@
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 10%,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 90%,
+      var(--theme-stroke-strong) 10%,
+      var(--theme-stroke-strong) 90%,
       transparent 100%
     );
     border-radius: 2px;
@@ -409,7 +414,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
-    background: var(--theme-panel-bg, #1a1a24);
+    background: var(--theme-panel-bg);
   }
 
   /* Modern scrollbar for bento filter panel */
@@ -422,7 +427,7 @@
   }
 
   .bento-filter-wrapper::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke-strong);
     border-radius: 3px;
   }
 
@@ -433,13 +438,13 @@
   /* Firefox scrollbar for bento filter */
   .bento-filter-wrapper {
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) transparent;
+    scrollbar-color: var(--theme-stroke-strong) transparent;
   }
 
   /* Sheet content padding */
   .sheet-content {
     padding: 16px 20px 24px;
-    background: var(--theme-panel-bg, #1a1a24);
+    background: var(--theme-panel-bg);
   }
 
   /* Drawer Headers */
@@ -448,12 +453,12 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     flex-shrink: 0;
   }
 
   :global(.drawer-content) .drawer-header h2 {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin: 0;
@@ -465,17 +470,17 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   :global(.drawer-content) .drawer-close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     color: var(--theme-text, white);
   }
 
@@ -490,7 +495,7 @@
     }
 
     :global(.drawer-content) .drawer-header h2 {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 
@@ -506,11 +511,11 @@
     top: 0 !important;
     height: 100vh !important;
     /* 2026 solid color style - no glassmorphism */
-    background: var(--theme-panel-bg, #1a1a24) !important;
+    background: var(--theme-panel-bg) !important;
     border: none !important;
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
+    border-left: 1px solid var(--theme-stroke) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, var(--theme-shadow)) !important;
   }
 
   /* Subtle vertical grip indicator on left edge for swipe affordance */
@@ -525,8 +530,8 @@
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 10%,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)) 90%,
+      var(--theme-stroke-strong) 10%,
+      var(--theme-stroke-strong) 90%,
       transparent 100%
     );
     border-radius: 2px;
@@ -546,7 +551,7 @@
     right: 20px !important;
     width: 36px !important;
     height: 36px !important;
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15)) !important;
+    background: var(--theme-stroke-strong) !important;
     border: 1px solid color-mix(in srgb, var(--theme-text, white) 25%, transparent) !important;
     z-index: 100 !important;
     position: relative;
@@ -600,7 +605,7 @@
     height: 100vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: var(--theme-panel-bg, #1a1a24) !important;
+    background: var(--theme-panel-bg) !important;
   }
 
   /* Letter/Length sheet drawer styles - desktop side panel */
@@ -612,11 +617,11 @@
       opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
     top: 0 !important;
     height: 100vh !important;
-    background: var(--theme-panel-bg, #1a1a24) !important;
+    background: var(--theme-panel-bg) !important;
     border: none !important;
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
+    border-left: 1px solid var(--theme-stroke) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, var(--theme-shadow)) !important;
   }
 
   /* Mobile: Letter/Length sheets as bottom sheets */
@@ -625,7 +630,7 @@
     max-height: 80vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: var(--theme-panel-bg, #1a1a24) !important;
+    background: var(--theme-panel-bg) !important;
   }
 
   /* Options sheet drawer styles - desktop side panel */
@@ -636,11 +641,11 @@
       opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
     top: 0 !important;
     height: 100vh !important;
-    background: var(--theme-panel-bg, #1a1a24) !important;
+    background: var(--theme-panel-bg) !important;
     border: none !important;
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
+    border-left: 1px solid var(--theme-stroke) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, var(--theme-shadow)) !important;
   }
 
   /* Mobile: Options sheet as bottom sheet */
@@ -648,7 +653,7 @@
     max-height: 85vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: var(--theme-panel-bg, #1a1a24) !important;
+    background: var(--theme-panel-bg) !important;
   }
 
   /* Options sheet content - scrollable */
@@ -665,17 +670,17 @@
       opacity 350ms cubic-bezier(0.32, 0.72, 0, 1) !important;
     top: 0 !important;
     height: 100vh !important;
-    background: var(--theme-panel-bg, #14141e) !important;
+    background: var(--theme-panel-bg) !important;
     border: none !important;
-    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08)) !important;
+    border-left: 1px solid var(--theme-stroke) !important;
     border-radius: 0 !important;
-    box-shadow: -4px 0 24px var(--theme-shadow, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: -4px 0 24px var(--theme-shadow, var(--theme-shadow)) !important;
   }
 
   :global(.invite-collaborators-panel.drawer-content[data-placement="bottom"]) {
     max-height: 90vh !important;
     border-top-left-radius: 16px !important;
     border-top-right-radius: 16px !important;
-    background: var(--theme-panel-bg, #14141e) !important;
+    background: var(--theme-panel-bg) !important;
   }
 </style>

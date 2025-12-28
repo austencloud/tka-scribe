@@ -81,16 +81,16 @@
 
 <style>
   .version-group {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     overflow: hidden;
     transition: all 0.2s;
   }
 
   .version-group.expanded {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .version-header {
@@ -101,13 +101,13 @@
     padding: 16px;
     background: transparent;
     border: none;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     cursor: pointer;
     transition: background 0.2s;
   }
 
   .version-header:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
   }
 
   .version-info {
@@ -118,14 +118,14 @@
   }
 
   .version-number {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .version-date {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .version-summary {
@@ -141,13 +141,13 @@
     gap: 4px;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
   .summary-badge.bug {
     background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .summary-badge.feature {
@@ -157,17 +157,17 @@
 
   .summary-badge.general {
     background: rgba(59, 130, 246, 0.15);
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .expand-icon {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     transition: transform 0.2s;
   }
 
   .version-items {
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -181,7 +181,7 @@
     justify-content: center;
     gap: 8px;
     padding: 24px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
   }
 </style>

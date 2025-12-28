@@ -42,7 +42,7 @@ VTGQuizFeedback - Correct/incorrect feedback after answer
 	.result-feedback:not(.correct) {
 		background: rgba(248, 113, 113, 0.15);
 		border: 1px solid rgba(248, 113, 113, 0.3);
-		color: #f87171;
+		color: var(--semantic-error);
 	}
 
 	.result-feedback i {

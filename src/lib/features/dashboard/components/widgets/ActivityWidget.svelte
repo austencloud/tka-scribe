@@ -275,11 +275,11 @@
     padding: 24px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 10%,
+      var(--theme-accent, var(--theme-accent)) 10%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 22%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 22%, transparent);
     border-radius: 24px;
   }
 
@@ -298,19 +298,19 @@
     height: 44px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
     border-radius: 14px;
-    color: var(--theme-accent, #6366f1);
-    font-size: 18px;
+    color: var(--theme-accent, var(--theme-accent));
+    font-size: var(--font-size-lg);
   }
 
   .widget-header h3 {
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .widget-content {
@@ -330,9 +330,9 @@
     height: 80px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 75%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -359,20 +359,20 @@
   }
 
   .empty-state i {
-    font-size: 32px;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    font-size: var(--font-size-3xl);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .empty-hint {
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Activity Stats */
@@ -398,7 +398,7 @@
     padding: 12px 8px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 8%,
+      var(--theme-accent, var(--theme-accent)) 8%,
       transparent
     );
     border-radius: 12px;
@@ -408,19 +408,19 @@
   .stat-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     line-height: 1;
   }
 
   .stat-label {
     font-size: 0.6875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
 
   .stat-item.recent .stat-value {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   /* Sequence Cards - Thumbnail-first design */
@@ -439,11 +439,11 @@
     padding: 10px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 8%,
+      var(--theme-accent, var(--theme-accent)) 8%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
     border-radius: 16px;
     cursor: pointer;
     transition: all 150ms ease;
@@ -455,7 +455,7 @@
   .sequence-card:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 14%,
+      var(--theme-accent) 14%,
       transparent
     );
     transform: translateY(-2px);
@@ -465,12 +465,12 @@
   .sequence-card.revisit {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 8%,
+      var(--semantic-warning, var(--semantic-warning)) 8%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 15%,
+      var(--semantic-warning, var(--semantic-warning)) 15%,
       transparent
     );
   }
@@ -478,7 +478,7 @@
   .sequence-card.revisit:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 14%,
+      var(--semantic-warning, var(--semantic-warning)) 14%,
       transparent
     );
   }
@@ -490,7 +490,7 @@
     overflow: hidden;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 10%,
+      var(--theme-accent, var(--theme-accent)) 10%,
       transparent
     );
   }
@@ -509,20 +509,20 @@
     height: 100%;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
-    color: var(--theme-accent, #6366f1);
-    font-size: 32px;
+    color: var(--theme-accent, var(--theme-accent));
+    font-size: var(--font-size-3xl);
   }
 
   .thumbnail-placeholder.revisit {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 15%,
+      var(--semantic-warning, var(--semantic-warning)) 15%,
       transparent
     );
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .card-label {
@@ -531,17 +531,17 @@
     gap: 6px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
 
   .card-label.revisit {
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .card-label i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Session Note */
@@ -551,14 +551,14 @@
     justify-content: center;
     gap: 6px;
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .live-dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--semantic-success, #22c55e);
+    background: var(--semantic-success, var(--semantic-success));
     animation: pulse 2s infinite;
   }
 
@@ -581,8 +581,8 @@
     padding: 14px 20px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 80%, black) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black) 100%
     );
     border: none;
     border-radius: 14px;
@@ -597,8 +597,8 @@
   .view-all-btn.create {
     background: linear-gradient(
       135deg,
-      var(--semantic-success, #22c55e) 0%,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 80%, black) 100%
+      var(--semantic-success, var(--semantic-success)) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, black) 100%
     );
   }
 
@@ -608,7 +608,7 @@
   }
 
   .view-all-btn i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   @media (max-width: 768px) {
@@ -620,7 +620,7 @@
     .header-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .widget-header h3 {

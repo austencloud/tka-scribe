@@ -84,17 +84,11 @@ Last audit: 2025-12-27
   const rendererLoading = $derived(engine.state.rendererLoading);
   const rendererError = $derived(engine.state.rendererError);
   const isInitialized = $derived(engine.state.isInitialized);
-
-  // Visibility state
   const tkaGlyphVisible = $derived(engine.state.visibilityState.tkaGlyph);
   const beatNumbersVisible = $derived(engine.state.visibilityState.beatNumbers);
-
-  // Pre-computation state
   const isPreRendering = $derived(engine.state.isPreRendering);
   const preRenderProgress = $derived(engine.state.preRenderProgress);
   const preRenderedFramesReady = $derived(engine.state.preRenderedFramesReady);
-
-  // Glyph transition state
   const displayedLetter = $derived(engine.state.displayedLetter);
   const displayedTurnsTuple = $derived(engine.state.displayedTurnsTuple);
   const displayedBeatNumber = $derived(engine.state.displayedBeatNumber);
@@ -111,31 +105,33 @@ Last audit: 2025-12-27
         externalTrailSettings = settings;
       },
     });
-
     return () => {
       engine.dispose();
     };
   });
 
   // Single effect to pass all props to engine
-  // NOTE: gridVisible, gridMode, and externalTrailSettings are read with untrack() to prevent infinite loops.
-  // - The engine subscribes to the visibility manager internally for grid settings
-  // - The engine syncs trail settings which would create a feedback loop if tracked
+  // NOTE: The engine.update() call is wrapped in untrack() because the engine
+  // internally reads reactive state (visibility manager, etc.) that would cause
+  // infinite loops if tracked. Props are read outside untrack() so changes still trigger updates.
   $effect(() => {
-    engine.update({
+    const props = {
       blueProp,
       redProp,
       secondaryBlueProp,
       secondaryRedProp,
-      gridVisible: untrack(() => gridVisible),
-      gridMode: untrack(() => gridMode),
+      gridVisible,
+      gridMode,
       backgroundAlpha,
       letter,
       beatData,
       sequenceData,
       currentBeat,
       isPlaying,
-      externalTrailSettings: untrack(() => externalTrailSettings),
+      externalTrailSettings,
+    };
+    untrack(() => {
+      engine.update(props);
     });
   });
 
@@ -146,7 +142,6 @@ Last audit: 2025-12-27
     }
   });
 
-  // Handle glyph SVG ready
   function handleGlyphSvgReady(
     svgString: string,
     width: number,

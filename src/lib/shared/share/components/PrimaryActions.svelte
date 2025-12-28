@@ -45,7 +45,7 @@
     padding: 16px 28px;
     border: none;
     border-radius: 14px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -77,7 +77,7 @@
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
     box-shadow:
       0 4px 16px rgba(59, 130, 246, 0.4),
@@ -112,15 +112,15 @@
   }
 
   .action-btn.primary i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
   }
 
   .action-btn.secondary {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg),
+      var(--theme-card-bg)
     );
     color: rgba(255, 255, 255, 0.95);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
@@ -160,7 +160,7 @@
   }
 
   .action-btn.secondary i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     opacity: 0.9;
   }
 

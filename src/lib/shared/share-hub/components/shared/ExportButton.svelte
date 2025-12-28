@@ -65,29 +65,29 @@
     max-width: 400px;
     margin: 0 auto;
     padding: 16px 32px;
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     border: none;
     border-radius: 12px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 700;
     color: white;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
-      0 0 0 1px var(--theme-accent-glow, rgba(74, 158, 255, 0.3));
+      0 4px 16px var(--theme-shadow),
+      0 0 0 1px var(--theme-accent-glow);
     overflow: hidden;
   }
 
   .export-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .export-button:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow:
       0 6px 20px rgba(0, 0, 0, 0.4),
-      0 0 0 1px var(--theme-accent-glow, rgba(74, 158, 255, 0.5));
+      0 0 0 1px var(--theme-accent-glow);
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -126,12 +126,12 @@
     100% {
       box-shadow:
         0 6px 20px rgba(0, 0, 0, 0.4),
-        0 0 0 1px var(--theme-accent-glow, rgba(74, 158, 255, 0.5));
+        0 0 0 1px var(--theme-accent-glow);
     }
     50% {
       box-shadow:
         0 6px 24px rgba(0, 0, 0, 0.5),
-        0 0 20px var(--theme-accent-glow, rgba(74, 158, 255, 0.6));
+        0 0 20px var(--theme-accent-glow);
     }
   }
 

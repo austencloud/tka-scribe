@@ -286,14 +286,14 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .panel-title i {
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text-dim);
   }
 
   .controls-row {

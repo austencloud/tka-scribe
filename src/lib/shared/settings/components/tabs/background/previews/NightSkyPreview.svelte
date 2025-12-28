@@ -47,8 +47,8 @@
       radial-gradient(circle, rgba(255, 255, 255, 0.9) 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
       radial-gradient(circle, white 2px, transparent 2px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.9) 1.5px, transparent 1.5px),
+      radial-gradient(circle, var(--theme-text-dim) 1px, transparent 1px),
+      radial-gradient(circle, var(--theme-text) 1.5px, transparent 1.5px),
       radial-gradient(circle, white 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
     background-size:
@@ -118,7 +118,7 @@
       transform: scale(1.05);
       box-shadow:
         0 0 clamp(20px, 5cqi, 40px) rgba(255, 255, 255, 1),
-        0 0 clamp(35px, 8cqi, 60px) rgba(255, 255, 255, 0.6),
+        0 0 clamp(35px, 8cqi, 60px) var(--theme-text-dim),
         inset -5px -5px 15px rgba(0, 0, 0, 0.15);
     }
   }

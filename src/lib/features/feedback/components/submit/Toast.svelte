@@ -41,27 +41,27 @@
   .toast.error {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent) 100%
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 8%, transparent) 100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent);
   }
 
   .toast.info {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 15%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 15%, transparent)
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 8%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 8%, transparent)
         100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 25%, transparent);
   }
 
   .toast.info .toast-icon {
-    background: var(--theme-accent-strong, #6366f1);
+    background: var(--theme-accent-strong, var(--theme-accent));
     color: white;
   }
 
@@ -76,7 +76,7 @@
   }
 
   .toast.error .toast-icon {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     color: white;
   }
 
@@ -89,13 +89,13 @@
     margin: 0;
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .toast-message {
     margin: 4px 0 0 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Reduced motion */

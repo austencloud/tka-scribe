@@ -36,7 +36,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
       type: "video",
       icon: "fa-solid fa-video",
       label: "Video",
-      color: "#ef4444",
+      color: "var(--semantic-error)",
       disabled: true,
     },
     {
@@ -50,7 +50,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
       type: "image",
       icon: "fa-solid fa-image",
       label: "Image",
-      color: "#3b82f6",
+      color: "var(--semantic-info)",
       disabled: false,
     },
   ];
@@ -103,7 +103,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     margin: 0 0 clamp(10px, 2cqw, 16px) 0;
     font-size: clamp(11px, 1.2cqw, 14px);
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 1.2px;
   }
@@ -124,10 +124,10 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     padding: clamp(12px, 2cqw, 18px) clamp(8px, 1.5cqw, 12px);
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.05) 0%,
+      var(--theme-card-bg) 0%,
       rgba(255, 255, 255, 0.02) 100%
     );
-    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: clamp(10px, 1.5cqw, 14px);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -144,7 +144,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     background: linear-gradient(
       135deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.05) 100%
+      var(--theme-card-bg) 100%
     );
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -160,7 +160,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     transform: translateY(-2px) scale(1.02);
     box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .type-button.selected {
@@ -174,7 +174,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     box-shadow:
       0 4px 20px color-mix(in srgb, var(--type-color) 30%, transparent),
       0 0 0 1px color-mix(in srgb, var(--type-color) 20%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      inset 0 1px 0 var(--theme-card-hover-bg);
   }
 
   .type-button.selected:hover:not(.disabled) {
@@ -210,7 +210,7 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
   .type-label {
     font-size: clamp(11px, 1.2cqw, 14px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     transition: all 0.25s ease;
     text-align: center;
   }
@@ -258,17 +258,17 @@ Compact horizontal row of buttons for selecting content types (Video, Animation,
     .type-icon {
       width: 28px;
       height: 28px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .type-label {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
 
     .selection-indicator {
       width: 14px;
       height: 14px;
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
       top: 4px;
       right: 4px;
     }

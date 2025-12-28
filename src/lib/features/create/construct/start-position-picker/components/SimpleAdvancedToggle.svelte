@@ -63,9 +63,9 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     border-radius: 24px;
 
     /* Typography */
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     letter-spacing: 0.3px;
 
     /* Interaction */
@@ -79,11 +79,11 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     /* Shadow */
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .mode-label {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     white-space: nowrap;
   }
@@ -91,7 +91,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
   /* Hover state */
   @media (hover: hover) {
     .view-mode-toggle:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+      background: var(--theme-card-hover-bg);
       border-color: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
       box-shadow:
@@ -108,7 +108,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 
   /* Focus state */
   .view-mode-toggle:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -136,7 +136,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
     }
 
     .mode-label {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

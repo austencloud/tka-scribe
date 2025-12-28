@@ -40,12 +40,12 @@
     background-image:
       radial-gradient(circle, white 2px, transparent 2px),
       radial-gradient(circle, rgba(255, 255, 255, 0.95) 1.5px, transparent 1.5px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.9) 2px, transparent 2px),
+      radial-gradient(circle, var(--theme-text) 2px, transparent 2px),
       radial-gradient(circle, white 1.5px, transparent 1.5px),
       radial-gradient(circle, rgba(255, 255, 255, 0.85) 2px, transparent 2px),
       radial-gradient(circle, rgba(255, 255, 255, 0.95) 1.5px, transparent 1.5px),
       radial-gradient(circle, white 1.5px, transparent 1.5px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.9) 2px, transparent 2px);
+      radial-gradient(circle, var(--theme-text) 2px, transparent 2px);
     background-size:
       79px 97px,
       131px 113px,
@@ -80,13 +80,13 @@
       radial-gradient(circle, rgba(255, 255, 255, 0.75) 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.65) 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+      radial-gradient(circle, var(--theme-text-dim) 1px, transparent 1px),
+      radial-gradient(circle, var(--theme-text-dim) 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.75) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+      radial-gradient(circle, var(--theme-text-dim) 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.65) 1px, transparent 1px),
       radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px),
-      radial-gradient(circle, rgba(255, 255, 255, 0.7) 1px, transparent 1px);
+      radial-gradient(circle, var(--theme-text-dim) 1px, transparent 1px);
     background-size:
       71px 83px,
       101px 97px,

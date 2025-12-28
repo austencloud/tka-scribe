@@ -46,14 +46,14 @@
     display: flex;
     gap: 16px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
   .info-section i {
-    font-size: 24px;
-    color: var(--theme-accent, #4a9eff);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-accent);
     opacity: 0.8;
     flex-shrink: 0;
     margin-top: 4px;
@@ -66,15 +66,15 @@
   }
 
   .info-content h4 {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
     color: var(--theme-text, white);
     margin: 0;
   }
 
   .info-content p {
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     line-height: 1.5;
   }
@@ -82,8 +82,8 @@
   .info-content ul {
     margin: 8px 0 0 0;
     padding-left: 20px;
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .info-content li {

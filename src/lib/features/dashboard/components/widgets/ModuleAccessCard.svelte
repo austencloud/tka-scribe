@@ -72,7 +72,7 @@
     background: color-mix(in srgb, var(--module-color) 12%, transparent);
     border-radius: var(--radius-2026-sm, 10px);
     flex-shrink: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .card-icon :global(i) {
@@ -88,13 +88,13 @@
     margin: 0;
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .card-content p {
     margin: 3px 0 0;
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -107,8 +107,8 @@
     width: 24px;
     height: 24px;
     flex-shrink: 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     transition: color var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
   }
 
@@ -126,7 +126,7 @@
     .card-icon {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .card-content h3 {

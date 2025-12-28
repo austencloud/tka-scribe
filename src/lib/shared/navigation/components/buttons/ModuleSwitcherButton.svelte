@@ -70,7 +70,7 @@
     min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
-    border: 1px solid var(--theme-accent, #6366f1);
+    border: 1px solid var(--theme-accent, var(--theme-accent));
     border-radius: 50%;
     cursor: pointer;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
@@ -87,7 +87,7 @@
     opacity: 0.85;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
   }
@@ -98,13 +98,13 @@
 
   /* Focus state for keyboard navigation */
   .menu-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .menu-icon {
-    font-size: 20px;
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-xl);
+    color: var(--theme-accent, var(--theme-accent));
     pointer-events: none;
   }
 
@@ -116,14 +116,14 @@
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border-radius: 9px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     line-height: 18px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px var(--theme-shadow);
     animation: badgePop 0.3s ease;
     pointer-events: none;
     z-index: 10;

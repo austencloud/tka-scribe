@@ -68,9 +68,9 @@
     display: flex;
     gap: 0.375rem;
     padding: 0.25rem;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 30%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 30%, transparent);
     border-radius: 0.75rem;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .mode-button {
@@ -84,26 +84,26 @@
     background: transparent;
     border: none;
     border-radius: 0.5rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s;
     white-space: nowrap;
   }
 
   .mode-button:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .mode-button.active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 25%,
+      var(--semantic-info, var(--semantic-info)) 25%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
-    color: var(--theme-text, #ffffff);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+    color: var(--theme-text);
   }
 
   .mode-button i {
@@ -128,7 +128,7 @@
   .mode-desc {
     font-size: 0.6875rem;
     font-weight: 400;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.2;
   }
 

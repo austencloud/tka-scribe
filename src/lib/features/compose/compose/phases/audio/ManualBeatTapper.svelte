@@ -315,7 +315,7 @@
 
   .toggle-label {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   /* Tapper content */
@@ -388,7 +388,7 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
   }
 
@@ -417,7 +417,7 @@
   }
 
   .stat-label {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -426,7 +426,7 @@
   .stat-value {
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-family: monospace;
   }
 
@@ -441,7 +441,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
   }
 
@@ -456,10 +456,10 @@
     justify-content: center;
     width: 24px;
     height: 24px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: 0.7rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -467,7 +467,7 @@
 
   .action-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .action-btn.danger:hover {
@@ -514,8 +514,8 @@
     height: 18px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     opacity: 0;
     transition: all 0.2s ease;
@@ -541,7 +541,7 @@
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
   }
 
@@ -558,13 +558,13 @@
 
   .inactive-message p {
     margin: 0;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     color: rgba(255, 255, 255, 0.75);
   }
 
   .inactive-message .hint {
     margin-top: 0.25rem;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
   }
 </style>

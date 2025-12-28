@@ -127,7 +127,7 @@
     width: 100%;
     max-width: min(900px, 85vw); /* Match SecurityTab card width */
     margin: 0 auto;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
     padding-top: clamp(20px, 3vh, 28px);
   }
 
@@ -142,7 +142,7 @@
     border: 1px solid rgba(239, 68, 68, 0.2);
     border-radius: 10px;
     color: rgba(239, 68, 68, 0.8);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -155,7 +155,7 @@
   }
 
   .disclosure-button i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: transform 0.2s ease;
     color: rgba(239, 68, 68, 0.7);
   }
@@ -177,21 +177,21 @@
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.6;
     margin: 0 0 16px 0;
   }
 
   .warning-text i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     color: rgba(239, 68, 68, 0.7);
     margin-top: 2px;
     flex-shrink: 0;
   }
 
   .confirmation-box {
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    background: var(--theme-panel-bg);
     border-radius: 10px;
     padding: 16px;
     margin-top: 12px;
@@ -201,14 +201,14 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 14px;
-    color: #ef4444;
+    font-size: var(--font-size-sm);
+    color: var(--semantic-error);
     margin: 0 0 16px 0;
     font-weight: 500;
   }
 
   .confirmation-text i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
   }
 
@@ -221,39 +221,39 @@
   }
 
   .confirmation-label {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
   }
 
   .confirmation-label strong {
-    color: #ef4444;
+    color: var(--semantic-error);
     font-family:
       ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     background: rgba(239, 68, 68, 0.15);
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     letter-spacing: 0.5px;
   }
 
   .confirmation-input {
     width: 100%;
     padding: 12px 14px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-family:
       ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
     letter-spacing: 0.5px;
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(239, 68, 68, 0.25);
     border-radius: 8px;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
     outline: none;
     transition: all 0.2s ease;
   }
 
   .confirmation-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.5); /* Improved contrast for WCAG AAA */
     font-family: inherit;
   }
 
@@ -277,7 +277,7 @@
     padding: 12px 20px;
     min-height: var(--min-touch-target);
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -285,18 +285,18 @@
   }
 
   .button i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .button--secondary {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    color: var(--theme-text, var(--theme-text));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .button--danger {
@@ -312,7 +312,7 @@
 
   .button--danger-confirm {
     background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--semantic-error);
     border: 2px solid rgba(239, 68, 68, 0.4);
   }
 

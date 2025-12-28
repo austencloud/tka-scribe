@@ -27,21 +27,21 @@
   }
 
   .no-changelog-content i {
-    font-size: 50px;
-    color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-stroke);
     margin-bottom: 16px;
   }
 
   .no-changelog-content h3 {
     margin: 0 0 8px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text, var(--theme-text-dim));
   }
 
   .no-changelog-content p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 </style>

@@ -173,7 +173,7 @@
 
   .sheet-subtitle {
     font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -185,7 +185,7 @@
   .section-title {
     font-size: clamp(0.85rem, 2.8cqi, 1rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin: 0 0 clamp(6px, 1.5cqi, 12px) 0;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -201,7 +201,7 @@
     padding: clamp(10px, 2.5cqi, 14px) 0;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
   }
 
@@ -230,8 +230,8 @@
     align-items: center;
     gap: clamp(6px, 1.5cqi, 12px);
     padding: clamp(12px, 3cqi, 20px);
-    background: rgba(255, 255, 255, 0.05);
-    border: clamp(1px, 0.3cqi, 2px) solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: clamp(1px, 0.3cqi, 2px) solid var(--theme-stroke);
     border-radius: clamp(6px, 2cqi, 14px);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -306,12 +306,12 @@
   .template-name {
     font-size: clamp(0.8rem, 2.5cqi, 0.95rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .template-description {
     font-size: clamp(0.65rem, 2cqi, 0.75rem);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Custom Hint */
@@ -321,9 +321,9 @@
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 10px);
     padding: clamp(6px, 1.5cqi, 12px) clamp(12px, 3cqi, 20px);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: clamp(6px, 1.5cqi, 10px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: clamp(0.7rem, 2.2cqi, 0.85rem);
   }
 

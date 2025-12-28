@@ -41,7 +41,7 @@
     margin: 0;
     font-size: 1.2rem;
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     white-space: nowrap;
     flex-shrink: 0;
   }
@@ -51,8 +51,8 @@
     height: 1px;
     background: linear-gradient(
       to right,
-      var(--theme-stroke, rgba(255, 255, 255, 0.2)) 0%,
-      var(--theme-stroke, rgba(255, 255, 255, 0.2)) 60%,
+      var(--theme-stroke) 0%,
+      var(--theme-stroke) 60%,
       transparent 100%
     );
   }

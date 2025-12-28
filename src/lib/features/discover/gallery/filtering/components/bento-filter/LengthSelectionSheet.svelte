@@ -80,9 +80,9 @@ Displays available lengths as pill buttons with clear option
 
   .sheet-title {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .clear-btn {
@@ -91,7 +91,7 @@ Displays available lengths as pill buttons with clear option
     border: none;
     border-radius: 100px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -131,12 +131,12 @@ Displays available lengths as pill buttons with clear option
 
   .length-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--theme-stroke);
     transform: translateY(-2px);
   }
 
   .length-btn.selected {
-    background: #f59e0b;
+    background: var(--semantic-warning);
     color: white;
     border-color: transparent;
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
@@ -147,13 +147,13 @@ Displays available lengths as pill buttons with clear option
   }
 
   .length-value {
-    font-size: 22px;
+    font-size: var(--font-size-xl);
     font-weight: 700;
     line-height: 1;
   }
 
   .length-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     opacity: 0.8;
   }

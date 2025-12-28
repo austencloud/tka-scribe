@@ -54,18 +54,18 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     /* Base button styling */
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .panel-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .panel-button:active {
@@ -74,33 +74,33 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .remove-beat-button {
     background: linear-gradient(
       135deg,
-      var(--semantic-warning, #ff9800) 0%,
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%
+      var(--semantic-warning) 0%,
+      color-mix(in srgb, var(--semantic-warning) 80%, #ff0000) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-warning, #ff9800) 30%,
+      var(--semantic-warning) 30%,
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 40%, transparent);
+      color-mix(in srgb, var(--semantic-warning) 40%, transparent);
   }
 
   .remove-beat-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%,
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%
+      color-mix(in srgb, var(--semantic-warning) 80%, #ff0000) 0%,
+      color-mix(in srgb, var(--semantic-warning) 60%, #ff0000) 100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, transparent);
+      color-mix(in srgb, var(--semantic-warning) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */
@@ -108,7 +108,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -118,7 +118,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -126,7 +126,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -137,7 +137,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

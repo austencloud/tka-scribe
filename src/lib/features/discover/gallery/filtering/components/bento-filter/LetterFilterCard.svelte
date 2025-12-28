@@ -23,7 +23,7 @@ Click to open letter selection sheet
 <FilterBaseCard
   title="Letter"
   currentValue={displayValue}
-  color="linear-gradient(135deg, #10b981, #059669)"
+  color="linear-gradient(135deg, var(--semantic-success), #059669)"
   shadowColor="160deg 84% 39%"
   {gridColumnSpan}
   {cardIndex}
@@ -49,16 +49,16 @@ Click to open letter selection sheet
   }
 
   .selected-letter {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     background: rgba(255, 255, 255, 0.15);
     padding: 2px 8px;
     border-radius: 4px;
   }
 
   .letter-hint {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 </style>

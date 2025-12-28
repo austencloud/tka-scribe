@@ -92,7 +92,7 @@ VTGComponentCard - Shows direction or timing component explanation
 
 	small {
 		font-size: 0.75rem;
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim);
 	}
 
 	@media (max-width: 600px) {

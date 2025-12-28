@@ -383,7 +383,7 @@
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     color: var(--muted-foreground);
     cursor: pointer;
@@ -398,7 +398,7 @@
   .action-btn.danger:hover {
     background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   /* Metadata row */
@@ -433,7 +433,7 @@
 
   .meta-item.warning {
     background: rgba(251, 191, 36, 0.15);
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   /* Beat Grid Section */
@@ -464,7 +464,7 @@
   .control-divider {
     width: 1px;
     height: 16px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
   }
 
   .chip-group {
@@ -475,7 +475,7 @@
   .control-chip {
     padding: 6px 12px;
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
     color: var(--muted-foreground);
     font-size: var(--font-size-xs);
@@ -501,7 +501,7 @@
 
   .control-chip.zero-turns.active {
     background: rgba(251, 191, 36, 0.25);
-    border-color: #fbbf24;
+    border-color: var(--semantic-warning);
     color: #fde047;
   }
 

@@ -148,7 +148,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--theme-panel-bg, #0f0f0f);
+    background: var(--theme-panel-bg);
     color: var(--theme-text, white);
   }
 
@@ -157,7 +157,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.5rem;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .browser-header h2 {
@@ -173,7 +173,7 @@
     align-items: center;
     justify-content: center;
     background: transparent;
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 8px;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -181,7 +181,7 @@
   }
 
   .close-button:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
   }
 
   .search-bar {
@@ -189,12 +189,12 @@
     align-items: center;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .search-bar i {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .search-bar input {
@@ -226,22 +226,22 @@
     gap: 1rem;
     padding: 3rem 1rem;
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .loading-state i,
   .error-state i,
   .empty-state i {
     font-size: 3rem;
-    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-stroke-strong);
   }
 
   .error-state button {
     padding: 0.75rem 1.5rem;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent-strong, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent-strong, var(--theme-accent-strong))
     );
     border: none;
     border-radius: 8px;
@@ -254,7 +254,7 @@
   .error-state button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
   }
 
   .sequences-grid {
@@ -269,8 +269,8 @@
     justify-content: space-between;
     gap: 1rem;
     padding: 1rem 1.25rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -279,10 +279,10 @@
   }
 
   .sequence-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 40%,
+      var(--semantic-info, var(--semantic-info)) 40%,
       transparent
     );
     transform: translateX(4px);
@@ -305,7 +305,7 @@
     display: flex;
     gap: 1rem;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .sequence-meta span {
@@ -315,12 +315,12 @@
   }
 
   .sequence-card > i {
-    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    color: var(--theme-stroke-strong);
     transition: all 0.2s;
   }
 
   .sequence-card:hover > i {
-    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
     transform: translateX(4px);
   }
 </style>

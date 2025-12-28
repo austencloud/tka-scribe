@@ -207,7 +207,7 @@
     overflow-y: auto;
     padding: 1.5rem;
     background: transparent;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   /* Loading State */
@@ -224,8 +224,8 @@
   .spinner {
     width: 3rem;
     height: 3rem;
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-top: 3px solid var(--semantic-error, #ef4444);
+    border: 3px solid var(--theme-stroke, var(--theme-stroke));
+    border-top: 3px solid var(--semantic-error, var(--semantic-error));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -263,8 +263,8 @@
     height: 64px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, #dc2626) 10%, transparent) 100%
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 10%, transparent) 100%
     );
     border-radius: 18px;
     margin-bottom: 1rem;
@@ -272,19 +272,19 @@
   }
 
   .header-icon i {
-    font-size: 28px;
-    color: var(--semantic-error, #ef4444);
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   @keyframes pulse-glow {
     0%,
     100% {
       box-shadow: 0 0 20px
-        color-mix(in srgb, var(--semantic-error, #ef4444) 10%, transparent);
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 10%, transparent);
     }
     50% {
       box-shadow: 0 0 30px
-        color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+        color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
     }
   }
 
@@ -299,7 +299,7 @@
   .empty-header p {
     margin: 0.5rem 0 0;
     font-size: 0.95rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Preview Stats Grid */
@@ -314,15 +314,15 @@
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     transition: all 200ms ease;
   }
 
   .stat-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke));
   }
 
   .stat-icon {
@@ -333,43 +333,43 @@
     height: 44px;
     border-radius: 12px;
     flex-shrink: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .stat-icon.sessions {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 12%,
+      var(--semantic-error, var(--semantic-error)) 12%,
       transparent
     );
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .stat-icon.time {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 12%,
+      var(--semantic-info, var(--semantic-info)) 12%,
       transparent
     );
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .stat-icon.accuracy {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 12%,
+      var(--semantic-success, var(--semantic-success)) 12%,
       transparent
     );
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .stat-icon.combo {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 12%,
+      var(--semantic-warning, var(--semantic-warning)) 12%,
       transparent
     );
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .stat-content {
@@ -390,7 +390,7 @@
 
   .stat-label {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
@@ -409,7 +409,7 @@
       var(--theme-card-bg, white) 50%,
       transparent
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
   }
 
@@ -422,7 +422,7 @@
 
   .section-header i {
     color: color-mix(in srgb, var(--theme-text, white) 40%, transparent);
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .section-header h2 {
@@ -440,7 +440,7 @@
 
   .empty-row {
     height: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 6px;
     overflow: hidden;
   }
@@ -449,9 +449,9 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--theme-stroke, rgba(255, 255, 255, 0.06)) 0%,
+      var(--theme-stroke) 0%,
       color-mix(in srgb, var(--theme-stroke, white) 30%, transparent) 50%,
-      var(--theme-stroke, rgba(255, 255, 255, 0.06)) 100%
+      var(--theme-stroke) 100%
     );
     background-size: 200% 100%;
     animation: shimmer 2s ease-in-out infinite;
@@ -490,8 +490,8 @@
     padding: 16px 28px;
     background: linear-gradient(
       135deg,
-      var(--semantic-error, #ef4444) 0%,
-      var(--semantic-error, #dc2626) 100%
+      var(--semantic-error, var(--semantic-error)) 0%,
+      var(--semantic-error, var(--semantic-error)) 100%
     );
     border: none;
     border-radius: 16px;
@@ -519,7 +519,7 @@
   .start-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 32px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 35%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 35%, transparent);
   }
 
   .start-btn:active {
@@ -527,7 +527,7 @@
   }
 
   .start-btn i:last-child {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     opacity: 0.8;
     transition: transform 200ms ease;
   }
@@ -551,7 +551,7 @@
     font-size: 1.25rem;
     font-weight: 600;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   /* ========================================
@@ -574,7 +574,7 @@
     }
 
     .header-icon i {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .empty-header h1 {
@@ -593,7 +593,7 @@
     .stat-icon {
       width: 38px;
       height: 38px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .stat-value {

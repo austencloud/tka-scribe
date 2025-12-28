@@ -147,7 +147,7 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    background: var(--theme-panel-bg, rgba(20, 20, 20, 0.98));
+    background: var(--theme-panel-bg);
     position: relative;
     overflow: hidden;
   }

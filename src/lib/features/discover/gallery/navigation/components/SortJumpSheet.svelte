@@ -142,8 +142,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -152,7 +152,7 @@ Touch-friendly interface for changing sort method and jumping to sections
 
   .section-header h3 {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -168,8 +168,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     align-items: center;
     gap: 16px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -177,19 +177,19 @@ Touch-friendly interface for changing sort method and jumping to sections
   }
 
   .option-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .option-button.active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #667eea) 15%,
+      var(--semantic-info) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #667eea) 40%,
+      var(--semantic-info) 40%,
       transparent
     );
   }
@@ -200,20 +200,20 @@ Touch-friendly interface for changing sort method and jumping to sections
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 10px;
-    font-size: 18px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-lg);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
   .option-button.active .option-icon {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #667eea) 30%,
+      var(--semantic-info) 30%,
       transparent
     );
-    color: var(--semantic-info, #667eea);
+    color: var(--semantic-info);
   }
 
   .option-content {
@@ -222,15 +222,15 @@ Touch-friendly interface for changing sort method and jumping to sections
   }
 
   .option-label {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin-bottom: 2px;
   }
 
   .option-description {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .check-icon {
@@ -239,8 +239,8 @@ Touch-friendly interface for changing sort method and jumping to sections
     justify-content: center;
     width: 24px;
     height: 24px;
-    color: var(--semantic-info, #667eea);
-    font-size: 16px;
+    color: var(--semantic-info);
+    font-size: var(--font-size-base);
     flex-shrink: 0;
   }
 
@@ -257,16 +257,16 @@ Touch-friendly interface for changing sort method and jumping to sections
     align-items: center;
     gap: 6px;
     padding: 16px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .jump-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
   }
 
@@ -275,17 +275,17 @@ Touch-friendly interface for changing sort method and jumping to sections
   }
 
   .jump-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     text-align: center;
   }
 
   .jump-count {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     padding: 2px 8px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border-radius: 10px;
   }
 

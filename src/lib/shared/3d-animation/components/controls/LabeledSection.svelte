@@ -33,7 +33,7 @@
   .section-label {
     font-size: var(--font-size-compact, 0.75rem);
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     letter-spacing: 0.05em;
   }
 </style>

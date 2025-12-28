@@ -2,7 +2,10 @@
 <script lang="ts">
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import type { KanbanBoardState } from "../../state/kanban-board-state.svelte";
-  import type { FeedbackItem } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
   import FeedbackKanbanColumn from "./FeedbackKanbanColumn.svelte";
   import KanbanStatusTab from "./KanbanStatusTab.svelte";
 
@@ -51,7 +54,7 @@
     }
   }
 
-  function handleDragOver(status: any) {
+  function handleDragOver(status: FeedbackStatus | "deferred") {
     if (boardState.draggedItem) {
       if (status === "deferred" || boardState.draggedItem.status !== status) {
         boardState.setDragOverColumn(status);
@@ -63,7 +66,7 @@
     boardState.setDragOverColumn(null);
   }
 
-  async function handleDrop(status: any) {
+  async function handleDrop(status: FeedbackStatus | "deferred") {
     if (!boardState.draggedItem) return;
 
     if (status === "deferred") {

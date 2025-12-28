@@ -75,9 +75,9 @@
     padding: var(--fb-space-sm) var(--fb-space-md);
     background: transparent;
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: var(--fb-radius-md);
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     cursor: pointer;
     font-weight: 500;
     font-size: var(--fb-text-xs);
@@ -88,7 +88,7 @@
   .delete-btn:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 10%,
+      var(--semantic-error, var(--semantic-error)) 10%,
       transparent
     );
     opacity: 1;
@@ -102,11 +102,11 @@
     padding: var(--fb-space-md);
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 5%,
+      var(--semantic-error, var(--semantic-error)) 5%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: var(--fb-radius-md);
   }
 
@@ -144,8 +144,8 @@
     justify-content: center;
     gap: 6px;
     padding: var(--fb-space-sm) var(--fb-space-md);
-    background: var(--semantic-error, #ef4444);
-    border: 1px solid var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
+    border: 1px solid var(--semantic-error, var(--semantic-error));
     border-radius: var(--fb-radius-md);
     color: white;
     cursor: pointer;
@@ -154,8 +154,8 @@
   }
 
   .delete-confirm-btn:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 80%, black);
-    border-color: color-mix(in srgb, var(--semantic-error, #ef4444) 80%, black);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, black);
+    border-color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, black);
   }
 
   .delete-confirm-btn:disabled {

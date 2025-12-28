@@ -94,7 +94,7 @@ Shows:
 
     background: hsl(var(--background));
     border-top: 1px solid hsl(var(--border));
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -4px 16px var(--theme-shadow);
   }
 
   .toolbar-button {

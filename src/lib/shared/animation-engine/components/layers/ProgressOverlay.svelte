@@ -49,10 +49,10 @@ Shows pre-render progress and perfect playback badge.
     color: white;
     padding: 8px 12px;
     border-radius: 8px;
-    font-size: var(--font-size-compact, 12px); /* Supplementary status text */
+    font-size: var(--font-size-compact); /* Supplementary status text */
     font-weight: 500;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px var(--theme-shadow);
     min-width: 140px;
   }
 
@@ -88,7 +88,7 @@ Shows pre-render progress and perfect playback badge.
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4ade80, #22c55e);
+    background: linear-gradient(90deg, #4ade80, var(--semantic-success));
     transition: width 0.3s ease;
   }
 
@@ -96,11 +96,11 @@ Shows pre-render progress and perfect playback badge.
     position: absolute;
     top: 12px;
     right: 12px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
     color: white;
     padding: 6px 12px;
     border-radius: 6px;
-    font-size: var(--font-size-compact, 12px); /* Supplementary badge text */
+    font-size: var(--font-size-compact); /* Supplementary badge text */
     font-weight: 600;
     z-index: 10;
     box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);

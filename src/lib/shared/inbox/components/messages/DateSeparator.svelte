@@ -61,11 +61,11 @@
 
   .date-label {
     padding: 4px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }

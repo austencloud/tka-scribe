@@ -319,7 +319,7 @@
 		gap: var(--spacing-xs);
 		padding: var(--spacing-sm) var(--spacing-md);
 		background: var(--surface-color);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke));
 		border-radius: 8px;
 		transition: var(--transition-fast);
 	}
@@ -372,7 +372,7 @@
 		width: 28px;
 		height: 28px;
 		background: var(--surface-dark);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke));
 		border-radius: 6px;
 		color: var(--muted-foreground);
 		cursor: pointer;
@@ -392,7 +392,7 @@
 	.action-btn.reject:hover {
 		background: rgba(239, 68, 68, 0.2);
 		border-color: rgba(239, 68, 68, 0.4);
-		color: #f87171;
+		color: var(--semantic-error);
 	}
 
 	.action-btn.reset:hover {
@@ -405,7 +405,7 @@
 	.custom-tags-section {
 		margin-top: var(--spacing-md);
 		padding-top: var(--spacing-md);
-		border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
 	}
 
 	.section-header {
@@ -454,7 +454,7 @@
 
 	.remove-btn:hover {
 		background: rgba(239, 68, 68, 0.2);
-		color: #f87171;
+		color: var(--semantic-error);
 	}
 
 	.add-custom-tag {
@@ -466,7 +466,7 @@
 		flex: 1;
 		padding: var(--spacing-xs) var(--spacing-sm);
 		background: var(--surface-dark);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke));
 		border-radius: 6px;
 		color: var(--foreground);
 		font-size: var(--font-size-sm);
@@ -480,7 +480,7 @@
 	.add-custom-tag select {
 		padding: var(--spacing-xs) var(--spacing-sm);
 		background: var(--surface-dark);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke));
 		border-radius: 6px;
 		color: var(--foreground);
 		font-size: var(--font-size-xs);

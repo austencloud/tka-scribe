@@ -70,12 +70,11 @@ Used for sort method selection (Letter/Length/Date)
     align-items: center;
     gap: 2px;
     padding: 3px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 100px; /* Full pill */
-    backdrop-filter: blur(12px);
     box-shadow:
-      inset 0 0.5px 1px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
-      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+      inset 0 0.5px 1px var(--theme-shadow),
+      0 1px 2px var(--theme-shadow);
     transition: all 0.2s ease;
   }
 
@@ -88,8 +87,8 @@ Used for sort method selection (Letter/Length/Date)
     background: transparent;
     border: none;
     border-radius: 100px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     font-weight: 590; /* SF Pro semibold weight */
     letter-spacing: -0.2px;
     cursor: pointer;
@@ -101,7 +100,7 @@ Used for sort method selection (Letter/Length/Date)
 
   .segment:hover:not(.active) {
     color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-hover-bg);
   }
 
   /* Active state - modern iOS pill style */
@@ -109,9 +108,9 @@ Used for sort method selection (Letter/Length/Date)
     background: color-mix(in srgb, var(--theme-text, white) 22%, transparent);
     color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     box-shadow:
-      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
-      0 0.5px 1px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
-      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
+      0 1px 3px var(--theme-shadow, var(--theme-shadow)),
+      0 0.5px 1px var(--theme-shadow),
+      inset 0 0.5px 0.5px var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .segment:active {
@@ -119,12 +118,12 @@ Used for sort method selection (Letter/Length/Date)
   }
 
   .segment i {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     opacity: 0.9;
   }
 
   .segment-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* Compact mode for smaller screens */
@@ -136,15 +135,15 @@ Used for sort method selection (Letter/Length/Date)
 
     .segment {
       padding: 6px 11px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .segment i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .segment-label {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 

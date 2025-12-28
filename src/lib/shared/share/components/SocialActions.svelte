@@ -41,7 +41,7 @@
     padding: 16px 28px;
     border: none;
     border-radius: 14px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -75,14 +75,14 @@
   .action-btn.social {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08),
+      var(--theme-card-bg),
       rgba(255, 255, 255, 0.04)
     );
     color: rgba(255, 255, 255, 0.95);
     border: 1.5px solid rgba(255, 255, 255, 0.18);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .action-btn.social::before {
@@ -134,12 +134,12 @@
     transform: scale(1.03) translateY(-2px);
     box-shadow:
       0 8px 24px rgba(188, 24, 136, 0.5),
-      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 4px 12px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 
   .action-btn.instagram i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
   }
 
@@ -150,7 +150,7 @@
 
   .action-btn.facebook i {
     color: #1877f2;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .action-btn:disabled {

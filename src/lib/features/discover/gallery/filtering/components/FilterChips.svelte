@@ -73,22 +73,22 @@ Shows visual feedback of active filters with easy removal.
         return "#06b6d4"; // Cyan
       case "difficulty":
         const level = currentFilter.value as number;
-        if (level === 1) return "#10b981"; // Green
-        if (level === 2) return "#f59e0b"; // Amber
-        if (level === 3) return "#ef4444"; // Red
-        return "var(--theme-accent-strong, #8b5cf6)"; // Purple
+        if (level === 1) return "var(--semantic-success)"; // Green
+        if (level === 2) return "var(--semantic-warning)"; // Amber
+        if (level === 3) return "var(--semantic-error)"; // Red
+        return "var(--theme-accent-strong, var(--theme-accent-strong))"; // Purple
       case "startingPosition":
-        return "var(--theme-accent-strong, #8b5cf6)"; // Purple
+        return "var(--theme-accent-strong, var(--theme-accent-strong))"; // Purple
       case "startingLetter":
-        return "#3b82f6"; // Blue
+        return "var(--semantic-info)"; // Blue
       case "containsLetters":
-        return "#3b82f6"; // Blue
+        return "var(--semantic-info)"; // Blue
       case "length":
         return "#14b8a6"; // Teal
       case "gridMode":
-        return "#f59e0b"; // Amber
+        return "var(--semantic-warning)"; // Amber
       default:
-        return "var(--theme-accent-strong, #8b5cf6)"; // Purple
+        return "var(--theme-accent-strong)"; // Purple
     }
   });
 
@@ -128,12 +128,11 @@ Shows visual feedback of active filters with easy removal.
     border: 1px solid color-mix(in srgb, var(--chip-color) 30%, transparent);
     border-radius: 100px;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     letter-spacing: -0.1px;
     white-space: nowrap;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 2px 4px var(--theme-shadow);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -150,7 +149,7 @@ Shows visual feedback of active filters with easy removal.
   }
 
   .chip-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1;
   }
 
@@ -192,7 +191,7 @@ Shows visual feedback of active filters with easy removal.
   }
 
   .chip-remove i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     position: relative;
     z-index: 1;
   }
@@ -201,13 +200,13 @@ Shows visual feedback of active filters with easy removal.
   @media (max-width: 480px) {
     .filter-chip {
       padding: 12px 12px 12px 16px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       gap: 10px;
       min-height: var(--min-touch-target);
     }
 
     .chip-label {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .chip-remove {
@@ -216,7 +215,7 @@ Shows visual feedback of active filters with easy removal.
     }
 
     .chip-remove i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .chip-remove::before {

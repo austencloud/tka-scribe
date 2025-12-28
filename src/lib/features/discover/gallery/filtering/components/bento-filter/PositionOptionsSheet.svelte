@@ -61,7 +61,7 @@ Uses shared PositionSection components for consistent UX with Generate module
 
   .clear-section {
     padding: 16px 24px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   .clear-all-button {
@@ -72,7 +72,7 @@ Uses shared PositionSection components for consistent UX with Generate module
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 12px;
     color: rgba(239, 68, 68, 0.9);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;

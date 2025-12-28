@@ -461,8 +461,8 @@ Integrates all Assembly components and manages state transitions.
   /* Path indicator */
   .path-indicator {
     padding: 12px 16px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .path-dots {
@@ -480,7 +480,7 @@ Integrates all Assembly components and manages state transitions.
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     color: white;
   }
@@ -494,8 +494,8 @@ Integrates all Assembly components and manages state transitions.
   }
 
   .path-placeholder {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     font-style: italic;
   }
 
@@ -530,25 +530,25 @@ Integrates all Assembly components and manages state transitions.
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: var(--font-size-3xl);
     color: white;
     box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
   }
 
   .complete-title {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
   .complete-text {
-    font-size: 15px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
@@ -561,11 +561,11 @@ Integrates all Assembly components and manages state transitions.
     .complete-icon {
       width: 64px;
       height: 64px;
-      font-size: 32px;
+      font-size: var(--font-size-3xl);
     }
 
     .complete-title {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
   }
 </style>

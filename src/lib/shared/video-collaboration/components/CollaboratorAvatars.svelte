@@ -101,7 +101,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
     border: 2px solid rgba(20, 20, 30, 1);
     overflow: hidden;
     transition: transform 0.2s ease;
@@ -124,7 +124,7 @@
   }
 
   .avatar.creator {
-    border-color: #fbbf24;
+    border-color: var(--semantic-warning);
   }
 
   .creator-indicator {
@@ -134,7 +134,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fbbf24;
+    background: var(--semantic-warning);
     border-radius: 50%;
     color: #1f2937;
   }

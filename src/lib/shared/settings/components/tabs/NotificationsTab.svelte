@@ -73,11 +73,11 @@
   function getSeverityColor(severity: Announcement["severity"]): string {
     switch (severity) {
       case "critical":
-        return "#ef4444"; // --semantic-error
+        return "var(--semantic-error)"; // --semantic-error
       case "warning":
-        return "#f59e0b"; // --semantic-warning
+        return "var(--semantic-warning)"; // --semantic-warning
       case "info":
-        return "#3b82f6"; // --semantic-info
+        return "var(--semantic-info)"; // --semantic-info
     }
   }
 

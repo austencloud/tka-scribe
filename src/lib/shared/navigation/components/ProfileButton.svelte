@@ -123,15 +123,15 @@
     min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     position: relative;
   }
 
@@ -151,7 +151,7 @@
   }
 
   .profile-button:hover:not(.variant-sidebar) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.05);
   }
 
@@ -160,7 +160,7 @@
   }
 
   .profile-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -175,9 +175,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     flex-shrink: 0;
-    font-size: 18px; /* Match Settings icon size */
+    font-size: var(--font-size-lg); /* Match Settings icon size */
   }
 
   /* When button has label, make icon smaller to match Settings icon size */
@@ -186,7 +186,7 @@
     height: 28px;
     min-width: 28px;
     min-height: 28px;
-    font-size: 16px; /* Slightly smaller icon for compact layout */
+    font-size: var(--font-size-base); /* Slightly smaller icon for compact layout */
     position: relative;
   }
 
@@ -220,27 +220,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     background: var(
       --theme-accent-strong,
-      #8b5cf6
+      var(--theme-accent-strong)
     ); /* Simplified, more subtle */
   }
 
   /* Smaller font in labeled button */
   .profile-button.with-label .profile-initial {
-    font-size: 13px; /* Proportionally smaller for 28px wrapper */
+    font-size: var(--font-size-compact); /* Proportionally smaller for 28px wrapper */
   }
 
   /* Profile label */
   .profile-label {
     flex: 1;
     text-align: left;
-    font-size: 15px; /* Match Settings button font-size */
+    font-size: var(--font-size-sm); /* Match Settings button font-size */
     font-weight: 500; /* Match Settings button font-weight */
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -257,7 +257,7 @@
   }
 
   .profile-button.variant-sidebar:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
     transform: translateX(2px); /* Match sidebar hover transform */
   }
 
@@ -272,22 +272,22 @@
 
   /* Icon wrapper in sidebar - needs subtle background */
   .profile-button.variant-sidebar .profile-icon-wrapper {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .profile-button.variant-sidebar:hover .profile-icon-wrapper {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Avatar in sidebar icon wrapper */
   .profile-button.variant-sidebar.has-avatar .profile-icon-wrapper {
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     background: transparent;
   }
 
   .profile-button.variant-sidebar.has-avatar:hover .profile-icon-wrapper {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Collapsed sidebar - center icon only */
@@ -318,7 +318,7 @@
 
   @media (prefers-contrast: high) {
     .profile-button {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+      background: var(--theme-card-hover-bg);
       border: 2px solid white;
     }
   }

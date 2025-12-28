@@ -141,7 +141,7 @@
     left: var(--fb-space-sm);
     top: 50%;
     transform: translateY(-50%);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     font-size: var(--fb-text-sm);
     pointer-events: none;
   }
@@ -150,25 +150,25 @@
     width: 100%;
     height: var(--fb-touch-target);
     padding: 0 var(--fb-touch-target) 0 clamp(36px, 9cqi, 44px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--fb-touch-target);
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-size: var(--fb-text-sm);
     font-family: inherit;
     transition: all 0.2s ease;
   }
 
   .search-input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .search-input:focus {
     outline: none;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--semantic-success, #10b981);
+    background: var(--theme-card-hover-bg, var(--theme-card-hover-bg));
+    border-color: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--semantic-success, #10b981) 15%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent);
   }
 
   .search-clear {
@@ -183,15 +183,15 @@
     height: clamp(32px, 8cqi, 40px);
     background: none;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     cursor: pointer;
     border-radius: 50%;
     transition: all 0.15s ease;
   }
 
   .search-clear:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text-dim));
   }
 
   /* ===== FILTER ROW ===== */
@@ -204,7 +204,7 @@
   .filter-divider {
     width: 1px;
     height: clamp(20px, 5cqi, 28px);
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke-strong);
     margin: 0 var(--fb-space-xs);
   }
 
@@ -214,18 +214,18 @@
     justify-content: center;
     width: var(--fb-icon-btn);
     height: var(--fb-icon-btn);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border: none;
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: var(--fb-text-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .filter-chip:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .filter-chip:active {
@@ -249,12 +249,12 @@
     height: var(--fb-icon-btn);
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 12%,
+      var(--semantic-error, var(--semantic-error)) 12%,
       transparent
     );
     border: none;
     border-radius: 50%;
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     font-size: var(--fb-text-sm);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -264,7 +264,7 @@
   .clear-btn:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 20%,
+      var(--semantic-error, var(--semantic-error)) 20%,
       transparent
     );
   }

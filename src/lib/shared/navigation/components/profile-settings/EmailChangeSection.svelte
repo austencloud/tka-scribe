@@ -151,8 +151,8 @@
 <style>
   .email-change-section {
     padding: clamp(18px, 3vh, 28px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: clamp(12px, 2vh, 18px);
     transition: all 0.2s ease;
   }
@@ -176,46 +176,46 @@
 
   .section-header i {
     font-size: clamp(18px, 2.5vh, 22px);
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, transparent);
   }
 
   .email-change-section.compact .section-header i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .email-change-section.very-compact .section-header i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .section-header h4 {
     font-size: clamp(16px, 2.2vh, 20px);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
   .email-change-section.compact .section-header h4 {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .email-change-section.very-compact .section-header h4 {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   .description {
     font-size: clamp(13px, 1.8vh, 15px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin: 0 0 clamp(16px, 2.5vh, 24px) 0;
     line-height: 1.5;
   }
 
   .email-change-section.compact .description {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     margin-bottom: 16px;
   }
 
   .email-change-section.very-compact .description {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin-bottom: 12px;
   }
 
@@ -236,40 +236,40 @@
     display: block;
     font-size: clamp(13px, 1.8vh, 16px);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     margin-bottom: clamp(6px, 1vh, 10px);
   }
 
   .email-change-section.compact .label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     margin-bottom: 6px;
   }
 
   .email-change-section.very-compact .label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin-bottom: 4px;
   }
 
   .input {
     width: 100%;
     padding: clamp(10px, 1.5vh, 14px) clamp(14px, 2vh, 18px);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-size: clamp(14px, 1.9vh, 17px);
     transition: all 0.2s ease;
   }
 
   .email-change-section.compact .input {
     padding: 10px 14px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     border-radius: 6px;
   }
 
   .email-change-section.very-compact .input {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     border-radius: 6px;
   }
 
@@ -277,10 +277,10 @@
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 60%,
+      var(--theme-accent, var(--theme-accent)) 60%,
       transparent
     );
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .input.error {
@@ -296,23 +296,23 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: rgba(239, 68, 68, 0.9);
     margin: 6px 0 0 0;
   }
 
   .email-change-section.compact .error-message {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin: 4px 0 0 0;
   }
 
   .email-change-section.very-compact .error-message {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin: 3px 0 0 0;
   }
 
   .error-message i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Actions */
@@ -351,7 +351,7 @@
   .email-change-section.compact .button {
     padding: 11px 20px;
     min-height: var(--min-touch-target);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     gap: 8px;
     border-radius: 8px;
   }
@@ -359,54 +359,54 @@
   .email-change-section.very-compact .button {
     padding: 11px 18px;
     min-height: var(--min-touch-target);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     gap: 6px;
     border-radius: 8px;
   }
 
   .button i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .email-change-section.compact .button i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .email-change-section.very-compact .button i {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .button--primary {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      var(--theme-accent-strong, #4f46e5)
+      var(--theme-accent, var(--theme-accent)),
+      var(--theme-accent-strong)
     );
     color: white;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .button--primary:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #4f46e5),
-      color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black)
+      var(--theme-accent-strong),
+      color-mix(in srgb, var(--theme-accent-strong) 85%, black)
     );
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .button--secondary {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    color: var(--theme-text, var(--theme-text));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
   }
 
   .button--secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
   }
 
@@ -434,13 +434,13 @@
   /* Accessibility - Focus Indicators */
   .input:focus-visible {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+      color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 
   .button:focus-visible {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+      color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 

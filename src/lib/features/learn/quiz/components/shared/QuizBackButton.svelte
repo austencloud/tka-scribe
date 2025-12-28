@@ -31,9 +31,9 @@ QuizBackButton - Back navigation button for quizzes
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     z-index: 10;
@@ -42,7 +42,7 @@ QuizBackButton - Back navigation button for quizzes
   .back-button:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     transform: translateX(-2px);
   }
 

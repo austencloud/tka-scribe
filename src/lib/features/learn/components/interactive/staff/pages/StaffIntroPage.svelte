@@ -183,7 +183,6 @@ StaffIntroPage - Page 1: Staff Positions Introduction
       rgba(34, 211, 238, 0.3) 0%,
       rgba(6, 182, 212, 0.3) 100%
     );
-    backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
     color: white;

@@ -32,13 +32,13 @@ Displays modal title and close button
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     flex-shrink: 0;
   }
 
   h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 700;
     color: var(--theme-text, white);
   }
@@ -48,8 +48,8 @@ Displays modal title and close button
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     padding: 0;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -68,12 +68,12 @@ Displays modal title and close button
   .close-button:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 50%,
+      var(--semantic-error, var(--semantic-error)) 50%,
       transparent
     );
     transform: scale(1.05);
@@ -90,7 +90,7 @@ Displays modal title and close button
     }
 
     h2 {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .close-button {
@@ -111,7 +111,7 @@ Displays modal title and close button
     }
 
     h2 {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .close-button {

@@ -112,11 +112,11 @@
     padding: clamp(10px, 2.5cqh, 14px) clamp(12px, 3cqw, 18px);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent),
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 5%, transparent)
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent),
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 5%, transparent)
     );
     border-bottom: 1px solid
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 30%, transparent);
     flex-shrink: 0;
   }
 
@@ -136,12 +136,12 @@
     height: clamp(32px, 6cqw, 40px);
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 20%,
+      var(--semantic-warning, var(--semantic-warning)) 20%,
       transparent
     );
     border-radius: clamp(8px, 2cqw, 10px);
-    color: var(--semantic-warning, #f59e0b);
-    font-size: 16px;
+    color: var(--semantic-warning, var(--semantic-warning));
+    font-size: var(--font-size-base);
     flex-shrink: 0;
   }
 
@@ -163,7 +163,7 @@
   .banner-text p {
     margin: 0;
     font-size: clamp(11px, 2.6cqi, 13px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -175,7 +175,7 @@
     padding: clamp(6px, 1.6cqh, 10px) clamp(10px, 3cqw, 14px);
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 20%,
+      var(--semantic-warning, var(--semantic-warning)) 20%,
       transparent
     );
     border-radius: clamp(12px, 3cqw, 18px);
@@ -185,7 +185,7 @@
   .banner-xp span {
     font-size: clamp(12px, 2.8cqi, 14px);
     font-weight: 600;
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .banner-close {
@@ -194,17 +194,17 @@
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: clamp(6px, 1.8cqw, 10px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s;
     flex-shrink: 0;
   }
 
   .banner-close:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 </style>

@@ -37,7 +37,7 @@
     align-items: flex-start;
     justify-content: space-between;
     padding: 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     flex-shrink: 0;
   }
 
@@ -47,15 +47,15 @@
   }
 
   .auth-header__title {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 700;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     margin: 0 0 8px 0;
   }
 
   .auth-header__subtitle {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     line-height: 1.5;
   }
@@ -67,9 +67,9 @@
     min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -80,7 +80,7 @@
   }
 
   .auth-header__close:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.16));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.05);
   }
 
@@ -90,7 +90,7 @@
 
   .auth-header__close:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -103,11 +103,11 @@
     }
 
     .auth-header__title {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .auth-header__subtitle {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -118,7 +118,7 @@
     }
 
     .auth-header__title {
-      font-size: 19px;
+      font-size: var(--font-size-lg);
       margin-bottom: 4px;
     }
 
@@ -134,12 +134,12 @@
     }
 
     .auth-header__title {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
       margin-bottom: 4px;
     }
 
     .auth-header__subtitle {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -150,7 +150,7 @@
     }
 
     .auth-header__title {
-      font-size: 17px;
+      font-size: var(--font-size-base);
       margin-bottom: 0;
     }
 

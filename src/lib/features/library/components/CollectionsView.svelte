@@ -90,7 +90,7 @@
             class="collection-card"
             onclick={() => handleOpenCollection(collection)}
             style="--card-color: {collection.color ||
-              'var(--theme-accent-strong, #8b5cf6)'}"
+              'var(--theme-accent-strong, var(--theme-accent-strong))'}"
           >
             <div class="card-icon">
               <i class="fas {collection.icon || 'fa-folder'}" aria-hidden="true"></i>
@@ -145,7 +145,7 @@
     flex: 1;
     text-align: center;
     padding: 40px 20px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .empty-state i {
@@ -157,7 +157,7 @@
   .empty-state h3 {
     margin: 0 0 8px 0;
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .empty-state p {
@@ -176,8 +176,8 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -187,7 +187,7 @@
 
   .collection-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: var(--card-color, var(--theme-accent-strong, #8b5cf6));
+    border-color: var(--card-color, var(--theme-accent-strong, var(--theme-accent-strong)));
     transform: translateY(-2px);
   }
 
@@ -197,7 +197,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--card-color, var(--theme-accent-strong, #8b5cf6));
+    background: var(--card-color, var(--theme-accent-strong, var(--theme-accent-strong)));
     border-radius: 12px;
     margin-bottom: 12px;
   }
@@ -217,7 +217,7 @@
   .item-count {
     margin: 0;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .system-badge {
@@ -235,7 +235,7 @@
 
   .system-badge i {
     font-size: 0.625rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   @media (max-width: 480px) {

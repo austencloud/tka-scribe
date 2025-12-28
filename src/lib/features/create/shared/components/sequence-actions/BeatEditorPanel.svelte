@@ -307,7 +307,7 @@
     gap: 8px;
     padding: 6px 12px;
     background: rgba(15, 20, 30, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     min-height: 44px;
     flex-shrink: 0;
   }
@@ -322,12 +322,12 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .subtitle {
     font-size: 0.8rem;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-muted, var(--theme-text-dim));
   }
 
   .header-actions {
@@ -349,19 +349,19 @@
     height: var(--min-touch-target);
     border-radius: 50%;
     cursor: pointer;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     transition: all 0.15s ease;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .icon-btn.editor {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--semantic-warning), #d97706);
     border-color: rgba(245, 158, 11, 0.3);
     color: white;
   }
 
   .icon-btn.editor:hover {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    background: linear-gradient(135deg, var(--semantic-warning), var(--semantic-warning));
     transform: scale(1.05);
   }
 
@@ -379,12 +379,12 @@
   .icon-btn.delete {
     background: linear-gradient(
       135deg,
-      var(--semantic-warning, #ff9800) 0%,
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 100%
+      var(--semantic-warning) 0%,
+      color-mix(in srgb, var(--semantic-warning) 80%, #ff0000) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-warning, #ff9800) 30%,
+      var(--semantic-warning) 30%,
       transparent
     );
     color: white;
@@ -393,8 +393,8 @@
   .icon-btn.delete:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 80%, #ff0000) 0%,
-      color-mix(in srgb, var(--semantic-warning, #ff9800) 60%, #ff0000) 100%
+      color-mix(in srgb, var(--semantic-warning) 80%, #ff0000) 0%,
+      color-mix(in srgb, var(--semantic-warning) 60%, #ff0000) 100%
     );
     transform: scale(1.05);
   }
@@ -425,7 +425,7 @@
     flex: 1 1 auto; /* Grow to fill ALL available space */
     min-height: 120px; /* Minimum usable height for beat grid */
     /* No max-height - let it grow to fill space */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.02);
     overflow: hidden;
     display: flex;
@@ -468,8 +468,8 @@
     padding: 12px;
     padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
     flex-shrink: 0;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-panel-bg, rgba(20, 20, 25, 0.95));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-panel-bg);
   }
 
   /* Mobile: controls take only what they need - beat grid fills the rest */
@@ -489,7 +489,7 @@
     gap: 12px;
     padding: 48px 24px;
     text-align: center;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
   }
 
   .no-selection i {

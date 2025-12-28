@@ -144,7 +144,7 @@
   :global(.mode-settings-backdrop) {
     background: color-mix(
       in srgb,
-      var(--theme-shadow, #000) 70%,
+      var(--theme-shadow) 70%,
       transparent
     ) !important;
   }
@@ -174,13 +174,13 @@
     align-items: center;
     gap: 14px;
     padding: 16px 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 20px;
     position: sticky;
     top: 0;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #141923) 98%,
+      var(--theme-panel-bg) 98%,
       transparent
     );
     z-index: 1;
@@ -194,18 +194,18 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     border-radius: 12px;
     flex-shrink: 0;
   }
 
   .header-icon i {
-    font-size: 18px;
-    color: var(--semantic-info, #60a5fa);
+    font-size: var(--font-size-lg);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .header-content {
@@ -217,13 +217,13 @@
     margin: 0;
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .panel-subtitle {
     margin: 4px 0 0 0;
     font-size: 0.8rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .close-btn {
@@ -233,9 +233,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -243,8 +243,8 @@
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .mode-sheet-body {
@@ -264,7 +264,7 @@
   /* Focus states */
   .close-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
     outline-offset: 2px;
   }
 

@@ -28,8 +28,8 @@
     display: flex;
     gap: var(--spacing-md, 16px);
     padding: var(--spacing-md, 16px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 2px solid var(--semantic-success, #10b981);
+    background: var(--theme-card-bg);
+    border: 2px solid var(--semantic-success, var(--semantic-success));
     border-radius: 12px;
     margin: var(--spacing-md, 16px) 0;
   }
@@ -41,12 +41,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--semantic-success, #10b981);
+    background: var(--semantic-success, var(--semantic-success));
     border-radius: 50%;
   }
 
   .badge-icon i {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     color: white;
   }
 
@@ -55,23 +55,23 @@
   }
 
   .badge-title {
-    font-size: var(--font-size-base, 16px);
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin-bottom: var(--spacing-xs, 4px);
   }
 
   .badge-description {
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim);
     line-height: 1.5;
   }
 
   .terms-link {
     display: inline-block;
     margin-top: var(--spacing-xs, 4px);
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-compact);
+    color: var(--theme-accent, var(--theme-accent));
     text-decoration: none;
   }
 

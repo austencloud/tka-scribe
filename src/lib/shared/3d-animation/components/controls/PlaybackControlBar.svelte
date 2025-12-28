@@ -117,11 +117,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px;
     padding: 0.5rem;
-    backdrop-filter: blur(8px);
   }
 
   .beat-indicator {
@@ -130,13 +129,13 @@
     font-size: var(--font-size-sm, 0.875rem);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent, var(--theme-accent-strong));
   }
 
   .divider {
     width: 1px;
     height: 32px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     margin: 0 0.25rem;
   }
 
@@ -147,17 +146,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .play-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     color: white;
   }
 
@@ -169,7 +168,7 @@
   .play-btn.primary {
     width: 56px;
     height: 56px;
-    background: var(--theme-accent, #8b5cf6);
+    background: var(--theme-accent, var(--theme-accent-strong));
     color: white;
     border-radius: 50%;
   }
@@ -188,14 +187,14 @@
     min-width: 80px;
     max-width: 200px;
     height: 48px;
-    accent-color: var(--theme-accent, #8b5cf6);
+    accent-color: var(--theme-accent, var(--theme-accent-strong));
   }
 
   .progress-label {
     min-width: 3rem;
     font-size: var(--font-size-sm, 0.875rem);
     font-variant-numeric: tabular-nums;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-align: center;
   }
 

@@ -21,9 +21,9 @@
       case "beginner":
         return "#4ade80";
       case "intermediate":
-        return "#fbbf24";
+        return "var(--semantic-warning)";
       case "advanced":
-        return "#f87171";
+        return "var(--semantic-error)";
       default:
         return "#94a3b8";
     }
@@ -227,7 +227,7 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .timeline-delete {
@@ -235,7 +235,7 @@
     height: 48px;
     border: none;
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--semantic-error);
     border-radius: 6px;
     cursor: pointer;
     display: flex;

@@ -70,8 +70,8 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
   }
 
   .creator-chip i {
@@ -84,11 +84,11 @@
     gap: 6px;
     padding: 12px 16px;
     min-height: 44px; /* WCAG AAA touch target */
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -102,21 +102,21 @@
   .visibility-toggle.public {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 40%,
+      var(--semantic-success, var(--semantic-success)) 40%,
       transparent
     );
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .visibility-toggle.public:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 25%,
+      var(--semantic-success, var(--semantic-success)) 25%,
       transparent
     );
   }
@@ -129,8 +129,8 @@
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 8px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 

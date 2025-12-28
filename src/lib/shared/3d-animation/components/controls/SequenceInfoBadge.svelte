@@ -25,11 +25,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     padding: 4px 4px 4px 12px;
-    backdrop-filter: blur(8px);
   }
 
   .name {
@@ -48,17 +47,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.15s;
     flex-shrink: 0;
   }
 
   .clear-btn:hover {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     color: white;
   }
 </style>

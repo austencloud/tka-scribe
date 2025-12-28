@@ -51,7 +51,7 @@ StaffQuizProgressBar - Progress indicator for staff quiz
 
   .progress-text {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-align: center;
   }
 

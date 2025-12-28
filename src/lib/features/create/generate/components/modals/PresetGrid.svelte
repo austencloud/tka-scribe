@@ -50,17 +50,17 @@ Displays a list of presets in a scrollable grid layout
   }
 
   .preset-list::-webkit-scrollbar-track {
-    background: var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    background: var(--theme-shadow);
     border-radius: 4px;
   }
 
   .preset-list::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
     border-radius: 4px;
   }
 
   .preset-list::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--theme-text, #fff) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-text) 50%, transparent);
   }
 
   .empty-state {
@@ -74,21 +74,21 @@ Displays a list of presets in a scrollable grid layout
   }
 
   .empty-icon {
-    font-size: 64px;
+    font-size: var(--font-size-3xl);
     margin-bottom: 16px;
     opacity: 0.5;
   }
 
   .empty-text {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     margin-bottom: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .empty-hint {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   @media (max-width: 640px) {
@@ -102,16 +102,16 @@ Displays a list of presets in a scrollable grid layout
     }
 
     .empty-icon {
-      font-size: 48px;
+      font-size: var(--font-size-3xl);
       margin-bottom: 12px;
     }
 
     .empty-text {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .empty-hint {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -131,16 +131,16 @@ Displays a list of presets in a scrollable grid layout
     }
 
     .empty-icon {
-      font-size: 40px;
+      font-size: var(--font-size-3xl);
       margin-bottom: 10px;
     }
 
     .empty-text {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .empty-hint {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

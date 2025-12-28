@@ -126,8 +126,8 @@
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow:
       0 -8px 32px rgba(0, 0, 0, 0.5),
-      0 -2px 8px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      0 -2px 8px var(--theme-shadow),
+      inset 0 1px 0 var(--theme-card-hover-bg);
     z-index: 150 !important;
   }
 

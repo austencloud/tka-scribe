@@ -114,13 +114,13 @@
     align-items: center;
     gap: var(--spacing-xs);
     font-size: var(--font-size-sm);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .sort-control select {
     padding: var(--spacing-xs) var(--spacing-sm);
-    background: var(--theme-panel-bg, #1a1a1a);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     color: var(--theme-text, white);
     font-family: inherit;
@@ -128,15 +128,15 @@
   }
 
   .sort-control select option {
-    background: var(--theme-panel-bg, #1a1a1a);
+    background: var(--theme-panel-bg);
     color: var(--theme-text, white);
     padding: var(--spacing-xs);
   }
 
   .view-mode-toggle {
     display: flex;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
     overflow: hidden;
   }
@@ -145,7 +145,7 @@
     padding: var(--spacing-xs);
     background: transparent;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all var(--transition-fast);
     display: flex;
@@ -154,7 +154,7 @@
   }
 
   .view-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: var(--theme-text, white);
   }
 

@@ -253,7 +253,7 @@
     flex-direction: column;
     gap: 12px;
     padding: clamp(12px, 3cqi, 20px);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -271,11 +271,11 @@
     border: 1px solid rgba(59, 130, 246, 0.25);
     border-radius: 8px;
     font-size: 0.8125rem;
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .preview-banner i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .preview-banner strong {
@@ -296,21 +296,21 @@
     height: 40px;
     background: rgba(59, 130, 246, 0.15);
     border-radius: 10px;
-    color: #3b82f6;
-    font-size: 16px;
+    color: var(--semantic-info);
+    font-size: var(--font-size-base);
   }
 
   .header-text h1 {
     margin: 0;
     font-size: clamp(1rem, 2.5cqi, 1.25rem);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .header-text p {
     margin: 0;
     font-size: clamp(0.75rem, 1.8cqi, 0.875rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Content area */
@@ -341,21 +341,21 @@
   }
 
   .loading-state i {
-    font-size: 24px;
-    color: #3b82f6;
+    font-size: var(--font-size-2xl);
+    color: var(--semantic-info);
   }
 
   .loading-state span {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .error-state i {
-    font-size: 32px;
-    color: #ef4444;
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-error);
   }
 
   .error-state span {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .error-state button {
@@ -363,7 +363,7 @@
     background: rgba(59, 130, 246, 0.2);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 8px;
-    color: #3b82f6;
+    color: var(--semantic-info);
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -374,22 +374,22 @@
   }
 
   .empty-state i {
-    font-size: 48px;
-    color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-stroke);
   }
 
   .empty-state h2 {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .empty-state p {
     margin: 0;
     max-width: 300px;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
   }
 

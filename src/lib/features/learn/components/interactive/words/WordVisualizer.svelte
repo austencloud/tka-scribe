@@ -163,7 +163,7 @@ Displays letters transitioning smoothly on the grid with motion arrows
 		<WordHandPositions leftPos={leftHandPos()} rightPos={rightHandPos()} />
 
 		<!-- Center point -->
-		<circle cx="50" cy="50" r="2" fill="rgba(255, 255, 255, 0.15)" />
+		<circle cx="50" cy="50" r="2" fill="var(--theme-stroke-strong)" />
 	</svg>
 
 	<!-- Beat navigation -->
@@ -186,7 +186,7 @@ Displays letters transitioning smoothly on the grid with motion arrows
 		gap: 1rem;
 		padding: 1rem;
 		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: 1px solid var(--theme-stroke);
 		border-radius: 16px;
 	}
 

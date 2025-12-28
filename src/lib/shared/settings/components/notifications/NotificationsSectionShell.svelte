@@ -24,10 +24,10 @@
   .panel {
     background: linear-gradient(
       145deg,
-      var(--theme-panel-bg, #0e1324),
-      var(--theme-panel-elevated-bg, #0c1120)
+      var(--theme-panel-bg),
+      var(--theme-panel-elevated-bg)
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     padding: 16px;
     box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
@@ -42,16 +42,16 @@
 
   .eyebrow {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   h3 {
     margin: 4px 0 0;
-    font-size: 18px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
   }
 
   @media (max-width: 640px) {

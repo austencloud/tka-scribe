@@ -80,7 +80,7 @@
     width: 18px;
     height: 18px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     flex-shrink: 0;
   }
@@ -142,6 +142,6 @@
 
   .remove-btn:hover {
     background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 </style>

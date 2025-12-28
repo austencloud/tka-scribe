@@ -75,21 +75,21 @@
   }
 
   .bell-body {
-    fill: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    stroke: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    fill: var(--theme-card-bg);
+    stroke: var(--theme-stroke);
     stroke-width: 2;
   }
 
   .bell-clapper {
-    fill: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    fill: var(--theme-text-dim);
   }
 
   .bell-top {
-    fill: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    fill: var(--theme-text-dim);
   }
 
   .sparkle {
-    fill: var(--theme-accent, #3b82f6);
+    fill: var(--theme-accent, var(--semantic-info));
     opacity: 0;
   }
 
@@ -118,11 +118,11 @@
   }
 
   .check-bg {
-    fill: color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent);
+    fill: color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent);
   }
 
   .check-mark {
-    stroke: var(--semantic-success, #22c55e);
+    stroke: var(--semantic-success, var(--semantic-success));
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -131,15 +131,15 @@
 
   h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -139,10 +139,9 @@ Provides a beautiful, unified experience for customizing presets
     height: var(--actual-vh, 100vh);
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #000) 85%,
+      var(--theme-panel-bg) 85%,
       transparent
     );
-    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -166,11 +165,10 @@ Provides a beautiful, unified experience for customizing presets
   .modal-content {
     background: linear-gradient(
       135deg,
-      var(--theme-stroke, rgba(255, 255, 255, 0.1)) 0%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.05)) 100%
+      var(--theme-stroke) 0%,
+      var(--theme-card-bg, var(--theme-card-bg)) 100%
     );
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 16px;
     max-width: min(460px, 90vw);
     width: 100%;
@@ -185,8 +183,8 @@ Provides a beautiful, unified experience for customizing presets
     flex-shrink: 0;
     box-sizing: border-box;
     box-shadow:
-      0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
-      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.1)) inset;
+      0 20px 60px var(--theme-shadow, var(--theme-shadow)),
+      0 0 0 1px var(--theme-stroke) inset;
   }
 
   @keyframes modal-appear {
@@ -215,17 +213,17 @@ Provides a beautiful, unified experience for customizing presets
   }
 
   .modal-body::-webkit-scrollbar-track {
-    background: var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    background: var(--theme-shadow);
     border-radius: 4px;
   }
 
   .modal-body::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
     border-radius: 4px;
   }
 
   .modal-body::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--theme-text, #fff) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-text) 50%, transparent);
   }
 
   .form-section {
@@ -235,8 +233,8 @@ Provides a beautiful, unified experience for customizing presets
   }
 
   .form-label {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 14px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     letter-spacing: 0.01em;
   }
@@ -246,38 +244,38 @@ Provides a beautiful, unified experience for customizing presets
     padding: 12px 16px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent),
-      color-mix(in srgb, var(--theme-shadow, #000) 30%, transparent)
+      color-mix(in srgb, var(--theme-shadow) 40%, transparent),
+      color-mix(in srgb, var(--theme-shadow) 30%, transparent)
     );
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 10px;
     color: var(--theme-text, white);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-family: inherit;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.1)) inset;
+    box-shadow: 0 2px 8px var(--theme-shadow) inset;
   }
 
   .name-input:focus {
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 60%,
+      var(--theme-accent, var(--semantic-info)) 60%,
       transparent
     );
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent),
-      color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent)
+      color-mix(in srgb, var(--theme-shadow) 50%, transparent),
+      color-mix(in srgb, var(--theme-shadow) 40%, transparent)
     );
     box-shadow:
       0 0 0 3px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
-      0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2)) inset;
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent),
+      0 2px 8px var(--theme-shadow, var(--theme-shadow)) inset;
   }
 
   .name-input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   @media (max-width: 640px) {
@@ -293,7 +291,7 @@ Provides a beautiful, unified experience for customizing presets
 
     .name-input {
       padding: 11px 14px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

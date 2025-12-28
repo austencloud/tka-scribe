@@ -111,7 +111,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-bottom: var(--glass-border);
     backdrop-filter: var(--glass-backdrop);
   }
@@ -156,7 +156,7 @@
   .loading-spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top: 3px solid var(--primary-color);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -268,7 +268,7 @@
   .browser-content::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .browser-content::-webkit-scrollbar-thumb:hover {

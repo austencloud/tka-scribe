@@ -141,7 +141,7 @@
       pointer-events: none;
       opacity: 0.9;
       transform: scale(1.05) rotate(2deg);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${typeConfig?.color ?? "#6366f1"};
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px ${typeConfig?.color ?? "var(--theme-accent)"};
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     `;
     document.body.appendChild(dragGhost);
@@ -275,7 +275,7 @@
   class:priority-medium={item.priority === "medium"}
   class:priority-low={item.priority === "low" || !item.priority}
   style="--type-color: {typeConfig?.color ??
-    '#6366f1'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
+    'var(--theme-accent)'}; --priority-color: {priorityConfig?.color || '#6b7280'}"
   draggable={!disableDrag}
   ondragstart={disableDrag ? undefined : handleDragStart}
   ondragend={disableDrag ? undefined : handleDragEnd}
@@ -360,13 +360,13 @@
     --kc-radius-sm: clamp(8px, 2cqi, 12px);
     --kc-radius-md: clamp(12px, 3cqi, 18px);
 
-    --kc-text: var(--theme-text, rgba(255, 255, 255, 0.95));
+    --kc-text: var(--theme-text);
     --kc-text-muted: color-mix(
       in srgb,
-      var(--theme-text, rgba(255, 255, 255, 0.95)) 75%,
+      var(--theme-text) 75%,
       transparent
     );
-    --kc-text-subtle: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    --kc-text-subtle: var(--theme-text-dim);
 
     --spring-smooth: cubic-bezier(0.4, 0, 0.2, 1);
     --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -392,7 +392,7 @@
     overflow: hidden;
     transition: all 0.2s var(--spring-smooth);
     box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 2px 8px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
@@ -405,13 +405,13 @@
     border-color: color-mix(
       in srgb,
       var(--type-color) 40%,
-      rgba(255, 255, 255, 0.1)
+      var(--theme-stroke)
     );
     transform: translateY(-2px) scale(1.01);
     box-shadow:
-      0 8px 20px rgba(0, 0, 0, 0.3),
+      0 8px 20px var(--theme-shadow),
       0 0 20px color-mix(in srgb, var(--type-color) 15%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   .kanban-card:active {
@@ -457,10 +457,10 @@
   .kanban-card.priority-critical {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, #ef4444 12%, rgba(30, 30, 40, 0.95)) 0%,
-      color-mix(in srgb, #ef4444 5%, rgba(25, 25, 35, 0.98)) 100%
+      color-mix(in srgb, var(--semantic-error) 12%, rgba(30, 30, 40, 0.95)) 0%,
+      color-mix(in srgb, var(--semantic-error) 5%, rgba(25, 25, 35, 0.98)) 100%
     );
-    border-color: color-mix(in srgb, #ef4444 30%, rgba(255, 255, 255, 0.08));
+    border-color: color-mix(in srgb, var(--semantic-error) 30%, rgba(255, 255, 255, 0.08));
   }
 
   .kanban-card.priority-high {
@@ -495,7 +495,7 @@
     flex-shrink: 0;
     border-radius: var(--kc-radius-sm);
     object-fit: cover;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px var(--theme-shadow);
   }
 
   .card-title {
@@ -539,7 +539,7 @@
   }
 
   .screenshot-indicator i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: var(--type-color);
   }
 
@@ -585,8 +585,8 @@
   }
 
   .kanban-card.priority-critical .priority-badge {
-    background: color-mix(in srgb, #ef4444 25%, transparent);
-    color: #ef4444;
+    background: color-mix(in srgb, var(--semantic-error) 25%, transparent);
+    color: var(--semantic-error);
     animation: pulse-critical 2s ease-in-out infinite;
   }
 
@@ -629,9 +629,9 @@
   /* Focus state */
   .kanban-card:focus-visible {
     outline: none;
-    border-color: var(--semantic-success, #10b981);
+    border-color: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--semantic-success, #10b981) 20%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent);
   }
 
   /* ===== Mobile optimizations ===== */

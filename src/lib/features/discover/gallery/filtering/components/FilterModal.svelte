@@ -236,9 +236,9 @@ Follows Svelte 5 runes + microservices architecture.
 
   .filter-section h3 {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding-bottom: 4px;
@@ -248,32 +248,31 @@ Follows Svelte 5 runes + microservices architecture.
   .filter-button {
     padding: 10px 16px;
     border: none;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border-radius: 10px;
     color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    backdrop-filter: blur(8px);
-    box-shadow: inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    box-shadow: inset 0 0.5px 1px var(--theme-stroke);
   }
 
   .filter-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     transform: translateY(-1px);
     box-shadow:
-      inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08)),
-      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+      inset 0 0.5px 1px var(--theme-stroke),
+      0 2px 4px var(--theme-shadow);
   }
 
   .filter-button.active {
     background: color-mix(in srgb, var(--theme-text, white) 18%, transparent);
     color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     box-shadow:
-      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
-      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
+      0 1px 3px var(--theme-shadow, var(--theme-shadow)),
+      inset 0 0.5px 0.5px var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .filter-button:active {
@@ -298,33 +297,32 @@ Follows Svelte 5 runes + microservices architecture.
   .letter-button {
     padding: 10px 8px;
     border: none;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border-radius: 8px;
     color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     text-align: center;
-    backdrop-filter: blur(8px);
-    box-shadow: inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    box-shadow: inset 0 0.5px 1px var(--theme-stroke);
   }
 
   .letter-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     transform: translateY(-1px);
     box-shadow:
-      inset 0 0.5px 1px var(--theme-stroke, rgba(255, 255, 255, 0.08)),
-      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+      inset 0 0.5px 1px var(--theme-stroke),
+      0 2px 4px var(--theme-shadow);
   }
 
   .letter-button.active {
     background: color-mix(in srgb, var(--theme-text, white) 18%, transparent);
     color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     box-shadow:
-      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
-      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
+      0 1px 3px var(--theme-shadow, var(--theme-shadow)),
+      inset 0 0.5px 0.5px var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .letter-button:active {
@@ -338,7 +336,7 @@ Follows Svelte 5 runes + microservices architecture.
     gap: 12px;
     padding-top: 20px;
     margin-top: auto;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -349,46 +347,45 @@ Follows Svelte 5 runes + microservices architecture.
     border: none;
     border-radius: 100px; /* Full pill */
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 590;
     letter-spacing: -0.2px;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(12px);
   }
 
   .clear-button {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
-    box-shadow: 0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 1px 2px var(--theme-shadow);
   }
 
   .clear-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.14));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 98%, transparent);
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 4px var(--theme-shadow);
   }
 
   .apply-button {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 20%,
+      var(--semantic-info, var(--semantic-info)) 20%,
       transparent
     );
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     box-shadow:
-      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.1)),
-      inset 0 0.5px 0.5px var(--theme-stroke, rgba(255, 255, 255, 0.15));
+      0 1px 2px var(--theme-shadow),
+      inset 0 0.5px 0.5px var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .apply-button:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 4px var(--theme-shadow);
   }
 
   .clear-button:active,

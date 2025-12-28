@@ -72,13 +72,13 @@
     width: 100%;
     padding: 12px 14px;
     border-radius: 18px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
   }
 
   .skeleton-bubble.own .skeleton-content {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 30%,
+      var(--theme-accent, var(--semantic-info)) 30%,
       transparent
     );
     border-bottom-right-radius: 6px;
@@ -96,7 +96,7 @@
     background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.04) 25%,
-      rgba(255, 255, 255, 0.08) 50%,
+      var(--theme-card-bg) 50%,
       rgba(255, 255, 255, 0.04) 75%
     );
     background-size: 200% 100%;

@@ -294,7 +294,7 @@ Mobile-first design:
     flex-direction: column;
     height: 100%;
     background: transparent;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     overflow: hidden;
   }
 
@@ -344,18 +344,18 @@ Mobile-first design:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border: none;
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s;
     flex-shrink: 0;
   }
 
   .close-btn:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, #fff);
+    background: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .prop-badge {
@@ -431,7 +431,7 @@ Mobile-first design:
     justify-content: center;
     gap: 0.75rem;
     padding: 2rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 12px;
     opacity: 0.7;
   }
@@ -439,7 +439,7 @@ Mobile-first design:
   .spinner {
     width: 24px;
     height: 24px;
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 2px solid var(--theme-stroke);
     border-top-color: #a5b4fc;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -463,7 +463,7 @@ Mobile-first design:
     align-items: center;
     gap: 0.75rem;
     padding: 0.875rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 10px;
   }
 
@@ -515,7 +515,7 @@ Mobile-first design:
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     color: white;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   }
@@ -525,7 +525,7 @@ Mobile-first design:
   }
 
   .btn-secondary {
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
     color: white;
   }
 
@@ -569,8 +569,8 @@ Mobile-first design:
   }
 
   :global(.drawer-content.ml-training-panel__drawer) {
-    --sheet-bg: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.65));
-    --sheet-border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    --sheet-bg: var(--theme-panel-elevated-bg);
+    --sheet-border: 1px solid var(--theme-stroke);
     --sheet-filter: blur(24px) saturate(180%);
   }
 </style>

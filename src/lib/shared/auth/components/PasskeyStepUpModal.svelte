@@ -267,10 +267,9 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #0f172a) 85%,
+      var(--theme-panel-bg) 85%,
       transparent
     );
-    backdrop-filter: blur(8px);
     z-index: 10000;
     animation: fadeIn 0.2s ease;
   }
@@ -288,11 +287,11 @@
     width: 100%;
     max-width: 420px;
     margin: 16px;
-    background: var(--theme-panel-bg, #1e293b);
+    background: var(--theme-panel-bg);
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
     border-radius: 20px;
-    box-shadow: 0 20px 60px var(--theme-shadow, rgba(0, 0, 0, 0.5));
+    box-shadow: 0 20px 60px var(--theme-shadow);
     animation: modalSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -320,24 +319,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, #22c55e 20%, transparent);
+    background: color-mix(in srgb, var(--semantic-success) 20%, transparent);
     border-radius: 14px;
-    color: #22c55e;
-    font-size: 24px;
+    color: var(--semantic-success);
+    font-size: var(--font-size-2xl);
     flex-shrink: 0;
   }
 
   .header-text h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .header-text p {
     margin: 4px 0 0;
-    font-size: 14px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-secondary, var(--theme-text-dim));
   }
 
   .modal-body {
@@ -351,8 +350,8 @@
   .label {
     display: block;
     margin-bottom: 8px;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-secondary, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -366,10 +365,10 @@
     width: 100%;
     padding: 12px 14px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: 1px solid rgba(255, 255, 255, 0.12);
     color: #fff;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .pw-toggle {
@@ -380,7 +379,7 @@
     border-radius: 10px;
     border: none;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
   }
 
@@ -395,7 +394,7 @@
   .setup-text {
     margin: 0 0 10px 0;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
   }
 
@@ -408,7 +407,7 @@
     padding: 10px 12px;
     border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
     color: #fff;
     font-weight: 700;
     cursor: pointer;
@@ -416,8 +415,8 @@
 
   .info {
     margin: 0;
-    color: var(--theme-text-secondary, rgba(255, 255, 255, 0.7));
-    font-size: 14px;
+    color: var(--theme-text-secondary, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     line-height: 1.5;
   }
 
@@ -429,13 +428,13 @@
     padding: 12px 16px;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
-    border: 1px solid var(--semantic-error, #ef4444);
+    border: 1px solid var(--semantic-error, var(--semantic-error));
     border-radius: 10px;
-    color: var(--semantic-error, #ef4444);
-    font-size: 14px;
+    color: var(--semantic-error, var(--semantic-error));
+    font-size: var(--font-size-sm);
   }
 
   .modal-footer {
@@ -448,9 +447,9 @@
     flex: 1;
     padding: 12px 16px;
     border-radius: 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, #fff);
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    color: var(--theme-text);
     cursor: pointer;
     font-weight: 500;
   }
@@ -459,7 +458,7 @@
     flex: 1.3;
     padding: 12px 16px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
     border: none;
     color: #fff;
     cursor: pointer;
@@ -472,8 +471,8 @@
 
   .verify-button.secondary {
     flex: 1;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   button:disabled {

@@ -269,7 +269,7 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     box-shadow: var(--theme-panel-shadow, 0 20px 60px rgba(0, 0, 0, 0.5));
     display: flex;
@@ -282,10 +282,10 @@
     justify-content: space-between;
     align-items: flex-start;
     padding: 1.5rem;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 5%,
+      var(--theme-accent, var(--theme-accent)) 5%,
       transparent
     );
   }
@@ -294,13 +294,13 @@
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .shortcuts-help__subtitle {
     margin: 0.25rem 0 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .shortcuts-help__close {
@@ -312,15 +312,15 @@
     background: transparent;
     border: none;
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     margin: -8px -8px 0 0;
   }
 
   .shortcuts-help__close:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-bg);
+    color: var(--theme-text);
   }
 
   .shortcuts-help__content {
@@ -336,8 +336,8 @@
   }
 
   .shortcuts-help__section {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 1rem;
   }
@@ -348,7 +348,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--theme-accent-strong, #a78bfa);
+    color: var(--theme-accent-strong);
   }
 
   .shortcuts-help__list {
@@ -362,19 +362,19 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0.625rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
     border-radius: 6px;
     gap: 0.75rem;
     transition: background 0.15s ease;
   }
 
   .shortcuts-help__item:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
   }
 
   .shortcuts-help__item-label {
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 0.8125rem;
     white-space: nowrap;
     overflow: hidden;
@@ -386,13 +386,13 @@
     padding: 0.25rem 0.5rem;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
     border-radius: 4px;
-    color: var(--theme-accent-strong, #a78bfa);
+    color: var(--theme-accent-strong);
     font-family: ui-monospace, "SF Mono", monospace;
     white-space: nowrap;
     font-weight: 600;
@@ -402,14 +402,14 @@
   .shortcuts-help__empty {
     text-align: center;
     padding: 3rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .shortcuts-help__footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    border-top: 1px solid var(--theme-stroke);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-align: center;
   }
 
@@ -425,7 +425,7 @@
   .shortcuts-help__content::-webkit-scrollbar-thumb {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
       transparent
     );
     border-radius: 3px;

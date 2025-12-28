@@ -51,7 +51,7 @@
     font-weight: 600;
     text-align: center;
     margin: 0 0 var(--spacing-md, 16px);
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .testimonial-grid {
@@ -68,14 +68,14 @@
 
   .testimonial-card {
     padding: var(--spacing-md, 16px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
   }
 
   .quote {
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-min);
+    color: var(--theme-text);
     margin-bottom: var(--spacing-md, 16px);
     font-style: italic;
   }
@@ -98,18 +98,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--gradient-primary, linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%));
+    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
     color: white;
   }
 
   .name {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .location {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 </style>

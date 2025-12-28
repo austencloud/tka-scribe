@@ -115,8 +115,8 @@
 <style>
 	.advanced-filters {
 		padding: 10px 14px;
-		background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-		border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+		background: var(--theme-card-bg);
+		border-bottom: 1px solid var(--theme-stroke);
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
@@ -130,8 +130,8 @@
 	}
 
 	.filter-label {
-		font-size: 12px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+		font-size: var(--font-size-compact);
+		color: var(--theme-text-dim);
 		text-transform: uppercase;
 		letter-spacing: 0.5px;
 		min-width: 65px;
@@ -151,10 +151,10 @@
 		flex: 1;
 		padding: 6px 10px;
 		border-radius: 12px;
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
-		font-size: 12px;
+		border: 1px solid var(--theme-stroke);
+		background: var(--theme-panel-elevated-bg);
+		color: var(--theme-text-dim);
+		font-size: var(--font-size-compact);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
@@ -165,17 +165,17 @@
 	}
 
 	.level-btn:hover {
-		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-		border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+		background: var(--theme-card-hover-bg);
+		border-color: var(--theme-stroke-strong);
 		color: var(--theme-text, white);
 		transform: translateY(-1px);
 	}
 
 	.level-btn.active {
-		border-color: var(--theme-accent, #4a9eff);
-		background: color-mix(in srgb, var(--theme-accent, #4a9eff) 20%, transparent);
-		color: var(--theme-accent, #4a9eff);
-		box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
+		border-color: var(--theme-accent);
+		background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+		color: var(--theme-accent);
+		box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 25%, transparent);
 	}
 
 	/* Level-specific gradients when active */
@@ -203,10 +203,10 @@
 	.stepper-btn {
 		padding: 6px 12px;
 		border-radius: 12px;
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
-		font-size: 12px;
+		border: 1px solid var(--theme-stroke);
+		background: var(--theme-panel-elevated-bg);
+		color: var(--theme-text-dim);
+		font-size: var(--font-size-compact);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
@@ -214,17 +214,17 @@
 	}
 
 	.stepper-btn:hover:not(:disabled) {
-		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-		border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+		background: var(--theme-card-hover-bg);
+		border-color: var(--theme-stroke-strong);
 		color: var(--theme-text, white);
 		transform: translateY(-1px);
 	}
 
 	.stepper-btn.active {
-		border-color: var(--theme-accent, #4a9eff);
-		background: color-mix(in srgb, var(--theme-accent, #4a9eff) 20%, transparent);
-		color: var(--theme-accent, #4a9eff);
-		box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
+		border-color: var(--theme-accent);
+		background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+		color: var(--theme-accent);
+		box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 25%, transparent);
 	}
 
 	.stepper-btn:disabled {
@@ -235,8 +235,8 @@
 	.length-display {
 		min-width: 28px;
 		text-align: center;
-		font-size: var(--font-size-min, 14px);
-		color: var(--theme-text, rgba(255, 255, 255, 0.92));
+		font-size: var(--font-size-min);
+		color: var(--theme-text);
 		font-weight: 600;
 	}
 
@@ -248,24 +248,24 @@
 		gap: 8px;
 		padding: 6px 12px;
 		border-radius: 12px;
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
-		font-size: 12px;
+		border: 1px solid var(--theme-stroke);
+		background: var(--theme-panel-elevated-bg);
+		color: var(--theme-text-dim);
+		font-size: var(--font-size-compact);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
 	}
 
 	.letter-select-btn:hover {
-		background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-		border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+		background: var(--theme-card-hover-bg);
+		border-color: var(--theme-stroke-strong);
 		color: var(--theme-text, white);
 		transform: translateY(-1px);
 	}
 
 	.letter-select-btn i:first-child {
-		font-size: 12px;
+		font-size: var(--font-size-compact);
 	}
 
 	.letter-select-btn span {
@@ -274,7 +274,7 @@
 	}
 
 	.letter-select-btn i:last-child {
-		font-size: 12px;
+		font-size: var(--font-size-compact);
 		opacity: 0.6;
 	}
 
@@ -285,10 +285,10 @@
 		gap: 6px;
 		padding: 6px 12px;
 		border-radius: 12px;
-		border: 1px solid var(--semantic-error, #ef4444);
-		background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
-		color: var(--semantic-error, #ef4444);
-		font-size: 12px;
+		border: 1px solid var(--semantic-error, var(--semantic-error));
+		background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent);
+		color: var(--semantic-error, var(--semantic-error));
+		font-size: var(--font-size-compact);
 		font-weight: 500;
 		cursor: pointer;
 		transition: all 0.2s ease;
@@ -296,8 +296,8 @@
 	}
 
 	.clear-filters-compact:hover {
-		background: color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent);
-		border-color: var(--semantic-error, #ef4444);
-		box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+		background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent);
+		border-color: var(--semantic-error, var(--semantic-error));
+		box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
 	}
 </style>

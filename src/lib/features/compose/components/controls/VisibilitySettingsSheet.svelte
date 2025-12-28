@@ -339,7 +339,7 @@
     padding: 16px;
     min-width: 280px;
     height: 100%;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
+    background: var(--theme-panel-elevated-bg);
   }
 
   .sheet-header {
@@ -347,7 +347,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 16px;
     flex-shrink: 0;
   }
@@ -355,7 +355,7 @@
   .sheet-title {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
@@ -366,17 +366,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .sheet-close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .sheet-body {
@@ -415,9 +415,9 @@
   }
 
   .section-title {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -458,10 +458,10 @@
     flex: 1;
     min-height: 50px;
     padding: 12px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -546,10 +546,10 @@
     min-height: 40px;
     padding: 8px 16px;
     margin-top: 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
@@ -565,9 +565,9 @@
   @media (hover: hover) and (pointer: fine) {
     .chip-btn:hover:not(.active),
     .ends-toggle:hover:not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.8));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
   }
 

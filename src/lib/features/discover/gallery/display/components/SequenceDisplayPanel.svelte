@@ -114,7 +114,7 @@
   /* Gallery controls container - wraps the top bar controls */
   .gallery-controls-container {
     flex-shrink: 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .display-content {
@@ -134,7 +134,7 @@
   }
 
   .display-content::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke-strong);
     border-radius: 3px;
   }
 
@@ -145,7 +145,7 @@
   /* Firefox scrollbar */
   .display-content {
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15))
+    scrollbar-color: var(--theme-stroke-strong)
       transparent;
   }
 
@@ -157,7 +157,7 @@
     justify-content: center;
     height: 200px;
     gap: var(--spacing-md);
-    color: var(--semantic-error, #ff6b6b);
+    color: var(--semantic-error);
   }
 
   .error-message {
@@ -169,12 +169,12 @@
     padding: var(--spacing-sm) var(--spacing-md);
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ff6b6b) 20%,
+      var(--semantic-error) 20%,
       transparent
     );
-    border: 1px solid var(--semantic-error, #ff6b6b);
+    border: 1px solid var(--semantic-error);
     border-radius: 6px;
-    color: var(--semantic-error, #ff6b6b);
+    color: var(--semantic-error);
     cursor: pointer;
     transition: all 0.2s;
   }
@@ -182,7 +182,7 @@
   .error-state button:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ff6b6b) 30%,
+      var(--semantic-error) 30%,
       transparent
     );
   }
@@ -193,12 +193,12 @@
     align-items: center;
     justify-content: center;
     height: 200px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   /* Responsive Design */

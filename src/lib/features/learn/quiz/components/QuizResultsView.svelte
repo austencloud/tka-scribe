@@ -66,7 +66,7 @@
         <QuizPerformanceGrade
           grade={analyzer?.getPerformanceGrade(results.accuracyPercentage) || {
             grade: "F",
-            color: "#dc2626",
+            color: "var(--semantic-error)",
             message: "Try again!",
           }}
           accuracy={results.accuracyPercentage}
@@ -199,7 +199,7 @@
   }
 
   .placeholder-icon {
-    font-size: 64px;
+    font-size: var(--font-size-3xl);
     margin-bottom: var(--spacing-lg);
   }
 

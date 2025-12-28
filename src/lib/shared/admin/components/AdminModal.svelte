@@ -4,6 +4,7 @@
    * Confirmation modal dialog
    */
 
+  import type { Snippet } from "svelte";
   import type { ModalVariant } from "../types/admin-component-types";
 
   interface AdminModalProps {
@@ -16,7 +17,7 @@
     onCancel: () => void;
     loading?: boolean;
     class?: string;
-    children?: any;
+    children?: Snippet;
   }
 
   let {
@@ -109,24 +110,24 @@
   }
 
   .admin-modal {
-    background: var(--theme-panel-elevated-bg, #1a1a2e);
+    background: var(--theme-panel-elevated-bg);
     border-radius: 16px;
     padding: 24px;
     max-width: 400px;
     width: 100%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .modal-title {
     margin: 0 0 12px 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .modal-message {
     margin: 0 0 24px 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
   }
 
@@ -144,7 +145,7 @@
   .confirm-btn {
     padding: 10px 20px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -152,38 +153,38 @@
   }
 
   .cancel-btn {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    color: var(--theme-text);
   }
 
   .cancel-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   .confirm-btn {
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     color: white;
   }
 
   .confirm-btn:hover:not(:disabled) {
-    background: var(--theme-accent-strong, #2563eb);
+    background: var(--theme-accent-strong);
   }
 
   .confirm-btn.danger {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
   }
 
   .confirm-btn.danger:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 85%, black);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, black);
   }
 
   .confirm-btn.warning {
-    background: var(--semantic-warning, #f59e0b);
+    background: var(--semantic-warning, var(--semantic-warning));
   }
 
   .confirm-btn.warning:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--semantic-warning, #f59e0b) 80%, black);
+    background: color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 80%, black);
   }
 
   .cancel-btn:disabled,

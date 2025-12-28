@@ -343,11 +343,11 @@
       rgba(15, 15, 20, 0.95) 0%,
       rgba(10, 10, 15, 0.98) 100%
     );
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 16px;
     box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+      0 4px 24px var(--theme-shadow),
+      inset 0 1px 0 var(--theme-card-bg);
     -webkit-overflow-scrolling: touch;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -385,15 +385,15 @@
     width: 6px;
   }
   .controls-panel::-webkit-scrollbar-track {
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-panel-bg);
     border-radius: 3px;
   }
   .controls-panel::-webkit-scrollbar-thumb {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     border-radius: 3px;
   }
   .controls-panel::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-stroke-strong);
   }
 
   /* Control Rows */
@@ -412,7 +412,7 @@
     max-height: 160px;
     overflow: hidden;
     border-radius: 12px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-panel-bg);
   }
 
   .playback-row {
@@ -448,10 +448,10 @@
     gap: 10px;
     min-height: var(--min-touch-target);
     padding: 10px 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -459,7 +459,7 @@
     -webkit-tap-highlight-color: transparent;
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   .settings-sheet-btn i {
@@ -475,14 +475,14 @@
     flex: 1;
     text-align: right;
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 500;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .settings-sheet-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
     }
   }
 

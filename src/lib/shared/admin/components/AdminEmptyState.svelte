@@ -43,26 +43,26 @@
     align-items: center;
     justify-content: center;
     padding: 50px 24px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     gap: 12px;
     text-align: center;
   }
 
   .empty-icon {
-    font-size: 50px;
+    font-size: var(--font-size-3xl);
     margin-bottom: 8px;
   }
 
   .empty-title {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .empty-message {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     max-width: 400px;
   }
 

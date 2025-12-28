@@ -115,7 +115,7 @@ Opens a sheet/panel for letter selection
     background: radial-gradient(
       ellipse at top left,
       #34d399 0%,
-      #10b981 40%,
+      var(--semantic-success) 40%,
       #059669 100%
     );
     border: none;
@@ -158,7 +158,7 @@ Opens a sheet/panel for letter selection
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      var(--theme-card-bg) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;
@@ -241,7 +241,7 @@ Opens a sheet/panel for letter selection
     right: 12px;
     width: 20px;
     height: 20px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     opacity: 0;
     transition: opacity 0.2s ease;
     z-index: 2;

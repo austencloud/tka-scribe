@@ -94,7 +94,7 @@ Uses grid layout for perfect centering with multi-select toggle
 
   .cap-modal-header h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 700;
     text-align: center;
     white-space: nowrap;
@@ -103,19 +103,19 @@ Uses grid layout for perfect centering with multi-select toggle
 
     /* Clean text shadow for legibility on rainbow background */
     text-shadow:
-      0 2px 8px color-mix(in srgb, var(--theme-shadow, #000) 60%, transparent),
-      0 4px 16px color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent);
+      0 2px 8px color-mix(in srgb, var(--theme-shadow) 60%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-shadow) 40%, transparent);
   }
 
   @container cap-modal (min-width: 400px) {
     .cap-modal-header h2 {
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
   }
 
   .multi-select-toggle {
-    background: var(--theme-shadow, rgba(0, 0, 0, 0.3));
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-shadow);
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 50%;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -130,33 +130,33 @@ Uses grid layout for perfect centering with multi-select toggle
   }
 
   .multi-select-toggle:hover {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
-    border-color: color-mix(in srgb, var(--theme-text, #fff) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 50%, transparent);
+    border-color: color-mix(in srgb, var(--theme-text) 50%, transparent);
     transform: scale(1.08);
   }
 
   .multi-select-toggle.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 40%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 80%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 80%,
       transparent
     );
     box-shadow: 0 0 16px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
   }
 
   .multi-select-toggle.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 50%,
+      var(--theme-accent-strong) 50%,
       transparent
     );
-    border-color: var(--theme-accent-strong, #8b5cf6);
+    border-color: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 
   .multi-select-toggle svg {
@@ -165,7 +165,7 @@ Uses grid layout for perfect centering with multi-select toggle
   }
 
   .cap-modal-close-button {
-    background: var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    background: var(--theme-shadow);
     border: none;
     border-radius: 50%;
     color: var(--theme-text, white);
@@ -181,7 +181,7 @@ Uses grid layout for perfect centering with multi-select toggle
   }
 
   .cap-modal-close-button:hover {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 50%, transparent);
     transform: scale(1.08);
   }
 

@@ -276,10 +276,10 @@
     gap: var(--nav-gap);
 
     /* Use global theme system for consistent navigation appearance */
-    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-panel-bg);
 
     /* Subtle top edge with theme stroke */
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
     box-shadow:
       0 -1px 0 0 hsl(0 0% 0% / 0.3),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.05);
@@ -416,9 +416,9 @@
     min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
-    border: 1px solid var(--theme-accent, #6366f1);
+    border: 1px solid var(--theme-accent, var(--theme-accent));
     border-radius: 50%;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     cursor: pointer;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
     touch-action: manipulation;
@@ -433,7 +433,7 @@
     opacity: 0.85;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
   }
@@ -443,12 +443,12 @@
   }
 
   .nav-back-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .nav-back-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   /* ============================================================================
@@ -474,7 +474,7 @@
     min-height: var(--min-touch-target);
     padding: 0;
     background: transparent;
-    border: 1px solid var(--theme-accent, #6366f1);
+    border: 1px solid var(--theme-accent, var(--theme-accent));
     border-radius: 50%;
     box-shadow: 0 2px 8px hsl(0 0% 0% / 0.3);
     touch-action: manipulation;
@@ -495,7 +495,7 @@
   .bottom-navigation :global(.nav-button.special.active) {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
   }
@@ -508,12 +508,12 @@
 
   /* Theme-colored gear icon */
   .bottom-navigation :global(.nav-button.special .nav-icon) {
-    font-size: 22px;
+    font-size: var(--font-size-xl);
   }
 
   .bottom-navigation :global(.nav-button.special .nav-icon i) {
-    color: var(--theme-accent, #6366f1);
-    -webkit-text-fill-color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent);
+    -webkit-text-fill-color: var(--theme-accent, var(--theme-accent));
   }
 
   /* ============================================================================
@@ -593,7 +593,7 @@
 
     @media (max-width: 399px) {
       .bottom-navigation :global(.nav-icon) {
-        font-size: 22px;
+        font-size: var(--font-size-xl);
       }
     }
   }
@@ -635,12 +635,12 @@
 
   /* Focus state for keyboard navigation */
   .peek-indicator:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: -2px;
   }
 
   .peek-indicator i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: hsl(0 0% 100% / 0.5);
     opacity: 0;
     transform: translateY(8px);

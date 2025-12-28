@@ -128,7 +128,7 @@ Allows natural language queries to find sequences, users, and collections.
   </div>
 
   <!-- Search input -->
-  <div class="search-input-container">
+  <div class="search-input-container" role="search" aria-label="Search sequences, users, and collections">
     <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="text"
@@ -184,6 +184,17 @@ Allows natural language queries to find sequences, users, and collections.
       </button>
     </div>
   {/if}
+
+  <!-- Screen reader status announcement -->
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+    {#if isSearching}
+      Searching...
+    {:else if hasSearched && filteredResults.length > 0}
+      {filteredResults.length} result{filteredResults.length === 1 ? '' : 's'} found
+    {:else if hasSearched && filteredResults.length === 0}
+      No results found
+    {/if}
+  </div>
 
   <!-- Content area -->
   <div class="search-content">
@@ -267,6 +278,19 @@ Allows natural language queries to find sequences, users, and collections.
 </div>
 
 <style>
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .search-explore-panel {
     display: flex;
     flex-direction: column;
@@ -283,7 +307,7 @@ Allows natural language queries to find sequences, users, and collections.
 
   .search-title {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
     color: var(--theme-text, white);
     display: flex;
@@ -294,8 +318,8 @@ Allows natural language queries to find sequences, users, and collections.
 
   .search-subtitle {
     margin: 8px 0 0 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Search input */
@@ -312,7 +336,7 @@ Allows natural language queries to find sequences, users, and collections.
   .search-icon {
     position: absolute;
     left: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     pointer-events: none;
   }
 
@@ -323,7 +347,7 @@ Allows natural language queries to find sequences, users, and collections.
     border: 2px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--theme-text);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     transition: all 0.2s ease;
   }
 
@@ -332,15 +356,15 @@ Allows natural language queries to find sequences, users, and collections.
     background: var(--theme-card-hover-bg);
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #007bff) 50%,
+      var(--semantic-info) 50%,
       transparent
     );
     box-shadow: 0 0 0 4px
-      color-mix(in srgb, var(--semantic-info, #007bff) 10%, transparent);
+      color-mix(in srgb, var(--semantic-info) 10%, transparent);
   }
 
   .search-input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .search-button {
@@ -349,14 +373,14 @@ Allows natural language queries to find sequences, users, and collections.
     padding: 14px 20px;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #007bff) 20%,
+      var(--semantic-info) 20%,
       transparent
     );
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, #007bff) 40%, transparent);
+      color-mix(in srgb, var(--semantic-info) 40%, transparent);
     border-radius: 12px;
-    color: var(--semantic-info, #4da3ff);
-    font-size: 16px;
+    color: var(--semantic-info);
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -364,12 +388,12 @@ Allows natural language queries to find sequences, users, and collections.
   .search-button:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #007bff) 30%,
+      var(--semantic-info) 30%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #007bff) 60%,
+      var(--semantic-info) 60%,
       transparent
     );
     transform: translateX(2px);
@@ -400,7 +424,7 @@ Allows natural language queries to find sequences, users, and collections.
     border: var(--theme-stroke);
     border-radius: 24px;
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -415,12 +439,12 @@ Allows natural language queries to find sequences, users, and collections.
   .filter-tab.active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #007bff) 20%,
+      var(--semantic-info) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #007bff) 40%,
+      var(--semantic-info) 40%,
       transparent
     );
     color: var(--theme-text, white);
@@ -441,9 +465,9 @@ Allows natural language queries to find sequences, users, and collections.
 
   .suggestions-title {
     margin: 0 0 16px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
   }
 
   .suggestions-grid {
@@ -463,7 +487,7 @@ Allows natural language queries to find sequences, users, and collections.
     border: var(--theme-stroke);
     border-radius: 10px;
     color: var(--theme-text-dim);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -471,12 +495,12 @@ Allows natural language queries to find sequences, users, and collections.
 
   .suggestion-chip:hover {
     background: var(--theme-card-hover-bg);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
   }
 
   .suggestion-chip i {
-    color: var(--semantic-warning, rgba(255, 193, 7, 0.8));
+    color: var(--semantic-warning);
   }
 
   /* AI callout */
@@ -494,21 +518,21 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .ai-callout i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     color: rgba(186, 104, 200, 0.8);
   }
 
   .callout-content strong {
     display: block;
     margin-bottom: 4px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     color: var(--theme-text, white);
   }
 
   .callout-content p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
   }
 
@@ -521,23 +545,23 @@ Allows natural language queries to find sequences, users, and collections.
     justify-content: center;
     gap: 12px;
     padding: 60px 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .loading-state i,
   .empty-state i {
-    font-size: 50px;
+    font-size: var(--font-size-3xl);
   }
 
   .empty-state h3 {
     margin: 0;
-    font-size: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-xl);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     text-align: center;
   }
 
@@ -563,7 +587,7 @@ Allows natural language queries to find sequences, users, and collections.
 
   .result-item:hover {
     background: var(--theme-card-hover-bg);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-stroke-strong);
     transform: translateX(4px);
   }
 
@@ -573,10 +597,10 @@ Allows natural language queries to find sequences, users, and collections.
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border-radius: 10px;
-    font-size: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-xl);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     flex-shrink: 0;
   }
 
@@ -594,25 +618,25 @@ Allows natural language queries to find sequences, users, and collections.
 
   .result-title {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--theme-text, white);
   }
 
   .result-type {
     padding: 3px 8px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
   }
 
   .result-description {
     margin: 0 0 8px 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .result-relevance {
@@ -624,7 +648,7 @@ Allows natural language queries to find sequences, users, and collections.
   .relevance-bar {
     flex: 1;
     height: 4px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 2px;
     overflow: hidden;
   }
@@ -633,21 +657,21 @@ Allows natural language queries to find sequences, users, and collections.
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--semantic-success, #00c853),
-      var(--semantic-info, #4da3ff)
+      var(--semantic-success),
+      var(--semantic-info)
     );
     transition: width 0.3s ease;
   }
 
   .relevance-text {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
   }
 
   .result-arrow {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
@@ -659,15 +683,15 @@ Allows natural language queries to find sequences, users, and collections.
     }
 
     .search-title {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .search-subtitle {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .search-input {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       padding: 12px 12px 12px 50px;
       min-height: var(--min-touch-target);
     }
@@ -692,7 +716,7 @@ Allows natural language queries to find sequences, users, and collections.
     .result-icon {
       width: 40px;
       height: 40px;
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 </style>

@@ -136,7 +136,7 @@ Features a welcoming header, mode toggle, and game cards.
       color-mix(in srgb, var(--theme-accent) 20%, transparent)
     );
     border-radius: 18px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin-bottom: 8px;
     border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     box-shadow:
@@ -170,7 +170,7 @@ Features a welcoming header, mode toggle, and game cards.
       sans-serif
     );
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-weight: 400;
   }
 

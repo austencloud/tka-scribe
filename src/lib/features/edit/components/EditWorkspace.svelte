@@ -181,7 +181,7 @@
     gap: 12px;
     margin-bottom: 12px;
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -196,7 +196,7 @@
   .sequence-name {
     font-size: 1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
@@ -205,7 +205,7 @@
 
   .beat-count {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
@@ -249,6 +249,6 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 </style>

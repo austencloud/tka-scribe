@@ -121,7 +121,7 @@ Can operate as stepper (inline) or panel opener (click to select)
     onIncrement={handleIncrement}
     onDecrement={handleDecrement}
     {formatValue}
-    color="radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)"
+    color="radial-gradient(ellipse at top left, var(--semantic-info) 0%, var(--semantic-info) 40%, #1d4ed8 100%)"
     shadowColor="220deg 80% 55%"
     {gridColumnSpan}
     {cardIndex}
@@ -179,8 +179,8 @@ Can operate as stepper (inline) or panel opener (click to select)
     border-radius: 16px;
     background: radial-gradient(
       ellipse at top left,
-      #fbbf24 0%,
-      #f59e0b 40%,
+      var(--semantic-warning) 0%,
+      var(--semantic-warning) 40%,
       #d97706 100%
     );
     border: none;
@@ -218,7 +218,7 @@ Can operate as stepper (inline) or panel opener (click to select)
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      var(--theme-card-bg) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;
@@ -296,7 +296,7 @@ Can operate as stepper (inline) or panel opener (click to select)
     right: 12px;
     width: 20px;
     height: 20px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     opacity: 0;
     transition: opacity 0.2s ease;
     z-index: 2;

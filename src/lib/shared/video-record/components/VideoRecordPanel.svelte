@@ -7,6 +7,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { browser } from "$app/environment";
+  import { toast } from "$lib/shared/toast/state/toast-state.svelte";
   import { loadFeatureModule, resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ICameraManager } from "$lib/features/train/services/contracts/ICameraManager";
@@ -145,6 +146,7 @@
       recordingState = "recording";
     } catch (error) {
       console.error("Failed to start recording:", error);
+      toast.error("Failed to start recording. Please try again.");
     }
   }
 
@@ -172,6 +174,7 @@
       }
     } catch (error) {
       console.error("Failed to stop recording:", error);
+      toast.error("Failed to stop recording. Please try again.");
     }
   }
 
@@ -230,6 +233,7 @@
     } catch (error) {
       if ((error as Error).name !== "AbortError") {
         console.error("Failed to share:", error);
+        toast.error("Failed to share recording.");
       }
     } finally {
       isSharing = false;
@@ -503,7 +507,7 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-panel-bg);
   }
 
   /* Settings FAB */
@@ -517,18 +521,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.5));
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
-    font-size: 16px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .settings-fab:hover {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.7));
+    background: var(--theme-card-hover-bg);
     color: var(--theme-text, white);
     transform: rotate(45deg);
   }
@@ -559,7 +562,7 @@
     flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.4));
+    background: var(--theme-panel-elevated-bg);
   }
 
   .panel-label {
@@ -571,18 +574,17 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.6));
-    backdrop-filter: blur(4px);
+    background: var(--theme-card-bg);
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .panel-label i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .video-wrapper,
@@ -630,7 +632,7 @@
     align-items: center;
     justify-content: center;
     padding: 12px 8px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
+    background: var(--theme-panel-bg);
   }
 
   .control-group {
@@ -638,14 +640,13 @@
     align-items: center;
     gap: 12px;
     padding: 8px 16px;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.7));
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-elevated-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 24px;
   }
 
   .duration-badge {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text, white);
     display: flex;
@@ -654,11 +655,11 @@
   }
 
   .duration-badge.recording {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .duration-badge.paused {
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .duration-badge i.pulse {
@@ -688,7 +689,7 @@
     justify-content: center;
     border: none;
     border-radius: 50%;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -696,31 +697,31 @@
   .control-btn.primary {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #3b82f6) 0%,
-      var(--theme-accent-strong, #2563eb) 100%
+      var(--theme-accent, var(--semantic-info)) 0%,
+      var(--theme-accent-strong) 100%
     );
     color: var(--theme-text, white);
   }
 
   .control-btn.secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.15));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     color: var(--theme-text, white);
   }
 
   .control-btn.success {
     background: linear-gradient(
       135deg,
-      var(--semantic-success, #22c55e) 0%,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 70%, black) 100%
+      var(--semantic-success, var(--semantic-success)) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 70%, black) 100%
     );
     color: var(--theme-text, white);
   }
 
   .control-btn.danger {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 80%, black);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 80%, black);
     color: white;
   }
 
@@ -744,9 +745,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.7));
-    backdrop-filter: blur(12px);
-    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-panel-elevated-bg);
+    border: 3px solid var(--theme-stroke-strong);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -755,7 +755,7 @@
   .record-btn:hover {
     border-color: color-mix(
       in srgb,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.3)) 70%,
+      var(--theme-stroke-strong) 70%,
       white
     );
     transform: scale(1.05);
@@ -768,7 +768,7 @@
   .record-dot {
     width: 32px;
     height: 32px;
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border-radius: 50%;
     transition: all 0.2s ease;
   }
@@ -776,7 +776,7 @@
   .record-btn:hover .record-dot {
     transform: scale(1.1);
     box-shadow: 0 0 20px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 50%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 50%, transparent);
   }
 
   /* Loading/Error States */
@@ -795,18 +795,18 @@
   .loading-state p,
   .error-state p {
     margin: 0;
-    font-size: 16px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-base);
+    color: var(--theme-text);
   }
 
   .error-state i {
-    font-size: 48px;
-    color: var(--semantic-warning, #f59e0b);
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .error-detail {
-    font-size: 14px !important;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5)) !important;
+    font-size: var(--font-size-sm) !important;
+    color: var(--theme-text-dim, var(--theme-text-dim)) !important;
   }
 
   .retry-btn {
@@ -814,24 +814,24 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--theme-text, white);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .retry-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   .spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-top-color: var(--theme-accent, rgba(59, 130, 246, 0.8));
+    border: 3px solid var(--theme-stroke, var(--theme-stroke));
+    border-top-color: var(--theme-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -868,7 +868,7 @@
     .control-btn {
       width: 48px; /* WCAG AAA touch target */
       height: 48px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .record-btn {

@@ -117,8 +117,8 @@ Shows all 4 orientations: in, out, clock, counter
     gap: 8px;
     min-height: 80px;
     padding: 16px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 16px;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -126,14 +126,14 @@ Shows all 4 orientations: in, out, clock, counter
   }
 
   .orientation-cell:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
   }
 
   .orientation-cell:active {
     transform: translateY(0);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   .orientation-cell.selected {
@@ -157,12 +157,12 @@ Shows all 4 orientations: in, out, clock, counter
   }
 
   .orientation-icon {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     line-height: 1;
   }
 
   .orientation-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -175,7 +175,7 @@ Shows all 4 orientations: in, out, clock, counter
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 12px;
     color: rgba(239, 68, 68, 0.9);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;

@@ -112,7 +112,7 @@ VTGQuizResults - Final quiz results display
 
 	.score-label {
 		font-size: 0.875rem;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim);
 	}
 
 	.finish-button {

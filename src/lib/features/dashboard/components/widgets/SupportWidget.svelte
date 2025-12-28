@@ -142,11 +142,11 @@
     padding: 24px;
     background: linear-gradient(
       145deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 12%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 12%, transparent)
         0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 100%
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 24px;
   }
 
@@ -166,12 +166,12 @@
     height: var(--min-touch-target);
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     border-radius: 14px;
     color: white;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     flex-shrink: 0;
     animation: pulse 2s ease-in-out infinite;
   }
@@ -190,13 +190,13 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .header-text p {
     margin: 6px 0 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -230,7 +230,7 @@
     background: var(--btn-hover);
     transform: translateY(-2px);
     box-shadow: 0 8px 24px
-      color-mix(in srgb, var(--theme-shadow, #000) 25%, transparent);
+      color-mix(in srgb, var(--theme-shadow) 25%, transparent);
   }
 
   .donate-btn:active {
@@ -238,11 +238,11 @@
   }
 
   .donate-btn.success {
-    background: var(--semantic-success, #10b981) !important;
+    background: var(--semantic-success, var(--semantic-success)) !important;
   }
 
   .donate-btn i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .venmo-svg {
@@ -254,13 +254,13 @@
   .social-section {
     margin-top: auto;
     padding-top: 20px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .social-label {
     display: block;
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     text-align: center;
     margin-bottom: 12px;
   }
@@ -277,11 +277,11 @@
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 16px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-base);
     text-decoration: none;
     cursor: pointer;
     transition: all 150ms ease;
@@ -308,7 +308,7 @@
     .heart-icon {
       width: 44px;
       height: 44px;
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .header-text h3 {

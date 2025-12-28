@@ -20,13 +20,13 @@
 
 <style>
   .dependency-warning {
-    background: var(--semantic-warning-dim, rgba(245, 158, 11, 0.15));
+    background: var(--semantic-warning-dim);
     border: 2px solid
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 30%, transparent);
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 30%, transparent);
     border-radius: 8px;
     padding: 12px;
-    color: var(--semantic-warning, #f59e0b);
-    font-size: 13px;
+    color: var(--semantic-warning, var(--semantic-warning));
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-align: center;
   }

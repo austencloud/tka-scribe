@@ -259,16 +259,16 @@
     gap: 10px;
     width: 100%;
     height: 100%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .preview-placeholder {
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text, var(--theme-text-dim));
   }
 
   .preview-placeholder i {
-    font-size: 28px;
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-3xl);
+    color: var(--theme-accent, var(--theme-accent));
     opacity: 0.8;
   }
 
@@ -289,13 +289,13 @@
 
   .preview-loading span,
   .preview-error span {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
   .preview-error i {
-    font-size: 28px;
-    color: var(--semantic-warning, #fbbf24);
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-warning, var(--semantic-warning));
     opacity: 0.6;
   }
 </style>

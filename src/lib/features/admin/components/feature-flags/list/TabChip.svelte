@@ -80,7 +80,7 @@
   }
 
   .tab-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .tab-name {
@@ -88,13 +88,13 @@
   }
 
   .tab-role {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin-left: 2px;
   }
 
   .disabled-icon {
-    color: var(--semantic-error, #f87171);
-    font-size: 12px;
+    color: var(--semantic-error, var(--semantic-error));
+    font-size: var(--font-size-compact);
     margin-left: 2px;
   }
 </style>

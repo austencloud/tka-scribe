@@ -111,17 +111,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .toggle-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     color: white;
   }
 
@@ -147,8 +147,8 @@
     bottom: calc(100% + 8px);
     right: 0;
     min-width: 260px;
-    background: var(--theme-panel-bg, rgba(20, 20, 30, 0.95));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     z-index: 100;

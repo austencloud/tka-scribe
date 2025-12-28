@@ -65,7 +65,7 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
   };
 
   // Default styling when no level selected
-  const defaultGradient = "linear-gradient(135deg, #3b82f6, #1d4ed8)";
+  const defaultGradient = "linear-gradient(135deg, var(--semantic-info), #1d4ed8)";
   const defaultShadowColor = "217deg 91% 60%";
 
   const currentConfig = $derived(
@@ -212,7 +212,7 @@ Supports levels 1-3 with TKA color gradients (sky blue, silver, gold)
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      var(--theme-card-bg) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;

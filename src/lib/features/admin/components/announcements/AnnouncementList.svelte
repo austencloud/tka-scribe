@@ -17,11 +17,11 @@
   function getSeverityColor(severity: Announcement["severity"]): string {
     switch (severity) {
       case "critical":
-        return "#ef4444";
+        return "var(--semantic-error)";
       case "warning":
-        return "#f59e0b";
+        return "var(--semantic-warning)";
       case "info":
-        return "var(--theme-accent, #6366f1)";
+        return "var(--theme-accent, var(--theme-accent))";
     }
   }
 
@@ -121,23 +121,23 @@
     align-items: center;
     gap: 12px;
     padding: 48px 24px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-align: center;
   }
 
   .empty-state i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
   .empty-state p {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 500;
     margin: 0;
   }
 
   .empty-state span {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     color: rgba(255, 255, 255, 0.4);
   }
 
@@ -159,14 +159,14 @@
     gap: 12px;
     padding: 16px;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     transition: all 0.2s ease;
   }
 
   .announcement-card:hover {
     border-color: rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   /* ============================================================================
@@ -186,7 +186,7 @@
 
   .severity-badge {
     padding: 4px 12px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     color: white;
@@ -201,14 +201,14 @@
     padding: 4px 10px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 20%,
+      var(--theme-accent, var(--theme-accent)) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
     border-radius: 6px;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
-    font-size: 12px;
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white);
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -223,10 +223,10 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -239,21 +239,21 @@
   .action-button.delete:hover {
     background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .action-button.edit:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 40%,
+      var(--theme-accent, var(--theme-accent)) 40%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white);
   }
 
   /* ============================================================================
@@ -264,15 +264,15 @@
   }
 
   .announcement-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     margin: 0 0 8px 0;
   }
 
   .announcement-message {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     margin: 0;
     line-height: 1.5;
     overflow: hidden;
@@ -303,13 +303,13 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .footer-info i,
   .expires-date i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .target-audience {

@@ -45,20 +45,20 @@
   }
 
   .panel-header__icon {
-    font-size: 24px;
-    color: var(--theme-accent, #06b6d4);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-accent);
   }
 
   .panel-header__text {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
   .panel-header__subtitle {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     padding-left: 36px;
   }
@@ -69,11 +69,11 @@
     }
 
     .panel-header__text {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .panel-header__subtitle {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       padding-left: 32px;
     }
   }

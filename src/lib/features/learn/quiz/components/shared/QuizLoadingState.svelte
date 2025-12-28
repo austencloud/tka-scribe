@@ -18,8 +18,8 @@ QuizLoadingState - Loading spinner for quizzes
   .loading-spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-left-color: var(--theme-accent, #667eea);
+    border: 3px solid var(--theme-stroke);
+    border-left-color: var(--theme-accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }

@@ -50,8 +50,8 @@
 <style>
   .announcement-item {
     padding: 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     transition:
       transform 180ms ease,
@@ -61,7 +61,7 @@
 
   .announcement-item:not(.dismissed):hover {
     transform: translateY(-1px);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    border-color: var(--theme-stroke-strong);
     box-shadow: var(--theme-shadow, 0 10px 24px rgba(0, 0, 0, 0.28));
   }
 
@@ -78,7 +78,7 @@
 
   .severity-badge {
     padding: 4px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     color: white;
@@ -87,20 +87,20 @@
   }
 
   .announcement-date {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .announcement-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 8px 0;
   }
 
   .announcement-message {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.72));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.5;
     margin: 0 0 10px 0;
     white-space: pre-wrap;
@@ -113,14 +113,14 @@
     padding: 8px 12px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 18%,
+      var(--theme-accent, var(--theme-accent)) 18%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
     border-radius: 10px;
-    color: var(--theme-accent, #a5b4fc);
-    font-size: 12px;
+    color: var(--theme-accent);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-decoration: none;
     transition:
@@ -131,7 +131,7 @@
   .action-link:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
     transform: translateY(-1px);
@@ -146,7 +146,7 @@
     border: 1px solid rgba(16, 185, 129, 0.3);
     border-radius: 10px;
     color: #34d399;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     margin-top: 8px;
   }

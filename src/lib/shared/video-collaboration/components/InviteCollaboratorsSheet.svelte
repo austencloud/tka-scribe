@@ -314,7 +314,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.03);
   }
 
@@ -326,7 +326,7 @@
 
   .header-icon {
     font-size: 1.25rem;
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .invite-sheet__header h2 {
@@ -343,7 +343,7 @@
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     border: none;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
@@ -391,8 +391,8 @@
   .search-input-wrapper input {
     width: 100%;
     padding: 0.875rem 1rem 0.875rem 2.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--text-primary);
     font-size: 1rem;
@@ -402,7 +402,7 @@
   .search-input-wrapper input:focus {
     outline: none;
     border-color: rgba(59, 130, 246, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .search-input-wrapper input::placeholder {
@@ -418,7 +418,7 @@
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
-    color: #ef4444;
+    color: var(--semantic-error);
     font-size: 0.9rem;
   }
 
@@ -521,7 +521,7 @@
   }
 
   .creator-badge {
-    color: #fbbf24;
+    color: var(--semantic-warning);
     font-size: 0.9rem;
   }
 
@@ -536,7 +536,7 @@
     align-items: center;
     gap: 0.375rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     border: none;
     border-radius: 8px;
     color: white;

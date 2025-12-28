@@ -158,12 +158,12 @@
     justify-content: space-between;
     align-items: center;
     padding-bottom: var(--spacing-sm);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .grid-header h3 {
     margin: 0;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: var(--font-size-lg);
     font-weight: 500;
   }
@@ -185,8 +185,8 @@
   .word-card {
     display: flex;
     flex-direction: column;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
@@ -198,7 +198,7 @@
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .word-card:focus {
@@ -246,7 +246,7 @@
   }
 
   .sequence-title {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: var(--font-size-base);
     font-weight: 500;
     line-height: 1.3;
@@ -260,7 +260,7 @@
     gap: var(--spacing-sm);
     align-items: center;
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .sequence-duration {
@@ -326,7 +326,7 @@
   }
 
   .empty-state p {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: var(--font-size-base);
     margin: 0;
     line-height: 1.5;

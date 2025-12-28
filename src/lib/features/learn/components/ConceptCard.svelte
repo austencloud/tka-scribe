@@ -88,8 +88,8 @@ Displays:
     align-items: stretch;
     padding: 0.75rem;
     min-height: 80px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
     position: relative;
     overflow: hidden;
@@ -108,8 +108,8 @@ Displays:
   }
 
   .concept-card:hover:not(.locked) {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     transform: translateY(-2px);
   }
 
@@ -146,7 +146,7 @@ Displays:
   .name {
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -95,11 +95,11 @@
     width: 48px;
     height: 48px;
     flex-shrink: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 12px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
@@ -107,22 +107,22 @@
 
   /* Full beat step buttons - same 48px touch target, slightly more prominent styling */
   .step-btn.step-full {
-    font-size: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text, var(--theme-text-dim));
   }
 
   @media (hover: hover) and (pointer: fine) {
     .step-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-      color: var(--theme-text, rgba(255, 255, 255, 0.9));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text, var(--theme-text));
       transform: scale(1.05);
     }
   }
 
   .step-btn:active {
     transform: scale(0.95);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   /* Play/Pause Button */
@@ -146,9 +146,9 @@
     box-shadow:
       0 2px 8px rgba(34, 197, 94, 0.15),
       0 0 16px rgba(34, 197, 94, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
     -webkit-tap-highlight-color: transparent;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .play-pause-btn.playing {
@@ -162,7 +162,7 @@
     box-shadow:
       0 2px 8px rgba(239, 68, 68, 0.15),
       0 0 16px rgba(239, 68, 68, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -177,7 +177,7 @@
       box-shadow:
         0 4px 14px rgba(34, 197, 94, 0.25),
         0 0 20px rgba(34, 197, 94, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
 
     .play-pause-btn.playing:hover {
@@ -190,7 +190,7 @@
       box-shadow:
         0 4px 14px rgba(239, 68, 68, 0.25),
         0 0 20px rgba(239, 68, 68, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
@@ -202,7 +202,7 @@
   .play-pause-btn.large {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   /* ===========================
@@ -216,15 +216,15 @@
 
     /* Touch targets must remain 48px on mobile for WCAG AAA */
     .step-btn {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .step-btn.step-full {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .play-pause-btn {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -235,19 +235,19 @@
     }
 
     .step-btn {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .step-btn.step-full {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .play-pause-btn {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .play-pause-btn.large {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

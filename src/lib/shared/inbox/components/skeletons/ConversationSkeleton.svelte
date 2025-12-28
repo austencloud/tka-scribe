@@ -38,7 +38,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--theme-stroke);
     animation: fadeIn 0.3s ease-out backwards;
     animation-delay: calc(var(--stagger) * 50ms);
   }
@@ -58,9 +58,9 @@
     border-radius: 50%;
     background: linear-gradient(
       90deg,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 25%,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1)) 50%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 75%
+      var(--theme-card-bg) 25%,
+      var(--theme-card-hover-bg, var(--theme-stroke)) 50%,
+      var(--theme-card-bg) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
@@ -85,9 +85,9 @@
     border-radius: 4px;
     background: linear-gradient(
       90deg,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 25%,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1)) 50%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 75%
+      var(--theme-card-bg) 25%,
+      var(--theme-card-hover-bg, var(--theme-stroke)) 50%,
+      var(--theme-card-bg) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
@@ -100,9 +100,9 @@
     border-radius: 4px;
     background: linear-gradient(
       90deg,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 25%,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1)) 50%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 75%
+      var(--theme-card-bg) 25%,
+      var(--theme-card-hover-bg, var(--theme-stroke)) 50%,
+      var(--theme-card-bg) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
@@ -115,9 +115,9 @@
     border-radius: 4px;
     background: linear-gradient(
       90deg,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 25%,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1)) 50%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 75%
+      var(--theme-card-bg) 25%,
+      var(--theme-card-hover-bg, var(--theme-stroke)) 50%,
+      var(--theme-card-bg) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;

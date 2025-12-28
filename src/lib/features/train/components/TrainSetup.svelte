@@ -127,7 +127,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--theme-panel-bg, #0f0f0f);
+    background: var(--theme-panel-bg);
     color: var(--theme-text, white);
     overflow: hidden;
     position: relative;
@@ -157,20 +157,20 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 20%, transparent)
     );
     border-radius: 20px;
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
   }
 
   .icon-container i {
     font-size: 2.5rem;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent-strong, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent-strong, var(--theme-accent-strong))
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -183,8 +183,8 @@
     margin: 0 0 0.75rem 0;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent-strong, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent-strong, var(--theme-accent-strong))
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -193,7 +193,7 @@
 
   .setup-header p {
     margin: 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 1rem;
     max-width: 400px;
     margin: 0 auto;
@@ -216,14 +216,14 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 12px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .feature i {
     font-size: 1.25rem;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     width: 24px;
     text-align: center;
   }
@@ -239,8 +239,8 @@
     padding: 1.25rem 2rem;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent-strong, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent-strong, var(--theme-accent-strong))
     );
     border: none;
     border-radius: 12px;
@@ -254,13 +254,13 @@
     gap: 0.75rem;
     transition: all 0.2s;
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
   }
 
   .select-sequence-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
   }
 
   .select-sequence-button i {
@@ -274,7 +274,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 80%, transparent);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -286,8 +286,8 @@
   .loading-spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 4px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border-top-color: var(--semantic-info, #3b82f6);
+    border: 4px solid var(--theme-stroke, var(--theme-stroke));
+    border-top-color: var(--semantic-info, var(--semantic-info));
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

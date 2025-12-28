@@ -23,7 +23,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
     formatValue = (val: number) => val.toString(),
     subtitle = "",
     description = "",
-    color = "#3b82f6",
+    color = "var(--semantic-info)",
     shadowColor = "0deg 0% 0%",
     textColor = "white",
     gridColumnSpan = 2,
@@ -238,7 +238,7 @@ Landscape: Left half decrements, right half increments (horizontal layout)
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      transparent 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;

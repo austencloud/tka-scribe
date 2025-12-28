@@ -368,7 +368,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
     color: #000000;
     border-radius: 20px;
     font-weight: 600;

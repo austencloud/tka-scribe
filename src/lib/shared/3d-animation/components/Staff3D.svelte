@@ -45,8 +45,8 @@
 
   // Color values
   const colors = {
-    blue: { main: "#3b82f6", dark: "#1d4ed8", light: "#60a5fa" },
-    red: { main: "#ef4444", dark: "#b91c1c", light: "#f87171" },
+    blue: { main: "var(--semantic-info)", dark: "#1d4ed8", light: "var(--semantic-info)" },
+    red: { main: "var(--semantic-error)", dark: "#b91c1c", light: "var(--semantic-error)" },
   };
   const palette = $derived(colors[color]);
 

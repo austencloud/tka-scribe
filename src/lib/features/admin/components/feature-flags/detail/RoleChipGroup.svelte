@@ -107,7 +107,7 @@
 
   @media (min-width: 480px) {
     .role-chip i {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

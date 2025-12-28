@@ -300,7 +300,7 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .back-header-button {
@@ -314,9 +314,9 @@
     padding: 0;
     /* Subtle glass button */
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
@@ -326,28 +326,28 @@
   .back-header-button:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 30%,
+      var(--theme-accent, var(--theme-accent)) 30%,
       transparent
     );
-    color: var(--theme-accent, #a78bfa);
+    color: var(--theme-accent);
   }
 
   .back-header-button:active {
     transform: scale(0.95);
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 20%,
+      var(--theme-accent, var(--theme-accent)) 20%,
       transparent
     );
   }
 
   .back-header-button i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: transform 0.15s ease;
   }
 
@@ -356,9 +356,9 @@
   }
 
   .back-header-title {
-    font-size: 17px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .settings-module-body {
@@ -382,7 +382,7 @@
   .settings-module-body::-webkit-scrollbar-thumb {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
     border-radius: 3px;
@@ -448,20 +448,19 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 20%,
+      var(--theme-accent, var(--theme-accent)) 20%,
       rgba(0, 0, 0, 0.3)
     );
-    backdrop-filter: blur(12px);
     border-radius: 50%;
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
     box-shadow: 0 0 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .swipe-arrow i {
-    color: var(--theme-accent, #a78bfa);
-    font-size: 14px;
+    color: var(--theme-accent);
+    font-size: var(--font-size-sm);
     transform: translateX(calc(var(--swipe-progress, 0) * 2px));
     transition: transform 0.1s ease;
   }

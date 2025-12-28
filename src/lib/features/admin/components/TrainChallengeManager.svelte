@@ -419,15 +419,15 @@
 
   .header-text h2 {
     margin: 0 0 4px 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .header-text p {
     margin: 0;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   .header-actions {
@@ -445,14 +445,14 @@
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .seed-btn {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
   }
 
   .seed-btn:hover:not(:disabled) {
@@ -466,7 +466,7 @@
   }
 
   .create-btn {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
   }
 
   .create-btn:hover {
@@ -481,7 +481,7 @@
     gap: 20px;
     padding: 24px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -493,9 +493,9 @@
 
   .form-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .close-btn {
@@ -504,17 +504,17 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .form-grid {
@@ -534,9 +534,9 @@
   }
 
   .form-group label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .form-group input,
@@ -544,10 +544,10 @@
   .form-group textarea {
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     font-family: inherit;
   }
 
@@ -581,15 +581,15 @@
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .cancel-btn {
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
   }
 
   .cancel-btn:hover {
@@ -600,7 +600,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(135deg, #22c55e, #16a34a);
+    background: linear-gradient(135deg, var(--semantic-success), #16a34a);
     color: white;
   }
 
@@ -617,7 +617,7 @@
   /* Challenges Section */
   .challenges-section h3 {
     margin: 0 0 16px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
   }
@@ -630,17 +630,17 @@
     justify-content: center;
     padding: 40px;
     gap: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .loading-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     color: #a78bfa;
   }
 
   .empty-state i {
-    font-size: 48px;
-    color: rgba(255, 255, 255, 0.2);
+    font-size: var(--font-size-3xl);
+    color: rgba(255, 255, 255, 0.4); /* Improved contrast for WCAG AAA */
   }
 
   .challenges-list {
@@ -663,7 +663,7 @@
 
   .challenge-item:hover {
     background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .challenge-info {
@@ -675,15 +675,15 @@
 
   .challenge-info h4 {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .challenge-info p {
     margin: 0;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.5;
   }
 
@@ -697,7 +697,7 @@
     display: inline-flex;
     align-items: center;
     padding: 3px 8px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);
@@ -706,17 +706,17 @@
 
   .badge.difficulty-easy {
     background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .badge.difficulty-medium {
     background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .badge.difficulty-hard {
     background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .badge.difficulty-expert {
@@ -731,7 +731,7 @@
 
   .badge.mode {
     background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .order-badge {
@@ -741,10 +741,10 @@
     min-width: 36px;
     height: 36px;
     padding: 0 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 6px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 </style>

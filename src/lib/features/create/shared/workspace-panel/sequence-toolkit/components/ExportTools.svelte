@@ -93,53 +93,52 @@ Pure presentation component that delegates to sequence export services.
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border-radius: 10px;
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    backdrop-filter: blur(10px);
+    border: 1px solid var(--theme-stroke-strong);
+    background: var(--theme-stroke);
     cursor: pointer;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all var(--transition-normal);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-weight: 500;
 
     /* Subtle inner shadow for depth */
     box-shadow:
-      inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.1)),
+      inset 0 1px 0 var(--theme-stroke, var(--theme-stroke)),
       0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .tool-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
     box-shadow:
-      inset 0 1px 0 var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15)),
+      inset 0 1px 0 var(--theme-card-hover-bg),
       0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .tool-btn:active:not(:disabled) {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     transform: translateY(0);
     box-shadow:
-      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)),
+      inset 0 1px 0 var(--theme-stroke-strong),
       0 2px 6px rgba(0, 0, 0, 0.2);
   }
 
   .tool-btn:disabled {
-    background: var(--theme-card-bg, rgba(200, 200, 200, 0.05));
-    border-color: var(--theme-stroke, rgba(200, 200, 200, 0.1));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
+    color: var(--theme-text-dim);
     cursor: not-allowed;
     transform: none;
-    box-shadow: inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    box-shadow: inset 0 1px 0 var(--theme-stroke);
   }
 
   /* Focus styles for accessibility */
   .tool-btn:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -153,7 +152,7 @@ Pure presentation component that delegates to sequence export services.
     .tool-btn {
       width: var(--min-touch-target); /* Larger touch targets on mobile */
       height: var(--min-touch-target);
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 
@@ -166,7 +165,7 @@ Pure presentation component that delegates to sequence export services.
     .tool-btn {
       width: var(--min-touch-target); /* Minimum touch target size */
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -179,7 +178,7 @@ Pure presentation component that delegates to sequence export services.
     .tool-btn {
       width: 48px; /* WCAG AAA touch target */
       height: 48px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       border-radius: 8px;
       position: relative;
     }

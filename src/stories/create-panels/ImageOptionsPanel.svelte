@@ -109,7 +109,7 @@
       rgba(255, 255, 255, 0.06),
       rgba(255, 255, 255, 0.03)
     );
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border: 1.5px solid var(--theme-stroke-strong);
     border-radius: 14px;
     color: rgba(255, 255, 255, 0.95);
     font-size: 15px;
@@ -118,7 +118,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .options-toggle:hover {
@@ -166,7 +166,7 @@
     margin: 0 0 14px 0;
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 1px;
     display: flex;
@@ -247,13 +247,13 @@
     border-radius: 50%;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-      0 2px 4px rgba(0, 0, 0, 0.2),
+      0 2px 4px var(--theme-shadow),
       0 1px 2px rgba(0, 0, 0, 0.1);
   }
 
   .toggle-option input[type="checkbox"]:checked + .image-option-toggle {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border-color: #3b82f6;
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
+    border-color: var(--semantic-info);
     box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
   }
 
@@ -264,7 +264,7 @@
   .toggle-label {
     font-size: 14px;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .format-buttons {
@@ -277,10 +277,10 @@
     padding: 12px 20px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08),
+      var(--theme-card-bg),
       rgba(255, 255, 255, 0.04)
     );
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    border: 1.5px solid var(--theme-stroke-strong);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.8);
     font-size: 13px;
@@ -302,8 +302,8 @@
   }
 
   .format-btn.active {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border-color: #3b82f6;
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
+    border-color: var(--semantic-info);
     color: white;
     box-shadow:
       0 4px 12px rgba(59, 130, 246, 0.3),
@@ -334,11 +334,11 @@
     height: 6px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg),
+      var(--theme-card-bg)
     );
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .quality-slider::-webkit-slider-thumb {
@@ -346,7 +346,7 @@
     appearance: none;
     width: 20px;
     height: 20px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     border-radius: 50%;
     cursor: pointer;
     box-shadow:
@@ -368,17 +368,17 @@
     height: 6px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg),
+      var(--theme-card-bg)
     );
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .quality-slider::-moz-range-thumb {
     width: 20px;
     height: 20px;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     border-radius: 50%;
     cursor: pointer;
     box-shadow:

@@ -78,7 +78,7 @@
     overflow: hidden;
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .section-header {
@@ -105,18 +105,18 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    font-size: 15px;
-    color: var(--theme-accent, #a78bfa);
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 12%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent);
+    font-size: var(--font-size-sm);
+    color: var(--theme-accent);
+    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 25%, transparent);
     border-radius: 10px;
   }
 
   .section-label {
     flex: 1;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .section-meta {
@@ -126,13 +126,13 @@
   }
 
   .custom-count {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     padding: 4px 10px;
     border-radius: 6px;
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 18%, transparent);
-    color: var(--theme-accent, #a78bfa);
+    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 18%, transparent);
+    color: var(--theme-accent);
   }
 
   .count {
@@ -142,17 +142,17 @@
     min-width: 28px;
     height: 28px;
     padding: 0 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     background: rgba(255, 255, 255, 0.06);
     border-radius: 6px;
     font-variant-numeric: tabular-nums;
   }
 
   .chevron {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     transition: transform 0.2s ease;
   }
 
@@ -178,7 +178,7 @@
 
   /* Focus state */
   .section-header:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: -2px;
   }
 

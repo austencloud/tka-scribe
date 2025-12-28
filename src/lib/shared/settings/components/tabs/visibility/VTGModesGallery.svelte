@@ -26,7 +26,7 @@
       description:
         "Hands split apart while moving in the same rotational direction",
       elemental: "Water",
-      elementalColor: "#3b82f6",
+      elementalColor: "var(--semantic-info)",
     },
     {
       code: "SO",
@@ -34,7 +34,7 @@
       description:
         "Hands split apart while moving in opposite rotational directions",
       elemental: "Fire",
-      elementalColor: "#ef4444",
+      elementalColor: "var(--semantic-error)",
     },
     {
       code: "TS",
@@ -55,7 +55,7 @@
       name: "Quarter Same",
       description: "Quarter-turn motion with both hands in the same direction",
       elemental: "Sun",
-      elementalColor: "#fbbf24",
+      elementalColor: "var(--semantic-warning)",
     },
     {
       code: "QO",
@@ -137,15 +137,15 @@
 
   .gallery-title {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .gallery-subtitle {
     margin: 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -174,7 +174,7 @@
 
   .mode-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .mode-card.selected {
@@ -212,9 +212,9 @@
   }
 
   .mode-code {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
     letter-spacing: 1px;
     transition: color 150ms ease;
@@ -225,9 +225,9 @@
   }
 
   .mode-elemental {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     transition: color 150ms ease;
@@ -281,21 +281,21 @@
   }
 
   .details-name {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .details-elemental {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     color: var(--elemental-color);
   }
 
   .details-description {
     margin: 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
   }
 
@@ -303,8 +303,8 @@
     margin: 0;
     padding: 12px;
     text-align: center;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     background: rgba(255, 255, 255, 0.02);
     border-radius: 8px;
   }

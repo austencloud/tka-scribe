@@ -192,16 +192,16 @@
     padding: 16px 24px;
     background: linear-gradient(
       to top,
-      var(--theme-panel-bg, rgba(20, 25, 35, 0.98)) 0%,
+      var(--theme-panel-bg) 0%,
       color-mix(
           in srgb,
-          var(--theme-panel-bg, rgba(20, 25, 35, 0.95)) 95%,
+          var(--theme-panel-bg) 95%,
           transparent
         )
         50%,
       transparent 100%
     );
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
     transition: padding 0.2s ease;
   }
 
@@ -237,41 +237,41 @@
     display: block;
     font-size: clamp(13px, 1.8vh, 16px); /* Fluid font sizing */
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     margin-bottom: clamp(6px, 1vh, 10px);
     transition: all 0.2s ease;
   }
 
   .section.compact :global(.label) {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     margin-bottom: 6px;
   }
 
   .section.very-compact :global(.label) {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin-bottom: 4px;
   }
 
   :global(.input) {
     width: 100%;
     padding: clamp(10px, 1.5vh, 14px) clamp(14px, 2vh, 18px);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-size: clamp(14px, 1.9vh, 17px); /* Fluid font size */
     transition: all 0.2s ease;
   }
 
   .section.compact :global(.input) {
     padding: 10px 14px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     border-radius: 6px;
   }
 
   .section.very-compact :global(.input) {
     padding: 8px 12px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     border-radius: 6px;
   }
 
@@ -279,10 +279,10 @@
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 60%,
+      var(--theme-accent, var(--theme-accent)) 60%,
       transparent
     );
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   :global(.input:disabled),
@@ -292,7 +292,7 @@
   }
 
   :global(.input--readonly) {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    background: var(--theme-card-bg);
   }
 
   .email-field-wrapper {
@@ -315,7 +315,7 @@
     max-width: min(800px, 80vw);
     margin-top: clamp(20px, 3vh, 32px);
     padding-top: clamp(20px, 3vh, 32px);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .section.compact .sign-out-section {
@@ -349,7 +349,7 @@
   .section.compact .sign-out-button {
     padding: 11px 20px;
     min-height: var(--min-touch-target);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     gap: 8px;
     border-radius: 8px;
   }
@@ -357,21 +357,21 @@
   .section.very-compact .sign-out-button {
     padding: 11px 18px;
     min-height: var(--min-touch-target);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     gap: 6px;
     border-radius: 8px;
   }
 
   .sign-out-button i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .section.compact .sign-out-button i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .section.very-compact .sign-out-button i {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .sign-out-button:hover:not(:disabled) {
@@ -397,7 +397,7 @@
   }
 
   :global(.hint) {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(
       --theme-text-dim,
       rgba(255, 255, 255, 0.65)
@@ -407,12 +407,12 @@
   }
 
   .section.compact :global(.hint) {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin: 4px 0 0 0;
   }
 
   .section.very-compact :global(.hint) {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin: 3px 0 0 0;
   }
 
@@ -439,7 +439,7 @@
     min-height: var(
       --min-touch-target
     ); /* WCAG 2.1 AA minimum touch target size */
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     gap: 8px;
     border-radius: 8px;
     margin-top: 6px;
@@ -450,45 +450,45 @@
     min-height: var(
       --min-touch-target
     ); /* WCAG 2.1 AA minimum touch target size */
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     gap: 6px;
     border-radius: 8px;
     margin-top: 4px;
   }
 
   :global(.button i) {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     transition: font-size 0.2s ease;
   }
 
   .section.compact :global(.button i) {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .section.very-compact :global(.button i) {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   :global(.button--primary) {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      var(--theme-accent-strong, #4f46e5)
+      var(--theme-accent, var(--theme-accent)),
+      var(--theme-accent-strong)
     );
     color: white;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   :global(.button--primary:hover:not(:disabled)) {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #4f46e5),
-      color-mix(in srgb, var(--theme-accent-strong, #4f46e5) 85%, black)
+      var(--theme-accent-strong),
+      color-mix(in srgb, var(--theme-accent-strong) 85%, black)
     );
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   :global(.button:active:not(:disabled)) {
@@ -503,7 +503,7 @@
 
   :global(.button--link) {
     background: transparent;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, transparent);
     box-shadow: none;
     padding: clamp(8px, 1.2vh, 10px) 0;
     min-height: auto;
@@ -513,17 +513,17 @@
 
   .section.compact :global(.button--link) {
     padding: 8px 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .section.very-compact :global(.button--link) {
     padding: 6px 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   :global(.button--link:hover:not(:disabled)) {
     background: transparent;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     transform: none;
     box-shadow: none;
     text-decoration: underline;
@@ -547,13 +547,13 @@
   /* Accessibility - Focus Indicators */
   :global(.input:focus-visible) {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+      color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 
   :global(.button:focus-visible) {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+      color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
   }
 

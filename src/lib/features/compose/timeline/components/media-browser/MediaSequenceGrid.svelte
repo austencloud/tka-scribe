@@ -103,25 +103,25 @@
 	}
 
 	.sequence-list::-webkit-scrollbar-track {
-		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
-		border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+		background: var(--theme-panel-elevated-bg);
+		border-left: 1px solid var(--theme-stroke);
 	}
 
 	.sequence-list::-webkit-scrollbar-thumb {
-		background: var(--theme-card-bg, rgba(255, 255, 255, 0.2));
-		border: 3px solid var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+		background: var(--theme-card-bg);
+		border: 3px solid var(--theme-panel-elevated-bg);
 		border-radius: 6px;
 		transition: all 0.2s ease;
 	}
 
 	.sequence-list::-webkit-scrollbar-thumb:hover {
-		background: var(--theme-accent, #4a9eff);
-		border-color: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
-		box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent);
+		background: var(--theme-accent);
+		border-color: var(--theme-panel-elevated-bg);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 40%, transparent);
 	}
 
 	.sequence-list::-webkit-scrollbar-thumb:active {
-		background: var(--theme-accent-strong, #3a7ed0);
+		background: var(--theme-accent-strong);
 	}
 
 	/* Firefox scrollbar */
@@ -139,40 +139,40 @@
 		justify-content: center;
 		gap: 12px;
 		padding: 48px 24px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
-		font-size: var(--font-size-min, 14px);
+		color: var(--theme-text-dim);
+		font-size: var(--font-size-min);
 	}
 
 	.state-message i {
-		font-size: 32px;
+		font-size: var(--font-size-3xl);
 		opacity: 0.5;
-		color: var(--theme-accent, #4a9eff);
+		color: var(--theme-accent);
 	}
 
 	.state-message button {
 		padding: 8px 16px;
 		border-radius: 12px;
-		border: 1px solid var(--theme-accent, #4a9eff);
-		background: color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
-		color: var(--theme-accent, #4a9eff);
+		border: 1px solid var(--theme-accent);
+		background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+		color: var(--theme-accent);
 		cursor: pointer;
-		font-size: 13px;
+		font-size: var(--font-size-compact);
 		font-weight: 500;
 		transition: all 0.2s ease;
 	}
 
 	.state-message button:hover {
-		background: color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
-		border-color: var(--theme-accent, #4a9eff);
-		box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+		background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+		border-color: var(--theme-accent);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
 		transform: translateY(-1px);
 	}
 
 	.spinner {
 		width: 28px;
 		height: 28px;
-		border: 3px solid color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
-		border-top-color: var(--theme-accent, #4a9eff);
+		border: 3px solid color-mix(in srgb, var(--theme-accent) 15%, transparent);
+		border-top-color: var(--theme-accent);
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
 	}
@@ -197,8 +197,8 @@
 		justify-content: center;
 		gap: 8px;
 		padding: 24px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-		font-size: 12px;
+		color: var(--theme-text-dim, var(--theme-text-dim));
+		font-size: var(--font-size-compact);
 	}
 
 	.load-more-indicator .spinner {

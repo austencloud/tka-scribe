@@ -168,17 +168,17 @@
     --panel-gap: clamp(12px, 4cqi, 20px);
 
     /* Colors */
-    --accent: var(--theme-accent-strong, #6366f1);
-    --text-primary: var(--theme-text, rgba(255, 255, 255, 0.95));
-    --text-secondary: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    --accent: var(--theme-accent-strong);
+    --text-primary: var(--theme-text);
+    --text-secondary: var(--theme-text-dim);
     --text-muted: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      var(--theme-text-dim) 80%,
       transparent
     );
-    --border-subtle: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    --bg-subtle: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    --bg-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    --border-subtle: var(--theme-stroke, var(--theme-stroke));
+    --bg-subtle: var(--theme-card-bg);
+    --bg-hover: var(--theme-card-hover-bg);
   }
 
   /* ═══════════════════════════════════════════════════════════════════════════
@@ -282,7 +282,7 @@
 
   .close-btn:hover {
     background: var(--bg-hover);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     color: var(--text-primary);
   }
 
@@ -361,14 +361,14 @@
   }
 
   .panel-body::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 3px;
   }
 
   .panel-body::-webkit-scrollbar-thumb:hover {
     background: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 60%,
+      var(--theme-text-dim) 60%,
       transparent
     );
   }
@@ -410,7 +410,7 @@
     max-width: 90vw;
 
     /* Override glassmorphism blur - use solid background */
-    --sheet-bg: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    --sheet-bg: var(--theme-panel-bg);
     --sheet-filter: none;
   }
 

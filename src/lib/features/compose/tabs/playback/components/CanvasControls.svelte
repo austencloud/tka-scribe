@@ -44,9 +44,9 @@
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 1rem;
     cursor: pointer;
     backdrop-filter: blur(8px);
@@ -57,7 +57,7 @@
   .settings-btn:hover {
     background: rgba(0, 0, 0, 0.7);
     border-color: rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     transform: scale(1.05);
   }
 

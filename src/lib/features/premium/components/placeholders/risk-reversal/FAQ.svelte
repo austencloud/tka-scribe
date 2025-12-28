@@ -95,7 +95,7 @@
     font-weight: 600;
     text-align: center;
     margin: 0 0 var(--spacing-md, 16px);
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .faq-list {
@@ -105,8 +105,8 @@
   }
 
   .faq-item {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     overflow: hidden;
   }
@@ -119,8 +119,8 @@
     padding: var(--spacing-md, 16px);
     background: transparent;
     border: none;
-    color: var(--theme-text, #ffffff);
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text);
+    font-size: var(--font-size-min);
     font-weight: 600;
     text-align: left;
     cursor: pointer;
@@ -128,19 +128,19 @@
   }
 
   .faq-question:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
   }
 
   .faq-question i {
     flex-shrink: 0;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     transition: transform var(--transition-fast, 150ms ease);
   }
 
   .faq-answer {
     padding: 0 var(--spacing-md, 16px) var(--spacing-md, 16px);
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim);
     line-height: 1.6;
     animation: slideDown 200ms ease;
   }

@@ -264,10 +264,10 @@
     gap: 2rem;
     padding: 1.5rem;
     height: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 12px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .question-section {
@@ -292,7 +292,7 @@
     padding: 1rem;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .letter-display {
@@ -359,9 +359,9 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .feedback {
@@ -377,7 +377,7 @@
   }
 
   .feedback.incorrect {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .feedback .icon {
@@ -386,7 +386,7 @@
 
   .next-button {
     padding: 0.75rem 2rem;
-    background: var(--theme-accent, #667eea);
+    background: var(--theme-accent);
     color: white;
     border: none;
     border-radius: 8px;

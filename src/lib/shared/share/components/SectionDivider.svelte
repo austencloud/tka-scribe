@@ -23,7 +23,7 @@
     padding: 0 18px;
     background: rgba(15, 20, 30, 0.96);
     color: rgba(255, 255, 255, 0.45);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.2px;

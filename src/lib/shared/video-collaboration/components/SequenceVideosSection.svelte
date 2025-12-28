@@ -197,7 +197,7 @@
     background: rgba(59, 130, 246, 0.15);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 6px;
-    color: #3b82f6;
+    color: var(--semantic-info);
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
@@ -228,7 +228,7 @@
   }
 
   .error {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .empty p {
@@ -240,7 +240,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.625rem 1rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     border: none;
     border-radius: 8px;
     color: white;
@@ -330,7 +330,7 @@
   .collab-label {
     font-size: 0.65rem;
     font-weight: 600;
-    color: #8b5cf6;
+    color: var(--theme-accent-strong);
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }

@@ -22,7 +22,7 @@
   .price-highlight {
     text-align: center;
     padding: var(--spacing-lg, 24px) var(--spacing-md, 16px);
-    background: var(--gradient-primary, linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%));
+    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
     border-radius: 12px;
     margin-bottom: var(--spacing-lg, 24px);
   }
@@ -43,13 +43,13 @@
   }
 
   .period {
-    font-size: var(--font-size-lg, 18px);
+    font-size: var(--font-size-lg);
     color: rgba(255, 255, 255, 0.8);
   }
 
   .tagline {
-    font-size: var(--font-size-min, 14px);
-    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--font-size-min);
+    color: var(--theme-text);
     margin: 0;
   }
 

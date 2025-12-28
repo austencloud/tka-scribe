@@ -208,7 +208,7 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
 
   .pattern-desc {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .alphabet-preview {
@@ -233,8 +233,8 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
     font-weight: 700;
     font-size: 1rem;
@@ -243,7 +243,7 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
 
   .note {
     font-size: 0.875rem !important;
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: var(--theme-text-dim) !important;
     margin-top: 0.75rem !important;
   }
 
@@ -264,7 +264,6 @@ Page 1 of 5: Overview of Type 1 letters and motion patterns
       rgba(34, 211, 238, 0.3) 0%,
       rgba(6, 182, 212, 0.3) 100%
     );
-    backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     color: white;
   }

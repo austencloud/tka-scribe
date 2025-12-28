@@ -71,7 +71,7 @@
     background: var(--help-color);
     border-radius: 10px;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     flex-shrink: 0;
   }
 
@@ -97,7 +97,7 @@
   .help-full {
     margin: 0;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     line-height: 1.45;
   }
 
@@ -107,7 +107,7 @@
     align-items: center;
     gap: 6px;
     font-size: 0.75rem;
-    color: #fbbf24;
+    color: var(--semantic-warning);
     background: rgba(251, 191, 36, 0.1);
     padding: 6px 10px;
     border-radius: 6px;
@@ -115,6 +115,6 @@
   }
 
   .help-warning i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 </style>

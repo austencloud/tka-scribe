@@ -208,7 +208,7 @@
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 28px;
   }
 
@@ -229,20 +229,20 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 12%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 12%,
       transparent
     );
     border-radius: 20px;
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
     transition:
       background var(--theme-transition),
       border-color var(--theme-transition);
   }
 
   .logo-icon {
-    font-size: 36px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    font-size: var(--font-size-3xl);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     transition: color var(--theme-transition);
   }
 
@@ -250,7 +250,7 @@
     margin: 0;
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     letter-spacing: -0.03em;
   }
 
@@ -258,7 +258,7 @@
     margin: 0;
     font-size: 1.125rem;
     font-weight: 500;
-    color: var(--theme-accent-strong, #8b5cf6);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     transition: color var(--theme-transition);
   }
 
@@ -277,11 +277,11 @@
     padding: 16px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       rgba(255, 255, 255, 0.03)
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
     border-radius: 14px;
     transition:
       background var(--theme-transition),
@@ -291,12 +291,12 @@
   .feature-card:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
-      rgba(255, 255, 255, 0.05)
+      var(--theme-accent-strong) 20%,
+      var(--theme-card-bg)
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 35%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 35%,
       transparent
     );
   }
@@ -309,7 +309,7 @@
     height: 36px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
       transparent
     );
     border-radius: 10px;
@@ -318,8 +318,8 @@
   }
 
   .feature-icon i {
-    font-size: 16px;
-    color: var(--theme-accent-strong, #8b5cf6);
+    font-size: var(--font-size-base);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
     transition: color var(--theme-transition);
   }
 
@@ -333,13 +333,13 @@
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .feature-text p {
     margin: 0;
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -353,11 +353,11 @@
     padding: 28px 24px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       rgba(255, 255, 255, 0.03)
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
     border-radius: 20px;
     transition:
       background var(--theme-transition),
@@ -374,7 +374,7 @@
   .auth-subtitle {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .auth-container {
@@ -393,13 +393,13 @@
     padding: 12px 20px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 12%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 12%,
       rgba(255, 255, 255, 0.02)
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -412,19 +412,19 @@
   .email-toggle:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 18%,
+      var(--theme-accent-strong) 18%,
       rgba(255, 255, 255, 0.04)
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 30%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
       transparent
     );
     color: var(--theme-text, white);
   }
 
   .email-toggle i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .divider {
@@ -442,7 +442,7 @@
     height: 1px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
       transparent
     );
     transition: background var(--theme-transition);
@@ -450,7 +450,7 @@
 
   .divider span {
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .email-auth-wrapper {
@@ -474,14 +474,14 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 10%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 10%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 18%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 18%, transparent);
     border-radius: 12px;
-    color: var(--theme-accent-strong, #8b5cf6);
-    font-size: 18px;
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
+    font-size: var(--font-size-lg);
     cursor: pointer;
     transition:
       background var(--theme-transition),
@@ -494,12 +494,12 @@
   .bg-toggle:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 30%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
       transparent
     );
     transform: scale(1.05);
@@ -527,7 +527,7 @@
     }
 
     .logo-icon {
-      font-size: 28px;
+      font-size: var(--font-size-3xl);
     }
 
     .landing-header h1 {
@@ -560,7 +560,7 @@
       right: 16px;
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 

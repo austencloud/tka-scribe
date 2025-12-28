@@ -84,7 +84,7 @@
 
     border: var(
       --sheet-border,
-      var(--sheet-border-subtle, 1px solid rgba(255, 255, 255, 0.1))
+      var(--sheet-border-subtle, 1px solid var(--theme-stroke))
     );
 
     /* Smooth CSS transitions - using 2026 system tokens */
@@ -172,7 +172,7 @@
     width: var(--sheet-width, min(600px, 90vw));
     border-left: var(
       --sheet-border-strong,
-      2px solid rgba(255, 255, 255, 0.15)
+      2px solid var(--theme-stroke-strong)
     );
     border-right: none;
     border-top-left-radius: var(--sheet-radius-large, 20px);
@@ -213,7 +213,7 @@
     width: var(--sheet-width, min(600px, 90vw));
     border-right: var(
       --sheet-border-strong,
-      2px solid rgba(255, 255, 255, 0.15)
+      2px solid var(--theme-stroke-strong)
     );
     border-left: none;
     border-top-right-radius: var(--sheet-radius-large, 20px);
@@ -486,7 +486,7 @@
   :global(body.drawer-scale-bg-active .drawer-scale-bg) {
     box-shadow:
       0 0 0 1px rgba(0, 0, 0, 0.1),
-      0 10px 40px rgba(0, 0, 0, 0.3);
+      0 10px 40px var(--theme-shadow);
   }
 
   /* Dark mode variant for background dimming */

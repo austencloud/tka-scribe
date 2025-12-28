@@ -119,7 +119,7 @@
   .picker-panel {
     width: 100%;
     max-height: 90vh;
-    background: var(--theme-panel-bg, #1a1a1a);
+    background: var(--theme-panel-bg);
     border-radius: 16px 16px 0 0;
     display: flex;
     flex-direction: column;
@@ -168,13 +168,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px;
-    border-bottom: 0.33px solid var(--theme-stroke, rgba(255, 255, 255, 0.16));
+    border-bottom: 0.33px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
   .picker-header h2 {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 700;
     color: var(--theme-text, white);
     letter-spacing: -0.45px;
@@ -186,7 +186,7 @@
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
     border-radius: 50%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     border: none;
     color: var(--theme-text, white);
     display: flex;
@@ -194,12 +194,12 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .close-button:active {
     transform: scale(0.95);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   .picker-grid {
@@ -218,7 +218,7 @@
     -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
     /* Scrollbar styling */
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-text-dim, rgba(255, 255, 255, 0.3)) transparent;
+    scrollbar-color: var(--theme-text-dim) transparent;
   }
 
   /* 3 columns for landscape mobile and larger */
@@ -245,12 +245,12 @@
   }
 
   .picker-grid::-webkit-scrollbar-thumb {
-    background: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    background: var(--theme-text-dim);
     border-radius: 4px;
   }
 
   .picker-grid::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-text, rgba(255, 255, 255, 0.4));
+    background: var(--theme-text);
   }
 
   @media (prefers-reduced-motion: reduce) {

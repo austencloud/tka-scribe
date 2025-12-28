@@ -133,14 +133,13 @@ that triggers the filter panel dropdown.
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.15) 0%,
-      rgba(255, 255, 255, 0.08) 100%
+      var(--theme-card-bg) 100%
     );
-    backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 4px 16px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     /* Icon */
@@ -198,7 +197,7 @@ that triggers the filter panel dropdown.
     right: 6px;
     width: 8px;
     height: 8px;
-    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--semantic-info) 100%);
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     box-shadow: 0 2px 6px rgba(59, 130, 246, 0.5);

@@ -139,8 +139,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--theme-panel-bg, rgba(30, 30, 35, 0.95));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px;
     padding: 32px;
     max-width: 480px;
@@ -171,7 +171,7 @@
   }
 
   .icon {
-    font-size: 50px;
+    font-size: var(--font-size-3xl);
     line-height: 1;
   }
 
@@ -182,7 +182,7 @@
 
   :global(.dialog-title) {
     margin: 0 0 12px 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
     color: var(--text-color, #ffffff);
     font-family:
@@ -196,9 +196,9 @@
 
   :global(.dialog-message) {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     line-height: 1.6;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .dialog-actions {
@@ -210,7 +210,7 @@
   .dialog-button {
     padding: 12px 32px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -219,54 +219,54 @@
   }
 
   .cancel-button {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    color: var(--theme-text, var(--theme-text));
+    border-color: var(--theme-stroke);
   }
 
   .cancel-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
   }
 
   .confirm-button {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #667eea) 0%,
-      var(--theme-accent-strong, #764ba2) 100%
+      var(--theme-accent) 0%,
+      var(--theme-accent-strong) 100%
     );
     color: white;
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-stroke);
   }
 
   .confirm-button:hover {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #7c8ff0) 0%,
-      var(--theme-accent, #8a5bb0) 100%
+      var(--theme-accent-strong) 0%,
+      var(--theme-accent) 100%
     );
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px
       color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   :global(.dialog-container.warning) .confirm-button {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
   }
 
   :global(.dialog-container.warning) .confirm-button:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
   }
 
   :global(.dialog-container.danger) .confirm-button {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
   }
 
   :global(.dialog-container.danger) .confirm-button:hover {
-    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
   }
 
@@ -278,21 +278,21 @@
     }
 
     :global(.dialog-title) {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     :global(.dialog-message) {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .dialog-button {
       padding: 10px 24px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       min-width: 100px;
     }
 
     .icon {
-      font-size: 40px;
+      font-size: var(--font-size-3xl);
     }
   }
 </style>

@@ -155,7 +155,7 @@
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -167,9 +167,9 @@
     gap: 6px;
     padding: 6px 10px;
     border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke-strong);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     font-size: 0.75rem;
     transition: all 0.15s ease;
@@ -186,7 +186,7 @@
   }
 
   .copied-label {
-    color: #22c55e;
+    color: var(--semantic-success);
     font-weight: 600;
   }
 
@@ -212,7 +212,7 @@
 
   .key {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -220,7 +220,7 @@
 
   .val {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-weight: 500;
     text-align: right;
     user-select: all;
@@ -245,7 +245,7 @@
   .subsection {
     margin-top: 8px;
     padding-top: 12px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    border-top: 1px dashed var(--theme-stroke);
   }
 
   .lookup-keys-section {
@@ -308,7 +308,7 @@
   }
 
   .data-row.blue-key .key-val {
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .data-row.red-key {
@@ -317,6 +317,6 @@
   }
 
   .data-row.red-key .key-val {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 </style>

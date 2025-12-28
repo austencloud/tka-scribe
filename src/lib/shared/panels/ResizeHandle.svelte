@@ -151,7 +151,7 @@
   }
 
   .resize-handle.dragging .handle-visual {
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     transform: scale(1.2);
   }
 

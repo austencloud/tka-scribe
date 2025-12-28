@@ -97,7 +97,7 @@
 
   .shortcut-row:hover {
     background: rgba(255, 255, 255, 0.07);
-    border-left-color: var(--theme-accent, #8b5cf6);
+    border-left-color: var(--theme-accent, var(--theme-accent-strong));
   }
 
   .shortcut-row:active {
@@ -105,11 +105,11 @@
   }
 
   .shortcut-row.customized {
-    border-left-color: var(--theme-accent, #8b5cf6);
+    border-left-color: var(--theme-accent, var(--theme-accent-strong));
   }
 
   .shortcut-row.customized .label {
-    color: var(--theme-accent, #a78bfa);
+    color: var(--theme-accent);
   }
 
   .shortcut-row.disabled {
@@ -132,9 +132,9 @@
   /* Label - connected to key */
   .label {
     flex: 1;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -158,8 +158,8 @@
     background: transparent;
     border: none;
     border-radius: 4px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
-    font-size: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     opacity: 0;
     transition: all 0.1s ease;
@@ -170,25 +170,25 @@
   }
 
   .reset-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent);
-    color: var(--semantic-error, #f87171);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .off-badge {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     padding: 2px 6px;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Edit icon - subtle, shows on hover */
   .edit-icon {
     flex-shrink: 0;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.2));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     opacity: 0;
     transition: opacity 0.1s ease;
   }
@@ -199,7 +199,7 @@
 
   /* Focus state */
   .shortcut-row:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 1px;
   }
 

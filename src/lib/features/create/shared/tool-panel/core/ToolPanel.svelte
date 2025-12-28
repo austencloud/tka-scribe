@@ -509,7 +509,7 @@
 
   .coming-soon-panel p {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin-bottom: 0.5rem;
   }
 </style>

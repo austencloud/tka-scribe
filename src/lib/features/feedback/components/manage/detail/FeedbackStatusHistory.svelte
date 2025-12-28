@@ -72,7 +72,7 @@
     font-weight: 600;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 65%,
+      var(--theme-text-dim, var(--theme-text-dim)) 65%,
       transparent
     );
     text-transform: uppercase;
@@ -100,7 +100,7 @@
     justify-content: center;
     border-radius: 50%;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .timeline-content {
@@ -117,7 +117,7 @@
 
   .timeline-time {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Mobile: Smaller elements */
@@ -125,7 +125,7 @@
     .timeline-dot {
       width: 20px;
       height: 20px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .timeline-status {

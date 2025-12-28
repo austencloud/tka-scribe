@@ -179,8 +179,8 @@
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
     padding: 0.75rem;
-    background: var(--theme-panel-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md, 14px);
     box-shadow: var(--shadow-2026-md, 0 2px 8px rgba(0, 0, 0, 0.08));
     color: color-mix(in srgb, var(--theme-text, white) 85%, transparent);
@@ -200,16 +200,16 @@
   /* Hover effects */
   @media (hover: hover) {
     .floating-btn:hover {
-      background: var(--theme-card-hover-bg, #2d2d3a);
+      background: var(--theme-card-hover-bg);
       border-color: color-mix(
         in srgb,
-        var(--semantic-info, #3b82f6) 40%,
+        var(--semantic-info, var(--semantic-info)) 40%,
         transparent
       );
       box-shadow: 0 4px 12px
-        color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
       transform: translateY(-2px);
-      color: var(--semantic-info, #93c5fd);
+      color: var(--semantic-info);
     }
   }
 
@@ -223,17 +223,17 @@
   .sequence-btn.has-sequence {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
     color: color-mix(
       in srgb,
-      var(--semantic-success, #86efac) 90%,
+      var(--semantic-success) 90%,
       transparent
     );
   }
@@ -241,16 +241,16 @@
   .sequence-btn.has-sequence:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 25%,
+      var(--semantic-success, var(--semantic-success)) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 50%,
+      var(--semantic-success, var(--semantic-success)) 50%,
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 20%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 20%, transparent);
   }
 
   /* Mode button accent colors based on mode */

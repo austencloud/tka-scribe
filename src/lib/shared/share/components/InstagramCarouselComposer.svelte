@@ -352,7 +352,7 @@ ${caption}
   }
 
   .upload-button {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
   }
 
@@ -396,7 +396,7 @@ ${caption}
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.3);
     border-radius: 8px;
-    color: #3b82f6;
+    color: var(--semantic-info);
     max-width: 400px;
     text-align: center;
   }
@@ -415,8 +415,8 @@ ${caption}
 
   .reset-button {
     padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
@@ -480,8 +480,8 @@ ${caption}
 
   .caption-section textarea {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--text-primary);
     font-family: inherit;
@@ -492,7 +492,7 @@ ${caption}
   .caption-section textarea:focus {
     outline: none;
     border-color: rgba(59, 130, 246, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .char-count {

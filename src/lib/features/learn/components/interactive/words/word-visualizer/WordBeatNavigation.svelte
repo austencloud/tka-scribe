@@ -59,12 +59,12 @@ WordBeatNavigation - Beat navigation dots for letter sequence
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: rgba(255, 255, 255, 0.08);
-		border: 2px solid rgba(255, 255, 255, 0.15);
+		background: var(--theme-card-bg);
+		border: 2px solid var(--theme-stroke-strong);
 		border-radius: 50%;
 		cursor: pointer;
 		transition: all 0.2s ease;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim);
 		font-size: 0.75rem;
 		font-weight: 600;
 	}

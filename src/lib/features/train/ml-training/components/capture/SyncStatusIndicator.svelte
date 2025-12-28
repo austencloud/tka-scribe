@@ -52,23 +52,23 @@
     font-size: 0.85rem;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     color: #93c5fd;
   }
 
   .sync-status.syncing {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
     color: #93c5fd;
@@ -77,12 +77,12 @@
   .sync-status.synced {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
     color: #86efac;
@@ -91,12 +91,12 @@
   .sync-status.error {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
     color: #fca5a5;
@@ -109,7 +109,7 @@
   .sync-progress-bar {
     flex: 1;
     height: 4px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 2px;
     overflow: hidden;
     margin-left: 0.5rem;
@@ -119,8 +119,8 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--semantic-info, #3b82f6),
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, white)
+      var(--semantic-info, var(--semantic-info)),
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, white)
     );
     border-radius: 2px;
     transition: width 0.3s ease;

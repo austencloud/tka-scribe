@@ -22,7 +22,7 @@
 
   .skeleton-version {
     height: 72px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 12px;
     animation: pulse 1.5s ease-in-out infinite;
   }

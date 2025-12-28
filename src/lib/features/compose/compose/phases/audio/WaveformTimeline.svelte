@@ -441,7 +441,7 @@
     background: rgba(0, 0, 0, 0.6);
     border-radius: 8px;
     outline: none;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     transition: border-color 0.2s ease;
     overflow: hidden;
   }
@@ -474,7 +474,7 @@
     justify-content: center;
     gap: 0.75rem;
     background: rgba(0, 0, 0, 0.5);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.9rem;
   }
 
@@ -506,8 +506,8 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
@@ -539,7 +539,7 @@
     border-radius: 4px;
     font-size: 0.8rem;
     font-family: monospace;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .separator {
@@ -547,7 +547,7 @@
   }
 
   .total {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   /* Zoom controls */
@@ -596,7 +596,7 @@
     background: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
     font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     pointer-events: none;
   }
 

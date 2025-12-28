@@ -89,7 +89,7 @@
   .label {
     font-size: var(--font-size-compact, 0.75rem);
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     letter-spacing: 0.05em;
   }
 
@@ -97,8 +97,8 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     padding: 3px;
   }
@@ -110,20 +110,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
+    background: var(--theme-card-hover-bg);
     border: none;
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .blue .btn:hover:not(:disabled) {
-    background: var(--prop-blue, #2e3192);
+    background: var(--prop-blue);
   }
 
   .red .btn:hover:not(:disabled) {
-    background: var(--prop-red, #ed1c24);
+    background: var(--prop-red);
   }
 
   .btn:active:not(:disabled) {
@@ -145,6 +145,6 @@
     font-size: var(--font-size-lg, 1.125rem);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
   }
 </style>

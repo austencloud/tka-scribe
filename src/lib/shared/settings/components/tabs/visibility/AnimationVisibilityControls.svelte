@@ -155,9 +155,9 @@
   }
 
   .section-title {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -182,11 +182,11 @@
     padding: 12px 8px;
     min-height: 70px;
     /* Bento box frosted glass background */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 12px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     /* Smooth Bento box transition */
@@ -199,19 +199,19 @@
   }
 
   .control-btn i {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .control-btn .icon-letter {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: bold;
     font-family: Georgia, serif;
   }
 
   .control-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
     /* Subtle lift effect */
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
@@ -223,112 +223,112 @@
   .control-btn.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 15%,
+      var(--theme-accent, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 40%,
+      var(--theme-accent, var(--semantic-info)) 40%,
       transparent
     );
-    color: var(--theme-accent, #60a5fa);
+    color: var(--theme-accent, var(--semantic-info));
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   .control-btn.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 20%,
+      var(--theme-accent, var(--semantic-info)) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 50%,
+      var(--theme-accent, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--theme-accent, #93c5fd);
+    color: var(--theme-accent);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   /* Motion Color Variants - Use prop colors for motion icons */
   .control-btn.motion-blue.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 15%,
+      var(--theme-accent, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 40%,
+      var(--theme-accent, var(--semantic-info)) 40%,
       transparent
     );
-    color: var(--theme-accent, #60a5fa);
+    color: var(--theme-accent, var(--semantic-info));
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   .control-btn.motion-blue.active i {
-    color: var(--prop-blue, #2e3192);
+    color: var(--prop-blue);
   }
 
   .control-btn.motion-blue.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 20%,
+      var(--theme-accent, var(--semantic-info)) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 50%,
+      var(--theme-accent, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--theme-accent, #93c5fd);
+    color: var(--theme-accent);
   }
 
   .control-btn.motion-red.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 15%,
+      var(--theme-accent, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 40%,
+      var(--theme-accent, var(--semantic-info)) 40%,
       transparent
     );
-    color: var(--theme-accent, #60a5fa);
+    color: var(--theme-accent, var(--semantic-info));
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 var(--theme-stroke),
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   .control-btn.motion-red.active i {
-    color: var(--prop-red, #ed1c24);
+    color: var(--prop-red);
   }
 
   .control-btn.motion-red.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 20%,
+      var(--theme-accent, var(--semantic-info)) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 50%,
+      var(--theme-accent, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--theme-accent, #93c5fd);
+    color: var(--theme-accent);
   }
 
   .control-btn:active {
@@ -348,7 +348,7 @@
     }
 
     .section-title {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -361,16 +361,16 @@
     .control-btn {
       min-height: 60px;
       padding: 10px 6px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       border-radius: 10px;
     }
 
     .control-btn i {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .control-btn .icon-letter {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
   }
 
@@ -393,7 +393,7 @@
     .control-btn.active {
       border-color: color-mix(
         in srgb,
-        var(--theme-accent, #3b82f6) 80%,
+        var(--theme-accent, var(--semantic-info)) 80%,
         transparent
       );
     }

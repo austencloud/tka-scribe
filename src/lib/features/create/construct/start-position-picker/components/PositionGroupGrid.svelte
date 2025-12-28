@@ -111,7 +111,7 @@
     display: block; /* Use block instead of flex to avoid sizing conflicts */
     box-sizing: border-box;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: var(--row-tint, rgba(255, 255, 255, 0.05));
+    background: var(--row-tint, var(--theme-card-bg));
     border: 2px solid transparent;
     border-radius: 0px;
     box-shadow:

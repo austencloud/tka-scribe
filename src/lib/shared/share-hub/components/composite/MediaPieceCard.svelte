@@ -156,15 +156,15 @@
     position: relative;
     width: 100%;
     height: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     overflow: hidden;
     transition: border-color 0.2s ease;
   }
 
   .media-piece-card:hover {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    border-color: var(--theme-accent);
   }
 
   .preview-content {
@@ -181,16 +181,16 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .placeholder-preview i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.3;
   }
 
   .placeholder-preview p {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     margin: 0;
   }
 
@@ -220,7 +220,7 @@
   }
 
   .play-overlay i {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     color: white;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
@@ -260,15 +260,15 @@
     padding: 4px 10px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: white;
   }
 
   .format-label i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .settings-gear {
@@ -282,7 +282,7 @@
     height: 48px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(8px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke);
     border-radius: 50%;
     color: white;
     cursor: pointer;
@@ -297,20 +297,20 @@
   }
 
   .settings-gear:hover {
-    background: var(--theme-accent, rgba(74, 158, 255, 0.8));
-    border-color: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
     transform: scale(1.05);
   }
 
   .settings-gear:focus-visible {
-    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
     opacity: 1;
     transform: scale(1);
   }
 
   .settings-gear i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* Mobile - always show settings gear */

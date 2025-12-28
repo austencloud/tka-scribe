@@ -244,7 +244,7 @@
   .orientation-controls.blue .arrow-btn {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.2);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.4);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
   }
 
   .orientation-controls.blue .arrow-btn:hover:not(:disabled) {
@@ -262,7 +262,7 @@
   .orientation-controls.blue .orientation-display:hover:not(:disabled) {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.25);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.5);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
     box-shadow: 0 2px 8px rgba(var(--prop-color-rgb, 59, 130, 246), 0.2);
   }
 
@@ -275,13 +275,13 @@
   .orientation-controls.blue .option-btn:hover:not(:disabled) {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.25);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.5);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
   }
 
   .orientation-controls.blue .option-btn.active {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.3);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.6);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
     box-shadow: 0 2px 8px rgba(var(--prop-color-rgb, 59, 130, 246), 0.25);
   }
 
@@ -289,7 +289,7 @@
   .orientation-controls.red .arrow-btn {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.2);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.4);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
   }
 
   .orientation-controls.red .arrow-btn:hover:not(:disabled) {
@@ -307,7 +307,7 @@
   .orientation-controls.red .orientation-display:hover:not(:disabled) {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.25);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.5);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
     box-shadow: 0 2px 8px rgba(var(--prop-color-rgb, 239, 68, 68), 0.2);
   }
 
@@ -320,13 +320,13 @@
   .orientation-controls.red .option-btn:hover:not(:disabled) {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.25);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.5);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
   }
 
   .orientation-controls.red .option-btn.active {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.3);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.6);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
     box-shadow: 0 2px 8px rgba(var(--prop-color-rgb, 239, 68, 68), 0.25);
   }
 

@@ -56,12 +56,12 @@
     height: 40px;
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 12%,
+      var(--semantic-warning, var(--semantic-warning)) 12%,
       transparent
     );
     border-radius: var(--radius-2026-sm, 10px);
-    color: var(--semantic-warning, #f59e0b);
-    font-size: 16px;
+    color: var(--semantic-warning, var(--semantic-warning));
+    font-size: var(--font-size-base);
     flex-shrink: 0;
   }
 
@@ -76,12 +76,12 @@
   .teaser-title {
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .teaser-subtitle {
     font-size: var(--text-2026-caption, 0.875rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .teaser-arrow {
@@ -90,13 +90,13 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     transition: color var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
   }
 
   .teaser:hover .teaser-arrow {
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   @media (prefers-reduced-motion: reduce) {

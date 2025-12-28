@@ -57,18 +57,18 @@
     width: 100%;
     aspect-ratio: 1;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     overflow: hidden;
   }
 
   .loading-state,
   .empty-state {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
   }
 
   .loading-state i {
@@ -93,7 +93,7 @@
     border: 1px solid rgba(139, 92, 246, 0.3);
     border-radius: 8px;
     color: rgba(167, 139, 250, 1);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;

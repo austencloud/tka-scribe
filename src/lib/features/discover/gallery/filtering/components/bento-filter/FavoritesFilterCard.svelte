@@ -106,7 +106,7 @@ Single tap toggles favorites on/off
       0 1px 2px hsl(220deg 13% 20% / 0.15),
       0 2px 4px hsl(220deg 13% 20% / 0.12),
       0 4px 8px hsl(220deg 13% 20% / 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
 
     overflow: hidden;
     color: white;
@@ -187,7 +187,7 @@ Single tap toggles favorites on/off
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .heart-container {
@@ -202,7 +202,7 @@ Single tap toggles favorites on/off
   .heart-icon {
     width: clamp(32px, 10cqw, 50px);
     height: clamp(32px, 10cqw, 50px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -229,12 +229,12 @@ Single tap toggles favorites on/off
     z-index: 2;
     font-size: clamp(10px, 2.5cqw, 13px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin-top: clamp(4px, 1cqh, 8px);
   }
 
   .favorites-card.active .status-text {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   @media (prefers-reduced-motion: reduce) {

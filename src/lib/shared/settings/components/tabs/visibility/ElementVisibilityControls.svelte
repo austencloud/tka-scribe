@@ -128,11 +128,11 @@
   }
 
   .section-title {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     padding: 0 4px;
     flex-shrink: 0;
@@ -157,7 +157,7 @@
     }
 
     .section-title {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       margin-bottom: -2px;
     }
 
@@ -173,7 +173,7 @@
     }
 
     .section-title {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .chips-grid {
@@ -200,7 +200,7 @@
   /* Accessibility */
   @media (prefers-contrast: high) {
     .section-title {
-      color: var(--theme-text, rgba(255, 255, 255, 0.9));
+      color: var(--theme-text);
     }
   }
 </style>

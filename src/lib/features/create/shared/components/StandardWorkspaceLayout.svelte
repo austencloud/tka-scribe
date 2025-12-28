@@ -263,7 +263,7 @@
     position: relative;
 
     /* Colored border for visual workspace distinction */
-    border: 1px solid var(--workspace-border-color, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--workspace-border-color, var(--theme-stroke));
     border-radius: 8px;
 
     /* Smooth opacity and border transitions */

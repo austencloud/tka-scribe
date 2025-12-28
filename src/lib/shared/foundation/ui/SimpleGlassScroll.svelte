@@ -55,7 +55,7 @@
 
   .glass-scrollable.primary::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -91,7 +91,7 @@
 
   .glass-scrollable.secondary::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -136,7 +136,7 @@
 
   .glass-scrollable.hover::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -172,9 +172,9 @@
       180deg,
       rgba(255, 255, 255, 0.05) 0%,
       rgba(255, 255, 255, 0.02) 50%,
-      rgba(255, 255, 255, 0.05) 100%
+      var(--theme-card-bg) 100%
     );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);

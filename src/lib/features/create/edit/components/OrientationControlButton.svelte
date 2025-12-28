@@ -121,7 +121,7 @@
   }
 
   .orientation-control-button.blue {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.08) 0%,
@@ -130,7 +130,7 @@
   }
 
   .orientation-control-button.red {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     background: linear-gradient(
       135deg,
       rgba(239, 68, 68, 0.08) 0%,
@@ -204,50 +204,50 @@
 
   /* Font sizes by layout mode (for expanded state) */
   .orientation-control-button.comfortable .preview-text:not(.two-line) {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .orientation-control-button.balanced .preview-text:not(.two-line) {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   .orientation-control-button.compact .preview-text:not(.two-line) {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .orientation-control-button.blue .preview-text {
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .orientation-control-button.red .preview-text {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .orientation-control-button.expanded .preview-text {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     text-align: center;
   }
 
   .orientation-control-button.expanded.compact .preview-text {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .chevron {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
     transition: transform 0.3s ease;
   }
 
   .orientation-control-button.compact .chevron {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .orientation-control-button.blue .chevron {
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .orientation-control-button.red .chevron {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   /* Responsive adjustments for very small screens */
@@ -257,11 +257,11 @@
     }
 
     .preview-text {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .orientation-control-button.expanded .preview-text {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

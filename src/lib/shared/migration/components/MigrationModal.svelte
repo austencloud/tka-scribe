@@ -93,8 +93,8 @@
   .modal-content {
     max-width: 400px;
     width: 100%;
-    background: var(--theme-panel-bg, rgba(20, 22, 36, 0.98));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 20px;
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
     overflow: hidden;
@@ -113,9 +113,9 @@
     justify-content: center;
     width: 72px;
     height: 72px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
     border-radius: 18px;
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     color: white;
   }
 
@@ -126,15 +126,15 @@
   }
 
   .modal-body h2 {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 16px 0;
   }
 
   .announcement {
-    font-size: 16px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    font-size: var(--font-size-base);
+    color: var(--theme-text);
     margin: 0 0 20px 0;
   }
 
@@ -142,21 +142,21 @@
     display: flex;
     justify-content: center;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     margin-bottom: 20px;
   }
 
   .new-domain {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   .explanation {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     line-height: 1.6;
     margin: 0;
   }
@@ -175,10 +175,10 @@
     justify-content: center;
     gap: 10px;
     padding: 16px 24px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-strong));
     border: none;
     border-radius: 12px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: white;
     cursor: pointer;
@@ -193,19 +193,19 @@
   .dismiss-button {
     padding: 12px 24px;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .dismiss-button:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   /* Responsive */
@@ -222,7 +222,7 @@
     .app-icon {
       width: 64px;
       height: 64px;
-      font-size: 28px;
+      font-size: var(--font-size-3xl);
     }
 
     .modal-body {
@@ -230,7 +230,7 @@
     }
 
     .modal-body h2 {
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
 
     .modal-footer {

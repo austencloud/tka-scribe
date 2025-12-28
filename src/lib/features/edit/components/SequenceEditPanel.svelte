@@ -95,7 +95,7 @@
       shortDesc: "Pivot 45° clockwise",
       fullDesc:
         "Rotates the entire sequence 45° as if you turned your body to the right. Repeat 4 times for a full 180° turn.",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
       action: doRotateCW,
     },
     {
@@ -105,7 +105,7 @@
       shortDesc: "Pivot 45° counter-clockwise",
       fullDesc:
         "Rotates the entire sequence 45° as if you turned your body to the left. Repeat 4 times for a full 180° turn.",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
       action: doRotateCCW,
     },
     {
@@ -115,7 +115,7 @@
       shortDesc: "Switch hand movements",
       fullDesc:
         "Exchanges which hand does each movement. Your left hand's moves become your right hand's, and vice versa.",
-      color: "#10b981",
+      color: "var(--semantic-success)",
       action: doSwapColors,
     },
     {
@@ -181,10 +181,10 @@
   .panel-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0 0 16px 0;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .no-sequence {
@@ -192,7 +192,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .actions-list {
@@ -259,7 +259,7 @@
     border-radius: 10px;
     flex-shrink: 0;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   /* Text container */
@@ -279,7 +279,7 @@
 
   .action-desc {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .transforming-indicator {
@@ -324,7 +324,7 @@
     .action-icon-box {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .action-name {

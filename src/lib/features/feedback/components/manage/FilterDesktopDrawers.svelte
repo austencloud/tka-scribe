@@ -45,7 +45,7 @@
 
   // Prepare filter options for grid components
   const statusOptions = [
-    { value: "all", label: "All Status", icon: "", color: "#10b981" },
+    { value: "all", label: "All Status", icon: "", color: "var(--semantic-success)" },
     ...Object.entries(STATUS_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -55,7 +55,7 @@
   ];
 
   const priorityOptions = [
-    { value: "all", label: "All Priority", icon: "", color: "#10b981" },
+    { value: "all", label: "All Priority", icon: "", color: "var(--semantic-success)" },
     ...Object.entries(PRIORITY_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -151,7 +151,7 @@
     align-items: center;
     gap: 13px;
     padding: 21px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .drawer-title {
@@ -161,11 +161,11 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .drawer-title i {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .drawer-close {
@@ -178,15 +178,15 @@
     margin-right: calc(-1 * 13px);
     background: none;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     border-radius: 12px;
     transition: all 0.15s ease;
   }
 
   .drawer-close:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .drawer-close:active {

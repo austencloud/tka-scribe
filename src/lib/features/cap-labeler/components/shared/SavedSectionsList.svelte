@@ -52,7 +52,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
     background: var(--surface-glass);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -114,6 +114,6 @@
 
   .remove-btn:hover {
     background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 </style>

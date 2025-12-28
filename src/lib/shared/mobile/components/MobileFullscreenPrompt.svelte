@@ -460,13 +460,13 @@
     display: flex;
     justify-content: center;
     padding: 16px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 50%, transparent);
     backdrop-filter: blur(4px);
     animation: fadeIn 0.3s ease-out;
   }
 
   .fullscreen-prompt-overlay.nag-mode {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 90%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 90%, transparent);
   }
 
   .fullscreen-prompt-overlay.position-top {
@@ -488,11 +488,11 @@
   .fullscreen-prompt {
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #0f172a) 94%,
+      var(--theme-panel-bg) 94%,
       transparent
     );
     border-radius: 12px;
-    box-shadow: 0 12px 40px var(--theme-shadow, rgba(0, 0, 0, 0.5));
+    box-shadow: 0 12px 40px var(--theme-shadow);
     max-width: 420px;
     width: 100%;
     animation: slideIn 0.3s ease-out;
@@ -500,7 +500,7 @@
 
   .fullscreen-prompt.nag-mode {
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
   }
 
   .prompt-content {
@@ -510,19 +510,19 @@
   }
 
   .prompt-icon {
-    font-size: 50px;
+    font-size: var(--font-size-3xl);
     margin-bottom: 16px;
   }
 
   .prompt-content h3 {
     margin: 0 0 12px 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
   }
 
   .prompt-content p {
     margin: 0 0 20px 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .prompt-actions {
@@ -532,12 +532,12 @@
   }
 
   .install-button {
-    background: var(--theme-accent-strong, #8b5cf6);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
     color: var(--theme-text, white);
     border: none;
     border-radius: 8px;
     padding: 12px 24px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -546,7 +546,7 @@
   .install-button:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 85%,
+      var(--theme-accent-strong) 85%,
       #000
     );
     transform: translateY(-1px);
@@ -560,29 +560,29 @@
 
   .dismiss-button {
     background: transparent;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     padding: 12px 24px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .dismiss-button:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .dismiss-button.nag-dismiss {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border-color: var(--theme-stroke-strong);
     color: color-mix(in srgb, var(--theme-text, white) 92%, transparent);
   }
 
   .manual-instructions {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 12%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 12%,
       transparent
     );
     border-radius: 8px;
@@ -599,7 +599,7 @@
   .manual-instructions ol {
     margin: 0 0 12px 0;
     padding-left: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .manual-instructions ol li {
@@ -608,20 +608,20 @@
 
   .manual-note {
     margin: 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
   }
 
   .unsupported-message {
     margin: 0 0 16px 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .recommendations {
     text-align: left;
     padding-left: 20px;
     margin: 0 0 20px 0;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .recommendations li {
@@ -633,12 +633,12 @@
     padding: 12px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 14%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 14%,
       transparent
     );
     border-radius: 10px;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   @keyframes slideIn {
@@ -671,11 +671,11 @@
     }
 
     .prompt-icon {
-      font-size: 38px;
+      font-size: var(--font-size-3xl);
     }
 
     .prompt-content h3 {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 </style>

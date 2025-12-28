@@ -79,7 +79,7 @@ Responsive design:
       shortDesc: "Switch hand movements",
       fullDesc:
         "Your left hand's moves become your right hand's, and vice versa. Same sequence, opposite hands leading.",
-      color: "#10b981",
+      color: "var(--semantic-success)",
       handler: onSwapColors,
     },
     {
@@ -89,7 +89,7 @@ Responsive design:
       shortDesc: "Pivot 45°",
       fullDesc:
         "Rotates the entire sequence 45° as if you turned your body. Repeat 4 times for a full 180° turn.",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
       handler: onRotate,
     },
     {
@@ -138,10 +138,10 @@ Responsive design:
 
 <style>
   .sequence-transform-tools {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: var(--border-radius, 12px);
     padding: var(--spacing-md, 16px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .tools-header {
@@ -150,7 +150,7 @@ Responsive design:
 
   .tools-header h4 {
     margin: 0;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: var(--font-size-md, 1rem);
     font-weight: 600;
   }
@@ -174,7 +174,7 @@ Responsive design:
     );
     border: 1px solid color-mix(in srgb, var(--action-color) 25%, transparent);
     border-radius: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     cursor: pointer;
     width: 100%;
     text-align: left;
@@ -219,7 +219,7 @@ Responsive design:
     border-radius: 10px;
     flex-shrink: 0;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   /* Text container */
@@ -234,12 +234,12 @@ Responsive design:
   .action-name {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .action-desc {
     font-size: 0.8rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Small mobile */
@@ -256,7 +256,7 @@ Responsive design:
     .action-icon-box {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .action-name {
@@ -286,7 +286,7 @@ Responsive design:
     .action-icon-box {
       width: 32px;
       height: 32px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .action-name {

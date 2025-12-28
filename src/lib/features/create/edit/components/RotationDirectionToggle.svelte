@@ -133,15 +133,15 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
   }
 
   .rotation-toggle.compact .toggle-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .rotation-toggle.balanced .toggle-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .rotation-toggle.comfortable .toggle-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .toggle-btn {
@@ -163,33 +163,33 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
 
   .rotation-toggle.compact .toggle-btn {
     padding: 3px 8px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     gap: 3px;
   }
 
   .rotation-toggle.balanced .toggle-btn {
     padding: 4px 9px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     gap: 3px;
   }
 
   .rotation-toggle.comfortable .toggle-btn {
     padding: 4px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     gap: 4px;
   }
 
   /* Color-specific active states */
   .rotation-toggle.blue .toggle-btn.active {
-    background: #3b82f6;
-    border-color: #3b82f6;
+    background: var(--semantic-info);
+    border-color: var(--semantic-info);
     color: white;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   }
 
   .rotation-toggle.red .toggle-btn.active {
-    background: #ef4444;
-    border-color: #ef4444;
+    background: var(--semantic-error);
+    border-color: var(--semantic-error);
     color: white;
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
   }

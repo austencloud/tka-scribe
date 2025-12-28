@@ -30,7 +30,7 @@
   }
 </script>
 
-<div class="admin-search-box {className}">
+<div class="admin-search-box {className}" role="search" aria-label="Search">
   <i class="fas {icon} search-icon" aria-hidden="true"></i>
   <input
     type="text"
@@ -53,8 +53,8 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
     padding: 10px 12px;
     transition: all 0.2s;
@@ -71,14 +71,14 @@
 
   .admin-search-box:focus-within {
     border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
     box-shadow: 0 0 0 3px
       color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
   .search-icon {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
@@ -88,13 +88,13 @@
     border: none;
     outline: none;
     color: white;
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: var(--font-size-base); /* Prevent zoom on iOS */
     min-width: 0;
   }
 
   @media (min-width: 480px) {
     .search-input {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -103,9 +103,9 @@
   }
 
   .clear-btn {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     padding: 6px;
     display: flex;
@@ -120,8 +120,8 @@
 
   @media (hover: hover) {
     .clear-btn:hover {
-      color: var(--theme-text, rgba(255, 255, 255, 0.9));
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+      color: var(--theme-text);
+      background: var(--theme-card-hover-bg);
     }
   }
 

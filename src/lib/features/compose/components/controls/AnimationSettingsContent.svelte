@@ -168,7 +168,7 @@
   .settings-section-title {
     font-size: 0.7rem;
     font-weight: 700;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -188,10 +188,10 @@
     gap: 6px;
     min-height: 36px;
     padding: 6px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;

@@ -43,11 +43,10 @@
 <style>
   .camera-bar {
     display: flex;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.7));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     padding: 4px;
-    backdrop-filter: blur(8px);
   }
 
   .preset-btn {
@@ -57,7 +56,7 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: var(--font-size-sm, 0.875rem);
     font-weight: 500;
     cursor: pointer;
@@ -66,12 +65,12 @@
 
   .preset-btn:hover {
     color: var(--theme-text, white);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
   }
 
   .preset-btn.active {
     color: white;
-    background: var(--theme-accent, rgba(139, 92, 246, 0.5));
+    background: var(--theme-accent);
   }
 
   @media (max-width: 600px) {

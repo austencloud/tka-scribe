@@ -202,9 +202,9 @@
     flex-direction: column;
     gap: var(--spacing-md);
     padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     transition: all var(--transition-normal);
   }
 
@@ -237,7 +237,7 @@
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-fast);
     min-height: var(--min-touch-target);
@@ -263,7 +263,7 @@
     background: rgba(0, 0, 0, 0.5);
     border: 2px solid rgba(74, 144, 226, 0.8);
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: var(--font-size-base);
     outline: none;
     transition: all var(--transition-fast);
@@ -291,7 +291,7 @@
     background: rgba(74, 144, 226, 0.2);
     border: 1px solid rgba(74, 144, 226, 0.4);
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-fast);
     font-size: var(--font-size-sm);
@@ -323,7 +323,7 @@
     display: flex;
     gap: var(--spacing-lg);
     padding-top: var(--spacing-sm);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .stat {

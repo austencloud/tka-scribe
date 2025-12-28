@@ -58,12 +58,12 @@
   .animation-mode-btn {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: 12px 18px;
     min-height: var(--min-touch-target);
     border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     transition: all 0.2s ease;
   }
 

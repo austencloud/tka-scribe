@@ -118,7 +118,7 @@
   }
 
   .avatar-button:hover {
-    border-color: var(--semantic-info, #3b82f6);
+    border-color: var(--semantic-info, var(--semantic-info));
     transform: scale(1.05);
   }
 
@@ -135,7 +135,7 @@
     border-radius: 50%;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #667eea) 0%,
+      var(--semantic-info) 0%,
       #764ba2 100%
     );
     display: flex;
@@ -157,10 +157,10 @@
     right: 0;
     top: calc(100% + 0.5rem);
     min-width: 200px;
-    background: var(--theme-panel-bg, #1f2937);
+    background: var(--theme-panel-bg);
     border-radius: 0.5rem;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    box-shadow: 0 10px 25px var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    box-shadow: 0 10px 25px var(--theme-shadow, var(--theme-shadow));
     z-index: 50;
     overflow: hidden;
     animation: slideIn 0.2s ease;
@@ -183,13 +183,13 @@
 
   .user-name {
     font-weight: 600;
-    color: var(--theme-text, #f9fafb);
+    color: var(--theme-text);
     margin: 0 0 0.25rem 0;
     font-size: 0.875rem;
   }
 
   .user-email {
-    color: var(--theme-text-dim, #9ca3af);
+    color: var(--theme-text-dim);
     margin: 0;
     font-size: 0.75rem;
     overflow: hidden;
@@ -198,7 +198,7 @@
 
   .menu-divider {
     height: 1px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
   }
 
   .logout-button {
@@ -207,7 +207,7 @@
     text-align: left;
     background: transparent;
     border: none;
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     font-weight: 500;
     cursor: pointer;
     transition: background 0.2s ease;
@@ -220,7 +220,7 @@
   .logout-button:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 10%,
+      var(--semantic-error, var(--semantic-error)) 10%,
       transparent
     );
   }

@@ -312,13 +312,13 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: rgba(16, 185, 129, 0.8);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -339,7 +339,7 @@
     justify-content: center;
     height: 100%;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: var(--spacing-xl, 32px);
   }
 
@@ -353,7 +353,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md, 16px);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   /* Error State */
@@ -364,7 +364,7 @@
     justify-content: center;
     height: 100%;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: var(--spacing-xl, 32px);
   }
 
@@ -378,7 +378,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md, 16px);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .retry-btn {
@@ -389,7 +389,7 @@
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
     border-radius: var(--border-radius-md, 8px);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -441,7 +441,7 @@
 
   .stat-label {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -530,7 +530,7 @@
     justify-content: center;
     gap: var(--spacing-sm, 8px);
     padding: var(--spacing-lg, 24px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
   }
 
@@ -548,7 +548,7 @@
     justify-content: center;
     padding: var(--spacing-xl, 32px);
     background: rgba(255, 255, 255, 0.02);
-    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border: 1px dashed var(--theme-stroke);
     border-radius: var(--border-radius-lg, 12px);
     text-align: center;
     gap: var(--spacing-sm, 8px);
@@ -556,12 +556,12 @@
 
   .empty-section i {
     font-size: 2rem;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
   }
 
   .empty-section p {
     margin: 0;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.9rem;
   }
 

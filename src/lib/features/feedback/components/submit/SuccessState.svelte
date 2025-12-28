@@ -50,17 +50,17 @@
     height: 64px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%,
-      var(--semantic-success, #10b981) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white) 0%,
+      var(--semantic-success, var(--semantic-success)) 100%
     );
     border-radius: 50%;
     margin-bottom: 16px;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
   }
 
   .success-icon i {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     color: white;
   }
 
@@ -68,14 +68,14 @@
     margin: 0 0 8px 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     letter-spacing: -0.02em;
   }
 
   .success-message {
     margin: 0 0 24px 0;
     font-size: 0.9375rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.5;
     max-width: 320px;
   }
@@ -89,13 +89,13 @@
     padding: 0 20px;
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, #10b981) 30%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 30%, transparent);
     border-radius: 10px;
-    color: color-mix(in srgb, var(--semantic-success, #10b981) 80%, white);
+    color: color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white);
     font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
@@ -105,12 +105,12 @@
   .success-action:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 25%,
+      var(--semantic-success, var(--semantic-success)) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 50%,
+      var(--semantic-success, var(--semantic-success)) 50%,
       transparent
     );
   }

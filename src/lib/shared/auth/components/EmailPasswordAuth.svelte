@@ -259,8 +259,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 600;
   }
 
@@ -268,10 +268,10 @@
     width: 100%;
     padding: 12px 14px;
     border-radius: 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, #fff);
-    font-size: 14px;
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
   }
 
   .password-row {
@@ -288,7 +288,7 @@
     border: none;
     border-radius: 10px;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
   }
 
@@ -297,34 +297,34 @@
     padding: 10px 12px;
     border-radius: 10px;
     border: 1px solid transparent;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
   }
 
   .message.error {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 60%,
+      var(--semantic-error, var(--semantic-error)) 60%,
       transparent
     );
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 12%,
+      var(--semantic-error, var(--semantic-error)) 12%,
       transparent
     );
   }
 
   .message.success {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 60%,
+      var(--semantic-success, var(--semantic-success)) 60%,
       transparent
     );
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 12%,
+      var(--semantic-success, var(--semantic-success)) 12%,
       transparent
     );
   }
@@ -336,8 +336,8 @@
     border: none;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, #000)
+      var(--theme-accent, var(--theme-accent)),
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 70%, #000)
     );
     color: #fff;
     font-weight: 800;
@@ -351,9 +351,9 @@
 
   .switch {
     width: 100%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border: 1px solid var(--theme-stroke);
     background: transparent;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
     border-radius: 12px;
     padding: 12px 14px;
     cursor: pointer;

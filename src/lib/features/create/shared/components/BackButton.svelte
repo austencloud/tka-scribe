@@ -73,34 +73,33 @@
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: var(--theme-card-bg, rgba(42, 42, 42, 0.95));
-    backdrop-filter: blur(12px);
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 50%;
     padding: 0;
-    color: var(--theme-text, #fff);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 100;
     box-shadow:
-      0 0 0 2px var(--theme-stroke, rgba(255, 255, 255, 0.1)),
-      0 4px 12px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      0 0 0 2px var(--theme-stroke, var(--theme-stroke)),
+      0 4px 12px var(--theme-shadow),
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .back-button:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 95%,
+      var(--theme-accent, var(--semantic-info)) 95%,
       transparent
     );
-    border-color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    border-color: var(--theme-text-dim);
     transform: translateX(-2px) scale(1.05);
     box-shadow:
-      0 0 0 2px var(--theme-stroke-strong, rgba(255, 255, 255, 0.2)),
+      0 0 0 2px var(--theme-stroke-strong),
       0 6px 16px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
-      0 4px 12px rgba(0, 0, 0, 0.3),
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
+      0 4px 12px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 

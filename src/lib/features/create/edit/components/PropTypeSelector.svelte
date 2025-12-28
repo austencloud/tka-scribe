@@ -105,9 +105,9 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
   .prop-type-selector {
     width: 100%;
     padding: var(--spacing-md, 16px);
-    background: var(--surface-secondary, rgba(255, 255, 255, 0.05));
+    background: var(--surface-secondary, var(--theme-card-bg));
     border-radius: var(--radius-md, 8px);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--border-color, var(--theme-stroke));
   }
 
   .section-header {
@@ -116,15 +116,15 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
 
   .section-header h3 {
     margin: 0 0 var(--spacing-xs, 4px) 0;
-    font-size: var(--font-size-md, 14px);
+    font-size: var(--font-size-md);
     font-weight: 600;
     color: var(--text-primary, #fff);
   }
 
   .help-text {
     margin: 0;
-    font-size: var(--font-size-sm, 12px);
-    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary, var(--theme-text-dim));
   }
 
   .prop-selectors {
@@ -143,7 +143,7 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
     display: flex;
     align-items: center;
     gap: var(--spacing-xs, 6px);
-    font-size: var(--font-size-sm, 13px);
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--text-primary, #fff);
   }
@@ -156,11 +156,11 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
   }
 
   .color-indicator.blue {
-    background-color: var(--prop-blue, #2e3192);
+    background-color: var(--prop-blue);
   }
 
   .color-indicator.red {
-    background-color: var(--prop-red, #ed1c24);
+    background-color: var(--prop-red);
   }
 
   select {
@@ -170,7 +170,7 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
     border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
     border-radius: var(--radius-sm, 6px);
     color: var(--text-primary, #fff);
-    font-size: var(--font-size-sm, 13px);
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -182,7 +182,7 @@ This enables mixed prop types in a single pictograph (e.g., red hand + blue staf
 
   select:focus {
     outline: none;
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     box-shadow: 0 0 0 3px
       color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }

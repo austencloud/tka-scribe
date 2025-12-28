@@ -39,7 +39,7 @@
   }
 
   .achievement-badge {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: 8px;
     text-align: center;

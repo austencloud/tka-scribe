@@ -71,19 +71,19 @@
   }
 
   .plane-body {
-    fill: color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
-    stroke: var(--theme-accent, #3b82f6);
+    fill: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
+    stroke: var(--theme-accent, var(--semantic-info));
     stroke-width: 2;
   }
 
   .plane-line {
-    stroke: var(--theme-accent, #3b82f6);
+    stroke: var(--theme-accent, var(--semantic-info));
     stroke-width: 1.5;
     stroke-opacity: 0.5;
   }
 
   .trail {
-    fill: var(--theme-accent, #3b82f6);
+    fill: var(--theme-accent, var(--semantic-info));
     opacity: 0.3;
   }
 
@@ -111,15 +111,15 @@
 
   h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   @media (prefers-reduced-motion: reduce) {

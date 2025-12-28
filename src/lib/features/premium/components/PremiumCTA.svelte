@@ -34,7 +34,7 @@
   .cta {
     text-align: center;
     padding: var(--spacing-xl, 32px) var(--spacing-lg, 24px);
-    background: var(--gradient-primary, linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%));
+    background: var(--gradient-primary, linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%));
     border-radius: 16px;
   }
 
@@ -66,10 +66,10 @@
     padding: var(--spacing-md, 16px) var(--spacing-2xl, 48px);
     min-height: var(--min-touch-target, 48px);
     background: white;
-    color: #6366f1;
+    color: var(--theme-accent);
     border: none;
     border-radius: 12px;
-    font-size: var(--font-size-lg, 18px);
+    font-size: var(--font-size-lg);
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-fast, 150ms ease);
@@ -78,7 +78,7 @@
 
   .subscribe-button:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 24px var(--theme-shadow);
   }
 
   .subscribe-button:active:not(:disabled) {
@@ -91,8 +91,8 @@
   }
 
   .note {
-    font-size: var(--font-size-compact, 12px);
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 </style>

@@ -249,7 +249,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
   .batch-title {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
     color: hsl(var(--foreground));
     display: flex;
@@ -282,7 +282,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   }
 
   .turn-control.blue {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     background: linear-gradient(
       135deg,
       rgba(59, 130, 246, 0.05) 0%,
@@ -291,7 +291,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   }
 
   .turn-control.red {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
   }
 
@@ -305,16 +305,16 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   /* Label (Left/Right) */
   .label {
     font-weight: 700;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     letter-spacing: 0.5px;
   }
 
   .turn-control.blue .label {
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .turn-control.red .label {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   /* Value Buttons Grid - 7 buttons in a row */
@@ -330,7 +330,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     border-radius: 8px;
     border: 2px solid;
     background: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -341,27 +341,27 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   }
 
   .turn-control.blue .value-btn {
-    border-color: #3b82f6;
-    color: #3b82f6;
+    border-color: var(--semantic-info);
+    color: var(--semantic-info);
   }
 
   .turn-control.red .value-btn {
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: var(--semantic-error);
+    color: var(--semantic-error);
   }
 
   /* Selected state */
   .turn-control.blue .value-btn.selected {
-    background: #3b82f6;
+    background: var(--semantic-info);
     color: white;
     border-color: #2563eb;
     box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
   }
 
   .turn-control.red .value-btn.selected {
-    background: #ef4444;
+    background: var(--semantic-error);
     color: white;
-    border-color: #dc2626;
+    border-color: var(--semantic-error);
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
   }
 
@@ -385,7 +385,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   .prop-badge {
     padding: 6px 12px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -397,12 +397,12 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
   .prop-badge.blue {
     background: rgba(59, 130, 246, 0.15);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .prop-badge.red {
     background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   /* Action Buttons */
@@ -419,7 +419,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     padding: 14px 20px;
     border: none;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -469,7 +469,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .batch-title {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .turn-control {
@@ -483,7 +483,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .label {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .value-buttons {
@@ -492,13 +492,13 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .value-btn {
       padding: 6px 2px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
       border-width: 1.5px;
     }
 
     .prop-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 3px 6px;
     }
 
@@ -509,7 +509,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .action-button {
       padding: 10px 16px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       min-height: var(--min-touch-target);
     }
   }
@@ -522,7 +522,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .batch-title {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .turn-control {
@@ -532,7 +532,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .value-buttons {
@@ -541,13 +541,13 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .value-btn {
       padding: 4px 1px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
       border-width: 1px;
     }
 
     .prop-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 2px 4px;
     }
 
@@ -558,7 +558,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .action-button {
       padding: 8px 12px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
     }
   }
@@ -571,7 +571,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .batch-title {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .turn-control {
@@ -582,7 +582,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .value-buttons {
@@ -591,14 +591,14 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .value-btn {
       padding: 3px 1px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
       border-width: 1px;
       border-radius: 6px;
     }
 
     .prop-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 2px 3px;
       min-width: 35px;
     }
@@ -611,7 +611,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .action-button {
       padding: 6px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
       border-radius: 6px;
     }

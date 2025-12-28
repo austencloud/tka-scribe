@@ -54,8 +54,8 @@ Type1AnswerButton - Single answer option for motion pattern
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.25rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 12px;
     color: white;
     cursor: pointer;
@@ -96,7 +96,7 @@ Type1AnswerButton - Single answer option for motion pattern
 
   .answer-desc {
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .answer-btn.correct {

@@ -64,16 +64,16 @@
     gap: 8px;
     padding-bottom: 8px;
     margin-bottom: 12px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    font-size: var(--font-size-compact, 12px);
+    border-bottom: 1px solid var(--theme-stroke);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .section-header i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
   }
 
@@ -84,17 +84,17 @@
     justify-content: center;
     gap: 6px;
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    font-size: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .action-btn:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
   }
 
   .action-buttons {
@@ -104,8 +104,8 @@
   }
 
   .action-btn.active {
-    background: var(--theme-accent, #4a9eff);
-    border-color: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
     color: white;
   }
 
@@ -116,6 +116,6 @@
   }
 
   .action-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 </style>

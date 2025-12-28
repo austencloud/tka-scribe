@@ -211,14 +211,14 @@ Clean design with:
   .title {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin: 0 0 0.25rem;
     line-height: 1.2;
   }
 
   .description {
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin: 0 0 0.625rem;
     line-height: 1.4;
     display: -webkit-box;
@@ -238,7 +238,7 @@ Clean design with:
     align-items: center;
     gap: 0.375rem;
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   .meta-item i {
@@ -289,7 +289,7 @@ Clean design with:
   }
 
   .hero-card.locked .cta-button {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     box-shadow: none;
   }
 

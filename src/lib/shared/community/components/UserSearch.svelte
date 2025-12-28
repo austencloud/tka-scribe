@@ -52,17 +52,17 @@
   .user-search__input {
     width: 100%;
     padding: 10px 12px 10px 36px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: all 0.2s ease;
   }
 
   .user-search__input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border-color: rgba(255, 255, 255, 0.2);
   }
 

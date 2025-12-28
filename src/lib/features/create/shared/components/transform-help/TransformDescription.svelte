@@ -117,8 +117,8 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -131,7 +131,7 @@
 
   .transform-action:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .transform-action:active {
@@ -149,7 +149,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   /* Text content area */
@@ -160,15 +160,15 @@
 
   .name {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .short-desc {
     margin: 2px 0 0 0;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   /* Expand toggle button (mobile only) */
@@ -177,15 +177,15 @@
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .expand-btn:hover {
@@ -203,7 +203,7 @@
 
   .full-desc {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
     line-height: 1.5;
   }
@@ -221,7 +221,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.15s;
     white-space: nowrap;
@@ -270,7 +270,7 @@
     width: 44px;
     height: 44px;
     border-radius: 10px;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .transform-action.desktop .content {
@@ -278,13 +278,13 @@
   }
 
   .transform-action.desktop .name {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   .transform-action.desktop .short-desc {
     margin: 4px 0 0 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.65);
   }
 

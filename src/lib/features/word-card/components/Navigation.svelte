@@ -177,11 +177,11 @@
   .length-scroll-area::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: var(--border-radius-sm);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .length-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
   }
 
   .length-options {
@@ -191,9 +191,9 @@
   }
 
   .length-button {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, var(--text-color, rgba(255, 255, 255, 0.9)));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    color: var(--theme-text, var(--text-color, var(--theme-text)));
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-md);
     cursor: pointer;
@@ -201,15 +201,14 @@
     font-size: var(--font-size-sm);
     font-weight: 500;
     transition: all var(--transition-normal);
-    backdrop-filter: blur(8px);
   }
 
   .length-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+      color-mix(in srgb, var(--theme-shadow) 20%, transparent);
   }
 
   .length-button.selected {
@@ -217,7 +216,7 @@
     border-color: var(--primary-light);
     color: white;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .separator {
@@ -225,7 +224,7 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      var(--theme-stroke, rgba(255, 255, 255, 0.1)) 50%,
+      var(--theme-stroke) 50%,
       transparent 100%
     );
     margin: var(--spacing-sm) 0;
@@ -239,28 +238,27 @@
 
   .column-select {
     width: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, var(--text-color, rgba(255, 255, 255, 0.9)));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    color: var(--theme-text, var(--text-color, var(--theme-text)));
     padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--border-radius-md);
     font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all var(--transition-normal);
-    backdrop-filter: blur(8px);
   }
 
   .column-select:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .column-select:focus {
     outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
   }
 
   .column-select option {

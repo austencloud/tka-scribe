@@ -103,8 +103,8 @@
     font-family: var(--desktop-font-family);
     font-weight: 600;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--theme-stroke-strong);
+    background: var(--theme-card-bg);
     backdrop-filter: blur(10px);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -116,7 +116,7 @@
     font-size: clamp(0.875rem, 2cqi, 1rem);
     min-width: clamp(80px, 15cqi, 120px);
     gap: 0.5rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 

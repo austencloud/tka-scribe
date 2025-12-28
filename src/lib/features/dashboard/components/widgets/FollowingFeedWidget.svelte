@@ -120,11 +120,10 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 24px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 24px;
     overflow: hidden;
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }
@@ -144,19 +143,19 @@
     height: 44px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
-      var(--theme-card-bg, rgba(0, 0, 0, 0.3))
+      var(--theme-accent, var(--theme-accent)) 25%,
+      var(--theme-card-bg, var(--theme-shadow))
     );
     border-radius: 14px;
-    color: var(--theme-accent, #6366f1);
-    font-size: 18px;
+    color: var(--theme-accent, var(--theme-accent));
+    font-size: var(--font-size-lg);
   }
 
   .widget-header h3 {
     margin: 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .widget-content {
@@ -182,7 +181,7 @@
     padding: 12px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 5%,
+      var(--theme-accent, var(--theme-accent)) 5%,
       transparent
     );
     border-radius: 12px;
@@ -194,9 +193,9 @@
     border-radius: 50%;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 75%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -214,9 +213,9 @@
     border-radius: 5px;
     background: linear-gradient(
       90deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 25%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent) 50%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 8%, transparent) 75%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 25%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent) 50%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 8%, transparent) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 2s infinite ease-in-out;
@@ -251,20 +250,20 @@
   }
 
   .empty-state i {
-    font-size: 32px;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+    font-size: var(--font-size-3xl);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .empty-hint {
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Feed list */
@@ -284,8 +283,8 @@
     padding: 14px 20px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 80%, black) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, black) 100%
     );
     border: none;
     border-radius: 14px;
@@ -303,7 +302,7 @@
   }
 
   .view-all-btn i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   @media (max-width: 768px) {
@@ -315,7 +314,7 @@
     .header-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .widget-header h3 {

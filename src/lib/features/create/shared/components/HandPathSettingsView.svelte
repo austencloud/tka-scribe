@@ -84,7 +84,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
 
   .start-drawing-btn {
     padding: clamp(1.125rem, 3vh, 1.375rem);
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
     border: none;
     border-radius: 18px;
     color: white;
@@ -157,7 +157,7 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
 
   .hint i {
     font-size: 1.15em;
-    color: #60a5fa;
+    color: var(--semantic-info);
     flex-shrink: 0;
   }
 

@@ -41,8 +41,8 @@
     justify-content: center;
     gap: 2rem;
     padding: 0.75rem 1rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);

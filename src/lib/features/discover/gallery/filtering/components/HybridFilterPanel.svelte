@@ -73,7 +73,7 @@
     },
     {
       level: 4,
-      bgGradient: "linear-gradient(135deg, #ff7878, #dc2626)",
+      bgGradient: "linear-gradient(135deg, #ff7878, var(--semantic-error))",
       textColor: "#ffffff",
     },
     {
@@ -356,7 +356,7 @@
     flex-direction: column;
     gap: clamp(12px, 3cqi, 20px);
     padding: clamp(12px, 3cqi, 20px);
-    background: var(--theme-panel-bg, #1a1a24);
+    background: var(--theme-panel-bg);
     container-type: inline-size;
     container-name: filter-panel;
   }
@@ -372,7 +372,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Quick Chips */
@@ -385,10 +385,10 @@
   .quick-chip {
     min-height: var(--min-touch-target);
     padding: 0 clamp(12px, 3cqi, 18px);
-    background: var(--theme-card-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 100px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     font-size: clamp(12px, 2.5cqi, 14px);
     font-weight: 500;
     cursor: pointer;
@@ -396,8 +396,8 @@
   }
 
   .quick-chip:hover {
-    background: var(--theme-card-hover-bg, #2d2d3d);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Filter Grid */
@@ -421,26 +421,26 @@
     gap: clamp(6px, 1.5cqi, 10px);
     min-height: clamp(72px, 18cqi, 90px);
     padding: clamp(10px, 2.5cqi, 16px);
-    background: var(--theme-card-bg, #252532);
+    background: var(--theme-card-bg);
     border: 2px solid transparent;
     border-radius: clamp(12px, 3cqi, 16px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .filter-card:hover {
-    background: var(--theme-card-hover-bg, #2d2d3d);
+    background: var(--theme-card-hover-bg);
     transform: translateY(-2px);
   }
 
   .filter-card.selected {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
-      var(--theme-card-bg, #252532)
+      var(--semantic-info, var(--semantic-info)) 15%,
+      var(--theme-card-bg)
     );
-    border-color: var(--semantic-info, #3b82f6);
+    border-color: var(--semantic-info, var(--semantic-info));
     color: var(--theme-text, white);
   }
 
@@ -452,30 +452,30 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-radius: clamp(8px, 2cqi, 12px);
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     font-size: clamp(12px, 3cqi, 16px);
   }
 
   .filter-card.selected .card-icon {
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     color: var(--theme-text, white);
   }
 
   .card-icon.favorites {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ec4899) 15%,
+      var(--semantic-error) 15%,
       transparent
     );
-    color: var(--semantic-error, #ec4899);
+    color: var(--semantic-error);
   }
 
   .filter-card.selected .card-icon.favorites {
-    background: var(--semantic-error, #ec4899);
+    background: var(--semantic-error);
     color: var(--theme-text, white);
   }
 
@@ -490,12 +490,12 @@
     padding: clamp(12px, 3cqi, 16px);
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 5%,
+      var(--semantic-info, var(--semantic-info)) 5%,
       transparent
     );
     border-radius: clamp(10px, 2.5cqi, 14px);
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent);
     animation: slideDown 0.2s ease;
   }
 
@@ -533,13 +533,13 @@
 
   .level-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
   }
 
   .level-card.selected {
-    border-color: var(--semantic-info, #3b82f6);
+    border-color: var(--semantic-info, var(--semantic-info));
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
   }
 
   .level-num {
@@ -553,12 +553,12 @@
     gap: clamp(6px, 1.5cqi, 10px);
     margin-top: clamp(8px, 2cqi, 12px);
     padding-top: clamp(8px, 2cqi, 12px);
-    border-top: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top: 1px dashed var(--theme-stroke, var(--theme-stroke));
   }
 
   .coming-soon {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .level-card.future {
@@ -584,10 +584,10 @@
     min-height: var(--min-touch-target);
     min-width: 44px;
     padding: 0;
-    background: var(--theme-card-bg, #252532);
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     font-size: clamp(13px, 3cqi, 15px);
     font-weight: 600;
     cursor: pointer;
@@ -595,11 +595,11 @@
   }
 
   .letter-btn:hover {
-    background: var(--theme-card-hover-bg, #2d2d3d);
+    background: var(--theme-card-hover-bg);
   }
 
   .letter-btn.selected {
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     color: var(--theme-text, white);
   }
 
@@ -615,10 +615,10 @@
   .position-chip {
     min-height: var(--min-touch-target);
     padding: 0 clamp(14px, 3.5cqi, 20px);
-    background: var(--theme-card-bg, #252532);
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
     border-radius: 100px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text-dim);
     font-size: clamp(13px, 3cqi, 15px);
     font-weight: 500;
     cursor: pointer;
@@ -627,12 +627,12 @@
 
   .length-chip:hover,
   .position-chip:hover {
-    background: var(--theme-card-hover-bg, #2d2d3d);
+    background: var(--theme-card-hover-bg);
   }
 
   .length-chip.selected,
   .position-chip.selected {
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     color: var(--theme-text, white);
   }
 </style>

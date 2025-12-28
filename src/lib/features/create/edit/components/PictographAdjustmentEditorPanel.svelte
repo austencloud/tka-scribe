@@ -413,16 +413,16 @@ Features:
     gap: var(--spacing-lg);
     padding: var(--spacing-xl);
     background: #1a1a2e;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid var(--theme-stroke);
     overflow-y: auto;
   }
 
   /* Info cards */
   .info-card {
     padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .info-card.empty {
@@ -436,7 +436,7 @@ Features:
     margin: 0 0 var(--spacing-md) 0;
     font-size: var(--font-size-md);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .info-content {
@@ -453,26 +453,26 @@ Features:
 
   .info-label {
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .info-value {
     font-size: var(--font-size-sm);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .info-value.blue {
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .info-value.red {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .hint {
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -494,20 +494,20 @@ Features:
   .increment-value {
     font-size: 2rem;
     font-weight: 700;
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .increment-hint {
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   /* Rotation override section */
   .rotation-override-section {
     padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .override-buttons {
@@ -519,9 +519,9 @@ Features:
   /* Hotkey legend */
   .hotkey-legend {
     padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: var(--border-radius);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .hotkey-list {
@@ -548,13 +548,13 @@ Features:
     border: 1px solid rgba(255, 255, 255, 0.2);
     font-family: monospace;
     font-size: var(--font-size-xs);
-    color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    color: var(--theme-text);
+    box-shadow: 0 2px 4px var(--theme-shadow);
   }
 
   .hotkey-desc {
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   /* Mobile responsive */
@@ -566,7 +566,7 @@ Features:
 
     .controls-section {
       border-left: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid var(--theme-stroke);
       max-height: 50vh;
     }
   }

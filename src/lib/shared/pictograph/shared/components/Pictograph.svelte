@@ -742,7 +742,7 @@
   }
 
   .pictograph.has-error {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
   }
 
   /* SVG styles (from PictographSvg) */

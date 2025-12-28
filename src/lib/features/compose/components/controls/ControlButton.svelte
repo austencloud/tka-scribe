@@ -42,7 +42,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 50%;
     color: white;
@@ -66,6 +66,11 @@
 
   .control-btn:active {
     transform: scale(0.95);
+  }
+
+  .control-btn:focus-visible {
+    outline: 2px solid var(--primary-color, #6366f1);
+    outline-offset: 2px;
   }
 
   /* Orange active state (default for Grid) */

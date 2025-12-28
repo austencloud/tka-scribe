@@ -48,7 +48,7 @@
     color: white;
     padding: 12px 16px;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     z-index: 20;
     min-width: 220px;
   }
@@ -80,8 +80,8 @@
   }
 
   .status-detail {
-    font-size: var(--font-size-compact, 12px);
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin-top: 6px;
   }
 
@@ -93,7 +93,7 @@
     min-height: var(--min-touch-target);
     border-radius: 6px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .cancel-btn:hover {
@@ -110,7 +110,7 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #4ade80, #22c55e);
+    background: linear-gradient(90deg, #4ade80, var(--semantic-success));
     transition: width 0.2s ease;
   }
 </style>

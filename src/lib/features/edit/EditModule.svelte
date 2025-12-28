@@ -371,7 +371,7 @@
     gap: 4px;
     padding: 8px;
     background: rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .mode-btn {
@@ -382,9 +382,9 @@
     gap: 8px;
     padding: 10px 16px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.9rem;
@@ -418,7 +418,7 @@
     justify-content: center;
     height: 100%;
     gap: 16px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .loading-state p {
@@ -429,7 +429,7 @@
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: #06b6d4;
     border-radius: 50%;
     animation: spin 1s linear infinite;

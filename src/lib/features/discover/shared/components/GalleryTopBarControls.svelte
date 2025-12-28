@@ -157,7 +157,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     display: flex;
     align-items: center;
     padding: var(--padding-vertical) 16px;
-    background: var(--theme-panel-bg, #12121a);
+    background: var(--theme-panel-bg);
     width: 100%;
     /* Prevent collapse when filter panel is open and sections are empty */
     min-height: calc(var(--control-height) + var(--padding-vertical) * 2);
@@ -210,11 +210,11 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     gap: 6px;
     padding: 0 14px;
     min-height: var(--control-height);
-    background: var(--theme-card-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 100px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -222,18 +222,18 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   }
 
   .sort-chip:hover {
-    background: var(--theme-card-hover-bg, #2d2d3d);
-    color: var(--theme-text, #fff);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .sort-chip.active {
-    background: var(--semantic-info, #3b82f6);
-    border-color: var(--semantic-info, #3b82f6);
-    color: var(--theme-text, #fff);
+    background: var(--semantic-info, var(--semantic-info));
+    border-color: var(--semantic-info, var(--semantic-info));
+    color: var(--theme-text);
   }
 
   .sort-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Active Filter Chip */
@@ -245,14 +245,14 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     min-height: var(--control-height);
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     border-radius: 100px;
-    color: var(--semantic-info, #3b82f6);
-    font-size: 13px;
+    color: var(--semantic-info, var(--semantic-info));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -262,13 +262,13 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   .active-filter-chip:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 25%,
+      var(--semantic-info, var(--semantic-info)) 25%,
       transparent
     );
   }
 
   .active-filter-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.8;
   }
 
@@ -280,33 +280,33 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     justify-content: center;
     width: var(--control-height);
     height: var(--control-height);
-    background: var(--theme-card-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 16px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.15s ease;
     flex-shrink: 0;
   }
 
   .filter-button:hover {
-    background: var(--theme-card-hover-bg, #2d2d3d);
-    color: var(--theme-text, #fff);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .filter-button.has-active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .filter-badge {
@@ -318,10 +318,10 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     border-radius: 50%;
-    color: var(--theme-text, #fff);
-    font-size: 12px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     font-weight: 700;
   }
 
@@ -340,7 +340,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     }
 
     .sort-chip i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 </style>

@@ -129,7 +129,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     /* Enable container queries for intrinsic sizing */
     container-type: inline-size;
     container-name: create-header;
@@ -162,8 +162,8 @@
   /* Segmented Control Styles */
   .segmented-control {
     display: inline-flex;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
     gap: 0;
   }
@@ -178,7 +178,7 @@
     padding: 8px 16px;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     /* Container-aware font sizing - scales from 11px to 14px based on container width */
     font-size: clamp(11px, 3cqi, 14px);
     font-weight: 500;
@@ -198,13 +198,13 @@
     padding: 12px 8px;
     min-height: var(--min-touch-target);
     min-width: var(--min-touch-target);
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     white-space: normal;
   }
 
   .segment-button:hover:not(.active) {
     color: rgba(255, 255, 255, 0.8);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
   }
 
   .segment-button.active {
@@ -243,7 +243,7 @@
       padding: 10px 6px;
       min-height: var(--min-touch-target);
       min-width: var(--min-touch-target);
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 

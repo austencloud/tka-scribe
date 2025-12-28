@@ -365,14 +365,14 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .panel-title i {
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text-dim);
   }
 
   .spacer {
@@ -386,7 +386,7 @@
      ============================================================================ */
   .user-card {
     /* Fallback if no color extracted yet */
-    --card-accent: var(--theme-accent-strong, #8b5cf6);
+    --card-accent: var(--theme-accent-strong);
     /* Derive lighter variant using color-mix */
     --card-accent-light: color-mix(in srgb, var(--card-accent) 80%, #fff);
     --card-accent-glow: color-mix(in srgb, var(--card-accent) 25%, transparent);
@@ -414,7 +414,7 @@
   .user-card:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--card-accent) 16%, rgba(255, 255, 255, 0.05)) 0%,
+      color-mix(in srgb, var(--card-accent) 16%, var(--theme-card-bg)) 0%,
       color-mix(in srgb, var(--card-accent) 10%, rgba(255, 255, 255, 0.03)) 100%
     );
     border-color: color-mix(in srgb, var(--card-accent) 40%, transparent);
@@ -470,7 +470,7 @@
   }
 
   .avatar-placeholder i {
-    font-size: 22px;
+    font-size: var(--font-size-xl);
     color: var(--card-accent-light);
     transition: color 0.3s var(--ease-out, ease);
   }
@@ -483,9 +483,9 @@
 
   .display-name {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -493,8 +493,8 @@
 
   .username {
     margin: 2px 0 0 0;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -512,12 +512,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .stat i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     /* Dynamic color tinted icons */
     color: var(--card-accent);
     opacity: 0.75;
@@ -541,7 +541,7 @@
     padding: 6px 12px;
     border: 1px solid var(--card-accent);
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s var(--ease-out, ease);
@@ -557,7 +557,7 @@
   .follow-button.following {
     background: transparent;
     border-color: color-mix(in srgb, var(--card-accent) 30%, transparent);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .follow-button.following:hover {
@@ -593,7 +593,7 @@
     }
 
     .panel-title {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .user-card {
@@ -609,15 +609,15 @@
     }
 
     .avatar-placeholder i {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .display-name {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .username {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .user-stats {
@@ -626,17 +626,17 @@
     }
 
     .stat {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       gap: 3px;
     }
 
     .stat i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .follow-button {
       padding: 6px 12px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 

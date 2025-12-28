@@ -124,9 +124,9 @@ Always opens selector panel when clicked
 
     /* Subtle shadow - consistent with other cards */
     box-shadow:
-      0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
-      0 4px 8px color-mix(in srgb, var(--theme-shadow, #000) 10%, transparent),
-      inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+      0 2px 4px var(--theme-shadow),
+      0 4px 8px color-mix(in srgb, var(--theme-shadow) 10%, transparent),
+      inset 0 1px 0 var(--theme-stroke-strong);
   }
 
   /* Flowing gradient animation */
@@ -156,8 +156,8 @@ Always opens selector panel when clicked
   .cap-card-wrapper :global(.base-card .card-header),
   .cap-card-wrapper :global(.base-card .card-value) {
     text-shadow:
-      0 1px 2px var(--theme-shadow, rgba(0, 0, 0, 0.3)),
-      0 2px 4px color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+      0 1px 2px var(--theme-shadow),
+      0 2px 4px color-mix(in srgb, var(--theme-shadow) 20%, transparent);
   }
 
   /* Maintain hover effects - only on hover-capable devices */
@@ -166,12 +166,12 @@ Always opens selector panel when clicked
       transform: scale(1.02);
       filter: brightness(1.05);
       box-shadow:
-        0 2px 4px color-mix(in srgb, var(--theme-shadow, #000) 12%, transparent),
-        0 4px 8px color-mix(in srgb, var(--theme-shadow, #000) 10%, transparent),
-        0 8px 16px color-mix(in srgb, var(--theme-shadow, #000) 8%, transparent),
+        0 2px 4px color-mix(in srgb, var(--theme-shadow) 12%, transparent),
+        0 4px 8px color-mix(in srgb, var(--theme-shadow) 10%, transparent),
+        0 8px 16px color-mix(in srgb, var(--theme-shadow) 8%, transparent),
         0 16px 24px
-          color-mix(in srgb, var(--theme-shadow, #000) 6%, transparent),
-        inset 0 1px 0 var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+          color-mix(in srgb, var(--theme-shadow) 6%, transparent),
+        inset 0 1px 0 var(--theme-stroke-strong);
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
   }

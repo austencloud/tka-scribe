@@ -52,8 +52,8 @@ Uses chips/tags for quick filtering with less screen real estate.
       icon: "fa-star",
       type: "difficulty",
       value: 1,
-      color: "#10b981",
-      gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+      color: "var(--semantic-success)",
+      gradient: "linear-gradient(135deg, #34d399 0%, var(--semantic-success) 100%)",
     },
     {
       id: "difficulty-2",
@@ -61,8 +61,8 @@ Uses chips/tags for quick filtering with less screen real estate.
       icon: "fa-star-half-alt",
       type: "difficulty",
       value: 2,
-      color: "#f59e0b",
-      gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)",
+      color: "var(--semantic-warning)",
+      gradient: "linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%)",
     },
     {
       id: "difficulty-3",
@@ -70,8 +70,8 @@ Uses chips/tags for quick filtering with less screen real estate.
       icon: "fa-fire",
       type: "difficulty",
       value: 3,
-      color: "#ef4444",
-      gradient: "linear-gradient(135deg, #f87171 0%, #ef4444 100%)",
+      color: "var(--semantic-error)",
+      gradient: "linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
     },
   ];
 
@@ -162,11 +162,11 @@ Uses chips/tags for quick filtering with less screen real estate.
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -175,8 +175,8 @@ Uses chips/tags for quick filtering with less screen real estate.
   }
 
   .filter-chip:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
@@ -188,7 +188,7 @@ Uses chips/tags for quick filtering with less screen real estate.
   }
 
   .filter-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .advanced-button {
@@ -196,11 +196,11 @@ Uses chips/tags for quick filtering with less screen real estate.
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -210,12 +210,12 @@ Uses chips/tags for quick filtering with less screen real estate.
 
   .advanced-button:hover {
     background: color-mix(in srgb, var(--theme-text, white) 12%, transparent);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    border-color: var(--theme-stroke-strong);
     color: var(--theme-text, white);
   }
 
   .advanced-button i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* Hide "Advanced" text on mobile */
@@ -229,7 +229,7 @@ Uses chips/tags for quick filtering with less screen real estate.
     }
 
     .filter-chip {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 5px 10px;
     }
   }
@@ -246,12 +246,12 @@ Uses chips/tags for quick filtering with less screen real estate.
 
     .filter-chip {
       padding: 8px 14px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .advanced-button {
       padding: 8px 16px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

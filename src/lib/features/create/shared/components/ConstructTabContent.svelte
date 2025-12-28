@@ -14,6 +14,11 @@
   import OptionPicker from "$lib/features/create/construct/option-picker/components/OptionPicker.svelte";
   import StartPositionPicker from "$lib/features/create/construct/start-position-picker/components/StartPositionPicker.svelte";
   import type { SimplifiedStartPositionState } from "../../construct/start-position-picker/state/start-position-state.svelte";
+  import TabIntro from "$lib/shared/onboarding/components/TabIntro.svelte";
+  import { getTabIntroContent } from "$lib/shared/onboarding/config/tab-intro-content";
+
+  // Get intro content for Constructor tab
+  const introContent = getTabIntroContent("create", "constructor");
 
   // Props
   let {
@@ -81,6 +86,18 @@
     </div>
   </div>
 </div>
+
+<!-- Tab intro - shows on first visit only -->
+{#if introContent}
+  <TabIntro
+    moduleId="create"
+    tabId="constructor"
+    icon={introContent.icon}
+    color={introContent.color}
+    title={introContent.title}
+    description={introContent.description}
+  />
+{/if}
 
 <style>
   .construct-tab-content {

@@ -45,11 +45,11 @@
   let statusColor = $derived.by(() => {
     switch (status.status) {
       case "completed":
-        return "#10b981";
+        return "var(--semantic-success)";
       case "failed":
-        return "#ef4444";
+        return "var(--semantic-error)";
       default:
-        return "#3b82f6";
+        return "var(--semantic-info)";
     }
   });
 
@@ -172,15 +172,15 @@
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      var(--status-color, #3b82f6) 0%,
+      var(--status-color, var(--semantic-info)) 0%,
       transparent 70%
     );
-    border: 3px solid var(--status-color, #3b82f6);
+    border: 3px solid var(--status-color, var(--semantic-info));
   }
 
   .status-icon i {
-    font-size: 28px;
-    color: var(--status-color, #3b82f6);
+    font-size: var(--font-size-3xl);
+    color: var(--status-color, var(--semantic-info));
   }
 
   .status-icon.spinning {
@@ -220,7 +220,7 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--status-color, #3b82f6),
+      var(--status-color, var(--semantic-info)),
       var(--status-color, #2563eb)
     );
     border-radius: 4px;
@@ -231,7 +231,7 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--status-color, #3b82f6);
+    color: var(--status-color, var(--semantic-info));
     text-align: center;
   }
 
@@ -259,7 +259,7 @@
     margin-bottom: 0.75rem;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #ef4444;
+    color: var(--semantic-error);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -269,13 +269,13 @@
     font-size: 0.85rem;
     font-weight: 600;
     font-family: monospace;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .error-message {
     margin: 0;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     line-height: 1.4;
   }
 
@@ -320,7 +320,7 @@
   }
 
   .retry-button {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
   }
 
@@ -331,9 +331,9 @@
 
   .close-button,
   .cancel-button {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .close-button:hover,
@@ -358,7 +358,7 @@
     }
 
     .status-icon i {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     button {

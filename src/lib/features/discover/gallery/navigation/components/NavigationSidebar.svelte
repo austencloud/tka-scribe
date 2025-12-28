@@ -226,7 +226,7 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .section-header.expanded {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   .section-header-content {
@@ -242,13 +242,13 @@ Follows Svelte 5 runes + microservices architecture.
 
   .section-count {
     font-size: var(--font-size-xs);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-weight: 400;
   }
 
   .section-expand-icon {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     transform: rotate(0deg);
     transition: transform var(--transition-fast);
   }
@@ -260,7 +260,7 @@ Follows Svelte 5 runes + microservices architecture.
   /* Section Items */
   .section-items {
     background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .navigation-item {
@@ -295,7 +295,7 @@ Follows Svelte 5 runes + microservices architecture.
 
   .item-count {
     font-size: var(--font-size-xs);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-weight: 400;
   }
 
@@ -317,8 +317,8 @@ Follows Svelte 5 runes + microservices architecture.
     align-items: center;
     justify-content: center;
     padding: var(--spacing-xs);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     color: rgba(255, 255, 255, 0.8);
     font-size: var(--font-size-xs);
@@ -347,8 +347,8 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .letter-count {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     font-weight: 400;
     margin-top: 2px;
   }
@@ -379,7 +379,7 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .stat-label {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .stat-value {

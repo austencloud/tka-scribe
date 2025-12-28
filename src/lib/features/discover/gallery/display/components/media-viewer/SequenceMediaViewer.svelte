@@ -336,7 +336,7 @@
     justify-content: center;
     gap: 4px;
     padding: 4px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 20%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
   }
@@ -349,8 +349,8 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -362,14 +362,14 @@
   }
 
   .media-tab:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .media-tab.active {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 25%,
+      var(--semantic-info, var(--semantic-info)) 25%,
       transparent
     );
     color: var(--theme-text, white);
@@ -446,7 +446,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 40%, transparent);
     opacity: 0;
     transition: opacity 0.2s ease;
     pointer-events: none;
@@ -464,7 +464,7 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 90%,
+      var(--semantic-info, var(--semantic-info)) 90%,
       transparent
     );
     border-radius: 50%;
@@ -478,7 +478,7 @@
   }
 
   .play-overlay span {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
     font-weight: 500;
   }
@@ -493,8 +493,7 @@
     align-items: center;
     gap: 12px;
     padding: 6px 12px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 60%, transparent);
-    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--theme-shadow) 60%, transparent);
     border-radius: 20px;
   }
 
@@ -504,7 +503,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border: none;
     border-radius: 50%;
     color: var(--theme-text, white);
@@ -518,11 +517,11 @@
   }
 
   .nav-arrow:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
   }
 
   .image-counter {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: var(--theme-text, white);
     min-width: 50px;
@@ -563,8 +562,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 60%, transparent);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: color-mix(in srgb, var(--theme-shadow) 60%, transparent);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 50%;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -577,7 +576,7 @@
   }
 
   .back-btn:hover {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 80%, transparent);
   }
 
   /* Placeholder */
@@ -587,8 +586,8 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
   }
 
   /* Reduced motion */

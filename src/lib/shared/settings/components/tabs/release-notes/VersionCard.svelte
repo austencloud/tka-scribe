@@ -130,8 +130,8 @@
     gap: 16px;
     width: 100%;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     text-align: left;
@@ -139,10 +139,10 @@
   }
 
   .version-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent, var(--theme-accent-strong)) 30%,
       transparent
     );
   }
@@ -163,19 +163,19 @@
   }
 
   .version-number {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 700;
-    color: var(--theme-accent, #a78bfa);
+    color: var(--theme-accent);
   }
 
   .pre-release .version-number {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
   }
 
   .version-date {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .version-summary {
@@ -186,13 +186,13 @@
   }
 
   .summary-text {
-    font-size: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text);
   }
 
   .total-count {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .arrow-icon {
@@ -201,14 +201,14 @@
     justify-content: center;
     width: 28px;
     height: 28px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    color: var(--theme-text-dim);
     transition:
       color 0.2s ease,
       transform 0.2s ease;
   }
 
   .version-card:hover .arrow-icon {
-    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
+    color: var(--theme-accent);
     transform: translateX(2px);
   }
 

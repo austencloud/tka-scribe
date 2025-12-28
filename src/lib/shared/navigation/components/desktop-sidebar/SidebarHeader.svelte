@@ -25,11 +25,11 @@
      SIDEBAR HEADER - Premium Glassmorphism Design
      ============================================================================ */
   .sidebar-header {
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 8%, transparent)
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 8%, transparent)
         50%,
       rgba(236, 72, 153, 0.06) 100%
     );
@@ -49,8 +49,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent),
+      color-mix(in srgb, var(--theme-accent) 40%, transparent),
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent),
       transparent
     );
   }
@@ -65,13 +65,13 @@
     align-items: center;
     justify-content: center;
     padding: 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     position: relative;
     overflow: hidden;
   }
@@ -84,7 +84,7 @@
     background: linear-gradient(
       135deg,
       transparent 40%,
-      rgba(255, 255, 255, 0.08) 50%,
+      var(--theme-card-bg) 50%,
       transparent 60%
     );
     opacity: 0;
@@ -106,12 +106,12 @@
   }
 
   .collapse-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
+    border-color: var(--theme-stroke-strong);
     box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .collapse-toggle:active {

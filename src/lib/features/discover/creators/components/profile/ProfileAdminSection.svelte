@@ -263,7 +263,7 @@
     align-items: center;
     gap: 8px;
     margin: 0 0 16px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: #fca5a5;
   }
@@ -277,7 +277,7 @@
     background: rgba(239, 68, 68, 0.15);
     border-radius: 8px;
     color: #fca5a5;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .error-banner button {
@@ -300,9 +300,9 @@
   .control-label {
     display: block;
     margin-bottom: 8px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -318,11 +318,11 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -354,11 +354,11 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -398,7 +398,7 @@
 
   .modal {
     background: #1a1a2e;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 24px;
     max-width: 400px;
@@ -407,9 +407,9 @@
 
   .modal-message {
     margin: 0 0 20px 0;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .modal-actions {
@@ -421,16 +421,16 @@
   .modal-btn {
     padding: 10px 18px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .modal-btn.cancel {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    color: var(--theme-text-dim);
   }
 
   .modal-btn.cancel:hover {

@@ -44,12 +44,12 @@
   .type-indicator.module {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 40%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
       transparent
     );
     color: #a78bfa;
@@ -62,22 +62,22 @@
       var(--accent-2026-indigo) 40%,
       transparent
     );
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .type-indicator.capability {
     background: var(--accent-2026-amber-soft);
     border-color: color-mix(in srgb, var(--accent-2026-amber) 40%, transparent);
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .type-indicator i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   @media (min-width: 480px) {
     .type-indicator i {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 

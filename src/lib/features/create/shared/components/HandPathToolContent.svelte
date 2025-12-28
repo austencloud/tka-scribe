@@ -92,7 +92,7 @@ Contains sequence settings, hand indicator, and action buttons.
 
   .start-drawing-btn {
     padding: clamp(0.875rem, 2vh, 1.125rem);
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
     border: none;
     border-radius: 14px;
     color: white;
@@ -147,7 +147,7 @@ Contains sequence settings, hand indicator, and action buttons.
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     color: white;
     border: none;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
@@ -163,9 +163,9 @@ Contains sequence settings, hand indicator, and action buttons.
   }
 
   .action-btn.secondary {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border: 2px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .action-btn.secondary:hover {
@@ -173,7 +173,7 @@ Contains sequence settings, hand indicator, and action buttons.
     border-color: rgba(255, 255, 255, 0.35);
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px var(--theme-stroke);
   }
 
   .action-btn.secondary:active {

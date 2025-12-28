@@ -123,7 +123,7 @@
     height: 120px;
     border-radius: var(--border-radius-md);
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -215,7 +215,7 @@
     }
 
     .act-description {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 

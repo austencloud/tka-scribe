@@ -33,13 +33,13 @@
       to top,
       color-mix(
           in srgb,
-          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
+          var(--active-type-color, var(--theme-accent, var(--semantic-info))) 4%,
           rgba(18, 18, 28, 1)
         )
         0%,
       color-mix(
           in srgb,
-          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
+          var(--active-type-color, var(--theme-accent, var(--semantic-info))) 4%,
           rgba(18, 18, 28, 1)
         )
         70%,
@@ -71,7 +71,7 @@
     cursor: pointer;
     transition: all 200ms ease;
     box-shadow: 0 3px 12px
-      color-mix(in srgb, var(--active-type-color) 30%, rgba(0, 0, 0, 0.2));
+      color-mix(in srgb, var(--active-type-color) 30%, var(--theme-shadow));
   }
 
   .submit-btn:hover:not(:disabled) {

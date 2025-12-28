@@ -55,8 +55,8 @@ PositionAnswerButton - Answer button for position type selection
 		gap: 0.5rem;
 		padding: 1rem;
 		min-height: 80px;
-		background: rgba(255, 255, 255, 0.05);
-		border: 2px solid rgba(255, 255, 255, 0.15);
+		background: var(--theme-card-bg);
+		border: 2px solid var(--theme-stroke-strong);
 		border-radius: 12px;
 		color: white;
 		font-size: 1rem;

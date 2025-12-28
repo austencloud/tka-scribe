@@ -376,7 +376,7 @@
   .region-bpm {
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
@@ -452,15 +452,15 @@
     flex-direction: column;
     gap: 0.25rem;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .form-row input {
     padding: 0.35rem 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.85rem;
   }
 
@@ -495,10 +495,10 @@
 
   .cancel-btn {
     padding: 0.4rem 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease;

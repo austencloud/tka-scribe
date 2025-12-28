@@ -102,22 +102,22 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 15%,
+      var(--semantic-info, var(--semantic-info)) 15%,
       transparent
     );
     border-radius: 50%;
   }
 
   .email-icon-container i {
-    font-size: 36px;
-    color: var(--semantic-info, #3b82f6);
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .pulse-ring {
     position: absolute;
     inset: 0;
     border: 2px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
     border-radius: 50%;
     animation: pulse-ring 2s ease-out infinite;
   }
@@ -145,13 +145,13 @@
 
   .verification-instructions p {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
   }
 
   .verification-instructions .hint {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .verification-status {
@@ -166,18 +166,18 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .status-indicator i {
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .progress-bar {
     width: 100%;
     height: 4px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 2px;
     overflow: hidden;
   }
@@ -186,8 +186,8 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent-strong, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent-strong, var(--theme-accent-strong))
     );
     border-radius: 2px;
     transition: width 0.3s ease;
@@ -202,8 +202,8 @@
 
   .resend-section p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .resend-btn {
@@ -211,18 +211,18 @@
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 10px;
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .resend-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .resend-btn:disabled {
@@ -237,19 +237,19 @@
     padding: 12px 14px;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 10px;
     color: #fca5a5;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.4;
   }
 
   .form-error i {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     flex-shrink: 0;
     margin-top: 2px;
   }
@@ -258,8 +258,8 @@
     padding: 10px 20px;
     background: transparent;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     cursor: pointer;
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -274,7 +274,7 @@
   .resend-btn:focus-visible,
   .skip-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong) 80%, transparent);
     outline-offset: 2px;
   }
 

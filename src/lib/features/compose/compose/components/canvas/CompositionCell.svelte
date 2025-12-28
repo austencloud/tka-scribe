@@ -119,9 +119,9 @@
     align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 1;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
     /* Thin border for subtle separation, shared between cells */
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 0;
     cursor: pointer;
     transition:
@@ -136,15 +136,15 @@
   }
 
   .composition-cell:hover {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    border-color: var(--theme-stroke-strong);
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .composition-cell:focus {
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 60%,
+      var(--theme-accent, var(--theme-accent)) 60%,
       transparent
     );
   }
@@ -152,20 +152,20 @@
   .composition-cell.selected {
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 80%,
+      var(--theme-accent, var(--theme-accent)) 80%,
       transparent
     );
   }
 
   .composition-cell.configured {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
   }
 
   .composition-cell.tunnel {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 10%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.04))
+      var(--theme-accent-strong, var(--theme-accent-strong)) 10%,
+      var(--theme-card-bg)
     );
   }
 
@@ -204,7 +204,7 @@
   .sequence-name {
     font-size: clamp(0.65rem, 4cqi, 1rem);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -213,7 +213,7 @@
 
   .sequence-count {
     font-size: clamp(0.55rem, 3cqi, 0.8rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .type-badge,
@@ -222,10 +222,10 @@
     align-items: center;
     gap: clamp(2px, 1cqi, 6px);
     padding: clamp(1px, 0.5cqi, 4px) clamp(4px, 2cqi, 10px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     border-radius: clamp(2px, 1cqi, 6px);
     font-size: clamp(0.55rem, 3cqi, 0.75rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .type-badge i,
@@ -240,12 +240,12 @@
     align-items: center;
     justify-content: center;
     gap: clamp(2px, 2cqi, 8px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     transition: color 0.2s ease;
   }
 
   .composition-cell:hover .empty-state {
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text);
   }
 
   .empty-icon {
@@ -269,7 +269,7 @@
     position: absolute;
     inset: -2px;
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 80%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 80%, transparent);
     border-radius: 0;
     pointer-events: none;
     animation: pulse-ring 1.5s ease-in-out infinite;

@@ -306,17 +306,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.12);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .upload-section {
@@ -391,7 +391,7 @@
     justify-content: center;
     height: 100%;
     min-height: 200px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-align: center;
   }
 
@@ -408,8 +408,8 @@
   }
 
   .empty-state .hint {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.3);
+    font-size: var(--font-size-compact, 0.75rem);
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
   }
 
   .tracks-list {
@@ -483,7 +483,7 @@
 
   .track-meta {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     margin-top: 0.25rem;
   }
 

@@ -69,7 +69,7 @@
 
   // Prepare filter options for grid components
   const typeOptions = [
-    { value: "all", label: "All Types", icon: "", color: "#10b981" },
+    { value: "all", label: "All Types", icon: "", color: "var(--semantic-success)" },
     ...Object.entries(TYPE_CONFIG).map(([value, config]) => ({
       value,
       label: config.label
@@ -82,7 +82,7 @@
   ];
 
   const statusOptions = [
-    { value: "all", label: "All Status", icon: "", color: "#10b981" },
+    { value: "all", label: "All Status", icon: "", color: "var(--semantic-success)" },
     ...Object.entries(STATUS_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -92,7 +92,7 @@
   ];
 
   const priorityOptions = [
-    { value: "all", label: "All Priority", icon: "", color: "#10b981" },
+    { value: "all", label: "All Priority", icon: "", color: "var(--semantic-success)" },
     ...Object.entries(PRIORITY_CONFIG).map(([value, config]) => ({
       value,
       label: config.label,
@@ -335,13 +335,13 @@
   .sheet-handle {
     width: 40px;
     height: 5px;
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-stroke-strong);
     border-radius: 3px;
     transition: background 0.2s ease;
   }
 
   .sheet-handle-area:hover .sheet-handle {
-    background: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    background: var(--theme-text-dim);
   }
 
   .sheet-header {
@@ -349,7 +349,7 @@
     align-items: center;
     gap: 13px;
     padding: 0 21px 21px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .sheet-title {
@@ -359,11 +359,11 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .sheet-title i {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .active-count {
@@ -372,13 +372,13 @@
     padding: 4px 8px;
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .sheet-close {
@@ -391,15 +391,15 @@
     margin-left: 0;
     background: none;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     border-radius: 12px;
     transition: all 0.15s ease;
   }
 
   .sheet-close:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .sheet-close:active {
@@ -418,8 +418,8 @@
   .filter-section {
     display: flex;
     flex-direction: column;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     overflow: hidden;
   }
@@ -452,7 +452,7 @@
     display: flex;
     gap: 13px;
     padding: 21px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
     background: rgba(0, 0, 0, 0.2);
   }
 
@@ -476,14 +476,14 @@
   }
 
   .sheet-btn.secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .sheet-btn.secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .sheet-btn.secondary:disabled {
@@ -494,17 +494,17 @@
   .sheet-btn.primary {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #10b981) 80%, white) 0%,
-      var(--semantic-success, #10b981) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, white) 0%,
+      var(--semantic-success, var(--semantic-success)) 100%
     );
     color: white;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
   }
 
   .sheet-btn.primary:hover {
     box-shadow: 0 6px 20px
-      color-mix(in srgb, var(--semantic-success, #10b981) 35%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 35%, transparent);
     transform: translateY(-1px);
   }
 

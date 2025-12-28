@@ -47,9 +47,9 @@ MotionTypeButton - Answer button for motion type selection
 		gap: 0.25rem;
 		padding: 0.75rem 0.5rem;
 		background: rgba(255, 255, 255, 0.04);
-		border: 2px solid rgba(255, 255, 255, 0.1);
+		border: 2px solid var(--theme-stroke);
 		border-radius: 10px;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim);
 		cursor: pointer;
 		transition: all 0.2s ease;
 		position: relative;
@@ -79,8 +79,8 @@ MotionTypeButton - Answer button for motion type selection
 
 	.answer-button.incorrect {
 		background: rgba(248, 113, 113, 0.15);
-		border-color: #f87171;
-		color: #f87171;
+		border-color: var(--semantic-error);
+		color: var(--semantic-error);
 	}
 
 	.type-num {

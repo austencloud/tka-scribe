@@ -104,8 +104,8 @@
       clamp(180px, 12vw, 200px)
     ); /* Reduced max from 252px to 200px for better desktop layout */
     max-width: 200px; /* Never exceed 200px */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border-right: 1px solid var(--theme-stroke, var(--theme-stroke));
     overflow-y: auto;
     container-type: inline-size;
     display: flex;
@@ -131,10 +131,10 @@
     ); /* WCAG AAA: 48px minimum, we use 48px for comfort */
     flex: 1; /* Allow items to grow and fill space evenly */
     max-height: 72px; /* Cap growth so items don't get too tall */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px; /* Slightly more rounded */
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth easing */
     text-align: left;
@@ -159,7 +159,7 @@
     }
 
     .sidebar-icon {
-      font-size: 24px; /* Larger icons when labels are hidden */
+      font-size: var(--font-size-2xl); /* Larger icons when labels are hidden */
     }
 
     /* Hide chevron in icon-only mode */
@@ -180,9 +180,9 @@
   }
 
   .settings-sidebar-item:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     transform: translateX(3px); /* Slide right hint - "go here" */
     box-shadow: var(--theme-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
   }
@@ -193,7 +193,7 @@
 
   .settings-sidebar-item.active {
     background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     border-color: color-mix(in srgb, var(--theme-accent) 60%, transparent);
     box-shadow: 0 0 12px
       color-mix(in srgb, var(--theme-accent) 30%, transparent);
@@ -207,7 +207,7 @@
   }
 
   .sidebar-icon {
-    font-size: 20px; /* Good size for touch target visibility */
+    font-size: var(--font-size-xl); /* Good size for touch target visibility */
     width: 24px;
     text-align: center;
     transition: transform 0.2s ease;
@@ -228,8 +228,8 @@
     content: "\f054"; /* FontAwesome chevron-right */
     font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
     font-weight: 900;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     opacity: 0;
     transform: translateX(-4px);
     transition: all 0.2s ease;
@@ -251,7 +251,7 @@
       width: 100%;
       min-height: auto;
       border-right: none;
-      border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+      border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
       max-height: 90px;
       position: relative;
     }
@@ -273,7 +273,7 @@
       flex: 1; /* Equal width for all tabs */
       gap: 4px; /* Tight spacing between icon and label */
       padding: 8px 6px;
-      font-size: 13px; /* Smaller but readable */
+      font-size: var(--font-size-compact); /* Smaller but readable */
       min-height: 62px; /* Taller for vertical layout */
       white-space: normal; /* Allow text wrapping if needed */
       text-align: center;
@@ -281,14 +281,14 @@
     }
 
     .sidebar-icon {
-      font-size: 22px; /* LARGER: Icons are the primary visual element */
+      font-size: var(--font-size-xl); /* LARGER: Icons are the primary visual element */
       flex-shrink: 0;
       width: auto; /* Remove fixed width */
       margin: 0; /* Remove margin */
     }
 
     .sidebar-label {
-      font-size: 12px; /* Compact but readable */
+      font-size: var(--font-size-compact); /* Compact but readable */
       line-height: 1.2;
       white-space: nowrap;
       overflow: hidden;
@@ -325,11 +325,11 @@
     }
 
     .sidebar-icon {
-      font-size: 20px; /* Slightly smaller but still prominent */
+      font-size: var(--font-size-xl); /* Slightly smaller but still prominent */
     }
 
     .sidebar-label {
-      font-size: 12px; /* Compact but readable */
+      font-size: var(--font-size-compact); /* Compact but readable */
     }
   }
 
@@ -347,11 +347,11 @@
     }
 
     .sidebar-icon {
-      font-size: 18px; /* Minimum practical icon size */
+      font-size: var(--font-size-lg); /* Minimum practical icon size */
     }
 
     .sidebar-label {
-      font-size: 12px; /* Minimum readable size */
+      font-size: var(--font-size-compact); /* Minimum readable size */
     }
   }
 
@@ -372,11 +372,11 @@
     }
 
     .sidebar-icon {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .sidebar-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -397,23 +397,23 @@
     align-items: center;
     gap: 12px;
     padding: 14px 18px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 16px;
+    color: var(--theme-text);
+    font-size: var(--font-size-base);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dropdown-trigger:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .dropdown-icon {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     flex-shrink: 0;
   }
 
@@ -423,7 +423,7 @@
   }
 
   .dropdown-arrow {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: transform 0.2s ease;
     opacity: 0.7;
   }
@@ -440,11 +440,11 @@
 
     .dropdown-trigger {
       padding: 12px 16px;
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
 
     .dropdown-icon {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 </style>

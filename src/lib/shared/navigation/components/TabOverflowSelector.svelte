@@ -125,12 +125,12 @@
     max-width: 240px;
 
     /* Use global theme system */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
 
-    color: var(--theme-text, #ffffff);
-    font-size: 13px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     letter-spacing: 0.01em;
 
@@ -147,10 +147,10 @@
   .tab-picker-trigger:hover {
     background: color-mix(
       in srgb,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 100%,
-      var(--theme-accent, #6366f1) 10%
+      var(--theme-card-bg) 100%,
+      var(--theme-accent, var(--theme-accent)) 10%
     );
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
   }
 
   .tab-picker-trigger:active {
@@ -161,11 +161,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .current-tab-icon :global(i) {
-    background: var(--theme-accent, #6366f1);
+    background: var(--theme-accent);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -180,7 +180,7 @@
   }
 
   .chevron {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -211,11 +211,10 @@
     overflow-y: auto;
 
     /* Use global theme system for elevated surface */
-    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.04));
-    backdrop-filter: blur(24px);
+    background: var(--theme-panel-bg);
     -webkit-backdrop-filter: blur(24px);
 
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px 16px 0 0; /* Round top corners only */
     border-bottom: none; /* No border at bottom edge */
     padding: 16px 12px calc(12px + env(safe-area-inset-bottom, 0px)); /* Safe area for home indicator */
@@ -279,12 +278,12 @@
     padding: 16px 12px;
     min-height: 80px;
 
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
 
-    color: var(--theme-text, #ffffff);
-    font-size: 12px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     font-weight: 500;
 
     cursor: pointer;
@@ -300,10 +299,10 @@
   .tab-option:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 100%,
-      var(--theme-accent, #6366f1) 10%
+      var(--theme-card-bg) 100%,
+      var(--theme-accent, var(--theme-accent)) 10%
     );
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
   }
 
   .tab-option:active:not(:disabled) {
@@ -313,13 +312,13 @@
   .tab-option.active {
     background: color-mix(
       in srgb,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.06)) 100%,
-      var(--theme-accent, #6366f1) 20%
+      var(--theme-card-bg) 100%,
+      var(--theme-accent, var(--theme-accent)) 20%
     );
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     box-shadow:
       0 0 0 2px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent),
       inset 0 1px 0 0 hsl(0 0% 100% / 0.1);
   }
 
@@ -332,7 +331,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
   }
 
   .tab-icon :global(i) {
@@ -351,8 +350,8 @@
     position: absolute;
     top: 8px;
     right: 8px;
-    font-size: 12px;
-    color: var(--theme-accent, #6366f1);
+    font-size: var(--font-size-compact);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   /* ============================================================================
@@ -402,12 +401,12 @@
 
   /* Focus visible for keyboard navigation */
   .tab-picker-trigger:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .tab-option:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 </style>

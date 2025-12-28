@@ -239,8 +239,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-panel-bg, #1a1a24);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
   }
 
   .content-column {
@@ -262,13 +262,13 @@
     padding: 10px 14px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 12%, transparent),
-      color-mix(in srgb, var(--semantic-success, #10b981) 8%, transparent)
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 12%, transparent),
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 8%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.15s;
@@ -277,12 +277,12 @@
   .sequence-info:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 18%, transparent),
-      color-mix(in srgb, var(--semantic-success, #10b981) 12%, transparent)
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 18%, transparent),
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 12%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 40%,
+      var(--semantic-success, var(--semantic-success)) 40%,
       transparent
     );
   }
@@ -298,14 +298,14 @@
 
   .seq-meta {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .sequence-info i {
     font-size: 0.8rem;
     color: color-mix(
       in srgb,
-      var(--semantic-success, #86efac) 80%,
+      var(--semantic-success) 80%,
       transparent
     );
   }
@@ -314,14 +314,14 @@
     flex: 1 1 auto;
     min-height: 120px;
     display: flex;
-    background: var(--theme-panel-bg, #1a1a24);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
   }
 
   .settings-cell {
     flex-shrink: 0;
-    background: var(--theme-panel-bg, #1a1a24);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
   }
 
   .settings-toggle {
@@ -332,7 +332,7 @@
     padding: 10px 14px;
     background: transparent;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -340,8 +340,8 @@
   }
 
   .settings-toggle:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .settings-toggle span {

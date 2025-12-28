@@ -707,19 +707,18 @@
     padding: clamp(20px, 4vw, 32px);
     font-size: clamp(13px, 2.8vw, 15px);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     border-radius: clamp(12px, 2vw, 16px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    backdrop-filter: blur(8px);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
   }
 
   .error-message {
-    color: var(--semantic-error, rgba(252, 165, 165, 1));
-    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    color: var(--semantic-error);
+    background: var(--semantic-error-dim);
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
   }

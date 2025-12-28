@@ -128,7 +128,7 @@
     border: 1px solid rgba(239, 68, 68, 0.4);
     border-radius: 12px;
     color: #fca5a5;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 150ms ease;
@@ -176,11 +176,11 @@
     }
 
     .profile-name {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .profile-email {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 

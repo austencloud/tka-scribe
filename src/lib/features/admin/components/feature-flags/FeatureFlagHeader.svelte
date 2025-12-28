@@ -94,7 +94,7 @@
     border-radius: 10px;
     background: transparent;
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -126,7 +126,7 @@
     }
 
     .toggle-btn i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -150,7 +150,7 @@
     .toggle-btn {
       flex: 0 0 auto;
       padding: 10px 16px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

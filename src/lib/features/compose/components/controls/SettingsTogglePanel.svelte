@@ -370,11 +370,11 @@
     gap: 8px;
     min-height: var(--touch-target-min, 44px);
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -382,7 +382,7 @@
   }
 
   .mode-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
   }
 
@@ -391,23 +391,23 @@
   }
 
   .mode-btn.active {
-    background: var(--semantic-warning-bg, rgba(251, 191, 36, 0.15));
-    border-color: var(--semantic-warning-border, rgba(251, 191, 36, 0.4));
-    color: var(--semantic-warning-text-vivid, rgba(252, 211, 77, 1));
+    background: var(--semantic-warning-bg);
+    border-color: var(--semantic-warning-border);
+    color: var(--semantic-warning-text-vivid);
     box-shadow:
-      0 0 12px var(--semantic-warning-glow, rgba(251, 191, 36, 0.12)),
+      0 0 12px var(--semantic-warning-glow),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
 
   .mode-btn.active i {
-    color: var(--semantic-warning-text, rgba(252, 211, 77, 0.9));
+    color: var(--semantic-warning-text);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .mode-btn:hover:not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.85));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
   }
 
@@ -431,7 +431,7 @@
   .section-title {
     font-size: 0.7rem;
     font-weight: 700;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -461,10 +461,10 @@
     flex: 1;
     min-height: 40px;
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -473,23 +473,23 @@
 
   /* Blue motion active */
   .chip-btn.blue.active {
-    background: var(--prop-blue-bg, rgba(59, 130, 246, 0.2));
-    border-color: var(--prop-blue-border, rgba(59, 130, 246, 0.5));
-    color: var(--prop-blue-text, rgba(147, 197, 253, 1));
+    background: var(--prop-blue-bg);
+    border-color: var(--prop-blue-border);
+    color: var(--prop-blue-text);
   }
 
   /* Red motion active */
   .chip-btn.red.active {
-    background: var(--prop-red-bg, rgba(239, 68, 68, 0.2));
-    border-color: var(--prop-red-border, rgba(239, 68, 68, 0.5));
-    color: var(--prop-red-text, rgba(252, 165, 165, 1));
+    background: var(--prop-red-bg);
+    border-color: var(--prop-red-border);
+    color: var(--prop-red-text);
   }
 
   /* Grid - cyan accent */
   .chip-btn.grid-btn.active {
-    background: var(--semantic-info-bg, rgba(20, 184, 166, 0.2));
-    border-color: var(--semantic-info-border, rgba(20, 184, 166, 0.5));
-    color: var(--semantic-info-text, rgba(94, 234, 212, 1));
+    background: var(--semantic-info-bg);
+    border-color: var(--semantic-info-border);
+    color: var(--semantic-info-text);
   }
 
   /* Props - orange accent */
@@ -501,16 +501,16 @@
 
   /* Beat numbers - yellow accent */
   .chip-btn.beat-btn.active {
-    background: var(--semantic-warning-bg, rgba(234, 179, 8, 0.2));
-    border-color: var(--semantic-warning-border, rgba(234, 179, 8, 0.5));
-    color: var(--semantic-warning-text, rgba(253, 224, 71, 1));
+    background: var(--semantic-warning-bg);
+    border-color: var(--semantic-warning-border);
+    color: var(--semantic-warning-text);
   }
 
   /* Glyph - purple accent */
   .chip-btn.glyph-btn.active {
-    background: var(--theme-accent-bg, rgba(168, 85, 247, 0.2));
-    border-color: var(--theme-accent-border, rgba(168, 85, 247, 0.5));
-    color: var(--theme-accent-text, rgba(216, 180, 254, 1));
+    background: var(--theme-accent-bg);
+    border-color: var(--theme-accent-border);
+    color: var(--theme-accent-text);
   }
 
   /* Turns - pink accent */
@@ -529,16 +529,16 @@
 
   /* Trail Subtle - sky blue accent */
   .chip-btn.trail-subtle.active {
-    background: var(--semantic-info-bg, rgba(56, 189, 248, 0.2));
-    border-color: var(--semantic-info-border, rgba(56, 189, 248, 0.5));
-    color: var(--semantic-info-text, rgba(186, 230, 253, 1));
+    background: var(--semantic-info-bg);
+    border-color: var(--semantic-info-border);
+    color: var(--semantic-info-text);
   }
 
   /* Trail Vivid - amber accent */
   .chip-btn.trail-vivid.active {
-    background: var(--semantic-warning-bg, rgba(245, 158, 11, 0.2));
-    border-color: var(--semantic-warning-border, rgba(245, 158, 11, 0.5));
-    color: var(--semantic-warning-text, rgba(253, 230, 138, 1));
+    background: var(--semantic-warning-bg);
+    border-color: var(--semantic-warning-border);
+    color: var(--semantic-warning-text);
   }
 
   /* Both Ends Toggle */
@@ -549,10 +549,10 @@
     min-height: 36px;
     padding: 6px 12px;
     margin-top: 4px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
@@ -560,17 +560,17 @@
   }
 
   .ends-toggle.active {
-    background: var(--theme-accent-bg, rgba(139, 92, 246, 0.2));
-    border-color: var(--theme-accent-border, rgba(139, 92, 246, 0.5));
-    color: var(--theme-accent-text, rgba(196, 181, 253, 1));
+    background: var(--theme-accent-bg);
+    border-color: var(--theme-accent-border);
+    color: var(--theme-accent-text);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .chip-btn:hover:not(.active),
     .ends-toggle:hover:not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.8));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
   }
 

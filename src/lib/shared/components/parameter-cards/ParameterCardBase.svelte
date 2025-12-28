@@ -12,7 +12,7 @@ Used by both Generate and Discover for consistent Bento card styling
   let {
     title,
     subtitle = "",
-    gradient = "linear-gradient(135deg, #3b82f6, #1d4ed8)",
+    gradient = "linear-gradient(135deg, var(--semantic-info), #1d4ed8)",
     shadowColor = "217deg 91% 60%",
     textColor = "white",
     clickable = false,
@@ -175,7 +175,7 @@ Used by both Generate and Discover for consistent Bento card styling
     background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.25) 0%,
-      rgba(255, 255, 255, 0.12) 40%,
+      var(--theme-card-hover-bg) 40%,
       rgba(255, 255, 255, 0.04) 70%,
       rgba(255, 255, 255, 0) 100%
     );

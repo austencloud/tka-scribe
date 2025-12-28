@@ -149,7 +149,7 @@
 
   .beat-count {
     font-weight: 600;
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .arrow {
@@ -181,7 +181,7 @@
   .clear-btn {
     padding: 2px var(--spacing-sm);
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    border: 1px solid var(--theme-stroke);
     border-radius: 4px;
     color: var(--muted-foreground);
     font-size: var(--font-size-xs);
@@ -203,7 +203,7 @@
   .base-chip {
     padding: 4px 8px;
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
     color: var(--muted-foreground);
     font-size: var(--font-size-xs);
@@ -276,7 +276,7 @@
     justify-content: center;
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
-    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    background: linear-gradient(135deg, var(--semantic-success) 0%, #16a34a 100%);
     border: none;
     border-radius: 8px;
     color: var(--foreground);

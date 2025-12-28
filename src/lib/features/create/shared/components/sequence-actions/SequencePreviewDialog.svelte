@@ -233,13 +233,13 @@
   }
 
   .icon {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     line-height: 1;
   }
 
   :global(.dialog-title) {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     color: var(--text-color, #ffffff);
     font-family:
@@ -282,27 +282,27 @@
   }
 
   .panel-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .sequence-panel.current .panel-label {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .sequence-panel.incoming .panel-label {
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .beat-count {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   .sequence-name {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: #fff;
     text-transform: uppercase;
@@ -329,14 +329,14 @@
     align-items: center;
     justify-content: center;
     color: rgba(255, 255, 255, 0.4);
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   :global(.dialog-message) {
     margin: 0 0 20px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-align: center;
   }
 
@@ -349,7 +349,7 @@
   .dialog-button {
     padding: 12px 24px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -359,7 +359,7 @@
 
   .cancel-button {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     border-color: rgba(255, 255, 255, 0.2);
   }
 
@@ -370,13 +370,13 @@
   }
 
   .confirm-button {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
     color: white;
     border-color: rgba(255, 255, 255, 0.2);
   }
 
   .confirm-button:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
@@ -407,12 +407,12 @@
     }
 
     :global(.dialog-title) {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .dialog-button {
       padding: 10px 20px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       min-width: 100px;
     }
   }

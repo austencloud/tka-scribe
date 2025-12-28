@@ -43,7 +43,7 @@
     INVERTED: "#eb7d00",
     MIRRORED: "#a855f7",
     REPEATED: "#6b7280",
-    UNKNOWN: "#ef4444",
+    UNKNOWN: "var(--semantic-error)",
     SAME: "#6b7280",
     ROTATED: "#36c3ff",
   };
@@ -51,7 +51,7 @@
   // Color coding for letter relationships
   const letterRelationshipColors: Record<string, string> = {
     inverted: "#eb7d00",
-    compound: "#22c55e",
+    compound: "var(--semantic-success)",
     alpha_beta_counterpart: "#a855f7",
   };
 
@@ -308,7 +308,7 @@
 <style>
   .beat-pair-analysis {
     background: var(--surface-dark, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     overflow: hidden;
   }
@@ -371,7 +371,7 @@
   .groups-section,
   .pairs-section {
     padding: var(--spacing-sm) var(--spacing-md);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .section-title {
@@ -413,7 +413,7 @@
   /* Unified Section (single pattern) */
   .unified-section {
     padding: var(--spacing-sm) var(--spacing-md);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .unified-summary {
@@ -431,7 +431,7 @@
   .alternatives-note {
     margin-top: var(--spacing-sm);
     padding-top: var(--spacing-sm);
-    border-top: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px dashed var(--theme-stroke);
   }
 
   .note-label {
@@ -510,7 +510,7 @@
   .transform-tag {
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     white-space: nowrap;
   }
@@ -522,14 +522,14 @@
   }
 
   .transform-tag.alternative {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     color: var(--muted-foreground);
     font-style: italic;
   }
 
   .also-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: var(--muted-foreground);
     font-style: italic;
     opacity: 0.7;
@@ -540,7 +540,7 @@
   .letter-relationships {
     margin-top: var(--spacing-sm);
     padding-top: var(--spacing-sm);
-    border-top: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px dashed var(--theme-stroke);
   }
 
   .letter-label {
@@ -559,7 +559,7 @@
   .letter-tag {
     padding: 2px 8px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     white-space: nowrap;
     background: color-mix(in srgb, var(--letter-color) 20%, transparent);

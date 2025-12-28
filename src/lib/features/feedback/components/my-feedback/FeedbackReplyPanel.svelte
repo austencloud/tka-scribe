@@ -165,7 +165,7 @@
     background: color-mix(in srgb, var(--status-color) 20%, transparent);
     border-radius: 8px;
     color: var(--status-color);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
   }
 
@@ -178,13 +178,13 @@
     margin: 0 0 4px 0;
     font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .header-hint {
     margin: 0;
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -208,13 +208,13 @@
   .success-message {
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.5);
-    color: #10b981;
+    color: var(--semantic-success);
   }
 
   .error-message {
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.5);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .form-group {
@@ -226,7 +226,7 @@
   .field-label {
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -240,12 +240,12 @@
     padding: 10px 12px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 80%,
+      var(--theme-panel-bg) 80%,
       transparent
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-family: inherit;
     font-size: 0.9375rem;
     line-height: 1.5;
@@ -257,16 +257,16 @@
     outline: none;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 90%,
+      var(--theme-panel-bg) 90%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 60%,
+      var(--theme-accent, var(--semantic-info)) 60%,
       transparent
     );
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 10%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 10%, transparent);
   }
 
   .reply-textarea:disabled {
@@ -283,14 +283,14 @@
     font-size: 0.75rem;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     transition: color 0.2s ease;
   }
 
   .char-count.met {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .form-actions {
@@ -314,13 +314,13 @@
   }
 
   .cancel-btn {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .cancel-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .cancel-btn:disabled {
@@ -329,7 +329,7 @@
   }
 
   .submit-btn {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
   }
 

@@ -400,7 +400,7 @@
   }
 
   .visibility-tab::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-radius: 3px;
   }
 

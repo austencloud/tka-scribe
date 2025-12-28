@@ -162,8 +162,8 @@ Shows all pictographs for a selected letter with:
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
@@ -198,7 +198,7 @@ Shows all pictographs for a selected letter with:
     background: linear-gradient(
       135deg,
       #a78bfa 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -221,13 +221,12 @@ Shows all pictographs for a selected letter with:
     padding: 1.25rem;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 8%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 8%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
     border-radius: 12px;
-    backdrop-filter: blur(10px);
   }
 
   .explanation-text {
@@ -246,7 +245,7 @@ Shows all pictographs for a selected letter with:
     margin: 0 0 1rem 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .pictograph-grid {
@@ -278,7 +277,7 @@ Shows all pictographs for a selected letter with:
   .empty-state {
     padding: 3rem 1rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .empty-state p {

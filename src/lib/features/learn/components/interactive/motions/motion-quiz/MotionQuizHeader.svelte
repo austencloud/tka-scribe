@@ -36,7 +36,7 @@ MotionQuizHeader - Progress and score display for motion quiz
 	.progress {
 		font-size: 0.875rem;
 		font-weight: 600;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim);
 	}
 
 	.score {

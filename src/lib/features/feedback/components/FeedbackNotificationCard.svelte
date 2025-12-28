@@ -156,7 +156,7 @@
 
   .notification-item.unread {
     box-shadow: 0 0 0 1px inset
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 30%, transparent);
   }
 
   /* ============================================================================
@@ -190,9 +190,9 @@
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   /* ============================================================================
@@ -212,20 +212,20 @@
   }
 
   .notification-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .notification-time {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
   .notification-message {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     line-height: 1.4;
     overflow: hidden;
@@ -238,10 +238,10 @@
 
   .notification-from {
     display: block;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     margin-top: 4px;
@@ -256,18 +256,18 @@
     border-radius: 50%;
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #6366f1) 0%,
+      var(--theme-accent-strong, var(--theme-accent)) 0%,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #6366f1) 80%,
-          var(--theme-accent-strong, #8b5cf6)
+          var(--theme-accent-strong, var(--theme-accent)) 80%,
+          var(--theme-accent-strong, var(--theme-accent-strong))
         )
         100%
     );
     flex-shrink: 0;
     margin-top: 4px;
     box-shadow: 0 0 8px
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 50%, transparent);
   }
 
   /* ============================================================================
@@ -276,7 +276,7 @@
   .notification-action {
     align-self: flex-end;
     padding: 6px 12px;
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     color: white;
     border: none;
     border-radius: 6px;
@@ -285,14 +285,14 @@
     cursor: pointer;
     transition: all var(--duration-fast) var(--ease-out);
     box-shadow: 0 2px 6px
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent);
   }
 
   .notification-action:hover {
-    background: color-mix(in srgb, var(--theme-accent, #3b82f6) 85%, black);
+    background: color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 85%, black);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 35%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 35%, transparent);
   }
 
   .notification-action:active {
@@ -304,7 +304,7 @@
      ============================================================================ */
   .notification-item:focus-within {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 70%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -314,7 +314,7 @@
 
   .notification-action:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 70%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 70%, transparent);
     outline-offset: 2px;
   }
 

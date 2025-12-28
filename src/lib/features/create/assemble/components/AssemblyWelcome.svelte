@@ -55,7 +55,7 @@ Shown when sequence is empty.
         />
         <!-- Hand indicator -->
         <circle cx="32" cy="32" r="8" fill="rgba(59, 130, 246, 0.3)" />
-        <circle cx="32" cy="32" r="4" fill="#3b82f6" />
+        <circle cx="32" cy="32" r="4" fill="var(--semantic-info)" />
       </svg>
     </div>
 
@@ -148,7 +148,7 @@ Shown when sequence is empty.
     height: 80px;
     color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 90%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 90%,
       transparent
     );
     margin-bottom: 8px;
@@ -160,35 +160,35 @@ Shown when sequence is empty.
   }
 
   .welcome-title {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
     letter-spacing: -0.02em;
   }
 
   .welcome-description {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     line-height: 1.6;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
   /* How it works section */
   .how-it-works {
     width: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 12px;
     padding: 16px 20px;
     margin-top: 4px;
   }
 
   .section-title {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     margin: 0 0 12px 0;
   }
 
@@ -215,33 +215,33 @@ Shown when sequence is empty.
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     flex-shrink: 0;
   }
 
   .step-number.blue {
     background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .step-number.red {
     background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .step-number.green {
     background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    color: var(--semantic-success);
   }
 
   .step-text {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .step-text strong {
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   /* Grid mode toggle */
@@ -254,16 +254,16 @@ Shown when sequence is empty.
   }
 
   .grid-mode-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .grid-mode-toggle {
     display: flex;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 8px;
     padding: 4px;
     gap: 4px;
@@ -277,8 +277,8 @@ Shown when sequence is empty.
     border: none;
     background: transparent;
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -287,19 +287,19 @@ Shown when sequence is empty.
   .mode-button.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 20%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
       transparent
     );
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .mode-button:hover:not(.active) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .mode-icon {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   /* Start button */
@@ -313,25 +313,25 @@ Shown when sequence is empty.
     padding: 16px 24px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6),
-      var(--theme-accent-strong, #7c3aed)
+      var(--theme-accent-strong, var(--theme-accent-strong)),
+      var(--theme-accent-strong)
     );
     border: none;
     border-radius: 12px;
     color: white;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     margin-top: 8px;
   }
 
   .start-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
   }
 
   .start-button:active {
@@ -339,7 +339,7 @@ Shown when sequence is empty.
   }
 
   .button-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     transition: transform 0.2s ease;
   }
 
@@ -359,11 +359,11 @@ Shown when sequence is empty.
     }
 
     .welcome-title {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .welcome-description {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

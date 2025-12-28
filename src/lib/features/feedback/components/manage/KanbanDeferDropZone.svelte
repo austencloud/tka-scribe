@@ -21,7 +21,7 @@
   class="defer-drop-zone"
   class:drop-target={isDropTarget}
   class:drag-active={isDragActive}
-  style="--column-color: #f59e0b"
+  style="--column-color: var(--semantic-warning)"
   ondragover={(e) => {
     e.preventDefault();
     onDragOver();
@@ -104,7 +104,7 @@
     justify-content: center;
     gap: clamp(6px, 1.5cqi, 12px);
     padding: clamp(10px, 2.5cqi, 16px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-align: center;
     flex-wrap: wrap;
   }

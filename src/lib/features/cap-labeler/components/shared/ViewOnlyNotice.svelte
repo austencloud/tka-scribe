@@ -25,7 +25,7 @@
     justify-content: space-between;
     padding: var(--spacing-md);
     background: var(--surface-dark, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
   }
 
@@ -39,14 +39,14 @@
     border-radius: 8px;
     font-size: var(--font-size-sm);
     font-weight: 600;
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .edit-button {
     padding: var(--spacing-xs) var(--spacing-md);
     background: transparent;
     color: var(--muted-foreground);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 8px;
     font-size: var(--font-size-sm);
     cursor: pointer;

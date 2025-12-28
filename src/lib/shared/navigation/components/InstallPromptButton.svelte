@@ -101,7 +101,7 @@
   }
 
   .item-icon {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     width: 32px;
     display: flex;
     align-items: center;
@@ -112,7 +112,7 @@
   .install-icon {
     color: var(
       --theme-accent-strong,
-      var(--theme-accent, rgba(139, 92, 246, 1))
+      var(--theme-accent)
     );
   }
 
@@ -125,14 +125,14 @@
   }
 
   .item-label {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .item-description {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.3;
   }
 

@@ -259,14 +259,14 @@ Provides instant visual feedback (correct = green glow, wrong = red shake).
 
   .progress-fill {
     height: 100%;
-    background: var(--theme-accent, #667eea);
+    background: var(--theme-accent);
     border-radius: 3px;
     transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .progress-text {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-weight: 600;
   }
 
@@ -290,13 +290,13 @@ Provides instant visual feedback (correct = green glow, wrong = red shake).
     max-width: 360px;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 16px var(--theme-shadow);
     transition: box-shadow 0.3s ease;
   }
 
   .grid-wrapper.feedback-correct {
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.2),
+      0 4px 16px var(--theme-shadow),
       0 0 24px rgba(34, 197, 94, 0.4);
   }
 

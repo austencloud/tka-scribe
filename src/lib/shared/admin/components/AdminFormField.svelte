@@ -37,8 +37,19 @@
     class: className = "",
   }: AdminFormFieldProps = $props();
 
-  // Generate unique ID for accessibility - derived from label prop
-  const fieldId = $derived(`field-${label.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`);
+  // Generate unique IDs for accessibility - derived from label prop
+  const baseId = $derived(`field-${label.toLowerCase().replace(/\s+/g, "-")}-${Math.random().toString(36).slice(2, 7)}`);
+  const fieldId = $derived(baseId);
+  const errorId = $derived(`${baseId}-error`);
+  const helpId = $derived(`${baseId}-help`);
+
+  // Build aria-describedby value from available descriptions
+  const describedBy = $derived.by(() => {
+    const ids: string[] = [];
+    if (error) ids.push(errorId);
+    if (helpText) ids.push(helpId);
+    return ids.length > 0 ? ids.join(' ') : undefined;
+  });
 
   function handleChange(e: Event) {
     const target = e.target as
@@ -80,6 +91,7 @@
       {disabled}
       aria-required={required}
       aria-invalid={!!error}
+      aria-describedby={describedBy}
       onchange={handleChange}
     />
   {:else if type === "textarea"}
@@ -92,6 +104,7 @@
       {disabled}
       aria-required={required}
       aria-invalid={!!error}
+      aria-describedby={describedBy}
       onchange={handleChange}
       rows="3"
     ></textarea>
@@ -123,11 +136,11 @@
   {/if}
 
   {#if helpText}
-    <span class="field-help">{helpText}</span>
+    <span id={helpId} class="field-help">{helpText}</span>
   {/if}
 
   {#if error}
-    <span class="field-error" role="alert">{error}</span>
+    <span id={errorId} class="field-error" role="alert" aria-live="assertive">{error}</span>
   {/if}
 </div>
 
@@ -139,24 +152,24 @@
   }
 
   .field-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
   }
 
   .required {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .field-input,
   .field-textarea,
   .field-select {
     padding: 10px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
     color: var(--theme-text, white);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: all 0.2s ease;
   }
 
@@ -165,7 +178,7 @@
   .field-select:focus {
     outline: none;
     border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
   }
 
   .field-textarea {
@@ -200,7 +213,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--theme-card-bg, rgba(255, 255, 255, 0.2));
+    background-color: var(--theme-card-bg);
     transition: 0.3s;
     border-radius: 24px;
   }
@@ -218,7 +231,7 @@
   }
 
   input:checked + .toggle-slider {
-    background-color: #10b981;
+    background-color: var(--semantic-success);
   }
 
   input:checked + .toggle-slider:before {
@@ -227,19 +240,19 @@
 
   /* Help and error text */
   .field-help {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .field-error {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: #fca5a5;
   }
 
   .has-error .field-input,
   .has-error .field-textarea,
   .has-error .field-select {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
   }
 
   /* Disabled state */

@@ -70,8 +70,8 @@ Provides a beautiful, consistent icon selection experience
   }
 
   .icon-label {
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     font-weight: 600;
     letter-spacing: 0.01em;
   }
@@ -89,10 +89,10 @@ Provides a beautiful, consistent icon selection experience
     justify-content: center;
     background: linear-gradient(
       135deg,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08)),
-      var(--theme-card-bg, rgba(255, 255, 255, 0.03))
+      var(--theme-card-hover-bg, var(--theme-card-bg)),
+      var(--theme-card-bg)
     );
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -107,7 +107,7 @@ Provides a beautiful, consistent icon selection experience
     inset: 0;
     background: radial-gradient(
       circle at center,
-      var(--theme-stroke, rgba(255, 255, 255, 0.1)) 0%,
+      var(--theme-stroke) 0%,
       transparent 70%
     );
     opacity: 0;
@@ -121,14 +121,14 @@ Provides a beautiful, consistent icon selection experience
   .icon-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-text, #fff) 12%, transparent),
-      color-mix(in srgb, var(--theme-text, #fff) 6%, transparent)
+      color-mix(in srgb, var(--theme-text) 12%, transparent),
+      color-mix(in srgb, var(--theme-text) 6%, transparent)
     );
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
     box-shadow:
-      0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.15)),
-      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.1)) inset;
+      0 4px 12px var(--theme-shadow),
+      0 0 0 1px var(--theme-stroke) inset;
   }
 
   .icon-button:active {
@@ -138,40 +138,40 @@ Provides a beautiful, consistent icon selection experience
   .icon-button.selected {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent),
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent)
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent),
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 60%,
+      var(--theme-accent, var(--semantic-info)) 60%,
       transparent
     );
     box-shadow:
       0 0 0 3px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 20%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 20%, transparent),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent);
   }
 
   .icon-button.selected:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 40%, transparent),
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 30%, transparent)
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 40%, transparent),
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 30%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 70%,
+      var(--theme-accent, var(--semantic-info)) 70%,
       transparent
     );
   }
 
   .icon-emoji {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     line-height: 1;
     position: relative;
     z-index: 1;
-    filter: drop-shadow(0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2)));
+    filter: drop-shadow(0 2px 4px var(--theme-shadow));
   }
 
   @media (max-width: 640px) {
@@ -180,7 +180,7 @@ Provides a beautiful, consistent icon selection experience
     }
 
     .icon-emoji {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .icon-button {

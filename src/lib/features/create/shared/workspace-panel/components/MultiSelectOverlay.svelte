@@ -70,7 +70,7 @@ Shows "Select Items" banner and makes escape prominent.
     align-items: center;
     gap: var(--spacing-lg);
     padding: var(--spacing-md) var(--spacing-xl);
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    background: linear-gradient(135deg, var(--semantic-warning), var(--semantic-warning));
     color: white;
     border-radius: 12px;
     box-shadow:
@@ -112,7 +112,7 @@ Shows "Select Items" banner and makes escape prominent.
   }
 
   .cancel-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   @keyframes fadeIn {

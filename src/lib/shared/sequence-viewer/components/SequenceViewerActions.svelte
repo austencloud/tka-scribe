@@ -96,7 +96,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -107,22 +107,22 @@
   }
 
   .action-button.primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     border: none;
   }
 
   .action-button.primary:hover {
-    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    background: linear-gradient(135deg, var(--semantic-info), var(--semantic-info));
   }
 
   .action-button.active {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .action-button.success {
     background: rgba(16, 185, 129, 0.2);
     border-color: rgba(16, 185, 129, 0.4);
-    color: #10b981;
+    color: var(--semantic-success);
   }
 
   .action-button:disabled {
@@ -139,7 +139,7 @@
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
-    color: #ef4444;
-    font-size: 14px;
+    color: var(--semantic-error);
+    font-size: var(--font-size-sm);
   }
 </style>

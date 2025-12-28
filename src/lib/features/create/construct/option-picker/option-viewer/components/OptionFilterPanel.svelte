@@ -201,7 +201,7 @@ Provides a dedicated UI for filtering option viewer content:
     border-radius: 16px 16px 0 0;
     box-shadow:
       0 -8px 32px rgba(0, 0, 0, 0.4),
-      0 -4px 16px rgba(0, 0, 0, 0.3);
+      0 -4px 16px var(--theme-shadow);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -247,7 +247,7 @@ Provides a dedicated UI for filtering option viewer content:
     align-items: center;
     justify-content: space-between;
     padding: 12px 24px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.03);
   }
 
@@ -293,8 +293,8 @@ Provides a dedicated UI for filtering option viewer content:
   }
 
   .close-button {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 50%;
     /* 48px minimum for touch targets on mobile */
     width: var(--min-touch-target);
@@ -303,7 +303,7 @@ Provides a dedicated UI for filtering option viewer content:
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -364,7 +364,7 @@ Provides a dedicated UI for filtering option viewer content:
   .filter-section-title {
     font-size: 0.85rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -398,8 +398,8 @@ Provides a dedicated UI for filtering option viewer content:
     align-items: center;
     gap: 16px;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke);
     border-radius: 16px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -423,7 +423,7 @@ Provides a dedicated UI for filtering option viewer content:
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .toggle-option.active {
@@ -443,10 +443,10 @@ Provides a dedicated UI for filtering option viewer content:
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border-radius: 12px;
     font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -492,7 +492,7 @@ Provides a dedicated UI for filtering option viewer content:
 
   .label-description {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .filter-panel.compact .label-description {

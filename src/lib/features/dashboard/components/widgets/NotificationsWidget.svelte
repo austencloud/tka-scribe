@@ -164,11 +164,10 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 16px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     overflow: hidden;
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }
@@ -190,10 +189,10 @@
     justify-content: center;
     gap: 8px;
     padding: 12px 14px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -201,25 +200,25 @@
   }
 
   .tab-btn:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .tab-btn.active {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, var(--theme-card-bg));
+    border-color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
+    color: var(--theme-text);
   }
 
   .tab-btn i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .badge {
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border-radius: 9px;
     color: white;
     font-size: 0.6875rem;
@@ -252,14 +251,14 @@
   }
 
   .empty-state i {
-    font-size: 28px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-text-dim);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* ========================================
@@ -279,7 +278,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
     border-radius: 10px;
     cursor: pointer;
@@ -292,13 +291,13 @@
   }
 
   .list-item:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke));
   }
 
   .list-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, var(--theme-card-bg, rgba(0, 0, 0, 0.2)));
-    border-color: color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, var(--theme-card-bg));
+    border-color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
   }
 
   /* Icon for alerts */
@@ -306,13 +305,13 @@
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
+    background: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, var(--theme-card-bg));
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: var(--semantic-info, #3b82f6);
-    font-size: 13px;
+    color: var(--semantic-info, var(--semantic-info));
+    font-size: var(--font-size-compact);
   }
 
   .item-content {
@@ -333,7 +332,7 @@
   .item-name {
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -341,7 +340,7 @@
 
   .item-preview {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -349,14 +348,14 @@
 
   .item-time {
     font-size: 0.6875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
   .unread-dot {
     width: 8px;
     height: 8px;
-    background: var(--semantic-info, #3b82f6);
+    background: var(--semantic-info, var(--semantic-info));
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -376,7 +375,7 @@
     }
 
     .tab-btn i {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 

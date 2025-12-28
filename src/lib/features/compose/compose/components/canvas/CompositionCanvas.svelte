@@ -63,7 +63,7 @@
     height: 100%;
     max-height: min(90cqb, 100%);
     /* Canvas aspect ratio matches grid layout (set via style binding) */
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    background: var(--theme-panel-bg);
     border-radius: 0;
     box-shadow: var(
       --theme-shadow,

@@ -115,36 +115,36 @@
     align-items: center;
     gap: 8px;
     margin: 0 0 10px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   .group-title .count {
     margin-left: auto;
     padding: 2px 8px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
   .group-title.fixed {
-    color: color-mix(in srgb, var(--semantic-error, #ef4444) 70%, white);
+    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 70%, white);
   }
   .group-title.fixed i {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
   .group-title.added {
-    color: var(--theme-accent, #c4b5fd);
+    color: var(--theme-accent);
   }
   .group-title.added i {
-    color: var(--theme-accent, #8b5cf6);
+    color: var(--theme-accent, var(--theme-accent-strong));
   }
   .group-title.improved {
-    color: var(--semantic-info, #93c5fd);
+    color: var(--semantic-info);
   }
   .group-title.improved i {
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .change-list {
@@ -166,10 +166,10 @@
     width: 100%;
     padding: 10px 12px;
     background: transparent;
-    border: 1px dashed var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 1px dashed var(--theme-stroke-strong);
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s;
   }
@@ -177,15 +177,15 @@
   .add-entry-btn:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 10%,
+      var(--theme-accent) 10%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent, var(--theme-accent-strong)) 30%,
       transparent
     );
-    color: var(--theme-accent, rgba(139, 92, 246, 0.8));
+    color: var(--theme-accent);
   }
 
   .add-entry-form {
@@ -193,9 +193,9 @@
     flex-direction: column;
     gap: 8px;
     padding: 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 8px;
   }
 
@@ -203,10 +203,10 @@
     width: 100%;
     padding: 8px;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     line-height: 1.5;
     font-family: inherit;
     resize: vertical;
@@ -217,7 +217,7 @@
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 50%,
+      var(--theme-accent, var(--theme-accent-strong)) 50%,
       transparent
     );
   }
@@ -234,18 +234,18 @@
     gap: 6px;
     height: 34px;
     padding: 0 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .glass-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     transform: translateY(-1px);
   }
 
@@ -257,21 +257,21 @@
   .glass-btn.primary {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 15%,
+      var(--theme-accent, var(--theme-accent-strong)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent, var(--theme-accent-strong)) 30%,
       transparent
     );
-    color: var(--theme-accent, #c4b5fd);
+    color: var(--theme-accent);
   }
 
   .glass-btn.primary:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
   }

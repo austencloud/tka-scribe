@@ -417,7 +417,7 @@
 
   .stat-label {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -444,7 +444,7 @@
     padding: clamp(10px, 2.5cqi, 14px) clamp(14px, 3.5cqi, 20px);
     border-radius: clamp(10px, 2.5cqi, 14px);
     min-width: clamp(70px, 18cqi, 90px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
   }
 
   .rank-value {
@@ -456,7 +456,7 @@
 
   .rank-label {
     font-size: clamp(10px, 2.5cqi, 12px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-top: 2px;
@@ -467,7 +467,7 @@
     align-items: center;
     justify-content: center;
     padding: clamp(12px, 3cqi, 16px);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: clamp(12px, 3cqi, 14px);
   }
 
@@ -499,8 +499,8 @@
     padding: clamp(8px, 2cqi, 10px) clamp(12px, 3cqi, 16px);
     border-radius: clamp(8px, 2cqi, 10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--theme-card-bg);
+    color: var(--theme-text);
     font-size: clamp(12px, 3cqi, 14px);
     font-weight: 500;
     cursor: pointer;
@@ -560,7 +560,7 @@
 
   .achievement-info p {
     font-size: clamp(12px, 3cqi, 14px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin: 0 0 clamp(6px, 1.5cqi, 8px);
     line-height: 1.4;
   }

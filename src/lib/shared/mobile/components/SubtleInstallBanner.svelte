@@ -175,7 +175,7 @@
     backdrop-filter: blur(20px) saturate(180%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.3),
+      0 4px 24px var(--theme-shadow),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 
     padding: 14px 20px;
@@ -202,21 +202,21 @@
     border-radius: 10px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent)
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent)
         100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
-    color: var(--theme-accent-strong, #8b5cf6);
-    font-size: 18px;
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
   }
 
   .banner-text {
     flex: 1;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     line-height: 1.4;
     color: rgba(255, 255, 255, 0.95);
@@ -236,37 +236,37 @@
     gap: 6px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 90%, transparent)
         0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 90%, transparent)
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 90%, transparent)
         100%
     );
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     padding: 8px 16px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
   }
 
   .install-btn:hover,
   .learn-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
-    background: var(--theme-accent-strong, #8b5cf6);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+    background: var(--theme-accent-strong, var(--theme-accent-strong));
   }
 
   .install-btn:active,
   .learn-btn:active {
     transform: translateY(0);
     box-shadow: 0 1px 4px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
   }
 
   .install-btn:disabled {
@@ -283,17 +283,17 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .dismiss-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
     color: rgba(255, 255, 255, 0.95);
   }
@@ -325,17 +325,17 @@
       height: var(--min-touch-target);
       min-width: var(--min-touch-target);
       min-height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .banner-text {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .install-btn,
     .learn-btn {
       padding: 7px 14px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       gap: 5px;
       min-height: var(--min-touch-target);
     }
@@ -345,7 +345,7 @@
       height: var(--min-touch-target);
       min-width: var(--min-touch-target);
       min-height: var(--min-touch-target);
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -365,7 +365,7 @@
       height: var(--min-touch-target);
       min-width: var(--min-touch-target);
       min-height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .banner-actions {
@@ -375,7 +375,7 @@
     .install-btn,
     .learn-btn {
       padding: 6px 12px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
     }
 

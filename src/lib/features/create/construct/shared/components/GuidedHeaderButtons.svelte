@@ -98,7 +98,7 @@
     justify-content: center;
     font-size: 0.95rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: visible;
   }
@@ -109,10 +109,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s ease;
     font-size: 0.95rem;
@@ -134,7 +134,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     border: none;
     border-radius: 8px;
     color: white;

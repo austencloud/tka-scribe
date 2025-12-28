@@ -143,7 +143,7 @@ Fixed Questions mode (set number) and Countdown mode (timed challenge).
     left: 4px;
     width: calc(50% - 4px);
     height: calc(100% - 8px);
-    background: var(--theme-accent, #667eea);
+    background: var(--theme-accent);
     border-radius: 12px;
     transform: translateX(calc(var(--slider-position) * 100%));
     transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);

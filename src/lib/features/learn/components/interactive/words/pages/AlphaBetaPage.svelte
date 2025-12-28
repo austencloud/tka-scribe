@@ -160,13 +160,13 @@
   .letter-info {
     font-size: 0.875rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .pattern-highlight {
     padding: 1.25rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     text-align: center;
   }
@@ -185,7 +185,7 @@
     align-items: center;
     gap: 0.375rem;
     padding: 0.75rem 1.25rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 10px;
   }
 
@@ -220,7 +220,7 @@
 
   .pattern-note {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-style: italic;
   }
 

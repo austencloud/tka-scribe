@@ -120,12 +120,11 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.4rem 0.8rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 500;
-    backdrop-filter: blur(8px);
     z-index: 1;
   }
 

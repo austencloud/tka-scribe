@@ -81,17 +81,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .header-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .close-button {
@@ -103,7 +103,7 @@
   }
 
   .copy-button :global(.fa-check) {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .version-badge {
@@ -111,33 +111,33 @@
     padding: 8px 20px;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 20%, transparent),
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 10%, transparent)
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 20%, transparent),
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 10%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 24px;
   }
 
   .version-badge.pre-release {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border-color: var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .badge-text {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 700;
-    color: var(--theme-accent, #a78bfa);
+    color: var(--theme-accent);
   }
 
   .pre-release .badge-text {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 16px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-base);
   }
 
   .release-date {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   @media (max-width: 768px) {
@@ -150,7 +150,7 @@
     }
 
     .badge-text {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 </style>

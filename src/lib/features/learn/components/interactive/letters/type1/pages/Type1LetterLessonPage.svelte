@@ -342,8 +342,8 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 50%;
     color: white;
     cursor: pointer;
@@ -362,7 +362,7 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
 
   .nav-indicator {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     min-width: 60px;
     text-align: center;
   }
@@ -388,12 +388,12 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 8px;
     font-weight: 700;
     font-size: 1.125rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -514,7 +514,6 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
       rgba(34, 211, 238, 0.3) 0%,
       rgba(6, 182, 212, 0.3) 100%
     );
-    backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     color: white;
   }
@@ -531,7 +530,7 @@ Eliminates ~1000 lines of duplicated code across the three letter type pages
 
   .prev-button {
     background: rgba(255, 255, 255, 0.06);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--theme-stroke-strong);
     color: rgba(255, 255, 255, 0.8);
   }
 

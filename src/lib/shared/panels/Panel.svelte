@@ -102,7 +102,7 @@
     min-height: 0;
     overflow: hidden;
     background: var(--panel-bg, #121218);
-    border: 1px solid var(--panel-border, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--panel-border, var(--theme-stroke));
     border-radius: var(--panel-radius, 6px);
   }
 
@@ -124,24 +124,24 @@
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: all 0.15s ease;
   }
 
   .collapse-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .panel-title {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

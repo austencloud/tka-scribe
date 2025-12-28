@@ -123,7 +123,7 @@ Shows count of active options, click to open configuration sheet
     background: radial-gradient(
       ellipse at top left,
       #a78bfa 0%,
-      #8b5cf6 40%,
+      var(--theme-accent-strong) 40%,
       #7c3aed 100%
     );
     border: none;
@@ -151,7 +151,7 @@ Shows count of active options, click to open configuration sheet
     background: radial-gradient(
       ellipse at top left,
       #34d399 0%,
-      #10b981 40%,
+      var(--semantic-success) 40%,
       #059669 100%
     );
     box-shadow:
@@ -177,7 +177,7 @@ Shows count of active options, click to open configuration sheet
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      var(--theme-card-bg) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;
@@ -277,7 +277,7 @@ Shows count of active options, click to open configuration sheet
     right: 12px;
     width: 20px;
     height: 20px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     opacity: 0;
     transition: opacity 0.2s ease;
     z-index: 2;

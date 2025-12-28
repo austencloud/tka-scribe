@@ -39,8 +39,8 @@
    * PANEL BORDERS
    * ============================================================================ */
 
-  --panel-border-subtle: 1px solid rgba(255, 255, 255, 0.1);
-  --panel-border-medium: 1px solid rgba(255, 255, 255, 0.15);
+  --panel-border-subtle: 1px solid var(--theme-stroke);
+  --panel-border-medium: 1px solid var(--theme-stroke-strong);
   --panel-border-accent-blue: 1px solid rgba(59, 130, 246, 0.3);
   --panel-border-accent-purple: 1px solid rgba(139, 92, 246, 0.25);
   --panel-border-glow: 1px solid rgba(139, 92, 246, 0.4);
@@ -84,7 +84,7 @@
    * ============================================================================ */
 
   /* Primary action buttons */
-  --btn-primary-bg: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  --btn-primary-bg: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
   --btn-primary-bg-hover: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   --btn-primary-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
   --btn-primary-shadow-hover: 0 6px 20px rgba(59, 130, 246, 0.4);
@@ -95,8 +95,8 @@
   --btn-secondary-border: 1px solid rgba(255, 255, 255, 0.2);
 
   /* Destructive action buttons */
-  --btn-danger-bg: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  --btn-danger-bg-hover: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  --btn-danger-bg: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
+  --btn-danger-bg-hover: linear-gradient(135deg, var(--semantic-error) 0%, #b91c1c 100%);
   --btn-danger-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
 
   /* Header circular buttons (current style) */
@@ -135,7 +135,7 @@
   --panel-title-color: rgba(255, 255, 255, 0.95);
 
   --panel-subtitle-size: 13px;
-  --panel-subtitle-color: rgba(255, 255, 255, 0.6);
+  --panel-subtitle-color: var(--theme-text-dim);
 
   --section-title-size: 16px;
   --section-title-weight: 600;
@@ -229,7 +229,7 @@
 
 .panel-btn-secondary {
   background: var(--btn-secondary-bg);
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--theme-text);
   border: var(--btn-secondary-border);
 }
 

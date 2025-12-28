@@ -66,7 +66,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--theme-text);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -91,38 +91,38 @@
   .cycling-btn.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent, var(--theme-accent)) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 45%,
+      var(--theme-accent, var(--theme-accent)) 45%,
       transparent
     );
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
   }
 
   .cycling-btn.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 35%,
+      var(--theme-accent) 35%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 55%,
+      var(--theme-accent, var(--theme-accent)) 55%,
       transparent
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
   }
 
   .label {
@@ -146,16 +146,16 @@
   }
 
   .dot.active {
-    background: var(--theme-accent, #6366f1);
+    background: var(--theme-accent, var(--theme-accent));
     opacity: 1;
     box-shadow: 0 0 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent);
   }
 
   /* Focus state */
   .cycling-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 

@@ -41,6 +41,6 @@ WordLetterLabel - Displays the current letter name and description
 
 	.letter-desc {
 		font-size: 0.75rem;
-		color: rgba(255, 255, 255, 0.6);
+		color: var(--theme-text-dim);
 	}
 </style>

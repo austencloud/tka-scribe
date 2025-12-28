@@ -355,8 +355,8 @@
   .audio-track {
     display: flex;
     flex-direction: column;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .audio-header {
@@ -365,8 +365,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 6px 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border-right: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .header-content {
@@ -376,15 +376,15 @@
   }
 
   .header-content i {
-    font-size: 12px;
-    color: var(--theme-accent, #4a9eff);
+    font-size: var(--font-size-compact);
+    color: var(--theme-accent);
     opacity: 0.8;
   }
 
   .track-name {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .header-controls {
@@ -401,17 +401,17 @@
   .bpm-input {
     width: 48px;
     padding: 2px 4px;
-    font-size: 12px;
-    background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    font-size: var(--font-size-compact);
+    background: var(--theme-input-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 4px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     text-align: center;
   }
 
   .bpm-input:focus {
     outline: none;
-    border-color: var(--theme-accent, #4a9eff);
+    border-color: var(--theme-accent);
   }
 
   .icon-btn {
@@ -423,14 +423,14 @@
     background: transparent;
     border: none;
     border-radius: 4px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.15s ease;
   }
 
   .icon-btn:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .icon-btn.danger:hover {
@@ -444,11 +444,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     border-radius: 4px;
     color: white;
     cursor: pointer;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: all 0.15s ease;
   }
 
@@ -491,7 +491,7 @@
     position: absolute;
     top: 2px;
     left: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(139, 92, 246, 0.8);
     user-select: none;
@@ -505,8 +505,8 @@
     justify-content: center;
     gap: 8px;
     background: rgba(0, 0, 0, 0.6);
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.7));
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-muted, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
   }
 
   .empty-state {
@@ -515,17 +515,17 @@
     justify-content: center;
     gap: 8px;
     height: 100%;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.4));
-    font-size: var(--font-size-compact, 12px);
-    border: 2px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
+    border: 2px dashed var(--theme-stroke, var(--theme-stroke));
     margin: 4px;
     border-radius: 4px;
     transition: all 0.2s ease;
   }
 
   .empty-state:hover {
-    border-color: var(--theme-accent, #4a9eff);
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    border-color: var(--theme-accent);
+    color: var(--theme-text-muted, var(--theme-text-dim));
   }
 
   .audio-footer {
@@ -534,12 +534,12 @@
     gap: 8px;
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .file-name {
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -549,7 +549,7 @@
     padding: 1px 6px;
     background: rgba(139, 92, 246, 0.25);
     border-radius: 4px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(167, 139, 250, 0.95);
   }

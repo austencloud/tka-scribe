@@ -9,7 +9,7 @@ Shows current length with +/- stepper controls for quick adjustment
     currentLength,
     onLengthChange,
     // 🎨 ENHANCED: More pronounced blue gradient with radial overlay for 3D depth
-    color = "radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)",
+    color = "radial-gradient(ellipse at top left, var(--semantic-info) 0%, var(--semantic-info) 40%, #1d4ed8 100%)",
     shadowColor = "220deg 80% 55%", // Blue-matched shadow
     gridColumnSpan = 2,
     headerFontSize = "9px",

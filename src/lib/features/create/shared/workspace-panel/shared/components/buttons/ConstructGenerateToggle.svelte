@@ -87,13 +87,13 @@ Design Principles:
     gap: 8px;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 1px solid var(--theme-stroke, rgba(148, 163, 184, 0.3));
+    border: 1px solid var(--theme-stroke);
     border-radius: 50%;
-    background: var(--theme-card-bg, rgba(100, 116, 139, 0.8));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--theme-card-bg);
+    box-shadow: 0 2px 8px var(--theme-shadow);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   /* Wider when showing label */
@@ -105,9 +105,9 @@ Design Principles:
 
   .toggle-button:hover {
     transform: scale(1.05);
-    background: var(--theme-card-hover-bg, rgba(100, 116, 139, 0.9));
-    border-color: var(--theme-stroke-strong, rgba(148, 163, 184, 0.4));
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .toggle-button:active {
@@ -116,21 +116,21 @@ Design Principles:
   }
 
   .toggle-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   /* Icon styling */
   .toggle-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
   }
 
   /* Label text styling */
   .label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     white-space: nowrap;
   }
 
@@ -142,11 +142,11 @@ Design Principles:
     }
 
     .toggle-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .label {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -159,11 +159,11 @@ Design Principles:
     }
 
     .toggle-button i {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -174,11 +174,11 @@ Design Principles:
     }
 
     .toggle-button i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -192,7 +192,7 @@ Design Principles:
     }
 
     .toggle-button i {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

@@ -434,7 +434,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     justify-content: space-between;
     padding: 12px 16px;
     background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -445,7 +445,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
   }
 
   .header-left i {
-    color: #f59e0b;
+    color: var(--semantic-warning);
     font-size: 1.1rem;
   }
 
@@ -466,7 +466,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
   }
 
   .admin-badge {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--semantic-warning), #d97706);
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 0.7rem;
@@ -482,7 +482,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -534,7 +534,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     gap: 12px;
     padding: 16px;
     background: rgba(0, 0, 0, 0.3);
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid var(--theme-stroke);
     overflow-y: auto;
   }
 
@@ -549,7 +549,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     margin: 0 0 10px 0;
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -591,21 +591,21 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
 
   .info-item .label {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .info-item .value {
     font-size: 0.8rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .info-item .value.blue {
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .info-item .value.red {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .info-item .value.mono {
@@ -635,12 +635,12 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
   .increment-value {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .increment-hint {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -662,9 +662,9 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
   .copy-btn {
     padding: 4px 8px;
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke-strong);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     font-size: 0.7rem;
     transition: all 0.15s ease;
@@ -692,7 +692,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
 
   .key-item .label {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
   }
 
@@ -715,11 +715,11 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
   }
 
   .key-item.blue code {
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .key-item.red code {
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   /* Keyboard Section */
@@ -738,7 +738,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     align-items: center;
     gap: 8px;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .keys {
@@ -750,7 +750,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     padding: 3px 6px;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     font-family: monospace;
     font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.8);
@@ -769,7 +769,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
 
     .controls-panel {
       border-left: none;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid var(--theme-stroke);
       max-height: 50vh;
     }
   }

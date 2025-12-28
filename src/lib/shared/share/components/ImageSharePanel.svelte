@@ -410,18 +410,18 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
   }
 
   .preview-empty i,
   .preview-error i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
   .preview-error {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
   .preview-error button {
     margin-top: 4px;
@@ -429,16 +429,16 @@
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.4);
     border-radius: 6px;
-    color: #ef4444;
-    font-size: 12px;
+    color: var(--semantic-error);
+    font-size: var(--font-size-compact);
     cursor: pointer;
   }
 
   .spinner {
     width: 24px;
     height: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #3b82f6;
+    border: 2px solid var(--theme-stroke);
+    border-top-color: var(--semantic-info);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -459,10 +459,10 @@
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 10px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     cursor: pointer;
     opacity: 0.6;
     transition: all 0.2s;
@@ -510,8 +510,8 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -519,12 +519,12 @@
 
   .mode-btn:hover:not(:disabled) {
     color: rgba(255, 255, 255, 0.8);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   .mode-btn.selected {
     background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .mode-btn:disabled {
@@ -552,29 +552,29 @@
     gap: 6px;
     padding: 14px 18px;
     min-height: var(--min-touch-target);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s;
   }
 
   .chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .chip:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .chip.active {
     background: rgba(59, 130, 246, 0.2);
     border-color: rgba(59, 130, 246, 0.5);
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .chip:disabled {
@@ -608,7 +608,7 @@
     gap: 4px;
     padding: 14px 12px;
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
@@ -616,7 +616,7 @@
   }
 
   .action-btn i {
-    font-size: 22px;
+    font-size: var(--font-size-xl);
     transition: transform 0.2s ease;
   }
 
@@ -630,7 +630,7 @@
   .btn-hint {
     font-size: 0.65rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     letter-spacing: 0.2px;
   }
 
@@ -645,7 +645,7 @@
     box-shadow:
       0 2px 8px rgba(59, 130, 246, 0.12),
       0 0 16px rgba(59, 130, 246, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   .download-btn i {
@@ -663,7 +663,7 @@
     box-shadow:
       0 2px 8px rgba(236, 72, 153, 0.12),
       0 0 16px rgba(236, 72, 153, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   .share-btn i {
@@ -681,7 +681,7 @@
     box-shadow:
       0 2px 8px rgba(16, 185, 129, 0.12),
       0 0 16px rgba(16, 185, 129, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   .link-btn i {
@@ -700,7 +700,7 @@
     box-shadow:
       0 2px 8px rgba(193, 53, 132, 0.12),
       0 0 16px rgba(193, 53, 132, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   .instagram-btn i {
@@ -720,7 +720,7 @@
       box-shadow:
         0 4px 16px rgba(59, 130, 246, 0.2),
         0 0 24px rgba(59, 130, 246, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--theme-stroke);
     }
 
     .share-btn:hover:not(:disabled) {
@@ -734,7 +734,7 @@
       box-shadow:
         0 4px 16px rgba(236, 72, 153, 0.2),
         0 0 24px rgba(236, 72, 153, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--theme-stroke);
     }
 
     .link-btn:hover:not(:disabled) {
@@ -748,7 +748,7 @@
       box-shadow:
         0 4px 16px rgba(16, 185, 129, 0.2),
         0 0 24px rgba(16, 185, 129, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--theme-stroke);
     }
 
     .instagram-btn:hover:not(:disabled) {
@@ -763,7 +763,7 @@
       box-shadow:
         0 4px 16px rgba(193, 53, 132, 0.2),
         0 0 24px rgba(193, 53, 132, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 var(--theme-stroke);
     }
 
     .action-btn:hover i {

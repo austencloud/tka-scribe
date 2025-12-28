@@ -276,21 +276,21 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: var(--theme-panel-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 1rem;
     cursor: pointer;
     z-index: 20;
     transition: all 0.2s;
-    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.15));
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .grid-settings-btn:hover {
-    background: var(--theme-card-hover-bg, #2d2d3a);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text, var(--theme-text));
     transform: scale(1.05);
   }
 
@@ -321,7 +321,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 70%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 70%, transparent);
     z-index: 30;
   }
 
@@ -330,7 +330,7 @@
     font-weight: bold;
     color: var(--theme-text, white);
     text-shadow: 0 0 40px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 80%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 80%, transparent);
     animation: pulse 1s ease-in-out infinite;
   }
 
@@ -361,8 +361,8 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: var(--theme-panel-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     padding: 0.5rem 0.75rem;
     border-radius: 8px;
     font-weight: 600;
@@ -376,18 +376,18 @@
 
   .combo-value {
     font-size: 1.125rem;
-    color: var(--semantic-warning, #fbbf24);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .combo-label {
     font-size: 0.625rem;
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .score-value {
     font-size: 1.25rem;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .hit-indicator {
@@ -401,7 +401,7 @@
   .hit-indicator.hit {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 90%,
+      var(--semantic-success, var(--semantic-success)) 90%,
       transparent
     );
     color: var(--theme-text, white);
@@ -410,7 +410,7 @@
   .hit-indicator.miss {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 90%,
+      var(--semantic-error, var(--semantic-error)) 90%,
       transparent
     );
     color: var(--theme-text, white);

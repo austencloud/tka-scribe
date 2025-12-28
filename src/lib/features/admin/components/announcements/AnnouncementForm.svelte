@@ -88,19 +88,19 @@
       value: "info",
       label: "Info",
       icon: "fa-info-circle",
-      color: "var(--theme-accent, #6366f1)",
+      color: "var(--theme-accent)",
     },
     {
       value: "warning",
       label: "Warning",
       icon: "fa-exclamation-triangle",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
     },
     {
       value: "critical",
       label: "Critical",
       icon: "fa-exclamation-circle",
-      color: "#ef4444",
+      color: "var(--semantic-error)",
     },
   ];
 
@@ -416,11 +416,11 @@
     margin-bottom: 32px;
     padding-bottom: 20px;
     border-bottom: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
   }
 
   .form-header h2 {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     color: #ffffff;
     margin: 0;
@@ -437,9 +437,9 @@
       --theme-card-bg,
       linear-gradient(135deg, #2d2d3a 0%, #1f1f28 100%)
     );
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -449,9 +449,9 @@
       --theme-card-hover-bg,
       linear-gradient(135deg, #3d3d4a 0%, #2f2f38 100%)
     );
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     transform: scale(1.05);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    border-color: var(--theme-stroke-strong);
   }
 
   /* ============================================================================
@@ -462,11 +462,11 @@
     align-items: center;
     gap: 12px;
     padding: 16px 20px;
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    border: 2px solid #ef4444;
+    background: linear-gradient(135deg, var(--semantic-error) 0%, #b91c1c 100%);
+    border: 2px solid var(--semantic-error);
     border-radius: 12px;
     color: #ffffff;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     margin-bottom: 24px;
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
@@ -481,7 +481,7 @@
 
   .section-label {
     display: block;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: #ffffff;
     margin-bottom: 12px;
@@ -489,9 +489,9 @@
   }
 
   .optional {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .text-input {
@@ -500,25 +500,25 @@
     min-height: var(--min-touch-target);
     background: linear-gradient(135deg, #1a1a24 0%, #16161e 100%);
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
     border-radius: 12px;
     color: #ffffff;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-family: inherit;
     transition: all 0.2s ease;
     resize: vertical;
   }
 
   .text-input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .text-input:focus {
     outline: none;
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     background: linear-gradient(135deg, #20202e 0%, #1c1c28 100%);
     box-shadow: 0 0 0 4px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent);
   }
 
   textarea.text-input {
@@ -530,15 +530,15 @@
   .help-text {
     display: block;
     margin-top: 8px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 500;
   }
 
   .indented {
     margin-left: 20px;
     padding-left: 20px;
-    border-left: 3px solid var(--theme-accent, #6366f1);
+    border-left: 3px solid var(--theme-accent, var(--theme-accent));
   }
 
   /* ============================================================================
@@ -561,21 +561,21 @@
       --theme-card-bg,
       linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
     );
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
-    font-size: 14px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .selection-chip i:not(.chip-check),
   .toggle-chip i:not(.chip-check) {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     opacity: 0.9;
   }
 
@@ -585,8 +585,8 @@
       --theme-card-hover-bg,
       linear-gradient(135deg, #3d3d4a 0%, #35353f 100%)
     );
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-    color: var(--theme-text, #ffffff);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
@@ -594,32 +594,32 @@
   .selection-chip.active {
     background: linear-gradient(
       135deg,
-      var(--chip-color, #6366f1) 0%,
-      color-mix(in srgb, var(--chip-color, #6366f1) 80%, black) 100%
+      var(--chip-color, var(--theme-accent)) 0%,
+      color-mix(in srgb, var(--chip-color, var(--theme-accent)) 80%, black) 100%
     );
-    border-color: var(--chip-color, #6366f1);
+    border-color: var(--chip-color, var(--theme-accent));
     color: #ffffff;
     box-shadow:
-      0 0 24px color-mix(in srgb, var(--chip-color, #6366f1) 40%, transparent),
+      0 0 24px color-mix(in srgb, var(--chip-color, var(--theme-accent)) 40%, transparent),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .toggle-chip.active {
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, black) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, black) 100%
     );
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
+    border-color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white);
     color: #ffffff;
     box-shadow:
-      0 0 24px color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent),
+      0 0 24px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .chip-check {
     margin-left: auto;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     animation: checkPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -646,7 +646,7 @@
     margin-top: 40px;
     padding-top: 24px;
     border-top: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
   }
 
   .cancel-button,
@@ -659,7 +659,7 @@
     padding: 16px 28px;
     min-height: var(--min-touch-target);
     border-radius: 12px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -671,9 +671,9 @@
       --theme-card-bg,
       linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
     );
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .cancel-button:hover {
@@ -681,8 +681,8 @@
       --theme-card-hover-bg,
       linear-gradient(135deg, #3d3d4a 0%, #35353f 100%)
     );
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-    color: var(--theme-text, #ffffff);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
@@ -690,26 +690,26 @@
   .save-button {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
-      var(--theme-accent, #6366f1) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white) 0%,
+      var(--theme-accent, var(--theme-accent)) 100%
     );
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 140%, white);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 140%, white);
     color: #ffffff;
     box-shadow:
-      0 0 20px color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent),
+      0 0 20px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent),
       0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   .save-button:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 130%, white) 0%,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 110%, white) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 130%, white) 0%,
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 110%, white) 100%
     );
     transform: translateY(-2px);
     box-shadow:
-      0 0 30px color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent),
+      0 0 30px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 50%, transparent),
       0 6px 20px rgba(0, 0, 0, 0.5);
   }
 
@@ -728,7 +728,7 @@
      ============================================================================ */
   @media (max-width: 640px) {
     .form-header h2 {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .form-section {
@@ -742,7 +742,7 @@
     .selection-chip,
     .toggle-chip {
       padding: 12px 16px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       min-height: var(--min-touch-target);
     }
 

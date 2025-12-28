@@ -98,7 +98,7 @@
     padding: 12px 16px;
     background: transparent;
     border: none;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--theme-stroke);
     text-align: left;
     cursor: pointer;
     transition:
@@ -107,7 +107,7 @@
   }
 
   .conversation-item:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    background: var(--theme-card-bg);
   }
 
   .conversation-item:active {
@@ -116,7 +116,7 @@
 
   .conversation-item:focus-visible {
     outline: none;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-hover-bg);
     box-shadow: inset 0 0 0 2px
       color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
@@ -132,7 +132,7 @@
     top: 8px;
     bottom: 8px;
     width: 3px;
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     border-radius: 0 2px 2px 0;
     animation: accentPulse 2s ease-in-out infinite;
   }
@@ -164,8 +164,8 @@
     right: 2px;
     width: 10px;
     height: 10px;
-    background: var(--theme-accent, #3b82f6);
-    border: 2px solid var(--theme-panel-bg, #1a1a1a);
+    background: var(--theme-accent, var(--semantic-info));
+    border: 2px solid var(--theme-panel-bg);
     border-radius: 50%;
     z-index: 1;
   }
@@ -185,9 +185,9 @@
   }
 
   .name {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -199,19 +199,19 @@
 
   .time {
     flex-shrink: 0;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .unread .time {
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
     font-weight: 500;
   }
 
   .preview {
     margin: 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -223,7 +223,7 @@
   }
 
   .unread .preview {
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     font-weight: 500;
   }
 
@@ -233,14 +233,14 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     border-radius: 11px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     line-height: 22px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px var(--theme-shadow);
   }
 
   /* Reduced motion */

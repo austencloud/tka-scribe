@@ -19,7 +19,7 @@
     label,
     value,
     icon,
-    color = "#3b82f6",
+    color = "var(--semantic-info)",
     change,
     changeLabel,
     trend,
@@ -49,10 +49,10 @@
   .admin-stat-card {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.05),
+      var(--theme-card-bg),
       rgba(255, 255, 255, 0.02)
     );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -63,7 +63,7 @@
 
   .admin-stat-card:hover {
     border-color: var(--accent-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
     transform: translateY(-2px);
   }
 
@@ -75,9 +75,9 @@
     align-items: center;
     justify-content: center;
     color: var(--accent-color);
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   .stat-content {
@@ -87,32 +87,32 @@
   }
 
   .stat-value {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .stat-label {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   .stat-change {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     display: flex;
     align-items: center;
     gap: 4px;
   }
 
   .stat-change.trend-up {
-    color: #10b981;
+    color: var(--semantic-success);
   }
 
   .stat-change.trend-down {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .stat-change.trend-neutral {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 </style>

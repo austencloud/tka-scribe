@@ -261,18 +261,18 @@
     top: 6px;
     bottom: 6px;
     min-width: 20px;
-    background: var(--clip-color, var(--theme-accent, #4a9eff));
+    background: var(--clip-color, var(--theme-accent));
     border-radius: 6px;
     cursor: grab;
     display: flex;
     overflow: hidden;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px var(--theme-shadow);
     user-select: none;
     border: 1px solid
       color-mix(
         in srgb,
-        var(--clip-color, var(--theme-accent, #4a9eff)) 70%,
+        var(--clip-color, var(--theme-accent)) 70%,
         white
       );
   }
@@ -306,7 +306,7 @@
     cursor: grabbing;
     box-shadow:
       0 8px 24px rgba(0, 0, 0, 0.6),
-      0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 40%, transparent);
+      0 0 16px color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .timeline-clip.changing-track {
@@ -327,7 +327,7 @@
   }
 
   .timeline-clip.resizing {
-    outline: 2px solid var(--semantic-success, #51cf66);
+    outline: 2px solid var(--semantic-success);
     outline-offset: -2px;
     box-shadow:
       0 4px 12px rgba(0, 0, 0, 0.4),
@@ -410,7 +410,7 @@
   }
 
   .clip-name {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     color: white;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
@@ -426,7 +426,7 @@
   }
 
   .badge {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     padding: 2px 5px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.5);
@@ -439,31 +439,31 @@
   .badge.speed {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #51cf66) 25%,
+      var(--semantic-success) 25%,
       transparent
     );
-    color: var(--semantic-success, #51cf66);
-    border-color: var(--semantic-success, #51cf66);
+    color: var(--semantic-success);
+    border-color: var(--semantic-success);
   }
 
   .badge.trim {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #ffd43b) 25%,
+      var(--semantic-warning) 25%,
       transparent
     );
-    color: var(--semantic-warning, #ffd43b);
-    border-color: var(--semantic-warning, #ffd43b);
+    color: var(--semantic-warning);
+    border-color: var(--semantic-warning);
   }
 
   .badge.loop {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #4a9eff) 25%,
+      var(--semantic-info) 25%,
       transparent
     );
-    color: var(--semantic-info, #4a9eff);
-    border-color: var(--semantic-info, #4a9eff);
+    color: var(--semantic-info);
+    border-color: var(--semantic-info);
   }
 
   .trim-handle {

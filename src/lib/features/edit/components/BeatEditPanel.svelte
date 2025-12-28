@@ -322,12 +322,12 @@
     justify-content: center;
     height: 100%;
     gap: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .no-selection i,
   .multi-select-info i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
@@ -340,10 +340,10 @@
   .panel-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0;
     padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .prop-section {
@@ -353,11 +353,11 @@
   }
 
   .prop-section.blue {
-    border-left: 3px solid #3b82f6;
+    border-left: 3px solid var(--semantic-info);
   }
 
   .prop-section.red {
-    border-left: 3px solid #ef4444;
+    border-left: 3px solid var(--semantic-error);
   }
 
   .section-title {
@@ -377,11 +377,11 @@
   }
 
   .color-indicator.blue {
-    background: #3b82f6;
+    background: var(--semantic-info);
   }
 
   .color-indicator.red {
-    background: #ef4444;
+    background: var(--semantic-error);
   }
 
   .control-group {
@@ -398,7 +398,7 @@
   .control-label {
     font-size: 0.8rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .turns-control {
@@ -416,7 +416,7 @@
     height: var(--min-touch-target);
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -435,7 +435,7 @@
   .turns-value {
     font-size: 1.25rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     min-width: var(--min-touch-target);
     text-align: center;
   }
@@ -452,9 +452,9 @@
     justify-content: center;
     padding: 10px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }

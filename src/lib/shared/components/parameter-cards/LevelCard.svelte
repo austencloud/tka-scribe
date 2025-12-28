@@ -59,7 +59,7 @@ Uses shared StepperCard for consistent styling with Generate module
   const currentConfig = $derived(value ? DIFFICULTY_LEVELS[value] : null);
   const color = $derived(
     currentConfig?.gradient ??
-      "radial-gradient(ellipse at top left, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)"
+      "radial-gradient(ellipse at top left, var(--semantic-info) 0%, var(--semantic-info) 40%, #1d4ed8 100%)"
   );
   const shadowColor = $derived(currentConfig?.shadowColor ?? "220deg 80% 55%");
   const textColor = $derived(currentConfig?.textColor ?? "white");
@@ -108,7 +108,7 @@ Uses shared StepperCard for consistent styling with Generate module
 
   .disabled-text {
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
   }
 </style>

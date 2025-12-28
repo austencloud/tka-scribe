@@ -16,7 +16,7 @@
   > = {
     info: {
       icon: "fa-info-circle",
-      color: "#60a5fa",
+      color: "var(--semantic-info)",
       bg: "rgba(59, 130, 246, 0.15)",
     },
     success: {
@@ -26,12 +26,12 @@
     },
     warning: {
       icon: "fa-exclamation-triangle",
-      color: "#fbbf24",
+      color: "var(--semantic-warning)",
       bg: "rgba(245, 158, 11, 0.15)",
     },
     error: {
       icon: "fa-times-circle",
-      color: "#f87171",
+      color: "var(--semantic-error)",
       bg: "rgba(239, 68, 68, 0.15)",
     },
   };
@@ -89,8 +89,7 @@
     background: var(--toast-bg);
     border: 1px solid var(--toast-color);
     border-radius: 10px;
-    box-shadow: 0 4px 20px var(--theme-shadow, rgba(0, 0, 0, 0.3));
-    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px var(--theme-shadow, var(--theme-shadow));
     animation: slideIn 0.25s ease-out;
     pointer-events: auto;
   }
@@ -107,14 +106,14 @@
   }
 
   .toast-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     color: var(--toast-color);
     flex-shrink: 0;
   }
 
   .toast-message {
     flex: 1;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
     line-height: 1.4;
@@ -129,14 +128,14 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.15s;
     flex-shrink: 0;
   }
 
   .toast-close:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
@@ -154,7 +153,7 @@
     }
 
     .toast-message {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

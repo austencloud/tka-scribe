@@ -252,7 +252,7 @@
     padding: 16px 20px;
     flex: 1;
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
@@ -266,11 +266,11 @@
     box-shadow:
       0 2px 10px rgba(6, 182, 212, 0.15),
       0 0 20px rgba(6, 182, 212, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .save-btn .main-icon {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     color: rgba(6, 182, 212, 1);
     transition: transform 0.2s ease;
   }
@@ -285,7 +285,7 @@
   .btn-hint {
     font-size: 0.65rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     letter-spacing: 0.2px;
   }
 
@@ -297,10 +297,10 @@
     width: var(--min-touch-target);
     flex-shrink: 0;
     border-radius: 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 18px;
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-lg);
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
@@ -323,7 +323,7 @@
       box-shadow:
         0 4px 16px rgba(6, 182, 212, 0.25),
         0 0 28px rgba(6, 182, 212, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
 
     .save-btn:hover .main-icon {
@@ -331,9 +331,9 @@
     }
 
     .settings-btn:hover:not(:disabled) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-      color: var(--theme-text, rgba(255, 255, 255, 0.8));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
 
     .settings-btn.has-settings:hover:not(:disabled) {
@@ -366,7 +366,7 @@
     box-shadow:
       0 2px 10px rgba(239, 68, 68, 0.15),
       0 0 20px rgba(239, 68, 68, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .save-btn.cancelling .main-icon {
@@ -385,7 +385,7 @@
       box-shadow:
         0 4px 16px rgba(239, 68, 68, 0.25),
         0 0 28px rgba(239, 68, 68, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
@@ -399,7 +399,7 @@
     box-shadow:
       0 2px 14px rgba(34, 197, 94, 0.25),
       0 0 24px rgba(34, 197, 94, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      inset 0 1px 0 var(--theme-card-hover-bg);
   }
 
   .save-btn.complete .main-icon {
@@ -412,7 +412,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border-radius: 0 0 14px 14px;
     overflow: hidden;
   }
@@ -443,7 +443,7 @@
     padding: 20px;
     padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     max-height: 70vh;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.85));
+    background: var(--theme-panel-elevated-bg);
   }
 
   .sheet-header {
@@ -451,14 +451,14 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 20px;
   }
 
   .sheet-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
@@ -469,17 +469,17 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .sheet-close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .sheet-body {
@@ -492,7 +492,7 @@
 
   .sheet-footer {
     padding-top: 20px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
     margin-top: 20px;
   }
 
@@ -540,13 +540,13 @@
   }
 
   .section-icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     color: rgba(6, 182, 212, 0.9);
     margin-top: 2px;
   }
 
   .section-icon.muted {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
   }
 
   .section-info {
@@ -556,18 +556,18 @@
   .section-title {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     margin: 0 0 4px 0;
   }
 
   .section-title.muted {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     opacity: 0.6;
   }
 
   .section-desc {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
@@ -582,10 +582,10 @@
     flex: 1;
     min-height: 44px;
     padding: 10px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -595,9 +595,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .loop-preset-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
-      color: var(--theme-text, rgba(255, 255, 255, 0.95));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
   }
 
@@ -626,7 +626,7 @@
     }
 
     .save-btn .main-icon {
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
 
     .btn-label {
@@ -639,7 +639,7 @@
 
     .settings-btn {
       width: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .loop-presets {

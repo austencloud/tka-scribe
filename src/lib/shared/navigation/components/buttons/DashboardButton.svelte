@@ -127,13 +127,13 @@
     border-radius: 50%;
     border: none;
     background: transparent;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     position: relative;
     padding: 0;
   }
@@ -148,7 +148,7 @@
 
   .dashboard-button:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 70%, transparent);
+      color-mix(in srgb, var(--theme-accent) 70%, transparent);
     outline-offset: 2px;
   }
 
@@ -168,16 +168,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke);
+    border: 2px solid var(--theme-stroke-strong);
     flex-shrink: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     position: relative;
     transition: all 0.2s ease;
   }
 
   .dashboard-button:hover .profile-icon-wrapper {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border-color: var(--theme-stroke-strong);
   }
 
   /* Profile avatar image */
@@ -204,10 +204,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: var(--theme-text);
+    background: linear-gradient(135deg, var(--semantic-success) 0%, #059669 100%);
   }
 
   /* ============================================================================

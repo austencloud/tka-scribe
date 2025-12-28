@@ -276,7 +276,7 @@ Shows:
 
   .completion-celebration p {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     margin: 0 0 1.5rem;
   }
 
@@ -308,10 +308,10 @@ Shows:
     gap: 0.5rem;
     padding: 0.875rem 1.5rem;
     min-height: var(--min-touch-target);
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -322,8 +322,8 @@ Shows:
   }
 
   .view-all-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .view-all-toggle i {
@@ -337,7 +337,7 @@ Shows:
     flex-direction: column;
     gap: 2rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   /* Bento-style category container using theme system */
@@ -346,8 +346,8 @@ Shows:
     flex-direction: column;
     gap: 1rem;
     padding: 1.25rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     position: relative;
     overflow: hidden;

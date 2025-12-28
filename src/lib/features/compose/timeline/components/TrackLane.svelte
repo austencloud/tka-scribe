@@ -151,14 +151,14 @@
 <style>
   .track-lane {
     position: relative;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     transition: height 0.2s ease, opacity 0.2s ease, background 0.2s ease;
   }
 
   /* Alternating track colors for visual distinction */
   .track-lane:nth-child(odd) {
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    background: var(--theme-card-bg);
   }
 
   .track-lane.dimmed {
@@ -172,20 +172,20 @@
   /* Empty track - collapsed but still a valid drop target */
   .track-lane.empty {
     border-style: dashed;
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 50%, transparent);
+    border-color: var(--theme-stroke-strong);
+    background: color-mix(in srgb, var(--theme-panel-bg) 50%, transparent);
   }
 
   .track-lane.empty:hover {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 8%, transparent);
-    border-color: var(--theme-accent, #4a9eff);
+    background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+    border-color: var(--theme-accent);
   }
 
   /* Drag over state - show drop target highlight */
   .track-lane.drag-over {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent) !important;
-    border-color: var(--theme-accent, #4a9eff);
-    box-shadow: inset 0 0 20px color-mix(in srgb, var(--theme-accent, #4a9eff) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent) !important;
+    border-color: var(--theme-accent);
+    box-shadow: inset 0 0 20px color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
 
   .grid-lines {
@@ -197,8 +197,8 @@
       90deg,
       transparent 0,
       transparent calc(100% - 1px),
-      var(--theme-stroke, rgba(255, 255, 255, 0.08)) calc(100% - 1px),
-      var(--theme-stroke, rgba(255, 255, 255, 0.08)) 100%
+      var(--theme-stroke, var(--theme-card-bg)) calc(100% - 1px),
+      var(--theme-stroke, var(--theme-card-bg)) 100%
     );
     background-size: 50px 100%; /* Adjusts with zoom via parent */
   }
@@ -209,11 +209,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-panel-bg, rgba(0, 0, 0, 0.6)) 70%, transparent);
-    backdrop-filter: blur(4px);
+    background: color-mix(in srgb, var(--theme-panel-bg) 70%, transparent);
     -webkit-backdrop-filter: blur(4px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
-    font-size: 24px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-2xl);
     pointer-events: none;
   }
 </style>

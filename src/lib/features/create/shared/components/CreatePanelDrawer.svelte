@@ -235,7 +235,7 @@
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     box-shadow:
       0 -8px 32px rgba(0, 0, 0, 0.5),
-      0 -2px 8px rgba(0, 0, 0, 0.3),
+      0 -2px 8px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.12);
     /* Ensure panel appears above navigation (z-index: 100) */
     z-index: 150 !important;

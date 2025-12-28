@@ -129,7 +129,7 @@
     gap: 8px;
     flex-wrap: wrap;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .filter-chip {
@@ -139,33 +139,33 @@
     padding: 6px 12px;
     background: linear-gradient(
       135deg,
-      var(--theme-card-bg, rgba(30, 30, 40, 0.95)) 0%,
-      var(--theme-card-hover-bg, rgba(35, 35, 45, 0.95)) 100%
+      var(--theme-card-bg) 0%,
+      var(--theme-card-hover-bg) 100%
     );
-    border: 1.5px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 1.5px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .filter-chip:hover {
     background: linear-gradient(
       135deg,
-      var(--theme-card-hover-bg, rgba(40, 40, 50, 0.98)) 0%,
+      var(--theme-card-hover-bg) 0%,
       color-mix(
           in srgb,
-          var(--theme-card-hover-bg, rgba(40, 40, 50, 0.98)) 90%,
+          var(--theme-card-hover-bg) 90%,
           white
         )
         100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-text, rgba(255, 255, 255, 0.95)) 30%,
+      var(--theme-text) 30%,
       transparent
     );
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -175,16 +175,16 @@
   .filter-chip.active {
     background: linear-gradient(
       135deg,
-      var(--status-color, #3b82f6) 0%,
-      color-mix(in srgb, var(--status-color, #3b82f6) 80%, black) 100%
+      var(--status-color, var(--semantic-info)) 0%,
+      color-mix(in srgb, var(--status-color, var(--semantic-info)) 80%, black) 100%
     );
     border: 1.5px solid
-      color-mix(in srgb, var(--status-color, #3b82f6) 120%, white);
+      color-mix(in srgb, var(--status-color, var(--semantic-info)) 120%, white);
     color: #ffffff;
     box-shadow:
-      0 6px 16px color-mix(in srgb, var(--status-color, #3b82f6) 40%, black),
+      0 6px 16px color-mix(in srgb, var(--status-color, var(--semantic-info)) 40%, black),
       0 0 0 1px
-        color-mix(in srgb, var(--status-color, #3b82f6) 50%, transparent);
+        color-mix(in srgb, var(--status-color, var(--semantic-info)) 50%, transparent);
     transform: translateY(-2px);
   }
 
@@ -212,7 +212,7 @@
     padding: 8px 0;
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -224,7 +224,7 @@
   .section-header .count {
     margin-left: auto;
     padding: 2px 8px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 10px;
     font-size: 0.75rem;
   }
@@ -243,7 +243,7 @@
     justify-content: center;
     gap: 8px;
     padding: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
   }
 
@@ -257,14 +257,14 @@
     padding: 32px;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     text-align: center;
   }
 
   .empty-filter i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
@@ -278,12 +278,12 @@
   }
 
   .feedback-list::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 3px;
   }
 
   .feedback-list::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
   }
 
   /* Container query for responsive layout */

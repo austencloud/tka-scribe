@@ -156,8 +156,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 10px;
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9375rem;
@@ -197,7 +197,7 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.625rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: 2px solid transparent;
     border-radius: 10px;
     transition: all 0.2s ease;
@@ -211,7 +211,7 @@
 
   .beat-num {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .beat-letter {
@@ -222,7 +222,7 @@
 
   .beat-desc {
     font-size: 0.6875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   @media (max-width: 600px) {

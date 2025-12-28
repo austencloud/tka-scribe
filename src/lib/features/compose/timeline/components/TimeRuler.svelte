@@ -80,7 +80,7 @@
   .time-ruler {
     position: relative;
     height: 100%;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+    background: var(--theme-panel-elevated-bg);
   }
 
   .tick {
@@ -94,7 +94,7 @@
 
   .tick-line {
     width: 1px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-stroke, var(--theme-card-bg));
   }
 
   .tick:not(.major) .tick-line {
@@ -105,14 +105,14 @@
   .tick.major .tick-line {
     height: 14px;
     margin-top: auto;
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+    background: var(--theme-stroke-strong);
   }
 
   .tick-label {
     position: absolute;
     top: 6px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     white-space: nowrap;
     transform: translateX(-50%);
     font-variant-numeric: tabular-nums;

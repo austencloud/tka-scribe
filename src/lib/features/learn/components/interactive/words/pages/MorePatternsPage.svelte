@@ -159,7 +159,7 @@
   .example-note {
     font-size: 0.875rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .summary-box {

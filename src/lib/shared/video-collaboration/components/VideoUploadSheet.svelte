@@ -10,6 +10,7 @@
     loadFeatureModule,
   } from "$lib/shared/inversify/container";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { toast } from "$lib/shared/toast/state/toast-state.svelte";
   import type { IFirebaseVideoUploader } from "$lib/shared/share/services/contracts/IFirebaseVideoUploader";
   import type { ICollaborativeVideoManager } from "../services/contracts/ICollaborativeVideoManager";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
@@ -221,6 +222,7 @@
     } catch (e) {
       console.error("Upload failed:", e);
       uploadError = e instanceof Error ? e.message : "Upload failed";
+      toast.error("Video upload failed. Please try again.");
       hapticService?.trigger("error");
     } finally {
       isUploading = false;
@@ -449,7 +451,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.03);
   }
 
@@ -461,7 +463,7 @@
 
   .header-icon {
     font-size: 1.25rem;
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .upload-sheet__header h2 {
@@ -478,7 +480,7 @@
     width: 44px;
     height: 44px;
     border: none;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
@@ -528,7 +530,7 @@
     gap: 0.75rem;
     padding: 3rem 2rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border: 2px dashed var(--theme-stroke-strong);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -541,7 +543,7 @@
 
   .file-drop-zone i {
     font-size: 2.5rem;
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .drop-text {
@@ -642,8 +644,8 @@
     justify-content: center;
     gap: 0.375rem;
     padding: 0.625rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--text-secondary);
     font-size: 0.8rem;
@@ -659,13 +661,13 @@
   .visibility-btn.active {
     background: rgba(59, 130, 246, 0.15);
     border-color: rgba(59, 130, 246, 0.5);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .option-group textarea {
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--text-primary);
     font-size: 0.9rem;
@@ -677,7 +679,7 @@
   .option-group textarea:focus {
     outline: none;
     border-color: rgba(59, 130, 246, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .char-count {
@@ -701,7 +703,7 @@
 
   .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(90deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
     border-radius: 4px;
     transition: width 0.3s ease;
   }
@@ -720,7 +722,7 @@
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
     border-radius: 8px;
-    color: #ef4444;
+    color: var(--semantic-error);
     font-size: 0.9rem;
   }
 
@@ -728,7 +730,7 @@
     display: flex;
     gap: 0.75rem;
     padding: 1rem 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.03);
   }
 
@@ -748,7 +750,7 @@
   }
 
   .btn-secondary {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     color: var(--text-primary);
   }
 
@@ -757,7 +759,7 @@
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
   }
 

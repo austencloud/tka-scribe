@@ -66,8 +66,8 @@
     align-items: center;
     gap: 20px;
     padding: 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     margin-bottom: 24px;
   }
@@ -86,17 +86,17 @@
     align-items: center;
     gap: 4px;
     padding: 6px 12px;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
     border: 2px solid rgba(0, 0, 0, 0.2);
     border-radius: 20px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 700;
     color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .level-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .user-info {
@@ -109,7 +109,7 @@
 
   .display-name {
     margin: 0;
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     color: var(--theme-text, white);
     text-align: center;
@@ -117,15 +117,15 @@
 
   .username {
     margin: 0;
-    font-size: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-base);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .bio {
     margin: 8px 0 0 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-align: center;
     max-width: 400px;
   }
@@ -133,11 +133,11 @@
   .follow-button {
     margin-top: 16px;
     padding: 12px 32px;
-    background: var(--theme-accent, #a855f7);
-    border: 1px solid var(--theme-accent, #a855f7);
+    background: var(--theme-accent);
+    border: 1px solid var(--theme-accent);
     border-radius: 8px;
     color: white;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -147,18 +147,18 @@
     filter: brightness(0.9);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #a855f7) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent) 40%, transparent);
   }
 
   .follow-button.following {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .follow-button.following:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     filter: none;
   }
 
@@ -182,7 +182,7 @@
     }
 
     .display-name {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
   }
 

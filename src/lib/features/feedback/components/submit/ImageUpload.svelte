@@ -194,10 +194,10 @@
     height: 32px;
     min-height: var(--min-touch-target, 44px); /* WCAG AAA touch target */
     padding: 0 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
@@ -207,25 +207,25 @@
   }
 
   .upload-button:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(
       in srgb,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.25)) 150%,
+      var(--theme-stroke-strong) 150%,
       transparent
     );
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .upload-button.dragging {
-    border-color: var(--theme-accent-strong, #6366f1);
+    border-color: var(--theme-accent-strong, var(--theme-accent));
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #6366f1) 15%,
+      var(--theme-accent-strong, var(--theme-accent)) 15%,
       transparent
     );
-    color: var(--theme-accent-strong, #6366f1);
+    color: var(--theme-accent-strong, var(--theme-accent));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent-strong, #6366f1) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent)) 20%, transparent);
   }
 
   .upload-button:disabled {
@@ -261,7 +261,7 @@
     border-radius: 8px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.3);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .preview-item img {
@@ -289,7 +289,7 @@
   }
 
   .remove-btn:hover:not(:disabled) {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     transform: scale(1.1);
   }
 
@@ -305,7 +305,7 @@
     right: 0;
     padding: 4px 8px;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 0.6875rem;
     white-space: nowrap;
     overflow: hidden;

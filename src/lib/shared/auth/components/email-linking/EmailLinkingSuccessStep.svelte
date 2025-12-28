@@ -56,7 +56,7 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border-radius: 50%;
@@ -64,8 +64,8 @@
   }
 
   .success-checkmark i {
-    font-size: 40px;
-    color: var(--semantic-success, #22c55e);
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   @keyframes success-pop {
@@ -90,7 +90,7 @@
 
   .success-message p {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
   }
 
@@ -102,21 +102,21 @@
     padding: 14px 24px;
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 15%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 12px;
   }
 
   .credential-display i {
-    color: var(--theme-accent-strong, #8b5cf6);
-    font-size: 16px;
+    color: var(--theme-accent-strong, var(--theme-accent-strong));
+    font-size: var(--font-size-base);
   }
 
   .credential-display span {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
@@ -131,13 +131,13 @@
     padding: 14px 28px;
     background: linear-gradient(
       135deg,
-      var(--semantic-success, #22c55e) 0%,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 80%, #000) 100%
+      var(--semantic-success, var(--semantic-success)) 0%,
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, #000) 100%
     );
     border: none;
     border-radius: 12px;
     color: var(--theme-text, white);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -146,7 +146,7 @@
   .done-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--semantic-success, #22c55e) 40%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
   }
 
   .done-btn:active {
@@ -156,7 +156,7 @@
   /* Focus States */
   .done-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong) 80%, transparent);
     outline-offset: 2px;
   }
 

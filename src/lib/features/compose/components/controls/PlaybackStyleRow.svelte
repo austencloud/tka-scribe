@@ -71,9 +71,9 @@
   }
 
   .style-label {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     letter-spacing: 0.05em;
     text-transform: uppercase;
     flex-shrink: 0;
@@ -95,11 +95,11 @@
     gap: 8px;
     min-height: var(--touch-target-min, 44px);
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -107,7 +107,7 @@
   }
 
   .style-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
   }
 
@@ -132,9 +132,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .style-btn:hover:not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.85));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
   }
 
@@ -156,12 +156,12 @@
 
     .style-btn {
       padding: 10px 8px;
-      font-size: var(--font-size-compact, 13px);
+      font-size: var(--font-size-compact);
       gap: 6px;
     }
 
     .style-btn i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

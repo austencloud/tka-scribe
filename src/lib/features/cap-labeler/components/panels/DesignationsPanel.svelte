@@ -210,7 +210,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
     background: var(--surface-glass);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -237,7 +237,7 @@
     width: 24px;
     height: 24px;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
     color: var(--muted-foreground);
     cursor: pointer;
@@ -253,6 +253,6 @@
   .copy-btn.success {
     background: rgba(34, 197, 94, 0.15);
     border-color: rgba(34, 197, 94, 0.4);
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 </style>

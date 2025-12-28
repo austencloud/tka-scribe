@@ -26,7 +26,7 @@
     padding: 14px 20px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 95%,
+      var(--theme-accent, var(--theme-accent)) 95%,
       transparent
     );
     backdrop-filter: blur(20px) saturate(180%);
@@ -35,20 +35,20 @@
     color: white;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     line-height: 1.5;
     letter-spacing: -0.24px;
     box-shadow:
       0 8px 24px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent),
       0 2px 8px rgba(0, 0, 0, 0.15);
     z-index: 10000;
     animation: toast-enter 0.4s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
   .sign-in-toast i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     opacity: 0.9;
   }
 

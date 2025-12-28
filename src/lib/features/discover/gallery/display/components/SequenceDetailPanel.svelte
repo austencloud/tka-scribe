@@ -78,7 +78,7 @@ Features:
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: var(--theme-shadow, #000);
+    background: var(--theme-shadow);
   }
 
   /* ===== DESKTOP SIDE PANEL ===== */
@@ -87,13 +87,12 @@ Features:
     min-width: 0;
     max-width: 500px;
     height: 100%;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.9));
-    border-left: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-panel-bg);
+    border-left: 1px solid var(--theme-stroke-strong);
     overflow-y: hidden;
     overflow-x: hidden;
     flex-shrink: 0;
-    box-shadow: -4px 0 20px var(--theme-shadow, rgba(0, 0, 0, 0.5));
-    backdrop-filter: blur(10px);
+    box-shadow: -4px 0 20px var(--theme-shadow);
     transition:
       width 0.3s ease,
       min-width 0.3s ease,
@@ -116,11 +115,11 @@ Features:
   }
 
   .detail-panel-desktop::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 20%, transparent);
   }
 
   .detail-panel-desktop::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 4px;
   }
 

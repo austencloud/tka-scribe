@@ -282,21 +282,21 @@
 
   /* Color variants */
   .turn-panel.blue {
-    border-color: var(--prop-blue, #3b82f6);
+    border-color: var(--prop-blue, var(--semantic-info));
     border-style: solid;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--prop-blue, #3b82f6) 5%, transparent) 0%,
+      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 5%, transparent) 0%,
       var(--theme-panel-bg, white) 100%
     );
   }
 
   .turn-panel.red {
-    border-color: var(--prop-red, #ef4444);
+    border-color: var(--prop-red, var(--semantic-error));
     border-style: solid;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--prop-red, #ef4444) 5%, transparent) 0%,
+      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 5%, transparent) 0%,
       var(--theme-panel-bg, white) 100%
     );
   }
@@ -318,7 +318,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
-    border-bottom: 2px solid var(--theme-stroke, rgba(0, 0, 0, 0.1));
+    border-bottom: 2px solid var(--theme-stroke);
   }
 
   .turn-panel.compact .turn-header {
@@ -354,54 +354,54 @@
   }
 
   .turn-panel.compact .turn-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .turn-panel.balanced .turn-label {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   .turn-panel.comfortable .turn-label {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .turn-panel.blue .turn-label {
-    color: var(--prop-blue, #3b82f6);
+    color: var(--prop-blue, var(--semantic-info));
   }
 
   .turn-panel.red .turn-label {
-    color: var(--prop-red, #ef4444);
+    color: var(--prop-red, var(--semantic-error));
   }
 
   .motion-badge {
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.08));
+    background: var(--theme-card-bg);
     border-radius: 6px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--theme-text, #333);
+    color: var(--theme-text);
   }
 
   .turn-panel.compact .motion-badge {
     padding: 2px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .turn-panel.balanced .motion-badge {
     padding: 2px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .turn-panel.comfortable .motion-badge {
     padding: 3px 8px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .close-btn {
     border: none;
     border-radius: 50%;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.08));
-    color: var(--theme-text-dim, #666);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     display: flex;
@@ -414,7 +414,7 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .turn-panel.balanced .close-btn {
@@ -422,7 +422,7 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .turn-panel.comfortable .close-btn {
@@ -430,11 +430,11 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.12));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.1);
   }
 
@@ -461,7 +461,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .turn-panel.compact .turn-btn {
@@ -469,42 +469,42 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 16px;
+    font-size: var(--font-size-base);
     border-width: 2px;
   }
 
   .turn-panel.balanced .turn-btn {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     border-width: 3px;
   }
 
   .turn-panel.comfortable .turn-btn {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     border-width: 4px;
   }
 
   .turn-panel.blue .turn-btn {
-    border-color: var(--prop-blue, #3b82f6);
+    border-color: var(--prop-blue, var(--semantic-info));
     border-style: solid;
   }
 
   .turn-panel.red .turn-btn {
-    border-color: var(--prop-red, #ef4444);
+    border-color: var(--prop-red, var(--semantic-error));
     border-style: solid;
   }
 
   .turn-btn:hover:not(:disabled) {
     transform: scale(1.1);
-    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
   }
 
   .turn-btn:active:not(:disabled) {
     transform: scale(0.95);
-    box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 1px 4px var(--theme-shadow);
   }
 
   .turn-btn:disabled {
@@ -522,13 +522,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .turn-panel.compact .turn-display {
     min-width: var(--min-touch-target);
     height: var(--min-touch-target);
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     border-width: 2px;
     border-radius: 8px;
   }
@@ -536,7 +536,7 @@
   .turn-panel.balanced .turn-display {
     min-width: var(--min-touch-target);
     height: var(--min-touch-target);
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     border-width: 3px;
     border-radius: 10px;
   }
@@ -544,29 +544,29 @@
   .turn-panel.comfortable .turn-display {
     min-width: 64px;
     height: 64px;
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     border-width: 4px;
     border-radius: 12px;
   }
 
   .turn-panel.blue .turn-display {
-    border-color: var(--prop-blue, #3b82f6);
+    border-color: var(--prop-blue, var(--semantic-info));
     border-style: solid;
   }
 
   .turn-panel.red .turn-display {
-    border-color: var(--prop-red, #ef4444);
+    border-color: var(--prop-red, var(--semantic-error));
     border-style: solid;
   }
 
   .turn-display:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
   }
 
   .turn-display:active {
     transform: scale(0.98);
-    box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 1px 4px var(--theme-shadow);
   }
 
   /* Rotation direction toggle buttons - in header */
@@ -575,25 +575,25 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 2px solid var(--theme-stroke, rgba(0, 0, 0, 0.2));
-    background: var(--theme-panel-bg, rgba(255, 255, 255, 0.95));
-    color: var(--theme-text-dim, #666);
+    border: 2px solid var(--theme-stroke);
+    background: var(--theme-panel-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     /* Minimum 48px touch target for accessibility */
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
     flex-shrink: 0;
-    box-shadow: 0 2px 6px var(--theme-shadow, rgba(0, 0, 0, 0.1));
+    box-shadow: 0 2px 6px var(--theme-shadow);
   }
 
   .rotation-btn:hover {
-    background: var(--theme-panel-elevated-bg, rgba(255, 255, 255, 1));
+    background: var(--theme-panel-elevated-bg);
     transform: scale(1.08);
-    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
   }
 
   .rotation-btn:active {
@@ -602,18 +602,18 @@
 
   /* Active state - matches panel color */
   .turn-panel.blue .rotation-btn.active {
-    background: var(--prop-blue, #3b82f6);
-    border-color: var(--prop-blue, #3b82f6);
+    background: var(--prop-blue, var(--semantic-info));
+    border-color: var(--prop-blue, var(--semantic-info));
     color: var(--theme-text, white);
     box-shadow: 0 3px 10px
-      color-mix(in srgb, var(--prop-blue, #3b82f6) 50%, transparent);
+      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 50%, transparent);
   }
 
   .turn-panel.red .rotation-btn.active {
-    background: var(--prop-red, #ef4444);
-    border-color: var(--prop-red, #ef4444);
+    background: var(--prop-red, var(--semantic-error));
+    border-color: var(--prop-red, var(--semantic-error));
     color: var(--theme-text, white);
     box-shadow: 0 3px 10px
-      color-mix(in srgb, var(--prop-red, #ef4444) 50%, transparent);
+      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 50%, transparent);
   }
 </style>

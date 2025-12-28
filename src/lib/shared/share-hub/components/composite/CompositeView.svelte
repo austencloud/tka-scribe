@@ -95,7 +95,7 @@
   .export-container {
     flex-shrink: 0;
     padding-top: 12px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   /* Mobile optimization */

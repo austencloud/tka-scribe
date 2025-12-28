@@ -119,7 +119,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
   }
 
@@ -158,13 +158,13 @@
     gap: 4px;
     padding: 4px 8px;
     border-radius: var(--radius-2026-xs);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     text-transform: capitalize;
   }
 
   .role-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .disabled-badge {
@@ -176,11 +176,11 @@
     border-radius: var(--radius-2026-xs);
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
-    color: var(--semantic-error, #fca5a5);
-    font-size: 12px;
+    color: var(--semantic-error);
+    font-size: var(--font-size-compact);
   }
 
   .tabs-grid {

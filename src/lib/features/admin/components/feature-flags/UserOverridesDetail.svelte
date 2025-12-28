@@ -80,7 +80,7 @@
         <div class="override-list">
           <div class="override-header">
             <h4>
-              <i class="fas fa-check-circle" aria-hidden="true" style="color: #10b981;"></i>
+              <i class="fas fa-check-circle" aria-hidden="true" style="color: var(--semantic-success);"></i>
               Explicitly Enabled ({editedEnabledFeatures.length})
             </h4>
             <p>Features this user can access regardless of their role</p>
@@ -108,7 +108,7 @@
         <div class="override-list">
           <div class="override-header">
             <h4>
-              <i class="fas fa-ban" aria-hidden="true" style="color: #ef4444;"></i>
+              <i class="fas fa-ban" aria-hidden="true" style="color: var(--semantic-error);"></i>
               Explicitly Disabled ({editedDisabledFeatures.length})
             </h4>
             <p>Features this user cannot access even if their role allows it</p>
@@ -160,14 +160,14 @@
 
   .detail-section h3 {
     margin: 0 0 12px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text);
   }
 
   .override-description {
     margin-bottom: 16px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
   }
 
@@ -187,13 +187,13 @@
   }
 
   .status-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
     font-weight: 500;
   }
 
   .status-value {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text);
     font-weight: 500;
     display: flex;
@@ -203,7 +203,7 @@
 
   .status-value.user-id {
     font-family: monospace;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .override-list {
@@ -220,7 +220,7 @@
 
   .override-header h4 {
     margin: 0 0 4px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text);
     display: flex;
@@ -230,7 +230,7 @@
 
   .override-header p {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
   }
 
@@ -268,12 +268,12 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     color: var(--theme-text);
     flex: 1;
   }
 
   .checkbox-label i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 </style>

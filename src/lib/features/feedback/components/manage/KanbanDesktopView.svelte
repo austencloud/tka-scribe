@@ -2,7 +2,10 @@
 <script lang="ts">
   import type { FeedbackManageState } from "../../state/feedback-manage-state.svelte";
   import type { KanbanBoardState } from "../../state/kanban-board-state.svelte";
-  import type { FeedbackItem } from "../../domain/models/feedback-models";
+  import type {
+    FeedbackItem,
+    FeedbackStatus,
+  } from "../../domain/models/feedback-models";
   import { STATUS_CONFIG } from "../../domain/models/feedback-models";
   import FeedbackKanbanColumn from "./FeedbackKanbanColumn.svelte";
   import KanbanArchiveDropZone from "./KanbanArchiveDropZone.svelte";
@@ -44,7 +47,7 @@
     }
   }
 
-  function handleDragOver(status: any) {
+  function handleDragOver(status: FeedbackStatus | "deferred") {
     if (boardState.draggedItem) {
       if (status === "deferred" || boardState.draggedItem.status !== status) {
         boardState.setDragOverColumn(status);
@@ -56,7 +59,7 @@
     boardState.setDragOverColumn(null);
   }
 
-  async function handleDrop(status: any) {
+  async function handleDrop(status: FeedbackStatus | "deferred") {
     if (!boardState.draggedItem) {
       return;
     }
@@ -169,12 +172,12 @@
   }
 
   .columns-container::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
     border-radius: clamp(6px, 1.5cqi, 10px);
   }
 
   .columns-container::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+    background: var(--theme-stroke-strong);
   }
 
   /* ===== ARCHIVE/DEFER STACK ===== */

@@ -73,39 +73,39 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 24px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
   }
 
   .format-chip i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .format-chip:hover {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    border-color: var(--theme-accent);
+    color: var(--theme-text, var(--theme-text));
     transform: translateY(-1px);
   }
 
   .format-chip:focus-visible {
-    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .format-chip.active {
-    background: var(--theme-accent, #4a9eff);
-    border-color: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
     color: white;
     box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 0 0 1px var(--theme-accent-glow, rgba(74, 158, 255, 0.3));
+      0 2px 8px var(--theme-shadow),
+      0 0 0 1px var(--theme-accent-glow);
   }
 
   .format-chip.active:hover {
@@ -123,11 +123,11 @@
       flex: 1;
       justify-content: center;
       padding: 8px 16px;
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
 
     .format-chip i {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 

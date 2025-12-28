@@ -42,7 +42,7 @@ VTGModeDetails - Shows direction and timing details for a mode
 	}
 
 	.detail-label {
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim);
 	}
 
 	.detail-value {

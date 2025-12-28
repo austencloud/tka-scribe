@@ -40,7 +40,7 @@
     background: transparent;
     border: none;
     border-radius: 7px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -52,18 +52,18 @@
   }
 
   .collapsed-tab-button:hover:not(.disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .collapsed-tab-button.active {
-    color: var(--theme-text, rgba(255, 255, 255, 1));
+    color: var(--theme-text);
     background: var(
       --theme-card-hover-bg,
       rgba(255, 255, 255, 0.18)
     ); /* More prominent to show active selection */
     box-shadow: inset 0 0 0 1px
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+      var(--theme-stroke-strong);
   }
 
   .collapsed-tab-button.disabled {
@@ -72,7 +72,7 @@
   }
 
   .tab-icon {
-    font-size: 18px; /* Slightly smaller for nested appearance */
+    font-size: var(--font-size-lg); /* Slightly smaller for nested appearance */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -106,19 +106,18 @@
     position: absolute;
     left: 48px;
     padding: 5px 10px;
-    background: var(--theme-panel-bg, rgba(20, 20, 30, 0.95));
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 5px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 12px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     white-space: nowrap;
     pointer-events: none;
     opacity: 0;
     transform: translateX(-8px);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--theme-shadow, 0 4px 12px rgba(0, 0, 0, 0.3));
+    box-shadow: var(--theme-shadow, 0 4px 12px var(--theme-shadow));
     z-index: 200;
   }
 
@@ -129,7 +128,7 @@
 
   /* Focus styles for keyboard navigation */
   .collapsed-tab-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -138,7 +137,7 @@
      ============================================================================ */
   @media (prefers-contrast: high) {
     .collapsed-tab-button.active {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
+      background: var(--theme-card-hover-bg);
       outline: 2px solid white;
     }
   }

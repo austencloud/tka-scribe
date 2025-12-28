@@ -63,12 +63,12 @@
     grade === "S"
       ? "#eab308"
       : grade === "A"
-        ? "#22c55e"
+        ? "var(--semantic-success)"
         : grade === "B"
-          ? "#3b82f6"
+          ? "var(--semantic-info)"
           : grade === "C"
-            ? "#f59e0b"
-            : "#ef4444"
+            ? "var(--semantic-warning)"
+            : "var(--semantic-error)"
   );
 
   // Handle Escape key to exit
@@ -327,7 +327,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 98%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 98%, transparent);
     z-index: 100;
     animation: fadeIn 0.4s ease-out;
   }
@@ -394,8 +394,8 @@
     margin: 0;
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent, var(--theme-accent-strong))
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -427,8 +427,8 @@
     justify-content: center;
     gap: 1.5rem;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
   }
 
@@ -441,11 +441,11 @@
     border-radius: 50%;
     background: radial-gradient(
       circle,
-      var(--grade-color, #3b82f6) 0%,
+      var(--grade-color, var(--semantic-info)) 0%,
       transparent 70%
     );
-    border: 3px solid var(--grade-color, #3b82f6);
-    box-shadow: 0 0 20px var(--grade-color, #3b82f6);
+    border: 3px solid var(--grade-color, var(--semantic-info));
+    box-shadow: 0 0 20px var(--grade-color, var(--semantic-info));
     flex-shrink: 0;
   }
 
@@ -461,19 +461,19 @@
     0%,
     100% {
       transform: scale(1);
-      box-shadow: 0 0 40px var(--grade-color, #3b82f6);
+      box-shadow: 0 0 40px var(--grade-color, var(--semantic-info));
     }
     50% {
       transform: scale(1.05);
-      box-shadow: 0 0 60px var(--grade-color, #3b82f6);
+      box-shadow: 0 0 60px var(--grade-color, var(--semantic-info));
     }
   }
 
   .grade-letter {
     font-size: 2.5rem;
     font-weight: 900;
-    color: var(--grade-color, #3b82f6);
-    text-shadow: 0 0 10px var(--grade-color, #3b82f6);
+    color: var(--grade-color, var(--semantic-info));
+    text-shadow: 0 0 10px var(--grade-color, var(--semantic-info));
   }
 
   @media (max-width: 768px) {
@@ -512,14 +512,14 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.75rem 0.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     transition: all 0.3s;
   }
 
   .stat-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
   }
 
   .stat-icon {
@@ -535,37 +535,37 @@
   .stat-icon.score {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #eab308) 20%,
+      var(--semantic-warning) 20%,
       transparent
     );
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
   }
 
   .stat-icon.hits {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 20%,
+      var(--semantic-success, var(--semantic-success)) 20%,
       transparent
     );
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .stat-icon.misses {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 20%,
+      var(--semantic-error, var(--semantic-error)) 20%,
       transparent
     );
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .stat-icon.combo {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 20%,
+      var(--semantic-info, var(--semantic-info)) 20%,
       transparent
     );
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .stat-icon svg {
@@ -584,7 +584,7 @@
     font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 600;
   }
 
@@ -593,8 +593,8 @@
     flex-direction: column;
     gap: 0.25rem;
     padding: 0.75rem 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
   }
 
@@ -606,7 +606,7 @@
     border-bottom: 1px solid
       color-mix(
         in srgb,
-        var(--theme-stroke, rgba(255, 255, 255, 0.1)) 50%,
+        var(--theme-stroke, var(--theme-stroke)) 50%,
         transparent
       );
   }
@@ -617,7 +617,7 @@
 
   .detail-label {
     font-size: 0.8rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .detail-value {
@@ -633,8 +633,8 @@
     justify-content: center;
     padding: 1rem 1.25rem;
     flex-shrink: 0; /* Never shrink - always visible */
-    background: color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent);
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: color-mix(in srgb, var(--theme-shadow) 80%, transparent);
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   @media (max-width: 768px) {
@@ -663,8 +663,8 @@
   .primary-button {
     background: linear-gradient(
       135deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent, var(--theme-accent-strong))
     );
     border: none;
     color: var(--theme-text, white);
@@ -673,7 +673,7 @@
   .primary-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 40%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 40%, transparent);
   }
 
   .primary-button svg {
@@ -683,12 +683,12 @@
 
   .secondary-button {
     background: transparent;
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    border: 1px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
   }
 
   .secondary-button:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
   }
 
   /* XP Section */
@@ -696,11 +696,11 @@
     padding: 0.75rem 1rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #eab308) 10%, transparent),
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 5%, transparent)
+      color-mix(in srgb, var(--semantic-warning) 10%, transparent),
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 5%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
     border-radius: 8px;
   }
 
@@ -714,14 +714,14 @@
   .xp-header svg {
     width: 18px;
     height: 18px;
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
   }
 
   .xp-header h3 {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
   }
 
   .xp-breakdown {
@@ -741,7 +741,7 @@
   .xp-row.bonus {
     color: color-mix(
       in srgb,
-      var(--semantic-warning, #eab308) 90%,
+      var(--semantic-warning) 90%,
       transparent
     );
   }
@@ -763,7 +763,7 @@
     padding: 0.5rem 0;
     margin-top: 0.25rem;
     border-top: 1px solid
-      color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
   }
 
   .xp-total-label {
@@ -775,7 +775,7 @@
   .xp-total-value {
     font-size: 1.125rem;
     font-weight: 800;
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
     font-variant-numeric: tabular-nums;
   }
 
@@ -784,23 +784,23 @@
     padding: 0.75rem 1rem;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 10%, transparent),
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 5%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 10%, transparent),
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 5%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
     border-radius: 8px;
   }
 
   .challenge-section.complete {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 10%, transparent),
-      color-mix(in srgb, var(--semantic-success, #10b981) 5%, transparent)
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 10%, transparent),
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 5%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
   }
@@ -815,22 +815,22 @@
   .challenge-header svg {
     width: 18px;
     height: 18px;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .challenge-section.complete .challenge-header svg {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .challenge-header h3 {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .challenge-section.complete .challenge-header h3 {
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .challenge-info {
@@ -854,7 +854,7 @@
   .progress-track {
     width: 100%;
     height: 6px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 3px;
     overflow: hidden;
   }
@@ -863,8 +863,8 @@
     height: 100%;
     background: linear-gradient(
       90deg,
-      var(--semantic-info, #3b82f6),
-      var(--theme-accent, #8b5cf6)
+      var(--semantic-info, var(--semantic-info)),
+      var(--theme-accent, var(--theme-accent-strong))
     );
     border-radius: 3px;
     transition: width 0.5s ease-out;
@@ -873,15 +873,15 @@
   .challenge-section.complete .progress-fill {
     background: linear-gradient(
       90deg,
-      var(--semantic-success, #22c55e),
-      var(--semantic-success, #10b981)
+      var(--semantic-success, var(--semantic-success)),
+      var(--semantic-success, var(--semantic-success))
     );
   }
 
   .progress-text {
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-align: center;
     font-variant-numeric: tabular-nums;
   }
@@ -894,7 +894,7 @@
     padding: 0.5rem;
     background: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 20%,
+      var(--semantic-success, var(--semantic-success)) 20%,
       transparent
     );
     border-radius: 6px;
@@ -908,7 +908,7 @@
   .reward-value {
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--semantic-success, #22c55e);
+    color: var(--semantic-success, var(--semantic-success));
     font-variant-numeric: tabular-nums;
   }
 </style>

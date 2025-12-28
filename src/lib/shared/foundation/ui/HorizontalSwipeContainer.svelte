@@ -379,10 +379,10 @@
     transform: translateY(-50%);
 
     /* Subtle frosted glass - less prominent since swiping is primary */
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     color: rgba(255, 255, 255, 0.8);
 
@@ -412,7 +412,7 @@
   }
 
   .embla__button:disabled {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.5); /* Improved contrast for WCAG AAA */
     cursor: not-allowed;
     opacity: 0.5 !important;
   }

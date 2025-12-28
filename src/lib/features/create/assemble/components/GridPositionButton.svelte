@@ -75,31 +75,31 @@ Supports enabled/disabled states and highlights current position.
     min-height: var(--min-touch-target);
 
     /* Typography */
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
 
     /* Base styling - themed */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   /* Enabled state - themed accent with subtle blue tint */
   .grid-position-button.enabled {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-accent, rgba(99, 102, 241, 0.5));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    box-shadow: 0 0 12px var(--theme-shadow, rgba(99, 102, 241, 0.15));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-accent);
+    color: var(--theme-text);
+    box-shadow: 0 0 12px var(--theme-shadow);
   }
 
   /* Disabled state - themed */
   .grid-position-button.disabled {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke);
+    color: var(--theme-text-dim);
     cursor: not-allowed;
     opacity: 0.4;
   }
@@ -107,9 +107,9 @@ Supports enabled/disabled states and highlights current position.
   /* Current position highlight - themed accent */
   .grid-position-button.current {
     box-shadow:
-      0 0 0 3px var(--theme-accent, rgba(99, 102, 241, 0.4)),
-      0 0 20px var(--theme-shadow, rgba(99, 102, 241, 0.25));
-    border-color: var(--theme-accent-strong, rgba(99, 102, 241, 0.8));
+      0 0 0 3px var(--theme-accent),
+      0 0 20px var(--theme-shadow);
+    border-color: var(--theme-accent-strong);
     transform: scale(1.05);
   }
 
@@ -117,9 +117,9 @@ Supports enabled/disabled states and highlights current position.
   @media (hover: hover) {
     .grid-position-button.enabled:hover:not(.current) {
       transform: scale(1.08);
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-      border-color: var(--theme-accent-strong, rgba(99, 102, 241, 0.7));
-      box-shadow: 0 4px 12px var(--theme-shadow, rgba(99, 102, 241, 0.25));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-accent-strong);
+      box-shadow: 0 4px 12px var(--theme-shadow);
     }
   }
 
@@ -138,7 +138,7 @@ Supports enabled/disabled states and highlights current position.
   .current-indicator {
     position: absolute;
     inset: -6px;
-    border: 2px solid var(--theme-accent, rgba(99, 102, 241, 0.6));
+    border: 2px solid var(--theme-accent);
     border-radius: 12px;
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     pointer-events: none;

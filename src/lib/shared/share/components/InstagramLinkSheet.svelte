@@ -250,7 +250,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.03);
   }
 
@@ -289,7 +289,7 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     border: none;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
@@ -327,8 +327,8 @@
   .form-group input,
   .form-group textarea {
     padding: 0.75rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     color: var(--text-primary);
     font-size: 1rem;
@@ -340,7 +340,7 @@
   .form-group textarea:focus {
     outline: none;
     border-color: rgba(59, 130, 246, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
 
@@ -368,7 +368,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.85rem;
-    color: #ef4444;
+    color: var(--semantic-error);
     margin: 0;
   }
 
@@ -376,7 +376,7 @@
   .preview-card {
     padding: 1rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -398,7 +398,7 @@
 
   .preview-url {
     font-size: 0.85rem;
-    color: #3b82f6;
+    color: var(--semantic-info);
     word-break: break-all;
     margin: 0;
   }
@@ -420,7 +420,7 @@
   /* Footer */
   .instagram-sheet__footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
     background: rgba(255, 255, 255, 0.03);
   }
 
@@ -444,7 +444,7 @@
   }
 
   .btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
   }
 
@@ -460,7 +460,7 @@
 
   .btn-danger {
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--semantic-error);
     border: 1px solid rgba(239, 68, 68, 0.3);
   }
 

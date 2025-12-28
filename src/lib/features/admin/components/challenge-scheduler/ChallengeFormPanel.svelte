@@ -270,7 +270,7 @@
   .empty-icon {
     width: 80px;
     height: 80px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -383,7 +383,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    color: var(--theme-accent, #667eea);
+    color: var(--theme-accent);
   }
 
   .select-sequence-btn span {
@@ -495,8 +495,8 @@
   .form-group textarea,
   .form-group select {
     padding: 0.6rem 0.85rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     color: #fff;
     font-size: 0.9rem;
@@ -508,7 +508,7 @@
   .form-group select:focus {
     outline: none;
     border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .form-group textarea {

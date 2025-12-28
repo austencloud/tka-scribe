@@ -44,7 +44,7 @@ MotionLegend - Shows left and right hand motion types
 		align-items: center;
 		gap: 0.375rem;
 		font-size: 0.8125rem;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim);
 	}
 
 	.legend-dot {
@@ -54,7 +54,7 @@ MotionLegend - Shows left and right hand motion types
 	}
 
 	.legend-label {
-		color: rgba(255, 255, 255, 0.5);
+		color: var(--theme-text-dim);
 	}
 
 	.legend-motion {

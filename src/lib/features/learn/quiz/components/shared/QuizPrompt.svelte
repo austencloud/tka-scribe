@@ -12,7 +12,7 @@ QuizPrompt - Subtle prompt text for quizzes
     margin: 0 0 0.75rem 0;
     font-size: 0.9375rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     letter-spacing: 0.02em;
     text-align: center;
     padding: 0 4rem;

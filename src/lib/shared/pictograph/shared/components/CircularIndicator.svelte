@@ -40,7 +40,7 @@
       <g opacity="0.9">
         <path
           d="M 0,-50 L 0,-44 M 0,50 L 0,44 M -50,0 L -44,0 M 50,0 L 44,0"
-          stroke="#fbbf24"
+          stroke="var(--semantic-warning)"
           stroke-width="2"
           stroke-linecap="round"
         >
@@ -58,15 +58,15 @@
     <defs>
       <!-- Golden gradient for star -->
       <radialGradient id="starGradient" cx="30%" cy="30%">
-        <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
-        <stop offset="50%" style="stop-color:#f59e0b;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:var(--semantic-warning);stop-opacity:1" />
+        <stop offset="50%" style="stop-color:var(--semantic-warning);stop-opacity:1" />
         <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
       </radialGradient>
 
       <!-- Glow effect -->
       <radialGradient id="starGlow">
-        <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:0.8" />
-        <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:0" />
+        <stop offset="0%" style="stop-color:var(--semantic-warning);stop-opacity:0.8" />
+        <stop offset="100%" style="stop-color:var(--semantic-warning);stop-opacity:0" />
       </radialGradient>
     </defs>
   </g>

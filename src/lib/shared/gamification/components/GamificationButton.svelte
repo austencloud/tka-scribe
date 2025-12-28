@@ -126,7 +126,7 @@
     min-height: var(--min-touch-target);
     border-radius: 50%;
     border: none;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -137,7 +137,7 @@
   }
 
   .gamification-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
     transform: scale(1.05);
   }
 
@@ -158,8 +158,8 @@
   .spinner {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    border-top-color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    border: 2px solid var(--theme-stroke);
+    border-top-color: var(--theme-text);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -172,7 +172,7 @@
 
   /* Minimal icon styling */
   .icon-minimal {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
@@ -183,8 +183,8 @@
     right: -2px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1) 0%,
-      var(--theme-accent-strong, #8b5cf6) 100%
+      var(--theme-accent, var(--theme-accent)) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 100%
     );
     border-radius: 50%;
     width: 16px;
@@ -192,16 +192,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     color: var(--theme-text, white);
-    box-shadow: 0 1px 4px var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    box-shadow: 0 1px 4px var(--theme-shadow, var(--theme-shadow));
     z-index: 2;
   }
 
   /* Accessibility */
   .gamification-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -222,7 +222,7 @@
   /* High Contrast */
   @media (prefers-contrast: high) {
     .gamification-button {
-      background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+      background: var(--theme-stroke-strong);
       border: 2px solid var(--theme-text, white);
     }
   }

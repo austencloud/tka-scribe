@@ -31,7 +31,7 @@
     border: 1.5px solid rgba(59, 130, 246, 0.3);
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.95);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;

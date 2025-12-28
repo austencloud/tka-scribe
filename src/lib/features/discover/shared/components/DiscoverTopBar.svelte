@@ -112,8 +112,8 @@ Structure:
     display: flex;
     align-items: center;
     padding: 10px 16px;
-    background: var(--theme-panel-bg, #12121a);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     width: 100%;
     flex-shrink: 0;
   }
@@ -167,18 +167,18 @@ Structure:
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: var(--theme-card-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 16px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .nav-button:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, #2d2d3d);
-    color: var(--theme-text, #fff);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .nav-button:active:not(:disabled) {

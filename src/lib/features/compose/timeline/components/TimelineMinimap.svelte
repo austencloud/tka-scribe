@@ -178,7 +178,7 @@
   .timeline-minimap {
     padding: 4px 8px;
     background: #16161e;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
     cursor: pointer;
     user-select: none;
   }
@@ -186,7 +186,7 @@
   .minimap-track {
     position: relative;
     height: 16px;
-    background: var(--theme-panel-elevated-bg, #0e0e12);
+    background: var(--theme-panel-elevated-bg);
     border-radius: 3px;
     overflow: hidden;
   }
@@ -204,7 +204,7 @@
     border-radius: 2px;
     min-width: 2px;
     /* Muted uniform color for subtle appearance */
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     opacity: 0.25;
   }
 

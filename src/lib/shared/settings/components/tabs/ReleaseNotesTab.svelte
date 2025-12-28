@@ -113,7 +113,7 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .header-content h2 {
@@ -121,13 +121,13 @@
     align-items: center;
     gap: 10px;
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .header-content h2 i {
-    color: var(--theme-accent, #a78bfa);
+    color: var(--theme-accent);
   }
 
   .tab-content {
@@ -147,7 +147,7 @@
   .tab-content::-webkit-scrollbar-thumb {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
     border-radius: 3px;
@@ -168,7 +168,7 @@
 
   .skeleton-card {
     height: 72px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 12px;
     animation: pulse 1.5s ease-in-out infinite;
   }
@@ -194,30 +194,30 @@
   }
 
   .error-state i {
-    font-size: 36px;
-    color: #ef4444;
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-error);
     margin-bottom: 12px;
   }
 
   .error-state p {
     margin: 0 0 16px 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .error-state button {
     padding: 8px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .error-state button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   /* Empty state */
@@ -231,22 +231,22 @@
   }
 
   .empty-state i {
-    font-size: 50px;
-    color: color-mix(in srgb, var(--theme-accent, #8b5cf6) 40%, transparent);
+    font-size: var(--font-size-3xl);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 40%, transparent);
     margin-bottom: 16px;
   }
 
   .empty-state h3 {
     margin: 0 0 8px 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Reduced motion */

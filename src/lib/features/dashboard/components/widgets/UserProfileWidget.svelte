@@ -262,11 +262,11 @@
     border-radius: var(--radius-2026-sm, 10px);
     font-size: var(--text-2026-micro, 0.75rem);
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .preview-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* User Profile (Signed In) */
@@ -302,7 +302,7 @@
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
     flex-shrink: 0;
   }
 
@@ -318,9 +318,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 700;
-    background: var(--theme-accent, #6366f1);
+    background: var(--theme-accent, var(--theme-accent));
     color: white;
   }
 
@@ -334,7 +334,7 @@
   .profile-name {
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -342,15 +342,15 @@
 
   .profile-email {
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   .dropdown-icon {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     transition: transform var(--duration-2026-fast, 150ms)
       var(--ease-2026, ease);
   }
@@ -365,8 +365,8 @@
     flex-direction: column;
     gap: 4px;
     padding: 8px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.15));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-sm, 10px);
     margin-top: -8px;
   }
@@ -379,7 +379,7 @@
     background: transparent;
     border: none;
     border-radius: var(--radius-2026-xs, 8px);
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     font-size: var(--text-2026-caption, 0.875rem);
     cursor: pointer;
     transition: background var(--duration-2026-fast, 150ms)
@@ -393,13 +393,13 @@
   }
 
   .dropdown-item.sign-out {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .dropdown-item.sign-out:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 12%,
+      var(--semantic-error, var(--semantic-error)) 12%,
       transparent
     );
   }
@@ -427,12 +427,12 @@
   .stat-item:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 8%,
+      var(--theme-accent) 8%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 15%,
+      var(--theme-accent, var(--theme-accent)) 15%,
       transparent
     );
   }
@@ -446,17 +446,17 @@
     border-radius: var(--radius-2026-xs, 8px);
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 12%,
+      var(--theme-accent, var(--theme-accent)) 12%,
       transparent
     );
-    color: var(--theme-accent, #6366f1);
-    font-size: 13px;
+    color: var(--theme-accent, var(--theme-accent));
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
   }
 
   .stat-icon.favorites {
     background: var(--accent-2026-amber-soft, rgba(245, 158, 11, 0.12));
-    color: var(--accent-2026-amber, #f59e0b);
+    color: var(--accent-2026-amber, var(--semantic-warning));
   }
 
   .stat-content {
@@ -467,13 +467,13 @@
   .stat-value {
     font-size: var(--text-2026-title, 1.125rem);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     line-height: 1.2;
   }
 
   .stat-label {
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Library Button - 2026 text link style */
@@ -486,7 +486,7 @@
     background: var(--accent-2026-emerald-soft, rgba(16, 185, 129, 0.12));
     border: 1px solid rgba(16, 185, 129, 0.2);
     border-radius: var(--radius-2026-sm, 10px);
-    color: var(--accent-2026-emerald, #10b981);
+    color: var(--accent-2026-emerald, var(--semantic-success));
     font-size: var(--text-2026-caption, 0.875rem);
     font-weight: 600;
     cursor: pointer;
@@ -500,7 +500,7 @@
   }
 
   .library-btn i:last-child {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     margin-left: auto;
     transition: transform var(--duration-2026-fast, 150ms)
       var(--ease-2026, ease);
@@ -531,12 +531,12 @@
     height: 44px;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 12%,
+      var(--theme-accent, var(--theme-accent)) 12%,
       transparent
     );
     border-radius: var(--radius-2026-sm, 10px);
-    color: var(--theme-accent, #6366f1);
-    font-size: 20px;
+    color: var(--theme-accent, var(--theme-accent));
+    font-size: var(--font-size-xl);
     flex-shrink: 0;
   }
 
@@ -544,13 +544,13 @@
     margin: 0;
     font-size: var(--text-2026-body, 1rem);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .prompt-text p {
     margin: 2px 0 0;
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Auth Buttons - 2026 Cleaner */
@@ -607,11 +607,11 @@
     gap: 8px;
     margin: 0;
     font-size: var(--text-2026-micro, 0.75rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .guest-note i {
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 60%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 60%, transparent);
   }
 
   /* Responsive - 2026 */
@@ -637,7 +637,7 @@
     .stat-icon {
       width: 28px;
       height: 28px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .stat-value {

@@ -4,15 +4,17 @@
    * Selectable list item with flexible slots
    */
 
+  import type { Snippet } from "svelte";
+
   interface AdminListItemProps {
     selected?: boolean;
     disabled?: boolean;
     onClick: () => void;
     variant?: "default" | "compact" | "detailed";
     class?: string;
-    children: any;
-    icon?: any;
-    meta?: any;
+    children: Snippet;
+    icon?: Snippet;
+    meta?: Snippet;
   }
 
   let {
@@ -70,7 +72,7 @@
 
   .admin-list-item:hover:not(.disabled) {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--theme-stroke);
   }
 
   .admin-list-item.selected {
@@ -88,8 +90,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text-dim);
   }
 
   .item-content {

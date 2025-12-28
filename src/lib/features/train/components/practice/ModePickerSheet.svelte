@@ -49,14 +49,14 @@
       value: PracticeMode.STEP_BY_STEP,
       label: "Step by Step",
       icon: "fa-shoe-prints",
-      color: "#10b981",
+      color: "var(--semantic-success)",
       description: "Go at your own pace. Manually advance through each beat.",
     },
     {
       value: PracticeMode.TIMED,
       label: "Timed",
       icon: "fa-stopwatch",
-      color: "#f59e0b",
+      color: "var(--semantic-warning)",
       description:
         "Follow the rhythm with scoring. Test your timing and accuracy.",
     },
@@ -128,7 +128,7 @@
   :global(.mode-picker-backdrop) {
     background: color-mix(
       in srgb,
-      var(--theme-shadow, #000) 70%,
+      var(--theme-shadow) 70%,
       transparent
     ) !important;
   }
@@ -163,7 +163,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     margin-bottom: 16px;
   }
 
@@ -175,18 +175,18 @@
     justify-content: center;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 15%,
+      var(--theme-accent, var(--theme-accent-strong)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 10px;
     flex-shrink: 0;
   }
 
   .header-icon i {
-    font-size: 14px;
-    color: var(--theme-accent, #a78bfa);
+    font-size: var(--font-size-sm);
+    color: var(--theme-accent);
   }
 
   .header-content {
@@ -198,13 +198,13 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .panel-subtitle {
     margin: 2px 0 0 0;
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .close-btn {
@@ -214,9 +214,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -224,8 +224,8 @@
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .mode-options {
@@ -239,18 +239,18 @@
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.2s;
     text-align: left;
   }
 
   .mode-option:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
   }
 
   .mode-option.active {
@@ -285,12 +285,12 @@
   .mode-label {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .mode-desc {
     font-size: 0.8rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.35;
   }
 
@@ -304,7 +304,7 @@
   .close-btn:focus-visible,
   .mode-option:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 80%, transparent);
+      color-mix(in srgb, var(--theme-accent) 80%, transparent);
     outline-offset: 2px;
   }
 

@@ -79,10 +79,10 @@
 	}
 
 	.sequence-item:hover:not(:disabled) .item-thumb {
-		border-color: var(--theme-accent, #4a9eff);
+		border-color: var(--theme-accent);
 		box-shadow:
-			0 6px 20px rgba(0, 0, 0, 0.3),
-			0 0 16px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+			0 6px 20px var(--theme-shadow),
+			0 0 16px color-mix(in srgb, var(--theme-accent) 30%, transparent);
 	}
 
 	.sequence-item:disabled {
@@ -98,9 +98,9 @@
 		aspect-ratio: 1;
 		border-radius: 12px;
 		overflow: hidden;
-		border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+		border: 2px solid var(--theme-stroke);
 		transition: all 0.2s ease;
-		background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+		background: var(--theme-card-bg);
 	}
 
 	.item-thumb img {
@@ -112,12 +112,12 @@
 	.placeholder-thumb {
 		width: 100%;
 		height: 100%;
-		background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
+		background: var(--theme-panel-elevated-bg);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
-		font-size: 24px;
+		color: var(--theme-text-dim);
+		font-size: var(--font-size-2xl);
 	}
 
 	.video-badge {
@@ -132,9 +132,9 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 12px;
+		font-size: var(--font-size-compact);
 		color: white;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 2px 8px var(--theme-shadow);
 	}
 
 	.loading-overlay {
@@ -149,8 +149,8 @@
 	}
 
 	.item-name {
-		font-size: 12px;
-		color: var(--theme-text, rgba(255, 255, 255, 0.92));
+		font-size: var(--font-size-compact);
+		color: var(--theme-text);
 		font-weight: 500;
 		white-space: nowrap;
 		overflow: hidden;
@@ -159,15 +159,15 @@
 	}
 
 	.item-meta {
-		font-size: 12px;
-		color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+		font-size: var(--font-size-compact);
+		color: var(--theme-text-dim);
 	}
 
 	.spinner {
 		width: 28px;
 		height: 28px;
-		border: 3px solid color-mix(in srgb, var(--theme-accent, #4a9eff) 15%, transparent);
-		border-top-color: var(--theme-accent, #4a9eff);
+		border: 3px solid color-mix(in srgb, var(--theme-accent) 15%, transparent);
+		border-top-color: var(--theme-accent);
 		border-radius: 50%;
 		animation: spin 0.8s linear infinite;
 	}

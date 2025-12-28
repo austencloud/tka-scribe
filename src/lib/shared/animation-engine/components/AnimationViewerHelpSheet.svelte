@@ -44,7 +44,7 @@
   <div class="help-content">
     <header class="help-header">
       <div class="header-info">
-        <h3 class="help-title">Animation Viewer</h3>
+        <h2 class="help-title">Animation Viewer</h2>
         <p class="help-subtitle">Keyboard shortcuts & tips</p>
       </div>
       <button
@@ -60,10 +60,10 @@
     <div class="help-body">
       <!-- Keyboard Shortcuts Section -->
       <section class="help-section">
-        <h4 class="section-title">
+        <h3 class="section-title">
           <i class="fas fa-keyboard" aria-hidden="true"></i>
           Keyboard Shortcuts
-        </h4>
+        </h3>
         <div class="shortcuts-list">
           {#each ANIMATION_SHORTCUTS as shortcut}
             <div class="shortcut-item">
@@ -79,10 +79,10 @@
 
       <!-- Usage Tips Section -->
       <section class="help-section">
-        <h4 class="section-title">
+        <h3 class="section-title">
           <i class="fas fa-lightbulb" aria-hidden="true"></i>
           Tips
-        </h4>
+        </h3>
         <ul class="tips-list">
           <li>
             Use the step buttons to analyze specific positions in the animation
@@ -137,7 +137,7 @@
 
   .help-subtitle {
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -148,9 +148,9 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--theme-stroke);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -159,7 +159,7 @@
 
   .close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .help-body {
@@ -221,12 +221,12 @@
   .shortcut-label {
     font-size: 0.85rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .shortcut-desc {
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .shortcut-key {
@@ -255,7 +255,7 @@
     position: relative;
     padding-left: 20px;
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     line-height: 1.5;
   }
 

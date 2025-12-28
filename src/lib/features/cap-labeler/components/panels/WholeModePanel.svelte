@@ -127,7 +127,7 @@
     gap: var(--spacing-sm);
     padding: var(--spacing-md);
     background: var(--surface-dark);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -158,7 +158,7 @@
     gap: 4px;
     padding: var(--spacing-sm);
     background: var(--surface-color);
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     color: var(--muted-foreground);
     cursor: pointer;
@@ -198,7 +198,7 @@
     justify-content: center;
     background: var(--component-color);
     border-radius: 50%;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     color: #000;
   }
@@ -214,7 +214,7 @@
     flex: 1;
     padding: 4px;
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
     color: var(--muted-foreground);
     font-size: var(--font-size-xs);

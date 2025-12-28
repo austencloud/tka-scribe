@@ -130,8 +130,8 @@
     gap: 12px;
     width: 100%;
     padding: 12px;
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 5%, transparent);
-    border: 1px solid color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent);
     border-radius: 12px;
     cursor: pointer;
     transition: all 150ms ease;
@@ -139,8 +139,8 @@
   }
 
   .feed-item:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 12%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
     transform: translateX(2px);
   }
 
@@ -162,21 +162,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.8));
+    background: var(--theme-card-bg);
     border-radius: 50%;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .event-badge.icon-create {
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .event-badge.icon-favorite {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .event-badge.icon-achievement {
-    color: #f59e0b;
+    color: var(--semantic-warning);
   }
 
   .item-content {
@@ -191,26 +191,26 @@
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.3;
   }
 
   .user-name {
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .action-text {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
   }
 
   .sequence-info,
   .achievement-info {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .sequence-name {
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
     font-weight: 500;
   }
 
@@ -221,13 +221,13 @@
 
   .timestamp {
     flex-shrink: 0;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     font-weight: 500;
   }
 
   .feed-item:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

@@ -54,7 +54,7 @@
 		align-items: center;
 		gap: var(--spacing-md);
 		padding: var(--spacing-md) var(--spacing-lg);
-		border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
 		background: var(--surface-glass);
 	}
 
@@ -62,7 +62,7 @@
 		padding: var(--spacing-sm) var(--spacing-md);
 		background: var(--surface-color);
 		color: var(--foreground);
-		border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+		border: 1px solid var(--theme-stroke, var(--theme-stroke));
 		border-radius: 8px;
 		font-size: var(--font-size-sm);
 		cursor: pointer;

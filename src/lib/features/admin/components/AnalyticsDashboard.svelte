@@ -32,7 +32,7 @@
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .dashboard-header {
@@ -43,15 +43,15 @@
 
   .dashboard-header h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .active-users-section {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border-radius: 12px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     min-height: 400px;
     overflow: hidden;
   }
@@ -67,12 +67,12 @@
   }
 
   .analytics-dashboard :global(::-webkit-scrollbar-thumb) {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 3px;
   }
 
   .analytics-dashboard :global(::-webkit-scrollbar-thumb:hover) {
-    background: color-mix(in srgb, var(--theme-accent, #8b5cf6) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 50%, transparent);
   }
 
   @media (max-width: 768px) {
@@ -82,7 +82,7 @@
     }
 
     .dashboard-header h2 {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
   }
 </style>

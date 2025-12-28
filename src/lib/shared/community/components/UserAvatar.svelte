@@ -122,9 +122,9 @@
   /* Color variant - gradient ring border */
   .user-avatar.variant-color {
     border: 3px solid;
-    border-color: var(--accent-color, #8b5cf6);
+    border-color: var(--accent-color, var(--theme-accent-strong));
     box-shadow: 0 0 16px
-      color-mix(in srgb, var(--accent-color, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--accent-color, var(--theme-accent-strong)) 40%, transparent);
   }
 
   /* Role badge - overlay on bottom-right */
@@ -138,7 +138,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: #000;
     border: 2px solid rgba(10, 10, 15, 0.9);
     z-index: 1;

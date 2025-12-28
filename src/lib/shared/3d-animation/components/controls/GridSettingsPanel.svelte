@@ -66,9 +66,9 @@
 <style>
   .grid-settings {
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke);
   }
 
   h3 {
@@ -77,12 +77,12 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .mode-toggle {
     display: flex;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    background: var(--theme-panel-bg);
     border-radius: 10px;
     padding: 3px;
     margin-bottom: 0.75rem;
@@ -98,7 +98,7 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: var(--font-size-sm, 0.875rem);
     font-weight: 500;
     cursor: pointer;
@@ -106,11 +106,11 @@
   }
 
   .mode-btn:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .mode-btn.active {
-    background: var(--theme-accent, rgba(139, 92, 246, 0.5));
+    background: var(--theme-accent);
     color: white;
   }
 
@@ -130,10 +130,10 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: var(--font-size-sm, 0.8rem);
     font-weight: 500;
     cursor: pointer;
@@ -141,12 +141,12 @@
   }
 
   .plane-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .plane-btn.active {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border-color: var(--color);
     color: var(--theme-text, white);
   }

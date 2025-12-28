@@ -376,14 +376,14 @@
     gap: 12px;
     padding: 16px 20px;
     background: transparent;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .header h1 {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     letter-spacing: -0.02em;
     flex-shrink: 0;
   }
@@ -395,11 +395,11 @@
     justify-content: center;
     width: 52px;
     height: 52px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 16px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -407,7 +407,7 @@
   }
 
   .filter-button:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: var(--theme-text, white);
   }
 
@@ -422,7 +422,7 @@
       rgba(220, 38, 38, 0.15)
     );
     border-color: rgba(239, 68, 68, 0.4);
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .filter-badge {
@@ -436,7 +436,7 @@
     justify-content: center;
     background: linear-gradient(135deg, #f43f5e, #ec4899);
     border-radius: 9px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     color: white;
     padding: 0 5px;
@@ -463,12 +463,12 @@
     justify-content: center;
     height: 52px;
     padding: 0 18px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 24px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -476,8 +476,8 @@
   }
 
   .chip:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .chip:active {
@@ -487,12 +487,12 @@
   .chip.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent),
-      color-mix(in srgb, var(--semantic-error, #dc2626) 20%, transparent)
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 40%,
+      var(--semantic-error, var(--semantic-error)) 40%,
       transparent
     );
     color: var(--theme-text, white);
@@ -530,7 +530,7 @@
     width: 52px;
     height: 52px;
     border: 3px solid rgba(239, 68, 68, 0.2);
-    border-top-color: #ef4444;
+    border-top-color: var(--semantic-error);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -543,8 +543,8 @@
 
   .loading-state p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Empty State */
@@ -566,25 +566,25 @@
     justify-content: center;
     background: linear-gradient(
       135deg,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.05)),
-      var(--theme-card-bg, rgba(255, 255, 255, 0.02))
+      var(--theme-card-bg, var(--theme-card-bg)),
+      var(--theme-card-bg)
     );
     border-radius: 24px;
-    font-size: 32px;
-    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-stroke-strong);
   }
 
   .empty-state h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     max-width: 280px;
     line-height: 1.5;
   }
@@ -592,10 +592,10 @@
   .clear-filters-btn {
     height: 52px;
     padding: 0 24px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 24px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--theme-text, white);
     cursor: pointer;
@@ -603,7 +603,7 @@
   }
 
   .clear-filters-btn:hover {
-    background: color-mix(in srgb, var(--theme-text, #fff) 12%, transparent);
+    background: color-mix(in srgb, var(--theme-text) 12%, transparent);
   }
 
   /* ============================================================================
@@ -627,12 +627,12 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 20px 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .filter-panel-header h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
     color: var(--theme-text, white);
   }
@@ -643,17 +643,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 18px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-lg);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     color: var(--theme-text, white);
   }
 
@@ -673,11 +673,11 @@
 
   .filter-section h3 {
     margin: 0 0 12px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .option-grid {
@@ -695,26 +695,26 @@
     gap: 6px;
     min-height: 72px;
     padding: 12px 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .option-btn i {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     opacity: 0.7;
   }
 
   .option-btn span {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
   .option-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg);
     color: var(--theme-text, white);
   }
 
@@ -778,7 +778,7 @@
     display: flex;
     gap: 12px;
     padding: 16px 20px 24px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .reset-btn {
@@ -786,27 +786,27 @@
     height: 52px;
     padding: 0 24px;
     background: transparent;
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 14px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .reset-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg);
     color: var(--theme-text, white);
   }
 
   .apply-btn {
     flex: 1;
     height: 52px;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
     border: none;
     border-radius: 14px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: white;
     cursor: pointer;
@@ -831,7 +831,7 @@
     }
 
     .header h1 {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     /* Visual size reduced but touch target maintained via pseudo-element */
@@ -839,7 +839,7 @@
       width: 40px;
       height: 40px;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       position: relative;
     }
 
@@ -857,7 +857,7 @@
     .chip {
       height: 36px;
       padding: 0 12px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       border-radius: 18px;
       position: relative;
     }
@@ -893,13 +893,13 @@
     }
 
     .header h1 {
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
 
     .chip {
       height: 52px;
       padding: 0 20px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .content {
@@ -926,7 +926,7 @@
     }
 
     .header h1 {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .content {

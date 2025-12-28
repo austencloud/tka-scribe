@@ -45,26 +45,25 @@
     height: var(--min-touch-target);
     background: linear-gradient(
       135deg,
-      #10b981 0%,
-      color-mix(in srgb, #10b981 85%, #059669) 100%
+      var(--semantic-success) 0%,
+      color-mix(in srgb, var(--semantic-success) 85%, #059669) 100%
     ); /* Green gradient (matches composite format) */
-    border: 1px solid color-mix(in srgb, #10b981 30%, transparent);
-    backdrop-filter: blur(10px);
+    border: 1px solid color-mix(in srgb, var(--semantic-success) 30%, transparent);
     border-radius: 50%;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
-    box-shadow: 0 4px 12px color-mix(in srgb, #10b981 40%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--semantic-success) 40%, transparent);
   }
 
   .share-hub-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, #10b981 85%, #059669) 0%,
-      color-mix(in srgb, #10b981 70%, #059669) 100%
+      color-mix(in srgb, var(--semantic-success) 85%, #059669) 0%,
+      color-mix(in srgb, var(--semantic-success) 70%, #059669) 100%
     );
     transform: scale(1.05);
-    box-shadow: 0 6px 16px color-mix(in srgb, #10b981 60%, transparent);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--semantic-success) 60%, transparent);
   }
 
   .share-hub-button:active {
@@ -73,17 +72,17 @@
   }
 
   .share-hub-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #10b981);
+    outline: 2px solid var(--theme-accent, var(--semantic-success));
     outline-offset: 2px;
   }
 
   .share-hub-button.active {
-    background: linear-gradient(135deg, #10b981, #059669);
-    box-shadow: 0 6px 20px color-mix(in srgb, #10b981 70%, transparent);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--semantic-success) 70%, transparent);
   }
 
   .share-hub-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   /* Mobile responsive adjustments - ALWAYS 48px minimum per iOS/Android guidelines */
@@ -91,7 +90,7 @@
     .share-hub-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -99,11 +98,11 @@
     .share-hub-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .share-hub-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -111,11 +110,11 @@
     .share-hub-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .share-hub-button i {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -127,15 +126,15 @@
     }
 
     .share-hub-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
   /* High contrast mode */
   @media (prefers-contrast: high) {
     .share-hub-button {
-      background: color-mix(in srgb, #10b981 30%, transparent);
-      border: 2px solid color-mix(in srgb, #10b981 70%, transparent);
+      background: color-mix(in srgb, var(--semantic-success) 30%, transparent);
+      border: 2px solid color-mix(in srgb, var(--semantic-success) 70%, transparent);
     }
   }
 

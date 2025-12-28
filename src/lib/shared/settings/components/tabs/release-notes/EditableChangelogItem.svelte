@@ -287,7 +287,7 @@
     gap: 10px;
     flex: 1;
     padding: 10px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border: none;
     border-radius: 8px;
     text-align: left;
@@ -303,7 +303,7 @@
   }
 
   .change-item.clickable:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
+    background: var(--theme-card-hover-bg);
   }
 
   .change-item.clickable:active {
@@ -319,24 +319,24 @@
     width: 6px;
     height: 6px;
     margin-top: 6px;
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
     border-radius: 50%;
   }
 
   .change-text {
     flex: 1;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.5;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
   }
 
   .feedback-link-icon {
     flex-shrink: 0;
     padding: 8px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border: none;
-    color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.4));
-    font-size: 12px;
+    color: var(--theme-stroke-strong);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     border-radius: 8px;
     transition: all 0.2s;
@@ -348,8 +348,8 @@
   }
 
   .feedback-link-icon:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-accent, rgba(139, 92, 246, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-accent);
     transform: scale(1.05);
   }
 
@@ -364,9 +364,9 @@
     gap: 8px;
     width: 100%;
     padding: 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 30%, transparent);
     border-radius: 8px;
   }
 
@@ -374,10 +374,10 @@
     width: 100%;
     padding: 8px;
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 14px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-sm);
     line-height: 1.5;
     font-family: inherit;
     resize: vertical;
@@ -388,7 +388,7 @@
     outline: none;
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 50%,
+      var(--theme-accent, var(--theme-accent-strong)) 50%,
       transparent
     );
   }
@@ -399,10 +399,10 @@
   }
 
   .error-message {
-    font-size: 12px;
-    color: var(--semantic-error, #ef4444);
+    font-size: var(--font-size-compact);
+    color: var(--semantic-error, var(--semantic-error));
     padding: 6px 10px;
-    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    background: var(--semantic-error-dim);
     border-radius: 6px;
   }
 
@@ -420,13 +420,12 @@
     gap: 6px;
     min-height: 48px; /* WCAG AAA touch target */
     padding: 0 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.15s ease;
   }
@@ -436,9 +435,9 @@
   }
 
   .glass-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
     transform: translateY(-1px);
   }
 
@@ -452,61 +451,61 @@
   }
 
   .glass-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Primary variant (accent) */
   .glass-btn.primary {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 15%,
+      var(--theme-accent, var(--theme-accent-strong)) 15%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent, var(--theme-accent-strong)) 30%,
       transparent
     );
-    color: var(--theme-accent, #c4b5fd);
+    color: var(--theme-accent);
   }
 
   .glass-btn.primary:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 25%,
+      var(--theme-accent) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 45%,
+      var(--theme-accent, var(--theme-accent-strong)) 45%,
       transparent
     );
-    color: var(--theme-accent-strong, #ddd6fe);
+    color: var(--theme-accent-strong);
   }
 
   /* Danger variant (error) */
   .glass-btn.danger {
-    background: var(--semantic-error-dim, rgba(239, 68, 68, 0.1));
+    background: var(--semantic-error-dim);
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 25%,
+      var(--semantic-error, var(--semantic-error)) 25%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-error, #fca5a5) 90%, white);
+    color: color-mix(in srgb, var(--semantic-error) 90%, white);
   }
 
   .glass-btn.danger:hover:not(:disabled) {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 18%,
+      var(--semantic-error, var(--semantic-error)) 18%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 40%,
+      var(--semantic-error, var(--semantic-error)) 40%,
       transparent
     );
-    color: var(--semantic-error, #fca5a5);
+    color: var(--semantic-error);
   }
 
   /* Delete confirmation bar */
@@ -518,24 +517,24 @@
     padding: 8px 10px;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 8%,
+      var(--semantic-error, var(--semantic-error)) 8%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
     border-radius: 8px;
   }
 
   .confirm-text {
-    font-size: 13px;
-    color: var(--semantic-error, #fca5a5);
+    font-size: var(--font-size-compact);
+    color: var(--semantic-error);
     font-weight: 500;
   }
 
   .confirm-text .hint {
     font-weight: 400;
     opacity: 0.7;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .confirm-actions {

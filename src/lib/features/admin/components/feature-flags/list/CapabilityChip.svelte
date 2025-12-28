@@ -73,7 +73,7 @@
   }
 
   .capability-chip i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .capability-name {
@@ -85,16 +85,16 @@
     align-items: center;
     padding: 3px var(--space-2026-xs);
     border-radius: var(--radius-2026-xs);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .role-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .disabled-icon {
-    color: var(--semantic-error, #f87171);
-    font-size: 12px;
+    color: var(--semantic-error, var(--semantic-error));
+    font-size: var(--font-size-compact);
     margin-left: 2px;
   }
 </style>

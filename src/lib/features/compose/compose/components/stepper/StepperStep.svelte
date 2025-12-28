@@ -51,7 +51,7 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
@@ -59,7 +59,7 @@
 
   .stepper-step:hover {
     background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .stepper-step.active {

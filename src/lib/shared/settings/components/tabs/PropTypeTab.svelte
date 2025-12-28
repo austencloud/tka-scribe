@@ -452,15 +452,15 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
-    color: var(--theme-accent, #a855f7);
+      color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    color: var(--theme-accent);
   }
 
   .panel-header-text {
@@ -468,15 +468,15 @@
   }
 
   .panel-title {
-    font-size: 17px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
   }
 
   .panel-subtitle {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 3px 0 0 0;
   }
 
@@ -489,8 +489,8 @@
 
   .mode-hint {
     margin: 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
   }
 
@@ -503,9 +503,9 @@
 
   .section-label {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -531,8 +531,8 @@
     align-items: center;
     gap: clamp(10px, 2cqi, 14px);
     padding: clamp(16px, 2.5cqi, 24px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 16px;
     min-height: clamp(140px, 18cqi, 220px);
     height: 100%;
@@ -541,8 +541,8 @@
   }
 
   .prop-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
   }
 
@@ -553,36 +553,36 @@
   .prop-card.blue {
     border-color: color-mix(
       in srgb,
-      var(--prop-blue, #2e3192) 30%,
+      var(--prop-blue) 30%,
       transparent
     );
-    background: color-mix(in srgb, var(--prop-blue, #2e3192) 8%, transparent);
+    background: color-mix(in srgb, var(--prop-blue) 8%, transparent);
   }
 
   .prop-card.blue:hover {
     border-color: color-mix(
       in srgb,
-      var(--prop-blue, #2e3192) 50%,
+      var(--prop-blue) 50%,
       transparent
     );
-    background: color-mix(in srgb, var(--prop-blue, #2e3192) 15%, transparent);
+    background: color-mix(in srgb, var(--prop-blue) 15%, transparent);
   }
 
   .prop-card.red {
-    border-color: color-mix(in srgb, var(--prop-red, #ed1c24) 30%, transparent);
-    background: color-mix(in srgb, var(--prop-red, #ed1c24) 8%, transparent);
+    border-color: color-mix(in srgb, var(--prop-red) 30%, transparent);
+    background: color-mix(in srgb, var(--prop-red) 8%, transparent);
   }
 
   .prop-card.red:hover {
-    border-color: color-mix(in srgb, var(--prop-red, #ed1c24) 50%, transparent);
-    background: color-mix(in srgb, var(--prop-red, #ed1c24) 15%, transparent);
+    border-color: color-mix(in srgb, var(--prop-red) 50%, transparent);
+    background: color-mix(in srgb, var(--prop-red) 15%, transparent);
   }
 
   .hand-label {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: var(--theme-text-dim);
     text-transform: uppercase;
@@ -596,11 +596,11 @@
   }
 
   .hand-dot.blue {
-    background: var(--prop-blue, #2e3192);
+    background: var(--prop-blue);
   }
 
   .hand-dot.red {
-    background: var(--prop-red, #ed1c24);
+    background: var(--prop-red);
   }
 
   .prop-icon {
@@ -621,7 +621,7 @@
   }
 
   .prop-name {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text);
   }
@@ -642,7 +642,7 @@
     border-radius: 10px;
     color: var(--theme-text-dim);
     cursor: pointer;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     transition: all 0.2s ease;
   }
 

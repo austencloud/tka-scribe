@@ -136,12 +136,12 @@
     backdrop-filter: blur(24px) saturate(180%);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke-strong);
+    border-left: 1px solid var(--theme-stroke);
+    border-right: 1px solid var(--theme-stroke);
     box-shadow:
       0 -8px 32px rgba(0, 0, 0, 0.4),
-      0 -2px 8px rgba(0, 0, 0, 0.2),
+      0 -2px 8px var(--theme-shadow),
       0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 
     padding-bottom: env(safe-area-inset-bottom);
@@ -175,7 +175,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 18px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -191,19 +191,19 @@
   }
 
   .title-icon {
-    font-size: 22px;
+    font-size: var(--font-size-xl);
     color: rgba(139, 92, 246, 1);
   }
 
   .guide-header h2 {
     margin: 0;
-    font-size: 19px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
     color: rgba(255, 255, 255, 0.95);
   }
 
   .compact .guide-header h2 {
-    font-size: 17px;
+    font-size: var(--font-size-base);
   }
 
   .close-btn {
@@ -214,16 +214,16 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg);
     color: rgba(255, 255, 255, 0.95);
   }
 
@@ -248,7 +248,7 @@
     justify-content: center;
     padding: clamp(10px, 2.5cqh, 16px) clamp(14px, 4cqw, 20px);
     background: rgba(26, 26, 46, 0.98);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .compact .guide-footer {

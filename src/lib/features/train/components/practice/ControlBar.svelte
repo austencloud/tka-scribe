@@ -166,14 +166,14 @@
     flex: 1;
     min-height: var(--min-touch-target);
     padding: var(--space-2026-xs, 6px);
-    background: var(--theme-panel-bg, #252532);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md, 14px);
     box-shadow: var(
       --shadow-2026-sm,
-      0 1px 3px var(--theme-shadow, rgba(0, 0, 0, 0.06))
+      0 1px 3px var(--theme-shadow)
     );
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
@@ -190,9 +190,9 @@
   }
 
   .control-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, #2d2d3a);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text, var(--theme-text));
     transform: translateY(-1px);
   }
 
@@ -221,180 +221,180 @@
   .primary-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, #16a34a) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-success, #86efac) 95%, white);
+    color: color-mix(in srgb, var(--semantic-success) 95%, white);
   }
 
   .primary-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, #16a34a) 25%, transparent) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success) 25%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 50%,
+      var(--semantic-success, var(--semantic-success)) 50%,
       transparent
     );
-    color: var(--semantic-success, #86efac);
+    color: var(--semantic-success);
   }
 
   .primary-btn:disabled {
-    background: var(--theme-card-hover-bg, #2d2d3a);
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.06));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke);
+    color: var(--theme-text-dim);
   }
 
   /* Stop button (Red) */
   .primary-btn.playing {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, #dc2626) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-error, #f87171) 95%, white);
+    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 95%, white);
   }
 
   .primary-btn.playing:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-error, #dc2626) 25%, transparent) 100%
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 50%,
+      var(--semantic-error, var(--semantic-error)) 50%,
       transparent
     );
-    color: var(--semantic-error, #f87171);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   /* Mode button (Purple/Violet) - Brain/creativity vibe */
   .mode-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 15%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, #7c3aed) 15%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 30%,
+      var(--theme-accent, var(--theme-accent-strong)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--theme-accent, #c4b5fd) 95%, white);
+    color: color-mix(in srgb, var(--theme-accent) 95%, white);
   }
 
   .mode-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #8b5cf6) 25%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent, #7c3aed) 25%, transparent) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent-strong)) 25%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent) 25%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #8b5cf6) 50%,
+      var(--theme-accent, var(--theme-accent-strong)) 50%,
       transparent
     );
-    color: var(--theme-accent, #c4b5fd);
+    color: var(--theme-accent);
   }
 
   /* Sequence button (Blue) - Browse/explore vibe */
   .sequence-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-info, #2563eb) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-info, #93c5fd) 95%, white);
+    color: color-mix(in srgb, var(--semantic-info) 95%, white);
   }
 
   .sequence-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-info, #2563eb) 25%, transparent) 100%
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-info) 25%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 50%,
+      var(--semantic-info, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--semantic-info, #93c5fd);
+    color: var(--semantic-info);
   }
 
   /* Sequence button with sequence loaded - Green checkmark vibe */
   .sequence-btn.has-sequence {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, #16a34a) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-success, #86efac) 95%, white);
+    color: color-mix(in srgb, var(--semantic-success) 95%, white);
   }
 
   .sequence-btn.has-sequence:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, #22c55e) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-success, #16a34a) 25%, transparent) 100%
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-success) 25%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #22c55e) 50%,
+      var(--semantic-success, var(--semantic-success)) 50%,
       transparent
     );
-    color: var(--semantic-success, #86efac);
+    color: var(--semantic-success);
   }
 
   /* Settings button (Orange/Amber) - Configuration vibe */
   .settings-btn {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #fbbf24) 15%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 15%, transparent) 100%
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 15%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-warning, #fbbf24) 30%,
+      var(--semantic-warning, var(--semantic-warning)) 30%,
       transparent
     );
-    color: color-mix(in srgb, var(--semantic-warning, #fde047) 95%, white);
+    color: color-mix(in srgb, var(--semantic-warning) 95%, white);
   }
 
   .settings-btn:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-warning, #fbbf24) 25%, transparent) 0%,
-      color-mix(in srgb, var(--semantic-warning, #f59e0b) 25%, transparent) 100%
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 25%, transparent) 0%,
+      color-mix(in srgb, var(--semantic-warning, var(--semantic-warning)) 25%, transparent) 100%
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-warning, #fbbf24) 50%,
+      var(--semantic-warning, var(--semantic-warning)) 50%,
       transparent
     );
-    color: var(--semantic-warning, #fde047);
+    color: var(--semantic-warning);
   }
 
   /* ============================================

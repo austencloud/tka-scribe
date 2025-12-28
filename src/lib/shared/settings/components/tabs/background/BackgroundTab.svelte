@@ -264,20 +264,20 @@
     flex-shrink: 0;
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #a855f7) 35%, transparent);
-    color: var(--theme-accent, #a855f7);
+      color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    color: var(--theme-accent);
     box-shadow: 0 0 12px
-      color-mix(in srgb, var(--theme-accent, #a855f7) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent) 20%, transparent);
     transition: all 0.15s ease;
   }
 
   .settings-panel:hover .panel-icon {
     box-shadow: 0 0 16px
-      color-mix(in srgb, var(--theme-accent, #a855f7) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   .panel-header-text {
@@ -288,7 +288,7 @@
   .panel-title {
     font-size: clamp(15px, 3cqi, 17px);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
@@ -296,7 +296,7 @@
 
   .panel-subtitle {
     font-size: clamp(12px, 2.5cqi, 13px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 2px 0 0 0;
   }
 
@@ -324,7 +324,7 @@
     border-radius: 5px;
     font-size: clamp(10px, 2cqi, 12px);
     background: rgba(255, 255, 255, 0.06);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .category-label {
@@ -332,7 +332,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
   }
@@ -389,7 +389,7 @@
   .background-tab::-webkit-scrollbar-thumb {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 20%,
+      var(--theme-accent) 20%,
       transparent
     );
     border-radius: 3px;
@@ -398,7 +398,7 @@
   .background-tab::-webkit-scrollbar-thumb:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #a855f7) 35%,
+      var(--theme-accent) 35%,
       transparent
     );
   }

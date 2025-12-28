@@ -122,7 +122,7 @@
   const statusColor = $derived(
     playerState.isLoaded
       ? "rgba(100, 200, 100, 0.9)"
-      : "rgba(255, 255, 255, 0.6)"
+      : "var(--theme-text-dim)"
   );
 </script>
 
@@ -221,7 +221,7 @@
   }
 
   .title {
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: var(--font-size-sm);
     font-weight: bold;
     font-family: "Segoe UI", sans-serif;
@@ -241,7 +241,7 @@
   .position-slider {
     width: 100%;
     height: 6px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: var(--border-radius-sm);
     outline: none;
     cursor: pointer;
@@ -252,9 +252,9 @@
 
   .position-slider::-webkit-slider-track {
     height: 6px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
   }
 
   .position-slider::-webkit-slider-thumb {
@@ -268,21 +268,21 @@
     cursor: pointer;
     transition: all var(--transition-fast);
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .position-slider::-webkit-slider-thumb:hover {
     background: var(--primary-light);
     transform: scale(1.1);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .position-slider::-moz-range-track {
     height: 6px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
   }
 
   .position-slider::-moz-range-thumb {
@@ -313,13 +313,13 @@
     gap: var(--spacing-xs);
     font-size: var(--font-size-sm);
     font-family: "Segoe UI", sans-serif;
-    color: var(--theme-text, var(--text-color, rgba(255, 255, 255, 0.9)));
+    color: var(--theme-text, var(--text-color, var(--theme-text)));
   }
 
   .time-separator {
     color: var(
       --theme-text-dim,
-      var(--text-secondary, rgba(255, 255, 255, 0.6))
+      var(--text-secondary, var(--theme-text-dim))
     );
   }
 
@@ -343,16 +343,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(8px);
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .control-button:hover:not(:disabled) {
     background: var(--primary-light);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .control-button:active:not(:disabled) {
@@ -361,11 +360,11 @@
   }
 
   .control-button:disabled {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke));
     color: var(
       --theme-text-dim,
-      var(--text-secondary, rgba(255, 255, 255, 0.6))
+      var(--text-secondary, var(--theme-text-dim))
     );
     cursor: not-allowed;
     transform: none;
@@ -430,7 +429,7 @@
     .control-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: var(--font-size-compact, 12px); /* Touch target maintained */
+      font-size: var(--font-size-compact); /* Touch target maintained */
     }
   }
 </style>

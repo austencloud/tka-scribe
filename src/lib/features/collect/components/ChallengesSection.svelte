@@ -265,7 +265,7 @@
 
   .challenge-description {
     font-size: clamp(13px, 3.2cqi, 14px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     margin-bottom: clamp(12px, 3cqi, 16px);
     line-height: 1.5;
   }
@@ -292,7 +292,7 @@
 
   .progress-text {
     font-size: clamp(12px, 3cqi, 13px);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .challenge-reward {

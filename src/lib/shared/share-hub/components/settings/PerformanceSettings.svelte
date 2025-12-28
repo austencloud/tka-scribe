@@ -202,13 +202,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
     color: var(--theme-text, white);
   }
 
   .setting-header i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     opacity: 0.7;
   }
 
@@ -223,8 +223,8 @@
     align-items: center;
     gap: 14px;
     padding: 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -232,7 +232,7 @@
   }
 
   .mode-option i {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     opacity: 0.6;
   }
 
@@ -243,43 +243,43 @@
   }
 
   .mode-title {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
     color: var(--theme-text, white);
   }
 
   .mode-description {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .mode-option:hover {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    border-color: var(--theme-accent);
     transform: translateY(-2px);
   }
 
   .mode-option:focus-visible {
-    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
   .mode-option.active {
-    background: var(--theme-accent, rgba(74, 158, 255, 0.2));
-    border-color: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
   }
 
   .mode-option.active i {
     opacity: 1;
-    color: var(--theme-accent, #4a9eff);
+    color: var(--theme-accent);
   }
 
   .camera-select {
     width: 100%;
     padding: 12px 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 8px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     color: var(--theme-text, white);
     font-family: inherit;
     cursor: pointer;
@@ -287,12 +287,12 @@
   }
 
   .camera-select:hover {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    border-color: var(--theme-accent);
   }
 
   .camera-select:focus {
     outline: none;
-    border-color: var(--theme-accent, #4a9eff);
+    border-color: var(--theme-accent);
   }
 
   .permission-prompt,
@@ -302,23 +302,23 @@
     align-items: center;
     gap: 12px;
     padding: 24px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px dashed var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1.5px dashed var(--theme-stroke);
     border-radius: 12px;
     text-align: center;
   }
 
   .permission-prompt i,
   .no-cameras-message i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
   .permission-prompt p,
   .no-cameras-message p {
     margin: 0;
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .permission-button {
@@ -326,10 +326,10 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     border: none;
     border-radius: 8px;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     font-weight: 600;
     color: white;
     cursor: pointer;
@@ -337,7 +337,7 @@
   }
 
   .permission-button:hover {
-    background: var(--theme-accent-hover, #3d8de6);
+    background: var(--theme-accent-hover);
     transform: translateY(-2px);
   }
 
@@ -349,33 +349,33 @@
     gap: 12px;
     min-height: 150px;
     padding: 24px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 2px dashed var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 2px dashed var(--theme-stroke);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .upload-area:hover {
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.06));
+    border-color: var(--theme-accent);
+    background: var(--theme-card-hover-bg);
   }
 
   .upload-area i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     opacity: 0.4;
   }
 
   .upload-area p {
     margin: 0;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     color: var(--theme-text, white);
     font-weight: 500;
   }
 
   .upload-hint {
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .uploaded-file-info {
@@ -385,8 +385,8 @@
   }
 
   .uploaded-file-info i {
-    font-size: 32px;
-    color: var(--theme-accent, #4a9eff);
+    font-size: var(--font-size-3xl);
+    color: var(--theme-accent);
     opacity: 1;
   }
 
@@ -399,7 +399,7 @@
 
   .file-name {
     margin: 0;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     color: var(--theme-text, white);
     font-weight: 600;
     word-break: break-word;
@@ -407,8 +407,8 @@
 
   .file-size {
     margin: 0;
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Mobile optimization */

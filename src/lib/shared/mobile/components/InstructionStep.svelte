@@ -41,8 +41,8 @@
 
 <style>
   .step-card {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: clamp(8px, 2cqw, 12px);
     padding: clamp(10px, 2.5cqh, 14px);
     transition: all 0.2s ease;
@@ -53,8 +53,8 @@
   }
 
   .step-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .step-header {
@@ -82,7 +82,7 @@
       color-mix(in srgb, var(--theme-accent) 30%, transparent) 100%
     );
     border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    color: var(--theme-accent, rgba(139, 92, 246, 1));
+    color: var(--theme-accent);
     font-weight: 700;
     font-size: clamp(13px, 3cqw, 15px);
   }
@@ -129,7 +129,7 @@
     gap: clamp(6px, 1.5cqh, 8px);
     padding: clamp(12px, 3cqh, 20px);
     background: rgba(255, 255, 255, 0.03);
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
     min-height: 80px;
   }
 

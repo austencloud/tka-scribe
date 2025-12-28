@@ -91,7 +91,7 @@ and smooth hover animations.
           rx="3"
           stroke="currentColor"
           stroke-width="2.5"
-          fill="rgba(255,255,255,0.1)"
+          fill="var(--theme-stroke)"
         />
         <circle cx="15" cy="17" r="4" fill="currentColor" opacity="0.7" />
         <!-- Arrow -->
@@ -140,7 +140,7 @@ and smooth hover animations.
           rx="3"
           stroke="currentColor"
           stroke-width="2.5"
-          fill="rgba(255,255,255,0.1)"
+          fill="var(--theme-stroke)"
         />
         <circle cx="33" cy="33" r="4" fill="currentColor" opacity="0.7" />
       </svg>
@@ -155,7 +155,7 @@ and smooth hover animations.
           rx="2"
           stroke="currentColor"
           stroke-width="2"
-          fill="rgba(255,255,255,0.1)"
+          fill="var(--theme-stroke)"
         />
         <rect
           x="18"
@@ -165,7 +165,7 @@ and smooth hover animations.
           rx="2"
           stroke="currentColor"
           stroke-width="2"
-          fill="rgba(255,255,255,0.1)"
+          fill="var(--theme-stroke)"
         />
         <rect
           x="32"
@@ -199,7 +199,7 @@ and smooth hover animations.
           r="16"
           stroke="currentColor"
           stroke-width="2.5"
-          fill="rgba(255,255,255,0.1)"
+          fill="var(--theme-stroke)"
         />
         <text
           x="24"
@@ -248,8 +248,8 @@ and smooth hover animations.
     gap: 16px;
     width: 100%;
     padding: 20px 24px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 20px;
     backdrop-filter: blur(16px);
     cursor: pointer;
@@ -267,7 +267,7 @@ and smooth hover animations.
     transform: translateY(-3px) scale(1.01);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+      0 0 0 1px var(--theme-stroke) inset,
       0 0 30px color-mix(in srgb, var(--theme-accent) 10%, transparent);
   }
 
@@ -301,7 +301,7 @@ and smooth hover animations.
       color-mix(in srgb, var(--theme-accent) 15%, transparent)
     );
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     transition: all 280ms ease;
   }
@@ -352,7 +352,7 @@ and smooth hover animations.
       sans-serif
     );
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     line-height: 1.4;
   }
 
@@ -381,7 +381,7 @@ and smooth hover animations.
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(255, 255, 255, 0.08),
+      var(--theme-card-bg),
       transparent
     );
     transform: skewX(-20deg);

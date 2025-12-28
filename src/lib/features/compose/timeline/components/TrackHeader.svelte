@@ -204,8 +204,8 @@
     align-items: center;
     gap: 6px;
     padding: 0 8px;
-    background: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.5));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-elevated-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     transition: height 0.2s ease, opacity 0.2s ease;
     position: relative;
   }
@@ -222,9 +222,9 @@
     width: 4px;
     height: 60%;
     border-radius: 2px;
-    background: var(--track-color, var(--theme-accent, #868e96));
+    background: var(--track-color, var(--theme-accent));
     flex-shrink: 0;
-    box-shadow: 0 0 8px color-mix(in srgb, var(--track-color, var(--theme-accent, #868e96)) 40%, transparent);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--track-color, var(--theme-accent)) 40%, transparent);
   }
 
   .track-name {
@@ -234,9 +234,9 @@
   }
 
   .name-text {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -245,14 +245,14 @@
 
   .name-input {
     width: 100%;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-accent, #4a9eff);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-accent);
     border-radius: 4px;
     padding: 3px 6px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: var(--theme-text, white);
     outline: none;
-    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent, #4a9eff) 30%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 30%, transparent);
   }
 
   /* Status indicators - always visible when state is active */
@@ -266,7 +266,7 @@
     width: 16px;
     height: 16px;
     border-radius: 3px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -274,19 +274,19 @@
   }
 
   .status-badge.muted {
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     color: white;
   }
 
   .status-badge.solo {
-    background: var(--semantic-warning, #ffd43b);
+    background: var(--semantic-warning);
     color: #1a1a1a;
   }
 
   .status-badge.locked {
     background: rgba(255, 255, 255, 0.2);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
   }
 
   /* Controls menu container */
@@ -301,11 +301,11 @@
     min-width: var(--min-touch-target, 48px);
     min-height: var(--min-touch-target, 48px);
     border-radius: 8px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    border: 1px solid var(--theme-stroke);
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -313,15 +313,15 @@
   }
 
   .menu-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .menu-toggle.active {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 20%, transparent);
-    border-color: var(--theme-accent, #4a9eff);
-    color: var(--theme-accent, #4a9eff);
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-color: var(--theme-accent);
+    color: var(--theme-accent);
   }
 
   /* Controls panel - slides out */
@@ -333,11 +333,10 @@
     display: flex;
     gap: 2px;
     padding: 4px 6px;
-    background: var(--theme-card-bg, rgba(20, 20, 25, 0.95));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 6px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(12px);
     margin-right: 4px;
     animation: slideIn 0.15s ease-out;
     z-index: 10;
@@ -360,11 +359,11 @@
     min-width: var(--min-touch-target, 48px);
     min-height: var(--min-touch-target, 48px);
     border-radius: 8px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    border: 1px solid var(--theme-stroke);
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     display: flex;
     align-items: center;
@@ -374,24 +373,24 @@
   }
 
   .track-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text, var(--theme-text));
     transform: scale(1.05);
   }
 
   .track-btn.active {
-    background: var(--theme-accent, #4a9eff);
-    border-color: var(--theme-accent-strong, #3a7ed0);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent-strong);
     color: white;
-    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent, #4a9eff) 35%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 35%, transparent);
   }
 
   .track-btn.solo.active {
-    background: var(--semantic-warning, #ffd43b);
+    background: var(--semantic-warning);
     border-color: #ffb800;
     color: #1a1a1a;
-    box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-warning, #ffd43b) 35%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--semantic-warning) 35%, transparent);
   }
 
   .delete-btn {
@@ -402,9 +401,9 @@
     border-radius: 8px;
     border: 1px solid transparent;
     background: transparent;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -414,10 +413,10 @@
   }
 
   .delete-btn:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ff4444) 20%, transparent);
-    border-color: var(--semantic-error, #ff4444);
-    color: var(--semantic-error, #ff4444);
-    box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-error, #ff4444) 30%, transparent);
+    background: color-mix(in srgb, var(--semantic-error) 20%, transparent);
+    border-color: var(--semantic-error);
+    color: var(--semantic-error);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--semantic-error) 30%, transparent);
     transform: scale(1.05);
   }
 </style>

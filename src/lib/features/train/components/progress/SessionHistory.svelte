@@ -15,15 +15,15 @@
   function getGradeColor(grade: string): string {
     switch (grade.toUpperCase()) {
       case "S":
-        return "#fbbf24"; // Gold
+        return "var(--semantic-warning)"; // Gold
       case "A":
-        return "#22c55e"; // Green
+        return "var(--semantic-success)"; // Green
       case "B":
-        return "#3b82f6"; // Blue
+        return "var(--semantic-info)"; // Blue
       case "C":
-        return "#f59e0b"; // Orange
+        return "var(--semantic-warning)"; // Orange
       case "D":
-        return "#ef4444"; // Red
+        return "var(--semantic-error)"; // Red
       default:
         return "#9ca3af"; // Gray
     }
@@ -112,16 +112,16 @@
     flex-direction: column;
     gap: 0.75rem;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 0.75rem;
     transition: all 0.2s;
     cursor: pointer;
   }
 
   .session-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .session-header {
@@ -164,7 +164,7 @@
     font-size: 1.25rem;
     font-weight: 700;
     color: #000000;
-    box-shadow: 0 2px 4px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 2px 4px var(--theme-shadow, var(--theme-shadow));
     flex-shrink: 0;
   }
 

@@ -230,8 +230,8 @@ Displays a single preset with icon, name, summary, and action buttons
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -242,10 +242,10 @@ Displays a single preset with icon, name, summary, and action buttons
   }
 
   .preset-item:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 4px 12px var(--theme-shadow, var(--theme-shadow));
   }
 
   .preset-item:active {
@@ -253,7 +253,7 @@ Displays a single preset with icon, name, summary, and action buttons
   }
 
   .preset-icon {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -277,7 +277,7 @@ Displays a single preset with icon, name, summary, and action buttons
   }
 
   .preset-name {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--theme-text, white);
     overflow: hidden;
@@ -290,7 +290,7 @@ Displays a single preset with icon, name, summary, and action buttons
   .level-badge {
     padding: 3px 10px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.6px;
@@ -301,7 +301,7 @@ Displays a single preset with icon, name, summary, and action buttons
 
   .preset-summary {
     font-size: 12.5px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -323,12 +323,12 @@ Displays a single preset with icon, name, summary, and action buttons
   .edit-button {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent),
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 8%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent),
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 8%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 30%, transparent);
-    color: color-mix(in srgb, var(--semantic-info, #3b82f6) 90%, white);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 90%, white);
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
@@ -344,18 +344,18 @@ Displays a single preset with icon, name, summary, and action buttons
   .edit-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 25%, transparent),
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 15%, transparent)
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 25%, transparent),
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 15%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 50%,
+      var(--semantic-info, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     transform: translateY(-1px);
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--semantic-info, #3b82f6) 20%, transparent);
+      color-mix(in srgb, var(--semantic-info, var(--semantic-info)) 20%, transparent);
   }
 
   .edit-button svg {
@@ -366,12 +366,12 @@ Displays a single preset with icon, name, summary, and action buttons
   .delete-button {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent),
-      color-mix(in srgb, var(--semantic-error, #ef4444) 8%, transparent)
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 8%, transparent)
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
-    color: color-mix(in srgb, var(--semantic-error, #ef4444) 90%, white);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
+    color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 90%, white);
     cursor: pointer;
     padding: 10px;
     border-radius: 8px;
@@ -387,18 +387,18 @@ Displays a single preset with icon, name, summary, and action buttons
   .delete-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, #ef4444) 25%, transparent),
-      color-mix(in srgb, var(--semantic-error, #ef4444) 15%, transparent)
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent),
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 15%, transparent)
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 50%,
+      var(--semantic-error, var(--semantic-error)) 50%,
       transparent
     );
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     transform: translateY(-1px);
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--semantic-error, #ef4444) 20%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent);
   }
 
   .delete-button svg {
@@ -423,22 +423,22 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .preset-icon {
-      font-size: 28px;
+      font-size: var(--font-size-3xl);
     }
 
     .preset-name {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       min-width: 100px;
     }
 
     .level-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 2px 8px;
       letter-spacing: 0.5px;
     }
 
     .preset-summary {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .edit-button,
@@ -465,7 +465,7 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .preset-icon {
-      font-size: 24px;
+      font-size: var(--font-size-2xl);
     }
 
     .preset-info {
@@ -478,7 +478,7 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .preset-name {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
       min-width: 0;
     }
 
@@ -513,7 +513,7 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .preset-icon {
-      font-size: 22px;
+      font-size: var(--font-size-xl);
     }
 
     .preset-info {
@@ -529,13 +529,13 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .level-badge {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       padding: 2px 6px;
       letter-spacing: 0.4px;
     }
 
     .preset-summary {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       line-height: 1.5;
     }
 

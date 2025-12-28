@@ -72,13 +72,11 @@
 
 <!-- Modal overlay -->
 {#if show}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="modal-overlay"
     onclick={handleBackdropClick}
-    onkeydown={handleKeydown}
-    role="button"
-    tabindex="0"
-    aria-label="Close share options"
+    aria-hidden="true"
   >
     <div
       class="modal-content"
@@ -172,7 +170,7 @@
     max-width: 500px;
     max-height: 90vh;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 25px var(--theme-shadow);
     display: flex;
     flex-direction: column;
   }

@@ -190,7 +190,7 @@
     align-items: center;
     justify-content: center;
     height: 200px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-align: center;
     gap: 16px;
     padding: 24px;
@@ -207,7 +207,7 @@
       sans-serif
     );
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .error-state {
@@ -244,7 +244,7 @@
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-family: var(
       --font-sans,
       -apple-system,
@@ -270,7 +270,7 @@
   .loading-spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-left: 3px solid
       color-mix(in srgb, var(--theme-accent) 80%, transparent);
     border-radius: 50%;

@@ -235,7 +235,7 @@
     height: 56px;
     z-index: 9998;
     background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
-    border-bottom: 2px solid #3b82f6;
+    border-bottom: 2px solid var(--semantic-info);
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
   }
 
@@ -265,7 +265,7 @@
     background: rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     color: white;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
@@ -282,7 +282,7 @@
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
     color: white;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     min-height: 36px;
     padding: 0 36px;
   }
@@ -293,7 +293,7 @@
 
   .search-container :global(.search-input:focus) {
     border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 2px var(--theme-stroke);
   }
 
   .search-container :global(.search-icon) {
@@ -327,11 +327,11 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px 4px 4px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 999px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 12px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.15s;
     white-space: nowrap;
@@ -345,7 +345,7 @@
 
   .quick-chip.active {
     background: rgba(59, 130, 246, 0.4);
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     color: white;
   }
 
@@ -364,8 +364,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
   }
 
   .chip-name {
@@ -387,17 +387,17 @@
     align-items: center;
     gap: 6px;
     padding-right: 8px;
-    border-right: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: 1px solid var(--theme-stroke-strong);
     margin-right: 4px;
   }
 
   .preview-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
   }
 
   .preview-name {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: white;
     max-width: 120px;
@@ -411,7 +411,7 @@
     background: rgba(251, 191, 36, 0.5);
     border: 1px solid rgba(251, 191, 36, 0.6);
     border-radius: 4px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     color: white;
@@ -427,11 +427,11 @@
     border: 1px solid rgba(239, 68, 68, 0.6);
     border-radius: 6px;
     color: white;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
   }
 
   .hint-text {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
     font-style: italic;
   }
@@ -442,11 +442,11 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.15s;
   }
@@ -469,11 +469,11 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.15s;
   }

@@ -147,9 +147,9 @@
 
     .config-panel {
       padding: 1.5rem;
-      background: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
+      background: var(--theme-panel-bg);
       border-radius: 16px;
-      border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+      border: 1px solid var(--theme-stroke);
       box-shadow: var(--theme-panel-shadow, 0 12px 28px rgba(0, 0, 0, 0.35));
       backdrop-filter: blur(24px) saturate(180%);
       -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -162,7 +162,7 @@
       margin: 0;
       font-size: 1rem;
       font-weight: 600;
-      color: var(--theme-accent, #a5b4fc);
+      color: var(--theme-accent);
     }
 
     .config-field {
@@ -180,8 +180,8 @@
     .config-field input,
     .config-field select {
       padding: 0.875rem 1rem;
-      background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-      border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+      background: var(--theme-card-bg, var(--theme-card-bg));
+      border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
       border-radius: 10px;
       color: inherit;
       font-size: 1rem;
@@ -191,7 +191,7 @@
     .config-field input:focus,
     .config-field select:focus {
       outline: none;
-      border-color: var(--theme-accent, #6366f1);
+      border-color: var(--theme-accent, var(--theme-accent));
       background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
     }
 
@@ -205,18 +205,18 @@
       padding: 1.25rem;
       background: linear-gradient(
         135deg,
-        color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent),
-        color-mix(in srgb, var(--theme-accent, #6366f1) 10%, transparent)
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 10%, transparent)
       );
       border: 1px solid
-        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
       border-radius: 12px;
     }
 
     .workflow-info h4 {
       margin: 0 0 0.75rem 0;
       font-size: 0.95rem;
-      color: var(--theme-accent, #a5b4fc);
+      color: var(--theme-accent);
     }
 
     .workflow-info ol {
@@ -228,7 +228,7 @@
     }
 
     .workflow-info strong {
-      color: var(--theme-accent, #c4b5fd);
+      color: var(--theme-accent);
     }
 
     .desktop-controls {
@@ -257,7 +257,7 @@
     }
 
     .btn-record-desktop {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
+      background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
       color: white;
       box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
     }
@@ -274,28 +274,28 @@
     }
 
     .btn-pause-desktop {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      background: linear-gradient(135deg, var(--semantic-warning), #d97706);
       color: white;
     }
 
     .btn-snapshot-desktop {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      background: linear-gradient(135deg, var(--semantic-info), #2563eb);
       color: white;
     }
 
     .btn-stop-desktop {
       background: color-mix(
         in srgb,
-        var(--semantic-error, #ef4444) 18%,
-        var(--theme-panel-bg, rgba(0, 0, 0, 0.5))
+        var(--semantic-error, var(--semantic-error)) 18%,
+        var(--theme-panel-bg)
       );
       border: 1px solid
         color-mix(
           in srgb,
-          var(--semantic-error, #ef4444) 30%,
-          var(--theme-stroke, rgba(255, 255, 255, 0.08))
+          var(--semantic-error, var(--semantic-error)) 30%,
+          var(--theme-stroke, var(--theme-card-bg))
         );
-      color: var(--theme-text, rgba(255, 255, 255, 0.92));
+      color: var(--theme-text);
     }
   }
 </style>

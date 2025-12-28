@@ -256,7 +256,7 @@ Shows box and diamond grids side-by-side with animations
     gap: 1rem;
     padding: 1.5rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--theme-stroke);
     border-radius: 16px;
   }
 
@@ -385,7 +385,7 @@ Shows box and diamond grids side-by-side with animations
     gap: 1.5rem;
     margin-top: 1rem;
     padding: 0.75rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
   }
 
@@ -421,7 +421,7 @@ Shows box and diamond grids side-by-side with animations
   .helper-text {
     text-align: center;
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-style: italic;
   }
 

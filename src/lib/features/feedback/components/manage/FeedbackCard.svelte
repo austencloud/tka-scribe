@@ -324,17 +324,17 @@
     --fb-radius-sm: 8px;
     --fb-radius-md: 12px;
 
-    --fb-primary: var(--semantic-success, #10b981);
-    --fb-error: var(--semantic-error, #ef4444);
-    --fb-surface: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    --fb-surface-hover: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07));
-    --fb-border: var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    --fb-border-hover: var(--theme-stroke-strong, rgba(255, 255, 255, 0.12));
-    --fb-text: var(--theme-text, rgba(255, 255, 255, 0.95));
-    --fb-text-muted: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    --fb-primary: var(--semantic-success, var(--semantic-success));
+    --fb-error: var(--semantic-error, var(--semantic-error));
+    --fb-surface: var(--theme-card-bg);
+    --fb-surface-hover: var(--theme-card-hover-bg);
+    --fb-border: var(--theme-stroke);
+    --fb-border-hover: var(--theme-stroke-strong);
+    --fb-text: var(--theme-text);
+    --fb-text-muted: var(--theme-text-dim);
     --fb-text-subtle: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      var(--theme-text-dim) 80%,
       transparent
     );
 
@@ -421,7 +421,7 @@
   @media (hover: hover) and (pointer: fine) {
     .feedback-card:hover:not(.swiping) {
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 16px var(--theme-shadow);
     }
 
     .feedback-card:active:not(.swiping) {
@@ -432,12 +432,12 @@
   .feedback-card.selected {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 10%,
+      var(--semantic-success, var(--semantic-success)) 10%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 30%,
+      var(--semantic-success, var(--semantic-success)) 30%,
       transparent
     );
   }
@@ -498,7 +498,7 @@
     background: color-mix(in srgb, var(--type-color) 15%, transparent);
     border-radius: var(--fb-radius-sm);
     color: var(--type-color);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     transition: all 0.2s var(--spring-bounce);
   }
 
@@ -631,7 +631,7 @@
     .card-type {
       width: 44px;
       height: 44px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .card-title {
@@ -652,7 +652,7 @@
     .card-type {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .card-title {

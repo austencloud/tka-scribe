@@ -130,14 +130,14 @@
     position: relative;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 80%,
+      var(--theme-panel-bg) 80%,
       transparent
     );
     border: 1.5px solid
       color-mix(
         in srgb,
         var(--active-type-color) 20%,
-        var(--theme-stroke, rgba(255, 255, 255, 0.1))
+        var(--theme-stroke, var(--theme-stroke))
       );
     border-radius: clamp(8px, 1.8cqi, 12px);
     transition:
@@ -154,7 +154,7 @@
   }
 
   .textarea-wrapper:focus-within {
-    border-color: var(--active-type-color, var(--theme-accent, #3b82f6));
+    border-color: var(--active-type-color, var(--theme-accent, var(--semantic-info)));
     background: color-mix(
       in srgb,
       var(--active-type-color) 5%,
@@ -163,18 +163,18 @@
   }
 
   .textarea-wrapper:has(.field-textarea.has-error) {
-    border-color: var(--semantic-error, #ef4444);
+    border-color: var(--semantic-error, var(--semantic-error));
   }
 
   .textarea-wrapper:has(.field-textarea.streaming) {
-    border-color: var(--theme-accent-strong, #8b5cf6);
+    border-color: var(--theme-accent-strong);
     background: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 8%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 8%,
       rgba(0, 0, 0, 0.25)
     );
     box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent);
   }
 
   .field-textarea {
@@ -183,7 +183,7 @@
     padding-right: clamp(48px, 10cqi, 60px); /* Room for voice button */
     background: transparent;
     border: none;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     font-size: 1rem;
     font-family: inherit;
     min-height: clamp(72px, 15cqi, 100px);
@@ -198,7 +198,7 @@
   .field-textarea::placeholder {
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      var(--theme-text-dim) 80%,
       transparent
     );
   }
@@ -215,14 +215,14 @@
     border: 1px solid
       color-mix(
         in srgb,
-        var(--semantic-error, #ff4444) 40%,
-        var(--theme-stroke, rgba(255, 255, 255, 0.15))
+        var(--semantic-error) 40%,
+        var(--theme-stroke, var(--theme-stroke-strong))
       );
     border-radius: clamp(6px, 1.5cqi, 8px);
     color: color-mix(
       in srgb,
-      var(--semantic-error, #ff4444) 70%,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.7))
+      var(--semantic-error) 70%,
+      var(--theme-text-dim, var(--theme-text-dim))
     );
     cursor: pointer;
     transition:
@@ -235,11 +235,11 @@
   .clear-text-btn:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ff4444) 15%,
+      var(--semantic-error) 15%,
       transparent
     );
-    border-color: var(--semantic-error, #ff4444);
-    color: var(--semantic-error, #ff4444);
+    border-color: var(--semantic-error);
+    color: var(--semantic-error);
   }
 
   .clear-text-btn:active {
@@ -273,21 +273,21 @@
     font-weight: 500;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     transition: color 150ms ease;
   }
 
   .char-count.met {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .field-error {
     margin: 0;
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
     font-weight: 500;
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .draft-saved {
@@ -296,7 +296,7 @@
     gap: 4px;
     font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
     font-weight: 500;
-    color: #10b981;
+    color: var(--semantic-success);
     animation: fadeInOut 2s ease-in-out;
   }
 

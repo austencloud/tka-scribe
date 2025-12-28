@@ -67,7 +67,7 @@
     min-height: 60px; /* Consistent height across all panels */
     padding: 12px 16px;
     background: rgba(15, 20, 30, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     gap: 12px;
     flex-shrink: 0; /* Prevent header from shrinking */
   }
@@ -93,7 +93,7 @@
 
   .header-title h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     white-space: nowrap;
@@ -103,8 +103,8 @@
   }
 
   .header-title .subtitle {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     font-weight: 400;
   }
 
@@ -138,17 +138,17 @@
     border: none;
     border-radius: 50%; /* Circular buttons */
     color: #ffffff; /* White icons */
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     cursor: pointer;
     transition: all var(--transition-normal, 0.3s cubic-bezier(0.4, 0, 0.2, 1));
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   :global(.panel-header .action-button:hover),
   .close-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   :global(.panel-header .action-button:active),
@@ -165,7 +165,7 @@
 
   :global(.panel-header .action-button i),
   .close-button i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   /* Close button - neutral gray gradient */
@@ -175,7 +175,7 @@
       rgba(100, 100, 120, 0.85),
       rgba(70, 70, 90, 0.85)
     );
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .close-button:hover {
@@ -265,11 +265,11 @@
   }
 
   .panel-header.mobile .header-title h2 {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .panel-header.mobile .header-title .subtitle {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Mobile buttons: 48px per iOS/Android accessibility guidelines */
@@ -280,12 +280,12 @@
       min-height: var(--min-touch-target);
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     :global(.panel-header .action-button i),
     .panel-header .close-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -296,12 +296,12 @@
       min-height: var(--min-touch-target);
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     :global(.panel-header .action-button i),
     .panel-header .close-button i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -318,7 +318,7 @@
 
     :global(.panel-header .action-button i),
     .panel-header .close-button i {
-      font-size: 14px; /* Slightly smaller icon, but same touch target */
+      font-size: var(--font-size-sm); /* Slightly smaller icon, but same touch target */
     }
   }
 

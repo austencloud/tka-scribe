@@ -38,10 +38,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     cursor: pointer;
     transition: all 0.15s;
     font-size: 1.1rem;
@@ -49,13 +49,13 @@
   }
 
   .icon-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .icon-btn.active {
-    background: var(--theme-accent, #38bdf8);
-    border-color: var(--theme-accent, #38bdf8);
+    background: var(--theme-accent);
+    border-color: var(--theme-accent);
     color: white;
   }
 

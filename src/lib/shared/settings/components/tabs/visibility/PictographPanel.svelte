@@ -159,7 +159,7 @@
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
     transition: all 0.15s ease;
   }
@@ -177,9 +177,9 @@
   }
 
   .panel-title {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
     white-space: nowrap;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
@@ -199,7 +199,7 @@
     border: 1px solid color-mix(in srgb, #818cf8 30%, transparent);
     border-radius: 50%;
     color: #818cf8;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.15s ease;
     -webkit-tap-highlight-color: transparent;
@@ -226,7 +226,7 @@
     width: 100%;
     aspect-ratio: 1;
     flex-shrink: 0;
-    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 8px var(--theme-shadow);
   }
 
   .preview-frame :global(.pictograph-with-visibility),
@@ -255,11 +255,11 @@
   }
 
   .group-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     padding-left: 2px;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
@@ -281,7 +281,7 @@
     border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     color: var(--theme-text-dim);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
@@ -305,44 +305,44 @@
   .toggle-btn.active {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 25%,
+      var(--theme-accent, var(--theme-accent)) 25%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 45%,
+      var(--theme-accent, var(--theme-accent)) 45%,
       transparent
     );
     color: white;
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
       0 4px 12px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
   }
 
   .toggle-btn.active:hover {
     background: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 35%,
+      var(--theme-accent) 35%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #6366f1) 55%,
+      var(--theme-accent, var(--theme-accent)) 55%,
       transparent
     );
     box-shadow:
       0 0 0 1px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent),
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
       0 4px 16px
-        color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent);
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
   }
 
   .toggle-btn:focus-visible,
   .help-btn:focus-visible {
     outline: 2px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 50%, transparent);
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
@@ -361,7 +361,7 @@
     }
 
     .toggle-btn.active {
-      border-color: var(--theme-accent, #6366f1);
+      border-color: var(--theme-accent, var(--theme-accent));
     }
 
     .toggle-btn:focus-visible {

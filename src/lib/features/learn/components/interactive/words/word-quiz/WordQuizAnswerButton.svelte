@@ -48,7 +48,7 @@ WordQuizAnswerButton - Single answer option with letter prefix
     align-items: center;
     gap: 0.75rem;
     padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: 2px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     color: white;
@@ -80,7 +80,7 @@ WordQuizAnswerButton - Single answer option with letter prefix
     border-radius: 6px;
     font-size: 0.875rem;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 

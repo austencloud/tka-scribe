@@ -140,11 +140,10 @@
     max-width: 100%;
     box-sizing: border-box;
     padding: 16px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     overflow: hidden;
-    backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
   }
@@ -169,25 +168,25 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    background: color-mix(in srgb, var(--semantic-info, #8b5cf6) 25%, var(--theme-card-bg, rgba(0, 0, 0, 0.3)));
+    background: color-mix(in srgb, var(--semantic-info, var(--theme-accent-strong)) 25%, var(--theme-card-bg, var(--theme-shadow)));
     border-radius: 10px;
-    color: var(--semantic-info, #8b5cf6);
-    font-size: 14px;
+    color: var(--semantic-info, var(--theme-accent-strong));
+    font-size: var(--font-size-sm);
   }
 
   .widget-header h3 {
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .mark-read-btn {
     padding: 4px 10px;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.6875rem;
     font-weight: 500;
     cursor: pointer;
@@ -195,9 +194,9 @@
   }
 
   .mark-read-btn:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
+    border-color: var(--theme-stroke);
   }
 
   .widget-content {
@@ -220,19 +219,19 @@
   }
 
   .empty-state i {
-    font-size: 24px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: var(--font-size-2xl);
+    color: var(--theme-text-dim);
   }
 
   .empty-state p {
     margin: 0;
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty-hint {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .conversation-list {
@@ -249,7 +248,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.2));
+    background: var(--theme-card-bg);
     border: 1px solid transparent;
     border-radius: 10px;
     cursor: pointer;
@@ -262,13 +261,13 @@
   }
 
   .conversation-item:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke));
   }
 
   .conversation-item.unread {
-    background: color-mix(in srgb, var(--semantic-info, #8b5cf6) 12%, var(--theme-card-bg, rgba(0, 0, 0, 0.2)));
-    border-color: color-mix(in srgb, var(--semantic-info, #8b5cf6) 25%, transparent);
+    background: color-mix(in srgb, var(--semantic-info, var(--theme-accent-strong)) 12%, var(--theme-card-bg, var(--theme-shadow)));
+    border-color: color-mix(in srgb, var(--semantic-info, var(--theme-accent-strong)) 25%, transparent);
   }
 
   .conversation-content {
@@ -289,7 +288,7 @@
   .conversation-name {
     font-size: 0.8125rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -297,13 +296,13 @@
 
   .conversation-time {
     font-size: 0.6875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     flex-shrink: 0;
   }
 
   .conversation-preview {
     font-size: 0.75rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -312,7 +311,7 @@
   .unread-dot {
     width: 8px;
     height: 8px;
-    background: var(--semantic-info, #8b5cf6);
+    background: var(--semantic-info, var(--theme-accent-strong));
     border-radius: 50%;
     flex-shrink: 0;
   }
@@ -325,10 +324,10 @@
     min-height: 40px;
     padding: 10px 16px;
     margin-top: 8px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 10px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 0.8125rem;
     font-weight: 500;
     cursor: pointer;
@@ -337,12 +336,12 @@
   }
 
   .view-all-btn:hover {
-    background: var(--theme-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .view-all-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   @media (max-width: 768px) {
@@ -354,7 +353,7 @@
     .header-icon {
       width: 32px;
       height: 32px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .widget-header h3 {

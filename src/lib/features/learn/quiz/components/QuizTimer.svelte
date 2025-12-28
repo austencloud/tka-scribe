@@ -180,7 +180,7 @@
         cy="60"
         r="54"
         fill="transparent"
-        stroke="rgba(255, 255, 255, 0.1)"
+        stroke="var(--theme-stroke)"
         stroke-width="4"
       />
       <circle
@@ -292,21 +292,21 @@
 
   /* Timer States */
   .quiz-timer.warning .progress-ring-progress {
-    stroke: #f59e0b;
+    stroke: var(--semantic-warning);
     animation: warningPulse 1s ease-in-out infinite alternate;
   }
 
   .quiz-timer.warning .time-text {
-    color: #f59e0b;
+    color: var(--semantic-warning);
   }
 
   .quiz-timer.critical .progress-ring-progress {
-    stroke: #ef4444;
+    stroke: var(--semantic-error);
     animation: criticalPulse 0.5s ease-in-out infinite alternate;
   }
 
   .quiz-timer.critical .time-text {
-    color: #ef4444;
+    color: var(--semantic-error);
     animation: criticalPulse 0.5s ease-in-out infinite alternate;
   }
 
@@ -374,11 +374,11 @@
     }
 
     .quiz-timer.warning .progress-ring-progress {
-      stroke: #fbbf24;
+      stroke: var(--semantic-warning);
     }
 
     .quiz-timer.critical .progress-ring-progress {
-      stroke: #f87171;
+      stroke: var(--semantic-error);
     }
   }
 </style>

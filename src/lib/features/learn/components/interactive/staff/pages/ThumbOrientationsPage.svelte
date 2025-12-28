@@ -154,7 +154,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
     border-radius: 50%;
     font-size: 1.5rem;
     background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .concept-summary {
@@ -174,9 +174,9 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
 
   .example-label {
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 8px;
   }
 
@@ -188,7 +188,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -244,7 +244,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
   .thumb-card.in {
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.25);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .thumb-card.out {
@@ -265,7 +265,7 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
   .thumb-card small {
     font-size: 0.75rem;
     opacity: 0.7;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .next-button {
@@ -280,7 +280,6 @@ ThumbOrientationsPage - Page 2: Thumb In/Out orientations
       rgba(34, 211, 238, 0.3) 0%,
       rgba(6, 182, 212, 0.3) 100%
     );
-    backdrop-filter: blur(20px);
     border: 2px solid rgba(34, 211, 238, 0.5);
     border-radius: 12px;
     color: white;

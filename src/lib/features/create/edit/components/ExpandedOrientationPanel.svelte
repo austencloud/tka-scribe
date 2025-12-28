@@ -142,7 +142,7 @@
 
   /* Color variants */
   .orientation-panel.blue {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     border-style: solid;
     background: linear-gradient(
       135deg,
@@ -152,7 +152,7 @@
   }
 
   .orientation-panel.red {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     border-style: solid;
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, white 100%);
   }
@@ -199,23 +199,23 @@
   }
 
   .orientation-panel.compact .orientation-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .orientation-panel.balanced .orientation-label {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   .orientation-panel.comfortable .orientation-label {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .orientation-panel.blue .orientation-label {
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .orientation-panel.red .orientation-label {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .current-badge {
@@ -229,17 +229,17 @@
 
   .orientation-panel.compact .current-badge {
     padding: 2px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .orientation-panel.balanced .current-badge {
     padding: 2px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .orientation-panel.comfortable .current-badge {
     padding: 3px 8px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .close-btn {
@@ -259,7 +259,7 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .orientation-panel.balanced .close-btn {
@@ -267,7 +267,7 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .orientation-panel.comfortable .close-btn {
@@ -275,7 +275,7 @@
     height: var(--min-touch-target);
     min-width: var(--min-touch-target);
     min-height: var(--min-touch-target);
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .close-btn:hover {
@@ -323,35 +323,35 @@
 
   .orientation-panel.compact .orientation-btn {
     min-height: var(--min-touch-target);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     border-width: 2px;
   }
 
   .orientation-panel.balanced .orientation-btn {
     min-height: var(--min-touch-target);
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     border-width: 3px;
   }
 
   .orientation-panel.comfortable .orientation-btn {
     min-height: var(--min-touch-target);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     border-width: 4px;
   }
 
   .orientation-panel.blue .orientation-btn {
-    border-color: #3b82f6;
+    border-color: var(--semantic-info);
     border-style: solid;
   }
 
   .orientation-panel.red .orientation-btn {
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     border-style: solid;
   }
 
   .orientation-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .orientation-btn:active {
@@ -360,12 +360,12 @@
   }
 
   .orientation-panel.blue .orientation-btn.active {
-    background: #3b82f6;
+    background: var(--semantic-info);
     color: white;
   }
 
   .orientation-panel.red .orientation-btn.active {
-    background: #ef4444;
+    background: var(--semantic-error);
     color: white;
   }
 </style>

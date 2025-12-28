@@ -160,7 +160,7 @@ Shows both grids simultaneously for comparison
 
   .grid-description {
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-left: 3px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
   }
@@ -242,7 +242,7 @@ Shows both grids simultaneously for comparison
 
   .action-hint {
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-align: center;
     margin: 0;
     font-style: italic;
@@ -287,7 +287,7 @@ Shows both grids simultaneously for comparison
 
   .merged-explanation p {
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     margin: 0 0 1rem 0;
     line-height: 1.6;
     max-width: 600px;

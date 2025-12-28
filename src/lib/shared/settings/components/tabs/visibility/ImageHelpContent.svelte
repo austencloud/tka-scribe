@@ -19,7 +19,7 @@
       label: "Beat Numbers",
       description: "Numbered labels beneath each pictograph.",
       icon: "fa-list-ol",
-      color: "#60a5fa",
+      color: "var(--semantic-info)",
     },
     {
       id: "startPosition",
@@ -33,7 +33,7 @@
       label: "Difficulty Level",
       description: "Difficulty rating badge on the image.",
       icon: "fa-chart-line",
-      color: "#fbbf24",
+      color: "var(--semantic-warning)",
     },
     {
       id: "userInfo",
@@ -148,7 +148,7 @@
   }
 
   .preview-visual i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     color: #34d399;
     filter: drop-shadow(0 0 16px rgba(52, 211, 153, 0.4));
   }
@@ -165,15 +165,15 @@
 
   .preview-title {
     display: block;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin-bottom: 6px;
   }
 
   .preview-subtitle {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     max-width: 280px;
     line-height: 1.5;
@@ -184,9 +184,9 @@
      ======================================== */
   .section-title {
     margin: 0 0 16px 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
@@ -233,7 +233,7 @@
     border: 1px solid color-mix(in srgb, var(--element-color) 30%, transparent);
     border-radius: 10px;
     color: var(--element-color);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .element-info {
@@ -243,15 +243,15 @@
 
   .element-label {
     display: block;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin-bottom: 4px;
   }
 
   .element-description {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
     margin: 0;
   }
@@ -271,7 +271,7 @@
 
   .use-cases > i {
     color: #34d399;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     margin-top: 2px;
     flex-shrink: 0;
   }
@@ -283,7 +283,7 @@
 
   .use-cases-title {
     display: block;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: #34d399;
     margin-bottom: 12px;
@@ -311,14 +311,14 @@
   }
 
   .use-case-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .use-case-desc {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 </style>

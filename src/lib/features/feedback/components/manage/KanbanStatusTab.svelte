@@ -44,10 +44,10 @@
     gap: clamp(2px, 0.5cqi, 6px);
     min-height: clamp(48px, 14cqi, 64px);
     padding: clamp(8px, 2cqi, 12px) clamp(6px, 1.5cqi, 12px);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
     border: none;
     border-radius: clamp(12px, 3cqi, 18px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: clamp(0.875rem, 2.5cqi, 1rem);
     font-weight: 600;
     cursor: pointer;
@@ -62,8 +62,8 @@
   }
 
   .status-tab:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .status-tab:active {

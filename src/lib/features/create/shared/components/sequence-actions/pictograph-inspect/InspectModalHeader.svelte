@@ -70,7 +70,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 24px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     background: rgba(0, 0, 0, 0.3);
     flex-wrap: wrap;
     gap: 12px;
@@ -113,7 +113,7 @@
   }
 
   .calculating-badge {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.85rem;
   }
 
@@ -157,7 +157,7 @@
   .copy-json-btn {
     background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .copy-json-btn:hover {
@@ -170,8 +170,8 @@
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.6);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;

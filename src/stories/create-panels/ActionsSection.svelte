@@ -136,7 +136,7 @@
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     color: white;
     box-shadow:
       0 4px 16px rgba(59, 130, 246, 0.4),
@@ -178,8 +178,8 @@
   .action-btn.secondary {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.12),
-      rgba(255, 255, 255, 0.08)
+      var(--theme-card-hover-bg),
+      var(--theme-card-bg)
     );
     color: rgba(255, 255, 255, 0.95);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
@@ -226,14 +226,14 @@
   .action-btn.social {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08),
+      var(--theme-card-bg),
       rgba(255, 255, 255, 0.04)
     );
     color: rgba(255, 255, 255, 0.95);
     border: 1.5px solid rgba(255, 255, 255, 0.18);
     box-shadow:
       0 2px 8px rgba(0, 0, 0, 0.08),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 
   .action-btn.social::before {
@@ -284,7 +284,7 @@
     transform: scale(1.03) translateY(-2px);
     box-shadow:
       0 8px 24px rgba(188, 24, 136, 0.5),
-      0 4px 12px rgba(0, 0, 0, 0.2),
+      0 4px 12px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
 

@@ -71,10 +71,10 @@
     gap: 6px;
     min-height: 36px;
     padding: 6px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.75rem;
     font-weight: 500;
     cursor: pointer;
@@ -83,7 +83,7 @@
   }
 
   .mode-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
   }
 
@@ -108,9 +108,9 @@
 
   @media (hover: hover) and (pointer: fine) {
     .mode-btn:hover:not(.active) {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.85));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
     }
   }
 

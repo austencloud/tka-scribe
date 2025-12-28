@@ -16,7 +16,7 @@ Hides header when card height is below 65px for space optimization
     option2,
     activeOption,
     onToggle,
-    color = "#3b82f6",
+    color = "var(--semantic-info)",
     shadowColor = "0deg 0% 0%",
     gridColumnSpan = 2,
     cardIndex = 0,
@@ -133,7 +133,7 @@ Hides header when card height is below 65px for space optimization
       0 2px 4px hsl(var(--shadow-color) / 0.12),
       0 4px 8px hsl(var(--shadow-color) / 0.1),
       /* Inner highlight for 3D effect */ inset 0 1px 0
-        var(--theme-stroke, rgba(255, 255, 255, 0.2));
+        var(--theme-stroke);
 
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: visible; /* Allow hover effects to overflow and pop over neighbors */
@@ -155,9 +155,9 @@ Hides header when card height is below 65px for space optimization
     height: 60%; /* Cover top 60% */
     background: linear-gradient(
       180deg,
-      color-mix(in srgb, var(--theme-text, #fff) 30%, transparent) 0%,
-      color-mix(in srgb, var(--theme-text, #fff) 15%, transparent) 40%,
-      color-mix(in srgb, var(--theme-text, #fff) 5%, transparent) 70%,
+      color-mix(in srgb, var(--theme-text) 30%, transparent) 0%,
+      color-mix(in srgb, var(--theme-text) 15%, transparent) 40%,
+      color-mix(in srgb, var(--theme-text) 5%, transparent) 70%,
       transparent 100%
     );
     border-radius: 16px 16px 0 0;
@@ -185,7 +185,7 @@ Hides header when card height is below 65px for space optimization
         0 4px 8px hsl(var(--shadow-color) / 0.1),
         0 8px 16px hsl(var(--shadow-color) / 0.08),
         0 16px 24px hsl(var(--shadow-color) / 0.06),
-        inset 0 1px 0 var(--theme-stroke, rgba(255, 255, 255, 0.2));
+        inset 0 1px 0 var(--theme-stroke);
     }
   }
 

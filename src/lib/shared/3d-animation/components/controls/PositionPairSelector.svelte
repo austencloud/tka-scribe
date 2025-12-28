@@ -49,7 +49,7 @@
 
   .arrow {
     font-size: var(--font-size-xl, 1.25rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin-top: 1rem;
     flex-shrink: 0;
   }

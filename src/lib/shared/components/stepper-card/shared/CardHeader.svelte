@@ -41,7 +41,7 @@ Reusable header for all card types with consistent styling
 
   .card-title {
     font-weight: 600;
-    color: var(--text-color, rgba(255, 255, 255, 0.9));
+    color: var(--text-color, var(--theme-text));
     text-align: center;
     letter-spacing: 0.2px;
     text-transform: uppercase;

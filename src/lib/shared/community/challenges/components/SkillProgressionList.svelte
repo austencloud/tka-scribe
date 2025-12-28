@@ -49,8 +49,8 @@
   // Category colors
   const categoryColors: Record<string, string> = {
     letter_mastery: "#06b6d4",
-    concept_mastery: "#8b5cf6",
-    practice_goals: "#f59e0b",
+    concept_mastery: "var(--theme-accent-strong)",
+    practice_goals: "var(--semantic-warning)",
   };
 
   function getCategoryColor(category: string): string {
@@ -183,23 +183,23 @@
     background: color-mix(in srgb, var(--category-color) 20%, transparent);
     border-radius: 8px;
     color: var(--category-color);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     flex-shrink: 0;
   }
 
   .compact .skill-icon {
     width: 32px;
     height: 32px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .letter-icon {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 700;
   }
 
   .compact .letter-icon {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .skill-info {
@@ -219,7 +219,7 @@
 
   .skill-header h4 {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     overflow: hidden;
@@ -230,23 +230,23 @@
 
   .level-badge {
     padding: 1px 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     white-space: nowrap;
   }
 
   .level-badge.mastered {
     background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    color: var(--semantic-success);
   }
 
   .skill-description {
     margin: 0;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -275,17 +275,17 @@
   }
 
   .progress-fill.completed {
-    background: #22c55e;
+    background: var(--semantic-success);
   }
 
   .progress-text {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     white-space: nowrap;
   }
 
   .progress-text i {
-    color: #22c55e;
+    color: var(--semantic-success);
     margin-right: 3px;
   }
 
@@ -296,8 +296,8 @@
     padding: 3px 6px;
     background: rgba(245, 158, 11, 0.15);
     border-radius: 12px;
-    color: #f59e0b;
-    font-size: 12px;
+    color: var(--semantic-warning);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     flex-shrink: 0;
   }
@@ -314,12 +314,12 @@
   }
 
   .empty-state i {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
   }
 
   .empty-state p {
     margin: 0;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* ============================================================================
@@ -348,22 +348,22 @@
     .skill-icon {
       width: 40px;
       height: 40px;
-      font-size: 16px;
+      font-size: var(--font-size-base);
       border-radius: 9px;
     }
 
     .compact .skill-icon {
       width: 34px;
       height: 34px;
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .letter-icon {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
 
     .compact .letter-icon {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
 
     .skill-info {
@@ -375,16 +375,16 @@
     }
 
     .skill-header h4 {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     .level-badge {
       padding: 2px 7px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .skill-description {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       line-height: 1.4;
     }
 
@@ -397,13 +397,13 @@
     }
 
     .progress-text {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .skill-xp {
       gap: 4px;
       padding: 4px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .empty-state {
@@ -412,11 +412,11 @@
     }
 
     .empty-state i {
-      font-size: 30px;
+      font-size: var(--font-size-3xl);
     }
 
     .empty-state p {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -446,22 +446,22 @@
     .skill-icon {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 18px;
+      font-size: var(--font-size-lg);
       border-radius: 10px;
     }
 
     .compact .skill-icon {
       width: 36px;
       height: 36px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .letter-icon {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .compact .letter-icon {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .skill-info {
@@ -473,13 +473,13 @@
     }
 
     .skill-header h4 {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       white-space: normal;
     }
 
     .level-badge {
       padding: 2px 8px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       border-radius: 4px;
     }
 
@@ -505,7 +505,7 @@
     }
 
     .progress-text {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .progress-text i {
@@ -515,7 +515,7 @@
     .skill-xp {
       gap: 4px;
       padding: 4px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       border-radius: 16px;
     }
 
@@ -525,11 +525,11 @@
     }
 
     .empty-state i {
-      font-size: 32px;
+      font-size: var(--font-size-3xl);
     }
 
     .empty-state p {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 

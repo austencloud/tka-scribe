@@ -14,6 +14,9 @@
   import SequenceDisplay from "../sequence-display/components/SequenceDisplay.svelte";
   import HandPathWorkspace from "../hand-path/HandPathWorkspace.svelte";
   import type { IBeatOperator } from "../../services/contracts/IBeatOperator";
+  import type { SequenceState } from "../../state/SequenceStateOrchestrator.svelte";
+  import type { CreateModuleState } from "../../state/create-module-state.svelte";
+  import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
 
   // Services
   let BeatOperator: IBeatOperator | null = null;
@@ -35,14 +38,14 @@
     // Current word display
     currentDisplayWord = "",
   }: {
-    sequenceState?: any; // TODO: Type this properly
-    createModuleState?: any; // TODO: Type this properly
+    sequenceState?: SequenceState;
+    createModuleState?: CreateModuleState;
     practiceBeatIndex?: number | null;
     animatingBeatNumber?: number | null;
     shouldOrbitAroundCenter?: boolean;
 
     // Animation state ref
-    animationStateRef?: any | null;
+    animationStateRef?: IAnimationPlaybackController | null;
 
     // Layout mode
     isSideBySideLayout?: boolean;
@@ -235,6 +238,6 @@
 
   .loading-message {
     color: #666;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 </style>

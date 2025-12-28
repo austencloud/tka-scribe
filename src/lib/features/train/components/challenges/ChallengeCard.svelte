@@ -55,20 +55,20 @@
       }
     > = {
       easy: {
-        color: "#10b981",
-        gradient: "linear-gradient(90deg, #10b981 0%, #34d399 100%)",
+        color: "var(--semantic-success)",
+        gradient: "linear-gradient(90deg, var(--semantic-success) 0%, #34d399 100%)",
         tint: "rgba(16, 185, 129, 0.06)",
         glow: "rgba(16, 185, 129, 0.3)",
       },
       beginner: {
-        color: "#22c55e",
-        gradient: "linear-gradient(90deg, #22c55e 0%, #4ade80 100%)",
+        color: "var(--semantic-success)",
+        gradient: "linear-gradient(90deg, var(--semantic-success) 0%, #4ade80 100%)",
         tint: "rgba(34, 197, 94, 0.06)",
         glow: "rgba(34, 197, 94, 0.3)",
       },
       medium: {
-        color: "#f59e0b",
-        gradient: "linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)",
+        color: "var(--semantic-warning)",
+        gradient: "linear-gradient(90deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%)",
         tint: "rgba(245, 158, 11, 0.06)",
         glow: "rgba(245, 158, 11, 0.3)",
       },
@@ -85,14 +85,14 @@
         glow: "rgba(249, 115, 22, 0.3)",
       },
       advanced: {
-        color: "#ef4444",
-        gradient: "linear-gradient(90deg, #ef4444 0%, #f87171 100%)",
+        color: "var(--semantic-error)",
+        gradient: "linear-gradient(90deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
         tint: "rgba(239, 68, 68, 0.06)",
         glow: "rgba(239, 68, 68, 0.3)",
       },
       expert: {
-        color: "#dc2626",
-        gradient: "linear-gradient(90deg, #dc2626 0%, #ef4444 100%)",
+        color: "var(--semantic-error)",
+        gradient: "linear-gradient(90deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
         tint: "rgba(220, 38, 38, 0.08)",
         glow: "rgba(220, 38, 38, 0.35)",
       },
@@ -204,7 +204,7 @@
     flex-direction: column;
     min-height: 160px;
     background: var(--accent-tint);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
     text-align: left;
     cursor: default;
@@ -220,9 +220,9 @@
 
   .challenge-card.clickable:hover {
     transform: translateY(-3px);
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     box-shadow:
-      0 12px 32px var(--theme-shadow, rgba(0, 0, 0, 0.2)),
+      0 12px 32px var(--theme-shadow, var(--theme-shadow)),
       0 0 0 1px var(--accent-color),
       0 0 40px var(--accent-glow);
   }
@@ -240,7 +240,7 @@
   }
 
   .challenge-card.complete .accent-bar {
-    background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%);
+    background: linear-gradient(90deg, var(--semantic-success) 0%, #4ade80 100%);
   }
 
   /* Colored top accent bar */
@@ -274,18 +274,18 @@
 
   .card-title {
     margin: 0 0 6px;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     line-height: 1.35;
     letter-spacing: -0.01em;
   }
 
   .card-description {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.5;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.55));
+    color: var(--theme-text-dim);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
@@ -310,20 +310,20 @@
   }
 
   .xp-badge i {
-    font-size: 12px;
-    color: #fbbf24;
+    font-size: var(--font-size-compact);
+    color: var(--semantic-warning);
   }
 
   .xp-value {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 700;
     color: #fcd34d;
   }
 
   .xp-badge .bonus {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: #f59e0b;
+    color: var(--semantic-warning);
   }
 
   /* Tags */
@@ -335,7 +335,7 @@
 
   .tag {
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -360,15 +360,15 @@
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 10px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke);
   }
 
   .progress-track {
     flex: 1;
     height: 6px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 3px;
     overflow: hidden;
   }
@@ -380,13 +380,13 @@
   }
 
   .progress-fill.complete {
-    background: linear-gradient(90deg, #22c55e, #4ade80) !important;
+    background: linear-gradient(90deg, var(--semantic-success), #4ade80) !important;
   }
 
   .progress-text {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     min-width: 44px;
     text-align: right;
   }
@@ -413,7 +413,7 @@
     background: color-mix(in srgb, var(--accent-color) 12%, transparent);
     border: 1px solid color-mix(in srgb, var(--accent-color) 25%, transparent);
     border-radius: 12px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: var(--accent-color);
     transition: all 0.2s ease;
@@ -426,7 +426,7 @@
   }
 
   .action-hint i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: transform 0.2s ease;
   }
 
@@ -441,7 +441,7 @@
     height: var(--min-touch-target);
     padding: 0 16px;
     border-radius: 12px;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
@@ -452,7 +452,7 @@
   }
 
   .status-badge i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* ============================================================================
@@ -465,11 +465,11 @@
     }
 
     .card-title {
-      font-size: 17px;
+      font-size: var(--font-size-base);
     }
 
     .card-description {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .xp-badge {
@@ -477,12 +477,12 @@
     }
 
     .xp-value {
-      font-size: 15px;
+      font-size: var(--font-size-sm);
     }
 
     .tag {
       padding: 6px 12px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -500,7 +500,7 @@
     }
 
     .card-title {
-      font-size: 18px;
+      font-size: var(--font-size-lg);
     }
   }
 
@@ -518,7 +518,7 @@
     }
 
     .card-title {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .card-description {
@@ -531,14 +531,14 @@
     }
 
     .xp-value {
-      font-size: 13px;
+      font-size: var(--font-size-compact);
     }
 
     /* Visual size compact but touch target maintained at 48px */
     .action-hint,
     .status-badge {
       height: 40px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
       position: relative;
     }
 

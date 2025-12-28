@@ -51,7 +51,7 @@
     gap: clamp(8px, 2cqi, 16px);
     min-height: var(--min-touch-target);
     padding: clamp(10px, 2.5cqi, 16px) 0;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     transition: opacity 0.2s cubic-bezier(0.36, 0.66, 0.04, 1);
   }
 
@@ -76,7 +76,7 @@
     font-weight: 400;
     letter-spacing: -0.08px;
     line-height: 1.38;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     flex: 1;
     min-width: 0;
     font-family:
@@ -146,7 +146,7 @@
 
   /* Toggle - Checked State (Theme Accent) */
   input:checked + .toggle-slider {
-    background: var(--theme-accent, #34c759);
+    background: var(--theme-accent);
   }
 
   input:checked + .toggle-slider:before {
@@ -176,7 +176,7 @@
     }
 
     input:checked + .toggle-slider {
-      border-color: var(--theme-accent, #34c759);
+      border-color: var(--theme-accent);
     }
   }
 </style>

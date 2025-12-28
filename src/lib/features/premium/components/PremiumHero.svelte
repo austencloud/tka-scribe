@@ -41,7 +41,7 @@
     margin: 0 auto var(--spacing-lg, 24px);
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid var(--theme-accent, #6366f1);
+    border: 3px solid var(--theme-accent, var(--theme-accent));
     position: relative;
   }
 
@@ -57,8 +57,8 @@
     height: 100%;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-    font-size: 48px;
+    background: linear-gradient(135deg, var(--theme-accent) 0%, var(--theme-accent-strong) 100%);
+    font-size: var(--font-size-3xl);
     color: white;
   }
 
@@ -66,12 +66,12 @@
     font-size: clamp(28px, 5vw, 42px);
     font-weight: 700;
     margin: 0 0 8px;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .subtitle {
-    font-size: var(--font-size-min, 14px);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-min);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
@@ -87,7 +87,7 @@
     }
 
     .photo-placeholder {
-      font-size: 32px;
+      font-size: var(--font-size-3xl);
     }
 
     h1 {

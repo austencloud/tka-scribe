@@ -84,7 +84,7 @@
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
+    color: var(--theme-text-dim);
     font-size: 0.85rem;
   }
 
@@ -104,8 +104,8 @@
   .beat-cell {
     position: relative;
     aspect-ratio: 1;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -140,7 +140,7 @@
     position: absolute;
     bottom: 2px;
     right: 4px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.75);
     font-variant-numeric: tabular-nums;

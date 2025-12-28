@@ -131,7 +131,7 @@ PositionPage - Single position type learning page
 		background: rgba(255, 255, 255, 0.06);
 		border: 1px solid rgba(255, 255, 255, 0.12);
 		border-radius: 8px;
-		color: rgba(255, 255, 255, 0.7);
+		color: var(--theme-text-dim);
 		font-size: 0.875rem;
 		cursor: pointer;
 		transition: all 0.2s ease;
@@ -154,7 +154,6 @@ PositionPage - Single position type learning page
 			rgba(34, 211, 238, 0.3) 0%,
 			rgba(6, 182, 212, 0.3) 100%
 		);
-		backdrop-filter: blur(20px);
 		border: 2px solid rgba(34, 211, 238, 0.5);
 		border-radius: 12px;
 		color: white;

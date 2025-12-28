@@ -220,14 +220,14 @@ Features:
   }
 
   .error-icon {
-    font-size: 64px;
+    font-size: var(--font-size-3xl);
     color: rgba(239, 68, 68, 0.5);
     margin-bottom: var(--spacing-lg);
   }
 
   .error-message {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-base);
+    color: var(--theme-text-dim);
     margin: 0 0 var(--spacing-md) 0;
     max-width: 400px;
   }
@@ -240,8 +240,8 @@ Features:
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
     border-radius: 8px;
-    color: var(--theme-accent, #3b82f6);
-    font-size: 14px;
+    color: var(--theme-accent, var(--semantic-info));
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;

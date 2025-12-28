@@ -125,7 +125,7 @@
     height: 100%;
     padding: var(--spacing-xl);
     text-align: center;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .coming-soon i {
@@ -138,7 +138,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .coming-soon p {

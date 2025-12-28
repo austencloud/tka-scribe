@@ -3,13 +3,14 @@
   import { ExploreSortMethod } from "../domain/enums/discover-enums";
   import ViewPresetsDropdown from "../../gallery/filtering/components/ViewPresetsDropdown.svelte";
   import NavigationDropdown from "../../gallery/navigation/components/NavigationDropdown.svelte";
+  import type { ExploreFilter } from "$lib/shared/persistence/domain/types/FilteringTypes";
 
   interface Props {
     isMobile: boolean;
-    currentFilter: any;
+    currentFilter: ExploreFilter;
     currentSortMethod: ExploreSortMethod;
-    availableSections: any[];
-    onFilterChange: (filter: any) => void;
+    availableSections: string[];
+    onFilterChange: (filter: Partial<ExploreFilter>) => void;
     onSortMethodChange: (method: ExploreSortMethod) => void;
     onSectionClick: (sectionId: string) => void;
   }
@@ -103,7 +104,7 @@
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
@@ -131,7 +132,7 @@
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;

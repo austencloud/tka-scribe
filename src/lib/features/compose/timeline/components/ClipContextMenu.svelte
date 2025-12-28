@@ -204,12 +204,11 @@
     position: fixed;
     z-index: 1000;
     min-width: 180px;
-    background: var(--theme-panel-bg, rgba(30, 30, 30, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 8px;
     padding: 4px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
   }
 
   .menu-item {
@@ -220,8 +219,8 @@
     padding: 8px 12px;
     border: none;
     background: transparent;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-compact);
     text-align: left;
     border-radius: 4px;
     cursor: pointer;
@@ -229,11 +228,11 @@
   }
 
   .menu-item:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
   }
 
   .menu-item.active {
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
   }
 
   .menu-item.danger:hover {
@@ -244,7 +243,7 @@
   .menu-item i {
     width: 16px;
     text-align: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
   }
 
@@ -253,16 +252,16 @@
   }
 
   .menu-item kbd {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     padding: 2px 4px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
   }
 
   .divider {
     height: 1px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     margin: 4px 0;
   }
 
@@ -271,7 +270,7 @@
   }
 
   .submenu-arrow {
-    font-size: 12px !important;
+    font-size: var(--font-size-compact) !important;
   }
 
   .submenu-content {
@@ -280,8 +279,8 @@
     left: 100%;
     top: 0;
     min-width: 140px;
-    background: var(--theme-panel-bg, rgba(30, 30, 30, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 8px;
     padding: 4px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);

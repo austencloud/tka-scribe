@@ -149,7 +149,7 @@ Uses the actual GridSvg component for consistency with the rest of the app.
 
   /* Direction labels */
   .direction-label {
-    font-size: 50px;
+    font-size: var(--font-size-3xl);
     font-weight: 700;
     fill: #374151;
     font-family:
@@ -173,7 +173,7 @@ Uses the actual GridSvg component for consistency with the rest of the app.
     }
 
     .direction-label {
-      font-size: 36px;
+      font-size: var(--font-size-3xl);
     }
   }
 

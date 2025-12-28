@@ -154,11 +154,11 @@
     justify-content: center;
     gap: 10px;
     padding: 12px 24px;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     border: none;
     border-radius: 12px;
     color: rgba(255, 255, 255, 0.98);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     letter-spacing: -0.01em;
     cursor: pointer;
@@ -202,7 +202,7 @@
   }
 
   .share-btn i {
-    font-size: 17px;
+    font-size: var(--font-size-base);
   }
 
   .btn-text {
@@ -249,12 +249,12 @@
   @media (max-width: 768px) {
     .share-btn {
       padding: 10px 20px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       border-radius: 10px;
     }
 
     .share-btn i {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 </style>

@@ -14,7 +14,10 @@
     markModuleOnboardingComplete,
   } from "$lib/shared/onboarding/config/storage-keys";
 
-  import type { IDiscoverEventHandler } from "../services/contracts/IDiscoverEventHandler";
+  import type {
+    IDiscoverEventHandler,
+    DeleteConfirmationData,
+  } from "../services/contracts/IDiscoverEventHandler";
   import CollectionsDiscoverPanel from "../../collections/components/CollectionsDiscoverPanel.svelte";
   import CreatorsPanel from "../../creators/components/CreatorsPanel.svelte";
   import UserProfilePanel from "../../creators/components/UserProfilePanel.svelte";
@@ -88,7 +91,7 @@
 
   // ✅ PURE RUNES: Local state
   let _selectedSequence = $state<SequenceData | null>(null);
-  let deleteConfirmationData = $state<any>(null);
+  let deleteConfirmationData = $state<DeleteConfirmationData | null>(null);
   let error = $state<string | null>(null);
   let activeTab = $state<DiscoverModuleType>("sequences");
   let showAnimator = $state<boolean>(false);
@@ -348,7 +351,7 @@
         galleryState,
         setSelectedSequence: (seq: SequenceData | null) =>
           (_selectedSequence = seq),
-        setDeleteConfirmationData: (data: any) =>
+        setDeleteConfirmationData: (data: DeleteConfirmationData | null) =>
           (deleteConfirmationData = data),
         setError: (err: string | null) => (error = err),
       });
@@ -487,7 +490,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.95));
+    background: var(--theme-panel-bg);
   }
 
   .explore-content {

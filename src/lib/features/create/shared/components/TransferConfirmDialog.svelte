@@ -76,15 +76,15 @@
 
   .confirmation-title {
     color: rgba(255, 255, 255, 0.95);
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     margin: 0;
     line-height: 1.3;
   }
 
   .confirmation-message {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 16px;
+    color: var(--theme-text);
+    font-size: var(--font-size-base);
     line-height: 1.6;
     margin: 0;
   }
@@ -98,7 +98,7 @@
   .confirmation-actions button {
     padding: 12px 24px;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -108,7 +108,7 @@
 
   .cancel-button {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     border-color: rgba(255, 255, 255, 0.2);
   }
 
@@ -119,13 +119,13 @@
   }
 
   .confirm-button {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
     color: white;
     border-color: rgba(255, 255, 255, 0.2);
   }
 
   .confirm-button:hover {
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    background: linear-gradient(135deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%);
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);

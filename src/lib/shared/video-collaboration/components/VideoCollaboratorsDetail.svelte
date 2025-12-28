@@ -161,7 +161,7 @@
     align-items: center;
     gap: 0.375rem;
     padding: 0.5rem 0.875rem;
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, #2563eb 100%);
     border: none;
     border-radius: 8px;
     color: white;
@@ -200,7 +200,7 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--semantic-info) 0%, var(--theme-accent-strong) 100%);
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;
@@ -252,7 +252,7 @@
     align-items: center;
     gap: 0.25rem;
     padding: 0.125rem 0.5rem;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border-radius: 4px;
     font-size: 0.7rem;
     font-weight: 600;
@@ -263,7 +263,7 @@
 
   .role-badge.creator {
     background: rgba(251, 191, 36, 0.15);
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .role-badge.creator i {
@@ -281,7 +281,7 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border: none;
     border-radius: 6px;
     color: var(--text-secondary);
@@ -291,7 +291,7 @@
 
   .remove-btn:hover {
     background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .pending-section {

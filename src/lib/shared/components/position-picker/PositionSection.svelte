@@ -102,7 +102,7 @@ Uses 4x4 pictograph grid with all 16 variations
 
 <style>
   .position-section {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .position-section.disabled {
@@ -143,15 +143,15 @@ Uses 4x4 pictograph grid with all 16 variations
   }
 
   .section-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     margin: 0 0 4px 0;
     color: white;
   }
 
   .section-description {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     margin: 0;
   }
 
@@ -166,13 +166,13 @@ Uses 4x4 pictograph grid with all 16 variations
     padding: 6px 12px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 16px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
   }
 
   .value-any {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 
   .value-locked {
@@ -183,7 +183,7 @@ Uses 4x4 pictograph grid with all 16 variations
     height: 32px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .value-locked svg {

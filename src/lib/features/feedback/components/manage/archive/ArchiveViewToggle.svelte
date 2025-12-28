@@ -35,12 +35,12 @@
     gap: 4px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 90%,
+      var(--theme-panel-bg) 90%,
       transparent
     );
     padding: 4px;
     border-radius: 8px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .toggle-btn {
@@ -51,8 +51,8 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -60,17 +60,17 @@
   }
 
   .toggle-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-bg);
+    color: var(--theme-text);
   }
 
   .toggle-btn.active {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .toggle-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   @media (max-width: 768px) {

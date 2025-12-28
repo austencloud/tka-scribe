@@ -475,8 +475,8 @@
     align-items: center;
     justify-content: center;
     padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
     min-height: 72px;
   }
@@ -525,7 +525,7 @@
     position: relative;
     padding: var(--spacing-md) var(--spacing-lg);
     background: rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -542,8 +542,8 @@
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     padding-left: calc(var(--spacing-xl) + var(--spacing-sm));
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md, 8px);
     color: white;
     font-size: 0.875rem;
@@ -552,7 +552,7 @@
   .search-input:focus {
     outline: none;
     border-color: rgba(74, 158, 255, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .clear-search {
@@ -594,10 +594,10 @@
     align-items: center;
     gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md, 8px);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
@@ -671,10 +671,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: white;
     z-index: 2;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 6px var(--theme-shadow);
   }
 
   /* States */
@@ -687,7 +687,7 @@
     justify-content: center;
     height: 300px;
     gap: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .error-state i,
@@ -704,7 +704,7 @@
   .spinner {
     width: 44px;
     height: 44px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: #4a9eff;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -741,7 +741,7 @@
     display: flex;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: var(--border-radius-md, 8px);
     margin-bottom: var(--spacing-lg);
   }
@@ -767,8 +767,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    color: rgba(255, 255, 255, 0.3);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
   }
 
   .preview-info {
@@ -791,11 +791,11 @@
   .preview-info p {
     margin: 4px 0 0;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .preview-info .author {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-style: italic;
   }
 
@@ -809,7 +809,7 @@
     border-radius: 4px;
     background: rgba(255, 212, 59, 0.15);
     color: #ffd43b;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -821,7 +821,7 @@
   }
 
   .preview-button i {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
   }
 
   .media-options {
@@ -834,7 +834,7 @@
     margin: 0 0 var(--spacing-sm);
     font-size: 0.9rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .media-option {
@@ -842,8 +842,8 @@
     align-items: center;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md, 8px);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -869,7 +869,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
   }
 
@@ -903,12 +903,12 @@
   .option-desc {
     display: block;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     margin-top: 2px;
   }
 
   .option-arrow {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
+    font-size: var(--font-size-sm);
   }
 </style>

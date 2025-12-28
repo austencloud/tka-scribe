@@ -368,14 +368,14 @@
     height: 100%;
     width: 100%;
     gap: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .loading-spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: rgba(255, 255, 255, 0.7);
+    border: 3px solid var(--theme-stroke);
+    border-top-color: var(--theme-text-dim);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
@@ -388,7 +388,7 @@
 
   .coming-soon-panel p,
   .no-tab-selected p {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     margin: 0;
   }
 </style>

@@ -59,8 +59,8 @@
   }
 
   .config-card {
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     overflow: hidden;
   }
@@ -70,17 +70,17 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.6));
+    background: var(--theme-panel-bg);
     font-weight: 600;
     font-size: var(--font-size-sm, 0.875rem);
   }
 
   .config-header.blue {
-    border-left: 3px solid var(--prop-blue, #2e3192);
+    border-left: 3px solid var(--prop-blue);
   }
 
   .config-header.red {
-    border-left: 3px solid var(--prop-red, #ed1c24);
+    border-left: 3px solid var(--prop-red);
   }
 
   .config-header .dot {
@@ -90,11 +90,11 @@
   }
 
   .config-header.blue .dot {
-    background: var(--prop-blue, #2e3192);
+    background: var(--prop-blue);
   }
 
   .config-header.red .dot {
-    background: var(--prop-red, #ed1c24);
+    background: var(--prop-red);
   }
 
   .config-details {
@@ -106,17 +106,17 @@
 
   .config-details span {
     padding: 0.25rem 0.5rem;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border-radius: 6px;
     font-size: var(--font-size-compact, 0.75rem);
     text-transform: uppercase;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty {
     padding: 1rem;
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     font-size: var(--font-size-sm, 0.875rem);
   }
 </style>

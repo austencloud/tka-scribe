@@ -152,16 +152,16 @@
   }
 
   .list-panel::-webkit-scrollbar-track {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg);
   }
 
   .list-panel::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
     border-radius: 3px;
   }
 
   .list-panel::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke-strong);
   }
 
   /* Drawer customization - Side drawer (desktop sidebar or landscape mobile) */

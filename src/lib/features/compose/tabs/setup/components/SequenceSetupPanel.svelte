@@ -281,10 +281,10 @@
     align-items: center;
     gap: 8px;
     padding: 12px 20px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -343,13 +343,13 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     font-size: 0.875rem;
     font-weight: 600;
   }
 
   .slot-header i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .slot-empty {
@@ -363,7 +363,7 @@
     background: rgba(255, 255, 255, 0.04);
     border: 2px dashed rgba(255, 255, 255, 0.2);
     border-radius: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     font-size: 0.9375rem;
     font-weight: 500;
     cursor: pointer;
@@ -376,11 +376,11 @@
   .slot-empty:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .slot-empty i {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .slot-filled {
@@ -403,7 +403,7 @@
 
   .sequence-meta {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .slot-actions {
@@ -431,24 +431,24 @@
     flex: 1;
     background: rgba(59, 130, 246, 0.15);
     border: 1px solid rgba(59, 130, 246, 0.3);
-    color: #3b82f6;
+    color: var(--semantic-info);
   }
 
   .change-btn:hover {
     background: rgba(59, 130, 246, 0.25);
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .clear-btn {
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+    color: var(--semantic-error);
     padding: 10px 12px;
   }
 
   .clear-btn:hover {
     background: rgba(239, 68, 68, 0.25);
-    color: #f87171;
+    color: var(--semantic-error);
   }
 
   .start-button {
@@ -458,7 +458,7 @@
     gap: 10px;
     min-height: var(--min-touch-target);
     padding: 16px 32px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, var(--semantic-success) 0%, #059669 100%);
     border: none;
     border-radius: 16px;
     color: white;
@@ -488,7 +488,7 @@
     margin: 0;
     text-align: center;
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   /* Responsive adjustments */

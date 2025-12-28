@@ -78,7 +78,7 @@
     margin: 0 0 clamp(8px, 1.2cqw, 12px) 0;
     font-size: clamp(10px, 1cqw, 12px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 1px;
   }
@@ -123,14 +123,14 @@
   .toggle-chip span {
     font-size: clamp(12px, 1.2cqw, 14px);
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     transition: all 0.2s ease;
     white-space: nowrap;
   }
 
   .toggle-chip:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--theme-stroke-strong);
   }
 
   .toggle-chip:hover i,
@@ -150,7 +150,7 @@
   }
 
   .toggle-chip.active i {
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .toggle-chip.active span {
@@ -170,11 +170,11 @@
     }
 
     .toggle-chip span {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .toggle-chip i {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

@@ -208,8 +208,8 @@
   }
 
   .section-header-container {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 8px;
     padding: 6px 16px;
     backdrop-filter: blur(10px);
@@ -225,7 +225,7 @@
   }
 
   .section-type {
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-weight: 600;
   }
 
@@ -307,12 +307,12 @@
     background: var(--desktop-bg-secondary);
     border-color: var(--desktop-border-primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .pictograph-item:not(.placeholder):active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 6px var(--theme-shadow);
   }
 
   .pictograph-item.placeholder {

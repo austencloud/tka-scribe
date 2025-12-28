@@ -45,11 +45,11 @@
     padding: clamp(3px, 0.8cqi, 5px);
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 80%,
+      var(--theme-panel-bg) 80%,
       transparent
     );
     border-radius: clamp(8px, 2cqi, 12px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .segment {
@@ -65,7 +65,7 @@
     border-radius: clamp(6px, 1.5cqi, 10px);
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     font-size: clamp(0.8rem, 2.5cqi, 0.9375rem);
@@ -102,7 +102,7 @@
   }
 
   .segment:hover:not(.selected) {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim);
     border-color: color-mix(in srgb, var(--type-color) 35%, transparent);
   }
 
@@ -115,7 +115,7 @@
   }
 
   .segment.selected {
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     border-color: var(--type-color);
     background: color-mix(in srgb, var(--type-color) 12%, transparent);
   }

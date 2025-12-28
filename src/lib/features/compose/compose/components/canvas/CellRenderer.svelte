@@ -167,10 +167,8 @@
   });
 
   onDestroy(() => {
-    // Cleanup animation resources
-    if (playbackController) {
-      // TODO: Add cleanup method to playback controller
-    }
+    // Cleanup animation state effects
+    animationState.dispose();
   });
 </script>
 
@@ -257,7 +255,7 @@
   .spinner {
     width: clamp(16px, 15cqi, 32px);
     height: clamp(16px, 15cqi, 32px);
-    border: clamp(2px, 1cqi, 4px) solid rgba(255, 255, 255, 0.1);
+    border: clamp(2px, 1cqi, 4px) solid var(--theme-stroke);
     border-top-color: rgba(236, 72, 153, 0.8);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -290,7 +288,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.4); /* Improved contrast for WCAG AAA */
     font-size: clamp(1rem, 12cqi, 2.5rem);
   }
 
@@ -303,7 +301,7 @@
     background: rgba(0, 0, 0, 0.6);
     border-radius: clamp(2px, 1cqi, 6px);
     font-size: clamp(0.5rem, 3cqi, 0.75rem);
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     pointer-events: none;
   }
 

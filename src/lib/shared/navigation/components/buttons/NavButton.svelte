@@ -146,7 +146,7 @@
 
   /* Focus state for keyboard navigation */
   .nav-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -168,7 +168,7 @@
   }
 
   .nav-icon {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -225,7 +225,7 @@
   }
 
   .nav-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     text-align: center;
     white-space: nowrap;
@@ -247,14 +247,14 @@
     min-width: 16px;
     height: 16px;
     padding: 0 4px;
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border-radius: 8px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     line-height: 16px;
     text-align: center;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px var(--theme-shadow);
     animation: badgePop 0.3s ease;
     pointer-events: none;
     z-index: 5;

@@ -106,17 +106,17 @@
     align-items: center;
     justify-content: center;
     padding: 48px 24px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     gap: 12px;
   }
 
   .empty-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
   }
 
   .empty-state p {
     margin: 0;
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
   }
 
   .notifications {

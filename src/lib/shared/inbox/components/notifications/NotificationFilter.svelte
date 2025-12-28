@@ -194,8 +194,8 @@
     flex-direction: column;
     gap: 12px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    border-bottom: 1px solid var(--theme-stroke);
+    background: var(--theme-panel-bg);
   }
 
   .search-box {
@@ -207,29 +207,29 @@
   .search-box i.fa-search {
     position: absolute;
     left: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     pointer-events: none;
   }
 
   .search-box input {
     flex: 1;
     padding: 10px 12px 10px 36px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, #ffffff);
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text);
+    font-size: var(--font-size-min);
     transition: all 0.2s ease;
   }
 
   .search-box input::placeholder {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
   }
 
   .search-box input:focus {
     outline: none;
-    border-color: var(--theme-accent, #3b82f6);
+    border-color: var(--theme-accent, var(--semantic-info));
     box-shadow: 0 0 0 2px
       color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
@@ -245,14 +245,14 @@
     background: transparent;
     border: none;
     border-radius: 4px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .clear-search:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   /* Filter header */
@@ -267,11 +267,11 @@
     align-items: center;
     gap: 6px;
     padding: 8px 16px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 20px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-min);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -279,14 +279,14 @@
   }
 
   .chip:hover:not(.active) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke);
+    color: var(--theme-text);
   }
 
   .chip.active {
-    background: var(--theme-accent, #3b82f6);
-    border-color: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
+    border-color: var(--theme-accent, var(--semantic-info));
     color: white;
   }
 
@@ -306,20 +306,20 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .filter-toggle-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-bg);
+    color: var(--theme-text);
   }
 
   .filter-toggle-btn.active {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
-    color: var(--theme-accent, #3b82f6);
+    background: var(--theme-card-bg);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   .filter-toggle-btn:focus-visible {
@@ -329,7 +329,7 @@
   }
 
   .filter-toggle-btn i:first-child {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Active filter indicator badge */
@@ -339,8 +339,8 @@
     right: 2px;
     width: 8px;
     height: 8px;
-    background: var(--semantic-info, #3b82f6);
-    border: 2px solid var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
+    background: var(--semantic-info, var(--semantic-info));
+    border: 2px solid var(--theme-panel-bg);
     border-radius: 50%;
   }
 
@@ -357,7 +357,7 @@
     overflow-y: hidden;
     padding-bottom: 4px;
     scrollbar-width: thin;
-    scrollbar-color: var(--theme-stroke, rgba(255, 255, 255, 0.2)) transparent;
+    scrollbar-color: var(--theme-stroke) transparent;
   }
 
   .chip-scroll::-webkit-scrollbar {
@@ -369,12 +369,12 @@
   }
 
   .chip-scroll::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke);
     border-radius: 3px;
   }
 
   .chip-scroll::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.3));
+    background: var(--theme-stroke);
   }
 
   .type-chip {
@@ -388,23 +388,23 @@
     justify-content: space-between;
     width: 100%;
     padding: 10px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, #ffffff);
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text);
+    font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .type-selector-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke);
   }
 
   .type-selector-btn:focus-visible {
     outline: none;
-    border-color: var(--theme-accent, #3b82f6);
+    border-color: var(--theme-accent, var(--semantic-info));
     box-shadow: 0 0 0 2px
       color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
@@ -434,9 +434,9 @@
     left: 0;
     right: 0;
     max-height: 70vh;
-    background: var(--theme-panel-bg, rgba(20, 20, 20, 0.95));
+    background: var(--theme-panel-bg);
     border-radius: 16px 16px 0 0;
-    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 -4px 24px var(--theme-shadow);
     animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
@@ -445,14 +445,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .sheet-header h3 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .close-btn {
@@ -464,14 +464,14 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-card-bg);
+    color: var(--theme-text);
   }
 
   .sheet-content {
@@ -490,25 +490,25 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text, #ffffff);
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text);
+    font-size: var(--font-size-min);
     text-align: left;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .type-option:hover {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
   }
 
   .type-option.active {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-accent, #3b82f6);
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    color: var(--theme-accent, var(--semantic-info));
     font-weight: 500;
   }
 
   .type-option i.fa-check {
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   /* Responsive */

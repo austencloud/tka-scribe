@@ -122,7 +122,7 @@ Supports Alpha, Beta, Gamma positions with Greek symbol pills
     background: radial-gradient(
       ellipse at top left,
       #a78bfa 0%,
-      #8b5cf6 40%,
+      var(--theme-accent-strong) 40%,
       #6d28d9 100%
     );
     border: none;
@@ -161,7 +161,7 @@ Supports Alpha, Beta, Gamma positions with Greek symbol pills
       180deg,
       rgba(255, 255, 255, 0.3) 0%,
       rgba(255, 255, 255, 0.15) 40%,
-      rgba(255, 255, 255, 0.05) 70%,
+      var(--theme-card-bg) 70%,
       rgba(255, 255, 255, 0) 100%
     );
     border-radius: 16px 16px 0 0;
@@ -245,20 +245,20 @@ Supports Alpha, Beta, Gamma positions with Greek symbol pills
     background: transparent;
     border: none;
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .pill-option:hover:not(.selected):not(:disabled) {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .pill-option.selected {
     background: rgba(255, 255, 255, 0.95);
     color: #6d28d9;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .pill-option:active:not(:disabled) {

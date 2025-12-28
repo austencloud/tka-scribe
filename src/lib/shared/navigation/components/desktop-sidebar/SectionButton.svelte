@@ -52,7 +52,7 @@
     background: transparent;
     border: 1px solid transparent;
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -61,8 +61,8 @@
   }
 
   .section-button:hover:not(.disabled) {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg);
+    color: var(--theme-text, var(--theme-text));
     transform: translateX(3px);
   }
 
@@ -72,7 +72,7 @@
   }
 
   .section-button.active {
-    color: var(--theme-text, rgba(255, 255, 255, 1));
+    color: var(--theme-text);
     background: color-mix(in srgb, var(--section-color) 12%, transparent);
     border-color: color-mix(in srgb, var(--section-color) 25%, transparent);
     box-shadow: 0 0 12px
@@ -93,7 +93,7 @@
   }
 
   .section-icon {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,7 +139,7 @@
   .section-label {
     flex: 1;
     text-align: left;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     letter-spacing: -0.005em;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
@@ -165,7 +165,7 @@
 
   /* Focus styles for keyboard navigation */
   .section-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -174,7 +174,7 @@
      ============================================================================ */
   @media (prefers-contrast: high) {
     .section-button.active {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.25));
+      background: var(--theme-card-hover-bg);
       outline: 2px solid white;
     }
   }

@@ -78,9 +78,9 @@
     gap: clamp(6px, 1cqw, 8px);
     padding: clamp(8px, 1cqh, 12px) clamp(12px, 1.5cqw, 18px);
     background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 10px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: clamp(13px, 1.2cqw, 15px);
     font-weight: 500;
     cursor: pointer;

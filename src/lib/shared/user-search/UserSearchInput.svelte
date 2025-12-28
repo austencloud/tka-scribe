@@ -230,6 +230,17 @@
     {/if}
   </div>
 
+  <!-- Screen reader status announcement -->
+  <div class="sr-only" role="status" aria-live="polite" aria-atomic="true">
+    {#if isSearching}
+      Searching...
+    {:else if showResults && searchResults.length > 0}
+      {searchResults.length} user{searchResults.length === 1 ? '' : 's'} found
+    {:else if showResults && searchResults.length === 0 && searchQuery.length >= 2}
+      No users found
+    {/if}
+  </div>
+
   {#if showResults && searchResults.length > 0}
     <div
       class="search-results"
@@ -280,6 +291,19 @@
 </div>
 
 <style>
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .user-search {
     position: relative;
     width: 100%;
@@ -295,15 +319,15 @@
     position: absolute;
     left: 16px;
     color: rgba(255, 255, 255, 0.75);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     pointer-events: none;
   }
 
   .loading-icon {
     position: absolute;
     right: 16px;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 14px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
   }
 
   .clear-btn {
@@ -317,7 +341,7 @@
     background: transparent;
     border: none;
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.15s ease;
     z-index: 2;
@@ -354,17 +378,17 @@
       --theme-card-bg,
       linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
     );
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
-    font-size: 15px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     transition: all 0.2s ease;
-    box-shadow: var(--theme-shadow, 0 2px 8px rgba(0, 0, 0, 0.3));
+    box-shadow: var(--theme-shadow, 0 2px 8px var(--theme-shadow));
   }
 
   .search-input:focus {
     outline: none;
-    border-color: var(--theme-accent, #6366f1);
+    border-color: var(--theme-accent, var(--theme-accent));
     box-shadow: 0 0 0 3px
       color-mix(in srgb, var(--theme-accent) 20%, transparent);
   }
@@ -388,7 +412,7 @@
       --theme-panel-bg,
       linear-gradient(135deg, #2d2d3a 0%, #25252f 100%)
     );
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
     overflow: hidden;
     z-index: 100;
@@ -450,7 +474,7 @@
 
   .result-name {
     color: rgba(255, 255, 255, 0.95);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -459,15 +483,15 @@
 
   .result-email {
     color: rgba(255, 255, 255, 0.75);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .result-check {
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 14px;
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
+    font-size: var(--font-size-sm);
     opacity: 0;
     transition: opacity 0.15s ease;
     flex-shrink: 0;
@@ -475,19 +499,19 @@
 
   .result-item:hover .result-check {
     opacity: 1;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   .result-item.selected .result-check {
     opacity: 1;
-    color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, var(--theme-accent));
   }
 
   .no-results {
     padding: 32px 16px;
     text-align: center;
     color: rgba(255, 255, 255, 0.75);
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -495,7 +519,7 @@
   }
 
   .no-results i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 

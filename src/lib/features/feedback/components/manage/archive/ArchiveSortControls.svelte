@@ -43,52 +43,52 @@
     padding: 12px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 80%,
+      var(--theme-panel-bg) 80%,
       transparent
     );
     border-radius: 8px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
   }
 
   .sort-controls label {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .sort-controls select {
     padding: 4px 8px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 90%,
+      var(--theme-panel-bg) 90%,
       transparent
     );
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 13px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-compact);
     cursor: pointer;
   }
 
   .sort-controls select:hover {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-color: var(--theme-stroke-strong);
   }
 
   .sort-order-btn {
     padding: 6px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .sort-order-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text, var(--theme-text));
   }
 
   @media (max-width: 768px) {

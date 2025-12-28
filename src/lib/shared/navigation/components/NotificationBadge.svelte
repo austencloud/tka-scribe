@@ -36,15 +36,15 @@
     justify-content: center;
 
     /* Styling */
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     border-radius: 10px;
-    border: 2px solid var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    border: 2px solid var(--theme-panel-bg);
     box-shadow:
-      var(--theme-shadow, 0 2px 4px rgba(0, 0, 0, 0.2)),
-      0 0 0 1px var(--theme-stroke, rgba(255, 255, 255, 0.1)) inset;
+      var(--theme-shadow, 0 2px 4px var(--theme-shadow)),
+      0 0 0 1px var(--theme-stroke) inset;
 
     /* Ensure it's always on top */
     z-index: 10;

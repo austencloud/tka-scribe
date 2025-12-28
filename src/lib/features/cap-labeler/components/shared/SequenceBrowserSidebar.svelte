@@ -63,7 +63,7 @@
       };
     }
 
-    return { type: "verified", icon: "circle-check", color: "#22c55e" };
+    return { type: "verified", icon: "circle-check", color: "var(--semantic-success)" };
   }
 
   // Get designation label
@@ -162,7 +162,7 @@
     flex-direction: column;
     height: 100%;
     background: var(--surface-glass);
-    border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-right: 1px solid var(--theme-stroke);
     overflow: hidden;
   }
 
@@ -171,7 +171,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-lg);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .sidebar-title {
@@ -199,7 +199,7 @@
     gap: var(--spacing-xs);
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--surface-dark);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .filter-tab {
@@ -210,7 +210,7 @@
     gap: var(--spacing-xs);
     padding: var(--spacing-xs) var(--spacing-sm);
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
     color: var(--muted-foreground);
     font-size: var(--font-size-xs);
@@ -250,7 +250,7 @@
   }
 
   .sequence-list::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
     border-radius: 3px;
   }
 
@@ -264,7 +264,7 @@
     width: 100%;
     padding: 0;
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     text-align: left;
     cursor: pointer;
@@ -276,7 +276,7 @@
     width: 100%;
     aspect-ratio: 1;
     background: rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border-bottom: 1px solid var(--theme-stroke);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -100,18 +100,18 @@ Supports Alpha, Beta, Gamma starting positions
     border-radius: 16px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6),
-      var(--theme-accent-strong, #4f46e5)
+      var(--theme-accent-strong, var(--theme-accent-strong)),
+      var(--theme-accent-strong)
     );
     border: none;
 
     box-shadow:
       0 1px 2px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent),
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent),
       0 2px 4px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 32%, transparent),
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 32%, transparent),
       0 4px 8px
-        color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 25%, transparent),
+        color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     overflow: hidden;
@@ -134,7 +134,7 @@ Supports Alpha, Beta, Gamma starting positions
     background: linear-gradient(
       180deg,
       rgba(255, 255, 255, 0.25) 0%,
-      rgba(255, 255, 255, 0.12) 40%,
+      var(--theme-card-hover-bg) 40%,
       rgba(255, 255, 255, 0.04) 70%,
       rgba(255, 255, 255, 0) 100%
     );
@@ -165,7 +165,7 @@ Supports Alpha, Beta, Gamma starting positions
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
   }
 
   .current-value {
@@ -202,20 +202,20 @@ Supports Alpha, Beta, Gamma starting positions
     background: transparent;
     border: none;
     border-radius: 100px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .pill-option:hover:not(.selected) {
     background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .pill-option.selected {
     background: rgba(255, 255, 255, 0.95);
-    color: var(--theme-accent-strong, #4f46e5);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    color: var(--theme-accent-strong);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .pill-option:active {

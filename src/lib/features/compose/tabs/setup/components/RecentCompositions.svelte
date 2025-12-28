@@ -35,11 +35,11 @@
 
   // Mode colors for consistency
   const modeColors: Record<ComposeMode, string> = {
-    single: "var(--theme-accent, #6366f1)",
-    mirror: "var(--theme-accent-strong, #8b5cf6)",
+    single: "var(--theme-accent, var(--theme-accent))",
+    mirror: "var(--theme-accent-strong)",
     tunnel: "#ec4899",
-    grid: "#f59e0b",
-    "side-by-side": "#10b981",
+    grid: "var(--semantic-warning)",
+    "side-by-side": "var(--semantic-success)",
   };
 
   // Mode icons
@@ -155,7 +155,7 @@
     margin: 0;
     font-size: clamp(0.875rem, 3vw, 1.125rem);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .section-title i {
@@ -165,7 +165,7 @@
 
   .section-hint {
     font-size: clamp(0.75rem, 2.5vw, 0.875rem);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .compositions-grid {
@@ -181,10 +181,10 @@
     padding: clamp(0.75rem, 3vw, 1rem);
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.08) 0%,
+      var(--theme-card-bg) 0%,
       rgba(255, 255, 255, 0.03) 100%
     );
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: clamp(0.625rem, 2.5vw, 1rem);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -204,7 +204,7 @@
   .composition-card:hover {
     border-color: var(--mode-color);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 24px var(--theme-shadow);
   }
 
   .composition-card:hover::before {
@@ -249,7 +249,7 @@
     align-items: center;
     gap: 0.375rem;
     font-size: clamp(0.6875rem, 2.5vw, 0.8125rem);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .mode-label {

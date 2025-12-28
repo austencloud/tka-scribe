@@ -70,16 +70,16 @@
     gap: 8px;
     padding-bottom: 8px;
     margin-bottom: 12px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    font-size: var(--font-size-compact, 12px);
+    border-bottom: 1px solid var(--theme-stroke);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .section-header i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
   }
 
@@ -90,8 +90,8 @@
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -99,31 +99,31 @@
   .text-input {
     width: 100%;
     padding: 8px 10px;
-    background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-input-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .text-input:focus {
     outline: none;
-    border-color: var(--theme-accent, #4a9eff);
+    border-color: var(--theme-accent);
   }
 
   .info-row {
     display: flex;
     justify-content: space-between;
     padding: 4px 0;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
   }
 
   .info-label {
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
   }
 
   .info-value {
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     font-weight: 500;
   }
 </style>

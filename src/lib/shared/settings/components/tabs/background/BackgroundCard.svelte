@@ -159,24 +159,24 @@
 
   /* Selected - accent ring highlight */
   .background-card.selected {
-    border: 2px solid var(--theme-accent, #6366f1);
+    border: 2px solid var(--theme-accent, var(--theme-accent));
     box-shadow:
       var(--shadow-glass),
-      0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent),
-      0 4px 16px color-mix(in srgb, var(--theme-accent, #6366f1) 20%, transparent);
+      0 0 0 2px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
   }
 
   .background-card.selected:hover {
     transform: scale(var(--hover-scale-sm, 1.01));
     box-shadow:
       var(--shadow-glass-hover),
-      0 0 0 2px color-mix(in srgb, var(--theme-accent, #6366f1) 35%, transparent),
-      0 6px 20px color-mix(in srgb, var(--theme-accent, #6366f1) 25%, transparent);
+      0 0 0 2px color-mix(in srgb, var(--theme-accent) 35%, transparent),
+      0 6px 20px color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
   }
 
   /* Focus - accent outline */
   .background-card:focus-visible {
-    outline: 2px solid var(--theme-accent, #6366f1);
+    outline: 2px solid var(--theme-accent, var(--theme-accent));
     outline-offset: 2px;
   }
 
@@ -239,11 +239,11 @@
     }
 
     .card-name {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .card-icon {
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
 
     .card-overlay {
@@ -259,7 +259,7 @@
     }
 
     .card-name {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .card-icon {
@@ -293,7 +293,7 @@
     }
 
     .background-card.selected {
-      border: 3px solid var(--theme-accent, #6366f1);
+      border: 3px solid var(--theme-accent, var(--theme-accent));
     }
   }
 

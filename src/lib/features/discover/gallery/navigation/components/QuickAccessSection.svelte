@@ -82,7 +82,7 @@
     border-radius: 14px;
     color: var(--theme-text, white);
     font-weight: bold;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     padding: 18px 32px;
     text-align: center;
     cursor: pointer;
@@ -109,7 +109,7 @@
     .quick-button {
       min-width: 140px;
       padding: 12px 20px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -117,7 +117,7 @@
     .quick-button {
       min-width: 100px;
       padding: 8px 12px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

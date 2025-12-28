@@ -165,9 +165,9 @@ Features:
     flex-direction: column;
     gap: var(--spacing-md);
     padding: var(--spacing-md);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    border: 1px solid var(--theme-stroke);
   }
 
   /* Filter Section */
@@ -178,9 +178,9 @@ Features:
   }
 
   .filter-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -197,30 +197,30 @@ Features:
     align-items: center;
     gap: 6px;
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .mode-chip:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .mode-chip.active {
     background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
     border-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   .mode-chip i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* Controls Row */
@@ -237,26 +237,26 @@ Features:
     align-items: center;
     gap: 6px;
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 13px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .favorites-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .favorites-toggle.active {
     background: rgba(239, 68, 68, 0.2);
     border-color: rgba(239, 68, 68, 0.4);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   /* Sort Controls */
@@ -268,18 +268,18 @@ Features:
 
   .sort-select {
     padding: 8px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 13px;
+    color: var(--theme-text);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .sort-select:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
   }
 
@@ -300,18 +300,18 @@ Features:
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
     padding: 0;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .sort-direction-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   /* Mobile adjustments */
@@ -326,7 +326,7 @@ Features:
 
     .mode-chip {
       padding: 6px 10px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
 
     .controls-row {

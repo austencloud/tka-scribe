@@ -757,7 +757,7 @@
   }
 
   .labeling-panel::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
     border-radius: 3px;
   }
 

@@ -64,34 +64,34 @@
   .conflict-warning.error {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 10%,
+      var(--semantic-error, var(--semantic-error)) 10%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
   }
 
   .conflict-warning.warning {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #eab308) 10%,
+      var(--semantic-warning) 10%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-warning, #eab308) 30%, transparent);
+      color-mix(in srgb, var(--semantic-warning) 30%, transparent);
   }
 
   .conflict-icon {
     flex-shrink: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .error .conflict-icon {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .warning .conflict-icon {
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
   }
 
   .conflict-info {
@@ -104,24 +104,24 @@
 
   .conflict-title {
     font-weight: 600;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
   }
 
   .error .conflict-title {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .warning .conflict-title {
-    color: var(--semantic-warning, #eab308);
+    color: var(--semantic-warning);
   }
 
   .conflict-detail {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
   }
 
   .context-note {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
     font-style: italic;
   }
 
@@ -134,29 +134,29 @@
   .conflict-btn {
     padding: 6px 12px;
     border-radius: 6px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     cursor: pointer;
     transition: all 150ms ease;
   }
 
   .conflict-btn.replace {
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border: none;
     color: var(--theme-text, white);
   }
 
   .conflict-btn.replace:hover {
-    background: color-mix(in srgb, var(--semantic-error, #ef4444) 85%, #000);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #000);
   }
 
   .conflict-btn.swap {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
   .conflict-btn.swap:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 </style>

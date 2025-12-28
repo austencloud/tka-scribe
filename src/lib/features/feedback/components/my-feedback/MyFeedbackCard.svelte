@@ -128,12 +128,12 @@
     border-color: color-mix(
       in srgb,
       var(--type-color) 40%,
-      rgba(255, 255, 255, 0.1)
+      var(--theme-stroke)
     );
     box-shadow:
       0 6px 20px rgba(0, 0, 0, 0.5),
       0 0 20px color-mix(in srgb, var(--type-color) 15%, transparent),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 var(--theme-card-bg);
     transform: translateY(-1px);
   }
 
@@ -185,7 +185,7 @@
     border: 1px solid color-mix(in srgb, var(--type-color) 40%, transparent);
     border-radius: 8px;
     color: var(--type-color);
-    font-size: 16px;
+    font-size: var(--font-size-base);
     box-shadow: 0 2px 8px color-mix(in srgb, var(--type-color) 25%, black);
   }
 
@@ -209,7 +209,7 @@
     margin: 0;
     font-size: 0.9375rem;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -242,7 +242,7 @@
   .card-description {
     margin: 0;
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -258,7 +258,7 @@
     gap: 4px;
     margin-top: 6px;
     font-size: var(--font-size-compact, 0.75rem); /* Supplementary text */
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .screenshot-indicator i {
@@ -274,7 +274,7 @@
     font-size: 0.75rem;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
   }
@@ -283,7 +283,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   .has-response i {
@@ -297,7 +297,7 @@
     top: 8px;
     bottom: 8px;
     width: 3px;
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     border-radius: 0 2px 2px 0;
   }
 </style>

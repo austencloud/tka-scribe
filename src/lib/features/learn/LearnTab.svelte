@@ -240,7 +240,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.95));
+    background: var(--theme-panel-bg);
   }
 
   .learn-tab {

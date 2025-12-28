@@ -34,7 +34,7 @@
     margin: 0;
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     letter-spacing: -0.02em;
   }
 

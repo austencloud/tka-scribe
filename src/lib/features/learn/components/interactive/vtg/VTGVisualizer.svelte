@@ -71,7 +71,7 @@ Shows how hands coordinate their movements in different VTG patterns
     },
     QO: {
       name: "Quarter-Opposite",
-      color: "#F59E0B",
+      color: "var(--semantic-warning)",
       direction: "Opposite directions",
       timing: "Quarter (90� offset)",
       description: "Hands move opposite with quarter-beat timing",
@@ -209,7 +209,7 @@ Shows how hands coordinate their movements in different VTG patterns
       cy="50"
       r="30"
       fill="none"
-      stroke="rgba(255,255,255,0.1)"
+      stroke="var(--theme-stroke)"
       stroke-width="0.5"
       stroke-dasharray="2 2"
     />
@@ -218,7 +218,7 @@ Shows how hands coordinate their movements in different VTG patterns
       y1="50"
       x2="80"
       y2="50"
-      stroke="rgba(255,255,255,0.08)"
+      stroke="var(--theme-card-bg)"
       stroke-width="0.5"
     />
     <line
@@ -226,7 +226,7 @@ Shows how hands coordinate their movements in different VTG patterns
       y1="20"
       x2="50"
       y2="80"
-      stroke="rgba(255,255,255,0.08)"
+      stroke="var(--theme-card-bg)"
       stroke-width="0.5"
     />
 
@@ -352,7 +352,7 @@ Shows how hands coordinate their movements in different VTG patterns
     gap: 1rem;
     padding: 1.25rem;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 16px;
   }
 
@@ -422,7 +422,7 @@ Shows how hands coordinate their movements in different VTG patterns
   }
 
   .info-label {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .info-value {

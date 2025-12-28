@@ -43,7 +43,7 @@
     padding: 10px 12px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 80%,
+      var(--theme-panel-bg) 80%,
       transparent
     );
     border: 1px solid transparent;
@@ -56,10 +56,10 @@
   .feedback-item:hover {
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 90%,
+      var(--theme-panel-bg) 90%,
       transparent
     );
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke, var(--theme-stroke));
   }
 
   .feedback-item:active {
@@ -75,7 +75,7 @@
     background: color-mix(in srgb, var(--type-color) 15%, transparent);
     border-radius: 6px;
     color: var(--type-color);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
   }
 
@@ -88,17 +88,17 @@
   }
 
   .item-title {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .item-description {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -107,16 +107,16 @@
   .item-arrow {
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 60%,
+      var(--theme-text-dim, var(--theme-text-dim)) 60%,
       transparent
     );
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     flex-shrink: 0;
     transition: transform 0.2s;
   }
 
   .feedback-item:hover .item-arrow {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim);
     transform: translateX(2px);
   }
 </style>

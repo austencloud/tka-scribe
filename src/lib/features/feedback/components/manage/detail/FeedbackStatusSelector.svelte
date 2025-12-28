@@ -190,8 +190,8 @@
 
   .cycle-btn:hover:not(:disabled) {
     background: var(--fb-surface-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--fb-purple, #8b5cf6);
-    color: var(--fb-purple, #8b5cf6);
+    border-color: var(--fb-purple, var(--theme-accent-strong));
+    color: var(--fb-purple, var(--theme-accent-strong));
   }
 
   .cycle-btn:disabled {

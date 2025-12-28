@@ -192,13 +192,13 @@
   .zone-badge {
     padding: 2px 8px;
     border-radius: 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
   }
 
   .zone-badge.complete {
     background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    color: var(--semantic-success);
     border: 1px solid rgba(34, 197, 94, 0.4);
   }
 
@@ -256,7 +256,7 @@
 
   .zone-count {
     width: 16px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     color: var(--muted-foreground);
     text-align: right;

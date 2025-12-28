@@ -158,19 +158,18 @@ about the sequence being deleted and potential consequences.
     left: 0;
     right: 0;
     bottom: 0;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 50%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    backdrop-filter: blur(2px);
   }
 
   .modal-dialog {
-    background: var(--theme-panel-bg, #1a1a24);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    box-shadow: 0 20px 40px var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    box-shadow: 0 20px 40px var(--theme-shadow, var(--theme-shadow));
     max-width: 500px;
     width: 90%;
     max-height: 80vh;
@@ -194,8 +193,8 @@ about the sequence being deleted and potential consequences.
     align-items: center;
     justify-content: space-between;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg);
   }
 
   .modal-header h2 {
@@ -209,7 +208,7 @@ about the sequence being deleted and potential consequences.
     background: none;
     border: none;
     font-size: 1.5rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     padding: 4px;
     border-radius: 50%;
@@ -217,7 +216,7 @@ about the sequence being deleted and potential consequences.
   }
 
   .close-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: var(--theme-text, white);
   }
 
@@ -238,8 +237,8 @@ about the sequence being deleted and potential consequences.
   }
 
   .sequence-info {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     padding: 16px;
     margin: 16px 0;
@@ -255,23 +254,23 @@ about the sequence being deleted and potential consequences.
 
   .sequence-author {
     font-size: 0.9rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin-bottom: 4px;
   }
 
   .sequence-length {
     font-size: 0.9rem;
-    color: var(--semantic-info, #3b82f6);
+    color: var(--semantic-info, var(--semantic-info));
     font-weight: 600;
   }
 
   .warning-details {
     background: color-mix(
       in srgb,
-      var(--semantic-warning, #f59e0b) 15%,
+      var(--semantic-warning, var(--semantic-warning)) 15%,
       transparent
     );
-    border: 1px solid var(--semantic-warning, #f59e0b);
+    border: 1px solid var(--semantic-warning, var(--semantic-warning));
     border-radius: 8px;
     padding: 16px;
     margin: 16px 0;
@@ -280,14 +279,14 @@ about the sequence being deleted and potential consequences.
 
   .warning-details p {
     margin: 0 0 8px 0;
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
     font-weight: 600;
   }
 
   .warning-details ul {
     margin: 0;
     padding-left: 20px;
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .warning-details li {
@@ -295,7 +294,7 @@ about the sequence being deleted and potential consequences.
   }
 
   .final-warning {
-    color: var(--semantic-error, #dc2626) !important;
+    color: var(--semantic-error, var(--semantic-error)) !important;
     font-weight: 600 !important;
     margin-top: 16px !important;
   }
@@ -305,13 +304,13 @@ about the sequence being deleted and potential consequences.
     gap: 12px;
     justify-content: flex-end;
     padding: 20px 24px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    border-top: 1px solid var(--theme-stroke, var(--theme-stroke));
+    background: var(--theme-card-bg);
   }
 
   .cancel-button {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
     padding: 10px 20px;
     border-radius: 6px;
@@ -321,13 +320,13 @@ about the sequence being deleted and potential consequences.
   }
 
   .cancel-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.3));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .delete-button {
-    background: var(--semantic-error, #dc2626);
-    border: 1px solid var(--semantic-error, #dc2626);
+    background: var(--semantic-error, var(--semantic-error));
+    border: 1px solid var(--semantic-error, var(--semantic-error));
     color: white;
     padding: 10px 20px;
     border-radius: 6px;
@@ -337,13 +336,13 @@ about the sequence being deleted and potential consequences.
   }
 
   .delete-button:hover {
-    background: color-mix(in srgb, var(--semantic-error, #dc2626) 85%, #000);
-    border-color: color-mix(in srgb, var(--semantic-error, #dc2626) 85%, #000);
+    background: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #000);
+    border-color: color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 85%, #000);
   }
 
   .delete-button:focus,
   .cancel-button:focus {
-    outline: 2px solid var(--semantic-info, #3b82f6);
+    outline: 2px solid var(--semantic-info, var(--semantic-info));
     outline-offset: 2px;
   }
 </style>

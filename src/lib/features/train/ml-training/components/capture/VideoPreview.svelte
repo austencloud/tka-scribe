@@ -80,8 +80,8 @@
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.3));
-    border-top-color: var(--theme-text, #fff);
+    border: 3px solid var(--theme-stroke);
+    border-top-color: var(--theme-text);
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }

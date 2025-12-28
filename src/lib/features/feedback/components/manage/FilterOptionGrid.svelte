@@ -68,7 +68,7 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -83,8 +83,8 @@
   }
 
   .filter-option:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .filter-option:active {
@@ -95,7 +95,7 @@
   .option-radio {
     width: 20px;
     height: 20px;
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border: 2px solid var(--theme-stroke-strong);
     border-radius: 50%;
     flex-shrink: 0;
     position: relative;
@@ -109,7 +109,7 @@
     left: 50%;
     width: 10px;
     height: 10px;
-    background: var(--option-color, #10b981);
+    background: var(--option-color, var(--semantic-success));
     border-radius: 50%;
     transform: translate(-50%, -50%) scale(0);
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -118,14 +118,14 @@
   .filter-option.selected {
     background: color-mix(
       in srgb,
-      var(--option-color, #10b981) 10%,
+      var(--option-color, var(--semantic-success)) 10%,
       transparent
     );
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .filter-option.selected .option-radio {
-    border-color: var(--option-color, #10b981);
+    border-color: var(--option-color, var(--semantic-success));
   }
 
   .filter-option.selected .option-radio::after {
@@ -133,7 +133,7 @@
   }
 
   .filter-option.selected i {
-    color: var(--option-color, #10b981);
+    color: var(--option-color, var(--semantic-success));
   }
 
   .option-label {

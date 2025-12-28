@@ -64,12 +64,11 @@
     align-items: center;
     gap: 1px;
     padding: 6px 12px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 75%, transparent);
-    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--theme-shadow) 75%, transparent);
     border-radius: 16px;
     border: 1px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
-    box-shadow: 0 2px 8px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+    box-shadow: 0 2px 8px var(--theme-shadow, var(--theme-shadow));
     animation: fadeInUp 0.3s ease-out;
   }
 
@@ -100,21 +99,21 @@
   }
 
   .xp-icon {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+    color: color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 90%, transparent);
   }
 
   .xp-amount {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 700;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   .xp-label {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin-left: 2px;
   }
 
@@ -130,11 +129,11 @@
     }
 
     .xp-amount {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .xp-label {
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 

@@ -306,7 +306,7 @@
 
   .splitter {
     width: 4px;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     cursor: col-resize;
     transition: background-color var(--transition-fast);
     flex-shrink: 0;

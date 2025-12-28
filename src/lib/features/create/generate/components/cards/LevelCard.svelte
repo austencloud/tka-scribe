@@ -102,7 +102,7 @@ Uses stepper pattern for space-efficient level selection
 
   function getColor(value: number): string {
     const level = numberToLevel[value];
-    if (!level) return "#3b82f6";
+    if (!level) return "var(--semantic-info)";
     const data = levelData[level];
     return data.color;
   }

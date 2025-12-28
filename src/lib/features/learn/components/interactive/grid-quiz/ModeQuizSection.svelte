@@ -100,14 +100,14 @@ ModeQuizSection - Identify diamond vs box grid
   .quiz-title {
     font-size: 1.375rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin: 0;
     text-align: center;
   }
 
   .quiz-subtitle {
     font-size: 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin: 0;
     text-align: center;
   }
@@ -117,9 +117,9 @@ ModeQuizSection - Identify diamond vs box grid
     max-width: 280px;
     aspect-ratio: 1;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border: 2px solid var(--theme-stroke);
   }
 
   .answer-buttons {
@@ -137,10 +137,10 @@ ModeQuizSection - Identify diamond vs box grid
     gap: 0.5rem;
     padding: 1.25rem;
     min-height: 80px;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg);
+    border: 2px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 12px;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -149,8 +149,8 @@ ModeQuizSection - Identify diamond vs box grid
   }
 
   .answer-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-    border-color: var(--theme-accent, rgba(74, 158, 255, 0.5));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-accent);
     transform: translateY(-2px);
   }
 

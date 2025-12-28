@@ -56,16 +56,16 @@
     gap: 8px;
     padding-bottom: 8px;
     margin-bottom: 12px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
-    font-size: var(--font-size-compact, 12px);
+    border-bottom: 1px solid var(--theme-stroke);
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .section-header i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
   }
 
@@ -76,19 +76,19 @@
   .number-input {
     width: 60px;
     padding: 6px 8px;
-    background: var(--theme-input-bg, rgba(0, 0, 0, 0.3));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-input-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 4px;
-    font-size: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text, var(--theme-text));
     text-align: center;
   }
 
   .field-label {
     display: block;
     margin-bottom: 6px;
-    font-size: 12px;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-muted, var(--theme-text-dim));
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -102,10 +102,10 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 10px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 6px;
-    font-size: var(--font-size-compact, 12px);
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
     cursor: pointer;
     margin-bottom: 12px;
   }
@@ -113,6 +113,6 @@
   .toggle-row input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: var(--theme-accent, #4a9eff);
+    accent-color: var(--theme-accent);
   }
 </style>

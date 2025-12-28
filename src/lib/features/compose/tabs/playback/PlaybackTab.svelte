@@ -317,8 +317,8 @@
     flex-shrink: 0;
     min-height: 140px;
     max-height: 200px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.4));
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-bg);
+    border-top: 1px solid var(--theme-stroke);
   }
 
   /* Mobile: Give more space to canvas */

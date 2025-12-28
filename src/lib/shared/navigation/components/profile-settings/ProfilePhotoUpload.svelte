@@ -94,8 +94,8 @@
     padding: 24px;
     width: 100%;
     max-width: 400px; /* Match form field width for consistency */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     margin-bottom: 24px;
     transition: all 0.2s ease;
@@ -147,7 +147,7 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 3px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     display: block;
     transition: all 0.2s ease;
   }
@@ -169,7 +169,7 @@
   }
 
   .photo-container.compact .photo-badge i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .photo-container.very-compact .photo-badge {
@@ -179,7 +179,7 @@
   }
 
   .photo-container.very-compact .photo-badge i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .photo-container.compact .photo {
@@ -196,26 +196,26 @@
     border-radius: 50%;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      var(--theme-accent-strong, #4f46e5)
+      var(--theme-accent, var(--theme-accent)),
+      var(--theme-accent-strong)
     );
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
+    font-size: var(--font-size-3xl);
     font-weight: 600;
     color: white;
-    border: 3px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    border: 3px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     transition: all 0.2s ease;
   }
 
   .photo-container.compact .photo-placeholder {
-    font-size: 28px;
+    font-size: var(--font-size-3xl);
     border-width: 2px;
   }
 
   .photo-container.very-compact .photo-placeholder {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     border-width: 2px;
   }
 
@@ -228,20 +228,20 @@
     border-radius: 50%;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #6366f1),
-      var(--theme-accent-strong, #4f46e5)
+      var(--theme-accent, var(--theme-accent)),
+      var(--theme-accent-strong)
     );
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 8px var(--theme-shadow);
     border: 3px solid rgba(20, 25, 35, 0.98); /* Match container background */
     transition: opacity 0.2s ease;
   }
 
   .photo-badge i {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .photo-overlay {
@@ -270,44 +270,44 @@
   }
 
   .photo-overlay i {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
   }
 
   .photo-overlay span {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
   .photo-container.compact .photo-overlay i {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .photo-container.compact .photo-overlay span {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .photo-container.very-compact .photo-overlay i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
   }
 
   .photo-container.very-compact .photo-overlay span {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   .photo-title {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0;
     transition: font-size 0.2s ease;
   }
 
   .photo-container.compact .photo-title {
-    font-size: 15px;
+    font-size: var(--font-size-sm);
   }
 
   .photo-container.very-compact .photo-title {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   /* Mobile Responsive */
@@ -321,7 +321,7 @@
   /* Accessibility - Focus Indicators */
   .photo-wrapper:focus-visible {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-accent, #6366f1) 90%, transparent);
+      color-mix(in srgb, var(--theme-accent) 90%, transparent);
     outline-offset: 2px;
     border-radius: 50%;
   }

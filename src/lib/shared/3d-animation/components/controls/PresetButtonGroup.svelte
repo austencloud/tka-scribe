@@ -34,7 +34,7 @@
     flex-wrap: wrap;
     gap: 0.25rem;
     padding-top: 0.5rem;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .preset-btn {
@@ -42,10 +42,10 @@
     min-height: 48px; /* WCAG AAA touch target */
     min-width: 0;
     padding: 0.35rem 0.5rem;
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     font-size: var(--font-size-compact, 0.75rem);
     cursor: pointer;
     transition: all 0.15s;
@@ -58,19 +58,19 @@
   }
 
   .preset-btn:hover {
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.14));
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .blue .preset-btn:hover {
-    background: var(--prop-blue, #2e3192);
-    border-color: var(--prop-blue, #2e3192);
+    background: var(--prop-blue);
+    border-color: var(--prop-blue);
     color: white;
   }
 
   .red .preset-btn:hover {
-    background: var(--prop-red, #ed1c24);
-    border-color: var(--prop-red, #ed1c24);
+    background: var(--prop-red);
+    border-color: var(--prop-red);
     color: white;
   }
 </style>

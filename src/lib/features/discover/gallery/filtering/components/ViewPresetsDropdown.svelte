@@ -68,14 +68,14 @@ Responsive behavior:
       id: "medium",
       label: "Medium",
       icon: "fa-circle",
-      iconColor: "#fbbf24",
+      iconColor: "var(--semantic-warning)",
       filter: { difficultyLevels: [2] } as Partial<ExploreFilter>,
     },
     {
       id: "hard",
       label: "Hard",
       icon: "fa-circle",
-      iconColor: "#ef4444",
+      iconColor: "var(--semantic-error)",
       filter: { difficultyLevels: [3] } as Partial<ExploreFilter>,
     },
   ];
@@ -241,11 +241,11 @@ Responsive behavior:
     align-items: center;
     gap: 7px;
     padding: 8px 15px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
     border: none;
     border-radius: 100px; /* Full pill */
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 14px;
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     font-weight: 590; /* SF Pro semibold */
     letter-spacing: -0.2px;
     cursor: pointer;
@@ -268,11 +268,11 @@ Responsive behavior:
   }
 
   .toggle-label {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .chevron-icon {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.75;
     transition: transform 0.2s ease;
   }
@@ -285,11 +285,11 @@ Responsive behavior:
     min-width: 200px;
     background: rgba(15, 15, 20, 0.96);
     backdrop-filter: blur(24px);
-    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    border: 0.5px solid var(--theme-stroke-strong);
     border-radius: 14px;
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.5),
-      0 2px 8px rgba(0, 0, 0, 0.3);
+      0 2px 8px var(--theme-shadow);
     z-index: 10000;
     overflow: hidden;
     animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -308,11 +308,11 @@ Responsive behavior:
 
   .menu-header {
     padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     font-size: 0.875rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -330,7 +330,7 @@ Responsive behavior:
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 0.95rem;
     font-weight: 500;
     cursor: pointer;
@@ -343,7 +343,7 @@ Responsive behavior:
   }
 
   .menu-item.active {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg);
   }
 
   .menu-item i:first-child {
@@ -396,10 +396,10 @@ Responsive behavior:
     align-items: center;
     gap: 16px;
     padding: 16px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
     font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
@@ -413,7 +413,7 @@ Responsive behavior:
   }
 
   .mobile-menu-item.active {
-    background: rgba(255, 255, 255, 0.12);
+    background: var(--theme-card-hover-bg);
     border-color: rgba(255, 255, 255, 0.3);
     font-weight: 600;
   }

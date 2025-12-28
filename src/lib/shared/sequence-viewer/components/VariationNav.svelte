@@ -76,7 +76,7 @@
   }
 
   .variation-indicator {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
   }
 </style>

@@ -165,12 +165,11 @@ ConceptDetailView - Direct view of concept content
 
     padding: 0.5rem 1rem;
 
-    background: var(--theme-card-bg, rgba(0, 0, 0, 0.45));
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
 
-    color: var(--theme-text, rgba(255, 255, 255, 0.92));
+    color: var(--theme-text);
     font-size: 0.875rem;
     font-weight: 600;
 
@@ -179,8 +178,8 @@ ConceptDetailView - Direct view of concept content
   }
 
   .back-button:hover {
-    background: var(--theme-card-hover-bg, rgba(0, 0, 0, 0.55));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
     transform: translateX(-2px);
   }
 
@@ -218,13 +217,13 @@ ConceptDetailView - Direct view of concept content
   .coming-soon-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     margin: 0;
   }
 
   .coming-soon-text {
     font-size: 1rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     margin: 0;
   }
 

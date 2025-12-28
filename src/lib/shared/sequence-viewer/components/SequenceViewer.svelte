@@ -460,13 +460,13 @@
     justify-content: center;
     padding: 12px 16px;
     background: rgba(15, 20, 30, 0.95);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
     min-height: 72px;
   }
 
   .viewer-title {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
     margin: 0;
     text-align: center;
@@ -485,7 +485,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     color: white;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -518,7 +518,7 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .spinner {
@@ -537,8 +537,8 @@
   }
 
   .error-state i {
-    font-size: 50px;
-    color: #ef4444;
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-error);
   }
 
   .error-state button {
@@ -564,7 +564,7 @@
     max-height: 300px;
     object-fit: contain;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
   }
 
   .thumbnail-placeholder {
@@ -573,10 +573,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-radius: 12px;
-    font-size: 50px;
-    color: rgba(255, 255, 255, 0.2);
+    font-size: var(--font-size-3xl);
+    color: rgba(255, 255, 255, 0.4); /* Improved contrast for WCAG AAA */
   }
 
   /* Metadata */
@@ -595,14 +595,14 @@
   }
 
   .metadata-item .label {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
 
   .metadata-item .value {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
   }
 

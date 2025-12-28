@@ -179,21 +179,21 @@
   }
 
   .access-denied i {
-    font-size: 64px;
-    color: var(--theme-stroke, rgba(255, 255, 255, 0.2));
+    font-size: var(--font-size-3xl);
+    color: var(--theme-stroke);
   }
 
   .access-denied h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .access-denied p {
     margin: 0;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .release-panel-container {
@@ -204,7 +204,7 @@
     padding: 24px;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #000) 30%,
+      var(--theme-panel-bg) 30%,
       transparent
     );
   }

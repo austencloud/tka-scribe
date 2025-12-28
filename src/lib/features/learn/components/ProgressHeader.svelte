@@ -70,7 +70,7 @@ Shows:
         cy="30"
         r={circleRadius}
         fill="none"
-        stroke="rgba(255, 255, 255, 0.1)"
+        stroke="var(--theme-stroke)"
         stroke-width="4"
       />
       <circle
@@ -180,7 +180,7 @@ Shows:
 
   .stat-label {
     font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
   }
 
   .category-bars {
@@ -218,7 +218,7 @@ Shows:
   }
 
   .bar-count {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     font-size: 0.8125rem;
     flex-shrink: 0;
     min-width: 28px;

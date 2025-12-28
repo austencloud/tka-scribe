@@ -21,7 +21,7 @@
 
 <style>
   .panel-spinner {
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: #06b6d4;
     border-radius: 50%;
     animation: panel-spin 0.8s linear infinite;

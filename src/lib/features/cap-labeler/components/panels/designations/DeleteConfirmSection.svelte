@@ -91,7 +91,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    color: #ef4444;
+    color: var(--semantic-error);
     font-size: var(--font-size-sm);
     font-weight: 500;
   }
@@ -105,7 +105,7 @@
   .delete-cancel-btn {
     padding: 6px 12px;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 6px;
     color: var(--muted-foreground);
     font-size: var(--font-size-sm);
@@ -131,7 +131,7 @@
     background: rgba(239, 68, 68, 0.2);
     border: 1px solid rgba(239, 68, 68, 0.5);
     border-radius: 6px;
-    color: #ef4444;
+    color: var(--semantic-error);
     font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
@@ -169,7 +169,7 @@
   .action-btn.delete:hover {
     background: rgba(239, 68, 68, 0.15);
     border-color: rgba(239, 68, 68, 0.5);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .spinner-icon {

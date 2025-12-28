@@ -67,7 +67,7 @@
     margin: 0 0 clamp(10px, 2cqh, 14px) 0;
     font-size: clamp(13px, 3cqw, 15px);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .compact.section-heading {

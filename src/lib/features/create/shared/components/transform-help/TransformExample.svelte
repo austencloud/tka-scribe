@@ -112,7 +112,7 @@
 
   .example-label {
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.6); /* WCAG AA: increased from 0.4 */
+    color: var(--theme-text-dim); /* WCAG AA: increased from 0.4 */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -158,8 +158,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 20px;
+    color: var(--theme-text-dim); /* Improved contrast for WCAG AAA */
+    font-size: var(--font-size-xl);
   }
 
   .pictograph-loading {
@@ -183,7 +183,7 @@
     border: none;
     color: white;
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: all 0.15s ease;
   }
 
@@ -216,15 +216,15 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: all 0.15s ease;
   }
 
   .shuffle-btn:hover:not(:disabled) {
     background: rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--theme-text);
   }
 
   .shuffle-btn:disabled {
@@ -240,7 +240,7 @@
   .example-hint {
     margin: 8px 0 0;
     font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.6); /* WCAG AA: increased from 0.35 */
+    color: var(--theme-text-dim); /* WCAG AA: increased from 0.35 */
     text-align: center;
   }
 

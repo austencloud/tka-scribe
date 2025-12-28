@@ -71,19 +71,19 @@ Uses stepper pattern for direct increment/decrement interaction
       return "radial-gradient(ellipse at top left, #a7f3d0 0%, #6ee7b7 40%, #34d399 100%)";
     } else if (value <= 1.0) {
       // Gentle (1.0x) - Solid Green with depth
-      return "radial-gradient(ellipse at top left, #4ade80 0%, #22c55e 40%, #16a34a 100%)";
+      return "radial-gradient(ellipse at top left, #4ade80 0%, var(--semantic-success) 40%, #16a34a 100%)";
     } else if (value <= 1.5) {
       // Light (1.5x) - Lime Green with vibrant depth
       return "radial-gradient(ellipse at top left, #bef264 0%, #a3e635 40%, #84cc16 100%)";
     } else if (value <= 2.0) {
       // Moderate (2.0x) - Amber with warm depth
-      return "radial-gradient(ellipse at top left, #fbbf24 0%, #f59e0b 40%, #d97706 100%)";
+      return "radial-gradient(ellipse at top left, var(--semantic-warning) 0%, var(--semantic-warning) 40%, #d97706 100%)";
     } else if (value <= 2.5) {
       // Strong (2.5x) - Orange-Red with intense depth
       return "radial-gradient(ellipse at top left, #fb923c 0%, #f97316 40%, #ea580c 100%)";
     } else {
       // Intense (3.0x) - Deep Red with danger depth
-      return "radial-gradient(ellipse at top left, #f87171 0%, #ef4444 40%, #dc2626 100%)";
+      return "radial-gradient(ellipse at top left, var(--semantic-error) 0%, var(--semantic-error) 40%, var(--semantic-error) 100%)";
     }
   }
 

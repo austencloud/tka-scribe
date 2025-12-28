@@ -325,7 +325,7 @@
     display: flex;
     flex-direction: column;
     background: #0e0e12;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--theme-stroke);
     border-radius: 8px;
     overflow: hidden;
     container-type: inline-size;
@@ -338,7 +338,7 @@
     padding: 8px 12px;
     background: rgba(255, 255, 255, 0.03);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
   }
 
   .preview-label {
@@ -348,7 +348,7 @@
 
   .sequence-info {
     margin-left: auto;
-    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-muted, var(--theme-text-dim));
     max-width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -387,8 +387,8 @@
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0.7);
     border-radius: 4px;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
     backdrop-filter: blur(4px);
   }
 
@@ -407,19 +407,19 @@
 
   .empty-state i,
   .error-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.5;
   }
 
   .empty-state .hint {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.6;
   }
 
   .spinner {
     width: 32px;
     height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: #ffd43b;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -442,7 +442,7 @@
     border-radius: 50%;
     backdrop-filter: blur(4px);
     color: #ffd43b;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     animation: pulse 1.5s ease-in-out infinite;
   }
 
@@ -517,13 +517,13 @@
     height: 48px;
     border-radius: 4px;
     border: none;
-    background: rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: all 0.15s ease;
   }
 
@@ -542,7 +542,7 @@
     height: 52px;
     background: rgba(255, 212, 59, 0.2);
     color: #ffd43b;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .transport-btn.play-btn:hover:not(:disabled) {
@@ -558,10 +558,10 @@
     padding: 6px 12px;
     border-radius: 4px;
     border: none;
-    background: var(--theme-accent, #4a9eff);
+    background: var(--theme-accent);
     color: white;
     cursor: pointer;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 500;
     transition: all 0.15s ease;
   }
@@ -572,7 +572,7 @@
   }
 
   .add-btn i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 </style>
 

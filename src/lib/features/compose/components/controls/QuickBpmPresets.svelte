@@ -44,10 +44,10 @@
     min-width: 0;
     min-height: var(--min-touch-target);
     padding: 10px 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text, var(--theme-text-dim));
     font-size: clamp(0.75rem, 2.5vw, 0.85rem);
     font-weight: 600;
     cursor: pointer;
@@ -56,18 +56,18 @@
     font-variant-numeric: tabular-nums;
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.1),
-      inset 0 1px 0 var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+      inset 0 1px 0 var(--theme-card-bg);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .quick-preset-btn:hover {
-      background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-      border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.18));
-      color: var(--theme-text, rgba(255, 255, 255, 0.85));
+      background: var(--theme-card-hover-bg);
+      border-color: var(--theme-stroke-strong);
+      color: var(--theme-text);
       transform: translateY(-1px);
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+        inset 0 1px 0 var(--theme-card-hover-bg);
     }
   }
 
@@ -86,6 +86,6 @@
     box-shadow:
       0 0 20px rgba(139, 92, 246, 0.25),
       0 2px 8px rgba(139, 92, 246, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      inset 0 1px 0 var(--theme-stroke);
   }
 </style>

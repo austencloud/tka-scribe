@@ -170,14 +170,14 @@
     justify-content: center;
     height: 100%;
     min-height: 200px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .loading-spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    border-top: 3px solid var(--theme-accent, #007bff);
+    border: 3px solid var(--theme-stroke);
+    border-top: 3px solid var(--theme-accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 16px;
@@ -194,7 +194,7 @@
 
   .module-loading p {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     opacity: 0.7;
   }
 
@@ -205,16 +205,16 @@
     justify-content: center;
     height: 100%;
     min-height: 200px;
-    color: var(--semantic-error, #dc3545);
+    color: var(--semantic-error);
   }
 
   .module-error p {
     margin: 0 0 8px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .module-error .error-details {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     opacity: 0.7;
   }
 

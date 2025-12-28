@@ -45,14 +45,14 @@
     width: var(--min-touch-target);
     height: var(--min-touch-target);
     flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1.5px solid rgba(255, 255, 255, 0.15);
+    background: var(--theme-card-bg);
+    border: 1.5px solid var(--theme-stroke-strong);
     border-radius: 50%;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .tool-view-toggle.showing-grid {
@@ -69,7 +69,7 @@
     .tool-view-toggle:hover {
       background: rgba(255, 255, 255, 0.12);
       border-color: rgba(255, 255, 255, 0.25);
-      color: rgba(255, 255, 255, 0.9);
+      color: var(--theme-text);
       transform: scale(1.05);
     }
 

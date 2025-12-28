@@ -333,36 +333,36 @@ ${
   }
 
   h3 {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
     margin-bottom: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   h4 {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     margin-bottom: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   h5 {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     margin-bottom: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.85));
+    color: var(--theme-text);
   }
 
   .description {
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin-bottom: 20px;
   }
 
   /* HMR Toggle Setting Card */
   .setting-card {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 24px;
@@ -382,15 +382,15 @@ ${
 
   .setting-info h4 {
     margin: 0 0 6px 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .setting-description {
     margin: 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;
   }
 
@@ -416,7 +416,7 @@ ${
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background-color: var(--theme-stroke-strong);
     transition: 0.3s;
     border-radius: 28px;
   }
@@ -452,10 +452,10 @@ ${
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 8px;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .setting-status.active {
@@ -464,7 +464,7 @@ ${
   }
 
   .setting-status i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .diagnostics-toggle {
@@ -473,10 +473,10 @@ ${
     gap: 0.75rem;
     width: 100%;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -484,8 +484,8 @@ ${
   }
 
   .diagnostics-toggle:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .diagnostics-toggle i {
@@ -507,8 +507,8 @@ ${
   }
 
   .firebase-config {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 20px;
@@ -526,18 +526,18 @@ ${
   }
 
   .label {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     min-width: 100px;
   }
 
   code {
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.3));
+    background: var(--theme-panel-bg);
     padding: 4px 8px;
     border-radius: 4px;
     font-family: "Consolas", "Monaco", monospace;
-    font-size: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
   }
 
   .diagnostics-summary {
@@ -548,8 +548,8 @@ ${
   }
 
   .summary-item {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 6px;
     padding: 12px;
     display: flex;
@@ -558,14 +558,14 @@ ${
   }
 
   .summary-item .label {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .summary-item .value {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .alert {
@@ -582,18 +582,18 @@ ${
   .alert strong {
     display: block;
     margin-bottom: 8px;
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .alert p {
-    font-size: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text, var(--theme-text));
     margin-bottom: 4px;
   }
 
   .diagnostics-details {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
     padding: 16px;
     margin-bottom: 20px;
@@ -602,12 +602,12 @@ ${
   .diagnostics-details summary {
     cursor: pointer;
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     user-select: none;
   }
 
   .diagnostics-details summary:hover {
-    color: var(--theme-text, rgba(255, 255, 255, 1));
+    color: var(--theme-text);
   }
 
   .storage-section {
@@ -622,12 +622,12 @@ ${
 
   .storage-section li {
     padding: 6px 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
+    background: var(--theme-card-bg);
     border-radius: 4px;
     margin-bottom: 4px;
     font-family: "Consolas", "Monaco", monospace;
-    font-size: 12px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -636,31 +636,31 @@ ${
   .storage-section li.old-project {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .storage-section li.more {
     background: none;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
   }
 
   .badge {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 600;
   }
 
   .badge-error {
-    background: #ef4444;
+    background: var(--semantic-error);
     color: white;
   }
 
   .empty {
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-style: italic;
   }
 
@@ -675,7 +675,7 @@ ${
     padding: 12px 20px;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     border: none;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -687,21 +687,21 @@ ${
   }
 
   .btn-secondary {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: white;
   }
 
   .btn-secondary:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
   }
 
   .btn-danger {
-    background: #ef4444;
+    background: var(--semantic-error);
     color: white;
   }
 
   .btn-danger:hover:not(:disabled) {
-    background: #dc2626;
+    background: var(--semantic-error);
   }
 
   .help-text {
@@ -712,7 +712,7 @@ ${
   }
 
   .help-text strong {
-    color: #3b82f6;
+    color: var(--semantic-info);
     display: block;
     margin-bottom: 8px;
   }
@@ -723,8 +723,8 @@ ${
   }
 
   .help-text li {
-    font-size: 13px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
     margin-bottom: 4px;
   }
 

@@ -216,14 +216,14 @@
   .preview-canvas {
     flex: 1;
     min-height: 0;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
+    background: var(--theme-card-bg);
   }
 
   .preview-image {
@@ -231,7 +231,7 @@
     max-height: 100%;
     object-fit: contain;
     border-radius: 4px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 16px var(--theme-shadow);
   }
 
   .empty-state,
@@ -241,25 +241,25 @@
     flex-direction: column;
     align-items: center;
     gap: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .empty-state i,
   .loading-state i,
   .error-state i {
-    font-size: 48px;
+    font-size: var(--font-size-3xl);
     opacity: 0.3;
   }
 
   .error-state i {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     opacity: 0.7;
   }
 
   .empty-state p,
   .loading-state p,
   .error-state p {
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
     margin: 0;
     text-align: center;
   }
@@ -271,8 +271,8 @@
     justify-content: center;
     gap: 8px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
@@ -282,11 +282,11 @@
     justify-content: center;
     padding: 12px 16px;
     min-height: 48px; /* WCAG 2.1 AA touch target minimum */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 24px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: var(--font-size-min, 14px);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-min);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -294,24 +294,24 @@
   }
 
   .chip:hover {
-    background: var(--theme-card-bg-hover, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     color: var(--theme-text, white);
   }
 
   .chip.active {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 25%, transparent);
-    border-color: color-mix(in srgb, var(--theme-accent, #4a9eff) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
     color: white;
   }
 
   .chip.active:hover {
-    background: color-mix(in srgb, var(--theme-accent, #4a9eff) 35%, transparent);
-    border-color: var(--theme-accent, #4a9eff);
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    border-color: var(--theme-accent);
   }
 
   .chip:focus-visible {
-    outline: 2px solid var(--theme-accent, #4a9eff);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

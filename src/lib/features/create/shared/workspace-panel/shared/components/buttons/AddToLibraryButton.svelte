@@ -56,18 +56,18 @@
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 18px;
-    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text);
 
     /* Base button styling */
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    background: var(--theme-stroke);
+    border: 1px solid var(--theme-stroke-strong);
+    box-shadow: 0 2px 8px var(--theme-shadow);
   }
 
   .panel-button:hover:not(:disabled) {
     transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px var(--theme-shadow);
   }
 
   .panel-button:active:not(:disabled) {
@@ -76,7 +76,7 @@
   }
 
   .panel-button:focus-visible {
-    outline: 2px solid var(--theme-accent, #818cf8);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 
@@ -89,21 +89,21 @@
   .add-to-library-button {
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 85%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          var(--theme-accent-strong)
         )
         100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent-strong, #8b5cf6) 30%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 30%,
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
   }
 
   .add-to-library-button:hover:not(:disabled) {
@@ -111,19 +111,19 @@
       135deg,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 85%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
+          var(--theme-accent-strong)
         )
         0%,
       color-mix(
           in srgb,
-          var(--theme-accent-strong, #8b5cf6) 70%,
-          var(--theme-accent-strong, #4f46e5)
+          var(--theme-accent-strong, var(--theme-accent-strong)) 70%,
+          var(--theme-accent-strong)
         )
         100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
   }
 
   /* Mobile responsive adjustments */
@@ -131,7 +131,7 @@
     .panel-button {
       width: var(--min-touch-target);
       height: var(--min-touch-target);
-      font-size: 16px;
+      font-size: var(--font-size-base);
     }
   }
 
@@ -141,7 +141,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 
@@ -149,7 +149,7 @@
     .panel-button {
       width: var(--min-touch-target); /* NEVER below 48px for accessibility */
       height: var(--min-touch-target);
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -160,7 +160,7 @@
         --min-touch-target
       ); /* Maintain 48px minimum for accessibility */
       height: var(--min-touch-target);
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 </style>

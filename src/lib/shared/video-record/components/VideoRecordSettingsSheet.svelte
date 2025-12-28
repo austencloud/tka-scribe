@@ -81,17 +81,15 @@
 <svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
     class="sheet-backdrop"
     onclick={handleBackdropClick}
-    onkeydown={(e) => e.key === "Escape" && onClose()}
-    role="button"
-    tabindex="0"
-    aria-label="Close settings"
+    aria-hidden="true"
   >
     <div class="sheet-content" role="dialog" aria-modal="true">
       <div class="sheet-header">
-        <h3>Recording Settings</h3>
+        <h2>Recording Settings</h2>
         <button class="close-btn" onclick={onClose} aria-label="Close">
           <i class="fas fa-times" aria-hidden="true"></i>
         </button>
@@ -100,7 +98,7 @@
       <div class="sheet-body">
         <!-- Reference View Section -->
         <section class="settings-section">
-          <h4>Reference View</h4>
+          <h3>Reference View</h3>
           <p class="section-hint">
             Choose what to display alongside your camera feed
           </p>
@@ -138,7 +136,7 @@
         <!-- Animation Settings (visible when animation reference is active) -->
         {#if referenceView === "animation"}
           <section class="settings-section">
-            <h4>Animation Settings</h4>
+            <h3>Animation Settings</h3>
 
             <!-- Trail Controls (Off/Subtle/Vivid) with bilateral toggle -->
             <SimpleTrailControls {bluePropType} {redPropType} />
@@ -161,7 +159,7 @@
         <!-- Grid Settings (visible when grid reference is active) -->
         {#if referenceView === "grid"}
           <section class="settings-section">
-            <h4>Grid Settings</h4>
+            <h3>Grid Settings</h3>
             <p class="section-hint">
               Adjust playback speed for the animated grid
             </p>
@@ -218,8 +216,8 @@
     width: 100%;
     max-width: 480px;
     max-height: 80vh;
-    background: var(--theme-panel-elevated-bg, rgba(20, 20, 28, 0.98));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-panel-elevated-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 20px 20px 0 0;
     overflow: hidden;
     animation: slideUp 0.3s ease;
@@ -241,14 +239,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
-  .sheet-header h3 {
+  .sheet-header h2 {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .close-btn {
@@ -257,17 +255,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     border: none;
     border-radius: 50%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 16px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.12));
+    background: var(--theme-card-hover-bg);
     color: var(--theme-text, white);
   }
 
@@ -285,17 +283,17 @@
     margin-bottom: 0;
   }
 
-  .settings-section h4 {
+  .settings-section h3 {
     margin: 0 0 4px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .section-hint {
     margin: 0 0 12px;
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   /* Option Grid */
@@ -311,41 +309,41 @@
     align-items: center;
     gap: 6px;
     padding: 12px 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1.5px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 12px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .option-btn i {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
   }
 
   .option-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   .option-btn.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #3b82f6) 18%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #2563eb) 14%, transparent)
+      color-mix(in srgb, var(--theme-accent, var(--semantic-info)) 18%, transparent) 0%,
+      color-mix(in srgb, var(--theme-accent-strong) 14%, transparent)
         100%
     );
     border-color: color-mix(
       in srgb,
-      var(--theme-accent, #3b82f6) 45%,
+      var(--theme-accent, var(--semantic-info)) 45%,
       transparent
     );
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   .option-btn.active i {
-    color: var(--theme-accent, #3b82f6);
+    color: var(--theme-accent, var(--semantic-info));
   }
 
   /* Motion Visibility Row */
@@ -356,15 +354,15 @@
     gap: 12px;
     margin-top: 12px;
     padding: 12px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.06));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: 12px;
   }
 
   .visibility-label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .visibility-buttons {
@@ -381,8 +379,8 @@
   }
 
   .slider-row > span {
-    font-size: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.8));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text);
   }
 
   .slider-control {
@@ -396,7 +394,7 @@
     height: 4px;
     background: color-mix(
       in srgb,
-      var(--theme-stroke-strong, rgba(255, 255, 255, 0.18)) 55%,
+      var(--theme-stroke-strong) 55%,
       transparent
     );
     border-radius: 2px;
@@ -410,8 +408,8 @@
     height: 18px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent, #3b82f6) 0%,
-      var(--theme-accent-strong, #2563eb) 100%
+      var(--theme-accent, var(--semantic-info)) 0%,
+      var(--theme-accent-strong) 100%
     );
     border-radius: 50%;
     cursor: pointer;
@@ -419,9 +417,9 @@
 
   .slider-value {
     min-width: 40px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     text-align: right;
   }
 </style>

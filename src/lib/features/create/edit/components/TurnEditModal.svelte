@@ -169,19 +169,19 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
   }
 
   .turn-dialog {
-    background: var(--theme-panel-bg, rgba(30, 30, 30, 0.95));
+    background: var(--theme-panel-bg);
     border-radius: 8px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 16px var(--theme-shadow);
     padding: 16px;
     min-width: 400px;
   }
 
   .blue-dialog {
-    border: 2px solid var(--prop-blue, #3b82f6);
+    border: 2px solid var(--prop-blue, var(--semantic-info));
   }
 
   .red-dialog {
-    border: 2px solid var(--prop-red, #ef4444);
+    border: 2px solid var(--prop-red, var(--semantic-error));
   }
 
   .dialog-header {
@@ -193,15 +193,15 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
 
   .dialog-header h4 {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .current-value {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .turn-buttons {
@@ -215,13 +215,13 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
     flex: 1;
     padding: 12px 8px;
     border: none;
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, #ffffff);
-    font-size: 14px;
+    background: var(--theme-stroke);
+    color: var(--theme-text);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    border-right: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    border-right: 1px solid var(--theme-stroke-strong);
   }
 
   .turn-btn:last-child {
@@ -229,36 +229,36 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
   }
 
   .turn-btn:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
   }
 
   .turn-btn.selected {
-    background: var(--theme-accent, #6366f1);
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-accent, var(--theme-accent));
+    color: var(--theme-text);
   }
 
   .blue-dialog .turn-btn.selected {
-    background: var(--prop-blue, #3b82f6);
+    background: var(--prop-blue, var(--semantic-info));
   }
 
   .red-dialog .turn-btn.selected {
-    background: var(--prop-red, #ef4444);
+    background: var(--prop-red, var(--semantic-error));
   }
 
   .close-btn {
     padding: 12px 24px;
-    background: var(--theme-accent, #6366f1);
-    color: var(--theme-text, #ffffff);
+    background: var(--theme-accent, var(--theme-accent));
+    color: var(--theme-text);
     border: none;
     border-radius: 6px;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-btn:hover {
-    background: color-mix(in srgb, var(--theme-accent, #6366f1) 85%, black);
+    background: color-mix(in srgb, var(--theme-accent) 85%, black);
   }
 
   /* Mobile adjustments */
@@ -270,7 +270,7 @@ Implements the proven DirectSetTurnsDialog pattern from the legacy desktop app:
 
     .turn-btn {
       padding: 10px 6px;
-      font-size: 12px;
+      font-size: var(--font-size-compact);
     }
   }
 </style>

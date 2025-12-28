@@ -151,8 +151,8 @@
     display: flex;
     gap: 4px;
     padding: 8px;
-    background: var(--theme-panel-bg, rgba(0, 0, 0, 0.2));
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-panel-bg);
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   /* Sliding indicator */
@@ -162,7 +162,7 @@
     bottom: 8px;
     height: calc(100% - 16px);
     width: calc((100% - 16px - 4px) / var(--tab-count));
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     border-radius: 8px;
     transform: translateX(calc(var(--active-index) * (100% + 4px)));
     transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -181,8 +181,8 @@
     background: transparent;
     border: none;
     border-radius: 10px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    font-size: 14px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition:
@@ -192,7 +192,7 @@
   }
 
   .tab:hover:not(.active) {
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
   }
 
   .tab:active {
@@ -210,7 +210,7 @@
   }
 
   .tab i {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: transform 0.2s ease;
   }
 
@@ -225,7 +225,7 @@
     padding: 0 6px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     line-height: 20px;
     text-align: center;
@@ -237,7 +237,7 @@
   }
 
   .tab:not(.active) .badge {
-    background: var(--theme-accent, #3b82f6);
+    background: var(--theme-accent, var(--semantic-info));
     color: white;
   }
 

@@ -198,7 +198,7 @@
     max-height: 100%;
     object-fit: contain;
     border-radius: 8px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px var(--theme-shadow);
   }
 
   /* Previous image scales down and fades out */
@@ -380,7 +380,7 @@
 
   .variation-dot:hover {
     background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
+    border-color: var(--theme-text-dim);
   }
 
   .variation-dot.active {

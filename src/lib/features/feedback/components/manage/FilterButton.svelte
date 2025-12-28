@@ -48,9 +48,9 @@
     height: var(--min-touch-target);
     padding: 0 21px;
     background: transparent;
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 999px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -59,9 +59,9 @@
   }
 
   .filter-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
   }
 
   .filter-button:active {
@@ -71,15 +71,15 @@
   .filter-button.active {
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
-    border-color: var(--semantic-success, #10b981);
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    border-color: var(--semantic-success, var(--semantic-success));
+    color: var(--theme-text);
   }
 
   .filter-button.active i:not(.panel-arrow) {
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
   }
 
   .filter-button i {
@@ -91,7 +91,7 @@
     margin-left: 6px;
     color: color-mix(
       in srgb,
-      var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,
+      var(--theme-text-dim, var(--theme-text-dim)) 80%,
       transparent
     );
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -108,10 +108,10 @@
     min-width: 22px;
     height: 22px;
     padding: 0 6px;
-    background: var(--semantic-success, #10b981);
+    background: var(--semantic-success, var(--semantic-success));
     border-radius: 999px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }

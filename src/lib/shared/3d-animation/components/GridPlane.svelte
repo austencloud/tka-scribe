@@ -39,7 +39,7 @@
 
   let {
     plane,
-    color = "#8b5cf6",
+    color = "var(--theme-accent-strong)",
     opacity = 0.15,
     showLabels = true,
     size = OUTER_POINT_RADIUS + 50, // Ensure plane contains outer points with padding
@@ -140,7 +140,7 @@
   <!-- Center point (largest, white/gold) -->
   <T.Mesh position={[0, 0, 1]}>
     <T.SphereGeometry args={[CENTER_POINT_SIZE, 16, 16]} />
-    <T.MeshBasicMaterial color="#fbbf24" />
+    <T.MeshBasicMaterial color="var(--semantic-warning)" />
   </T.Mesh>
 </T.Group>
 
@@ -177,7 +177,7 @@
       text={locationLabels[location]}
       position={[pos[0] * 1.08, pos[1] * 1.08, pos[2] * 1.08]}
       fontSize={11}
-      color="rgba(255,255,255,0.6)"
+      color="var(--theme-text-dim)"
       anchorX="center"
       anchorY="middle"
     />

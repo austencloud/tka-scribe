@@ -144,6 +144,7 @@
     return () => {
       // Clean up on unmount
       playbackController?.dispose();
+      animationState.dispose();
       visibilityManager.unregisterObserver(handleVisibilityChange);
     };
   });
@@ -304,7 +305,7 @@
     gap: 10px;
     width: 100%;
     height: 100%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .preview-loading .spinner {
@@ -324,13 +325,13 @@
 
   .preview-loading span,
   .preview-error span {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 
   .preview-error i {
-    font-size: 28px;
-    color: var(--semantic-warning, #fbbf24);
+    font-size: var(--font-size-3xl);
+    color: var(--semantic-warning, var(--semantic-warning));
     opacity: 0.6;
   }
 </style>

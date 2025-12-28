@@ -99,7 +99,7 @@ Shows:
       cy={size / 2}
       r={radius}
       fill="none"
-      stroke="rgba(255, 255, 255, 0.08)"
+      stroke="var(--theme-card-bg)"
       stroke-width={strokeWidth}
     />
 
@@ -183,13 +183,13 @@ Shows:
   .progress-value {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     line-height: 1;
   }
 
   .progress-label {
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
   }
 
   /* Position the SVG container relatively */
@@ -229,7 +229,7 @@ Shows:
 
   .legend-count {
     font-size: 0.8125rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
+    color: var(--theme-text-dim);
     font-weight: 500;
   }
 

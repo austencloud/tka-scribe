@@ -247,7 +247,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   .title {
     font-size: clamp(1.25rem, 4vw, 1.75rem);
     font-weight: 700;
-    color: var(--theme-text, #ffffff);
+    color: var(--theme-text);
     text-align: center;
     margin: 0;
     line-height: 1.2;
@@ -255,7 +255,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
 
   .subtitle {
     font-size: clamp(0.875rem, 2.5vw, 1rem);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     text-align: center;
     margin: 0;
     line-height: 1.4;
@@ -337,7 +337,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
 
   .start-btn {
     padding: 1rem;
-    background: linear-gradient(135deg, #10b981, #059669);
+    background: linear-gradient(135deg, var(--semantic-success), #059669);
     border: none;
     border-radius: 14px;
     color: white;
@@ -397,7 +397,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .action-btn.primary {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: linear-gradient(135deg, var(--semantic-info), #2563eb);
     color: white;
     border: none;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
@@ -413,17 +413,17 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
   }
 
   .action-btn.secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.2));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 2px solid var(--theme-stroke);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .action-btn.secondary:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.15));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.35));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
     color: var(--theme-text, white);
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 6px 16px var(--theme-stroke);
   }
 
   .action-btn.secondary:active {
@@ -435,7 +435,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
     background: rgba(239, 68, 68, 0.12);
     border: 2px solid rgba(239, 68, 68, 0.35);
     border-radius: 14px;
-    color: #f87171;
+    color: var(--semantic-error);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -449,7 +449,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
 
   .cancel-btn:hover {
     background: rgba(239, 68, 68, 0.2);
-    border-color: #ef4444;
+    border-color: var(--semantic-error);
     color: #fca5a5;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);

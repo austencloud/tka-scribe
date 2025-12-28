@@ -357,8 +357,8 @@
     align-items: center;
     justify-content: center;
     padding: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
     min-height: 72px;
   }
@@ -402,7 +402,7 @@
     position: relative;
     padding: var(--spacing-md) var(--spacing-lg);
     background: rgba(255, 255, 255, 0.02);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--theme-stroke);
     flex-shrink: 0;
   }
 
@@ -419,8 +419,8 @@
     width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
     padding-left: calc(var(--spacing-xl) + var(--spacing-sm));
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--border-radius-md);
     color: white;
     font-size: 0.875rem;
@@ -429,7 +429,7 @@
   .search-input:focus {
     outline: none;
     border-color: rgba(236, 72, 153, 0.5);
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--theme-card-bg);
   }
 
   .clear-search {
@@ -464,7 +464,7 @@
     padding: var(--spacing-sm) var(--spacing-lg);
     background: rgba(59, 130, 246, 0.1);
     border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
+    color: var(--semantic-info);
     font-size: 0.875rem;
   }
 
@@ -523,7 +523,7 @@
     justify-content: center;
     height: 300px;
     gap: var(--spacing-md);
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
   }
 
   .error-state i,
@@ -535,7 +535,7 @@
   .spinner {
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    border: 3px solid rgba(255, 255, 255, 0.1);
+    border: 3px solid var(--theme-stroke);
     border-top-color: #ec4899;
     border-radius: 50%;
     animation: spin 1s linear infinite;

@@ -88,8 +88,8 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
   }
 
@@ -112,7 +112,7 @@
     justify-content: center;
     align-items: center;
     min-height: 200px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 20%, transparent);
     border-radius: 8px;
     padding: 1rem;
   }
@@ -124,7 +124,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     font-size: 1rem;
   }
 
@@ -151,17 +151,17 @@
   }
 
   .reversal.blue {
-    background: color-mix(in srgb, var(--prop-blue, #3b82f6) 20%, transparent);
-    color: var(--prop-blue, #3b82f6);
+    background: color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 20%, transparent);
+    color: var(--prop-blue, var(--semantic-info));
     border: 1px solid
-      color-mix(in srgb, var(--prop-blue, #3b82f6) 30%, transparent);
+      color-mix(in srgb, var(--prop-blue, var(--semantic-info)) 30%, transparent);
   }
 
   .reversal.red {
-    background: color-mix(in srgb, var(--prop-red, #ef4444) 20%, transparent);
-    color: var(--prop-red, #ef4444);
+    background: color-mix(in srgb, var(--prop-red, var(--semantic-error)) 20%, transparent);
+    color: var(--prop-red, var(--semantic-error));
     border: 1px solid
-      color-mix(in srgb, var(--prop-red, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--prop-red, var(--semantic-error)) 30%, transparent);
   }
 
   .positions {
@@ -182,11 +182,11 @@
   }
 
   .label.blue {
-    color: var(--prop-blue, #3b82f6);
+    color: var(--prop-blue, var(--semantic-info));
   }
 
   .label.red {
-    color: var(--prop-red, #ef4444);
+    color: var(--prop-red, var(--semantic-error));
   }
 
   .location {

@@ -68,7 +68,7 @@
     const gradientMatch = iconHtml.match(/stop-color[:\s=]\s*["']?([#\w]+)/);
     if (gradientMatch?.[1]) return gradientMatch[1];
 
-    // Match inline style color (e.g., style="color: #f59e0b;")
+    // Match inline style color (e.g., style="color: var(--semantic-warning);")
     const colorMatch = iconHtml.match(/color[:\s=]\s*["']?([#\w]+)/);
     if (colorMatch?.[1]) return colorMatch[1];
 
@@ -299,16 +299,16 @@
 
   .dev-section {
     padding-top: 20px; /* More space before dev section */
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.05));
+    border-top: 1px solid var(--theme-stroke);
   }
 
   .section-title {
     margin: 0 0 16px 4px; /* More space before grid for better visual hierarchy */
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.35));
+    color: var(--theme-text-dim);
   }
 
   /* ============================================================================
@@ -347,7 +347,7 @@
     background: transparent;
     border: none;
     border-radius: 14px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    color: var(--theme-text, var(--theme-text));
     cursor: pointer;
     text-align: center;
     overflow: hidden;
@@ -365,7 +365,7 @@
       color-mix(in srgb, var(--module-color) 8%, rgba(255, 255, 255, 0.02)) 100%
     );
     border: 1px solid
-      color-mix(in srgb, var(--module-color) 25%, rgba(255, 255, 255, 0.1));
+      color-mix(in srgb, var(--module-color) 25%, var(--theme-stroke));
     border-radius: 16px; /* Match parent border-radius */
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 0;
@@ -405,7 +405,7 @@
   .module-cell:hover .cell-background {
     background: linear-gradient(
       145deg,
-      color-mix(in srgb, var(--module-color) 20%, rgba(255, 255, 255, 0.08)) 0%,
+      color-mix(in srgb, var(--module-color) 20%, var(--theme-card-bg)) 0%,
       color-mix(in srgb, var(--module-color) 10%, rgba(255, 255, 255, 0.03))
         100%
     );
@@ -482,14 +482,14 @@
     /* Compact labels: min 11px, preferred 1.6vh, max 14px */
     font-size: clamp(11px, 1.6vh, 14px);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.88));
+    color: var(--theme-text);
     letter-spacing: 0.01em;
     line-height: 1.2;
     transition: color 0.2s ease;
   }
 
   .module-cell.active .cell-label {
-    color: var(--theme-text, rgba(255, 255, 255, 1));
+    color: var(--theme-text);
   }
 
   /* ============================================================================
@@ -499,14 +499,14 @@
     position: absolute;
     top: 6px;
     right: 6px;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     padding: 2px 5px;
     border-radius: 4px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     letter-spacing: 0.4px;
     z-index: 3;
   }
@@ -521,14 +521,14 @@
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
-    background: var(--semantic-error, #ef4444);
+    background: var(--semantic-error, var(--semantic-error));
     border-radius: 9px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     line-height: 18px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 2px 4px var(--theme-shadow);
     animation: badgePop 0.3s ease;
     z-index: 3;
   }
@@ -567,10 +567,10 @@
   .module-cell.disabled:hover .cell-background {
     background: linear-gradient(
       145deg,
-      var(--theme-card-hover-bg, rgba(255, 255, 255, 0.07)) 0%,
-      var(--theme-card-bg, rgba(255, 255, 255, 0.03)) 100%
+      var(--theme-card-hover-bg) 0%,
+      var(--theme-card-bg) 100%
     );
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-color: var(--theme-stroke, var(--theme-stroke));
   }
 
   .module-cell.disabled:hover .cell-glow {
@@ -615,7 +615,7 @@
         --theme-card-hover-bg,
         rgba(255, 255, 255, 0.15)
       ) !important;
-      border: 2px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.4)) !important;
+      border: 2px solid var(--theme-stroke-strong) !important;
     }
 
     .module-cell.active .cell-background {

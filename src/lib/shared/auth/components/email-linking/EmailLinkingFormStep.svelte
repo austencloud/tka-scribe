@@ -135,7 +135,7 @@
   }
 
   .form-group label {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
     color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
   }
@@ -149,24 +149,24 @@
   .input-icon {
     position: absolute;
     left: 14px;
-    font-size: 14px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-dim);
     transition: color 0.2s ease;
     pointer-events: none;
   }
 
   .input-wrapper:focus-within .input-icon {
-    color: var(--theme-accent-strong, #8b5cf6);
+    color: var(--theme-accent-strong);
   }
 
   .form-group input {
     width: 100%;
     padding: 14px 14px 14px 44px;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 30%, transparent);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: color-mix(in srgb, var(--theme-shadow) 30%, transparent);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     transition: all 0.2s ease;
   }
 
@@ -176,9 +176,9 @@
 
   .form-group input:focus {
     outline: none;
-    border-color: var(--theme-accent-strong, #8b5cf6);
+    border-color: var(--theme-accent-strong, var(--theme-accent-strong));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent);
   }
 
   .form-group input:disabled {
@@ -196,7 +196,7 @@
     justify-content: center;
     background: transparent;
     border: none;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     cursor: pointer;
     border-radius: 8px;
     transition: all 0.2s ease;
@@ -204,7 +204,7 @@
 
   .toggle-password:hover:not(:disabled) {
     color: color-mix(in srgb, var(--theme-text, white) 80%, transparent);
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
   }
 
   .toggle-password:disabled {
@@ -213,11 +213,11 @@
   }
 
   .field-hint {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     display: flex;
     align-items: center;
     gap: 4px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .field-hint i {
@@ -231,19 +231,19 @@
     padding: 12px 14px;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 10px;
     color: #fca5a5;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     line-height: 1.4;
   }
 
   .form-error i {
-    color: var(--semantic-error, #ef4444);
+    color: var(--semantic-error, var(--semantic-error));
     flex-shrink: 0;
     margin-top: 2px;
   }
@@ -257,18 +257,18 @@
   .cancel-btn {
     flex: 1;
     padding: 14px 20px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 12px;
     color: color-mix(in srgb, var(--theme-text, white) 70%, transparent);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .cancel-btn:hover:not(:disabled) {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     color: color-mix(in srgb, var(--theme-text, white) 90%, transparent);
   }
 
@@ -286,13 +286,13 @@
     padding: 14px 20px;
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
       #7c3aed 100%
     );
     border: none;
     border-radius: 12px;
     color: var(--theme-text, white);
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -301,7 +301,7 @@
   .submit-btn:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
   }
 
   .submit-btn:active:not(:disabled) {
@@ -331,7 +331,7 @@
   .cancel-btn:focus-visible,
   .submit-btn:focus-visible,
   .toggle-password:focus-visible {
-    outline: 2px solid var(--theme-accent-strong, rgba(139, 92, 246, 0.8));
+    outline: 2px solid var(--theme-accent-strong);
     outline-offset: 2px;
   }
 

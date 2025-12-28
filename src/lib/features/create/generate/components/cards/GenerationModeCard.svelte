@@ -10,7 +10,7 @@ Shows BOTH Freeform and Circular options vertically with clear active/inactive s
     currentMode,
     onModeChange,
     // 🎨 EXTREME: Super vibrant purple gradient with HUGE contrast
-    color = "radial-gradient(ellipse at top left, #ede9fe 0%, #ddd6fe 20%, #c4b5fd 40%, #a78bfa 60%, #8b5cf6 80%, #6d28d9 100%)",
+    color = "radial-gradient(ellipse at top left, #ede9fe 0%, #ddd6fe 20%, #c4b5fd 40%, #a78bfa 60%, var(--theme-accent-strong) 80%, #6d28d9 100%)",
     shadowColor = "270deg 70% 55%", // Purple-matched shadow
     gridColumnSpan = 2,
     cardIndex = 0,

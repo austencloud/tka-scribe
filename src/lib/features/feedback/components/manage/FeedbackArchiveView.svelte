@@ -231,7 +231,7 @@
     height: 100%;
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 80%,
+      var(--theme-panel-bg) 80%,
       transparent
     );
   }
@@ -241,10 +241,10 @@
     flex-direction: column;
     gap: 16px;
     padding: 16px 20px;
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-bottom: 1px solid var(--theme-stroke);
     background: color-mix(
       in srgb,
-      var(--theme-panel-bg, #12121a) 90%,
+      var(--theme-panel-bg) 90%,
       transparent
     );
   }
@@ -267,19 +267,19 @@
     align-items: center;
     gap: 8px;
     padding: 6px 12px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-hover-bg, var(--theme-card-bg));
     border: none;
     border-radius: 6px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s;
     width: fit-content;
   }
 
   .back-btn:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.12));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-stroke);
+    color: var(--theme-text, var(--theme-text));
   }
 
   .archive-header h2 {
@@ -287,19 +287,19 @@
     align-items: center;
     gap: 10px;
     margin: 8px 0 0 0;
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
   }
 
   .archive-header h2 i {
-    color: var(--theme-text-dim, #6b7280);
+    color: var(--theme-text-dim);
   }
 
   .subtitle {
     margin: 0;
-    font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .archive-content {
@@ -335,33 +335,33 @@
     height: 100%;
     padding: 48px 24px;
     text-align: center;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .detail-loading i,
   .detail-error i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
     opacity: 0.6;
   }
 
   .detail-error i {
-    color: var(--semantic-warning, #f59e0b);
+    color: var(--semantic-warning, var(--semantic-warning));
   }
 
   .detail-error button {
     margin-top: 8px;
     padding: 8px 16px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border: 1px solid var(--theme-stroke-strong);
     border-radius: 6px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 13px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s;
   }
 
   .detail-error button:hover {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
   }
 
   /* Responsive design */

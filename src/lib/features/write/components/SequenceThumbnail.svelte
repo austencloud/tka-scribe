@@ -125,7 +125,7 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-xs);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-bottom: var(--glass-border);
   }
 
@@ -139,7 +139,7 @@
     min-width: 20px;
     text-align: center;
     box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
   }
 
   .remove-button {
@@ -149,7 +149,7 @@
     width: 18px;
     height: 18px;
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: bold;
     cursor: pointer;
     display: flex;
@@ -188,7 +188,7 @@
 
   .sequence-info {
     padding: var(--spacing-xs);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--theme-card-bg);
     border-top: var(--glass-border);
   }
 
@@ -204,7 +204,7 @@
 
   .beats-count {
     color: var(--text-secondary);
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     text-align: center;
   }
 
@@ -222,7 +222,7 @@
     }
 
     .position-number {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
       padding: 1px 4px;
       min-width: 16px;
     }
@@ -230,15 +230,15 @@
     .remove-button {
       width: 16px;
       height: 16px;
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
 
     .sequence-name {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
 
     .beats-count {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
   }
 
@@ -257,7 +257,7 @@
     }
 
     .position-number {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
       padding: 1px 3px;
       min-width: 14px;
     }
@@ -265,16 +265,16 @@
     .remove-button {
       width: 14px;
       height: 14px;
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
 
     .sequence-name {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
       margin-bottom: 1px;
     }
 
     .beats-count {
-      font-size: var(--font-size-compact, 12px);
+      font-size: var(--font-size-compact);
     }
   }
 </style>

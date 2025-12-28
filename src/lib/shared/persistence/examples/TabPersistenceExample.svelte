@@ -213,7 +213,7 @@ async function handleTabClick(tabId) {
     border-radius: 6px;
     background: white;
     cursor: pointer;
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     transition: all 0.2s;
   }
 
@@ -279,7 +279,7 @@ async function handleTabClick(tabId) {
     padding: 15px;
     border-radius: 4px;
     overflow-x: auto;
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     line-height: 1.4;
   }
 

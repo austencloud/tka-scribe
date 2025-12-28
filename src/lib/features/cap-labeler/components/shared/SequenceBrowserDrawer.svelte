@@ -215,7 +215,7 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-lg) var(--spacing-xl);
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
     flex-shrink: 0;
   }
 
@@ -252,7 +252,7 @@
     margin: var(--spacing-md) var(--spacing-xl);
     padding: var(--spacing-sm) var(--spacing-md);
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 8px;
     color: var(--muted);
     flex-shrink: 0;
@@ -304,7 +304,7 @@
   .filter-chip {
     padding: var(--spacing-xs) var(--spacing-sm);
     background: var(--surface-color);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 9999px;
     color: var(--muted-foreground);
     cursor: pointer;
@@ -350,7 +350,7 @@
   }
 
   .sequence-grid::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: var(--theme-stroke);
     border-radius: 3px;
   }
 
@@ -369,7 +369,7 @@
 
   .sequence-card:hover {
     background: var(--surface-hover);
-    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-color: var(--theme-stroke, var(--theme-stroke-strong));
   }
 
   .sequence-card.current {
@@ -414,7 +414,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
     background: rgba(255, 255, 255, 0.1);
     color: var(--muted);
@@ -428,7 +428,7 @@
 
   .status-badge.unknown {
     background: rgba(234, 179, 8, 0.3);
-    color: #fbbf24;
+    color: var(--semantic-warning);
   }
 
   .card-footer {
@@ -449,7 +449,7 @@
   }
 
   .card-meta {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     color: var(--muted);
     flex-shrink: 0;
   }

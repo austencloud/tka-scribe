@@ -44,7 +44,7 @@ StaffGridPoint - Single grid point with label and interactivity
 			y={point.y + (point.y < 50 ? -10 : 16)}
 			text-anchor="middle"
 			class="point-label"
-			fill="rgba(255, 255, 255, 0.5)"
+			fill="var(--theme-text-dim)"
 			font-size="6"
 			font-weight="600"
 		>

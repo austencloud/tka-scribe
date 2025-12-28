@@ -84,18 +84,18 @@
     justify-content: center;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 8px 32px var(--theme-shadow, rgba(0, 0, 0, 0.3));
+    box-shadow: 0 8px 32px var(--theme-shadow, var(--theme-shadow));
   }
 
   .action-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke-strong);
     color: var(--theme-text, white);
     padding: 0.75rem 1.5rem;
     border-radius: 1.5rem;
@@ -108,10 +108,10 @@
   }
 
   .action-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
     border-color: color-mix(in srgb, var(--theme-text, white) 30%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px var(--theme-shadow, rgba(0, 0, 0, 0.2));
+    box-shadow: 0 4px 16px var(--theme-shadow, var(--theme-shadow));
   }
 
   .action-button:active {
@@ -121,54 +121,54 @@
   .action-button.edit:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 30%,
+      var(--semantic-info, var(--semantic-info)) 30%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-info, #3b82f6) 50%,
+      var(--semantic-info, var(--semantic-info)) 50%,
       transparent
     );
-    color: var(--semantic-info, #60a5fa);
+    color: var(--semantic-info, var(--semantic-info));
   }
 
   .action-button.favorite:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 50%,
+      var(--semantic-error, var(--semantic-error)) 50%,
       transparent
     );
-    color: var(--semantic-error, #f87171);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .action-button.favorite.favorited {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 20%,
+      var(--semantic-error, var(--semantic-error)) 20%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 40%,
+      var(--semantic-error, var(--semantic-error)) 40%,
       transparent
     );
-    color: var(--semantic-error, #f87171);
+    color: var(--semantic-error, var(--semantic-error));
   }
 
   .action-button.delete:hover {
     background: color-mix(
       in srgb,
-      var(--semantic-error, #dc2626) 30%,
+      var(--semantic-error, var(--semantic-error)) 30%,
       transparent
     );
     border-color: color-mix(
       in srgb,
-      var(--semantic-error, #dc2626) 50%,
+      var(--semantic-error, var(--semantic-error)) 50%,
       transparent
     );
     color: #fca5a5;

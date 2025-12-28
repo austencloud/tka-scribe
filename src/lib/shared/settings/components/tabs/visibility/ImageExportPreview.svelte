@@ -125,12 +125,12 @@
     gap: 10px;
     width: 100%;
     height: 100%;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    color: var(--theme-text-dim);
   }
 
   .preview-loading i,
   .preview-error i {
-    font-size: 36px;
+    font-size: var(--font-size-3xl);
     color: #34d399;
     opacity: 0.6;
   }
@@ -141,7 +141,7 @@
 
   .preview-loading span,
   .preview-error span {
-    font-size: 13px;
+    font-size: var(--font-size-compact);
     font-weight: 500;
   }
 

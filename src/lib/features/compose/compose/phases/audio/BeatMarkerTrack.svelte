@@ -218,7 +218,7 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
   }
@@ -239,7 +239,7 @@
     border: 1px solid rgba(251, 191, 36, 0.6);
     border-radius: 5px;
     color: white;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -292,7 +292,7 @@
     left: 6px;
     font-size: 0.7rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-text-dim);
     user-select: none;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
@@ -304,7 +304,7 @@
     gap: 0.5rem;
     height: 100%;
     color: rgba(255, 255, 255, 0.75);
-    font-size: var(--font-size-min, 14px);
+    font-size: var(--font-size-min);
   }
 
   .no-beats i {
@@ -332,7 +332,7 @@
     border: 1px solid rgba(251, 191, 36, 0.7);
     border-radius: 50%;
     color: white;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     cursor: pointer;
     transition: all 0.2s ease;
   }
@@ -366,12 +366,12 @@
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: white;
   }
 
   .marker-count i {
-    font-size: var(--font-size-compact, 12px);
+    font-size: var(--font-size-compact);
     color: rgba(251, 191, 36, 0.9);
   }
 </style>

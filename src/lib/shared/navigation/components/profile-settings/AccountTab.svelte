@@ -99,8 +99,8 @@
   .security-card {
     width: 100%;
     max-width: min(900px, 85vw); /* Fluid responsive width */
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: clamp(12px, 2vh, 18px);
     padding: clamp(18px, 3vh, 28px);
     transition: all 0.2s ease;
@@ -117,8 +117,8 @@
   }
 
   .security-card:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.05));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
   }
 
   /* Mobile Responsive */

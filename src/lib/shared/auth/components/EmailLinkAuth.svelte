@@ -16,6 +16,7 @@
   import { auth } from "../firebase";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+  import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
   let email = $state("");
   let loading = $state(false);
@@ -24,9 +25,15 @@
 
   // Check if we're completing a sign-in from an email link
   onMount(async () => {
-    if (isSignInWithEmailLink(auth, window.location.href)) {
-      console.log("🔐 [email-link] Detected email link sign-in");
-      await completeSignIn();
+    try {
+      if (isSignInWithEmailLink(auth, window.location.href)) {
+        console.log("🔐 [email-link] Detected email link sign-in");
+        await completeSignIn();
+      }
+    } catch (err) {
+      console.error("❌ [email-link] Unexpected error during sign-in check:", err);
+      error = "An unexpected error occurred. Please try again.";
+      toast.error("Sign-in failed. Please try again.");
     }
   });
 
@@ -59,10 +66,13 @@
 
       if (err.code === "auth/invalid-email") {
         error = "Invalid email address.";
+        toast.error("Invalid email address.");
       } else if (err.code === "auth/missing-email") {
         error = "Please enter your email address.";
+        toast.error("Please enter your email address.");
       } else {
         error = err.message || "Failed to send email. Please try again.";
+        toast.error("Failed to send magic link. Please try again.");
       }
     } finally {
       loading = false;
@@ -124,13 +134,17 @@
 
       if (err.code === "auth/invalid-email") {
         error = "Invalid email address.";
+        toast.error("Invalid email address.");
       } else if (err.code === "auth/invalid-action-code") {
         error =
           "This link is invalid or has expired. Please request a new one.";
+        toast.error("This link is invalid or expired. Request a new one.");
       } else if (err.code === "auth/expired-action-code") {
         error = "This link has expired. Please request a new one.";
+        toast.error("This link has expired. Please request a new one.");
       } else {
         error = err.message || "Failed to sign in. Please try again.";
+        toast.error("Sign-in failed. Please try again.");
       }
     }
   }
@@ -236,7 +250,7 @@
 
   .form-header p {
     font-size: 0.875rem;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
   }
 
@@ -254,19 +268,19 @@
 
   input {
     padding: 0.75rem;
-    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border: 2px solid var(--theme-stroke, var(--theme-stroke-strong));
     border-radius: 0.5rem;
     font-size: 1rem;
     transition: all 0.2s ease;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    background: var(--theme-card-bg, var(--theme-card-bg));
     color: color-mix(in srgb, var(--theme-text, white) 95%, transparent);
   }
 
   input:focus {
     outline: none;
-    border-color: var(--theme-accent-strong, #8b5cf6);
+    border-color: var(--theme-accent-strong, var(--theme-accent-strong));
     box-shadow: 0 0 0 3px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 15%, transparent);
   }
 
   input:disabled {
@@ -282,8 +296,8 @@
     padding: 0.75rem 1.5rem;
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, #8b5cf6) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000) 100%
+      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 85%, #000) 100%
     );
     color: var(--theme-text, white);
     border: none;
@@ -294,17 +308,17 @@
     transition: all 0.2s ease;
     min-height: var(--min-touch-target);
     box-shadow: 0 4px 6px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 20%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
   }
 
   .submit-button:hover:not(:disabled) {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 85%, #000) 0%,
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 70%, #000) 100%
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 85%, #000) 0%,
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 70%, #000) 100%
     );
     box-shadow: 0 6px 8px
-      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 30%, transparent);
+      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
     transform: translateY(-1px);
   }
 
@@ -340,11 +354,11 @@
     padding: 0.75rem;
     background: color-mix(
       in srgb,
-      var(--semantic-error, #ef4444) 15%,
+      var(--semantic-error, var(--semantic-error)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-error, #ef4444) 30%, transparent);
+      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 30%, transparent);
     border-radius: 0.5rem;
     margin: 0;
   }
@@ -354,17 +368,17 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    color: var(--semantic-success, #10b981);
+    color: var(--semantic-success, var(--semantic-success));
     font-size: 0.875rem;
     text-align: center;
     padding: 0.75rem;
     background: color-mix(
       in srgb,
-      var(--semantic-success, #10b981) 15%,
+      var(--semantic-success, var(--semantic-success)) 15%,
       transparent
     );
     border: 1px solid
-      color-mix(in srgb, var(--semantic-success, #10b981) 25%, transparent);
+      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 25%, transparent);
     border-radius: 0.5rem;
     margin: 0;
   }

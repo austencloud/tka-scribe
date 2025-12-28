@@ -81,7 +81,7 @@
     inset: 0;
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-text, #ffffff) 18%, transparent) 0%,
+      color-mix(in srgb, var(--theme-text) 18%, transparent) 0%,
       transparent 50%
     );
     pointer-events: none;
@@ -90,7 +90,7 @@
   .module-card:hover {
     transform: translateY(var(--hover-lift-md, -2px))
       scale(var(--hover-scale-sm, 1.01));
-    box-shadow: var(--theme-panel-shadow, 0 12px 32px rgba(0, 0, 0, 0.3));
+    box-shadow: var(--theme-panel-shadow, 0 12px 32px var(--theme-shadow));
   }
 
   .module-card:active {
@@ -100,7 +100,7 @@
 
   .module-card:focus {
     outline: 3px solid
-      color-mix(in srgb, var(--theme-text, #ffffff) 95%, transparent);
+      color-mix(in srgb, var(--theme-text) 95%, transparent);
     outline-offset: 2px;
   }
 
@@ -112,7 +112,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 15%, transparent);
+    background: color-mix(in srgb, var(--theme-shadow) 15%, transparent);
     border-radius: inherit;
     pointer-events: none;
   }
@@ -126,13 +126,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, var(--theme-shadow, #000) 40%, transparent);
-    backdrop-filter: blur(8px);
+    background: color-mix(in srgb, var(--theme-shadow) 40%, transparent);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid
       color-mix(
         in srgb,
-        var(--theme-stroke, rgba(255, 255, 255, 0.08)) 60%,
+        var(--theme-stroke) 60%,
         transparent
       );
     border-radius: 8px;
@@ -140,8 +139,8 @@
   }
 
   .lock-badge i {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--font-size-compact);
+    color: var(--theme-text);
   }
 
   .module-icon {
@@ -150,9 +149,9 @@
     justify-content: center;
     width: var(--min-touch-target);
     height: var(--min-touch-target);
-    background: color-mix(in srgb, var(--theme-text, #ffffff) 20%, transparent);
+    background: color-mix(in srgb, var(--theme-text) 20%, transparent);
     border-radius: 14px;
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     color: white;
   }
 
@@ -175,7 +174,7 @@
 
   .module-desc {
     font-size: 0.875rem;
-    color: color-mix(in srgb, var(--theme-text, #ffffff) 85%, transparent);
+    color: color-mix(in srgb, var(--theme-text) 85%, transparent);
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -194,7 +193,7 @@
     .module-icon {
       width: 44px;
       height: 44px;
-      font-size: 20px;
+      font-size: var(--font-size-xl);
       border-radius: 12px;
     }
 
@@ -213,7 +212,7 @@
     .module-icon {
       width: 40px;
       height: 40px;
-      font-size: 18px;
+      font-size: var(--font-size-lg);
       border-radius: 10px;
     }
 

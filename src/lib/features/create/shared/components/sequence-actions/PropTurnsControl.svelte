@@ -148,7 +148,7 @@
   .turns-controls.blue .ctrl-btn {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.2);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.4);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
   }
 
   .turns-controls.blue .ctrl-btn:hover {
@@ -166,13 +166,13 @@
   .turns-controls.blue .rot-btn:hover:not(:disabled) {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.25);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.5);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
   }
 
   .turns-controls.blue .rot-btn.active {
     background: rgba(var(--prop-color-rgb, 59, 130, 246), 0.3);
     border-color: rgba(var(--prop-color-rgb, 59, 130, 246), 0.6);
-    color: var(--prop-color, #3b82f6);
+    color: var(--prop-color, var(--semantic-info));
     box-shadow: 0 2px 8px rgba(var(--prop-color-rgb, 59, 130, 246), 0.25);
   }
 
@@ -180,7 +180,7 @@
   .turns-controls.red .ctrl-btn {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.2);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.4);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
   }
 
   .turns-controls.red .ctrl-btn:hover {
@@ -198,13 +198,13 @@
   .turns-controls.red .rot-btn:hover:not(:disabled) {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.25);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.5);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
   }
 
   .turns-controls.red .rot-btn.active {
     background: rgba(var(--prop-color-rgb, 239, 68, 68), 0.3);
     border-color: rgba(var(--prop-color-rgb, 239, 68, 68), 0.6);
-    color: var(--prop-color, #ef4444);
+    color: var(--prop-color, var(--semantic-error));
     box-shadow: 0 2px 8px rgba(var(--prop-color-rgb, 239, 68, 68), 0.25);
   }
 

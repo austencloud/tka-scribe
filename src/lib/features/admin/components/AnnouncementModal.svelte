@@ -80,11 +80,11 @@
   function getSeverityColor(severity: Announcement["severity"]): string {
     switch (severity) {
       case "critical":
-        return "#ef4444";
+        return "var(--semantic-error)";
       case "warning":
-        return "#f59e0b";
+        return "var(--semantic-warning)";
       case "info":
-        return "var(--theme-accent, #6366f1)";
+        return "var(--theme-accent, var(--theme-accent))";
     }
   }
 
@@ -199,8 +199,8 @@
     max-height: calc(100vh - 40px); /* Leave room for padding */
     display: flex;
     flex-direction: column;
-    background: var(--theme-panel-bg, rgba(20, 22, 36, 0.95));
-    border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    background: var(--theme-panel-bg);
+    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 20px;
     overflow: hidden;
     animation: slideUp 0.3s ease-out;
@@ -233,7 +233,7 @@
       rgba(var(--severity-color, 99 102 241), 0.2) 0%,
       rgba(var(--severity-color, 99 102 241), 0.1) 100%
     );
-    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
   }
 
   .header-icon {
@@ -242,10 +242,10 @@
     justify-content: center;
     width: 64px;
     height: 64px;
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-hover-bg);
     border-radius: 50%;
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
-    font-size: 32px;
+    color: var(--theme-text, var(--theme-text));
+    font-size: var(--font-size-3xl);
   }
 
   .close-button {
@@ -257,17 +257,17 @@
     justify-content: center;
     width: 48px; /* WCAG AAA touch target */
     height: 48px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
     border-radius: 8px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.7));
+    color: var(--theme-text, var(--theme-text-dim));
     cursor: pointer;
     transition: all 0.2s ease;
   }
 
   .close-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    background: var(--theme-card-hover-bg);
+    color: var(--theme-text);
   }
 
   /* ============================================================================
@@ -283,7 +283,7 @@
   .severity-badge {
     display: inline-block;
     padding: 6px 14px;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     text-transform: uppercase;
     color: white;
@@ -293,16 +293,16 @@
   }
 
   .announcement-title {
-    font-size: 24px;
+    font-size: var(--font-size-2xl);
     font-weight: 700;
-    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    color: var(--theme-text);
     margin: 0 0 16px 0;
     line-height: 1.3;
   }
 
   .announcement-message {
-    font-size: 15px;
-    color: var(--theme-text, rgba(255, 255, 255, 0.75));
+    font-size: var(--font-size-sm);
+    color: var(--theme-text);
     line-height: 1.7;
     margin: 0;
     white-space: pre-wrap;
@@ -315,7 +315,7 @@
     display: flex;
     gap: 12px;
     padding: 20px 24px;
-    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    border-top: 1px solid var(--theme-stroke);
     flex-shrink: 0; /* Don't shrink footer - keep buttons visible */
   }
 
@@ -327,7 +327,7 @@
     gap: 8px;
     padding: 14px 24px;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -337,8 +337,8 @@
   .action-button.primary {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white) 0%,
-      var(--theme-accent, #6366f1) 100%
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 120%, white) 0%,
+      var(--theme-accent, var(--theme-accent)) 100%
     );
     border: none;
     color: white;
@@ -347,18 +347,18 @@
   .action-button.primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px
-      color-mix(in srgb, var(--theme-accent, #6366f1) 40%, transparent);
+      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
   }
 
   .action-button.secondary {
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-bg, var(--theme-card-bg));
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    color: var(--theme-text, var(--theme-text));
   }
 
   .action-button.secondary:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
   }
 
   .action-button:active {
@@ -380,7 +380,7 @@
     .header-icon {
       width: 44px;
       height: 44px;
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .modal-body {
@@ -388,11 +388,11 @@
     }
 
     .announcement-title {
-      font-size: 20px;
+      font-size: var(--font-size-xl);
     }
 
     .announcement-message {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
 
     .modal-footer {
@@ -403,7 +403,7 @@
 
     .action-button {
       padding: 12px 16px;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 

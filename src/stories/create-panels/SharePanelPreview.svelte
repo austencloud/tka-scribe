@@ -29,7 +29,7 @@
       icon: "fa-solid fa-video",
       label: "Video",
       description: "Recorded performance",
-      color: "#ef4444",
+      color: "var(--semantic-error)",
       disabled: true,
       comingSoon: true,
     },
@@ -46,7 +46,7 @@
       icon: "fa-solid fa-image",
       label: "Image",
       description: "Static sequence image",
-      color: "#3b82f6",
+      color: "var(--semantic-info)",
       disabled: false,
     },
   ];
@@ -223,9 +223,9 @@
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
+      0 2px 8px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid var(--theme-stroke-strong);
   }
 
   .close-btn:hover {
@@ -236,7 +236,7 @@
     );
     transform: scale(1.08) rotate(90deg);
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 4px 16px var(--theme-shadow),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
@@ -255,7 +255,7 @@
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.18),
-      rgba(255, 255, 255, 0.12)
+      var(--theme-card-hover-bg)
     );
     border-radius: 6px;
     font-size: 12px;

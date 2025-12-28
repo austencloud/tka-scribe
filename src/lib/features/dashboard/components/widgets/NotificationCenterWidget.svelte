@@ -228,13 +228,13 @@
     padding: 8px 12px;
     background: rgba(59, 130, 246, 0.15);
     border-bottom: 1px solid rgba(59, 130, 246, 0.2);
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 600;
-    color: #60a5fa;
+    color: var(--semantic-info);
   }
 
   .preview-banner i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
   }
 
   /* ============================================================================
@@ -263,12 +263,12 @@
   }
 
   .widget-header i {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     color: rgba(239, 68, 68, 0.8);
   }
 
   .widget-header h3 {
-    font-size: 16px;
+    font-size: var(--font-size-base);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     margin: 0;
@@ -279,14 +279,14 @@
     background: transparent;
     border: none;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--theme-text-dim);
     cursor: pointer;
     transition: color var(--duration-fast) var(--ease-out);
     border-radius: 4px;
   }
 
   .clear-all-btn:hover {
-    color: #ef4444;
+    color: var(--semantic-error);
   }
 
   .clear-all-btn:active {
@@ -300,9 +300,9 @@
     min-width: 24px;
     height: 24px;
     padding: 0 8px;
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
     color: white;
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     font-weight: 700;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
@@ -337,24 +337,24 @@
     justify-content: center;
     gap: 12px;
     padding: 32px 24px;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--theme-text-dim);
     text-align: center;
   }
 
   .empty-state i,
   .loading-state i {
-    font-size: 32px;
+    font-size: var(--font-size-3xl);
   }
 
   .empty-state p,
   .loading-state p {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
     margin: 0;
   }
 
   .empty-hint {
-    font-size: 12px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: var(--font-size-compact);
+    color: var(--theme-text-dim);
   }
 
   /* ============================================================================
@@ -368,20 +368,20 @@
     gap: 8px;
     padding: 12px;
     margin-top: 8px;
-    background: var(--theme-card-bg, rgba(255, 255, 255, 0.03));
-    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
     border-radius: var(--radius-2026-md);
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
-    font-size: 13px;
+    color: var(--theme-text-dim, var(--theme-text-dim));
+    font-size: var(--font-size-compact);
     font-weight: 500;
     cursor: pointer;
     transition: all var(--duration-normal) var(--ease-out);
   }
 
   .view-all-button:hover {
-    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
-    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
-    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong, var(--theme-stroke-strong));
+    color: var(--theme-text, var(--theme-text));
     transform: translateY(-1px);
   }
 
@@ -390,7 +390,7 @@
   }
 
   .view-all-button i {
-    font-size: 12px;
+    font-size: var(--font-size-compact);
     transition: transform var(--duration-normal) var(--ease-out);
   }
 
@@ -411,13 +411,13 @@
   }
 
   .widget-content::-webkit-scrollbar-thumb {
-    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    background: var(--theme-stroke);
     border-radius: 3px;
     transition: background var(--duration-fast) var(--ease-out);
   }
 
   .widget-content::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    background: var(--theme-stroke-strong);
   }
 
   /* ============================================================================
