@@ -6,6 +6,7 @@ import path from "path";
 import type { ViteDevServer } from "vite";
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { visualizer } from "rollup-plugin-visualizer";
 
 // ============================================================================
 // CUSTOM PLUGINS
@@ -227,6 +228,15 @@ export default defineConfig({
     devCachePlugin(), // 🚀 2025: Smart caching (no-cache for CSS/JS, cache for SVGs)
     webpWasmDevPlugin(),
     webpStaticCopyPlugin(),
+    // 📊 Bundle analyzer - generates stats.html when ANALYZE=true
+    process.env.ANALYZE === "true" &&
+      visualizer({
+        filename: "stats.html",
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        template: "treemap", // or "sunburst", "network"
+      }),
   ].filter(Boolean),
   resolve: {
     alias: {
@@ -276,9 +286,7 @@ export default defineConfig({
       "inversify", // Force bundle to avoid CommonJS require()
       "reflect-metadata", // Required by inversify, often has CJS issues
       "gif.js", // May contain CJS code
-      "html2canvas", // May contain CJS code
       "file-saver", // Often has CJS exports
-      "@jdfranel/snowflake-generator", // May contain CJS code
       "@tsparticles/basic",
       "@tsparticles/engine",
       "@tsparticles/preset-snow",
