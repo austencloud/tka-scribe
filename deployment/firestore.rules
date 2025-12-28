@@ -59,34 +59,28 @@ service cloud.firestore {
     // ============================================================================
 
     // User Achievements - users can read/write their own achievements
+    // SECURITY: userId field is required - no fallback for missing field
     match /userAchievements/{achievementId} {
-      allow read: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow create: if isAuthenticated()
-        && (!('userId' in request.resource.data) || hasValidUserId());
-      allow update: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow delete: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow read: if isOwner(resource.data.userId);
+      allow create: if hasValidUserId();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
     }
 
     // User XP - users can read/write their own XP data
+    // SECURITY: userId field is required - no fallback for missing field
     match /userXP/{xpId} {
-      allow read: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow create: if isAuthenticated()
-        && (!('userId' in request.resource.data) || hasValidUserId());
-      allow update: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow delete: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow read: if isOwner(resource.data.userId);
+      allow create: if hasValidUserId();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
     }
 
     // XP Events - append-only log, users can only create events for themselves
+    // SECURITY: userId field is required on create
     match /xpEvents/{eventId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated()
-        && (!('userId' in request.resource.data) || hasValidUserId());
+      allow read: if isOwner(resource.data.userId);
+      allow create: if hasValidUserId();
       allow update, delete: if false; // Events are immutable
     }
 
@@ -121,39 +115,30 @@ service cloud.firestore {
     }
 
     // User Challenge Progress - users can read/write their own progress
+    // SECURITY: userId field is required - no fallback for missing field
     match /userChallengeProgress/{progressId} {
-      allow read: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow create: if isAuthenticated()
-        && (!('userId' in request.resource.data) || hasValidUserId());
-      allow update: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow delete: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow read: if isOwner(resource.data.userId);
+      allow create: if hasValidUserId();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
     }
 
     // User Streaks - users can read/write their own streak data
+    // SECURITY: userId field is required - no fallback for missing field
     match /userStreaks/{streakId} {
-      allow read: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow create: if isAuthenticated()
-        && (!('userId' in request.resource.data) || hasValidUserId());
-      allow update: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow delete: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow read: if isOwner(resource.data.userId);
+      allow create: if hasValidUserId();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
     }
 
     // Achievement Notifications - users can only read/write their own notifications
+    // SECURITY: userId field is required - no fallback for missing field
     match /achievementNotifications/{notificationId} {
-      allow read: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow create: if isAuthenticated()
-        && (!('userId' in request.resource.data) || hasValidUserId());
-      allow update: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
-      allow delete: if isAuthenticated()
-        && (!('userId' in resource.data) || isOwner(resource.data.userId));
+      allow read: if isOwner(resource.data.userId);
+      allow create: if hasValidUserId();
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
     }
 
     // ============================================================================
@@ -215,6 +200,13 @@ service cloud.firestore {
       }
 
       // -------------------------------------------------------------------------
+      // USER TAGS (Private)
+      // -------------------------------------------------------------------------
+      match /tags/{tagId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // -------------------------------------------------------------------------
       // USER GAMIFICATION SUBCOLLECTIONS (Private)
       // -------------------------------------------------------------------------
 
@@ -257,6 +249,13 @@ service cloud.firestore {
 
       // Create module sessions - users can read/write their own sessions
       match /sessions/{sessionId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // -------------------------------------------------------------------------
+      // SEQUENCE DRAFTS (Autosave)
+      // -------------------------------------------------------------------------
+      match /drafts/{draftId} {
         allow read, write: if isOwner(userId);
       }
 
@@ -461,6 +460,16 @@ service cloud.firestore {
 
       // Events are immutable - no updates or deletes
       allow update, delete: if false;
+    }
+
+    // ============================================================================
+    // VERSIONS COLLECTION (Release Management)
+    // ============================================================================
+
+    // App versions - testers/admins can read, only admins can write
+    match /versions/{versionId} {
+      allow read: if isTester();
+      allow write: if isAdmin();
     }
 
     // ============================================================================
