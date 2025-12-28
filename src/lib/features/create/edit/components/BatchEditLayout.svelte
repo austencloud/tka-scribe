@@ -153,7 +153,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
   {#if showHeader}
     <div class="batch-header">
       <h3 class="batch-title">
-        <i class="fas fa-edit"></i>
+        <i class="fas fa-edit" aria-hidden="true"></i>
         {selectedBeats.length} Beat{selectedBeats.length !== 1 ? "s" : ""}
       </h3>
     </div>
@@ -221,7 +221,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
       type="button"
     >
       {#if containerHeight >= 500}
-        <i class="fas fa-check"></i>
+        <i class="fas fa-check" aria-hidden="true"></i>
       {/if}
       {applyButtonText}
     </button>
@@ -498,7 +498,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .prop-badge {
-      font-size: 9px;
+      font-size: 12px;
       padding: 3px 6px;
     }
 
@@ -541,13 +541,13 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .value-btn {
       padding: 4px 1px;
-      font-size: 11px;
+      font-size: 12px;
       min-height: var(--min-touch-target);
       border-width: 1px;
     }
 
     .prop-badge {
-      font-size: 8px;
+      font-size: 12px;
       padding: 2px 4px;
     }
 
@@ -582,7 +582,7 @@ Uses simplified stepper controls matching the single-beat edit pattern.
     }
 
     .label {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .value-buttons {
@@ -591,14 +591,14 @@ Uses simplified stepper controls matching the single-beat edit pattern.
 
     .value-btn {
       padding: 3px 1px;
-      font-size: 10px;
+      font-size: 12px;
       min-height: var(--min-touch-target);
       border-width: 1px;
       border-radius: 6px;
     }
 
     .prop-badge {
-      font-size: 7px;
+      font-size: 12px;
       padding: 2px 3px;
       min-width: 35px;
     }

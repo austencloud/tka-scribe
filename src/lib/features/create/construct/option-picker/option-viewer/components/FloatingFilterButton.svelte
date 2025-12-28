@@ -100,10 +100,11 @@ that triggers the filter panel dropdown.
   use:swipeGesture={{ onSwipeDown: handleFilterClick }}
   aria-label="Open filter options"
   aria-expanded={isFilterPanelOpen}
+  aria-controls="option-filter-panel"
   type="button"
   style="--button-padding: {buttonPadding()}px;"
 >
-  <i class="fas fa-filter"></i>
+  <i class="fas fa-filter" aria-hidden="true"></i>
   {#if isContinuousOnly}
     <span class="filter-indicator" aria-label="Continuous filter active"></span>
   {/if}

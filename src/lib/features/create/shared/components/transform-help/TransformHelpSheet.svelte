@@ -135,22 +135,22 @@
 </script>
 
 {#if show}
-  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
     class="help-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="transform-help-title"
-    tabindex="-1"
+    role="button"
+    tabindex="0"
+    aria-label="Close transform help"
     onclick={onClose}
     onkeydown={handleKeydown}
   >
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="help-sheet"
       bind:this={sheetElement}
       onclick={(e) => e.stopPropagation()}
       onkeydown={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="transform-help-title"
     >
       <div class="help-header">
         <h3 id="transform-help-title">Transform Actions</h3>
@@ -281,8 +281,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.1);
     border: none;

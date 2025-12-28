@@ -175,7 +175,7 @@
             aria-label="Edit pictograph"
             title="Edit pictograph (admin)"
           >
-            <i class="fa-solid fa-pen-ruler"></i>
+            <i class="fa-solid fa-pen-ruler" aria-hidden="true"></i>
           </button>
           <button
             class="icon-btn inspect"
@@ -183,7 +183,7 @@
             aria-label="Inspect pictograph data"
             title="Inspect pictograph data (dev)"
           >
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
           </button>
         {/if}
         {#if onDelete && hasSelection}
@@ -197,11 +197,11 @@
               ? "Delete start position"
               : "Delete this beat"}
           >
-            <i class="fa-solid fa-trash"></i>
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
           </button>
         {/if}
         <button class="icon-btn close" onclick={handleClose} aria-label="Close beat editor">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
     </header>
@@ -239,7 +239,7 @@
     <div class="controls-section" class:mobile={!isSideBySideLayout}>
       {#if !hasSelection}
         <div class="no-selection">
-          <i class="fas fa-hand-pointer"></i>
+          <i class="fas fa-hand-pointer" aria-hidden="true"></i>
           <p>Select a beat to edit</p>
         </div>
       {:else if isStartPositionSelected}

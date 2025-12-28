@@ -131,7 +131,7 @@ Allows user to set name, visibility, tags, collections, and notes.
       onclick={handleCancel}
       aria-label="Close dialog"
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
 
     <!-- Header -->
@@ -161,10 +161,10 @@ Allows user to set name, visibility, tags, collections, and notes.
 
       <!-- Creator Info (compact) -->
       <div class="info-chip">
-        <i class="fas fa-user"></i>
+        <i class="fas fa-user" aria-hidden="true"></i>
         <span>By {displayName}</span>
         <span class="separator">•</span>
-        <i class="fas fa-globe"></i>
+        <i class="fas fa-globe" aria-hidden="true"></i>
         <span>Public</span>
       </div>
 
@@ -188,7 +188,7 @@ Allows user to set name, visibility, tags, collections, and notes.
             disabled={!tagInput.trim()}
             aria-label="Add tag"
           >
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-plus" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -203,7 +203,7 @@ Allows user to set name, visibility, tags, collections, and notes.
                   onclick={() => handleRemoveTag(tag)}
                   aria-label="Remove tag {tag}"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" aria-hidden="true"></i>
                 </button>
               </div>
             {/each}
@@ -215,7 +215,7 @@ Allows user to set name, visibility, tags, collections, and notes.
       <div class="form-group">
         <span class="form-label">Collections</span>
         <p class="placeholder-text">
-          <i class="fas fa-folder"></i>
+          <i class="fas fa-folder" aria-hidden="true"></i>
           Collection management coming soon
         </p>
       </div>
@@ -249,7 +249,7 @@ Allows user to set name, visibility, tags, collections, and notes.
         onclick={handleSave}
         disabled={!name.trim()}
       >
-        <i class="fas fa-save"></i>
+        <i class="fas fa-save" aria-hidden="true"></i>
         Save & Continue
       </button>
     </div>

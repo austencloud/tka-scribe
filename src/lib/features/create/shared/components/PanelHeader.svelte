@@ -52,7 +52,7 @@
   <!-- Right section: Close button only -->
   <div class="header-actions">
     <button class="close-button" onclick={onClose} aria-label="Close panel">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 </div>

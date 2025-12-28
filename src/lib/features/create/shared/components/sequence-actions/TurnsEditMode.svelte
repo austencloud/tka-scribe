@@ -44,7 +44,7 @@
 
 {#if !hasSelection}
   <div class="empty-state">
-    <i class="fas fa-hand-pointer"></i>
+    <i class="fas fa-hand-pointer" aria-hidden="true"></i>
     <p>Tap a beat in the sequence to edit its turns</p>
   </div>
 {:else}

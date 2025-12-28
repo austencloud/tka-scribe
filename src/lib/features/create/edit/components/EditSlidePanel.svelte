@@ -57,8 +57,8 @@ HMR Test: Nested component change test
   }>();
 
   // Local state for isOpen (bindable to Drawer)
-  // svelte-ignore state_referenced_locally - intentional: $effect below syncs prop changes
-  let isOpen = $state(isOpenProp);
+  // Initialize to false, $effect below handles initial and prop changes
+  let isOpen = $state(false);
 
   // Sync local isOpen with prop changes
   $effect(() => {
@@ -229,7 +229,7 @@ HMR Test: Nested component change test
               aria-label="Copy beat data as JSON (with rotation calculations)"
               title="Copy beat data as JSON (with rotation calculations)"
             >
-              <i class="fas fa-copy"></i>
+              <i class="fas fa-copy" aria-hidden="true"></i>
             </button>
           {/if}
           {#if shouldShowRemoveButton}
@@ -238,7 +238,7 @@ HMR Test: Nested component change test
               onclick={handleRemoveBeat}
               aria-label="Remove Beat {selectedBeatNumber} and all following beats"
             >
-              <i class="fas fa-trash-alt"></i>
+              <i class="fas fa-trash-alt" aria-hidden="true"></i>
             </button>
           {/if}
           {#if shouldShowAdjustButton}
@@ -247,7 +247,7 @@ HMR Test: Nested component change test
               onclick={handleAdjustArrows}
               aria-label="Adjust arrow positions"
             >
-              <i class="fas fa-arrows-alt"></i>
+              <i class="fas fa-arrows-alt" aria-hidden="true"></i>
             </button>
           {/if}
         {/if}

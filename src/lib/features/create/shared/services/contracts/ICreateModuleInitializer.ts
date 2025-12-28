@@ -18,7 +18,6 @@ import type { PanelCoordinationState } from "../../state/panel-coordination-stat
 import type { IBeatOperator } from "./IBeatOperator";
 import type { ICreateModuleEffectCoordinator } from "./ICreateModuleEffectCoordinator";
 import type { ICreateModuleHandlers } from "./ICreateModuleHandlers";
-import type { ICreationMethodPersister } from "./ICreationMethodPersister";
 import type { IDeepLinkSequenceHandler } from "./IDeepLinkSequenceHandler";
 import type { INavigationSyncer } from "./INavigationSyncer";
 import type { IResponsiveLayoutManager } from "./IResponsiveLayoutManager";
@@ -54,7 +53,6 @@ export interface CreateModuleInitializationResult {
 
   // UI coordination services
   handlers: ICreateModuleHandlers;
-  creationMethodPersistence: ICreationMethodPersister;
   effectCoordinator: ICreateModuleEffectCoordinator;
   deepLinkService: IDeepLinkSequenceHandler;
   shareService: ISharer;

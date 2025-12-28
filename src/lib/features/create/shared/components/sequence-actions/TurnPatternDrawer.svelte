@@ -117,7 +117,7 @@
     <header class="drawer-header">
       <h2>Turn Patterns</h2>
       <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -141,7 +141,7 @@
 
     {#if errorMessage}
       <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         {errorMessage}
       </div>
     {/if}
@@ -185,9 +185,9 @@
               disabled={savingPattern}
             >
               {#if savingPattern}
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
               {:else}
-                <i class="fas fa-save"></i>
+                <i class="fas fa-save" aria-hidden="true"></i>
               {/if}
               Save Pattern
             </button>
@@ -199,7 +199,7 @@
       <div class="apply-section">
         {#if turnPatternState.isLoading}
           <div class="loading">
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             Loading patterns...
           </div>
         {:else}
@@ -361,7 +361,7 @@
                         title="Delete pattern"
                         aria-label="Delete pattern"
                       >
-                        <i class="fas fa-trash"></i>
+                        <i class="fas fa-trash" aria-hidden="true"></i>
                       </button>
                     </div>
                   </div>

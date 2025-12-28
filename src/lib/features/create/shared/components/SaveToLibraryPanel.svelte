@@ -50,8 +50,8 @@
   );
   const sequence = $derived(activeSequenceState.currentSequence);
 
-  // Local state
-  let isOpen = $state(show);
+  // Local state - initialized with default, $effect below syncs from prop
+  let isOpen = $state(false);
   let isSaving = $state(false);
   let saveStep = $state(0);
   let renderProgress = $state({ current: 0, total: 0 });
@@ -206,7 +206,7 @@
       aria-label="Close panel"
       disabled={isSaving}
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
 
     <div class="panel-header">
@@ -300,10 +300,10 @@
         disabled={!tkaName || isSaving}
       >
         {#if isSaving}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           Saving...
         {:else}
-          <i class="fas fa-save"></i>
+          <i class="fas fa-save" aria-hidden="true"></i>
           Save to Library
         {/if}
       </button>
@@ -325,8 +325,8 @@
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     border-radius: 50%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));

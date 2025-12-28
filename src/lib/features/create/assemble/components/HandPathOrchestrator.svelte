@@ -59,12 +59,18 @@ Integrates all Assembly components and manages state transitions.
   }>();
 
   // Local state for whether user has started building
-  // svelte-ignore state_referenced_locally - intentional: initial flag based on prop
-  let hasStarted = $state(hasExistingSequence);
+  // Initialize with default - $effect syncs from prop
+  let hasStarted = $state(false);
 
   // Grid mode (managed locally)
-  // svelte-ignore state_referenced_locally - intentional: handleGridModeChange handles updates
-  let gridMode = $state(initialGridMode);
+  // Initialize with default - $effect syncs from prop
+  let gridMode = $state(GridMode.DIAMOND);
+
+  // Sync initial values from props
+  $effect(() => {
+    hasStarted = hasExistingSequence;
+    gridMode = initialGridMode;
+  });
 
   // Extract GridLocation from a pictograph's blue motion
   function extractBlueLocation(
@@ -105,23 +111,32 @@ Integrates all Assembly components and manages state transitions.
   }
 
   // Get initial blue hand path from existing data
-  // svelte-ignore state_referenced_locally - intentional: one-time initialization based on existing data
-  const initialBlueHandPath = hasExistingSequence
-    ? reconstructBlueHandPath()
-    : [];
+  const initialBlueHandPath = $derived(
+    hasExistingSequence ? reconstructBlueHandPath() : []
+  );
 
   // Create state manager with restored state if available
   // HandPathAssembleState is already reactive internally, but we need $state for reassignment detection
   // Note: gridMode is captured at initialization only - when gridMode changes, we recreate assemblyState (see handleGridModeChange)
-  // svelte-ignore state_referenced_locally - intentional: captured for initial state creation
-  const initialGridModeValue = gridMode;
   let assemblyState: HandPathAssembleState = $state(
     createHandPathAssembleState({
-      gridMode: initialGridModeValue,
-      initialBlueHandPath:
-        initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
+      gridMode: GridMode.DIAMOND,
+      initialBlueHandPath: undefined,
     })
   );
+
+  // Initialize assembly state with actual props on first render
+  let hasInitialized = false;
+  $effect(() => {
+    if (!hasInitialized) {
+      hasInitialized = true;
+      assemblyState = createHandPathAssembleState({
+        gridMode: initialGridMode,
+        initialBlueHandPath:
+          initialBlueHandPath.length > 0 ? initialBlueHandPath : undefined,
+      });
+    }
+  });
 
   const currentPhase = $derived(assemblyState.currentPhase);
   const bluePathLength = $derived(assemblyState.blueHandPath.length);

@@ -32,7 +32,7 @@ Shows "Select Items" banner and makes escape prominent.
   <div class="mode-banner">
     <div class="mode-text">Select Items</div>
     <button class="cancel-button" onclick={onCancel} type="button">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
       Done
     </button>
   </div>

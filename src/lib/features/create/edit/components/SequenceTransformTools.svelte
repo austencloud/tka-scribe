@@ -60,8 +60,8 @@ Responsive design:
     expandedAction = expandedAction === id ? null : id;
   }
 
-  // svelte-ignore state_referenced_locally - intentional: static action definitions with handler props
-  const actions: TransformAction[] = [
+  // Use $derived to keep handlers reactive when props change
+  const actions: TransformAction[] = $derived([
     {
       id: "mirror",
       icon: "fa-left-right",
@@ -102,7 +102,7 @@ Responsive design:
       color: "#f43f5e",
       handler: onRewind,
     },
-  ];
+  ]);
 </script>
 
 <div class="sequence-transform-tools">
@@ -121,7 +121,7 @@ Responsive design:
         onclick={() => handle(action.handler)}
       >
         <div class="action-icon-box">
-          <i class="fas {action.icon}"></i>
+          <i class="fas {action.icon}" aria-hidden="true"></i>
         </div>
         <div class="action-text">
           <span class="action-name">{action.name}</span>

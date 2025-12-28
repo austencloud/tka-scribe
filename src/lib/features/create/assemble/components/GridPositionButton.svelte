@@ -34,8 +34,8 @@ Supports enabled/disabled states and highlights current position.
     [GridLocation.NORTHWEST]: "NW",
   };
 
-  // svelte-ignore state_referenced_locally - intentional: component is keyed/recreated when position changes
-  const label = positionLabels[position as GridLocation] ?? "?";
+  // Reactive label - updates when position changes
+  const label = $derived(positionLabels[position as GridLocation] ?? "?");
 
   function handleClick() {
     if (enabled) {

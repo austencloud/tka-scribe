@@ -80,10 +80,12 @@ Matches the desktop version exactly:
     () => forcedPictographSize ?? pictographSize
   );
 
-  // Reactive container dimension tracking (width AND height)
-  // svelte-ignore state_referenced_locally - intentional: ResizeObserver handles updates
-  let actualContainerWidth = $state(containerWidth);
-  let actualContainerHeight = $state(600); // Default height
+  // Reactive container dimension tracking (width AND height) - $effect syncs from prop
+  let actualContainerWidth = $state(400);
+  let actualContainerHeight = $state(600);
+  $effect(() => {
+    actualContainerWidth = containerWidth;
+  });
   let containerElement: HTMLDivElement;
   let resizeObserver: ResizeObserver | null = null;
 

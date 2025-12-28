@@ -47,10 +47,11 @@
   }}
   style="--color: {item.color}"
   aria-expanded={expanded}
+  aria-controls="transform-description-{item.id}"
 >
   <!-- Icon box (always visible) -->
   <div class="icon-box">
-    <i class="fas {item.icon}"></i>
+    <i class="fas {item.icon}" aria-hidden="true"></i>
   </div>
 
   <!-- Content area: name + short desc (mobile: flex 1, desktop: full width centered) -->
@@ -69,13 +70,13 @@
     aria-label={expanded ? `Collapse ${item.name}` : `Expand ${item.name}`}
     type="button"
   >
-    <i class="fas {expanded ? 'fa-chevron-up' : 'fa-chevron-down'}"></i>
+    <i class="fas {expanded ? 'fa-chevron-up' : 'fa-chevron-down'}" aria-hidden="true"></i>
   </button>
 </div>
 
 <!-- Mobile expanded: Full description + actions -->
 {#if expanded}
-  <div class="description-panel">
+  <div class="description-panel" id="transform-description-{item.id}">
     <p class="full-desc">{item.fullDesc}</p>
 
     {#if item.id === "rotate"}
@@ -90,7 +91,7 @@
           aria-label="Rotate counter-clockwise"
           type="button"
         >
-          <i class="fas fa-rotate-left"></i>
+          <i class="fas fa-rotate-left" aria-hidden="true"></i>
         </button>
         <button
           class="rotate-btn"
@@ -102,7 +103,7 @@
           aria-label="Rotate clockwise"
           type="button"
         >
-          <i class="fas fa-rotate-right"></i>
+          <i class="fas fa-rotate-right" aria-hidden="true"></i>
         </button>
       </div>
     {/if}
@@ -173,8 +174,8 @@
   /* Expand toggle button (mobile only) */
   .expand-btn {
     flex-shrink: 0;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.08);
     border: none;

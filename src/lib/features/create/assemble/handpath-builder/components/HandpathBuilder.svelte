@@ -153,13 +153,13 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
       <SequenceLengthPicker bind:sequenceLength bind:gridMode />
 
       <button class="start-btn" onclick={startDrawing}>
-        <i class="fas fa-play"></i>
+        <i class="fas fa-play" aria-hidden="true"></i>
         Start Drawing
       </button>
 
       {#if onCancel}
         <button class="cancel-btn" onclick={onCancel}>
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
           Cancel
         </button>
       {/if}
@@ -177,7 +177,7 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
             title="Change settings"
             aria-label="Change settings and restart drawing"
           >
-            <i class="fas fa-cog"></i>
+            <i class="fas fa-cog" aria-hidden="true"></i>
           </button>
         </div>
         <SequenceLengthPicker bind:sequenceLength bind:gridMode />
@@ -204,14 +204,14 @@ Provides setup wizard, drawing interface, and conversion to MotionData.
       {#if pathState.isSessionComplete}
         <div class="complete-actions" in:fade={{ duration: 200 }}>
           <button class="action-btn primary" onclick={handleFinish}>
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             Finish & Import
           </button>
           <button
             class="action-btn secondary"
             onclick={() => pathState.backToBlueHand()}
           >
-            <i class="fas fa-redo"></i>
+            <i class="fas fa-redo" aria-hidden="true"></i>
             Redraw Blue Hand
           </button>
         </div>

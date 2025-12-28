@@ -20,13 +20,13 @@
   <div class="pictograph-display">
     {#if isLoading}
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
     {:else if pictograph}
       <Pictograph pictographData={pictograph} />
     {:else}
       <div class="empty-state">
-        <i class="fas fa-image"></i>
+        <i class="fas fa-image" aria-hidden="true"></i>
       </div>
     {/if}
   </div>
@@ -38,7 +38,7 @@
     aria-label="Get a new random pictograph"
     type="button"
   >
-    <i class="fas fa-shuffle"></i>
+    <i class="fas fa-shuffle" aria-hidden="true"></i>
     <span>New Example</span>
   </button>
 </div>

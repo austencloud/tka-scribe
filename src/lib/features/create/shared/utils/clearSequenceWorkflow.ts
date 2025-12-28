@@ -6,14 +6,9 @@
  *
  * Workflow:
  * 1. Push undo snapshot
- * 2. Trigger layout transition (optionally reset creation method selection)
- * 3. Wait for fade/layout animations (300ms)
- * 4. Clear ONLY the active tab's sequence data and UI state
- * 5. Close related panels
- *
- * Behavior modes:
- * - shouldResetCreationMethod = true: Returns to creation method selector (initial state)
- * - shouldResetCreationMethod = false: Keeps creation mode selected, returns to start position picker (Construct only)
+ * 2. Wait for fade/layout animations (300ms)
+ * 3. Clear ONLY the active tab's sequence data and UI state
+ * 4. Close related panels
  *
  * IMPORTANT: This workflow is TAB-AWARE and only clears the currently active tab's state.
  * Each tab (Construct, Generate, Assembler) maintains independent state.
@@ -34,8 +29,6 @@ export interface ClearSequenceConfig {
   CreateModuleState: CreateModuleState;
   constructTabState: ConstructTabState | null; // Made nullable since we might not need it for other tabs
   panelState: PanelCoordinationState;
-  resetCreationMethodSelection: () => void;
-  shouldResetCreationMethod?: boolean; // Optional flag to control whether to reset creation method (default: true for backward compatibility)
 }
 
 /**
@@ -45,13 +38,7 @@ export interface ClearSequenceConfig {
 export async function executeClearSequenceWorkflow(
   config: ClearSequenceConfig
 ): Promise<void> {
-  const {
-    CreateModuleState,
-    constructTabState,
-    panelState,
-    resetCreationMethodSelection,
-    shouldResetCreationMethod = true, // Default to true for backward compatibility
-  } = config;
+  const { CreateModuleState, constructTabState, panelState } = config;
 
   try {
     // Determine which tab is currently active
@@ -71,19 +58,11 @@ export async function executeClearSequenceWorkflow(
       await activeTabSequenceState.clearPersistedState();
     }
 
-    // 2. Manually trigger layout transition - bypass the effect system
-    // This ensures immediate fade starts regardless of workspace state
-    // Only reset creation method selection if explicitly requested
-    if (shouldResetCreationMethod) {
-      resetCreationMethodSelection();
-      navigationState.setCreationMethodSelectorVisible(true);
-    }
-
-    // 3. Wait for fade and layout transition to complete (300ms)
+    // 2. Wait for fade and layout transition to complete (300ms)
     // Everything fades together - beats, workspace, button panel, layout
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    // 4. After animations complete, clear the active tab's data and reset UI
+    // 3. After animations complete, clear the active tab's data and reset UI
     // This happens after components have faded out to avoid visual popping
 
     // Clear Construct tab state if we're in the Constructor tab
@@ -101,7 +80,7 @@ export async function executeClearSequenceWorkflow(
       activeTabSequenceState.clearError();
     }
 
-    // 5. Close all sequence-related panels
+    // 4. Close all sequence-related panels
     panelState.closeAllPanels();
   } catch (error) {
     const errorMessage =

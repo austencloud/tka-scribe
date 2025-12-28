@@ -148,7 +148,7 @@
           style="--action-color: {action.color}"
         >
           <div class="action-icon-box">
-            <i class="fas {action.icon}"></i>
+            <i class="fas {action.icon}" aria-hidden="true"></i>
           </div>
           <div class="action-text">
             <span class="action-name">{action.name}</span>

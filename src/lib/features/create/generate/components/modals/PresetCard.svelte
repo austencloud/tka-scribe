@@ -290,7 +290,7 @@ Displays a single preset with icon, name, summary, and action buttons
   .level-badge {
     padding: 3px 10px;
     border-radius: 12px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.6px;
@@ -432,7 +432,7 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .level-badge {
-      font-size: 9px;
+      font-size: 12px;
       padding: 2px 8px;
       letter-spacing: 0.5px;
     }
@@ -529,14 +529,14 @@ Displays a single preset with icon, name, summary, and action buttons
     }
 
     .level-badge {
-      font-size: 8px;
+      font-size: 12px;
       padding: 2px 6px;
       letter-spacing: 0.4px;
     }
 
     .preset-summary {
-      font-size: 11px;
-      line-height: 1.3;
+      font-size: 12px;
+      line-height: 1.5;
     }
 
     /* Switch to abbreviated summary on narrow devices */

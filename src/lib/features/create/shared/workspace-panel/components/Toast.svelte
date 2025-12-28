@@ -14,7 +14,7 @@ Shows at the bottom center of screen, auto-dismisses after 3 seconds
 {#if message}
   <div class="toast-container">
     <div class="toast" role="alert">
-      <i class="fas fa-exclamation-circle"></i>
+      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span class="toast-message">{message}</span>
       {#if onDismiss}
         <button
@@ -23,7 +23,7 @@ Shows at the bottom center of screen, auto-dismisses after 3 seconds
           type="button"
           aria-label="Dismiss"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </div>

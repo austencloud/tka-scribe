@@ -27,7 +27,7 @@
 <div class="empty-edit-state">
   <div class="empty-content">
     <div class="icon-container">
-      <i class="fas fa-pen-to-square"></i>
+      <i class="fas fa-pen-to-square" aria-hidden="true"></i>
     </div>
 
     <h2 class="title">No Sequence Selected</h2>
@@ -38,13 +38,13 @@
 
     <div class="action-buttons">
       <button class="action-btn browse" onclick={onBrowseSequences}>
-        <i class="fas fa-folder-open"></i>
+        <i class="fas fa-folder-open" aria-hidden="true"></i>
         <span>Browse Sequences</span>
         <span class="btn-hint">Select from gallery</span>
       </button>
 
       <button class="action-btn create" onclick={navigateToCreate}>
-        <i class="fas fa-plus-circle"></i>
+        <i class="fas fa-plus-circle" aria-hidden="true"></i>
         <span>Create New</span>
         <span class="btn-hint">Build from scratch</span>
       </button>
@@ -54,14 +54,14 @@
       <h3>Edit Capabilities</h3>
       <ul class="info-list">
         <li>
-          <i class="fas fa-pen"></i>
+          <i class="fas fa-pen" aria-hidden="true"></i>
           <span
             ><strong>Beat Mode</strong>: Adjust turns, rotation direction for
             each beat</span
           >
         </li>
         <li>
-          <i class="fas fa-layer-group"></i>
+          <i class="fas fa-layer-group" aria-hidden="true"></i>
           <span
             ><strong>Sequence Mode</strong>: Mirror, rotate, swap colors,
             reverse</span

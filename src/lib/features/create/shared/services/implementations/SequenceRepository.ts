@@ -19,7 +19,7 @@ import type { ISequenceDomainManager } from "../contracts/ISequenceDomainManager
 import type { ISequenceImporter } from "../contracts/ISequenceImporter";
 import type { IReversalDetector } from "../contracts/IReversalDetector";
 import type { ISequenceRepository } from "../contracts/ISequenceRepository";
-import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
+import type { ISequenceNormalizer } from "$lib/features/compose/services/contracts/ISequenceNormalizer";
 
 @injectable()
 export class SequenceRepository implements ISequenceRepository {
@@ -30,8 +30,8 @@ export class SequenceRepository implements ISequenceRepository {
     private persistenceService: IPersistenceService,
     @inject(TYPES.IReversalDetector)
     private ReversalDetector: IReversalDetector,
-    @inject(TYPES.ISequenceNormalizationService)
-    private normalizationService: ISequenceNormalizationService,
+    @inject(TYPES.ISequenceNormalizer)
+    private normalizationService: ISequenceNormalizer,
     @inject(TYPES.ISequenceImporter)
     private sequenceImportService?: ISequenceImporter
   ) {}

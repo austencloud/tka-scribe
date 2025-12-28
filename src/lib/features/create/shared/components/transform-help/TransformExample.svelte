@@ -44,7 +44,7 @@
         </div>
       {:else}
         <div class="pictograph-empty" aria-hidden="true">
-          <i class="fas fa-image"></i>
+          <i class="fas fa-image" aria-hidden="true"></i>
         </div>
       {/if}
     </div>

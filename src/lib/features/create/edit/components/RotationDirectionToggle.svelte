@@ -78,7 +78,7 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
     aria-label="Counter-clockwise rotation"
     aria-pressed={isCounterClockwise}
   >
-    <i class="fas fa-undo"></i>
+    <i class="fas fa-undo" aria-hidden="true"></i>
     <span class="btn-text">CCW</span>
   </button>
 
@@ -93,7 +93,7 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
     aria-label="Clockwise rotation"
     aria-pressed={isClockwise}
   >
-    <i class="fas fa-redo"></i>
+    <i class="fas fa-redo" aria-hidden="true"></i>
     <span class="btn-text">CW</span>
   </button>
 </div>
@@ -133,7 +133,7 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
   }
 
   .rotation-toggle.compact .toggle-label {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .rotation-toggle.balanced .toggle-label {
@@ -163,13 +163,13 @@ Only shown when motion has turns > 0 and rotation direction is not NO_ROTATION.
 
   .rotation-toggle.compact .toggle-btn {
     padding: 3px 8px;
-    font-size: 10px;
+    font-size: 12px;
     gap: 3px;
   }
 
   .rotation-toggle.balanced .toggle-btn {
     padding: 4px 9px;
-    font-size: 11px;
+    font-size: 12px;
     gap: 3px;
   }
 

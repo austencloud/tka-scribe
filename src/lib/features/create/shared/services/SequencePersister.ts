@@ -59,12 +59,6 @@ export class SequencePersister {
     sequenceData: SequenceData,
     metadata: SaveSequenceMetadata
   ): Promise<string> {
-    console.log("[SequencePersister] saveSequence called", {
-      beatCount: sequenceData.beats.length,
-      thumbnailUrl: metadata.thumbnailUrl,
-      name: metadata.name,
-    });
-
     const user = auth.currentUser;
     if (!user) {
       console.error("[SequencePersister] No authenticated user");
@@ -72,10 +66,6 @@ export class SequencePersister {
     }
 
     const sequenceId = sequenceData.id || crypto.randomUUID();
-    console.log(
-      "[SequencePersister] Generated sequence ID:",
-      sequenceId
-    );
 
     // Flatten structure to match LibrarySequence format
     // Store thumbnail in both thumbnails array (for SequenceData compatibility)
@@ -83,12 +73,6 @@ export class SequencePersister {
     const thumbnails = metadata.thumbnailUrl
       ? [metadata.thumbnailUrl]
       : sequenceData.thumbnails || [];
-
-    console.log("[SequencePersister] Thumbnails to save:", {
-      thumbnailUrl: metadata.thumbnailUrl,
-      thumbnailsArray: thumbnails,
-      existingThumbnails: sequenceData.thumbnails,
-    });
 
     const savedSequence = {
       id: sequenceId,
@@ -111,10 +95,6 @@ export class SequencePersister {
       firestore,
       `users/${user.uid}/sequences/${sequenceId}`
     );
-    console.log(
-      "[SequencePersister] Writing to Firestore path:",
-      sequenceRef.path
-    );
 
     // Filter out undefined fields
     const sequenceToSave = Object.fromEntries(
@@ -127,9 +107,6 @@ export class SequencePersister {
 
     await setDoc(sequenceRef, sequenceToSave);
 
-    console.log(
-      "[SequencePersister] ✅ Sequence saved successfully to Firestore"
-    );
     return sequenceId;
   }
 

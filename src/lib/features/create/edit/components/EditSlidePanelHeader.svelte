@@ -53,7 +53,7 @@ Contains:
         title="Adjust arrow positions with WASD"
         type="button"
       >
-        <i class="fas fa-crosshairs"></i>
+        <i class="fas fa-crosshairs" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -71,7 +71,7 @@ Contains:
       aria-label="Close edit panel"
       type="button"
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 </div>

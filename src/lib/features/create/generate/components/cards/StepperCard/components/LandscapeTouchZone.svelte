@@ -11,8 +11,9 @@ Left side decrements, right side increments
     title: string;
   }>();
 
-  const ariaLabel =
-    type === "increment" ? `Increase ${title}` : `Decrease ${title}`;
+  const ariaLabel = $derived(
+    type === "increment" ? `Increase ${title}` : `Decrease ${title}`
+  );
 </script>
 
 <button

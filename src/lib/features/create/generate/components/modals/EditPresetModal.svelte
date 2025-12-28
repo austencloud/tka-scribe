@@ -22,8 +22,14 @@ Provides a beautiful, unified experience for customizing presets
   let hapticService: IHapticFeedback;
   let nameInput: HTMLInputElement;
 
-  let presetName = $state(preset.name);
-  let selectedIcon = $state(preset.icon || "⚙️");
+  let presetName = $state("");
+  let selectedIcon = $state("⚙️");
+
+  // Sync from preset prop
+  $effect(() => {
+    presetName = preset.name;
+    selectedIcon = preset.icon || "⚙️";
+  });
 
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(

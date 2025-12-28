@@ -19,7 +19,6 @@ import {
 import { createCurrentWordDisplayEffect } from "../../state/managers/CurrentWordDisplayManager.svelte";
 import { createLayoutEffects } from "../../state/managers/LayoutManager.svelte";
 import { createNavigationSyncEffects } from "../../state/managers/NavigationSyncManager.svelte";
-import { createPanelHeightTracker } from "../../state/managers/PanelHeightTracker.svelte";
 import { createPWAEngagementEffect } from "../../state/managers/PWAEngagementManager.svelte";
 import { createGlobalStateSyncEffects } from "../../state/managers/GlobalStateSyncManager.svelte";
 import { createCreationFlowEffects } from "../../state/managers/CreationFlowManager.svelte";
@@ -40,19 +39,14 @@ export class CreateModuleEffectCoordinator
       layoutService,
       NavigationSyncer,
       getDeepLinker,
-      getCreationMethodPersistence,
       getBeatOperator,
       getAutosaver,
       isServicesInitialized,
-      hasSelectedCreationMethod,
-      setHasSelectedCreationMethod,
       onLayoutChange,
       getShouldUseSideBySideLayout,
       setAnimatingBeatNumber,
       onCurrentWordChange,
       onTabAccessibilityChange,
-      toolPanelElement,
-      buttonPanelElement,
     } = config;
 
     const cleanups: (() => void)[] = [];
@@ -66,11 +60,10 @@ export class CreateModuleEffectCoordinator
       })
     );
 
-    // Creation flow (selector visibility, tab accessibility)
+    // Creation flow (tab accessibility)
     cleanups.push(
       createCreationFlowEffects({
         getCreateModuleState,
-        hasSelectedCreationMethod,
         onTabAccessibilityChange,
       })
     );
@@ -81,10 +74,7 @@ export class CreateModuleEffectCoordinator
         getDeepLinker,
         getCreateModuleState,
         getConstructTabState,
-        getCreationMethodPersistence,
         isServicesInitialized,
-        hasSelectedCreationMethod,
-        setHasSelectedCreationMethod,
       })
     );
 
@@ -155,22 +145,13 @@ export class CreateModuleEffectCoordinator
         createCurrentWordDisplayEffect({
           CreateModuleState: createModuleState,
           constructTabState,
-          hasSelectedCreationMethod,
           onCurrentWordChange,
         })
       );
     }
 
-    // Panel height tracking
-    if (toolPanelElement || buttonPanelElement) {
-      cleanups.push(
-        createPanelHeightTracker({
-          toolPanelElement,
-          buttonPanelElement,
-          panelState,
-        })
-      );
-    }
+    // NOTE: Panel height tracking moved to CreateModule.svelte $effect
+    // because DOM element bindings happen AFTER onMount completes
 
     return () => {
       cleanups.forEach((cleanup) => cleanup());

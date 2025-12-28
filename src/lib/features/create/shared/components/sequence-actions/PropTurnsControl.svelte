@@ -51,7 +51,7 @@
       aria-label="Decrease {color} turns"
       onclick={(e) => handleTurnsChangeClick(e, -0.5)}
     >
-      <i class="fas fa-minus"></i>
+      <i class="fas fa-minus" aria-hidden="true"></i>
     </button>
     <span class="turns-value">{displayTurns}</span>
     <button
@@ -59,7 +59,7 @@
       aria-label="Increase {color} turns"
       onclick={(e) => handleTurnsChangeClick(e, 0.5)}
     >
-      <i class="fas fa-plus"></i>
+      <i class="fas fa-plus" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -72,7 +72,7 @@
       onclick={(e) => handleRotationClick(e, RotationDirection.CLOCKWISE)}
       disabled={!showRotation}
     >
-      <i class="fas fa-rotate-right"></i>
+      <i class="fas fa-rotate-right" aria-hidden="true"></i>
     </button>
     <button
       class="rot-btn"
@@ -83,7 +83,7 @@
         handleRotationClick(e, RotationDirection.COUNTER_CLOCKWISE)}
       disabled={!showRotation}
     >
-      <i class="fas fa-rotate-left"></i>
+      <i class="fas fa-rotate-left" aria-hidden="true"></i>
     </button>
   </div>
 </div>

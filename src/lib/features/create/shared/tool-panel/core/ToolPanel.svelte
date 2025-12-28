@@ -212,12 +212,6 @@
       // Sync picker state to match construct tab's sequence state
       constructTabState.syncPickerStateWithSequence();
 
-      // Debug logging for troubleshooting
-      if (sequenceLength === 0 && !hasStart) {
-        console.log(
-          "🔄 ToolPanel: Construct sequence is empty, ensuring StartPositionPicker is shown"
-        );
-      }
     }
   });
 
@@ -293,24 +287,11 @@
             <AssemblerTab
               initialGridMode={createModuleState.sequenceState.gridMode}
               onStartPositionSet={(startPosition) => {
-                console.log(
-                  "[ToolPanel] onStartPositionSet called with",
-                  startPosition
-                );
-
                 // Ensure a sequence exists
                 let currentSeq =
                   createModuleState.sequenceState.currentSequence;
-                console.log("[ToolPanel] Current sequence before processing:", {
-                  hasSequence: currentSeq !== null,
-                  sequenceId: currentSeq?.id,
-                  beatCount: currentSeq?.beats?.length ?? 0,
-                });
 
                 if (!currentSeq) {
-                  console.log(
-                    "[ToolPanel] Creating new sequence for assembler mode with start position"
-                  );
                   const gridMode = createModuleState.sequenceState.gridMode;
                   currentSeq = {
                     id: crypto.randomUUID(),
@@ -335,9 +316,6 @@
                 } else {
                   // IMPORTANT: Clear existing beats when setting new start position in assembly mode
                   // This prevents old beat data from persisting after clear
-                  console.log(
-                    "[ToolPanel] Updating existing sequence with start position (clearing beats)"
-                  );
                   createModuleState.sequenceState.updateSequence({
                     ...currentSeq,
                     beats: [], // Clear beats when setting new start position

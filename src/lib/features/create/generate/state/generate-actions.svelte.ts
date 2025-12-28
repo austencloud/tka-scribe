@@ -15,7 +15,7 @@ import type { IGenerationOrchestrator } from "../shared/services/contracts/IGene
 import type { IErrorHandler } from "$lib/shared/application/services/contracts/IErrorHandler";
 
 export function createGenerationActionsState(
-  sequenceState?: SequenceState,
+  getSequenceState?: () => SequenceState | undefined,
   getIsSequential?: () => boolean
 ) {
   let isGenerating = $state(false);
@@ -76,6 +76,7 @@ export function createGenerationActionsState(
 
   async function updateWorkbenchWithSequence(sequence: SequenceData) {
     try {
+      const sequenceState = getSequenceState?.();
       if (!sequenceState) return;
 
       const hasExistingSequence = sequenceState.getCurrentBeats().length > 0;

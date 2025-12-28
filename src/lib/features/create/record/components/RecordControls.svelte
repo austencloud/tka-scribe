@@ -28,8 +28,8 @@ Provides play/pause, speed adjustment (BPM), reset, and metronome toggle.
     onMetronomeToggle: (enabled: boolean) => void;
   } = $props();
 
-  // Local state for slider interaction
-  let localBpm = $state(bpm);
+  // Local state for slider interaction - initialized with default, $effect syncs from prop
+  let localBpm = $state(120);
 
   // Sync local BPM with prop changes
   $effect(() => {

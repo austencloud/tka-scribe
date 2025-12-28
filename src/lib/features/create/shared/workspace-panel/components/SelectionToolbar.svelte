@@ -47,7 +47,7 @@ Shows:
     type="button"
     aria-label="Cancel selection"
   >
-    <i class="fas fa-times"></i>
+    <i class="fas fa-times" aria-hidden="true"></i>
   </button>
 
   <!-- Selection counter -->
@@ -73,7 +73,7 @@ Shows:
       disabled={!canEdit}
       type="button"
     >
-      <i class="fas fa-edit"></i>
+      <i class="fas fa-edit" aria-hidden="true"></i>
       Edit
     </button>
   </div>

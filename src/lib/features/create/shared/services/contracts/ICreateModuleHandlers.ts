@@ -6,11 +6,9 @@
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { NavigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { ConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
-import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 
 /**
  * Parameters for clear sequence handler
@@ -19,8 +17,6 @@ export interface ClearSequenceParams {
   CreateModuleState: CreateModuleState;
   constructTabState: ConstructTabState;
   panelState: PanelCoordinationState;
-  resetCreationMethodSelection: () => void;
-  shouldResetCreationMethod?: boolean; // Optional flag to control whether to reset creation method (default: true)
 }
 
 /**
@@ -52,16 +48,6 @@ export interface ICreateModuleHandlers {
    * Handle share hub button click
    */
   handleOpenShareHubPanel(panelState: PanelCoordinationState): void;
-
-  /**
-   * Handle creation method selection
-   */
-  handleCreationMethodSelected(
-    method: BuildModeId,
-    CreateModuleState: CreateModuleState | null,
-    navigationState: NavigationState,
-    onMethodSelected: () => void
-  ): void;
 
   /**
    * Handle clear sequence button click

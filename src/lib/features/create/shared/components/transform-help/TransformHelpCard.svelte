@@ -19,7 +19,7 @@
 <div class="help-card" style="--help-color: {item.color}">
   <div class="help-card-header">
     <div class="help-card-icon" aria-hidden="true">
-      <i class="fas {item.icon}"></i>
+      <i class="fas {item.icon}" aria-hidden="true"></i>
     </div>
     <div class="help-card-text">
       <h4>{item.name}</h4>

@@ -84,15 +84,8 @@
   function handleBeatClick(beatNumber: number) {
     hapticService?.trigger("selection");
 
-    console.log("[SequenceDisplay] handleBeatClick", {
-      beatNumber,
-      isShiftStartMode: panelState.isShiftStartMode,
-      hasHandler: !!panelState.shiftStartHandler,
-    });
-
     // If in shift start mode, use the shift handler instead of normal selection
     if (panelState.isShiftStartMode && panelState.shiftStartHandler) {
-      console.log("[SequenceDisplay] Calling shift start handler");
       panelState.shiftStartHandler(beatNumber);
       return;
     }

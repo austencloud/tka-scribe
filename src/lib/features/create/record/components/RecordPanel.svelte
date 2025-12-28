@@ -21,12 +21,12 @@ Combines video feed with playback controls for practicing sequences.
     onBeatIndexChange?: (beatIndex: number) => void;
   } = $props();
 
-  // State
-  const recordState = createRecordTabState(sequence);
+  // State - initialized with null, $effect below syncs sequence prop
+  const recordState = createRecordTabState(null);
   let metronome: Metronome | null = null;
   let playbackIntervalId: number | null = null;
 
-  // Sync sequence changes
+  // Sync sequence changes (handles both initial and subsequent updates)
   $effect(() => {
     recordState.setSequence(sequence);
   });

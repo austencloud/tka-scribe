@@ -445,7 +445,7 @@ Renders a section with:
 
   @media (max-height: 600px) {
     .type-label {
-      font-size: 11px;
+      font-size: 12px;
       padding: 2px 2px;
       min-width: 100px;
     }

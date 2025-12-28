@@ -145,8 +145,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.06));
     border-radius: 8px;
@@ -162,8 +162,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
   }
 
   .back-placeholder {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
   }
 
@@ -256,8 +256,8 @@ Shows current phase (Blue Hand, Red Hand, Rotation), progress, and contextual in
 
     .back-button,
     .back-placeholder {
-      width: 32px;
-      height: 32px;
+      width: 48px; /* WCAG AAA touch target - maintain on mobile */
+      height: 48px;
     }
   }
 </style>

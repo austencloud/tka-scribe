@@ -36,6 +36,7 @@
   use:swipeGesture={{ onSwipeDown: handleFilterClick }}
   aria-label="Open filter options - {titleHtml ? 'Type information' : title}"
   aria-expanded={isFilterPanelOpen}
+  aria-controls="options-filter-panel"
 >
   <div class="header-left-spacer"></div>
 
@@ -49,7 +50,7 @@
   </div>
 
   <div class="header-right-indicator">
-    <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen}></i>
+    <i class="fas fa-chevron-down chevron" class:open={isFilterPanelOpen} aria-hidden="true"></i>
   </div>
 </button>
 

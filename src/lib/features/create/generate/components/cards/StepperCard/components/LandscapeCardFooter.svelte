@@ -7,7 +7,7 @@ LandscapeCardFooter.svelte - Absolutely positioned subtitle and description for 
     description?: string;
   }>();
 
-  const hasDescription = description.length > 0;
+  const hasDescription = $derived(description.length > 0);
 </script>
 
 {#if subtitle}

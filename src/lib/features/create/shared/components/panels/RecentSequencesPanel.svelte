@@ -100,7 +100,7 @@
   <div class="recent-sequences-panel">
     <div class="panel-header">
       <h2>
-        <i class="fas fa-clock-rotate-left"></i>
+        <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
         Recent Sequences
       </h2>
       <button
@@ -108,13 +108,13 @@
         onclick={() => (show = false)}
         aria-label="Close panel"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
     {#if isLoading}
       <div class="loading">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <span>Loading...</span>
       </div>
     {:else}
@@ -123,14 +123,14 @@
         {#if drafts.length > 0}
           <section class="section">
             <h3 class="section-title">
-              <i class="fas fa-file-dashed"></i>
+              <i class="fas fa-file-dashed" aria-hidden="true"></i>
               Unsaved Drafts ({drafts.length})
             </h3>
             <div class="list">
               {#each drafts as draft}
                 <div class="draft list-item">
                   <div class="item-icon">
-                    <i class="fas fa-file-dashed"></i>
+                    <i class="fas fa-file-dashed" aria-hidden="true"></i>
                   </div>
                   <div class="item-info">
                     <div class="item-title">
@@ -147,7 +147,7 @@
                       title="Resume editing"
                       aria-label="Resume editing"
                     >
-                      <i class="fas fa-folder-open"></i>
+                      <i class="fas fa-folder-open" aria-hidden="true"></i>
                     </button>
                     <button
                       class="action-btn delete"
@@ -155,7 +155,7 @@
                       title="Delete draft"
                       aria-label="Delete draft"
                     >
-                      <i class="fas fa-trash"></i>
+                      <i class="fas fa-trash" aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
@@ -168,14 +168,14 @@
         {#if savedSequences.length > 0}
           <section class="section">
             <h3 class="section-title">
-              <i class="fas fa-bookmark"></i>
+              <i class="fas fa-bookmark" aria-hidden="true"></i>
               Saved Sequences ({savedSequences.length})
             </h3>
             <div class="list">
               {#each savedSequences as sequence}
                 <div class="saved list-item">
                   <div class="item-icon">
-                    <i class="fas fa-bookmark"></i>
+                    <i class="fas fa-bookmark" aria-hidden="true"></i>
                   </div>
                   <div class="item-info">
                     <div class="item-title">
@@ -194,7 +194,7 @@
                       title="Load sequence"
                       aria-label="Load sequence"
                     >
-                      <i class="fas fa-folder-open"></i>
+                      <i class="fas fa-folder-open" aria-hidden="true"></i>
                     </button>
                   </div>
                 </div>
@@ -205,7 +205,7 @@
 
         {#if drafts.length === 0 && savedSequences.length === 0}
           <div class="empty-state">
-            <i class="fas fa-inbox"></i>
+            <i class="fas fa-inbox" aria-hidden="true"></i>
             <p>No recent sequences</p>
             <span class="empty-hint">
               Start building a sequence to see it here

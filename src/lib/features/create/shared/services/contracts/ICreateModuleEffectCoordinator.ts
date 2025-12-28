@@ -14,7 +14,6 @@ import type { PanelCoordinationState } from "../../state/panel-coordination-stat
 import type { IResponsiveLayoutManager } from "./IResponsiveLayoutManager";
 import type { INavigationSyncer } from "./INavigationSyncer";
 import type { IDeepLinkSequenceHandler } from "./IDeepLinkSequenceHandler";
-import type { ICreationMethodPersister } from "./ICreationMethodPersister";
 import type { IBeatOperator } from "./IBeatOperator";
 import type { Autosaver } from "../../services/Autosaver";
 
@@ -32,14 +31,11 @@ export interface CreateModuleEffectConfig {
   layoutService: IResponsiveLayoutManager;
   NavigationSyncer: INavigationSyncer;
   getDeepLinker: () => IDeepLinkSequenceHandler | null;
-  getCreationMethodPersistence: () => ICreationMethodPersister | null;
   getBeatOperator: () => IBeatOperator | null;
   getAutosaver: () => Autosaver | null;
 
   // State flags
   isServicesInitialized: () => boolean;
-  hasSelectedCreationMethod: () => boolean;
-  setHasSelectedCreationMethod: (value: boolean) => void;
 
   // Layout callbacks
   onLayoutChange: (shouldUseSideBySideLayout: boolean) => void;
@@ -49,10 +45,6 @@ export interface CreateModuleEffectConfig {
   // Optional callbacks
   onCurrentWordChange?: (word: string) => void;
   onTabAccessibilityChange?: (canAccess: boolean) => void;
-
-  // DOM elements
-  toolPanelElement: HTMLElement | null;
-  buttonPanelElement: HTMLElement | null;
 }
 
 /**

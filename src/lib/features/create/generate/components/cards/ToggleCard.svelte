@@ -36,14 +36,15 @@ Hides header when card height is below 65px for space optimization
   }>();
 
   // Create state using factory function
-  // Use getter for activeOption to ensure reactivity
-  // svelte-ignore state_referenced_locally - intentional: configuration for state creation
-  const state = createToggleCardState({
-    option1,
-    option2,
-    getActiveOption: () => activeOption,
-    onToggle,
-  });
+  // Use $derived to ensure reactive updates when props change
+  const state = $derived(
+    createToggleCardState({
+      option1,
+      option2,
+      getActiveOption: () => activeOption,
+      onToggle,
+    })
+  );
 
   // Simple derived state stays in component
   const isOption1Active = $derived(activeOption === option1.value);

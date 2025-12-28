@@ -65,42 +65,42 @@
     <span class="section-label">Transform</span>
     <div class="section-grid">
       <button class="grid-btn mirror" onclick={onMirror} {disabled} aria-label="Mirror sequence: flip left and right">
-        <div class="btn-icon"><i class="fas fa-left-right"></i></div>
+        <div class="btn-icon"><i class="fas fa-left-right" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Mirror</span>
           <span class="btn-desc">Flip left & right</span>
         </div>
       </button>
       <button class="grid-btn flip" onclick={onFlip} {disabled} aria-label="Flip sequence: flip up and down">
-        <div class="btn-icon"><i class="fas fa-up-down"></i></div>
+        <div class="btn-icon"><i class="fas fa-up-down" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Flip</span>
           <span class="btn-desc">Flip up & down</span>
         </div>
       </button>
       <button class="grid-btn swap" onclick={onSwap} {disabled} aria-label="Swap hands in sequence">
-        <div class="btn-icon"><i class="fas fa-arrows-rotate"></i></div>
+        <div class="btn-icon"><i class="fas fa-arrows-rotate" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Swap</span>
           <span class="btn-desc">Switch hands</span>
         </div>
       </button>
       <button class="grid-btn invert" onclick={onInvert} {disabled} aria-label="Invert sequence: reverse turn directions">
-        <div class="btn-icon"><i class="fas fa-repeat"></i></div>
+        <div class="btn-icon"><i class="fas fa-repeat" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Invert</span>
           <span class="btn-desc">Reverse turns</span>
         </div>
       </button>
       <button class="grid-btn rotate-ccw" onclick={onRotateCCW} {disabled} aria-label="Rotate sequence left 45 degrees">
-        <div class="btn-icon"><i class="fas fa-rotate-left"></i></div>
+        <div class="btn-icon"><i class="fas fa-rotate-left" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Rotate L</span>
           <span class="btn-desc">Pivot 45°</span>
         </div>
       </button>
       <button class="grid-btn rotate-cw" onclick={onRotateCW} {disabled} aria-label="Rotate sequence right 45 degrees">
-        <div class="btn-icon"><i class="fas fa-rotate-right"></i></div>
+        <div class="btn-icon"><i class="fas fa-rotate-right" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Rotate R</span>
           <span class="btn-desc">Pivot 45°</span>
@@ -119,7 +119,7 @@
         disabled={!hasSequence}
         aria-label="Apply turn pattern to sequence"
       >
-        <div class="btn-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
+        <div class="btn-icon"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Turn Pattern</span>
           <span class="btn-desc">Apply patterns</span>
@@ -131,7 +131,7 @@
         disabled={!hasSequence}
         aria-label="Apply rotation direction pattern (clockwise or counter-clockwise)"
       >
-        <div class="btn-icon"><i class="fas fa-compass"></i></div>
+        <div class="btn-icon"><i class="fas fa-compass" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Direction</span>
           <span class="btn-desc">CW/CCW patterns</span>
@@ -146,9 +146,9 @@
         >
           <div class="btn-icon">
             {#if isAutocompleting}
-              <i class="fas fa-spinner fa-spin"></i>
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             {:else}
-              <i class="fas fa-circle-check"></i>
+              <i class="fas fa-circle-check" aria-hidden="true"></i>
             {/if}
           </div>
           <div class="btn-text">
@@ -168,7 +168,7 @@
           aria-label="Pick new first beat: change where the sequence starts"
         >
           <div class="btn-icon">
-            <i class="fas fa-forward"></i>
+            <i class="fas fa-forward" aria-hidden="true"></i>
           </div>
           <div class="btn-text">
             <span class="btn-label">First Beat</span>
@@ -177,7 +177,7 @@
         </button>
       {/if}
       <button class="grid-btn rewind" onclick={onRewind} {disabled} aria-label="Rewind: add reversed sequence to the end">
-        <div class="btn-icon"><i class="fas fa-backward"></i></div>
+        <div class="btn-icon"><i class="fas fa-backward" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Rewind</span>
           <span class="btn-desc">Add reverse to end</span>
@@ -197,7 +197,7 @@
         disabled={!hasSelection}
         aria-label={hasSelection ? "Edit turns for selected beat" : "Edit turns: select a beat first"}
       >
-        <div class="btn-icon"><i class="fas fa-sliders-h"></i></div>
+        <div class="btn-icon"><i class="fas fa-sliders-h" aria-hidden="true"></i></div>
         <div class="btn-text">
           <span class="btn-label">Edit Turns</span>
           <span class="btn-desc"
@@ -213,7 +213,7 @@
           data-testid="edit-in-constructor"
           aria-label="Open sequence in constructor for full editing"
         >
-          <div class="btn-icon"><i class="fas fa-pen-to-square"></i></div>
+          <div class="btn-icon"><i class="fas fa-pen-to-square" aria-hidden="true"></i></div>
           <div class="btn-text">
             <span class="btn-label">Constructor</span>
             <span class="btn-desc">Full editor</span>
@@ -260,7 +260,7 @@
   }
 
   .section-label {
-    font-size: 9px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;

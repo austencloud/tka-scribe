@@ -33,7 +33,7 @@
   aria-pressed={isActive}
   title="Share"
 >
-  <i class="fas fa-share-alt"></i>
+  <i class="fas fa-share-alt" aria-hidden="true"></i>
 </button>
 
 <style>

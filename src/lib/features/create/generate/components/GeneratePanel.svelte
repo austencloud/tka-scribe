@@ -36,7 +36,7 @@ Card-based architecture with integrated Generate button:
   // ===== State Management =====
   const configState = createGenerationConfigState();
   const actionsState = createGenerationActionsState(
-    sequenceState,
+    () => sequenceState,
     () => isSequentialAnimation
   );
   const deviceState = createDeviceState();

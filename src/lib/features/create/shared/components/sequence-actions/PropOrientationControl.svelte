@@ -74,7 +74,7 @@
         onclick={(e) => handleCycle(e, "prev")}
         aria-label="Previous {color} orientation"
       >
-        <i class="fas fa-chevron-left"></i>
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
       </button>
 
       <button
@@ -82,7 +82,7 @@
         onclick={togglePopover}
         aria-label="Select {color} orientation"
       >
-        <i class="fas {getOrientationOption(orientation).icon}"></i>
+        <i class="fas {getOrientationOption(orientation).icon}" aria-hidden="true"></i>
         <span class="display-label"
           >{getOrientationOption(orientation).label}</span
         >
@@ -93,7 +93,7 @@
         onclick={(e) => handleCycle(e, "next")}
         aria-label="Next {color} orientation"
       >
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
       </button>
     </div>
   {:else}
@@ -106,7 +106,7 @@
           onclick={(e) => handleOrientationClick(e, opt.value)}
           aria-label="Set {color} orientation to {opt.label}"
         >
-          <i class="fas {opt.icon}"></i>
+          <i class="fas {opt.icon}" aria-hidden="true"></i>
           <span>{opt.label}</span>
         </button>
       {/each}

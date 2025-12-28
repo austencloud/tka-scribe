@@ -45,12 +45,10 @@ Features:
   // Keyboard handler
   function handleKeydown(event: KeyboardEvent) {
     if (!isOpen) {
-      console.log("[Keydown] Panel not open, ignoring");
       return;
     }
 
     const key = event.key.toLowerCase();
-    console.log("[Keydown] Key pressed:", key, "Panel open:", isOpen);
 
     // Close on Escape
     if (key === "escape") {
@@ -73,12 +71,6 @@ Features:
 
     // Handle WASD movement
     if (["w", "a", "s", "d"].includes(key)) {
-      console.log(
-        "[Keydown] WASD key detected:",
-        key,
-        "increment:",
-        currentIncrement
-      );
       event.preventDefault();
       handleWASDMovement(key as "w" | "a" | "s" | "d");
     }
@@ -184,7 +176,7 @@ Features:
     <!-- Header -->
     <div class="panel-header">
       <h2 id="adjustment-panel-title" class="panel-title">
-        <i class="fas fa-crosshairs"></i>
+        <i class="fas fa-crosshairs" aria-hidden="true"></i>
         Adjust Arrows
       </h2>
       <button
@@ -193,7 +185,7 @@ Features:
         aria-label="Close adjustment panel"
         type="button"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 

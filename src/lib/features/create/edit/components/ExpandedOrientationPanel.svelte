@@ -77,7 +77,7 @@
       <span class="current-badge">{currentOrientation().toUpperCase()}</span>
     </div>
     <button class="close-btn" onclick={handleClose} aria-label="Close panel">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -229,17 +229,17 @@
 
   .orientation-panel.compact .current-badge {
     padding: 2px 6px;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .orientation-panel.balanced .current-badge {
     padding: 2px 6px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .orientation-panel.comfortable .current-badge {
     padding: 3px 8px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .close-btn {

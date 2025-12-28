@@ -8,7 +8,6 @@
 
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { IDeepLinkSequenceHandler } from "../../services/contracts/IDeepLinkSequenceHandler";
-import type { ICreationMethodPersister } from "../../services/contracts/ICreationMethodPersister";
 import type { CreateModuleState } from "../create-module-state.svelte";
 import type { ConstructTabState } from "../construct-tab-state.svelte";
 
@@ -16,10 +15,7 @@ export interface PendingEditConfig {
   getDeepLinker: () => IDeepLinkSequenceHandler | null;
   getCreateModuleState: () => CreateModuleState | null;
   getConstructTabState: () => ConstructTabState | null;
-  getCreationMethodPersistence: () => ICreationMethodPersister | null;
   isServicesInitialized: () => boolean;
-  hasSelectedCreationMethod: () => boolean;
-  setHasSelectedCreationMethod: (value: boolean) => void;
 }
 
 export function createPendingEditEffect(config: PendingEditConfig): () => void {
@@ -27,10 +23,7 @@ export function createPendingEditEffect(config: PendingEditConfig): () => void {
     getDeepLinker,
     getCreateModuleState,
     getConstructTabState,
-    getCreationMethodPersistence,
     isServicesInitialized,
-    hasSelectedCreationMethod,
-    setHasSelectedCreationMethod,
   } = config;
 
   let pendingEditProcessed = false;
@@ -43,7 +36,6 @@ export function createPendingEditEffect(config: PendingEditConfig): () => void {
       const deepLinkService = getDeepLinker();
       const createModuleState = getCreateModuleState();
       const constructTabState = getConstructTabState();
-      const creationMethodPersistence = getCreationMethodPersistence();
 
       if (
         !deepLinkService ||
@@ -69,12 +61,6 @@ export function createPendingEditEffect(config: PendingEditConfig): () => void {
         } else {
           createModuleState.sequenceState.setCurrentSequence(sequence);
         }
-
-        if (!hasSelectedCreationMethod()) {
-          setHasSelectedCreationMethod(true);
-          creationMethodPersistence?.markMethodSelected();
-        }
-        navigationState.setCreationMethodSelectorVisible(false);
 
         if (constructTabState?.setShowStartPositionPicker) {
           constructTabState.setShowStartPositionPicker(false);

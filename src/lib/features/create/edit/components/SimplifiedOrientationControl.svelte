@@ -106,7 +106,7 @@ Research-backed design for 352px portrait (Z Fold):
       aria-label={`Previous ${displayLabel} orientation`}
       type="button"
     >
-      <i class="fas fa-rotate-left"></i>
+      <i class="fas fa-rotate-left" aria-hidden="true"></i>
     </button>
 
     <!-- Orientation display -->
@@ -121,7 +121,7 @@ Research-backed design for 352px portrait (Z Fold):
       aria-label={`Next ${displayLabel} orientation`}
       type="button"
     >
-      <i class="fas fa-rotate-right"></i>
+      <i class="fas fa-rotate-right" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -262,7 +262,7 @@ Research-backed design for 352px portrait (Z Fold):
     padding: 4px 8px; /* Reduced from 6px 12px */
     background: rgba(0, 0, 0, 0.08);
     border-radius: 6px;
-    font-size: 10px; /* Reduced from 12px */
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.3px; /* Reduced from 0.5px */
@@ -295,7 +295,7 @@ Research-backed design for 352px portrait (Z Fold):
     }
 
     .motion-badge {
-      font-size: 10px;
+      font-size: 12px;
       padding: 4px 8px;
     }
   }

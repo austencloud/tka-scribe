@@ -228,8 +228,7 @@ Uses organizer and sizer services for section grouping and sizing.
           : "Showing all - click for continuous only"}
         aria-pressed={isContinuousOnly}
       >
-        <i
-          class="fas"
+        <i class="fas" aria-hidden="true"
           class:fa-link={isContinuousOnly}
           class:fa-th={!isContinuousOnly}
         ></i>
@@ -381,19 +380,19 @@ Uses organizer and sizer services for section grouping and sizing.
   }
 
   .filter-toggle i {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   /* Mobile: More compact */
   .filter-toggle.mobile {
     padding: 4px 10px;
-    font-size: 11px;
+    font-size: 12px;
     margin: 2px 0;
     border-radius: 12px;
   }
 
   .filter-toggle.mobile i {
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .sections-container {

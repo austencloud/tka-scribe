@@ -65,7 +65,7 @@ Primarily for desktop where we have extra space to show this information.
     <!-- Blue/Left Motion Info -->
     <div class="motion-section blue-section">
       <div class="section-header">
-        <i class="fas fa-circle" style="color: #3b82f6;"></i>
+        <i class="fas fa-circle" style="color: #3b82f6;" aria-hidden="true"></i>
         <span>Left Hand</span>
       </div>
 
@@ -106,7 +106,7 @@ Primarily for desktop where we have extra space to show this information.
     <!-- Red/Right Motion Info -->
     <div class="motion-section red-section">
       <div class="section-header">
-        <i class="fas fa-circle" style="color: #ef4444;"></i>
+        <i class="fas fa-circle" style="color: #ef4444;" aria-hidden="true"></i>
         <span>Right Hand</span>
       </div>
 
@@ -193,7 +193,7 @@ Primarily for desktop where we have extra space to show this information.
   }
 
   .section-header i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .info-row {
@@ -233,7 +233,7 @@ Primarily for desktop where we have extra space to show this information.
     }
 
     .info-row {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 </style>

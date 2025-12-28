@@ -8,8 +8,6 @@
 import { injectable, inject } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
-import type { NavigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { CreateModuleState } from "../../state/create-module-state.svelte";
 import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 import type {
@@ -72,29 +70,6 @@ export class CreateModuleHandlers implements ICreateModuleHandlers {
    */
   handleOpenShareHubPanel(panelState: PanelCoordinationState): void {
     panelState.openShareHubPanel();
-  }
-
-  /**
-   * Handle creation method selection
-   */
-  handleCreationMethodSelected(
-    method: BuildModeId,
-    CreateModuleState: CreateModuleState | null,
-    navigationState: NavigationState,
-    onMethodSelected: () => void
-  ): void {
-    // Clear undo history when starting new creation session
-    // This creates a clean mental model: each creation session is independent
-    if (CreateModuleState) {
-      CreateModuleState.clearUndoHistory();
-    }
-
-    // Mark that user has selected a creation method
-    onMethodSelected();
-
-    // Switch to the selected tab
-    navigationState.setActiveTab(method);
-    // The effect will automatically hide the selector based on hasSelectedCreationMethod
   }
 
   /**

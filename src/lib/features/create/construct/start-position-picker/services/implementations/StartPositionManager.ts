@@ -46,7 +46,7 @@ export class StartPositionManager implements IStartPositionManager {
             { position: GridPosition.GAMMA12, letter: Letter.GAMMA },
           ];
 
-    return this.createPictographsFromPositions(startPositionKeys);
+    return this.createPictographsFromPositions(startPositionKeys, gridMode);
   }
 
   getAllStartPositionVariations(gridMode: GridMode): PictographData[] {
@@ -93,11 +93,12 @@ export class StartPositionManager implements IStartPositionManager {
             { position: GridPosition.GAMMA16, letter: Letter.GAMMA },
           ];
 
-    return this.createPictographsFromPositions(allVariations);
+    return this.createPictographsFromPositions(allVariations, gridMode);
   }
 
   private createPictographsFromPositions(
-    positions: Array<{ position: GridPosition; letter: Letter }>
+    positions: Array<{ position: GridPosition; letter: Letter }>,
+    gridMode: GridMode
   ): PictographData[] {
     return positions.map((pos) => {
       // Get the hand locations for this position (blue and red hand locations)
@@ -118,6 +119,7 @@ export class StartPositionManager implements IStartPositionManager {
         isVisible: true,
         propType: PropType.STAFF,
         arrowLocation: blueLocation,
+        gridMode, // Pass the grid mode for correct arrow positioning
       });
 
       const redMotion = createMotionData({
@@ -132,6 +134,7 @@ export class StartPositionManager implements IStartPositionManager {
         isVisible: true,
         propType: PropType.STAFF,
         arrowLocation: redLocation,
+        gridMode, // Pass the grid mode for correct arrow positioning
       });
 
       // Create proper pictograph data using factory function (like the original working implementation)
@@ -140,6 +143,7 @@ export class StartPositionManager implements IStartPositionManager {
         letter: pos.letter,
         startPosition: pos.position,
         endPosition: pos.position,
+        gridMode, // Also pass gridMode to the pictograph
         motions: {
           [MotionColor.BLUE]: blueMotion,
           [MotionColor.RED]: redMotion,

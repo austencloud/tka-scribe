@@ -41,13 +41,13 @@ to the full workspace/tool panel layout when "Start Drawing" is clicked.
       class="start-drawing-btn"
       onclick={() => handPathCoordinator.startDrawing()}
     >
-      <i class="fas fa-play"></i>
+      <i class="fas fa-play" aria-hidden="true"></i>
       Start Drawing
     </button>
 
     <!-- Helpful hint -->
     <div class="hint">
-      <i class="fas fa-lightbulb"></i>
+      <i class="fas fa-lightbulb" aria-hidden="true"></i>
       <span>You'll draw paths for both blue and red hands</span>
     </div>
   </div>

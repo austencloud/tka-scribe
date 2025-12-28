@@ -36,9 +36,16 @@ Opens sheet with start/end position and letter constraint options
     gridMode?: GridMode;
   }>();
 
-  // Track reset animation state
+  // Track reset animation state - initialized with 0, $effect syncs
   let isResetting = $state(false);
-  let lastResetTrigger = $state(positionsResetTrigger);
+  let lastResetTrigger = $state(0);
+
+  // Initialize lastResetTrigger on first run
+  $effect(() => {
+    if (lastResetTrigger === 0 && positionsResetTrigger > 0) {
+      lastResetTrigger = positionsResetTrigger;
+    }
+  });
 
   // Watch for reset trigger changes and animate (use $effect.pre to sync with text update)
   $effect.pre(() => {

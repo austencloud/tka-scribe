@@ -30,7 +30,7 @@
   title="Sequence actions"
   data-testid="sequence-actions-button"
 >
-  <i class="fas fa-tools"></i>
+  <i class="fas fa-tools" aria-hidden="true"></i>
 </button>
 
 <style>

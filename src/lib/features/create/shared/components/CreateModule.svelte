@@ -49,7 +49,6 @@
   import type { CreateModuleOrchestrators } from "../types/create-module-services";
   import type { ICreateModuleInitializer } from "../services/contracts/ICreateModuleInitializer";
   import type { ICreateModuleHandlers } from "../services/contracts/ICreateModuleHandlers";
-  import type { ICreationMethodPersister } from "../services/contracts/ICreationMethodPersister";
   import type { ICreateModuleEffectCoordinator } from "../services/contracts/ICreateModuleEffectCoordinator";
   import type { IPanelPersister } from "../services/contracts/IPanelPersister";
   import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
@@ -60,7 +59,6 @@
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import TransferConfirmDialog from "./TransferConfirmDialog.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
-  import CreationMethodSelector from "../workspace-panel/components/CreationMethodSelector.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
   import { setCreateModuleContext } from "../context/create-module-context";
   import CAPCoordinator from "./coordinators/CAPCoordinator.svelte";
@@ -76,6 +74,7 @@
   import { Autosaver } from "../services/Autosaver";
   import { SequencePersister } from "../services/SequencePersister";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { createPanelHeightTracker } from "../state/managers/PanelHeightTracker.svelte";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -98,8 +97,6 @@
   // ============================================================================
   let services: CreateModuleOrchestrators | null = $state(null);
   let handlers: ICreateModuleHandlers | null = $state(null);
-  let creationMethodPersistence: ICreationMethodPersister | null =
-    $state(null);
   let effectCoordinator: ICreateModuleEffectCoordinator | null = $state(null);
   let deepLinkService:
     | import("../services/contracts/IDeepLinkSequenceHandler").IDeepLinkSequenceHandler
@@ -121,7 +118,6 @@
   let shouldUseSideBySideLayout = $state<boolean>(false);
   let error = $state<string | null>(null);
   let servicesInitialized = $state<boolean>(false);
-  let hasSelectedCreationMethod = $state(false);
 
   // Transfer confirmation dialog state
   let showTransferConfirmation = $state(false);
@@ -133,6 +129,7 @@
   let assemblyTabKey = $state(0); // Changes when assembly tab needs to reset
   let effectCleanup: (() => void) | null = null;
   let panelPersistenceCleanup: (() => void) | null = null;
+  let panelHeightTrackerCleanup: (() => void) | null = null;
   let currentDisplayWord = $state<string>(""); // Current word with contextual messages
 
   // ============================================================================
@@ -208,14 +205,9 @@
       layoutService: services.layoutService,
       NavigationSyncer: services.NavigationSyncer,
       getDeepLinker: () => deepLinkService,
-      getCreationMethodPersistence: () => creationMethodPersistence,
       getBeatOperator: () => services?.BeatOperator ?? null,
       getAutosaver: () => autosaver,
       isServicesInitialized: () => servicesInitialized,
-      hasSelectedCreationMethod: () => hasSelectedCreationMethod,
-      setHasSelectedCreationMethod: (value: boolean) => {
-        hasSelectedCreationMethod = value;
-      },
       onLayoutChange: (layout) => {
         shouldUseSideBySideLayout = layout;
         setSideBySideLayout(layout);
@@ -229,8 +221,8 @@
         onCurrentWordChange?.(word);
       },
       onTabAccessibilityChange,
-      toolPanelElement,
-      buttonPanelElement,
+      // NOTE: Panel height tracking moved to separate $effect in CreateModule
+      // because element bindings happen AFTER onMount completes
     });
   }
 
@@ -280,7 +272,6 @@
 
         // Extract UI coordination services from result (no manual resolution needed)
         handlers = result.handlers;
-        creationMethodPersistence = result.creationMethodPersistence;
         effectCoordinator = result.effectCoordinator;
         deepLinkService = result.deepLinkService;
         panelPersistenceService = result.panelPersistenceService;
@@ -299,8 +290,6 @@
           panelState,
         });
 
-        const fromStorage = creationMethodPersistence.hasUserSelectedMethod();
-        hasSelectedCreationMethod = fromStorage;
         servicesInitialized = true;
 
         initService.configureEventCallbacks(CreateModuleState, panelState);
@@ -363,15 +352,6 @@
           );
 
         if (loadResult.sequenceLoaded) {
-          // Mark that a creation method has been selected
-          if (
-            loadResult.shouldMarkMethodSelected &&
-            !hasSelectedCreationMethod
-          ) {
-            hasSelectedCreationMethod = true;
-            creationMethodPersistence.markMethodSelected();
-          }
-
           // Navigate to target tab if specified (deep link only)
           if (loadResult.targetTab) {
             navigationState.setActiveTab(loadResult.targetTab);
@@ -444,6 +424,12 @@
         panelPersistenceCleanup = null;
       }
 
+      // Cleanup panel height tracker
+      if (panelHeightTrackerCleanup) {
+        panelHeightTrackerCleanup();
+        panelHeightTrackerCleanup = null;
+      }
+
       // Cleanup session management
       autosaver?.stopAutosave();
       sessionManager?.abandonSession();
@@ -479,54 +465,14 @@
     handlers.handleOpenShareHubPanel(panelState);
   }
 
-  async function handleCreationMethodSelected(method: BuildModeId) {
-    if (!handlers || !creationMethodPersistence) return;
-
-    // FIRST: Set the active tab (but keep selector visible)
-    navigationState.setActiveTab(method);
-    CreateModuleState?.clearUndoHistory();
-
-    // Wait for Svelte to apply DOM updates
-    await tick();
-
-    // Wait multiple frames to ensure effects have completed and tool panel has fully rendered
-    // Frame 1: Effect is scheduled
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-    // Frame 2: Effect executes and updates DOM
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-    // Frame 3: Browser paints the new content
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-
-    // THEN: Mark as selected (which triggers the crossfade via effect)
-    hasSelectedCreationMethod = true;
-    creationMethodPersistence.markMethodSelected();
-
-    // Explicitly hide the onboarding selector to ensure tabs remain visible
-    navigationState.setCreationMethodSelectorVisible(false);
-
-    // Reset the choice step flag (no longer needed after selection)
-    navigationState.setCreateTutorialOnChoiceStep(false);
-  }
-
   async function handleClearSequence() {
-    if (
-      !handlers ||
-      !CreateModuleState ||
-      !constructTabState ||
-      !creationMethodPersistence
-    )
-      return;
+    if (!handlers || !CreateModuleState || !constructTabState) return;
 
     try {
       await handlers.handleClearSequence({
         CreateModuleState,
         constructTabState,
         panelState,
-        resetCreationMethodSelection: () => {
-          hasSelectedCreationMethod = false;
-          creationMethodPersistence!.resetSelection();
-        },
-        shouldResetCreationMethod: false, // Keep creation mode selected, just reset to start position picker
       });
 
       // Force assembly tab to remount with fresh state
@@ -594,6 +540,35 @@
     sequenceToTransfer = null;
     console.log("❌ Sequence transfer cancelled by user");
   }
+
+  // ============================================================================
+  // PANEL HEIGHT TRACKER (Separate from effect coordinator to handle timing)
+  // ============================================================================
+  /**
+   * Set up panel height tracker when elements become available.
+   *
+   * This runs in a separate $effect because toolPanelElement and buttonPanelElement
+   * are bound AFTER onMount completes (element bindings happen after first render).
+   *
+   * The effect coordinator runs during onMount's async initialization, when elements
+   * are still null, so we need to watch for when they become available.
+   */
+  $effect(() => {
+    // Clean up previous tracker if it exists
+    if (panelHeightTrackerCleanup) {
+      panelHeightTrackerCleanup();
+      panelHeightTrackerCleanup = null;
+    }
+
+    // Only set up tracker if at least one element is available
+    if (toolPanelElement || buttonPanelElement) {
+      panelHeightTrackerCleanup = createPanelHeightTracker({
+        toolPanelElement,
+        buttonPanelElement,
+        panelState,
+      });
+    }
+  });
 </script>
 
 {#if error}
@@ -606,46 +581,25 @@
         handPathCoordinator={CreateModuleState.handPathCoordinator}
       />
     {:else}
-      <!-- Crossfade wrapper for smooth transitions -->
-      <div class="transition-wrapper">
-        <!-- Creation Method Selector -->
-        <div
-          class="transition-view"
-          class:active={navigationState.isCreationMethodSelectorVisible}
-          class:inactive={!navigationState.isCreationMethodSelectorVisible}
-        >
-          <CreationMethodSelector
-            onMethodSelected={handleCreationMethodSelected}
-          />
-        </div>
-
-        <!-- Standard Workspace/Tool Panel Layout -->
-        <div
-          class="transition-view"
-          class:active={!navigationState.isCreationMethodSelectorVisible}
-          class:inactive={navigationState.isCreationMethodSelectorVisible}
-        >
-          <StandardWorkspaceLayout
-            {shouldUseSideBySideLayout}
-            {CreateModuleState}
-            {panelState}
-            {currentDisplayWord}
-            bind:animatingBeatNumber
-            bind:toolPanelRef
-            bind:buttonPanelElement
-            bind:toolPanelElement
-            onPlayAnimation={handlePlayAnimation}
-            onClearSequence={handleClearSequence}
-            onShareHub={handleOpenShareHubPanel}
-            onSequenceActionsClick={handleOpenSequenceActions}
-            onOptionSelected={handleOptionSelected}
-            onOpenFilters={handleOpenFilterPanel}
-            onCloseFilters={() => {
-              panelState.closeFilterPanel();
-            }}
-          />
-        </div>
-      </div>
+      <StandardWorkspaceLayout
+        {shouldUseSideBySideLayout}
+        {CreateModuleState}
+        {panelState}
+        {currentDisplayWord}
+        bind:animatingBeatNumber
+        bind:toolPanelRef
+        bind:buttonPanelElement
+        bind:toolPanelElement
+        onPlayAnimation={handlePlayAnimation}
+        onClearSequence={handleClearSequence}
+        onShareHub={handleOpenShareHubPanel}
+        onSequenceActionsClick={handleOpenSequenceActions}
+        onOptionSelected={handleOptionSelected}
+        onOpenFilters={handleOpenFilterPanel}
+        onCloseFilters={() => {
+          panelState.closeFilterPanel();
+        }}
+      />
     {/if}
   </div>
 
@@ -707,36 +661,5 @@
     width: 100%;
     overflow: hidden;
     transition: background-color 200ms ease-out;
-  }
-
-  /* Crossfade transition system */
-  .transition-wrapper {
-    position: relative;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .transition-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .transition-view.active {
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 1;
-  }
-
-  .transition-view.inactive {
-    opacity: 0;
-    pointer-events: none;
-    z-index: 0;
   }
 </style>

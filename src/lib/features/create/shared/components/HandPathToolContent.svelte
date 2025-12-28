@@ -29,7 +29,7 @@ Contains sequence settings, hand indicator, and action buttons.
         class="start-drawing-btn"
         onclick={() => handPathCoordinator.startDrawing()}
       >
-        <i class="fas fa-play"></i>
+        <i class="fas fa-play" aria-hidden="true"></i>
         Start Drawing
       </button>
     </div>
@@ -62,14 +62,14 @@ Contains sequence settings, hand indicator, and action buttons.
               // TODO: Convert motions to sequence beats
             })}
         >
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
           Finish & Import
         </button>
         <button
           class="action-btn secondary"
           onclick={() => handPathCoordinator.handleBackToBlue()}
         >
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
           Redraw Blue Hand
         </button>
       </div>

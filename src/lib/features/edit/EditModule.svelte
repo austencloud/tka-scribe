@@ -266,7 +266,7 @@
             onclick={() => editState.setCurrentMode("beat")}
             aria-label="Beat editing mode"
           >
-            <i class="fas fa-pen"></i>
+            <i class="fas fa-pen" aria-hidden="true"></i>
             <span>Beat</span>
           </button>
           <button
@@ -275,7 +275,7 @@
             onclick={() => editState.setCurrentMode("sequence")}
             aria-label="Sequence transformation mode"
           >
-            <i class="fas fa-layer-group"></i>
+            <i class="fas fa-layer-group" aria-hidden="true"></i>
             <span>Sequence</span>
           </button>
         </div>

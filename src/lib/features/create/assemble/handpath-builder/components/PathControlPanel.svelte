@@ -100,7 +100,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
         onclick={() => selectRotation(RotationDirection.CLOCKWISE)}
         aria-label="Clockwise rotation"
       >
-        <i class="fas fa-rotate-right"></i>
+        <i class="fas fa-rotate-right" aria-hidden="true"></i>
         <span>CW</span>
       </button>
       <button
@@ -110,7 +110,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
         onclick={() => selectRotation(RotationDirection.COUNTER_CLOCKWISE)}
         aria-label="Counter-clockwise rotation"
       >
-        <i class="fas fa-rotate-left"></i>
+        <i class="fas fa-rotate-left" aria-hidden="true"></i>
         <span>CCW</span>
       </button>
       <button
@@ -120,7 +120,7 @@ Displays current state, beat progress, rotation selector, and action buttons.
         onclick={() => selectRotation(RotationDirection.NO_ROTATION)}
         aria-label="No rotation"
       >
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
         <span>None</span>
       </button>
     </div>
@@ -159,15 +159,15 @@ Displays current state, beat progress, rotation selector, and action buttons.
       onclick={handleResetClick}
     >
       {#if resetConfirmationActive}
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         Confirm Reset?
       {:else}
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
         Reset
       {/if}
     </button>
     <button class="action-btn tertiary" onclick={onBackToSettings}>
-      <i class="fas fa-cog"></i>
+      <i class="fas fa-cog" aria-hidden="true"></i>
       Settings
     </button>
   </div>

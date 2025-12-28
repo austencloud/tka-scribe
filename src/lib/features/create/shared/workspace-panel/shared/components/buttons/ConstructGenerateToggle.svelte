@@ -73,7 +73,7 @@ Design Principles:
   onkeydown={handleKeyDown}
   title={ariaLabel}
 >
-  <i class="fa-solid {targetIcon}"></i>
+  <i class="fa-solid {targetIcon}" aria-hidden="true"></i>
   {#if showLabels}
     <span class="label">{targetLabel}</span>
   {/if}
@@ -178,7 +178,7 @@ Design Principles:
     }
 
     .label {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

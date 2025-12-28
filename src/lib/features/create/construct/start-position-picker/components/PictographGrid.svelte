@@ -242,6 +242,12 @@
       0 4px 8px rgba(0, 0, 0, 0.08);
   }
 
+  /* Focus styles for accessibility */
+  .pictograph-container:focus-visible .pictograph-wrapper {
+    outline: 2px solid var(--primary-color, #6366f1);
+    outline-offset: 2px;
+  }
+
   @media (max-width: 768px) {
     .pictograph-row {
       flex-direction: row;

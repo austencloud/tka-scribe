@@ -33,7 +33,7 @@
 
 {#if !startPositionData}
   <div class="empty-state">
-    <i class="fas fa-compass"></i>
+    <i class="fas fa-compass" aria-hidden="true"></i>
     <p>No start position selected</p>
   </div>
 {:else}

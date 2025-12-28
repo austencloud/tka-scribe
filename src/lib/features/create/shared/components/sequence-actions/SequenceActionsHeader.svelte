@@ -21,7 +21,7 @@
     class:active={currentMode === "turns"}
     onclick={() => onModeChange("turns")}
   >
-    <i class="fas fa-sliders-h"></i>
+    <i class="fas fa-sliders-h" aria-hidden="true"></i>
     Turns
   </button>
   <button
@@ -29,7 +29,7 @@
     class:active={currentMode === "transforms"}
     onclick={() => onModeChange("transforms")}
   >
-    <i class="fas fa-wand-magic-sparkles"></i>
+    <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
     Transforms
   </button>
   {#if currentMode === "transforms"}
@@ -38,7 +38,7 @@
       onclick={onShowHelp}
       aria-label="Learn about transforms"
     >
-      <i class="fas fa-circle-question"></i>
+      <i class="fas fa-circle-question" aria-hidden="true"></i>
     </button>
   {/if}
 </div>

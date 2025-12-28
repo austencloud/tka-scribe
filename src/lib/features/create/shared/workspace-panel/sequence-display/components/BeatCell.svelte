@@ -71,8 +71,8 @@
 
   let hasAnimated = $state(false);
   let currentAnimationName = $state("gentleBloom");
-  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
-  let previousBeatId = beat.id;
+  // Track previous beat ID for change detection
+  let previousBeatId = "";
 
   // Long-press detection
   const LONG_PRESS_DURATION = 500; // ms
@@ -96,8 +96,8 @@
     return `${beatData.letter || "null"}-${motionStructure}`;
   }
 
-  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
-  let previousSignature = getPictographSignature(beat);
+  // Track previous signature for change detection
+  let previousSignature = "";
 
   // Reset hasAnimated ONLY when the beat data itself changes (different beat loaded)
   // This prevents re-animating all beats when only one beat should animate

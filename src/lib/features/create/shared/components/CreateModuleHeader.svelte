@@ -79,6 +79,7 @@
         role="tab"
         aria-selected={activeTab === "construct"}
         aria-controls="construct-panel"
+        tabindex={activeTab === "construct" ? 0 : -1}
         id="tab-construct"
         title="Construct mode"
         data-testid="tab-constructor"
@@ -100,6 +101,7 @@
         role="tab"
         aria-selected={activeTab === "generate"}
         aria-controls="generate-panel"
+        tabindex={activeTab === "generate" ? 0 : -1}
         id="tab-generate"
         title="Generate mode"
         data-testid="tab-generator"

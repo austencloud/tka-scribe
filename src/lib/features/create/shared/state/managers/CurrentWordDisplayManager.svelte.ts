@@ -5,7 +5,6 @@
  * based on the current creation state.
  *
  * Handles contextual messaging for:
- * - Creation method selection prompt
  * - Guided mode header text
  * - Gestural mode (hand path) state messages
  * - Construct mode instructions
@@ -26,7 +25,6 @@ type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
 export interface CurrentWordDisplayConfig {
   CreateModuleState: CreateModuleState;
   constructTabState: ConstructTabState;
-  hasSelectedCreationMethod: () => boolean;
   onCurrentWordChange?: (word: string) => void;
 }
 
@@ -37,12 +35,7 @@ export interface CurrentWordDisplayConfig {
 export function createCurrentWordDisplayEffect(
   config: CurrentWordDisplayConfig
 ): () => void {
-  const {
-    CreateModuleState,
-    constructTabState,
-    hasSelectedCreationMethod,
-    onCurrentWordChange,
-  } = config;
+  const { CreateModuleState, constructTabState, onCurrentWordChange } = config;
 
   if (!onCurrentWordChange) {
     // No callback provided, return no-op cleanup
@@ -63,15 +56,8 @@ export function createCurrentWordDisplayEffect(
 
       let displayText = "";
 
-      // When creation method selector is visible, show selection prompt
-      if (
-        CreateModuleState.isWorkspaceEmpty() &&
-        !hasSelectedCreationMethod()
-      ) {
-        displayText = "Choose Creation Mode";
-      }
       // In guided mode, show the header text from Guided Builder
-      else if (CreateModuleState.activeSection === "guided") {
+      if (CreateModuleState.activeSection === "guided") {
         displayText =
           CreateModuleState.guidedModeHeaderText || "Guided Builder";
       }

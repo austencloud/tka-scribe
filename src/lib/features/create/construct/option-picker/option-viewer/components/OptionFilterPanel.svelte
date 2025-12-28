@@ -124,7 +124,7 @@ Provides a dedicated UI for filtering option viewer content:
 
     <div class="filter-panel-header">
       <h2 id="filter-panel-title" class="filter-panel-title">
-        <i class="fas fa-filter"></i>
+        <i class="fas fa-filter" aria-hidden="true"></i>
         Filter Options
       </h2>
       <button
@@ -133,7 +133,7 @@ Provides a dedicated UI for filtering option viewer content:
         aria-label="Close filter panel"
         type="button"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -149,7 +149,7 @@ Provides a dedicated UI for filtering option viewer content:
             aria-pressed={!isContinuousOnly}
           >
             <div class="toggle-icon">
-              <i class="fas fa-th"></i>
+              <i class="fas fa-th" aria-hidden="true"></i>
             </div>
             <div class="toggle-label">
               <div class="label-text">All Options</div>
@@ -164,7 +164,7 @@ Provides a dedicated UI for filtering option viewer content:
             aria-pressed={isContinuousOnly}
           >
             <div class="toggle-icon">
-              <i class="fas fa-link"></i>
+              <i class="fas fa-link" aria-hidden="true"></i>
             </div>
             <div class="toggle-label">
               <div class="label-text">Continuous Only</div>
@@ -313,21 +313,9 @@ Provides a dedicated UI for filtering option viewer content:
   }
 
   .filter-panel.extra-compact .close-button {
-    width: 40px;
-    height: 40px;
+    width: 48px; /* WCAG AAA touch target - maintain on all modes */
+    height: 48px;
     font-size: 0.9rem;
-    position: relative;
-  }
-
-  /* Ensure 48px touch target even in extra-compact mode */
-  .filter-panel.extra-compact .close-button::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: var(--min-touch-target);
-    min-height: var(--min-touch-target);
   }
 
   .close-button:hover {

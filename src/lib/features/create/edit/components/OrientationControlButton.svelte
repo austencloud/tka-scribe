@@ -74,13 +74,13 @@
         <div class="line-2">{previewLine2()}</div>
       </div>
       <div class="chevron">
-        <i class="fas fa-chevron-down"></i>
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
       </div>
     {:else}
       <!-- Both panels collapsed - show single-line format -->
       <div class="preview-text">{previewText()}</div>
       <div class="chevron">
-        <i class="fas fa-chevron-down"></i>
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
       </div>
     {/if}
   </div>
@@ -197,7 +197,7 @@
   }
 
   .preview-text.two-line .line-2 {
-    font-size: clamp(10px, 2.5cqw, 13px);
+    font-size: clamp(12px, 2.5cqw, 13px);
     opacity: 0.8;
     font-weight: 500;
   }
@@ -239,7 +239,7 @@
   }
 
   .orientation-control-button.compact .chevron {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .orientation-control-button.blue .chevron {

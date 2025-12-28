@@ -26,7 +26,7 @@ Compact inline panel for configuring sequence length and grid mode.
         onclick={() => (sequenceLength = Math.max(1, sequenceLength - 1))}
         aria-label="Decrease beats"
       >
-        <i class="fas fa-minus"></i>
+        <i class="fas fa-minus" aria-hidden="true"></i>
       </button>
       <div class="value-display">{sequenceLength}</div>
       <button
@@ -34,7 +34,7 @@ Compact inline panel for configuring sequence length and grid mode.
         onclick={() => (sequenceLength = Math.min(64, sequenceLength + 1))}
         aria-label="Increase beats"
       >
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -50,7 +50,7 @@ Compact inline panel for configuring sequence length and grid mode.
         aria-label="Diamond mode"
         title="Diamond (N, E, S, W)"
       >
-        <i class="fas fa-gem"></i>
+        <i class="fas fa-gem" aria-hidden="true"></i>
         <span class="grid-label">Diamond</span>
       </button>
       <button
@@ -60,7 +60,7 @@ Compact inline panel for configuring sequence length and grid mode.
         aria-label="Box mode"
         title="Box (NE, SE, SW, NW)"
       >
-        <i class="fas fa-square"></i>
+        <i class="fas fa-square" aria-hidden="true"></i>
         <span class="grid-label">Box</span>
       </button>
     </div>

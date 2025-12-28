@@ -173,7 +173,7 @@
         aria-label="Set counter-clockwise rotation"
         aria-pressed={getRotationDirection() === "ccw"}
       >
-        <i class="fas fa-undo"></i>
+        <i class="fas fa-undo" aria-hidden="true"></i>
       </button>
     {:else}
       <div class="rotation-placeholder"></div>
@@ -195,11 +195,11 @@
         aria-label="Set clockwise rotation"
         aria-pressed={getRotationDirection() === "cw"}
       >
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
       </button>
     {:else if showCloseButton}
       <button class="close-btn" onclick={handleClose} aria-label="Close panel">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     {:else}
       <div class="rotation-placeholder"></div>
@@ -214,7 +214,7 @@
       disabled={!canDecrementTurn()}
       aria-label="Decrease turn amount"
     >
-      <i class="fas fa-minus"></i>
+      <i class="fas fa-minus" aria-hidden="true"></i>
     </button>
 
     <button
@@ -231,7 +231,7 @@
       disabled={!canIncrementTurn()}
       aria-label="Increase turn amount"
     >
-      <i class="fas fa-plus"></i>
+      <i class="fas fa-plus" aria-hidden="true"></i>
     </button>
   </div>
 </div>
@@ -384,17 +384,17 @@
 
   .turn-panel.compact .motion-badge {
     padding: 2px 6px;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .turn-panel.balanced .motion-badge {
     padding: 2px 6px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .turn-panel.comfortable .motion-badge {
     padding: 3px 8px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .close-btn {

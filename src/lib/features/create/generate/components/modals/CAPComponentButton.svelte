@@ -19,7 +19,11 @@ Container-aware and aspect-ratio responsive
     onClick: () => void;
   }>();
 
-  const { label, shortLabel, icon, color } = componentInfo;
+  // Reactive destructure - updates when componentInfo changes
+  const label = $derived(componentInfo.label);
+  const shortLabel = $derived(componentInfo.shortLabel);
+  const icon = $derived(componentInfo.icon);
+  const color = $derived(componentInfo.color);
 </script>
 
 <button

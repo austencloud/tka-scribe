@@ -189,7 +189,6 @@ Features square aspect ratio for consistent layout and settings dialog for camer
 <div class="video-feed-panel">
   <div class="video-container">
     <!-- Video element - ALWAYS render so it's available for stream attachment -->
-    <!-- svelte-ignore a11y_media_has_caption -->
     <video
       bind:this={videoElement}
       class="video-feed"
@@ -198,6 +197,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
       autoplay
       playsinline
       muted
+      aria-hidden="true"
     ></video>
 
     <!-- Settings button - always visible when camera is active -->

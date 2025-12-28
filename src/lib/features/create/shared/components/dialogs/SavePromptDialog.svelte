@@ -49,7 +49,7 @@
       <p class="message">{message}</p>
 
       <div class="info-box">
-        <i class="fas fa-info-circle"></i>
+        <i class="fas fa-info-circle" aria-hidden="true"></i>
         <span>
           Saving allows you to:
           <ul>
@@ -63,11 +63,11 @@
 
     <div class="dialog-actions">
       <button class="btn-secondary" onclick={handleCancel}>
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
         Cancel
       </button>
       <button class="btn-primary" onclick={handleSave}>
-        <i class="fas fa-save"></i>
+        <i class="fas fa-save" aria-hidden="true"></i>
         Save & Continue
       </button>
     </div>

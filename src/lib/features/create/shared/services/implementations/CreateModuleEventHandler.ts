@@ -6,7 +6,7 @@
  * that was previously scattered throughout the massive ConstructTab component.
  */
 
-import { resolve } from "../../../../../shared/inversify/di";
+import { tryResolve } from "../../../../../shared/inversify/resolve-utils";
 import type { SequenceData } from "../../../../../shared/foundation/domain/models/SequenceData";
 import { TYPES } from "../../../../../shared/inversify/types";
 import { injectable } from "inversify";
@@ -47,17 +47,16 @@ export class CreateModuleEventHandler implements ICreateModuleEventHandler {
       return; // Already initialized
     }
 
-    try {
-      this.constructCoordinator = resolve<IBuildConstructSectionCoordinator>(
-        TYPES.IBuildConstructTabCoordinator
-      );
-      this.OrientationCalculator = resolve<IOrientationCalculator>(
-        TYPES.IOrientationCalculator
-      );
+    this.constructCoordinator = tryResolve<IBuildConstructSectionCoordinator>(
+      TYPES.IBuildConstructTabCoordinator
+    );
+    this.OrientationCalculator = tryResolve<IOrientationCalculator>(
+      TYPES.IOrientationCalculator
+    );
+
+    // Only mark as initialized if at least one service resolved
+    if (this.constructCoordinator || this.OrientationCalculator) {
       this.initialized = true;
-    } catch (error) {
-      // This is expected during SSR - services will be resolved once client-side DI container is ready
-      // Services will remain null and methods will handle gracefully
     }
   }
 

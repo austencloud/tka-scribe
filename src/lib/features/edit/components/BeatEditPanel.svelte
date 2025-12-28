@@ -165,12 +165,12 @@
 <div class="beat-edit-panel">
   {#if !hasSelection}
     <div class="no-selection">
-      <i class="fas fa-hand-pointer"></i>
+      <i class="fas fa-hand-pointer" aria-hidden="true"></i>
       <p>Select a beat to edit</p>
     </div>
   {:else if isMultiSelect}
     <div class="multi-select-info">
-      <i class="fas fa-layer-group"></i>
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
       <p>{selectedBeatNumbers.length} beats selected</p>
       <p class="hint">Batch editing coming soon</p>
     </div>
@@ -198,7 +198,7 @@
               onclick={() => handleBlueTurnsChange(-0.5)}
               aria-label="Decrease turns"
             >
-              <i class="fas fa-minus"></i>
+              <i class="fas fa-minus" aria-hidden="true"></i>
             </button>
             <span class="turns-value">{displayBlueTurns}</span>
             <button
@@ -206,7 +206,7 @@
               onclick={() => handleBlueTurnsChange(0.5)}
               aria-label="Increase turns"
             >
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -224,7 +224,7 @@
               disabled={!showBlueRotation}
               aria-label="Clockwise rotation"
             >
-              <i class="fas fa-rotate-right"></i>
+              <i class="fas fa-rotate-right" aria-hidden="true"></i>
             </button>
             <button
               class="rotation-btn"
@@ -235,7 +235,7 @@
               disabled={!showBlueRotation}
               aria-label="Counter-clockwise rotation"
             >
-              <i class="fas fa-rotate-left"></i>
+              <i class="fas fa-rotate-left" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -257,7 +257,7 @@
               onclick={() => handleRedTurnsChange(-0.5)}
               aria-label="Decrease turns"
             >
-              <i class="fas fa-minus"></i>
+              <i class="fas fa-minus" aria-hidden="true"></i>
             </button>
             <span class="turns-value">{displayRedTurns}</span>
             <button
@@ -265,7 +265,7 @@
               onclick={() => handleRedTurnsChange(0.5)}
               aria-label="Increase turns"
             >
-              <i class="fas fa-plus"></i>
+              <i class="fas fa-plus" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -283,7 +283,7 @@
               disabled={!showRedRotation}
               aria-label="Clockwise rotation"
             >
-              <i class="fas fa-rotate-right"></i>
+              <i class="fas fa-rotate-right" aria-hidden="true"></i>
             </button>
             <button
               class="rotation-btn"
@@ -294,7 +294,7 @@
               disabled={!showRedRotation}
               aria-label="Counter-clockwise rotation"
             >
-              <i class="fas fa-rotate-left"></i>
+              <i class="fas fa-rotate-left" aria-hidden="true"></i>
             </button>
           </div>
         </div>

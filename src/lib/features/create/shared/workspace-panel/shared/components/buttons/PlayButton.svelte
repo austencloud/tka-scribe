@@ -30,7 +30,7 @@
   aria-label="Play sequence animation"
   title="Animate"
 >
-  <i class="fas fa-play"></i>
+  <i class="fas fa-play" aria-hidden="true"></i>
 </button>
 
 <style>

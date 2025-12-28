@@ -54,9 +54,13 @@ Delegates all rendering to child components.
   let preparedOptions = $state<PreparedPictographData[]>([]);
   let isReady = $state(false);
 
-  // Internal continuous filter state (initialized from prop)
-  // svelte-ignore state_referenced_locally - intentional: internal filter state initialized from prop
-  let internalContinuousOnly = $state(isContinuousOnly);
+  // Internal continuous filter state - initialize with default
+  let internalContinuousOnly = $state(false);
+
+  // Sync from prop
+  $effect(() => {
+    internalContinuousOnly = isContinuousOnly;
+  });
 
   // Services
   let preparer: IPictographPreparer | null = null;

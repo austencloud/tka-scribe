@@ -12,7 +12,7 @@
   import type { BeatData } from "../../create/shared/domain/models/BeatData";
   import { isStartPosition } from "../../create/shared/domain/type-guards/pictograph-type-guards";
   import BeatGrid from "../../create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
-  import type { ISequenceNormalizationService } from "$lib/features/compose/services/contracts/ISequenceNormalizationService";
+  import type { ISequenceNormalizer } from "$lib/features/compose/services/contracts/ISequenceNormalizer";
   import { onMount } from "svelte";
 
   interface Props {
@@ -34,16 +34,16 @@
   }: Props = $props();
 
   // Service for normalizing sequence data
-  let normalizationService: ISequenceNormalizationService | null = $state(null);
+  let normalizationService: ISequenceNormalizer | null = $state(null);
 
   onMount(() => {
     try {
-      normalizationService = resolve<ISequenceNormalizationService>(
-        TYPES.ISequenceNormalizationService
+      normalizationService = resolve<ISequenceNormalizer>(
+        TYPES.ISequenceNormalizer
       );
     } catch (error) {
       console.warn(
-        "EditWorkspace: Failed to resolve ISequenceNormalizationService:",
+        "EditWorkspace: Failed to resolve ISequenceNormalizer:",
         error
       );
     }
@@ -138,7 +138,7 @@
           title="Change sequence"
           aria-label="Change sequence"
         >
-          <i class="fas fa-folder-open"></i>
+          <i class="fas fa-folder-open" aria-hidden="true"></i>
         </button>
       {/if}
     </div>

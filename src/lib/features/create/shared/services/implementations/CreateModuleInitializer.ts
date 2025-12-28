@@ -28,7 +28,6 @@ import type { IBeatOperator } from "../contracts/IBeatOperator";
 import type { ICreateModuleEffectCoordinator } from "../contracts/ICreateModuleEffectCoordinator";
 import type { ICreateModuleHandlers } from "../contracts/ICreateModuleHandlers";
 import type { ICreateModuleOrchestrator } from "../contracts/ICreateModuleOrchestrator";
-import type { ICreationMethodPersister } from "../contracts/ICreationMethodPersister";
 import type { IDeepLinkSequenceHandler } from "../contracts/IDeepLinkSequenceHandler";
 import type { INavigationSyncer } from "../contracts/INavigationSyncer";
 import type { IResponsiveLayoutManager } from "../contracts/IResponsiveLayoutManager";
@@ -77,8 +76,6 @@ export class CreateModuleInitializer
     // UI coordination services
     @inject(TYPES.ICreateModuleHandlers)
     private readonly handlers: ICreateModuleHandlers,
-    @inject(TYPES.ICreationMethodPersister)
-    private readonly creationMethodPersistence: ICreationMethodPersister,
     @inject(TYPES.ICreateModuleEffectCoordinator)
     private readonly effectCoordinator: ICreateModuleEffectCoordinator,
     @inject(TYPES.ISharer)
@@ -173,7 +170,6 @@ export class CreateModuleInitializer
 
       // UI coordination services
       handlers: this.handlers,
-      creationMethodPersistence: this.creationMethodPersistence,
       effectCoordinator: this.effectCoordinator,
       deepLinkService: this.deepLinkService,
       shareService: this.shareService,

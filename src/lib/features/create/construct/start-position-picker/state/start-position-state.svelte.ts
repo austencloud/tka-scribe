@@ -5,7 +5,10 @@
  * No over-engineering, just the core functionality needed.
  */
 
-import { getContainerInstance } from "../../../../../shared/inversify/di";
+import {
+  resolve,
+  waitForContainer,
+} from "../../../../../shared/inversify/resolve-utils";
 import { TYPES } from "../../../../../shared/inversify/types";
 import { GridMode } from "../../../../../shared/pictograph/grid/domain/enums/grid-enums";
 import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
@@ -16,35 +19,23 @@ export function createSimplifiedStartPositionState() {
   // Lazy service resolution to avoid effect_orphan error
   let StartPositionManager: IStartPositionManager | null = null;
   let settingsService: ISettingsState | null = null;
-  let containerPromise: ReturnType<typeof getContainerInstance> | null = null;
-
-  async function ensureContainer() {
-    if (!containerPromise) {
-      containerPromise = getContainerInstance();
-    }
-    return containerPromise;
-  }
 
   async function getService(): Promise<IStartPositionManager> {
     if (!StartPositionManager) {
-      const container = await ensureContainer();
-      if (container) {
-        StartPositionManager = container.get<IStartPositionManager>(
-          TYPES.IStartPositionManager
-        );
-      }
+      await waitForContainer();
+      StartPositionManager = resolve<IStartPositionManager>(
+        TYPES.IStartPositionManager
+      );
     }
-    return StartPositionManager!;
+    return StartPositionManager;
   }
 
   async function getSettingsServiceAsync(): Promise<ISettingsState> {
     if (!settingsService) {
-      const container = await ensureContainer();
-      if (container) {
-        settingsService = container.get<ISettingsState>(TYPES.ISettingsState);
-      }
+      await waitForContainer();
+      settingsService = resolve<ISettingsState>(TYPES.ISettingsState);
     }
-    return settingsService!;
+    return settingsService;
   }
 
   // Simple reactive state - just what we need

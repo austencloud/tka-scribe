@@ -350,13 +350,6 @@ export class Autocompleter implements IAutocompleter {
         ? SliceSize.QUARTERED
         : SliceSize.HALVED;
 
-    console.log("[Autocomplete] Generating completion with CAP:", {
-      capType,
-      sliceSize,
-      startPosition: analysis.startPosition,
-      endPosition: analysis.currentEndPosition,
-    });
-
     // Get the CAP executor for the selected type
     const executor = this.capExecutorSelector.getExecutor(capType);
 
@@ -376,16 +369,6 @@ export class Autocompleter implements IAutocompleter {
     // Return only the new beats (after the original sequence)
     const newBeats = completedBeats.slice(originalLength);
 
-    console.log(
-      "[Autocomplete] Generated",
-      newBeats.length,
-      "completion beats (original:",
-      originalLength,
-      ", completed:",
-      completedBeats.length,
-      ")"
-    );
-
     return newBeats;
   }
 
@@ -396,23 +379,12 @@ export class Autocompleter implements IAutocompleter {
     sequence: SequenceData,
     options: AutocompleteOptions
   ): Promise<SequenceData> {
-    console.log(
-      "[Autocomplete] Starting autocomplete for sequence:",
-      sequence.name
-    );
     const completionBeats = await this.generateCompletionBeats(
       sequence,
       options
     );
-    console.log(
-      "[Autocomplete] Generated completion beats:",
-      completionBeats.length
-    );
 
     if (completionBeats.length === 0) {
-      console.log(
-        "[Autocomplete] No completion beats generated - returning original sequence"
-      );
       return sequence;
     }
 
@@ -425,14 +397,6 @@ export class Autocompleter implements IAutocompleter {
 
     // Combine existing beats with completion beats
     const newBeats = [...(sequence.beats || []), ...renumberedBeats];
-
-    console.log(
-      "[Autocomplete] Returning completed sequence with",
-      newBeats.length,
-      "beats (was",
-      sequence.beats?.length || 0,
-      ")"
-    );
 
     return {
       ...sequence,
@@ -602,13 +566,6 @@ export class Autocompleter implements IAutocompleter {
       .sort((a, b) => a.beatNumber - b.beatNumber);
 
     result.push(...actualBeats);
-
-    console.log("[Autocomplete] convertSequenceToBeats result:", {
-      hasBeat0InSource: !!beat0,
-      hasStartPosData: !!startPosData,
-      resultLength: result.length,
-      beatNumbers: result.map((b) => b.beatNumber),
-    });
 
     return result;
   }

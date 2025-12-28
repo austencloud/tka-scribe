@@ -209,7 +209,7 @@
   padding: 14px 24px;
   border: none;
   border-radius: 12px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-spring);

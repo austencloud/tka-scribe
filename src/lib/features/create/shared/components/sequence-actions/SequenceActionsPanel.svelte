@@ -74,9 +74,8 @@
   let hapticService: IHapticFeedback | null = $state(null);
   let Autocompleter: IAutocompleter | null = $state(null);
 
-  // Local state
-  // svelte-ignore state_referenced_locally - intentional: $effect below handles prop changes
-  let isOpen = $state(show);
+  // Local state - $effect below handles initial and prop changes
+  let isOpen = $state(false);
   let isTransforming = $state(false);
   let showConfirmDialog = $state(false);
   let pendingSequenceTransfer = $state<any>(null);
@@ -235,12 +234,6 @@
   }) {
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
-
-    // Log any warnings
-    if (result.warnings && result.warnings.length > 0) {
-      console.log("[TurnPattern] Applied with warnings:", result.warnings);
-    }
-
     hapticService?.trigger("success");
   }
 
@@ -255,15 +248,6 @@
   }) {
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
-
-    // Log any warnings
-    if (result.warnings && result.warnings.length > 0) {
-      console.log(
-        "[RotationDirection] Applied with warnings:",
-        result.warnings
-      );
-    }
-
     hapticService?.trigger("success");
   }
 
@@ -273,7 +257,6 @@
 
     // Analyze the sequence to get available CAP options
     const analysis = Autocompleter.analyzeSequence(sequence);
-    console.log("[Autocomplete] Analysis:", analysis);
 
     if (!analysis.canComplete) {
       toast.warning("Cannot autocomplete this sequence");
@@ -291,16 +274,9 @@
     hapticService?.trigger("selection");
 
     try {
-      console.log("[Autocomplete] Applying CAP:", capType);
-      console.log("[Autocomplete] Before - beats:", sequence.beats?.length);
-
       const completedSequence = await Autocompleter.autocompleteSequence(
         sequence,
         { capType }
-      );
-      console.log(
-        "[Autocomplete] After - beats:",
-        completedSequence.beats?.length
       );
 
       if (completedSequence.beats?.length === sequence.beats?.length) {
@@ -406,12 +382,7 @@
   function handleShiftStart() {
     if (!sequence || !canShiftStart) return;
     hapticService?.trigger("selection");
-    console.log("[SequenceActionsPanel] Entering shift start mode");
     panelState.enterShiftStartMode(handleShiftStartBeatSelect);
-    console.log("[SequenceActionsPanel] Shift mode state:", {
-      isShiftStartMode: panelState.isShiftStartMode,
-      hasHandler: !!panelState.shiftStartHandler,
-    });
     toast.info("Tap the beat you want to play first — it will become Beat 1");
   }
 
@@ -547,7 +518,7 @@
             aria-label="Copy sequence JSON"
             title="Copy sequence JSON"
           >
-            <i class="fas fa-code"></i>
+            <i class="fas fa-code" aria-hidden="true"></i>
           </button>
         {/if}
         <button
@@ -555,10 +526,10 @@
           onclick={() => (showHelpSheet = true)}
           aria-label="Help"
         >
-          <i class="fas fa-circle-question"></i>
+          <i class="fas fa-circle-question" aria-hidden="true"></i>
         </button>
         <button class="icon-btn close" onclick={handleClose} aria-label="Close">
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
     </div>

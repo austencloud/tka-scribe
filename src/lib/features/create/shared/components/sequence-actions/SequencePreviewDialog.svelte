@@ -132,7 +132,7 @@
 
         <!-- Arrow indicator -->
         <div class="arrow-indicator">
-          <i class="fas fa-arrow-right"></i>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </div>
 
         <!-- Incoming sequence (will replace) -->
@@ -282,7 +282,7 @@
   }
 
   .panel-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -297,7 +297,7 @@
   }
 
   .beat-count {
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
   }
 

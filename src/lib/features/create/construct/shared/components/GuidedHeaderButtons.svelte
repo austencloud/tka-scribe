@@ -42,7 +42,7 @@
 <div class="guided-header-buttons">
   <div class="header-left">
     <button class="back-button" onclick={handleBackClick} aria-label="Reset">
-      <i class="fas fa-arrow-left"></i>
+      <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -54,7 +54,7 @@
     {#if showNextHandButton}
       <button class="next-hand-button" onclick={handleNextHandClick}>
         {nextHandButtonText}
-        <i class="fas fa-arrow-right"></i>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
     {:else if onGridModeChange && currentGridMode}
       <GridModeToggle {currentGridMode} {onGridModeChange} />

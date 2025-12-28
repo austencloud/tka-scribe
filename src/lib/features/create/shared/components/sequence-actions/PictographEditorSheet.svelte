@@ -253,7 +253,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
     <!-- Header -->
     <header class="sheet-header">
       <div class="header-left">
-        <i class="fas fa-pen-ruler"></i>
+        <i class="fas fa-pen-ruler" aria-hidden="true"></i>
         <h2 id="editor-sheet-title">Pictograph Editor</h2>
         {#if beatData?.letter}
           <span class="letter-badge">{beatData.letter}</span>
@@ -261,7 +261,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
         <span class="admin-badge">Admin</span>
       </div>
       <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -276,7 +276,7 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
           />
         {:else}
           <div class="no-pictograph">
-            <i class="fas fa-crosshairs"></i>
+            <i class="fas fa-crosshairs" aria-hidden="true"></i>
             <p>No pictograph selected</p>
           </div>
         {/if}
@@ -350,14 +350,14 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
         {#if lookupKeys}
           <div class="control-section lookup-section">
             <div class="section-header">
-              <h3><i class="fas fa-key"></i> Lookup Keys</h3>
+              <h3><i class="fas fa-key" aria-hidden="true"></i> Lookup Keys</h3>
               <button
                 class="copy-btn"
                 onclick={copyLookupKeys}
                 title="Copy keys"
                 aria-label="Copy lookup keys"
               >
-                <i class="fas fa-copy"></i>
+                <i class="fas fa-copy" aria-hidden="true"></i>
               </button>
             </div>
             <div class="keys-grid">
@@ -477,8 +477,8 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
   }
 
   .close-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border-radius: 50%;
     border: none;
     background: rgba(255, 255, 255, 0.1);

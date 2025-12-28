@@ -90,13 +90,13 @@
         </span>
       </div>
       <button class="close-btn" onclick={handleClose} disabled={isApplying} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
     {#if !analysis || !analysis.canComplete}
       <div class="no-options">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <p>No completion patterns available for this sequence.</p>
       </div>
     {:else}
@@ -126,7 +126,7 @@
                   disabled={isApplying}
                 >
                   <div class="option-icon">
-                    <i class={getIconClass(option.icon)}></i>
+                    <i class={getIconClass(option.icon)} aria-hidden="true"></i>
                   </div>
                   <div class="option-info">
                     <span class="option-name">{option.name}</span>
@@ -151,7 +151,7 @@
                   disabled={isApplying}
                 >
                   <div class="option-icon">
-                    <i class={getIconClass(option.icon)}></i>
+                    <i class={getIconClass(option.icon)} aria-hidden="true"></i>
                   </div>
                   <div class="option-info">
                     <span class="option-name">{option.name}</span>
@@ -167,7 +167,7 @@
         {#if hasUnavailableOptions}
           <section class="options-section unavailable-section">
             <h3>
-              <i class="fas fa-lock"></i>
+              <i class="fas fa-lock" aria-hidden="true"></i>
               Other Patterns
               <span class="unavailable-hint"
                 >(requires different position)</span
@@ -177,7 +177,7 @@
               {#each unavailableOptions as option}
                 <div class="cap-option unavailable">
                   <div class="option-icon">
-                    <i class={getIconClass(option.icon)}></i>
+                    <i class={getIconClass(option.icon)} aria-hidden="true"></i>
                   </div>
                   <div class="option-info">
                     <span class="option-name">{option.name}</span>
@@ -191,7 +191,7 @@
 
         {#if isApplying}
           <div class="applying-overlay">
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             <span>Applying pattern...</span>
           </div>
         {/if}
