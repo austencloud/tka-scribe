@@ -1221,7 +1221,10 @@
       "Bash(powershell -ExecutionPolicy Bypass -File scripts/temp/rename-discover-compose-refs.ps1:*)",
       "Bash(powershell -ExecutionPolicy Bypass -File scripts/temp/rename-final-refs.ps1)",
       "Bash(bash:*)",
-      "Bash(powershell -ExecutionPolicy Bypass -File scripts/temp/update-create-refs.ps1)"
+      "Bash(powershell -ExecutionPolicy Bypass -File scripts/temp/update-create-refs.ps1)",
+      "WebFetch(domain:www.thisdot.co)",
+      "WebFetch(domain:pixijs.com)",
+      "Bash(cmd //c \"taskkill /PID 109776 /F\")"
     ],
     "deny": [],
     "ask": []

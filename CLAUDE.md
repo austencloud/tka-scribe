@@ -171,6 +171,45 @@ See `src/lib/shared/settings/utils/background-theme-calculator.ts` for implement
 
 **Legacy (`--*-current`)**: Still used by 30+ components. Migration ongoing.
 
+### Unified Panel Background System
+
+**Problem:** Panels had inconsistent backgrounds - some used glassmorphism blur, some used gradients, some used solid colors.
+
+**Solution:** Use theme variables exclusively. NO blur effects on content panels.
+
+**Panel Types:**
+
+1. **Main Panels** (full-screen content areas):
+   ```css
+   background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+   ```
+
+2. **Cards/Sub-panels** (nested content):
+   ```css
+   background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+   border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+   ```
+
+3. **Hover States**:
+   ```css
+   border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+   ```
+
+**Override Drawer Glassmorphism:**
+
+Most drawers should NOT have blur. Override the defaults:
+
+```css
+:global(.your-drawer-class) {
+  --sheet-bg: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+  --sheet-filter: none; /* Disable blur */
+}
+```
+
+**When to use blur:** ONLY for modal backdrops to dim content behind. Never for content panels, drawers, forms, or interactive surfaces.
+
+See `docs/UNIFIED_PANEL_BACKGROUNDS.md` for full guidelines.
+
 ### Testing Philosophy: "Earned Tests"
 
 **Core principle:** Tests are earned, not given. Code must prove it deserves a test.

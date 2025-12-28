@@ -15,7 +15,7 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | Detection | `*DetectionService` | `*Detector` | `CAPDetectionService` → `CAPDetector` |
 | Analysis | `*AnalysisService` | `*Analyzer` | `SequenceAnalysisService` → `SequenceAnalyzer` |
 | Calculation | `*CalculationService` | `*Calculator` | `DimensionCalculationService` → `DimensionCalculator` |
-| Export | `*ExportService` | `*Exporter` | `VideoExportService` → `VideoExporter` |
+| Export | `*ExportService` | `*Exporter` | `VideoExporter` → `VideoExporter` |
 | Import | `*ImportService` | `*Importer` | `SequenceImportService` → `SequenceImporter` |
 | Playback | `*PlaybackService` | `*Player` | `VideoPlaybackService` → `VideoPlayer` |
 | Persistence | `*PersistenceService` | `*Persister` | `SettingsPersistenceService` → `SettingsPersister` |
@@ -80,9 +80,9 @@ Drop the "Service" suffix in favor of names that describe what the class actuall
 | `AudioStorageService` | `AudioStorage` |
 | `AnimationLoopService` | `AnimationLooper` |
 | `AnimationStorageService` | `AnimationStorage` |
-| `SequenceNormalizationService` | `SequenceNormalizer` |
+| `SequenceNormalizer` | `SequenceNormalizer` |
 | `TrailCaptureService` | `TrailCapturer` |
-| `VideoExportService` | `VideoExporter` |
+| `VideoExporter` | `VideoExporter` |
 | `VideoPlaybackService` | `VideoPlayer` |
 | `VideoPreRenderService` | `VideoPreRenderer` |
 | `TimelinePlaybackService` | `TimelinePlayer` |
