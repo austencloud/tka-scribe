@@ -140,7 +140,7 @@
         onclick={() => galleryPanelManager.close()}
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     <ViewPresetsSheet
@@ -169,7 +169,7 @@
         onclick={() => galleryPanelManager.close()}
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     <SortJumpSheet
@@ -209,7 +209,7 @@
         onclick={() => galleryPanelManager.close()}
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     <div class="bento-filter-wrapper">
@@ -244,7 +244,7 @@
         onclick={() => (isLetterSheetOpen = false)}
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     <div class="sheet-content">
@@ -275,7 +275,7 @@
         onclick={() => (isOptionsSheetOpen = false)}
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     <div class="sheet-content options-sheet-content">
@@ -463,26 +463,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.08));
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
     border-radius: 50%;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 0.2s ease;
-    position: relative;
-  }
-
-  /* Expand touch target while maintaining visual size */
-  :global(.drawer-content) .drawer-close-btn::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: var(--min-touch-target);
-    min-height: var(--min-touch-target);
   }
 
   :global(.drawer-content) .drawer-close-btn:hover {

@@ -65,7 +65,7 @@
     <!-- Acts Mode (Coming Soon) -->
     <div class="mode-panel" class:active={isModeActive("acts")}>
       <div class="coming-soon">
-        <i class="fas fa-film"></i>
+        <i class="fas fa-film" aria-hidden="true"></i>
         <h2>Acts Coming Soon</h2>
         <p>
           Create acts by combining multiple sequences together.<br />

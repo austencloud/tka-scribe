@@ -4,7 +4,7 @@ import type {
   FeedbackStatus,
 } from "../domain/models/feedback-models";
 import { STATUS_CONFIG } from "../domain/models/feedback-models";
-import type { IFeedbackSortingService } from "../services/contracts/IFeedbackSortingService";
+import type { IFeedbackSorter } from "../services/contracts/IFeedbackSorter";
 import type { IStorageManager } from "$lib/shared/foundation/services/contracts/IStorageManager";
 
 type KanbanStatus = "new" | "in-progress" | "in-review" | "completed";
@@ -49,7 +49,7 @@ export interface KanbanBoardState {
 
 export function createKanbanBoardState(
   manageState: FeedbackManageState,
-  sortingService: IFeedbackSortingService,
+  sortingService: IFeedbackSorter,
   storageService: IStorageManager | null
 ): KanbanBoardState {
   // Load saved active status or default to "new"

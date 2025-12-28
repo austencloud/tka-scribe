@@ -125,7 +125,6 @@ Uses singleton state for caching - data persists across tab switches.
   function handleSequenceClick(sequenceId: string) {
     hapticService?.trigger("selection");
     // TODO: Navigate to sequence detail or animate
-    console.log("[CollectionsDiscoverPanel] Sequence clicked:", sequenceId);
   }
 
   function handleSearchChange() {
@@ -141,7 +140,7 @@ Uses singleton state for caching - data persists across tab switches.
     </div>
     <div class="header-section">
       <h2 class="panel-title">
-        <i class="fas fa-book-open"></i>
+        <i class="fas fa-book-open" aria-hidden="true"></i>
         Browse Libraries
       </h2>
     </div>

@@ -42,12 +42,10 @@
 
   async function handleCreateCollection() {
     // TODO: Open create collection modal
-    console.log("[CollectionsView] Create collection clicked");
   }
 
   function handleOpenCollection(collection: LibraryCollection) {
     // TODO: Navigate to collection detail view
-    console.log("[CollectionsView] Open collection:", collection.id);
   }
 </script>
 
@@ -67,20 +65,20 @@
     <div class="header">
       <h2>My Collections</h2>
       <PanelButton variant="primary" onclick={handleCreateCollection}>
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         New Collection
       </PanelButton>
     </div>
 
     {#if collections.length === 0}
       <div class="empty-state">
-        <i class="fas fa-folder-open"></i>
+        <i class="fas fa-folder-open" aria-hidden="true"></i>
         <h3>No Collections Yet</h3>
         <p>
           Create collections to organize your sequences, compositions, and more.
         </p>
         <PanelButton variant="primary" onclick={handleCreateCollection}>
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
           Create Your First Collection
         </PanelButton>
       </div>
@@ -95,7 +93,7 @@
               'var(--theme-accent-strong, #8b5cf6)'}"
           >
             <div class="card-icon">
-              <i class="fas {collection.icon || 'fa-folder'}"></i>
+              <i class="fas {collection.icon || 'fa-folder'}" aria-hidden="true"></i>
             </div>
             <div class="card-content">
               <h3>{collection.name}</h3>
@@ -106,7 +104,7 @@
             </div>
             {#if collection.systemType}
               <div class="system-badge">
-                <i class="fas fa-lock"></i>
+                <i class="fas fa-lock" aria-hidden="true"></i>
               </div>
             {/if}
           </button>

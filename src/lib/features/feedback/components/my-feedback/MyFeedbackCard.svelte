@@ -51,7 +51,7 @@
 >
   <!-- Type icon -->
   <div class="card-type">
-    <i class="fas {typeConfig.icon}"></i>
+    <i class="fas {typeConfig.icon}" aria-hidden="true"></i>
   </div>
 
   <!-- Content -->
@@ -59,7 +59,7 @@
     <div class="card-header">
       <h3 class="card-title">{item.title}</h3>
       <span class="status-badge" style="--badge-color: {statusConfig.color}">
-        <i class="fas {statusConfig.icon}"></i>
+        <i class="fas {statusConfig.icon}" aria-hidden="true"></i>
         {statusConfig.label}
       </span>
     </div>
@@ -69,7 +69,7 @@
     <!-- Screenshot indicator -->
     {#if item.imageUrls && item.imageUrls.length > 0}
       <div class="screenshot-indicator">
-        <i class="fas fa-images"></i>
+        <i class="fas fa-images" aria-hidden="true"></i>
         <span
           >{item.imageUrls.length} screenshot{item.imageUrls.length !== 1
             ? "s"
@@ -82,7 +82,7 @@
       <span class="date">{formatDate(item.createdAt)}</span>
       {#if item.adminResponse}
         <span class="has-response">
-          <i class="fas fa-reply"></i>
+          <i class="fas fa-reply" aria-hidden="true"></i>
           Response
         </span>
       {/if}

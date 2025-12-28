@@ -22,7 +22,7 @@
   const { manageState }: Props = $props();
 
   let hapticService: IHapticFeedback | undefined;
-  const uiState = createFilterBarUIState(manageState);
+  const uiState = createFilterBarUIState(() => manageState);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(
@@ -51,7 +51,7 @@
 <div class="filter-bar">
   <!-- Search input (always visible) -->
   <div class="search-wrapper">
-    <i class="fas fa-search search-icon"></i>
+    <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="text"
       class="search-input"
@@ -66,7 +66,7 @@
         onclick={clearSearch}
         aria-label="Clear search"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -138,7 +138,7 @@
         onclick={clearFilters}
         aria-label="Clear all filters"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
         Clear
       </button>
     {/if}

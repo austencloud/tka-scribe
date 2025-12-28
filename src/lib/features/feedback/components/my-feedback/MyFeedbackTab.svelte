@@ -21,12 +21,17 @@
   // Track pending notification target
   let pendingTargetId: string | null = null;
   let targetCheckInterval: ReturnType<typeof setInterval> | null = null;
+  let targetCheckTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  // Cleanup function for target interval
+  // Cleanup function for target interval and timeout
   function cleanupTargetInterval() {
     if (targetCheckInterval) {
       clearInterval(targetCheckInterval);
       targetCheckInterval = null;
+    }
+    if (targetCheckTimeout) {
+      clearTimeout(targetCheckTimeout);
+      targetCheckTimeout = null;
     }
   }
 
@@ -47,8 +52,8 @@
       }
     }, 100);
 
-    // Cleanup interval after 10 seconds if not found
-    setTimeout(() => {
+    // Cleanup interval after 10 seconds if not found (track timeout for cleanup)
+    targetCheckTimeout = setTimeout(() => {
       cleanupTargetInterval();
       if (pendingTargetId) {
         console.warn(
@@ -97,10 +102,6 @@
     let targetFeedbackId: string | null = null;
 
     if (urlFeedbackId) {
-      console.log(
-        "[MyFeedbackTab] onMount: Found URL param openFeedback:",
-        urlFeedbackId
-      );
       targetFeedbackId = urlFeedbackId;
       // Clear the URL param
       urlParams.delete("openFeedback");
@@ -141,7 +142,6 @@
   $effect(() => {
     const targetId = notificationTargetState.feedbackId;
     if (targetId) {
-      console.log("[MyFeedbackTab] Notification target changed:", targetId);
       // Clear it immediately so we don't keep re-triggering
       setNotificationTargetFeedback(null);
       // Set up the target check to find and select the item
@@ -174,13 +174,13 @@
     <header class="tab-header" class:preview-mode={isPreviewMode}>
       {#if isPreviewMode}
         <div class="preview-banner">
-          <i class="fas fa-eye"></i>
+          <i class="fas fa-eye" aria-hidden="true"></i>
           <span>Viewing feedback for: <strong>{previewUserName}</strong></span>
         </div>
       {/if}
       <div class="header-content">
         <div class="header-icon">
-          <i class="fas fa-list-check"></i>
+          <i class="fas fa-list-check" aria-hidden="true"></i>
         </div>
         <div class="header-text">
           <h1>
@@ -199,18 +199,18 @@
     <div class="tab-content">
       {#if state.isLoading && state.items.length === 0}
         <div class="loading-state">
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           <span>Loading your feedback...</span>
         </div>
       {:else if state.error}
         <div class="error-state">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
           <span>{state.error}</span>
           <button onclick={() => state.loadMyFeedback(true)}>Retry</button>
         </div>
       {:else if state.items.length === 0}
         <div class="empty-state">
-          <i class="fas fa-inbox"></i>
+          <i class="fas fa-inbox" aria-hidden="true"></i>
           <h2>No feedback yet</h2>
           <p>
             You haven't submitted any feedback. Head to the Submit tab to share

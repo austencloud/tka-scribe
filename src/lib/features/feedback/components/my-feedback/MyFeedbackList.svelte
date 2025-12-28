@@ -69,7 +69,7 @@
           onclick={() => (selectedStatus = status)}
           style="--status-color: {STATUS_CONFIG[status].color}"
         >
-          <i class="fas {STATUS_CONFIG[status].icon}"></i>
+          <i class="fas {STATUS_CONFIG[status].icon}" aria-hidden="true"></i>
           <span>{STATUS_CONFIG[status].label}</span>
           <span class="count">{count}</span>
         </button>
@@ -79,7 +79,7 @@
 
   <section class="all-section">
     <header class="section-header">
-      <i class="fas fa-list"></i>
+      <i class="fas fa-list" aria-hidden="true"></i>
       <span>{STATUS_CONFIG[selectedStatus].label}</span>
       <span class="count">{filteredItems.length}</span>
     </header>
@@ -96,7 +96,7 @@
 
     {#if filteredItems.length === 0 && !isLoading}
       <div class="empty-filter">
-        <i class="fas fa-filter"></i>
+        <i class="fas fa-filter" aria-hidden="true"></i>
         <span
           >No {STATUS_CONFIG[selectedStatus].label.toLowerCase()} feedback</span
         >
@@ -105,7 +105,7 @@
 
     {#if isLoading}
       <div class="loading-more">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <span>Loading more...</span>
       </div>
     {/if}

@@ -302,7 +302,7 @@
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-      <video src={showVideoPlayer.videoUrl} controls autoplay playsinline>
+      <video src={showVideoPlayer.videoUrl} controls autoplay muted playsinline>
         <track kind="captions" />
       </video>
     </div>

@@ -9,7 +9,7 @@
 
 {#if visible}
   <div class="sign-in-toast" role="alert" aria-live="assertive">
-    <i class="fas fa-lock"></i>
+    <i class="fas fa-lock" aria-hidden="true"></i>
     <span>{message}</span>
   </div>
 {/if}
@@ -37,7 +37,7 @@
       -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
     font-size: 15px;
     font-weight: 600;
-    line-height: 20px;
+    line-height: 1.5;
     letter-spacing: -0.24px;
     box-shadow:
       0 8px 24px

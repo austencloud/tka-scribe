@@ -41,7 +41,7 @@
 >
   {#if isLocked}
     <div class="lock-badge" aria-label="Sign in required">
-      <i class="fas fa-lock"></i>
+      <i class="fas fa-lock" aria-hidden="true"></i>
     </div>
   {/if}
   <div class="module-icon">

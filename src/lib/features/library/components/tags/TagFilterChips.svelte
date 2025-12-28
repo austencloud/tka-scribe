@@ -69,7 +69,7 @@
   <div class="tag-filter-container">
     <div class="tag-filter-header">
       <span class="filter-label">
-        <i class="fas fa-tags"></i>
+        <i class="fas fa-tags" aria-hidden="true"></i>
         Tags
       </span>
       {#if hasActiveFilters}
@@ -99,7 +99,7 @@
   </div>
 {:else if isLoading}
   <div class="tag-filter-loading">
-    <i class="fas fa-spinner fa-spin"></i>
+    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
     <span>Loading tags...</span>
   </div>
 {/if}

@@ -310,7 +310,7 @@
         message={error || "User not found"}
       />
       <PanelButton variant="secondary" onclick={handleBack}>
-        <i class="fas fa-arrow-left"></i>
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
         Go Back
       </PanelButton>
     </div>

@@ -119,7 +119,7 @@
     transition:fly={{ y: -20, duration: 300, easing: cubicOut }}
   >
     <div class="banner-icon">
-      <i class="fas {getSeverityIcon(currentAnnouncement.severity)}"></i>
+      <i class="fas {getSeverityIcon(currentAnnouncement.severity)}" aria-hidden="true"></i>
     </div>
 
     <div class="banner-content">
@@ -139,7 +139,7 @@
       </button>
 
       <button class="dismiss-btn" onclick={dismissCurrent} aria-label="Dismiss announcement">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
 
@@ -151,7 +151,7 @@
           disabled={currentIndex === 0}
           aria-label="Previous announcement"
         >
-          <i class="fas fa-chevron-left"></i>
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </button>
         <span class="page-indicator">{currentIndex + 1} / {announcements.length}</span>
         <button
@@ -160,7 +160,7 @@
           disabled={currentIndex === announcements.length - 1}
           aria-label="Next announcement"
         >
-          <i class="fas fa-chevron-right"></i>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
         </button>
       </div>
     {/if}
@@ -263,8 +263,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -291,15 +291,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-bg, rgba(0, 0, 0, 0.3));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 6px;
     color: var(--theme-text, rgba(255, 255, 255, 0.8));
     cursor: pointer;
     transition: all 150ms ease;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .page-btn:hover:not(:disabled) {

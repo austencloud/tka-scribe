@@ -20,7 +20,7 @@
   {#if isActive}
     <span class="section-active-dot"></span>
   {/if}
-  <i class="fas fa-chevron-down section-chevron" class:rotated={isExpanded}></i>
+  <i class="fas fa-chevron-down section-chevron" aria-hidden="true" class:rotated={isExpanded}></i>
 </button>
 
 <style>

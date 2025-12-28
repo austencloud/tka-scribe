@@ -247,7 +247,7 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .section-expand-icon {
-    font-size: 10px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
     transform: rotate(0deg);
     transition: transform var(--transition-fast);
@@ -347,7 +347,7 @@ Follows Svelte 5 runes + microservices architecture.
   }
 
   .letter-count {
-    font-size: 10px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
     font-weight: 400;
     margin-top: 2px;

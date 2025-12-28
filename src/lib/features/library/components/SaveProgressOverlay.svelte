@@ -40,7 +40,7 @@
     {#if isComplete}
       <div class="success-animation">
         <div class="success-circle">
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
         </div>
         <h3>Saved!</h3>
         <p>Your sequence is now in your library</p>
@@ -50,8 +50,7 @@
       <div class="progress-header">
         <div class="progress-icon-wrapper">
           <div class="progress-icon-ring"></div>
-          <i
-            class="fas {steps[currentStep - 1]?.icon || 'fa-spinner'} progress-icon"
+          <i class="fas {steps[currentStep - 1]?.icon || 'fa-spinner'} progress-icon" aria-hidden="true"
           ></i>
         </div>
         <h3>
@@ -84,7 +83,7 @@
           >
             <div class="step-indicator">
               {#if currentStep > i + 1}
-                <i class="fas fa-check"></i>
+                <i class="fas fa-check" aria-hidden="true"></i>
               {:else if currentStep === i + 1}
                 <div class="step-pulse"></div>
               {:else}
@@ -270,7 +269,7 @@
   }
 
   .step-number {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .step-label {

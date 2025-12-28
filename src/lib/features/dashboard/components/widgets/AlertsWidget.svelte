@@ -130,7 +130,7 @@
   <div class="widget-header">
     <div class="header-left">
       <div class="header-icon">
-        <i class="fas fa-bell"></i>
+        <i class="fas fa-bell" aria-hidden="true"></i>
       </div>
       <h3>Alerts</h3>
     </div>
@@ -144,12 +144,12 @@
   <div class="widget-content">
     {#if !authState.isAuthenticated}
       <div class="empty-state">
-        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
         <p>Sign in to see alerts</p>
       </div>
     {:else if alertNotifications.length === 0}
       <div class="empty-state">
-        <i class="fas fa-bell-slash"></i>
+        <i class="fas fa-bell-slash" aria-hidden="true"></i>
         <p>No alerts yet</p>
         <span class="empty-hint">We'll notify you here</span>
       </div>
@@ -165,7 +165,7 @@
               class="alert-icon"
               style="--icon-color: {getNotificationColor(notification.type)}"
             >
-              <i class="fas {getNotificationIcon(notification.type)}"></i>
+              <i class="fas {getNotificationIcon(notification.type)}" aria-hidden="true"></i>
             </div>
             <div class="alert-content">
               <span class="alert-message">{notification.message}</span>
@@ -182,7 +182,7 @@
 
   <button class="view-all-btn" onclick={openAllAlerts}>
     <span>All Alerts</span>
-    <i class="fas fa-arrow-right"></i>
+    <i class="fas fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

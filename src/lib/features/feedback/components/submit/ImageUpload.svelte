@@ -141,7 +141,7 @@
       {disabled}
       title="Upload image or paste screenshot"
     >
-      <i class="fas fa-paperclip"></i>
+      <i class="fas fa-paperclip" aria-hidden="true"></i>
       <span>Attach image</span>
     </button>
     <input
@@ -151,7 +151,8 @@
       accept="image/*"
       multiple
       {disabled}
-      style="display: none;"
+      aria-label="Upload images"
+      class="sr-only"
     />
   {/if}
 
@@ -168,7 +169,7 @@
             {disabled}
             aria-label="Remove image"
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
           <div class="preview-name">{file.name}</div>
         </div>
@@ -191,6 +192,7 @@
     justify-content: center;
     gap: 6px;
     height: 32px;
+    min-height: var(--min-touch-target, 44px); /* WCAG AAA touch target */
     padding: 0 12px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
@@ -229,6 +231,18 @@
   .upload-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .upload-button i {

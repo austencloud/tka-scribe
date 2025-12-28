@@ -136,7 +136,7 @@
               </div>
             {:else}
               <div class="sequence-thumbnail-placeholder">
-                <i class="fas fa-list"></i>
+                <i class="fas fa-list" aria-hidden="true"></i>
               </div>
             {/if}
 
@@ -146,7 +146,7 @@
               <div class="sequence-meta">
                 {#if sequence.createdAt}
                   <span class="meta-item">
-                    <i class="fas fa-clock"></i>
+                    <i class="fas fa-clock" aria-hidden="true"></i>
                     {sequence.createdAt instanceof Date
                       ? sequence.createdAt.toLocaleDateString()
                       : new Date(sequence.createdAt).toLocaleDateString()}
@@ -154,7 +154,7 @@
                 {/if}
                 {#if sequence.beats && sequence.beats.length > 0}
                   <span class="meta-item">
-                    <i class="fas fa-music"></i>
+                    <i class="fas fa-music" aria-hidden="true"></i>
                     {sequence.beats.length} beats
                   </span>
                 {/if}
@@ -191,15 +191,15 @@
             </div>
             <div class="user-list-stats">
               <span class="user-list-stat">
-                <i class="fas fa-list"></i>
+                <i class="fas fa-list" aria-hidden="true"></i>
                 {user.sequenceCount}
               </span>
               <span class="user-list-stat">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-users" aria-hidden="true"></i>
                 {user.followerCount}
               </span>
             </div>
-            <i class="fas fa-chevron-right user-list-arrow"></i>
+            <i class="fas fa-chevron-right user-list-arrow" aria-hidden="true"></i>
           </button>
         {/each}
       </div>
@@ -231,15 +231,15 @@
             </div>
             <div class="user-list-stats">
               <span class="user-list-stat">
-                <i class="fas fa-list"></i>
+                <i class="fas fa-list" aria-hidden="true"></i>
                 {user.sequenceCount}
               </span>
               <span class="user-list-stat">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-users" aria-hidden="true"></i>
                 {user.followerCount}
               </span>
             </div>
-            <i class="fas fa-chevron-right user-list-arrow"></i>
+            <i class="fas fa-chevron-right user-list-arrow" aria-hidden="true"></i>
           </button>
         {/each}
       </div>
@@ -257,7 +257,7 @@
         {#each userProfile.topAchievements as achievement (achievement.id)}
           <div class="achievement-card" transition:fade={{ duration: 200 }}>
             <div class="achievement-icon tier-{achievement.tier}">
-              <i class="fas {achievement.icon}"></i>
+              <i class="fas {achievement.icon}" aria-hidden="true"></i>
             </div>
             <div class="achievement-info">
               <h4 class="achievement-name">{achievement.title}</h4>
@@ -269,7 +269,7 @@
                   {achievement.tier}
                 </span>
                 <span class="xp-badge">
-                  <i class="fas fa-bolt"></i>
+                  <i class="fas fa-bolt" aria-hidden="true"></i>
                   {achievement.xpReward} XP
                 </span>
               </div>
@@ -377,7 +377,7 @@
   }
 
   .meta-item i {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .user-list-grid {
@@ -451,7 +451,7 @@
   }
 
   .user-list-stat i {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .user-list-arrow {
@@ -557,7 +557,7 @@
     gap: 4px;
     padding: 4px 10px;
     border-radius: 12px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: capitalize;
   }
@@ -592,7 +592,7 @@
   }
 
   .xp-badge i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   @media (max-width: 768px) {

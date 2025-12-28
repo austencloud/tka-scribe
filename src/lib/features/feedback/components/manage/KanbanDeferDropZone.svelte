@@ -35,7 +35,7 @@
   aria-label="Defer drop zone"
 >
   <div class="defer-label">
-    <i class="fas fa-clock"></i>
+    <i class="fas fa-clock" aria-hidden="true"></i>
     <span>Defer</span>
     {#if deferredCount > 0}
       <span class="defer-count">{deferredCount}</span>
@@ -44,7 +44,7 @@
 
   {#if isDropTarget}
     <div class="drop-indicator">
-      <i class="fas fa-calendar-plus"></i>
+      <i class="fas fa-calendar-plus" aria-hidden="true"></i>
     </div>
   {/if}
 </div>

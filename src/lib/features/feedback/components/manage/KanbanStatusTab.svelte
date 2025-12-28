@@ -12,20 +12,22 @@
 
   const { status, isActive, count, onClick }: Props = $props();
 
-  const config = STATUS_CONFIG[status];
+  const config = $derived(STATUS_CONFIG[status]);
 </script>
 
 <button
   type="button"
   role="tab"
+  id="tab-{status}"
   class="status-tab"
   class:active={isActive}
   style="--tab-color: {config.color}"
   onclick={onClick}
   aria-selected={isActive}
   aria-controls="column-{status}"
+  tabindex={isActive ? 0 : -1}
 >
-  <i class="fas {config.icon}"></i>
+  <i class="fas {config.icon}" aria-hidden="true"></i>
   <span class="tab-label">{config.label.replace("Won't Fix", "Declined")}</span>
   {#if count > 0}
     <span class="tab-count">{count}</span>

@@ -134,16 +134,16 @@
 
 <section class="admin-section">
   <h3 class="section-title">
-    <i class="fas fa-shield-halved"></i>
+    <i class="fas fa-shield-halved" aria-hidden="true"></i>
     Admin Controls
   </h3>
 
   {#if actionError}
     <div class="error-banner">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       {actionError}
       <button onclick={() => (actionError = null)} aria-label="Dismiss">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
   {/if}
@@ -160,7 +160,7 @@
           onclick={() => changeRole(role)}
           style="--role-color: {ROLE_DISPLAY[role].color}"
         >
-          <i class="fas {ROLE_DISPLAY[role].icon}"></i>
+          <i class="fas {ROLE_DISPLAY[role].icon}" aria-hidden="true"></i>
           {ROLE_DISPLAY[role].label}
         </button>
       {/each}
@@ -185,7 +185,7 @@
           };
         }}
       >
-        <i class="fas {userProfile.isDisabled ? 'fa-check-circle' : 'fa-ban'}"
+        <i class="fas {userProfile.isDisabled ? 'fa-check-circle' : 'fa-ban'}" aria-hidden="true"
         ></i>
         {userProfile.isDisabled ? "Enable Account" : "Disable Account"}
       </button>
@@ -200,7 +200,7 @@
           };
         }}
       >
-        <i class="fas fa-rotate-left"></i>
+        <i class="fas fa-rotate-left" aria-hidden="true"></i>
         Reset Progress
       </button>
     </div>
@@ -209,10 +209,21 @@
 
 <!-- Confirmation Modal -->
 {#if confirmAction}
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <div class="modal-backdrop" onclick={() => (confirmAction = null)}>
-    <div class="modal" onclick={(e) => e.stopPropagation()}>
+  <div
+    class="modal-backdrop"
+    onclick={() => (confirmAction = null)}
+    onkeydown={(e) => e.key === "Escape" && (confirmAction = null)}
+    role="button"
+    tabindex="0"
+    aria-label="Close confirmation dialog"
+  >
+    <div
+      class="modal"
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+    >
       <p class="modal-message">{confirmAction.message}</p>
       <div class="modal-actions">
         <button
@@ -228,7 +239,7 @@
           disabled={isActionPending}
         >
           {#if isActionPending}
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           {:else}
             Confirm
           {/if}

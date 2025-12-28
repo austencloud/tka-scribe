@@ -21,6 +21,10 @@ import {
   serverTimestamp,
   writeBatch,
   increment,
+  runTransaction,
+  getCountFromServer,
+  arrayUnion,
+  documentId,
   type Unsubscribe,
   type DocumentData,
 } from "firebase/firestore";
@@ -148,45 +152,91 @@ export class LibraryRepository implements ILibraryRepository {
     const userId = this.getUserId();
     const sequenceId = sequence.id || crypto.randomUUID();
 
-    // Check if sequence already exists
-    const existingDoc = await getDoc(
-      doc(firestore, getUserSequencePath(userId, sequenceId))
+    const sequenceDocRef = doc(
+      firestore,
+      getUserSequencePath(userId, sequenceId)
+    );
+    const userDocRef = doc(firestore, `users/${userId}`);
+
+    // Use transaction to safely handle read-modify-write
+    const { librarySequence, isNewSequence } = await runTransaction(
+      firestore,
+      async (transaction) => {
+        // Read existing document within transaction
+        const existingDoc = await transaction.get(sequenceDocRef);
+        const wasNew = !existingDoc.exists();
+
+        let libSeq: LibrarySequence;
+
+        if (existingDoc.exists()) {
+          // Update existing
+          const existing = this.mapDocToLibrarySequence(
+            existingDoc.data(),
+            sequenceId
+          );
+          libSeq = {
+            ...existing,
+            ...sequence,
+            id: sequenceId,
+            updatedAt: new Date(),
+          };
+        } else {
+          // Create new
+          libSeq = createLibrarySequence(
+            { ...sequence, id: sequenceId },
+            userId,
+            { visibility: "public" } // Default to public
+          );
+        }
+
+        // Migrate tags to sequenceTags if needed (sync operation)
+        if (!libSeq.sequenceTags || libSeq.sequenceTags.length === 0) {
+          // Note: Tag migration needs to happen outside transaction
+          // because it may involve async Firestore operations
+          libSeq = {
+            ...libSeq,
+            sequenceTags: [],
+            tagIds: [],
+          };
+        }
+
+        // Detect orientation cycle count for circular sequences (sync CPU operation)
+        if (libSeq.isCircular) {
+          try {
+            const cycleResult =
+              this.orientationCycleDetector.detectOrientationCycle(libSeq);
+            libSeq = {
+              ...libSeq,
+              orientationCycleCount: cycleResult.cycleCount,
+            };
+          } catch (error) {
+            console.error(
+              "[LibraryRepository] Orientation cycle detection failed:",
+              error
+            );
+          }
+        }
+
+        // Write sequence document
+        transaction.set(sequenceDocRef, {
+          ...libSeq,
+          createdAt: existingDoc.exists() ? libSeq.createdAt : serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        // Increment user's sequenceCount if this is a new sequence
+        if (wasNew) {
+          transaction.update(userDocRef, {
+            sequenceCount: increment(1),
+          });
+        }
+
+        return { librarySequence: libSeq, isNewSequence: wasNew };
+      }
     );
 
-    const isNewSequence = !existingDoc.exists();
-    let librarySequence: LibrarySequence;
-
-    if (existingDoc.exists()) {
-      // Update existing
-      const existing = this.mapDocToLibrarySequence(
-        existingDoc.data(),
-        sequenceId
-      );
-      librarySequence = {
-        ...existing,
-        ...sequence,
-        id: sequenceId,
-        updatedAt: new Date(),
-      };
-    } else {
-      // Create new
-      librarySequence = createLibrarySequence(
-        { ...sequence, id: sequenceId },
-        userId,
-        { visibility: "public" } // Default to public
-      );
-
-      // Track XP for creating sequence
-      try {
-        await this.achievementService.trackAction("sequence_created", {
-          beatCount: sequence.beats.length ?? 0,
-        });
-      } catch (_e) {
-        console.warn("Failed to track achievement:", _e);
-      }
-    }
-
-    // Migrate tags to sequenceTags if needed
+    // Post-transaction: Tag migration (involves async Firestore operations)
+    let finalSequence = librarySequence;
     if (
       !librarySequence.sequenceTags ||
       librarySequence.sequenceTags.length === 0
@@ -196,72 +246,41 @@ export class LibraryRepository implements ILibraryRepository {
           librarySequence,
           this.tagService
         );
-        librarySequence = {
+        finalSequence = {
           ...librarySequence,
           sequenceTags: migrationResult.sequenceTags,
           tagIds: migrationResult.tagIds,
         };
+        // Update with migrated tags (outside transaction is fine for this)
+        await updateDoc(sequenceDocRef, {
+          sequenceTags: migrationResult.sequenceTags,
+          tagIds: migrationResult.tagIds,
+        });
       } catch (error) {
         console.error("[LibraryRepository] Tag migration failed:", error);
-        // Continue with save even if migration fails
       }
     }
 
-    // Detect orientation cycle count for circular sequences
-    if (librarySequence.isCircular) {
-      try {
-        const cycleResult = this.orientationCycleDetector.detectOrientationCycle(
-          librarySequence
-        );
-        librarySequence = {
-          ...librarySequence,
-          orientationCycleCount: cycleResult.cycleCount,
-        };
-        console.log(
-          `[LibraryRepository] Detected orientation cycle count: ${cycleResult.cycleCount}`
-        );
-      } catch (error) {
-        console.error(
-          "[LibraryRepository] Orientation cycle detection failed:",
-          error
-        );
-        // Continue with save even if detection fails
-      }
-    }
-
-    // Save to Firestore
-    await setDoc(doc(firestore, getUserSequencePath(userId, sequenceId)), {
-      ...librarySequence,
-      createdAt: existingDoc.exists()
-        ? librarySequence.createdAt
-        : serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-
-    // Increment user's sequenceCount if this is a new sequence
+    // Post-transaction: Track XP for creating sequence
     if (isNewSequence) {
       try {
-        const userDocRef = doc(firestore, `users/${userId}`);
-        await updateDoc(userDocRef, {
-          sequenceCount: increment(1),
+        await this.achievementService.trackAction("sequence_created", {
+          beatCount: sequence.beats.length ?? 0,
         });
-        console.log(
-          `[LibraryRepository] Incremented sequenceCount for user ${userId}`
-        );
-      } catch (error) {
-        console.error(
-          `[LibraryRepository] Failed to increment sequenceCount for user ${userId}:`,
-          error
-        );
+      } catch (_e) {
+        console.warn("Failed to track achievement:", _e);
       }
+      console.log(
+        `[LibraryRepository] Incremented sequenceCount for user ${userId}`
+      );
     }
 
-    // If public, sync to public index
-    if (librarySequence.visibility === "public") {
-      await this.syncToPublicIndex(librarySequence, userId);
+    // Post-transaction: Sync to public index
+    if (finalSequence.visibility === "public") {
+      await this.syncToPublicIndex(finalSequence, userId);
     }
 
-    return librarySequence;
+    return finalSequence;
   }
 
   async getSequence(sequenceId: string): Promise<LibrarySequence | null> {
@@ -467,15 +486,18 @@ export class LibraryRepository implements ILibraryRepository {
     const userId = this.getUserId();
     let unsubscribe: Unsubscribe | null = null;
 
+    // Default limit to prevent unbounded listeners
+    const DEFAULT_LIBRARY_LIMIT = 100;
+
     // Initialize subscription asynchronously
     getFirestoreInstance().then((firestore) => {
       const sequencesRef = collection(firestore, getUserSequencesPath(userId));
 
       let q = query(sequencesRef, orderBy("updatedAt", "desc"));
 
-      if (options?.limit) {
-        q = query(q, firestoreLimit(options.limit));
-      }
+      // Always apply a limit to prevent cost explosion
+      const limitCount = options?.limit ?? DEFAULT_LIBRARY_LIMIT;
+      q = query(q, firestoreLimit(limitCount));
 
       unsubscribe = onSnapshot(
         q,
@@ -539,22 +561,40 @@ export class LibraryRepository implements ILibraryRepository {
   // ============================================================
 
   async getLibraryStats(): Promise<LibraryStats> {
-    const sequences = await this.getSequences();
+    const firestore = await getFirestoreInstance();
+    const userId = this.getUserId();
+    const sequencesRef = collection(firestore, getUserSequencesPath(userId));
+
+    // Run all count queries in parallel for efficiency
+    const [
+      totalSnapshot,
+      createdSnapshot,
+      forkedSnapshot,
+      publicSnapshot,
+      privateSnapshot,
+    ] = await Promise.all([
+      getCountFromServer(query(sequencesRef)),
+      getCountFromServer(query(sequencesRef, where("source", "==", "created"))),
+      getCountFromServer(query(sequencesRef, where("source", "==", "forked"))),
+      getCountFromServer(
+        query(sequencesRef, where("visibility", "==", "public"))
+      ),
+      getCountFromServer(
+        query(sequencesRef, where("visibility", "==", "private"))
+      ),
+    ]);
 
     return {
-      totalSequences: sequences.length,
-      createdSequences: sequences.filter((s) => s.source === "created").length,
-      forkedSequences: sequences.filter((s) => s.source === "forked").length,
-      publicSequences: sequences.filter((s) => s.visibility === "public")
-        .length,
-      privateSequences: sequences.filter((s) => s.visibility === "private")
-        .length,
+      totalSequences: totalSnapshot.data().count,
+      createdSequences: createdSnapshot.data().count,
+      forkedSequences: forkedSnapshot.data().count,
+      publicSequences: publicSnapshot.data().count,
+      privateSequences: privateSnapshot.data().count,
       totalCollections: 0, // TODO: Get from collection service
       totalActs: 0, // TODO: Get from act service
-      totalBeats: sequences.reduce(
-        (sum, seq) => sum + (seq.beats?.length ?? 0),
-        0
-      ),
+      // Note: totalBeats requires fetching docs or a denormalized counter
+      // For now, return 0 - consider denormalizing if this stat is needed frequently
+      totalBeats: 0,
     };
   }
 
@@ -563,13 +603,34 @@ export class LibraryRepository implements ILibraryRepository {
   // ============================================================
 
   async deleteSequences(sequenceIds: string[]): Promise<void> {
+    if (sequenceIds.length === 0) return;
+
     const firestore = await getFirestoreInstance();
     const userId = this.getUserId();
     const batch = writeBatch(firestore);
 
+    // Batch fetch all sequences to check visibility (avoid N+1 reads)
+    const sequencesRef = collection(firestore, getUserSequencesPath(userId));
+    const BATCH_SIZE = 30; // Firestore 'in' query limit
+    const existingSequences = new Map<string, LibrarySequence>();
+
+    // Process in chunks of 30
+    for (let i = 0; i < sequenceIds.length; i += BATCH_SIZE) {
+      const chunk = sequenceIds.slice(i, i + BATCH_SIZE);
+      const batchQuery = query(sequencesRef, where(documentId(), "in", chunk));
+      const batchSnapshot = await getDocs(batchQuery);
+
+      for (const docSnap of batchSnapshot.docs) {
+        existingSequences.set(
+          docSnap.id,
+          this.mapDocToLibrarySequence(docSnap.data(), docSnap.id)
+        );
+      }
+    }
+
     let deletedCount = 0;
     for (const sequenceId of sequenceIds) {
-      const existing = await this.getSequence(sequenceId);
+      const existing = existingSequences.get(sequenceId);
       if (existing) {
         if (existing.visibility === "public") {
           batch.delete(doc(firestore, getPublicSequencePath(sequenceId)));
@@ -606,10 +667,9 @@ export class LibraryRepository implements ILibraryRepository {
 
     for (const sequenceId of sequenceIds) {
       const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
-      // Note: This adds to existing collections, doesn't replace
-      // For proper implementation, we'd need to read existing collectionIds first
+      // Use arrayUnion to append to existing collections without data loss
       batch.update(docRef, {
-        collectionIds: [collectionId], // Simplified - would need arrayUnion in production
+        collectionIds: arrayUnion(collectionId),
         updatedAt: serverTimestamp(),
       });
     }
@@ -627,8 +687,9 @@ export class LibraryRepository implements ILibraryRepository {
 
     for (const sequenceId of sequenceIds) {
       const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
+      // Use arrayUnion to append tags without overwriting existing ones
       batch.update(docRef, {
-        tagIds: tagIds, // Simplified - would need arrayUnion in production
+        tagIds: arrayUnion(...tagIds),
         updatedAt: serverTimestamp(),
       });
     }
@@ -640,9 +701,54 @@ export class LibraryRepository implements ILibraryRepository {
     sequenceIds: string[],
     visibility: SequenceVisibility
   ): Promise<void> {
-    for (const sequenceId of sequenceIds) {
-      await this.setVisibility(sequenceId, visibility);
+    if (sequenceIds.length === 0) return;
+
+    const firestore = await getFirestoreInstance();
+    const userId = this.getUserId();
+    const batch = writeBatch(firestore);
+    const now = serverTimestamp();
+
+    // Track which sequences need public index updates
+    const toPublish: LibrarySequence[] = [];
+    const toUnpublish: string[] = [];
+
+    // Batch fetch all sequences to check current visibility (avoid N+1)
+    const sequencesRef = collection(firestore, getUserSequencesPath(userId));
+    const BATCH_SIZE = 30;
+
+    for (let i = 0; i < sequenceIds.length; i += BATCH_SIZE) {
+      const chunk = sequenceIds.slice(i, i + BATCH_SIZE);
+      const batchQuery = query(sequencesRef, where(documentId(), "in", chunk));
+      const batchSnapshot = await getDocs(batchQuery);
+
+      for (const docSnap of batchSnapshot.docs) {
+        const existing = this.mapDocToLibrarySequence(docSnap.data(), docSnap.id);
+        const docRef = doc(firestore, getUserSequencePath(userId, docSnap.id));
+
+        // Update visibility in batch
+        batch.update(docRef, {
+          visibility,
+          visibilityChangedAt: now,
+          updatedAt: now,
+        });
+
+        // Track public index changes
+        if (visibility === "public" && existing.visibility !== "public") {
+          toPublish.push({ ...existing, visibility });
+        } else if (visibility !== "public" && existing.visibility === "public") {
+          toUnpublish.push(docSnap.id);
+        }
+      }
     }
+
+    // Commit all visibility updates in one batch
+    await batch.commit();
+
+    // Handle public index updates (these can run in parallel)
+    await Promise.all([
+      ...toPublish.map((seq) => this.syncToPublicIndex(seq, userId)),
+      ...toUnpublish.map((id) => this.removeFromPublicIndex(id)),
+    ]);
   }
 
   // ============================================================

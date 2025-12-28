@@ -26,7 +26,7 @@
     transition:fly={{ y: 20, duration: 300, delay: 150 }}
   >
     <h3 class="rankings-title">
-      <i class="fas fa-chart-line"></i>
+      <i class="fas fa-chart-line" aria-hidden="true"></i>
       Rankings
     </h3>
     <div class="rankings-badges">
@@ -68,7 +68,7 @@
     transition:fly={{ y: 20, duration: 300, delay: 150 }}
   >
     <h3 class="rankings-title">
-      <i class="fas fa-chart-line"></i>
+      <i class="fas fa-chart-line" aria-hidden="true"></i>
       Rankings
     </h3>
     <div class="rankings-loading">
@@ -127,7 +127,7 @@
   }
 
   .rank-label {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.5px;

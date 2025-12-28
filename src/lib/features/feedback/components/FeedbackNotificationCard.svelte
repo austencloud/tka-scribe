@@ -107,7 +107,7 @@
     aria-label="Dismiss notification: {notification.message}"
   >
     <div class="notification-icon" style="background: {config.color};">
-      <i class="fas {config.icon}"></i>
+      <i class="fas {config.icon}" aria-hidden="true"></i>
     </div>
 
     <div class="notification-content">
@@ -218,7 +218,7 @@
   }
 
   .notification-time {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
     flex-shrink: 0;
   }
@@ -238,7 +238,7 @@
 
   .notification-from {
     display: block;
-    font-size: 11px;
+    font-size: 12px;
     color: color-mix(
       in srgb,
       var(--theme-text-dim, rgba(255, 255, 255, 0.5)) 80%,

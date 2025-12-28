@@ -86,19 +86,15 @@ Handles click events and accessibility.
     transform: scale(1.05);
   }
 
-  /* Container query responsive sizing */
+  /* Container query responsive sizing - maintain 48px touch target for WCAG AAA */
   @container sequence-card (max-width: 249px) {
     .favorite {
-      min-width: 44px;
-      min-height: 44px;
       font-size: 1rem;
     }
   }
 
   @container sequence-card (min-width: 250px) and (max-width: 299px) {
     .favorite {
-      min-width: var(--min-touch-target);
-      min-height: var(--min-touch-target);
       font-size: 1.15rem;
     }
   }

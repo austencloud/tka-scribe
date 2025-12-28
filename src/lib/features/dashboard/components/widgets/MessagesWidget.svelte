@@ -70,7 +70,7 @@
   <div class="widget-header">
     <div class="header-left">
       <div class="header-icon">
-        <i class="fas fa-envelope"></i>
+        <i class="fas fa-envelope" aria-hidden="true"></i>
       </div>
       <h3>Messages</h3>
     </div>
@@ -84,12 +84,12 @@
   <div class="widget-content">
     {#if !authState.isAuthenticated}
       <div class="empty-state">
-        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
         <p>Sign in to see messages</p>
       </div>
     {:else if conversations.length === 0}
       <div class="empty-state">
-        <i class="fas fa-envelope-open"></i>
+        <i class="fas fa-envelope-open" aria-hidden="true"></i>
         <p>No messages yet</p>
         <span class="empty-hint">Start a conversation!</span>
       </div>
@@ -127,7 +127,7 @@
 
   <button class="view-all-btn" onclick={openAllMessages}>
     <span>All Messages</span>
-    <i class="fas fa-arrow-right"></i>
+    <i class="fas fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

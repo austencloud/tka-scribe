@@ -8,7 +8,7 @@
 
 import type { FeedbackManageState } from "./feedback-manage-state.svelte";
 
-export function createFilterBarUIState(manageState: FeedbackManageState) {
+export function createFilterBarUIState(getManageState: () => FeedbackManageState) {
   // Mobile sheet state
   let isSheetOpen = $state(false);
   let isSheetAnimating = $state(false);
@@ -20,14 +20,14 @@ export function createFilterBarUIState(manageState: FeedbackManageState) {
 
   // Derived: Current status label for button display
   const currentStatusLabel = $derived(() => {
-    const status = manageState.filters.status;
+    const status = getManageState().filters.status;
     if (status === "all") return "All Status";
     return status;
   });
 
   // Derived: Current priority label for button display
   const currentPriorityLabel = $derived(() => {
-    const priority = manageState.filters.priority;
+    const priority = getManageState().filters.priority;
     if (priority === "all") return "All Priority";
     return priority;
   });
@@ -35,9 +35,9 @@ export function createFilterBarUIState(manageState: FeedbackManageState) {
   // Derived: Count of active filters
   const activeFilterCount = $derived(
     [
-      manageState.filters.type !== "all",
-      manageState.filters.status !== "all",
-      manageState.filters.priority !== "all",
+      getManageState().filters.type !== "all",
+      getManageState().filters.status !== "all",
+      getManageState().filters.priority !== "all",
     ].filter(Boolean).length
   );
 

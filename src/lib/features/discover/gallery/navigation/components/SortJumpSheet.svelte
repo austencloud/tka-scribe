@@ -72,7 +72,7 @@ Touch-friendly interface for changing sort method and jumping to sections
   <!-- Sort Methods Section -->
   <div class="section">
     <div class="section-header">
-      <i class="fas fa-sort"></i>
+      <i class="fas fa-sort" aria-hidden="true"></i>
       <h3>Sort By</h3>
     </div>
     <div class="sort-options">
@@ -84,7 +84,7 @@ Touch-friendly interface for changing sort method and jumping to sections
           type="button"
         >
           <div class="option-icon">
-            <i class="fas {option.icon}"></i>
+            <i class="fas {option.icon}" aria-hidden="true"></i>
           </div>
           <div class="option-content">
             <div class="option-label">{option.label}</div>
@@ -92,7 +92,7 @@ Touch-friendly interface for changing sort method and jumping to sections
           </div>
           {#if currentSortMethod === option.id}
             <div class="check-icon">
-              <i class="fas fa-check"></i>
+              <i class="fas fa-check" aria-hidden="true"></i>
             </div>
           {/if}
         </button>
@@ -104,7 +104,7 @@ Touch-friendly interface for changing sort method and jumping to sections
   {#if availableSections && availableSections.length > 0}
     <div class="section">
       <div class="section-header">
-        <i class="fas fa-rocket"></i>
+        <i class="fas fa-rocket" aria-hidden="true"></i>
         <h3>Quick Jump</h3>
       </div>
       <div class="jump-sections">

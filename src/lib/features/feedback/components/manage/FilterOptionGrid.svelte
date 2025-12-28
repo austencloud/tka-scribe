@@ -37,7 +37,7 @@
         <span class="option-radio"></span>
       {/if}
       {#if showIcons && option.icon}
-        <i class="fas {option.icon}"></i>
+        <i class="fas {option.icon}" aria-hidden="true"></i>
       {/if}
       <span class="option-label">{option.label}</span>
       {#if !isVertical}

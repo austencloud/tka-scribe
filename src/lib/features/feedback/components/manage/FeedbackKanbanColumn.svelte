@@ -69,7 +69,7 @@
   <!-- Column Header -->
   <header class="column-header">
     <div class="header-icon">
-      <i class="fas {config.icon}"></i>
+      <i class="fas {config.icon}" aria-hidden="true"></i>
     </div>
     <h3 class="header-title">{config.label}</h3>
     <span class="header-count">{items.length}</span>
@@ -86,6 +86,7 @@
               : status === 'wont-fix'
                 ? 'fa-ban'
                 : 'fa-inbox'}"
+            aria-hidden="true"
           ></i>
         </div>
         <span class="empty-title">
@@ -126,7 +127,7 @@
   <!-- Drop zone indicator -->
   {#if isDropTarget}
     <div class="drop-indicator">
-      <i class="fas fa-plus-circle"></i>
+      <i class="fas fa-plus-circle" aria-hidden="true"></i>
       <span>Drop here</span>
     </div>
   {/if}

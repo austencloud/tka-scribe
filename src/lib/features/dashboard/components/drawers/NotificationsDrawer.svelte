@@ -7,7 +7,7 @@
    * No tabs, no messages - focused on notifications only.
    */
 
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
@@ -33,16 +33,24 @@
   // Haptic feedback service
   let hapticService: IHapticFeedback | undefined;
 
+  // Media query for responsive behavior
+  let mediaQuery: MediaQueryList | null = null;
+  function handleMediaChange(e: MediaQueryListEvent) {
+    isMobile = e.matches;
+  }
+
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(
       TYPES.IHapticFeedback
     );
 
-    const mediaQuery = window.matchMedia("(max-width: 768px)");
+    mediaQuery = window.matchMedia("(max-width: 768px)");
     isMobile = mediaQuery.matches;
-    mediaQuery.addEventListener("change", (e) => {
-      isMobile = e.matches;
-    });
+    mediaQuery.addEventListener("change", handleMediaChange);
+  });
+
+  onDestroy(() => {
+    mediaQuery?.removeEventListener("change", handleMediaChange);
   });
 
   // Auto-mark all notifications as read when drawer opens (viewing = acknowledging)

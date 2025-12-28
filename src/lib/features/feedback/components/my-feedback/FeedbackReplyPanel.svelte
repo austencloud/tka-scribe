@@ -49,7 +49,7 @@
 <div class="reply-panel">
   <div class="reply-header">
     <div class="header-icon" style="--status-color: {statusConfig.color}">
-      <i class="fas fa-reply"></i>
+      <i class="fas fa-reply" aria-hidden="true"></i>
     </div>
     <div class="header-content">
       <h3>
@@ -73,14 +73,14 @@
   <div class="reply-form">
     {#if showSuccess}
       <div class="success-message">
-        <i class="fas fa-check-circle"></i>
+        <i class="fas fa-check-circle" aria-hidden="true"></i>
         <span>Reply sent successfully!</span>
       </div>
     {/if}
 
     {#if error}
       <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <span>{error}</span>
       </div>
     {/if}
@@ -102,7 +102,7 @@
           {#if reply.trim().length < 5}
             {5 - reply.trim().length} more needed
           {:else}
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           {/if}
         </span>
       </div>
@@ -124,10 +124,10 @@
         disabled={!isValidReply || isLoading}
       >
         {#if isLoading}
-          <i class="fas fa-circle-notch fa-spin"></i>
+          <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
           <span>Sending...</span>
         {:else}
-          <i class="fas fa-send"></i>
+          <i class="fas fa-send" aria-hidden="true"></i>
           <span>Send Reply</span>
         {/if}
       </button>

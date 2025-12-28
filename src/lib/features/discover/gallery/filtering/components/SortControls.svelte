@@ -46,8 +46,13 @@ Follows Svelte 5 runes + microservices architecture.
     { id: ExploreSortMethod.SEQUENCE_LENGTH, label: "Length" },
   ];
 
-  // Local state for controlled component
-  let localSort = $state<ExploreSortMethod>(currentSort);
+  // Local state for controlled component - initialized with default, $effect syncs from prop
+  let localSort = $state<ExploreSortMethod>(ExploreSortMethod.ALPHABETICAL);
+
+  // Sync localSort with prop changes
+  $effect(() => {
+    localSort = currentSort;
+  });
 
   // Handle sort change
   function handleSortChange() {

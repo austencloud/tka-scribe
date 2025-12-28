@@ -42,8 +42,8 @@
     );
   });
 
-  // State
-  let activeMediaType = $state<MediaType>(initialMediaType);
+  // State - initialized with default, $effect below syncs from prop
+  let activeMediaType = $state<MediaType>("image");
   let currentImageIndex = $state(0);
   let currentVideoIndex = $state(0);
 
@@ -201,6 +201,7 @@
         class="image-view"
         role="button"
         tabindex="0"
+        aria-label="Click to animate sequence"
         onclick={handleImageClick}
         onkeypress={(e) => e.key === "Enter" && handleImageClick()}
       >

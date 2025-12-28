@@ -30,7 +30,7 @@
         <FeedbackManageTab />
       {:else}
         <div class="placeholder">
-          <i class="fas fa-comment-dots"></i>
+          <i class="fas fa-comment-dots" aria-hidden="true"></i>
           <h2>Feedback</h2>
           <p>Select a tab to get started</p>
         </div>

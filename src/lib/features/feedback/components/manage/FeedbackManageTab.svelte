@@ -107,7 +107,7 @@
 <div class="manage-tab">
   {#if !isAdmin}
     <div class="access-denied">
-      <i class="fas fa-lock"></i>
+      <i class="fas fa-lock" aria-hidden="true"></i>
       <h2>Admin Access Required</h2>
       <p>You need admin permissions to manage feedback.</p>
     </div>

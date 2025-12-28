@@ -5,7 +5,7 @@
   import type { KanbanBoardState } from "../../state/kanban-board-state.svelte";
   import { createKanbanBoardState } from "../../state/kanban-board-state.svelte";
   import type { IStorageManager } from "$lib/shared/foundation/services/contracts/IStorageManager";
-  import type { IFeedbackSortingService } from "../../services/contracts/IFeedbackSortingService";
+  import type { IFeedbackSorter } from "../../services/contracts/IFeedbackSorter";
   import {
     tryResolve,
     TYPES,
@@ -24,7 +24,7 @@
 
   // Resolve services
   let boardState = $state<KanbanBoardState | null>(null);
-  let sortingService: IFeedbackSortingService | null = null;
+  let sortingService: IFeedbackSorter | null = null;
   let storageService: IStorageManager | null = null;
 
   onMount(() => {
@@ -39,14 +39,14 @@
         await loadFeatureModule("feedback");
 
         // Now resolve services - feedback module is ready
-        sortingService = tryResolve<IFeedbackSortingService>(
-          TYPES.IFeedbackSortingService
+        sortingService = tryResolve<IFeedbackSorter>(
+          TYPES.IFeedbackSorter
         );
         storageService = tryResolve<IStorageManager>(TYPES.IStorageManager);
 
         if (!sortingService) {
           console.error(
-            `[FeedbackKanbanBoard] Failed to resolve IFeedbackSortingService after feedback module load`
+            `[FeedbackKanbanBoard] Failed to resolve IFeedbackSorter after feedback module load`
           );
           return;
         }
@@ -138,25 +138,25 @@
 
     <!-- Defer Dialog -->
     {#if boardState.showDeferDialog && boardState.itemToDefer}
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="defer-dialog-overlay"
         onclick={handleDeferCancel}
         onkeydown={(e) => e.key === "Escape" && handleDeferCancel()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="defer-dialog-title"
-        tabindex="-1"
+        role="button"
+        tabindex="0"
+        aria-label="Close defer dialog"
       >
-        <!-- svelte-ignore a11y_no_static_element_interactions -->
         <div
           class="defer-dialog"
           onclick={(e) => e.stopPropagation()}
           onkeydown={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="defer-dialog-title"
         >
           <div class="dialog-header">
             <div class="dialog-icon">
-              <i class="fas fa-clock"></i>
+              <i class="fas fa-clock" aria-hidden="true"></i>
             </div>
             <h3 class="dialog-title" id="defer-dialog-title">Defer Feedback</h3>
             <button
@@ -165,7 +165,7 @@
               onclick={handleDeferCancel}
               aria-label="Close dialog"
             >
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
 
@@ -180,7 +180,7 @@
 
             <div class="form-field">
               <label for="defer-date" class="field-label">
-                <i class="fas fa-calendar"></i>
+                <i class="fas fa-calendar" aria-hidden="true"></i>
                 Reactivate on
               </label>
               <input
@@ -197,7 +197,7 @@
 
             <div class="form-field">
               <label for="defer-notes" class="field-label">
-                <i class="fas fa-sticky-note"></i>
+                <i class="fas fa-sticky-note" aria-hidden="true"></i>
                 Reason (optional)
               </label>
               <textarea
@@ -228,10 +228,10 @@
               disabled={!boardState.deferDate || boardState.isSubmittingDefer}
             >
               {#if boardState.isSubmittingDefer}
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                 Deferring...
               {:else}
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-clock" aria-hidden="true"></i>
                 Defer
               {/if}
             </button>

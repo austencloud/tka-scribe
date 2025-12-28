@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { FeedbackSubtask } from "../../../domain/models/feedback-models";
-  import type { IFeedbackSubtaskService } from "../../../services/contracts/IFeedbackSubtaskService";
+  import type { IFeedbackSubtaskManager } from "../../../services/contracts/IFeedbackSubtaskManager";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
 
@@ -10,8 +10,8 @@
 
   const { subtasks }: Props = $props();
 
-  const subtaskService = tryResolve<IFeedbackSubtaskService>(
-    TYPES.IFeedbackSubtaskService
+  const subtaskService = tryResolve<IFeedbackSubtaskManager>(
+    TYPES.IFeedbackSubtaskManager
   );
 
   function isBlocked(subtask: FeedbackSubtask): boolean {
@@ -27,7 +27,7 @@
 {#if subtasks.length > 0}
   <section class="section subtasks-section">
     <h3 class="section-title">
-      <i class="fas fa-tasks"></i>
+      <i class="fas fa-tasks" aria-hidden="true"></i>
       Subtasks
       <span class="subtask-count">
         {completedCount}/{subtasks.length}
@@ -44,13 +44,13 @@
         >
           <div class="subtask-status-icon">
             {#if subtask.status === "completed"}
-              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
             {:else if subtask.status === "in-progress"}
-              <i class="fas fa-spinner fa-pulse"></i>
+              <i class="fas fa-spinner fa-pulse" aria-hidden="true"></i>
             {:else if blocked}
-              <i class="fas fa-lock"></i>
+              <i class="fas fa-lock" aria-hidden="true"></i>
             {:else}
-              <i class="far fa-circle"></i>
+              <i class="far fa-circle" aria-hidden="true"></i>
             {/if}
           </div>
           <div class="subtask-content">
@@ -61,7 +61,7 @@
             {/if}
             {#if subtask.dependsOn && subtask.dependsOn.length > 0}
               <span class="subtask-deps">
-                <i class="fas fa-link"></i>
+                <i class="fas fa-link" aria-hidden="true"></i>
                 Depends on: {subtask.dependsOn
                   .map((id: string) => `#${id}`)
                   .join(", ")}

@@ -41,6 +41,14 @@
   let pendingTags = $state<LibraryTag[]>([]); // Optimistically created tags (not yet saved)
   let showAddInput = $state(false);
   let selectedColor = $state<string>(TAG_COLORS[0]);
+  let customInputElement = $state<HTMLInputElement | null>(null);
+
+  // Focus input when entering add mode (accessible alternative to autofocus)
+  $effect(() => {
+    if (showAddInput && customInputElement) {
+      customInputElement.focus();
+    }
+  });
 
   // Combined tags (persisted + pending)
   const combinedTags = $derived([...allTags, ...pendingTags]);
@@ -174,7 +182,7 @@
             {/if}
             <span class="tag-text">{tag.name}</span>
             {#if tag.isSelected}
-              <i class="fas fa-check tag-check-icon"></i>
+              <i class="fas fa-check tag-check-icon" aria-hidden="true"></i>
             {:else if tag.useCount > 0}
               <span class="tag-count">{tag.useCount}</span>
             {/if}
@@ -183,7 +191,7 @@
       </div>
     {:else}
       <div class="empty-state">
-        <i class="fas fa-inbox"></i>
+        <i class="fas fa-inbox" aria-hidden="true"></i>
         <span>No tags yet - create one below</span>
       </div>
     {/if}
@@ -198,22 +206,20 @@
         onclick={() => (showAddInput = true)}
         disabled={selectedTags.length >= maxTags}
       >
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         Add custom tag
       </button>
     {:else}
       <div class="custom-tag-creator">
         <div class="custom-input-container">
-          <!-- autofocus needed: User clicked "Add Custom Tag", expects to type immediately -->
-          <!-- svelte-ignore a11y_autofocus -->
           <input
+            bind:this={customInputElement}
             bind:value={inputValue}
             type="text"
             class="custom-input"
             placeholder="Enter tag name..."
             onkeydown={handleKeydown}
             maxlength="50"
-            autofocus
           />
           <button
             type="button"
@@ -222,7 +228,7 @@
             disabled={!inputValue.trim()}
             aria-label="Add tag"
           >
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           </button>
           <button
             type="button"
@@ -234,7 +240,7 @@
             }}
             aria-label="Cancel"
           >
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
 
@@ -252,7 +258,7 @@
                 aria-label="Select color {color}"
               >
                 {#if selectedColor === color}
-                  <i class="fas fa-check"></i>
+                  <i class="fas fa-check" aria-hidden="true"></i>
                 {/if}
               </button>
             {/each}
@@ -264,7 +270,7 @@
 
   {#if selectedTags.length >= maxTags}
     <p class="max-tags-message">
-      <i class="fas fa-info-circle"></i>
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
       Maximum {maxTags} tags reached
     </p>
   {/if}

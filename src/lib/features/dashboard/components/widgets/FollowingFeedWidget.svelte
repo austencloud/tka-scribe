@@ -59,7 +59,7 @@
 <div class="following-widget">
   <div class="widget-header">
     <div class="header-icon">
-      <i class="fas fa-user-friends"></i>
+      <i class="fas fa-user-friends" aria-hidden="true"></i>
     </div>
     <h3>Following</h3>
   </div>
@@ -81,18 +81,18 @@
       </div>
     {:else if error}
       <div class="empty-state">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <p>{error}</p>
       </div>
     {:else if !hasFollowing}
       <div class="empty-state">
-        <i class="fas fa-user-plus"></i>
+        <i class="fas fa-user-plus" aria-hidden="true"></i>
         <p>Not following anyone yet</p>
         <span class="empty-hint">Follow creators to see their activity here</span>
       </div>
     {:else if feedItems.length === 0}
       <div class="empty-state">
-        <i class="fas fa-stream"></i>
+        <i class="fas fa-stream" aria-hidden="true"></i>
         <p>No recent activity</p>
         <span class="empty-hint">Your followed creators haven't posted lately</span>
       </div>
@@ -107,7 +107,7 @@
 
   <button class="view-all-btn" onclick={viewCreators}>
     <span>Discover Creators</span>
-    <i class="fas fa-arrow-right"></i>
+    <i class="fas fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

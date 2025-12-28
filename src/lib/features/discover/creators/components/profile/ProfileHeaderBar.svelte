@@ -4,7 +4,7 @@
 
 <div class="profile-header">
   <button class="back-btn" onclick={onBack}>
-    <i class="fas fa-arrow-left"></i>
+    <i class="fas fa-arrow-left" aria-hidden="true"></i>
     <span class="back-text">Back</span>
   </button>
 </div>

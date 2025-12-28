@@ -36,7 +36,7 @@
         type="button"
         aria-label="View presets"
       >
-        <i class="fas fa-eye"></i>
+        <i class="fas fa-eye" aria-hidden="true"></i>
         <span>View</span>
       </button>
     {:else}
@@ -55,7 +55,7 @@
         type="button"
         aria-label="Sort and navigate"
       >
-        <i class="fas fa-sort"></i>
+        <i class="fas fa-sort" aria-hidden="true"></i>
         <span>Sort</span>
       </button>
     {:else}
@@ -77,7 +77,7 @@
       type="button"
       aria-label="Advanced filters"
     >
-      <i class="fas fa-sliders-h"></i>
+      <i class="fas fa-sliders-h" aria-hidden="true"></i>
       <span>Filters</span>
     </button>
   </div>

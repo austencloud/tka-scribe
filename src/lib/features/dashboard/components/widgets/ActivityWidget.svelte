@@ -159,7 +159,7 @@
 <div class="activity-widget">
   <div class="widget-header">
     <div class="header-icon">
-      <i class="fas fa-layer-group"></i>
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
     </div>
     <h3>Your Creations</h3>
   </div>
@@ -171,12 +171,12 @@
       </div>
     {:else if !authState.isAuthenticated}
       <div class="empty-state">
-        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
         <p>Sign in to track your creations</p>
       </div>
     {:else if totalSequences === 0}
       <div class="empty-state">
-        <i class="fas fa-wand-magic-sparkles"></i>
+        <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
         <p>No sequences yet</p>
         <span class="empty-hint">Create your first sequence!</span>
       </div>
@@ -209,12 +209,12 @@
                   <img src={thumbnailUrl} alt="Continue sequence" />
                 {:else}
                   <div class="thumbnail-placeholder">
-                    <i class="fas fa-layer-group"></i>
+                    <i class="fas fa-layer-group" aria-hidden="true"></i>
                   </div>
                 {/if}
               </div>
               <div class="card-label">
-                <i class="fas fa-play"></i>
+                <i class="fas fa-play" aria-hidden="true"></i>
                 <span>Continue</span>
               </div>
             </button>
@@ -231,12 +231,12 @@
                   <img src={revisitThumbnailUrl} alt="Revisit sequence" />
                 {:else}
                   <div class="thumbnail-placeholder revisit">
-                    <i class="fas fa-clock-rotate-left"></i>
+                    <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
                   </div>
                 {/if}
               </div>
               <div class="card-label revisit">
-                <i class="fas fa-clock-rotate-left"></i>
+                <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
                 <span>{revisitSequence.label}</span>
               </div>
             </button>
@@ -257,12 +257,12 @@
   {#if authState.isAuthenticated && totalSequences === 0}
     <button class="view-all-btn create" onclick={createNew}>
       <span>Create Your First</span>
-      <i class="fas fa-plus"></i>
+      <i class="fas fa-plus" aria-hidden="true"></i>
     </button>
   {:else}
     <button class="view-all-btn" onclick={viewFullActivity}>
       <span>View Activity Log</span>
-      <i class="fas fa-arrow-right"></i>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
     </button>
   {/if}
 </div>
@@ -541,7 +541,7 @@
   }
 
   .card-label i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   /* Session Note */

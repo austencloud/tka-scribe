@@ -30,8 +30,10 @@
     readOnly = false,
   }: Props = $props();
 
-  // Create state wrapper - orchestrates services and reactive state
-  const detailState = createFeedbackDetailState(item, manageState, readOnly);
+  // Create state wrapper - use $derived to be reactive to prop changes
+  const detailState = $derived(
+    createFeedbackDetailState(item, manageState, readOnly)
+  );
 
   // Mobile detection
   let isMobile = $state(false);
@@ -108,14 +110,14 @@
     {#if (item.status === "in-review" || item.status === "completed" || item.status === "archived") && item.resolutionNotes}
       <section class="section resolution-section">
         <h3 class="section-title">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
           Resolution
         </h3>
         <div class="resolution-card">
           <p class="resolution-text">{item.resolutionNotes}</p>
           {#if item.fixedInVersion}
             <span class="version-badge">
-              <i class="fas fa-tag"></i>
+              <i class="fas fa-tag" aria-hidden="true"></i>
               v{item.fixedInVersion}
             </span>
           {/if}
@@ -160,13 +162,13 @@
             class="screenshots-button"
             onclick={() => openImageViewer(0)}
           >
-            <i class="fas fa-images"></i>
+            <i class="fas fa-images" aria-hidden="true"></i>
             <span
               >View {item.imageUrls.length} screenshot{item.imageUrls.length > 1
                 ? "s"
                 : ""}</span
             >
-            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
           </button>
         {:else}
           <!-- Desktop: Inline grid -->
@@ -184,7 +186,7 @@
                   class="screenshot-thumb"
                 />
                 <div class="screenshot-overlay">
-                  <i class="fas fa-expand"></i>
+                  <i class="fas fa-expand" aria-hidden="true"></i>
                 </div>
               </button>
             {/each}
@@ -199,7 +201,7 @@
     <!-- Priority Section -->
     <section class="section">
       <h3 class="section-title">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         Priority
       </h3>
       {#if isMobile}
@@ -212,7 +214,7 @@
             disabled={readOnly || currentPriorityIndex <= 0}
             aria-label="Lower priority"
           >
-            <i class="fas fa-chevron-down"></i>
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
           </button>
           <span
             class="priority-value"
@@ -220,7 +222,7 @@
               '#6b7280'}"
           >
             {#if currentPriorityConfig}
-              <i class="fas {currentPriorityConfig.icon}"></i>
+              <i class="fas {currentPriorityConfig.icon}" aria-hidden="true"></i>
               {currentPriorityConfig.label}
             {:else}
               None
@@ -234,7 +236,7 @@
               currentPriorityIndex >= priorityOrder.length - 1}
             aria-label="Raise priority"
           >
-            <i class="fas fa-chevron-up"></i>
+            <i class="fas fa-chevron-up" aria-hidden="true"></i>
           </button>
         </div>
       {:else}
@@ -262,7 +264,7 @@
                 void detailState.saveChanges();
               }}
             >
-              <i class="fas {config.icon}"></i>
+              <i class="fas {config.icon}" aria-hidden="true"></i>
               {config.label}
             </button>
           {/each}

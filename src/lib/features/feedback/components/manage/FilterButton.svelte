@@ -26,13 +26,14 @@
   class:panel={isPanel}
   onclick={onClick}
   aria-expanded={isActive}
+  aria-controls="filter-panel-content"
 >
   {#if icon}
-    <i class="fas {icon}"></i>
+    <i class="fas {icon}" aria-hidden="true"></i>
   {/if}
   <span>{label}</span>
   {#if isPanel}
-    <i class="fas fa-chevron-right panel-arrow"></i>
+    <i class="fas fa-chevron-right panel-arrow" aria-hidden="true"></i>
   {/if}
   {#if badgeCount !== undefined && badgeCount > 0}
     <span class="filter-count">{badgeCount}</span>
@@ -110,7 +111,7 @@
     background: var(--semantic-success, #10b981);
     border-radius: 999px;
     color: white;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }

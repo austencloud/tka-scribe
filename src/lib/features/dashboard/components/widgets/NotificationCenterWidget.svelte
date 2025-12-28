@@ -127,13 +127,13 @@
 <div class="notification-center-widget" class:preview-mode={isPreviewActive}>
   {#if isPreviewActive}
     <div class="preview-banner">
-      <i class="fas fa-eye"></i>
+      <i class="fas fa-eye" aria-hidden="true"></i>
       <span>Viewing user's notifications</span>
     </div>
   {/if}
   <div class="widget-header">
     <div class="header-left">
-      <i class="fas fa-bell"></i>
+      <i class="fas fa-bell" aria-hidden="true"></i>
       <h3>Notifications</h3>
     </div>
     <div class="header-right">
@@ -156,17 +156,17 @@
   <div class="widget-content">
     {#if !authState.isAuthenticated && !isPreviewActive}
       <div class="empty-state">
-        <i class="fas fa-bell-slash"></i>
+        <i class="fas fa-bell-slash" aria-hidden="true"></i>
         <p>Sign in to see notifications</p>
       </div>
     {:else if notificationState.isLoading || userPreviewState.loadingSection === "notifications"}
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Loading notifications...</p>
       </div>
     {:else if recentNotifications.length === 0}
       <div class="empty-state">
-        <i class="fas fa-inbox"></i>
+        <i class="fas fa-inbox" aria-hidden="true"></i>
         <p>No notifications yet</p>
         <span class="empty-hint"
           >{isPreviewActive
@@ -188,7 +188,7 @@
       {#if hasMore}
         <button class="view-all-button" onclick={viewAllNotifications}>
           <span>View all notifications</span>
-          <i class="fas fa-arrow-right"></i>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </button>
       {/if}
     {/if}

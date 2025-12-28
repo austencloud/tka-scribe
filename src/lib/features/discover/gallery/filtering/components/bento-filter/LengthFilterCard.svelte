@@ -85,13 +85,13 @@ Click to open length selection sheet
   }
 
   .more {
-    font-size: 10px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.6);
     margin-left: 2px;
   }
 
   .length-hint {
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
   }
 

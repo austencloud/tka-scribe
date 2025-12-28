@@ -5,6 +5,14 @@
  */
 
 /**
+ * Draft persistence data structure
+ */
+export interface FeedbackDraft {
+  formData: FeedbackFormData;
+  timestamp: number;
+}
+
+/**
  * Device context data captured on feedback submission
  */
 export interface DeviceContext {

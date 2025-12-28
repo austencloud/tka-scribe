@@ -58,7 +58,7 @@ Integrates with discoverNavigationState for proper navigation flow.
       aria-label="Go back"
       title="Go back"
     >
-      <i class="fas fa-chevron-left"></i>
+      <i class="fas fa-chevron-left" aria-hidden="true"></i>
     </button>
     <button
       class="nav-button"
@@ -67,7 +67,7 @@ Integrates with discoverNavigationState for proper navigation flow.
       aria-label="Go forward"
       title="Go forward"
     >
-      <i class="fas fa-chevron-right"></i>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
     </button>
   </div>
 {/if}

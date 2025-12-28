@@ -107,7 +107,7 @@
 <div class="profile-widget" class:preview-mode={preview.isActive}>
   {#if preview.isActive}
     <div class="preview-badge">
-      <i class="fas fa-eye"></i>
+      <i class="fas fa-eye" aria-hidden="true"></i>
       Viewing as {effectiveDisplayName || effectiveEmail || "User"}
     </div>
   {/if}
@@ -140,8 +140,7 @@
           <span class="profile-email">{effectiveEmail || "Signed In"}</span>
         </div>
         {#if !preview.isActive}
-          <i
-            class="fas fa-chevron-down dropdown-icon"
+          <i class="fas fa-chevron-down dropdown-icon" aria-hidden="true"
             class:open={showAuthOptions}
           ></i>
         {/if}
@@ -150,7 +149,7 @@
       {#if showAuthOptions}
         <div class="auth-dropdown">
           <button class="dropdown-item sign-out" onclick={handleSignOut}>
-            <i class="fas fa-sign-out-alt"></i>
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             Sign Out
           </button>
         </div>
@@ -160,7 +159,7 @@
       <div class="quick-stats">
         <button class="stat-item" onclick={navigateToLibrary}>
           <div class="stat-icon">
-            <i class="fas fa-layer-group"></i>
+            <i class="fas fa-layer-group" aria-hidden="true"></i>
           </div>
           <div class="stat-content">
             <span class="stat-value">{sequenceCount}</span>
@@ -169,7 +168,7 @@
         </button>
         <button class="stat-item" onclick={navigateToLibrary}>
           <div class="stat-icon favorites">
-            <i class="fas fa-star"></i>
+            <i class="fas fa-star" aria-hidden="true"></i>
           </div>
           <div class="stat-content">
             <span class="stat-value">{favoriteCount}</span>
@@ -180,9 +179,9 @@
 
       <!-- Library Access Button -->
       <button class="library-btn" onclick={navigateToLibrary}>
-        <i class="fas fa-book"></i>
+        <i class="fas fa-book" aria-hidden="true"></i>
         Open Library
-        <i class="fas fa-arrow-right"></i>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
     </div>
   {:else}
@@ -190,7 +189,7 @@
     <div class="sign-in-prompt">
       <div class="prompt-header">
         <div class="prompt-icon">
-          <i class="fas fa-user-circle"></i>
+          <i class="fas fa-user-circle" aria-hidden="true"></i>
         </div>
         <div class="prompt-text">
           <h3>Sign In</h3>
@@ -221,13 +220,13 @@
           Google
         </button>
         <button class="auth-btn facebook" onclick={handleFacebookSignIn}>
-          <i class="fab fa-facebook-f"></i>
+          <i class="fab fa-facebook-f" aria-hidden="true"></i>
           Facebook
         </button>
       </div>
 
       <p class="guest-note">
-        <i class="fas fa-info-circle"></i>
+        <i class="fas fa-info-circle" aria-hidden="true"></i>
         Continue as guest - data saved locally
       </p>
     </div>
@@ -351,7 +350,7 @@
 
   .dropdown-icon {
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
-    font-size: 11px;
+    font-size: 12px;
     transition: transform var(--duration-2026-fast, 150ms)
       var(--ease-2026, ease);
   }
@@ -501,7 +500,7 @@
   }
 
   .library-btn i:last-child {
-    font-size: 11px;
+    font-size: 12px;
     margin-left: auto;
     transition: transform var(--duration-2026-fast, 150ms)
       var(--ease-2026, ease);

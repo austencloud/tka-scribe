@@ -1,0 +1,131 @@
+<script lang="ts">
+  import { TYPE_CONFIG } from "../../domain/models/feedback-models";
+  import type { FeedbackType } from "../../domain/models/feedback-models";
+
+  const { selectedType, onTypeChange } = $props<{
+    selectedType: FeedbackType;
+    onTypeChange: (type: FeedbackType) => void;
+  }>();
+</script>
+
+<fieldset class="type-selector">
+  <legend class="sr-only">Feedback Type</legend>
+  <div class="segment-control">
+    {#each Object.entries(TYPE_CONFIG) as [type, config]}
+      <button
+        type="button"
+        class="segment"
+        class:selected={selectedType === type}
+        onclick={() => onTypeChange(type as FeedbackType)}
+        style="--type-color: {config.color}"
+        aria-pressed={selectedType === type}
+      >
+        <i class="fas {config.icon}" aria-hidden="true"></i>
+        <span class="segment-label"
+          >{config.label
+            .replace(" Report", "")
+            .replace(" Request", "")
+            .replace(" Feedback", "")}</span
+        >
+      </button>
+    {/each}
+  </div>
+</fieldset>
+
+<style>
+  .type-selector {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .segment-control {
+    display: flex;
+    gap: clamp(4px, 1cqi, 8px);
+    padding: clamp(3px, 0.8cqi, 5px);
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 80%,
+      transparent
+    );
+    border-radius: clamp(8px, 2cqi, 12px);
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .segment {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(4px, 1cqi, 8px);
+    min-height: var(--min-touch-target);
+    padding: clamp(6px, 1.5cqi, 10px) clamp(8px, 2cqi, 14px);
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: clamp(6px, 1.5cqi, 10px);
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      transparent
+    );
+    font-size: clamp(0.8rem, 2.5cqi, 0.9375rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 200ms ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .segment::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--type-color) 20%, transparent) 0%,
+      color-mix(in srgb, var(--type-color) 8%, transparent) 100%
+    );
+    opacity: 0;
+    transition: opacity 200ms ease;
+  }
+
+  .segment i {
+    position: relative;
+    z-index: 1;
+    font-size: clamp(0.9em, 2cqi, 1.15em);
+    transition: color 200ms ease;
+  }
+
+  .segment-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .segment:hover:not(.selected) {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    border-color: color-mix(in srgb, var(--type-color) 35%, transparent);
+  }
+
+  .segment:hover:not(.selected)::before {
+    opacity: 0.4;
+  }
+
+  .segment:hover:not(.selected) i {
+    color: var(--type-color);
+  }
+
+  .segment.selected {
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    border-color: var(--type-color);
+    background: color-mix(in srgb, var(--type-color) 12%, transparent);
+  }
+
+  .segment.selected::before {
+    opacity: 1;
+  }
+
+  .segment.selected i {
+    color: var(--type-color);
+  }
+
+</style>

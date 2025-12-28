@@ -49,7 +49,7 @@
 
 <section class="section">
   <h3 class="section-title">
-    <i class="fas fa-tasks"></i>
+    <i class="fas fa-tasks" aria-hidden="true"></i>
     Status
   </h3>
   {#if isMobile}
@@ -62,10 +62,10 @@
         disabled={readOnly || currentStatusIndex <= 0}
         aria-label="Previous status"
       >
-        <i class="fas fa-chevron-left"></i>
+        <i class="fas fa-chevron-left" aria-hidden="true"></i>
       </button>
       <span class="status-value" style="--status-color: {currentConfig.color}">
-        <i class="fas {currentConfig.icon}"></i>
+        <i class="fas {currentConfig.icon}" aria-hidden="true"></i>
         {currentConfig.label}
       </span>
       <button
@@ -75,7 +75,7 @@
         disabled={readOnly || currentStatusIndex >= statusOrder.length - 1}
         aria-label="Next status"
       >
-        <i class="fas fa-chevron-right"></i>
+        <i class="fas fa-chevron-right" aria-hidden="true"></i>
       </button>
     </div>
   {:else}
@@ -94,7 +94,7 @@
           }}
           disabled={readOnly}
         >
-          <i class="fas {config.icon}"></i>
+          <i class="fas {config.icon}" aria-hidden="true"></i>
           <span class="status-label">{config.label}</span>
         </button>
       {/each}

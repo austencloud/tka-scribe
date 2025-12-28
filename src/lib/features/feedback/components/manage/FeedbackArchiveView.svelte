@@ -163,7 +163,7 @@
   <header class="archive-header">
     <div class="header-top">
       <button type="button" class="back-btn" onclick={onBack}>
-        <i class="fas fa-arrow-left"></i>
+        <i class="fas fa-arrow-left" aria-hidden="true"></i>
         <span>Back to Kanban</span>
       </button>
 
@@ -174,7 +174,7 @@
           class:active={viewMode === "releases"}
           onclick={() => (viewMode = "releases")}
         >
-          <i class="fas fa-tags"></i>
+          <i class="fas fa-tags" aria-hidden="true"></i>
           By Release
         </button>
         <button
@@ -183,7 +183,7 @@
           class:active={viewMode === "all"}
           onclick={() => (viewMode = "all")}
         >
-          <i class="fas fa-list"></i>
+          <i class="fas fa-list" aria-hidden="true"></i>
           All Items
         </button>
       </div>
@@ -191,7 +191,7 @@
 
     <div class="header-content">
       <h2>
-        <i class="fas fa-archive"></i>
+        <i class="fas fa-archive" aria-hidden="true"></i>
         {viewMode === "releases" ? "Release Archive" : "All Archived Feedback"}
       </h2>
       <p class="subtitle">
@@ -219,7 +219,7 @@
             ? "Sort ascending"
             : "Sort descending"}
         >
-          <i class="fas fa-sort-amount-{sortOrder === 'asc' ? 'up' : 'down'}"
+          <i class="fas fa-sort-amount-{sortOrder === 'asc' ? 'up' : 'down'}" aria-hidden="true"
           ></i>
         </button>
       </div>
@@ -236,7 +236,7 @@
         </div>
       {:else if sortedArchivedItems.length === 0}
         <div class="empty-state">
-          <i class="fas fa-box-open"></i>
+          <i class="fas fa-box-open" aria-hidden="true"></i>
           <h3>No Archived Items</h3>
           <p>Archived feedback will appear here.</p>
         </div>
@@ -251,7 +251,7 @@
             >
               <div class="item-header">
                 <div class="item-icon" style="--type-color: {typeConfig.color}">
-                  <i class="fas {typeConfig.icon}"></i>
+                  <i class="fas {typeConfig.icon}" aria-hidden="true"></i>
                 </div>
                 <div class="item-meta">
                   <span class="item-type" style="color: {typeConfig.color}">
@@ -270,7 +270,7 @@
               </div>
               <div class="item-footer">
                 <span class="item-date">
-                  <i class="fas fa-archive"></i>
+                  <i class="fas fa-archive" aria-hidden="true"></i>
                   {#if item.archivedAt}
                     {item.archivedAt.toLocaleDateString("en-US", {
                       month: "short",
@@ -283,12 +283,12 @@
                 </span>
                 {#if item.fixedInVersion}
                   <span class="item-version">
-                    <i class="fas fa-tag"></i>
+                    <i class="fas fa-tag" aria-hidden="true"></i>
                     v{item.fixedInVersion}
                   </span>
                 {/if}
               </div>
-              <i class="fas fa-chevron-right item-arrow"></i>
+              <i class="fas fa-chevron-right item-arrow" aria-hidden="true"></i>
             </button>
           {/each}
         </div>
@@ -301,7 +301,7 @@
       </div>
     {:else if versionState.versions.length === 0}
       <div class="empty-state">
-        <i class="fas fa-box-open"></i>
+        <i class="fas fa-box-open" aria-hidden="true"></i>
         <h3>No Releases Yet</h3>
         <p>Completed feedback will appear here after preparing a release.</p>
       </div>
@@ -328,24 +328,24 @@
               <div class="version-summary">
                 {#if version.feedbackSummary.bugs > 0}
                   <span class="summary-badge bug">
-                    <i class="fas fa-bug"></i>
+                    <i class="fas fa-bug" aria-hidden="true"></i>
                     {version.feedbackSummary.bugs}
                   </span>
                 {/if}
                 {#if version.feedbackSummary.features > 0}
                   <span class="summary-badge feature">
-                    <i class="fas fa-lightbulb"></i>
+                    <i class="fas fa-lightbulb" aria-hidden="true"></i>
                     {version.feedbackSummary.features}
                   </span>
                 {/if}
                 {#if version.feedbackSummary.general > 0}
                   <span class="summary-badge general">
-                    <i class="fas fa-comment"></i>
+                    <i class="fas fa-comment" aria-hidden="true"></i>
                     {version.feedbackSummary.general}
                   </span>
                 {/if}
               </div>
-              <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} expand-icon"
+              <i class="fas fa-chevron-{isExpanded ? 'up' : 'down'} expand-icon" aria-hidden="true"
               ></i>
             </button>
 
@@ -353,7 +353,7 @@
               <div class="version-items">
                 {#if versionState.isLoading}
                   <div class="items-loading">
-                    <i class="fas fa-spinner fa-spin"></i>
+                    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                     Loading...
                   </div>
                 {:else if versionState.selectedVersionFeedback.length === 0}
@@ -372,13 +372,13 @@
                         class="item-icon"
                         style="--type-color: {typeConfig.color}"
                       >
-                        <i class="fas {typeConfig.icon}"></i>
+                        <i class="fas {typeConfig.icon}" aria-hidden="true"></i>
                       </div>
                       <div class="item-content">
                         <span class="item-title">{item.title}</span>
                         <span class="item-description">{item.description}</span>
                       </div>
-                      <i class="fas fa-chevron-right item-arrow"></i>
+                      <i class="fas fa-chevron-right item-arrow" aria-hidden="true"></i>
                     </button>
                   {/each}
                 {/if}
@@ -399,7 +399,7 @@
 >
   {#if isLoadingItem}
     <div class="detail-loading">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <span>Loading feedback...</span>
     </div>
   {:else if selectedItem}
@@ -411,7 +411,7 @@
     />
   {:else}
     <div class="detail-error">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       <span>Failed to load feedback item</span>
       <button type="button" onclick={closeDetail}>Close</button>
     </div>
@@ -855,7 +855,7 @@
 
   .item-priority {
     padding: 2px 8px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
     border-radius: 4px;
@@ -864,18 +864,18 @@
   }
 
   .item-priority.priority-high {
-    background: rgba(239, 68, 68, 0.2);
-    color: #f87171;
+    background: rgba(239, 68, 68, 0.5);
+    color: white;
   }
 
   .item-priority.priority-medium {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.5);
+    color: white;
   }
 
   .item-priority.priority-low {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.5);
+    color: white;
   }
 
   .feedback-item-card .item-content {
@@ -894,7 +894,7 @@
 
   .feedback-item-card .item-description {
     font-size: 13px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     white-space: normal;
     overflow: visible;
     text-overflow: clip;

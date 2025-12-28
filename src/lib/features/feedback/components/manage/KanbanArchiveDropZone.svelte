@@ -52,16 +52,16 @@
   aria-label="View archived feedback"
 >
   <div class="archive-label">
-    <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}"></i>
+    <i class="fas {STATUS_CONFIG[ARCHIVE_STATUS].icon}" aria-hidden="true"></i>
     <span>Archived</span>
     {#if !isDragActive}
-      <i class="fas fa-chevron-right view-icon"></i>
+      <i class="fas fa-chevron-right view-icon" aria-hidden="true"></i>
     {/if}
   </div>
 
   {#if isDropTarget}
     <div class="drop-indicator">
-      <i class="fas fa-arrow-right"></i>
+      <i class="fas fa-arrow-right" aria-hidden="true"></i>
     </div>
   {/if}
 </div>

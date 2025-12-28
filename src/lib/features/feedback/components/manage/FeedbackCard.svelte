@@ -31,22 +31,26 @@
     label: "Unknown",
   };
 
-  const typeConfig =
+  const typeConfig = $derived(
     item.type && item.type in TYPE_CONFIG
       ? TYPE_CONFIG[item.type as keyof typeof TYPE_CONFIG]
-      : DEFAULT_TYPE_CONFIG;
-  const statusConfig =
+      : DEFAULT_TYPE_CONFIG
+  );
+  const statusConfig = $derived(
     item.status && item.status in STATUS_CONFIG
       ? STATUS_CONFIG[item.status as keyof typeof STATUS_CONFIG]
-      : DEFAULT_STATUS_CONFIG;
-  const priorityConfig =
+      : DEFAULT_STATUS_CONFIG
+  );
+  const priorityConfig = $derived(
     item.priority && item.priority in PRIORITY_CONFIG
       ? PRIORITY_CONFIG[item.priority as keyof typeof PRIORITY_CONFIG]
-      : null;
+      : null
+  );
 
   // Use Google photo if available, fallback to generated avatar
-  const avatarUrl =
-    item.userPhotoURL || generateAvatarUrl(item.userDisplayName, 64);
+  const avatarUrl = $derived(
+    item.userPhotoURL || generateAvatarUrl(item.userDisplayName, 64)
+  );
 
   // Swipe state
   let swipeOffset = $state(0);
@@ -213,7 +217,7 @@
       style="opacity: {leftActionOpacity}"
     >
       <div class="action-content" style="transform: scale({leftActionScale})">
-        <i class="fas fa-trash-alt"></i>
+        <i class="fas fa-trash-alt" aria-hidden="true"></i>
         <span>Delete</span>
       </div>
     </div>
@@ -225,7 +229,7 @@
       style="opacity: {rightActionOpacity}"
     >
       <div class="action-content" style="transform: scale({rightActionScale})">
-        <i class="fas fa-check-circle"></i>
+        <i class="fas fa-check-circle" aria-hidden="true"></i>
         <span
           >{item.status === "new"
             ? "Start"
@@ -253,7 +257,7 @@
   >
     <!-- Left column: Type icon -->
     <div class="card-type" style="--type-color: {typeConfig.color}">
-      <i class="fas {typeConfig.icon}"></i>
+      <i class="fas {typeConfig.icon}" aria-hidden="true"></i>
     </div>
 
     <!-- Main content -->
@@ -288,7 +292,7 @@
             class="priority-badge"
             style="--badge-color: {priorityConfig.color}"
           >
-            <i class="fas {priorityConfig.icon}"></i>
+            <i class="fas {priorityConfig.icon}" aria-hidden="true"></i>
             <span class="priority-label">{priorityConfig.label}</span>
           </span>
         {/if}

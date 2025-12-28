@@ -156,7 +156,7 @@
 <div class="library-dashboard">
   {#if !isAuthenticated}
     <div class="auth-required">
-      <i class="fas fa-lock"></i>
+      <i class="fas fa-lock" aria-hidden="true"></i>
       <h3>Sign In Required</h3>
       <p>Please sign in to access your personal library.</p>
     </div>
@@ -167,11 +167,11 @@
     </div>
   {:else if error}
     <div class="error-state">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       <h3>Error Loading Library</h3>
       <p>{error}</p>
       <button class="retry-btn" onclick={() => libraryState.initialize()}>
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
         Retry
       </button>
     </div>
@@ -198,12 +198,12 @@
       <section class="dashboard-section">
         <div class="section-header">
           <div class="section-title">
-            <i class="fas fa-clock"></i>
+            <i class="fas fa-clock" aria-hidden="true"></i>
             <h2>Recent Sequences</h2>
           </div>
           {#if totalSequences > 0}
             <button class="see-all-btn" onclick={handleSeeAllSequences}>
-              See All <i class="fas fa-chevron-right"></i>
+              See All <i class="fas fa-chevron-right" aria-hidden="true"></i>
             </button>
           {/if}
         </div>
@@ -220,7 +220,7 @@
           </div>
         {:else}
           <div class="empty-section">
-            <i class="fas fa-plus-circle"></i>
+            <i class="fas fa-plus-circle" aria-hidden="true"></i>
             <p>No sequences yet. Create your first sequence!</p>
           </div>
         {/if}
@@ -231,11 +231,11 @@
         <section class="dashboard-section">
           <div class="section-header">
             <div class="section-title">
-              <i class="fas fa-star"></i>
+              <i class="fas fa-star" aria-hidden="true"></i>
               <h2>Favorites</h2>
             </div>
             <button class="see-all-btn" onclick={handleSeeAllFavorites}>
-              See All <i class="fas fa-chevron-right"></i>
+              See All <i class="fas fa-chevron-right" aria-hidden="true"></i>
             </button>
           </div>
 
@@ -256,12 +256,12 @@
         <section class="dashboard-section">
           <div class="section-header">
             <div class="section-title">
-              <i class="fas fa-video"></i>
+              <i class="fas fa-video" aria-hidden="true"></i>
               <h2>My Videos</h2>
             </div>
             {#if totalVideos > 0}
               <button class="see-all-btn" onclick={handleSeeAllVideos}>
-                See All <i class="fas fa-chevron-right"></i>
+                See All <i class="fas fa-chevron-right" aria-hidden="true"></i>
               </button>
             {/if}
           </div>
@@ -282,7 +282,7 @@
             </div>
           {:else}
             <div class="empty-section">
-              <i class="fas fa-video"></i>
+              <i class="fas fa-video" aria-hidden="true"></i>
               <p>No videos yet. Record your first performance!</p>
             </div>
           {/if}

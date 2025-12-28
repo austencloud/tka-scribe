@@ -32,10 +32,10 @@
     disabled={readOnly}
     title={readOnly ? detailState.typeConfig.label : "Click to change type"}
   >
-    <i class="fas {detailState.typeConfig.icon}"></i>
+    <i class="fas {detailState.typeConfig.icon}" aria-hidden="true"></i>
     <span>{detailState.typeConfig.label}</span>
     {#if !readOnly}
-      <i class="fas fa-exchange-alt type-switcher-icon"></i>
+      <i class="fas fa-exchange-alt type-switcher-icon" aria-hidden="true"></i>
     {/if}
   </button>
 
@@ -49,7 +49,7 @@
         aria-label="Restore original"
         title="Restore original"
       >
-        <i class="fas fa-undo"></i>
+        <i class="fas fa-undo" aria-hidden="true"></i>
       </button>
       <button
         type="button"
@@ -60,9 +60,9 @@
         title="Save changes"
       >
         {#if detailState.isSaving}
-          <i class="fas fa-circle-notch fa-spin"></i>
+          <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
         {:else}
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
         {/if}
       </button>
     {/if}
@@ -72,7 +72,7 @@
       onclick={onClose}
       aria-label="Close panel"
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 </header>

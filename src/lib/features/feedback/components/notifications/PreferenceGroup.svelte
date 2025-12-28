@@ -3,12 +3,16 @@
   import PreferenceItemCard from "./PreferenceItemCard.svelte";
   import type { PreferenceItem } from "./PreferenceItem";
 
-  export let title: string;
-  export let description: string;
-  export let items: PreferenceItem[];
-  export let preferences: NotificationPreferences;
-  export let isBusyKey: (key: keyof NotificationPreferences) => boolean;
-  export let onToggle: (key: keyof NotificationPreferences) => void;
+  interface Props {
+    title: string;
+    description: string;
+    items: PreferenceItem[];
+    preferences: NotificationPreferences;
+    isBusyKey: (key: keyof NotificationPreferences) => boolean;
+    onToggle: (key: keyof NotificationPreferences) => void;
+  }
+
+  let { title, description, items, preferences, isBusyKey, onToggle }: Props = $props();
 </script>
 
 <div class="preference-group">

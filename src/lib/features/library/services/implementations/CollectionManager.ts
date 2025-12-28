@@ -21,8 +21,10 @@ import {
   writeBatch,
   arrayUnion,
   arrayRemove,
+  documentId,
   type Unsubscribe,
   type DocumentData,
+  type Firestore,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
@@ -128,6 +130,49 @@ export class CollectionManager implements ICollectionManager {
     } as LibrarySequence;
   }
 
+  /**
+   * Batch fetch sequences by IDs to avoid N+1 query pattern
+   * Firestore 'in' queries are limited to 30 items, so we chunk
+   */
+  private async batchFetchSequences(
+    firestore: Firestore,
+    userId: string,
+    sequenceIds: string[],
+    filterPublic = false
+  ): Promise<LibrarySequence[]> {
+    if (sequenceIds.length === 0) {
+      return [];
+    }
+
+    const sequences: LibrarySequence[] = [];
+    const BATCH_SIZE = 30; // Firestore 'in' query limit
+
+    // Process in chunks of 30
+    for (let i = 0; i < sequenceIds.length; i += BATCH_SIZE) {
+      const chunk = sequenceIds.slice(i, i + BATCH_SIZE);
+      const sequencesRef = collection(
+        firestore,
+        `users/${userId}/sequences`
+      );
+      const batchQuery = query(
+        sequencesRef,
+        where(documentId(), "in", chunk)
+      );
+      const batchSnapshot = await getDocs(batchQuery);
+
+      for (const docSnap of batchSnapshot.docs) {
+        const data = docSnap.data();
+        // If filtering for public, only include public sequences
+        if (filterPublic && data["visibility"] !== "public") {
+          continue;
+        }
+        sequences.push(this.mapDocToSequence(data, docSnap.id));
+      }
+    }
+
+    return sequences;
+  }
+
   // ============================================================
   // SYSTEM COLLECTIONS
   // ============================================================
@@ -148,7 +193,6 @@ export class CollectionManager implements ICollectionManager {
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        console.log(`[CollectionManager] Creating system collection: ${type}`);
         const systemCollection = createSystemCollection(type, userId);
         await setDoc(docRef, {
           ...systemCollection,
@@ -400,17 +444,12 @@ export class CollectionManager implements ICollectionManager {
       return [];
     }
 
-    // Fetch each sequence
-    const sequences: LibrarySequence[] = [];
-    for (const sequenceId of collectionData.sequenceIds) {
-      const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        sequences.push(this.mapDocToSequence(docSnap.data(), sequenceId));
-      }
-    }
-
-    return sequences;
+    // Batch fetch sequences to avoid N+1 query pattern
+    return this.batchFetchSequences(
+      firestore,
+      userId,
+      collectionData.sequenceIds
+    );
   }
 
   async reorderSequences(
@@ -650,21 +689,13 @@ export class CollectionManager implements ICollectionManager {
       return [];
     }
 
-    // Fetch sequences
-    const sequences: LibrarySequence[] = [];
-    for (const sequenceId of collectionData.sequenceIds) {
-      const seqRef = doc(firestore, getUserSequencePath(userId, sequenceId));
-      const seqSnap = await getDoc(seqRef);
-      if (seqSnap.exists()) {
-        const seqData = seqSnap.data();
-        // Only include public sequences
-        if (seqData["visibility"] === "public") {
-          sequences.push(this.mapDocToSequence(seqData, sequenceId));
-        }
-      }
-    }
-
-    return sequences;
+    // Batch fetch sequences, filtering for public visibility
+    return this.batchFetchSequences(
+      firestore,
+      userId,
+      collectionData.sequenceIds,
+      true // filterPublic = true
+    );
   }
 
   // ============================================================

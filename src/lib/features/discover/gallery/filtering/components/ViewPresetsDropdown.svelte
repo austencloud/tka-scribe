@@ -167,18 +167,18 @@ Responsive behavior:
     type="button"
     aria-label="View presets"
     aria-expanded={isOpen}
+    aria-controls="view-presets-menu"
   >
-    <i
-      class="fas {currentPreset.icon}"
+    <i class="fas {currentPreset.icon}" aria-hidden="true"
       style={currentPreset.iconColor ? `color: ${currentPreset.iconColor}` : ""}
     ></i>
     <span class="toggle-label">{currentPreset.label}</span>
-    <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon"></i>
+    <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon" aria-hidden="true"></i>
   </button>
 
   <!-- Desktop: Dropdown Menu -->
   {#if isOpen && !isMobile}
-    <div class="dropdown-menu">
+    <div class="dropdown-menu" id="view-presets-menu">
       <div class="menu-header">Quick Views</div>
       <div class="menu-items">
         {#each presets as preset (preset.id)}
@@ -191,10 +191,11 @@ Responsive behavior:
             <i
               class="fas {preset.icon}"
               style={preset.iconColor ? `color: ${preset.iconColor}` : ""}
+              aria-hidden="true"
             ></i>
             <span>{preset.label}</span>
             {#if currentPreset.id === preset.id}
-              <i class="fas fa-check check-icon"></i>
+              <i class="fas fa-check check-icon" aria-hidden="true"></i>
             {/if}
           </button>
         {/each}
@@ -217,10 +218,11 @@ Responsive behavior:
           <i
             class="fas {preset.icon}"
             style={preset.iconColor ? `color: ${preset.iconColor}` : ""}
+            aria-hidden="true"
           ></i>
           <span>{preset.label}</span>
           {#if currentPreset.id === preset.id}
-            <i class="fas fa-check check-icon"></i>
+            <i class="fas fa-check check-icon" aria-hidden="true"></i>
           {/if}
         </button>
       {/each}
@@ -270,7 +272,7 @@ Responsive behavior:
   }
 
   .chevron-icon {
-    font-size: 11px;
+    font-size: 12px;
     opacity: 0.75;
     transition: transform 0.2s ease;
   }

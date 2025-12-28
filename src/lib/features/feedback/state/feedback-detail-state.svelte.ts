@@ -13,8 +13,8 @@ import type {
   FeedbackStatus,
 } from "../domain/models/feedback-models";
 import type { FeedbackManageState } from "./feedback-manage-state.svelte";
-import type { IFeedbackEditingService } from "../services/contracts/IFeedbackEditingService";
-import type { IFeedbackFormattingService } from "../services/contracts/IFeedbackFormattingService";
+import type { IFeedbackEditor } from "../services/contracts/IFeedbackEditor";
+import type { IFeedbackFormatter } from "../services/contracts/IFeedbackFormatter";
 import { TYPE_CONFIG, PRIORITY_CONFIG } from "../domain/models/feedback-models";
 import { tryResolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -28,11 +28,11 @@ export function createFeedbackDetailState(
   readOnly: boolean = false
 ) {
   // Resolve services via DI
-  const editingService = tryResolve<IFeedbackEditingService>(
-    TYPES.IFeedbackEditingService
+  const editingService = tryResolve<IFeedbackEditor>(
+    TYPES.IFeedbackEditor
   );
-  const formattingService = tryResolve<IFeedbackFormattingService>(
-    TYPES.IFeedbackFormattingService
+  const formattingService = tryResolve<IFeedbackFormatter>(
+    TYPES.IFeedbackFormatter
   );
 
   if (!editingService || !formattingService) {

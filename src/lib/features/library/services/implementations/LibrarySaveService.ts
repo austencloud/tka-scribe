@@ -150,9 +150,7 @@ export class LibrarySaveService implements ILibrarySaveService {
         thumbnailOptions
       );
 
-      if (imageBlob) {
-        console.log("[LibrarySaveService] Using cached thumbnail");
-      } else {
+      if (!imageBlob) {
         // Cache miss - generate thumbnail with progress tracking
         imageBlob = await this.shareService.getImageBlob(
           sequence,
@@ -196,7 +194,6 @@ export class LibrarySaveService implements ILibrarySaveService {
           // Create new tag with random color
           const randomColor = TAG_COLORS[Math.floor(Math.random() * TAG_COLORS.length)];
           await this.tagService.createTag(normalized, { color: randomColor });
-          console.log(`[LibrarySaveService] Created new tag: ${normalized}`);
         }
       }
     } catch (error) {

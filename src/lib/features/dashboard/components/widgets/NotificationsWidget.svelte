@@ -55,7 +55,7 @@
       class:active={activeTab === "messages"}
       onclick={() => (activeTab = "messages")}
     >
-      <i class="fas fa-envelope"></i>
+      <i class="fas fa-envelope" aria-hidden="true"></i>
       <span>Messages</span>
       {#if unreadMessages > 0}
         <span class="badge">{unreadMessages > 99 ? "99+" : unreadMessages}</span>
@@ -67,7 +67,7 @@
       class:active={activeTab === "alerts"}
       onclick={() => (activeTab = "alerts")}
     >
-      <i class="fas fa-bell"></i>
+      <i class="fas fa-bell" aria-hidden="true"></i>
       <span>Alerts</span>
       {#if unreadNotifications > 0}
         <span class="badge">{unreadNotifications > 99 ? "99+" : unreadNotifications}</span>
@@ -79,12 +79,12 @@
   <div class="content-area">
     {#if !authState.isAuthenticated}
       <div class="empty-state">
-        <i class="fas fa-user-circle"></i>
+        <i class="fas fa-user-circle" aria-hidden="true"></i>
         <p>Sign in to see your inbox</p>
       </div>
     {:else if !hasContent}
       <div class="empty-state">
-        <i class="fas {activeTab === 'messages' ? 'fa-envelope' : 'fa-bell'}"></i>
+        <i class="fas {activeTab === 'messages' ? 'fa-envelope' : 'fa-bell'}" aria-hidden="true"></i>
         <p>No {activeTab === "messages" ? "messages" : "alerts"} yet</p>
       </div>
     {:else if activeTab === "messages"}
@@ -128,17 +128,17 @@
           >
             <div class="item-icon">
               {#if notification.type === "message-received"}
-                <i class="fas fa-envelope"></i>
+                <i class="fas fa-envelope" aria-hidden="true"></i>
               {:else if notification.type.startsWith("feedback-")}
-                <i class="fas fa-comment-dots"></i>
+                <i class="fas fa-comment-dots" aria-hidden="true"></i>
               {:else if notification.type === "achievement-unlocked"}
-                <i class="fas fa-trophy"></i>
+                <i class="fas fa-trophy" aria-hidden="true"></i>
               {:else if notification.type === "sequence-liked"}
-                <i class="fas fa-heart"></i>
+                <i class="fas fa-heart" aria-hidden="true"></i>
               {:else if notification.type === "user-followed"}
-                <i class="fas fa-user-plus"></i>
+                <i class="fas fa-user-plus" aria-hidden="true"></i>
               {:else}
-                <i class="fas fa-bell"></i>
+                <i class="fas fa-bell" aria-hidden="true"></i>
               {/if}
             </div>
             <div class="item-content">

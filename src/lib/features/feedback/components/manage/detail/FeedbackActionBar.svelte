@@ -30,9 +30,9 @@
             disabled={detailState.isDeleting}
           >
             {#if detailState.isDeleting}
-              <i class="fas fa-circle-notch fa-spin"></i>
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
             {:else}
-              <i class="fas fa-trash"></i>
+              <i class="fas fa-trash" aria-hidden="true"></i>
             {/if}
             Delete
           </button>
@@ -44,7 +44,7 @@
         class="delete-btn"
         onclick={() => (detailState.showDeleteConfirm = true)}
       >
-        <i class="fas fa-trash-alt"></i>
+        <i class="fas fa-trash-alt" aria-hidden="true"></i>
         Delete Forever
       </button>
     {/if}

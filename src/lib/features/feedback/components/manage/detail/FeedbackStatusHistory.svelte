@@ -31,7 +31,7 @@
 {#if sortedHistory.length > 0}
   <section class="section">
     <h3 class="section-title">
-      <i class="fas fa-history"></i>
+      <i class="fas fa-history" aria-hidden="true"></i>
       Status History
     </h3>
     <div class="timeline">
@@ -40,7 +40,7 @@
           STATUS_CONFIG[entry.status as keyof typeof STATUS_CONFIG]}
         <div class="timeline-entry">
           <div class="timeline-dot" style="background: {config.color}">
-            <i class="fas {config.icon}"></i>
+            <i class="fas {config.icon}" aria-hidden="true"></i>
           </div>
           <div class="timeline-content">
             <div class="timeline-status" style="color: {config.color}">
@@ -100,7 +100,7 @@
     justify-content: center;
     border-radius: 50%;
     color: white;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .timeline-content {
@@ -125,7 +125,7 @@
     .timeline-dot {
       width: 20px;
       height: 20px;
-      font-size: 9px;
+      font-size: 12px;
     }
 
     .timeline-status {
@@ -133,7 +133,7 @@
     }
 
     .timeline-time {
-      font-size: 0.6875rem;
+      font-size: 0.75rem;
     }
   }
 </style>

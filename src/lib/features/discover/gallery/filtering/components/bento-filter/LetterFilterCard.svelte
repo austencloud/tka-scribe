@@ -58,7 +58,7 @@ Click to open letter selection sheet
   }
 
   .letter-hint {
-    font-size: 11px;
+    font-size: 12px;
     color: rgba(255, 255, 255, 0.5);
   }
 </style>

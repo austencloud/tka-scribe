@@ -162,7 +162,7 @@
     border: 2px solid rgba(0, 0, 0, 0.8);
     border-radius: 9px;
     color: #ffffff;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     line-height: 1;
     animation: badgePop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);

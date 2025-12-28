@@ -46,7 +46,7 @@
 <div class="challenge-widget">
   <div class="widget-header">
     <div class="header-icon">
-      <i class="fas fa-bolt"></i>
+      <i class="fas fa-bolt" aria-hidden="true"></i>
     </div>
     <h3>Today's Challenge</h3>
   </div>
@@ -58,14 +58,14 @@
       </div>
     {:else if error}
       <div class="empty-state">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <p>{error}</p>
       </div>
     {:else if challenge}
       <DailyChallengeCard {challenge} {progress} compact />
     {:else}
       <div class="empty-state">
-        <i class="fas fa-sun"></i>
+        <i class="fas fa-sun" aria-hidden="true"></i>
         <p>Check back later for today's challenge!</p>
       </div>
     {/if}
@@ -73,7 +73,7 @@
 
   <button class="view-all-btn" onclick={viewAllChallenges}>
     <span>View All Challenges</span>
-    <i class="fas fa-arrow-right"></i>
+    <i class="fas fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

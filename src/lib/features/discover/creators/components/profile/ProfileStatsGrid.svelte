@@ -7,7 +7,7 @@
 
 <div class="stats-grid" transition:fly={{ y: 20, duration: 300, delay: 100 }}>
   <div class="stat-card">
-    <i class="fas fa-list stat-icon"></i>
+    <i class="fas fa-list stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.sequenceCount}</span>
       <span class="stat-label">Sequences</span>
@@ -15,7 +15,7 @@
   </div>
 
   <div class="stat-card">
-    <i class="fas fa-folder stat-icon"></i>
+    <i class="fas fa-folder stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.collectionCount}</span>
       <span class="stat-label">Collections</span>
@@ -23,7 +23,7 @@
   </div>
 
   <div class="stat-card">
-    <i class="fas fa-users stat-icon"></i>
+    <i class="fas fa-users stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.followerCount}</span>
       <span class="stat-label">Followers</span>
@@ -31,7 +31,7 @@
   </div>
 
   <div class="stat-card">
-    <i class="fas fa-user-plus stat-icon"></i>
+    <i class="fas fa-user-plus stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.followingCount}</span>
       <span class="stat-label">Following</span>
@@ -39,7 +39,7 @@
   </div>
 
   <div class="stat-card">
-    <i class="fas fa-trophy stat-icon"></i>
+    <i class="fas fa-trophy stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.achievementCount}</span>
       <span class="stat-label">Achievements</span>
@@ -47,7 +47,7 @@
   </div>
 
   <div class="stat-card">
-    <i class="fas fa-bolt stat-icon"></i>
+    <i class="fas fa-bolt stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.totalXP.toLocaleString()}</span>
       <span class="stat-label">Total XP</span>
@@ -55,7 +55,7 @@
   </div>
 
   <div class="stat-card">
-    <i class="fas fa-fire stat-icon"></i>
+    <i class="fas fa-fire stat-icon" aria-hidden="true"></i>
     <div class="stat-content">
       <span class="stat-value">{userProfile.currentStreak}</span>
       <span class="stat-label">Day Streak</span>
@@ -141,7 +141,7 @@
     }
 
     .stat-label {
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

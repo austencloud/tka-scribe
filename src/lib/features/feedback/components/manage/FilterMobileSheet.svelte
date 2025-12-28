@@ -105,12 +105,14 @@
 <svelte:window onkeydown={uiState.isSheetOpen ? handleKeydown : undefined} />
 
 {#if uiState.isSheetOpen}
-  <!-- svelte-ignore a11y_click_events_have_key_events a11y_no_static_element_interactions -->
   <div
     class="sheet-backdrop"
     class:closing={uiState.isSheetAnimating && !uiState.isSheetOpen}
     onclick={handleBackdropClick}
-    aria-hidden="true"
+    onkeydown={(e) => e.key === "Escape" && uiState.closeSheet()}
+    role="button"
+    tabindex="0"
+    aria-label="Close filter sheet"
   >
     <div
       class="sheet-container"
@@ -132,7 +134,7 @@
       <!-- Header -->
       <header class="sheet-header">
         <h2 class="sheet-title">
-          <i class="fas fa-filter"></i>
+          <i class="fas fa-filter" aria-hidden="true"></i>
           Filters
         </h2>
         {#if uiState.activeFilterCount > 0}
@@ -144,7 +146,7 @@
           onclick={() => uiState.closeSheet()}
           aria-label="Close filters"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </header>
 
@@ -232,7 +234,7 @@
           onclick={clearFilters}
           disabled={uiState.activeFilterCount === 0}
         >
-          <i class="fas fa-undo"></i>
+          <i class="fas fa-undo" aria-hidden="true"></i>
           Clear All
         </button>
         <button
@@ -240,7 +242,7 @@
           class="sheet-btn primary"
           onclick={() => uiState.closeSheet()}
         >
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
           Done
         </button>
       </footer>

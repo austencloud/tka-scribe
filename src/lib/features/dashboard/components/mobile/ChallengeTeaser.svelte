@@ -13,14 +13,14 @@
 
 <button class="teaser" {onclick}>
   <div class="teaser-icon">
-    <i class="fas fa-bolt"></i>
+    <i class="fas fa-bolt" aria-hidden="true"></i>
   </div>
   <div class="teaser-content">
     <span class="teaser-title">Today's Challenge</span>
     <span class="teaser-subtitle">Tap to view</span>
   </div>
   <div class="teaser-arrow">
-    <i class="fas fa-chevron-up"></i>
+    <i class="fas fa-chevron-up" aria-hidden="true"></i>
   </div>
 </button>
 

@@ -334,7 +334,7 @@ Used by both desktop side panel and mobile slide-up overlay.
     <div class="video-player-container">
       <header class="video-player-header">
         <div class="video-player-title">
-          <i class="fas fa-video"></i>
+          <i class="fas fa-video" aria-hidden="true"></i>
           <span>Performance Video</span>
         </div>
         <div class="video-player-actions">
@@ -346,12 +346,12 @@ Used by both desktop side panel and mobile slide-up overlay.
                 closeVideoPlayer();
               }}
             >
-              <i class="fas fa-user-plus"></i>
+              <i class="fas fa-user-plus" aria-hidden="true"></i>
               Invite
             </button>
           {/if}
           <button class="video-player-close" onclick={closeVideoPlayer} aria-label="Close video">
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
       </header>
@@ -360,6 +360,7 @@ Used by both desktop side panel and mobile slide-up overlay.
           src={selectedVideo.videoUrl}
           controls
           autoplay
+          muted
           playsinline
           class="video-player-video"
         >

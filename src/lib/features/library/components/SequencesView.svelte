@@ -200,7 +200,7 @@
   <div class="header-bar">
     <!-- Search -->
     <div class="search-container">
-      <i class="fas fa-search search-icon"></i>
+      <i class="fas fa-search search-icon" aria-hidden="true"></i>
       <input
         type="text"
         placeholder="Search sequences..."
@@ -217,7 +217,7 @@
             libraryState.setSearchQuery("");
           }}
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </div>
@@ -232,7 +232,7 @@
           onclick={() => (showSortMenu = !showSortMenu)}
           title="Sort sequences"
         >
-          <i class="fas fa-sort-amount-down"></i>
+          <i class="fas fa-sort-amount-down" aria-hidden="true"></i>
         </button>
         {#if showSortMenu}
           <div class="sort-menu">
@@ -244,11 +244,10 @@
               >
                 <span>{option.label}</span>
                 {#if libraryState.filters.sortBy === option.field}
-                  <i
-                    class="fas fa-arrow-{libraryState.filters.sortDirection ===
+                  <i class="fas fa-arrow-{libraryState.filters.sortDirection ===
                     'asc'
                       ? 'up'
-                      : 'down'}"
+                      : 'down'}" aria-hidden="true"
                   ></i>
                 {/if}
               </button>
@@ -265,7 +264,7 @@
           onclick={enterSelectMode}
           title="Select"
         >
-          <i class="fas fa-check-square"></i>
+          <i class="fas fa-check-square" aria-hidden="true"></i>
         </button>
       {:else}
         <button
@@ -274,7 +273,7 @@
           onclick={exitSelectMode}
           title="Done"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       {/if}
     </div>
@@ -287,7 +286,7 @@
       class:active={currentFilter === "all"}
       onclick={() => handleFilterChange("all")}
     >
-      <i class="fas fa-th"></i>
+      <i class="fas fa-th" aria-hidden="true"></i>
       <span>All</span>
       {#if stats.all > 0}
         <span class="badge">{stats.all}</span>
@@ -298,7 +297,7 @@
       class:active={currentFilter === "created"}
       onclick={() => handleFilterChange("created")}
     >
-      <i class="fas fa-pencil-alt"></i>
+      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
       <span>Created</span>
       {#if stats.created > 0}
         <span class="badge">{stats.created}</span>
@@ -309,7 +308,7 @@
       class:active={currentFilter === "forked"}
       onclick={() => handleFilterChange("forked")}
     >
-      <i class="fas fa-code-branch"></i>
+      <i class="fas fa-code-branch" aria-hidden="true"></i>
       <span>Forked</span>
       {#if stats.forked > 0}
         <span class="badge">{stats.forked}</span>
@@ -320,7 +319,7 @@
       class:active={currentFilter === "favorites"}
       onclick={() => handleFilterChange("favorites")}
     >
-      <i class="fas fa-star"></i>
+      <i class="fas fa-star" aria-hidden="true"></i>
       <span>Favorites</span>
       {#if stats.favorites > 0}
         <span class="badge">{stats.favorites}</span>
@@ -349,7 +348,7 @@
           disabled={selectedCount === 0}
           title="Make public"
         >
-          <i class="fas fa-globe"></i>
+          <i class="fas fa-globe" aria-hidden="true"></i>
         </button>
         <button
           class="batch-btn"
@@ -358,7 +357,7 @@
           disabled={selectedCount === 0}
           title="Make private"
         >
-          <i class="fas fa-lock"></i>
+          <i class="fas fa-lock" aria-hidden="true"></i>
         </button>
         <button
           class="batch-btn danger"
@@ -367,7 +366,7 @@
           disabled={selectedCount === 0}
           title="Delete"
         >
-          <i class="fas fa-trash"></i>
+          <i class="fas fa-trash" aria-hidden="true"></i>
         </button>
       </div>
     </div>
@@ -377,7 +376,7 @@
   <div class="content-area">
     {#if !isAuthenticated}
       <div class="auth-required">
-        <i class="fas fa-lock"></i>
+        <i class="fas fa-lock" aria-hidden="true"></i>
         <h3>Sign In Required</h3>
         <p>Please sign in to access your library.</p>
       </div>
@@ -388,20 +387,20 @@
       </div>
     {:else if error}
       <div class="error-state">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <h3>Error Loading Sequences</h3>
         <p>{error}</p>
         <button
           class="retry-button"
           onclick={() => libraryState.loadSequences()}
         >
-          <i class="fas fa-redo"></i>
+          <i class="fas fa-redo" aria-hidden="true"></i>
           Retry
         </button>
       </div>
     {:else if displayedSequences().length === 0}
       <div class="empty-state">
-        <i class="fas fa-folder-open"></i>
+        <i class="fas fa-folder-open" aria-hidden="true"></i>
         <h3>
           {#if searchQuery}
             No Results Found

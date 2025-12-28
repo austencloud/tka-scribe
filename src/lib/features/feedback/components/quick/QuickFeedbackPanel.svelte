@@ -408,6 +408,10 @@
     /* Responsive width with min/max bounds */
     width: clamp(320px, 30vw, 420px);
     max-width: 90vw;
+
+    /* Override glassmorphism blur - use solid background */
+    --sheet-bg: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    --sheet-filter: none;
   }
 
   :global(.quick-feedback-drawer.bottom-sheet) {

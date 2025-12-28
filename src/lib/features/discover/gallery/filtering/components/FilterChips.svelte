@@ -112,7 +112,7 @@ Shows visual feedback of active filters with easy removal.
       aria-label="Remove {filterLabel} filter"
       type="button"
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 {/if}
@@ -192,7 +192,7 @@ Shows visual feedback of active filters with easy removal.
   }
 
   .chip-remove i {
-    font-size: 11px;
+    font-size: 12px;
     position: relative;
     z-index: 1;
   }
@@ -216,7 +216,7 @@ Shows visual feedback of active filters with easy removal.
     }
 
     .chip-remove i {
-      font-size: 10px;
+      font-size: 12px;
     }
 
     .chip-remove::before {

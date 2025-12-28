@@ -209,12 +209,12 @@
 
   {#if isLoading}
     <div class="loading-state shell">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <p>Loading preferences...</p>
     </div>
   {:else if !authState.isAuthenticated}
     <div class="empty-state shell">
-      <i class="fas fa-user-slash"></i>
+      <i class="fas fa-user-slash" aria-hidden="true"></i>
       <p>Sign in to manage notification preferences</p>
     </div>
   {:else}
@@ -230,7 +230,7 @@
         aria-label="Enable all notifications"
         aria-busy={bulkBusy === "enable"}
       >
-        <i class="fas fa-check-circle"></i>
+        <i class="fas fa-check-circle" aria-hidden="true"></i>
         Enable All
       </button>
       <button
@@ -243,7 +243,7 @@
         aria-label="Disable all notifications"
         aria-busy={bulkBusy === "disable"}
       >
-        <i class="fas fa-times-circle"></i>
+        <i class="fas fa-times-circle" aria-hidden="true"></i>
         Disable All
       </button>
     </div>
@@ -264,7 +264,7 @@
 
     <!-- System Notifications Notice -->
     <div class="system-notice">
-      <i class="fas fa-info-circle"></i>
+      <i class="fas fa-info-circle" aria-hidden="true"></i>
       <p>System announcements cannot be disabled and will always be shown.</p>
     </div>
   {/if}

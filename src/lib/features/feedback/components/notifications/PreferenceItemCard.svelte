@@ -1,9 +1,13 @@
 <script lang="ts">
-  export let label: string;
-  export let description: string;
-  export let enabled = false;
-  export let isBusy = false;
-  export let onToggle: () => void;
+  interface Props {
+    label: string;
+    description: string;
+    enabled?: boolean;
+    isBusy?: boolean;
+    onToggle: () => void;
+  }
+
+  let { label, description, enabled = false, isBusy = false, onToggle }: Props = $props();
 </script>
 
 <button
@@ -124,7 +128,7 @@
     align-items: center;
     gap: 6px;
     padding: 6px 10px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -146,7 +150,7 @@
   }
 
   .item-description {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     margin: 0;
     line-height: 1.4;

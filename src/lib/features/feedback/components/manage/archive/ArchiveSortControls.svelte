@@ -1,0 +1,109 @@
+<!-- ArchiveSortControls - Sort controls for archived items list -->
+<script lang="ts">
+  type SortField = "date" | "type" | "title";
+  type SortOrder = "asc" | "desc";
+
+  let { sortBy = $bindable(), sortOrder = $bindable() } = $props<{
+    sortBy: SortField;
+    sortOrder: SortOrder;
+  }>();
+
+  function toggleSortOrder() {
+    sortOrder = sortOrder === "asc" ? "desc" : "asc";
+  }
+</script>
+
+<div class="sort-controls">
+  <label>
+    <span>Sort by:</span>
+    <select bind:value={sortBy}>
+      <option value="date">Date Archived</option>
+      <option value="type">Type</option>
+      <option value="title">Title</option>
+    </select>
+  </label>
+  <button
+    type="button"
+    class="sort-order-btn"
+    onclick={toggleSortOrder}
+    aria-label={sortOrder === "asc" ? "Sort ascending" : "Sort descending"}
+  >
+    <i
+      class="fas fa-sort-amount-{sortOrder === 'asc' ? 'up' : 'down'}"
+      aria-hidden="true"
+    ></i>
+  </button>
+</div>
+
+<style>
+  .sort-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 80%,
+      transparent
+    );
+    border-radius: 8px;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  .sort-controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+  }
+
+  .sort-controls select {
+    padding: 4px 8px;
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 90%,
+      transparent
+    );
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .sort-controls select:hover {
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+  }
+
+  .sort-order-btn {
+    padding: 6px 10px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 6px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sort-order-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  @media (max-width: 768px) {
+    .sort-controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .sort-controls label {
+      width: 100%;
+    }
+
+    .sort-controls select {
+      flex: 1;
+    }
+  }
+</style>

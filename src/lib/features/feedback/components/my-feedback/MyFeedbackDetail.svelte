@@ -186,14 +186,14 @@
         <div class="header-row">
           <div class="header-meta">
             <span class="type-badge" style="--badge-color: {typeConfig.color}">
-              <i class="fas {typeConfig.icon}"></i>
+              <i class="fas {typeConfig.icon}" aria-hidden="true"></i>
               <span class="badge-label">{typeConfig.label}</span>
             </span>
             <span
               class="status-badge"
               style="--badge-color: {statusConfig.color}"
             >
-              <i class="fas {statusConfig.icon}"></i>
+              <i class="fas {statusConfig.icon}" aria-hidden="true"></i>
               <span class="badge-label">{statusConfig.label}</span>
             </span>
             {#if priorityConfig}
@@ -201,7 +201,7 @@
                 class="priority-badge"
                 style="--badge-color: {priorityConfig.color}"
               >
-                <i class="fas {priorityConfig.icon}"></i>
+                <i class="fas {priorityConfig.icon}" aria-hidden="true"></i>
                 <span class="badge-label">{priorityConfig.label}</span>
               </span>
             {/if}
@@ -214,7 +214,7 @@
                 type="button"
                 aria-label="Edit feedback"
               >
-                <i class="fas fa-pen"></i>
+                <i class="fas fa-pen" aria-hidden="true"></i>
               </button>
             {/if}
             {#if canDelete}
@@ -224,7 +224,7 @@
                 type="button"
                 aria-label="Delete feedback"
               >
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             {/if}
             <button
@@ -233,7 +233,7 @@
               type="button"
               aria-label="Close detail panel"
             >
-              <i class="fas fa-times"></i>
+              <i class="fas fa-times" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -245,12 +245,12 @@
 
         <div class="meta-row">
           <span class="date">
-            <i class="fas fa-calendar"></i>
+            <i class="fas fa-calendar" aria-hidden="true"></i>
             {formatDate(item.createdAt)}
           </span>
           {#if item.updatedAt}
             <span class="updated">
-              <i class="fas fa-clock"></i>
+              <i class="fas fa-clock" aria-hidden="true"></i>
               Updated {formatDate(item.updatedAt)}
             </span>
           {/if}
@@ -265,7 +265,7 @@
         {#if item.imageUrls && item.imageUrls.length > 0}
           <div class="screenshots-section">
             <h3>
-              <i class="fas fa-images"></i>
+              <i class="fas fa-images" aria-hidden="true"></i>
               Screenshots ({item.imageUrls.length})
             </h3>
             <div class="screenshots-grid">
@@ -282,7 +282,7 @@
                     class="screenshot-thumb"
                   />
                   <div class="screenshot-overlay">
-                    <i class="fas fa-expand"></i>
+                    <i class="fas fa-expand" aria-hidden="true"></i>
                   </div>
                 </button>
               {/each}
@@ -296,12 +296,12 @@
             <h3>Context</h3>
             <div class="context-tags">
               <span class="context-tag">
-                <i class="fas fa-cube"></i>
+                <i class="fas fa-cube" aria-hidden="true"></i>
                 {item.capturedModule}
               </span>
               {#if item.capturedTab}
                 <span class="context-tag">
-                  <i class="fas fa-folder"></i>
+                  <i class="fas fa-folder" aria-hidden="true"></i>
                   {item.capturedTab}
                 </span>
               {/if}
@@ -313,7 +313,7 @@
         {#if item.resolutionNotes}
           <div class="response-section">
             <h3>
-              <i class="fas fa-check-circle"></i>
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
               Resolution
             </h3>
             <div class="response-card resolution">
@@ -351,7 +351,7 @@
       >
         <div class="dialog-content">
           <div class="dialog-icon">
-            <i class="fas fa-trash-alt"></i>
+            <i class="fas fa-trash-alt" aria-hidden="true"></i>
           </div>
           <h3>Delete Feedback?</h3>
           <p>
@@ -374,7 +374,7 @@
               type="button"
             >
               {#if isDeleting}
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                 Deleting...
               {:else}
                 Delete

@@ -112,7 +112,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
               class:active={galleryControls.currentSortMethod === opt.id}
               onclick={() => handleSortChange(opt.id)}
             >
-              <i class="fas {opt.icon}"></i>
+              <i class="fas {opt.icon}" aria-hidden="true"></i>
               <span class="chip-label">{opt.label}</span>
             </button>
           {/each}
@@ -125,7 +125,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
         {#if hasActiveFilter && activeFilterLabel}
           <button class="active-filter-chip" onclick={handleClearFilter}>
             <span>{activeFilterLabel}</span>
-            <i class="fas fa-times"></i>
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         {/if}
 
@@ -138,7 +138,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
             type="button"
             aria-label="Open filters"
           >
-            <i class="fas fa-sliders-h"></i>
+            <i class="fas fa-sliders-h" aria-hidden="true"></i>
             {#if hasActiveFilter}
               <span class="filter-badge">1</span>
             {/if}
@@ -268,7 +268,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
   }
 
   .active-filter-chip i {
-    font-size: 10px;
+    font-size: 12px;
     opacity: 0.8;
   }
 
@@ -321,7 +321,7 @@ Gallery Top Bar Controls - 2026 Modern Design (Compact)
     background: var(--semantic-info, #3b82f6);
     border-radius: 50%;
     color: var(--theme-text, #fff);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
   }
 

@@ -101,7 +101,7 @@
     <!-- Error State -->
     <div class="state-container error">
       <div class="state-icon error">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       </div>
       <h3 class="state-title">Something went wrong</h3>
       <p class="state-subtitle">{manageState.error}</p>
@@ -110,7 +110,7 @@
         class="retry-btn"
         onclick={() => manageState.loadFeedback(true)}
       >
-        <i class="fas fa-redo"></i>
+        <i class="fas fa-redo" aria-hidden="true"></i>
         Try Again
       </button>
     </div>
@@ -141,7 +141,7 @@
     <!-- Empty State -->
     <div class="state-container">
       <div class="state-icon">
-        <i class="fas {emptyStateMessage().icon}"></i>
+        <i class="fas {emptyStateMessage().icon}" aria-hidden="true"></i>
       </div>
       <h3 class="state-title">{emptyStateMessage().title}</h3>
       <p class="state-subtitle">{emptyStateMessage().subtitle}</p>
@@ -165,7 +165,7 @@
         <div bind:this={loadMoreTrigger} class="load-trigger">
           {#if manageState.isLoading}
             <div class="loading-more">
-              <i class="fas fa-circle-notch fa-spin"></i>
+              <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
               <span>Loading more...</span>
             </div>
           {/if}

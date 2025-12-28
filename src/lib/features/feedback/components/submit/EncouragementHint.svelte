@@ -1,0 +1,64 @@
+<script lang="ts">
+  const { message } = $props<{
+    message: string;
+  }>();
+</script>
+
+<div class="encouragement-hint">
+  <i class="fas fa-robot" aria-hidden="true"></i>
+  <span>{message}</span>
+</div>
+
+<style>
+  .encouragement-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(8px, 2cqi, 12px);
+    padding: clamp(10px, 2.5cqi, 14px) clamp(12px, 3cqi, 16px);
+    background: linear-gradient(
+      135deg,
+      color-mix(
+          in srgb,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 8%,
+          rgba(255, 255, 255, 0.03)
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--active-type-color, var(--theme-accent, #3b82f6)) 4%,
+          rgba(255, 255, 255, 0.01)
+        )
+        100%
+    );
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--active-type-color, var(--theme-accent, #3b82f6)) 15%,
+        rgba(255, 255, 255, 0.06)
+      );
+    border-radius: clamp(8px, 1.8cqi, 10px);
+    margin-top: clamp(4px, 1cqi, 8px);
+  }
+
+  .encouragement-hint i {
+    flex-shrink: 0;
+    font-size: clamp(0.8rem, 2cqi, 0.9rem);
+    color: color-mix(
+      in srgb,
+      var(--active-type-color, var(--theme-accent, #3b82f6)) 70%,
+      rgba(255, 255, 255, 0.6)
+    );
+    margin-top: 2px;
+  }
+
+  .encouragement-hint span {
+    font-size: clamp(0.75rem, 2cqi, 0.8125rem);
+    font-style: italic;
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      transparent
+    );
+    line-height: 1.5;
+  }
+</style>

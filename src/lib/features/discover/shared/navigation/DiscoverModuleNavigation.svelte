@@ -52,7 +52,7 @@ Tabs: Gallery, Collections, Creators
         aria-label={tab.label}
         aria-current={currentTab === tab.id ? "page" : undefined}
       >
-        <i class="fas {tab.icon}"></i>
+        <i class="fas {tab.icon}" aria-hidden="true"></i>
         <span class="tab-label">{tab.label}</span>
       </button>
     {/each}

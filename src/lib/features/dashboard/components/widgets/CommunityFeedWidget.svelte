@@ -60,7 +60,7 @@
 <div class="community-widget">
   <div class="widget-header">
     <div class="header-icon">
-      <i class="fas fa-globe"></i>
+      <i class="fas fa-globe" aria-hidden="true"></i>
     </div>
     <h3>New from Community</h3>
   </div>
@@ -76,12 +76,12 @@
       </div>
     {:else if error}
       <div class="empty-state">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <p>{error}</p>
       </div>
     {:else if recentSequences.length === 0}
       <div class="empty-state">
-        <i class="fas fa-users"></i>
+        <i class="fas fa-users" aria-hidden="true"></i>
         <p>No community sequences yet</p>
         <span class="empty-hint">Be the first to share!</span>
       </div>
@@ -95,7 +95,7 @@
                 <img src={thumbnail} alt={seq.word || 'Sequence'} loading="lazy" />
               {:else}
                 <div class="thumbnail-placeholder">
-                  <i class="fas fa-layer-group"></i>
+                  <i class="fas fa-layer-group" aria-hidden="true"></i>
                 </div>
               {/if}
             </div>
@@ -107,7 +107,7 @@
 
   <button class="view-all-btn" onclick={viewAll}>
     <span>Explore Gallery</span>
-    <i class="fas fa-arrow-right"></i>
+    <i class="fas fa-arrow-right" aria-hidden="true"></i>
   </button>
 </div>
 

@@ -97,7 +97,7 @@
       size="sm"
     />
     <div class="event-badge {getIconColorClass(item.eventType)}">
-      <i class="fas {getEventIcon(item.eventType)}"></i>
+      <i class="fas {getEventIcon(item.eventType)}" aria-hidden="true"></i>
     </div>
   </div>
 
@@ -164,7 +164,7 @@
     justify-content: center;
     background: var(--theme-card-bg, rgba(0, 0, 0, 0.8));
     border-radius: 50%;
-    font-size: 9px;
+    font-size: 12px;
   }
 
   .event-badge.icon-create {
@@ -201,7 +201,7 @@
   }
 
   .action-text {
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
   }
 
   .sequence-info,
@@ -215,14 +215,14 @@
   }
 
   .achievement-name {
-    color: #f59e0b;
+    color: rgba(253, 230, 138, 1);
     font-weight: 500;
   }
 
   .timestamp {
     flex-shrink: 0;
-    font-size: 11px;
-    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-size: 12px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.75));
     font-weight: 500;
   }
 

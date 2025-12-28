@@ -57,18 +57,11 @@
   }
 
   async function handleDrop(status: any) {
-    console.log("[KanbanDesktopView] Drop handler called", {
-      status,
-      draggedItem: boardState.draggedItem?.id,
-    });
-
     if (!boardState.draggedItem) {
-      console.log("[KanbanDesktopView] No dragged item, returning");
       return;
     }
 
     if (status === "deferred") {
-      console.log("[KanbanDesktopView] Moving to deferred");
       boardState.setItemToDefer(boardState.draggedItem);
       boardState.setShowDeferDialog(true);
       boardState.setDraggedItem(null);
@@ -77,19 +70,11 @@
     }
 
     if (boardState.draggedItem.status !== status) {
-      console.log("[KanbanDesktopView] Updating status", {
-        id: boardState.draggedItem.id,
-        from: boardState.draggedItem.status,
-        to: status,
-      });
       try {
         await manageState.updateStatus(boardState.draggedItem.id, status);
-        console.log("[KanbanDesktopView] Status updated successfully");
       } catch (err) {
         console.error("[KanbanDesktopView] Failed to update status:", err);
       }
-    } else {
-      console.log("[KanbanDesktopView] Item already in target status");
     }
     boardState.setDraggedItem(null);
     boardState.setDragOverColumn(null);
@@ -97,25 +82,15 @@
 
   // Handle touch drop - find column at touch position and process drop
   async function handleTouchEnd(x: number, y: number) {
-    console.log("[KanbanDesktopView] Touch end at position", { x, y });
-
     if (!boardState.draggedItem) {
-      console.log("[KanbanDesktopView] No dragged item for touch end");
       return;
     }
 
     const targetStatus = boardState.getColumnAtPosition(x, y);
-    console.log(
-      "[KanbanDesktopView] Target status from touch position:",
-      targetStatus
-    );
 
     if (targetStatus) {
       await handleDrop(targetStatus);
     } else {
-      console.log(
-        "[KanbanDesktopView] No valid drop target at touch position, clearing drag state"
-      );
       boardState.setDraggedItem(null);
       boardState.setDragOverColumn(null);
     }

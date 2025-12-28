@@ -96,7 +96,7 @@
 <div class="prepare-panel">
   <header class="panel-header">
     <h2>
-      <i class="fas fa-rocket"></i>
+      <i class="fas fa-rocket" aria-hidden="true"></i>
       Prepare Release
     </h2>
     <button
@@ -105,7 +105,7 @@
       onclick={onClose}
       aria-label="Close"
     >
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </header>
 
@@ -127,7 +127,7 @@
 
       {#if versionState.unversionedCount === 0}
         <div class="empty-state">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
           <p>No completed feedback to release.</p>
           <p class="hint">
             Complete some feedback items first, then prepare a release.
@@ -161,20 +161,20 @@
           <!-- Auto-generated Changelog Preview -->
           <div class="form-group">
             <span class="label-text">
-              <i class="fas fa-magic"></i>
+              <i class="fas fa-magic" aria-hidden="true"></i>
               Auto-Generated Changelog
             </span>
 
             {#if versionState.isGeneratingChangelog}
               <div class="changelog-loading">
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                 Generating changelog...
               </div>
             {:else if versionState.generatedChangelog.length > 0}
               <div class="changelog-preview">
                 {#each versionState.generatedChangelog as entry (entry.text)}
                   <div class="changelog-entry {entry.category}">
-                    <i class="fas {getCategoryIcon(entry.category)}"></i>
+                    <i class="fas {getCategoryIcon(entry.category)}" aria-hidden="true"></i>
                     <span class="entry-text">{entry.text}</span>
                   </div>
                 {/each}
@@ -185,7 +185,7 @@
               </p>
             {:else}
               <div class="changelog-empty">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
                 No changelog entries could be generated
               </div>
             {/if}
@@ -198,10 +198,10 @@
               disabled={!isValid || versionState.isPreparingRelease}
             >
               {#if versionState.isPreparingRelease}
-                <i class="fas fa-spinner fa-spin"></i>
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                 Preparing...
               {:else}
-                <i class="fas fa-tag"></i>
+                <i class="fas fa-tag" aria-hidden="true"></i>
                 Prepare Release
               {/if}
             </button>
@@ -222,7 +222,7 @@
             onclick={handleTagPreRelease}
             disabled={versionState.isLoading}
           >
-            <i class="fas fa-history"></i>
+            <i class="fas fa-history" aria-hidden="true"></i>
             Tag as Pre-Release
           </button>
         </div>
@@ -230,7 +230,7 @@
 
       {#if versionState.error}
         <div class="error-banner">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
           {versionState.error}
         </div>
       {/if}
@@ -239,7 +239,7 @@
     <!-- Confirmation -->
     <div class="confirm-content">
       <div class="confirm-icon">
-        <i class="fas fa-tag"></i>
+        <i class="fas fa-tag" aria-hidden="true"></i>
       </div>
       <h3>Confirm Release v{version}</h3>
       <p>This will:</p>
@@ -272,10 +272,10 @@
           disabled={versionState.isPreparingRelease}
         >
           {#if versionState.isPreparingRelease}
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             Creating...
           {:else}
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             Confirm
           {/if}
         </button>
@@ -326,8 +326,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border: none;
     border-radius: 8px;
@@ -470,7 +470,7 @@
 
   .field-hint {
     margin: 4px 0 0 0;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 
@@ -535,7 +535,7 @@
 
   .changelog-hint {
     margin: 4px 0 0 0;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
   }
 

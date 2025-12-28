@@ -208,15 +208,16 @@ Responsive behavior:
     type="button"
     aria-label={getHeaderText(currentSortMethod)}
     aria-expanded={isOpen}
+    aria-controls="navigation-dropdown-menu"
   >
-    <i class="fas fa-bars"></i>
+    <i class="fas fa-bars" aria-hidden="true"></i>
     <span class="toggle-label">{getButtonLabel(currentSortMethod)}</span>
-    <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon"></i>
+    <i class="fas fa-chevron-{isOpen ? 'up' : 'down'} chevron-icon" aria-hidden="true"></i>
   </button>
 
   <!-- Desktop: Dropdown Menu -->
   {#if isOpen && !isMobile}
-    <div class="dropdown-menu">
+    <div class="dropdown-menu" id="navigation-dropdown-menu">
       <!-- Sort Method Section -->
       <div class="menu-section">
         <div class="section-header">Sort By</div>
@@ -228,10 +229,10 @@ Responsive behavior:
               onclick={() => handleSortMethodChange(method.value)}
               type="button"
             >
-              <i class="fas {method.icon}"></i>
+              <i class="fas {method.icon}" aria-hidden="true"></i>
               <span>{method.label}</span>
               {#if currentSortMethod === method.value}
-                <i class="fas fa-check check-icon"></i>
+                <i class="fas fa-check check-icon" aria-hidden="true"></i>
               {/if}
             </button>
           {/each}
@@ -276,10 +277,10 @@ Responsive behavior:
             onclick={() => handleSortMethodChange(method.value)}
             type="button"
           >
-            <i class="fas {method.icon}"></i>
+            <i class="fas {method.icon}" aria-hidden="true"></i>
             <span>{method.label}</span>
             {#if currentSortMethod === method.value}
-              <i class="fas fa-check check-icon"></i>
+              <i class="fas fa-check check-icon" aria-hidden="true"></i>
             {/if}
           </button>
         {/each}

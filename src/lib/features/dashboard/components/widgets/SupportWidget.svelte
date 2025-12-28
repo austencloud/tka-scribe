@@ -75,7 +75,7 @@
   <!-- Header with heart -->
   <div class="widget-header">
     <div class="heart-icon">
-      <i class="fas fa-heart"></i>
+      <i class="fas fa-heart" aria-hidden="true"></i>
     </div>
     <div class="header-text">
       <h3>Love TKA?</h3>
@@ -102,7 +102,7 @@
             />
           </svg>
         {:else}
-          <i class={option.icon}></i>
+          <i class={option.icon} aria-hidden="true"></i>
         {/if}
         <span>
           {option.name === "Zelle" && copiedEmail
@@ -127,7 +127,7 @@
           aria-label={social.name}
           style="--brand: {social.color}"
         >
-          <i class={social.icon}></i>
+          <i class={social.icon} aria-hidden="true"></i>
         </a>
       {/each}
     </div>

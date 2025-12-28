@@ -13,14 +13,14 @@
 
 <button class="teaser" {onclick}>
   <div class="teaser-icon">
-    <i class="fas fa-heart"></i>
+    <i class="fas fa-heart" aria-hidden="true"></i>
   </div>
   <div class="teaser-content">
     <span class="teaser-title">Support TKA</span>
     <span class="teaser-subtitle">Tap to donate or connect</span>
   </div>
   <div class="teaser-arrow">
-    <i class="fas fa-chevron-up"></i>
+    <i class="fas fa-chevron-up" aria-hidden="true"></i>
   </div>
 </button>
 

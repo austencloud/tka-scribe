@@ -28,7 +28,7 @@
     <p>{module.description}</p>
   </div>
   <div class="card-arrow">
-    <i class="fas fa-chevron-right"></i>
+    <i class="fas fa-chevron-right" aria-hidden="true"></i>
   </div>
 </button>
 
@@ -108,7 +108,7 @@
     height: 24px;
     flex-shrink: 0;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
-    font-size: 11px;
+    font-size: 12px;
     transition: color var(--duration-2026-fast, 150ms) var(--ease-2026, ease);
   }
 

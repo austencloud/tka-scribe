@@ -20,7 +20,7 @@
   <div class="meta-row">
     {#if creatorName}
       <div class="creator-chip">
-        <i class="fas fa-user"></i>
+        <i class="fas fa-user" aria-hidden="true"></i>
         <span>By {creatorName}</span>
       </div>
     {/if}
@@ -33,17 +33,17 @@
       aria-pressed={isPublic}
     >
       {#if isPublic}
-        <i class="fas fa-globe"></i>
+        <i class="fas fa-globe" aria-hidden="true"></i>
         <span>Public</span>
       {:else}
-        <i class="fas fa-lock"></i>
+        <i class="fas fa-lock" aria-hidden="true"></i>
         <span>Private</span>
       {/if}
     </button>
   </div>
 
   <p class="visibility-hint">
-    <i class="fas fa-info-circle"></i>
+    <i class="fas fa-info-circle" aria-hidden="true"></i>
     {#if isPublic}
       Will appear in the public gallery for others to discover
     {:else}
@@ -82,7 +82,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
+    padding: 12px 16px;
+    min-height: 44px; /* WCAG AAA touch target */
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;

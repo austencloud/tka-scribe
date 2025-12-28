@@ -202,7 +202,7 @@
         onclick={() => handleFilterTypeSelect("all")}
       >
         <div class="card-icon">
-          <i class="fas fa-globe"></i>
+          <i class="fas fa-globe" aria-hidden="true"></i>
         </div>
         <span class="card-label">All</span>
       </button>
@@ -213,7 +213,7 @@
         onclick={() => handleFilterTypeSelect("favorites")}
       >
         <div class="card-icon favorites">
-          <i class="fas fa-heart"></i>
+          <i class="fas fa-heart" aria-hidden="true"></i>
         </div>
         <span class="card-label">Favorites</span>
       </button>
@@ -224,7 +224,7 @@
         onclick={() => handleFilterTypeSelect("difficulty")}
       >
         <div class="card-icon">
-          <i class="fas fa-layer-group"></i>
+          <i class="fas fa-layer-group" aria-hidden="true"></i>
         </div>
         <span class="card-label">By Level</span>
       </button>
@@ -235,7 +235,7 @@
         onclick={() => handleFilterTypeSelect("letter")}
       >
         <div class="card-icon">
-          <i class="fas fa-font"></i>
+          <i class="fas fa-font" aria-hidden="true"></i>
         </div>
         <span class="card-label">By Letter</span>
       </button>
@@ -246,7 +246,7 @@
         onclick={() => handleFilterTypeSelect("length")}
       >
         <div class="card-icon">
-          <i class="fas fa-ruler-horizontal"></i>
+          <i class="fas fa-ruler-horizontal" aria-hidden="true"></i>
         </div>
         <span class="card-label">By Length</span>
       </button>
@@ -257,7 +257,7 @@
         onclick={() => handleFilterTypeSelect("position")}
       >
         <div class="card-icon">
-          <i class="fas fa-crosshairs"></i>
+          <i class="fas fa-crosshairs" aria-hidden="true"></i>
         </div>
         <span class="card-label">Position</span>
       </button>

@@ -56,7 +56,7 @@ Used for sort method selection (Letter/Length/Date)
       aria-label={segment.label}
     >
       {#if segment.icon}
-        <i class="fas {segment.icon}"></i>
+        <i class="fas {segment.icon}" aria-hidden="true"></i>
       {/if}
       <span class="segment-label">{segment.label}</span>
     </button>

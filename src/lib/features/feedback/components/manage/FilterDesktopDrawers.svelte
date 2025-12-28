@@ -76,7 +76,7 @@
   <div class="drawer-panel">
     <header class="drawer-header">
       <h2 class="drawer-title">
-        <i class="fas fa-tasks"></i>
+        <i class="fas fa-tasks" aria-hidden="true"></i>
         Filter by Status
       </h2>
       <button
@@ -85,7 +85,7 @@
         onclick={() => uiState.closeStatusDrawer()}
         aria-label="Close panel"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
     <div class="filter-drawer-content">
@@ -111,7 +111,7 @@
   <div class="drawer-panel">
     <header class="drawer-header">
       <h2 class="drawer-title">
-        <i class="fas fa-flag"></i>
+        <i class="fas fa-flag" aria-hidden="true"></i>
         Filter by Priority
       </h2>
       <button
@@ -120,7 +120,7 @@
         onclick={() => uiState.closePriorityDrawer()}
         aria-label="Close panel"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
     <div class="filter-drawer-content">

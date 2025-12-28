@@ -31,7 +31,7 @@
 <div class="filter-bar">
   <!-- Search input -->
   <div class="search-wrapper">
-    <i class="fas fa-search search-icon"></i>
+    <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="text"
       class="search-input"
@@ -46,7 +46,7 @@
         onclick={() => manageState.setSearchQuery("")}
         aria-label="Clear search"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     {/if}
   </div>
@@ -67,7 +67,7 @@
         title={config.label}
         aria-label="Filter by {config.label}"
       >
-        <i class="fas {config.icon}"></i>
+        <i class="fas {config.icon}" aria-hidden="true"></i>
       </button>
     {/each}
 
@@ -89,7 +89,7 @@
         title="{config.label} priority"
         aria-label="Filter by {config.label} priority"
       >
-        <i class="fas {config.icon}"></i>
+        <i class="fas {config.icon}" aria-hidden="true"></i>
       </button>
     {/each}
   </div>
@@ -101,7 +101,7 @@
       onclick={clearFilters}
       aria-label="Clear filters"
     >
-      <i class="fas fa-filter-circle-xmark"></i>
+      <i class="fas fa-filter-circle-xmark" aria-hidden="true"></i>
     </button>
   {/if}
 </div>

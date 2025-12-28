@@ -45,7 +45,6 @@
 
   function handleOpenComposition(composition: Composition) {
     // TODO: Load composition into Compose module and navigate there
-    console.log("[CompositionsView] Open composition:", composition.id);
     void handleModuleChange("compose", "arrange");
   }
 
@@ -82,21 +81,21 @@
     <div class="header">
       <h2>My Compositions</h2>
       <PanelButton variant="primary" onclick={handleCreateComposition}>
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         New Composition
       </PanelButton>
     </div>
 
     {#if compositions.length === 0}
       <div class="empty-state">
-        <i class="fas fa-layer-group"></i>
+        <i class="fas fa-layer-group" aria-hidden="true"></i>
         <h3>No Compositions Yet</h3>
         <p>
           Create compositions in the Compose module to arrange sequences into
           multi-cell layouts for performances.
         </p>
         <PanelButton variant="primary" onclick={handleCreateComposition}>
-          <i class="fas fa-plus"></i>
+          <i class="fas fa-plus" aria-hidden="true"></i>
           Create Your First Composition
         </PanelButton>
       </div>
@@ -113,12 +112,12 @@
                 <img src={composition.thumbnailUrl} alt={composition.name} />
               {:else}
                 <div class="placeholder-thumbnail">
-                  <i class="fas fa-film"></i>
+                  <i class="fas fa-film" aria-hidden="true"></i>
                 </div>
               {/if}
               {#if composition.isFavorite}
                 <div class="favorite-badge">
-                  <i class="fas fa-heart"></i>
+                  <i class="fas fa-heart" aria-hidden="true"></i>
                 </div>
               {/if}
             </div>

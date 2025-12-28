@@ -300,13 +300,13 @@
       {#if priorityConfig}
         <span class="priority-badge" title="{priorityConfig.label} priority">
           {#if item.priority === "critical"}
-            <i class="fas fa-exclamation-circle"></i>
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           {:else if item.priority === "high"}
-            <i class="fas fa-arrow-up"></i>
+            <i class="fas fa-arrow-up" aria-hidden="true"></i>
           {:else if item.priority === "medium"}
-            <i class="fas fa-minus"></i>
+            <i class="fas fa-minus" aria-hidden="true"></i>
           {:else}
-            <i class="fas fa-arrow-down"></i>
+            <i class="fas fa-arrow-down" aria-hidden="true"></i>
           {/if}
         </span>
       {/if}
@@ -318,7 +318,7 @@
     <!-- Screenshot indicator -->
     {#if item.imageUrls && item.imageUrls.length > 0}
       <div class="screenshot-indicator">
-        <i class="fas fa-images"></i>
+        <i class="fas fa-images" aria-hidden="true"></i>
         <span
           >{item.imageUrls.length} screenshot{item.imageUrls.length !== 1
             ? "s"
@@ -340,7 +340,7 @@
 
   <!-- Drag handle indicator -->
   <div class="drag-handle" aria-hidden="true">
-    <i class="fas fa-grip-vertical"></i>
+    <i class="fas fa-grip-vertical" aria-hidden="true"></i>
   </div>
 </button>
 
@@ -539,7 +539,7 @@
   }
 
   .screenshot-indicator i {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--type-color);
   }
 

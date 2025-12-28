@@ -64,14 +64,13 @@ Displays:
   aria-label={`${profile.displayName}'s library`}
 >
   <!-- Header: Avatar + Info + Actions -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
     class="card-header"
     onclick={handleCardClick}
     role="button"
     tabindex="0"
     aria-expanded={isExpanded}
+    aria-controls="creator-library-content-{profile.userId}"
     onkeydown={(e) => {
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
@@ -94,12 +93,12 @@ Displays:
             if (fallback) fallback.style.display = "flex";
           }}
         />
-        <div class="avatar-fallback" style="display: none;">
-          <i class="fas fa-user"></i>
+        <div class="avatar-fallback" style="display: none;" aria-hidden="true">
+          <i class="fas fa-user" aria-hidden="true"></i>
         </div>
       {:else}
-        <div class="avatar-fallback">
-          <i class="fas fa-user"></i>
+        <div class="avatar-fallback" aria-hidden="true">
+          <i class="fas fa-user" aria-hidden="true"></i>
         </div>
       {/if}
     </div>
@@ -110,15 +109,15 @@ Displays:
       <p class="username">@{profile.username}</p>
       <div class="stats">
         <span class="stat" title="Sequences">
-          <i class="fas fa-list"></i>
+          <i class="fas fa-list" aria-hidden="true"></i>
           {sequenceCount}
         </span>
         <span class="stat" title="Collections">
-          <i class="fas fa-folder"></i>
+          <i class="fas fa-folder" aria-hidden="true"></i>
           {collectionCount}
         </span>
         <span class="stat" title="Followers">
-          <i class="fas fa-users"></i>
+          <i class="fas fa-users" aria-hidden="true"></i>
           {profile.followerCount}
         </span>
       </div>
@@ -134,22 +133,25 @@ Displays:
       }}
       aria-label="View full profile"
     >
-      <i class="fas fa-user-circle"></i>
+      <i class="fas fa-user-circle" aria-hidden="true"></i>
       <span>Profile</span>
     </button>
   </div>
 
   <!-- Content Area (always visible, expands on click) -->
   {#if hasContent}
-    <div class="content-area">
+    <div class="content-area" id="creator-library-content-{profile.userId}">
       <!-- Content Tabs -->
-      <div class="content-tabs" role="tablist">
+      <div class="content-tabs" role="tablist" aria-label="Creator content tabs">
         <button
           type="button"
           role="tab"
+          id="tab-sequences-{profile.userId}"
           class="tab"
           class:active={activeTab === "sequences"}
           aria-selected={activeTab === "sequences"}
+          aria-controls="panel-sequences-{profile.userId}"
+          tabindex={activeTab === "sequences" ? 0 : -1}
           onclick={(e) => handleTabClick("sequences", e)}
         >
           Sequences
@@ -158,9 +160,12 @@ Displays:
         <button
           type="button"
           role="tab"
+          id="tab-collections-{profile.userId}"
           class="tab"
           class:active={activeTab === "collections"}
           aria-selected={activeTab === "collections"}
+          aria-controls="panel-collections-{profile.userId}"
+          tabindex={activeTab === "collections" ? 0 : -1}
           onclick={(e) => handleTabClick("collections", e)}
         >
           Collections
@@ -169,8 +174,12 @@ Displays:
         <button
           type="button"
           role="tab"
+          id="tab-compositions-{profile.userId}"
           class="tab disabled"
           disabled
+          aria-selected={false}
+          aria-disabled="true"
+          tabindex={-1}
           title="Coming soon"
         >
           Compositions
@@ -179,7 +188,12 @@ Displays:
       </div>
 
       <!-- Tab Content -->
-      <div class="tab-content" role="tabpanel">
+      <div
+        class="tab-content"
+        role="tabpanel"
+        id="panel-{activeTab}-{profile.userId}"
+        aria-labelledby="tab-{activeTab}-{profile.userId}"
+      >
         {#if activeTab === "sequences"}
           {#if previewSequences.length > 0}
             <div class="sequence-grid">
@@ -200,7 +214,7 @@ Displays:
                     />
                   {:else}
                     <div class="thumbnail-placeholder">
-                      <i class="fas fa-image"></i>
+                      <i class="fas fa-image" aria-hidden="true"></i>
                     </div>
                   {/if}
                   <span class="sequence-name"
@@ -359,7 +373,7 @@ Displays:
   }
 
   .stat i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   /* View profile button */
@@ -433,7 +447,7 @@ Displays:
     padding: 2px 6px;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 10px;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   /* Tab content */
@@ -489,7 +503,7 @@ Displays:
       transparent,
       color-mix(in srgb, var(--theme-shadow, #000) 80%, transparent)
     );
-    font-size: 10px;
+    font-size: 12px;
     color: var(--theme-text, white);
     white-space: nowrap;
     overflow: hidden;
@@ -536,7 +550,7 @@ Displays:
   }
 
   .see-all-text {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   /* Collection list */

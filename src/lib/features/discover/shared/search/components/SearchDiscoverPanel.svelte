@@ -119,7 +119,7 @@ Allows natural language queries to find sequences, users, and collections.
   <!-- Search header -->
   <div class="search-header">
     <h2 class="search-title">
-      <i class="fas fa-search"></i>
+      <i class="fas fa-search" aria-hidden="true"></i>
       Intelligent Search
     </h2>
     <p class="search-subtitle">
@@ -129,7 +129,7 @@ Allows natural language queries to find sequences, users, and collections.
 
   <!-- Search input -->
   <div class="search-input-container">
-    <i class="fas fa-search search-icon"></i>
+    <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="text"
       class="search-input"
@@ -143,9 +143,9 @@ Allows natural language queries to find sequences, users, and collections.
       disabled={!searchQuery.trim() || isSearching}
     >
       {#if isSearching}
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       {:else}
-        <i class="fas fa-arrow-right"></i>
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
       {/if}
     </button>
   </div>
@@ -197,7 +197,7 @@ Allows natural language queries to find sequences, users, and collections.
               class="suggestion-chip"
               onclick={() => handleSuggestedSearch(suggestion)}
             >
-              <i class="fas fa-lightbulb"></i>
+              <i class="fas fa-lightbulb" aria-hidden="true"></i>
               {suggestion}
             </button>
           {/each}
@@ -205,7 +205,7 @@ Allows natural language queries to find sequences, users, and collections.
 
         <!-- AI feature callout -->
         <div class="ai-callout">
-          <i class="fas fa-brain"></i>
+          <i class="fas fa-brain" aria-hidden="true"></i>
           <div class="callout-content">
             <strong>Powered by AI</strong>
             <p>
@@ -218,13 +218,13 @@ Allows natural language queries to find sequences, users, and collections.
     {:else if isSearching}
       <!-- Loading state -->
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Searching...</p>
       </div>
     {:else if filteredResults.length === 0}
       <!-- No results -->
       <div class="empty-state">
-        <i class="fas fa-search"></i>
+        <i class="fas fa-search" aria-hidden="true"></i>
         <h3>No results found</h3>
         <p>
           Try adjusting your search query or browse suggested searches above
@@ -236,7 +236,7 @@ Allows natural language queries to find sequences, users, and collections.
         {#each filteredResults as result (result.id)}
           <button class="result-item" onclick={() => handleResultClick(result)}>
             <div class="result-icon">
-              <i class="fas {getResultIcon(result.type)}"></i>
+              <i class="fas {getResultIcon(result.type)}" aria-hidden="true"></i>
             </div>
             <div class="result-content">
               <div class="result-header">
@@ -258,7 +258,7 @@ Allows natural language queries to find sequences, users, and collections.
                 >
               </div>
             </div>
-            <i class="fas fa-chevron-right result-arrow"></i>
+            <i class="fas fa-chevron-right result-arrow" aria-hidden="true"></i>
           </button>
         {/each}
       </div>
@@ -603,7 +603,7 @@ Allows natural language queries to find sequences, users, and collections.
     padding: 3px 8px;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.1));
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
     text-transform: uppercase;
@@ -640,7 +640,7 @@ Allows natural language queries to find sequences, users, and collections.
   }
 
   .relevance-text {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
     white-space: nowrap;
   }

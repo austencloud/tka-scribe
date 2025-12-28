@@ -195,7 +195,7 @@
       </div>
       <div class="header-section">
         <h2 class="panel-title">
-          <i class="fas fa-users"></i>
+          <i class="fas fa-users" aria-hidden="true"></i>
           Discover Creators
         </h2>
       </div>
@@ -221,14 +221,13 @@
       {:else}
         <PanelGrid minCardWidth="240px" gap="20px">
           {#each filteredUsers as user (user.id)}
-            <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <!-- svelte-ignore a11y_click_events_have_key_events -->
             <div
               class="user-card"
               style="--card-accent: {getUserColor(user)}"
               onclick={() => handleUserClick(user)}
               role="button"
               tabindex="0"
+              aria-label="View profile of {user.displayName}"
               onkeydown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
@@ -256,12 +255,12 @@
                       )}
                   />
                   <!-- Fallback placeholder (shown if image fails to load) -->
-                  <div class="avatar-placeholder" style="display: none;">
-                    <i class="fas fa-user"></i>
+                  <div class="avatar-placeholder" style="display: none;" aria-hidden="true">
+                    <i class="fas fa-user" aria-hidden="true"></i>
                   </div>
                 {:else}
-                  <div class="avatar-placeholder">
-                    <i class="fas fa-user"></i>
+                  <div class="avatar-placeholder" aria-hidden="true">
+                    <i class="fas fa-user" aria-hidden="true"></i>
                   </div>
                 {/if}
               </div>
@@ -274,15 +273,15 @@
                 <!-- Stats -->
                 <div class="user-stats">
                   <div class="stat">
-                    <i class="fas fa-list"></i>
+                    <i class="fas fa-list" aria-hidden="true"></i>
                     <span>{user.sequenceCount}</span>
                   </div>
                   <div class="stat">
-                    <i class="fas fa-folder"></i>
+                    <i class="fas fa-folder" aria-hidden="true"></i>
                     <span>{user.collectionCount}</span>
                   </div>
                   <div class="stat">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-users" aria-hidden="true"></i>
                     <span>{user.followerCount}</span>
                   </div>
                 </div>
@@ -296,13 +295,14 @@
                     class:following={user.isFollowing}
                     class:loading={followingInProgress.has(user.id)}
                     disabled={followingInProgress.has(user.id)}
+                    aria-busy={followingInProgress.has(user.id)}
                     onclick={(e) => {
                       e.stopPropagation();
                       handleFollowToggle(user);
                     }}
                   >
                     {#if followingInProgress.has(user.id)}
-                      <i class="fas fa-spinner fa-spin"></i>
+                      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
                     {:else}
                       {user.isFollowing ? "Following" : "Follow"}
                     {/if}
@@ -512,12 +512,12 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.65));
   }
 
   .stat i {
-    font-size: 10px;
+    font-size: 12px;
     /* Dynamic color tinted icons */
     color: var(--card-accent);
     opacity: 0.75;
@@ -617,7 +617,7 @@
     }
 
     .username {
-      font-size: 11px;
+      font-size: 12px;
     }
 
     .user-stats {
@@ -626,17 +626,17 @@
     }
 
     .stat {
-      font-size: 10px;
+      font-size: 12px;
       gap: 3px;
     }
 
     .stat i {
-      font-size: 9px;
+      font-size: 12px;
     }
 
     .follow-button {
       padding: 6px 12px;
-      font-size: 11px;
+      font-size: 12px;
     }
   }
 

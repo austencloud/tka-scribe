@@ -12,7 +12,7 @@
     <!-- Centered header -->
     <header class="submit-header">
       <div class="header-icon">
-        <i class="fas fa-paper-plane"></i>
+        <i class="fas fa-paper-plane" aria-hidden="true"></i>
       </div>
       <h1 class="header-title">Submit Feedback</h1>
       <p class="header-subtitle">Help improve TKA Scribe with your input</p>

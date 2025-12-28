@@ -82,7 +82,7 @@ Modern, touch-friendly interface for selecting view presets
         type="button"
       >
         <div class="preset-icon">
-          <i class="fas {preset.icon}"></i>
+          <i class="fas {preset.icon}" aria-hidden="true"></i>
         </div>
         <div class="preset-content">
           <div class="preset-label">{preset.label}</div>
@@ -90,7 +90,7 @@ Modern, touch-friendly interface for selecting view presets
         </div>
         {#if currentFilter === preset.id}
           <div class="check-icon">
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
           </div>
         {/if}
       </button>

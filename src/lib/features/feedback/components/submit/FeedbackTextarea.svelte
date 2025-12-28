@@ -1,0 +1,326 @@
+<script lang="ts">
+  import VoiceInputButton from "./VoiceInputButton.svelte";
+  import ImageUpload from "./ImageUpload.svelte";
+  import type { DraftSaveStatus } from "../../services/contracts/IFormDraftPersister";
+
+  let {
+    value,
+    error,
+    placeholder,
+    isStreaming = false,
+    isMobile = false,
+    draftStatus = "idle",
+    images = $bindable([]),
+    disabled = false,
+    onInput,
+    onKeydown,
+    onVoiceTranscript,
+    onInterimTranscript,
+    onRecordingEnd,
+    onVoiceTimeout,
+    onClearText,
+  } = $props<{
+    value: string;
+    error?: string;
+    placeholder: string;
+    isStreaming?: boolean;
+    isMobile?: boolean;
+    draftStatus?: DraftSaveStatus;
+    images?: string[];
+    disabled?: boolean;
+    onInput: (value: string) => void;
+    onKeydown: (event: KeyboardEvent) => void;
+    onVoiceTranscript: (transcript: string, isFinal: boolean) => void;
+    onInterimTranscript: (transcript: string) => void;
+    onRecordingEnd: () => void;
+    onVoiceTimeout: () => void;
+    onClearText: () => void;
+  }>();
+
+  const minChars = 10;
+  const charsNeeded = $derived(Math.max(0, minChars - value.trim().length));
+  const charsMet = $derived(value.trim().length >= minChars);
+</script>
+
+<div class="field">
+  <label for="fb-description" class="sr-only">Feedback description (minimum 10 characters)</label>
+  <div class="textarea-wrapper">
+    <textarea
+      id="fb-description"
+      class="field-textarea"
+      class:has-error={!!error}
+      class:streaming={isStreaming}
+      {value}
+      oninput={(e) => onInput(e.currentTarget.value)}
+      onkeydown={onKeydown}
+      placeholder={`${placeholder}${isMobile ? "" : " (Shift+Enter to submit)"}`}
+      rows="6"
+      aria-invalid={!!error}
+      aria-describedby={error ? "fb-description-error" : undefined}
+    ></textarea>
+    <div class="voice-input-wrapper">
+      <VoiceInputButton
+        onTranscript={onVoiceTranscript}
+        onInterimTranscript={onInterimTranscript}
+        onRecordingEnd={onRecordingEnd}
+        onTimeout={onVoiceTimeout}
+        {disabled}
+      />
+    </div>
+  </div>
+  <div class="field-footer">
+    <div class="field-hint">
+      <span class="char-count" class:met={charsMet} aria-live="polite" aria-atomic="true">
+        {#if !charsMet}
+          {charsNeeded} more needed
+        {:else}
+          <i class="fas fa-check" aria-hidden="true"></i>
+        {/if}
+      </span>
+      {#if draftStatus === "saved"}
+        <span class="draft-saved" aria-live="polite">
+          <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+          Draft saved
+        </span>
+      {/if}
+      {#if error}
+        <span class="field-error" id="fb-description-error" role="alert">{error}</span>
+      {/if}
+    </div>
+    <div class="field-actions">
+      {#if value.trim().length > 0}
+        <button
+          type="button"
+          class="clear-text-btn"
+          onclick={onClearText}
+          aria-label="Clear feedback text"
+          title="Clear text"
+        >
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      {/if}
+      <ImageUpload bind:images {disabled} />
+    </div>
+  </div>
+</div>
+
+<style>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4px, 1cqi, 8px);
+  }
+
+  .field-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: clamp(8px, 2cqi, 12px);
+  }
+
+  .field-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .textarea-wrapper {
+    position: relative;
+    background: color-mix(
+      in srgb,
+      var(--theme-panel-bg, #12121a) 80%,
+      transparent
+    );
+    border: 1.5px solid
+      color-mix(
+        in srgb,
+        var(--active-type-color) 20%,
+        var(--theme-stroke, rgba(255, 255, 255, 0.1))
+      );
+    border-radius: clamp(8px, 1.8cqi, 12px);
+    transition:
+      border-color 200ms ease,
+      background 200ms ease;
+  }
+
+  .textarea-wrapper:hover {
+    border-color: color-mix(
+      in srgb,
+      var(--active-type-color) 45%,
+      rgba(255, 255, 255, 0.15)
+    );
+  }
+
+  .textarea-wrapper:focus-within {
+    border-color: var(--active-type-color, var(--theme-accent, #3b82f6));
+    background: color-mix(
+      in srgb,
+      var(--active-type-color) 5%,
+      rgba(0, 0, 0, 0.25)
+    );
+  }
+
+  .textarea-wrapper:has(.field-textarea.has-error) {
+    border-color: var(--semantic-error, #ef4444);
+  }
+
+  .textarea-wrapper:has(.field-textarea.streaming) {
+    border-color: var(--theme-accent-strong, #8b5cf6);
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong, #8b5cf6) 8%,
+      rgba(0, 0, 0, 0.25)
+    );
+    box-shadow: 0 0 0 2px
+      color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 15%, transparent);
+  }
+
+  .field-textarea {
+    width: 100%;
+    padding: clamp(8px, 2cqi, 12px) clamp(10px, 2.5cqi, 16px);
+    padding-right: clamp(48px, 10cqi, 60px); /* Room for voice button */
+    background: transparent;
+    border: none;
+    color: var(--theme-text, rgba(255, 255, 255, 0.95));
+    font-size: 1rem;
+    font-family: inherit;
+    min-height: clamp(72px, 15cqi, 100px);
+    resize: none;
+    line-height: 1.5;
+  }
+
+  .field-textarea:focus {
+    outline: none;
+  }
+
+  .field-textarea::placeholder {
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      transparent
+    );
+  }
+
+  .clear-text-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--min-touch-target, 44px);
+    min-height: var(--min-touch-target, 44px);
+    width: clamp(36px, 8cqi, 44px);
+    height: clamp(36px, 8cqi, 44px);
+    background: transparent;
+    border: 1px solid
+      color-mix(
+        in srgb,
+        var(--semantic-error, #ff4444) 40%,
+        var(--theme-stroke, rgba(255, 255, 255, 0.15))
+      );
+    border-radius: clamp(6px, 1.5cqi, 8px);
+    color: color-mix(
+      in srgb,
+      var(--semantic-error, #ff4444) 70%,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.7))
+    );
+    cursor: pointer;
+    transition:
+      all 150ms ease,
+      border-color 150ms ease;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .clear-text-btn:hover {
+    background: color-mix(
+      in srgb,
+      var(--semantic-error, #ff4444) 15%,
+      transparent
+    );
+    border-color: var(--semantic-error, #ff4444);
+    color: var(--semantic-error, #ff4444);
+  }
+
+  .clear-text-btn:active {
+    transform: scale(0.95);
+  }
+
+  .clear-text-btn i {
+    font-size: clamp(0.8rem, 2cqi, 0.95rem);
+  }
+
+  .voice-input-wrapper {
+    position: absolute;
+    bottom: clamp(10px, 2.5cqi, 16px);
+    right: clamp(10px, 2.5cqi, 16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .field-hint {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: clamp(14px, 3cqi, 18px);
+  }
+
+  .char-count {
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 500;
+    color: color-mix(
+      in srgb,
+      var(--theme-text-dim, rgba(255, 255, 255, 0.6)) 80%,
+      transparent
+    );
+    transition: color 150ms ease;
+  }
+
+  .char-count.met {
+    color: var(--semantic-success, #10b981);
+  }
+
+  .field-error {
+    margin: 0;
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 500;
+    color: var(--semantic-error, #ef4444);
+  }
+
+  .draft-saved {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: clamp(0.7rem, 1.8cqi, 0.8rem);
+    font-weight: 500;
+    color: #10b981;
+    animation: fadeInOut 2s ease-in-out;
+  }
+
+  .draft-saved i {
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    20% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    80% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+</style>

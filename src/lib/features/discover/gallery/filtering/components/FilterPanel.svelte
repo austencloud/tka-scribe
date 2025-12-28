@@ -80,7 +80,12 @@ Follows Svelte 5 runes + microservices architecture.
 
   // State for multi-select filters
   let selectedLetters = $state<string[]>([]);
-  let localSort = $state<ExploreSortMethod>(currentSort);
+  let localSort = $state<ExploreSortMethod>(ExploreSortMethod.ALPHABETICAL);
+
+  // Sync localSort with prop changes
+  $effect(() => {
+    localSort = currentSort;
+  });
 
   // Apply a filter
   function applyFilter(type: string, value?: ExploreFilterValue) {
@@ -328,7 +333,6 @@ Follows Svelte 5 runes + microservices architecture.
     flex-direction: column;
     height: 100%;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.02));
-    backdrop-filter: blur(10px);
     border-right: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     color: var(--theme-text, white);
     overflow-y: auto;

@@ -52,21 +52,19 @@
 
   const drawerPlacement = $derived(isSideBySide ? "right" : "bottom");
 
-  // Local edit state
-  let editType = $state<FeedbackType>(item.type);
-  let editDescription = $state(item.description);
+  // Local edit state - initialize with defaults, $effect syncs from item
+  let editType = $state<FeedbackType>("bug");
+  let editDescription = $state("");
   let additionalNotes = $state("");
   let isSaving = $state(false);
   let error = $state<string | null>(null);
 
-  // Reset edit state when drawer opens
+  // Sync edit state when drawer opens or item changes
   $effect(() => {
-    if (isOpen) {
-      editType = item.type;
-      editDescription = item.description;
-      additionalNotes = "";
-      error = null;
-    }
+    editType = item.type;
+    editDescription = item.description;
+    additionalNotes = "";
+    error = null;
   });
 
   // Validation for full edit mode
@@ -136,7 +134,7 @@
         onclick={handleCancel}
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </header>
 
@@ -144,7 +142,7 @@
       {#if appendMode}
         <!-- Append Mode: Show original + add notes -->
         <div class="append-info">
-          <i class="fas fa-info-circle"></i>
+          <i class="fas fa-info-circle" aria-hidden="true"></i>
           <span
             >This feedback is <strong style="color: {statusConfig.color}"
               >{statusConfig.label.toLowerCase()}</strong
@@ -160,7 +158,7 @@
               class="type-indicator"
               style="--type-color: {currentTypeConfig.color}"
             >
-              <i class="fas {currentTypeConfig.icon}"></i>
+              <i class="fas {currentTypeConfig.icon}" aria-hidden="true"></i>
               {currentTypeConfig.label
                 .replace(" Report", "")
                 .replace(" Request", "")
@@ -192,7 +190,7 @@
               {#if additionalNotes.trim().length < 5}
                 {5 - additionalNotes.trim().length} more needed
               {:else}
-                <i class="fas fa-check"></i>
+                <i class="fas fa-check" aria-hidden="true"></i>
               {/if}
             </span>
           </div>
@@ -201,7 +199,7 @@
         <!-- Full Edit Mode -->
         <!-- Type Selector -->
         <fieldset class="type-selector">
-          <legend class="visually-hidden">Feedback Type</legend>
+          <legend class="sr-only">Feedback Type</legend>
           <div class="segment-control">
             {#each Object.entries(TYPE_CONFIG) as [type, config]}
               <button
@@ -212,7 +210,7 @@
                 style="--type-color: {config.color}"
                 aria-pressed={editType === type}
               >
-                <i class="fas {config.icon}"></i>
+                <i class="fas {config.icon}" aria-hidden="true"></i>
                 <span class="segment-label">
                   {config.label
                     .replace(" Report", "")
@@ -244,7 +242,7 @@
               {#if editDescription.trim().length < 10}
                 {10 - editDescription.trim().length} more needed
               {:else}
-                <i class="fas fa-check"></i>
+                <i class="fas fa-check" aria-hidden="true"></i>
               {/if}
             </span>
           </div>
@@ -253,8 +251,8 @@
 
       <!-- Error message -->
       {#if error}
-        <div class="error-message">
-          <i class="fas fa-exclamation-circle"></i>
+        <div class="error-message" role="alert" aria-live="assertive">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           {error}
         </div>
       {/if}
@@ -269,12 +267,13 @@
           class="save-btn"
           onclick={handleSave}
           disabled={!canSave || isSaving}
+          aria-busy={isSaving}
         >
           {#if isSaving}
-            <i class="fas fa-circle-notch fa-spin"></i>
+            <i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i>
             <span>Saving...</span>
           {:else}
-            <i class="fas {appendMode ? 'fa-plus' : 'fa-check'}"></i>
+            <i class="fas {appendMode ? 'fa-plus' : 'fa-check'}" aria-hidden="true"></i>
             <span>{appendMode ? "Add Notes" : "Save Changes"}</span>
           {/if}
         </button>
@@ -343,8 +342,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
@@ -427,18 +426,6 @@
     padding: 0;
     margin: 0;
     flex-shrink: 0;
-  }
-
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
   }
 
   .segment-control {

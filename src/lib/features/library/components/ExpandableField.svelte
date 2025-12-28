@@ -35,7 +35,7 @@
 
 {#if !expanded}
   <button type="button" class="expand-chip" onclick={handleExpand}>
-    <i class="fas fa-plus"></i>
+    <i class="fas fa-plus" aria-hidden="true"></i>
     Add {label}
   </button>
 {:else}
@@ -48,7 +48,7 @@
         onclick={handleCollapse}
         aria-label="Remove {label.toLowerCase()}"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     {@render children()}
@@ -77,7 +77,7 @@
   }
 
   .expand-chip i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .expandable-field {

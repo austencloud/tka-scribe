@@ -99,9 +99,6 @@ function createDiscoverNavigationState() {
           data.currentIndex,
           data.history.length - 1
         );
-        console.log(
-          `[DiscoverNav] Restored ${state.history.length} history entries, index: ${state.currentIndex}`
-        );
         return true;
       }
     } catch (error) {
@@ -153,10 +150,6 @@ function createDiscoverNavigationState() {
       }
 
       persistState();
-      console.log(
-        `[DiscoverNav] Navigated to: ${location.tab}/${location.view}`,
-        location.contextId ? `(${location.contextId})` : ""
-      );
     },
 
     /**
@@ -170,13 +163,6 @@ function createDiscoverNavigationState() {
       state.currentIndex--;
       const location = state.history[state.currentIndex];
       persistState();
-
-      if (location) {
-        console.log(
-          `[DiscoverNav] Back to: ${location.tab}/${location.view}`,
-          location.contextId ? `(${location.contextId})` : ""
-        );
-      }
 
       // Reset flag after a tick
       setTimeout(() => {
@@ -197,13 +183,6 @@ function createDiscoverNavigationState() {
       state.currentIndex++;
       const location = state.history[state.currentIndex];
       persistState();
-
-      if (location) {
-        console.log(
-          `[DiscoverNav] Forward to: ${location.tab}/${location.view}`,
-          location.contextId ? `(${location.contextId})` : ""
-        );
-      }
 
       // Reset flag after a tick
       setTimeout(() => {
@@ -340,7 +319,6 @@ function createDiscoverNavigationState() {
       state.history = [];
       state.currentIndex = -1;
       localStorage.removeItem(STORAGE_KEY);
-      console.log("[DiscoverNav] History cleared");
     },
 
     /**

@@ -58,8 +58,7 @@
   onclick={handleBackdropClick}
 >
   {#if images.length > 0}
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-    <div class="viewer-container" onclick={(e) => e.stopPropagation()} onkeydown={(e) => e.stopPropagation()} role="region">
+    <div class="viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
       <!-- Close button -->
       <button
         class="close-btn"
@@ -67,7 +66,7 @@
         type="button"
         aria-label="Close"
       >
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
 
       <!-- Image counter -->
@@ -94,7 +93,7 @@
           type="button"
           aria-label="Previous"
         >
-          <i class="fas fa-chevron-left"></i>
+          <i class="fas fa-chevron-left" aria-hidden="true"></i>
         </button>
         <button
           class="nav-btn next"
@@ -102,7 +101,7 @@
           type="button"
           aria-label="Next"
         >
-          <i class="fas fa-chevron-right"></i>
+          <i class="fas fa-chevron-right" aria-hidden="true"></i>
         </button>
       {/if}
 
@@ -157,8 +156,8 @@
     position: absolute;
     top: 16px;
     right: 16px;
-    width: 44px;
-    height: 44px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -280,12 +279,6 @@
 
   /* Mobile optimizations */
   @media (max-width: 768px) {
-    .nav-btn {
-      width: 40px;
-      height: 40px;
-      font-size: 1rem;
-    }
-
     .nav-btn.prev {
       left: 8px;
     }

@@ -117,7 +117,7 @@ Uses chips/tags for quick filtering with less screen real estate.
         onclick={() => handleQuickFilter(filter)}
         aria-label={filter.label}
       >
-        <i class="fas {filter.icon}"></i>
+        <i class="fas {filter.icon}" aria-hidden="true"></i>
         <span>{filter.label}</span>
       </button>
     {/each}
@@ -129,7 +129,7 @@ Uses chips/tags for quick filtering with less screen real estate.
     onclick={handleAdvancedClick}
     aria-label="Advanced filters"
   >
-    <i class="fas fa-sliders-h"></i>
+    <i class="fas fa-sliders-h" aria-hidden="true"></i>
     <span class="desktop-only">Advanced</span>
   </button>
 </div>
