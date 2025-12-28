@@ -39,12 +39,17 @@ import {
   CURRENT_MODULE_KEY,
   ACTIVE_TAB_KEY,
   MODULE_LAST_TABS_KEY,
-  TAB_LAST_PANELS_KEY,
   CURRENT_CREATE_MODE_KEY,
   CURRENT_LEARN_MODE_KEY,
   PREVIOUS_MODULE_SESSION_KEY,
   PREVIOUS_TAB_SESSION_KEY,
 } from "../config/storage-keys";
+
+// Import onboarding visibility state (extracted for single responsibility)
+import { onboardingVisibilityState } from "../../onboarding/state/onboarding-visibility-state.svelte";
+
+// Import panel persistence state (extracted for single responsibility)
+import { panelPersistenceState } from "./panel-persistence-state.svelte";
 
 // Re-export for backwards compatibility
 export {
@@ -85,21 +90,6 @@ export function createNavigationState() {
   let currentModule = $state<ModuleId>("dashboard");
   let activeTab = $state<string>(""); // Active tab within the current module (dashboard has no tabs)
   let lastTabByModule = $state<Partial<Record<ModuleId, string>>>({});
-
-  // Panel persistence per tab (e.g., animation panel open in construct tab)
-  // Key format: "moduleId:tabId" (e.g., "create:constructor", "create:assembler")
-  let lastPanelByTab = $state<Record<string, string | null>>({});
-
-  // Track when user reaches the choice step of the Create tutorial
-  // At this point, tabs should animate in to show they're available
-  let isCreateTutorialOnChoiceStep = $state<boolean>(false);
-
-  // Generic module onboarding visibility tracking (for all modules except Create which has its own)
-  // When true, the module's tabs are hidden in the sidebar
-  let moduleOnboardingVisible = $state<Record<string, boolean>>({});
-
-  // Track when a module's onboarding is on the choice step (tabs should animate in)
-  let moduleOnboardingOnChoiceStep = $state<Record<string, boolean>>({});
 
   // Track previous module for settings toggle behavior
   let previousModule = $state<ModuleId | null>(loadPreviousModuleFromSession());
@@ -213,35 +203,18 @@ export function createNavigationState() {
       }
     }
 
-    // Load last open panel for each tab (key format: "moduleId:tabId")
-    const savedLastPanels = localStorage.getItem(TAB_LAST_PANELS_KEY);
-    if (savedLastPanels) {
-      try {
-        const parsed = JSON.parse(savedLastPanels) as Record<
-          string,
-          string | null
-        >;
-        // Validate tab keys - format "moduleId:tabId"
-        const filteredEntries = Object.entries(parsed).filter(([tabKey]) => {
-          const [moduleId, tabId] = tabKey.split(":");
-          if (!moduleId || !tabId) return false;
-          const moduleDefinition = MODULE_DEFINITIONS.find(
-            (m) => m.id === moduleId
-          );
-          return (
-            moduleDefinition?.sections.some((tab) => tab.id === tabId) ?? false
-          );
-        });
-        if (filteredEntries.length > 0) {
-          lastPanelByTab = Object.fromEntries(filteredEntries);
-        }
-      } catch (error) {
-        console.warn(
-          "NavigationState: failed to parse saved tab panel map:",
-          error
-        );
-      }
-    }
+    // Load last open panel for each tab via panelPersistenceState
+    // Validator ensures saved tab keys are still valid
+    panelPersistenceState.loadFromStorage((tabKey: string) => {
+      const [moduleId, tabId] = tabKey.split(":");
+      if (!moduleId || !tabId) return false;
+      const moduleDefinition = MODULE_DEFINITIONS.find(
+        (m) => m.id === moduleId
+      );
+      return (
+        moduleDefinition?.sections.some((tab) => tab.id === tabId) ?? false
+      );
+    });
 
     // Load current active tab
     const savedActiveTab = localStorage.getItem(ACTIVE_TAB_KEY);
@@ -319,17 +292,6 @@ export function createNavigationState() {
     }
   }
 
-  function persistLastPanels() {
-    if (typeof localStorage === "undefined") {
-      return;
-    }
-
-    try {
-      localStorage.setItem(TAB_LAST_PANELS_KEY, JSON.stringify(lastPanelByTab));
-    } catch (error) {
-      console.warn("NavigationState: failed to persist tab panel map:", error);
-    }
-  }
 
   // Module-based functions
   // targetTab: Optional tab to set directly (bypasses remembered/default tab logic)
@@ -637,65 +599,35 @@ export function createNavigationState() {
     getModuleDefinition,
     updateTabAccessibility,
 
-    // Track when user reaches the choice step of the Create tutorial
+    // ─────────────────────────────────────────────────────────────────────────
+    // Onboarding Visibility (delegated to onboardingVisibilityState)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /** @see onboardingVisibilityState.isCreateTutorialOnChoiceStep */
     get isCreateTutorialOnChoiceStep() {
-      return isCreateTutorialOnChoiceStep;
+      return onboardingVisibilityState.isCreateTutorialOnChoiceStep;
     },
-    setCreateTutorialOnChoiceStep(onChoiceStep: boolean) {
-      isCreateTutorialOnChoiceStep = onChoiceStep;
-    },
+    /** @see onboardingVisibilityState.setCreateTutorialOnChoiceStep */
+    setCreateTutorialOnChoiceStep:
+      onboardingVisibilityState.setCreateTutorialOnChoiceStep,
 
-    // Generic module onboarding visibility (for modules other than Create)
-    /**
-     * Check if a module's onboarding is currently visible
-     * @param moduleId The module to check
-     * @returns true if onboarding is visible, false otherwise
-     */
-    isModuleOnboardingVisible(moduleId: string): boolean {
-      return moduleOnboardingVisible[moduleId] ?? false;
-    },
+    /** @see onboardingVisibilityState.isModuleOnboardingVisible */
+    isModuleOnboardingVisible:
+      onboardingVisibilityState.isModuleOnboardingVisible,
+    /** @see onboardingVisibilityState.setModuleOnboardingVisible */
+    setModuleOnboardingVisible:
+      onboardingVisibilityState.setModuleOnboardingVisible,
+    /** @see onboardingVisibilityState.isModuleOnboardingOnChoiceStep */
+    isModuleOnboardingOnChoiceStep:
+      onboardingVisibilityState.isModuleOnboardingOnChoiceStep,
+    /** @see onboardingVisibilityState.setModuleOnboardingOnChoiceStep */
+    setModuleOnboardingOnChoiceStep:
+      onboardingVisibilityState.setModuleOnboardingOnChoiceStep,
 
-    /**
-     * Set whether a module's onboarding is visible
-     * @param moduleId The module to set
-     * @param visible Whether onboarding should be visible
-     */
-    setModuleOnboardingVisible(moduleId: string, visible: boolean) {
-      moduleOnboardingVisible = {
-        ...moduleOnboardingVisible,
-        [moduleId]: visible,
-      };
-      // Reset choice step when hiding onboarding
-      if (!visible) {
-        moduleOnboardingOnChoiceStep = {
-          ...moduleOnboardingOnChoiceStep,
-          [moduleId]: false,
-        };
-      }
-    },
+    // ─────────────────────────────────────────────────────────────────────────
+    // Panel Persistence (delegated to panelPersistenceState)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    /**
-     * Check if a module's onboarding is on the choice step
-     * @param moduleId The module to check
-     * @returns true if on choice step, false otherwise
-     */
-    isModuleOnboardingOnChoiceStep(moduleId: string): boolean {
-      return moduleOnboardingOnChoiceStep[moduleId] ?? false;
-    },
-
-    /**
-     * Set whether a module's onboarding is on the choice step
-     * @param moduleId The module to set
-     * @param onChoiceStep Whether on the choice step
-     */
-    setModuleOnboardingOnChoiceStep(moduleId: string, onChoiceStep: boolean) {
-      moduleOnboardingOnChoiceStep = {
-        ...moduleOnboardingOnChoiceStep,
-        [moduleId]: onChoiceStep,
-      };
-    },
-
-    // Panel persistence per tab (key format: "moduleId:tabId")
     /**
      * Get the last open panel for a specific tab
      * @param moduleId The module (defaults to current module)
@@ -705,8 +637,7 @@ export function createNavigationState() {
     getLastPanelForTab(moduleId?: ModuleId, tabId?: string): string | null {
       const module = moduleId ?? currentModule;
       const tab = tabId ?? activeTab;
-      const tabKey = `${module}:${tab}`;
-      return lastPanelByTab[tabKey] ?? null;
+      return panelPersistenceState.getLastPanel(`${module}:${tab}`);
     },
 
     /**
@@ -722,12 +653,7 @@ export function createNavigationState() {
     ) {
       const module = moduleId ?? currentModule;
       const tab = tabId ?? activeTab;
-      const tabKey = `${module}:${tab}`;
-      lastPanelByTab = {
-        ...lastPanelByTab,
-        [tabKey]: panelId,
-      };
-      persistLastPanels();
+      panelPersistenceState.setLastPanel(`${module}:${tab}`, panelId);
     },
 
     /**
@@ -738,11 +664,7 @@ export function createNavigationState() {
     clearPanelForTab(moduleId?: ModuleId, tabId?: string) {
       const module = moduleId ?? currentModule;
       const tab = tabId ?? activeTab;
-      const tabKey = `${module}:${tab}`;
-      const updated = { ...lastPanelByTab };
-      delete updated[tabKey];
-      lastPanelByTab = updated;
-      persistLastPanels();
+      panelPersistenceState.clearPanel(`${module}:${tab}`);
     },
 
     // Legacy action aliases (deprecated)

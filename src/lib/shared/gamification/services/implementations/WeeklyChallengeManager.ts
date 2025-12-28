@@ -24,6 +24,7 @@ import {
   getWeeklyChallengesPath,
   getUserWeeklyProgressPath,
 } from "../../data/firestore-collections";
+import { toast } from "../../../toast/state/toast-state.svelte";
 import type {
   WeeklyChallenge,
   UserWeeklyChallengeProgress,
@@ -134,47 +135,53 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
     const challenge = await this.getCurrentWeekChallenge();
     if (!challenge) return null;
 
-    const firestore = await getFirestoreInstance();
-    const progressPath = getUserWeeklyProgressPath(user.uid);
-    const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
-    const progressDoc = await getDoc(progressDocRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const progressPath = getUserWeeklyProgressPath(user.uid);
+      const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
+      const progressDoc = await getDoc(progressDocRef);
 
-    if (!progressDoc.exists()) {
-      // Initialize progress
-      const { year, weekNumber } = getCurrentWeekNumber();
-      const initialProgress: UserWeeklyChallengeProgress = {
-        id: challenge.id,
-        challengeId: challenge.id,
-        userId: user.uid,
-        weekNumber,
-        year,
-        progress: 0,
-        isCompleted: false,
-        startedAt: new Date(),
-        bonusEarned: false,
-      };
+      if (!progressDoc.exists()) {
+        // Initialize progress
+        const { year, weekNumber } = getCurrentWeekNumber();
+        const initialProgress: UserWeeklyChallengeProgress = {
+          id: challenge.id,
+          challengeId: challenge.id,
+          userId: user.uid,
+          weekNumber,
+          year,
+          progress: 0,
+          isCompleted: false,
+          startedAt: new Date(),
+          bonusEarned: false,
+        };
 
-      await setDoc(progressDocRef, {
-        ...initialProgress,
-        startedAt: serverTimestamp(),
-      });
+        await setDoc(progressDocRef, {
+          ...initialProgress,
+          startedAt: serverTimestamp(),
+        });
 
-      // Cache locally
-      await db.userWeeklyProgress.put(initialProgress);
+        // Cache locally
+        await db.userWeeklyProgress.put(initialProgress);
 
-      return initialProgress;
+        return initialProgress;
+      }
+
+      const data = progressDoc.data() as Record<string, unknown>;
+      const startedAt = data["startedAt"] as { toDate?: () => Date } | undefined;
+      const completedAt = data["completedAt"] as
+        | { toDate?: () => Date }
+        | undefined;
+      return {
+        ...data,
+        startedAt: startedAt?.toDate?.() || new Date(),
+        completedAt: completedAt?.toDate?.(),
+      } as UserWeeklyChallengeProgress;
+    } catch (error) {
+      console.error("[WeeklyChallengeManager] Failed to get weekly progress:", error);
+      toast.error("Failed to load weekly challenge progress.");
+      return null;
     }
-
-    const data = progressDoc.data() as Record<string, unknown>;
-    const startedAt = data["startedAt"] as { toDate?: () => Date } | undefined;
-    const completedAt = data["completedAt"] as
-      | { toDate?: () => Date }
-      | undefined;
-    return {
-      ...data,
-      startedAt: startedAt?.toDate?.() || new Date(),
-      completedAt: completedAt?.toDate?.(),
-    } as UserWeeklyChallengeProgress;
   }
 
   async updateWeeklyProgress(progressDelta: number): Promise<{
@@ -215,76 +222,82 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
       bonusEarned = new Date() < new Date(challenge.bonusDeadline);
     }
 
-    const firestore = await getFirestoreInstance();
-    const progressPath = getUserWeeklyProgressPath(user.uid);
-    const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
+    try {
+      const firestore = await getFirestoreInstance();
+      const progressPath = getUserWeeklyProgressPath(user.uid);
+      const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
 
-    if (isNowCompleted) {
-      // Mark as completed
-      const updatedProgress: UserWeeklyChallengeProgress = {
-        ...currentProgress,
-        progress: challenge.requirement.target,
-        isCompleted: true,
-        completedAt: new Date(),
-        bonusEarned,
-      };
+      if (isNowCompleted) {
+        // Mark as completed
+        const updatedProgress: UserWeeklyChallengeProgress = {
+          ...currentProgress,
+          progress: challenge.requirement.target,
+          isCompleted: true,
+          completedAt: new Date(),
+          bonusEarned,
+        };
 
-      await updateDoc(progressDocRef, {
-        progress: challenge.requirement.target,
-        isCompleted: true,
-        completedAt: serverTimestamp(),
-        bonusEarned,
-      });
+        await updateDoc(progressDocRef, {
+          progress: challenge.requirement.target,
+          isCompleted: true,
+          completedAt: serverTimestamp(),
+          bonusEarned,
+        });
 
-      // Cache locally
-      await db.userWeeklyProgress.put(updatedProgress);
+        // Cache locally
+        await db.userWeeklyProgress.put(updatedProgress);
 
-      // Award XP via AchievementManager
-      if (this._achievementService) {
-        await this._achievementService.trackAction(
-          "weekly_challenge_completed",
-          {
-            challengeId: challenge.id,
-            weekNumber: challenge.weekNumber,
-            year: challenge.year,
-            bonusEarned,
+        // Award XP via AchievementManager
+        if (this._achievementService) {
+          await this._achievementService.trackAction(
+            "weekly_challenge_completed",
+            {
+              challengeId: challenge.id,
+              weekNumber: challenge.weekNumber,
+              year: challenge.year,
+              bonusEarned,
+            }
+          );
+
+          // Award bonus XP if earned
+          if (bonusEarned) {
+            await this._achievementService.trackAction("weekly_challenge_bonus", {
+              challengeId: challenge.id,
+              weekNumber: challenge.weekNumber,
+              year: challenge.year,
+            });
           }
+        }
+
+        console.log(
+          `🎉 Weekly challenge completed: ${challenge.title}${bonusEarned ? " (with bonus!)" : ""}`
         );
 
-        // Award bonus XP if earned
-        if (bonusEarned) {
-          await this._achievementService.trackAction("weekly_challenge_bonus", {
-            challengeId: challenge.id,
-            weekNumber: challenge.weekNumber,
-            year: challenge.year,
-          });
-        }
+        return { completed: true, progress: updatedProgress, bonusEarned };
+      } else {
+        // Update progress
+        const updatedProgress: UserWeeklyChallengeProgress = {
+          ...currentProgress,
+          progress: newProgress,
+        };
+
+        await updateDoc(progressDocRef, {
+          progress: newProgress,
+        });
+
+        // Cache locally
+        await db.userWeeklyProgress.put(updatedProgress);
+
+        return {
+          completed: false,
+          progress: updatedProgress,
+          bonusEarned: false,
+        };
       }
-
-      console.log(
-        `🎉 Weekly challenge completed: ${challenge.title}${bonusEarned ? " (with bonus!)" : ""}`
-      );
-
-      return { completed: true, progress: updatedProgress, bonusEarned };
-    } else {
-      // Update progress
-      const updatedProgress: UserWeeklyChallengeProgress = {
-        ...currentProgress,
-        progress: newProgress,
-      };
-
-      await updateDoc(progressDocRef, {
-        progress: newProgress,
-      });
-
-      // Cache locally
-      await db.userWeeklyProgress.put(updatedProgress);
-
-      return {
-        completed: false,
-        progress: updatedProgress,
-        bonusEarned: false,
-      };
+    } catch (error) {
+      console.error("[WeeklyChallengeManager] Failed to update weekly progress:", error);
+      toast.error("Failed to update weekly challenge progress.");
+      throw error;
     }
   }
 
@@ -394,76 +407,87 @@ export class WeeklyChallengeManager implements IWeeklyChallengeManager {
       };
     }
 
-    const firestore = await getFirestoreInstance();
-    const progressPath = getUserWeeklyProgressPath(user.uid);
-    const completedQuery = query(
-      collection(firestore, progressPath),
-      where("isCompleted", "==", true),
-      orderBy("year", "desc"),
-      orderBy("weekNumber", "desc")
-    );
-
-    const snapshot = await getDocs(completedQuery);
-    const totalWeeklyChallengesCompleted = snapshot.size;
-
-    // Count bonuses earned
-    let totalBonusesEarned = 0;
-    const completedWeeks: Array<{ year: number; weekNumber: number }> = [];
-
-    snapshot.docs.forEach((doc) => {
-      const data = doc.data() as Record<string, unknown>;
-      if (data["bonusEarned"]) {
-        totalBonusesEarned++;
-      }
-      completedWeeks.push({
-        year: data["year"] as number,
-        weekNumber: data["weekNumber"] as number,
-      });
-    });
-
-    // Calculate streaks
-    let currentWeeklyStreak = 0;
-    let longestWeeklyStreak = 0;
-    let tempStreak = 0;
-
-    const { year, weekNumber } = getCurrentWeekNumber();
-    let checkYear = year;
-    let checkWeek = weekNumber;
-
-    // Calculate current streak
-    for (let i = 0; i < 100; i++) {
-      const found = completedWeeks.some(
-        (w) => w.year === checkYear && w.weekNumber === checkWeek
+    try {
+      const firestore = await getFirestoreInstance();
+      const progressPath = getUserWeeklyProgressPath(user.uid);
+      const completedQuery = query(
+        collection(firestore, progressPath),
+        where("isCompleted", "==", true),
+        orderBy("year", "desc"),
+        orderBy("weekNumber", "desc")
       );
 
-      if (found) {
-        currentWeeklyStreak++;
-        tempStreak++;
-      } else {
-        if (i === 0) {
-          // Current week not completed yet, check previous
-          currentWeeklyStreak = 0;
+      const snapshot = await getDocs(completedQuery);
+      const totalWeeklyChallengesCompleted = snapshot.size;
+
+      // Count bonuses earned
+      let totalBonusesEarned = 0;
+      const completedWeeks: Array<{ year: number; weekNumber: number }> = [];
+
+      snapshot.docs.forEach((doc) => {
+        const data = doc.data() as Record<string, unknown>;
+        if (data["bonusEarned"]) {
+          totalBonusesEarned++;
+        }
+        completedWeeks.push({
+          year: data["year"] as number,
+          weekNumber: data["weekNumber"] as number,
+        });
+      });
+
+      // Calculate streaks
+      let currentWeeklyStreak = 0;
+      let longestWeeklyStreak = 0;
+      let tempStreak = 0;
+
+      const { year, weekNumber } = getCurrentWeekNumber();
+      let checkYear = year;
+      let checkWeek = weekNumber;
+
+      // Calculate current streak
+      for (let i = 0; i < 100; i++) {
+        const found = completedWeeks.some(
+          (w) => w.year === checkYear && w.weekNumber === checkWeek
+        );
+
+        if (found) {
+          currentWeeklyStreak++;
+          tempStreak++;
         } else {
-          break;
+          if (i === 0) {
+            // Current week not completed yet, check previous
+            currentWeeklyStreak = 0;
+          } else {
+            break;
+          }
+        }
+
+        // Move to previous week
+        checkWeek--;
+        if (checkWeek <= 0) {
+          checkYear--;
+          checkWeek = 52;
         }
       }
 
-      // Move to previous week
-      checkWeek--;
-      if (checkWeek <= 0) {
-        checkYear--;
-        checkWeek = 52;
-      }
+      longestWeeklyStreak = Math.max(currentWeeklyStreak, tempStreak);
+
+      return {
+        totalWeeklyChallengesCompleted,
+        currentWeeklyStreak,
+        longestWeeklyStreak,
+        totalBonusesEarned,
+      };
+    } catch (error) {
+      console.error("[WeeklyChallengeManager] Failed to get weekly stats:", error);
+      toast.error("Failed to load weekly challenge statistics.");
+      return {
+        totalWeeklyChallengesCompleted: 0,
+        currentWeeklyStreak: 0,
+        longestWeeklyStreak: 0,
+        totalBonusesEarned: 0,
+      };
     }
-
-    longestWeeklyStreak = Math.max(currentWeeklyStreak, tempStreak);
-
-    return {
-      totalWeeklyChallengesCompleted,
-      currentWeeklyStreak,
-      longestWeeklyStreak,
-      totalBonusesEarned,
-    };
   }
 
   // ============================================================================

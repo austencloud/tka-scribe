@@ -171,7 +171,7 @@ export function generateGlassMorphismTheme(
       cardBorder: "rgba(255, 255, 255, 0.1)",
       cardHover: "rgba(255, 255, 255, 0.08)",
       textPrimary: "#ffffff",
-      textSecondary: "rgba(255, 255, 255, 0.7)",
+      textSecondary: "rgba(255, 255, 255, 0.75)", // WCAG AAA compliant
       inputBg: "rgba(255, 255, 255, 0.05)",
       inputBorder: "rgba(255, 255, 255, 0.1)",
       inputFocus: "rgba(255, 255, 255, 0.08)",
@@ -248,8 +248,8 @@ export function generateMatteTheme(
     accentStrong: accent, // Use same accent for strong variant
     stroke: "rgba(255, 255, 255, 0.08)",
     strokeStrong: "rgba(255, 255, 255, 0.14)",
-    text: "rgba(255, 255, 255, 0.92)",
-    textDim: "rgba(255, 255, 255, 0.65)",
+    text: "#ffffff",
+    textDim: "rgba(255, 255, 255, 0.75)", // WCAG AAA: 7:1 contrast minimum
     shadow: "0 14px 36px rgba(0, 0, 0, 0.4)",
     panelShadow: "0 12px 28px rgba(0, 0, 0, 0.35)",
   };
@@ -388,6 +388,29 @@ export function applyThemeFromColors(
   root.style.setProperty("--theme-shadow", matteTheme.shadow);
   root.style.setProperty("--theme-panel-shadow", matteTheme.panelShadow);
 
+  // Additional convenience tokens (derived from base tokens)
+  root.style.setProperty(
+    "--theme-accent-bg",
+    `color-mix(in srgb, ${matteTheme.accent} 15%, transparent)`
+  );
+  root.style.setProperty(
+    "--theme-accent-glow",
+    `color-mix(in srgb, ${matteTheme.accent} 40%, transparent)`
+  );
+  root.style.setProperty(
+    "--theme-accent-hover",
+    `color-mix(in srgb, ${matteTheme.accent} 80%, white)`
+  );
+  root.style.setProperty("--theme-accent-border", matteTheme.stroke);
+  root.style.setProperty("--theme-accent-text", matteTheme.accent);
+  root.style.setProperty("--theme-input-bg", matteTheme.cardBg);
+  root.style.setProperty("--theme-hover-bg", matteTheme.cardHoverBg);
+  root.style.setProperty(
+    "--theme-text-tertiary",
+    `color-mix(in srgb, ${matteTheme.textDim} 70%, transparent)`
+  );
+  root.style.setProperty("--theme-transition", "150ms ease-out");
+
   // Danger zone theme variables (for destructive actions)
   root.style.setProperty("--theme-danger-bg", dangerTheme.bg);
   root.style.setProperty("--theme-danger-hover-bg", dangerTheme.hoverBg);
@@ -413,12 +436,26 @@ export function applyThemeFromColors(
   root.style.setProperty("--semantic-success-dim", "rgba(34, 197, 94, 0.15)");
   root.style.setProperty("--semantic-warning", "#f59e0b");
   root.style.setProperty("--semantic-warning-dim", "rgba(245, 158, 11, 0.15)");
+  root.style.setProperty("--semantic-warning-bg", "rgba(245, 158, 11, 0.1)");
+  root.style.setProperty("--semantic-warning-border", "rgba(245, 158, 11, 0.3)");
+  root.style.setProperty("--semantic-warning-text", "#fbbf24");
+  root.style.setProperty("--semantic-warning-glow", "rgba(245, 158, 11, 0.4)");
+  root.style.setProperty("--semantic-warning-text-vivid", "#fcd34d");
   root.style.setProperty("--semantic-info", "#3b82f6");
   root.style.setProperty("--semantic-info-dim", "rgba(59, 130, 246, 0.15)");
+  root.style.setProperty("--semantic-info-bg", "rgba(59, 130, 246, 0.1)");
+  root.style.setProperty("--semantic-info-border", "rgba(59, 130, 246, 0.3)");
+  root.style.setProperty("--semantic-info-text", "#60a5fa");
 
   // Domain-specific prop colors (constant)
   root.style.setProperty("--prop-blue", "#2e3192");
+  root.style.setProperty("--prop-blue-bg", "rgba(46, 49, 146, 0.15)");
+  root.style.setProperty("--prop-blue-border", "rgba(46, 49, 146, 0.4)");
+  root.style.setProperty("--prop-blue-text", "#818cf8");
   root.style.setProperty("--prop-red", "#ed1c24");
+  root.style.setProperty("--prop-red-bg", "rgba(237, 28, 36, 0.15)");
+  root.style.setProperty("--prop-red-border", "rgba(237, 28, 36, 0.4)");
+  root.style.setProperty("--prop-red-text", "#f87171");
 }
 
 /**

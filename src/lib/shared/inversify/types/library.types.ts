@@ -12,4 +12,5 @@ export const LibraryTypes = {
   ILibraryQueryService: Symbol.for("ILibraryQueryService"),
   IForkService: Symbol.for("IForkService"),
   ILibraryMigrationService: Symbol.for("ILibraryMigrationService"),
+  IPublicIndexSyncer: Symbol.for("IPublicIndexSyncer"),
 } as const;

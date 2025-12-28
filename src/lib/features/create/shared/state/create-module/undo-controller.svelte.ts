@@ -24,12 +24,11 @@ type UndoControllerDeps = {
   ) => Promise<void>;
 };
 
-export type UndoSnapshotType =
-  | "REMOVE_BEATS"
-  | "CLEAR_SEQUENCE"
-  | "ADD_BEAT"
-  | "SELECT_START_POSITION"
-  | "BATCH_EDIT";
+/**
+ * Subset of UndoOperationType used for snapshot operations
+ * @deprecated Use UndoOperationType directly
+ */
+export type UndoSnapshotType = UndoOperationType;
 
 export function createUndoController({
   UndoManager,
@@ -47,19 +46,13 @@ export function createUndoController({
     undoChangeCounter++;
   });
 
-  function pushUndoSnapshot(type: UndoSnapshotType, metadata?: UndoMetadata) {
-    if (!sequenceState.currentSequence && type !== "SELECT_START_POSITION") {
+  function pushUndoSnapshot(type: UndoOperationType, metadata?: UndoMetadata) {
+    if (
+      !sequenceState.currentSequence &&
+      type !== UndoOperationType.SELECT_START_POSITION
+    ) {
       return;
     }
-
-    const operationType =
-      type === "SELECT_START_POSITION"
-        ? UndoOperationType.SELECT_START_POSITION
-        : type === "ADD_BEAT"
-          ? UndoOperationType.ADD_BEAT
-          : type === "REMOVE_BEATS"
-            ? UndoOperationType.REMOVE_BEATS
-            : UndoOperationType.CLEAR_SEQUENCE;
 
     const currentSequenceRef = sequenceState.currentSequence;
     const selectedBeatNumberRef = sequenceState.selectedBeatNumber;
@@ -81,11 +74,11 @@ export function createUndoController({
         selectedBeatNumber: selectedBeatNumberRef,
         activeSection: activeSectionRef,
         shouldShowStartPositionPicker:
-          type === "SELECT_START_POSITION" ? true : false,
+          type === UndoOperationType.SELECT_START_POSITION,
         timestamp: timestampRef,
       };
 
-      UndoManager.pushUndo(operationType, beforeState, metadata);
+      UndoManager.pushUndo(type, beforeState, metadata);
     });
   }
 

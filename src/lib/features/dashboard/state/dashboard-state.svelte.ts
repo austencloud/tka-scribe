@@ -12,6 +12,17 @@ import { libraryState } from "$lib/features/library/state/library-state.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
 import { MODULE_GRADIENTS } from "../domain/models/dashboard-config";
 import type { FeedbackItem } from "$lib/features/feedback/domain/models/feedback-models";
+import type { User } from "firebase/auth";
+import type { ModuleDefinition } from "$lib/shared/navigation/domain/types";
+import type { PreviewUserProfile } from "$lib/shared/debug/state/user-preview-state.svelte";
+
+/**
+ * Module card displayed on the dashboard
+ */
+export interface DashboardModuleCard extends ModuleDefinition {
+  gradient: string;
+  isLocked: boolean;
+}
 
 /**
  * Internal state structure (not exported to consumers)
@@ -37,14 +48,14 @@ export interface DashboardState {
   readonly feedbackDetailItem: FeedbackItem | null;
   readonly feedbackDetailOpen: boolean;
   readonly isAuthenticated: boolean;
-  readonly user: any;
+  readonly user: User | null;
   readonly sequenceCount: number;
   readonly favoriteCount: number;
   readonly greeting: string;
   readonly welcomeMessage: string;
-  readonly moduleCards: any[];
+  readonly moduleCards: DashboardModuleCard[];
   readonly isPreviewActive: boolean;
-  readonly previewProfile: any;
+  readonly previewProfile: PreviewUserProfile | null;
   showSignInRequiredToast: (moduleName: string) => void;
   clearToast: () => void;
   openFeedbackDetail: (item: FeedbackItem) => void;

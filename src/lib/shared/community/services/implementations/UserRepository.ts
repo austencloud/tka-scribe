@@ -22,6 +22,7 @@ import {
 } from "firebase/firestore";
 import type { Timestamp, DocumentData } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import { getUserAchievementsPath } from "$lib/shared/gamification/data/firestore-collections";
 import { ALL_ACHIEVEMENTS } from "$lib/shared/gamification/domain/constants/achievement-definitions";
 import type {
@@ -162,6 +163,7 @@ export class UserRepository implements IUserRepository {
       return filteredUsers;
     } catch (error) {
       console.error("[UserRepository] Error fetching users:", error);
+      toast.error("Failed to load creators.");
       throw error;
     }
   }
@@ -189,12 +191,13 @@ export class UserRepository implements IUserRepository {
 
     // Use async IIFE to get firestore instance
     void (async () => {
-      const firestore = await getFirestoreInstance();
-      const usersRef = collection(firestore, this.USERS_COLLECTION);
-      const limitValue = options?.limit ?? 100;
-      const q = query(usersRef, firestoreLimit(limitValue));
+      try {
+        const firestore = await getFirestoreInstance();
+        const usersRef = collection(firestore, this.USERS_COLLECTION);
+        const limitValue = options?.limit ?? 100;
+        const q = query(usersRef, firestoreLimit(limitValue));
 
-      unsubscribe = onSnapshot(
+        unsubscribe = onSnapshot(
         q,
         (querySnapshot) => {
           // Process async operations without blocking
@@ -232,8 +235,13 @@ export class UserRepository implements IUserRepository {
         },
         (error) => {
           console.error("[UserRepository] Real-time subscription error:", error);
+          toast.error("Failed to connect to creators feed.");
         }
       );
+      } catch (error) {
+        console.error("[UserRepository] Failed to initialize creators subscription:", error);
+        toast.error("Failed to connect to creators feed.");
+      }
     })();
 
     // Return cleanup function that calls unsubscribe when available
@@ -262,6 +270,7 @@ export class UserRepository implements IUserRepository {
       );
     } catch (error) {
       console.error("[UserRepository] Error searching users:", error);
+      toast.error("Failed to search users.");
       throw new Error("Failed to search users");
     }
   }
@@ -341,6 +350,7 @@ export class UserRepository implements IUserRepository {
       });
     } catch (error) {
       console.error(`[UserRepository] Error following user:`, error);
+      toast.error("Failed to follow user. Please try again.");
       throw new Error("Failed to follow user");
     }
   }
@@ -418,6 +428,7 @@ export class UserRepository implements IUserRepository {
       });
     } catch (error) {
       console.error(`[UserRepository] Error unfollowing user:`, error);
+      toast.error("Failed to unfollow user. Please try again.");
       throw new Error("Failed to unfollow user");
     }
   }
@@ -560,25 +571,30 @@ export class UserRepository implements IUserRepository {
 
     // Use async IIFE to get firestore instance
     void (async () => {
-      const firestore = await getFirestoreInstance();
-      const followingRef = doc(
-        firestore,
-        `${this.USERS_COLLECTION}/${currentUserId}/following/${targetUserId}`
-      );
+      try {
+        const firestore = await getFirestoreInstance();
+        const followingRef = doc(
+          firestore,
+          `${this.USERS_COLLECTION}/${currentUserId}/following/${targetUserId}`
+        );
 
-      unsubscribe = onSnapshot(
-        followingRef,
-        (docSnap) => {
-          callback(docSnap.exists());
-        },
-        (error) => {
-          console.error(
-            `[UserRepository] Follow status subscription error:`,
-            error
-          );
-          callback(false);
-        }
-      );
+        unsubscribe = onSnapshot(
+          followingRef,
+          (docSnap) => {
+            callback(docSnap.exists());
+          },
+          (error) => {
+            console.error(
+              `[UserRepository] Follow status subscription error:`,
+              error
+            );
+            callback(false);
+          }
+        );
+      } catch (error) {
+        console.error("[UserRepository] Failed to initialize follow status subscription:", error);
+        callback(false);
+      }
     })();
 
     // Return cleanup function that calls unsubscribe when available

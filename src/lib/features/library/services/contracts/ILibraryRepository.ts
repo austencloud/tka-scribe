@@ -45,6 +45,8 @@ export interface LibraryQueryOptions {
   collectionId?: string;
   /** Filter by tag IDs */
   tagIds?: string[];
+  /** Filter by favorite status */
+  isFavorite?: boolean;
   /** Search query (name, word) */
   searchQuery?: string;
   /** Sort field */

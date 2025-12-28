@@ -15,7 +15,7 @@ import {
 import { authState } from "../../auth/state/authState.svelte";
 import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
 import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
-import { roleSwitcherState } from "../../debug/state/role-switcher-state.svelte";
+import { adminToolbarState } from "../../debug/state/admin-toolbar-state.svelte";
 import { settingsService } from "../../settings/state/SettingsState.svelte";
 
 export function registerGlobalShortcuts(
@@ -200,19 +200,19 @@ export function registerGlobalShortcuts(
   // ==================== Admin Shortcuts ====================
   // Only registered for admin users
 
-  // F9 - Role Switcher (admin-only debug tool)
+  // F9 - Admin Toolbar (admin-only debug tools)
   service.register({
-    id: "admin.role-switcher",
-    label: "Role Switcher",
-    description: "Toggle the role switcher debug panel (admin only)",
+    id: "admin.toolbar",
+    label: "Admin Toolbar",
+    description: "Toggle the admin debug toolbar (admin only)",
     key: "F9",
     modifiers: [],
     context: "global",
     scope: "admin",
     priority: "high",
-    // No condition needed - the RoleSwitcherDebugPanel handles admin check with auth timing fallback
+    // No condition needed - AdminToolbar handles admin check
     action: () => {
-      roleSwitcherState.toggle();
+      adminToolbarState.toggle();
     },
   });
 }

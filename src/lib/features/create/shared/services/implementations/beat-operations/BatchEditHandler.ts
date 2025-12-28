@@ -7,6 +7,7 @@ import type {
   ICreateModuleState,
   BatchEditChanges,
 } from "../../../types/create-module-types";
+import { UndoOperationType } from "../../../services/contracts/IUndoManager";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const logger = createComponentLogger("BatchEdit");
@@ -32,7 +33,7 @@ export function applyBatchChanges(
   );
 
   // Push undo snapshot before batch edit
-  createModuleState.pushUndoSnapshot("BATCH_EDIT", {
+  createModuleState.pushUndoSnapshot(UndoOperationType.BATCH_EDIT, {
     beatNumbers: Array.from(selectedBeatNumbers),
     changes,
     description: `Batch edit ${selectedBeatNumbers.size} beats`,

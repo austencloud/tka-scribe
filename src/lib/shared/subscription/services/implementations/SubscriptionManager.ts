@@ -24,6 +24,7 @@ import {
   type Firestore,
 } from "firebase/firestore";
 import { auth, getFirestoreInstance } from "../../../auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type {
   ISubscriptionManager,
   SubscriptionInfo,
@@ -47,21 +48,26 @@ export class SubscriptionManager implements ISubscriptionManager {
     const user = auth.currentUser;
     if (!user) return;
 
-    const customerRef = doc(firestore, "customers", user.uid);
-    const customerSnap = await getDoc(customerRef);
+    try {
+      const customerRef = doc(firestore, "customers", user.uid);
+      const customerSnap = await getDoc(customerRef);
 
-    if (!customerSnap.exists()) {
-      console.log(
-        "[SubscriptionManager] Creating customer document for existing user"
-      );
-      // Create minimal customer doc - extension will sync to Stripe
-      await setDoc(customerRef, {
-        email: user.email,
-        uid: user.uid,
-      });
+      if (!customerSnap.exists()) {
+        console.log(
+          "[SubscriptionManager] Creating customer document for existing user"
+        );
+        // Create minimal customer doc - extension will sync to Stripe
+        await setDoc(customerRef, {
+          email: user.email,
+          uid: user.uid,
+        });
 
-      // Give the extension a moment to create the Stripe customer
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Give the extension a moment to create the Stripe customer
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
+    } catch (error) {
+      console.error("[SubscriptionManager] Failed to ensure customer exists:", error);
+      // Don't throw - let the checkout attempt proceed anyway
     }
   }
 
@@ -71,47 +77,61 @@ export class SubscriptionManager implements ISubscriptionManager {
       throw new Error("User must be signed in to subscribe");
     }
 
-    const firestore = await getFirestoreInstance();
+    try {
+      const firestore = await getFirestoreInstance();
 
-    // Ensure customer exists before creating checkout session
-    await this.ensureCustomerExists(firestore);
+      // Ensure customer exists before creating checkout session
+      await this.ensureCustomerExists(firestore);
 
-    const sessionsRef = collection(
-      firestore,
-      `customers/${user.uid}/checkout_sessions`
-    );
+      const sessionsRef = collection(
+        firestore,
+        `customers/${user.uid}/checkout_sessions`
+      );
 
-    // Create checkout session document - extension will process it
-    const docRef = await addDoc(sessionsRef, {
-      price: priceId,
-      success_url: `${window.location.origin}/settings?tab=profile&subscription=success`,
-      cancel_url: `${window.location.origin}/settings?tab=profile&subscription=canceled`,
-      mode: "subscription",
-      allow_promotion_codes: true,
-    });
-
-    // Wait for extension to populate the session URL
-    return new Promise((resolve, reject) => {
-      const unsubscribe = onSnapshot(docRef, (snap) => {
-        const data = snap.data();
-
-        if (data?.error) {
-          unsubscribe();
-          reject(new Error(data.error.message || "Checkout session failed"));
-        }
-
-        if (data?.url) {
-          unsubscribe();
-          resolve(data.url);
-        }
+      // Create checkout session document - extension will process it
+      const docRef = await addDoc(sessionsRef, {
+        price: priceId,
+        success_url: `${window.location.origin}/settings?tab=profile&subscription=success`,
+        cancel_url: `${window.location.origin}/settings?tab=profile&subscription=canceled`,
+        mode: "subscription",
+        allow_promotion_codes: true,
       });
 
-      // Timeout after 30 seconds
-      setTimeout(() => {
-        unsubscribe();
-        reject(new Error("Checkout session creation timed out"));
-      }, 30000);
-    });
+      // Wait for extension to populate the session URL
+      return new Promise((resolve, reject) => {
+        const unsubscribe = onSnapshot(
+          docRef,
+          (snap) => {
+            const data = snap.data();
+
+            if (data?.error) {
+              unsubscribe();
+              reject(new Error(data.error.message || "Checkout session failed"));
+            }
+
+            if (data?.url) {
+              unsubscribe();
+              resolve(data.url);
+            }
+          },
+          (error) => {
+            console.error("[SubscriptionManager] Checkout session subscription error:", error);
+            unsubscribe();
+            reject(new Error("Failed to monitor checkout session"));
+          }
+        );
+
+        // Timeout after 30 seconds
+        setTimeout(() => {
+          unsubscribe();
+          reject(new Error("Checkout session creation timed out"));
+        }, 30000);
+      });
+    } catch (error) {
+      console.error("[SubscriptionManager] Failed to create checkout session:", error);
+      toast.error("Failed to start checkout. Please try again.");
+      throw error;
+    }
   }
 
   async createPortalSession(): Promise<string> {
@@ -120,29 +140,35 @@ export class SubscriptionManager implements ISubscriptionManager {
       throw new Error("User must be signed in to manage subscription");
     }
 
-    // Call the Firebase extension's HTTP function for portal link
-    const projectId =
-      import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || "the-kinetic-alphabet";
-    const functionUrl = `https://us-central1-${projectId}.cloudfunctions.net/ext-firestore-stripe-payments-createPortalLink`;
+    try {
+      // Call the Firebase extension's HTTP function for portal link
+      const projectId =
+        import.meta.env.PUBLIC_FIREBASE_PROJECT_ID || "the-kinetic-alphabet";
+      const functionUrl = `https://us-central1-${projectId}.cloudfunctions.net/ext-firestore-stripe-payments-createPortalLink`;
 
-    const response = await fetch(functionUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${await user.getIdToken()}`,
-      },
-      body: JSON.stringify({
-        returnUrl: `${window.location.origin}/settings?tab=profile`,
-      }),
-    });
+      const response = await fetch(functionUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await user.getIdToken()}`,
+        },
+        body: JSON.stringify({
+          returnUrl: `${window.location.origin}/settings?tab=profile`,
+        }),
+      });
 
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`Failed to create portal session: ${error}`);
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Failed to create portal session: ${error}`);
+      }
+
+      const { url } = await response.json();
+      return url;
+    } catch (error) {
+      console.error("[SubscriptionManager] Failed to create portal session:", error);
+      toast.error("Failed to open subscription management. Please try again.");
+      throw error;
     }
-
-    const { url } = await response.json();
-    return url;
   }
 
   async getSubscriptionInfo(): Promise<SubscriptionInfo> {
@@ -195,17 +221,29 @@ export class SubscriptionManager implements ISubscriptionManager {
     let unsubscribe: Unsubscribe | null = null;
 
     // Set up listener asynchronously
-    getFirestoreInstance().then((firestore: Firestore) => {
-      const subsRef = collection(
-        firestore,
-        `customers/${user.uid}/subscriptions`
-      );
+    getFirestoreInstance()
+      .then((firestore: Firestore) => {
+        const subsRef = collection(
+          firestore,
+          `customers/${user.uid}/subscriptions`
+        );
 
-      unsubscribe = onSnapshot(subsRef, async () => {
-        const info = await this.getSubscriptionInfo();
-        callback(info);
+        unsubscribe = onSnapshot(
+          subsRef,
+          async () => {
+            const info = await this.getSubscriptionInfo();
+            callback(info);
+          },
+          (error) => {
+            console.error("[SubscriptionManager] Subscription change listener error:", error);
+            toast.error("Lost connection to subscription status. Please refresh.");
+          }
+        );
+      })
+      .catch((error) => {
+        console.error("[SubscriptionManager] Failed to initialize subscription listener:", error);
+        toast.error("Failed to connect to subscription status.");
       });
-    });
 
     // Return cleanup function
     return () => {

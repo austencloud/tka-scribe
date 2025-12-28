@@ -27,6 +27,7 @@ import {
   type Firestore,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
 import { tryResolve, TYPES } from "$lib/shared/inversify/di";
 import type { IActivityLogger } from "$lib/shared/analytics/services/contracts/IActivityLogger";
@@ -137,7 +138,7 @@ export class CollectionManager implements ICollectionManager {
   private async batchFetchSequences(
     firestore: Firestore,
     userId: string,
-    sequenceIds: string[],
+    sequenceIds: readonly string[],
     filterPublic = false
   ): Promise<LibrarySequence[]> {
     if (sequenceIds.length === 0) {
@@ -349,7 +350,13 @@ export class CollectionManager implements ICollectionManager {
     // Delete the collection
     batch.delete(doc(firestore, getUserCollectionPath(userId, collectionId)));
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[CollectionManager] Failed to delete collection:", error);
+      toast.error("Failed to delete collection. Please try again.");
+      throw new CollectionError("Failed to delete collection", "NETWORK", collectionId);
+    }
   }
 
   async getCollections(): Promise<LibraryCollection[]> {
@@ -486,27 +493,33 @@ export class CollectionManager implements ICollectionManager {
     let unsubscribe: Unsubscribe | null = null;
 
     // Initialize subscription asynchronously
-    getFirestoreInstance().then((firestore) => {
-      const collectionsRef = collection(
-        firestore,
-        getUserCollectionsPath(userId)
-      );
-      const q = query(collectionsRef, orderBy("sortOrder", "asc"));
+    getFirestoreInstance()
+      .then((firestore) => {
+        const collectionsRef = collection(
+          firestore,
+          getUserCollectionsPath(userId)
+        );
+        const q = query(collectionsRef, orderBy("sortOrder", "asc"));
 
-      unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const collections: LibraryCollection[] = [];
-          snapshot.forEach((doc) => {
-            collections.push(this.mapDocToCollection(doc.data(), doc.id));
-          });
-          callback(collections);
-        },
-        (error) => {
-          console.error("[CollectionManager] Subscription error:", error);
-        }
-      );
-    });
+        unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const collections: LibraryCollection[] = [];
+            snapshot.forEach((doc) => {
+              collections.push(this.mapDocToCollection(doc.data(), doc.id));
+            });
+            callback(collections);
+          },
+          (error) => {
+            console.error("[CollectionManager] Subscription error:", error);
+            toast.error("Failed to connect to collections.");
+          }
+        );
+      })
+      .catch((error) => {
+        console.error("[CollectionManager] Failed to initialize collections subscription:", error);
+        toast.error("Failed to connect to collections.");
+      });
 
     // Return cleanup function
     return () => {
@@ -524,29 +537,35 @@ export class CollectionManager implements ICollectionManager {
     let unsubscribe: Unsubscribe | null = null;
 
     // Initialize subscription asynchronously
-    getFirestoreInstance().then((firestore) => {
-      const docRef = doc(
-        firestore,
-        getUserCollectionPath(userId, collectionId)
-      );
+    getFirestoreInstance()
+      .then((firestore) => {
+        const docRef = doc(
+          firestore,
+          getUserCollectionPath(userId, collectionId)
+        );
 
-      unsubscribe = onSnapshot(
-        docRef,
-        (docSnap) => {
-          if (docSnap.exists()) {
-            callback(this.mapDocToCollection(docSnap.data(), collectionId));
-          } else {
-            callback(null);
+        unsubscribe = onSnapshot(
+          docRef,
+          (docSnap) => {
+            if (docSnap.exists()) {
+              callback(this.mapDocToCollection(docSnap.data(), collectionId));
+            } else {
+              callback(null);
+            }
+          },
+          (error) => {
+            console.error(
+              "[CollectionManager] Collection subscription error:",
+              error
+            );
+            toast.error("Failed to connect to collection.");
           }
-        },
-        (error) => {
-          console.error(
-            "[CollectionManager] Collection subscription error:",
-            error
-          );
-        }
-      );
-    });
+        );
+      })
+      .catch((error) => {
+        console.error("[CollectionManager] Failed to initialize collection subscription:", error);
+        toast.error("Failed to connect to collection.");
+      });
 
     // Return cleanup function
     return () => {
@@ -576,7 +595,13 @@ export class CollectionManager implements ICollectionManager {
       });
     });
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[CollectionManager] Failed to reorder collections:", error);
+      toast.error("Failed to reorder collections. Please try again.");
+      throw new CollectionError("Failed to reorder collections", "NETWORK");
+    }
   }
 
   // ============================================================

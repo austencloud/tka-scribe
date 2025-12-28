@@ -4,6 +4,7 @@
  */
 
 import type { ICreateModuleState } from "../../../types/create-module-types";
+import { UndoOperationType } from "../../../services/contracts/IUndoManager";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const logger = createComponentLogger("BeatRemoval");
@@ -21,7 +22,7 @@ export function removeBeat(
   if (selectedBeat && selectedBeat.beatNumber === 0) {
     logger.log("Removing start position - clearing entire sequence");
 
-    createModuleState.pushUndoSnapshot("CLEAR_SEQUENCE", {
+    createModuleState.pushUndoSnapshot(UndoOperationType.CLEAR_SEQUENCE, {
       description: "Clear sequence (removed start position)",
     });
 
@@ -41,7 +42,7 @@ export function removeBeat(
   );
 
   // Push undo snapshot before removal
-  createModuleState.pushUndoSnapshot("REMOVE_BEATS", {
+  createModuleState.pushUndoSnapshot(UndoOperationType.REMOVE_BEATS, {
     beatIndex,
     beatsRemoved: beatsToRemove,
     description: `Remove beat ${beatIndex} and ${beatsToRemove - 1} subsequent beats`,

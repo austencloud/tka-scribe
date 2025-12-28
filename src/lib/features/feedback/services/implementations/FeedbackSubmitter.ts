@@ -17,6 +17,7 @@ import {
 import { trackXP } from "$lib/shared/gamification/init/gamification-initializer";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { IFeedbackSubmissionService } from "../contracts/IFeedbackSubmissionService";
 import type {
   FeedbackFormData,
@@ -98,18 +99,31 @@ export class FeedbackSubmissionService implements IFeedbackSubmissionService {
       updatedAt: null,
     };
 
-    // Create document first to get ID
-    const docRef = await addDoc(
-      collection(firestore, COLLECTION_NAME),
-      feedbackData
-    );
+    let docRef;
+    try {
+      // Create document first to get ID
+      docRef = await addDoc(
+        collection(firestore, COLLECTION_NAME),
+        feedbackData
+      );
+    } catch (error) {
+      console.error("[FeedbackSubmitter] Failed to submit feedback:", error);
+      toast.error("Failed to submit feedback. Please try again.");
+      throw error;
+    }
 
     // Upload images if provided
     if (images && images.length > 0) {
-      const imageUrls = await Promise.all(
-        images.map((file) => this.uploadImage(file, docRef.id))
-      );
-      await updateDoc(docRef, { imageUrls });
+      try {
+        const imageUrls = await Promise.all(
+          images.map((file) => this.uploadImage(file, docRef.id))
+        );
+        await updateDoc(docRef, { imageUrls });
+      } catch (error) {
+        console.error("[FeedbackSubmitter] Failed to upload images:", error);
+        toast.warning("Feedback submitted but some images failed to upload.");
+        // Don't throw - feedback was still submitted
+      }
     }
 
     // Award XP for submitting feedback (non-blocking)
@@ -127,7 +141,7 @@ export class FeedbackSubmissionService implements IFeedbackSubmissionService {
         formData.type,
         formData.description
       ).catch((err) =>
-        console.error("[FeedbackSubmissionService] Failed to send message:", err)
+        console.error("[FeedbackSubmitter] Failed to send message:", err)
       );
     }
 
@@ -160,9 +174,14 @@ export class FeedbackSubmissionService implements IFeedbackSubmissionService {
     const storagePath = `feedback/${feedbackId}/${timestamp}_${sanitizedFilename}`;
 
     const storageRef = ref(storage, storagePath);
-    await uploadBytes(storageRef, file);
 
-    return getDownloadURL(storageRef);
+    try {
+      await uploadBytes(storageRef, file);
+      return await getDownloadURL(storageRef);
+    } catch (error) {
+      console.error("[FeedbackSubmitter] Failed to upload image:", error);
+      throw new Error(`Failed to upload image: ${file.name}`);
+    }
   }
 
   private async sendFeedbackMessage(

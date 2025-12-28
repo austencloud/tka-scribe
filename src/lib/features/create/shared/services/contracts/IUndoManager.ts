@@ -24,9 +24,10 @@ export enum UndoOperationType {
   REMOVE_BEATS = "REMOVE_BEATS",
   CLEAR_SEQUENCE = "CLEAR_SEQUENCE",
 
-  // Beat modification operations Is it a bad idea to leave my King Song 18XL electric unicycle plugged in overnight I'm sorry I finished your thought
+  // Beat modification operations
   UPDATE_BEAT = "UPDATE_BEAT",
   INSERT_BEAT = "INSERT_BEAT",
+  BATCH_EDIT = "BATCH_EDIT",
 
   // Transform operations
   MIRROR_SEQUENCE = "MIRROR_SEQUENCE",

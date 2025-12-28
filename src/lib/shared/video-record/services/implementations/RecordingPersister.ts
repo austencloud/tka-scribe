@@ -7,6 +7,7 @@
 
 import { injectable } from "inversify";
 import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import {
   collection,
   doc,
@@ -132,74 +133,109 @@ export class RecordingPersister
       docData.notes = recording.notes;
     }
 
-    await setDoc(docRef, docData);
-
-    console.log(`✅ Saved recording metadata: ${recording.id}`);
+    try {
+      await setDoc(docRef, docData);
+      console.log(`✅ Saved recording metadata: ${recording.id}`);
+    } catch (error) {
+      console.error("[RecordingPersister] Failed to save recording:", error);
+      toast.error("Failed to save recording. Please try again.");
+      throw error;
+    }
   }
 
   async getRecording(recordingId: string): Promise<RecordingMetadata | null> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const collectionPath = this.getRecordingsCollectionPath(userId);
-    const docRef = doc(firestore, collectionPath, recordingId);
-    const docSnap = await getDoc(docRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const collectionPath = this.getRecordingsCollectionPath(userId);
+      const docRef = doc(firestore, collectionPath, recordingId);
+      const docSnap = await getDoc(docRef);
 
-    if (!docSnap.exists()) {
+      if (!docSnap.exists()) {
+        return null;
+      }
+
+      return this.docToRecording(docSnap.data(), recordingId);
+    } catch (error) {
+      console.error("[RecordingPersister] Failed to get recording:", error);
+      toast.error("Failed to load recording.");
       return null;
     }
-
-    return this.docToRecording(docSnap.data(), recordingId);
   }
 
   async getRecordingsForSequence(
     sequenceId: string
   ): Promise<RecordingMetadata[]> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const collectionPath = this.getRecordingsCollectionPath(userId);
-    const collectionRef = collection(firestore, collectionPath);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const collectionPath = this.getRecordingsCollectionPath(userId);
+      const collectionRef = collection(firestore, collectionPath);
 
-    const q = query(
-      collectionRef,
-      where("sequenceId", "==", sequenceId),
-      orderBy("recordedAt", "desc")
-    );
+      const q = query(
+        collectionRef,
+        where("sequenceId", "==", sequenceId),
+        orderBy("recordedAt", "desc")
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => this.docToRecording(doc.data(), doc.id));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => this.docToRecording(doc.data(), doc.id));
+    } catch (error) {
+      console.error("[RecordingPersister] Failed to get recordings for sequence:", error);
+      toast.error("Failed to load recordings.");
+      return [];
+    }
   }
 
   async getAllRecordings(limitCount = 50): Promise<RecordingMetadata[]> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const collectionPath = this.getRecordingsCollectionPath(userId);
-    const collectionRef = collection(firestore, collectionPath);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const collectionPath = this.getRecordingsCollectionPath(userId);
+      const collectionRef = collection(firestore, collectionPath);
 
-    const q = query(
-      collectionRef,
-      orderBy("recordedAt", "desc"),
-      firestoreLimit(limitCount)
-    );
+      const q = query(
+        collectionRef,
+        orderBy("recordedAt", "desc"),
+        firestoreLimit(limitCount)
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => this.docToRecording(doc.data(), doc.id));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => this.docToRecording(doc.data(), doc.id));
+    } catch (error) {
+      console.error("[RecordingPersister] Failed to get all recordings:", error);
+      toast.error("Failed to load recordings.");
+      return [];
+    }
   }
 
   async deleteRecording(recordingId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const collectionPath = this.getRecordingsCollectionPath(userId);
-    const docRef = doc(firestore, collectionPath, recordingId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const collectionPath = this.getRecordingsCollectionPath(userId);
+      const docRef = doc(firestore, collectionPath, recordingId);
 
-    await deleteDoc(docRef);
-    console.log(`🗑️ Deleted recording metadata: ${recordingId}`);
+      await deleteDoc(docRef);
+      console.log(`🗑️ Deleted recording metadata: ${recordingId}`);
+    } catch (error) {
+      console.error("[RecordingPersister] Failed to delete recording:", error);
+      toast.error("Failed to delete recording. Please try again.");
+      throw error;
+    }
   }
 
   async deleteRecordingsForSequence(sequenceId: string): Promise<void> {
-    const recordings = await this.getRecordingsForSequence(sequenceId);
-    await Promise.all(recordings.map((r) => this.deleteRecording(r.id)));
-    console.log(
-      `🗑️ Deleted ${recordings.length} recordings for sequence ${sequenceId}`
-    );
+    try {
+      const recordings = await this.getRecordingsForSequence(sequenceId);
+      await Promise.all(recordings.map((r) => this.deleteRecording(r.id)));
+      console.log(
+        `🗑️ Deleted ${recordings.length} recordings for sequence ${sequenceId}`
+      );
+    } catch (error) {
+      console.error("[RecordingPersister] Failed to delete recordings for sequence:", error);
+      toast.error("Failed to delete recordings. Please try again.");
+      throw error;
+    }
   }
 }

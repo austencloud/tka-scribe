@@ -18,6 +18,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import { db } from "$lib/shared/persistence/database/TKADatabase";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { DailyChallenge } from "$lib/shared/gamification/domain/models/achievement-models";
@@ -43,96 +44,104 @@ export class AdminChallengeManager implements IAdminChallengeManager {
     startDate: Date,
     endDate: Date
   ): Promise<ChallengeScheduleEntry[]> {
-    const firestore = await getFirestoreInstance();
-    // Build date strings for the range
-    const startDateStr = startDate.toISOString().split("T")[0] ?? "";
-    const endDateStr = endDate.toISOString().split("T")[0] ?? "";
-
-    // Fetch all challenges in range with a single query
-    const challengesRef = collection(firestore, "dailyChallenges");
-    const q = query(
-      challengesRef,
-      where("date", ">=", startDateStr),
-      where("date", "<=", endDateStr)
-    );
-
-    const challengeMap = new Map<string, DailyChallenge>();
-
     try {
+      const firestore = await getFirestoreInstance();
+      // Build date strings for the range
+      const startDateStr = startDate.toISOString().split("T")[0] ?? "";
+      const endDateStr = endDate.toISOString().split("T")[0] ?? "";
+
+      // Fetch all challenges in range with a single query
+      const challengesRef = collection(firestore, "dailyChallenges");
+      const q = query(
+        challengesRef,
+        where("date", ">=", startDateStr),
+        where("date", "<=", endDateStr)
+      );
+
+      const challengeMap = new Map<string, DailyChallenge>();
+
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
         const challenge = doc.data() as DailyChallenge;
         challengeMap.set(challenge.date, challenge);
       });
+
+      // Build entries array for each day in range
+      const entries: ChallengeScheduleEntry[] = [];
+      const currentDate = new Date(startDate);
+
+      while (currentDate <= endDate) {
+        const dateStr = currentDate.toISOString().split("T")[0] ?? "";
+        const challenge = challengeMap.get(dateStr) ?? null;
+
+        entries.push({
+          date: dateStr,
+          challenge,
+          isScheduled: challenge !== null,
+        });
+
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      return entries;
     } catch (error) {
-      console.error("❌ [Admin] Failed to fetch challenges:", error);
+      console.error("[AdminChallengeManager] Failed to fetch scheduled challenges:", error);
+      toast.error("Failed to load scheduled challenges.");
+      return [];
     }
-
-    // Build entries array for each day in range
-    const entries: ChallengeScheduleEntry[] = [];
-    const currentDate = new Date(startDate);
-
-    while (currentDate <= endDate) {
-      const dateStr = currentDate.toISOString().split("T")[0] ?? "";
-      const challenge = challengeMap.get(dateStr) ?? null;
-
-      entries.push({
-        date: dateStr,
-        challenge,
-        isScheduled: challenge !== null,
-      });
-
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-
-    return entries;
   }
 
   /**
    * Create a new daily challenge
    */
   async createChallenge(formData: ChallengeFormData): Promise<DailyChallenge> {
-    const firestore = await getFirestoreInstance();
-    const challengeId = `challenge_${formData.date}`;
+    try {
+      const firestore = await getFirestoreInstance();
+      const challengeId = `challenge_${formData.date}`;
 
-    // Create end-of-day expiration
-    const expiresAt = new Date(formData.date);
-    expiresAt.setHours(23, 59, 59, 999);
+      // Create end-of-day expiration
+      const expiresAt = new Date(formData.date);
+      expiresAt.setHours(23, 59, 59, 999);
 
-    const challenge: DailyChallenge = {
-      id: challengeId,
-      date: formData.date,
-      type: formData.type,
-      difficulty: formData.difficulty,
-      title: formData.title,
-      description: formData.description,
-      xpReward: formData.xpReward,
-      requirement: {
+      const challenge: DailyChallenge = {
+        id: challengeId,
+        date: formData.date,
         type: formData.type,
-        target: formData.target,
-        ...(formData.metadata && { metadata: formData.metadata }),
-      },
-      expiresAt,
-    };
+        difficulty: formData.difficulty,
+        title: formData.title,
+        description: formData.description,
+        xpReward: formData.xpReward,
+        requirement: {
+          type: formData.type,
+          target: formData.target,
+          ...(formData.metadata && { metadata: formData.metadata }),
+        },
+        expiresAt,
+      };
 
-    // Save to Firestore
-    const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
-    await setDoc(challengeDocRef, {
-      ...challenge,
-      expiresAt: Timestamp.fromDate(expiresAt),
-    });
+      // Save to Firestore
+      const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
+      await setDoc(challengeDocRef, {
+        ...challenge,
+        expiresAt: Timestamp.fromDate(expiresAt),
+      });
 
-    // Log the action
-    await this.auditLogger.logAction(
-      "challenge_created",
-      `Created daily challenge: ${challenge.title} (${formData.date})`,
-      undefined,
-      { challengeId, date: formData.date, difficulty: formData.difficulty }
-    );
+      // Log the action
+      await this.auditLogger.logAction(
+        "challenge_created",
+        `Created daily challenge: ${challenge.title} (${formData.date})`,
+        undefined,
+        { challengeId, date: formData.date, difficulty: formData.difficulty }
+      );
 
-    console.log(`✅ [Admin] Created daily challenge: ${challenge.title}`);
+      console.log(`✅ [Admin] Created daily challenge: ${challenge.title}`);
 
-    return challenge;
+      return challenge;
+    } catch (error) {
+      console.error("[AdminChallengeManager] Failed to create challenge:", error);
+      toast.error("Failed to create challenge. Please try again.");
+      throw error;
+    }
   }
 
   /**
@@ -142,51 +151,63 @@ export class AdminChallengeManager implements IAdminChallengeManager {
     challengeId: string,
     formData: Partial<ChallengeFormData>
   ): Promise<DailyChallenge> {
-    const firestore = await getFirestoreInstance();
-    const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
-    const challengeDoc = await getDoc(challengeDocRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
+      const challengeDoc = await getDoc(challengeDocRef);
 
-    if (!challengeDoc.exists()) {
-      throw new Error(`Challenge ${challengeId} not found`);
+      if (!challengeDoc.exists()) {
+        throw new Error(`Challenge ${challengeId} not found`);
+      }
+
+      const existingChallenge = challengeDoc.data() as DailyChallenge;
+
+      // Build update object
+      const updates: Partial<DailyChallenge> = {};
+
+      if (formData.title) updates.title = formData.title;
+      if (formData.description) updates.description = formData.description;
+      if (formData.difficulty) updates.difficulty = formData.difficulty;
+      if (formData.xpReward !== undefined) updates.xpReward = formData.xpReward;
+      if (formData.type) updates.type = formData.type;
+
+      if (formData.target !== undefined || formData.metadata !== undefined) {
+        updates.requirement = {
+          ...existingChallenge.requirement,
+          ...(formData.target !== undefined && { target: formData.target }),
+          ...(formData.metadata && { metadata: formData.metadata }),
+        };
+      }
+
+      await updateDoc(challengeDocRef, updates);
+
+      console.log(`✅ [Admin] Updated daily challenge: ${challengeId}`);
+
+      // Fetch and return updated challenge
+      const updatedDoc = await getDoc(challengeDocRef);
+      return updatedDoc.data() as DailyChallenge;
+    } catch (error) {
+      console.error("[AdminChallengeManager] Failed to update challenge:", error);
+      toast.error("Failed to update challenge. Please try again.");
+      throw error;
     }
-
-    const existingChallenge = challengeDoc.data() as DailyChallenge;
-
-    // Build update object
-    const updates: Partial<DailyChallenge> = {};
-
-    if (formData.title) updates.title = formData.title;
-    if (formData.description) updates.description = formData.description;
-    if (formData.difficulty) updates.difficulty = formData.difficulty;
-    if (formData.xpReward !== undefined) updates.xpReward = formData.xpReward;
-    if (formData.type) updates.type = formData.type;
-
-    if (formData.target !== undefined || formData.metadata !== undefined) {
-      updates.requirement = {
-        ...existingChallenge.requirement,
-        ...(formData.target !== undefined && { target: formData.target }),
-        ...(formData.metadata && { metadata: formData.metadata }),
-      };
-    }
-
-    await updateDoc(challengeDocRef, updates);
-
-    console.log(`✅ [Admin] Updated daily challenge: ${challengeId}`);
-
-    // Fetch and return updated challenge
-    const updatedDoc = await getDoc(challengeDocRef);
-    return updatedDoc.data() as DailyChallenge;
   }
 
   /**
    * Delete a daily challenge
    */
   async deleteChallenge(challengeId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
-    await deleteDoc(challengeDocRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
+      await deleteDoc(challengeDocRef);
 
-    console.log(`✅ [Admin] Deleted daily challenge: ${challengeId}`);
+      console.log(`✅ [Admin] Deleted daily challenge: ${challengeId}`);
+    } catch (error) {
+      console.error("[AdminChallengeManager] Failed to delete challenge:", error);
+      toast.error("Failed to delete challenge. Please try again.");
+      throw error;
+    }
   }
 
   /**
@@ -197,7 +218,8 @@ export class AdminChallengeManager implements IAdminChallengeManager {
       const sequences = await db.sequences.toArray();
       return sequences;
     } catch (error) {
-      console.error("❌ [Admin] Failed to fetch user sequences:", error);
+      console.error("[AdminChallengeManager] Failed to fetch user sequences:", error);
+      toast.error("Failed to load sequences.");
       return [];
     }
   }
@@ -206,11 +228,11 @@ export class AdminChallengeManager implements IAdminChallengeManager {
    * Get a specific challenge by date
    */
   async getChallengeByDate(date: string): Promise<DailyChallenge | null> {
-    const firestore = await getFirestoreInstance();
-    const challengeId = `challenge_${date}`;
-    const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
-
     try {
+      const firestore = await getFirestoreInstance();
+      const challengeId = `challenge_${date}`;
+      const challengeDocRef = doc(firestore, `dailyChallenges/${challengeId}`);
+
       const challengeDoc = await getDoc(challengeDocRef);
 
       if (challengeDoc.exists()) {
@@ -219,7 +241,8 @@ export class AdminChallengeManager implements IAdminChallengeManager {
 
       return null;
     } catch (error) {
-      console.error(`❌ [Admin] Failed to fetch challenge for ${date}:`, error);
+      console.error(`[AdminChallengeManager] Failed to fetch challenge for ${date}:`, error);
+      toast.error("Failed to load challenge.");
       return null;
     }
   }

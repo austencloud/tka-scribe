@@ -18,6 +18,7 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { auth, getFirestoreInstance } from "../../../auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { AppSettings } from "../../domain/AppSettings";
 import type { ISettingsPersister } from "../contracts/ISettingsPersister";
 
@@ -98,6 +99,7 @@ export class FirebaseSettingsPersister
         "❌ [FirebaseSettingsPersister] Failed to save settings:",
         error
       );
+      toast.error("Failed to save settings.");
       throw error;
     }
   }
@@ -121,6 +123,7 @@ export class FirebaseSettingsPersister
         "❌ [FirebaseSettingsPersister] Failed to clear settings:",
         error
       );
+      toast.error("Failed to clear settings.");
       throw error;
     }
   }
@@ -158,37 +161,46 @@ export class FirebaseSettingsPersister
     }
 
     // Start async subscription setup
-    this.getSettingsDocRef().then((docRef) => {
-      if (!docRef) {
-        return; // No user, no subscription
-      }
-
-      this.unsubscribe = onSnapshot(
-        docRef,
-        (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data();
-            // Remove Firestore metadata fields
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {
-              updatedAt: _updatedAt,
-              createdAt: _createdAt,
-              clearedAt: _clearedAt,
-              ...settings
-            } = data;
-            if (Object.keys(settings).length > 0) {
-              callback(settings as AppSettings);
-            }
-          }
-        },
-        (error) => {
-          console.error(
-            "❌ [FirebaseSettingsPersister] Snapshot listener error:",
-            error
-          );
+    this.getSettingsDocRef()
+      .then((docRef) => {
+        if (!docRef) {
+          return; // No user, no subscription
         }
-      );
-    });
+
+        this.unsubscribe = onSnapshot(
+          docRef,
+          (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.data();
+              // Remove Firestore metadata fields
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              const {
+                updatedAt: _updatedAt,
+                createdAt: _createdAt,
+                clearedAt: _clearedAt,
+                ...settings
+              } = data;
+              if (Object.keys(settings).length > 0) {
+                callback(settings as AppSettings);
+              }
+            }
+          },
+          (error) => {
+            console.error(
+              "❌ [FirebaseSettingsPersister] Subscription error:",
+              error
+            );
+            toast.error("Lost connection to settings. Please refresh.");
+          }
+        );
+      })
+      .catch((error) => {
+        console.error(
+          "❌ [FirebaseSettingsPersister] Failed to initialize settings subscription:",
+          error
+        );
+        toast.error("Failed to connect to settings.");
+      });
 
     return () => {
       if (this.unsubscribe) {

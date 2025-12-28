@@ -26,8 +26,17 @@ import type { ISequenceTransformer } from "../services/contracts/ISequenceTransf
 import type { ISequenceValidator } from "../services/contracts/ISequenceValidator";
 import { createSequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
-import type { ICreateModuleState } from "../types/create-module-types";
 import type { IUndoManager } from "../services/contracts/IUndoManager";
+import { UndoOperationType } from "../services/contracts/IUndoManager";
+import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+
+/**
+ * Minimal interface for createModuleState dependency
+ * Only includes what createConstructTabState actually needs to avoid circular references
+ */
+interface CreateModuleStateMinimal {
+  readonly activeSection: BuildModeId | null;
+}
 import { createUndoController } from "./create-module/undo-controller.svelte";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
@@ -41,7 +50,7 @@ import { TYPES } from "$lib/shared/inversify/types";
  * @param sequenceStatisticsService - Optional statistics service for sequence analysis
  * @param SequenceTransformer - Optional transformation service for sequence operations
  * @param sequenceValidationService - Optional validation service for sequence validation
- * @param createModuleState - Create module state for accessing navigation history
+ * @param createModuleState - Create module state for accessing navigation (minimal interface to avoid circular refs)
  * @returns Reactive state object with getters and state mutations
  */
 export function createConstructTabState(
@@ -51,7 +60,7 @@ export function createConstructTabState(
   sequenceStatisticsService?: ISequenceStatsCalculator,
   SequenceTransformer?: ISequenceTransformer,
   sequenceValidationService?: ISequenceValidator,
-  createModuleState?: ICreateModuleState | null
+  createModuleState?: CreateModuleStateMinimal | null
 ) {
   // ============================================================================
   // HMR STATE BACKUP
@@ -132,7 +141,7 @@ export function createConstructTabState(
     }
 
     if (source === "user" && undoController) {
-      undoController.pushUndoSnapshot("SELECT_START_POSITION", {
+      undoController.pushUndoSnapshot(UndoOperationType.SELECT_START_POSITION, {
         description: "Select start position",
       });
     }

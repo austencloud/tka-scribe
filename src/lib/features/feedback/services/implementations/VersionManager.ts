@@ -20,6 +20,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { IVersionService } from "../contracts/IVersionService";
 import type {
   AppVersion,
@@ -153,25 +154,43 @@ export class VersionService implements IVersionService {
     batch.set(versionRef, versionDoc);
 
     // 5. Commit the batch
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[VersionManager] Failed to prepare release:", error);
+      toast.error("Failed to prepare release. Please try again.");
+      throw error;
+    }
   }
 
   async updateReleaseNotes(
     version: string,
     releaseNotes: string
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
-    await updateDoc(versionRef, { releaseNotes });
+    try {
+      const firestore = await getFirestoreInstance();
+      const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
+      await updateDoc(versionRef, { releaseNotes });
+    } catch (error) {
+      console.error("[VersionManager] Failed to update release notes:", error);
+      toast.error("Failed to update release notes. Please try again.");
+      throw error;
+    }
   }
 
   async updateChangelogEntries(
     version: string,
     changelogEntries: ChangelogEntry[]
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
-    await updateDoc(versionRef, { changelogEntries });
+    try {
+      const firestore = await getFirestoreInstance();
+      const versionRef = doc(firestore, VERSIONS_COLLECTION, version);
+      await updateDoc(versionRef, { changelogEntries });
+    } catch (error) {
+      console.error("[VersionManager] Failed to update changelog entries:", error);
+      toast.error("Failed to update changelog. Please try again.");
+      throw error;
+    }
   }
 
   async updateChangelogEntry(
@@ -198,7 +217,13 @@ export class VersionService implements IVersionService {
     // Update the specific entry
     changelogEntries[index] = updatedEntry;
 
-    await updateDoc(versionRef, { changelogEntries });
+    try {
+      await updateDoc(versionRef, { changelogEntries });
+    } catch (error) {
+      console.error("[VersionManager] Failed to update changelog entry:", error);
+      toast.error("Failed to update changelog entry. Please try again.");
+      throw error;
+    }
   }
 
   async addChangelogEntry(
@@ -219,7 +244,13 @@ export class VersionService implements IVersionService {
 
     changelogEntries.push(entry);
 
-    await updateDoc(versionRef, { changelogEntries });
+    try {
+      await updateDoc(versionRef, { changelogEntries });
+    } catch (error) {
+      console.error("[VersionManager] Failed to add changelog entry:", error);
+      toast.error("Failed to add changelog entry. Please try again.");
+      throw error;
+    }
   }
 
   async deleteChangelogEntry(version: string, index: number): Promise<void> {
@@ -241,7 +272,13 @@ export class VersionService implements IVersionService {
 
     changelogEntries.splice(index, 1);
 
-    await updateDoc(versionRef, { changelogEntries });
+    try {
+      await updateDoc(versionRef, { changelogEntries });
+    } catch (error) {
+      console.error("[VersionManager] Failed to delete changelog entry:", error);
+      toast.error("Failed to delete changelog entry. Please try again.");
+      throw error;
+    }
   }
 
   /**
@@ -294,11 +331,17 @@ export class VersionService implements IVersionService {
     ];
 
     const versionRef = doc(firestore, VERSIONS_COLLECTION, "0.1.0");
-    await updateDoc(versionRef, {
-      changelogEntries,
-      releaseNotes:
-        "The first official beta release! This version introduces the feedback system so you can help us make the app better.",
-    });
+    try {
+      await updateDoc(versionRef, {
+        changelogEntries,
+        releaseNotes:
+          "The first official beta release! This version introduces the feedback system so you can help us make the app better.",
+      });
+    } catch (error) {
+      console.error("[VersionManager] Failed to seed changelog:", error);
+      toast.error("Failed to seed changelog. Please try again.");
+      throw error;
+    }
   }
 
   async getCompletedCount(): Promise<number> {
@@ -398,7 +441,13 @@ export class VersionService implements IVersionService {
       releasedAt: serverTimestamp(),
     });
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[VersionManager] Failed to tag pre-release items:", error);
+      toast.error("Failed to tag pre-release items. Please try again.");
+      throw error;
+    }
 
     return unversionedDocs.length;
   }

@@ -24,6 +24,7 @@ import {
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { ITagManager } from "../contracts/ITagManager";
 import type { LibraryTag, CreateTagOptions } from "../../domain/models/Tag";
 import { createTag } from "../../domain/models/Tag";
@@ -93,107 +94,142 @@ export class TagManager implements ITagManager {
     name: string,
     options: CreateTagOptions = {}
   ): Promise<LibraryTag> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const normalizedName = this.normalizeTagName(name);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const normalizedName = this.normalizeTagName(name);
 
-    // Check for duplicate
-    const existing = await this.findTagByName(normalizedName);
-    if (existing) {
-      return existing;
+      // Check for duplicate
+      const existing = await this.findTagByName(normalizedName);
+      if (existing) {
+        return existing;
+      }
+
+      const tagId = crypto.randomUUID();
+      const tagData = createTag(normalizedName, userId, options);
+
+      // Remove undefined values for Firebase
+      const cleanTagData = Object.fromEntries(
+        Object.entries(tagData).filter(([_, v]) => v !== undefined)
+      );
+
+      await setDoc(doc(firestore, getUserTagPath(userId, tagId)), {
+        ...cleanTagData,
+        createdAt: serverTimestamp(),
+      });
+
+      return {
+        id: tagId,
+        ...tagData,
+      };
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to create tag:", error);
+      toast.error("Failed to create tag.");
+      throw error;
     }
-
-    const tagId = crypto.randomUUID();
-    const tagData = createTag(normalizedName, userId, options);
-
-    // Remove undefined values for Firebase
-    const cleanTagData = Object.fromEntries(
-      Object.entries(tagData).filter(([_, v]) => v !== undefined)
-    );
-
-    await setDoc(doc(firestore, getUserTagPath(userId, tagId)), {
-      ...cleanTagData,
-      createdAt: serverTimestamp(),
-    });
-
-    return {
-      id: tagId,
-      ...tagData,
-    };
   }
 
   async getTag(tagId: string): Promise<LibraryTag | null> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const docRef = doc(firestore, getUserTagPath(userId, tagId));
-    const docSnap = await getDoc(docRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const docRef = doc(firestore, getUserTagPath(userId, tagId));
+      const docSnap = await getDoc(docRef);
 
-    if (!docSnap.exists()) {
+      if (!docSnap.exists()) {
+        return null;
+      }
+
+      return this.mapDocToTag(docSnap.data(), tagId);
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to get tag:", error);
+      toast.error("Failed to load tag.");
       return null;
     }
-
-    return this.mapDocToTag(docSnap.data(), tagId);
   }
 
   async getAllTags(): Promise<LibraryTag[]> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const tagsRef = collection(firestore, getUserTagsPath(userId));
-    const q = query(tagsRef, orderBy("name", "asc"));
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const tagsRef = collection(firestore, getUserTagsPath(userId));
+      const q = query(tagsRef, orderBy("name", "asc"));
 
-    const snapshot = await getDocs(q);
-    const tags: LibraryTag[] = [];
+      const snapshot = await getDocs(q);
+      const tags: LibraryTag[] = [];
 
-    snapshot.forEach((doc) => {
-      tags.push(this.mapDocToTag(doc.data(), doc.id));
-    });
+      snapshot.forEach((doc) => {
+        tags.push(this.mapDocToTag(doc.data(), doc.id));
+      });
 
-    return tags;
+      return tags;
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to get all tags:", error);
+      toast.error("Failed to load tags.");
+      return [];
+    }
   }
 
   async updateTag(
     tagId: string,
     updates: Partial<Pick<LibraryTag, "name" | "color" | "icon">>
   ): Promise<LibraryTag> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const docRef = doc(firestore, getUserTagPath(userId, tagId));
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const docRef = doc(firestore, getUserTagPath(userId, tagId));
 
-    // Get existing
-    const existing = await this.getTag(tagId);
-    if (!existing) {
-      throw new TagError("Tag not found", "NOT_FOUND", tagId);
+      // Get existing
+      const existing = await this.getTag(tagId);
+      if (!existing) {
+        throw new TagError("Tag not found", "NOT_FOUND", tagId);
+      }
+
+      // Normalize name if updating
+      const normalizedUpdates = {
+        ...updates,
+        name: updates.name ? this.normalizeTagName(updates.name) : undefined,
+      };
+
+      // Remove undefined values
+      const cleanUpdates = Object.fromEntries(
+        Object.entries(normalizedUpdates).filter(([_, v]) => v !== undefined)
+      );
+
+      await updateDoc(docRef, cleanUpdates);
+
+      return {
+        ...existing,
+        ...cleanUpdates,
+      } as LibraryTag;
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to update tag:", error);
+      toast.error("Failed to update tag.");
+      throw error;
     }
-
-    // Normalize name if updating
-    const normalizedUpdates = {
-      ...updates,
-      name: updates.name ? this.normalizeTagName(updates.name) : undefined,
-    };
-
-    // Remove undefined values
-    const cleanUpdates = Object.fromEntries(
-      Object.entries(normalizedUpdates).filter(([_, v]) => v !== undefined)
-    );
-
-    await updateDoc(docRef, cleanUpdates);
-
-    return {
-      ...existing,
-      ...cleanUpdates,
-    } as LibraryTag;
   }
 
   async deleteTag(tagId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const existing = await this.getTag(tagId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const existing = await this.getTag(tagId);
 
-    if (!existing) {
-      return; // Already deleted
+      if (!existing) {
+        return; // Already deleted
+      }
+
+      await deleteDoc(doc(firestore, getUserTagPath(userId, tagId)));
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to delete tag:", error);
+      toast.error("Failed to delete tag.");
+      throw error;
     }
-
-    await deleteDoc(doc(firestore, getUserTagPath(userId, tagId)));
   }
 
   // ============================================================
@@ -205,24 +241,30 @@ export class TagManager implements ITagManager {
   }
 
   async findTagByName(name: string): Promise<LibraryTag | null> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const normalizedName = this.normalizeTagName(name);
-    const tagsRef = collection(firestore, getUserTagsPath(userId));
-    const q = query(tagsRef, where("name", "==", normalizedName));
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const normalizedName = this.normalizeTagName(name);
+      const tagsRef = collection(firestore, getUserTagsPath(userId));
+      const q = query(tagsRef, where("name", "==", normalizedName));
 
-    const snapshot = await getDocs(q);
+      const snapshot = await getDocs(q);
 
-    if (snapshot.empty) {
+      if (snapshot.empty) {
+        return null;
+      }
+
+      const firstDoc = snapshot.docs[0];
+      if (!firstDoc) {
+        return null;
+      }
+
+      return this.mapDocToTag(firstDoc.data(), firstDoc.id);
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to find tag by name:", error);
       return null;
     }
-
-    const firstDoc = snapshot.docs[0];
-    if (!firstDoc) {
-      return null;
-    }
-
-    return this.mapDocToTag(firstDoc.data(), firstDoc.id);
   }
 
   // ============================================================
@@ -230,23 +272,35 @@ export class TagManager implements ITagManager {
   // ============================================================
 
   async incrementUseCount(tagId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const docRef = doc(firestore, getUserTagPath(userId, tagId));
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const docRef = doc(firestore, getUserTagPath(userId, tagId));
 
-    await updateDoc(docRef, {
-      useCount: increment(1),
-    });
+      await updateDoc(docRef, {
+        useCount: increment(1),
+      });
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to increment use count:", error);
+      // Silent failure - don't show toast for counter updates
+    }
   }
 
   async decrementUseCount(tagId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const docRef = doc(firestore, getUserTagPath(userId, tagId));
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const docRef = doc(firestore, getUserTagPath(userId, tagId));
 
-    await updateDoc(docRef, {
-      useCount: increment(-1),
-    });
+      await updateDoc(docRef, {
+        useCount: increment(-1),
+      });
+    } catch (error) {
+      if (error instanceof TagError) throw error;
+      console.error("[TagManager] Failed to decrement use count:", error);
+      // Silent failure - don't show toast for counter updates
+    }
   }
 
   // ============================================================
@@ -258,24 +312,30 @@ export class TagManager implements ITagManager {
     let unsubscribe: Unsubscribe | null = null;
 
     // Initialize subscription asynchronously
-    getFirestoreInstance().then((firestore) => {
-      const tagsRef = collection(firestore, getUserTagsPath(userId));
-      const q = query(tagsRef, orderBy("name", "asc"));
+    getFirestoreInstance()
+      .then((firestore) => {
+        const tagsRef = collection(firestore, getUserTagsPath(userId));
+        const q = query(tagsRef, orderBy("name", "asc"));
 
-      unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const tags: LibraryTag[] = [];
-          snapshot.forEach((doc) => {
-            tags.push(this.mapDocToTag(doc.data(), doc.id));
-          });
-          callback(tags);
-        },
-        (error) => {
-          console.error("TagManager: Subscription error", error);
-        }
-      );
-    });
+        unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const tags: LibraryTag[] = [];
+            snapshot.forEach((doc) => {
+              tags.push(this.mapDocToTag(doc.data(), doc.id));
+            });
+            callback(tags);
+          },
+          (error) => {
+            console.error("[TagManager] Subscription error:", error);
+            toast.error("Lost connection to tags. Please refresh.");
+          }
+        );
+      })
+      .catch((error) => {
+        console.error("[TagManager] Failed to initialize tag subscription:", error);
+        toast.error("Failed to connect to tags.");
+      });
 
     // Return cleanup function
     return () => {

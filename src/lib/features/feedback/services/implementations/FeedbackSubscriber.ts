@@ -16,6 +16,7 @@ import {
   type Unsubscribe,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { IFeedbackSubscriptionService } from "../contracts/IFeedbackSubscriptionService";
 import type { FeedbackItem } from "../../domain/models/feedback-models";
 import type { IFeedbackDocumentMapper } from "../contracts/IFeedbackDocumentMapper";
@@ -37,42 +38,49 @@ export class FeedbackSubscriptionService
     let unsubscribed = false;
     let firestoreUnsubscribe: Unsubscribe | null = null;
 
-    void (async () => {
-      const firestore = await getFirestoreInstance();
+    (async () => {
+      try {
+        const firestore = await getFirestoreInstance();
 
-      const q = query(
-        collection(firestore, COLLECTION_NAME),
-        orderBy("createdAt", "desc"),
-        limit(200)
-      );
+        const q = query(
+          collection(firestore, COLLECTION_NAME),
+          orderBy("createdAt", "desc"),
+          limit(200)
+        );
 
-      // First, do an initial server fetch to ensure fresh data
-      getDocsFromServer(q)
-        .then((snapshot) => {
-          if (unsubscribed) return;
+        // First, do an initial server fetch to ensure fresh data
+        getDocsFromServer(q)
+          .then((snapshot) => {
+            if (unsubscribed) return;
 
-          const items = this.mapSnapshotToItems(snapshot);
-          onUpdate(items);
-        })
-        .catch((error) => {
-          console.error("Initial feedback fetch error:", error);
-        });
+            const items = this.mapSnapshotToItems(snapshot);
+            onUpdate(items);
+          })
+          .catch((error) => {
+            console.error("[FeedbackSubscriber] Initial fetch error:", error);
+          });
 
-      // Then set up the real-time listener
-      firestoreUnsubscribe = onSnapshot(
-        q,
-        { includeMetadataChanges: false },
-        (snapshot) => {
-          if (unsubscribed) return;
+        // Then set up the real-time listener
+        firestoreUnsubscribe = onSnapshot(
+          q,
+          { includeMetadataChanges: false },
+          (snapshot) => {
+            if (unsubscribed) return;
 
-          const items = this.mapSnapshotToItems(snapshot);
-          onUpdate(items);
-        },
-        (error) => {
-          console.error("Feedback subscription error:", error);
-          onError?.(error);
-        }
-      );
+            const items = this.mapSnapshotToItems(snapshot);
+            onUpdate(items);
+          },
+          (error) => {
+            console.error("[FeedbackSubscriber] Subscription error:", error);
+            toast.error("Lost connection to feedback. Please refresh.");
+            onError?.(error);
+          }
+        );
+      } catch (error) {
+        console.error("[FeedbackSubscriber] Failed to initialize subscription:", error);
+        toast.error("Failed to connect to feedback.");
+        onError?.(error instanceof Error ? error : new Error(String(error)));
+      }
     })();
 
     return () => {
@@ -91,42 +99,49 @@ export class FeedbackSubscriptionService
     let unsubscribed = false;
     let firestoreUnsubscribe: Unsubscribe | null = null;
 
-    void (async () => {
-      const firestore = await getFirestoreInstance();
+    (async () => {
+      try {
+        const firestore = await getFirestoreInstance();
 
-      const q = query(
-        collection(firestore, COLLECTION_NAME),
-        where("userId", "==", userId),
-        orderBy("createdAt", "desc")
-      );
+        const q = query(
+          collection(firestore, COLLECTION_NAME),
+          where("userId", "==", userId),
+          orderBy("createdAt", "desc")
+        );
 
-      // First, do an initial server fetch to ensure fresh data
-      getDocsFromServer(q)
-        .then((snapshot) => {
-          if (unsubscribed) return;
+        // First, do an initial server fetch to ensure fresh data
+        getDocsFromServer(q)
+          .then((snapshot) => {
+            if (unsubscribed) return;
 
-          const items = this.mapSnapshotToItems(snapshot);
-          onUpdate(items);
-        })
-        .catch((error) => {
-          console.error("Initial user feedback fetch error:", error);
-        });
+            const items = this.mapSnapshotToItems(snapshot);
+            onUpdate(items);
+          })
+          .catch((error) => {
+            console.error("[FeedbackSubscriber] Initial user fetch error:", error);
+          });
 
-      // Then set up the real-time listener
-      firestoreUnsubscribe = onSnapshot(
-        q,
-        { includeMetadataChanges: false },
-        (snapshot) => {
-          if (unsubscribed) return;
+        // Then set up the real-time listener
+        firestoreUnsubscribe = onSnapshot(
+          q,
+          { includeMetadataChanges: false },
+          (snapshot) => {
+            if (unsubscribed) return;
 
-          const items = this.mapSnapshotToItems(snapshot);
-          onUpdate(items);
-        },
-        (error) => {
-          console.error("User feedback subscription error:", error);
-          onError?.(error);
-        }
-      );
+            const items = this.mapSnapshotToItems(snapshot);
+            onUpdate(items);
+          },
+          (error) => {
+            console.error("[FeedbackSubscriber] User subscription error:", error);
+            toast.error("Lost connection to your feedback. Please refresh.");
+            onError?.(error);
+          }
+        );
+      } catch (error) {
+        console.error("[FeedbackSubscriber] Failed to initialize user subscription:", error);
+        toast.error("Failed to connect to your feedback.");
+        onError?.(error instanceof Error ? error : new Error(String(error)));
+      }
     })();
 
     return () => {

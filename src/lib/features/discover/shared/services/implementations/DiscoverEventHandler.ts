@@ -11,6 +11,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 import type {
   IDiscoverEventHandler,
   ExploreEventHandlerParams,
+  DeleteConfirmationData,
 } from "../contracts/IDiscoverEventHandler";
 import { openSpotlightViewer } from "../../../../../shared/application/state/ui/ui-state.svelte";
 import type { IDiscoverThumbnailProvider } from "../../../gallery/display/services/contracts/IDiscoverThumbnailProvider";
@@ -188,7 +189,7 @@ export class DiscoverEventHandler
   }
 
   async handleDeleteConfirm(
-    deleteConfirmationData: Record<string, unknown> | null
+    deleteConfirmationData: DeleteConfirmationData | null
   ): Promise<void> {
     this.ensureInitialized();
 
@@ -196,11 +197,7 @@ export class DiscoverEventHandler
 
     try {
       // TODO: Implement actual delete logic
-      const sequence = deleteConfirmationData.sequence as Record<
-        string,
-        unknown
-      >;
-      console.log("🗑️ Deleting sequence:", sequence.id);
+      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
       this.params!.setDeleteConfirmationData(null);
       // Refresh the sequence list
       await this.params!.galleryState.loadAllSequences();

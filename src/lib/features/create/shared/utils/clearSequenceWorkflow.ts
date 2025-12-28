@@ -20,6 +20,7 @@ import { navigationState } from "$lib/shared/navigation/state/navigation-state.s
 import type { createCreateModuleState as CreateModuleStateType } from "../state/create-module-state.svelte";
 import type { createConstructTabState as ConstructTabStateType } from "../state/construct-tab-state.svelte";
 import type { createPanelCoordinationState as PanelCoordinationStateType } from "../state/panel-coordination-state.svelte";
+import { UndoOperationType } from "../services/contracts/IUndoManager";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
@@ -49,7 +50,7 @@ export async function executeClearSequenceWorkflow(
     const activeTabSequenceState = CreateModuleState.sequenceState;
 
     // 1. Push undo snapshot
-    CreateModuleState.pushUndoSnapshot("CLEAR_SEQUENCE", {
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.CLEAR_SEQUENCE, {
       description: "Clear sequence",
     });
 

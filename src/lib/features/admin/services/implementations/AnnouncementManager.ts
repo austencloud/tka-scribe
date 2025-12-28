@@ -19,6 +19,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { IAnnouncementManager } from "../contracts/IAnnouncementManager";
 import type { Announcement } from "../../domain/models/announcement-models";
 
@@ -68,40 +69,46 @@ export class AnnouncementManager implements IAnnouncementManager {
   async createAnnouncement(
     announcement: Omit<Announcement, "id" | "createdAt">
   ): Promise<string> {
-    const firestore = await getFirestoreInstance();
-    const announcementsRef = collection(
-      firestore,
-      this.ANNOUNCEMENTS_COLLECTION
-    );
-    const newDoc = doc(announcementsRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const announcementsRef = collection(
+        firestore,
+        this.ANNOUNCEMENTS_COLLECTION
+      );
+      const newDoc = doc(announcementsRef);
 
-    // Build data object, excluding undefined fields (Firestore doesn't accept undefined)
-    const announcementData: Record<string, unknown> = {
-      title: announcement.title,
-      message: announcement.message,
-      severity: announcement.severity,
-      targetAudience: announcement.targetAudience,
-      showAsModal: announcement.showAsModal,
-      createdBy: announcement.createdBy,
-      createdAt: Timestamp.now(),
-    };
+      // Build data object, excluding undefined fields (Firestore doesn't accept undefined)
+      const announcementData: Record<string, unknown> = {
+        title: announcement.title,
+        message: announcement.message,
+        severity: announcement.severity,
+        targetAudience: announcement.targetAudience,
+        showAsModal: announcement.showAsModal,
+        createdBy: announcement.createdBy,
+        createdAt: Timestamp.now(),
+      };
 
-    // Add optional fields only if defined
-    if (announcement.expiresAt) {
-      announcementData.expiresAt = Timestamp.fromDate(announcement.expiresAt);
-    }
-    if (announcement.targetUserId) {
-      announcementData.targetUserId = announcement.targetUserId;
-    }
-    if (announcement.actionUrl) {
-      announcementData.actionUrl = announcement.actionUrl;
-    }
-    if (announcement.actionLabel) {
-      announcementData.actionLabel = announcement.actionLabel;
-    }
+      // Add optional fields only if defined
+      if (announcement.expiresAt) {
+        announcementData.expiresAt = Timestamp.fromDate(announcement.expiresAt);
+      }
+      if (announcement.targetUserId) {
+        announcementData.targetUserId = announcement.targetUserId;
+      }
+      if (announcement.actionUrl) {
+        announcementData.actionUrl = announcement.actionUrl;
+      }
+      if (announcement.actionLabel) {
+        announcementData.actionLabel = announcement.actionLabel;
+      }
 
-    await setDoc(newDoc, announcementData);
-    return newDoc.id;
+      await setDoc(newDoc, announcementData);
+      return newDoc.id;
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to create announcement:", error);
+      toast.error("Failed to create announcement. Please try again.");
+      throw error;
+    }
   }
 
   /**
@@ -111,109 +118,133 @@ export class AnnouncementManager implements IAnnouncementManager {
     id: string,
     updates: Partial<Announcement>
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
+    try {
+      const firestore = await getFirestoreInstance();
+      const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
 
-    // Build update data, excluding undefined fields
-    const updateData: Record<string, unknown> = {};
+      // Build update data, excluding undefined fields
+      const updateData: Record<string, unknown> = {};
 
-    if (updates.title !== undefined) updateData.title = updates.title;
-    if (updates.message !== undefined) updateData.message = updates.message;
-    if (updates.severity !== undefined) updateData.severity = updates.severity;
-    if (updates.targetAudience !== undefined)
-      updateData.targetAudience = updates.targetAudience;
-    if (updates.showAsModal !== undefined)
-      updateData.showAsModal = updates.showAsModal;
-    if (updates.targetUserId !== undefined)
-      updateData.targetUserId = updates.targetUserId;
-    if (updates.actionUrl !== undefined)
-      updateData.actionUrl = updates.actionUrl;
-    if (updates.actionLabel !== undefined)
-      updateData.actionLabel = updates.actionLabel;
+      if (updates.title !== undefined) updateData.title = updates.title;
+      if (updates.message !== undefined) updateData.message = updates.message;
+      if (updates.severity !== undefined) updateData.severity = updates.severity;
+      if (updates.targetAudience !== undefined)
+        updateData.targetAudience = updates.targetAudience;
+      if (updates.showAsModal !== undefined)
+        updateData.showAsModal = updates.showAsModal;
+      if (updates.targetUserId !== undefined)
+        updateData.targetUserId = updates.targetUserId;
+      if (updates.actionUrl !== undefined)
+        updateData.actionUrl = updates.actionUrl;
+      if (updates.actionLabel !== undefined)
+        updateData.actionLabel = updates.actionLabel;
 
-    if (updates.expiresAt !== undefined) {
-      updateData.expiresAt = updates.expiresAt
-        ? Timestamp.fromDate(updates.expiresAt)
-        : null;
+      if (updates.expiresAt !== undefined) {
+        updateData.expiresAt = updates.expiresAt
+          ? Timestamp.fromDate(updates.expiresAt)
+          : null;
+      }
+
+      await updateDoc(docRef, updateData);
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to update announcement:", error);
+      toast.error("Failed to update announcement. Please try again.");
+      throw error;
     }
-
-    await updateDoc(docRef, updateData);
   }
 
   /**
    * Delete an announcement
    */
   async deleteAnnouncement(id: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
-    await deleteDoc(docRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const docRef = doc(firestore, this.ANNOUNCEMENTS_COLLECTION, id);
+      await deleteDoc(docRef);
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to delete announcement:", error);
+      toast.error("Failed to delete announcement. Please try again.");
+      throw error;
+    }
   }
 
   /**
    * Get all announcements (admin view)
    */
   async getAllAnnouncements(): Promise<Announcement[]> {
-    const firestore = await getFirestoreInstance();
-    const announcementsRef = collection(
-      firestore,
-      this.ANNOUNCEMENTS_COLLECTION
-    );
-    const q = query(announcementsRef, orderBy("createdAt", "desc"));
+    try {
+      const firestore = await getFirestoreInstance();
+      const announcementsRef = collection(
+        firestore,
+        this.ANNOUNCEMENTS_COLLECTION
+      );
+      const q = query(announcementsRef, orderBy("createdAt", "desc"));
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => this.fromFirestore(doc.data(), doc.id));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => this.fromFirestore(doc.data(), doc.id));
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to get announcements:", error);
+      toast.error("Failed to load announcements.");
+      return [];
+    }
   }
 
   /**
    * Get active announcements for a user (excludes expired, applies targeting)
    */
   async getActiveAnnouncementsForUser(userId: string): Promise<Announcement[]> {
-    const firestore = await getFirestoreInstance();
-    const now = Timestamp.now();
-    const announcementsRef = collection(
-      firestore,
-      this.ANNOUNCEMENTS_COLLECTION
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const now = Timestamp.now();
+      const announcementsRef = collection(
+        firestore,
+        this.ANNOUNCEMENTS_COLLECTION
+      );
 
-    // Get user document to check admin status
-    const userDoc = await getDoc(doc(firestore, `users/${userId}`));
-    const isAdmin = userDoc.exists()
-      ? (userDoc.data()?.isAdmin as boolean)
-      : false;
+      // Get user document to check admin status
+      const userDoc = await getDoc(doc(firestore, `users/${userId}`));
+      const isAdmin = userDoc.exists()
+        ? (userDoc.data()?.isAdmin as boolean)
+        : false;
 
-    // Get all announcements (we'll filter targeting client-side)
-    const snapshot = await getDocs(
-      query(announcementsRef, orderBy("createdAt", "desc"))
-    );
+      // Get all announcements (we'll filter targeting client-side)
+      const snapshot = await getDocs(
+        query(announcementsRef, orderBy("createdAt", "desc"))
+      );
 
-    const announcements = snapshot.docs
-      .map((doc) => this.fromFirestore(doc.data(), doc.id))
-      .filter((announcement) => {
-        // Filter out expired announcements
-        if (announcement.expiresAt && announcement.expiresAt < new Date()) {
-          return false;
-        }
+      const announcements = snapshot.docs
+        .map((doc) => this.fromFirestore(doc.data(), doc.id))
+        .filter((announcement) => {
+          // Filter out expired announcements
+          if (announcement.expiresAt && announcement.expiresAt < new Date()) {
+            return false;
+          }
 
-        // Apply audience targeting
-        switch (announcement.targetAudience) {
-          case "all":
-            return true;
-          case "admins":
-            return isAdmin;
-          case "specific-user":
-            return announcement.targetUserId === userId;
-          case "beta":
-          case "new":
-          case "active":
-          case "creators":
-            // TODO: Implement user targeting logic when user metadata is available
-            return true;
-          default:
-            return true;
-        }
-      });
+          // Apply audience targeting
+          switch (announcement.targetAudience) {
+            case "all":
+              return true;
+            case "admins":
+              return isAdmin;
+            case "specific-user":
+              return announcement.targetUserId === userId;
+            case "beta":
+            case "new":
+            case "active":
+            case "creators":
+              // TODO: Implement user targeting logic when user metadata is available
+              return true;
+            default:
+              return true;
+          }
+        });
 
-    return announcements;
+      return announcements;
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to get active announcements:", error);
+      toast.error("Failed to load announcements.");
+      return [];
+    }
   }
 
   /**
@@ -223,13 +254,19 @@ export class AnnouncementManager implements IAnnouncementManager {
     userId: string,
     announcementId: string
   ): Promise<boolean> {
-    const firestore = await getFirestoreInstance();
-    const dismissalRef = doc(
-      firestore,
-      `users/${userId}/dismissedAnnouncements/${announcementId}`
-    );
-    const dismissalDoc = await getDoc(dismissalRef);
-    return dismissalDoc.exists();
+    try {
+      const firestore = await getFirestoreInstance();
+      const dismissalRef = doc(
+        firestore,
+        `users/${userId}/dismissedAnnouncements/${announcementId}`
+      );
+      const dismissalDoc = await getDoc(dismissalRef);
+      return dismissalDoc.exists();
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to check dismissal status:", error);
+      // Default to true (dismissed) on error to avoid showing broken announcements
+      return true;
+    }
   }
 
   /**
@@ -239,16 +276,22 @@ export class AnnouncementManager implements IAnnouncementManager {
     userId: string,
     announcementId: string
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const dismissalRef = doc(
-      firestore,
-      `users/${userId}/dismissedAnnouncements/${announcementId}`
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const dismissalRef = doc(
+        firestore,
+        `users/${userId}/dismissedAnnouncements/${announcementId}`
+      );
 
-    await setDoc(dismissalRef, {
-      announcementId,
-      dismissedAt: Timestamp.now(),
-    });
+      await setDoc(dismissalRef, {
+        announcementId,
+        dismissedAt: Timestamp.now(),
+      });
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to dismiss announcement:", error);
+      toast.error("Failed to dismiss announcement.");
+      throw error;
+    }
   }
 
   /**
@@ -284,27 +327,33 @@ export class AnnouncementManager implements IAnnouncementManager {
       return [];
     }
 
-    const firestore = await getFirestoreInstance();
-    const usersRef = collection(firestore, "users");
-    const snapshot = await getDocs(usersRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const usersRef = collection(firestore, "users");
+      const snapshot = await getDocs(usersRef);
 
-    const queryLower = query.toLowerCase();
-    const results = snapshot.docs
-      .map((doc) => {
-        const data = doc.data();
-        return {
-          uid: doc.id,
-          displayName: data.displayName as string,
-          email: data.email as string,
-        };
-      })
-      .filter((user) => {
-        const displayName = user.displayName?.toLowerCase() || "";
-        const email = user.email?.toLowerCase() || "";
-        return displayName.includes(queryLower) || email.includes(queryLower);
-      })
-      .slice(0, 10); // Limit to 10 results
+      const queryLower = query.toLowerCase();
+      const results = snapshot.docs
+        .map((doc) => {
+          const data = doc.data();
+          return {
+            uid: doc.id,
+            displayName: data.displayName as string,
+            email: data.email as string,
+          };
+        })
+        .filter((user) => {
+          const displayName = user.displayName?.toLowerCase() || "";
+          const email = user.email?.toLowerCase() || "";
+          return displayName.includes(queryLower) || email.includes(queryLower);
+        })
+        .slice(0, 10); // Limit to 10 results
 
-    return results;
+      return results;
+    } catch (error) {
+      console.error("[AnnouncementManager] Failed to search users:", error);
+      toast.error("Failed to search users.");
+      return [];
+    }
   }
 }

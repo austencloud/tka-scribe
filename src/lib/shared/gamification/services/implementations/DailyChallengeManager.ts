@@ -22,6 +22,7 @@ import {
   getDailyChallengesPath,
   getUserChallengeProgressPath,
 } from "../../data/firestore-collections";
+import { toast } from "../../../toast/state/toast-state.svelte";
 import type {
   DailyChallenge,
   UserChallengeProgress,
@@ -120,34 +121,40 @@ export class DailyChallengeManager implements IDailyChallengeManager {
 
     if (!challenge) return null;
 
-    const firestore = await getFirestoreInstance();
-    const progressPath = getUserChallengeProgressPath(user.uid);
-    const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
-    const progressDoc = await getDoc(progressDocRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const progressPath = getUserChallengeProgressPath(user.uid);
+      const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
+      const progressDoc = await getDoc(progressDocRef);
 
-    if (!progressDoc.exists()) {
-      // Initialize progress
-      const initialProgress: UserChallengeProgress = {
-        id: challenge.id,
-        challengeId: challenge.id,
-        userId: user.uid,
-        progress: 0,
-        isCompleted: false,
-        startedAt: new Date(),
-      };
+      if (!progressDoc.exists()) {
+        // Initialize progress
+        const initialProgress: UserChallengeProgress = {
+          id: challenge.id,
+          challengeId: challenge.id,
+          userId: user.uid,
+          progress: 0,
+          isCompleted: false,
+          startedAt: new Date(),
+        };
 
-      await setDoc(progressDocRef, {
-        ...initialProgress,
-        startedAt: serverTimestamp(),
-      });
+        await setDoc(progressDocRef, {
+          ...initialProgress,
+          startedAt: serverTimestamp(),
+        });
 
-      // Cache locally
-      await db.userChallengeProgress.put(initialProgress);
+        // Cache locally
+        await db.userChallengeProgress.put(initialProgress);
 
-      return initialProgress;
+        return initialProgress;
+      }
+
+      return progressDoc.data() as UserChallengeProgress;
+    } catch (error) {
+      console.error("[DailyChallengeManager] Failed to get challenge progress:", error);
+      toast.error("Failed to load challenge progress.");
+      return null;
     }
-
-    return progressDoc.data() as UserChallengeProgress;
   }
 
   async updateChallengeProgress(
@@ -181,57 +188,63 @@ export class DailyChallengeManager implements IDailyChallengeManager {
     const newProgress = currentProgress.progress + progressDelta;
     const isNowCompleted = newProgress >= challenge.requirement.target;
 
-    const firestore = await getFirestoreInstance();
-    const progressPath = getUserChallengeProgressPath(user.uid);
-    const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
+    try {
+      const firestore = await getFirestoreInstance();
+      const progressPath = getUserChallengeProgressPath(user.uid);
+      const progressDocRef = doc(firestore, `${progressPath}/${challenge.id}`);
 
-    if (isNowCompleted) {
-      // Mark as completed
-      const updatedProgress: UserChallengeProgress = {
-        ...currentProgress,
-        progress: challenge.requirement.target,
-        isCompleted: true,
-        completedAt: new Date(),
-      };
+      if (isNowCompleted) {
+        // Mark as completed
+        const updatedProgress: UserChallengeProgress = {
+          ...currentProgress,
+          progress: challenge.requirement.target,
+          isCompleted: true,
+          completedAt: new Date(),
+        };
 
-      await updateDoc(progressDocRef, {
-        progress: challenge.requirement.target,
-        isCompleted: true,
-        completedAt: serverTimestamp(),
-      });
+        await updateDoc(progressDocRef, {
+          progress: challenge.requirement.target,
+          isCompleted: true,
+          completedAt: serverTimestamp(),
+        });
 
-      // Cache locally
-      await db.userChallengeProgress.put(updatedProgress);
+        // Cache locally
+        await db.userChallengeProgress.put(updatedProgress);
 
-      // Award XP via AchievementManager
-      if (this._achievementService) {
-        await this._achievementService.trackAction(
-          "daily_challenge_completed",
-          {
-            challengeId: challenge.id,
-            challengeType: challenge.type,
-          }
-        );
+        // Award XP via AchievementManager
+        if (this._achievementService) {
+          await this._achievementService.trackAction(
+            "daily_challenge_completed",
+            {
+              challengeId: challenge.id,
+              challengeType: challenge.type,
+            }
+          );
+        }
+
+        console.log(`🎉 Daily challenge completed: ${challenge.title}`);
+
+        return { completed: true, progress: updatedProgress };
+      } else {
+        // Update progress
+        const updatedProgress: UserChallengeProgress = {
+          ...currentProgress,
+          progress: newProgress,
+        };
+
+        await updateDoc(progressDocRef, {
+          progress: newProgress,
+        });
+
+        // Cache locally
+        await db.userChallengeProgress.put(updatedProgress);
+
+        return { completed: false, progress: updatedProgress };
       }
-
-      console.log(`🎉 Daily challenge completed: ${challenge.title}`);
-
-      return { completed: true, progress: updatedProgress };
-    } else {
-      // Update progress
-      const updatedProgress: UserChallengeProgress = {
-        ...currentProgress,
-        progress: newProgress,
-      };
-
-      await updateDoc(progressDocRef, {
-        progress: newProgress,
-      });
-
-      // Cache locally
-      await db.userChallengeProgress.put(updatedProgress);
-
-      return { completed: false, progress: updatedProgress };
+    } catch (error) {
+      console.error("[DailyChallengeManager] Failed to update challenge progress:", error);
+      toast.error("Failed to update challenge progress.");
+      throw error;
     }
   }
 
@@ -314,52 +327,62 @@ export class DailyChallengeManager implements IDailyChallengeManager {
       };
     }
 
-    const firestore = await getFirestoreInstance();
-    const progressPath = getUserChallengeProgressPath(user.uid);
-    const completedQuery = query(
-      collection(firestore, progressPath),
-      where("isCompleted", "==", true)
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const progressPath = getUserChallengeProgressPath(user.uid);
+      const completedQuery = query(
+        collection(firestore, progressPath),
+        where("isCompleted", "==", true)
+      );
 
-    const snapshot = await getDocs(completedQuery);
-    const totalChallengesCompleted = snapshot.size;
+      const snapshot = await getDocs(completedQuery);
+      const totalChallengesCompleted = snapshot.size;
 
-    // Calculate streaks (simplified - could be more sophisticated)
-    const completedDates = snapshot.docs
-      .map((doc) => doc.id.replace("challenge_", ""))
-      .sort()
-      .reverse();
+      // Calculate streaks (simplified - could be more sophisticated)
+      const completedDates = snapshot.docs
+        .map((doc) => doc.id.replace("challenge_", ""))
+        .sort()
+        .reverse();
 
-    let currentStreak = 0;
-    let longestStreak = 0;
-    let tempStreak = 0;
+      let currentStreak = 0;
+      let longestStreak = 0;
+      let tempStreak = 0;
 
-    const checkDate = new Date();
+      const checkDate = new Date();
 
-    // Calculate current streak
-    for (let i = 0; i < 100; i++) {
-      const dateStr = checkDate.toISOString().split("T")[0]!;
-      if (completedDates.includes(dateStr)) {
-        currentStreak++;
-        tempStreak++;
-      } else {
-        if (i === 0) {
-          // Today not completed yet, check yesterday
-          currentStreak = 0;
+      // Calculate current streak
+      for (let i = 0; i < 100; i++) {
+        const dateStr = checkDate.toISOString().split("T")[0]!;
+        if (completedDates.includes(dateStr)) {
+          currentStreak++;
+          tempStreak++;
         } else {
-          break;
+          if (i === 0) {
+            // Today not completed yet, check yesterday
+            currentStreak = 0;
+          } else {
+            break;
+          }
         }
+        checkDate.setDate(checkDate.getDate() - 1);
       }
-      checkDate.setDate(checkDate.getDate() - 1);
+
+      // Longest streak would require full history scan
+      longestStreak = Math.max(currentStreak, tempStreak);
+
+      return {
+        totalChallengesCompleted,
+        currentStreak,
+        longestStreak,
+      };
+    } catch (error) {
+      console.error("[DailyChallengeManager] Failed to get challenge stats:", error);
+      toast.error("Failed to load challenge statistics.");
+      return {
+        totalChallengesCompleted: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+      };
     }
-
-    // Longest streak would require full history scan
-    longestStreak = Math.max(currentStreak, tempStreak);
-
-    return {
-      totalChallengesCompleted,
-      currentStreak,
-      longestStreak,
-    };
   }
 }

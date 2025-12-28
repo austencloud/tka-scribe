@@ -30,10 +30,12 @@ import {
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IAchievementManager } from "$lib/shared/gamification/services/contracts/IAchievementManager";
 import type { ITagManager } from "../contracts/ITagManager";
 import type { IOrientationCycleDetector } from "../../../create/generate/circular/services/contracts/IOrientationCycleDetector";
+import type { IPublicIndexSyncer } from "../contracts/IPublicIndexSyncer";
 import { migrateSequenceTags } from "../migrations/tag-migration";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type {
@@ -80,7 +82,9 @@ export class LibraryRepository implements ILibraryRepository {
     @inject(TYPES.ITagManager)
     private tagService: ITagManager,
     @inject(TYPES.IOrientationCycleDetector)
-    private orientationCycleDetector: IOrientationCycleDetector
+    private orientationCycleDetector: IOrientationCycleDetector,
+    @inject(TYPES.IPublicIndexSyncer)
+    private publicIndexSyncer: IPublicIndexSyncer
   ) {}
 
   /**
@@ -277,7 +281,7 @@ export class LibraryRepository implements ILibraryRepository {
 
     // Post-transaction: Sync to public index
     if (finalSequence.visibility === "public") {
-      await this.syncToPublicIndex(finalSequence, userId);
+      await this.publicIndexSyncer.syncToPublicIndex(finalSequence, userId);
     }
 
     return finalSequence;
@@ -319,17 +323,23 @@ export class LibraryRepository implements ILibraryRepository {
       updatedAt: new Date(),
     };
 
-    await updateDoc(docRef, {
-      ...updates,
-      updatedAt: serverTimestamp(),
-    });
+    try {
+      await updateDoc(docRef, {
+        ...updates,
+        updatedAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to update sequence:", error);
+      toast.error("Failed to update sequence. Please try again.");
+      throw new LibraryError("Failed to update sequence", "NETWORK", sequenceId);
+    }
 
     // Handle visibility changes
     if (updates.visibility && updates.visibility !== existing.visibility) {
       if (updates.visibility === "public") {
-        await this.syncToPublicIndex(updated, userId);
+        await this.publicIndexSyncer.syncToPublicIndex(updated, userId);
       } else if (existing.visibility === "public") {
-        await this.removeFromPublicIndex(sequenceId);
+        await this.publicIndexSyncer.removeFromPublicIndex(sequenceId);
       }
     }
 
@@ -347,11 +357,22 @@ export class LibraryRepository implements ILibraryRepository {
 
     // Remove from public index if public
     if (existing.visibility === "public") {
-      await this.removeFromPublicIndex(sequenceId);
+      try {
+        await this.publicIndexSyncer.removeFromPublicIndex(sequenceId);
+      } catch (error) {
+        console.warn("[LibraryRepository] Failed to remove from public index:", error);
+        // Continue with deletion - public index sync can be fixed later
+      }
     }
 
     // Delete the sequence
-    await deleteDoc(doc(firestore, getUserSequencePath(userId, sequenceId)));
+    try {
+      await deleteDoc(doc(firestore, getUserSequencePath(userId, sequenceId)));
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to delete sequence:", error);
+      toast.error("Failed to delete sequence. Please try again.");
+      throw new LibraryError("Failed to delete sequence", "NETWORK", sequenceId);
+    }
 
     // Decrement user's sequenceCount
     try {
@@ -367,6 +388,7 @@ export class LibraryRepository implements ILibraryRepository {
         `[LibraryRepository] Failed to decrement sequenceCount for user ${userId}:`,
         error
       );
+      // Don't throw - sequence is already deleted, count will be inconsistent but not critical
     }
   }
 
@@ -401,6 +423,10 @@ export class LibraryRepository implements ILibraryRepository {
         q,
         where("collectionIds", "array-contains", options.collectionId)
       );
+    }
+
+    if (options?.isFavorite !== undefined) {
+      q = query(q, where("isFavorite", "==", options.isFavorite));
     }
 
     // Apply sorting
@@ -490,29 +516,35 @@ export class LibraryRepository implements ILibraryRepository {
     const DEFAULT_LIBRARY_LIMIT = 100;
 
     // Initialize subscription asynchronously
-    getFirestoreInstance().then((firestore) => {
-      const sequencesRef = collection(firestore, getUserSequencesPath(userId));
+    getFirestoreInstance()
+      .then((firestore) => {
+        const sequencesRef = collection(firestore, getUserSequencesPath(userId));
 
-      let q = query(sequencesRef, orderBy("updatedAt", "desc"));
+        let q = query(sequencesRef, orderBy("updatedAt", "desc"));
 
-      // Always apply a limit to prevent cost explosion
-      const limitCount = options?.limit ?? DEFAULT_LIBRARY_LIMIT;
-      q = query(q, firestoreLimit(limitCount));
+        // Always apply a limit to prevent cost explosion
+        const limitCount = options?.limit ?? DEFAULT_LIBRARY_LIMIT;
+        q = query(q, firestoreLimit(limitCount));
 
-      unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const sequences: LibrarySequence[] = [];
-          snapshot.forEach((doc) => {
-            sequences.push(this.mapDocToLibrarySequence(doc.data(), doc.id));
-          });
-          callback(sequences);
-        },
-        (error) => {
-          console.error("LibraryRepository: Subscription error", error);
-        }
-      );
-    });
+        unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const sequences: LibrarySequence[] = [];
+            snapshot.forEach((doc) => {
+              sequences.push(this.mapDocToLibrarySequence(doc.data(), doc.id));
+            });
+            callback(sequences);
+          },
+          (error) => {
+            console.error("[LibraryRepository] Subscription error:", error);
+            toast.error("Failed to sync library. Please refresh.");
+          }
+        );
+      })
+      .catch((error) => {
+        console.error("[LibraryRepository] Failed to initialize library subscription:", error);
+        toast.error("Failed to connect to library.");
+      });
 
     // Return cleanup function
     return () => {
@@ -530,23 +562,28 @@ export class LibraryRepository implements ILibraryRepository {
     let unsubscribe: Unsubscribe | null = null;
 
     // Initialize subscription asynchronously
-    getFirestoreInstance().then((firestore) => {
-      const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
+    getFirestoreInstance()
+      .then((firestore) => {
+        const docRef = doc(firestore, getUserSequencePath(userId, sequenceId));
 
-      unsubscribe = onSnapshot(
-        docRef,
-        (docSnap) => {
-          if (docSnap.exists()) {
-            callback(this.mapDocToLibrarySequence(docSnap.data(), sequenceId));
-          } else {
-            callback(null);
+        unsubscribe = onSnapshot(
+          docRef,
+          (docSnap) => {
+            if (docSnap.exists()) {
+              callback(this.mapDocToLibrarySequence(docSnap.data(), sequenceId));
+            } else {
+              callback(null);
+            }
+          },
+          (error) => {
+            console.error("[LibraryRepository] Sequence subscription error:", error);
+            toast.error("Failed to sync sequence updates.");
           }
-        },
-        (error) => {
-          console.error("LibraryRepository: Sequence subscription error", error);
-        }
-      );
-    });
+        );
+      })
+      .catch((error) => {
+        console.error("[LibraryRepository] Failed to initialize sequence subscription:", error);
+      });
 
     // Return cleanup function
     return () => {
@@ -648,7 +685,13 @@ export class LibraryRepository implements ILibraryRepository {
       });
     }
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to delete sequences:", error);
+      toast.error("Failed to delete sequences. Please try again.");
+      throw new LibraryError("Failed to delete sequences", "NETWORK");
+    }
 
     if (deletedCount > 0) {
       console.log(
@@ -674,7 +717,13 @@ export class LibraryRepository implements ILibraryRepository {
       });
     }
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to move to collection:", error);
+      toast.error("Failed to move sequences. Please try again.");
+      throw new LibraryError("Failed to move sequences to collection", "NETWORK");
+    }
   }
 
   async addTagsToSequences(
@@ -694,7 +743,13 @@ export class LibraryRepository implements ILibraryRepository {
       });
     }
 
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to add tags:", error);
+      toast.error("Failed to add tags. Please try again.");
+      throw new LibraryError("Failed to add tags to sequences", "NETWORK");
+    }
   }
 
   async setVisibilityBatch(
@@ -742,13 +797,30 @@ export class LibraryRepository implements ILibraryRepository {
     }
 
     // Commit all visibility updates in one batch
-    await batch.commit();
+    try {
+      await batch.commit();
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to update visibility:", error);
+      toast.error("Failed to update visibility. Please try again.");
+      throw new LibraryError("Failed to update sequence visibility", "NETWORK");
+    }
 
     // Handle public index updates (these can run in parallel)
-    await Promise.all([
-      ...toPublish.map((seq) => this.syncToPublicIndex(seq, userId)),
-      ...toUnpublish.map((id) => this.removeFromPublicIndex(id)),
-    ]);
+    // Wrap in try/catch but don't throw - visibility was already updated
+    try {
+      await Promise.all([
+        ...toPublish.map((seq) =>
+          this.publicIndexSyncer.syncToPublicIndex(seq, userId)
+        ),
+        ...toUnpublish.map((id) =>
+          this.publicIndexSyncer.removeFromPublicIndex(id)
+        ),
+      ]);
+    } catch (error) {
+      console.error("[LibraryRepository] Failed to sync public index:", error);
+      toast.warning("Visibility updated, but public index sync failed.");
+      // Don't throw - visibility was already successfully updated
+    }
   }
 
   // ============================================================
@@ -768,69 +840,10 @@ export class LibraryRepository implements ILibraryRepository {
 
   async getFavorites(): Promise<LibrarySequence[]> {
     return this.getSequences({
+      isFavorite: true,
       sortBy: "updatedAt",
       sortDirection: "desc",
-    }).then((sequences) => sequences.filter((s) => s.isFavorite));
+    });
   }
 
-  // ============================================================
-  // PRIVATE HELPERS
-  // ============================================================
-
-  /**
-   * Sync a public sequence to the publicSequences collection
-   */
-  private async syncToPublicIndex(
-    sequence: LibrarySequence,
-    userId: string
-  ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    try {
-      // Get user display info for denormalization
-      const userDoc = await getDoc(doc(firestore, `users/${userId}`));
-      const userData = userDoc.data() ?? {};
-
-      const publicData = {
-        id: sequence.id,
-        sourceRef: `users/${userId}/sequences/${sequence.id}`,
-        ownerId: userId,
-        ownerDisplayName: userData["displayName"] ?? "Unknown",
-        ownerAvatarUrl: userData["photoURL"],
-        name: sequence.name,
-        displayName: sequence.displayName, // User's custom display name
-        word: sequence.word,
-        thumbnails: sequence.thumbnails.slice(0, 3) ?? [],
-        sequenceLength: sequence.beats.length ?? 0,
-        difficultyLevel: sequence.difficultyLevel,
-        forkCount: sequence.forkCount ?? 0,
-        viewCount: sequence.viewCount ?? 0,
-        starCount: sequence.starCount ?? 0,
-        tags: [], // TODO: Resolve tag names from tagIds
-        isForked: sequence.source === "forked",
-        originalCreatorId: sequence.forkAttribution?.originalCreatorId,
-        originalCreatorName: sequence.forkAttribution?.originalCreatorName,
-        publishedAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      };
-
-      await setDoc(
-        doc(firestore, getPublicSequencePath(sequence.id)),
-        publicData
-      );
-    } catch (error) {
-      console.error("Failed to sync to public index:", error);
-    }
-  }
-
-  /**
-   * Remove a sequence from the public index
-   */
-  private async removeFromPublicIndex(sequenceId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    try {
-      await deleteDoc(doc(firestore, getPublicSequencePath(sequenceId)));
-    } catch (error) {
-      console.error("Failed to remove from public index:", error);
-    }
-  }
 }

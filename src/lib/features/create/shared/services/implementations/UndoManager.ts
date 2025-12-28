@@ -41,6 +41,7 @@ const OPERATION_DESCRIPTIONS: Record<UndoOperationType, string> = {
   CLEAR_SEQUENCE: "Clear Sequence",
   UPDATE_BEAT: "Update Beat",
   INSERT_BEAT: "Insert Beat",
+  BATCH_EDIT: "Batch Edit",
   MIRROR_SEQUENCE: "Mirror Sequence",
   ROTATE_SEQUENCE: "Rotate Sequence",
   SWAP_COLORS: "Swap Colors",

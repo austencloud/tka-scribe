@@ -21,6 +21,12 @@ import type { BeatData } from "../domain/models/BeatData";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { AssemblerTabState } from "./assembler-tab-state.svelte";
 import type { GeneratorTabState } from "./generator-tab-state.svelte";
+import type { ConstructTabState } from "./construct-tab-state.svelte";
+import type { UndoController } from "./create-module/undo-controller.svelte";
+import type {
+  UndoOperationType,
+  UndoMetadata,
+} from "../services/contracts/IUndoManager";
 
 /**
  * Creates the main Create Module state orchestrator
@@ -74,7 +80,7 @@ export function createCreateModuleState(
   });
 
   // Store tab states in closure - moved up so getSequenceStateForTab can access them
-  let _constructorTabState: any = null; // Will be set during initialization
+  let _constructorTabState: ConstructTabState | null = null;
   let _assemblerTabState: AssemblerTabState | null = null;
   let _generatorTabState: GeneratorTabState | null = null;
 
@@ -213,12 +219,11 @@ export function createCreateModuleState(
    *
    * @returns The undo controller for the active tab (constructor, assembler, or generator)
    */
-  function getActiveTabUndoController() {
+  function getActiveTabUndoController(): UndoController | null {
     const activeTab = navigationState.activeTab as BuildModeId;
     switch (activeTab) {
       case "constructor": {
-        const ctor = _constructorTabState as any;
-        return ctor?.undoController || null;
+        return _constructorTabState?.undoController ?? null;
       }
       case "assembler": {
         return _assemblerTabState?.undoController || null;
@@ -266,7 +271,7 @@ export function createCreateModuleState(
     get undoController() {
       return getActiveTabUndoController();
     },
-    pushUndoSnapshot: (type: any, metadata?: any) => {
+    pushUndoSnapshot: (type: UndoOperationType, metadata?: UndoMetadata) => {
       const controller = getActiveTabUndoController();
       controller?.pushUndoSnapshot(type, metadata);
     },
@@ -337,10 +342,10 @@ export function createCreateModuleState(
     get constructorTabState() {
       return _constructorTabState;
     },
-    set constructorTabState(value: unknown) {
+    set constructorTabState(value: ConstructTabState | null) {
       _constructorTabState = value;
     },
-    constructTabState: null as any, // Legacy accessor - will be set by initializer
+    constructTabState: null as ConstructTabState | null, // Legacy accessor - will be set by initializer
     get assemblerTabState() {
       return _assemblerTabState;
     },

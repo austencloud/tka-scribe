@@ -100,6 +100,8 @@ export type AnimationPanelState = {
   setError: (error: string | null) => void;
   setSequenceData: (data: SequenceData | null) => void;
   reset: () => void;
+  /** Cleanup function - call in onDestroy to prevent memory leaks */
+  dispose: () => void;
 };
 
 const DEFAULT_PROP_STATE: PropState = {
@@ -124,7 +126,8 @@ export function createAnimationPanelState(): AnimationPanelState {
   let exportLoopCount = $state(exportLoopCountPersistence.load());
 
   // Auto-save speed, loop state, and export loop count
-  $effect.root(() => {
+  // Capture cleanup function to prevent memory leaks
+  const cleanupEffects = $effect.root(() => {
     $effect(() => {
       void speed;
       speedPersistence.setupAutoSave(speed);
@@ -305,6 +308,10 @@ export function createAnimationPanelState(): AnimationPanelState {
       loading = false;
       error = null;
       sequenceData = null;
+    },
+
+    dispose: () => {
+      cleanupEffects();
     },
   };
 }

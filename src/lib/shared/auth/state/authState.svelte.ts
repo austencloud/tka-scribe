@@ -256,19 +256,16 @@ export function initializeAuthListener() {
             TYPES.IProfilePictureManager
           );
           if (profilePictureService) {
-            try {
-              void profilePictureService.updateFacebookProfilePictureIfNeeded(
-                user
-              );
-              void profilePictureService.updateGoogleProfilePictureIfNeeded(
-                user
-              );
-            } catch (error) {
-              console.warn(
-                "⚠️ [authState] Failed to update profile pictures:",
-                error
-              );
-            }
+            profilePictureService
+              .updateFacebookProfilePictureIfNeeded(user)
+              .catch((error) => {
+                console.warn("⚠️ [authState] Facebook profile picture update failed:", error);
+              });
+            profilePictureService
+              .updateGoogleProfilePictureIfNeeded(user)
+              .catch((error) => {
+                console.warn("⚠️ [authState] Google profile picture update failed:", error);
+              });
           }
 
           // Initialize feature flags for this user
@@ -311,83 +308,77 @@ export function initializeAuthListener() {
             TYPES.IActivityLogger
           );
           if (activityService) {
-            void activityService.logSessionStart();
+            activityService.logSessionStart().catch((error) => {
+              console.warn("⚠️ [authState] Session start logging failed:", error);
+            });
           }
         } catch {
           // Silently fail - activity logging is non-critical
         }
 
         // Initialize presence tracking (non-blocking)
-        try {
-          void import("../../inversify/di").then(
-            async ({ ensureContainerInitialized, tryResolve: resolve }) => {
-              await ensureContainerInitialized(); // Ensure Tier 1 modules (including presence) are loaded
-              const presenceService = resolve<{
-                initialize: () => Promise<void>;
-              }>(TYPES.IPresenceTracker);
-              if (presenceService) {
-                void presenceService.initialize();
-              }
+        import("../../inversify/di")
+          .then(async ({ ensureContainerInitialized, tryResolve: resolve }) => {
+            await ensureContainerInitialized(); // Ensure Tier 1 modules (including presence) are loaded
+            const presenceService = resolve<{
+              initialize: () => Promise<void>;
+            }>(TYPES.IPresenceTracker);
+            if (presenceService) {
+              await presenceService.initialize();
             }
-          );
-        } catch {
-          // Silently fail - presence is non-critical
-        }
+          })
+          .catch((error) => {
+            console.warn("⚠️ [authState] Presence initialization failed:", error);
+          });
 
         // Initialize settings Firebase sync (non-blocking)
-        try {
-          void import("$lib/shared/settings/state/SettingsState.svelte").then(
-            async (settingsModule) => {
-              // Ensure Firestore is initialized before settings sync
-              const { getFirestoreInstance } = await import(
-                "$lib/shared/auth/firebase"
-              );
-              await getFirestoreInstance();
-              void settingsModule.settingsService.initializeFirebaseSync();
-            }
-          );
-        } catch {
-          // Silently fail - settings sync is non-critical
-        }
+        import("$lib/shared/settings/state/SettingsState.svelte")
+          .then(async (settingsModule) => {
+            // Ensure Firestore is initialized before settings sync
+            const { getFirestoreInstance } = await import(
+              "$lib/shared/auth/firebase"
+            );
+            await getFirestoreInstance();
+            await settingsModule.settingsService.initializeFirebaseSync();
+          })
+          .catch((error) => {
+            console.warn("⚠️ [authState] Settings sync initialization failed:", error);
+          });
 
         // Initialize onboarding Firebase sync (non-blocking)
-        try {
-          void import("$lib/shared/onboarding/config/storage-keys").then(
-            async (onboardingModule) => {
-              // Ensure Firestore is initialized before onboarding sync
-              const { getFirestoreInstance } = await import(
-                "$lib/shared/auth/firebase"
-              );
-              await getFirestoreInstance();
-              void onboardingModule.syncOnboardingToCloud();
-            }
-          );
-        } catch {
-          // Silently fail - onboarding sync is non-critical
-        }
+        import("$lib/shared/onboarding/config/storage-keys")
+          .then(async (onboardingModule) => {
+            // Ensure Firestore is initialized before onboarding sync
+            const { getFirestoreInstance } = await import(
+              "$lib/shared/auth/firebase"
+            );
+            await getFirestoreInstance();
+            await onboardingModule.syncOnboardingToCloud();
+          })
+          .catch((error) => {
+            console.warn("⚠️ [authState] Onboarding sync failed:", error);
+          });
 
         // Initialize system collections (Favorites, etc.) - non-blocking
-        try {
-          void import("$lib/shared/inversify/di").then(
-            async ({ loadFeatureModule, tryResolve }) => {
-              // Ensure Firestore is initialized before collection operations
-              const { getFirestoreInstance } = await import(
-                "$lib/shared/auth/firebase"
-              );
-              await getFirestoreInstance();
+        import("$lib/shared/inversify/di")
+          .then(async ({ loadFeatureModule, tryResolve }) => {
+            // Ensure Firestore is initialized before collection operations
+            const { getFirestoreInstance } = await import(
+              "$lib/shared/auth/firebase"
+            );
+            await getFirestoreInstance();
 
-              await loadFeatureModule("library");
-              const collectionService = tryResolve<{
-                ensureSystemCollections?: () => Promise<void>;
-              }>(TYPES.ICollectionManager);
-              if (collectionService?.ensureSystemCollections) {
-                void collectionService.ensureSystemCollections();
-              }
+            await loadFeatureModule("library");
+            const collectionService = tryResolve<{
+              ensureSystemCollections?: () => Promise<void>;
+            }>(TYPES.ICollectionManager);
+            if (collectionService?.ensureSystemCollections) {
+              await collectionService.ensureSystemCollections();
             }
-          );
-        } catch {
-          // Silently fail - system collections init is non-critical
-        }
+          })
+          .catch((error) => {
+            console.warn("⚠️ [authState] System collections init failed:", error);
+          });
 
         // Initialize subscription listener for real-time role sync
         void initializeSubscriptionListener(user);
@@ -395,15 +386,13 @@ export function initializeAuthListener() {
 
       // Revalidate current module after auth state changes
       if (typeof window !== "undefined") {
-        try {
-          void import("../../application/state/ui/module-state").then(
-            (moduleState) => {
-              void moduleState.revalidateCurrentModule();
-            }
-          );
-        } catch {
-          // Ignore - module state may not be available yet
-        }
+        import("../../application/state/ui/module-state")
+          .then(async (moduleState) => {
+            await moduleState.revalidateCurrentModule();
+          })
+          .catch(() => {
+            // Ignore - module state may not be available yet
+          });
       }
     },
     (_error) => {

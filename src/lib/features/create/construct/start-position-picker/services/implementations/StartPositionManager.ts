@@ -138,12 +138,12 @@ export class StartPositionManager implements IStartPositionManager {
       });
 
       // Create proper pictograph data using factory function (like the original working implementation)
+      // Note: gridMode is stored in the motion data, not the pictograph itself
       return createPictographData({
         id: `start-${pos.position}`, // Use the position enum as the unique identifier
         letter: pos.letter,
         startPosition: pos.position,
         endPosition: pos.position,
-        gridMode, // Also pass gridMode to the pictograph
         motions: {
           [MotionColor.BLUE]: blueMotion,
           [MotionColor.RED]: redMotion,

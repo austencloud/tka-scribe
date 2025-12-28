@@ -24,6 +24,7 @@ import {
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 // Note: Message notifications removed - messages and notifications share same inbox panel
 import type {
   Message,
@@ -91,89 +92,95 @@ export class Messenger implements IMessenger {
    * Send a new message in a conversation
    */
   async sendMessage(input: CreateMessageInput): Promise<Message> {
-    const firestore = await getFirestoreInstance();
-    const effectiveUser = this.getEffectiveUserInfo();
+    try {
+      const firestore = await getFirestoreInstance();
+      const effectiveUser = this.getEffectiveUserInfo();
 
-    const { conversationId, content, attachments } = input;
+      const { conversationId, content, attachments } = input;
 
-    // Validate conversation exists and user is a participant
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    const conversationSnap = await getDoc(conversationRef);
+      // Validate conversation exists and user is a participant
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      const conversationSnap = await getDoc(conversationRef);
 
-    if (!conversationSnap.exists()) {
-      throw new Error("Conversation not found");
+      if (!conversationSnap.exists()) {
+        throw new Error("Conversation not found");
+      }
+
+      const conversationData = conversationSnap.data();
+      const participants = conversationData["participants"] as string[];
+
+      if (!participants.includes(effectiveUser.uid)) {
+        throw new Error("User is not a participant in this conversation");
+      }
+
+      // Create the message
+      const messagesRef = collection(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId,
+        MESSAGES_SUBCOLLECTION
+      );
+
+      const messageData = {
+        senderId: effectiveUser.uid,
+        senderName: effectiveUser.displayName,
+        senderAvatar: effectiveUser.photoURL,
+        content,
+        createdAt: serverTimestamp(),
+        readBy: [effectiveUser.uid], // Sender has read their own message
+        attachments: attachments || null,
+        isDeleted: false,
+      };
+
+      const docRef = await addDoc(messagesRef, messageData);
+
+      // Update conversation with last message and increment unread count for other participant
+      const otherUserId = participants.find((p) => p !== effectiveUser.uid);
+      const lastMessage: MessagePreview = {
+        content: content.substring(0, 100),
+        senderId: effectiveUser.uid,
+        senderName: effectiveUser.displayName,
+        createdAt: new Date(),
+        hasAttachment: !!(attachments && attachments.length > 0),
+      };
+
+      const batch = writeBatch(firestore);
+
+      batch.update(conversationRef, {
+        lastMessage,
+        updatedAt: serverTimestamp(),
+        ...(otherUserId && {
+          [`unreadCount.${otherUserId}`]:
+            ((conversationData["unreadCount"] as Record<string, number>)?.[
+              otherUserId
+            ] || 0) + 1,
+        }),
+      });
+
+      await batch.commit();
+
+      // Note: No in-app notification created - messages tab shows unread badge instead
+
+      return {
+        id: docRef.id,
+        conversationId,
+        senderId: effectiveUser.uid,
+        senderName: effectiveUser.displayName,
+        senderAvatar: effectiveUser.photoURL || undefined,
+        content,
+        createdAt: new Date(),
+        readBy: [effectiveUser.uid],
+        attachments,
+      };
+    } catch (error) {
+      console.error("[Messenger] Failed to send message:", error);
+      toast.error("Failed to send message. Please try again.");
+      throw error;
     }
-
-    const conversationData = conversationSnap.data();
-    const participants = conversationData["participants"] as string[];
-
-    if (!participants.includes(effectiveUser.uid)) {
-      throw new Error("User is not a participant in this conversation");
-    }
-
-    // Create the message
-    const messagesRef = collection(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId,
-      MESSAGES_SUBCOLLECTION
-    );
-
-    const messageData = {
-      senderId: effectiveUser.uid,
-      senderName: effectiveUser.displayName,
-      senderAvatar: effectiveUser.photoURL,
-      content,
-      createdAt: serverTimestamp(),
-      readBy: [effectiveUser.uid], // Sender has read their own message
-      attachments: attachments || null,
-      isDeleted: false,
-    };
-
-    const docRef = await addDoc(messagesRef, messageData);
-
-    // Update conversation with last message and increment unread count for other participant
-    const otherUserId = participants.find((p) => p !== effectiveUser.uid);
-    const lastMessage: MessagePreview = {
-      content: content.substring(0, 100),
-      senderId: effectiveUser.uid,
-      senderName: effectiveUser.displayName,
-      createdAt: new Date(),
-      hasAttachment: !!(attachments && attachments.length > 0),
-    };
-
-    const batch = writeBatch(firestore);
-
-    batch.update(conversationRef, {
-      lastMessage,
-      updatedAt: serverTimestamp(),
-      ...(otherUserId && {
-        [`unreadCount.${otherUserId}`]:
-          ((conversationData["unreadCount"] as Record<string, number>)?.[
-            otherUserId
-          ] || 0) + 1,
-      }),
-    });
-
-    await batch.commit();
-
-    // Note: No in-app notification created - messages tab shows unread badge instead
-
-    return {
-      id: docRef.id,
-      conversationId,
-      senderId: effectiveUser.uid,
-      senderName: effectiveUser.displayName,
-      senderAvatar: effectiveUser.photoURL || undefined,
-      content,
-      createdAt: new Date(),
-      readBy: [effectiveUser.uid],
-      attachments,
-    };
   }
 
   /**
@@ -193,46 +200,52 @@ export class Messenger implements IMessenger {
     conversationId: string,
     options?: MessageFetchOptions
   ): Promise<Message[]> {
-    const firestore = await getFirestoreInstance();
-    const maxCount = options?.limit ?? 50;
+    try {
+      const firestore = await getFirestoreInstance();
+      const maxCount = options?.limit ?? 50;
 
-    const messagesRef = collection(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId,
-      MESSAGES_SUBCOLLECTION
-    );
-
-    let q = query(messagesRef, orderBy("createdAt", "desc"), limit(maxCount));
-
-    // Handle cursor-based pagination
-    if (options?.beforeId) {
-      const beforeDoc = await getDoc(
-        doc(
-          firestore,
-          CONVERSATIONS_COLLECTION,
-          conversationId,
-          MESSAGES_SUBCOLLECTION,
-          options.beforeId
-        )
+      const messagesRef = collection(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId,
+        MESSAGES_SUBCOLLECTION
       );
-      if (beforeDoc.exists()) {
-        q = query(
-          messagesRef,
-          orderBy("createdAt", "desc"),
-          startAfter(beforeDoc),
-          limit(maxCount)
+
+      let q = query(messagesRef, orderBy("createdAt", "desc"), limit(maxCount));
+
+      // Handle cursor-based pagination
+      if (options?.beforeId) {
+        const beforeDoc = await getDoc(
+          doc(
+            firestore,
+            CONVERSATIONS_COLLECTION,
+            conversationId,
+            MESSAGES_SUBCOLLECTION,
+            options.beforeId
+          )
         );
+        if (beforeDoc.exists()) {
+          q = query(
+            messagesRef,
+            orderBy("createdAt", "desc"),
+            startAfter(beforeDoc),
+            limit(maxCount)
+          );
+        }
       }
+
+      const snapshot = await getDocs(q);
+
+      return snapshot.docs
+        .map((docSnap) =>
+          this.mapDocToMessage(docSnap.id, conversationId, docSnap.data())
+        )
+        .reverse(); // Return in chronological order
+    } catch (error) {
+      console.error("[Messenger] Failed to get messages:", error);
+      toast.error("Failed to load messages.");
+      return [];
     }
-
-    const snapshot = await getDocs(q);
-
-    return snapshot.docs
-      .map((docSnap) =>
-        this.mapDocToMessage(docSnap.id, conversationId, docSnap.data())
-      )
-      .reverse(); // Return in chronological order
   }
 
   /**
@@ -249,37 +262,40 @@ export class Messenger implements IMessenger {
     }
 
     // Use async IIFE to get firestore instance
-    void (async () => {
-      const firestore = await getFirestoreInstance();
+    (async () => {
+      try {
+        const firestore = await getFirestoreInstance();
 
-      const messagesRef = collection(
-        firestore,
-        CONVERSATIONS_COLLECTION,
-        conversationId,
-        MESSAGES_SUBCOLLECTION
-      );
+        const messagesRef = collection(
+          firestore,
+          CONVERSATIONS_COLLECTION,
+          conversationId,
+          MESSAGES_SUBCOLLECTION
+        );
 
-      const q = query(messagesRef, orderBy("createdAt", "desc"), limit(100));
+        const q = query(messagesRef, orderBy("createdAt", "desc"), limit(100));
 
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const messages = snapshot.docs
-            .map((docSnap) =>
-              this.mapDocToMessage(docSnap.id, conversationId, docSnap.data())
-            )
-            .reverse(); // Chronological order
-          callback(messages);
-        },
-        (error) => {
-          console.error(
-            "[Messenger] Error subscribing to messages:",
-            error
-          );
-        }
-      );
+        const unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const messages = snapshot.docs
+              .map((docSnap) =>
+                this.mapDocToMessage(docSnap.id, conversationId, docSnap.data())
+              )
+              .reverse(); // Chronological order
+            callback(messages);
+          },
+          (error) => {
+            console.error("[Messenger] Messages subscription error:", error);
+            toast.error("Lost connection to messages. Please refresh.");
+          }
+        );
 
-      this.messageSubscriptions.set(conversationId, unsubscribe);
+        this.messageSubscriptions.set(conversationId, unsubscribe);
+      } catch (error) {
+        console.error("[Messenger] Failed to initialize messages subscription:", error);
+        toast.error("Failed to connect to messages.");
+      }
     })();
 
     // Return a cleanup function that will unsubscribe when ready
@@ -296,41 +312,46 @@ export class Messenger implements IMessenger {
    * Mark all messages in a conversation as read for the current user
    */
   async markAsRead(conversationId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
 
-    // Reset unread count for current user in conversation
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    await updateDoc(conversationRef, {
-      [`unreadCount.${currentUserId}`]: 0,
-    });
+      // Reset unread count for current user in conversation
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      await updateDoc(conversationRef, {
+        [`unreadCount.${currentUserId}`]: 0,
+      });
 
-    // Mark all unread messages as read
-    const messagesRef = collection(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId,
-      MESSAGES_SUBCOLLECTION
-    );
+      // Mark all unread messages as read
+      const messagesRef = collection(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId,
+        MESSAGES_SUBCOLLECTION
+      );
 
-    const snapshot = await getDocs(messagesRef);
-    const batch = writeBatch(firestore);
+      const snapshot = await getDocs(messagesRef);
+      const batch = writeBatch(firestore);
 
-    snapshot.docs.forEach((docSnap) => {
-      const data = docSnap.data();
-      const readBy = (data["readBy"] as string[]) || [];
-      if (!readBy.includes(currentUserId)) {
-        batch.update(docSnap.ref, {
-          readBy: [...readBy, currentUserId],
-        });
-      }
-    });
+      snapshot.docs.forEach((docSnap) => {
+        const data = docSnap.data();
+        const readBy = (data["readBy"] as string[]) || [];
+        if (!readBy.includes(currentUserId)) {
+          batch.update(docSnap.ref, {
+            readBy: [...readBy, currentUserId],
+          });
+        }
+      });
 
-    await batch.commit();
+      await batch.commit();
+    } catch (error) {
+      console.error("[Messenger] Failed to mark messages as read:", error);
+      // Silent failure - don't interrupt user experience for read status
+    }
   }
 
   /**
@@ -340,29 +361,34 @@ export class Messenger implements IMessenger {
     conversationId: string,
     messageId: string
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
 
-    const messageRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId,
-      MESSAGES_SUBCOLLECTION,
-      messageId
-    );
+      const messageRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId,
+        MESSAGES_SUBCOLLECTION,
+        messageId
+      );
 
-    const snapshot = await getDoc(messageRef);
-    if (!snapshot.exists()) {
-      return;
-    }
+      const snapshot = await getDoc(messageRef);
+      if (!snapshot.exists()) {
+        return;
+      }
 
-    const data = snapshot.data();
-    const readBy = (data["readBy"] as string[]) || [];
+      const data = snapshot.data();
+      const readBy = (data["readBy"] as string[]) || [];
 
-    if (!readBy.includes(currentUserId)) {
-      await updateDoc(messageRef, {
-        readBy: [...readBy, currentUserId],
-      });
+      if (!readBy.includes(currentUserId)) {
+        await updateDoc(messageRef, {
+          readBy: [...readBy, currentUserId],
+        });
+      }
+    } catch (error) {
+      console.error("[Messenger] Failed to mark message as read:", error);
+      // Silent failure - don't interrupt user experience for read status
     }
   }
 
@@ -373,31 +399,37 @@ export class Messenger implements IMessenger {
     conversationId: string,
     messageId: string
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
 
-    const messageRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId,
-      MESSAGES_SUBCOLLECTION,
-      messageId
-    );
+      const messageRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId,
+        MESSAGES_SUBCOLLECTION,
+        messageId
+      );
 
-    const snapshot = await getDoc(messageRef);
-    if (!snapshot.exists()) {
-      throw new Error("Message not found");
+      const snapshot = await getDoc(messageRef);
+      if (!snapshot.exists()) {
+        throw new Error("Message not found");
+      }
+
+      const data = snapshot.data();
+      if (data["senderId"] !== currentUserId) {
+        throw new Error("Only the sender can delete a message");
+      }
+
+      await updateDoc(messageRef, {
+        isDeleted: true,
+        content: "[Message deleted]",
+      });
+    } catch (error) {
+      console.error("[Messenger] Failed to delete message:", error);
+      toast.error("Failed to delete message.");
+      throw error;
     }
-
-    const data = snapshot.data();
-    if (data["senderId"] !== currentUserId) {
-      throw new Error("Only the sender can delete a message");
-    }
-
-    await updateDoc(messageRef, {
-      isDeleted: true,
-      content: "[Message deleted]",
-    });
   }
 
   /**
@@ -408,37 +440,43 @@ export class Messenger implements IMessenger {
     messageId: string,
     newContent: string
   ): Promise<Message> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
 
-    const messageRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId,
-      MESSAGES_SUBCOLLECTION,
-      messageId
-    );
+      const messageRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId,
+        MESSAGES_SUBCOLLECTION,
+        messageId
+      );
 
-    const snapshot = await getDoc(messageRef);
-    if (!snapshot.exists()) {
-      throw new Error("Message not found");
+      const snapshot = await getDoc(messageRef);
+      if (!snapshot.exists()) {
+        throw new Error("Message not found");
+      }
+
+      const data = snapshot.data();
+      if (data["senderId"] !== currentUserId) {
+        throw new Error("Only the sender can edit a message");
+      }
+
+      await updateDoc(messageRef, {
+        content: newContent,
+        editedAt: serverTimestamp(),
+      });
+
+      return this.mapDocToMessage(messageId, conversationId, {
+        ...data,
+        content: newContent,
+        editedAt: Timestamp.now(),
+      });
+    } catch (error) {
+      console.error("[Messenger] Failed to edit message:", error);
+      toast.error("Failed to edit message.");
+      throw error;
     }
-
-    const data = snapshot.data();
-    if (data["senderId"] !== currentUserId) {
-      throw new Error("Only the sender can edit a message");
-    }
-
-    await updateDoc(messageRef, {
-      content: newContent,
-      editedAt: serverTimestamp(),
-    });
-
-    return this.mapDocToMessage(messageId, conversationId, {
-      ...data,
-      content: newContent,
-      editedAt: Timestamp.now(),
-    });
   }
 
   /**

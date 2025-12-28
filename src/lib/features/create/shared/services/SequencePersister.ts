@@ -20,6 +20,7 @@ import {
   type Timestamp,
 } from "firebase/firestore";
 import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
 /**
@@ -105,7 +106,13 @@ export class SequencePersister {
       }).filter(([_, value]) => value !== undefined)
     );
 
-    await setDoc(sequenceRef, sequenceToSave);
+    try {
+      await setDoc(sequenceRef, sequenceToSave);
+    } catch (error) {
+      console.error("[SequencePersister] Failed to save sequence:", error);
+      toast.error("Failed to save sequence. Please try again.");
+      throw error;
+    }
 
     return sequenceId;
   }
@@ -151,7 +158,13 @@ export class SequencePersister {
       updates.beats = sequenceData.beats;
     }
 
-    await setDoc(sequenceRef, updates, { merge: true });
+    try {
+      await setDoc(sequenceRef, updates, { merge: true });
+    } catch (error) {
+      console.error("[SequencePersister] Failed to update sequence:", error);
+      toast.error("Failed to update sequence. Please try again.");
+      throw error;
+    }
   }
 
   /**
@@ -161,16 +174,22 @@ export class SequencePersister {
     const user = auth.currentUser;
     if (!user) return null;
 
-    const firestore = await getFirestoreInstance();
-    const sequenceRef = doc(
-      firestore,
-      `users/${user.uid}/sequences/${sequenceId}`
-    );
-    const snapshot = await getDoc(sequenceRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const sequenceRef = doc(
+        firestore,
+        `users/${user.uid}/sequences/${sequenceId}`
+      );
+      const snapshot = await getDoc(sequenceRef);
 
-    if (!snapshot.exists()) return null;
+      if (!snapshot.exists()) return null;
 
-    return snapshot.data() as SavedSequence;
+      return snapshot.data() as SavedSequence;
+    } catch (error) {
+      console.error("[SequencePersister] Failed to load sequence:", error);
+      toast.error("Failed to load sequence.");
+      return null;
+    }
   }
 
   /**
@@ -180,16 +199,22 @@ export class SequencePersister {
     const user = auth.currentUser;
     if (!user) return [];
 
-    const firestore = await getFirestoreInstance();
-    const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
-    const q = query(
-      sequencesRef,
-      orderBy("updatedAt", "desc"),
-      limit(limitCount)
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
+      const q = query(
+        sequencesRef,
+        orderBy("updatedAt", "desc"),
+        limit(limitCount)
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => doc.data() as SavedSequence);
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => doc.data() as SavedSequence);
+    } catch (error) {
+      console.error("[SequencePersister] Failed to get recent sequences:", error);
+      toast.error("Failed to load recent sequences.");
+      return [];
+    }
   }
 
   /**
@@ -199,11 +224,17 @@ export class SequencePersister {
     const user = auth.currentUser;
     if (!user) return [];
 
-    const firestore = await getFirestoreInstance();
-    const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
-    const snapshot = await getDocs(sequencesRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const sequencesRef = collection(firestore, `users/${user.uid}/sequences`);
+      const snapshot = await getDocs(sequencesRef);
 
-    return snapshot.docs.map((doc) => doc.data() as SavedSequence);
+      return snapshot.docs.map((doc) => doc.data() as SavedSequence);
+    } catch (error) {
+      console.error("[SequencePersister] Failed to get all sequences:", error);
+      toast.error("Failed to load sequences.");
+      return [];
+    }
   }
 
   /**
@@ -213,13 +244,18 @@ export class SequencePersister {
     const user = auth.currentUser;
     if (!user) return false;
 
-    const firestore = await getFirestoreInstance();
-    const sequenceRef = doc(
-      firestore,
-      `users/${user.uid}/sequences/${sequenceId}`
-    );
-    const snapshot = await getDoc(sequenceRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const sequenceRef = doc(
+        firestore,
+        `users/${user.uid}/sequences/${sequenceId}`
+      );
+      const snapshot = await getDoc(sequenceRef);
 
-    return snapshot.exists();
+      return snapshot.exists();
+    } catch (error) {
+      console.error("[SequencePersister] Failed to check if sequence saved:", error);
+      return false;
+    }
   }
 }

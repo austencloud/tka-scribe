@@ -23,6 +23,7 @@ import {
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
 import { authState } from "$lib/shared/auth/state/authState.svelte";
 import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type {
   Conversation,
   ConversationPreview,
@@ -128,88 +129,100 @@ export class ConversationManager implements IConversationManager {
   async getOrCreateConversation(
     otherUserId: string
   ): Promise<GetOrCreateConversationResult> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const conversationId = this.generateConversationId(
-      currentUserId,
-      otherUserId
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const conversationId = this.generateConversationId(
+        currentUserId,
+        otherUserId
+      );
 
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    const existingDoc = await getDoc(conversationRef);
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      const existingDoc = await getDoc(conversationRef);
 
-    if (existingDoc.exists()) {
-      return {
-        conversation: this.mapDocToConversation(
-          existingDoc.id,
-          existingDoc.data()
-        ),
-        isNew: false,
+      if (existingDoc.exists()) {
+        return {
+          conversation: this.mapDocToConversation(
+            existingDoc.id,
+            existingDoc.data()
+          ),
+          isNew: false,
+        };
+      }
+
+      // Create new conversation
+      const effectiveUser = this.getEffectiveUserInfo();
+      const otherUserInfo = await this.fetchUserInfo(otherUserId);
+      const now = new Date();
+      const participants = [currentUserId, otherUserId].sort();
+
+      const participantInfo: Record<string, ParticipantInfo> = {
+        [currentUserId]: {
+          userId: currentUserId,
+          displayName: effectiveUser.displayName,
+          ...(effectiveUser.photoURL && { avatar: effectiveUser.photoURL }),
+          joinedAt: now,
+        },
+        [otherUserId]: {
+          userId: otherUserId,
+          displayName: otherUserInfo.displayName,
+          ...(otherUserInfo.photoURL && { avatar: otherUserInfo.photoURL }),
+          joinedAt: now,
+        },
       };
+
+      const newConversation: Omit<Conversation, "id"> = {
+        participants,
+        participantInfo,
+        unreadCount: { [currentUserId]: 0, [otherUserId]: 0 },
+        createdAt: now,
+        updatedAt: now,
+      };
+
+      await setDoc(conversationRef, {
+        ...newConversation,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+
+      return {
+        conversation: { id: conversationId, ...newConversation },
+        isNew: true,
+      };
+    } catch (error) {
+      console.error("[ConversationManager] Failed to get or create conversation:", error);
+      toast.error("Failed to start conversation.");
+      throw error;
     }
-
-    // Create new conversation
-    const effectiveUser = this.getEffectiveUserInfo();
-    const otherUserInfo = await this.fetchUserInfo(otherUserId);
-    const now = new Date();
-    const participants = [currentUserId, otherUserId].sort();
-
-    const participantInfo: Record<string, ParticipantInfo> = {
-      [currentUserId]: {
-        userId: currentUserId,
-        displayName: effectiveUser.displayName,
-        ...(effectiveUser.photoURL && { avatar: effectiveUser.photoURL }),
-        joinedAt: now,
-      },
-      [otherUserId]: {
-        userId: otherUserId,
-        displayName: otherUserInfo.displayName,
-        ...(otherUserInfo.photoURL && { avatar: otherUserInfo.photoURL }),
-        joinedAt: now,
-      },
-    };
-
-    const newConversation: Omit<Conversation, "id"> = {
-      participants,
-      participantInfo,
-      unreadCount: { [currentUserId]: 0, [otherUserId]: 0 },
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    await setDoc(conversationRef, {
-      ...newConversation,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-
-    return {
-      conversation: { id: conversationId, ...newConversation },
-      isNew: true,
-    };
   }
 
   /**
    * Get a specific conversation by ID
    */
   async getConversation(conversationId: string): Promise<Conversation | null> {
-    const firestore = await getFirestoreInstance();
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    const snapshot = await getDoc(conversationRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      const snapshot = await getDoc(conversationRef);
 
-    if (!snapshot.exists()) {
+      if (!snapshot.exists()) {
+        return null;
+      }
+
+      return this.mapDocToConversation(snapshot.id, snapshot.data());
+    } catch (error) {
+      console.error("[ConversationManager] Failed to get conversation:", error);
+      toast.error("Failed to load conversation.");
       return null;
     }
-
-    return this.mapDocToConversation(snapshot.id, snapshot.data());
   }
 
   /**
@@ -218,24 +231,30 @@ export class ConversationManager implements IConversationManager {
   async getConversations(
     options?: ConversationFetchOptions
   ): Promise<ConversationPreview[]> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const maxCount = options?.limit ?? 50;
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const maxCount = options?.limit ?? 50;
 
-    const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-    const q = query(
-      conversationsRef,
-      where("participants", "array-contains", currentUserId),
-      orderBy("updatedAt", "desc"),
-      limit(maxCount)
-    );
+      const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+      const q = query(
+        conversationsRef,
+        where("participants", "array-contains", currentUserId),
+        orderBy("updatedAt", "desc"),
+        limit(maxCount)
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs
-      .map((docSnap) =>
-        this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId)
-      )
-      .filter((preview): preview is ConversationPreview => preview !== null);
+      const snapshot = await getDocs(q);
+      return snapshot.docs
+        .map((docSnap) =>
+          this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId)
+        )
+        .filter((preview): preview is ConversationPreview => preview !== null);
+    } catch (error) {
+      console.error("[ConversationManager] Failed to get conversations:", error);
+      toast.error("Failed to load conversations.");
+      return [];
+    }
   }
 
   /**
@@ -252,26 +271,38 @@ export class ConversationManager implements IConversationManager {
     const currentUserId = this.getCurrentUserId();
 
     // Use async IIFE to get firestore instance
-    void (async () => {
-      const firestore = await getFirestoreInstance();
-      const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-      const q = query(
-        conversationsRef,
-        where("participants", "array-contains", currentUserId),
-        orderBy("updatedAt", "desc"),
-        limit(50)
-      );
+    (async () => {
+      try {
+        const firestore = await getFirestoreInstance();
+        const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+        const q = query(
+          conversationsRef,
+          where("participants", "array-contains", currentUserId),
+          orderBy("updatedAt", "desc"),
+          limit(50)
+        );
 
-      this.conversationsUnsubscribe = onSnapshot(q, (snapshot) => {
-        const conversations = snapshot.docs
-          .map((docSnap) =>
-            this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId)
-          )
-          .filter(
-            (preview): preview is ConversationPreview => preview !== null
-          );
-        callback(conversations);
-      });
+        this.conversationsUnsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const conversations = snapshot.docs
+              .map((docSnap) =>
+                this.mapDocToPreview(docSnap.id, docSnap.data(), currentUserId)
+              )
+              .filter(
+                (preview): preview is ConversationPreview => preview !== null
+              );
+            callback(conversations);
+          },
+          (error) => {
+            console.error("[ConversationManager] Conversations subscription error:", error);
+            toast.error("Lost connection to messages. Please refresh.");
+          }
+        );
+      } catch (error) {
+        console.error("[ConversationManager] Failed to initialize conversations subscription:", error);
+        toast.error("Failed to connect to messages.");
+      }
     })();
 
     return () => {
@@ -286,28 +317,33 @@ export class ConversationManager implements IConversationManager {
    * Get total unread message count across all conversations
    */
   async getTotalUnreadCount(): Promise<number> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-    const q = query(
-      conversationsRef,
-      where("participants", "array-contains", currentUserId)
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+      const q = query(
+        conversationsRef,
+        where("participants", "array-contains", currentUserId)
+      );
 
-    const snapshot = await getDocs(q);
-    let total = 0;
+      const snapshot = await getDocs(q);
+      let total = 0;
 
-    snapshot.docs.forEach((docSnap) => {
-      const data = docSnap.data();
-      const unreadCount = data["unreadCount"] as
-        | Record<string, number>
-        | undefined;
-      if (unreadCount?.[currentUserId]) {
-        total += unreadCount[currentUserId];
-      }
-    });
+      snapshot.docs.forEach((docSnap) => {
+        const data = docSnap.data();
+        const unreadCount = data["unreadCount"] as
+          | Record<string, number>
+          | undefined;
+        if (unreadCount?.[currentUserId]) {
+          total += unreadCount[currentUserId];
+        }
+      });
 
-    return total;
+      return total;
+    } catch (error) {
+      console.error("[ConversationManager] Failed to get unread count:", error);
+      return 0;
+    }
   }
 
   /**
@@ -322,27 +358,37 @@ export class ConversationManager implements IConversationManager {
     const currentUserId = this.getCurrentUserId();
 
     // Use async IIFE to get firestore instance
-    void (async () => {
-      const firestore = await getFirestoreInstance();
-      const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-      const q = query(
-        conversationsRef,
-        where("participants", "array-contains", currentUserId)
-      );
+    (async () => {
+      try {
+        const firestore = await getFirestoreInstance();
+        const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+        const q = query(
+          conversationsRef,
+          where("participants", "array-contains", currentUserId)
+        );
 
-      this.unreadCountUnsubscribe = onSnapshot(q, (snapshot) => {
-        let total = 0;
-        snapshot.docs.forEach((docSnap) => {
-          const data = docSnap.data();
-          const unreadCount = data["unreadCount"] as
-            | Record<string, number>
-            | undefined;
-          if (unreadCount?.[currentUserId]) {
-            total += unreadCount[currentUserId];
+        this.unreadCountUnsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            let total = 0;
+            snapshot.docs.forEach((docSnap) => {
+              const data = docSnap.data();
+              const unreadCount = data["unreadCount"] as
+                | Record<string, number>
+                | undefined;
+              if (unreadCount?.[currentUserId]) {
+                total += unreadCount[currentUserId];
+              }
+            });
+            callback(total);
+          },
+          (error) => {
+            console.error("[ConversationManager] Unread count subscription error:", error);
           }
-        });
-        callback(total);
-      });
+        );
+      } catch (error) {
+        console.error("[ConversationManager] Failed to initialize unread count subscription:", error);
+      }
     })();
 
     return () => {
@@ -357,80 +403,103 @@ export class ConversationManager implements IConversationManager {
    * Check if a conversation exists between current user and another user
    */
   async conversationExists(otherUserId: string): Promise<string | null> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const conversationId = this.generateConversationId(
-      currentUserId,
-      otherUserId
-    );
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    const snapshot = await getDoc(conversationRef);
-    return snapshot.exists() ? conversationId : null;
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const conversationId = this.generateConversationId(
+        currentUserId,
+        otherUserId
+      );
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      const snapshot = await getDoc(conversationRef);
+      return snapshot.exists() ? conversationId : null;
+    } catch (error) {
+      console.error("[ConversationManager] Failed to check conversation exists:", error);
+      return null;
+    }
   }
 
   /**
    * Archive a conversation (future implementation)
    */
   async archiveConversation(conversationId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    await updateDoc(conversationRef, {
-      [`archived.${currentUserId}`]: true,
-    });
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      await updateDoc(conversationRef, {
+        [`archived.${currentUserId}`]: true,
+      });
+    } catch (error) {
+      console.error("[ConversationManager] Failed to archive conversation:", error);
+      toast.error("Failed to archive conversation.");
+      throw error;
+    }
   }
 
   /**
    * Unarchive a conversation (future implementation)
    */
   async unarchiveConversation(conversationId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const conversationRef = doc(
-      firestore,
-      CONVERSATIONS_COLLECTION,
-      conversationId
-    );
-    await updateDoc(conversationRef, {
-      [`archived.${currentUserId}`]: false,
-    });
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const conversationRef = doc(
+        firestore,
+        CONVERSATIONS_COLLECTION,
+        conversationId
+      );
+      await updateDoc(conversationRef, {
+        [`archived.${currentUserId}`]: false,
+      });
+    } catch (error) {
+      console.error("[ConversationManager] Failed to unarchive conversation:", error);
+      toast.error("Failed to unarchive conversation.");
+      throw error;
+    }
   }
 
   /**
    * Mark all conversations as read for current user
    */
   async markAllAsRead(): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getCurrentUserId();
-    const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
-    const q = query(
-      conversationsRef,
-      where("participants", "array-contains", currentUserId)
-    );
-
-    const snapshot = await getDocs(q);
-    const updates = snapshot.docs
-      .filter((docSnap) => {
-        const data = docSnap.data();
-        const unreadCount =
-          (data["unreadCount"] as Record<string, number>) || {};
-        return (unreadCount[currentUserId] || 0) > 0;
-      })
-      .map((docSnap) =>
-        updateDoc(docSnap.ref, {
-          [`unreadCount.${currentUserId}`]: 0,
-        })
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getCurrentUserId();
+      const conversationsRef = collection(firestore, CONVERSATIONS_COLLECTION);
+      const q = query(
+        conversationsRef,
+        where("participants", "array-contains", currentUserId)
       );
 
-    await Promise.all(updates);
+      const snapshot = await getDocs(q);
+      const updates = snapshot.docs
+        .filter((docSnap) => {
+          const data = docSnap.data();
+          const unreadCount =
+            (data["unreadCount"] as Record<string, number>) || {};
+          return (unreadCount[currentUserId] || 0) > 0;
+        })
+        .map((docSnap) =>
+          updateDoc(docSnap.ref, {
+            [`unreadCount.${currentUserId}`]: 0,
+          })
+        );
+
+      await Promise.all(updates);
+    } catch (error) {
+      console.error("[ConversationManager] Failed to mark all as read:", error);
+      toast.error("Failed to mark messages as read.");
+      throw error;
+    }
   }
 
   /**

@@ -4,12 +4,21 @@ import type { createExploreState } from "../../state/discover-state-factory.svel
 type ExploreState = ReturnType<typeof createExploreState>;
 
 /**
+ * Data for delete confirmation dialog
+ */
+export interface DeleteConfirmationData {
+  sequence: SequenceData;
+  relatedSequences: SequenceData[];
+  totalCount: number;
+}
+
+/**
  * Parameters required to initialize the event handler service
  */
 export interface ExploreEventHandlerParams {
   galleryState: ExploreState;
   setSelectedSequence: (sequence: SequenceData | null) => void;
-  setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
+  setDeleteConfirmationData: (data: DeleteConfirmationData | null) => void;
   setError: (error: string | null) => void;
 }
 
@@ -70,7 +79,7 @@ export interface IDiscoverEventHandler {
    * Handle delete confirmation
    */
   handleDeleteConfirm(
-    deleteConfirmationData: Record<string, unknown> | null
+    deleteConfirmationData: DeleteConfirmationData | null
   ): Promise<void>;
 
   /**

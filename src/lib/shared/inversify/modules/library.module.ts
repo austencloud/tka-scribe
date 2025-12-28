@@ -11,6 +11,7 @@ import { TYPES } from "../types";
 import type { ILibraryRepository } from "../../../features/library/services/contracts/ILibraryRepository";
 import type { ILibrarySaveService } from "../../../features/library/services/contracts/ILibrarySaveService";
 import type { ICollectionManager } from "../../../features/library/services/contracts/ICollectionManager";
+import type { IPublicIndexSyncer } from "../../../features/library/services/contracts/IPublicIndexSyncer";
 // import type { ILibraryActManager } from "../../../features/library/services/contracts/ILibraryActManager";
 // import type { IForkService } from "../../../features/library/services/contracts/IForkService";
 // import type { ILibraryMigrationService } from "../../../features/library/services/contracts/ILibraryMigrationService";
@@ -19,6 +20,7 @@ import type { ICollectionManager } from "../../../features/library/services/cont
 import { LibraryRepository } from "../../../features/library/services/implementations/LibraryRepository";
 import { LibrarySaveService } from "../../../features/library/services/implementations/LibrarySaveService";
 import { CollectionManager } from "../../../features/library/services/implementations/CollectionManager";
+import { PublicIndexSyncer } from "../../../features/library/services/implementations/PublicIndexSyncer";
 // import { LibraryActManager } from "../../../features/library/services/implementations/LibraryActManager";
 // import { ForkService } from "../../../features/library/services/implementations/ForkService";
 // import { LibraryMigrationService } from "../../../features/library/services/implementations/LibraryMigrationService";
@@ -51,6 +53,12 @@ export const libraryModule = new ContainerModule(
     options
       .bind<ICollectionManager>(TYPES.ICollectionManager)
       .to(CollectionManager)
+      .inSingletonScope();
+
+    // Public Index Syncer (manages publicSequences collection)
+    options
+      .bind<IPublicIndexSyncer>(TYPES.IPublicIndexSyncer)
+      .to(PublicIndexSyncer)
       .inSingletonScope();
 
     // Act Service (TODO: Implement)

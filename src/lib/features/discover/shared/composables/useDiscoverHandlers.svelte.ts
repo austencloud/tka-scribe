@@ -2,6 +2,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { IDiscoverThumbnailProvider } from "../../gallery/display/services/contracts/IDiscoverThumbnailProvider";
 import type { ISheetRouter } from "$lib/shared/navigation/services/contracts/ISheetRouter";
 import type { IDiscoverLoader } from "../../gallery/display/services/contracts/IDiscoverLoader";
+import type { DeleteConfirmationData } from "../services/contracts/IDiscoverEventHandler";
 import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
 import { galleryPanelManager } from "../state/gallery-panel-state.svelte";
 import type { createExploreState } from "../state/discover-state-factory.svelte";
@@ -14,7 +15,7 @@ type ExploreState = ReturnType<typeof createExploreState>;
 interface ExploreHandlersParams {
   galleryState: ExploreState;
   setSelectedSequence: (sequence: SequenceData | null) => void;
-  setDeleteConfirmationData: (data: Record<string, unknown> | null) => void;
+  setDeleteConfirmationData: (data: DeleteConfirmationData | null) => void;
   setError: (error: string | null) => void;
   thumbnailService: IDiscoverThumbnailProvider;
   sheetRouterService?: ISheetRouter | null;
@@ -156,17 +157,13 @@ export function useDiscoverHandlers({
   }
 
   async function handleDeleteConfirm(
-    deleteConfirmationData: Record<string, unknown> | null
+    deleteConfirmationData: DeleteConfirmationData | null
   ) {
     if (!deleteConfirmationData?.sequence) return;
 
     try {
       // TODO: Implement actual delete logic
-      const sequence = deleteConfirmationData.sequence as Record<
-        string,
-        unknown
-      >;
-      console.log("🗑️ Deleting sequence:", sequence.id);
+      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
       setDeleteConfirmationData(null);
       // Refresh the sequence list
       await galleryState.loadAllSequences();
