@@ -86,6 +86,16 @@
 
     // Note: Sequence restoration tester removed (now integrated into services)
 
+    // 📊 PERFORMANCE: Initialize Web Vitals tracking
+    (async () => {
+      try {
+        const { initWebVitals } = await import("$lib/shared/analytics/web-vitals");
+        await initWebVitals();
+      } catch (error) {
+        console.warn("Web Vitals tracking failed to initialize:", error);
+      }
+    })();
+
     // ⚡ PERFORMANCE: Initialize services in background without blocking render
     // This allows Vite HMR WebSocket to connect immediately
     (async () => {
