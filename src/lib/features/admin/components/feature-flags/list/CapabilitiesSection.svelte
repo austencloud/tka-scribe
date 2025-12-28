@@ -14,7 +14,7 @@
 {#if capabilities.length > 0}
   <div class="capabilities-card">
     <div class="section-header">
-      <i class="fas fa-magic"></i>
+      <i class="fas fa-magic" aria-hidden="true"></i>
       <span>Capabilities</span>
     </div>
     <div class="capabilities-grid">

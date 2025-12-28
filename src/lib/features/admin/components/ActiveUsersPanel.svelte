@@ -142,7 +142,7 @@
         Showing: <strong>{statusFilter}</strong> users ({filteredUsers.length})
       </span>
       <button class="clear-filter" onclick={() => setFilter("all")}>
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
         Show all
       </button>
     </div>
@@ -156,18 +156,18 @@
       </div>
     {:else if error}
       <div class="error">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         <span>{error}</span>
       </div>
     {:else if users.length === 0}
       <div class="empty">
-        <i class="fas fa-users"></i>
+        <i class="fas fa-users" aria-hidden="true"></i>
         <span>No users found</span>
         <p>Users will appear here when they sign in</p>
       </div>
     {:else if filteredUsers.length === 0}
       <div class="empty">
-        <i class="fas fa-filter"></i>
+        <i class="fas fa-filter" aria-hidden="true"></i>
         <span>No {statusFilter} users</span>
         <button class="link-button" onclick={() => setFilter("all")}>
           Show all users

@@ -21,7 +21,7 @@
   aria-label={`Edit ${capability.name} settings`}
   title={capability.description}
 >
-  <i class="fas {style.icon}" style="color: {style.color}"></i>
+  <i class="fas {style.icon}" aria-hidden="true" style="color: {style.color}"></i>
   <span class="capability-name">{capability.name}</span>
   <span
     class="role-badge"
@@ -29,10 +29,10 @@
       capability.minimumRole
     )}20; color: {getRoleColor(capability.minimumRole)}"
   >
-    <i class="fas {getRoleIcon(capability.minimumRole)}"></i>
+    <i class="fas {getRoleIcon(capability.minimumRole)}" aria-hidden="true"></i>
   </span>
   {#if !capability.enabled}
-    <i class="fas fa-ban disabled-icon"></i>
+    <i class="fas fa-ban disabled-icon" aria-hidden="true"></i>
   {/if}
 </button>
 
@@ -85,16 +85,16 @@
     align-items: center;
     padding: 3px var(--space-2026-xs);
     border-radius: var(--radius-2026-xs);
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .role-badge i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .disabled-icon {
     color: var(--semantic-error, #f87171);
-    font-size: 10px;
+    font-size: 12px;
     margin-left: 2px;
   }
 </style>

@@ -32,15 +32,15 @@
 
 <div class="timeline-container">
   <h3 class="timeline-title">
-    <i class="fas fa-stream"></i>
+    <i class="fas fa-stream" aria-hidden="true"></i>
     Upcoming Challenges
   </h3>
   {#if upcomingChallenges.length === 0}
     <div class="empty-timeline">
-      <i class="fas fa-calendar-times"></i>
+      <i class="fas fa-calendar-times" aria-hidden="true"></i>
       <p>No upcoming challenges scheduled</p>
       <button class="add-challenge-btn" onclick={onSwitchToCalendar}>
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         Schedule a Challenge
       </button>
     </div>
@@ -72,7 +72,7 @@
                 {entry.challenge?.difficulty ?? "intermediate"}
               </span>
               <span class="xp-badge">
-                <i class="fas fa-star"></i>
+                <i class="fas fa-star" aria-hidden="true"></i>
                 {entry.challenge?.xpReward ?? 50} XP
               </span>
             </div>
@@ -83,7 +83,7 @@
               entry.challenge && onDeleteChallenge(entry.challenge.id)}
             aria-label="Delete challenge"
           >
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-trash" aria-hidden="true"></i>
           </button>
         </div>
       {/each}
@@ -231,8 +231,8 @@
   }
 
   .timeline-delete {
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;

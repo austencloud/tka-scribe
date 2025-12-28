@@ -37,7 +37,7 @@
 <div class="announcement-list">
   {#if announcements.length === 0}
     <div class="empty-state">
-      <i class="fas fa-bullhorn"></i>
+      <i class="fas fa-bullhorn" aria-hidden="true"></i>
       <p>No announcements yet</p>
       <span>Create your first announcement to get started</span>
     </div>
@@ -55,7 +55,7 @@
               </span>
               {#if announcement.showAsModal}
                 <span class="modal-badge">
-                  <i class="fas fa-window-restore"></i>
+                  <i class="fas fa-window-restore" aria-hidden="true"></i>
                   Modal
                 </span>
               {/if}
@@ -66,14 +66,14 @@
                 onclick={() => onEdit(announcement)}
                 aria-label="Edit announcement"
               >
-                <i class="fas fa-edit"></i>
+                <i class="fas fa-edit" aria-hidden="true"></i>
               </button>
               <button
                 class="action-button delete"
                 onclick={() => onDelete(announcement.id)}
                 aria-label="Delete announcement"
               >
-                <i class="fas fa-trash"></i>
+                <i class="fas fa-trash" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -86,17 +86,17 @@
           <div class="card-footer">
             <div class="footer-info">
               <span class="target-audience">
-                <i class="fas fa-users"></i>
+                <i class="fas fa-users" aria-hidden="true"></i>
                 {announcement.targetAudience}
               </span>
               <span class="created-date">
-                <i class="fas fa-calendar"></i>
+                <i class="fas fa-calendar" aria-hidden="true"></i>
                 {formatDate(announcement.createdAt)}
               </span>
             </div>
             {#if announcement.expiresAt}
               <span class="expires-date">
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-clock" aria-hidden="true"></i>
                 Expires {formatDate(announcement.expiresAt)}
               </span>
             {/if}
@@ -186,7 +186,7 @@
 
   .severity-badge {
     padding: 4px 12px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     color: white;
@@ -208,7 +208,7 @@
       color-mix(in srgb, var(--theme-accent, #6366f1) 30%, transparent);
     border-radius: 6px;
     color: color-mix(in srgb, var(--theme-accent, #6366f1) 120%, white);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
   }
 
@@ -221,8 +221,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
@@ -309,7 +309,7 @@
 
   .footer-info i,
   .expires-date i {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .target-audience {

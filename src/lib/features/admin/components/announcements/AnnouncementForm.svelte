@@ -33,34 +33,36 @@
     );
   });
 
-  // Form state - intentional initial capture from prop, form is locally editable
-  // svelte-ignore state_referenced_locally
-  let title = $state(announcement?.title ?? "");
-  // svelte-ignore state_referenced_locally
-  let message = $state(announcement?.message ?? "");
-  // svelte-ignore state_referenced_locally
-  let severity = $state<AnnouncementSeverity>(announcement?.severity ?? "info");
-  // svelte-ignore state_referenced_locally
-  let targetAudience = $state<AnnouncementAudience>(
-    announcement?.targetAudience ?? "all"
-  );
-  // svelte-ignore state_referenced_locally
-  let targetUserId = $state(announcement?.targetUserId ?? "");
+  // Form state - initialize with defaults, $effect syncs when announcement prop changes
+  let title = $state("");
+  let message = $state("");
+  let severity = $state<AnnouncementSeverity>("info");
+  let targetAudience = $state<AnnouncementAudience>("all");
+  let targetUserId = $state("");
   let targetUserDisplay = $state(""); // Display name for selected user
-  // svelte-ignore state_referenced_locally
-  let showAsModal = $state(announcement?.showAsModal ?? true);
-  // svelte-ignore state_referenced_locally
-  let hasExpiration = $state(!!announcement?.expiresAt);
-  // svelte-ignore state_referenced_locally
-  let expirationDate = $state(
-    announcement?.expiresAt
-      ? new Date(announcement.expiresAt).toISOString().split("T")[0]
-      : ""
-  );
-  // svelte-ignore state_referenced_locally
-  let actionUrl = $state(announcement?.actionUrl ?? "");
-  // svelte-ignore state_referenced_locally
-  let actionLabel = $state(announcement?.actionLabel ?? "");
+  let showAsModal = $state(true);
+  let hasExpiration = $state(false);
+  let expirationDate = $state("");
+  let actionUrl = $state("");
+  let actionLabel = $state("");
+
+  // Sync form state when announcement prop changes (for edit mode)
+  $effect(() => {
+    if (announcement) {
+      title = announcement.title ?? "";
+      message = announcement.message ?? "";
+      severity = announcement.severity ?? "info";
+      targetAudience = announcement.targetAudience ?? "all";
+      targetUserId = announcement.targetUserId ?? "";
+      showAsModal = announcement.showAsModal ?? true;
+      hasExpiration = !!announcement.expiresAt;
+      expirationDate = announcement.expiresAt
+        ? new Date(announcement.expiresAt).toISOString().split("T")[0] ?? ""
+        : "";
+      actionUrl = announcement.actionUrl ?? "";
+      actionLabel = announcement.actionLabel ?? "";
+    }
+  });
 
   let isSaving = $state(false);
   let error = $state<string | null>(null);
@@ -193,14 +195,14 @@
   <div class="form-header">
     <h2>{announcement ? "Edit" : "Create"} Announcement</h2>
     <button class="close-button" onclick={onCancel} aria-label="Close">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </div>
 
   <form onsubmit={handleSubmit}>
     {#if error}
-      <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i>
+      <div class="error-message" role="alert" aria-live="assertive">
+        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
         {error}
       </div>
     {/if}
@@ -216,6 +218,7 @@
         placeholder="e.g., New Feature: Dark Mode"
         maxlength="100"
         required
+        aria-required="true"
       />
       <span class="char-count">{title.length}/100</span>
     </div>
@@ -230,15 +233,15 @@
         placeholder="Announcement message (supports markdown)"
         rows="6"
         required
+        aria-required="true"
       ></textarea>
       <span class="help-text">Supports markdown formatting</span>
     </div>
 
     <!-- Severity Selection (Chips) -->
     <div class="form-section">
-      <!-- svelte-ignore a11y_label_has_associated_control -->
-      <span class="section-label">Severity</span>
-      <div class="chip-group" role="group" aria-label="Severity">
+      <span class="section-label" id="severity-label">Severity</span>
+      <div class="chip-group" role="group" aria-labelledby="severity-label">
         {#each severityOptions as option}
           <button
             type="button"
@@ -248,10 +251,10 @@
             onclick={() => (severity = option.value)}
             aria-pressed={severity === option.value}
           >
-            <i class="fas {option.icon}"></i>
+            <i class="fas {option.icon}" aria-hidden="true"></i>
             <span>{option.label}</span>
             {#if severity === option.value}
-              <i class="fas fa-check chip-check"></i>
+              <i class="fas fa-check chip-check" aria-hidden="true"></i>
             {/if}
           </button>
         {/each}
@@ -260,9 +263,8 @@
 
     <!-- Target Audience Selection (Chips) -->
     <div class="form-section">
-      <!-- svelte-ignore a11y_label_has_associated_control -->
-      <span class="section-label">Target Audience</span>
-      <div class="chip-group" role="group" aria-label="Target Audience">
+      <span class="section-label" id="audience-label">Target Audience</span>
+      <div class="chip-group" role="group" aria-labelledby="audience-label">
         {#each audienceOptions as option}
           <button
             type="button"
@@ -271,10 +273,10 @@
             onclick={() => (targetAudience = option.value)}
             aria-pressed={targetAudience === option.value}
           >
-            <i class="fas {option.icon}"></i>
+            <i class="fas {option.icon}" aria-hidden="true"></i>
             <span>{option.label}</span>
             {#if targetAudience === option.value}
-              <i class="fas fa-check chip-check"></i>
+              <i class="fas fa-check chip-check" aria-hidden="true"></i>
             {/if}
           </button>
         {/each}
@@ -284,8 +286,7 @@
     <!-- Specific User Search (conditional) -->
     {#if targetAudience === "specific-user"}
       <div class="form-section indented">
-        <!-- svelte-ignore a11y_label_has_associated_control -->
-        <span class="section-label">Select User</span>
+        <label class="section-label" for="user-search-input">Select User</label>
         <UserSearchInput
           selectedUserId={targetUserId}
           selectedUserDisplay={targetUserDisplay}
@@ -306,10 +307,10 @@
           onclick={() => (showAsModal = !showAsModal)}
           aria-pressed={showAsModal}
         >
-          <i class="fas fa-window-maximize"></i>
+          <i class="fas fa-window-maximize" aria-hidden="true"></i>
           <span>Show as Modal</span>
           {#if showAsModal}
-            <i class="fas fa-check chip-check"></i>
+            <i class="fas fa-check chip-check" aria-hidden="true"></i>
           {/if}
         </button>
 
@@ -320,10 +321,10 @@
           onclick={() => (hasExpiration = !hasExpiration)}
           aria-pressed={hasExpiration}
         >
-          <i class="fas fa-calendar-times"></i>
+          <i class="fas fa-calendar-times" aria-hidden="true"></i>
           <span>Set Expiration</span>
           {#if hasExpiration}
-            <i class="fas fa-check chip-check"></i>
+            <i class="fas fa-check chip-check" aria-hidden="true"></i>
           {/if}
         </button>
       </div>
@@ -381,15 +382,15 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <button type="button" class="cancel-button" onclick={onCancel}>
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
         Cancel
       </button>
       <button type="submit" class="save-button" disabled={isSaving}>
         {#if isSaving}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           Saving...
         {:else}
-          <i class="fas fa-check"></i>
+          <i class="fas fa-check" aria-hidden="true"></i>
           {announcement ? "Update" : "Create"}
         {/if}
       </button>

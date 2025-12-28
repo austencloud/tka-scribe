@@ -23,7 +23,7 @@
   aria-label={`Edit ${tab.name} settings`}
   title={tab.description}
 >
-  <i class="fas {style.icon}" style="color: {style.color}"></i>
+  <i class="fas {style.icon}" aria-hidden="true" style="color: {style.color}"></i>
   <span class="tab-name">{tab.name.replace(" Tab", "")}</span>
   {#if elevated}
     <span
@@ -31,11 +31,11 @@
       style="color: {getRoleColor(tab.minimumRole)}"
       title="Elevated: requires {tab.minimumRole}"
     >
-      <i class="fas {getRoleIcon(tab.minimumRole)}"></i>
+      <i class="fas {getRoleIcon(tab.minimumRole)}" aria-hidden="true"></i>
     </span>
   {/if}
   {#if !tab.enabled}
-    <i class="fas fa-ban disabled-icon"></i>
+    <i class="fas fa-ban disabled-icon" aria-hidden="true"></i>
   {/if}
 </button>
 
@@ -80,7 +80,7 @@
   }
 
   .tab-chip i {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .tab-name {
@@ -88,13 +88,13 @@
   }
 
   .tab-role {
-    font-size: 10px;
+    font-size: 12px;
     margin-left: 2px;
   }
 
   .disabled-icon {
     color: var(--semantic-error, #f87171);
-    font-size: 10px;
+    font-size: 12px;
     margin-left: 2px;
   }
 </style>

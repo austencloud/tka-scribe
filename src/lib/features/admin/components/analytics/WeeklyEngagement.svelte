@@ -76,7 +76,7 @@
     {#if cacheAge}
       <span class="cache-indicator" title="Data cached from SystemState">
         <i class="fas fa-database" aria-hidden="true"></i>
-        <span class="visually-hidden">Data loaded</span>
+        <span class="sr-only">Data loaded</span>
         {cacheAge}
       </span>
     {/if}
@@ -85,7 +85,7 @@
   <div aria-live="polite" aria-busy={isLoading}>
     {#if isLoading}
       <div class="metrics-grid" role="status">
-        <span class="visually-hidden">Loading stats...</span>
+        <span class="sr-only">Loading stats...</span>
         {#each Array(3) as _}
           <div class="metric-card skeleton" aria-hidden="true">
             <div class="skeleton-value"></div>
@@ -98,7 +98,7 @@
         <div class="metric-card" role="listitem">
           <div class="metric-value" aria-hidden="true">{metrics().totalUsers}</div>
           <div class="metric-label">Total Users</div>
-          <span class="visually-hidden">
+          <span class="sr-only">
             {metrics().totalUsers} total registered users
           </span>
         </div>
@@ -106,7 +106,7 @@
         <div class="metric-card" role="listitem">
           <div class="metric-value" aria-hidden="true">{metrics().activeThisWeek}</div>
           <div class="metric-label">Active This Week</div>
-          <span class="visually-hidden">
+          <span class="sr-only">
             {metrics().activeThisWeek} users active this week
           </span>
         </div>
@@ -114,7 +114,7 @@
         <div class="metric-card" role="listitem">
           <div class="metric-value" aria-hidden="true">{metrics().newThisWeek}</div>
           <div class="metric-label">New This Week</div>
-          <span class="visually-hidden">
+          <span class="sr-only">
             {metrics().newThisWeek} new users this week
           </span>
         </div>
@@ -218,19 +218,6 @@
     50% {
       opacity: 0.5;
     }
-  }
-
-  /* Visually hidden but accessible to screen readers */
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
   }
 
   @media (max-width: 500px) {

@@ -47,7 +47,7 @@
       onclick={() => onNavigateMonth(-1)}
       aria-label="Previous month"
     >
-      <i class="fas fa-chevron-left"></i>
+      <i class="fas fa-chevron-left" aria-hidden="true"></i>
     </button>
     <div class="month-display">
       <span class="month-name">{monthName}</span>
@@ -58,7 +58,7 @@
       onclick={() => onNavigateMonth(1)}
       aria-label="Next month"
     >
-      <i class="fas fa-chevron-right"></i>
+      <i class="fas fa-chevron-right" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -104,8 +104,8 @@
   }
 
   .nav-btn {
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     background: rgba(255, 255, 255, 0.1);
     color: #fff;

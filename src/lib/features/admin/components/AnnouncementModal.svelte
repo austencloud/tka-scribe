@@ -105,24 +105,25 @@
   onclick={handleDismiss}
   onkeydown={(e) => e.key === "Escape" && handleDismiss()}
   role="button"
-  tabindex="-1"
+  tabindex="0"
+  aria-label="Close announcement"
 >
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
     class="modal-content"
     onclick={(e) => e.stopPropagation()}
-    role="presentation"
+    onkeydown={(e) => e.stopPropagation()}
+    role="dialog"
+    aria-modal="true"
   >
     <div
       class="modal-header"
       style="--severity-color: {getSeverityColor(announcement.severity)};"
     >
       <div class="header-icon">
-        <i class="fas {getSeverityIcon(announcement.severity)}"></i>
+        <i class="fas {getSeverityIcon(announcement.severity)}" aria-hidden="true"></i>
       </div>
       <button class="close-button" onclick={handleDismiss} aria-label="Close">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
     <div class="modal-body">
@@ -144,7 +145,7 @@
             onclick={() => handleInternalNavigation(announcement.actionUrl!)}
           >
             {announcement.actionLabel || "Learn More"}
-            <i class="fas fa-arrow-right"></i>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
           </button>
         {:else}
           <a
@@ -154,12 +155,12 @@
             rel="noopener noreferrer"
           >
             {announcement.actionLabel || "Learn More"}
-            <i class="fas fa-external-link-alt"></i>
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
           </a>
         {/if}
       {/if}
       <button class="action-button primary" onclick={handleDismiss}>
-        <i class="fas fa-check"></i>
+        <i class="fas fa-check" aria-hidden="true"></i>
         Got it
       </button>
     </div>
@@ -254,8 +255,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.05));
     border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
     border-radius: 8px;
@@ -282,7 +283,7 @@
   .severity-badge {
     display: inline-block;
     padding: 6px 14px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     color: white;

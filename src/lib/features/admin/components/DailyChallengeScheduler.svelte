@@ -218,7 +218,7 @@
 <div class="scheduler">
   {#if isLoading}
     <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <p>Loading challenge data...</p>
     </div>
   {:else}
@@ -233,7 +233,7 @@
               class:active={viewMode === "calendar"}
               onclick={() => (viewMode = "calendar")}
             >
-              <i class="fas fa-calendar-alt"></i>
+              <i class="fas fa-calendar-alt" aria-hidden="true"></i>
               Calendar
             </button>
             <button
@@ -241,7 +241,7 @@
               class:active={viewMode === "timeline"}
               onclick={() => (viewMode = "timeline")}
             >
-              <i class="fas fa-list"></i>
+              <i class="fas fa-list" aria-hidden="true"></i>
               Timeline
             </button>
           </div>

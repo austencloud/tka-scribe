@@ -29,7 +29,7 @@
         class:active={viewMode === "global"}
         onclick={() => onViewModeChange("global")}
       >
-        <i class="fas fa-globe"></i>
+        <i class="fas fa-globe" aria-hidden="true"></i>
         Global Settings
       </button>
       <button
@@ -37,7 +37,7 @@
         class:active={viewMode === "users"}
         onclick={() => onViewModeChange("users")}
       >
-        <i class="fas fa-user-cog"></i>
+        <i class="fas fa-user-cog" aria-hidden="true"></i>
         User Overrides
       </button>
     </div>

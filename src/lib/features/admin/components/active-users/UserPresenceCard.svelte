@@ -81,7 +81,7 @@
   <div class="status-section">
     {#if isActive && user.currentModule}
       <span class="location">
-        <i class="fas fa-location-dot"></i>
+        <i class="fas fa-location-dot" aria-hidden="true"></i>
         {user.currentModule}{user.currentTab ? ` / ${user.currentTab}` : ""}
       </span>
     {:else}
@@ -94,11 +94,11 @@
   <!-- Device indicator -->
   <div class="device-badge">
     {#if user.device === "mobile"}
-      <i class="fas fa-mobile-screen"></i>
+      <i class="fas fa-mobile-screen" aria-hidden="true"></i>
     {:else if user.device === "tablet"}
-      <i class="fas fa-tablet-screen-button"></i>
+      <i class="fas fa-tablet-screen-button" aria-hidden="true"></i>
     {:else}
-      <i class="fas fa-desktop"></i>
+      <i class="fas fa-desktop" aria-hidden="true"></i>
     {/if}
   </div>
 </button>
@@ -233,7 +233,7 @@
   }
 
   .location i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .activity-status {
@@ -281,7 +281,7 @@
     .device-badge {
       width: 24px;
       height: 24px;
-      font-size: 10px; /* Icon only, not text */
+      font-size: 12px; /* Icon only, not text */
     }
   }
 

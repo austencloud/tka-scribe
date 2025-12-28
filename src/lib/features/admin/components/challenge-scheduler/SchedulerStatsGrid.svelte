@@ -17,7 +17,7 @@
       class="stat-icon"
       style="background: color-mix(in srgb, var(--theme-accent) 20%, transparent); color: var(--theme-accent, #667eea);"
     >
-      <i class="fas fa-calendar-check"></i>
+      <i class="fas fa-calendar-check" aria-hidden="true"></i>
     </div>
     <div class="stat-content">
       <span class="stat-value">{stats.total}</span>
@@ -29,7 +29,7 @@
       class="stat-icon"
       style="background: rgba(74, 222, 128, 0.2); color: #4ade80;"
     >
-      <i class="fas fa-clock"></i>
+      <i class="fas fa-clock" aria-hidden="true"></i>
     </div>
     <div class="stat-content">
       <span class="stat-value">{stats.upcoming}</span>
@@ -41,7 +41,7 @@
       class="stat-icon"
       style="background: rgba(251, 191, 36, 0.2); color: #fbbf24;"
     >
-      <i class="fas fa-calendar-week"></i>
+      <i class="fas fa-calendar-week" aria-hidden="true"></i>
     </div>
     <div class="stat-content">
       <span class="stat-value">{stats.thisWeek}</span>
@@ -53,7 +53,7 @@
       class="stat-icon"
       style="background: rgba(148, 163, 184, 0.2); color: #94a3b8;"
     >
-      <i class="fas fa-plus-circle"></i>
+      <i class="fas fa-plus-circle" aria-hidden="true"></i>
     </div>
     <div class="stat-content">
       <span class="stat-value">{stats.unscheduled}</span>

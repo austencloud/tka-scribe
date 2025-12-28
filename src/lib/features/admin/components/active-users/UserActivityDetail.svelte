@@ -101,7 +101,7 @@
   <header class="detail-header">
     <h3>User Activity</h3>
     <button class="close-btn" onclick={onClose} aria-label="Close">
-      <i class="fas fa-times"></i>
+      <i class="fas fa-times" aria-hidden="true"></i>
     </button>
   </header>
 
@@ -113,7 +113,7 @@
       </div>
     {:else if sessions.length === 0}
       <div class="empty">
-        <i class="fas fa-history"></i>
+        <i class="fas fa-history" aria-hidden="true"></i>
         <span>No sessions found</span>
       </div>
     {:else}
@@ -134,7 +134,7 @@
             </div>
             <div class="session-meta">
               <span class="event-count">
-                <i class="fas fa-list"></i>
+                <i class="fas fa-list" aria-hidden="true"></i>
                 {session.eventCount} events
               </span>
               {#if session.modules.length > 0}
@@ -160,7 +160,7 @@
                 <div class="events-timeline">
                   {#each sessionEvents as event}
                     <div class="event-item">
-                      <i class="fas {getEventIcon(event.category)}"></i>
+                      <i class="fas {getEventIcon(event.category)}" aria-hidden="true"></i>
                       <div class="event-info">
                         <span class="event-type">{event.eventType}</span>
                         <span class="event-time"
@@ -210,8 +210,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: transparent;
     border: none;
     border-radius: 0.25rem;

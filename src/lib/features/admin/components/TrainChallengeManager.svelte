@@ -182,15 +182,15 @@
         disabled={seeding || loading}
       >
         {#if seeding}
-          <i class="fas fa-spinner fa-spin"></i>
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
           Seeding...
         {:else}
-          <i class="fas fa-seedling"></i>
+          <i class="fas fa-seedling" aria-hidden="true"></i>
           Seed Challenges ({SEED_CHALLENGES.length})
         {/if}
       </button>
       <button class="create-btn" onclick={handleShowCreate}>
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         Create Challenge
       </button>
     </div>
@@ -206,7 +206,7 @@
           aria-label="Close create challenge form"
           onclick={() => (showCreateForm = false)}
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
 
@@ -342,7 +342,7 @@
         </button>
         <button class="submit-btn" onclick={handleCreate} disabled={creating}>
           {#if creating}
-            <i class="fas fa-spinner fa-spin"></i>
+            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             Creating...
           {:else}
             Create Challenge
@@ -358,12 +358,12 @@
 
     {#if loading}
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Loading challenges...</p>
       </div>
     {:else if challenges.length === 0}
       <div class="empty-state">
-        <i class="fas fa-dumbbell"></i>
+        <i class="fas fa-dumbbell" aria-hidden="true"></i>
         <p>No challenges created yet</p>
       </div>
     {:else}
@@ -502,8 +502,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
@@ -697,7 +697,7 @@
     display: inline-flex;
     align-items: center;
     padding: 3px 8px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);

@@ -36,7 +36,7 @@
       class="module-icon"
       style="background: {style.color}15; color: {style.color}"
     >
-      <i class="fas {style.icon}"></i>
+      <i class="fas {style.icon}" aria-hidden="true"></i>
     </div>
     <div class="module-info">
       <h3>{module.name}</h3>
@@ -49,12 +49,12 @@
           module.minimumRole
         )}20; color: {getRoleColor(module.minimumRole)}"
       >
-        <i class="fas {getRoleIcon(module.minimumRole)}"></i>
+        <i class="fas {getRoleIcon(module.minimumRole)}" aria-hidden="true"></i>
         {module.minimumRole}
       </span>
       {#if !module.enabled}
         <span class="disabled-badge">
-          <i class="fas fa-ban"></i>
+          <i class="fas fa-ban" aria-hidden="true"></i>
         </span>
       {/if}
     </div>
@@ -158,13 +158,13 @@
     gap: 4px;
     padding: 4px 8px;
     border-radius: var(--radius-2026-xs);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     text-transform: capitalize;
   }
 
   .role-badge i {
-    font-size: 10px;
+    font-size: 12px;
   }
 
   .disabled-badge {
@@ -180,7 +180,7 @@
       transparent
     );
     color: var(--semantic-error, #fca5a5);
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .tabs-grid {

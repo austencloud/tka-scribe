@@ -98,7 +98,7 @@
 
 <div class="user-search">
   <div class="search-input-wrapper">
-    <i class="fas fa-search search-icon"></i>
+    <i class="fas fa-search search-icon" aria-hidden="true"></i>
     <input
       type="search"
       class="search-input"
@@ -109,28 +109,30 @@
       onblur={handleBlur}
       placeholder="Search by name or email..."
       autocomplete="off"
+      aria-label="Search users by name or email"
       data-1p-ignore
       data-lpignore="true"
       data-form-type="other"
     />
     {#if isSearching}
-      <i class="fas fa-spinner fa-spin loading-icon"></i>
+      <i class="fas fa-spinner fa-spin loading-icon" aria-hidden="true"></i>
     {/if}
   </div>
 
   {#if showResults && searchResults.length > 0}
-    <div class="search-results">
+    <div class="search-results" role="listbox" aria-label="Search results">
       {#each searchResults as user (user.uid)}
         <button
           type="button"
           class="result-item"
+          role="option"
           onclick={() => handleSelectUser(user)}
         >
           <div class="result-info">
             <span class="result-name">{user.displayName || "No name"}</span>
             <span class="result-email">{user.email}</span>
           </div>
-          <i class="fas fa-check result-check"></i>
+          <i class="fas fa-check result-check" aria-hidden="true"></i>
         </button>
       {/each}
     </div>
@@ -139,7 +141,7 @@
   {#if showResults && searchResults.length === 0 && searchQuery.length >= 2 && !isSearching}
     <div class="search-results">
       <div class="no-results">
-        <i class="fas fa-user-slash"></i>
+        <i class="fas fa-user-slash" aria-hidden="true"></i>
         No users found
       </div>
     </div>

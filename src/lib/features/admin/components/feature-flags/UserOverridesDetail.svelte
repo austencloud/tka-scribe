@@ -57,7 +57,7 @@
               class="status-value"
               style="color: {getRoleColor(selectedUser.role)}"
             >
-              <i class="fas {getRoleIcon(selectedUser.role)}"></i>
+              <i class="fas {getRoleIcon(selectedUser.role)}" aria-hidden="true"></i>
               {ROLE_DISPLAY[selectedUser.role].label}
             </span>
           </div>
@@ -80,7 +80,7 @@
         <div class="override-list">
           <div class="override-header">
             <h4>
-              <i class="fas fa-check-circle" style="color: #10b981;"></i>
+              <i class="fas fa-check-circle" aria-hidden="true" style="color: #10b981;"></i>
               Explicitly Enabled ({editedEnabledFeatures.length})
             </h4>
             <p>Features this user can access regardless of their role</p>
@@ -95,8 +95,7 @@
                   onchange={() => onToggleEnabled(flag.id)}
                 />
                 <span class="checkbox-label">
-                  <i
-                    class="fas {flagStyle.icon}"
+                  <i class="fas {flagStyle.icon}" aria-hidden="true"
                     style="color: {flagStyle.color}"
                   ></i>
                   {flag.name}
@@ -109,7 +108,7 @@
         <div class="override-list">
           <div class="override-header">
             <h4>
-              <i class="fas fa-ban" style="color: #ef4444;"></i>
+              <i class="fas fa-ban" aria-hidden="true" style="color: #ef4444;"></i>
               Explicitly Disabled ({editedDisabledFeatures.length})
             </h4>
             <p>Features this user cannot access even if their role allows it</p>
@@ -124,8 +123,7 @@
                   onchange={() => onToggleDisabled(flag.id)}
                 />
                 <span class="checkbox-label">
-                  <i
-                    class="fas {flagStyle.icon}"
+                  <i class="fas {flagStyle.icon}" aria-hidden="true"
                     style="color: {flagStyle.color}"
                   ></i>
                   {flag.name}
@@ -205,7 +203,7 @@
 
   .status-value.user-id {
     font-family: monospace;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .override-list {

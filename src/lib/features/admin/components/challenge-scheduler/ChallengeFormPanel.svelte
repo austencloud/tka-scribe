@@ -105,7 +105,7 @@
     <div class="creation-form">
       <div class="form-header">
         <h3>
-          <i class="fas fa-plus-circle"></i>
+          <i class="fas fa-plus-circle" aria-hidden="true"></i>
           Schedule Challenge
         </h3>
         <button
@@ -113,12 +113,12 @@
           onclick={handleClose}
           aria-label="Close panel"
         >
-          <i class="fas fa-times"></i>
+          <i class="fas fa-times" aria-hidden="true"></i>
         </button>
       </div>
 
       <div class="date-display">
-        <i class="fas fa-calendar"></i>
+        <i class="fas fa-calendar" aria-hidden="true"></i>
         {formattedDate}
       </div>
 
@@ -139,7 +139,7 @@
               />
             {:else}
               <div class="sequence-icon-large">
-                <i class="fas fa-layer-group"></i>
+                <i class="fas fa-layer-group" aria-hidden="true"></i>
               </div>
             {/if}
             <div class="sequence-info-large">
@@ -150,7 +150,7 @@
               </span>
             </div>
             <div class="change-sequence">
-              <i class="fas fa-exchange-alt"></i>
+              <i class="fas fa-exchange-alt" aria-hidden="true"></i>
               <span>Change</span>
             </div>
           </button>
@@ -160,10 +160,10 @@
             onclick={() => (showSequenceBrowser = true)}
           >
             <div class="btn-icon">
-              <i class="fas fa-plus-circle"></i>
+              <i class="fas fa-plus-circle" aria-hidden="true"></i>
             </div>
             <span>Browse Sequences</span>
-            <i class="fas fa-chevron-right"></i>
+            <i class="fas fa-chevron-right" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
@@ -220,7 +220,7 @@
         <div class="form-actions">
           <button class="cancel-btn" onclick={handleClose}> Cancel </button>
           <button class="schedule-btn" onclick={handleSchedule}>
-            <i class="fas fa-check"></i>
+            <i class="fas fa-check" aria-hidden="true"></i>
             Schedule Challenge
           </button>
         </div>
@@ -229,7 +229,7 @@
   {:else}
     <div class="empty-detail">
       <div class="empty-icon">
-        <i class="fas fa-mouse-pointer"></i>
+        <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
       </div>
       <h3>Select a Date</h3>
       <p>Click on a date in the calendar to schedule a new challenge</p>
@@ -314,8 +314,8 @@
   }
 
   .close-btn {
-    width: 32px;
-    height: 32px;
+    width: 48px; /* WCAG AAA touch target */
+    height: 48px;
     border: none;
     background: rgba(255, 255, 255, 0.1);
     color: #fff;

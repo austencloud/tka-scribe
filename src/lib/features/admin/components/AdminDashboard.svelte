@@ -44,7 +44,7 @@
 <div class="admin-dashboard">
   {#if isLoading}
     <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <p>Loading admin tools...</p>
     </div>
   {:else}

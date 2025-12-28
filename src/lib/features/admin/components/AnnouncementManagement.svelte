@@ -83,7 +83,7 @@
 <div class="announcement-management">
   {#if isLoading}
     <div class="loading-state">
-      <i class="fas fa-spinner fa-spin"></i>
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       <p>Loading announcements...</p>
     </div>
   {:else if showForm}
@@ -96,7 +96,7 @@
     <div class="management-header">
       <h2>System Announcements</h2>
       <button class="create-button" onclick={handleCreateNew}>
-        <i class="fas fa-plus"></i>
+        <i class="fas fa-plus" aria-hidden="true"></i>
         Create Announcement
       </button>
     </div>

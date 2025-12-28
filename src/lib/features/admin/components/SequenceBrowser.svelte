@@ -37,7 +37,7 @@
 <div class="sequence-browser">
   <div class="browser-header">
     <div class="search-box">
-      <i class="fas fa-search"></i>
+      <i class="fas fa-search" aria-hidden="true"></i>
       <input
         type="text"
         placeholder="Search sequences..."
@@ -54,7 +54,7 @@
   <div class="sequence-list">
     {#if filteredSequences.length === 0}
       <div class="empty-state">
-        <i class="fas fa-inbox"></i>
+        <i class="fas fa-inbox" aria-hidden="true"></i>
         <p>No sequences found</p>
         {#if searchQuery}
           <button class="clear-search" onclick={() => (searchQuery = "")}>
@@ -72,7 +72,7 @@
           <div class="sequence-header">
             <h4 class="sequence-name">{sequence.name}</h4>
             {#if selectedSequence?.id === sequence.id}
-              <i class="fas fa-check-circle selected-icon"></i>
+              <i class="fas fa-check-circle selected-icon" aria-hidden="true"></i>
             {/if}
           </div>
 
@@ -82,12 +82,12 @@
 
           <div class="sequence-meta">
             <span class="meta-item">
-              <i class="fas fa-layer-group"></i>
+              <i class="fas fa-layer-group" aria-hidden="true"></i>
               {sequence.beats?.length || 0} beats
             </span>
             {#if sequence.dateAdded}
               <span class="meta-item">
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-clock" aria-hidden="true"></i>
                 {new Date(sequence.dateAdded).toLocaleDateString()}
               </span>
             {/if}

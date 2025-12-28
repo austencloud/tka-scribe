@@ -56,7 +56,7 @@
       />
     {:else if isSearching}
       <div class="loading-state">
-        <i class="fas fa-spinner fa-spin"></i>
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Searching users...</p>
       </div>
     {:else if searchedUsers.length === 0}
@@ -107,7 +107,7 @@
                 user.role
               )}20; color: {getRoleColor(user.role)}"
             >
-              <i class="fas {getRoleIcon(user.role)}"></i>
+              <i class="fas {getRoleIcon(user.role)}" aria-hidden="true"></i>
               {user.role}
             </span>
           {/snippet}
@@ -203,7 +203,7 @@
     gap: 4px;
     padding: 4px 8px;
     border-radius: 4px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     text-transform: capitalize;
   }

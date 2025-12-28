@@ -33,10 +33,10 @@
 
   {#if errorMessage}
     <div class="error-banner">
-      <i class="fas fa-exclamation-triangle"></i>
+      <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       {errorMessage}
       <button onclick={() => (errorMessage = null)} aria-label="Dismiss error">
-        <i class="fas fa-times"></i>
+        <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
   {/if}

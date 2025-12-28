@@ -23,7 +23,7 @@
     <div class="status-item">
       <span class="status-label">Minimum Role:</span>
       <span class="status-value" style="color: {getRoleColor(minimumRole)}">
-        <i class="fas {getRoleIcon(minimumRole)}"></i>
+        <i class="fas {getRoleIcon(minimumRole)}" aria-hidden="true"></i>
         {ROLE_DISPLAY[minimumRole].label}
       </span>
     </div>

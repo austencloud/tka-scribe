@@ -49,7 +49,7 @@
 
 <div class="calendar">
   <h3 class="calendar-title">
-    <i class="fas fa-calendar-alt"></i>
+    <i class="fas fa-calendar-alt" aria-hidden="true"></i>
     Challenge Schedule
   </h3>
 
@@ -73,12 +73,12 @@
           <div class="day-content">
             {#if entry.isScheduled && entry.challenge}
               <div class="challenge-indicator">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
                 <span class="challenge-title">{entry.challenge.title}</span>
               </div>
             {:else}
               <div class="no-challenge">
-                <i class="fas fa-plus-circle"></i>
+                <i class="fas fa-plus-circle" aria-hidden="true"></i>
                 <span>Add Challenge</span>
               </div>
             {/if}
@@ -91,7 +91,7 @@
             aria-label="Delete challenge"
             title="Delete challenge"
           >
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-trash" aria-hidden="true"></i>
           </button>
         {/if}
       </div>

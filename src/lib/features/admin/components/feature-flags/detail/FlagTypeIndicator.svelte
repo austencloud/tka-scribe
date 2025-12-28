@@ -15,7 +15,7 @@
 </script>
 
 <div class="type-indicator {category}">
-  <i class="fas {config.icon}"></i>
+  <i class="fas {config.icon}" aria-hidden="true"></i>
   <span class="type-label">{config.label}</span>
 </div>
 

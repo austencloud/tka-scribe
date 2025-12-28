@@ -27,7 +27,7 @@
         role="radio"
         aria-checked={selectedRole === role}
       >
-        <i class="fas {getRoleIcon(role)}"></i>
+        <i class="fas {getRoleIcon(role)}" aria-hidden="true"></i>
         <span>{ROLE_DISPLAY[role].label}</span>
       </button>
     {/each}
