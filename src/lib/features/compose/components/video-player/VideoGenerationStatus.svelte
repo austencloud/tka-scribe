@@ -75,6 +75,14 @@
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+      border-top-color: white;
+      border-right-color: white;
+    }
+  }
+
   .status-text {
     flex: 1;
   }

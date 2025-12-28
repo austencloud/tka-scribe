@@ -339,8 +339,8 @@ Mobile-first design:
   }
 
   .close-btn {
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -448,6 +448,14 @@ Mobile-first design:
   @keyframes spin {
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+      border-top-color: #a5b4fc;
+      border-right-color: #a5b4fc;
     }
   }
 

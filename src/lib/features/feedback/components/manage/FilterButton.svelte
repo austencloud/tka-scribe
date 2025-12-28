@@ -82,6 +82,11 @@
     color: var(--semantic-success, var(--semantic-success));
   }
 
+  .filter-button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   .filter-button i {
     font-size: 0.85em;
   }

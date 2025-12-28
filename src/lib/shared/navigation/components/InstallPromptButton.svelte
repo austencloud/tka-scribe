@@ -136,6 +136,11 @@
     line-height: 1.3;
   }
 
+  .install-button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     .install-button {

@@ -287,6 +287,18 @@ Allows viewing, continuing, or deleting sessions.
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+      border-top-color: var(--theme-text);
+      border-right-color: var(--theme-text);
+    }
+
+    .btn-refresh .fa-spin {
+      animation: none;
+    }
+  }
+
   .sessions {
     flex: 1;
     overflow-y: auto;

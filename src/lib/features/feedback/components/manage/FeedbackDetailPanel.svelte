@@ -30,10 +30,9 @@
     readOnly = false,
   }: Props = $props();
 
-  // Create state wrapper - use $derived to be reactive to prop changes
-  const detailState = $derived(
-    createFeedbackDetailState(item, manageState, readOnly)
-  );
+  // Create state wrapper ONCE - do NOT use $derived as it recreates state on every item change
+  // This was causing showDeleteConfirm to reset when real-time updates arrived
+  const detailState = createFeedbackDetailState(item, manageState, readOnly);
 
   // Mobile detection
   let isMobile = $state(false);

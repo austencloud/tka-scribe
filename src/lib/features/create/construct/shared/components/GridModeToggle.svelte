@@ -114,7 +114,7 @@ Action-oriented pattern: Shows the mode you can switch TO (not current mode)
 
   /* Focus state */
   .grid-mode-toggle:focus-visible {
-    outline: 2px solid #818cf8;
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 

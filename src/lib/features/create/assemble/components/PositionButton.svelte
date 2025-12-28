@@ -61,4 +61,9 @@ Displays a pictograph with a location label in a selectable button
     transform: scale(0.98);
     transition: transform 0.1s ease;
   }
+
+  .position-button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
 </style>

@@ -411,4 +411,32 @@
     font-size: var(--font-size-sm);
     color: var(--theme-text-dim);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .save-progress-overlay {
+      animation: none;
+    }
+
+    .progress-icon-ring {
+      animation: none;
+      border-top-color: var(--theme-accent-strong, var(--theme-accent-strong));
+      border-right-color: var(--theme-accent-strong, var(--theme-accent-strong));
+    }
+
+    .progress-icon {
+      animation: none;
+    }
+
+    .step-pulse {
+      animation: none;
+    }
+
+    .success-animation {
+      animation: none;
+    }
+
+    .success-circle i {
+      animation: none;
+    }
+  }
 </style>

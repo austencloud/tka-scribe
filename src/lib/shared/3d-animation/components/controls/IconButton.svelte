@@ -62,4 +62,9 @@
   .icon-btn.dimmed {
     opacity: 0.4;
   }
+
+  .icon-btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
 </style>

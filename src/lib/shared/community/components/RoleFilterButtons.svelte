@@ -73,4 +73,9 @@
   .filter-btn i {
     font-size: var(--font-size-compact);
   }
+
+  .filter-btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
 </style>

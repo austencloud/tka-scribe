@@ -364,6 +364,14 @@
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .loading .spinner {
+      animation: none;
+      border-top-color: var(--theme-accent, var(--theme-accent));
+      border-right-color: var(--theme-accent, var(--theme-accent));
+    }
+  }
+
   .error {
     color: var(--semantic-error, var(--semantic-error));
   }

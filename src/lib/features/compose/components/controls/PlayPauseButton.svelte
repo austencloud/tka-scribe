@@ -96,6 +96,11 @@
     box-shadow: 0 6px 16px rgba(251, 191, 36, 0.35);
   }
 
+  .play-pause-button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   /* Play icon needs slight offset for optical center */
   .play-pause-button i.fa-play {
     margin-left: 3px;

@@ -319,6 +319,11 @@
     }
   }
 
+  .voice-btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .voice-btn.recording {

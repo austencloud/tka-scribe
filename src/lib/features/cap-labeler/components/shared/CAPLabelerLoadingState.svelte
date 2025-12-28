@@ -38,4 +38,12 @@
       transform: rotate(360deg);
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+      border-top-color: var(--primary-color);
+      border-right-color: var(--primary-color);
+    }
+  }
 </style>

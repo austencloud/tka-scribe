@@ -125,4 +125,16 @@ Shows pre-render progress and perfect playback badge.
       transform: translateY(-10px);
     }
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner-small {
+      animation: none;
+      border-top-color: white;
+      border-right-color: white;
+    }
+
+    .perfect-mode-badge {
+      animation: none;
+    }
+  }
 </style>

@@ -347,7 +347,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px; /* WCAG 2.1 AA touch target minimum */
+    min-height: var(--min-touch-target); /* WCAG 2.1 AA touch target minimum */
     box-sizing: border-box;
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
@@ -430,7 +430,7 @@
     font-size: var(--font-size-min);
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 48px;
+    min-height: var(--min-touch-target);
     box-sizing: border-box;
   }
 
@@ -472,7 +472,7 @@
     font-size: var(--font-size-min);
     outline: none;
     transition: all 0.2s ease;
-    min-height: 48px;
+    min-height: var(--min-touch-target);
     box-sizing: border-box;
   }
 
@@ -486,8 +486,8 @@
   }
 
   .input-action-button {
-    width: 48px;
-    height: 48px;
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
     padding: 0;
     border: none;
     border-radius: 8px;

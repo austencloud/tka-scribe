@@ -340,8 +340,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     border: none;
     background: var(--theme-card-bg);
     border-radius: 8px;

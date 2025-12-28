@@ -191,7 +191,11 @@ Integrates the "Generate New" button into the card grid layout so it scales with
 
   @media (prefers-reduced-motion: reduce) {
     .generate-button-card {
-      animation: meshGradientFlow 8s ease infinite;
+      animation: none;
+    }
+
+    .generate-button-card:hover:not(:disabled) {
+      animation: none;
     }
   }
 </style>

@@ -468,8 +468,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
     border-radius: 50%;

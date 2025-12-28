@@ -77,6 +77,11 @@
     }
   }
 
+  .export-btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
     .export-btn {

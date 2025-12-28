@@ -127,6 +127,11 @@
     cursor: not-allowed;
   }
 
+  .btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   .error {
     margin: 10px 0 0;
     font-size: var(--font-size-compact);

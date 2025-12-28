@@ -91,6 +91,11 @@
     filter: grayscale(20%);
   }
 
+  .submit-btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   .submit-btn i {
     font-size: clamp(0.9em, 2cqi, 1.1em);
   }

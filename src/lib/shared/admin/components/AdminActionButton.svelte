@@ -140,4 +140,9 @@
   .variant-info:hover:not(:disabled) {
     background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
+
+  .admin-action-btn:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
 </style>

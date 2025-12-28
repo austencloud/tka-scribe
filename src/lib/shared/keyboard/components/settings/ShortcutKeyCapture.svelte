@@ -603,4 +603,10 @@
     background: var(--theme-card-hover-bg);
     border-color: var(--theme-stroke-strong);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .capture-area.capturing {
+      animation: none;
+    }
+  }
 </style>

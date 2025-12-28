@@ -10,10 +10,15 @@
 
   import { createComponentLogger } from "$lib/shared/utils/debug-logger";
   import EditSlidePanel from "../../../edit/components/EditSlidePanel.svelte";
+  import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
   import type { BatchEditChanges } from "../../types/create-module-types";
   import { getCreateModuleContext } from "../../context/create-module-context";
 
   const logger = createComponentLogger("EditCoordinator");
+
+  // Confirmation dialog state
+  let showRemoveBeatConfirm = $state(false);
+  let beatToRemove = $state<number | null>(null);
 
   // Get context
   const ctx = getCreateModuleContext();
@@ -143,14 +148,32 @@
   }
 
   function handleRemoveBeat(beatNumber: number) {
+    // Show confirmation dialog instead of executing directly
+    beatToRemove = beatNumber;
+    showRemoveBeatConfirm = true;
+  }
+
+  function confirmRemoveBeat() {
+    if (beatToRemove === null) return;
+
     try {
-      BeatOperator.removeBeat(beatNumber - 1, CreateModuleState);
+      BeatOperator.removeBeat(beatToRemove - 1, CreateModuleState);
+      // Close edit panel after removing beat
+      panelState.closeEditPanel();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to remove beat";
       logger.error("Failed to remove beat", err);
       onError?.(errorMessage);
+    } finally {
+      showRemoveBeatConfirm = false;
+      beatToRemove = null;
     }
+  }
+
+  function cancelRemoveBeat() {
+    showRemoveBeatConfirm = false;
+    beatToRemove = null;
   }
 
   function handleClosePanel() {
@@ -180,4 +203,16 @@
   onRotationDirectionChanged={handleRotationDirectionChange}
   onBatchApply={handleBatchApply}
   onRemoveBeat={handleRemoveBeat}
+/>
+
+<!-- Remove Beat Confirmation Dialog -->
+<ConfirmDialog
+  bind:isOpen={showRemoveBeatConfirm}
+  title="Remove Beat?"
+  message="This will delete beat {beatToRemove} from your sequence. This action cannot be undone."
+  confirmText="Remove"
+  cancelText="Keep"
+  variant="danger"
+  onConfirm={confirmRemoveBeat}
+  onCancel={cancelRemoveBeat}
 />

@@ -347,6 +347,13 @@
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+      border-right-color: currentColor;
+    }
+  }
+
   .error-message {
     color: #fca5a5;
     font-size: 0.875rem;

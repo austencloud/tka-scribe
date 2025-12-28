@@ -516,8 +516,8 @@
     top: 12px;
     right: 12px;
     z-index: 10;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -682,8 +682,8 @@
   }
 
   .control-btn {
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -866,8 +866,8 @@
     }
 
     .control-btn {
-      width: 48px; /* WCAG AAA touch target */
-      height: 48px;
+      width: var(--min-touch-target); /* WCAG AAA touch target */
+      height: var(--min-touch-target);
       font-size: var(--font-size-sm);
     }
 

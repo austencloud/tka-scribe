@@ -258,6 +258,15 @@
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .spinner,
+    .spinner-small {
+      animation: none;
+      border-top-color: var(--theme-accent, var(--theme-accent));
+      border-right-color: var(--theme-accent, var(--theme-accent));
+    }
+  }
+
   .sessions-list h4 {
     margin: 0 0 0.75rem;
     font-size: 0.75rem;

@@ -180,6 +180,11 @@
       0 0 0 1px var(--button-accent);
   }
 
+  .category-button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   /* Visual type buttons (larger, more prominent) */
   .category-button.visual {
     min-height: 120px;

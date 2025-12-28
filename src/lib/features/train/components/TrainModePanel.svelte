@@ -742,10 +742,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
-    min-width: 48px;
-    min-height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
+    min-width: var(--min-touch-target);
+    min-height: var(--min-touch-target);
     background: var(--theme-card-hover-bg);
     border: none;
     border-radius: 8px;

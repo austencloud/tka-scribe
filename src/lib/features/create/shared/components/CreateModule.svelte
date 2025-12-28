@@ -58,6 +58,7 @@
   import type { IToolPanelMethods } from "../types/create-module-types";
   import HandPathSettingsView from "./HandPathSettingsView.svelte";
   import TransferConfirmDialog from "./TransferConfirmDialog.svelte";
+  import ConfirmDialog from "$lib/shared/foundation/ui/ConfirmDialog.svelte";
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
   import { setCreateModuleContext } from "../context/create-module-context";
@@ -119,8 +120,9 @@
   let error = $state<string | null>(null);
   let servicesInitialized = $state<boolean>(false);
 
-  // Transfer confirmation dialog state
+  // Confirmation dialog states
   let showTransferConfirmation = $state(false);
+  let showClearSequenceConfirm = $state(false);
   let isMobile = $state(false);
   let sequenceToTransfer: PictographData[] | null = $state(null);
   let toolPanelElement: HTMLElement | null = $state(null);
@@ -465,7 +467,13 @@
     handlers.handleOpenShareHubPanel(panelState);
   }
 
-  async function handleClearSequence() {
+  function handleClearSequence() {
+    if (!handlers || !CreateModuleState || !constructTabState) return;
+    // Show confirmation dialog instead of executing directly
+    showClearSequenceConfirm = true;
+  }
+
+  async function confirmClearSequence() {
     if (!handlers || !CreateModuleState || !constructTabState) return;
 
     try {
@@ -479,7 +487,13 @@
       assemblyTabKey++;
     } catch (err) {
       error = err instanceof Error ? err.message : "Failed to clear sequence";
+    } finally {
+      showClearSequenceConfirm = false;
     }
+  }
+
+  function cancelClearSequence() {
+    showClearSequenceConfirm = false;
   }
 
   function handleOpenFilterPanel() {
@@ -650,6 +664,18 @@
     {isMobile}
     onConfirm={handleConfirmTransfer}
     onCancel={handleCancelTransfer}
+  />
+
+  <!-- Clear Sequence Confirmation Dialog -->
+  <ConfirmDialog
+    bind:isOpen={showClearSequenceConfirm}
+    title="Clear Sequence?"
+    message="This will remove all beats and the start position. This action cannot be undone."
+    confirmText="Clear All"
+    cancelText="Keep"
+    variant="danger"
+    onConfirm={confirmClearSequence}
+    onCancel={cancelClearSequence}
   />
 {/if}
 

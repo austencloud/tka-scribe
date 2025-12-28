@@ -30,6 +30,14 @@ QuizLoadingState - Loading spinner for quizzes
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .loading-spinner {
+      animation: none;
+      border-left-color: var(--theme-accent);
+      border-top-color: var(--theme-accent);
+    }
+  }
+
   .loading-text {
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9375rem;

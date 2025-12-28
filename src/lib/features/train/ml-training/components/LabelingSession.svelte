@@ -498,6 +498,14 @@ Allows navigating through frames and labeling each one.
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
+      border-top-color: #fff;
+      border-right-color: #fff;
+    }
+  }
+
   .canvas-container {
     flex: 1;
     min-height: 0;
@@ -511,8 +519,8 @@ Allows navigating through frames and labeling each one.
   }
 
   .nav-btn {
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     border: none;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);
@@ -576,8 +584,8 @@ Allows navigating through frames and labeling each one.
 
   .thumbnail {
     flex-shrink: 0;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+    width: var(--min-touch-target); /* WCAG AAA touch target */
+    height: var(--min-touch-target);
     border: 2px solid transparent;
     border-radius: 4px;
     background: rgba(255, 255, 255, 0.1);

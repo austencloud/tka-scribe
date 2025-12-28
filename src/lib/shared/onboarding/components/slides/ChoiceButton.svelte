@@ -184,6 +184,11 @@
     animation: none;
   }
 
+  .choice-button:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
   @media (max-width: 500px) {
     .choice-button {
       padding: 0.875rem 1rem;
