@@ -4,8 +4,19 @@ import { TYPES } from "$lib/shared/inversify/types";
 import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import {
+  checkRateLimit,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "$lib/server/security/rate-limiter";
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+  // Rate limit to prevent resource exhaustion
+  const clientIp = getClientAddress();
+  const rateCheck = checkRateLimit(`test-render:${clientIp}`, RATE_LIMITS.GENERAL);
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt);
+  }
   try {
     const body = (await request.json()) as { beatSize?: unknown };
     const beatSizeValue = body.beatSize;

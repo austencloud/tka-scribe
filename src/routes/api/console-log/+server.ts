@@ -1,7 +1,30 @@
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import {
+  checkRateLimit,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "$lib/server/security/rate-limiter";
 
-export const POST: RequestHandler = async ({ request }) => {
+/**
+ * Sanitize log input to prevent log injection attacks.
+ * Removes newlines, carriage returns, and ANSI escape sequences.
+ */
+function sanitizeLogInput(input: string): string {
+  return input
+    .replace(/[\r\n]/g, " ") // Replace newlines with spaces
+    .replace(/\x1b\[[0-9;]*m/g, "") // Remove ANSI escape sequences
+    .slice(0, 1000); // Limit length to prevent log flooding
+}
+
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+  // Rate limit to prevent log flooding
+  const clientIp = getClientAddress();
+  const rateCheck = checkRateLimit(`console-log:${clientIp}`, RATE_LIMITS.GENERAL);
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt);
+  }
+
   try {
     const body = (await request.json()) as {
       level?: string;
@@ -10,8 +33,13 @@ export const POST: RequestHandler = async ({ request }) => {
     };
     const { level, message, timestamp } = body;
 
+    // Sanitize inputs to prevent log injection
+    const safeLevel = sanitizeLogInput(level ?? "LOG");
+    const safeMessage = sanitizeLogInput(message ?? "");
+    const safeTimestamp = sanitizeLogInput(timestamp ?? "");
+
     // Format the log message for the server console
-    const formattedMessage = `[BROWSER-${level ?? "LOG"}] ${timestamp ?? ""} ${message ?? ""}`;
+    const formattedMessage = `[BROWSER-${safeLevel}] ${safeTimestamp} ${safeMessage}`;
 
     // Output to server console based on level
     switch (level) {

@@ -24,7 +24,7 @@ const hoistedModules = await (async () => {
   );
 
   // Verify TYPES is properly loaded
-  if (!typesModule.TYPES || !typesModule.TYPES.IVideoExportService) {
+  if (!typesModule.TYPES || !typesModule.TYPES.IVideoExporter) {
     throw new Error("TYPES module failed to load properly in test setup");
   }
 

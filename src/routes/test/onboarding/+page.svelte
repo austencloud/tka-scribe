@@ -137,7 +137,7 @@
   }
 
   .status .label {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.75);
   }
 
   .status .value {
@@ -193,8 +193,8 @@
   }
 
   .hint {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: var(--font-size-compact, 12px);
+    color: rgba(255, 255, 255, 0.75);
     margin: 4px 0 0 0;
     line-height: 1.4;
   }

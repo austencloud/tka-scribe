@@ -258,7 +258,7 @@
       rgba(255, 255, 255, 0.12)
     );
     border-radius: 6px;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.8px;

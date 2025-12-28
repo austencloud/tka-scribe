@@ -49,17 +49,6 @@ const config = {
   compilerOptions: {
     // Svelte 5 runes mode is enabled by default
     // 2025: Runes provide better reactivity and performance
-    warningFilter: (warning) => {
-      // Suppress state_referenced_locally warnings - these are intentional patterns
-      // in this codebase where:
-      // - $effect() handles prop sync
-      // - Component is keyed/recreated when prop changes
-      // - Initial value capture is deliberate
-      if (warning.code === "state_referenced_locally") {
-        return false;
-      }
-      return true;
-    },
   },
 };
 

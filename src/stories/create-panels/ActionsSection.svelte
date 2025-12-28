@@ -71,7 +71,7 @@
       rgba(12, 16, 25, 0.98) 100%
     );
     color: rgba(255, 255, 255, 0.45);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.2px;

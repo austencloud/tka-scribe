@@ -4,11 +4,11 @@
   border: 0;
   border-radius: 3em;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.5;
   font-family: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .storybook-button--primary {
-  background-color: #555ab9;
+  background-color: #3730a3;
   color: white;
 }
 .storybook-button--secondary {

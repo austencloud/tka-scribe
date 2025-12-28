@@ -4,6 +4,11 @@ import admin from "firebase-admin";
 import { requireFirebaseUser } from "$lib/server/auth/requireFirebaseUser";
 import { getAdminAuth, getAdminDb } from "$lib/server/firebaseAdmin";
 import { requireStepUpOrRecentAuth } from "$lib/server/security/requireStepUp";
+import {
+  checkRateLimit,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "$lib/server/security/rate-limiter";
 
 const STEP_UP_COOKIE = "tka_step_up";
 
@@ -25,6 +30,16 @@ async function deleteCollection(
 }
 
 export const POST: RequestHandler = async (event) => {
+  // Rate limit by IP address
+  const clientIp = event.getClientAddress();
+  const rateCheck = checkRateLimit(
+    `delete-account:${clientIp}`,
+    RATE_LIMITS.ACCOUNT_SENSITIVE
+  );
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt);
+  }
+
   try {
     const user = await requireFirebaseUser(event);
     requireStepUpOrRecentAuth(event, {

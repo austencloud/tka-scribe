@@ -4,7 +4,7 @@
   max-width: 600px;
   color: #333;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 1.5;
   font-family: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
@@ -14,7 +14,7 @@
   margin: 0 0 4px;
   font-weight: 700;
   font-size: 32px;
-  line-height: 1;
+  line-height: 1.5;
 }
 
 .storybook-page p {
@@ -43,15 +43,15 @@
   padding: 4px 12px;
   color: #357a14;
   font-weight: 700;
-  font-size: 11px;
-  line-height: 12px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .storybook-page .tip-wrapper {
   margin-top: 40px;
   margin-bottom: 40px;
   font-size: 13px;
-  line-height: 20px;
+  line-height: 1.5;
 }
 
 .storybook-page .tip-wrapper svg {

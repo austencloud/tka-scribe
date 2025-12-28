@@ -13,6 +13,11 @@ import type { SequenceExportOptions } from "$lib/shared/render/domain/models/Seq
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
+import {
+  checkRateLimit,
+  rateLimitResponse,
+  RATE_LIMITS,
+} from "$lib/server/security/rate-limiter";
 
 export const GET: RequestHandler = async () => {
   return json({
@@ -45,7 +50,14 @@ export const GET: RequestHandler = async () => {
   });
 };
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, getClientAddress }) => {
+  // Rate limit to prevent resource exhaustion (rendering is CPU-intensive)
+  const clientIp = getClientAddress();
+  const rateCheck = checkRateLimit(`batch-render:${clientIp}`, RATE_LIMITS.GENERAL);
+  if (!rateCheck.allowed) {
+    return rateLimitResponse(rateCheck.resetAt);
+  }
+
   try {
     const body = (await request.json()) as {
       sequence: SequenceData;
