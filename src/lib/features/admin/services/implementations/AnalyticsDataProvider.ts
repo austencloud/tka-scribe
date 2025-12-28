@@ -371,52 +371,59 @@ export class AnalyticsDataProvider implements IAnalyticsDataProvider {
    * OPTIMIZED: Uses SystemStateManager for unified data hub
    */
   async getEngagementMetrics(): Promise<EngagementMetrics> {
-    if (!(await this.isFirestoreAvailable())) {
-      return {
-        challengeParticipants: 0,
-        achievementsUnlocked: 0,
-        activeStreaks: 0,
-        totalXPEarned: 0,
-        totalUsers: 0,
-        totalAchievementsPossible: 0,
-      };
-    }
-
-    const systemState = await this.systemStateManager.getSystemState();
-    const users = systemState.users;
-    const totalUsers = users.length;
-
-    let challengeParticipants = 0;
-    let achievementsUnlocked = 0;
-    let activeStreaks = 0;
-    let totalXPEarned = 0;
-
-    for (const user of users) {
-      // Count users who have completed at least one challenge
-      if (user.challengesCompleted > 0) {
-        challengeParticipants++;
-      }
-      // Sum up achievements
-      achievementsUnlocked += user.achievementCount;
-      // Count users with active streaks
-      if (user.currentStreak > 0) {
-        activeStreaks++;
-      }
-      // Sum up XP
-      totalXPEarned += user.totalXP;
-    }
-
-    // Calculate total possible achievements (10 achievements per user as baseline)
-    const totalAchievementsPossible = totalUsers * 10;
-
-    return {
-      challengeParticipants,
-      achievementsUnlocked,
-      activeStreaks,
-      totalXPEarned,
-      totalUsers,
-      totalAchievementsPossible,
+    const emptyMetrics = {
+      challengeParticipants: 0,
+      achievementsUnlocked: 0,
+      activeStreaks: 0,
+      totalXPEarned: 0,
+      totalUsers: 0,
+      totalAchievementsPossible: 0,
     };
+
+    if (!(await this.isFirestoreAvailable())) {
+      return emptyMetrics;
+    }
+
+    try {
+      const systemState = await this.systemStateManager.getSystemState();
+      const users = systemState.users;
+      const totalUsers = users.length;
+
+      let challengeParticipants = 0;
+      let achievementsUnlocked = 0;
+      let activeStreaks = 0;
+      let totalXPEarned = 0;
+
+      for (const user of users) {
+        // Count users who have completed at least one challenge
+        if (user.challengesCompleted > 0) {
+          challengeParticipants++;
+        }
+        // Sum up achievements
+        achievementsUnlocked += user.achievementCount;
+        // Count users with active streaks
+        if (user.currentStreak > 0) {
+          activeStreaks++;
+        }
+        // Sum up XP
+        totalXPEarned += user.totalXP;
+      }
+
+      // Calculate total possible achievements (10 achievements per user as baseline)
+      const totalAchievementsPossible = totalUsers * 10;
+
+      return {
+        challengeParticipants,
+        achievementsUnlocked,
+        activeStreaks,
+        totalXPEarned,
+        totalUsers,
+        totalAchievementsPossible,
+      };
+    } catch (error) {
+      console.error("[AnalyticsDataProvider] Failed to get engagement metrics:", error);
+      return emptyMetrics;
+    }
   }
 
   // ============================================================================

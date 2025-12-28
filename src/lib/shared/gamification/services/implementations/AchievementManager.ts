@@ -90,39 +90,44 @@ export class AchievementManager implements IAchievementManager {
    * Initialize user XP document in Firestore if it doesn't exist
    */
   private async initializeUserXP(userId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const xpDocRef = doc(firestore, getUserXPPath(userId));
-    const xpDoc = await getDoc(xpDocRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const xpDocRef = doc(firestore, getUserXPPath(userId));
+      const xpDoc = await getDoc(xpDocRef);
 
-    if (!xpDoc.exists()) {
-      const initialXP: UserXP = {
-        id: "current",
-        userId,
-        totalXP: 0,
-        currentLevel: 1,
-        xpToNextLevel: 100,
-        lastUpdated: new Date(),
-      };
+      if (!xpDoc.exists()) {
+        const initialXP: UserXP = {
+          id: "current",
+          userId,
+          totalXP: 0,
+          currentLevel: 1,
+          xpToNextLevel: 100,
+          lastUpdated: new Date(),
+        };
 
-      await setDoc(xpDocRef, {
-        ...initialXP,
-        lastUpdated: serverTimestamp(),
-      });
+        await setDoc(xpDocRef, {
+          ...initialXP,
+          lastUpdated: serverTimestamp(),
+        });
 
-      // Also cache locally
-      await db.userXP.add(initialXP);
+        // Also cache locally
+        await db.userXP.add(initialXP);
 
-      console.log("✅ Initialized user XP record");
-    } else {
-      // Cache existing Firestore data locally
-      const firestoreXP = xpDoc.data() as UserXP;
-      await db.userXP.put({
-        ...firestoreXP,
-        lastUpdated:
-          firestoreXP.lastUpdated instanceof Timestamp
-            ? firestoreXP.lastUpdated.toDate()
-            : new Date(firestoreXP.lastUpdated),
-      });
+        console.log("✅ Initialized user XP record");
+      } else {
+        // Cache existing Firestore data locally
+        const firestoreXP = xpDoc.data() as UserXP;
+        await db.userXP.put({
+          ...firestoreXP,
+          lastUpdated:
+            firestoreXP.lastUpdated instanceof Timestamp
+              ? firestoreXP.lastUpdated.toDate()
+              : new Date(firestoreXP.lastUpdated),
+        });
+      }
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to initialize user XP:", error);
+      throw error;
     }
   }
 
@@ -131,53 +136,58 @@ export class AchievementManager implements IAchievementManager {
    * Uses a single batch query instead of individual reads for each achievement
    */
   private async initializeUserAchievements(userId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const achievementsPath = getUserAchievementsPath(userId);
-    const achievementsCollectionRef = collection(firestore, achievementsPath);
+    try {
+      const firestore = await getFirestoreInstance();
+      const achievementsPath = getUserAchievementsPath(userId);
+      const achievementsCollectionRef = collection(firestore, achievementsPath);
 
-    // Fetch ALL existing achievements in a single query (1 DB call instead of 22+)
-    const existingSnapshot = await getDocs(achievementsCollectionRef);
-    const existingAchievementIds = new Set(
-      existingSnapshot.docs.map((d) => d.id)
-    );
-
-    // Only create achievements that don't exist yet
-    const missingAchievements = ALL_ACHIEVEMENTS.filter(
-      (a) => !existingAchievementIds.has(a.id)
-    );
-
-    // Batch create missing achievements
-    for (const achievement of missingAchievements) {
-      const achievementDocRef = doc(
-        firestore,
-        `${achievementsPath}/${achievement.id}`
+      // Fetch ALL existing achievements in a single query (1 DB call instead of 22+)
+      const existingSnapshot = await getDocs(achievementsCollectionRef);
+      const existingAchievementIds = new Set(
+        existingSnapshot.docs.map((d) => d.id)
       );
 
-      const userAchievement: Omit<UserAchievement, "id"> = {
-        achievementId: achievement.id,
-        userId,
-        unlockedAt: new Date(),
-        progress: 0,
-        isCompleted: false,
-        notificationShown: false,
-      };
-
-      await setDoc(achievementDocRef, {
-        ...userAchievement,
-        unlockedAt: serverTimestamp(),
-      });
-
-      // Cache locally
-      await db.userAchievements.add({
-        id: achievement.id,
-        ...userAchievement,
-      });
-    }
-
-    if (missingAchievements.length > 0) {
-      console.log(
-        `✅ Initialized ${missingAchievements.length} new achievement records`
+      // Only create achievements that don't exist yet
+      const missingAchievements = ALL_ACHIEVEMENTS.filter(
+        (a) => !existingAchievementIds.has(a.id)
       );
+
+      // Batch create missing achievements
+      for (const achievement of missingAchievements) {
+        const achievementDocRef = doc(
+          firestore,
+          `${achievementsPath}/${achievement.id}`
+        );
+
+        const userAchievement: Omit<UserAchievement, "id"> = {
+          achievementId: achievement.id,
+          userId,
+          unlockedAt: new Date(),
+          progress: 0,
+          isCompleted: false,
+          notificationShown: false,
+        };
+
+        await setDoc(achievementDocRef, {
+          ...userAchievement,
+          unlockedAt: serverTimestamp(),
+        });
+
+        // Cache locally
+        await db.userAchievements.add({
+          id: achievement.id,
+          ...userAchievement,
+        });
+      }
+
+      if (missingAchievements.length > 0) {
+        console.log(
+          `✅ Initialized ${missingAchievements.length} new achievement records`
+        );
+      }
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to initialize user achievements:", error);
+      throw error;
     }
   }
 
@@ -334,64 +344,69 @@ export class AchievementManager implements IAchievementManager {
     action: XPActionType,
     metadata?: XPEventMetadata
   ): Promise<{ newLevel?: number }> {
-    const firestore = await getFirestoreInstance();
-    const xpDocRef = doc(firestore, getUserXPPath(userId));
+    try {
+      const firestore = await getFirestoreInstance();
+      const xpDocRef = doc(firestore, getUserXPPath(userId));
 
-    // Get current XP
-    const xpDoc = await getDoc(xpDocRef);
-    const currentXP = xpDoc.exists() ? (xpDoc.data() as UserXP) : null;
+      // Get current XP
+      const xpDoc = await getDoc(xpDocRef);
+      const currentXP = xpDoc.exists() ? (xpDoc.data() as UserXP) : null;
 
-    if (!currentXP) {
-      throw new Error("User XP record not found");
+      if (!currentXP) {
+        throw new Error("User XP record not found");
+      }
+
+      const oldTotalXP = currentXP.totalXP;
+      const newTotalXP = oldTotalXP + amount;
+
+      // Calculate new level
+      const oldLevel = calculateLevelFromXP(oldTotalXP);
+      const newLevel = calculateLevelFromXP(newTotalXP);
+
+      const leveledUp = newLevel.currentLevel > oldLevel.currentLevel;
+
+      // Update Firestore subcollection
+      await updateDoc(xpDocRef, {
+        totalXP: increment(amount),
+        currentLevel: newLevel.currentLevel,
+        xpToNextLevel: newLevel.xpToNextLevel,
+        lastUpdated: serverTimestamp(),
+      });
+
+      // Sync to main user document for leaderboards (denormalized)
+      const userDocRef = doc(firestore, `users/${userId}`);
+      await updateDoc(userDocRef, {
+        totalXP: increment(amount),
+        currentLevel: newLevel.currentLevel,
+      });
+
+      // Log XP event
+      await this.logXPEvent(userId, action, amount, metadata);
+
+      // Update local cache
+      await db.userXP.put({
+        id: "current",
+        userId,
+        totalXP: newTotalXP,
+        currentLevel: newLevel.currentLevel,
+        xpToNextLevel: newLevel.xpToNextLevel,
+        lastUpdated: new Date(),
+      });
+
+      // Show level up notification if applicable
+      if (leveledUp && this._notificationService) {
+        await this._notificationService.showLevelUp(newLevel.currentLevel);
+      }
+
+      const result: { newLevel?: number } = {};
+      if (leveledUp) {
+        result.newLevel = newLevel.currentLevel;
+      }
+      return result;
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to award XP:", error);
+      throw error;
     }
-
-    const oldTotalXP = currentXP.totalXP;
-    const newTotalXP = oldTotalXP + amount;
-
-    // Calculate new level
-    const oldLevel = calculateLevelFromXP(oldTotalXP);
-    const newLevel = calculateLevelFromXP(newTotalXP);
-
-    const leveledUp = newLevel.currentLevel > oldLevel.currentLevel;
-
-    // Update Firestore subcollection
-    await updateDoc(xpDocRef, {
-      totalXP: increment(amount),
-      currentLevel: newLevel.currentLevel,
-      xpToNextLevel: newLevel.xpToNextLevel,
-      lastUpdated: serverTimestamp(),
-    });
-
-    // Sync to main user document for leaderboards (denormalized)
-    const userDocRef = doc(firestore, `users/${userId}`);
-    await updateDoc(userDocRef, {
-      totalXP: increment(amount),
-      currentLevel: newLevel.currentLevel,
-    });
-
-    // Log XP event
-    await this.logXPEvent(userId, action, amount, metadata);
-
-    // Update local cache
-    await db.userXP.put({
-      id: "current",
-      userId,
-      totalXP: newTotalXP,
-      currentLevel: newLevel.currentLevel,
-      xpToNextLevel: newLevel.xpToNextLevel,
-      lastUpdated: new Date(),
-    });
-
-    // Show level up notification if applicable
-    if (leveledUp && this._notificationService) {
-      await this._notificationService.showLevelUp(newLevel.currentLevel);
-    }
-
-    const result: { newLevel?: number } = {};
-    if (leveledUp) {
-      result.newLevel = newLevel.currentLevel;
-    }
-    return result;
   }
 
   /**
@@ -403,29 +418,34 @@ export class AchievementManager implements IAchievementManager {
     xpGained: number,
     metadata?: XPEventMetadata
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const eventsPath = getUserXPEventsPath(userId);
-    const eventRef = doc(collection(firestore, eventsPath));
+    try {
+      const firestore = await getFirestoreInstance();
+      const eventsPath = getUserXPEventsPath(userId);
+      const eventRef = doc(collection(firestore, eventsPath));
 
-    const event: Omit<XPGainEvent, "id"> = {
-      action,
-      xpGained,
-      timestamp: new Date(),
-    };
-    if (metadata !== undefined) {
-      event.metadata = metadata;
+      const event: Omit<XPGainEvent, "id"> = {
+        action,
+        xpGained,
+        timestamp: new Date(),
+      };
+      if (metadata !== undefined) {
+        event.metadata = metadata;
+      }
+
+      await setDoc(eventRef, {
+        ...event,
+        timestamp: serverTimestamp(),
+      });
+
+      // Cache locally
+      await db.xpEvents.add({
+        id: eventRef.id,
+        ...event,
+      });
+    } catch (error) {
+      // Silent failure - XP event logging is non-critical
+      console.error("❌ [AchievementManager] Failed to log XP event:", error);
     }
-
-    await setDoc(eventRef, {
-      ...event,
-      timestamp: serverTimestamp(),
-    });
-
-    // Cache locally
-    await db.xpEvents.add({
-      id: eventRef.id,
-      ...event,
-    });
   }
 
   async awardXP(amount: number, reason?: string): Promise<void> {
@@ -453,43 +473,48 @@ export class AchievementManager implements IAchievementManager {
     const user = auth.currentUser;
     if (!user) return [];
 
-    const unlockedAchievements: Achievement[] = [];
+    try {
+      const unlockedAchievements: Achievement[] = [];
 
-    // Get all achievements that could be affected by this action
-    const relevantAchievements = this.getRelevantAchievements(action);
+      // Get all achievements that could be affected by this action
+      const relevantAchievements = this.getRelevantAchievements(action);
 
-    for (const achievement of relevantAchievements) {
-      const wasUnlocked = await this.updateAchievementProgress(
-        user.uid,
-        achievement,
-        action,
-        metadata
-      );
+      for (const achievement of relevantAchievements) {
+        const wasUnlocked = await this.updateAchievementProgress(
+          user.uid,
+          achievement,
+          action,
+          metadata
+        );
 
-      if (wasUnlocked) {
-        unlockedAchievements.push(achievement);
+        if (wasUnlocked) {
+          unlockedAchievements.push(achievement);
 
-        // Show unlock notification
-        if (this._notificationService) {
-          await this._notificationService.showAchievementUnlock(
-            achievement.id,
-            achievement.title,
-            achievement.icon,
-            achievement.xpReward
+          // Show unlock notification
+          if (this._notificationService) {
+            await this._notificationService.showAchievementUnlock(
+              achievement.id,
+              achievement.title,
+              achievement.icon,
+              achievement.xpReward
+            );
+          }
+
+          // Award bonus XP for unlocking achievement
+          await this.awardXPInternal(
+            user.uid,
+            achievement.xpReward,
+            "achievement_unlocked",
+            { achievementId: achievement.id, tier: achievement.tier }
           );
         }
-
-        // Award bonus XP for unlocking achievement
-        await this.awardXPInternal(
-          user.uid,
-          achievement.xpReward,
-          "achievement_unlocked",
-          { achievementId: achievement.id, tier: achievement.tier }
-        );
       }
-    }
 
-    return unlockedAchievements;
+      return unlockedAchievements;
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to check achievement progress:", error);
+      return [];
+    }
   }
 
   /**
@@ -538,83 +563,88 @@ export class AchievementManager implements IAchievementManager {
     action: XPActionType,
     metadata?: XPEventMetadata
   ): Promise<boolean> {
-    const firestore = await getFirestoreInstance();
-    const achievementsPath = getUserAchievementsPath(userId);
-    const achievementDocRef = doc(
-      firestore,
-      `${achievementsPath}/${achievement.id}`
-    );
-
-    const achievementDoc = await getDoc(achievementDocRef);
-    if (!achievementDoc.exists()) {
-      console.warn(
-        `⚠️ Achievement progress not found: ${achievement.id}, initializing...`
+    try {
+      const firestore = await getFirestoreInstance();
+      const achievementsPath = getUserAchievementsPath(userId);
+      const achievementDocRef = doc(
+        firestore,
+        `${achievementsPath}/${achievement.id}`
       );
-      await this.initializeUserAchievements(userId);
-      return false;
-    }
 
-    const userAchievement = achievementDoc.data() as UserAchievement;
+      const achievementDoc = await getDoc(achievementDocRef);
+      if (!achievementDoc.exists()) {
+        console.warn(
+          `⚠️ Achievement progress not found: ${achievement.id}, initializing...`
+        );
+        await this.initializeUserAchievements(userId);
+        return false;
+      }
 
-    // Already completed
-    if (userAchievement.isCompleted) {
-      return false;
-    }
+      const userAchievement = achievementDoc.data() as UserAchievement;
 
-    // Calculate new progress based on achievement type
-    const progressDelta = this.calculateProgressDelta(
-      achievement,
-      action,
-      metadata
-    );
+      // Already completed
+      if (userAchievement.isCompleted) {
+        return false;
+      }
 
-    if (progressDelta === 0) {
-      return false;
-    }
+      // Calculate new progress based on achievement type
+      const progressDelta = this.calculateProgressDelta(
+        achievement,
+        action,
+        metadata
+      );
 
-    const newProgress = userAchievement.progress + progressDelta;
-    const isNowCompleted = newProgress >= achievement.requirement.target;
+      if (progressDelta === 0) {
+        return false;
+      }
 
-    // Update Firestore
-    if (isNowCompleted) {
-      await updateDoc(achievementDocRef, {
-        progress: achievement.requirement.target,
-        isCompleted: true,
-        unlockedAt: serverTimestamp(),
-        notificationShown: false,
-      });
+      const newProgress = userAchievement.progress + progressDelta;
+      const isNowCompleted = newProgress >= achievement.requirement.target;
 
-      // Sync to main user document for leaderboards (denormalized)
-      const userDocRef = doc(firestore, `users/${userId}`);
-      await updateDoc(userDocRef, {
-        achievementCount: increment(1),
-      });
+      // Update Firestore
+      if (isNowCompleted) {
+        await updateDoc(achievementDocRef, {
+          progress: achievement.requirement.target,
+          isCompleted: true,
+          unlockedAt: serverTimestamp(),
+          notificationShown: false,
+        });
 
-      // Update local cache
-      await db.userAchievements.put({
-        ...userAchievement,
-        id: achievement.id,
-        progress: achievement.requirement.target,
-        isCompleted: true,
-        unlockedAt: new Date(),
-        notificationShown: false,
-      });
+        // Sync to main user document for leaderboards (denormalized)
+        const userDocRef = doc(firestore, `users/${userId}`);
+        await updateDoc(userDocRef, {
+          achievementCount: increment(1),
+        });
 
-      console.log(`🎉 Achievement unlocked: ${achievement.title}`);
-      return true;
-    } else {
-      // Just update progress
-      await updateDoc(achievementDocRef, {
-        progress: increment(progressDelta),
-      });
+        // Update local cache
+        await db.userAchievements.put({
+          ...userAchievement,
+          id: achievement.id,
+          progress: achievement.requirement.target,
+          isCompleted: true,
+          unlockedAt: new Date(),
+          notificationShown: false,
+        });
 
-      // Update local cache
-      await db.userAchievements.put({
-        ...userAchievement,
-        id: achievement.id,
-        progress: newProgress,
-      });
+        console.log(`🎉 Achievement unlocked: ${achievement.title}`);
+        return true;
+      } else {
+        // Just update progress
+        await updateDoc(achievementDocRef, {
+          progress: increment(progressDelta),
+        });
 
+        // Update local cache
+        await db.userAchievements.put({
+          ...userAchievement,
+          id: achievement.id,
+          progress: newProgress,
+        });
+
+        return false;
+      }
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to update achievement progress:", error);
       return false;
     }
   }
@@ -686,33 +716,38 @@ export class AchievementManager implements IAchievementManager {
       throw new Error("No user logged in");
     }
 
-    // Try local cache first
-    const localXP = await db.userXP.get("current");
-    if (localXP) {
-      return localXP;
+    try {
+      // Try local cache first
+      const localXP = await db.userXP.get("current");
+      if (localXP) {
+        return localXP;
+      }
+
+      // Fall back to Firestore
+      const firestore = await getFirestoreInstance();
+      const xpDocRef = doc(firestore, getUserXPPath(user.uid));
+      const xpDoc = await getDoc(xpDocRef);
+
+      if (!xpDoc.exists()) {
+        throw new Error("User XP record not found");
+      }
+
+      const firestoreXP = xpDoc.data() as UserXP;
+
+      // Cache it locally
+      await db.userXP.put({
+        ...firestoreXP,
+        lastUpdated:
+          firestoreXP.lastUpdated instanceof Timestamp
+            ? firestoreXP.lastUpdated.toDate()
+            : new Date(firestoreXP.lastUpdated),
+      });
+
+      return firestoreXP;
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to get user XP:", error);
+      throw error;
     }
-
-    // Fall back to Firestore
-    const firestore = await getFirestoreInstance();
-    const xpDocRef = doc(firestore, getUserXPPath(user.uid));
-    const xpDoc = await getDoc(xpDocRef);
-
-    if (!xpDoc.exists()) {
-      throw new Error("User XP record not found");
-    }
-
-    const firestoreXP = xpDoc.data() as UserXP;
-
-    // Cache it locally
-    await db.userXP.put({
-      ...firestoreXP,
-      lastUpdated:
-        firestoreXP.lastUpdated instanceof Timestamp
-          ? firestoreXP.lastUpdated.toDate()
-          : new Date(firestoreXP.lastUpdated),
-    });
-
-    return firestoreXP;
   }
 
   async getAllAchievements(): Promise<
@@ -723,22 +758,27 @@ export class AchievementManager implements IAchievementManager {
       return ALL_ACHIEVEMENTS.map((a) => ({ ...a, userProgress: null }));
     }
 
-    const firestore = await getFirestoreInstance();
-    const achievementsPath = getUserAchievementsPath(user.uid);
-    const achievementsSnapshot = await getDocs(
-      collection(firestore, achievementsPath)
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const achievementsPath = getUserAchievementsPath(user.uid);
+      const achievementsSnapshot = await getDocs(
+        collection(firestore, achievementsPath)
+      );
 
-    const userProgressMap = new Map<string, UserAchievement>();
-    achievementsSnapshot.docs.forEach((doc) => {
-      const data = doc.data() as UserAchievement;
-      userProgressMap.set(doc.id, { ...data, id: doc.id });
-    });
+      const userProgressMap = new Map<string, UserAchievement>();
+      achievementsSnapshot.docs.forEach((doc) => {
+        const data = doc.data() as UserAchievement;
+        userProgressMap.set(doc.id, { ...data, id: doc.id });
+      });
 
-    return ALL_ACHIEVEMENTS.map((achievement) => ({
-      ...achievement,
-      userProgress: userProgressMap.get(achievement.id) ?? null,
-    }));
+      return ALL_ACHIEVEMENTS.map((achievement) => ({
+        ...achievement,
+        userProgress: userProgressMap.get(achievement.id) ?? null,
+      }));
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to get all achievements:", error);
+      return ALL_ACHIEVEMENTS.map((a) => ({ ...a, userProgress: null }));
+    }
   }
 
   async getAchievementsByCategory(
@@ -752,22 +792,27 @@ export class AchievementManager implements IAchievementManager {
     const user = auth.currentUser;
     if (!user) return [];
 
-    const firestore = await getFirestoreInstance();
-    const achievementsPath = getUserAchievementsPath(user.uid);
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    try {
+      const firestore = await getFirestoreInstance();
+      const achievementsPath = getUserAchievementsPath(user.uid);
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const recentQuery = query(
-      collection(firestore, achievementsPath),
-      where("isCompleted", "==", true),
-      where("unlockedAt", ">=", Timestamp.fromDate(sevenDaysAgo)),
-      orderBy("unlockedAt", "desc"),
-      limit(10)
-    );
+      const recentQuery = query(
+        collection(firestore, achievementsPath),
+        where("isCompleted", "==", true),
+        where("unlockedAt", ">=", Timestamp.fromDate(sevenDaysAgo)),
+        orderBy("unlockedAt", "desc"),
+        limit(10)
+      );
 
-    const snapshot = await getDocs(recentQuery);
-    return snapshot.docs.map(
-      (doc) => ({ ...doc.data(), id: doc.id }) as UserAchievement
-    );
+      const snapshot = await getDocs(recentQuery);
+      return snapshot.docs.map(
+        (doc) => ({ ...doc.data(), id: doc.id }) as UserAchievement
+      );
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to get recent achievements:", error);
+      return [];
+    }
   }
 
   async getAchievementProgress(
@@ -776,22 +821,27 @@ export class AchievementManager implements IAchievementManager {
     const user = auth.currentUser;
     if (!user) return null;
 
-    const firestore = await getFirestoreInstance();
-    const achievementsPath = getUserAchievementsPath(user.uid);
-    const achievementDocRef = doc(
-      firestore,
-      `${achievementsPath}/${achievementId}`
-    );
-    const achievementDoc = await getDoc(achievementDocRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const achievementsPath = getUserAchievementsPath(user.uid);
+      const achievementDocRef = doc(
+        firestore,
+        `${achievementsPath}/${achievementId}`
+      );
+      const achievementDoc = await getDoc(achievementDocRef);
 
-    if (!achievementDoc.exists()) {
+      if (!achievementDoc.exists()) {
+        return null;
+      }
+
+      return {
+        ...achievementDoc.data(),
+        id: achievementDoc.id,
+      } as UserAchievement;
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to get achievement progress:", error);
       return null;
     }
-
-    return {
-      ...achievementDoc.data(),
-      id: achievementDoc.id,
-    } as UserAchievement;
   }
 
   async getStats(): Promise<{
@@ -801,32 +851,39 @@ export class AchievementManager implements IAchievementManager {
     totalAchievements: number;
     completionPercentage: number;
   }> {
+    const defaultStats = {
+      totalXP: 0,
+      currentLevel: 1,
+      achievementsUnlocked: 0,
+      totalAchievements: ALL_ACHIEVEMENTS.length,
+      completionPercentage: 0,
+    };
+
     const user = auth.currentUser;
     if (!user) {
-      return {
-        totalXP: 0,
-        currentLevel: 1,
-        achievementsUnlocked: 0,
-        totalAchievements: ALL_ACHIEVEMENTS.length,
-        completionPercentage: 0,
-      };
+      return defaultStats;
     }
 
-    const xp = await this.getUserXP();
-    const achievements = await this.getAllAchievements();
+    try {
+      const xp = await this.getUserXP();
+      const achievements = await this.getAllAchievements();
 
-    const unlockedCount = achievements.filter(
-      (a) => a.userProgress?.isCompleted
-    ).length;
+      const unlockedCount = achievements.filter(
+        (a) => a.userProgress?.isCompleted
+      ).length;
 
-    return {
-      totalXP: xp.totalXP,
-      currentLevel: xp.currentLevel,
-      achievementsUnlocked: unlockedCount,
-      totalAchievements: ALL_ACHIEVEMENTS.length,
-      completionPercentage: Math.round(
-        (unlockedCount / ALL_ACHIEVEMENTS.length) * 100
-      ),
-    };
+      return {
+        totalXP: xp.totalXP,
+        currentLevel: xp.currentLevel,
+        achievementsUnlocked: unlockedCount,
+        totalAchievements: ALL_ACHIEVEMENTS.length,
+        completionPercentage: Math.round(
+          (unlockedCount / ALL_ACHIEVEMENTS.length) * 100
+        ),
+      };
+    } catch (error) {
+      console.error("❌ [AchievementManager] Failed to get stats:", error);
+      return defaultStats;
+    }
   }
 }

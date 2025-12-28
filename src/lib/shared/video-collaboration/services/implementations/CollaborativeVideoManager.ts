@@ -13,6 +13,7 @@
 
 import { injectable } from "inversify";
 import { getFirestoreInstance, auth } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import {
   collection,
   doc,
@@ -187,75 +188,98 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
   // ============================================================================
 
   async saveVideo(video: CollaborativeVideo): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
 
-    // Ensure current user is the creator
-    if (video.creatorId !== userId) {
-      throw new Error("Only the creator can save this video");
+      // Ensure current user is the creator
+      if (video.creatorId !== userId) {
+        throw new Error("Only the creator can save this video");
+      }
+
+      const docRef = doc(firestore, VIDEOS_COLLECTION, video.id);
+      await setDoc(docRef, this.videoToDoc(video));
+
+      console.log(`✅ Saved collaborative video: ${video.id}`);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to save video:", error);
+      toast.error("Failed to save video.");
+      throw error;
     }
-
-    const docRef = doc(firestore, VIDEOS_COLLECTION, video.id);
-    await setDoc(docRef, this.videoToDoc(video));
-
-    console.log(`✅ Saved collaborative video: ${video.id}`);
   }
 
   async getVideo(videoId: string): Promise<CollaborativeVideo | null> {
-    const firestore = await getFirestoreInstance();
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-    const docSnap = await getDoc(docRef);
+    try {
+      const firestore = await getFirestoreInstance();
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+      const docSnap = await getDoc(docRef);
 
-    if (!docSnap.exists()) {
+      if (!docSnap.exists()) {
+        return null;
+      }
+
+      return this.docToVideo(docSnap.data(), videoId);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to get video:", error);
       return null;
     }
-
-    return this.docToVideo(docSnap.data(), videoId);
   }
 
   async deleteVideo(videoId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const video = await this.getVideo(videoId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const video = await this.getVideo(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
+      if (!video) {
+        throw new Error("Video not found");
+      }
+
+      if (video.creatorId !== userId) {
+        throw new Error("Only the creator can delete this video");
+      }
+
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+      await deleteDoc(docRef);
+
+      console.log(`🗑️ Deleted collaborative video: ${videoId}`);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to delete video:", error);
+      toast.error("Failed to delete video.");
+      throw error;
     }
-
-    if (video.creatorId !== userId) {
-      throw new Error("Only the creator can delete this video");
-    }
-
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-    await deleteDoc(docRef);
-
-    console.log(`🗑️ Deleted collaborative video: ${videoId}`);
   }
 
   async updateVideo(
     videoId: string,
     updates: Partial<Pick<CollaborativeVideo, "visibility" | "description">>
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const video = await this.getVideo(videoId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const video = await this.getVideo(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
+      if (!video) {
+        throw new Error("Video not found");
+      }
+
+      // Only creator can update
+      if (video.creatorId !== userId) {
+        throw new Error("Only the creator can update this video");
+      }
+
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+      await updateDoc(docRef, {
+        ...updates,
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log(`📝 Updated collaborative video: ${videoId}`);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to update video:", error);
+      toast.error("Failed to update video.");
+      throw error;
     }
-
-    // Only creator can update
-    if (video.creatorId !== userId) {
-      throw new Error("Only the creator can update this video");
-    }
-
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-    await updateDoc(docRef, {
-      ...updates,
-      updatedAt: serverTimestamp(),
-    });
-
-    console.log(`📝 Updated collaborative video: ${videoId}`);
   }
 
   // ============================================================================
@@ -268,205 +292,229 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
     displayName?: string,
     message?: string
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getUserId();
-    const video = await this.getVideo(videoId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getUserId();
+      const video = await this.getVideo(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
+      if (!video) {
+        throw new Error("Video not found");
+      }
+
+      // Only collaborators can invite others
+      if (!video.collaborators.some((c) => c.userId === currentUserId)) {
+        throw new Error("Only collaborators can invite others");
+      }
+
+      // Check if already a collaborator
+      if (video.collaborators.some((c) => c.userId === userId)) {
+        throw new Error("User is already a collaborator");
+      }
+
+      // Check if already has pending invite
+      if (
+        video.pendingInvites.some(
+          (i) => i.userId === userId && i.status === "pending"
+        )
+      ) {
+        throw new Error("User already has a pending invite");
+      }
+
+      const invite: CollaborationInvite = {
+        userId,
+        displayName,
+        message,
+        invitedAt: new Date(),
+        invitedBy: currentUserId,
+        status: "pending",
+      };
+
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+      await updateDoc(docRef, {
+        pendingInvites: arrayUnion({
+          userId: invite.userId,
+          displayName: invite.displayName ?? null,
+          message: invite.message ?? null,
+          invitedAt: invite.invitedAt,
+          invitedBy: invite.invitedBy,
+          status: invite.status,
+          respondedAt: null,
+        }),
+        pendingInviteUserIds: arrayUnion(userId),
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log(`📨 Invited ${userId} to collaborate on video ${videoId}`);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to invite collaborator:", error);
+      toast.error("Failed to send collaboration invite.");
+      throw error;
     }
-
-    // Only collaborators can invite others
-    if (!video.collaborators.some((c) => c.userId === currentUserId)) {
-      throw new Error("Only collaborators can invite others");
-    }
-
-    // Check if already a collaborator
-    if (video.collaborators.some((c) => c.userId === userId)) {
-      throw new Error("User is already a collaborator");
-    }
-
-    // Check if already has pending invite
-    if (
-      video.pendingInvites.some(
-        (i) => i.userId === userId && i.status === "pending"
-      )
-    ) {
-      throw new Error("User already has a pending invite");
-    }
-
-    const invite: CollaborationInvite = {
-      userId,
-      displayName,
-      message,
-      invitedAt: new Date(),
-      invitedBy: currentUserId,
-      status: "pending",
-    };
-
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-    await updateDoc(docRef, {
-      pendingInvites: arrayUnion({
-        userId: invite.userId,
-        displayName: invite.displayName ?? null,
-        message: invite.message ?? null,
-        invitedAt: invite.invitedAt,
-        invitedBy: invite.invitedBy,
-        status: invite.status,
-        respondedAt: null,
-      }),
-      pendingInviteUserIds: arrayUnion(userId),
-      updatedAt: serverTimestamp(),
-    });
-
-    console.log(`📨 Invited ${userId} to collaborate on video ${videoId}`);
   }
 
   async acceptInvite(videoId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userInfo = this.getUserInfo();
-    const video = await this.getVideo(videoId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userInfo = this.getUserInfo();
+      const video = await this.getVideo(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
+      if (!video) {
+        throw new Error("Video not found");
+      }
+
+      const invite = video.pendingInvites.find(
+        (i) => i.userId === userInfo.uid && i.status === "pending"
+      );
+
+      if (!invite) {
+        throw new Error("No pending invite found");
+      }
+
+      const newCollaborator: VideoCollaborator = {
+        userId: userInfo.uid,
+        displayName: userInfo.displayName,
+        avatarUrl: userInfo.avatarUrl,
+        joinedAt: new Date(),
+        role: "collaborator",
+      };
+
+      // Update in a single write
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+
+      // Remove old invite, add updated one, add collaborator
+      const updatedInvites = video.pendingInvites.map((i) =>
+        i.userId === userInfo.uid
+          ? { ...i, status: "accepted" as const, respondedAt: new Date() }
+          : i
+      );
+
+      await updateDoc(docRef, {
+        collaborators: arrayUnion({
+          userId: newCollaborator.userId,
+          displayName: newCollaborator.displayName ?? null,
+          avatarUrl: newCollaborator.avatarUrl ?? null,
+          joinedAt: newCollaborator.joinedAt,
+          role: newCollaborator.role,
+        }),
+        collaboratorIds: arrayUnion(userInfo.uid),
+        pendingInvites: updatedInvites.map((i) => ({
+          userId: i.userId,
+          displayName: i.displayName ?? null,
+          message: i.message ?? null,
+          invitedAt: i.invitedAt,
+          invitedBy: i.invitedBy,
+          status: i.status,
+          respondedAt: i.respondedAt ?? null,
+        })),
+        pendingInviteUserIds: arrayRemove(userInfo.uid),
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log(
+        `✅ ${userInfo.uid} accepted collaboration on video ${videoId}`
+      );
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to accept invite:", error);
+      toast.error("Failed to accept collaboration invite.");
+      throw error;
     }
-
-    const invite = video.pendingInvites.find(
-      (i) => i.userId === userInfo.uid && i.status === "pending"
-    );
-
-    if (!invite) {
-      throw new Error("No pending invite found");
-    }
-
-    const newCollaborator: VideoCollaborator = {
-      userId: userInfo.uid,
-      displayName: userInfo.displayName,
-      avatarUrl: userInfo.avatarUrl,
-      joinedAt: new Date(),
-      role: "collaborator",
-    };
-
-    // Update in a single write
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-
-    // Remove old invite, add updated one, add collaborator
-    const updatedInvites = video.pendingInvites.map((i) =>
-      i.userId === userInfo.uid
-        ? { ...i, status: "accepted" as const, respondedAt: new Date() }
-        : i
-    );
-
-    await updateDoc(docRef, {
-      collaborators: arrayUnion({
-        userId: newCollaborator.userId,
-        displayName: newCollaborator.displayName ?? null,
-        avatarUrl: newCollaborator.avatarUrl ?? null,
-        joinedAt: newCollaborator.joinedAt,
-        role: newCollaborator.role,
-      }),
-      collaboratorIds: arrayUnion(userInfo.uid),
-      pendingInvites: updatedInvites.map((i) => ({
-        userId: i.userId,
-        displayName: i.displayName ?? null,
-        message: i.message ?? null,
-        invitedAt: i.invitedAt,
-        invitedBy: i.invitedBy,
-        status: i.status,
-        respondedAt: i.respondedAt ?? null,
-      })),
-      pendingInviteUserIds: arrayRemove(userInfo.uid),
-      updatedAt: serverTimestamp(),
-    });
-
-    console.log(
-      `✅ ${userInfo.uid} accepted collaboration on video ${videoId}`
-    );
   }
 
   async declineInvite(videoId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const video = await this.getVideo(videoId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const video = await this.getVideo(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
+      if (!video) {
+        throw new Error("Video not found");
+      }
+
+      const invite = video.pendingInvites.find(
+        (i) => i.userId === userId && i.status === "pending"
+      );
+
+      if (!invite) {
+        throw new Error("No pending invite found");
+      }
+
+      const updatedInvites = video.pendingInvites.map((i) =>
+        i.userId === userId
+          ? { ...i, status: "declined" as const, respondedAt: new Date() }
+          : i
+      );
+
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+      await updateDoc(docRef, {
+        pendingInvites: updatedInvites.map((i) => ({
+          userId: i.userId,
+          displayName: i.displayName ?? null,
+          message: i.message ?? null,
+          invitedAt: i.invitedAt,
+          invitedBy: i.invitedBy,
+          status: i.status,
+          respondedAt: i.respondedAt ?? null,
+        })),
+        pendingInviteUserIds: arrayRemove(userId),
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log(`❌ ${userId} declined collaboration on video ${videoId}`);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to decline invite:", error);
+      toast.error("Failed to decline collaboration invite.");
+      throw error;
     }
-
-    const invite = video.pendingInvites.find(
-      (i) => i.userId === userId && i.status === "pending"
-    );
-
-    if (!invite) {
-      throw new Error("No pending invite found");
-    }
-
-    const updatedInvites = video.pendingInvites.map((i) =>
-      i.userId === userId
-        ? { ...i, status: "declined" as const, respondedAt: new Date() }
-        : i
-    );
-
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-    await updateDoc(docRef, {
-      pendingInvites: updatedInvites.map((i) => ({
-        userId: i.userId,
-        displayName: i.displayName ?? null,
-        message: i.message ?? null,
-        invitedAt: i.invitedAt,
-        invitedBy: i.invitedBy,
-        status: i.status,
-        respondedAt: i.respondedAt ?? null,
-      })),
-      pendingInviteUserIds: arrayRemove(userId),
-      updatedAt: serverTimestamp(),
-    });
-
-    console.log(`❌ ${userId} declined collaboration on video ${videoId}`);
   }
 
   async removeCollaborator(videoId: string, userId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const currentUserId = this.getUserId();
-    const video = await this.getVideo(videoId);
+    try {
+      const firestore = await getFirestoreInstance();
+      const currentUserId = this.getUserId();
+      const video = await this.getVideo(videoId);
 
-    if (!video) {
-      throw new Error("Video not found");
-    }
+      if (!video) {
+        throw new Error("Video not found");
+      }
 
-    // Cannot remove the creator
-    if (userId === video.creatorId) {
-      throw new Error("Cannot remove the creator");
-    }
+      // Cannot remove the creator
+      if (userId === video.creatorId) {
+        throw new Error("Cannot remove the creator");
+      }
 
-    // Only creator or self can remove
-    if (currentUserId !== video.creatorId && currentUserId !== userId) {
-      throw new Error(
-        "Only the creator or the user themselves can remove a collaborator"
+      // Only creator or self can remove
+      if (currentUserId !== video.creatorId && currentUserId !== userId) {
+        throw new Error(
+          "Only the creator or the user themselves can remove a collaborator"
+        );
+      }
+
+      const collaboratorToRemove = video.collaborators.find(
+        (c) => c.userId === userId
       );
+      if (!collaboratorToRemove) {
+        throw new Error("User is not a collaborator");
+      }
+
+      const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
+      await updateDoc(docRef, {
+        collaborators: arrayRemove({
+          userId: collaboratorToRemove.userId,
+          displayName: collaboratorToRemove.displayName ?? null,
+          avatarUrl: collaboratorToRemove.avatarUrl ?? null,
+          joinedAt: collaboratorToRemove.joinedAt,
+          role: collaboratorToRemove.role,
+        }),
+        collaboratorIds: arrayRemove(userId),
+        updatedAt: serverTimestamp(),
+      });
+
+      console.log(`🚪 Removed ${userId} from video ${videoId}`);
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to remove collaborator:", error);
+      toast.error("Failed to remove collaborator.");
+      throw error;
     }
-
-    const collaboratorToRemove = video.collaborators.find(
-      (c) => c.userId === userId
-    );
-    if (!collaboratorToRemove) {
-      throw new Error("User is not a collaborator");
-    }
-
-    const docRef = doc(firestore, VIDEOS_COLLECTION, videoId);
-    await updateDoc(docRef, {
-      collaborators: arrayRemove({
-        userId: collaboratorToRemove.userId,
-        displayName: collaboratorToRemove.displayName ?? null,
-        avatarUrl: collaboratorToRemove.avatarUrl ?? null,
-        joinedAt: collaboratorToRemove.joinedAt,
-        role: collaboratorToRemove.role,
-      }),
-      collaboratorIds: arrayRemove(userId),
-      updatedAt: serverTimestamp(),
-    });
-
-    console.log(`🚪 Removed ${userId} from video ${videoId}`);
   }
 
   // ============================================================================
@@ -476,82 +524,103 @@ export class CollaborativeVideoManager implements ICollaborativeVideoManager {
   async getVideosForSequence(
     sequenceId: string
   ): Promise<CollaborativeVideo[]> {
-    const firestore = await getFirestoreInstance();
-    const collectionRef = collection(firestore, VIDEOS_COLLECTION);
-    const q = query(
-      collectionRef,
-      where("sequenceId", "==", sequenceId),
-      orderBy("createdAt", "desc")
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const collectionRef = collection(firestore, VIDEOS_COLLECTION);
+      const q = query(
+        collectionRef,
+        where("sequenceId", "==", sequenceId),
+        orderBy("createdAt", "desc")
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to get videos for sequence:", error);
+      return [];
+    }
   }
 
   async getUserVideoLibrary(): Promise<UserVideoLibrary> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const collectionRef = collection(firestore, VIDEOS_COLLECTION);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const collectionRef = collection(firestore, VIDEOS_COLLECTION);
 
-    // Query videos where user is a collaborator
-    const collaboratorQuery = query(
-      collectionRef,
-      where("collaboratorIds", "array-contains", userId),
-      orderBy("createdAt", "desc")
-    );
+      // Query videos where user is a collaborator
+      const collaboratorQuery = query(
+        collectionRef,
+        where("collaboratorIds", "array-contains", userId),
+        orderBy("createdAt", "desc")
+      );
 
-    // Query videos where user has pending invites
-    const pendingQuery = query(
-      collectionRef,
-      where("pendingInviteUserIds", "array-contains", userId)
-    );
+      // Query videos where user has pending invites
+      const pendingQuery = query(
+        collectionRef,
+        where("pendingInviteUserIds", "array-contains", userId)
+      );
 
-    const [collaboratorSnapshot, pendingSnapshot] = await Promise.all([
-      getDocs(collaboratorQuery),
-      getDocs(pendingQuery),
-    ]);
+      const [collaboratorSnapshot, pendingSnapshot] = await Promise.all([
+        getDocs(collaboratorQuery),
+        getDocs(pendingQuery),
+      ]);
 
-    const allCollaborations = collaboratorSnapshot.docs.map((doc) =>
-      this.docToVideo(doc.data(), doc.id)
-    );
+      const allCollaborations = collaboratorSnapshot.docs.map((doc) =>
+        this.docToVideo(doc.data(), doc.id)
+      );
 
-    const created = allCollaborations.filter((v) => v.creatorId === userId);
-    const collaborations = allCollaborations.filter(
-      (v) => v.creatorId !== userId
-    );
-    const pendingInvites = pendingSnapshot.docs.map((doc) =>
-      this.docToVideo(doc.data(), doc.id)
-    );
+      const created = allCollaborations.filter((v) => v.creatorId === userId);
+      const collaborations = allCollaborations.filter(
+        (v) => v.creatorId !== userId
+      );
+      const pendingInvites = pendingSnapshot.docs.map((doc) =>
+        this.docToVideo(doc.data(), doc.id)
+      );
 
-    return { created, collaborations, pendingInvites };
+      return { created, collaborations, pendingInvites };
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to get user video library:", error);
+      toast.error("Failed to load your video library.");
+      return { created: [], collaborations: [], pendingInvites: [] };
+    }
   }
 
   async getPendingInvites(): Promise<CollaborativeVideo[]> {
-    const firestore = await getFirestoreInstance();
-    const userId = this.getUserId();
-    const collectionRef = collection(firestore, VIDEOS_COLLECTION);
+    try {
+      const firestore = await getFirestoreInstance();
+      const userId = this.getUserId();
+      const collectionRef = collection(firestore, VIDEOS_COLLECTION);
 
-    const q = query(
-      collectionRef,
-      where("pendingInviteUserIds", "array-contains", userId)
-    );
+      const q = query(
+        collectionRef,
+        where("pendingInviteUserIds", "array-contains", userId)
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to get pending invites:", error);
+      return [];
+    }
   }
 
   async getPublicVideos(limit = 50): Promise<CollaborativeVideo[]> {
-    const firestore = await getFirestoreInstance();
-    const collectionRef = collection(firestore, VIDEOS_COLLECTION);
+    try {
+      const firestore = await getFirestoreInstance();
+      const collectionRef = collection(firestore, VIDEOS_COLLECTION);
 
-    const q = query(
-      collectionRef,
-      where("visibility", "==", "public"),
-      orderBy("createdAt", "desc"),
-      firestoreLimit(limit)
-    );
+      const q = query(
+        collectionRef,
+        where("visibility", "==", "public"),
+        orderBy("createdAt", "desc"),
+        firestoreLimit(limit)
+      );
 
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc) => this.docToVideo(doc.data(), doc.id));
+    } catch (error) {
+      console.error("❌ [CollaborativeVideoManager] Failed to get public videos:", error);
+      return [];
+    }
   }
 }

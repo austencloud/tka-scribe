@@ -202,35 +202,41 @@ export class UserRepository implements IUserRepository {
         (querySnapshot) => {
           // Process async operations without blocking
           void (async () => {
-            // Get list of users current user is following
-            let followingSet = new Set<string>();
-            if (currentUserId) {
-              followingSet = await this.getFollowingIds(currentUserId);
-            }
-
-            const users: EnhancedUserProfile[] = [];
-
-            for (const docSnap of querySnapshot.docs) {
-              const data = docSnap.data() as FirestoreUserData;
-              const isFollowing =
-                currentUserId !== docSnap.id && followingSet.has(docSnap.id);
-              // Skip achievements fetch in list views to avoid N+1 queries
-              const user = await this.mapFirestoreToEnhancedProfile(
-                docSnap.id,
-                data,
-                isFollowing,
-                true // skipAchievements
-              );
-              if (user) {
-                users.push(user);
+            try {
+              // Get list of users current user is following
+              let followingSet = new Set<string>();
+              if (currentUserId) {
+                followingSet = await this.getFollowingIds(currentUserId);
               }
+
+              const users: EnhancedUserProfile[] = [];
+
+              for (const docSnap of querySnapshot.docs) {
+                const data = docSnap.data() as FirestoreUserData;
+                const isFollowing =
+                  currentUserId !== docSnap.id && followingSet.has(docSnap.id);
+                // Skip achievements fetch in list views to avoid N+1 queries
+                const user = await this.mapFirestoreToEnhancedProfile(
+                  docSnap.id,
+                  data,
+                  isFollowing,
+                  true // skipAchievements
+                );
+                if (user) {
+                  users.push(user);
+                }
+              }
+
+              // Apply client-side filtering and sorting
+              let filteredUsers = this.applyFilters(users, options);
+              filteredUsers = this.applySorting(filteredUsers, options);
+
+              callback(filteredUsers);
+            } catch (error) {
+              console.error("[UserRepository] Error processing creators snapshot:", error);
+              // Return empty array on error to maintain UI stability
+              callback([]);
             }
-
-            // Apply client-side filtering and sorting
-            let filteredUsers = this.applyFilters(users, options);
-            filteredUsers = this.applySorting(filteredUsers, options);
-
-            callback(filteredUsers);
           })();
         },
         (error) => {

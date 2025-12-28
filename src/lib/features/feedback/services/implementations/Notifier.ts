@@ -19,6 +19,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type {
   UserNotification,
   TesterNotification,
@@ -34,18 +35,23 @@ export class NotificationService {
    * Get unread notification count for a user
    */
   async getUnreadCount(userId: string): Promise<number> {
-    const firestore = await getFirestoreInstance();
-    const notificationsRef = collection(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
+      );
 
-    const q = query(notificationsRef, where("read", "==", false));
-    const snapshot = await getDocs(q);
+      const q = query(notificationsRef, where("read", "==", false));
+      const snapshot = await getDocs(q);
 
-    return snapshot.size;
+      return snapshot.size;
+    } catch (error) {
+      console.error("[Notifier] Failed to get unread count:", error);
+      return 0;
+    }
   }
 
   /**
@@ -55,25 +61,31 @@ export class NotificationService {
     userId: string,
     maxCount: number = 20
   ): Promise<UserNotification[]> {
-    const firestore = await getFirestoreInstance();
-    const notificationsRef = collection(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
+      );
 
-    const q = query(
-      notificationsRef,
-      orderBy("createdAt", "desc"),
-      limit(maxCount)
-    );
+      const q = query(
+        notificationsRef,
+        orderBy("createdAt", "desc"),
+        limit(maxCount)
+      );
 
-    const snapshot = await getDocs(q);
+      const snapshot = await getDocs(q);
 
-    return snapshot.docs.map((docSnap) =>
-      this.mapDocToNotification(docSnap.id, docSnap.data())
-    );
+      return snapshot.docs.map((docSnap) =>
+        this.mapDocToNotification(docSnap.id, docSnap.data())
+      );
+    } catch (error) {
+      console.error("[Notifier] Failed to get notifications:", error);
+      toast.error("Failed to load notifications.");
+      return [];
+    }
   }
 
   /**
@@ -150,60 +162,75 @@ export class NotificationService {
    * Mark a notification as read
    */
   async markAsRead(userId: string, notificationId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const notificationRef = doc(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION,
-      notificationId
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationRef = doc(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION,
+        notificationId
+      );
 
-    await updateDoc(notificationRef, {
-      read: true,
-      readAt: serverTimestamp(),
-    });
+      await updateDoc(notificationRef, {
+        read: true,
+        readAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("[Notifier] Failed to mark notification as read:", error);
+      // Silent failure - non-critical for UX
+    }
   }
 
   /**
    * Mark a notification as unread
    */
   async markAsUnread(userId: string, notificationId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const notificationRef = doc(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION,
-      notificationId
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationRef = doc(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION,
+        notificationId
+      );
 
-    await updateDoc(notificationRef, {
-      read: false,
-      readAt: null,
-    });
+      await updateDoc(notificationRef, {
+        read: false,
+        readAt: null,
+      });
+    } catch (error) {
+      console.error("[Notifier] Failed to mark notification as unread:", error);
+      // Silent failure - non-critical for UX
+    }
   }
 
   /**
    * Mark all notifications as read
    */
   async markAllAsRead(userId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const notificationsRef = collection(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
+      );
 
-    const q = query(notificationsRef, where("read", "==", false));
-    const snapshot = await getDocs(q);
+      const q = query(notificationsRef, where("read", "==", false));
+      const snapshot = await getDocs(q);
 
-    const updates = snapshot.docs.map((docSnap) =>
-      updateDoc(docSnap.ref, { read: true, readAt: serverTimestamp() })
-    );
+      const updates = snapshot.docs.map((docSnap) =>
+        updateDoc(docSnap.ref, { read: true, readAt: serverTimestamp() })
+      );
 
-    await Promise.all(updates);
+      await Promise.all(updates);
+    } catch (error) {
+      console.error("[Notifier] Failed to mark all as read:", error);
+      toast.error("Failed to mark all as read.");
+    }
   }
 
   /**
@@ -213,55 +240,70 @@ export class NotificationService {
     userId: string,
     notificationId: string
   ): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const notificationRef = doc(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION,
-      notificationId
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationRef = doc(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION,
+        notificationId
+      );
 
-    await deleteDoc(notificationRef);
+      await deleteDoc(notificationRef);
+    } catch (error) {
+      console.error("[Notifier] Failed to delete notification:", error);
+      toast.error("Failed to delete notification.");
+    }
   }
 
   /**
    * Delete all read notifications
    */
   async deleteAllReadNotifications(userId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const notificationsRef = collection(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
+      );
 
-    const q = query(notificationsRef, where("read", "==", true));
-    const snapshot = await getDocs(q);
+      const q = query(notificationsRef, where("read", "==", true));
+      const snapshot = await getDocs(q);
 
-    const deletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
+      const deletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
 
-    await Promise.all(deletes);
+      await Promise.all(deletes);
+    } catch (error) {
+      console.error("[Notifier] Failed to delete read notifications:", error);
+      toast.error("Failed to clear read notifications.");
+    }
   }
 
   /**
    * Delete all notifications
    */
   async deleteAllNotifications(userId: string): Promise<void> {
-    const firestore = await getFirestoreInstance();
-    const notificationsRef = collection(
-      firestore,
-      USERS_COLLECTION,
-      userId,
-      NOTIFICATIONS_SUBCOLLECTION
-    );
+    try {
+      const firestore = await getFirestoreInstance();
+      const notificationsRef = collection(
+        firestore,
+        USERS_COLLECTION,
+        userId,
+        NOTIFICATIONS_SUBCOLLECTION
+      );
 
-    const snapshot = await getDocs(notificationsRef);
+      const snapshot = await getDocs(notificationsRef);
 
-    const deletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
+      const deletes = snapshot.docs.map((docSnap) => deleteDoc(docSnap.ref));
 
-    await Promise.all(deletes);
+      await Promise.all(deletes);
+    } catch (error) {
+      console.error("[Notifier] Failed to delete all notifications:", error);
+      toast.error("Failed to clear all notifications.");
+    }
   }
 
   /**
@@ -282,30 +324,42 @@ export class NotificationService {
 
     // Initialize subscription asynchronously
     void (async () => {
-      const firestore = await getFirestoreInstance();
-      const notificationsRef = collection(
-        firestore,
-        USERS_COLLECTION,
-        userId,
-        NOTIFICATIONS_SUBCOLLECTION
-      );
-
-      // Build query with or without limit based on maxCount
-      const q =
-        maxCount > 0
-          ? query(
-              notificationsRef,
-              orderBy("createdAt", "desc"),
-              limit(maxCount)
-            )
-          : query(notificationsRef, orderBy("createdAt", "desc"));
-
-      this.unsubscribe = onSnapshot(q, (snapshot) => {
-        const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
-          this.mapDocToNotification(docSnap.id, docSnap.data())
+      try {
+        const firestore = await getFirestoreInstance();
+        const notificationsRef = collection(
+          firestore,
+          USERS_COLLECTION,
+          userId,
+          NOTIFICATIONS_SUBCOLLECTION
         );
-        callback(notifications);
-      });
+
+        // Build query with or without limit based on maxCount
+        const q =
+          maxCount > 0
+            ? query(
+                notificationsRef,
+                orderBy("createdAt", "desc"),
+                limit(maxCount)
+              )
+            : query(notificationsRef, orderBy("createdAt", "desc"));
+
+        this.unsubscribe = onSnapshot(
+          q,
+          (snapshot) => {
+            const notifications: UserNotification[] = snapshot.docs.map((docSnap) =>
+              this.mapDocToNotification(docSnap.id, docSnap.data())
+            );
+            callback(notifications);
+          },
+          (error) => {
+            console.error("[Notifier] Notifications subscription error:", error);
+            toast.error("Lost connection to notifications. Please refresh.");
+          }
+        );
+      } catch (error) {
+        console.error("[Notifier] Failed to initialize notifications subscription:", error);
+        toast.error("Failed to connect to notifications.");
+      }
     })();
 
     return () => {

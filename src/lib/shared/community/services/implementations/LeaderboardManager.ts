@@ -21,6 +21,7 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 import type { ILeaderboardManager } from "../contracts/ILeaderboardManager";
 import type {
   LeaderboardCategory,
@@ -204,7 +205,8 @@ export class LeaderboardManager implements ILeaderboardManager {
         lastUpdated: new Date(),
       };
     } catch (error) {
-      console.error("LeaderboardManager: Error fetching leaderboard", error);
+      console.error("[LeaderboardManager] Error fetching leaderboard:", error);
+      toast.error("Failed to load leaderboard. Please try again.");
       throw new Error(`Failed to fetch ${category} leaderboard`);
     }
   }
@@ -257,7 +259,8 @@ export class LeaderboardManager implements ILeaderboardManager {
       // Rank = users ahead + 1
       return usersAhead + 1;
     } catch (error) {
-      console.error("LeaderboardManager: Error fetching user rank", error);
+      console.error("[LeaderboardManager] Error fetching user rank:", error);
+      // Silent failure for rank lookup - non-critical for UX
       return null;
     }
   }
@@ -347,16 +350,18 @@ export class LeaderboardManager implements ILeaderboardManager {
           },
           (error) => {
             console.error(
-              "LeaderboardManager: Error in leaderboard subscription",
+              "[LeaderboardManager] Error in leaderboard subscription:",
               error
             );
+            toast.error("Lost connection to leaderboard. Please refresh.");
           }
         );
       } catch (error) {
         console.error(
-          "LeaderboardManager: Error subscribing to leaderboard",
+          "[LeaderboardManager] Error subscribing to leaderboard:",
           error
         );
+        toast.error("Failed to connect to leaderboard.");
       }
     })();
 
