@@ -35,6 +35,7 @@ const CREATION_MODES: BuildModeId[] = [
   "assembler",
   "constructor",
   "generator",
+  "spell",
 ] as const;
 
 const isCreationMode = (mode: BuildModeId) =>

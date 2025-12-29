@@ -10,16 +10,26 @@ Features:
   let {
     value = "",
     onInput,
-    onPaletteToggle,
-    showPaletteButton = true,
     disabled = false,
+    onFocusChange,
   }: {
     value: string;
     onInput: (value: string) => void;
-    onPaletteToggle?: () => void;
-    showPaletteButton?: boolean;
     disabled?: boolean;
+    /** Called when input focus state changes */
+    onFocusChange?: (focused: boolean) => void;
   } = $props();
+
+  function handleFocus() {
+    onFocusChange?.(true);
+  }
+
+  function handleBlur() {
+    // Small delay to allow clicking on palette buttons before hiding
+    setTimeout(() => {
+      onFocusChange?.(false);
+    }, 150);
+  }
 
   function handleInput(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -45,6 +55,8 @@ Features:
       placeholder="Type your word..."
       {value}
       oninput={handleInput}
+      onfocus={handleFocus}
+      onblur={handleBlur}
       {disabled}
       autocomplete="off"
       autocapitalize="off"
@@ -80,16 +92,6 @@ Features:
         </button>
       {/if}
 
-      {#if showPaletteButton}
-        <button
-          class="action-button palette-button"
-          onclick={onPaletteToggle}
-          title="Greek letter palette"
-          {disabled}
-        >
-          <span class="greek-symbol">Σ</span>
-        </button>
-      {/if}
     </div>
   </div>
 
@@ -168,21 +170,6 @@ Features:
   .action-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  .palette-button {
-    background: var(--theme-accent, #6366f1);
-    border-color: var(--theme-accent, #6366f1);
-    color: white;
-  }
-
-  .palette-button:hover:not(:disabled) {
-    background: var(--theme-accent-hover, #4f46e5);
-  }
-
-  .greek-symbol {
-    font-size: var(--font-size-md, 16px);
-    font-weight: 600;
   }
 
   .input-hint {

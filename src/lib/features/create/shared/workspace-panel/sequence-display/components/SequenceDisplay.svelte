@@ -6,6 +6,7 @@
   import { onMount } from "svelte";
   import type { SequenceState } from "../../../state/SequenceStateOrchestrator.svelte";
   import { getCreateModuleContext } from "../../../context/create-module-context";
+  import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
   import BeatGrid from "./BeatGrid.svelte";
   import WordLabel from "./WordLabel.svelte";
   import UndoButton from "../../shared/components/buttons/UndoButton.svelte";
@@ -24,6 +25,7 @@
     shouldOrbitAroundCenter = false,
     activeMode = null,
     currentDisplayWord = "",
+    letterSources = null,
   } = $props<{
     sequenceState: SequenceState;
     onBeatSelected?: (beatNumber: number) => void;
@@ -36,6 +38,8 @@
     shouldOrbitAroundCenter?: boolean;
     activeMode?: BuildModeId | null;
     currentDisplayWord?: string;
+    /** Optional: When provided for spell tab, enables original vs bridge letter styling */
+    letterSources?: LetterSource[] | null;
   }>();
 
   const logger = createComponentLogger("SequenceDisplay");
@@ -108,7 +112,7 @@
           <UndoButton {CreateModuleState} />
         </div>
         <div class="word-label-area">
-          <WordLabel word={currentDisplayWord} scrollMode={false} />
+          <WordLabel word={currentDisplayWord} scrollMode={false} {letterSources} />
         </div>
         <div class="top-right-zone">
           <SaveToLibraryButton

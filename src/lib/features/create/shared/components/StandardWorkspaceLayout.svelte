@@ -17,6 +17,7 @@
   import type { PanelCoordinationState } from "../state/panel-coordination-state.svelte";
   import type { IToolPanelMethods } from "../types/create-module-types";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
+  import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
   type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 
@@ -28,6 +29,7 @@
     CreateModuleState,
     panelState,
     currentDisplayWord,
+    currentLetterSources = null,
     // Bindable props
     animatingBeatNumber = $bindable(null),
     toolPanelRef = $bindable(null),
@@ -46,6 +48,8 @@
     CreateModuleState: CreateModuleState;
     panelState: PanelCoordinationState;
     currentDisplayWord: string;
+    /** Letter sources for spell tab - enables original vs bridge letter styling */
+    currentLetterSources?: LetterSource[] | null;
     animatingBeatNumber?: number | null;
     toolPanelRef?: IToolPanelMethods | null;
     buttonPanelElement?: HTMLElement | null;
@@ -173,6 +177,7 @@
           {onPlayAnimation}
           {currentDisplayWord}
           {buttonPanelHeight}
+          letterSources={currentLetterSources}
           {...toolPanelRef?.getAnimationStateRef?.()
             ? { animationStateRef: toolPanelRef.getAnimationStateRef() }
             : {}}

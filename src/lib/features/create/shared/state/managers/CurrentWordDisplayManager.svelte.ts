@@ -8,6 +8,7 @@
  * - Guided mode header text
  * - Gestural mode (hand path) state messages
  * - Construct mode instructions
+ * - Spell mode with letter sources for original vs bridge styling
  * - Default sequence word display
  *
  * Extracted from CreateModule to reduce component complexity.
@@ -18,6 +19,7 @@
 import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 import type { createCreateModuleState as CreateModuleStateType } from "../create-module-state.svelte";
 import type { createConstructTabState as ConstructTabStateType } from "../construct-tab-state.svelte";
+import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
 type CreateModuleState = ReturnType<typeof CreateModuleStateType>;
 type ConstructTabState = ReturnType<typeof ConstructTabStateType>;
@@ -26,6 +28,7 @@ export interface CurrentWordDisplayConfig {
   CreateModuleState: CreateModuleState;
   constructTabState: ConstructTabState;
   onCurrentWordChange?: (word: string) => void;
+  onLetterSourcesChange?: (sources: LetterSource[] | null) => void;
 }
 
 /**
@@ -35,7 +38,12 @@ export interface CurrentWordDisplayConfig {
 export function createCurrentWordDisplayEffect(
   config: CurrentWordDisplayConfig
 ): () => void {
-  const { CreateModuleState, constructTabState, onCurrentWordChange } = config;
+  const {
+    CreateModuleState,
+    constructTabState,
+    onCurrentWordChange,
+    onLetterSourcesChange,
+  } = config;
 
   if (!onCurrentWordChange) {
     // No callback provided, return no-op cleanup
@@ -55,13 +63,29 @@ export function createCurrentWordDisplayEffect(
       const _beatCount = CreateModuleState.getCurrentBeatCount();
 
       let displayText = "";
+      let letterSources: LetterSource[] | null = null;
 
-      // In guided mode, show the header text from Guided Builder
-      if (CreateModuleState.activeSection === "guided") {
-        displayText =
-          CreateModuleState.guidedModeHeaderText || "Guided Builder";
+      // PRIORITY 1: Spell tab - has special letterSources handling for original vs bridge letters
+      // Must check this FIRST to ensure letterSources persist during interactions
+      if (navigationState.activeTab === "spell") {
+        const spellState = CreateModuleState.spellTabState;
+        if (spellState) {
+          // Explicitly read reactive values to ensure effect tracks them
+          const sources = spellState.letterSources;
+          const expandedWord = spellState.expandedWord;
+
+          if (sources && sources.length > 0) {
+            displayText = expandedWord || "";
+            letterSources = sources;
+          } else {
+            // No generation yet, show sequence word or empty
+            displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
+          }
+        } else {
+          displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
+        }
       }
-      // In gestural (hand path) mode, show contextual message instead of word
+      // PRIORITY 2: Gestural (hand path) mode - contextual messages
       else if (
         navigationState.activeTab === "gestural" &&
         CreateModuleState.handPathCoordinator
@@ -79,21 +103,27 @@ export function createCurrentWordDisplayEffect(
         } else {
           displayText = "Draw Hand Path";
         }
-      } else if (navigationState.activeTab === "constructor") {
-        // Show contextual instruction based on sequence state
+      }
+      // PRIORITY 3: Constructor tab - start position instructions
+      else if (navigationState.activeTab === "constructor") {
         if (constructTabState.shouldShowStartPositionPicker()) {
-          // On start position picker: Show instruction
           displayText = "Choose your start position!";
         } else {
-          // Has beats: Show the actual sequence word
           displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
         }
-      } else {
-        // Default: Show current word
+      }
+      // PRIORITY 4: Guided mode - header text
+      else if (CreateModuleState.activeSection === "guided") {
+        displayText =
+          CreateModuleState.guidedModeHeaderText || "Guided Builder";
+      }
+      // Default: Show current word
+      else {
         displayText = CreateModuleState.sequenceState.sequenceWord() ?? "";
       }
 
       onCurrentWordChange(displayText);
+      onLetterSourcesChange?.(letterSources);
     });
   });
 

@@ -8,6 +8,11 @@
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import type { LOOPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import type {
+  ExtensionAnalysis,
+  LOOPOption,
+} from "$lib/features/create/shared/services/contracts/ISequenceExtender";
 
 /**
  * Tracks whether a letter in the sequence is original (user-typed) or a bridge (interpolated)
@@ -31,10 +36,26 @@ export interface SpellPreferences {
   preferContinuous: boolean;
   /** Favor or avoid certain motion types: null = no preference, 'dash' = favor dashes, 'no-dash' = avoid dashes */
   favorMotionType: "dash" | "no-dash" | null;
-  /** Maximum number of bridge letters allowed between any two original letters */
-  maxBridgeLetters: number;
   /** Generate a circular (LOOP) sequence that returns to start */
   makeCircular: boolean;
+  /** Selected LOOP type when makeCircular is true (null = show options after generation) */
+  selectedLOOPType: LOOPType | null;
+}
+
+/**
+ * Option for making a non-loopable sequence circular
+ * When a sequence ends at a different position group than it starts,
+ * we need bridge letters to get back to the starting group
+ */
+export interface CircularizationOption {
+  /** Bridge letters needed to reach a loopable position */
+  bridgeLetters: Letter[];
+  /** The position we'd end at after adding bridge letters */
+  endPosition: string;
+  /** Available LOOP types for this ending position */
+  availableLOOPs: LOOPOption[];
+  /** Description for UI display */
+  description: string;
 }
 
 /**
@@ -53,6 +74,15 @@ export interface SpellResult {
   success: boolean;
   /** Error message if generation failed */
   error?: string;
+  /** LOOP analysis for the generated sequence (available extension options) */
+  loopAnalysis?: ExtensionAnalysis;
+  /**
+   * When sequence isn't directly loopable, these are options to make it circular
+   * Each option shows bridge letters needed and resulting LOOP choices
+   */
+  circularizationOptions?: CircularizationOption[];
+  /** Reason why direct LOOP isn't available (e.g., "Ends at gamma, needs to reach alpha") */
+  directLoopUnavailableReason?: string;
 }
 
 /**
@@ -89,6 +119,12 @@ export interface SpellGenerationOptions {
   startPosition?: GridPositionGroup;
   /** Optional: seed for randomization (for reproducible results) */
   seed?: number;
+  /**
+   * Optional: Force a specific bridge letter to be appended for circularization.
+   * When provided, this bridge letter will be added at the end of the sequence
+   * before applying the LOOP (useful when user selects a circularization option).
+   */
+  forceBridgeLetter?: Letter;
 }
 
 /**
@@ -101,3 +137,6 @@ export interface LetterAlias {
   /** The actual letter (e.g., "Σ") */
   letter: Letter;
 }
+
+// Re-export LOOP types for convenience
+export type { LOOPType, ExtensionAnalysis, LOOPOption };

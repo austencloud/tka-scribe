@@ -10,10 +10,13 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
 <script lang="ts">
   import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
   import type { SpellTabState } from "../state/spell-tab-state.svelte";
-  import { resolve } from "$lib/shared/inversify/di";
+  import { loadFeatureModule, resolve } from "$lib/shared/inversify/di";
   import { SPELL_TYPES } from "../services/implementations/spell-types";
   import type { IWordSequenceGenerator } from "../services/contracts/IWordSequenceGenerator";
   import type { ILetterTransitionGraph } from "../services/contracts/ILetterTransitionGraph";
+  import type { LOOPType } from "../domain/models/spell-models";
+  import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import { slide } from "svelte/transition";
   import WordInput from "./WordInput.svelte";
   import LetterPalette from "./LetterPalette.svelte";
   import PreferencesPanel from "./PreferencesPanel.svelte";
@@ -33,8 +36,18 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   // Services (resolved on-demand)
   let wordGenerator: IWordSequenceGenerator | null = null;
   let transitionGraph: ILetterTransitionGraph | null = null;
+  let modulesLoaded = false;
 
-  function getWordGenerator(): IWordSequenceGenerator {
+  // Load required modules before resolving services
+  async function ensureModulesLoaded(): Promise<void> {
+    if (modulesLoaded) return;
+    // Load learn module for CodexLetterMappingRepo dependency
+    await loadFeatureModule("learn");
+    modulesLoaded = true;
+  }
+
+  async function getWordGenerator(): Promise<IWordSequenceGenerator> {
+    await ensureModulesLoaded();
     if (!wordGenerator) {
       wordGenerator = resolve<IWordSequenceGenerator>(
         SPELL_TYPES.IWordSequenceGenerator
@@ -44,6 +57,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   }
 
   async function getTransitionGraph(): Promise<ILetterTransitionGraph> {
+    await ensureModulesLoaded();
     if (!transitionGraph) {
       transitionGraph = resolve<ILetterTransitionGraph>(
         SPELL_TYPES.ILetterTransitionGraph
@@ -66,7 +80,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       // Ensure transition graph is initialized
       await getTransitionGraph();
 
-      const generator = getWordGenerator();
+      const generator = await getWordGenerator();
       const result = await generator.generateFromWord({
         word: spellState.inputWord,
         preferences: spellState.preferences,
@@ -77,16 +91,29 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
         spellState.setExpandedWord(result.expandedWord);
         spellState.setLetterSources(result.letterSources);
 
-        // Push to sequence state
+        // Store LOOP analysis for UI display
+        if (result.loopAnalysis) {
+          spellState.setLoopAnalysis(result.loopAnalysis);
+        }
+
+        // Store circularization options (when sequence isn't directly loopable)
+        if (result.circularizationOptions) {
+          spellState.setCircularizationOptions(result.circularizationOptions);
+        } else {
+          spellState.setCircularizationOptions([]);
+        }
+        if (result.directLoopUnavailableReason) {
+          spellState.setDirectLoopUnavailableReason(
+            result.directLoopUnavailableReason
+          );
+        } else {
+          spellState.setDirectLoopUnavailableReason(null);
+        }
+
+        // Push to sequence state - use setCurrentSequence with the complete sequence
         if (sequenceState) {
-          await sequenceState.setBeats(result.sequence.beats);
-          if (result.sequence.startingPositionBeat) {
-            await sequenceState.setStartPosition(
-              result.sequence.startingPositionBeat
-            );
-          }
-          // Update sequence name to the original word
-          sequenceState.updateSequenceMetadata({
+          sequenceState.setCurrentSequence({
+            ...result.sequence,
             name: result.originalWord,
             word: result.expandedWord,
           });
@@ -119,12 +146,91 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     handleGenerate();
   }
 
+  /**
+   * Handle LOOP chip click - immediately apply the LOOP with optional bridge letter.
+   * This is called when user clicks a LOOP chip in PreferencesPanel.
+   * @param bridgeLetter - If provided, this bridge letter will be added before applying LOOP
+   * @param loopType - The LOOP type to apply
+   */
+  async function handleApplyLOOP(bridgeLetter: Letter | null, loopType: LOOPType) {
+    if (!spellState.inputWord.trim()) return;
+
+    spellState.setGenerating(true);
+    spellState.clearError();
+
+    try {
+      // Ensure transition graph is initialized
+      await getTransitionGraph();
+
+      const generator = await getWordGenerator();
+
+      // Generate with the specified LOOP and optional bridge letter
+      const result = await generator.generateFromWord({
+        word: spellState.inputWord,
+        preferences: {
+          ...spellState.preferences,
+          makeCircular: true, // Ensure circular is on
+          selectedLOOPType: loopType,
+        },
+        // Pass bridge letter if specified (for circularization)
+        forceBridgeLetter: bridgeLetter,
+      });
+
+      if (result.success && result.sequence) {
+        // Update spell state with results
+        spellState.setExpandedWord(result.expandedWord);
+        spellState.setLetterSources(result.letterSources);
+
+        // Store LOOP analysis
+        if (result.loopAnalysis) {
+          spellState.setLoopAnalysis(result.loopAnalysis);
+        }
+
+        // Clear circularization options since we've applied one
+        spellState.setCircularizationOptions([]);
+        spellState.setDirectLoopUnavailableReason(null);
+
+        // Push to sequence state
+        if (sequenceState) {
+          sequenceState.setCurrentSequence({
+            ...result.sequence,
+            name: result.originalWord,
+            word: result.expandedWord,
+          });
+        }
+
+        // Push undo snapshot
+        spellState.pushUndoSnapshot("spell-apply-loop", {
+          word: result.originalWord,
+          loopType,
+          bridgeLetter,
+        });
+      } else {
+        spellState.setError(result.error || "Failed to apply LOOP");
+      }
+    } catch (error) {
+      console.error("Failed to apply LOOP:", error);
+      spellState.setError(
+        error instanceof Error ? error.message : "Unknown error"
+      );
+    } finally {
+      spellState.setGenerating(false);
+    }
+  }
+
   // Handle clear
   function handleClear() {
     spellState.clearSpellState();
     if (sequenceState) {
       sequenceState.clearSequenceCompletely();
     }
+  }
+
+  // Track input focus for showing/hiding palette
+  let isInputFocused = $state(false);
+
+  function handleInputFocusChange(focused: boolean) {
+    isInputFocused = focused;
   }
 </script>
 
@@ -135,15 +241,14 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       <WordInput
         value={spellState.inputWord}
         onInput={(value) => spellState.setInputWord(value)}
-        onPaletteToggle={() => spellState.toggleLetterPalette()}
-        showPaletteButton={true}
+        onFocusChange={handleInputFocusChange}
         disabled={spellState.isGenerating}
       />
     </div>
 
-    <!-- Letter Palette (collapsible) -->
-    {#if spellState.showLetterPalette}
-      <div class="palette-section">
+    <!-- Letter Palette (visible when input is focused) -->
+    {#if isInputFocused}
+      <div class="palette-section" transition:slide={{ duration: 200 }}>
         <LetterPalette onSelect={handleLetterInsert} />
       </div>
     {/if}
@@ -153,6 +258,11 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       <PreferencesPanel
         preferences={spellState.preferences}
         onUpdate={(key, value) => spellState.updatePreference(key, value)}
+        availableLOOPOptions={spellState.availableLOOPOptions}
+        onApplyLOOP={handleApplyLOOP}
+        circularizationOptions={spellState.circularizationOptions}
+        directLoopUnavailableReason={spellState.directLoopUnavailableReason}
+        needsCircularization={spellState.needsCircularization}
       />
     </div>
 

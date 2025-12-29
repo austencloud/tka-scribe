@@ -36,6 +36,7 @@
   const showDesktopSidebar = $derived(desktopSidebarState.isVisible);
 
   // Derived state for which panel to show
+  // Read directly from navigationState for proper reactivity
   const activeToolPanel = $derived(navigationState.activeTab);
 
   // Loading states

@@ -1,7 +1,7 @@
 /**
  * Mirrored Swapped Inverted LOOP Executor
  *
- * Executes the mirrored-swapped-inverted LOOP (Continuous Assembly Pattern) by combining:
+ * Executes the mirrored-swapped-inverted LOOP (Linked Orbital Offset Pattern) by combining:
  * 1. MIRRORED: Mirror locations vertically (E↔W)
  * 2. SWAPPED: Blue does what Red did, Red does what Blue did
  * 3. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI)

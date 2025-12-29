@@ -77,6 +77,7 @@
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { createPanelHeightTracker } from "../state/managers/PanelHeightTracker.svelte";
   import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
+  import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -137,6 +138,7 @@
   let panelPersistenceCleanup: (() => void) | null = null;
   let panelHeightTrackerCleanup: (() => void) | null = null;
   let currentDisplayWord = $state<string>(""); // Current word with contextual messages
+  let currentLetterSources = $state<LetterSource[] | null>(null); // Letter sources for spell tab styling
 
   // ============================================================================
   // CONTEXT PROVISION
@@ -225,6 +227,9 @@
       onCurrentWordChange: (word: string) => {
         currentDisplayWord = word;
         onCurrentWordChange?.(word);
+      },
+      onLetterSourcesChange: (sources: LetterSource[] | null) => {
+        currentLetterSources = sources;
       },
       onTabAccessibilityChange,
       // NOTE: Panel height tracking moved to separate $effect in CreateModule
@@ -620,6 +625,7 @@
         {CreateModuleState}
         {panelState}
         {currentDisplayWord}
+        {currentLetterSources}
         bind:animatingBeatNumber
         bind:toolPanelRef
         bind:buttonPanelElement

@@ -11,6 +11,8 @@ import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IBeatConverter } from "$lib/features/create/generate/shared/services/contracts/IBeatConverter";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
+import type { ISequenceExtender } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -20,13 +22,17 @@ import type {
   SpellGenerationOptions,
   SpellResult,
   LetterSource,
+  CircularizationOption,
 } from "../../domain/models/spell-models";
+import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import {
   GREEK_LETTER_ALIASES,
   MAX_WORD_LENGTH,
 } from "../../domain/constants/spell-constants";
 import { DifficultyLevel } from "$lib/features/create/generate/shared/domain/models/generate-models";
+import { LOOPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 import { SPELL_TYPES } from "./spell-types";
+import { recalculateAllOrientations } from "$lib/features/create/shared/services/implementations/sequence-transforms/orientation-propagation";
 
 @injectable()
 export class WordSequenceGenerator implements IWordSequenceGenerator {
@@ -36,7 +42,11 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
     @inject(TYPES.ILetterQueryHandler)
     private letterQueryHandler: ILetterQueryHandler,
     @inject(TYPES.IBeatConverter)
-    private beatConverter: IBeatConverter
+    private beatConverter: IBeatConverter,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculator: IOrientationCalculator,
+    @inject(TYPES.ISequenceExtender)
+    private sequenceExtender: ISequenceExtender
   ) {}
 
   async generateFromWord(options: SpellGenerationOptions): Promise<SpellResult> {
@@ -61,9 +71,10 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
     try {
       // Build expanded letter sequence with bridge letters
+      // Always use 1 bridge letter max - any transition can be done with 1 bridge
       const { expandedLetters, letterSources } = this.buildExpandedSequence(
         letters,
-        options.preferences.maxBridgeLetters
+        1
       );
 
       if (expandedLetters.length === 0) {
@@ -87,7 +98,7 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       }
 
       // Generate beats for each letter
-      const beats = await this.generateBeats(
+      let beats = await this.generateBeats(
         expandedLetters,
         startPosition,
         gridMode
@@ -100,16 +111,128 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
         );
       }
 
-      // Build sequence data
-      const sequence = this.buildSequenceData(
+      // Build sequence data (non-circular initially)
+      let sequence = this.buildSequenceData(
         options.word,
         startPosition,
         beats,
-        gridMode
+        gridMode,
+        false // Initially not circular - LOOP is applied after
       );
+
+      // Recalculate all orientations to ensure chain integrity
+      // The CSV data may not have proper orientation continuity,
+      // so we propagate orientations from the start position
+      sequence = recalculateAllOrientations(
+        sequence,
+        this.orientationCalculator
+      );
+
+      // If a forced bridge letter was specified (for circularization), append it
+      if (options.forceBridgeLetter) {
+        const bridgeResult = await this.appendForcedBridgeLetter(
+          sequence,
+          options.forceBridgeLetter,
+          gridMode
+        );
+        if (bridgeResult.success) {
+          sequence = bridgeResult.sequence;
+          expandedLetters.push(options.forceBridgeLetter);
+          letterSources.push({
+            letter: options.forceBridgeLetter,
+            isOriginal: false,
+            beatIndex: expandedLetters.length,
+          });
+        } else {
+          return this.createErrorResult(
+            options.word,
+            bridgeResult.error || "Failed to add bridge letter"
+          );
+        }
+      }
 
       // Build expanded word string
       const expandedWord = expandedLetters.join("");
+
+      // Store spell metadata in sequence for persistence
+      sequence = {
+        ...sequence,
+        metadata: {
+          ...sequence.metadata,
+          spellData: {
+            originalWord: options.word,
+            expandedWord,
+            letterSources,
+          },
+        },
+      };
+
+      // Analyze what LOOP types are available for this sequence
+      const loopAnalysis = this.sequenceExtender.analyzeSequence(sequence);
+
+      // If sequence is directly loopable and user has selected a LOOP type, apply it
+      if (
+        options.preferences.makeCircular &&
+        options.preferences.selectedLOOPType &&
+        loopAnalysis.canExtend
+      ) {
+        // Check if the selected LOOP type is available
+        const isLOOPAvailable = loopAnalysis.availableLOOPOptions.some(
+          (opt) => opt.loopType === options.preferences.selectedLOOPType
+        );
+
+        if (isLOOPAvailable) {
+          // Apply the LOOP transformation
+          sequence = await this.sequenceExtender.extendSequence(sequence, {
+            loopType: options.preferences.selectedLOOPType,
+          });
+
+          // Update metadata to reflect the LOOP was applied
+          sequence = {
+            ...sequence,
+            metadata: {
+              ...sequence.metadata,
+              spellData: {
+                originalWord: options.word,
+                expandedWord,
+                letterSources,
+                appliedLOOPType: options.preferences.selectedLOOPType,
+              },
+            },
+          };
+        }
+      }
+
+      // If position groups don't match, compute circularization options
+      // These show what bridge letters could be added to enable position-dependent LOOPs
+      // Note: REWOUND is always available (it's position-independent), but we still
+      // want to show circularization options for users who want other LOOP types
+      let circularizationOptions: CircularizationOption[] | undefined;
+      let directLoopUnavailableReason: string | undefined;
+
+      if (options.preferences.makeCircular) {
+        const startPosGroup = this.positionToGroup(
+          startPosition.startPosition || startPosition.endPosition || ""
+        );
+        const endBeat = beats[beats.length - 1];
+        const endPosGroup = endBeat
+          ? this.positionToGroup(endBeat.endPosition || "")
+          : null;
+
+        // Check if position groups don't match - this means position-dependent LOOPs
+        // (STRICT_ROTATED, STRICT_MIRRORED, etc.) won't work without bridge letters
+        if (startPosGroup && endPosGroup && startPosGroup !== endPosGroup) {
+          directLoopUnavailableReason = `Sequence ends at ${endPosGroup}, needs to reach ${startPosGroup} for position-dependent LOOPs`;
+
+          // Compute circularization options to show what bridge letters enable which LOOPs
+          circularizationOptions = await this.computeCircularizationOptions(
+            sequence,
+            startPosition,
+            endBeat,
+            gridMode
+          );
+        }
+      }
 
       return {
         sequence,
@@ -117,6 +240,9 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
         expandedWord,
         letterSources,
         success: true,
+        loopAnalysis,
+        circularizationOptions,
+        directLoopUnavailableReason,
       };
     } catch (error) {
       return this.createErrorResult(
@@ -307,7 +433,8 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
   }
 
   /**
-   * Generate beats for the expanded letter sequence
+   * Generate beats for the expanded letter sequence.
+   * Throws an error if a valid pictograph cannot be found for any letter.
    */
   private async generateBeats(
     letters: Letter[],
@@ -321,7 +448,7 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       const letter = letters[i];
       if (!letter) continue;
 
-      // Get pictograph for this letter
+      // Get pictograph for this letter that properly chains from the last one
       const pictograph = await this.findPictographForLetter(
         letter,
         lastPictograph,
@@ -329,8 +456,13 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       );
 
       if (!pictograph) {
-        console.warn(`Could not find pictograph for letter ${letter}`);
-        continue;
+        // No valid pictograph found - this means the transition graph
+        // didn't correctly identify needed bridge letters, or no valid
+        // pictograph variation exists for this transition
+        throw new Error(
+          `Cannot chain letter "${letter}" from position "${lastPictograph.endPosition}". ` +
+            `No pictograph variation for "${letter}" starts at this position.`
+        );
       }
 
       // Convert to beat
@@ -343,29 +475,46 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
   }
 
   /**
-   * Find a pictograph for a letter that can follow the last pictograph
+   * Find a pictograph for a letter that can follow the last pictograph.
+   * Ensures position continuity (startPosition === lastPictograph.endPosition).
+   * Orientations are recalculated afterward by recalculateAllOrientations().
    */
   private async findPictographForLetter(
     letter: Letter,
     lastPictograph: PictographData,
     gridMode: GridMode
   ): Promise<PictographData | null> {
-    // Get the pictograph for this letter
-    const pictograph = await this.letterQueryHandler.getPictographByLetter(
-      letter,
-      gridMode
-    );
-
-    if (pictograph) {
-      return pictograph;
-    }
-
-    // Fallback: search all variations
+    // Get ALL pictograph variations
     const allPictographs =
       await this.letterQueryHandler.getAllPictographVariations(gridMode);
-    const matching = allPictographs.find((p) => p.letter === letter);
 
-    return matching || null;
+    // Filter to variations for this letter
+    const letterVariations = allPictographs.filter((p) => p.letter === letter);
+
+    if (letterVariations.length === 0) {
+      console.warn(`No pictograph variations found for letter ${letter}`);
+      return null;
+    }
+
+    // Get the end position from the last pictograph
+    const requiredStartPosition = lastPictograph.endPosition;
+
+    // Filter by position continuity
+    const positionMatches = letterVariations.filter(
+      (p) => p.startPosition === requiredStartPosition
+    );
+
+    if (positionMatches.length === 0) {
+      console.warn(
+        `No pictograph for letter ${letter} starts at position ${requiredStartPosition}`
+      );
+      // Return null - this means we need a bridge letter
+      return null;
+    }
+
+    // Return a random match from valid candidates for variety
+    const randomIndex = Math.floor(Math.random() * positionMatches.length);
+    return positionMatches[randomIndex] ?? null;
   }
 
   /**
@@ -375,7 +524,8 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
     name: string,
     startPosition: PictographData,
     beats: BeatData[],
-    gridMode: GridMode
+    gridMode: GridMode,
+    isCircular: boolean = false
   ): SequenceData {
     const startPositionData = this.beatConverter.convertToStartPosition(
       startPosition,
@@ -387,14 +537,15 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       name,
       word: beats.map((b) => b.letter || "").join(""),
       beats,
-      startingPositionBeat: startPositionData,
+      startPosition: startPositionData, // Primary field for orientation propagation
+      startingPositionBeat: startPositionData, // Legacy field for backward compatibility
       gridMode,
       propType: PropType.STAFF,
       difficultyLevel: DifficultyLevel.INTERMEDIATE,
-      isCircular: false,
+      isCircular,
       isFavorite: false,
       thumbnails: [],
-      tags: ["generated", "spell"],
+      tags: isCircular ? ["generated", "spell", "loop"] : ["generated", "spell"],
       metadata: {
         createdAt: new Date().toISOString(),
         source: "spell",
@@ -427,5 +578,168 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
   private isStartPositionPictograph(pictograph: PictographData): boolean {
     return pictograph.startPosition === pictograph.endPosition;
+  }
+
+  /**
+   * Compute circularization options for a non-loopable sequence.
+   * When a sequence ends at a different position group than it starts,
+   * we need bridge letters to return to the start group. Different bridge
+   * letters will end at different specific positions, enabling different LOOPs.
+   */
+  private async computeCircularizationOptions(
+    sequence: SequenceData,
+    startPosition: PictographData,
+    endBeat: BeatData | undefined,
+    gridMode: GridMode
+  ): Promise<CircularizationOption[]> {
+    if (!endBeat) return [];
+
+    const startPos = startPosition.startPosition || startPosition.endPosition;
+    const endPos = endBeat.endPosition;
+    if (!startPos || !endPos) return [];
+
+    const startGroup = this.positionToGroup(startPos);
+    const endGroup = this.positionToGroup(endPos);
+    if (!startGroup || !endGroup || startGroup === endGroup) return [];
+
+    const options: CircularizationOption[] = [];
+    const allPictographs =
+      await this.letterQueryHandler.getAllPictographVariations(gridMode);
+
+    // Find ALL pictograph variations that:
+    // 1. Start at the sequence's end position (endPos)
+    // 2. End at a position in the start group (startGroup)
+    // This gives us all possible bridge letters (X, W-, X-, etc.)
+    const bridgeCandidates = allPictographs.filter((p) => {
+      if (p.startPosition !== endPos) return false;
+      const pEndGroup = this.positionToGroup(p.endPosition || "");
+      return pEndGroup === startGroup;
+    });
+
+    if (bridgeCandidates.length === 0) return [];
+
+    // Group candidates by letter and ending position to avoid duplicates
+    // Key: "letter|endPosition" -> PictographData
+    const uniqueBridges = new Map<string, PictographData>();
+    for (const variation of bridgeCandidates) {
+      const key = `${variation.letter}|${variation.endPosition}`;
+      if (!uniqueBridges.has(key)) {
+        uniqueBridges.set(key, variation);
+      }
+    }
+
+    // For each unique bridge variation, check available LOOPs
+    for (const [key, variation] of uniqueBridges) {
+      const bridgeLetter = variation.letter as Letter;
+      const bridgeEndPos = variation.endPosition || "";
+
+      // Create a temporary beat for the bridge letter
+      const bridgeBeat: BeatData = {
+        ...variation,
+        isBeat: true,
+        beatNumber: sequence.beats.length + 1,
+        duration: 1,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+      };
+
+      // Create a temporary sequence with the bridge letter to analyze
+      const tempSequence: SequenceData = {
+        ...sequence,
+        beats: [...sequence.beats, bridgeBeat],
+      };
+
+      // Analyze what LOOPs are available for this extended sequence
+      // Filter out REWOUND since it's always available and shown separately
+      const analysis = this.sequenceExtender.analyzeSequence(tempSequence);
+      const positionDependentLOOPs = analysis.availableLOOPOptions.filter(
+        (opt) => opt.loopType !== LOOPType.REWOUND
+      );
+
+      if (positionDependentLOOPs.length > 0) {
+        options.push({
+          bridgeLetters: [bridgeLetter],
+          endPosition: bridgeEndPos,
+          availableLOOPs: positionDependentLOOPs,
+          description: `Add "${bridgeLetter}" to end at ${bridgeEndPos}`,
+        });
+      }
+    }
+
+    return options;
+  }
+
+  /**
+   * Get a representative letter that starts at a given position group.
+   * Used to find bridge paths.
+   */
+  private getFirstLetterInGroup(group: string): Letter {
+    // These are known letters that start at each position group
+    const groupStarters: Record<string, Letter> = {
+      alpha: Letter.A,
+      beta: Letter.B,
+      gamma: Letter.G,
+    };
+    return groupStarters[group] || Letter.A;
+  }
+
+  /**
+   * Append a forced bridge letter to the sequence.
+   * This is used when user selects a circularization option that requires a specific bridge letter.
+   */
+  private async appendForcedBridgeLetter(
+    sequence: SequenceData,
+    bridgeLetter: Letter,
+    gridMode: GridMode
+  ): Promise<{ success: boolean; sequence: SequenceData; error?: string }> {
+    const lastBeat = sequence.beats[sequence.beats.length - 1];
+    if (!lastBeat) {
+      return { success: false, sequence, error: "No beats in sequence" };
+    }
+
+    // Get all pictographs for the bridge letter
+    const allPictographs =
+      await this.letterQueryHandler.getAllPictographVariations(gridMode);
+
+    // Find a pictograph variation that starts at the last beat's end position
+    const bridgeVariations = allPictographs.filter(
+      (p) => p.letter === bridgeLetter && p.startPosition === lastBeat.endPosition
+    );
+
+    if (bridgeVariations.length === 0) {
+      return {
+        success: false,
+        sequence,
+        error: `No variation of "${bridgeLetter}" starts at position "${lastBeat.endPosition}"`,
+      };
+    }
+
+    // Pick a random variation for variety
+    const randomIndex = Math.floor(Math.random() * bridgeVariations.length);
+    const bridgeVariation = bridgeVariations[randomIndex];
+    if (!bridgeVariation) {
+      return { success: false, sequence, error: "Failed to select bridge variation" };
+    }
+
+    // Convert to beat and append
+    const bridgeBeat = this.beatConverter.convertToBeat(
+      bridgeVariation,
+      sequence.beats.length + 1,
+      gridMode
+    );
+
+    const newSequence: SequenceData = {
+      ...sequence,
+      beats: [...sequence.beats, bridgeBeat],
+    };
+
+    // Recalculate orientations for the new sequence
+    const recalculatedSequence = recalculateAllOrientations(
+      newSequence,
+      this.orientationCalculator
+    );
+
+    return { success: true, sequence: recalculatedSequence };
   }
 }

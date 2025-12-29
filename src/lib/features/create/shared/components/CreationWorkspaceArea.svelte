@@ -14,6 +14,7 @@
 
   import { fade } from "svelte/transition";
   import type { IToolPanelMethods } from "../types/create-module-types";
+  import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
   import WorkspacePanel from "../workspace-panel/core/WorkspacePanel.svelte";
   import { getCreateModuleContext } from "../context/create-module-context";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
@@ -29,12 +30,15 @@
     animationStateRef,
     currentDisplayWord,
     buttonPanelHeight = 0,
+    letterSources = null,
   }: {
     animatingBeatNumber?: number | null;
     onPlayAnimation: () => void;
     animationStateRef?: ReturnType<IToolPanelMethods["getAnimationStateRef"]>;
     currentDisplayWord: string;
     buttonPanelHeight?: number;
+    /** Letter sources for spell tab - enables original vs bridge letter styling */
+    letterSources?: LetterSource[] | null;
   } = $props();
 
   // Derive values from context
@@ -84,6 +88,7 @@
       {shouldOrbitAroundCenter}
       {animationStateRef}
       {currentDisplayWord}
+      {letterSources}
     />
   {/key}
 </div>

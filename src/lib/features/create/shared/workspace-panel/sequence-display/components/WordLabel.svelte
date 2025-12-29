@@ -1,11 +1,19 @@
 <script lang="ts">
   import { simplifyAndTruncate } from "../../shared/utils/word-simplifier";
+  import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
   // Props
-  let { word = "", scrollMode = false } = $props<{
+  let { word = "", scrollMode = false, letterSources = null } = $props<{
     word?: string;
     scrollMode?: boolean;
+    /** Optional: When provided, renders letters with different styles for original vs bridge */
+    letterSources?: LetterSource[] | null;
   }>();
+
+  // Computed: Whether we have letter source data to render styled letters
+  const hasLetterSources = $derived(
+    letterSources !== null && letterSources.length > 0
+  );
 
   // State
   let showCopiedMessage = $state(false);
@@ -76,13 +84,25 @@
       class="word-label"
       class:has-word={!!word && !isContextualMessage}
       class:contextual-message={isContextualMessage}
+      class:has-letter-sources={hasLetterSources}
       onclick={copyToClipboard}
       title={isContextualMessage ? word : "Click to copy '{word}' to clipboard"}
       aria-label={isContextualMessage
         ? word
         : "Current word: {word}. Click to copy."}
     >
-      {displayWord}
+      {#if hasLetterSources && !isContextualMessage}
+        <!-- Render each letter with styling based on original vs bridge -->
+        {#each letterSources as source, index (index)}
+          <span
+            class="letter"
+            class:original={source.isOriginal}
+            class:bridge={!source.isOriginal}
+          >{source.letter}</span>
+        {/each}
+      {:else}
+        {displayWord}
+      {/if}
     </button>
 
     {#if showCopiedMessage}
@@ -229,5 +249,30 @@
     .word-label {
       font-size: clamp(1rem, 6vw, 1.75rem);
     }
+  }
+
+  /* Letter source styling - original vs bridge letters */
+  .letter {
+    display: inline;
+    transition: opacity 0.2s ease;
+  }
+
+  .letter.original {
+    /* Original letters (user-typed) - bold and bright */
+    font-weight: 700;
+    color: var(--theme-text, #ffffff);
+    opacity: 1;
+  }
+
+  .letter.bridge {
+    /* Bridge letters (interpolated) - dimmed */
+    font-weight: 400;
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
+    opacity: 0.6;
+  }
+
+  /* When has letter sources, adjust container for inline flex */
+  .word-label.has-letter-sources {
+    gap: 0;
   }
 </style>

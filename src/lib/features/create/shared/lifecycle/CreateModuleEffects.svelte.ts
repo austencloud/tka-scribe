@@ -54,8 +54,11 @@ export function createCreateModuleEffects(config: EffectConfig) {
   });
 
   // Effect 3: CreateModule → Navigation sync
+  // IMPORTANT: Must wait for persistence to initialize to avoid overriding
+  // the URL-based navigation (e.g., /create/spell) with the default "constructor"
   $effect(() => {
     if (!CreateModuleState) return;
+    if (!CreateModuleState.isPersistenceInitialized) return;
 
     const CreateModuleCurrentMode = CreateModuleState.activeSection;
     const navCurrentMode = navigationState.currentSection;

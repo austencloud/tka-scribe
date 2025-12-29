@@ -1,7 +1,7 @@
 /**
  * Rotated Swapped LOOP Executor
  *
- * Executes the rotated-swapped LOOP (Continuous Assembly Pattern) by combining:
+ * Executes the rotated-swapped LOOP (Linked Orbital Offset Pattern) by combining:
  * 1. SWAPPED: Blue does what Red did, Red does what Blue did
  * 2. ROTATED: Rotate locations based on handpath direction (90°, 180°, or 270°)
  *

@@ -1,7 +1,7 @@
 /**
  * Strict Inverted LOOP Executor
  *
- * Executes the strict inverted LOOP (Continuous Assembly Pattern) by:
+ * Executes the strict inverted LOOP (Linked Orbital Offset Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
  * 2. Using inverted letters (opposite motion types)
  * 3. Generating the remaining beats to complete the circular pattern

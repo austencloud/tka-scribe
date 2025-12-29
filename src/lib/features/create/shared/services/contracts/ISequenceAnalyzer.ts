@@ -13,7 +13,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 export type CircularType = "same" | "halved" | "quartered";
 
 /**
- * LOOP (Continuous Assembly Pattern) Type
+ * LOOP (Linked Orbital Offset Pattern) Type
  *
  * Strict variations based on rotation and mirroring:
  * - 'rotated': Pure rotation without mirroring
@@ -62,7 +62,7 @@ export interface CircularityAnalysis {
  * Sequence Analysis Service Contract
  *
  * Service for analyzing sequences to detect circular patterns,
- * LOOP (Continuous Assembly Pattern) potential, and autocomplete capability.
+ * LOOP (Linked Orbital Offset Pattern) potential, and autocomplete capability.
  *
  * This service is used to:
  * - Detect if a sequence can form a circular pattern

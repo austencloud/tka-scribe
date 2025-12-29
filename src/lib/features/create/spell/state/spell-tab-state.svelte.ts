@@ -22,7 +22,13 @@ import type { IUndoManager } from "$lib/features/create/shared/services/contract
 import { createUndoController } from "$lib/features/create/shared/state/create-module/undo-controller.svelte";
 import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
-import type { LetterSource, SpellPreferences } from "../domain/models/spell-models";
+import type {
+  LetterSource,
+  SpellPreferences,
+  ExtensionAnalysis,
+  LOOPType,
+  CircularizationOption,
+} from "../domain/models/spell-models";
 import { DEFAULT_SPELL_PREFERENCES } from "../domain/constants/spell-constants";
 
 /**
@@ -58,6 +64,9 @@ export function createSpellTabState(
   let isGenerating = $state(false);
   let showLetterPalette = $state(false);
   let preferences = $state<SpellPreferences>({ ...DEFAULT_SPELL_PREFERENCES });
+  let loopAnalysis = $state<ExtensionAnalysis | null>(null);
+  let circularizationOptions = $state<CircularizationOption[]>([]);
+  let directLoopUnavailableReason = $state<string | null>(null);
 
   // Spell tab has its own independent sequence state
   // IMPORTANT: Pass tabId="spell" to ensure persistence loads/saves only spell's data
@@ -100,6 +109,23 @@ export function createSpellTabState(
     letterSources.some((source) => !source.isOriginal)
   );
 
+  // LOOP-related derived state
+  const hasAvailableLOOPs = $derived(
+    loopAnalysis !== null && loopAnalysis.availableLOOPOptions.length > 0
+  );
+  const availableLOOPOptions = $derived(
+    loopAnalysis?.availableLOOPOptions ?? []
+  );
+
+  // Circularization-related derived state (for sequences where position groups don't match)
+  // Note: Even if loopAnalysis.canExtend is true (e.g., REWOUND always works),
+  // we still show circularization options when position groups don't match
+  // to let users enable position-dependent LOOPs like STRICT_ROTATED
+  const hasCircularizationOptions = $derived(circularizationOptions.length > 0);
+  const needsCircularization = $derived(
+    preferences.makeCircular && circularizationOptions.length > 0
+  );
+
   // ============================================================================
   // INITIALIZATION
   // ============================================================================
@@ -122,10 +148,46 @@ export function createSpellTabState(
         await sequenceState.initializeWithPersistence();
       }
 
+      // Restore spell-specific metadata from sequence if available
+      restoreSpellMetadataFromSequence();
+
       isInitialized = true;
     } catch (error) {
       console.error("❌ SpellTabState: Failed to initialize:", error);
       setError(error instanceof Error ? error.message : "Failed to initialize");
+    }
+  }
+
+  /**
+   * Restore spell metadata (letterSources, inputWord, expandedWord) from sequence metadata.
+   * This is called after sequence state is restored from persistence.
+   */
+  function restoreSpellMetadataFromSequence() {
+    if (!sequenceState) return;
+
+    // currentSequence is a getter property
+    const currentSequence = sequenceState.currentSequence;
+    if (!currentSequence) return;
+
+    // Check if sequence has spell metadata
+    const spellData = currentSequence.metadata?.spellData as
+      | {
+          originalWord?: string;
+          expandedWord?: string;
+          letterSources?: LetterSource[];
+        }
+      | undefined;
+
+    if (spellData) {
+      if (spellData.originalWord) {
+        inputWord = spellData.originalWord;
+      }
+      if (spellData.expandedWord) {
+        expandedWord = spellData.expandedWord;
+      }
+      if (spellData.letterSources && Array.isArray(spellData.letterSources)) {
+        letterSources = spellData.letterSources;
+      }
     }
   }
 
@@ -210,12 +272,31 @@ export function createSpellTabState(
     preferences = { ...DEFAULT_SPELL_PREFERENCES };
   }
 
+  function setLoopAnalysis(analysis: ExtensionAnalysis | null) {
+    loopAnalysis = analysis;
+  }
+
+  function selectLOOPType(loopType: LOOPType | null) {
+    preferences = { ...preferences, selectedLOOPType: loopType };
+  }
+
+  function setCircularizationOptions(options: CircularizationOption[]) {
+    circularizationOptions = options;
+  }
+
+  function setDirectLoopUnavailableReason(reason: string | null) {
+    directLoopUnavailableReason = reason;
+  }
+
   function clearSpellState() {
     inputWord = "";
     expandedWord = "";
     letterSources = [];
     isGenerating = false;
     error = null;
+    loopAnalysis = null;
+    circularizationOptions = [];
+    directLoopUnavailableReason = null;
   }
 
   /**
@@ -283,6 +364,31 @@ export function createSpellTabState(
       return hasBridgeLetters;
     },
 
+    // LOOP-related readonly state
+    get loopAnalysis() {
+      return loopAnalysis;
+    },
+    get hasAvailableLOOPs() {
+      return hasAvailableLOOPs;
+    },
+    get availableLOOPOptions() {
+      return availableLOOPOptions;
+    },
+
+    // Circularization-related readonly state
+    get circularizationOptions() {
+      return circularizationOptions;
+    },
+    get hasCircularizationOptions() {
+      return hasCircularizationOptions;
+    },
+    get needsCircularization() {
+      return needsCircularization;
+    },
+    get directLoopUnavailableReason() {
+      return directLoopUnavailableReason;
+    },
+
     // Sequence state access
     get sequenceState() {
       return sequenceState;
@@ -332,6 +438,14 @@ export function createSpellTabState(
     resetPreferences,
     clearSpellState,
     insertLetter,
+
+    // LOOP-related mutations
+    setLoopAnalysis,
+    selectLOOPType,
+
+    // Circularization-related mutations
+    setCircularizationOptions,
+    setDirectLoopUnavailableReason,
 
     // Initialization
     initializeSpellTab,

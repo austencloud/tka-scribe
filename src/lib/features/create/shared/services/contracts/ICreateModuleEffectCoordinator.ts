@@ -16,6 +16,7 @@ import type { INavigationSyncer } from "./INavigationSyncer";
 import type { IDeepLinkSequenceHandler } from "./IDeepLinkSequenceHandler";
 import type { IBeatOperator } from "./IBeatOperator";
 import type { Autosaver } from "../../services/Autosaver";
+import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
 /**
  * Configuration for CreateModule effects
@@ -44,6 +45,7 @@ export interface CreateModuleEffectConfig {
 
   // Optional callbacks
   onCurrentWordChange?: (word: string) => void;
+  onLetterSourcesChange?: (sources: LetterSource[] | null) => void;
   onTabAccessibilityChange?: (canAccess: boolean) => void;
 }
 

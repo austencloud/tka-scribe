@@ -19,8 +19,8 @@ export const DEFAULT_SPELL_PREFERENCES: SpellPreferences = {
   minimizeReversals: true,
   preferContinuous: true,
   favorMotionType: null,
-  maxBridgeLetters: 2,
   makeCircular: false,
+  selectedLOOPType: null, // null = show options after generation
 };
 
 /**

@@ -188,7 +188,8 @@
     if (hasMounted && isSelected && !wasSelected && cellElement) {
       // Small delay to ensure DOM is settled after deletion animation
       requestAnimationFrame(() => {
-        cellElement?.focus();
+        // Use preventScroll to avoid pulling user's viewport during animation playback
+        cellElement?.focus({ preventScroll: true });
       });
     }
     wasSelected = isSelected;

@@ -1,7 +1,7 @@
 /**
  * Mirrored Inverted LOOP Executor
  *
- * Executes the mirrored-inverted LOOP (Continuous Assembly Pattern) by combining:
+ * Executes the mirrored-inverted LOOP (Linked Orbital Offset Pattern) by combining:
  * 1. MIRRORED: Mirror locations vertically (E↔W), flip prop rotation (CW↔CCW)
  * 2. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
  *

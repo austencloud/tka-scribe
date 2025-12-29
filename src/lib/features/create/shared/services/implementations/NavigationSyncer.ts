@@ -44,6 +44,7 @@ export class NavigationSyncer implements INavigationSyncer {
       "constructor",
       "gestural",
       "generator",
+      "spell",
     ];
     if (!validCreateTabs.includes(currentMode)) {
       return;

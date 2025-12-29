@@ -1,7 +1,7 @@
 /**
  * Mirrored Rotated Inverted Swapped LOOP Executor
  *
- * Executes the mirrored-rotated-inverted-swapped LOOP (Continuous Assembly Pattern) by composing
+ * Executes the mirrored-rotated-inverted-swapped LOOP (Linked Orbital Offset Pattern) by composing
  * FOUR LOOP operations sequentially:
  * 1. ROTATED: Apply strict rotation with user-selected slice size (halved or quartered)
  * 2. MIRRORED + SWAPPED + INVERTED: Apply all three transformations together

@@ -1,7 +1,7 @@
 /**
  * Rotated Inverted LOOP Executor
  *
- * Executes the rotated-inverted LOOP (Continuous Assembly Pattern) by combining:
+ * Executes the rotated-inverted LOOP (Linked Orbital Offset Pattern) by combining:
  * 1. ROTATED: Rotate locations based on handpath direction (90°, 180°, or 270°)
  * 2. INVERTED: Flip letters (A↔B), flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
  *

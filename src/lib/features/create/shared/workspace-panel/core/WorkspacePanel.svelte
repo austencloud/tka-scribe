@@ -18,6 +18,7 @@
   import type { CreateModuleState } from "../../state/create-module-state.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
   import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
+  import type { LetterSource } from "$lib/features/create/spell/domain/models/spell-models";
 
   // Services
   let BeatOperator: IBeatOperator | null = null;
@@ -39,6 +40,9 @@
 
     // Current word display
     currentDisplayWord = "",
+
+    // Letter sources for spell tab
+    letterSources = null,
   }: {
     sequenceState?: SequenceState;
     createModuleState?: CreateModuleState;
@@ -55,6 +59,9 @@
 
     // Current word display
     currentDisplayWord?: string;
+
+    /** Letter sources for spell tab - enables original vs bridge letter styling */
+    letterSources?: LetterSource[] | null;
   } = $props();
 
   // Local beat selection state (beatNumber: 0=start, 1=first beat, etc.)
@@ -206,6 +213,7 @@
           {shouldOrbitAroundCenter}
           activeMode={createModuleState?.activeSection ?? null}
           {currentDisplayWord}
+          {letterSources}
         />
       </div>
 

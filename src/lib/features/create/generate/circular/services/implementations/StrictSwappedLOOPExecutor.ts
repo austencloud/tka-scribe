@@ -1,7 +1,7 @@
 /**
  * Strict Swapped LOOP Executor
  *
- * Executes the strict swapped LOOP (Continuous Assembly Pattern) by:
+ * Executes the strict swapped LOOP (Linked Orbital Offset Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
  * 2. Swapping blue and red attributes between beats
  * 3. Generating the remaining beats to complete the circular pattern

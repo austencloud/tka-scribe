@@ -1,7 +1,7 @@
 /**
  * Mirrored Rotated LOOP Executor
  *
- * Executes the mirrored-rotated LOOP (Continuous Assembly Pattern) by composing
+ * Executes the mirrored-rotated LOOP (Linked Orbital Offset Pattern) by composing
  * two LOOP operations sequentially:
  * 1. ROTATED: Apply strict rotation with user-selected slice size (halved or quartered)
  * 2. MIRRORED: Apply vertical mirroring to double the sequence again

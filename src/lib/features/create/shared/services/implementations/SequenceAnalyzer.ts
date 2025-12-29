@@ -22,7 +22,7 @@ import {
 /**
  * Sequence Analysis Service Implementation
  *
- * Analyzes sequences to detect circular patterns and LOOP (Continuous Assembly Pattern) potential.
+ * Analyzes sequences to detect circular patterns and LOOP (Linked Orbital Offset Pattern) potential.
  *
  * Key Concepts:
  * - Circular sequences can be "autocompleted" by applying LOOP transformations

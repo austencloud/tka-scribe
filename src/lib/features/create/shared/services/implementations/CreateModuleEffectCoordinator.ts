@@ -46,6 +46,7 @@ export class CreateModuleEffectCoordinator
       getShouldUseSideBySideLayout,
       setAnimatingBeatNumber,
       onCurrentWordChange,
+      onLetterSourcesChange,
       onTabAccessibilityChange,
     } = config;
 
@@ -138,7 +139,7 @@ export class CreateModuleEffectCoordinator
       );
     }
 
-    // Current word display effects
+    // Current word display effects (and letter sources for spell tab)
     const constructTabState = getConstructTabState();
     if (onCurrentWordChange && createModuleState && constructTabState) {
       cleanups.push(
@@ -146,6 +147,7 @@ export class CreateModuleEffectCoordinator
           CreateModuleState: createModuleState,
           constructTabState,
           onCurrentWordChange,
+          onLetterSourcesChange,
         })
       );
     }

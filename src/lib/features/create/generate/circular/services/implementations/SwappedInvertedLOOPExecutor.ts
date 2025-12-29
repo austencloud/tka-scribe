@@ -1,7 +1,7 @@
 /**
  * Swapped Inverted LOOP Executor
  *
- * Executes the swapped-inverted LOOP (Continuous Assembly Pattern) by combining:
+ * Executes the swapped-inverted LOOP (Linked Orbital Offset Pattern) by combining:
  * 1. SWAPPED: Blue does what Red did, Red does what Blue did
  * 2. INVERTED: Flip letters, flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
  *

@@ -1,7 +1,7 @@
 /**
  * Strict Mirrored LOOP Executor
  *
- * Executes the strict mirrored LOOP (Continuous Assembly Pattern) by:
+ * Executes the strict mirrored LOOP (Linked Orbital Offset Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
  * 2. Applying vertical mirroring transformations to each beat
  * 3. Generating the remaining beats to complete the circular pattern
