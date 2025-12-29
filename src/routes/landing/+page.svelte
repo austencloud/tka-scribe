@@ -1,27 +1,29 @@
 <script lang="ts">
 	import { onMount, onDestroy } from "svelte";
+	import { fade, scale } from "svelte/transition";
+	import { cubicOut, backOut } from "svelte/easing";
 	import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
 	import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 	import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
 	import type { ISequenceRepository } from "$lib/features/create/shared/services/contracts/ISequenceRepository";
+	import type { IStartPositionDeriver } from "$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver";
 	import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
 	import { resolve, loadFeatureModule } from "$lib/shared/inversify/di";
 	import { TYPES } from "$lib/shared/inversify/types";
-	import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+	import { animationSettings, TrackingMode } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 	import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+	import BeatGrid from "$lib/features/create/shared/workspace-panel/sequence-display/components/BeatGrid.svelte";
 
-	// Curated sequences that showcase variety - all circular for smooth looping
+	// Transition key - changes trigger the crossfade animation
+	let transitionKey = $state(0);
+
+	// Curated sequences: 8 and 16-beat strict_rotated LOOPs
+	// These showcase impressive bilateral choreography with smooth circular looping
 	const SHOWCASE_SEQUENCES = [
-		{ word: "A", beats: 4, desc: "Simple prospin flower" },
-		{ word: "B", beats: 4, desc: "Antispin flower" },
-		{ word: "AB", beats: 4, desc: "Pro-anti hybrid" },
-		{ word: "DJ", beats: 4, desc: "Isolations" },
-		{ word: "EK", beats: 4, desc: "CAT pattern" },
-		{ word: "C", beats: 8, desc: "Extended flower" },
-		{ word: "AABB", beats: 4, desc: "Double letters" },
-		{ word: "BA", beats: 4, desc: "Anti-pro hybrid" },
-		{ word: "BC", beats: 4, desc: "Anti patterns" },
-		{ word: "EJ", beats: 4, desc: "Together-opposite" },
+		// 8-beat
+		"BJEA", "DΨ", "JΦ", "EΔUZ", "ΩZ", "Ψ-H",
+		// 16-beat
+		"KIΦC", "IΦAJ",
 	];
 
 	// Props to randomize between - popular prop types
@@ -38,6 +40,7 @@
 	const animationState = createAnimationPanelState();
 	let playbackController: IAnimationPlaybackController | null = null;
 	let sequenceService: ISequenceRepository | null = null;
+	let startPositionDeriver: IStartPositionDeriver | null = null;
 	let servicesReady = $state(false);
 	let animationReady = $state(false);
 	let animationError = $state(false);
@@ -48,19 +51,30 @@
 	let currentPropType = $state<PropType>(RANDOM_PROPS[0]);
 
 	// Derived values
-	let currentSequenceInfo = $derived(SHOWCASE_SEQUENCES[currentSequenceIndex]);
+	let currentWord = $derived(SHOWCASE_SEQUENCES[currentSequenceIndex]);
+
+	// Derived start position - uses service to derive from first beat if not stored
+	// Must be defined before currentLetter/currentBeatData which depend on it
+	let derivedStartPosition = $derived.by(() => {
+		if (!animationState.sequenceData || !startPositionDeriver) return null;
+		return startPositionDeriver.getOrDeriveStartPosition(animationState.sequenceData);
+	});
 
 	// Current beat data for AnimatorCanvas
+	// Animation uses 1-indexed currentBeat: 1-2 = beat 1, 2-3 = beat 2
+	// But beats array is 0-indexed: beats[0] = beat 1, beats[1] = beat 2
+	// So we need beatIndex = Math.floor(currentBeat) - 1
 	let currentLetter = $derived.by(() => {
 		if (!animationState.sequenceData) return null;
 		const currentBeat = animationState.currentBeat;
 
-		if (currentBeat === 0 && !animationState.isPlaying && animationState.sequenceData.startPosition) {
-			return animationState.sequenceData.startPosition.letter || null;
+		// Start position: currentBeat < 1
+		if (currentBeat < 1) {
+			return derivedStartPosition?.letter || null;
 		}
 
 		if (animationState.sequenceData.beats?.length > 0) {
-			const beatIndex = Math.floor(currentBeat);
+			const beatIndex = Math.floor(currentBeat) - 1; // Convert 1-indexed to 0-indexed
 			const clampedIndex = Math.max(0, Math.min(beatIndex, animationState.sequenceData.beats.length - 1));
 			return animationState.sequenceData.beats[clampedIndex]?.letter || null;
 		}
@@ -72,12 +86,13 @@
 		if (!animationState.sequenceData) return null;
 		const currentBeat = animationState.currentBeat;
 
-		if (currentBeat === 0 && !animationState.isPlaying && animationState.sequenceData.startPosition) {
-			return animationState.sequenceData.startPosition;
+		// Start position: currentBeat < 1
+		if (currentBeat < 1) {
+			return derivedStartPosition || null;
 		}
 
 		if (animationState.sequenceData.beats?.length > 0) {
-			const beatIndex = Math.floor(currentBeat);
+			const beatIndex = Math.floor(currentBeat) - 1; // Convert 1-indexed to 0-indexed
 			const clampedIndex = Math.max(0, Math.min(beatIndex, animationState.sequenceData.beats.length - 1));
 			return animationState.sequenceData.beats[clampedIndex] || null;
 		}
@@ -87,16 +102,25 @@
 
 	let gridMode = $derived(animationState.sequenceData?.gridMode ?? null);
 
+	// Current beat number for beat grid highlighting
+	// Animation uses 1-indexed beats: currentBeat 1-2 = beat 1, currentBeat 2-3 = beat 2, etc.
+	// Start position is currentBeat < 1, which floors to 0
+	let currentBeatNumber = $derived(Math.floor(animationState.currentBeat));
+
 	// Load and start animation on mount
 	onMount(async () => {
 		try {
+			// Configure trail settings for demo - track both ends of bilateral props
+			animationSettings.setTrackingMode(TrackingMode.BOTH_ENDS);
+
 			await loadFeatureModule("animate");
 			sequenceService = resolve<ISequenceRepository>(TYPES.ISequenceRepository);
 			playbackController = resolve<IAnimationPlaybackController>(TYPES.IAnimationPlaybackController);
+			startPositionDeriver = resolve<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
 			servicesReady = true;
 
 			// Load initial sequence
-			await loadSequence(SHOWCASE_SEQUENCES[0].word);
+			await loadSequence(SHOWCASE_SEQUENCES[0]);
 
 		} catch (err) {
 			console.error("Failed to load hero animation:", err);
@@ -112,6 +136,8 @@
 	async function loadSequence(word: string, propType?: PropType) {
 		if (!sequenceService || !playbackController) return;
 
+		// Trigger transition animation
+		transitionKey++;
 		isLoading = true;
 		animationReady = false;
 
@@ -144,10 +170,9 @@
 			animationReady = true;
 			isLoading = false;
 
-			// Start playing after brief delay
-			setTimeout(() => {
-				playbackController?.togglePlayback();
-			}, 300);
+			// Skip start position - seek directly to beat 1 and start playing
+			animationState.setCurrentBeat(1);
+			playbackController?.togglePlayback();
 
 		} catch (err) {
 			console.error("Failed to load sequence:", err);
@@ -168,7 +193,7 @@
 		const newPropType = RANDOM_PROPS[Math.floor(Math.random() * RANDOM_PROPS.length)];
 		currentPropType = newPropType;
 
-		loadSequence(SHOWCASE_SEQUENCES[newSequenceIndex].word, newPropType);
+		loadSequence(SHOWCASE_SEQUENCES[newSequenceIndex], newPropType);
 	}
 
 	// Feature cards data
@@ -257,53 +282,77 @@
 				</a>
 			</div>
 
-			<!-- Real Animation Preview with Controls -->
+			<!-- Real Animation Preview with Beat Grid -->
 			<div class="hero-visual">
-				<div class="animation-preview">
-					{#if animationReady && !isLoading}
-						<div class="canvas-wrapper">
-							<AnimatorCanvas
-								blueProp={animationState.bluePropState}
-								redProp={animationState.redPropState}
-								gridVisible={true}
-								{gridMode}
-								letter={currentLetter}
-								beatData={currentBeatData}
-								sequenceData={animationState.sequenceData}
-								isPlaying={animationState.isPlaying}
-								trailSettings={animationSettings.trail}
-							/>
-						</div>
-					{:else if animationError}
-						<div class="animation-fallback">
-							<div class="fallback-icon">🌀</div>
-							<span>Animation Preview</span>
-						</div>
-					{:else}
-						<div class="animation-loading">
-							<div class="spinner"></div>
-							<span>{isLoading ? "Loading..." : "Initializing..."}</span>
-						</div>
-					{/if}
-
-					<!-- Sequence Info -->
-					<div class="sequence-info">
-						<span class="word">{currentSequenceInfo?.word || "A"}</span>
-						<span class="desc">{currentSequenceInfo?.desc || ""}</span>
-					</div>
-
-					<!-- Randomize Button -->
-					<button
-						class="randomize-btn"
-						onclick={handleRandomize}
-						disabled={!servicesReady || isLoading}
+				{#key transitionKey}
+					<div
+						class="demo-transition-wrapper"
+						in:scale={{ duration: 350, delay: 100, start: 0.95, opacity: 0, easing: backOut }}
+						out:scale={{ duration: 200, start: 0.98, opacity: 0, easing: cubicOut }}
 					>
-						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
-						</svg>
-						<span>Try Another</span>
-					</button>
-				</div>
+						<div class="demo-layout">
+							<!-- Word Label - spans full width above both panels -->
+							<div class="word-label-row">
+								<span class="word-text">{currentWord || "A"}</span>
+							</div>
+
+							<!-- Content Row: Animation + Beat Grid side by side -->
+							<div class="demo-content-row">
+								<!-- Animation Canvas -->
+								<div class="animation-preview">
+									{#if animationReady && !isLoading}
+										<div class="canvas-wrapper">
+											<AnimatorCanvas
+												blueProp={animationState.bluePropState}
+												redProp={animationState.redPropState}
+												gridVisible={true}
+												{gridMode}
+												letter={currentLetter}
+												beatData={currentBeatData}
+												sequenceData={animationState.sequenceData}
+												isPlaying={animationState.isPlaying}
+												trailSettings={animationSettings.trail}
+											/>
+										</div>
+									{:else if animationError}
+										<div class="animation-fallback">
+											<div class="fallback-icon">🌀</div>
+											<span>Animation Preview</span>
+										</div>
+									{:else}
+										<div class="animation-loading">
+											<div class="spinner"></div>
+											<span>{isLoading ? "Loading..." : "Initializing..."}</span>
+										</div>
+									{/if}
+								</div>
+
+								<!-- Beat Grid -->
+								{#if animationState.sequenceData}
+									<div class="beat-grid-panel">
+										<BeatGrid
+											beats={animationState.sequenceData.beats}
+											startPosition={derivedStartPosition}
+											selectedBeatNumber={currentBeatNumber}
+										/>
+									</div>
+								{/if}
+							</div>
+						</div>
+					</div>
+				{/key}
+
+				<!-- Randomize Button - outside transition so it stays visible -->
+				<button
+					class="randomize-btn"
+					onclick={handleRandomize}
+					disabled={!servicesReady || isLoading}
+				>
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>
+					</svg>
+					<span>Try Another</span>
+				</button>
 			</div>
 		</div>
 	</section>
@@ -779,19 +828,74 @@
 
 	/* Hero Visual / Real Animation */
 	.hero-visual {
-		margin-top: 48px;
+		margin-top: clamp(24px, 5vw, 48px);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(16px, 3vw, 24px);
+		width: 100%;
+		container-type: inline-size;
+		/* Container for absolute positioned transition children */
+		position: relative;
+		min-height: clamp(380px, 50cqw, 520px);
+	}
+
+	/* Wrapper for keyed transition - needs absolute positioning for crossfade */
+	.demo-transition-wrapper {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.demo-layout {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(12px, 2cqw, 20px);
+		width: 100%;
+		max-width: 900px;
+	}
+
+	/* Word Label Row - spans full width, centered */
+	.word-label-row {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+	}
+
+	.word-label-row .word-text {
+		font-family: Georgia, serif;
+		font-size: clamp(1.5rem, 5cqw, 2.5rem);
+		font-weight: 600;
+		color: var(--text, #ffffff);
+		letter-spacing: 0.02em;
+		text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+	}
+
+	/* Content Row - Animation + Beat Grid side by side */
+	.demo-content-row {
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		gap: clamp(16px, 3cqw, 32px);
+		width: 100%;
 	}
 
 	.animation-preview {
-		display: inline-flex;
+		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 16px;
+		flex: 0 0 auto;
 	}
 
 	.canvas-wrapper {
-		width: 280px;
-		height: 280px;
+		width: clamp(300px, 38cqw, 400px);
+		height: clamp(300px, 38cqw, 400px);
 		background: rgba(0, 0, 0, 0.4);
 		border: 1px solid var(--border);
 		border-radius: 16px;
@@ -799,22 +903,18 @@
 		box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 	}
 
-	.sequence-info {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 4px;
-	}
-
-	.sequence-info .word {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: var(--primary-light);
-	}
-
-	.sequence-info .desc {
-		font-size: 0.875rem;
-		color: var(--text-muted);
+	.beat-grid-panel {
+		flex: 0 0 auto;
+		width: clamp(400px, 50cqw, 530px);
+		height: clamp(300px, 38cqw, 400px);
+		/* Transparent background so selection effects don't show black edges */
+		background: transparent;
+		border: 2px solid var(--border-strong);
+		border-radius: 16px;
+		/* Use visible overflow so scaled selection effects aren't clipped */
+		overflow: visible;
+		/* No padding - let BeatGrid fill the space */
+		padding: 0;
 	}
 
 	.animation-loading,
@@ -850,7 +950,13 @@
 		to { transform: rotate(360deg); }
 	}
 
-	/* Randomize Button */
+	/* Randomize Button - positioned at bottom of hero-visual */
+	.hero-visual > .randomize-btn {
+		position: absolute;
+		bottom: 0;
+		z-index: 10;
+	}
+
 	.randomize-btn {
 		display: inline-flex;
 		align-items: center;
@@ -1351,15 +1457,29 @@
 			justify-content: center;
 		}
 
+		.demo-content-row {
+			flex-wrap: wrap;
+		}
+
+		.beat-grid-panel {
+			width: 100%;
+			max-width: clamp(300px, 85vw, 440px);
+			height: clamp(280px, 55vw, 380px);
+		}
+
+		.word-label-row .word-text {
+			font-size: clamp(1.25rem, 6vw, 2rem);
+		}
+
 		.canvas-wrapper {
-			width: 240px;
-			height: 240px;
+			width: clamp(280px, 70vw, 360px);
+			height: clamp(280px, 70vw, 360px);
 		}
 
 		.animation-loading,
 		.animation-fallback {
-			width: 240px;
-			height: 240px;
+			width: clamp(240px, 65vw, 320px);
+			height: clamp(240px, 65vw, 320px);
 		}
 
 		.randomize-btn {

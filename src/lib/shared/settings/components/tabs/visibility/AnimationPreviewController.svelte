@@ -10,6 +10,7 @@
     resolve,
     loadAnimationModule,
     loadFeatureModule,
+    ensureContainerInitialized,
   } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -91,6 +92,9 @@
     try {
       loading = true;
       error = null;
+
+      // Ensure container is fully initialized (handles HMR timing)
+      await ensureContainerInitialized();
 
       // Load required modules
       await loadFeatureModule("animate");

@@ -75,10 +75,17 @@ if (import.meta.hot) {
   import.meta.hot.accept(async () => {
     console.log("🔄 HMR: Container module updated - rebuilding with zero downtime...");
 
-    // Restore module state from HMR data
+    // Capture modules to restore BEFORE clearing
     const featureModulesToRestore = Array.from(loadedModules).filter(
       (module) => !getTierModuleNames().includes(module)
     );
+
+    // Clear loadedModules so loadIfNeeded actually reloads them
+    // (container bindings were cleared, so we need to re-register)
+    loadedModules.clear();
+    tier1Loaded = false;
+    tier2Loaded = false;
+    tier2Promise = null;
 
     // Trigger HMR rebuild through manager
     await hmrManager.onHMRAccept();
@@ -436,6 +443,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "compose":
       case "animate":
+        // Wait for tier 2 (pictograph module has IStartPositionDeriver)
+        if (tier2Promise) await tier2Promise;
         await Promise.all([
           loadIfNeeded("discover", () => import("./modules/discover.module")),
           loadIfNeeded("animator", () => import("./modules/animator.module")),

@@ -28,7 +28,7 @@ import {
   getDefaultFeatureRole,
 } from "../domain/models/FeatureFlag";
 import type { ModuleId } from "../../navigation/domain/types";
-import { MODULE_DEFINITIONS } from "../../navigation/state/navigation-state.svelte";
+import { MODULE_DEFINITIONS } from "../../navigation/config/module-definitions";
 import { isModuleEnabledInEnvironment } from "../../environment/environment-features";
 
 /**

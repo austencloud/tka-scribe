@@ -29,6 +29,7 @@ export const RenderingTypes = {
   IArrowPositioningOrchestrator: Symbol.for("IArrowPositioningOrchestrator"),
   IArrowAdjustmentCalculator: Symbol.for("IArrowAdjustmentCalculator"),
   IGridPositionDeriver: Symbol.for("IGridPositionDeriver"),
+  IStartPositionDeriver: Symbol.for("IStartPositionDeriver"),
   IPositionCalculatorService: Symbol.for("IPositionCalculatorService"),
   IOrientationCalculator: Symbol.for("IOrientationCalculator"),
 

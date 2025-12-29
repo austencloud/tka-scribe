@@ -300,7 +300,7 @@ export async function handleModuleChange(
 // Tab order for determining slide direction (per module)
 // Note: Compose module playback is an overlay, not a tab
 const TAB_ORDERS: Record<string, string[]> = {
-  create: ["assembler", "constructor", "generator", "editor", "export"],
+  create: ["assembler", "constructor", "generator", "spell", "editor", "export"],
   discover: ["sequences", "collections", "creators", "library"],
   learn: ["concepts", "play", "codex"],
   compose: ["arrange", "browse"],

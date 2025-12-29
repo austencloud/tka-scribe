@@ -13,6 +13,7 @@ import {
   AUTUMN_PHYSICS,
   AUTUMN_OPACITY,
   AUTUMN_BOUNDS,
+  AUTUMN_LEAF_PATHS,
 } from "../domain/constants/autumn-constants";
 
 export interface LeafSystem {
@@ -35,10 +36,24 @@ export function createLeafSystem(): LeafSystem {
 
   function getLeafType(): LeafType {
     const rand = Math.random();
-    if (rand < AUTUMN_LEAF_DISTRIBUTION.maple) return "maple";
-    if (rand < AUTUMN_LEAF_DISTRIBUTION.maple + AUTUMN_LEAF_DISTRIBUTION.oak)
-      return "oak";
-    return "oval";
+    let cumulative = 0;
+
+    cumulative += AUTUMN_LEAF_DISTRIBUTION.maple;
+    if (rand < cumulative) return "maple";
+
+    cumulative += AUTUMN_LEAF_DISTRIBUTION.curved;
+    if (rand < cumulative) return "curved";
+
+    cumulative += AUTUMN_LEAF_DISTRIBUTION.oak;
+    if (rand < cumulative) return "oak";
+
+    cumulative += AUTUMN_LEAF_DISTRIBUTION.rounded;
+    if (rand < cumulative) return "rounded";
+
+    cumulative += AUTUMN_LEAF_DISTRIBUTION.double;
+    if (rand < cumulative) return "double";
+
+    return "nature";
   }
 
   function getLeafColor(): string {
@@ -256,129 +271,48 @@ export function createLeafSystem(): LeafSystem {
     }
   }
 
+  /**
+   * Create a scaled and centered Path2D from SVG path data
+   * Transforms the original viewBox coordinates to be centered at origin
+   * and scaled to the target size
+   */
+  function createScaledPath(
+    svgPath: string,
+    viewBox: { width: number; height: number },
+    targetSize: number
+  ): Path2D {
+    // Calculate scale factor to fit within target size
+    const maxDimension = Math.max(viewBox.width, viewBox.height);
+    const scale = targetSize / maxDimension;
+
+    // Center offsets (move origin to center of viewBox)
+    const offsetX = -viewBox.width / 2;
+    const offsetY = -viewBox.height / 2;
+
+    // Create a transformation matrix
+    const matrix = new DOMMatrix();
+    matrix.scaleSelf(scale, scale);
+    matrix.translateSelf(offsetX, offsetY);
+
+    // Create path from SVG string and apply transformation
+    const originalPath = new Path2D(svgPath);
+    const scaledPath = new Path2D();
+    scaledPath.addPath(originalPath, matrix);
+
+    return scaledPath;
+  }
+
   function getOrCreateLeafPath(type: LeafType, size: number): Path2D {
     const key = `${type}-${Math.round(size)}`;
     if (leafPathCache.has(key)) {
       return leafPathCache.get(key)!;
     }
 
-    const path = new Path2D();
-
-    switch (type) {
-      case "maple":
-        drawMaplePath(path, size);
-        break;
-      case "oak":
-        drawOakPath(path, size);
-        break;
-      case "oval":
-        drawOvalPath(path, size);
-        break;
-    }
+    const leafData = AUTUMN_LEAF_PATHS[type];
+    const path = createScaledPath(leafData.d, leafData.viewBox, size);
 
     leafPathCache.set(key, path);
     return path;
-  }
-
-  function drawMaplePath(path: Path2D, size: number): void {
-    // 5-pointed maple leaf with curved indentations
-    const points = 5;
-    const outerRadius = size / 2;
-    const innerRadius = outerRadius * 0.4;
-
-    path.moveTo(0, -outerRadius);
-
-    for (let i = 0; i < points; i++) {
-      const outerAngle = (i * 2 * Math.PI) / points - Math.PI / 2;
-      const innerAngle = ((i + 0.5) * 2 * Math.PI) / points - Math.PI / 2;
-      const nextOuterAngle = ((i + 1) * 2 * Math.PI) / points - Math.PI / 2;
-
-      const outerX = Math.cos(outerAngle) * outerRadius;
-      const outerY = Math.sin(outerAngle) * outerRadius;
-      const innerX = Math.cos(innerAngle) * innerRadius;
-      const innerY = Math.sin(innerAngle) * innerRadius;
-      const nextOuterX = Math.cos(nextOuterAngle) * outerRadius;
-      const nextOuterY = Math.sin(nextOuterAngle) * outerRadius;
-
-      // Curve from current outer point to inner point
-      const cp1x = outerX + (innerX - outerX) * 0.5;
-      const cp1y = outerY + (innerY - outerY) * 0.3;
-      path.quadraticCurveTo(cp1x, cp1y, innerX, innerY);
-
-      // Curve from inner point to next outer point
-      const cp2x = innerX + (nextOuterX - innerX) * 0.5;
-      const cp2y = innerY + (nextOuterY - innerY) * 0.3;
-      path.quadraticCurveTo(cp2x, cp2y, nextOuterX, nextOuterY);
-    }
-
-    path.closePath();
-
-    // Add stem
-    path.moveTo(0, outerRadius * 0.3);
-    path.lineTo(0, outerRadius * 1.2);
-  }
-
-  function drawOakPath(path: Path2D, size: number): void {
-    // Oak leaf with wavy lobed edges
-    const halfWidth = size * 0.4;
-    const halfHeight = size * 0.6;
-    const lobes = 4;
-
-    path.moveTo(0, -halfHeight);
-
-    // Right side with lobes
-    for (let i = 0; i < lobes; i++) {
-      const t = i / lobes;
-      const nextT = (i + 1) / lobes;
-      const y1 = -halfHeight + t * halfHeight * 2;
-      const y2 = -halfHeight + nextT * halfHeight * 2;
-      const lobeDepth = halfWidth * (0.7 + 0.3 * Math.sin(t * Math.PI));
-      const insetDepth = halfWidth * 0.5;
-
-      path.quadraticCurveTo(
-        lobeDepth,
-        (y1 + y2) / 2 - halfHeight * 0.1,
-        insetDepth,
-        y2
-      );
-    }
-
-    // Bottom point
-    path.lineTo(0, halfHeight);
-
-    // Left side with lobes (mirror)
-    for (let i = lobes - 1; i >= 0; i--) {
-      const t = i / lobes;
-      const prevT = (i - 1) / lobes;
-      const y1 = -halfHeight + t * halfHeight * 2;
-      const y2 = -halfHeight + Math.max(0, prevT) * halfHeight * 2;
-      const lobeDepth = -halfWidth * (0.7 + 0.3 * Math.sin(t * Math.PI));
-      const insetDepth = -halfWidth * 0.5;
-
-      path.quadraticCurveTo(lobeDepth, (y1 + y2) / 2, insetDepth, y2);
-    }
-
-    path.closePath();
-
-    // Add stem
-    path.moveTo(0, halfHeight);
-    path.lineTo(0, halfHeight + size * 0.25);
-  }
-
-  function drawOvalPath(path: Path2D, size: number): void {
-    // Simple elongated oval leaf
-    const halfWidth = size * 0.35;
-    const halfHeight = size * 0.55;
-
-    path.ellipse(0, 0, halfWidth, halfHeight, 0, 0, Math.PI * 2);
-
-    // Add center vein
-    path.moveTo(0, -halfHeight * 0.8);
-    path.lineTo(0, halfHeight * 0.8);
-
-    // Add stem
-    path.moveTo(0, halfHeight);
-    path.lineTo(0, halfHeight + size * 0.2);
   }
 
   function draw(ctx: CanvasRenderingContext2D): void {

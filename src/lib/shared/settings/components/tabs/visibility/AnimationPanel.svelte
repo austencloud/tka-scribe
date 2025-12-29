@@ -12,6 +12,7 @@
     TrailMode,
     TrackingMode,
   } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   interface Props {
     gridVisible: boolean;
@@ -46,6 +47,31 @@
   }: Props = $props();
 
   const bpmPresets = [30, 60, 90, 120];
+
+  // LED Mode state
+  const visibilityManager = getAnimationVisibilityManager();
+  let ledModeEnabled = $state(visibilityManager.isLedMode());
+
+  // Sync LED mode from visibility manager
+  $effect(() => {
+    ledModeEnabled = visibilityManager.isLedMode();
+    const handler = () => {
+      ledModeEnabled = visibilityManager.isLedMode();
+    };
+    visibilityManager.registerObserver(handler);
+    return () => visibilityManager.unregisterObserver(handler);
+  });
+
+  /**
+   * Toggle LED Mode
+   * When enabled: dark background, glowing props
+   * Trail effect is independent and user-controlled
+   */
+  function toggleLedMode() {
+    const newState = !ledModeEnabled;
+    visibilityManager.setLedMode(newState);
+    ledModeEnabled = newState;
+  }
 
   // Check if tracking both ends
   const isBothEnds = $derived(
@@ -239,6 +265,22 @@
           onclick={() => onToggle("turnNumbers")}>Turn #s</button
         >
       </div>
+    </div>
+
+    <div class="control-group">
+      <span class="group-label">Effects</span>
+      <button
+        class="led-mode-btn"
+        class:active={ledModeEnabled}
+        onclick={toggleLedMode}
+        type="button"
+        aria-label={ledModeEnabled ? "Disable LED Mode" : "Enable LED Mode"}
+        aria-pressed={ledModeEnabled}
+      >
+        <i class="fas fa-lightbulb" aria-hidden="true"></i>
+        <span>LED Mode</span>
+        <span class="led-status">{ledModeEnabled ? "ON" : "OFF"}</span>
+      </button>
     </div>
   </div>
 </section>
@@ -797,5 +839,85 @@
     .ends-toggle:focus-visible {
       outline-width: 3px;
     }
+  }
+
+  /* LED Mode Button */
+  .led-mode-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    min-height: var(--min-touch-target);
+    padding: 14px 16px;
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .led-mode-btn i {
+    font-size: var(--font-size-base);
+  }
+
+  .led-status {
+    margin-left: auto;
+    font-size: var(--font-size-compact);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+  }
+
+  .led-mode-btn:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
+    transform: translateY(-1px);
+  }
+
+  .led-mode-btn:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 50ms;
+  }
+
+  /* LED Mode Active - Electric cyan glow */
+  .led-mode-btn.active {
+    background: rgba(0, 255, 255, 0.12);
+    border-color: rgba(0, 255, 255, 0.4);
+    color: #00ffff;
+    box-shadow:
+      0 0 12px rgba(0, 255, 255, 0.25),
+      0 0 24px rgba(0, 255, 255, 0.15),
+      inset 0 0 8px rgba(0, 255, 255, 0.08);
+  }
+
+  .led-mode-btn.active i {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
+  }
+
+  .led-mode-btn.active .led-status {
+    color: #00ffff;
+    opacity: 1;
+    text-shadow: 0 0 6px rgba(0, 255, 255, 0.6);
+  }
+
+  .led-mode-btn.active:hover {
+    background: rgba(0, 255, 255, 0.18);
+    border-color: rgba(0, 255, 255, 0.55);
+    box-shadow:
+      0 0 16px rgba(0, 255, 255, 0.35),
+      0 0 32px rgba(0, 255, 255, 0.2),
+      inset 0 0 12px rgba(0, 255, 255, 0.1);
+  }
+
+  .led-mode-btn:focus-visible {
+    outline: 2px solid rgba(0, 255, 255, 0.5);
+    outline-offset: 2px;
   }
 </style>

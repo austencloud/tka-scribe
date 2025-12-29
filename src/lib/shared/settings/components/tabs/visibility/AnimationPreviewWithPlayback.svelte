@@ -15,6 +15,7 @@
     resolve,
     loadAnimationModule,
     loadFeatureModule,
+    ensureContainerInitialized,
   } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -85,12 +86,16 @@
     }
 
     // For beats, use direct indexing with clamping
-    // currentBeat is 1-based: currentBeat 1.0-2.0 = beat 1's motion (uses beats[0])
+    // Beat indexing: beats[0] = beat 1, beats[1] = beat 2, etc.
+    // currentBeat semantics: beat N's motion spans from N.0 to (N+1).0
     if (
       animationState.sequenceData.beats &&
       animationState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.max(0, Math.floor(currentBeat) - 1);
+      // Formula: ceil(currentBeat - 1) gives the beat number whose motion is/was playing
+      // - At 3.0 (pause after beat 2): ceil(2.0) = 2, shows beat 2
+      const beatNumber = Math.ceil(currentBeat - 1);
+      const beatIndex = Math.max(0, beatNumber - 1);
       const clampedIndex = Math.min(
         beatIndex,
         animationState.sequenceData.beats.length - 1
@@ -178,6 +183,9 @@
     try {
       loading = true;
       error = null;
+
+      // Ensure container is fully initialized (handles HMR timing)
+      await ensureContainerInitialized();
 
       // Load required modules
       await loadFeatureModule("animate");

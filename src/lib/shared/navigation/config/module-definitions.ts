@@ -97,8 +97,25 @@ export const MODULE_DEFINITIONS: ModuleDefinition[] = [
   // Removed: inbox module (Messages/notifications accessible via Dashboard widget drawer)
   // Removed: account module (merged into Dashboard - profile widget handles auth)
   // Removed: edit module (Edit functionality is now a slide-out panel accessible from Create and Sequence Viewer)
-  // Removed: write and word_card modules (not currently in use)
   // Removed: about module (content moved to Dashboard > Support widget)
+  {
+    id: "word_card",
+    label: "Word Card",
+    icon: '<i class="fas fa-id-card" style="color: #6366f1;" aria-hidden="true"></i>',
+    color: "#6366f1", // Indigo - flashcards/learning
+    description: "Browse words as flashcard sequences",
+    isMain: true,
+    sections: [], // Single-tab module
+  },
+  {
+    id: "write",
+    label: "Write",
+    icon: '<i class="fas fa-pen-nib" style="color: #f43f5e;" aria-hidden="true"></i>',
+    color: "#f43f5e", // Rose - creative writing/composition
+    description: "Create and edit choreography acts",
+    isMain: true,
+    sections: [], // Single-tab module
+  },
   {
     id: "feedback",
     label: "Feedback",

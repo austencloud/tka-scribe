@@ -55,6 +55,7 @@ import { PropSvgLoader } from "../../pictograph/prop/services/implementations/Pr
 import { CSVPictographParser } from "../../pictograph/shared/services/implementations/CSVPictographParser";
 import { MotionQueryHandler } from "../../pictograph/shared/services/implementations/MotionQueryHandler";
 import { PictographCoordinator } from "../../pictograph/shared/services/implementations/PictographCoordinator";
+import { StartPositionDeriver } from "../../pictograph/shared/services/implementations/StartPositionDeriver";
 import { SvgPreloader } from "../../pictograph/shared/services/implementations/SvgPreloader";
 import { LetterQueryHandler } from "../../pictograph/tka-glyph/services/implementations/LetterQueryHandler";
 import { TYPES } from "../types";
@@ -138,6 +139,7 @@ export const pictographModule = new ContainerModule(
     // === GRID SERVICES ===
     options.bind(TYPES.IGridModeDeriver).to(GridModeDeriver);
     options.bind(TYPES.IGridPositionDeriver).to(GridPositionDeriver);
+    options.bind(TYPES.IStartPositionDeriver).to(StartPositionDeriver);
     options.bind(TYPES.IGridRenderer).to(GridRenderer);
 
     // === PROP SERVICES ===

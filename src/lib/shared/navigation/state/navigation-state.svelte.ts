@@ -415,9 +415,10 @@ export function createNavigationState() {
     const moduleDefinition = MODULE_DEFINITIONS.find(
       (m) => m.id === currentModule
     );
+    const tabExists = moduleDefinition?.sections.some((tab) => tab.id === tabId);
     if (
       moduleDefinition &&
-      moduleDefinition.sections.some((tab) => tab.id === tabId)
+      tabExists
     ) {
       const previousTab = activeTab;
       activeTab = tabId;

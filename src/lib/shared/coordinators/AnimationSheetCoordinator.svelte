@@ -120,19 +120,20 @@
     }
 
     // Motion beats: currentBeat >= 1
-    // Beat numbering: currentBeat 1.x = beat 1 = beats[0]
-    //                 currentBeat 2.x = beat 2 = beats[1]
     if (
       animationPanelState.sequenceData.beats &&
       animationPanelState.sequenceData.beats.length > 0
     ) {
-      // Beat number is 1-indexed, array is 0-indexed
-      // currentBeat of 1.5 means we're in beat 1, which is beats[0]
-      const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
-      const arrayIndex = beatNumber - 1; // 0, 1, 2, etc.
-      const clampedIndex = Math.max(
-        0,
-        Math.min(arrayIndex, animationPanelState.sequenceData.beats.length - 1)
+      // Beat indexing: beats[0] = beat 1, beats[1] = beat 2, etc.
+      // currentBeat semantics: beat N's motion spans from N.0 to (N+1).0
+      //
+      // Formula: ceil(currentBeat - 1) gives the beat number whose motion is/was playing
+      // - At 3.0 (pause after beat 2): ceil(2.0) = 2, shows beat 2
+      const beatNumber = Math.ceil(currentBeat - 1);
+      const beatIndex = Math.max(0, beatNumber - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationPanelState.sequenceData.beats.length - 1
       );
       return (
         animationPanelState.sequenceData.beats[clampedIndex]?.letter || null
@@ -157,16 +158,20 @@
     }
 
     // Motion beats: currentBeat >= 1
-    // Beat numbering matches currentLetter logic
     if (
       animationPanelState.sequenceData.beats &&
       animationPanelState.sequenceData.beats.length > 0
     ) {
-      const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
-      const arrayIndex = beatNumber - 1; // 0, 1, 2, etc.
-      const clampedIndex = Math.max(
-        0,
-        Math.min(arrayIndex, animationPanelState.sequenceData.beats.length - 1)
+      // Beat indexing: beats[0] = beat 1, beats[1] = beat 2, etc.
+      // currentBeat semantics: beat N's motion spans from N.0 to (N+1).0
+      //
+      // Formula: ceil(currentBeat - 1) gives the beat number whose motion is/was playing
+      // - At 3.0 (pause after beat 2): ceil(2.0) = 2, shows beat 2
+      const beatNumber = Math.ceil(currentBeat - 1);
+      const beatIndex = Math.max(0, beatNumber - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationPanelState.sequenceData.beats.length - 1
       );
       return animationPanelState.sequenceData.beats[clampedIndex] || null;
     }
