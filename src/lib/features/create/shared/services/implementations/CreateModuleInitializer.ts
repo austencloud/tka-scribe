@@ -23,6 +23,7 @@ import { createCreateModuleState } from "$lib/features/create/shared/state/creat
 import { createConstructTabState } from "$lib/features/create/shared/state/construct-tab-state.svelte";
 import { createAssemblerTabState } from "$lib/features/create/shared/state/assembler-tab-state.svelte";
 import { createGeneratorTabState } from "$lib/features/create/shared/state/generator-tab-state.svelte";
+import { createSpellTabState } from "$lib/features/create/spell/state/spell-tab-state.svelte";
 import type { PanelCoordinationState } from "$lib/features/create/shared/state/panel-coordination-state.svelte";
 import type { IBeatOperator } from "../contracts/IBeatOperator";
 import type { ICreateModuleEffectCoordinator } from "../contracts/ICreateModuleEffectCoordinator";
@@ -132,11 +133,20 @@ export class CreateModuleInitializer
       this.sequenceValidationService
     );
 
+    const spellTabState = createSpellTabState(
+      this.sequenceService,
+      this.SequencePersister,
+      this.sequenceStatisticsService,
+      this.SequenceTransformer,
+      this.sequenceValidationService
+    );
+
     // Attach tab states to CreateModuleState for easy access
     CreateModuleState.constructTabState = constructTabState; // Legacy accessor
     CreateModuleState.constructorTabState = constructTabState; // Main accessor (triggers setter for _constructorTabState)
     CreateModuleState.assemblerTabState = assemblerTabState;
     CreateModuleState.generatorTabState = generatorTabState;
+    CreateModuleState.spellTabState = spellTabState;
 
     // Initialize services
     await this.CreateModuleOrchestrator.initialize();
@@ -145,6 +155,7 @@ export class CreateModuleInitializer
     await constructTabState.initializeConstructTab();
     await assemblerTabState.initializeAssemblerTab();
     await generatorTabState.initializeGeneratorTab();
+    await spellTabState.initializeSpellTab();
 
     // Note: Event callbacks configured separately via configureEventCallbacks()
     // after component has created panelState
@@ -158,6 +169,7 @@ export class CreateModuleInitializer
       constructTabState,
       assemblerTabState,
       generatorTabState,
+      spellTabState,
 
       // Core services
       sequenceService: this.sequenceService,

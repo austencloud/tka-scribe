@@ -45,16 +45,26 @@ export enum TrackingMode {
 }
 
 /**
+ * Trail visual effect type
+ */
+export enum TrailEffect {
+  NONE = "none", // No glow effect
+  GLOW = "glow", // Simple shadowBlur glow
+  NEON = "neon", // Multi-layer LED ribbon effect (bright core + outer glow)
+}
+
+/**
  * Trail settings configuration
  */
 export interface TrailSettings {
   enabled: boolean;
   mode: TrailMode;
   style: TrailStyle;
+  effect: TrailEffect; // Visual effect (none, glow, neon)
   fadeDurationMs: number; // How long before trail fades (fade mode only)
   maxPoints: number; // Maximum trail points to store
   lineWidth: number;
-  glowEnabled: boolean;
+  glowEnabled: boolean; // Legacy - use effect instead
   glowBlur: number;
   blueColor: string;
   redColor: string;
@@ -73,10 +83,11 @@ export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {
   enabled: true, // ✅ Trails enabled by default
   mode: TrailMode.FADE, // FADE mode provides beautiful, smooth trails
   style: TrailStyle.SMOOTH_LINE,
+  effect: TrailEffect.GLOW, // Simple glow by default
   fadeDurationMs: 2500, // 2.5 seconds (vivid preset)
   maxPoints: 1000, // Increased for full sequence trails
   lineWidth: 4, // Vivid preset line width
-  glowEnabled: true,
+  glowEnabled: true, // Legacy field
   glowBlur: 2,
   blueColor: "#2E3192",
   redColor: "#ED1C24",

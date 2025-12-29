@@ -17,6 +17,7 @@ import type {
 import {
   TrailMode,
   TrailStyle,
+  TrailEffect,
   TrackingMode,
 } from "../../../shared/domain/types/TrailTypes";
 
@@ -267,13 +268,52 @@ export class Canvas2DTrailRenderer {
       ctx.lineTo(point.x, point.y);
     }
 
-    // Stroke the entire path
-    ctx.strokeStyle = color;
-    ctx.lineWidth = settings.lineWidth;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.globalAlpha = avgOpacity;
-    ctx.stroke();
+    // Apply effect based on settings
+    const effect = settings.effect ?? (settings.glowEnabled ? TrailEffect.GLOW : TrailEffect.NONE);
+
+    if (effect === TrailEffect.NEON) {
+      // NEON: Multi-layer LED ribbon effect
+      // Layer 1: Outer glow (wide, diffuse)
+      ctx.lineWidth = settings.lineWidth * 4;
+      ctx.globalAlpha = avgOpacity * 0.2;
+      ctx.strokeStyle = color;
+      ctx.shadowBlur = 25;
+      ctx.shadowColor = color;
+      ctx.stroke();
+
+      // Layer 2: Mid glow
+      ctx.lineWidth = settings.lineWidth * 2;
+      ctx.globalAlpha = avgOpacity * 0.4;
+      ctx.shadowBlur = 12;
+      ctx.stroke();
+
+      // Layer 3: Core (bright white-ish)
+      ctx.lineWidth = settings.lineWidth;
+      ctx.globalAlpha = avgOpacity;
+      ctx.shadowBlur = 4;
+      ctx.strokeStyle = this.lightenColor(color, 0.7); // 70% toward white
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+    } else if (effect === TrailEffect.GLOW) {
+      // GLOW: Simple shadowBlur effect
+      const glowBlur = settings.glowBlur > 0 ? settings.glowBlur * 4 : 8;
+      ctx.shadowBlur = glowBlur;
+      ctx.shadowColor = color;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = settings.lineWidth;
+      ctx.globalAlpha = avgOpacity;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    } else {
+      // NONE: Standard stroke, no glow
+      ctx.strokeStyle = color;
+      ctx.lineWidth = settings.lineWidth;
+      ctx.globalAlpha = avgOpacity;
+      ctx.stroke();
+    }
 
     ctx.restore();
   }
@@ -288,10 +328,20 @@ export class Canvas2DTrailRenderer {
     if (points.length < 2) return;
 
     ctx.save();
-    ctx.strokeStyle = color;
-    ctx.lineWidth = settings.lineWidth;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
+
+    // Determine effect
+    const effect = settings.effect ?? (settings.glowEnabled ? TrailEffect.GLOW : TrailEffect.NONE);
+
+    // Apply glow/shadow if using glow effect
+    if (effect === TrailEffect.GLOW) {
+      const glowBlur = settings.glowBlur > 0 ? settings.glowBlur * 4 : 8;
+      ctx.shadowBlur = glowBlur;
+      ctx.shadowColor = color;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+    }
 
     // Draw trail segments with varying opacity
     for (let i = 0; i < points.length - 1; i++) {
@@ -328,15 +378,64 @@ export class Canvas2DTrailRenderer {
           progress * (settings.maxOpacity - settings.minOpacity);
       }
 
-      // Draw line segment
-      ctx.globalAlpha = opacity;
       ctx.beginPath();
       ctx.moveTo(point.x, point.y);
       ctx.lineTo(nextPoint.x, nextPoint.y);
-      ctx.stroke();
+
+      if (effect === TrailEffect.NEON) {
+        // NEON: Multi-layer per segment
+        // Layer 1: Outer glow
+        ctx.lineWidth = settings.lineWidth * 4;
+        ctx.globalAlpha = opacity * 0.2;
+        ctx.strokeStyle = color;
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = color;
+        ctx.stroke();
+
+        // Layer 2: Mid glow
+        ctx.lineWidth = settings.lineWidth * 2;
+        ctx.globalAlpha = opacity * 0.4;
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+
+        // Layer 3: Bright core
+        ctx.lineWidth = settings.lineWidth;
+        ctx.globalAlpha = opacity;
+        ctx.shadowBlur = 4;
+        ctx.strokeStyle = this.lightenColor(color, 0.7);
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+      } else {
+        // GLOW or NONE: Single stroke
+        ctx.strokeStyle = color;
+        ctx.lineWidth = settings.lineWidth;
+        ctx.globalAlpha = opacity;
+        ctx.stroke();
+      }
     }
 
     ctx.restore();
+  }
+
+  /**
+   * Lighten a hex color toward white
+   * @param hex - Hex color string (e.g., "#2E3192")
+   * @param amount - 0 = no change, 1 = pure white
+   */
+  private lightenColor(hex: string, amount: number): string {
+    // Parse hex color
+    const hexClean = hex.replace("#", "");
+    const r = parseInt(hexClean.substring(0, 2), 16);
+    const g = parseInt(hexClean.substring(2, 4), 16);
+    const b = parseInt(hexClean.substring(4, 6), 16);
+
+    // Lerp toward white (255, 255, 255)
+    const newR = Math.round(r + (255 - r) * amount);
+    const newG = Math.round(g + (255 - g) * amount);
+    const newB = Math.round(b + (255 - b) * amount);
+
+    return `rgb(${newR}, ${newG}, ${newB})`;
   }
 
   private calculateOpacity(

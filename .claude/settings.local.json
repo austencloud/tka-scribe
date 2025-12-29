@@ -1244,7 +1244,8 @@
       "Bash(wmic bios get smbiosbiosversion,releasedate,manufacturer)",
       "WebFetch(domain:thekineticalphabet.com)",
       "Bash(cmd //c \"dir F:\\\\_THE\\\\ KINETIC\\\\ ALPHABET\\\\_TKA-SCRIBE\\\\LICENSE* 2>nul || echo No LICENSE file found in project root\")",
-      "WebFetch(domain:www.gnu.org)"
+      "WebFetch(domain:www.gnu.org)",
+      "WebFetch(domain:www.svgrepo.com)"
     ],
     "deny": [],
     "ask": []

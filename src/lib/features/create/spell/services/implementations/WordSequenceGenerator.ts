@@ -66,17 +66,23 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
         options.preferences.maxBridgeLetters
       );
 
+      if (expandedLetters.length === 0) {
+        return this.createErrorResult(options.word, "No letters to generate");
+      }
+
+      const firstLetter = expandedLetters[0]!;
+
       // Get start position for first letter
       const gridMode = GridMode.DIAMOND; // Default for now
       const startPosition = await this.selectStartPosition(
-        expandedLetters[0],
+        firstLetter,
         gridMode
       );
 
       if (!startPosition) {
         return this.createErrorResult(
           options.word,
-          `Could not find start position for letter ${expandedLetters[0]}`
+          `Could not find start position for letter ${firstLetter}`
         );
       }
 
@@ -145,7 +151,11 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
       if (!matched) {
         // Try single character match
-        const char = word[i];
+        const char = word.charAt(i);
+        if (!char) {
+          i++;
+          continue;
+        }
         const upperChar = char.toUpperCase();
 
         // Check if it's a direct Letter enum value
@@ -215,6 +225,7 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
     for (let i = 0; i < originalLetters.length; i++) {
       const letter = originalLetters[i];
+      if (!letter) continue;
 
       if (i === 0) {
         // First letter - just add it
@@ -227,6 +238,8 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       } else {
         // Check if we need bridge letters
         const prevLetter = expandedLetters[expandedLetters.length - 1];
+        if (!prevLetter) continue;
+
         const bridgeLetters = this.transitionGraph.findBridgeLetters(
           prevLetter,
           letter
@@ -280,7 +293,8 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
     if (startPositions.length > 0) {
       // Return random start position
-      return startPositions[Math.floor(Math.random() * startPositions.length)];
+      const randomIndex = Math.floor(Math.random() * startPositions.length);
+      return startPositions[randomIndex] ?? null;
     }
 
     // Fallback: return any pictograph that ends at the right group
@@ -289,7 +303,7 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       return this.positionToGroup(endPos) === startGroup;
     });
 
-    return fallback || null;
+    return fallback ?? null;
   }
 
   /**
@@ -305,6 +319,7 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
 
     for (let i = 0; i < letters.length; i++) {
       const letter = letters[i];
+      if (!letter) continue;
 
       // Get pictograph for this letter
       const pictograph = await this.findPictographForLetter(
@@ -368,6 +383,7 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
     );
 
     return {
+      id: crypto.randomUUID(),
       name,
       word: beats.map((b) => b.letter || "").join(""),
       beats,
@@ -376,6 +392,8 @@ export class WordSequenceGenerator implements IWordSequenceGenerator {
       propType: PropType.STAFF,
       difficultyLevel: DifficultyLevel.INTERMEDIATE,
       isCircular: false,
+      isFavorite: false,
+      thumbnails: [],
       tags: ["generated", "spell"],
       metadata: {
         createdAt: new Date().toISOString(),

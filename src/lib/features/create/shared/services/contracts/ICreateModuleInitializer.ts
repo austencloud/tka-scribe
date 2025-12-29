@@ -31,6 +31,7 @@ import type { ICreateModuleState } from "../../types/create-module-types";
 import type { createConstructTabState } from "../../state/construct-tab-state.svelte";
 import type { AssemblerTabState } from "../../state/assembler-tab-state.svelte";
 import type { GeneratorTabState } from "../../state/generator-tab-state.svelte";
+import type { SpellTabState } from "$lib/features/create/spell/state/spell-tab-state.svelte";
 
 // Use the actual return type of createConstructTabState instead of the incomplete interface
 type ConstructTabState = ReturnType<typeof createConstructTabState>;
@@ -41,6 +42,7 @@ export interface CreateModuleInitializationResult {
   constructTabState: ConstructTabState;
   assemblerTabState: AssemblerTabState;
   generatorTabState: GeneratorTabState;
+  spellTabState: SpellTabState;
 
   // Core services
   sequenceService: ISequenceRepository;

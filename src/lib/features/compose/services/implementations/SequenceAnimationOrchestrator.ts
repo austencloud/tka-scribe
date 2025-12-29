@@ -29,21 +29,19 @@ import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnima
  * Lightweight Animation Orchestrator
  * Coordinates focused services instead of doing everything itself
  *
- * IMPORTANT: Start position vs Beats distinction
- * - Start position: The initial pose held BEFORE animation begins (not a beat)
- * - Beats: The actual movements in the sequence (beat 1, beat 2, etc.)
+ * IMPORTANT: Start position is derived from beats[0]
+ * - beats[0].startLocation/startOrientation = the initial pose before animation begins
+ * - No separate startPosition field needed
  *
- * When currentBeat < 1: We're at the start position
+ * When currentBeat < 1: We're at the start position (derived from beats[0])
  * When currentBeat >= 1: We're at a motion beat (beat N uses this.beats[N-1])
  */
 @injectable()
 export class SequenceAnimationOrchestrator
   implements ISequenceAnimationOrchestrator
 {
-  // Start position is separate from beats - it's the pose before animation begins
-  private startPosition: PictographData | null = null;
-
   // Motion beats (beat 1 = beats[0], beat 2 = beats[1], etc.)
+  // Start position is derived from beats[0].startLocation/startOrientation
   private beats: readonly BeatData[] = [];
   private totalBeats = 0; // Number of motion beats (NOT including start position)
 
@@ -68,17 +66,13 @@ export class SequenceAnimationOrchestrator
    * Initialize with domain sequence data (PURE DOMAIN!)
    * Data arrives already normalized from SequenceService
    *
-   * Start position and beats are stored separately:
-   * - startPosition: The initial pose before animation (not a beat)
+   * Start position is derived from beats[0].startLocation/startOrientation
+   * - No separate startPosition field needed
    * - beats: Motion beats (beat 1 = beats[0], beat 2 = beats[1], etc.)
    */
   initializeWithDomainData(sequenceData: SequenceData): boolean {
     try {
-      // Store start position separately (check both fields for backward compatibility)
-      this.startPosition =
-        (sequenceData.startPosition as PictographData) ??
-        (sequenceData.startingPositionBeat as PictographData) ??
-        null;
+      // Start position is derived from beats[0] - no separate storage needed
 
       // Store motion beats (beat 1+)
       const beats = (sequenceData.beats ?? [])
