@@ -167,6 +167,10 @@ export function createConstructTabState(
       isBlank: false,
     };
 
+    // Get the current grid mode from the start position picker to ensure
+    // the sequence is created with the correct grid mode (Diamond or Box)
+    const currentGridMode = startPositionStateService.currentGridMode;
+
     sequenceState
       .createSequence({
         name: `Sequence ${new Date().toLocaleTimeString()}`,
@@ -174,7 +178,13 @@ export function createConstructTabState(
       })
       .then((newSequence) => {
         if (newSequence) {
-          sequenceState.setCurrentSequence(newSequence);
+          // IMPORTANT: Set the gridMode on the sequence to match the start position picker
+          // This ensures the option picker loads options for the correct grid mode after undo
+          const sequenceWithGridMode = {
+            ...newSequence,
+            gridMode: currentGridMode,
+          };
+          sequenceState.setCurrentSequence(sequenceWithGridMode);
           try {
             sequenceState.setStartPosition(beatData);
           } catch (error) {

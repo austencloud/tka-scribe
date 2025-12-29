@@ -8,8 +8,8 @@
     hasSequence: boolean;
     hasSelection: boolean;
     isTransforming: boolean;
-    canAutocomplete?: boolean;
-    isAutocompleting?: boolean;
+    canExtend?: boolean;
+    isExtending?: boolean;
     canShiftStart?: boolean;
     showEditInConstructor: boolean;
     /** True when panel is desktop side-panel (2 cols), false for mobile bottom drawer (3 cols) */
@@ -26,7 +26,7 @@
     onRewind: () => void;
     onTurnPattern: () => void;
     onRotationDirection: () => void;
-    onAutocomplete?: () => void;
+    onExtend?: () => void;
     onShiftStart?: () => void;
     onEditInConstructor: () => void;
   }
@@ -35,8 +35,8 @@
     hasSequence,
     hasSelection = false,
     isTransforming,
-    canAutocomplete = false,
-    isAutocompleting = false,
+    canExtend = false,
+    isExtending = false,
     canShiftStart = false,
     showEditInConstructor,
     isDesktopPanel = false,
@@ -51,21 +51,21 @@
     onRewind,
     onTurnPattern,
     onRotationDirection,
-    onAutocomplete,
+    onExtend,
     onShiftStart,
     onEditInConstructor,
   }: Props = $props();
 
-  const disabled = $derived(isTransforming || isAutocompleting || !hasSequence);
+  const disabled = $derived(isTransforming || isExtending || !hasSequence);
 
   // Calculate how many items are in each section for dynamic flex ratios
   // Transform: always 6 items
   const transformItemCount = 6;
 
-  // Patterns: Turn Pattern + Direction + Rewind (always) + Autocomplete (conditional) + Shift Start (conditional)
+  // Patterns: Turn Pattern + Direction + Rewind (always) + Extend (conditional) + Shift Start (conditional)
   const patternsItemCount = $derived(
     3 + // Turn Pattern, Direction, Rewind (always present)
-    (onAutocomplete && canAutocomplete ? 1 : 0) +
+    (onExtend && canExtend ? 1 : 0) +
     (onShiftStart ? 1 : 0)
   );
 
@@ -163,15 +163,15 @@
           <span class="btn-desc">CW/CCW patterns</span>
         </div>
       </button>
-      {#if onAutocomplete && canAutocomplete}
+      {#if onExtend && canExtend}
         <button
-          class="grid-btn autocomplete"
-          onclick={onAutocomplete}
-          disabled={!hasSequence || isAutocompleting}
-          aria-label={isAutocompleting ? "Autocompleting sequence" : "Autocomplete sequence back to starting position"}
+          class="grid-btn extend"
+          onclick={onExtend}
+          disabled={!hasSequence || isExtending}
+          aria-label={isExtending ? "Extending sequence" : "Extend sequence back to starting position"}
         >
           <div class="btn-icon">
-            {#if isAutocompleting}
+            {#if isExtending}
               <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
             {:else}
               <i class="fas fa-circle-check" aria-hidden="true"></i>
@@ -179,7 +179,7 @@
           </div>
           <div class="btn-text">
             <span class="btn-label"
-              >{isAutocompleting ? "..." : "Autocomplete"}</span
+              >{isExtending ? "..." : "Extend"}</span
             >
             <span class="btn-desc">Complete to start</span>
           </div>
@@ -411,7 +411,7 @@
   .grid-btn.rewind { --btn-color: 244, 63, 94; }        /* Rose */
   .grid-btn.turn-pattern { --btn-color: 20, 184, 166; } /* Teal */
   .grid-btn.direction { --btn-color: 14, 165, 233; }    /* Sky */
-  .grid-btn.autocomplete { --btn-color: 34, 197, 94; }  /* Green */
+  .grid-btn.extend { --btn-color: 34, 197, 94; }        /* Green */
   .grid-btn.shift-start { --btn-color: 6, 182, 212; }   /* Cyan */
   .grid-btn.edit-turns { --btn-color: 59, 130, 246; }   /* Blue */
   .grid-btn.constructor { --btn-color: 124, 58, 237; }  /* Violet */
@@ -520,7 +520,7 @@
 
   /* Long labels get more space and appear last */
   .actions-container.compact .patterns-section .grid-btn.turn-pattern,
-  .actions-container.compact .patterns-section .grid-btn.autocomplete {
+  .actions-container.compact .patterns-section .grid-btn.extend {
     grid-column: span 3;
     order: 2;
   }

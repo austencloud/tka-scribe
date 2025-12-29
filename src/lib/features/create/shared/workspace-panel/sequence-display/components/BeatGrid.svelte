@@ -403,6 +403,7 @@
             isPracticeBeat={practiceBeatNumber === 0}
             {activeMode}
             onLongPress={onBeatLongPress}
+            onDelete={() => onBeatDelete?.(0)}
           />
         </div>
       {/if}
@@ -488,6 +489,7 @@
               isPracticeBeat={practiceBeatNumber === 0}
               {activeMode}
               onLongPress={onBeatLongPress}
+              onDelete={() => onBeatDelete?.(0)}
             />
           </div>
         {/if}

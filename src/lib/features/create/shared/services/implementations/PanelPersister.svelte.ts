@@ -58,7 +58,7 @@ export class PanelPersister implements IPanelPersister {
       case "sequenceActions":
         panelState.openSequenceActionsPanel();
         break;
-      // edit and cap panels require context (beat data, CAP type)
+      // edit and cap panels require context (beat data, LOOP type)
       // so we don't restore them - they need user interaction
     }
   }

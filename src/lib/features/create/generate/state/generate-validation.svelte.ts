@@ -64,7 +64,7 @@ export function createGenerationValidationState() {
     errors.push(...turnValidation.errors);
     warnings.push(...turnValidation.warnings);
 
-    // Validate CAP configuration (circular mode only)
+    // Validate LOOP configuration (circular mode only)
     if (config.mode === "circular") {
       const capValidation = validateCAPConfiguration(config);
       errors.push(...capValidation.errors);
@@ -181,7 +181,7 @@ export function createGenerationValidationState() {
   }
 
   /**
-   * Validate CAP configuration for circular mode
+   * Validate LOOP configuration for circular mode
    */
   function validateCAPConfiguration(
     config: UIGenerationConfig
@@ -189,11 +189,11 @@ export function createGenerationValidationState() {
     const errors: ValidationError[] = [];
     const warnings: ValidationError[] = [];
 
-    // CAP type must be selected
-    if (!config.capType) {
+    // LOOP type must be selected
+    if (!config.loopType) {
       errors.push({
-        field: "capType",
-        message: "CAP type must be selected for circular mode",
+        field: "loopType",
+        message: "LOOP type must be selected for circular mode",
         severity: "error",
       });
     }
@@ -207,15 +207,15 @@ export function createGenerationValidationState() {
       });
     }
 
-    // Warn about complex CAP types for beginners
+    // Warn about complex LOOP types for beginners
     if (
       config.level === 1 &&
-      config.capType &&
-      config.capType.includes("INVERTED")
+      config.loopType &&
+      config.loopType.includes("INVERTED")
     ) {
       warnings.push({
-        field: "capType",
-        message: "Inverted CAP types may be challenging for beginners",
+        field: "loopType",
+        message: "Inverted LOOP types may be challenging for beginners",
         severity: "warning",
       });
     }

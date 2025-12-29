@@ -1,9 +1,9 @@
 /**
- * Circular Position Maps for CAP (Continuous Assembly Pattern) Generation
+ * Circular Position Maps for LOOP (Linked Offset Operation Pattern) Generation
  *
  * These maps define the valid end positions for circular sequences based on rotation angles.
- * - Halved CAPs: 180° rotation (position +4 or -4)
- * - Quartered CAPs: 90° rotation (position +2 or -2 for clockwise/counter-clockwise)
+ * - Halved LOOPs: 180° rotation (position +4 or -4)
+ * - Quartered LOOPs: 90° rotation (position +2 or -2 for clockwise/counter-clockwise)
  */
 
 import {
@@ -236,10 +236,10 @@ export const QUARTER_POSITION_MAP_CCW: Record<GridPosition, GridPosition> = {
 };
 
 /**
- * Halved CAP validation set
- * Set of (start_position, end_position) tuples that are valid for halved CAPs
+ * Halved LOOP validation set
+ * Set of (start_position, end_position) tuples that are valid for halved LOOPs
  */
-export const HALVED_CAPS = new Set<string>([
+export const HALVED_LOOPS = new Set<string>([
   `${GridPosition.ALPHA1},${GridPosition.ALPHA5}`,
   `${GridPosition.ALPHA2},${GridPosition.ALPHA6}`,
   `${GridPosition.ALPHA3},${GridPosition.ALPHA7}`,
@@ -278,10 +278,10 @@ export const HALVED_CAPS = new Set<string>([
 ]);
 
 /**
- * Quartered CAP validation set
- * Set of (start_position, end_position) tuples that are valid for quartered CAPs
+ * Quartered LOOP validation set
+ * Set of (start_position, end_position) tuples that are valid for quartered LOOPs
  */
-export const QUARTERED_CAPS = new Set<string>([
+export const QUARTERED_LOOPS = new Set<string>([
   // Clockwise quarter rotations
   `${GridPosition.ALPHA1},${GridPosition.ALPHA3}`,
   `${GridPosition.ALPHA2},${GridPosition.ALPHA4}`,

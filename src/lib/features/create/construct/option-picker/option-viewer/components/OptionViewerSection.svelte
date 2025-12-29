@@ -222,6 +222,8 @@ Renders a section with:
     const gridGapValue = parseInt(layoutConfig?.gridGap || "8px");
     const targetSize = forcedPictographSize ?? basePictographSize;
 
+    console.log(`[OptionViewerSection] Layout calc: letterType=${letterType}, effectiveW=${contentAreaBounds?.width || availableWidth}, effectiveH=${availableHeight || layoutConfig?.containerHeight}, basePictographSize=${basePictographSize}`);
+
     // When fitToViewport is true (mobile + continuous filter), calculate size
     // to ensure all options fit within the container without scrolling
     if (
@@ -257,6 +259,8 @@ Renders a section with:
       );
       const finalSize = Math.max(fitSize, 40);
 
+      console.log(`[OptionViewerSection] fitToViewport size: ${finalSize}px (container=${containerWidth}x${containerHeight})`);
+
       return {
         columns,
         pictographSize: finalSize,
@@ -272,8 +276,14 @@ Renders a section with:
       };
     }
 
+    // Use contentAreaBounds directly if available (don't wait for $effect to sync to availableWidth)
+    // This prevents the timing issue where $derived runs before $effect
+    const effectiveWidth = contentAreaBounds?.width || availableWidth;
+    // For height, use availableHeight if measured, otherwise fall back to layoutConfig
+    const effectiveHeight = availableHeight || layoutConfig?.containerHeight || 0;
+
     // If no available dimensions yet, use conservative fallback
-    if (!availableWidth || !availableHeight) {
+    if (!effectiveWidth || !effectiveHeight) {
       // Use a conservative fallback size that accounts for potential arrow space
       const containerWidth = layoutConfig?.containerWidth || 800;
       const estimatedAvailableWidth = Math.max(containerWidth - 80, 300);
@@ -287,6 +297,8 @@ Renders a section with:
       );
       const fallbackSize = Math.max(conservativeSize, 40);
 
+      console.log(`[OptionViewerSection] FALLBACK size: ${fallbackSize}px (no dimensions yet, effectiveWidth=${effectiveWidth})`);
+
       return {
         columns,
         pictographSize: fallbackSize,
@@ -295,7 +307,7 @@ Renders a section with:
     }
 
     const totalWidthGapSpace = (columns - 1) * gridGapValue;
-    const availableWidthForPictographs = availableWidth - totalWidthGapSpace;
+    const availableWidthForPictographs = effectiveWidth - totalWidthGapSpace;
     const maxWidthBasedSize = Math.floor(
       availableWidthForPictographs / columns
     );
@@ -303,12 +315,14 @@ Renders a section with:
     const rows = Math.ceil(rawItemCount / columns) || 1;
     const totalHeightGapSpace = (rows - 1) * gridGapValue;
     const availableHeightForPictographs =
-      availableHeight - actualHeaderHeight - totalHeightGapSpace;
+      effectiveHeight - actualHeaderHeight - totalHeightGapSpace;
     const maxHeightBasedSize = Math.floor(availableHeightForPictographs / rows);
 
     const maxPictographSize = Math.min(maxWidthBasedSize, maxHeightBasedSize);
     const optimalSize = Math.min(basePictographSize, maxPictographSize);
     const finalSize = Math.max(optimalSize, 40);
+
+    console.log(`[OptionViewerSection] Final size: ${finalSize}px (maxW=${maxWidthBasedSize}, maxH=${maxHeightBasedSize}, effectiveWidth=${effectiveWidth})`);
 
     return {
       columns,

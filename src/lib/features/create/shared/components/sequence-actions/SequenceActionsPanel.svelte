@@ -1,7 +1,7 @@
 <!--
   SequenceActionsPanel.svelte
 
-  Panel for sequence-wide operations: transforms, patterns, autocomplete.
+  Panel for sequence-wide operations: transforms, patterns, extend.
   Individual beat editing (turns, rotation) is handled by BeatEditorPanel.
 -->
 <script lang="ts">
@@ -9,15 +9,16 @@
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type {
-    IAutocompleter,
-    AutocompleteAnalysis,
-  } from "../../services/contracts/IAutocompleter";
+    ISequenceExtender,
+    ExtensionAnalysis,
+    LOOPType,
+  } from "../../services/contracts/ISequenceExtender";
+  import { UndoOperationType } from "../../services/contracts/IUndoManager";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { toast } from "$lib/shared/toast/state/toast-state.svelte";
   import { areSequencesEqual } from "../../utils/sequence-comparison";
-  import { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
   import { isAdmin } from "$lib/shared/auth/state/authState.svelte";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
@@ -26,7 +27,7 @@
   import TransformHelpSheet from "../transform-help/TransformHelpSheet.svelte";
   import TurnPatternDrawer from "./TurnPatternDrawer.svelte";
   import RotationDirectionDrawer from "./RotationDirectionDrawer.svelte";
-  import AutocompleteDrawer from "./AutocompleteDrawer.svelte";
+  import ExtendDrawer from "./ExtendDrawer.svelte";
   import BeatGridSection from "./BeatGridSection.svelte";
   import ShiftStartConfirmDialog from "./ShiftStartConfirmDialog.svelte";
   import { setGridRotationDirection } from "$lib/shared/pictograph/grid/state/grid-rotation-state.svelte";
@@ -41,11 +42,12 @@
   // Context and state
   const ctx = getCreateModuleContext();
   const { CreateModuleState, panelState, layout } = ctx;
-  const activeSequenceState = $derived(
+  // Use $derived.by() to ensure reactive property tracking through function calls
+  const activeSequenceState = $derived.by(() =>
     CreateModuleState.getActiveTabSequenceState()
   );
-  const sequence = $derived(activeSequenceState.currentSequence);
-  const hasSequence = $derived(activeSequenceState.hasSequence());
+  const sequence = $derived.by(() => activeSequenceState.currentSequence);
+  const hasSequence = $derived.by(() => activeSequenceState.hasSequence());
   const isInConstructTab = $derived(
     navigationState.currentCreateMode === "constructor"
   );
@@ -73,7 +75,7 @@
 
   // Services
   let hapticService: IHapticFeedback | null = $state(null);
-  let Autocompleter: IAutocompleter | null = $state(null);
+  let sequenceExtender: ISequenceExtender | null = $state(null);
 
   // Local state - $effect below handles initial and prop changes
   let isOpen = $state(false);
@@ -83,9 +85,9 @@
   let showHelpSheet = $state(false);
   let showTurnPatternDrawer = $state(false);
   let showRotationDirectionDrawer = $state(false);
-  let showAutocompleteDrawer = $state(false);
-  let autocompleteAnalysis = $state<AutocompleteAnalysis | null>(null);
-  let isAutocompleting = $state(false);
+  let showExtendDrawer = $state(false);
+  let extensionAnalysis = $state<ExtensionAnalysis | null>(null);
+  let isExtending = $state(false);
   let showShiftConfirmDialog = $state(false);
   let pendingShiftBeatNumber = $state<number | null>(null);
 
@@ -98,15 +100,17 @@
   });
 
   // Beat selection state (for displaying in beat grid)
-  const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
+  const selectedBeatNumber = $derived.by(
+    () => activeSequenceState.selectedBeatNumber
+  );
   const hasSelection = $derived(selectedBeatNumber !== null);
 
-  // Autocomplete availability - check if sequence can be completed
-  const canAutocomplete = $derived.by(() => {
-    if (!sequence || !Autocompleter) return false;
+  // Extension availability - check if sequence can be extended
+  const canExtend = $derived.by(() => {
+    if (!sequence || !sequenceExtender) return false;
     try {
-      const analysis = Autocompleter.analyzeSequence(sequence);
-      return analysis.canComplete;
+      const analysis = sequenceExtender.analyzeSequence(sequence);
+      return analysis.canExtend;
     } catch {
       return false;
     }
@@ -126,8 +130,8 @@
       /* Optional service */
     }
     try {
-      Autocompleter = resolve<IAutocompleter>(
-        TYPES.IAutocompleter
+      sequenceExtender = resolve<ISequenceExtender>(
+        TYPES.ISequenceExtender
       );
     } catch {
       /* Optional service */
@@ -135,10 +139,19 @@
   });
 
   // Transform helper - eliminates boilerplate across all transform handlers
-  async function withTransform(action: () => Promise<void>, beforeAction?: () => void) {
+  // Pushes undo snapshot BEFORE performing the action
+  async function withTransform(
+    undoType: UndoOperationType,
+    action: () => Promise<void>,
+    beforeAction?: () => void
+  ) {
     if (!sequence || isTransforming) return;
     isTransforming = true;
     hapticService?.trigger("selection");
+
+    // Push undo snapshot BEFORE the transform
+    CreateModuleState.pushUndoSnapshot(undoType);
+
     beforeAction?.();
     try {
       await action();
@@ -148,18 +161,35 @@
   }
 
   // Transform handlers - clean one-liners using the helper
-  const handleMirror = () => withTransform(() => activeSequenceState.mirrorSequence());
-  const handleSwap = () => withTransform(() => activeSequenceState.swapColors());
-  const handleRewind = () => withTransform(() => activeSequenceState.rewindSequence());
-  const handleFlip = () => withTransform(() => activeSequenceState.flipSequence());
-  const handleInvert = () => withTransform(() => activeSequenceState.invertSequence());
+  const handleMirror = () => withTransform(
+    UndoOperationType.MIRROR_SEQUENCE,
+    () => activeSequenceState.mirrorSequence()
+  );
+  const handleSwap = () => withTransform(
+    UndoOperationType.SWAP_COLORS,
+    () => activeSequenceState.swapColors()
+  );
+  const handleRewind = () => withTransform(
+    UndoOperationType.REWIND_SEQUENCE,
+    () => activeSequenceState.rewindSequence()
+  );
+  const handleFlip = () => withTransform(
+    UndoOperationType.FLIP_SEQUENCE,
+    () => activeSequenceState.flipSequence()
+  );
+  const handleInvert = () => withTransform(
+    UndoOperationType.INVERT_SEQUENCE,
+    () => activeSequenceState.invertSequence()
+  );
 
   // Rotation handlers set grid animation direction before transform
   const handleRotateCW = () => withTransform(
+    UndoOperationType.ROTATE_SEQUENCE,
     () => activeSequenceState.rotateSequence("clockwise"),
     () => setGridRotationDirection(1)
   );
   const handleRotateCCW = () => withTransform(
+    UndoOperationType.ROTATE_SEQUENCE,
     () => activeSequenceState.rotateSequence("counterclockwise"),
     () => setGridRotationDirection(-1)
   );
@@ -181,6 +211,9 @@
     sequence: any;
     warnings?: readonly string[];
   }) {
+    // Push undo snapshot BEFORE applying pattern
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.APPLY_TURN_PATTERN);
+
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
     hapticService?.trigger("success");
@@ -195,60 +228,66 @@
     sequence: any;
     warnings?: readonly string[];
   }) {
+    // Push undo snapshot BEFORE applying pattern
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.APPLY_ROTATION_PATTERN);
+
     // Update the active sequence with the pattern-applied sequence
     activeSequenceState.setCurrentSequence(result.sequence);
     hapticService?.trigger("success");
   }
 
-  function handleAutocomplete() {
-    if (!sequence || !Autocompleter) return;
+  function handleExtend() {
+    if (!sequence || !sequenceExtender) return;
     hapticService?.trigger("selection");
 
-    // Analyze the sequence to get available CAP options
-    const analysis = Autocompleter.analyzeSequence(sequence);
+    // Analyze the sequence to get available LOOP options
+    const analysis = sequenceExtender.analyzeSequence(sequence);
 
-    if (!analysis.canComplete) {
-      toast.warning("Cannot autocomplete this sequence");
+    if (!analysis.canExtend) {
+      toast.warning("Cannot extend this sequence");
       return;
     }
 
     // Store the analysis and show the drawer
-    autocompleteAnalysis = analysis;
-    showAutocompleteDrawer = true;
+    extensionAnalysis = analysis;
+    showExtendDrawer = true;
   }
 
-  async function handleAutocompleteApply(capType: CAPType) {
-    if (!sequence || !Autocompleter || isAutocompleting) return;
-    isAutocompleting = true;
+  async function handleExtendApply(loopType: LOOPType) {
+    if (!sequence || !sequenceExtender || isExtending) return;
+    isExtending = true;
     hapticService?.trigger("selection");
 
     try {
-      const completedSequence = await Autocompleter.autocompleteSequence(
+      const extendedSequence = await sequenceExtender.extendSequence(
         sequence,
-        { capType }
+        { loopType }
       );
 
-      if (completedSequence.beats?.length === sequence.beats?.length) {
-        console.warn("[Autocomplete] No new beats were added!");
-        toast.warning("No completion beats generated");
+      if (extendedSequence.beats?.length === sequence.beats?.length) {
+        console.warn("[Extend] No new beats were added!");
+        toast.warning("No extension beats generated");
         return;
       }
 
-      activeSequenceState.setCurrentSequence(completedSequence);
+      // Push undo snapshot BEFORE applying extension
+      CreateModuleState.pushUndoSnapshot(UndoOperationType.EXTEND_SEQUENCE);
+
+      activeSequenceState.setCurrentSequence(extendedSequence);
       hapticService?.trigger("success");
       toast.success(
-        `Completed with ${capType.replace(/_/g, " ")}! Added ${(completedSequence.beats?.length || 0) - (sequence.beats?.length || 0)} beats`
+        `Extended with ${loopType.replace(/_/g, " ")}! Added ${(extendedSequence.beats?.length || 0) - (sequence.beats?.length || 0)} beats`
       );
 
       // Close the drawer on success
-      showAutocompleteDrawer = false;
-      autocompleteAnalysis = null;
+      showExtendDrawer = false;
+      extensionAnalysis = null;
     } catch (error) {
-      console.error("[Autocomplete] Failed:", error);
-      toast.error("Could not complete sequence");
+      console.error("[Extend] Failed:", error);
+      toast.error("Could not extend sequence");
       hapticService?.trigger("error");
     } finally {
-      isAutocompleting = false;
+      isExtending = false;
     }
   }
 
@@ -359,6 +398,9 @@
   async function executeShiftStart(beatNumber: number) {
     if (!sequence || isTransforming) return;
     isTransforming = true;
+
+    // Push undo snapshot BEFORE shifting
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.SHIFT_START);
 
     try {
       await activeSequenceState.shiftStartPosition(beatNumber);
@@ -506,8 +548,8 @@
         {hasSequence}
         {hasSelection}
         {isTransforming}
-        {canAutocomplete}
-        {isAutocompleting}
+        {canExtend}
+        {isExtending}
         {canShiftStart}
         showEditInConstructor={!isInConstructTab}
         isDesktopPanel={isSideBySideLayout}
@@ -522,7 +564,7 @@
         onRewind={handleRewind}
         onTurnPattern={handleTurnPattern}
         onRotationDirection={handleRotationDirection}
-        onAutocomplete={handleAutocomplete}
+        onExtend={handleExtend}
         onShiftStart={handleShiftStart}
         onEditInConstructor={handleEditInConstructor}
       />
@@ -563,16 +605,16 @@
   onApply={handleRotationDirectionApply}
 />
 
-<AutocompleteDrawer
-  bind:isOpen={showAutocompleteDrawer}
-  analysis={autocompleteAnalysis}
-  isApplying={isAutocompleting}
+<ExtendDrawer
+  bind:isOpen={showExtendDrawer}
+  analysis={extensionAnalysis}
+  isApplying={isExtending}
   toolPanelWidth={panelState.toolPanelWidth}
   onClose={() => {
-    showAutocompleteDrawer = false;
-    autocompleteAnalysis = null;
+    showExtendDrawer = false;
+    extensionAnalysis = null;
   }}
-  onApply={handleAutocompleteApply}
+  onApply={handleExtendApply}
 />
 
 <!-- Shift Start Confirmation Dialog (non-circular sequences) -->

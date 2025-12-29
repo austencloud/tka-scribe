@@ -1,16 +1,17 @@
 /**
  * Circular Generation Models
  *
- * Type definitions for circular word (CAP - Continuous Assembly Pattern) generation.
+ * Type definitions for LOOP (Linked Offset Operation Pattern) generation.
+ * LOOPs are TKA's algorithmic extension patterns that transform sequences.
  */
 
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 
 /**
- * CAP Type Enum
- * Defines the different types of Continuous Assembly Patterns
+ * LOOP Type Enum
+ * Defines the different types of Linked Offset Operation Patterns
  */
-export enum CAPType {
+export enum LOOPType {
   /** Strict rotated - rotates positions around the grid */
   STRICT_ROTATED = "strict_rotated",
 
@@ -46,6 +47,9 @@ export enum CAPType {
 
   /** Mirrored rotated inverted swapped - combines all four transformations */
   MIRRORED_ROTATED_INVERTED_SWAPPED = "mirrored_rotated_inverted_swapped",
+
+  /** Rewound - appends reversed sequence to double length */
+  REWOUND = "rewound",
 }
 
 /**
@@ -61,17 +65,17 @@ export enum SliceSize {
 }
 
 /**
- * CAP Generation Options
+ * LOOP Generation Options
  * Configuration for generating circular words
  */
-export interface CAPGenerationOptions {
+export interface LOOPGenerationOptions {
   /** Total sequence length (will be multiplied based on slice size) */
   length: number;
 
-  /** CAP type to apply */
-  capType: CAPType;
+  /** LOOP type to apply */
+  loopType: LOOPType;
 
-  /** Slice size for rotational CAPs */
+  /** Slice size for rotational LOOPs */
   sliceSize: SliceSize;
 
   /** Turn intensity (1-3) */
@@ -88,35 +92,36 @@ export interface CAPGenerationOptions {
 }
 
 /**
- * CAP Validation Result
- * Result of validating whether a sequence can perform a given CAP
+ * LOOP Validation Result
+ * Result of validating whether a sequence can perform a given LOOP
  */
-export interface CAPValidationResult {
-  /** Whether the sequence is valid for the CAP type */
+export interface LOOPValidationResult {
+  /** Whether the sequence is valid for the LOOP type */
   isValid: boolean;
 
   /** Reason for invalidity (if applicable) */
   reason?: string;
 
-  /** Expected end position for the CAP (if applicable) */
+  /** Expected end position for the LOOP (if applicable) */
   expectedEndPosition?: GridPosition;
 }
 
 /**
- * CAP User-friendly labels
- * Maps CAP types to display names for UI
+ * LOOP User-friendly labels
+ * Maps LOOP types to display names for UI
  */
-export const CAP_TYPE_LABELS: Record<CAPType, string> = {
-  [CAPType.STRICT_ROTATED]: "Rotated",
-  [CAPType.STRICT_MIRRORED]: "Mirrored",
-  [CAPType.STRICT_SWAPPED]: "Swapped",
-  [CAPType.STRICT_INVERTED]: "Inverted",
-  [CAPType.SWAPPED_INVERTED]: "Swapped / Inverted",
-  [CAPType.MIRRORED_SWAPPED]: "Mirrored / Swapped",
-  [CAPType.ROTATED_INVERTED]: "Rotated / Inverted",
-  [CAPType.MIRRORED_INVERTED]: "Mirrored / Inverted",
-  [CAPType.ROTATED_SWAPPED]: "Rotated / Swapped",
-  [CAPType.MIRRORED_ROTATED]: "Mirrored / Rotated",
-  [CAPType.MIRRORED_INVERTED_ROTATED]: "Mir / Comp / Rot",
-  [CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED]: "All Four",
+export const LOOP_TYPE_LABELS: Record<LOOPType, string> = {
+  [LOOPType.STRICT_ROTATED]: "Rotated",
+  [LOOPType.STRICT_MIRRORED]: "Mirrored",
+  [LOOPType.STRICT_SWAPPED]: "Swapped",
+  [LOOPType.STRICT_INVERTED]: "Inverted",
+  [LOOPType.SWAPPED_INVERTED]: "Swapped / Inverted",
+  [LOOPType.MIRRORED_SWAPPED]: "Mirrored / Swapped",
+  [LOOPType.ROTATED_INVERTED]: "Rotated / Inverted",
+  [LOOPType.MIRRORED_INVERTED]: "Mirrored / Inverted",
+  [LOOPType.ROTATED_SWAPPED]: "Rotated / Swapped",
+  [LOOPType.MIRRORED_ROTATED]: "Mirrored / Rotated",
+  [LOOPType.MIRRORED_INVERTED_ROTATED]: "Mir / Comp / Rot",
+  [LOOPType.MIRRORED_ROTATED_INVERTED_SWAPPED]: "All Four",
+  [LOOPType.REWOUND]: "Rewound",
 };

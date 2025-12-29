@@ -19,6 +19,9 @@ Controls moved below the grid for better UX
   import AdvancedStartPositionPicker from "./AdvancedStartPositionPicker.svelte";
   import PictographGrid from "./PictographGrid.svelte";
 
+  // Local storage key for persisting picker preferences
+  const STORAGE_KEY = "tka-start-position-picker-prefs";
+
   // Props - receive navigation callbacks and layout detection
   const {
     startPositionState,
@@ -43,9 +46,62 @@ Controls moved below the grid for better UX
   // Services
   let hapticService: IHapticFeedback;
 
+  // Load persisted preferences on mount
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
+    loadPersistedPreferences();
   });
+
+  /**
+   * Load persisted picker preferences from localStorage
+   */
+  function loadPersistedPreferences() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return;
+
+      const prefs = JSON.parse(stored) as {
+        showAdvanced?: boolean;
+        gridMode?: string;
+      };
+
+      // Restore advanced/simple view preference
+      if (typeof prefs.showAdvanced === "boolean") {
+        showAdvancedPicker = prefs.showAdvanced;
+        if (showAdvancedPicker) {
+          onNavigateToAdvanced?.();
+        }
+      }
+
+      // Restore grid mode preference (Diamond/Box)
+      if (prefs.gridMode === "DIAMOND" || prefs.gridMode === "BOX") {
+        const mode =
+          prefs.gridMode === "DIAMOND" ? GridMode.DIAMOND : GridMode.BOX;
+        if (showAdvancedPicker) {
+          void pickerState.loadAllVariations(mode);
+        } else {
+          void pickerState.loadPositions(mode);
+        }
+      }
+    } catch (error) {
+      console.warn("Failed to load start position picker preferences:", error);
+    }
+  }
+
+  /**
+   * Persist current preferences to localStorage
+   */
+  function persistPreferences() {
+    try {
+      const prefs = {
+        showAdvanced: showAdvancedPicker,
+        gridMode: pickerState.currentGridMode === GridMode.DIAMOND ? "DIAMOND" : "BOX",
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    } catch (error) {
+      console.warn("Failed to persist start position picker preferences:", error);
+    }
+  }
 
   // Derived labels for action-oriented toggles
   const viewModeLabel = $derived(showAdvancedPicker ? "Simple" : "All Variations");
@@ -80,6 +136,7 @@ Controls moved below the grid for better UX
       showAdvancedPicker = false;
       onNavigateToDefault?.();
     }
+    persistPreferences();
   }
 
   // Handle return to the default picker (exposed for external triggers)
@@ -99,6 +156,7 @@ Controls moved below the grid for better UX
         : GridMode.DIAMOND;
     await pickerState.loadPositions(newMode);
     await pickerState.loadAllVariations(newMode);
+    persistPreferences();
   }
 </script>
 

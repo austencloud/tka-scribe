@@ -21,7 +21,7 @@ import { SliceSize } from "../../domain/models/circular-models";
 @injectable()
 export class RotatedEndPositionSelector {
   /**
-   * Determine the required end position for a rotated CAP
+   * Determine the required end position for a rotated LOOP
    *
    * @param sliceSize - Whether the rotation is halved (180°) or quartered (90°)
    * @param startPosition - The starting position of the sequence

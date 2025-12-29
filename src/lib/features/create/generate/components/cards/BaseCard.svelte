@@ -79,7 +79,7 @@ Provides consistent styling and interaction patterns for all generation setting 
   <div
     bind:this={cardElement}
     class="base-card clickable"
-    class:cap-card={title === "CAP Type"}
+    class:cap-card={title === "LOOP Type"}
     role="button"
     tabindex="0"
     onclick={handleClick}
@@ -341,7 +341,7 @@ Provides consistent styling and interaction patterns for all generation setting 
     height: 100%;
   }
 
-  /* ✨ MAGICAL CAP CARD - Animated Mesh Gradient */
+  /* ✨ MAGICAL LOOP CARD - Animated Mesh Gradient */
   .base-card.cap-card {
     /* Use the gradient passed from CAPCard component */
     background: var(--card-color) !important;
@@ -402,7 +402,7 @@ Provides consistent styling and interaction patterns for all generation setting 
     }
   }
 
-  /* 📱 LANDSCAPE MOBILE: Adjust CAP card styling for compact mode */
+  /* 📱 LANDSCAPE MOBILE: Adjust LOOP card styling for compact mode */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .base-card.cap-card {
       /* Let grid control height - no forced constraints */

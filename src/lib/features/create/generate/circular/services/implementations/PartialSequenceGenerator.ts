@@ -1,7 +1,7 @@
 /**
  * Partial Sequence Generator Implementation
  *
- * Generates partial sequences for circular mode (CAP preparation).
+ * Generates partial sequences for circular mode (LOOP preparation).
  * Extracted from SequenceGenerationService - EXACT original logic preserved.
  */
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
@@ -17,13 +17,13 @@ import type { GenerationOptions } from "$lib/features/create/generate/shared/dom
 import { PropContinuity } from "$lib/features/create/generate/shared/domain/models/generate-models";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { IBeatConverter } from "$lib/features/create/generate/shared/services/contracts/IBeatConverter";
-import type { ICAPParameterProvider } from "$lib/features/create/generate/shared/services/contracts/ICAPParameterProvider";
+import type { ILOOPParameterProvider } from "$lib/features/create/generate/shared/services/contracts/ILOOPParameterProvider";
 import type { IPictographFilter } from "$lib/features/create/generate/shared/services/contracts/IPictographFilter";
 import type { ISequenceMetadataManager } from "$lib/features/create/generate/shared/services/contracts/ISequenceMetadataManager";
 import type { ITurnManager } from "$lib/features/create/generate/shared/services/contracts/ITurnManager";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { SliceSize } from "../../domain/models/circular-models";
-import { CAPType } from "../../domain/models/circular-models";
+import { LOOPType } from "../../domain/models/circular-models";
 import type { IPartialSequenceGenerator } from "../contracts/IPartialSequenceGenerator";
 import type { IArrowPositioningOrchestrator } from "../../../../../../shared/pictograph/arrow/positioning/services/contracts/IArrowPositioningOrchestrator";
 
@@ -46,8 +46,8 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     private OrientationCalculator: IOrientationCalculator,
     @inject(TYPES.IArrowPositioningOrchestrator)
     private arrowPositioningOrchestrator: IArrowPositioningOrchestrator,
-    @inject(TYPES.ICAPParameterProvider)
-    private capParams: ICAPParameterProvider
+    @inject(TYPES.ILOOPParameterProvider)
+    private loopParams: ILOOPParameterProvider
   ) {}
 
   /**
@@ -181,9 +181,9 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     let wordLength: number;
 
     if (
-      options.capType === CAPType.MIRRORED_ROTATED ||
-      options.capType === CAPType.MIRRORED_INVERTED_ROTATED ||
-      options.capType === CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED
+      options.loopType === LOOPType.MIRRORED_ROTATED ||
+      options.loopType === LOOPType.MIRRORED_INVERTED_ROTATED ||
+      options.loopType === LOOPType.MIRRORED_ROTATED_INVERTED_SWAPPED
     ) {
       // MIRRORED_ROTATED, MIRRORED_INVERTED_ROTATED, or MIRRORED_ROTATED_INVERTED_SWAPPED:
       // Account for both rotation AND mirroring (or mirrored+swapped+inverted)
@@ -192,7 +192,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
           ? Math.floor(options.length / 4) // 16 → 4 (rotation ×2, then mirror ×2)
           : Math.floor(options.length / 8); // 16 → 2 (rotation ×4, then mirror ×2)
     } else {
-      // Regular CAP types: Only account for rotation/mirroring (not both)
+      // Regular LOOP types: Only account for rotation/mirroring (not both)
       wordLength =
         sliceSize === SliceSize.HALVED
           ? Math.floor(options.length / 2) // Standard halved
@@ -355,7 +355,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     level: number,
     turnIntensity: number
   ): { blue: (number | "fl")[]; red: (number | "fl")[] } {
-    return this.capParams.allocateTurns(beatsToGenerate, level, turnIntensity);
+    return this.loopParams.allocateTurns(beatsToGenerate, level, turnIntensity);
   }
 
   /**
@@ -366,7 +366,7 @@ export class PartialSequenceGenerator implements IPartialSequenceGenerator {
     blueRotationDirection: string;
     redRotationDirection: string;
   } {
-    return this.capParams.determineRotationDirections(propContinuity);
+    return this.loopParams.determineRotationDirections(propContinuity);
   }
 
   /**

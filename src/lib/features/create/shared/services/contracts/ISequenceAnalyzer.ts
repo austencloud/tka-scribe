@@ -13,7 +13,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 export type CircularType = "same" | "halved" | "quartered";
 
 /**
- * CAP (Continuous Assembly Pattern) Type
+ * LOOP (Continuous Assembly Pattern) Type
  *
  * Strict variations based on rotation and mirroring:
  * - 'rotated': Pure rotation without mirroring
@@ -51,7 +51,7 @@ export interface CircularityAnalysis {
   /** Whether end position is a beta position */
   readonly endIsBeta: boolean;
 
-  /** Possible CAP types this sequence could become */
+  /** Possible LOOP types this sequence could become */
   readonly possibleCapTypes: readonly StrictCapType[];
 
   /** Human-readable description of the circular relationship */
@@ -62,11 +62,11 @@ export interface CircularityAnalysis {
  * Sequence Analysis Service Contract
  *
  * Service for analyzing sequences to detect circular patterns,
- * CAP (Continuous Assembly Pattern) potential, and autocomplete capability.
+ * LOOP (Continuous Assembly Pattern) potential, and autocomplete capability.
  *
  * This service is used to:
  * - Detect if a sequence can form a circular pattern
- * - Determine what type of CAP pattern is possible
+ * - Determine what type of LOOP pattern is possible
  * - Enable autocomplete functionality for the user
  */
 export interface ISequenceAnalyzer {
@@ -74,7 +74,7 @@ export interface ISequenceAnalyzer {
    * Analyze a sequence for circular properties
    *
    * Determines if a sequence has the potential to be completed as a
-   * circular pattern (CAP - Continuous Assembly Pattern).
+   * circular pattern (LOOP - Continuous Assembly Pattern).
    *
    * A sequence is circular-capable if:
    * 1. It has at least one beat with pictograph data
@@ -113,18 +113,18 @@ export interface ISequenceAnalyzer {
   isCircularCapable(sequence: SequenceData): boolean;
 
   /**
-   * Get possible CAP types for a circular sequence
+   * Get possible LOOP types for a circular sequence
    *
-   * Based on the circular type, returns which CAP patterns are possible:
+   * Based on the circular type, returns which LOOP patterns are possible:
    * - 'same' (distance 0): Returns to exact same position → mirrored/swapped/inverted
    * - 'halved' (distance 4 or 8): Opposite position → halved rotated
    * - 'quartered' (distance 2 or 4): Quarter-turn position → quartered rotated
    *
    * @param sequence - The sequence to analyze
-   * @returns Array of possible strict CAP types
+   * @returns Array of possible strict LOOP types
    *
    * @example
-   * const capTypes = service.getPossibleCapTypes(sequence);
+   * const loopTypes = service.getPossibleCapTypes(sequence);
    * // ['rotated'] for quartered sequences (e.g., alpha1→alpha3)
    * // ['mirrored'] for halved sequences (e.g., beta1→beta5)
    * // ['static'] for same-position sequences (e.g., gamma1→gamma1)
@@ -196,18 +196,18 @@ export interface ISequenceAnalyzer {
   getCircularDescription(analysis: CircularityAnalysis): string;
 
   /**
-   * Detect the actual CAP type of a COMPLETED sequence
+   * Detect the actual LOOP type of a COMPLETED sequence
    *
    * Analyzes all consecutive beat transformations to determine what type
-   * of completed CAP pattern the sequence represents.
+   * of completed LOOP pattern the sequence represents.
    *
    * Logic:
-   * 1. Static CAP: All beats at the same position
-   * 2. Rotated CAP: Each consecutive pair shows 90° rotation
-   * 3. Mirrored CAP: Each consecutive pair shows mirroring relationship
+   * 1. Static LOOP: All beats at the same position
+   * 2. Rotated LOOP: Each consecutive pair shows 90° rotation
+   * 3. Mirrored LOOP: Each consecutive pair shows mirroring relationship
    *
    * @param sequence - The completed sequence to analyze
-   * @returns Array of CAP types this sequence represents (can be multiple)
+   * @returns Array of LOOP types this sequence represents (can be multiple)
    *
    * @example
    * // For a rotated sequence: alpha1 → alpha3 → alpha5 → alpha7 → alpha1

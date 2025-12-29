@@ -20,6 +20,7 @@ import {
   RotationDirection,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { isBeat } from "../../../domain/type-guards/pictograph-type-guards";
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
@@ -459,15 +460,35 @@ function truncateToNewStart(
 }
 
 /**
+ * Derive the static letter (α, β, Γ) from a grid position.
+ * Alpha positions → Letter.ALPHA (α)
+ * Beta positions → Letter.BETA (β)
+ * Gamma positions → Letter.GAMMA (Γ)
+ */
+function getStaticLetterFromGridPosition(
+  position: GridPosition | null | undefined
+): Letter {
+  if (!position) return Letter.ALPHA; // Fallback for null/undefined
+
+  const positionStr = position.toString().toLowerCase();
+  if (positionStr.startsWith("beta")) return Letter.BETA;
+  if (positionStr.startsWith("gamma")) return Letter.GAMMA;
+  return Letter.ALPHA; // Default for alpha positions
+}
+
+/**
  * Create a start position from a beat's end state.
  */
 export function createStartPositionFromBeatEnd(beat: BeatData): BeatData {
   const blueMotion = beat.motions[MotionColor.BLUE];
   const redMotion = beat.motions[MotionColor.RED];
 
+  // Derive the correct letter from the end position (alpha, beta, or gamma)
+  const letter = getStaticLetterFromGridPosition(beat.endPosition);
+
   return createBeatData({
     id: `beat-${Date.now()}`,
-    letter: Letter.ALPHA,
+    letter: letter,
     startPosition: beat.endPosition ?? null,
     endPosition: beat.endPosition ?? null,
     beatNumber: 0,

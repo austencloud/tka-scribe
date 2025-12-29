@@ -23,6 +23,7 @@
     MotionColor,
     RotationDirection,
   } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+  import { UndoOperationType } from "../../services/contracts/IUndoManager";
 
   const logger = createComponentLogger("BeatEditorCoordinator");
 
@@ -55,15 +56,20 @@
   const isOpen = $derived(panelState.isBeatEditorPanelOpen);
 
   // Get active sequence state and selected beat data
-  const activeSequenceState = $derived(
+  // Use $derived.by() to ensure reactive property tracking through function calls
+  // Without .by(), Svelte may not detect changes to properties inside returned objects
+  const activeSequenceState = $derived.by(() =>
     CreateModuleState.getActiveTabSequenceState()
   );
-  const selectedBeatNumber = $derived(activeSequenceState.selectedBeatNumber);
-  const selectedBeatData = $derived(activeSequenceState.selectedBeatData);
-  const sequence = $derived(activeSequenceState.currentSequence);
+  const selectedBeatNumber = $derived.by(
+    () => activeSequenceState.selectedBeatNumber
+  );
+  const selectedBeatData = $derived.by(() => activeSequenceState.selectedBeatData);
+  const sequence = $derived.by(() => activeSequenceState.currentSequence);
+
 
   // Animation state for deletion visualization
-  const removingBeatIndices = $derived(
+  const removingBeatIndices = $derived.by(() =>
     activeSequenceState.getRemovingBeatIndices()
   );
 
@@ -89,6 +95,9 @@
     if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("selection");
 
+    // Push undo snapshot BEFORE modifying
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.MODIFY_BEAT_PROPERTIES);
+
     const currentTurns =
       color === MotionColor.BLUE ? currentBlueTurns : currentRedTurns;
     const newNumericTurns = Math.min(3, Math.max(-0.5, currentTurns + delta));
@@ -111,6 +120,9 @@
     if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("selection");
 
+    // Push undo snapshot BEFORE modifying
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.MODIFY_BEAT_PROPERTIES);
+
     const directionString =
       direction === RotationDirection.CLOCKWISE ? "cw" : "ccw";
     BeatOperator.updateRotationDirection(
@@ -126,6 +138,9 @@
     if (selectedBeatNumber === null || !BeatOperator) return;
     hapticService?.trigger("selection");
 
+    // Push undo snapshot BEFORE modifying
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.MODIFY_BEAT_PROPERTIES);
+
     BeatOperator.updateBeatOrientation(
       selectedBeatNumber,
       color,
@@ -136,8 +151,13 @@
   }
 
   function handleBeatDelete() {
-    if (selectedBeatNumber === null || !BeatOperator) return;
+    if (selectedBeatNumber === null || !BeatOperator) {
+      return;
+    }
     hapticService?.trigger("warning");
+
+    // Push undo snapshot BEFORE deleting
+    CreateModuleState.pushUndoSnapshot(UndoOperationType.REMOVE_BEATS);
 
     // For start position (0), clear the start position
     if (selectedBeatNumber === 0) {

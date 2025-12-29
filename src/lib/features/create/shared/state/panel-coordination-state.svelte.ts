@@ -7,7 +7,7 @@
  * **PANEL MUTUAL EXCLUSIVITY RULES:**
  * - Only ONE modal/slide panel can be open at a time
  * - Opening any panel automatically closes all other panels
- * - Panels: Edit, Animation, Share, Filter, CAP, CreationMethod
+ * - Panels: Edit, Animation, Share, Filter, LOOP, CreationMethod
  *
  * **PERSISTED PANEL STATES:**
  * - Sequence Actions Panel: open/closed state and mode (turns/transforms)
@@ -20,8 +20,8 @@
  */
 
 import type { BeatData } from "../domain/models/BeatData";
-import type { CAPType } from "../../generate/circular/domain/models/circular-models";
-import type { CAPComponent } from "../../generate/shared/domain/models/generate-models";
+import type { LOOPType } from "../../generate/circular/domain/models/circular-models";
+import type { LOOPComponent } from "../../generate/shared/domain/models/generate-models";
 import type { PictographData } from "../../../../shared/pictograph/shared/domain/models/PictographData";
 import type { Letter } from "../../../../shared/foundation/domain/models/Letter";
 import { GridMode } from "../../../../shared/pictograph/grid/domain/enums/grid-enums";
@@ -158,16 +158,16 @@ export interface PanelCoordinationState {
   get practiceBeatIndex(): number | null;
   setPracticeBeatIndex(index: number | null): void;
 
-  // CAP Panel State
+  // LOOP Panel State
   get isCAPPanelOpen(): boolean;
-  get capSelectedComponents(): Set<CAPComponent> | null;
-  get capCurrentType(): CAPType | null;
-  get capOnChange(): ((capType: CAPType) => void) | null;
+  get capSelectedComponents(): Set<LOOPComponent> | null;
+  get capCurrentType(): LOOPType | null;
+  get capOnChange(): ((loopType: LOOPType) => void) | null;
 
   openCAPPanel(
-    currentType: CAPType,
-    selectedComponents: Set<CAPComponent>,
-    onChange: (capType: CAPType) => void
+    currentType: LOOPType,
+    selectedComponents: Set<LOOPComponent>,
+    onChange: (loopType: LOOPType) => void
   ): void;
   closeCAPPanel(): void;
 
@@ -277,11 +277,11 @@ export function createPanelCoordinationState(): PanelCoordinationState {
   // Practice mode
   let practiceBeatIndex = $state<number | null>(null);
 
-  // CAP panel state
+  // LOOP panel state
   let isCAPPanelOpen = $state(false);
-  let capSelectedComponents = $state<Set<CAPComponent> | null>(null);
-  let capCurrentType = $state<CAPType | null>(null);
-  let capOnChange = $state<((capType: CAPType) => void) | null>(null);
+  let capSelectedComponents = $state<Set<LOOPComponent> | null>(null);
+  let capCurrentType = $state<LOOPType | null>(null);
+  let capOnChange = $state<((loopType: LOOPType) => void) | null>(null);
 
   // Creation method panel state
   let isCreationMethodPanelOpen = $state(false);
@@ -613,7 +613,7 @@ export function createPanelCoordinationState(): PanelCoordinationState {
       practiceBeatIndex = index;
     },
 
-    // CAP Panel Getters
+    // LOOP Panel Getters
     get isCAPPanelOpen() {
       return isCAPPanelOpen;
     },
@@ -628,9 +628,9 @@ export function createPanelCoordinationState(): PanelCoordinationState {
     },
 
     openCAPPanel(
-      currentType: CAPType,
-      selectedComponents: Set<CAPComponent>,
-      onChange: (capType: CAPType) => void
+      currentType: LOOPType,
+      selectedComponents: Set<LOOPComponent>,
+      onChange: (loopType: LOOPType) => void
     ) {
       closeAllPanels();
       capCurrentType = currentType;

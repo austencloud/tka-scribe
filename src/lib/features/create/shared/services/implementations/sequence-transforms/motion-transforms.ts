@@ -13,7 +13,7 @@ import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictogra
 import {
   VERTICAL_MIRROR_LOCATION_MAP,
   HORIZONTAL_MIRROR_LOCATION_MAP,
-} from "../../../../generate/circular/domain/constants/strict-cap-position-maps";
+} from "../../../../generate/circular/domain/constants/strict-loop-position-maps";
 import {
   reverseRotationDirection,
   invertMotionType,

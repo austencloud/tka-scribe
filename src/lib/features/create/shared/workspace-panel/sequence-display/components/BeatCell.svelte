@@ -80,6 +80,9 @@
   let isLongPressing = $state(false);
   let longPressTriggered = $state(false);
 
+  // Element ref for focus management
+  let cellElement: HTMLDivElement;
+
   // Track when new pictograph data arrives for fade-in animation
   let enableTransitionsForNewData = $state(false);
 
@@ -173,10 +176,30 @@
     };
   });
 
+  // Auto-focus when this cell becomes selected (e.g., after deleting another beat)
+  // This enables continuous Delete key presses to delete beats one by one
+  let wasSelected = isSelected; // Initialize to current state to avoid focus on mount
+  let hasMounted = false;
+  onMount(() => {
+    hasMounted = true;
+  });
+
+  $effect(() => {
+    if (hasMounted && isSelected && !wasSelected && cellElement) {
+      // Small delay to ensure DOM is settled after deletion animation
+      requestAnimationFrame(() => {
+        cellElement?.focus();
+      });
+    }
+    wasSelected = isSelected;
+  });
+
   function handleClick() {
     // Trigger haptic feedback for beat selection
     hapticService?.trigger("selection");
     onClick?.();
+    // Focus the cell so keyboard events (Delete/Backspace) work immediately
+    cellElement?.focus();
   }
 
   function handleKeyDown(event: KeyboardEvent) {
@@ -186,8 +209,8 @@
       hapticService?.trigger("selection");
       onClick?.();
     } else if (event.key === "Delete" || event.key === "Backspace") {
-      // Only allow deletion if beat is selected and not the start position
-      if (isSelected && beat.beatNumber >= 1) {
+      // Allow deletion if beat is selected (including start position)
+      if (isSelected) {
         event.preventDefault();
         // Trigger warning haptic feedback for deletion
         hapticService?.trigger("warning");
@@ -247,6 +270,7 @@
 </script>
 
 <div
+  bind:this={cellElement}
   class="beat-cell"
   class:invisible={!isVisible}
   class:animate={shouldAnimateIn}
@@ -340,6 +364,11 @@
   .beat-cell:hover {
     opacity: 0.9;
     transform: scale(1.02);
+  }
+
+  /* Override global focus-visible outline - selection styling is sufficient */
+  .beat-cell:focus-visible {
+    outline: none;
   }
 
   /* Visual feedback during long-press */

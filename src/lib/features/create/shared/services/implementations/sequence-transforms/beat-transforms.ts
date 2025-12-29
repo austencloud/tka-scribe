@@ -20,7 +20,7 @@ import {
   VERTICAL_MIRROR_POSITION_MAP,
   HORIZONTAL_MIRROR_POSITION_MAP,
   SWAPPED_POSITION_MAP,
-} from "../../../../generate/circular/domain/constants/strict-cap-position-maps";
+} from "../../../../generate/circular/domain/constants/strict-loop-position-maps";
 import {
   mirrorMotion,
   flipMotion,
@@ -275,5 +275,8 @@ export async function rewindBeat(
     endPosition: beat.startPosition ?? null,
     motions: rewindMotions,
     letter: correctLetter,
+    // Clear reversal flags - they must be recalculated based on the new sequence order
+    blueReversal: false,
+    redReversal: false,
   });
 }

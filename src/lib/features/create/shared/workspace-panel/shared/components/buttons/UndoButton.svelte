@@ -17,16 +17,32 @@
   } = $props();
 
   // Resolve haptic feedback service
-  const hapticService = resolve<IHapticFeedback>(
-    TYPES.IHapticFeedback
-  );
+  const hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
-  // Debug logging removed - this creates noise during reactive updates
-  // $effect(() => {
-  //   console.log('🔍 UndoButton: CreateModuleState.canUndo =', CreateModuleState.canUndo);
-  // });
+  // Type descriptions for all operation types
+  const typeDescriptions: Record<UndoOperationType, string> = {
+    [UndoOperationType.ADD_BEAT]: "Add Beat",
+    [UndoOperationType.REMOVE_BEATS]: "Remove Beats",
+    [UndoOperationType.CLEAR_SEQUENCE]: "Clear Sequence",
+    [UndoOperationType.SELECT_START_POSITION]: "Select Start Position",
+    [UndoOperationType.UPDATE_BEAT]: "Update Beat",
+    [UndoOperationType.INSERT_BEAT]: "Insert Beat",
+    [UndoOperationType.BATCH_EDIT]: "Batch Edit",
+    [UndoOperationType.MIRROR_SEQUENCE]: "Mirror",
+    [UndoOperationType.FLIP_SEQUENCE]: "Flip",
+    [UndoOperationType.ROTATE_SEQUENCE]: "Rotate",
+    [UndoOperationType.SWAP_COLORS]: "Swap Colors",
+    [UndoOperationType.INVERT_SEQUENCE]: "Invert",
+    [UndoOperationType.REWIND_SEQUENCE]: "Rewind",
+    [UndoOperationType.SHIFT_START]: "Shift Start",
+    [UndoOperationType.APPLY_TURN_PATTERN]: "Turn Pattern",
+    [UndoOperationType.APPLY_ROTATION_PATTERN]: "Rotation Pattern",
+    [UndoOperationType.EXTEND_SEQUENCE]: "Extend",
+    [UndoOperationType.MODIFY_BEAT_PROPERTIES]: "Edit Beat",
+    [UndoOperationType.GENERATE_SEQUENCE]: "Generate Sequence",
+  };
 
-  // Derived state
+  // Derived state for button text/tooltip
   const undoButtonText = $derived(() => {
     if (!CreateModuleState.canUndo) return "Nothing to Undo";
 
@@ -35,21 +51,6 @@
     if (lastEntry?.metadata?.description) {
       return `Undo ${lastEntry.metadata.description}`;
     }
-
-    // Fallback to type-based descriptions
-    const typeDescriptions: Record<UndoOperationType, string> = {
-      [UndoOperationType.ADD_BEAT]: "Add Beat",
-      [UndoOperationType.REMOVE_BEATS]: "Remove Beats",
-      [UndoOperationType.CLEAR_SEQUENCE]: "Clear Sequence",
-      [UndoOperationType.SELECT_START_POSITION]: "Select Start Position",
-      [UndoOperationType.UPDATE_BEAT]: "Update Beat",
-      [UndoOperationType.INSERT_BEAT]: "Insert Beat",
-      [UndoOperationType.MIRROR_SEQUENCE]: "Mirror Sequence",
-      [UndoOperationType.ROTATE_SEQUENCE]: "Rotate Sequence",
-      [UndoOperationType.SWAP_COLORS]: "Swap Colors",
-      [UndoOperationType.MODIFY_BEAT_PROPERTIES]: "Modify Beat Properties",
-      [UndoOperationType.GENERATE_SEQUENCE]: "Generate Sequence",
-    };
 
     const lastType = lastEntry?.type as UndoOperationType | undefined;
     return `Undo ${lastType ? typeDescriptions[lastType] : "Last Action"}`;
@@ -67,7 +68,7 @@
     return `Undo last action (${lastEntry?.type || "Unknown"})`;
   });
 
-  // Functions
+  // Simple click handler
   function handleUndo() {
     hapticService?.trigger("selection");
     const success = CreateModuleState.undo();
@@ -77,7 +78,7 @@
   }
 </script>
 
-<!-- Professional Undo Button matching ButtonPanel style - always visible but disabled when nothing to undo -->
+<!-- Simple tap-to-undo button -->
 <button
   class="undo-button"
   class:disabled={!CreateModuleState.canUndo}
@@ -87,6 +88,7 @@
   aria-label={undoButtonText()}
 >
   <svg
+    class="undo-icon"
     width="20"
     height="20"
     viewBox="0 0 24 24"
@@ -128,39 +130,21 @@
     /* Purple gradient matching SaveToLibraryButton */
     background: linear-gradient(
       135deg,
-      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
-      color-mix(
-          in srgb,
-          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
-          var(--theme-accent-strong)
-        )
-        100%
+      var(--theme-accent-strong) 0%,
+      color-mix(in srgb, var(--theme-accent-strong) 85%, var(--theme-accent-strong)) 100%
     );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 30%, transparent);
-    box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+    border: 1px solid color-mix(in srgb, var(--theme-accent-strong) 30%, transparent);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent-strong) 40%, transparent);
   }
 
   .undo-button:hover:not(:disabled) {
     transform: scale(1.05);
     background: linear-gradient(
       135deg,
-      color-mix(
-          in srgb,
-          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
-          var(--theme-accent-strong)
-        )
-        0%,
-      color-mix(
-          in srgb,
-          var(--theme-accent-strong, var(--theme-accent-strong)) 70%,
-          var(--theme-accent-strong)
-        )
-        100%
+      color-mix(in srgb, var(--theme-accent-strong) 85%, var(--theme-accent-strong)) 0%,
+      color-mix(in srgb, var(--theme-accent-strong) 70%, var(--theme-accent-strong)) 100%
     );
-    box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--theme-accent-strong) 60%, transparent);
   }
 
   .undo-button:active {
@@ -180,56 +164,8 @@
     pointer-events: none;
   }
 
-  .undo-button:disabled:hover,
-  .undo-button.disabled:hover {
-    transform: none;
-    background: linear-gradient(
-      135deg,
-      var(--theme-accent-strong, var(--theme-accent-strong)) 0%,
-      color-mix(
-          in srgb,
-          var(--theme-accent-strong, var(--theme-accent-strong)) 85%,
-          var(--theme-accent-strong)
-        )
-        100%
-    );
-    box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
-  }
-
-  /* Mobile responsive - 48px minimum per iOS/Android guidelines */
-  @media (max-width: 768px) {
-    .undo-button {
-      width: var(--min-touch-target);
-      height: var(--min-touch-target);
-      font-size: var(--font-size-base);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .undo-button {
-      width: var(--min-touch-target); /* Maintain 48px minimum */
-      height: var(--min-touch-target);
-      font-size: var(--font-size-base);
-    }
-  }
-
-  @media (max-width: 320px) {
-    .undo-button {
-      width: var(--min-touch-target); /* NEVER below 48px for accessibility */
-      height: var(--min-touch-target);
-      font-size: var(--font-size-sm);
-    }
-  }
-
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
-  @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
-    .undo-button {
-      width: var(
-        --min-touch-target
-      ); /* Maintain 48px minimum for accessibility */
-      height: var(--min-touch-target);
-      font-size: var(--font-size-sm);
-    }
+  /* Undo icon positioning */
+  .undo-icon {
+    flex-shrink: 0;
   }
 </style>

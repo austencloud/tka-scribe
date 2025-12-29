@@ -10,13 +10,13 @@ import type {
   ITurnAllocator,
   TurnAllocation,
 } from "../contracts/ITurnAllocator";
-import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
+import type { ILOOPParameterProvider } from "../contracts/ILOOPParameterProvider";
 
 @injectable()
 export class TurnAllocator implements ITurnAllocator {
   constructor(
-    @inject(TYPES.ICAPParameterProvider)
-    private capParams: ICAPParameterProvider
+    @inject(TYPES.ILOOPParameterProvider)
+    private loopParams: ILOOPParameterProvider
   ) {}
 
   /**
@@ -27,6 +27,6 @@ export class TurnAllocator implements ITurnAllocator {
     level: number,
     turnIntensity: number
   ): Promise<TurnAllocation> {
-    return this.capParams.allocateTurns(beatsToGenerate, level, turnIntensity);
+    return this.loopParams.allocateTurns(beatsToGenerate, level, turnIntensity);
   }
 }

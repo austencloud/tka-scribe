@@ -4,8 +4,8 @@ Displays a single preset with icon, name, summary, and action buttons
 -->
 <script lang="ts">
   import {
-    CAP_TYPE_LABELS,
-    type CAPType,
+    LOOP_TYPE_LABELS,
+    type LOOPType,
   } from "$lib/features/create/generate/circular/domain/models/circular-models";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
@@ -55,7 +55,7 @@ Displays a single preset with icon, name, summary, and action buttons
       `${config.length} beats`,
       gridMode,
       mode,
-      CAP_TYPE_LABELS[config.capType as CAPType] || config.capType,
+      LOOP_TYPE_LABELS[config.loopType as LOOPType] || config.loopType,
     ];
 
     if (config.turnIntensity > 0) {
@@ -75,7 +75,7 @@ Displays a single preset with icon, name, summary, and action buttons
     const mode = config.mode.charAt(0).toUpperCase() + config.mode.slice(1);
 
     // Shorten "Inverted" to "Compl." for narrow screens
-    let capLabel = CAP_TYPE_LABELS[config.capType as CAPType] || config.capType;
+    let capLabel = LOOP_TYPE_LABELS[config.loopType as LOOPType] || config.loopType;
     if (capLabel === "Inverted") {
       capLabel = "Compl.";
     }

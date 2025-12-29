@@ -5,7 +5,7 @@ import type {
   PropContinuity,
 } from "../../domain/models/generate-models";
 import type {
-  CAPType,
+  LOOPType,
   SliceSize,
 } from "../../../circular/domain/models/circular-models";
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
@@ -35,7 +35,7 @@ export interface CardHandlers {
   handlePropContinuityChange: (continuity: PropContinuity) => void;
   handleGridModeChange: (mode: GridMode) => void;
   handleGenerationModeChange: (mode: GenerationMode) => void;
-  handleCAPTypeChange: (capType: CAPType) => void;
+  handleLOOPTypeChange: (loopType: LOOPType) => void;
   handleSliceSizeChange: (sliceSize: SliceSize) => void;
   handleCustomizeChange?: (options: CustomizeOptions) => void;
   handleGenerateClick?: () => Promise<void>;

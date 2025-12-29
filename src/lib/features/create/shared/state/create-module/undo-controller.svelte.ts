@@ -13,6 +13,7 @@ import type {
 } from "../../services/contracts/IUndoManager";
 import { UndoOperationType } from "../../services/contracts/IUndoManager";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+import { toast } from "$lib/shared/toast/state/toast-state.svelte";
 
 type UndoControllerDeps = {
   UndoManager: IUndoManager;
@@ -83,9 +84,17 @@ export function createUndoController({
   }
 
   function undo(): boolean {
+    // Get description before undo (entry moves to redo after)
+    const undoDescription = UndoManager.getLastUndoDescription();
+
     const lastEntry = UndoManager.undo();
     if (!lastEntry) {
       return false;
+    }
+
+    // Show brief toast confirming the undo
+    if (undoDescription) {
+      toast.info(`Undid ${undoDescription}`, 1500);
     }
 
     if (lastEntry.type === UndoOperationType.SELECT_START_POSITION) {
@@ -198,11 +207,53 @@ export function createUndoController({
     onUndoingOptionCallback = callback;
   }
 
+  /**
+   * Jump to a specific history entry and restore that state
+   * Used by history panel to allow jumping to any point in history
+   */
+  function jumpToState(entryId: string): boolean {
+    // Get timeline to find the entry
+    const timeline = UndoManager.getTimeline();
+    const entry = timeline.find((e) => e.id === entryId);
+    if (!entry) return false;
+
+    // Perform the jump in the manager
+    const result = UndoManager.jumpToState(entryId);
+    if (!result) return false;
+
+    // Restore the state from the entry's beforeState
+    if (entry.type === UndoOperationType.SELECT_START_POSITION) {
+      void sequenceState.clearSequenceCompletely();
+      if (showStartPositionPickerCallback) {
+        showStartPositionPickerCallback();
+      }
+    } else {
+      sequenceState.setCurrentSequence(entry.beforeState.sequence);
+      restoreSelection(entry.beforeState.selectedBeatNumber);
+      if (entry.beforeState.activeSection) {
+        void setActiveSectionInternal(entry.beforeState.activeSection, false);
+      }
+    }
+
+    if (syncPickerStateCallback) {
+      syncPickerStateCallback();
+    }
+
+    // Show toast indicating the jump
+    const description =
+      entry.metadata?.description ||
+      UndoManager.getOperationDescription(entry.type);
+    toast.info(`Jumped to: ${description}`, 1500);
+
+    return true;
+  }
+
   return {
     pushUndoSnapshot,
     undo,
     redo,
     clearUndoHistory,
+    jumpToState,
     setShowStartPositionPickerCallback,
     setSyncPickerStateCallback,
     setOnUndoingOptionCallback,
@@ -216,6 +267,16 @@ export function createUndoController({
     },
     get undoHistory() {
       return UndoManager.undoHistory;
+    },
+    get redoHistory() {
+      return UndoManager.redoHistory;
+    },
+    getTimeline() {
+      void undoChangeCounter;
+      return UndoManager.getTimeline();
+    },
+    getOperationDescription(type: UndoOperationType) {
+      return UndoManager.getOperationDescription(type);
     },
   };
 }

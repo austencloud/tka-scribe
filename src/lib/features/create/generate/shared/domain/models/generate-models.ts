@@ -9,9 +9,12 @@
 // ============================================================================
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type {
-  CAPType,
+  LOOPType,
   SliceSize,
 } from "../../../circular/domain/models/circular-models";
+
+// Re-export LOOPType for convenience
+export type { LOOPType };
 import type { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
@@ -29,7 +32,7 @@ export interface GenerationOptions {
   propContinuity?: PropContinuity | undefined;
   turnIntensity?: number | undefined;
   sliceSize?: SliceSize | undefined; // For circular generation
-  capType?: CAPType | undefined; // CAP type for circular generation
+  loopType?: LOOPType | undefined; // LOOP type for circular generation
 
   // Customize options - advanced constraints for generation
   startPosition?: PictographData | null; // Specific start position constraint
@@ -49,23 +52,24 @@ export interface PictographOperation {
   targetIndex?: number;
   data?: Record<string, unknown>;
 }
-// NOTE: SliceSize and CAPType are now in circular/domain/models/circular-models.ts
+// NOTE: SliceSize and LOOPType are now in circular/domain/models/circular-models.ts
 // Import from there if needed
 
-// Fundamental CAP components that can be combined
-export enum CAPComponent {
+// Fundamental LOOP components that can be combined
+export enum LOOPComponent {
   ROTATED = "rotated",
   MIRRORED = "mirrored",
   SWAPPED = "swapped",
   INVERTED = "inverted",
 }
 
+
 /**
- * Display metadata for CAP component UI
- * Visual representation only - descriptions handled by CAPExplanationTextGenerator service
+ * Display metadata for LOOP component UI
+ * Visual representation only - descriptions handled by LOOPExplanationTextGenerator service
  */
-export interface CAPComponentInfo {
-  component: CAPComponent;
+export interface LOOPComponentInfo {
+  component: LOOPComponent;
   label: string;
   shortLabel: string;
   icon: string;
@@ -101,7 +105,7 @@ export enum GenerationMode {
 }
 
 // ============================================================================
-// CAP PARAMETER TYPES
+// LOOP PARAMETER TYPES
 // ============================================================================
 
 /**

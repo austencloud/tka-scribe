@@ -77,6 +77,7 @@
     <WorkspacePanel
       sequenceState={activeSequenceState}
       createModuleState={CreateModuleState}
+      {panelState}
       {practiceBeatIndex}
       {animatingBeatNumber}
       {isSideBySideLayout}

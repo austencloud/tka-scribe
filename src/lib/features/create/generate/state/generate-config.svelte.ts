@@ -7,7 +7,7 @@
  */
 
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { CAPType, SliceSize } from "../circular/domain/models/circular-models";
+import { LOOPType, SliceSize } from "../circular/domain/models/circular-models";
 import {
   GenerationMode,
   PropContinuity,
@@ -28,7 +28,7 @@ interface SerializedConfig {
   gridMode: GridMode;
   propContinuity: PropContinuity;
   sliceSize: SliceSize;
-  capType: CAPType;
+  loopType: LOOPType;
   timestamp: number;
 }
 
@@ -45,7 +45,7 @@ function saveConfig(config: UIGenerationConfig): void {
       gridMode: config.gridMode as GridMode,
       propContinuity: config.propContinuity as PropContinuity,
       sliceSize: config.sliceSize as SliceSize,
-      capType: config.capType as CAPType,
+      loopType: config.loopType as LOOPType,
       timestamp: Date.now(),
     };
 
@@ -86,7 +86,7 @@ function loadConfig(): UIGenerationConfig | null {
       gridMode: data.gridMode as GridMode,
       propContinuity: data.propContinuity as PropContinuity,
       sliceSize: data.sliceSize as SliceSize,
-      capType: data.capType as CAPType,
+      loopType: data.loopType as LOOPType,
     };
   } catch (error) {
     console.warn("⚠️ GenerateConfig: Failed to load config:", error);
@@ -114,7 +114,7 @@ const DEFAULT_CONFIG: UIGenerationConfig = {
   gridMode: GridMode.DIAMOND,
   propContinuity: PropContinuity.CONTINUOUS,
   sliceSize: SliceSize.HALVED,
-  capType: CAPType.STRICT_ROTATED,
+  loopType: LOOPType.STRICT_ROTATED,
 };
 
 // ===== Simple State Creator =====
@@ -182,8 +182,8 @@ export function createGenerationConfigState(
     updateConfig({ sliceSize: value });
   }
 
-  function onCAPTypeChanged(event: CustomEvent) {
-    updateConfig({ capType: event.detail.value });
+  function onLOOPTypeChanged(event: CustomEvent) {
+    updateConfig({ loopType: event.detail.value });
   }
 
   return {
@@ -207,6 +207,6 @@ export function createGenerationConfigState(
     onGenerationModeChanged,
     onPropContinuityChanged,
     onSliceSizeChanged,
-    onCAPTypeChanged,
+    onLOOPTypeChanged,
   };
 }

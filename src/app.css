@@ -420,7 +420,7 @@ h6 {
      ======================================== */
 
   /* Z-Index Hierarchy */
-  --sheet-z-modal: 1200; /* Full-screen modal sheets (Share, CAP) */
+  --sheet-z-modal: 1200; /* Full-screen modal sheets (Share, LOOP) */
   --sheet-z-overlay: 1100; /* Settings, overlays */
   --sheet-z-base: 1000; /* Standard sheets */
   --sheet-z-low: 150; /* Lower priority sheets */
@@ -435,16 +435,16 @@ h6 {
   --backdrop-blur-medium: blur(4px);
   --backdrop-blur-none: none;
 
-  /* Sheet Background Styles */
-  --sheet-bg-solid: var(--theme-panel-bg, rgba(0, 0, 0, 0.5));
+  /* Sheet Background Styles - Solid by default, opt-in for transparency */
+  --sheet-bg-solid: rgb(15, 15, 20);
   --sheet-bg-glass: var(--theme-panel-elevated-bg, rgba(0, 0, 0, 0.4));
   --sheet-bg-gradient: linear-gradient(
     135deg,
     rgba(0, 0, 0, 0.45) 0%,
     rgba(0, 0, 0, 0.6) 100%
   );
-  /* Default sheet background used by Drawer.css */
-  --sheet-bg: var(--sheet-bg-gradient);
+  /* Default sheet background used by Drawer.css - solid, no transparency */
+  --sheet-bg: var(--sheet-bg-solid);
   --sheet-bg-transparent: transparent;
 
   /* Sheet Mesh Gradient (Animated) */

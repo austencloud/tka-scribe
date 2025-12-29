@@ -62,12 +62,38 @@
   const { layout, panelState } = ctx;
   const isSideBySideLayout = $derived(layout.shouldUseSideBySideLayout);
 
-  // Derived state
-  const hasSelection = $derived(selectedBeatNumber !== null);
-  const isStartPositionSelected = $derived(selectedBeatNumber === 0);
+  // Hold onto previous beat data during transitions
+  // This prevents layout flicker when deleting beats - the controls stay visible
+  // with the old data until the new beat is selected, then CSS transitions
+  // smoothly animate the pictograph elements to their new positions
+  let displayedBeatData = $state<BeatData | null>(null);
+  let displayedBeatNumber = $state<number | null>(null);
 
-  const blueMotion = $derived(selectedBeatData?.motions?.[MotionColor.BLUE]);
-  const redMotion = $derived(selectedBeatData?.motions?.[MotionColor.RED]);
+  $effect(() => {
+    // Only update displayed data when we have actual new data
+    // When selectedBeatData becomes null (during deletion), keep showing previous
+    if (selectedBeatData !== null) {
+      displayedBeatData = selectedBeatData;
+    }
+    if (selectedBeatNumber !== null) {
+      displayedBeatNumber = selectedBeatNumber;
+    }
+  });
+
+  // Reset displayed data when panel closes to avoid stale data on next open
+  $effect(() => {
+    if (!isOpen) {
+      displayedBeatData = null;
+      displayedBeatNumber = null;
+    }
+  });
+
+  // Derived state - use displayed values for rendering to prevent flicker
+  const hasSelection = $derived(displayedBeatNumber !== null);
+  const isStartPositionSelected = $derived(displayedBeatNumber === 0);
+
+  const blueMotion = $derived(displayedBeatData?.motions?.[MotionColor.BLUE]);
+  const redMotion = $derived(displayedBeatData?.motions?.[MotionColor.RED]);
 
   const normalizeTurns = (turns: number | string | undefined): number =>
     turns === "fl" ? -0.5 : Number(turns) || 0;
@@ -115,10 +141,10 @@
   );
 
   const beatLabel = $derived.by(() => {
-    if (selectedBeatNumber === null) return "";
-    return selectedBeatNumber === 0
+    if (displayedBeatNumber === null) return "";
+    return displayedBeatNumber === 0
       ? "Start Position"
-      : `Beat ${selectedBeatNumber}`;
+      : `Beat ${displayedBeatNumber}`;
   });
 
   // Inspect modal state (admin-only)
@@ -157,6 +183,7 @@
   showHandle={true}
   closeOnBackdrop={false}
   focusTrap={false}
+  autoFocus={false}
   ariaLabel="Beat editor panel"
   onClose={handleClose}
 >
@@ -168,7 +195,7 @@
         <span class="subtitle">{beatLabel}</span>
       </div>
       <div class="header-actions">
-        {#if isAdmin() && hasSelection && selectedBeatData}
+        {#if isAdmin() && hasSelection && displayedBeatData}
           <button
             class="icon-btn editor"
             onclick={handleOpenEditor}
@@ -189,7 +216,7 @@
         {#if onDelete && hasSelection}
           <button
             class="icon-btn delete"
-            onclick={onDelete}
+            onclick={() => onDelete()}
             aria-label={isStartPositionSelected
               ? "Delete start position"
               : "Delete beat"}
@@ -224,11 +251,11 @@
     {/if}
 
     <!-- Desktop layout: Pictograph Preview -->
-    {#if isSideBySideLayout && hasSelection && selectedBeatData}
+    {#if isSideBySideLayout && hasSelection && displayedBeatData}
       <div class="preview-section">
         <div class="pictograph-container">
           <Pictograph
-            pictographData={selectedBeatData}
+            pictographData={displayedBeatData}
             disableContentTransitions={true}
           />
         </div>
@@ -244,7 +271,7 @@
         </div>
       {:else if isStartPositionSelected}
         <StartPositionEditMode
-          startPositionData={selectedBeatData}
+          startPositionData={displayedBeatData}
           stacked={!isSideBySideLayout}
           {onOrientationChange}
         />
@@ -269,14 +296,14 @@
 <!-- Inspect Modal (admin-only) -->
 <PictographInspectModal
   show={showInspectModal}
-  beatData={selectedBeatData}
+  beatData={displayedBeatData}
   onClose={handleCloseInspect}
 />
 
 <!-- Editor Sheet (admin-only) -->
 <PictographEditorSheet
   isOpen={showEditorSheet}
-  beatData={selectedBeatData}
+  beatData={displayedBeatData}
   onClose={handleCloseEditor}
 />
 

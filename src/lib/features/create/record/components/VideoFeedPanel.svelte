@@ -218,7 +218,7 @@ Features square aspect ratio for consistent layout and settings dialog for camer
         <p>Accessing camera...</p>
       </div>
     {:else if error}
-      <div class="state-overlay error-state">
+      <div class="state-overlay error-state" role="alert" aria-live="assertive">
         <div class="error-icon">📷</div>
         <p class="error-message">{error}</p>
         <button class="retry-button" onclick={() => startCamera()}>

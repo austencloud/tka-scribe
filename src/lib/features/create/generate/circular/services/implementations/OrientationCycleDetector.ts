@@ -4,7 +4,7 @@
  * Determines how many repetitions of a sequence are needed to return
  * to the starting prop orientation.
  *
- * For CAP sequences, the sequence may return to the starting grid position
+ * For LOOP sequences, the sequence may return to the starting grid position
  * after one repetition, but the prop orientation might be rotated 90° or 180°.
  * This service detects whether the sequence needs 1, 2, or 4 repetitions
  * to return to both the starting position AND orientation.

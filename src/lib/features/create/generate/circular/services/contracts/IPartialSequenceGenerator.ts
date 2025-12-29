@@ -1,7 +1,7 @@
 /**
  * Partial Sequence Generator Interface
  *
- * Generates partial sequences for circular mode (CAP preparation).
+ * Generates partial sequences for circular mode (LOOP preparation).
  */
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { GenerationOptions } from "$lib/features/create/generate/shared/domain/models/generate-models";
@@ -11,7 +11,7 @@ import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid
 export interface IPartialSequenceGenerator {
   /**
    * Generate a partial sequence ending at a specific position
-   * Used for circular mode CAP generation
+   * Used for circular mode LOOP generation
    * @param startPos - Start grid position
    * @param endPos - Required end grid position
    * @param sliceSize - Halved or quartered

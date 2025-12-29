@@ -1,4 +1,4 @@
-import { CAPType } from "../../../circular/domain/models/circular-models";
+import { LOOPType } from "../../../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
 import { DifficultyLevel } from "../../domain/models/generate-models";
 import type {
@@ -111,20 +111,20 @@ export class CardConfigurator implements ICardConfigurator {
       });
     }
 
-    // Row 3: Circular mode only cards (Slice Size + CAP Type)
+    // Row 3: Circular mode only cards (Slice Size + LOOP Type)
     // Determine if slice size selection is needed
-    // CAP types that include ROTATION support slice size choice (halved or quartered)
-    // CAP types without rotation only support halved mode
-    const capTypeAllowsSliceChoice =
-      config.capType === CAPType.STRICT_ROTATED ||
-      config.capType === CAPType.ROTATED_INVERTED ||
-      config.capType === CAPType.ROTATED_SWAPPED ||
-      config.capType === CAPType.MIRRORED_ROTATED ||
-      config.capType === CAPType.MIRRORED_INVERTED_ROTATED ||
-      config.capType === CAPType.MIRRORED_ROTATED_INVERTED_SWAPPED;
+    // LOOP types that include ROTATION support slice size choice (halved or quartered)
+    // LOOP types without rotation only support halved mode
+    const loopTypeAllowsSliceChoice =
+      config.loopType === LOOPType.STRICT_ROTATED ||
+      config.loopType === LOOPType.ROTATED_INVERTED ||
+      config.loopType === LOOPType.ROTATED_SWAPPED ||
+      config.loopType === LOOPType.MIRRORED_ROTATED ||
+      config.loopType === LOOPType.MIRRORED_INVERTED_ROTATED ||
+      config.loopType === LOOPType.MIRRORED_ROTATED_INVERTED_SWAPPED;
 
-    // Conditional: Slice Size (only in Circular mode AND when CAP type allows choice)
-    if (!isFreeformMode && capTypeAllowsSliceChoice) {
+    // Conditional: Slice Size (only in Circular mode AND when LOOP type allows choice)
+    if (!isFreeformMode && loopTypeAllowsSliceChoice) {
       cardList.push({
         id: "slice-size",
         props: {
@@ -139,35 +139,35 @@ export class CardConfigurator implements ICardConfigurator {
     }
 
     // Customize Options Card - for advanced constraints
-    // In circular mode: Add to row 3 with CAP/SliceSize
+    // In circular mode: Add to row 3 with LOOP/SliceSize
     // In freeform mode: Add to final row with Generate button
     const hasCustomizeCard =
       handlers.handleCustomizeChange && handlers.customizeOptions;
 
-    // Conditional: CAP Type (only in Circular mode)
+    // Conditional: LOOP Type (only in Circular mode)
     // Row 3 layout depends on whether slice size and customize are shown:
-    // - SliceSize (2) + CAP (2) + Customize (2) = 6 cols
-    // - CAP (4) + Customize (2) = 6 cols
-    // - SliceSize (2) + CAP (4) = 6 cols (no customize)
-    // - CAP (6) = full row (no customize, no slice size)
+    // - SliceSize (2) + LOOP (2) + Customize (2) = 6 cols
+    // - LOOP (4) + Customize (2) = 6 cols
+    // - SliceSize (2) + LOOP (4) = 6 cols (no customize)
+    // - LOOP (6) = full row (no customize, no slice size)
     if (!isFreeformMode) {
-      // Determine CAP column span based on what else is in row 3
+      // Determine LOOP column span based on what else is in row 3
       let capColumnSpan: number;
-      if (capTypeAllowsSliceChoice && hasCustomizeCard) {
-        capColumnSpan = 2; // SliceSize(2) + CAP(2) + Customize(2)
-      } else if (capTypeAllowsSliceChoice) {
-        capColumnSpan = 4; // SliceSize(2) + CAP(4)
+      if (loopTypeAllowsSliceChoice && hasCustomizeCard) {
+        capColumnSpan = 2; // SliceSize(2) + LOOP(2) + Customize(2)
+      } else if (loopTypeAllowsSliceChoice) {
+        capColumnSpan = 4; // SliceSize(2) + LOOP(4)
       } else if (hasCustomizeCard) {
-        capColumnSpan = 4; // CAP(4) + Customize(2)
+        capColumnSpan = 4; // LOOP(4) + Customize(2)
       } else {
-        capColumnSpan = 6; // CAP(6) full row
+        capColumnSpan = 6; // LOOP(6) full row
       }
 
       cardList.push({
         id: "cap-type",
         props: {
-          currentCAPType: config.capType,
-          onCAPTypeChange: handlers.handleCAPTypeChange,
+          currentLOOPType: config.loopType,
+          onLOOPTypeChange: handlers.handleLOOPTypeChange,
           shadowColor: "30deg 75% 55%", // Orange shadow
           cardIndex: cardIndex++,
           headerFontSize,

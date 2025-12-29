@@ -62,7 +62,7 @@
   import StandardWorkspaceLayout from "./StandardWorkspaceLayout.svelte";
   import AnimationSheetCoordinator from "../../../../shared/coordinators/AnimationSheetCoordinator.svelte";
   import { setCreateModuleContext } from "../context/create-module-context";
-  import CAPCoordinator from "./coordinators/CAPCoordinator.svelte";
+  import LOOPCoordinator from "./coordinators/LOOPCoordinator.svelte";
   import EditCoordinator from "./coordinators/EditCoordinator.svelte";
   import CustomizeCoordinator from "./coordinators/CustomizeCoordinator.svelte";
   import SequenceActionsCoordinator from "./coordinators/SequenceActionsCoordinator.svelte";
@@ -76,6 +76,7 @@
   import { SequencePersister } from "../services/SequencePersister";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { createPanelHeightTracker } from "../state/managers/PanelHeightTracker.svelte";
+  import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 
   const logger = createComponentLogger("CreateModule");
 
@@ -110,6 +111,9 @@
   let sessionManager: SessionManager | null = $state(null);
   let autosaver: Autosaver | null = $state(null);
   let sequencePersister: SequencePersister | null = $state(null);
+
+  // Settings service for user preferences
+  let settingsService: ISettingsState | null = $state(null);
 
   // ============================================================================
   // COMPONENT STATE
@@ -294,6 +298,9 @@
 
         servicesInitialized = true;
 
+        // Resolve settings service for user preferences
+        settingsService = resolve<ISettingsState>(TYPES.ISettingsState);
+
         initService.configureEventCallbacks(CreateModuleState, panelState);
 
         // Start panel persistence tracking (handles navigation changes, panel close detection)
@@ -469,7 +476,14 @@
 
   function handleClearSequence() {
     if (!handlers || !CreateModuleState || !constructTabState) return;
-    // Show confirmation dialog instead of executing directly
+
+    // Skip confirmation if user has opted out (undo is always available)
+    if (settingsService?.currentSettings?.skipClearConfirmation) {
+      confirmClearSequence();
+      return;
+    }
+
+    // Show confirmation dialog
     showClearSequenceConfirm = true;
   }
 
@@ -494,6 +508,12 @@
 
   function cancelClearSequence() {
     showClearSequenceConfirm = false;
+  }
+
+  function handleSkipClearConfirmationChange(checked: boolean) {
+    if (checked && settingsService) {
+      settingsService.updateSetting("skipClearConfirmation", true);
+    }
   }
 
   function handleOpenFilterPanel() {
@@ -636,17 +656,23 @@
   <BeatEditorCoordinator />
 
   <!-- Animation Coordinator - Rendered outside stacking context to appear above navigation -->
+  <!-- Note: Merge selectedStartPosition into sequence because Create module stores it separately -->
   {#if CreateModuleState}
+    {@const seq = CreateModuleState.sequenceState.currentSequence}
+    {@const startPos = CreateModuleState.sequenceState.selectedStartPosition}
+    {@const sequenceWithStartPosition = seq && startPos && !seq.startPosition
+      ? { ...seq, startPosition: startPos }
+      : seq}
     <AnimationSheetCoordinator
-      sequence={CreateModuleState.sequenceState.currentSequence}
+      sequence={sequenceWithStartPosition}
       bind:isOpen={panelState.isAnimationPanelOpen}
       bind:animatingBeatNumber
       combinedPanelHeight={panelState.combinedPanelHeight}
     />
   {/if}
 
-  <!-- CAP Coordinator -->
-  <CAPCoordinator />
+  <!-- LOOP Coordinator -->
+  <LOOPCoordinator />
 
   <!-- Customize Options Coordinator -->
   <CustomizeCoordinator />
@@ -670,12 +696,14 @@
   <ConfirmDialog
     bind:isOpen={showClearSequenceConfirm}
     title="Clear Sequence?"
-    message="This will remove all beats and the start position. This action cannot be undone."
+    message="This will remove all beats and the start position. Use undo to restore if needed."
     confirmText="Clear All"
     cancelText="Keep"
     variant="danger"
+    showDontAskAgain={true}
     onConfirm={confirmClearSequence}
     onCancel={cancelClearSequence}
+    onDontAskAgainChange={handleSkipClearConfirmationChange}
   />
 {/if}
 

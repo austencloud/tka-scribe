@@ -10,7 +10,7 @@ Delegates ALL logic to services (SRP compliant)
   import { quintOut } from "svelte/easing";
   import { scale } from "svelte/transition";
   import type { CardDescriptor } from "../shared/services/contracts/ICardConfigurator";
-  import type { ICAPParameterProvider } from "../shared/services/contracts/ICAPParameterProvider";
+  import type { ILOOPParameterProvider } from "../shared/services/contracts/ILOOPParameterProvider";
   import type { ICardConfigurator } from "../shared/services/contracts/ICardConfigurator";
   import type { IResponsiveTypographer } from "../shared/services/contracts/IResponsiveTypographer";
   import type { UIGenerationConfig } from "../state/generate-config.svelte";
@@ -21,12 +21,12 @@ Delegates ALL logic to services (SRP compliant)
     PropContinuity,
   } from "../shared/domain/models/generate-models";
   import type {
-    CAPType,
+    LOOPType,
     SliceSize,
   } from "../circular/domain/models/circular-models";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   // Card components
-  import CAPCard from "./cards/CAPCard.svelte";
+  import LOOPCard from "./cards/LOOPCard.svelte";
   import GenerationModeCard from "./cards/GenerationModeCard.svelte";
   import GridModeCard from "./cards/GridModeCard.svelte";
   import LengthCard from "./cards/LengthCard.svelte";
@@ -57,7 +57,7 @@ Delegates ALL logic to services (SRP compliant)
   // Services - use $state to make them reactive
   let typographyService = $state<IResponsiveTypographer | null>(null);
   let cardConfigService = $state<ICardConfigurator | null>(null);
-  let capParamProvider = $state<ICAPParameterProvider | null>(null);
+  let capParamProvider = $state<ILOOPParameterProvider | null>(null);
 
   // State
   let headerFontSize = $state("9px");
@@ -81,8 +81,8 @@ Delegates ALL logic to services (SRP compliant)
     cardConfigService = resolve<ICardConfigurator>(
       TYPES.ICardConfigurator
     );
-    capParamProvider = resolve<ICAPParameterProvider>(
-      TYPES.ICAPParameterProvider
+    capParamProvider = resolve<ILOOPParameterProvider>(
+      TYPES.ILOOPParameterProvider
     );
 
     updateFontSize();
@@ -143,8 +143,8 @@ Delegates ALL logic to services (SRP compliant)
     updateConfig({ mode });
   }
 
-  function handleCAPTypeChange(capType: CAPType) {
-    updateConfig({ capType });
+  function handleLOOPTypeChange(loopType: LOOPType) {
+    updateConfig({ loopType });
   }
 
   function handleSliceSizeChange(sliceSize: SliceSize) {
@@ -171,7 +171,7 @@ Delegates ALL logic to services (SRP compliant)
         handlePropContinuityChange,
         handleGridModeChange,
         handleGenerationModeChange,
-        handleCAPTypeChange,
+        handleLOOPTypeChange,
         handleSliceSizeChange,
         handleCustomizeChange: customizeState
           ? handleCustomizeChange
@@ -213,7 +213,7 @@ Delegates ALL logic to services (SRP compliant)
       {:else if card.id === "turn-intensity"}
         <TurnIntensityCard {...card.props as any} />
       {:else if card.id === "cap-type"}
-        <CAPCard {...card.props as any} />
+        <LOOPCard {...card.props as any} />
       {:else if card.id === "customize"}
         <CustomizeCard {...card.props as any} />
       {:else if card.id === "generate-button"}

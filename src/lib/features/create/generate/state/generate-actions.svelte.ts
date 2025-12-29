@@ -62,7 +62,7 @@ export function createGenerationActionsState(
               mode: options.mode,
               length: options.length,
               gridMode: options.gridMode,
-              capType: options.capType,
+              loopType: options.loopType,
             },
           },
         });

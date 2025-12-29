@@ -63,7 +63,7 @@ export interface UIGenerationConfig {
   gridMode: GridMode;
   propContinuity: string; // "continuous" | "random"
   sliceSize: string; // "halved" | "quartered"
-  capType: string; // CAP type for circular mode
+  loopType: string; // LOOP type for circular mode
 }
 
 /**
@@ -79,24 +79,24 @@ export function uiConfigToGenerationOptions(
   propType: PropType = PropTypeEnum.FAN,
   customizeOptions?: CustomizeOptions | null
 ): GenerationOptions {
-  // Force halved mode for CAP types that only support halved (not quartered)
+  // Force halved mode for LOOP types that only support halved (not quartered)
   // EXCEPTION: MIRRORED_ROTATED, MIRRORED_INVERTED_ROTATED, and MIRRORED_ROTATED_INVERTED_SWAPPED
   // support BOTH halved and quartered (rotation determines multiplication)
   const supportsSliceChoice =
-    uiConfig.capType === "mirrored_rotated" ||
-    uiConfig.capType === "mirrored_inverted_rotated" ||
-    uiConfig.capType === "mirrored_rotated_inverted_swapped";
+    uiConfig.loopType === "mirrored_rotated" ||
+    uiConfig.loopType === "mirrored_inverted_rotated" ||
+    uiConfig.loopType === "mirrored_rotated_inverted_swapped";
 
   const requiresHalved =
     !supportsSliceChoice &&
-    (uiConfig.capType.includes("mirrored") ||
-      uiConfig.capType.includes("swapped") ||
-      uiConfig.capType.includes("inverted"));
+    (uiConfig.loopType.includes("mirrored") ||
+      uiConfig.loopType.includes("swapped") ||
+      uiConfig.loopType.includes("inverted"));
 
   const sliceSize = requiresHalved ? "halved" : uiConfig.sliceSize;
 
   if (requiresHalved && uiConfig.sliceSize !== "halved") {
-    // Override to halved for this CAP type
+    // Override to halved for this LOOP type
   }
 
   const options: GenerationOptions = {
@@ -115,8 +115,8 @@ export function uiConfigToGenerationOptions(
     sliceSize: sliceSize
       ? (sliceSize as GenerationOptions["sliceSize"])
       : undefined,
-    capType: uiConfig.capType
-      ? (uiConfig.capType as GenerationOptions["capType"])
+    loopType: uiConfig.loopType
+      ? (uiConfig.loopType as GenerationOptions["loopType"])
       : undefined,
 
     // Include customize options if provided
@@ -135,7 +135,7 @@ export function uiConfigToGenerationOptions(
 export function generationOptionsToUIConfig(
   options: GenerationOptions,
   sliceSize: string = "halved",
-  capType: string = "strictRotated"
+  loopType: string = "strict_rotated"
 ): UIGenerationConfig {
   return {
     mode: options.mode || "freeform",
@@ -145,6 +145,6 @@ export function generationOptionsToUIConfig(
     gridMode: options.gridMode,
     propContinuity: options.propContinuity || "continuous",
     sliceSize,
-    capType,
+    loopType,
   };
 }

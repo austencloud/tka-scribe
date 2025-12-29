@@ -24,6 +24,7 @@
     showHandle = true,
     closeOnBackdrop = false,
     focusTrap = false,
+    autoFocus = true,
     lockScroll = false,
     labelledBy,
     ariaLabel,
@@ -39,6 +40,7 @@
     showHandle?: boolean;
     closeOnBackdrop?: boolean;
     focusTrap?: boolean;
+    autoFocus?: boolean;
     lockScroll?: boolean;
     labelledBy?: string;
     ariaLabel?: string;
@@ -184,6 +186,7 @@
         class={drawerClass}
         backdropClass={drawerBackdropClass}
         trapFocus={focusTrap}
+        {autoFocus}
         preventScroll={lockScroll}
       >
         <div class="create-drawer-body" style={panelHeightStyle}>
@@ -206,6 +209,7 @@
       class={drawerClass}
       backdropClass={drawerBackdropClass}
       trapFocus={focusTrap}
+      {autoFocus}
       preventScroll={lockScroll}
     >
       <div class="create-drawer-body" style={panelHeightStyle}>

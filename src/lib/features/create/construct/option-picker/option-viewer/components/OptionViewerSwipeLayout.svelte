@@ -69,6 +69,13 @@ Features:
     width: number;
   } | null>(null);
 
+  // Only render section content when bounds are ready to prevent size burst
+  const boundsReady = $derived(() => {
+    const ready = contentAreaBounds !== null && contentAreaBounds.width > 0;
+    console.log(`[SwipeLayout] boundsReady=${ready}, width=${contentAreaBounds?.width}`);
+    return ready;
+  });
+
   // ===== Event Handlers =====
   function handlePanelChange(panelIndex: number) {
     // Save panel position to sessionStorage
@@ -92,6 +99,7 @@ Features:
     right: number;
     width: number;
   }) {
+    console.log(`[SwipeLayout] contentAreaBounds: width=${bounds.width}`);
     contentAreaBounds = bounds;
   }
 </script>
@@ -116,32 +124,35 @@ Features:
         data-section-type={section.type || "individual"}
       >
         <div class="option-viewer-body">
-          {#if section.title === "Types 4-6" || section.type === "grouped"}
-            <!-- Grouped section (Types 4-6) -->
-            <OptionPicker456Group
-              pictographs={section.pictographs}
-              {onPictographSelected}
-              containerWidth={contentAreaBounds?.width ||
-                layoutConfig?.containerWidth ||
-                800}
-              pictographSize={layoutConfig?.pictographSize || 144}
-              gridGap={layoutConfig?.gridGap || "8px"}
-              {currentSequence}
-              {isFadingOut}
-              {contentAreaBounds}
-            />
-          {:else}
-            <!-- Individual section (Types 1-3) -->
-            <OptionViewerSection
-              letterType={section.title}
-              pictographs={section.pictographs}
-              {onPictographSelected}
-              {layoutConfig}
-              {currentSequence}
-              {isFadingOut}
-              {contentAreaBounds}
-              showHeader={false}
-            />
+          <!-- Wait for bounds before rendering to prevent size burst on mobile -->
+          {#if boundsReady()}
+            {#if section.title === "Types 4-6" || section.type === "grouped"}
+              <!-- Grouped section (Types 4-6) -->
+              <OptionPicker456Group
+                pictographs={section.pictographs}
+                {onPictographSelected}
+                containerWidth={contentAreaBounds?.width ||
+                  layoutConfig?.containerWidth ||
+                  800}
+                pictographSize={layoutConfig?.pictographSize || 144}
+                gridGap={layoutConfig?.gridGap || "8px"}
+                {currentSequence}
+                {isFadingOut}
+                {contentAreaBounds}
+              />
+            {:else}
+              <!-- Individual section (Types 1-3) -->
+              <OptionViewerSection
+                letterType={section.title}
+                pictographs={section.pictographs}
+                {onPictographSelected}
+                {layoutConfig}
+                {currentSequence}
+                {isFadingOut}
+                {contentAreaBounds}
+                showHeader={false}
+              />
+            {/if}
           {/if}
         </div>
       </div>

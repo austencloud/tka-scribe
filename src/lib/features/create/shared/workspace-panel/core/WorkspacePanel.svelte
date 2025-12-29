@@ -17,6 +17,7 @@
   import type { SequenceState } from "../../state/SequenceStateOrchestrator.svelte";
   import type { CreateModuleState } from "../../state/create-module-state.svelte";
   import type { IAnimationPlaybackController } from "$lib/features/compose/services/contracts/IAnimationPlaybackController";
+  import type { PanelCoordinationState } from "../../state/panel-coordination-state.svelte";
 
   // Services
   let BeatOperator: IBeatOperator | null = null;
@@ -25,6 +26,7 @@
   let {
     sequenceState,
     createModuleState,
+    panelState = null,
     practiceBeatIndex = null,
     animatingBeatNumber = null,
     shouldOrbitAroundCenter = false,
@@ -40,6 +42,7 @@
   }: {
     sequenceState?: SequenceState;
     createModuleState?: CreateModuleState;
+    panelState?: PanelCoordinationState | null;
     practiceBeatIndex?: number | null;
     animatingBeatNumber?: number | null;
     shouldOrbitAroundCenter?: boolean;
@@ -98,7 +101,6 @@
       // In other tabs: Just select the beat - the edit panel will open automatically
       localSelectedBeatNumber = beatNumber;
       sequenceState.selectBeat(beatNumber);
-
       // Note: We no longer switch to edit tab! The edit slide panel will open instead.
       // This is handled by an effect in CreateModule.svelte that watches for beat selection.
     }
@@ -126,15 +128,28 @@
 
   // Handle beat deletion via keyboard
   function handleBeatDelete(beatNumber: number) {
-    if (!BeatOperator || !createModuleState) {
-      console.warn("Cannot delete beat - services not initialized");
+    if (!createModuleState) {
+      console.warn("Cannot delete beat - createModuleState not initialized");
       return;
     }
 
-    // Convert beatNumber (1, 2, 3...) to beatIndex (0, 1, 2...)
-    const beatIndex = beatNumber - 1;
-
     try {
+      // Special case: Start position (beatNumber 0) - clear it instead of removing
+      if (beatNumber === 0) {
+        sequenceState?.setStartPosition(null);
+        sequenceState?.clearSelection();
+        // Close beat editor panel since workspace is now empty
+        panelState?.closeBeatEditorPanel();
+        return;
+      }
+
+      if (!BeatOperator) {
+        console.warn("Cannot delete beat - BeatOperator not initialized");
+        return;
+      }
+
+      // Convert beatNumber (1, 2, 3...) to beatIndex (0, 1, 2...)
+      const beatIndex = beatNumber - 1;
       BeatOperator.removeBeat(beatIndex, createModuleState);
     } catch (err) {
       console.error("Failed to remove beat", err);

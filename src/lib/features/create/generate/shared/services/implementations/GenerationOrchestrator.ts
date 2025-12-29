@@ -5,10 +5,10 @@ import type { PictographData } from "$lib/shared/pictograph/shared/domain/models
 import { inject, injectable } from "inversify";
 // Import TYPES directly from inversify/types to avoid HMR issues with re-exports
 import { TYPES } from "$lib/shared/inversify/types";
-import type { ICAPEndPositionSelector } from "../../../circular/services/contracts/ICAPEndPositionSelector";
-import type { ICAPExecutorSelector } from "../../../circular/services/contracts/ICAPExecutorSelector";
+import type { ILOOPEndPositionSelector } from "../../../circular/services/contracts/ILOOPEndPositionSelector";
+import type { ILOOPExecutorSelector } from "../../../circular/services/contracts/ILOOPExecutorSelector";
 import type { IPartialSequenceGenerator } from "../../../circular/services/contracts/IPartialSequenceGenerator";
-import type { ICAPParameterProvider } from "../contracts/ICAPParameterProvider";
+import type { ILOOPParameterProvider } from "../contracts/ILOOPParameterProvider";
 import type { GenerationOptions } from "../../domain/models/generate-models";
 import {
   GenerationMode,
@@ -36,8 +36,8 @@ export class GenerationOrchestrator
     @inject(TYPES.IStartPositionSelector)
     private readonly startPositionSelector: IStartPositionSelector,
 
-    @inject(TYPES.ICAPParameterProvider)
-    private readonly capParams: ICAPParameterProvider,
+    @inject(TYPES.ILOOPParameterProvider)
+    private readonly loopParams: ILOOPParameterProvider,
 
     @inject(TYPES.ITurnAllocationCalculator)
     private readonly turnAllocationCalculator: ITurnAllocator,
@@ -54,11 +54,11 @@ export class GenerationOrchestrator
     @inject(TYPES.IPartialSequenceGenerator)
     private readonly partialSequenceGenerator: IPartialSequenceGenerator,
 
-    @inject(TYPES.ICAPEndPositionSelector)
-    private readonly capEndPositionSelector: ICAPEndPositionSelector,
+    @inject(TYPES.ILOOPEndPositionSelector)
+    private readonly loopEndPositionSelector: ILOOPEndPositionSelector,
 
-    @inject(TYPES.ICAPExecutorSelector)
-    private readonly capExecutorSelector: ICAPExecutorSelector
+    @inject(TYPES.ILOOPExecutorSelector)
+    private readonly loopExecutorSelector: ILOOPExecutorSelector
   ) {}
 
   /**
@@ -96,7 +96,7 @@ export class GenerationOrchestrator
     const sequence: (BeatData | StartPositionData)[] = [startPosition];
 
     // Step 2: Determine rotation directions
-    const rotationDirections = this.capParams.determineRotationDirections(
+    const rotationDirections = this.loopParams.determineRotationDirections(
       options.propContinuity
     );
 
@@ -207,21 +207,21 @@ export class GenerationOrchestrator
   }
 
   /**
-   * Generate circular sequence using CAP executor
+   * Generate circular sequence using LOOP executor
    * EXACT ORIGINAL LOGIC from SequenceGenerationService.generatePatternSequence
    */
   private async generateCircularSequence(
     options: GenerationOptions
   ): Promise<SequenceData> {
     // Import circular-specific models
-    const { CAPType, SliceSize } = await import(
+    const { LOOPType, SliceSize } = await import(
       "../../../circular/domain/models/circular-models"
     );
 
     // Use constructor-injected services to avoid HMR issues
-    // Determine which CAP executor to use based on capType option
-    const capType = options.capType || CAPType.STRICT_ROTATED;
-    const capExecutor = this.capExecutorSelector.getExecutor(capType);
+    // Determine which LOOP executor to use based on loopType option
+    const loopType = options.loopType || LOOPType.STRICT_ROTATED;
+    const loopExecutor = this.loopExecutorSelector.getExecutor(loopType);
 
     // Get slice size
     const sliceSize = options.sliceSize || SliceSize.HALVED;
@@ -253,9 +253,9 @@ export class GenerationOrchestrator
     if (!startPos) {
       throw new Error("Failed to determine a starting grid position");
     }
-    // Use CAP-specific end position selector (different end positions for rotated/mirrored/swapped/inverted)
-    const requiredEndPos = this.capEndPositionSelector.determineEndPosition(
-      capType,
+    // Use LOOP-specific end position selector (different end positions for rotated/mirrored/swapped/inverted)
+    const requiredEndPos = this.loopEndPositionSelector.determineEndPosition(
+      loopType,
       startPos,
       sliceSize
     );
@@ -269,8 +269,8 @@ export class GenerationOrchestrator
         options
       );
 
-    // Execute CAP to complete the circle
-    const circularBeats = capExecutor.executeCAP(partialSequence, sliceSize);
+    // Execute LOOP to complete the circle
+    const circularBeats = loopExecutor.executeLOOP(partialSequence, sliceSize);
 
     // Build sequence data
     const word = this.metadataService.calculateWordFromBeats(
@@ -299,7 +299,7 @@ export class GenerationOrchestrator
       difficultyLevel: options.difficulty,
       isFavorite: false,
       isCircular: true,
-      tags: ["circular", "cap", capType.replace("_", "-")],
+      tags: ["circular", "cap", loopType.replace("_", "-")],
       metadata,
     });
 

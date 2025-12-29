@@ -13,6 +13,7 @@ import type { ISequenceTransformer } from "../../contracts/ISequenceTransformer"
 import type { IMotionQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
+import type { IReversalDetector } from "../../contracts/IReversalDetector";
 
 import {
   clearSequence,
@@ -34,7 +35,9 @@ export class SequenceTransformer
     @inject(TYPES.IMotionQueryHandler)
     private readonly motionQueryHandler: IMotionQueryHandler,
     @inject(TYPES.IOrientationCalculator)
-    private readonly orientationCalculator: IOrientationCalculator
+    private readonly orientationCalculator: IOrientationCalculator,
+    @inject(TYPES.IReversalDetector)
+    private readonly reversalDetector: IReversalDetector
   ) {}
 
   clearSequence(sequence: SequenceData): SequenceData {
@@ -73,7 +76,16 @@ export class SequenceTransformer
   }
 
   async rewindSequence(sequence: SequenceData): Promise<SequenceData> {
-    return rewindSequence(sequence, this.motionQueryHandler);
+    // First, apply the rewind transformation (reverses beat order, swaps start/end positions)
+    const rewoundSequence = await rewindSequence(
+      sequence,
+      this.motionQueryHandler
+    );
+
+    // Then recalculate reversals based on the new beat order
+    // This is critical because reversals depend on comparing consecutive beats
+    // and beat 1 should never have reversals (nothing before it to compare)
+    return this.reversalDetector.processReversals(rewoundSequence);
   }
 
   shiftStartPosition(

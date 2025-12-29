@@ -31,8 +31,17 @@ export enum UndoOperationType {
 
   // Transform operations
   MIRROR_SEQUENCE = "MIRROR_SEQUENCE",
+  FLIP_SEQUENCE = "FLIP_SEQUENCE",
   ROTATE_SEQUENCE = "ROTATE_SEQUENCE",
   SWAP_COLORS = "SWAP_COLORS",
+  INVERT_SEQUENCE = "INVERT_SEQUENCE",
+  REWIND_SEQUENCE = "REWIND_SEQUENCE",
+  SHIFT_START = "SHIFT_START",
+
+  // Pattern operations
+  APPLY_TURN_PATTERN = "APPLY_TURN_PATTERN",
+  APPLY_ROTATION_PATTERN = "APPLY_ROTATION_PATTERN",
+  EXTEND_SEQUENCE = "EXTEND_SEQUENCE",
 
   // Edit operations
   MODIFY_BEAT_PROPERTIES = "MODIFY_BEAT_PROPERTIES",
@@ -194,4 +203,31 @@ export interface IUndoManager {
    * @returns Unsubscribe function
    */
   onChange(callback: () => void): () => void;
+
+  /**
+   * Jump to a specific history entry by ID
+   * Used by history panel to restore any previous state
+   * Moves all entries between current position and target to the appropriate stack
+   *
+   * @param targetId - The ID of the history entry to jump to
+   * @returns The target entry, or null if not found
+   */
+  jumpToState(targetId: string): UndoHistoryEntry | null;
+
+  /**
+   * Get the combined timeline of undo and redo entries
+   * Undo entries (past) come first, then redo entries (future) in reverse
+   * Used by history panel to display full timeline
+   *
+   * @returns Array of all entries with isCurrentPosition marker
+   */
+  getTimeline(): Array<UndoHistoryEntry & { isInRedoStack: boolean }>;
+
+  /**
+   * Get a description for an operation type
+   *
+   * @param type - The operation type
+   * @returns Human-readable description
+   */
+  getOperationDescription(type: UndoOperationType): string;
 }

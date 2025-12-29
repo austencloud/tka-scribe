@@ -45,10 +45,11 @@
   const { CreateModuleState } = ctx;
 
   // Get current sequence
-  const activeSequenceState = $derived(
+  // Use $derived.by() to ensure reactive property tracking through function calls
+  const activeSequenceState = $derived.by(() =>
     CreateModuleState.getActiveTabSequenceState()
   );
-  const sequence = $derived(activeSequenceState.currentSequence);
+  const sequence = $derived.by(() => activeSequenceState.currentSequence);
 
   // Local state - initialized with default, $effect below syncs from prop
   let isOpen = $state(false);

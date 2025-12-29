@@ -11,7 +11,7 @@ import {
   GenerationMode,
   PropContinuity,
 } from "../shared/domain/models/generate-models";
-import { CAPType, SliceSize } from "../circular/domain/models/circular-models";
+import { LOOPType, SliceSize } from "../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../shared/utils/config-mapper";
 
 // ===== Types =====
@@ -85,7 +85,7 @@ function createDefaultPreset(): GenerationPreset {
     gridMode: GridMode.DIAMOND,
     propContinuity: PropContinuity.CONTINUOUS,
     sliceSize: SliceSize.HALVED,
-    capType: CAPType.STRICT_ROTATED,
+    loopType: LOOPType.STRICT_ROTATED,
   };
 
   return {

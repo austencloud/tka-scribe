@@ -37,15 +37,15 @@ export class ValidationError extends GenerationError {
 }
 
 /**
- * Thrown when CAP execution fails
+ * Thrown when LOOP execution fails
  */
 export class CAPExecutionError extends GenerationError {
   constructor(
     message: string,
-    public readonly capType?: string,
+    public readonly loopType?: string,
     context?: Record<string, unknown>
   ) {
-    super(message, "CAP_EXECUTION_ERROR", { ...context, capType });
+    super(message, "CAP_EXECUTION_ERROR", { ...context, loopType });
     this.name = "CAPExecutionError";
   }
 }

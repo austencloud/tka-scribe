@@ -20,6 +20,10 @@
   // Animation disabled - positions appear instantly for speed
   let animatedPictographs = $state(new Set<string>());
 
+  // Layout stabilization: Force horizontal layout briefly on mount to prevent
+  // flicker during workspace collapse animation (container is transiently narrow)
+  let isLayoutStabilizing = $state(true);
+
   // Services
   let hapticService: IHapticFeedback | undefined;
 
@@ -27,6 +31,14 @@
     hapticService = resolve<IHapticFeedback>(
       TYPES.IHapticFeedback
     );
+
+    // Allow container queries to take effect after layout animation completes
+    // (workspace collapse animation is 450ms, add buffer for safety)
+    const stabilizationTimer = setTimeout(() => {
+      isLayoutStabilizing = false;
+    }, 500);
+
+    return () => clearTimeout(stabilizationTimer);
   });
 
   // Animation handlers (kept for compatibility but never trigger)
@@ -48,7 +60,7 @@
   }
 </script>
 
-<div class="pictograph-row">
+<div class="pictograph-row" class:layout-stabilizing={isLayoutStabilizing}>
   {#each pictographDataSet as pictographData, index (pictographData.id)}
     <div
       class="pictograph-container"
@@ -97,6 +109,30 @@
 
     /* Enable container queries for children */
     container-type: size;
+
+    /* Smooth transition for layout changes (prevents jarring snap during animations) */
+    transition:
+      grid-template-columns 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* During layout stabilization, hide content until container dimensions settle */
+  .pictograph-row.layout-stabilizing {
+    opacity: 0;
+  }
+
+  /* Fade in once stabilization complete */
+  .pictograph-row:not(.layout-stabilizing) {
+    animation: fadeInGrid 250ms ease-out forwards;
+  }
+
+  @keyframes fadeInGrid {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Tall container (portrait): Use 3x1 column layout */
@@ -259,6 +295,18 @@
   @media (max-width: 480px) {
     .pictograph-row {
       gap: var(--spacing-sm);
+    }
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .pictograph-row {
+      transition: none;
+    }
+
+    .pictograph-row:not(.layout-stabilizing) {
+      animation: none;
+      opacity: 1;
     }
   }
 

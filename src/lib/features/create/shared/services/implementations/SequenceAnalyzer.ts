@@ -11,22 +11,22 @@ import type {
   StrictCapType,
 } from "../contracts/ISequenceAnalyzer";
 import {
-  HALVED_CAPS,
-  QUARTERED_CAPS,
+  HALVED_LOOPS,
+  QUARTERED_LOOPS,
 } from "../../../generate/circular/domain/constants/circular-position-maps";
 import {
   SWAPPED_POSITION_MAP,
   VERTICAL_MIRROR_POSITION_MAP,
-} from "../../../generate/circular/domain/constants/strict-cap-position-maps";
+} from "../../../generate/circular/domain/constants/strict-loop-position-maps";
 
 /**
  * Sequence Analysis Service Implementation
  *
- * Analyzes sequences to detect circular patterns and CAP (Continuous Assembly Pattern) potential.
+ * Analyzes sequences to detect circular patterns and LOOP (Continuous Assembly Pattern) potential.
  *
  * Key Concepts:
- * - Circular sequences can be "autocompleted" by applying CAP transformations
- * - The start→end position relationship determines which CAP types are possible
+ * - Circular sequences can be "autocompleted" by applying LOOP transformations
+ * - The start→end position relationship determines which LOOP types are possible
  * - Uses predefined position maps (quartered, halved, mirrored, swapped, inverted)
  * - Intermediate pictographs are irrelevant - only start/end positions matter
  */
@@ -100,7 +100,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
       };
     }
 
-    // Get possible CAP types based on circular type
+    // Get possible LOOP types based on circular type
     const possibleCapTypes =
       this.getPossibleCapTypesForCircularType(circularType);
 
@@ -129,7 +129,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
   }
 
   /**
-   * Get possible CAP types for a circular sequence
+   * Get possible LOOP types for a circular sequence
    */
   getPossibleCapTypes(sequence: SequenceData): readonly StrictCapType[] {
     const analysis = this.analyzeCircularity(sequence);
@@ -140,7 +140,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
    * Determine the circular relationship between two positions
    *
    * Uses the predefined transformation maps to check if the start→end pair
-   * exists in any of the CAP validation sets:
+   * exists in any of the LOOP validation sets:
    * - Same position → 'same' (inverted, mirrored, swapped)
    * - Quartered map → 'quartered' (90° rotation)
    * - Halved map → 'halved' (180° rotation)
@@ -151,18 +151,18 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
   ): CircularType | null {
     const positionKey = `${startPosition},${endPosition}`;
 
-    // Check if same position (inverted CAP)
+    // Check if same position (inverted LOOP)
     if (startPosition === endPosition) {
       return "same";
     }
 
     // Check quartered CAPs (90° rotation)
-    if (QUARTERED_CAPS.has(positionKey)) {
+    if (QUARTERED_LOOPS.has(positionKey)) {
       return "quartered";
     }
 
     // Check halved CAPs (180° rotation)
-    if (HALVED_CAPS.has(positionKey)) {
+    if (HALVED_LOOPS.has(positionKey)) {
       return "halved";
     }
 
@@ -246,10 +246,10 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
   }
 
   /**
-   * Detect the actual CAP type of a COMPLETED sequence
+   * Detect the actual LOOP type of a COMPLETED sequence
    *
    * Analyzes ALL consecutive beat transformations to determine what type
-   * of completed CAP pattern the sequence represents.
+   * of completed LOOP pattern the sequence represents.
    */
   detectCompletedCapTypes(sequence: SequenceData): readonly StrictCapType[] {
     if (!sequence.beats || sequence.beats.length === 0) {
@@ -265,7 +265,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
       return [];
     }
 
-    // Check 1: Static CAP - all beats at the same position
+    // Check 1: Static LOOP - all beats at the same position
     const allSamePosition = validBeats.every(
       (beat) =>
         beat.startPosition === validBeats[0]!.startPosition &&
@@ -301,22 +301,22 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
       return [];
     }
 
-    // Check 2: Rotated CAP - all consecutive pairs show 90° rotation
+    // Check 2: Rotated LOOP - all consecutive pairs show 90° rotation
     const allQuartered = consecutivePairs.every((pair) => {
       const key = `${pair.from},${pair.to}`;
-      return QUARTERED_CAPS.has(key);
+      return QUARTERED_LOOPS.has(key);
     });
 
     if (allQuartered) {
       return ["rotated"] as const;
     }
 
-    // Check 3: Mirrored CAP - all consecutive pairs show mirroring
+    // Check 3: Mirrored LOOP - all consecutive pairs show mirroring
     const allMirrored = consecutivePairs.every((pair) => {
       const key = `${pair.from},${pair.to}`;
 
       // Check halved caps (180° mirroring)
-      if (HALVED_CAPS.has(key)) {
+      if (HALVED_LOOPS.has(key)) {
         return true;
       }
 
@@ -347,7 +347,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
   }
 
   /**
-   * Get possible CAP types based on circular type
+   * Get possible LOOP types based on circular type
    *
    * Mapping:
    * - 'same' → ['static']

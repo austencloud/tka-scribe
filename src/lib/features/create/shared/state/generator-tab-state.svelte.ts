@@ -2,7 +2,7 @@
  * Generator Tab State - Sub-tab State
  *
  * Manages state specific to the Generator sub-tab functionality.
- * Handles CAP (Circular Auto-Pattern) generation and generator-specific UI state.
+ * Handles LOOP (Circular Auto-Pattern) generation and generator-specific UI state.
  *
  * ✅ All generator-specific runes ($state, $derived, $effect) live here
  * ✅ Pure reactive wrappers - no business logic

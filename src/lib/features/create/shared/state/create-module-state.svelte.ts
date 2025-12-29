@@ -22,6 +22,7 @@ import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
 import type { AssemblerTabState } from "./assembler-tab-state.svelte";
 import type { GeneratorTabState } from "./generator-tab-state.svelte";
 import type { ConstructTabState } from "./construct-tab-state.svelte";
+import type { SpellTabState } from "$lib/features/create/spell/state/spell-tab-state.svelte";
 import type { UndoController } from "./create-module/undo-controller.svelte";
 import type {
   UndoOperationType,
@@ -70,6 +71,7 @@ export function createCreateModuleState(
   const constructorFallbackState = createTabFallbackState();
   const assemblerFallbackState = createTabFallbackState();
   const generatorFallbackState = createTabFallbackState();
+  const spellFallbackState = createTabFallbackState();
 
   // Create hand path coordinator
   const handPathCoordinator = createHandPathCoordinator();
@@ -83,6 +85,7 @@ export function createCreateModuleState(
   let _constructorTabState: ConstructTabState | null = null;
   let _assemblerTabState: AssemblerTabState | null = null;
   let _generatorTabState: GeneratorTabState | null = null;
+  let _spellTabState: SpellTabState | null = null;
 
   /**
    * Get the sequence state for a specific tab
@@ -104,6 +107,9 @@ export function createCreateModuleState(
       }
       case "generator": {
         return _generatorTabState?.sequenceState || generatorFallbackState;
+      }
+      case "spell": {
+        return _spellTabState?.sequenceState || spellFallbackState;
       }
       default:
         return sequenceState;
@@ -231,6 +237,9 @@ export function createCreateModuleState(
       case "generator": {
         return _generatorTabState?.undoController || null;
       }
+      case "spell": {
+        return _spellTabState?.undoController || null;
+      }
       default:
         return null;
     }
@@ -311,6 +320,22 @@ export function createCreateModuleState(
       const controller = getActiveTabUndoController();
       return controller?.undoHistory || [];
     },
+    get redoHistory() {
+      const controller = getActiveTabUndoController();
+      return controller?.redoHistory || [];
+    },
+    jumpToState: (entryId: string) => {
+      const controller = getActiveTabUndoController();
+      return controller?.jumpToState(entryId) || false;
+    },
+    getTimeline: () => {
+      const controller = getActiveTabUndoController();
+      return controller?.getTimeline() || [];
+    },
+    getOperationDescription: (type: UndoOperationType) => {
+      const controller = getActiveTabUndoController();
+      return controller?.getOperationDescription(type) || "Unknown";
+    },
 
     // Hand path
     handPathCoordinator,
@@ -357,6 +382,12 @@ export function createCreateModuleState(
     },
     set generatorTabState(value: GeneratorTabState | null) {
       _generatorTabState = value;
+    },
+    get spellTabState() {
+      return _spellTabState;
+    },
+    set spellTabState(value: SpellTabState | null) {
+      _spellTabState = value;
     },
   };
 

@@ -16,7 +16,7 @@ import {
   VERTICAL_MIRROR_POSITION_MAP,
   HORIZONTAL_MIRROR_POSITION_MAP,
   SWAPPED_POSITION_MAP,
-} from "../../../../generate/circular/domain/constants/strict-cap-position-maps";
+} from "../../../../generate/circular/domain/constants/strict-loop-position-maps";
 import {
   mirrorMotion,
   flipMotion,

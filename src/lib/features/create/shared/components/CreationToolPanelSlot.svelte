@@ -17,6 +17,7 @@
   import GeneratePanel from "../../generate/components/GeneratePanel.svelte";
   import ConstructTabContent from "./ConstructTabContent.svelte";
   import AssemblerTab from "../../assemble/components/AssemblerTab.svelte";
+  import SpellPanel from "../../spell/components/SpellPanel.svelte";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
 
   // Get context
@@ -311,6 +312,20 @@
               sequenceState={createModuleState.getActiveTabSequenceState()}
               isDesktop={showDesktopSidebar}
             />
+          {:else if activeToolPanel === "spell"}
+            <!-- Spell Mode - Word to sequence generator -->
+            {@const spellTabState = createModuleState.spellTabState}
+            {#if spellTabState}
+              <SpellPanel
+                spellState={spellTabState}
+                sequenceState={spellTabState.sequenceState}
+                isDesktop={showDesktopSidebar}
+              />
+            {:else}
+              <div class="coming-soon-panel">
+                <p>Spell tab loading...</p>
+              </div>
+            {/if}
           {:else if activeToolPanel === "gestural"}
             <!-- Hand Path Builder (coming soon) -->
             <div class="coming-soon-panel">

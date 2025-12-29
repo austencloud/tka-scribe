@@ -42,9 +42,16 @@ const OPERATION_DESCRIPTIONS: Record<UndoOperationType, string> = {
   UPDATE_BEAT: "Update Beat",
   INSERT_BEAT: "Insert Beat",
   BATCH_EDIT: "Batch Edit",
-  MIRROR_SEQUENCE: "Mirror Sequence",
-  ROTATE_SEQUENCE: "Rotate Sequence",
+  MIRROR_SEQUENCE: "Mirror",
+  FLIP_SEQUENCE: "Flip",
+  ROTATE_SEQUENCE: "Rotate",
   SWAP_COLORS: "Swap Colors",
+  INVERT_SEQUENCE: "Invert",
+  REWIND_SEQUENCE: "Rewind",
+  SHIFT_START: "Shift Start",
+  APPLY_TURN_PATTERN: "Apply Turn Pattern",
+  APPLY_ROTATION_PATTERN: "Apply Rotation Pattern",
+  EXTEND_SEQUENCE: "Extend",
   MODIFY_BEAT_PROPERTIES: "Modify Beat Properties",
   GENERATE_SEQUENCE: "Generate Sequence",
 };
@@ -385,5 +392,75 @@ export class UndoManager implements IUndoManager {
    */
   private generateActionId(): string {
     return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  }
+
+  /**
+   * Jump to a specific history entry by ID
+   * Moves all entries between current position and target to appropriate stack
+   */
+  jumpToState(targetId: string): UndoHistoryEntry | null {
+    // First, check if target is in undo history
+    const undoIndex = this._undoHistory.findIndex((e) => e.id === targetId);
+    if (undoIndex !== -1) {
+      // Target is in undo history - need to undo back to that point
+      // Move all entries from undoIndex+1 to end to redo stack
+      const entriesToMove = this._undoHistory.splice(undoIndex + 1);
+      // Reverse so most recent is at end of redo stack
+      this._redoHistory.push(...entriesToMove.reverse());
+
+      this.saveHistory().catch((error) => {
+        console.error("❌ UndoManager: Failed to save history after jump:", error);
+      });
+      this.notifyChange();
+
+      return this._undoHistory[undoIndex] ?? null;
+    }
+
+    // Check if target is in redo history
+    const redoIndex = this._redoHistory.findIndex((e) => e.id === targetId);
+    if (redoIndex !== -1) {
+      // Target is in redo history - need to redo up to that point
+      // Move all entries from redoIndex to end to undo stack
+      const entriesToMove = this._redoHistory.splice(redoIndex);
+      // Reverse so they go back in correct order
+      this._undoHistory.push(...entriesToMove.reverse());
+
+      this.saveHistory().catch((error) => {
+        console.error("❌ UndoManager: Failed to save history after jump:", error);
+      });
+      this.notifyChange();
+
+      return this._undoHistory[this._undoHistory.length - 1] ?? null;
+    }
+
+    return null; // Entry not found
+  }
+
+  /**
+   * Get combined timeline of undo and redo entries
+   * Shows undo stack (oldest to newest), then redo stack (newest to oldest)
+   */
+  getTimeline(): Array<UndoHistoryEntry & { isInRedoStack: boolean }> {
+    // Undo history is ordered oldest to newest - past actions
+    const undoEntries = this._undoHistory.map((entry) => ({
+      ...entry,
+      isInRedoStack: false,
+    }));
+
+    // Redo history is ordered oldest (first undone) to newest (most recently undone)
+    // We reverse it so the "future" appears in order from closest to farthest
+    const redoEntries = [...this._redoHistory].reverse().map((entry) => ({
+      ...entry,
+      isInRedoStack: true,
+    }));
+
+    return [...undoEntries, ...redoEntries];
+  }
+
+  /**
+   * Get description for an operation type
+   */
+  getOperationDescription(type: UndoOperationType): string {
+    return OPERATION_DESCRIPTIONS[type] || "Unknown Action";
   }
 }

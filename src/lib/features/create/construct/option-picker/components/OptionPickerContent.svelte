@@ -9,6 +9,7 @@ Uses organizer and sizer services for section grouping and sizing.
   import type { IOptionOrganizer } from "../services/contracts/IOptionOrganizer";
   import type { IOptionSizer } from "../services/contracts/IOptionSizer";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
+  // CSS animations used instead of Svelte transitions to avoid carousel dimension issues
   import OptionSection from "./OptionSection.svelte";
   import Option456Row from "./Option456Row.svelte";
   import OptionGrid from "./OptionGrid.svelte";
@@ -189,6 +190,7 @@ Uses organizer and sizer services for section grouping and sizing.
           const w = entry.contentRect.width;
           const h = entry.contentRect.height;
           if (w > 100 && h > 100) {
+            console.log(`[OptionPickerContent] ResizeObserver: ${w}x${h}, sizingStable=${sizingStable}`);
             containerWidth = w;
             containerHeight = h;
             sizingStable = true;
@@ -201,10 +203,12 @@ Uses organizer and sizer services for section grouping and sizing.
 
     // Initial measurement
     const rect = containerElement.getBoundingClientRect();
+    console.log(`[OptionPickerContent] Initial measurement: ${rect.width}x${rect.height}`);
     if (rect.width > 100 && rect.height > 100) {
       containerWidth = rect.width;
       containerHeight = rect.height;
       sizingStable = true;
+      console.log(`[OptionPickerContent] sizingStable=true, swipeLayout=${shouldUseSwipeLayout()}`);
     }
 
     return () => {
@@ -215,105 +219,111 @@ Uses organizer and sizer services for section grouping and sizing.
 </script>
 
 <div class="option-picker-content" bind:this={containerElement}>
-  <!-- Filter toggle chip - only show when we have rotation context -->
-  {#if shouldShowFilterToggle()}
-    <div class="filter-header" class:mobile={shouldUseSwipeLayout()}>
-      <button
-        class="filter-toggle"
-        class:mobile={shouldUseSwipeLayout()}
-        class:continuous={isContinuousOnly}
-        onclick={() => onToggleContinuous?.(!isContinuousOnly)}
-        aria-label={isContinuousOnly
-          ? "Showing continuous only - click for all"
-          : "Showing all - click for continuous only"}
-        aria-pressed={isContinuousOnly}
-      >
-        <i class="fas" aria-hidden="true"
-          class:fa-link={isContinuousOnly}
-          class:fa-th={!isContinuousOnly}
-        ></i>
-        <span class="filter-label"
-          >{isContinuousOnly ? "Continuous" : "All"}</span
-        >
-      </button>
-    </div>
-  {/if}
+  {#if sizingStable && options.length > 0}
+    <!-- Animate in after sizing is stable -->
+    <!-- Use CSS animation class based on layout to avoid scale affecting carousel dimensions -->
+    <div
+      class="animated-content"
+      class:swipe-entrance={shouldUseSwipeLayout()}
+      class:scale-entrance={!shouldUseSwipeLayout()}
+    >
+      <!-- Filter toggle chip - only show when we have rotation context -->
+      {#if shouldShowFilterToggle()}
+        <div class="filter-header" class:mobile={shouldUseSwipeLayout()}>
+          <button
+            class="filter-toggle"
+            class:mobile={shouldUseSwipeLayout()}
+            class:continuous={isContinuousOnly}
+            onclick={() => onToggleContinuous?.(!isContinuousOnly)}
+            aria-label={isContinuousOnly
+              ? "Showing continuous only - click for all"
+              : "Showing all - click for continuous only"}
+            aria-pressed={isContinuousOnly}
+          >
+            <i class="fas" aria-hidden="true"
+              class:fa-link={isContinuousOnly}
+              class:fa-th={!isContinuousOnly}
+            ></i>
+            <span class="filter-label"
+              >{isContinuousOnly ? "Continuous" : "All"}</span
+            >
+          </button>
+        </div>
+      {/if}
 
-  {#if options.length === 0}
-    <div class="empty-state">
-      <p>No options available</p>
-    </div>
-  {:else if shouldUseCompact4x4()}
-    <!-- ==================== COMPACT 4x4 LAYOUT ==================== -->
-    <!-- Narrow container + continuous mode: Compact 4x4 grid -->
-    <div class="compact-4x4-container">
-      <OptionViewerSection
-        pictographs={options}
-        onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
-        layoutConfig={mobileLayoutConfig()}
-        fitToViewport={true}
-        showHeader={false}
-        isFadingOut={isFading}
-        {currentSequence}
-      />
-    </div>
-  {:else if shouldUseSwipeLayout()}
-    <!-- ==================== SWIPE LAYOUT ==================== -->
-    <!-- Mobile stacked layout OR narrow container: Horizontal swipe between type sections -->
-    <div class="swipe-container">
-      <OptionViewerSwipeLayout
-        organizedPictographs={swipeSections()}
-        onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
-        layoutConfig={mobileLayoutConfig()}
-        isFadingOut={isFading}
-        {currentSequence}
-      />
-    </div>
-  {:else if shouldUseWideLayout && !isMobileStackedLayout()}
-    <!-- ==================== WIDE DESKTOP LAYOUT ==================== -->
-    <!-- Wide container (>= 750px): 8-column grouped vertical layout -->
-    <div class="sections-container">
-      <!-- Types 1-3: Individual vertical sections -->
-      {#each types123Sections() as section (section.title)}
-        <OptionSection
-          letterType={section.title}
-          options={section.pictographs}
-          cardSize={desktopSizing().cardSize}
-          columns={desktopSizing().columns}
-          gap={desktopSizing().gap}
-          showHeader={organizedSections().length > 1}
-          {isFading}
-          {onSelect}
-          {currentSequence}
-        />
-      {/each}
+      {#if shouldUseCompact4x4()}
+        <!-- ==================== COMPACT 4x4 LAYOUT ==================== -->
+        <div class="compact-4x4-container">
+          <OptionViewerSection
+            pictographs={options}
+            onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
+            layoutConfig={mobileLayoutConfig()}
+            fitToViewport={true}
+            showHeader={false}
+            isFadingOut={isFading}
+            {currentSequence}
+          />
+        </div>
+      {:else if shouldUseSwipeLayout()}
+        <!-- ==================== SWIPE LAYOUT ==================== -->
+        <div class="swipe-container">
+          <OptionViewerSwipeLayout
+            organizedPictographs={swipeSections()}
+            onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
+            layoutConfig={mobileLayoutConfig()}
+            isFadingOut={isFading}
+            {currentSequence}
+          />
+        </div>
+      {:else if shouldUseWideLayout && !isMobileStackedLayout()}
+        <!-- ==================== WIDE DESKTOP LAYOUT ==================== -->
+        <div class="sections-container">
+          <!-- Types 1-3: Individual vertical sections -->
+          {#each types123Sections() as section (section.title)}
+            <OptionSection
+              letterType={section.title}
+              options={section.pictographs}
+              cardSize={desktopSizing().cardSize}
+              columns={desktopSizing().columns}
+              gap={desktopSizing().gap}
+              showHeader={organizedSections().length > 1}
+              {isFading}
+              {onSelect}
+              {currentSequence}
+            />
+          {/each}
 
-      <!-- Types 4-6: Horizontal row -->
-      {#if types456Sections().length > 0}
-        <Option456Row
-          sections={types456Sections()}
-          cardSize={desktopSizing().cardSize}
-          columns={desktopSizing().columns}
-          gap={desktopSizing().gap}
-          {isFading}
-          {onSelect}
-          {currentSequence}
-        />
+          <!-- Types 4-6: Horizontal row -->
+          {#if types456Sections().length > 0}
+            <Option456Row
+              sections={types456Sections()}
+              cardSize={desktopSizing().cardSize}
+              columns={desktopSizing().columns}
+              gap={desktopSizing().gap}
+              {isFading}
+              {onSelect}
+              {currentSequence}
+            />
+          {/if}
+        </div>
+      {:else}
+        <!-- ==================== FALLBACK: SINGLE SECTION ==================== -->
+        <div class="swipe-container">
+          <OptionViewerSection
+            pictographs={options}
+            onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
+            layoutConfig={mobileLayoutConfig()}
+            fitToViewport={true}
+            showHeader={false}
+            isFadingOut={isFading}
+            {currentSequence}
+          />
+        </div>
       {/if}
     </div>
-  {:else}
-    <!-- ==================== FALLBACK: SINGLE SECTION ==================== -->
-    <!-- Narrow container with single type section -->
-    <div class="swipe-container">
-      <OptionViewerSection
-        pictographs={options}
-        onPictographSelected={(p) => onSelect(p as PreparedPictographData)}
-        layoutConfig={mobileLayoutConfig()}
-        fitToViewport={true}
-        showHeader={false}
-        isFadingOut={isFading}
-        {currentSequence}
-      />
+  {:else if options.length === 0 && sizingStable}
+    <div class="empty-state">
+      <p>No options available</p>
     </div>
   {/if}
 </div>
@@ -328,6 +338,58 @@ Uses organizer and sizer services for section grouping and sizing.
     flex-direction: column;
     align-items: center;
     container-type: size;
+  }
+
+  .animated-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Entrance animation for swipe layout - fade only (no scale to avoid carousel dimension issues) */
+  .animated-content.swipe-entrance {
+    animation: fade-in 200ms cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  /* Entrance animation for desktop layout - scale + fade */
+  .animated-content.scale-entrance {
+    animation: scale-in 280ms cubic-bezier(0.33, 1, 0.68, 1) both;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .animated-content.swipe-entrance,
+    .animated-content.scale-entrance {
+      animation: none;
+    }
+  }
+
+  /* Disable prop/arrow transitions during initial entrance animation */
+  .animated-content :global(.prop-svg),
+  .animated-content :global(.arrow-svg) {
+    transition: none !important;
   }
 
   /* Filter header - inline, minimal */

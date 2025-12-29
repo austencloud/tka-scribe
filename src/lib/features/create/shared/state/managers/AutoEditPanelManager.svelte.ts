@@ -101,13 +101,10 @@ export function createAutoBeatEditorEffect(
       const selectedBeatNumber =
         CreateModuleState.sequenceState.selectedBeatNumber;
 
-
-
       // Only act when selection CHANGES (prevents fight with manual close)
       if (selectedBeatNumber !== lastSelectedBeat) {
         if (selectedBeatNumber !== null) {
           // New beat selected → auto-open Beat Editor panel
-
           panelState.openBeatEditorPanel();
           getLogger().log(
             `Auto-opening Beat Editor panel for beat ${selectedBeatNumber}`
