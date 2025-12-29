@@ -15,7 +15,7 @@ import { inject, injectable } from "inversify";
 import type { IDiscoverLoader } from "../contracts/IDiscoverLoader";
 import type { IDiscoverMetadataExtractor } from "../contracts/IDiscoverMetadataExtractor";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { CAPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import type { LOOPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
 import {
   GridLocation,
@@ -39,7 +39,7 @@ interface RawSequenceData {
   thumbnails?: unknown;
   isFavorite?: unknown;
   isCircular?: unknown;
-  capType?: string; // CAP type for circular sequences
+  loopType?: string; // LOOP type for circular sequences
   tags?: unknown;
   metadata?: unknown;
   author?: string;
@@ -216,7 +216,7 @@ export class DiscoverLoader implements IDiscoverLoader {
         thumbnails: this.parseThumbnails(rawSeq.thumbnails),
         isFavorite: Boolean(rawSeq.isFavorite),
         isCircular: Boolean(rawSeq.isCircular),
-        capType: (rawSeq.capType as CAPType) ?? null, // CAP type for circular sequences
+        loopType: (rawSeq.loopType as LOOPType) ?? null, // LOOP type for circular sequences
         tags: this.parseTags(rawSeq.tags),
         metadata: this.parseMetadata(rawSeq.metadata),
         author: String(rawSeq.author ?? "Unknown"),
@@ -617,7 +617,7 @@ export class DiscoverLoader implements IDiscoverLoader {
       thumbnails: this.parseThumbnails(rawSeq.thumbnails),
       isFavorite: Boolean(rawSeq.isFavorite),
       isCircular: Boolean(rawSeq.isCircular),
-      capType: (rawSeq.capType as CAPType) ?? null, // CAP type for circular sequences
+      loopType: (rawSeq.loopType as LOOPType) ?? null, // LOOP type for circular sequences
       tags: this.parseTags(rawSeq.tags),
       metadata: this.parseMetadata(rawSeq.metadata),
       author: String(rawSeq.author ?? "Unknown"),
@@ -657,7 +657,7 @@ export class DiscoverLoader implements IDiscoverLoader {
       thumbnails: this.parseThumbnails(rawSeq.thumbnails),
       isFavorite: Boolean(rawSeq.isFavorite),
       isCircular: Boolean(rawSeq.isCircular),
-      capType: (rawSeq.capType as CAPType) ?? null, // CAP type for circular sequences
+      loopType: (rawSeq.loopType as LOOPType) ?? null, // LOOP type for circular sequences
       tags: this.parseTags(rawSeq.tags),
       metadata: this.parseMetadata(rawSeq.metadata),
       author: String(rawSeq.author ?? "Unknown"),

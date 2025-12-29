@@ -20,13 +20,13 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   // Local filter cards
-  import CAPTypeFilterCard from "./CAPTypeFilterCard.svelte";
+  import LOOPTypeFilterCard from "./LOOPTypeFilterCard.svelte";
 
   let {
     currentFilter = { type: "all", value: null },
     startPosition = null,
     endPosition = null,
-    capTypeCounts = {},
+    loopTypeCounts = {},
     onFilterChange = () => {},
     onOpenLetterSheet = () => {},
     onOpenOptionsSheet = () => {},
@@ -34,7 +34,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     currentFilter?: { type: string; value: ExploreFilterValue };
     startPosition?: PictographData | null;
     endPosition?: PictographData | null;
-    capTypeCounts?: Record<string, number>;
+    loopTypeCounts?: Record<string, number>;
     onFilterChange?: (type: string, value?: ExploreFilterValue) => void;
     onOpenLetterSheet?: () => void;
     onOpenOptionsSheet?: () => void;
@@ -147,10 +147,10 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
       cardIndex={4}
     />
 
-    <CAPTypeFilterCard
+    <LOOPTypeFilterCard
       currentValue={currentCapType}
       onValueChange={handleCapTypeChange}
-      {capTypeCounts}
+      {loopTypeCounts}
       gridColumnSpan={2}
       cardIndex={5}
     />

@@ -26,7 +26,7 @@
     currentFilter: CurrentFilter;
     currentSortMethod: ExploreSortMethod;
     availableSections: string[];
-    capTypeCounts?: Record<string, number>;
+    loopTypeCounts?: Record<string, number>;
     isNavVisible?: boolean;
     onFilterChange: (type: string, value?: ExploreFilterValue) => void;
     onSortMethodChange: (method: ExploreSortMethod) => void;
@@ -41,7 +41,7 @@
     currentFilter,
     currentSortMethod,
     availableSections,
-    capTypeCounts = {},
+    loopTypeCounts = {},
     isNavVisible = true,
     onFilterChange,
     onSortMethodChange,
@@ -222,7 +222,7 @@
         {currentFilter}
         {startPosition}
         {endPosition}
-        {capTypeCounts}
+        {loopTypeCounts}
         onFilterChange={handleBentoFilterChange}
         onOpenLetterSheet={handleOpenLetterSheet}
         onOpenOptionsSheet={handleOpenOptionsSheet}

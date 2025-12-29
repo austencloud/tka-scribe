@@ -228,7 +228,7 @@ Allows natural language queries to find sequences, users, and collections.
       </div>
     {:else if isSearching}
       <!-- Loading state -->
-      <div class="loading-state">
+      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
         <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
         <p>Searching...</p>
       </div>

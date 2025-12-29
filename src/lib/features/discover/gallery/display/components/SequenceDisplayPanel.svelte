@@ -82,7 +82,7 @@
       <!-- Show skeletons on initial load for instant feedback -->
       <DiscoverThumbnailSkeleton viewMode="grid" count={12} />
     {:else if error}
-      <div class="error-state">
+      <div class="error-state" role="alert" aria-live="assertive">
         <p class="error-message">{error}</p>
         <button onclick={handleRetry}> Try Again </button>
       </div>

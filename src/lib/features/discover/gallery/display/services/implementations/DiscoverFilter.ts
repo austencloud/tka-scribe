@@ -12,8 +12,8 @@ import { injectable } from "inversify";
 import type { ExploreFilterValue } from "$lib/shared/persistence/domain/types/FilteringTypes";
 import type { IDiscoverFilter } from "../contracts/IDiscoverFilter";
 import {
-  CAPType,
-  CAP_TYPE_LABELS,
+  LOOPType,
+  LOOP_TYPE_LABELS,
 } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
 // Constants
@@ -57,7 +57,7 @@ export class DiscoverFilter implements IDiscoverFilter {
       case ExploreFilterType.RECENT:
         return this.filterByRecent(sequences);
       case ExploreFilterType.CAP_TYPE:
-        return this.filterByCAPType(sequences, filterValue);
+        return this.filterByLOOPType(sequences, filterValue);
       default:
         return sequences;
     }
@@ -79,7 +79,7 @@ export class DiscoverFilter implements IDiscoverFilter {
       case ExploreFilterType.GRID_MODE:
         return GRID_MODE_OPTIONS;
       case ExploreFilterType.CAP_TYPE:
-        return this.getCAPTypeOptions(sequences);
+        return this.getLOOPTypeOptions(sequences);
       default:
         return [];
     }
@@ -376,14 +376,14 @@ export class DiscoverFilter implements IDiscoverFilter {
   }
 
   /**
-   * Filter sequences by CAP type (Continuous Assembly Pattern)
+   * Filter sequences by LOOP type (Continuous Assembly Pattern)
    * Supports special values:
-   * - "circular" - all circular sequences regardless of CAP type
+   * - "circular" - all circular sequences regardless of LOOP type
    * - "non_circular" - all non-circular sequences
-   * - "circular_untyped" - circular sequences without a detected CAP type
-   * - specific CAPType enum values
+   * - "circular_untyped" - circular sequences without a detected LOOP type
+   * - specific LOOPType enum values
    */
-  private filterByCAPType(
+  private filterByLOOPType(
     sequences: SequenceData[],
     filterValue: ExploreFilterValue
   ): SequenceData[] {
@@ -403,18 +403,18 @@ export class DiscoverFilter implements IDiscoverFilter {
       return sequences.filter((seq) => !seq.isCircular);
     }
 
-    // Special case: circular but no specific CAP type detected
+    // Special case: circular but no specific LOOP type detected
     if (filterStr === "circular_untyped") {
-      return sequences.filter((seq) => seq.isCircular && !seq.capType);
+      return sequences.filter((seq) => seq.isCircular && !seq.loopType);
     }
 
-    // Filter by specific CAP type
+    // Filter by specific LOOP type
     return sequences.filter((seq) => {
       // Must be circular
       if (!seq.isCircular) return false;
 
-      // Check capType field
-      return seq.capType === filterStr;
+      // Check loopType field
+      return seq.loopType === filterStr;
     });
   }
 
@@ -435,10 +435,10 @@ export class DiscoverFilter implements IDiscoverFilter {
   }
 
   /**
-   * Get available CAP type options with counts
+   * Get available LOOP type options with counts
    * Returns array of strings in format: "cap_type_value" or "circular" for all circular
    */
-  private getCAPTypeOptions(sequences: SequenceData[]): string[] {
+  private getLOOPTypeOptions(sequences: SequenceData[]): string[] {
     const options: string[] = [];
 
     // Count circular sequences
@@ -447,19 +447,19 @@ export class DiscoverFilter implements IDiscoverFilter {
       options.push("circular"); // "All Circular" option
     }
 
-    // Count by CAP type
-    const capTypeCounts = new Map<string, number>();
+    // Count by LOOP type
+    const loopTypeCounts = new Map<string, number>();
     for (const seq of sequences) {
-      if (seq.capType) {
-        const current = capTypeCounts.get(seq.capType) ?? 0;
-        capTypeCounts.set(seq.capType, current + 1);
+      if (seq.loopType) {
+        const current = loopTypeCounts.get(seq.loopType) ?? 0;
+        loopTypeCounts.set(seq.loopType, current + 1);
       }
     }
 
-    // Add CAP types that have sequences (sorted by label)
-    const sortedTypes = Array.from(capTypeCounts.keys()).sort((a, b) => {
-      const labelA = CAP_TYPE_LABELS[a as CAPType] ?? a;
-      const labelB = CAP_TYPE_LABELS[b as CAPType] ?? b;
+    // Add LOOP types that have sequences (sorted by label)
+    const sortedTypes = Array.from(loopTypeCounts.keys()).sort((a, b) => {
+      const labelA = LOOP_TYPE_LABELS[a as LOOPType] ?? a;
+      const labelB = LOOP_TYPE_LABELS[b as LOOPType] ?? b;
       return labelA.localeCompare(labelB);
     });
 
@@ -469,14 +469,14 @@ export class DiscoverFilter implements IDiscoverFilter {
   }
 
   /**
-   * Get count of sequences matching a CAP type
+   * Get count of sequences matching a LOOP type
    * Useful for displaying counts in filter UI
    */
-  getCAPTypeCount(sequences: SequenceData[], capType: string): number {
-    if (capType === "circular" || capType === "all_circular") {
+  getLOOPTypeCount(sequences: SequenceData[], loopType: string): number {
+    if (loopType === "circular" || loopType === "all_circular") {
       return sequences.filter((s) => s.isCircular).length;
     }
-    return sequences.filter((s) => s.capType === capType).length;
+    return sequences.filter((s) => s.loopType === loopType).length;
   }
 
   /**

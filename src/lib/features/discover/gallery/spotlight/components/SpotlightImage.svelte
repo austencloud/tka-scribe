@@ -78,15 +78,15 @@
 <div class="image-viewer">
   <div class="image-container">
     {#if spotlightState.imageError}
-      <div class="error-state">
+      <div class="error-state" role="alert" aria-live="assertive">
         <div class="error-icon">⚠️</div>
         <p>Failed to load image</p>
         <button class="retry-button" onclick={retryImageLoad}>Retry</button>
       </div>
     {:else}
       {#if spotlightState.isImageLoading && !isTransitioning}
-        <div class="loading-spinner">
-          <div class="spinner"></div>
+        <div class="loading-spinner" role="status" aria-live="polite" aria-busy="true">
+          <div class="spinner" aria-hidden="true"></div>
           <p>Loading image...</p>
         </div>
       {/if}
