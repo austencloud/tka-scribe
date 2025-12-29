@@ -12,6 +12,8 @@
   import { getTimelineState } from "../state/timeline-state.svelte";
   import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import SnapControls from "./SnapControls.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { animationSettings, TrailEffect } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   interface Props {
     onOpenMediaBrowser?: () => void;
@@ -38,6 +40,10 @@
   let isPlaying = $state(false);
   let playheadDirection = $state<1 | -1>(1);
   let shuttleSpeed = $state(1);
+
+  // LED Mode state
+  let ledModeEnabled = $state(false);
+  const visibilityManager = getAnimationVisibilityManager();
 
   // Format current time as MM:SS.ms
   function formatTime(seconds: number): string {
@@ -76,6 +82,36 @@
     const state = getState();
     zoomPercent = Math.round((state.viewport.pixelsPerSecond / 50) * 100);
   });
+
+  // Sync LED mode from visibility manager
+  $effect(() => {
+    ledModeEnabled = visibilityManager.isLedMode();
+    // Re-check on changes
+    const handler = () => {
+      ledModeEnabled = visibilityManager.isLedMode();
+    };
+    visibilityManager.registerObserver(handler);
+    return () => visibilityManager.unregisterObserver(handler);
+  });
+
+  /**
+   * Toggle LED Mode
+   * When enabled: dark background, glowing props, neon trails
+   */
+  function toggleLedMode() {
+    const newState = !ledModeEnabled;
+    console.log("[TimelineControls] toggleLedMode:", newState);
+    visibilityManager.setLedMode(newState);
+    ledModeEnabled = newState;
+
+    // When enabling LED mode, also enable neon trail effect
+    if (newState) {
+      animationSettings.setTrailEffect(TrailEffect.NEON);
+    } else {
+      // When disabling, revert to simple glow
+      animationSettings.setTrailEffect(TrailEffect.GLOW);
+    }
+  }
 </script>
 
 <div class="timeline-controls">
@@ -141,6 +177,18 @@
       <i class="fa-solid fa-expand" aria-hidden="true"></i>
     </button>
   </div>
+
+  <!-- LED Mode Toggle -->
+  <button
+    class="control-btn led-mode-btn"
+    class:active={ledModeEnabled}
+    onclick={toggleLedMode}
+    title={ledModeEnabled ? "Disable LED Mode" : "Enable LED Mode"}
+    aria-label={ledModeEnabled ? "Disable LED Mode" : "Enable LED Mode"}
+    aria-pressed={ledModeEnabled}
+  >
+    <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+  </button>
 
   <!-- Project Settings -->
   <button
@@ -304,5 +352,25 @@
 
   .add-media-btn i {
     font-size: var(--font-size-compact);
+  }
+
+  /* LED Mode button - electric cyan glow when active */
+  .led-mode-btn.active {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: #00ffff;
+    color: #00ffff;
+    box-shadow:
+      0 0 12px rgba(0, 255, 255, 0.4),
+      0 0 20px rgba(0, 255, 255, 0.2),
+      inset 0 0 8px rgba(0, 255, 255, 0.1);
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+  }
+
+  .led-mode-btn.active:hover {
+    background: rgba(0, 255, 255, 0.25);
+    box-shadow:
+      0 0 16px rgba(0, 255, 255, 0.5),
+      0 0 28px rgba(0, 255, 255, 0.3),
+      inset 0 0 10px rgba(0, 255, 255, 0.15);
   }
 </style>

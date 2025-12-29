@@ -10,12 +10,16 @@
  * Single Responsibility: Canvas setup and lifecycle
  */
 
+// LED Mode background color (near-black for light stick effect)
+const LED_MODE_BACKGROUND = "#0a0a0f";
+
 export class Canvas2DApplicationManager {
   private canvas: HTMLCanvasElement | null = null;
   private ctx: CanvasRenderingContext2D | null = null;
   private currentSize: number = 500;
   private backgroundAlpha: number = 1;
   private isInitialized: boolean = false;
+  private ledModeEnabled: boolean = false;
 
   async initialize(
     container: HTMLElement,
@@ -79,13 +83,42 @@ export class Canvas2DApplicationManager {
     // Clear entire canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Fill with white if opaque background
-    if (this.backgroundAlpha > 0) {
-      this.ctx.globalAlpha = this.backgroundAlpha;
-      this.ctx.fillStyle = "#ffffff";
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    // LED Mode: dark background for glowing light stick effect
+    if (this.ledModeEnabled) {
+      // DEBUG: Log once per LED mode session
+      if (!this._ledModeLoggedOnce) {
+        console.log("[Canvas2DApplicationManager] clear() using LED mode background");
+        this._ledModeLoggedOnce = true;
+      }
       this.ctx.globalAlpha = 1;
+      this.ctx.fillStyle = LED_MODE_BACKGROUND;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    } else {
+      this._ledModeLoggedOnce = false;
+      if (this.backgroundAlpha > 0) {
+        // Normal mode: white background
+        this.ctx.globalAlpha = this.backgroundAlpha;
+        this.ctx.fillStyle = "#ffffff";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.globalAlpha = 1;
+      }
     }
+  }
+  private _ledModeLoggedOnce = false;
+
+  /**
+   * Set LED mode (dark background for glowing props)
+   */
+  setLedMode(enabled: boolean): void {
+    console.log("[Canvas2DApplicationManager] setLedMode called:", enabled);
+    this.ledModeEnabled = enabled;
+  }
+
+  /**
+   * Check if LED mode is enabled
+   */
+  isLedModeEnabled(): boolean {
+    return this.ledModeEnabled;
   }
 
   getContext(): CanvasRenderingContext2D | null {

@@ -92,6 +92,13 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
     await this.imageLoader.loadGridImage(gridMode, canvasSize);
   }
 
+  /**
+   * Set LED mode for dark background with glowing props
+   */
+  setLedMode(enabled: boolean): void {
+    this.appManager.setLedMode(enabled);
+  }
+
   async loadGlyphTexture(
     svgString: string,
     width: number,
@@ -123,7 +130,15 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
     // 2. Draw grid (if visible)
     const gridImage = this.imageLoader.getGridImage();
     if (params.visibility.gridVisible && gridImage) {
+      // In LED mode, invert the grid colors so black points become off-white
+      const isLedMode = this.appManager.isLedModeEnabled();
+      if (isLedMode) {
+        ctx.filter = "invert(0.85)"; // Invert to off-white (not pure white)
+      }
       ctx.drawImage(gridImage, 0, 0, canvasSize, canvasSize);
+      if (isLedMode) {
+        ctx.filter = "none";
+      }
     }
 
     // 3. Draw trails (if visible)
@@ -141,6 +156,10 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
 
     // 4. Draw props (if visible and not hidden by trail settings)
     if (params.visibility.propsVisible && !params.trailSettings.hideProps) {
+      // Get prop colors for glow effect (used when LED mode is active)
+      const blueColor = params.trailSettings.blueColor;
+      const redColor = params.trailSettings.redColor;
+
       // Primary blue prop
       if (params.blueProp && params.visibility.blueMotionVisible) {
         this.renderProp(
@@ -148,7 +167,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.blueProp,
           this.imageLoader.getBluePropImage(),
           params.bluePropDimensions,
-          canvasSize
+          canvasSize,
+          blueColor
         );
       }
 
@@ -159,7 +179,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.redProp,
           this.imageLoader.getRedPropImage(),
           params.redPropDimensions,
-          canvasSize
+          canvasSize,
+          redColor
         );
       }
 
@@ -170,7 +191,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.secondaryBlueProp,
           this.imageLoader.getSecondaryBluePropImage(),
           params.bluePropDimensions,
-          canvasSize
+          canvasSize,
+          blueColor
         );
       }
 
@@ -181,7 +203,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.secondaryRedProp,
           this.imageLoader.getSecondaryRedPropImage(),
           params.redPropDimensions,
-          canvasSize
+          canvasSize,
+          redColor
         );
       }
     }
@@ -192,13 +215,15 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
 
   /**
    * Render a prop at its calculated position with rotation
+   * Supports glow effect via CSS filter when LED mode is enabled
    */
   private renderProp(
     ctx: CanvasRenderingContext2D,
     propState: { centerPathAngle: number; staffRotationAngle: number; x?: number; y?: number },
     image: HTMLImageElement | null,
     dimensions: { width: number; height: number },
-    canvasSize: number
+    canvasSize: number,
+    glowColor?: string
   ): void {
     if (!image) return;
 
@@ -207,6 +232,14 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
     ctx.save();
     ctx.translate(transform.x, transform.y);
     ctx.rotate(transform.rotation);
+
+    // Apply glow effect when LED mode is active (not based on trail effect)
+    if (this.appManager.isLedModeEnabled() && glowColor) {
+      // Multi-layer glow for LED staff effect
+      // Layer 1: Outer diffuse glow
+      ctx.filter = `drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor})`;
+    }
+
     ctx.drawImage(
       image,
       -transform.width / 2,
@@ -214,6 +247,9 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
       transform.width,
       transform.height
     );
+
+    // Reset filter
+    ctx.filter = "none";
     ctx.restore();
   }
 

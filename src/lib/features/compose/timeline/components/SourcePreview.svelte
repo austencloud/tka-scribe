@@ -15,6 +15,7 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { ISequenceAnimationOrchestrator } from "../../services/contracts/ISequenceAnimationOrchestrator";
   import type { PropState } from "../../shared/domain/types/PropState";
@@ -272,6 +273,7 @@
           beatData={currentBeatData}
           currentBeat={Math.floor(currentBeat)}
           sequenceData={sequence}
+          trailSettings={animationSettings.trail}
         />
       </div>
 

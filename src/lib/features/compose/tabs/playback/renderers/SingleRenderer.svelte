@@ -60,13 +60,9 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
 
-  // Trail settings - use $state and sync with $effect
-  let trailSettings = $state(animationSettings.settings.trail);
-
-  // Sync trail settings whenever animationSettings changes
-  $effect(() => {
-    trailSettings = animationSettings.settings.trail;
-  });
+  // Trail settings - derive directly from animationSettings for proper reactivity
+  // This ensures changes to trail effect (e.g., LED mode enabling NEON) are picked up
+  let trailSettings = $derived(animationSettings.trail);
 
   // Initialize services
   onMount(() => {
@@ -194,10 +190,22 @@
       animationState.sequenceData.beats &&
       animationState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
-      const clampedIndex = Math.max(
-        0,
-        Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
+      // Beat indexing: beats[0] = beat 1, beats[1] = beat 2, etc.
+      // currentBeat semantics: beat N's motion spans from N.0 to (N+1).0
+      //
+      // In step playback:
+      // - Motion for beat 2 goes from currentBeat 2.0 to 3.0
+      // - After motion completes, pause at currentBeat 3.0
+      // - During this pause, glyph should show beat 2 (the completed beat)
+      //
+      // Formula: ceil(currentBeat - 1) gives the beat number whose motion is/was playing
+      // - At 2.0 to 2.999: ceil(1.0 to 1.999) = 1 or 2, shows beat 1 or 2
+      // - At 3.0 (pause after beat 2): ceil(2.0) = 2, shows beat 2
+      const beatNumber = Math.ceil(currentBeat - 1);
+      const beatIndex = Math.max(0, beatNumber - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationState.sequenceData.beats.length - 1
       );
       return animationState.sequenceData.beats[clampedIndex] || null;
     }

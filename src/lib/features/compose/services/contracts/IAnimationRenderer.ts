@@ -130,4 +130,10 @@ export interface IAnimationRenderer {
    * Get the canvas element
    */
   getCanvas(): HTMLCanvasElement | null;
+
+  /**
+   * Set LED mode for dark background with glowing props
+   * @param enabled - Whether LED mode is enabled
+   */
+  setLedMode(enabled: boolean): void;
 }

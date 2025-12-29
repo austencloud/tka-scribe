@@ -17,6 +17,7 @@
     animationSettings,
     TrailMode,
     TrackingMode,
+    TrailEffect,
   } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import { isBilateralProp } from "$lib/shared/pictograph/prop/domain/enums/PropClassification";
   import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
@@ -100,6 +101,11 @@
     return visibilityManager.getVisibility("turnNumbers");
   }
 
+  function getLedMode() {
+    updateCounter;
+    return visibilityManager.isLedMode();
+  }
+
   // Toggle handlers
   function toggleGrid() {
     const currentMode = visibilityManager.getGridMode();
@@ -141,6 +147,25 @@
   function toggleTurnNumbers() {
     const current = visibilityManager.getVisibility("turnNumbers");
     visibilityManager.setVisibility("turnNumbers", !current);
+    updateCounter++;
+  }
+
+  function toggleLedMode() {
+    const current = visibilityManager.isLedMode();
+    visibilityManager.setLedMode(!current);
+
+    // When enabling LED mode, auto-enable neon trail effect
+    if (!current) {
+      animationSettings.setTrailEffect(TrailEffect.NEON);
+      // Also set trails to vivid if currently off
+      if (currentTrailStyle === "off") {
+        setTrailStyle("vivid");
+      }
+    } else {
+      // When disabling, go back to standard glow
+      animationSettings.setTrailEffect(TrailEffect.GLOW);
+    }
+
     updateCounter++;
   }
 
@@ -272,8 +297,16 @@
           >
             Turns
           </button>
-          <!-- Empty cell placeholder for 6th slot -->
-          <div class="empty-cell"></div>
+          <button
+            class="chip-btn led-btn"
+            class:active={getLedMode()}
+            onclick={toggleLedMode}
+            type="button"
+            title="LED Mode: Dark background with glowing props and neon trails"
+          >
+            <i class="fas fa-lightbulb" aria-hidden="true"></i>
+            LED
+          </button>
         </div>
       </section>
 
@@ -515,6 +548,18 @@
     background: rgba(236, 72, 153, 0.2);
     border-color: rgba(236, 72, 153, 0.5);
     color: rgba(249, 168, 212, 1);
+  }
+
+  /* LED Mode - electric cyan/neon accent */
+  .chip-btn.led-btn {
+    gap: 6px;
+  }
+
+  .chip-btn.led-btn.active {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: rgba(0, 255, 255, 0.6);
+    color: rgba(0, 255, 255, 1);
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
   }
 
   /* Trail Off - gray accent */

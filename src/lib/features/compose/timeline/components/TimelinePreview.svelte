@@ -14,6 +14,7 @@
   import AnimatorCanvas from "$lib/shared/animation-engine/components/AnimatorCanvas.svelte";
   import { resolve, loadPixiModule, loadFeatureModule } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import { getTimelinePlayer } from "../services/implementations/TimelinePlaybackService";
   import type { TimelineClip } from "../domain/timeline-types";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -298,6 +299,7 @@
           beatData={currentBeatData}
           currentBeat={Math.floor(clipBeatPosition)}
           sequenceData={currentSequence}
+          trailSettings={animationSettings.trail}
         />
       </div>
 

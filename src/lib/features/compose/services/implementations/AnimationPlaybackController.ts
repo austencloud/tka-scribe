@@ -158,8 +158,9 @@ export class AnimationPlaybackController
       this.stopStepPlayback();
     }
 
-    // Clamp target beat to valid range
-    const clampedBeat = Math.max(0, Math.min(beat, this.state.totalBeats));
+    // Clamp target beat to valid animation range
+    // Allow totalBeats + 1 to show the final beat's motion (which spans from totalBeats to totalBeats + 1)
+    const clampedBeat = Math.max(0, Math.min(beat, this.state.totalBeats + 1));
 
     // If already animating to this target, don't restart
     if (this.animationTarget === clampedBeat) {
@@ -251,7 +252,9 @@ export class AnimationPlaybackController
     // Add small epsilon to handle exact positions (e.g., at 2.0, go to 2.5 not stay at 2.0)
     const nextHalfBeat = Math.ceil((currentBeat + 0.001) * 2) / 2;
 
-    if (nextHalfBeat <= this.state.totalBeats) {
+    // Allow stepping to totalBeats + 1 to show final beat's motion
+    const animationEndBeat = this.state.totalBeats + 1;
+    if (nextHalfBeat <= animationEndBeat) {
       this.animateToBeat(nextHalfBeat, this.getStepDuration(0.5), true);
     }
   }
@@ -280,7 +283,9 @@ export class AnimationPlaybackController
     // Find next full-beat position (0, 1, 2, 3, etc.)
     const nextFullBeat = Math.ceil(currentBeat + 0.001);
 
-    if (nextFullBeat <= this.state.totalBeats) {
+    // Allow stepping to totalBeats + 1 to show final beat's motion
+    const animationEndBeat = this.state.totalBeats + 1;
+    if (nextFullBeat <= animationEndBeat) {
       this.animateToBeat(nextFullBeat, this.getStepDuration(1.0), true);
     }
   }
@@ -366,8 +371,10 @@ export class AnimationPlaybackController
         ? Math.ceil((currentBeat + 0.001) * 2) / 2
         : Math.ceil(currentBeat + 0.001);
 
-    // End reached
-    if (nextBeat > this.state.totalBeats) {
+    // End reached - use totalBeats + 1 to allow final beat's motion to complete
+    // (Beat N's motion spans from currentBeat N to N+1)
+    const animationEndBeat = this.state.totalBeats + 1;
+    if (nextBeat > animationEndBeat) {
       if (this.state.shouldLoop) {
         // Loop back to start without leaving "playing" state
         this.state.setCurrentBeat(0);
@@ -385,22 +392,38 @@ export class AnimationPlaybackController
           const duration = this.getStepDuration(stepSize);
           this.animateToBeatInternal(stepSize, duration, true, false);
         }
+
+        // Schedule next tick to continue looping
+        // Use pause at start position (unless seamlessly loopable, where we animate immediately)
+        const duration = this.isSeamlesslyLoopable
+          ? this.getStepDuration(stepSize)
+          : 0;
+        const pauseMs = this.state.stepPlaybackPauseMs;
+        const nextDelay = duration + pauseMs;
+
+        this.stepPlaybackTimer = setTimeout(() => {
+          this.runStepPlaybackTick(runId);
+        }, nextDelay);
       } else {
-        this.state.setCurrentBeat(this.state.totalBeats);
+        // Stay at the end position (after final beat's motion completed)
+        // Don't reset currentBeat - let it stay where the animation left it
         this.state.setIsPlaying(false);
         return;
       }
     } else {
       const duration = this.getStepDuration(stepSize);
       this.animateToBeatInternal(nextBeat, duration, true, false);
+
+      // If we just stepped to the animation end beat, loop immediately after animation
+      // (no pause at the "past the end" position since it's not a real beat)
+      const isAtAnimationEnd = nextBeat >= animationEndBeat;
+      const pauseMs = isAtAnimationEnd ? 0 : this.state.stepPlaybackPauseMs;
+      const nextDelay = duration + pauseMs;
+
+      this.stepPlaybackTimer = setTimeout(() => {
+        this.runStepPlaybackTick(runId);
+      }, nextDelay);
     }
-
-    const pauseMs = this.state.stepPlaybackPauseMs;
-    const nextDelay = this.getStepDuration(stepSize) + pauseMs;
-
-    this.stepPlaybackTimer = setTimeout(() => {
-      this.runStepPlaybackTick(runId);
-    }, nextDelay);
   }
 
   private onAnimationUpdate(deltaTime: number): void {
