@@ -1,54 +1,55 @@
 /**
- * Strict Inverted CAP Executor
+ * Strict Mirrored LOOP Executor
  *
- * Executes the strict inverted CAP (Continuous Assembly Pattern) by:
+ * Executes the strict mirrored LOOP (Continuous Assembly Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
- * 2. Using inverted letters (opposite motion types)
+ * 2. Applying vertical mirroring transformations to each beat
  * 3. Generating the remaining beats to complete the circular pattern
  *
- * The inverted transformation works by:
- * - Using inverted letters (A↔B, D↔E, G↔H, etc.)
- * - Flipping motion types (PRO ↔ ANTI)
- * - Flipping prop rotation directions (CLOCKWISE ↔ COUNTER_CLOCKWISE)
- * - Keeping positions the same (sequence returns to start position)
- * - Maintaining the same hand locations
+ * The mirroring works by:
+ * - Flipping positions vertically across the center horizontal axis
+ * - Mirroring hand locations (east ↔ west, northeast ↔ northwest, etc.)
+ * - Flipping prop rotation directions (clockwise ↔ counter-clockwise)
+ * - Maintaining the same letters and motion types
  *
  * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
- * IMPORTANT: End position must equal start position for inverted CAPs
  */
 
-import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
 import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import {
-  MotionType,
-  MotionColor,
   RotationDirection,
+  MotionColor,
 } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { TYPES } from "$lib/shared/inversify/types";
+import type {
+  GridPosition,
+  GridLocation,
+} from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import {
-  INVERTED_CAP_VALIDATION_SET,
-  getInvertedLetter,
-} from "../../domain/constants/strict-cap-position-maps";
+  VERTICAL_MIRROR_POSITION_MAP,
+  VERTICAL_MIRROR_LOCATION_MAP,
+  MIRRORED_LOOP_VALIDATION_SET,
+} from "../../domain/constants/strict-loop-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
+import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
-export class StrictInvertedCAPExecutor {
+export class StrictMirroredLOOPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
     private OrientationCalculator: IOrientationCalculator
   ) {}
 
   /**
-   * Execute the strict inverted CAP
+   * Execute the strict mirrored LOOP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
-   * @param sliceSize - Ignored (inverted CAP always uses halved)
+   * @param sliceSize - Ignored (mirrored LOOP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
+  executeLOOP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 
@@ -58,7 +59,7 @@ export class StrictInvertedCAPExecutor {
       throw new Error("Sequence must have a start position");
     }
 
-    // Calculate how many beats to generate (always doubles for inverted)
+    // Calculate how many beats to generate (always doubles for mirrored)
     const sequenceLength = sequence.length;
     const entriesToAdd = sequenceLength; // Always halved = doubles the sequence
 
@@ -70,7 +71,7 @@ export class StrictInvertedCAPExecutor {
     // Skip first two beats in the loop (start from beat 2)
     for (let i = 2; i < sequenceLength + 2; i++) {
       const finalIntendedLength = sequenceLength + entriesToAdd;
-      const nextBeat = this._createNewCAPEntry(
+      const nextBeat = this._createNewLOOPEntry(
         sequence,
         lastBeat,
         nextBeatNumber + i - 2,
@@ -89,8 +90,8 @@ export class StrictInvertedCAPExecutor {
   }
 
   /**
-   * Validate that the sequence can perform a inverted CAP
-   * Requirement: end_position === start_position (returns to start)
+   * Validate that the sequence can perform a mirrored LOOP
+   * Requirement: vertical_mirror(start_position) === end_position
    */
   private _validateSequence(sequence: BeatData[]): void {
     if (sequence.length < 2) {
@@ -106,21 +107,23 @@ export class StrictInvertedCAPExecutor {
       throw new Error("Sequence beats must have valid start and end positions");
     }
 
-    // Check if the (start, end) pair is valid for inverted (must be same)
+    // Check if the (start, end) pair is valid for mirroring
     const key = `${startPos},${endPos}`;
 
-    if (!INVERTED_CAP_VALIDATION_SET.has(key)) {
+    if (!MIRRORED_LOOP_VALIDATION_SET.has(key)) {
+      const expectedEnd =
+        VERTICAL_MIRROR_POSITION_MAP[startPos as GridPosition];
       throw new Error(
-        `Invalid position pair for inverted CAP: ${startPos} → ${endPos}. ` +
-          `For a inverted CAP, the sequence must end at the same position it started (${startPos}).`
+        `Invalid position pair for mirrored LOOP: ${startPos} → ${endPos}. ` +
+          `For a mirrored LOOP from ${startPos}, the sequence must end at ${expectedEnd}.`
       );
     }
   }
 
   /**
-   * Create a new CAP entry by transforming a previous beat
+   * Create a new LOOP entry by transforming a previous beat
    */
-  private _createNewCAPEntry(
+  private _createNewLOOPEntry(
     sequence: BeatData[],
     previousBeat: BeatData,
     beatNumber: number,
@@ -133,24 +136,23 @@ export class StrictInvertedCAPExecutor {
       finalIntendedLength
     );
 
-    // Get inverted letter
-    const invertedLetter = this._getInvertedLetter(previousMatchingBeat);
+    // Calculate new end position (vertical mirror)
+    const newEndPosition = this._getMirroredPosition(previousMatchingBeat);
 
-    // Create the new beat with inverted attributes
+    // Create the new beat with mirrored attributes
     const newBeat: BeatData = {
       ...previousMatchingBeat,
       id: `beat-${beatNumber}`,
       beatNumber,
-      letter: invertedLetter,
       startPosition: previousBeat.endPosition ?? null,
-      endPosition: previousMatchingBeat.endPosition ?? null, // Same as matching beat
+      endPosition: newEndPosition,
       motions: {
-        [MotionColor.BLUE]: this._createInvertedMotion(
+        [MotionColor.BLUE]: this._createMirroredMotion(
           MotionColor.BLUE,
           previousBeat,
           previousMatchingBeat
         ),
-        [MotionColor.RED]: this._createInvertedMotion(
+        [MotionColor.RED]: this._createMirroredMotion(
           MotionColor.RED,
           previousBeat,
           previousMatchingBeat
@@ -216,25 +218,28 @@ export class StrictInvertedCAPExecutor {
   }
 
   /**
-   * Get inverted letter
+   * Get the vertical mirrored position
    */
-  private _getInvertedLetter(previousMatchingBeat: BeatData): Letter {
-    const letter = previousMatchingBeat.letter;
+  private _getMirroredPosition(
+    previousMatchingBeat: BeatData
+  ): GridPosition | null {
+    const endPos = previousMatchingBeat.endPosition;
 
-    if (!letter) {
-      throw new Error("Previous matching beat must have a letter");
+    if (!endPos) {
+      throw new Error("Previous matching beat must have an end position");
     }
 
-    const invertedLetter = getInvertedLetter(letter as string) as Letter;
+    const mirroredPosition =
+      VERTICAL_MIRROR_POSITION_MAP[endPos as GridPosition];
 
-    return invertedLetter;
+    return mirroredPosition;
   }
 
   /**
-   * Create inverted motion data for the new beat
-   * Flips motion type (PRO ↔ ANTI) and prop rotation direction
+   * Create mirrored motion data for the new beat
+   * Mirrors locations vertically and flips prop rotation direction
    */
-  private _createInvertedMotion(
+  private _createMirroredMotion(
     color: MotionColor,
     previousBeat: BeatData,
     previousMatchingBeat: BeatData
@@ -246,50 +251,42 @@ export class StrictInvertedCAPExecutor {
       throw new Error(`Missing motion data for ${color}`);
     }
 
-    // Flip the motion type (PRO ↔ ANTI)
-    const invertedMotionType = this._getInvertedMotionType(
-      matchingMotion.motionType as MotionType
+    // Mirror the end location vertically
+    const mirroredEndLocation = this._getMirroredLocation(
+      matchingMotion.endLocation as GridLocation
     );
 
-    // Flip the prop rotation direction (FIXED: use rotationDirection not propRotationDirection)
-    const invertedPropRotDir = this._getInvertedPropRotDir(
-      matchingMotion.rotationDirection as RotationDirection
+    // Flip the prop rotation direction
+    const mirroredPropRotDir = this._getMirroredPropRotDir(
+      matchingMotion.rotationDirection
     );
 
-    // Create inverted motion
-    const invertedMotion = {
+    // Create mirrored motion
+    const mirroredMotion = {
       ...matchingMotion,
-      motionType: invertedMotionType,
       startLocation: previousMotion.endLocation,
-      endLocation: matchingMotion.endLocation, // Same as matching beat
-      rotationDirection: invertedPropRotDir,
+      endLocation: mirroredEndLocation,
+      rotationDirection: mirroredPropRotDir,
       // Start orientation will be set by OrientationCalculator
       // End orientation will be calculated by OrientationCalculator
     };
 
-    return invertedMotion;
+    return mirroredMotion;
   }
 
   /**
-   * Get inverted motion type (flip PRO ↔ ANTI)
-   * Other motion types (FLOAT, DASH, STATIC) remain unchanged
+   * Mirror a location vertically (flip east/west)
    */
-  private _getInvertedMotionType(motionType: MotionType): MotionType {
-    if (motionType === MotionType.PRO) {
-      return MotionType.ANTI;
-    } else if (motionType === MotionType.ANTI) {
-      return MotionType.PRO;
-    }
+  private _getMirroredLocation(location: GridLocation): GridLocation {
+    const mirrored = VERTICAL_MIRROR_LOCATION_MAP[location];
 
-    // FLOAT, DASH, STATIC stay the same
-    return motionType;
+    return mirrored;
   }
 
   /**
-   * Get inverted prop rotation direction (flip CLOCKWISE ↔ COUNTER_CLOCKWISE)
-   * NO_ROTATION stays NO_ROTATION
+   * Mirror prop rotation direction (flip clockwise/counter-clockwise)
    */
-  private _getInvertedPropRotDir(
+  private _getMirroredPropRotDir(
     propRotDir: RotationDirection
   ): RotationDirection {
     if (propRotDir === RotationDirection.CLOCKWISE) {

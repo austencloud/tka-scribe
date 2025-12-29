@@ -1,7 +1,7 @@
 /**
- * Strict Swapped CAP Executor
+ * Strict Swapped LOOP Executor
  *
- * Executes the strict swapped CAP (Continuous Assembly Pattern) by:
+ * Executes the strict swapped LOOP (Continuous Assembly Pattern) by:
  * 1. Taking a partial sequence (always first half - no quartering)
  * 2. Swapping blue and red attributes between beats
  * 3. Generating the remaining beats to complete the circular pattern
@@ -27,13 +27,13 @@ import { inject, injectable } from "inversify";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import {
   SWAPPED_POSITION_MAP,
-  SWAPPED_CAP_VALIDATION_SET,
-} from "../../domain/constants/strict-cap-position-maps";
+  SWAPPED_LOOP_VALIDATION_SET,
+} from "../../domain/constants/strict-loop-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
-export class StrictSwappedCAPExecutor {
+export class StrictSwappedLOOPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
     private OrientationCalculator: IOrientationCalculator,
@@ -42,13 +42,13 @@ export class StrictSwappedCAPExecutor {
   ) {}
 
   /**
-   * Execute the strict swapped CAP
+   * Execute the strict swapped LOOP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
-   * @param sliceSize - Ignored (swapped CAP always uses halved)
+   * @param sliceSize - Ignored (swapped LOOP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
+  executeLOOP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 
@@ -70,7 +70,7 @@ export class StrictSwappedCAPExecutor {
     // Skip first two beats in the loop (start from beat 2)
     for (let i = 2; i < sequenceLength + 2; i++) {
       const finalIntendedLength = sequenceLength + entriesToAdd;
-      const nextBeat = this._createNewCAPEntry(
+      const nextBeat = this._createNewLOOPEntry(
         sequence,
         lastBeat,
         nextBeatNumber + i - 2,
@@ -89,7 +89,7 @@ export class StrictSwappedCAPExecutor {
   }
 
   /**
-   * Validate that the sequence can perform a swapped CAP
+   * Validate that the sequence can perform a swapped LOOP
    * Requirement: swapped_position(start_position) === end_position
    */
   private _validateSequence(sequence: BeatData[]): void {
@@ -109,19 +109,19 @@ export class StrictSwappedCAPExecutor {
     // Check if the (start, end) pair is valid for swapping
     const key = `${startPos},${endPos}`;
 
-    if (!SWAPPED_CAP_VALIDATION_SET.has(key)) {
+    if (!SWAPPED_LOOP_VALIDATION_SET.has(key)) {
       const expectedEnd = SWAPPED_POSITION_MAP[startPos as GridPosition];
       throw new Error(
-        `Invalid position pair for swapped CAP: ${startPos} → ${endPos}. ` +
-          `For a swapped CAP from ${startPos}, the sequence must end at ${expectedEnd}.`
+        `Invalid position pair for swapped LOOP: ${startPos} → ${endPos}. ` +
+          `For a swapped LOOP from ${startPos}, the sequence must end at ${expectedEnd}.`
       );
     }
   }
 
   /**
-   * Create a new CAP entry by transforming a previous beat
+   * Create a new LOOP entry by transforming a previous beat
    */
-  private _createNewCAPEntry(
+  private _createNewLOOPEntry(
     sequence: BeatData[],
     previousBeat: BeatData,
     beatNumber: number,

@@ -1,25 +1,25 @@
 <!--
-CAPTypeFilterCard.svelte - Card for filtering by CAP type (Continuous Assembly Pattern)
+LOOPTypeFilterCard.svelte - Card for filtering by LOOP type (Continuous Assembly Pattern)
 Uses shared StepperCard for consistent styling
-Options: All → Non-Circular → Circular → specific CAP types
+Options: All → Non-Circular → Circular → specific LOOP types
 -->
 <script lang="ts">
   import StepperCard from "$lib/shared/components/stepper-card/StepperCard.svelte";
   import {
-    CAPType,
-    CAP_TYPE_LABELS,
+    LOOPType,
+    LOOP_TYPE_LABELS,
   } from "$lib/features/create/generate/circular/domain/models/circular-models";
 
   let {
     currentValue = null,
     onValueChange,
-    capTypeCounts = {} as Record<string, number>,
+    loopTypeCounts = {} as Record<string, number>,
     gridColumnSpan = 2,
     cardIndex = 0,
   } = $props<{
     currentValue: string | null;
     onValueChange: (value: string | null) => void;
-    capTypeCounts: Record<string, number>;
+    loopTypeCounts: Record<string, number>;
     gridColumnSpan?: number;
     cardIndex?: number;
   }>();
@@ -33,9 +33,9 @@ Options: All → Non-Circular → Circular → specific CAP types
 
   const options = $derived.by(() => {
     const opts: FilterOption[] = [];
-    const total = capTypeCounts["_total"] ?? 0;
-    const circular = capTypeCounts["_circular"] ?? 0;
-    const nonCircular = capTypeCounts["_non_circular"] ?? 0;
+    const total = loopTypeCounts["_total"] ?? 0;
+    const circular = loopTypeCounts["_circular"] ?? 0;
+    const nonCircular = loopTypeCounts["_non_circular"] ?? 0;
 
     // "All Sequences" (no filter)
     opts.push({
@@ -53,28 +53,28 @@ Options: All → Non-Circular → Circular → specific CAP types
       });
     }
 
-    // Add specific CAP types (these ARE circular by definition)
+    // Add specific LOOP types (these ARE circular by definition)
     // Sorted by count descending so most popular patterns appear first
-    const capTypes = Object.values(CAPType)
-      .filter((type) => capTypeCounts[type] && capTypeCounts[type] > 0)
+    const loopTypes = Object.values(LOOPType)
+      .filter((type) => loopTypeCounts[type] && loopTypeCounts[type] > 0)
       .sort((a, b) => {
-        const countA = capTypeCounts[a] ?? 0;
-        const countB = capTypeCounts[b] ?? 0;
+        const countA = loopTypeCounts[a] ?? 0;
+        const countB = loopTypeCounts[b] ?? 0;
         return countB - countA; // Descending by count
       });
 
-    for (const capType of capTypes) {
+    for (const loopType of loopTypes) {
       opts.push({
-        value: capType,
-        label: CAP_TYPE_LABELS[capType] ?? capType,
-        count: capTypeCounts[capType] ?? 0,
+        value: loopType,
+        label: LOOP_TYPE_LABELS[loopType] ?? loopType,
+        count: loopTypeCounts[loopType] ?? 0,
       });
     }
 
-    // If there are circular sequences without a specific CAP type detected,
+    // If there are circular sequences without a specific LOOP type detected,
     // add an "Other Circular" option for them
-    const typedCircularCount = capTypes.reduce(
-      (sum, type) => sum + (capTypeCounts[type] ?? 0),
+    const typedCircularCount = loopTypes.reduce(
+      (sum, type) => sum + (loopTypeCounts[type] ?? 0),
       0
     );
     const untypedCircularCount = circular - typedCircularCount;
@@ -126,7 +126,7 @@ Options: All → Non-Circular → Circular → specific CAP types
         shadowColor: "173deg 80% 40%",
       };
     }
-    // Specific CAP type - purple (circular patterns)
+    // Specific LOOP type - purple (circular patterns)
     return {
       color:
         "radial-gradient(ellipse at top left, #a78bfa 0%, var(--theme-accent-strong) 40%, #6d28d9 100%)",

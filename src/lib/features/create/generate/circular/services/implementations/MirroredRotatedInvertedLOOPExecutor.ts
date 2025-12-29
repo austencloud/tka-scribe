@@ -1,8 +1,8 @@
 /**
- * Mirrored Rotated Inverted CAP Executor
+ * Mirrored Rotated Inverted LOOP Executor
  *
- * Executes the mirrored-rotated-complementary CAP (Continuous Assembly Pattern) by composing
- * THREE CAP operations sequentially:
+ * Executes the mirrored-rotated-complementary LOOP (Continuous Assembly Pattern) by composing
+ * THREE LOOP operations sequentially:
  * 1. ROTATED: Apply strict rotation with user-selected slice size (halved or quartered)
  * 2. INVERTED MIRRORED: Apply vertical mirroring + complementary transformation
  *    - Letters are flipped (complementary effect)
@@ -32,32 +32,32 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 
 import { SliceSize } from "../../domain/models/circular-models";
-import type { ICAPExecutor } from "../contracts/ICAPExecutor";
+import type { ILOOPExecutor } from "../contracts/ILOOPExecutor";
 import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
-export class MirroredRotatedInvertedCAPExecutor implements ICAPExecutor {
+export class MirroredRotatedInvertedLOOPExecutor implements ILOOPExecutor {
   constructor(
-    @inject(TYPES.IStrictRotatedCAPExecutor)
-    private readonly strictRotatedExecutor: ICAPExecutor,
+    @inject(TYPES.IStrictRotatedLOOPExecutor)
+    private readonly strictRotatedExecutor: ILOOPExecutor,
 
-    @inject(TYPES.IMirroredInvertedCAPExecutor)
-    private readonly mirroredInvertedExecutor: ICAPExecutor
+    @inject(TYPES.IMirroredInvertedLOOPExecutor)
+    private readonly mirroredInvertedExecutor: ILOOPExecutor
   ) {}
 
   /**
-   * Execute the mirrored-rotated-complementary CAP by composing rotation + complementary mirroring
+   * Execute the mirrored-rotated-complementary LOOP by composing rotation + complementary mirroring
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
    * @param sliceSize - The slice size for rotation (halved or quartered)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
+  executeLOOP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
     // Step 1: Apply STRICT_ROTATED with user-selected slice size
     // HALVED: doubles the sequence (e.g., 4 beats → 8 beats)
     // QUARTERED: quadruples the sequence (e.g., 2 beats → 8 beats)
     // Returns to home position in both cases
-    const rotatedSequence = this.strictRotatedExecutor.executeCAP(
+    const rotatedSequence = this.strictRotatedExecutor.executeLOOP(
       sequence,
       sliceSize
     );
@@ -69,7 +69,7 @@ export class MirroredRotatedInvertedCAPExecutor implements ICAPExecutor {
     // - Mirrors locations vertically
     // - Keeps rotation directions (both flips cancel out)
     // For example: 8 beats → 16 beats final
-    const finalSequence = this.mirroredInvertedExecutor.executeCAP(
+    const finalSequence = this.mirroredInvertedExecutor.executeLOOP(
       rotatedSequence,
       SliceSize.HALVED // Not actually used by complementary executor, but passed for consistency
     );

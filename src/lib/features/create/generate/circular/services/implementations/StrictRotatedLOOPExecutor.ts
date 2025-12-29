@@ -1,7 +1,7 @@
 /**
- * Strict Rotated CAP Executor
+ * Strict Rotated LOOP Executor
  *
- * Executes the strict rotated CAP (Continuous Assembly Pattern) by:
+ * Executes the strict rotated LOOP (Continuous Assembly Pattern) by:
  * 1. Taking a partial sequence (first half or quarter)
  * 2. Applying rotational transformations to each beat
  * 3. Generating the remaining beats to complete the circular pattern
@@ -22,8 +22,8 @@ import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import {
-  HALVED_CAPS,
-  QUARTERED_CAPS,
+  HALVED_LOOPS,
+  QUARTERED_LOOPS,
   getHandRotationDirection,
   getLocationMapForHandRotation,
 } from "../../domain/constants/circular-position-maps";
@@ -31,7 +31,7 @@ import { SliceSize } from "../../domain/models/circular-models";
 import type { BeatData } from "../../../../shared/domain/models/BeatData";
 
 @injectable()
-export class StrictRotatedCAPExecutor {
+export class StrictRotatedLOOPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
     private OrientationCalculator: IOrientationCalculator,
@@ -40,13 +40,13 @@ export class StrictRotatedCAPExecutor {
   ) {}
 
   /**
-   * Execute the strict rotated CAP
+   * Execute the strict rotated LOOP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
    * @param sliceSize - Whether to use halved (180°) or quartered (90°) rotation
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
+  executeLOOP(sequence: BeatData[], sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence, sliceSize);
 
@@ -67,7 +67,7 @@ export class StrictRotatedCAPExecutor {
 
     for (let i = 0; i < entriesToAdd; i++) {
       const finalIntendedLength = sequenceLength + entriesToAdd;
-      const nextBeat = this._createNewCAPEntry(
+      const nextBeat = this._createNewLOOPEntry(
         sequence,
         lastBeat,
         nextBeatNumber,
@@ -88,7 +88,7 @@ export class StrictRotatedCAPExecutor {
   }
 
   /**
-   * Validate that the sequence can perform the requested CAP
+   * Validate that the sequence can perform the requested LOOP
    */
   private _validateSequence(sequence: BeatData[], sliceSize: SliceSize): void {
     if (sequence.length < 2) {
@@ -107,11 +107,11 @@ export class StrictRotatedCAPExecutor {
     // Check if the (start, end) pair is valid for the slice size
     const key = `${startPos},${endPos}`;
     const validationSet =
-      sliceSize === SliceSize.HALVED ? HALVED_CAPS : QUARTERED_CAPS;
+      sliceSize === SliceSize.HALVED ? HALVED_LOOPS : QUARTERED_LOOPS;
 
     if (!validationSet.has(key)) {
       throw new Error(
-        `Invalid position pair for ${sliceSize} CAP: ${startPos} → ${endPos}. ` +
+        `Invalid position pair for ${sliceSize} LOOP: ${startPos} → ${endPos}. ` +
           `This pair cannot complete a ${sliceSize} rotation.`
       );
     }
@@ -132,9 +132,9 @@ export class StrictRotatedCAPExecutor {
   }
 
   /**
-   * Create a new CAP entry by transforming a previous beat
+   * Create a new LOOP entry by transforming a previous beat
    */
-  private _createNewCAPEntry(
+  private _createNewLOOPEntry(
     sequence: BeatData[],
     previousBeat: BeatData,
     beatNumber: number,

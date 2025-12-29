@@ -1,19 +1,20 @@
 /**
- * Swapped Inverted CAP Executor
+ * Strict Inverted LOOP Executor
  *
- * Executes the swapped-inverted CAP (Continuous Assembly Pattern) by combining:
- * 1. SWAPPED: Blue does what Red did, Red does what Blue did
- * 2. INVERTED: Flip letters, flip motion types (PRO↔ANTI), flip prop rotation (CW↔CCW)
+ * Executes the strict inverted LOOP (Continuous Assembly Pattern) by:
+ * 1. Taking a partial sequence (always first half - no quartering)
+ * 2. Using inverted letters (opposite motion types)
+ * 3. Generating the remaining beats to complete the circular pattern
  *
- * This creates a sequence where:
- * - Colors are swapped (Blue performs Red's actions and vice versa)
- * - Letters are inverted (A↔B, D↔E, etc.)
- * - Motion types are flipped (PRO↔ANTI)
- * - Prop rotation directions are flipped (CW↔CCW)
- * - Locations stay the same (returns to starting position)
+ * The inverted transformation works by:
+ * - Using inverted letters (A↔B, D↔E, G↔H, etc.)
+ * - Flipping motion types (PRO ↔ ANTI)
+ * - Flipping prop rotation directions (CLOCKWISE ↔ COUNTER_CLOCKWISE)
+ * - Keeping positions the same (sequence returns to start position)
+ * - Maintaining the same hand locations
  *
- * IMPORTANT: Slice size is ALWAYS halved (no quartering)
- * IMPORTANT: End position must equal start position (returns to start)
+ * IMPORTANT: Slice size is ALWAYS halved (no user choice like STRICT_ROTATED)
+ * IMPORTANT: End position must equal start position for inverted LOOPs
  */
 
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
@@ -28,26 +29,26 @@ import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
 import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
 import {
-  INVERTED_CAP_VALIDATION_SET,
+  INVERTED_LOOP_VALIDATION_SET,
   getInvertedLetter,
-} from "../../domain/constants/strict-cap-position-maps";
+} from "../../domain/constants/strict-loop-position-maps";
 import type { SliceSize } from "../../domain/models/circular-models";
 
 @injectable()
-export class SwappedInvertedCAPExecutor {
+export class StrictInvertedLOOPExecutor {
   constructor(
     @inject(TYPES.IOrientationCalculator)
     private OrientationCalculator: IOrientationCalculator
   ) {}
 
   /**
-   * Execute the swapped-inverted CAP
+   * Execute the strict inverted LOOP
    *
    * @param sequence - The partial sequence to complete (must include start position at index 0)
-   * @param sliceSize - Ignored (swapped-inverted CAP always uses halved)
+   * @param sliceSize - Ignored (inverted LOOP always uses halved)
    * @returns The complete circular sequence with all beats
    */
-  executeCAP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
+  executeLOOP(sequence: BeatData[], _sliceSize: SliceSize): BeatData[] {
     // Validate the sequence
     this._validateSequence(sequence);
 
@@ -57,9 +58,9 @@ export class SwappedInvertedCAPExecutor {
       throw new Error("Sequence must have a start position");
     }
 
-    // Calculate how many beats to generate (always doubles for halved)
+    // Calculate how many beats to generate (always doubles for inverted)
     const sequenceLength = sequence.length;
-    const entriesToAdd = sequenceLength;
+    const entriesToAdd = sequenceLength; // Always halved = doubles the sequence
 
     // Generate the new beats
     const generatedBeats: BeatData[] = [];
@@ -69,7 +70,7 @@ export class SwappedInvertedCAPExecutor {
     // Skip first two beats in the loop (start from beat 2)
     for (let i = 2; i < sequenceLength + 2; i++) {
       const finalIntendedLength = sequenceLength + entriesToAdd;
-      const nextBeat = this._createNewCAPEntry(
+      const nextBeat = this._createNewLOOPEntry(
         sequence,
         lastBeat,
         nextBeatNumber + i - 2,
@@ -88,7 +89,7 @@ export class SwappedInvertedCAPExecutor {
   }
 
   /**
-   * Validate that the sequence can perform a swapped-inverted CAP
+   * Validate that the sequence can perform a inverted LOOP
    * Requirement: end_position === start_position (returns to start)
    */
   private _validateSequence(sequence: BeatData[]): void {
@@ -105,21 +106,21 @@ export class SwappedInvertedCAPExecutor {
       throw new Error("Sequence beats must have valid start and end positions");
     }
 
-    // Check if the (start, end) pair is valid for swapped-inverted (must return to start)
+    // Check if the (start, end) pair is valid for inverted (must be same)
     const key = `${startPos},${endPos}`;
 
-    if (!INVERTED_CAP_VALIDATION_SET.has(key)) {
+    if (!INVERTED_LOOP_VALIDATION_SET.has(key)) {
       throw new Error(
-        `Invalid position pair for swapped-inverted CAP: ${startPos} → ${endPos}. ` +
-          `For a swapped-inverted CAP, the sequence must end at the same position it started (${startPos}).`
+        `Invalid position pair for inverted LOOP: ${startPos} → ${endPos}. ` +
+          `For a inverted LOOP, the sequence must end at the same position it started (${startPos}).`
       );
     }
   }
 
   /**
-   * Create a new CAP entry by transforming a previous beat with SWAP + INVERTED
+   * Create a new LOOP entry by transforming a previous beat
    */
-  private _createNewCAPEntry(
+  private _createNewLOOPEntry(
     sequence: BeatData[],
     previousBeat: BeatData,
     beatNumber: number,
@@ -135,31 +136,24 @@ export class SwappedInvertedCAPExecutor {
     // Get inverted letter
     const invertedLetter = this._getInvertedLetter(previousMatchingBeat);
 
-    // Create the new beat with swapped and inverted attributes
-    // KEY: Blue gets attributes from Red's matching beat (SWAP)
-    //      Red gets attributes from Blue's matching beat (SWAP)
-    //      Then motion types and rotations are flipped (INVERTED)
+    // Create the new beat with inverted attributes
     const newBeat: BeatData = {
       ...previousMatchingBeat,
       id: `beat-${beatNumber}`,
       beatNumber,
-      letter: invertedLetter, // INVERTED
+      letter: invertedLetter,
       startPosition: previousBeat.endPosition ?? null,
-      endPosition: previousMatchingBeat.endPosition ?? null, // Same as matching beat (returns to start), handle undefined
+      endPosition: previousMatchingBeat.endPosition ?? null, // Same as matching beat
       motions: {
-        // SWAP: Blue does what Red did, with inverted transformation
-        [MotionColor.BLUE]: this._createSwappedInvertedMotion(
+        [MotionColor.BLUE]: this._createInvertedMotion(
           MotionColor.BLUE,
           previousBeat,
-          previousMatchingBeat,
-          true // isSwapped = true (use opposite color's data)
+          previousMatchingBeat
         ),
-        // SWAP: Red does what Blue did, with inverted transformation
-        [MotionColor.RED]: this._createSwappedInvertedMotion(
+        [MotionColor.RED]: this._createInvertedMotion(
           MotionColor.RED,
           previousBeat,
-          previousMatchingBeat,
-          true // isSwapped = true (use opposite color's data)
+          previousMatchingBeat
         ),
       },
     };
@@ -237,66 +231,43 @@ export class SwappedInvertedCAPExecutor {
   }
 
   /**
-   * Create swapped-inverted motion data for the new beat
-   * Combines color swapping with inverted transformations
+   * Create inverted motion data for the new beat
+   * Flips motion type (PRO ↔ ANTI) and prop rotation direction
    */
-  private _createSwappedInvertedMotion(
+  private _createInvertedMotion(
     color: MotionColor,
     previousBeat: BeatData,
-    previousMatchingBeat: BeatData,
-    isSwapped: boolean
+    previousMatchingBeat: BeatData
   ): MotionData {
-    // SWAP: Get the opposite color's motion data
-    const oppositeColor =
-      color === MotionColor.BLUE ? MotionColor.RED : MotionColor.BLUE;
-
-    // When swapped, this color follows the opposite color's path
-    // So its start location must continue from where the opposite color ended
-    const previousMotion = isSwapped
-      ? previousBeat.motions[oppositeColor]
-      : previousBeat.motions[color];
-
-    const matchingMotion = isSwapped
-      ? previousMatchingBeat.motions[oppositeColor]
-      : previousMatchingBeat.motions[color];
+    const previousMotion = previousBeat.motions[color];
+    const matchingMotion = previousMatchingBeat.motions[color];
 
     if (!previousMotion || !matchingMotion) {
       throw new Error(`Missing motion data for ${color}`);
     }
 
-    // Get start location from previous motion's end (for continuity)
-    const startLocation = previousMotion.endLocation;
-
-    // INVERTED: Flip the motion type (PRO ↔ ANTI)
+    // Flip the motion type (PRO ↔ ANTI)
     const invertedMotionType = this._getInvertedMotionType(
-      matchingMotion.motionType
+      matchingMotion.motionType as MotionType
     );
 
-    // For STATIC motions, end = start (no movement)
-    // For other motions, keep the matching motion's end location
-    const endLocation =
-      invertedMotionType === MotionType.STATIC
-        ? startLocation
-        : matchingMotion.endLocation;
-
-    // INVERTED: Flip the prop rotation direction
+    // Flip the prop rotation direction (FIXED: use rotationDirection not propRotationDirection)
     const invertedPropRotDir = this._getInvertedPropRotDir(
-      matchingMotion.rotationDirection
+      matchingMotion.rotationDirection as RotationDirection
     );
 
-    // Create swapped-inverted motion
-    const swappedInvertedMotion = {
+    // Create inverted motion
+    const invertedMotion = {
       ...matchingMotion,
-      color, // IMPORTANT: Preserve the color (Blue stays Blue, Red stays Red)
-      motionType: invertedMotionType, // Flipped
-      startLocation,
-      endLocation,
-      rotationDirection: invertedPropRotDir, // Flipped
+      motionType: invertedMotionType,
+      startLocation: previousMotion.endLocation,
+      endLocation: matchingMotion.endLocation, // Same as matching beat
+      rotationDirection: invertedPropRotDir,
       // Start orientation will be set by OrientationCalculator
       // End orientation will be calculated by OrientationCalculator
     };
 
-    return swappedInvertedMotion;
+    return invertedMotion;
   }
 
   /**

@@ -1,25 +1,25 @@
 <script lang="ts">
   /**
-   * CAP Coordinator Component
+   * LOOP Coordinator Component
    *
-   * Manages CAP selection modal state at CreateModule level.
-   * Extracts CAP modal logic from CAPCard for proper stacking context.
+   * Manages LOOP selection modal state at CreateModule level.
+   * Extracts LOOP modal logic from CAPCard for proper stacking context.
    *
-   * Domain: Create module - CAP Panel Coordination
+   * Domain: Create module - LOOP Panel Coordination
    */
 
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { ICAPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeResolver";
-  import CAPSelectionModal from "../../../generate/components/modals/CAPSelectionPanel.svelte";
+  import type { ILOOPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ILOOPTypeResolver";
+  import LOOPSelectionPanel from "../../../generate/components/modals/LOOPSelectionPanel.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
 
   // Get context
   const ctx = getCreateModuleContext();
   const { panelState } = ctx;
 
-  let CAPTypeResolver: ICAPTypeResolver = resolve<ICAPTypeResolver>(
-    TYPES.ICAPTypeResolver
+  let LOOPTypeResolver: ILOOPTypeResolver = resolve<ILOOPTypeResolver>(
+    TYPES.ILOOPTypeResolver
   );
 
   // Local pending state - tracks changes before applying
@@ -35,7 +35,7 @@
     // Apply pending changes if any
     if (pendingComponents && panelState.capOnChange) {
       // Check if the combination is implemented
-      const isImplemented = CAPTypeResolver.isImplemented(pendingComponents);
+      const isImplemented = LOOPTypeResolver.isImplemented(pendingComponents);
 
       if (!isImplemented) {
         // Show "Coming Soon" message
@@ -49,8 +49,8 @@
         return; // Don't close the panel, let user select a different combination
       }
 
-      const finalCAPType = CAPTypeResolver.generateCAPType(pendingComponents);
-      panelState.capOnChange(finalCAPType);
+      const finalLOOPType = LOOPTypeResolver.generateLOOPType(pendingComponents);
+      panelState.capOnChange(finalLOOPType);
     }
 
     // Reset state and close
@@ -91,7 +91,7 @@
   });
 </script>
 
-<CAPSelectionModal
+<LOOPSelectionPanel
   isOpen={panelState.isCAPPanelOpen}
   selectedComponents={displayComponents}
   onToggleComponent={handleToggleComponent}
