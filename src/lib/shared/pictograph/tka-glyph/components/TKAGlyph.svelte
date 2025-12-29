@@ -292,6 +292,7 @@ Uses pure runes instead of stores for reactivity.
     data-letter={letter}
     data-led-mode={ledMode}
     transform="translate({x}, {y}) scale({scale})"
+    style={ledMode ? "filter: invert(0.9)" : undefined}
     onclick={onToggle}
     {...onToggle
       ? {

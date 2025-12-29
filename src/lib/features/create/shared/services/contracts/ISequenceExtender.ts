@@ -12,6 +12,7 @@ import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { LOOPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 
 // Re-export LOOPType for convenience
 export type { LOOPType };
@@ -72,6 +73,22 @@ export interface ExtensionOptions {
   turnIntensity?: number;
 }
 
+/**
+ * Option for making a non-loopable sequence circular via bridge letter.
+ * When a sequence ends at a different position group than it starts,
+ * adding a bridge letter can bring it to a position where LOOPs work.
+ */
+export interface CircularizationOption {
+  /** Bridge letters needed to reach a loopable position */
+  bridgeLetters: Letter[];
+  /** The position we'd end at after adding bridge letters */
+  endPosition: string;
+  /** Available LOOP types for this ending position */
+  availableLOOPs: LOOPOption[];
+  /** Description for UI display */
+  description: string;
+}
+
 export interface ISequenceExtender {
   /**
    * Analyze a sequence to determine if it can be extended
@@ -102,5 +119,27 @@ export interface ISequenceExtender {
   extendSequence(
     sequence: SequenceData,
     options?: ExtensionOptions
+  ): Promise<SequenceData>;
+
+  /**
+   * Get circularization options for a sequence that isn't directly loopable.
+   * Returns bridge letter options that would bring the sequence to a loopable position.
+   * @param sequence The sequence to analyze
+   * @returns Array of circularization options, or empty if already loopable or no options exist
+   */
+  getCircularizationOptions(sequence: SequenceData): Promise<CircularizationOption[]>;
+
+  /**
+   * Extend a sequence by first appending a bridge letter, then applying a LOOP.
+   * @param sequence The sequence to extend
+   * @param bridgeLetter The bridge letter to append before applying LOOP
+   * @param loopType The LOOP type to apply after adding bridge letter
+   * @returns A new sequence with bridge letter and LOOP applied
+   * @throws Error if extension fails
+   */
+  extendWithBridge(
+    sequence: SequenceData,
+    bridgeLetter: Letter,
+    loopType: LOOPType
   ): Promise<SequenceData>;
 }

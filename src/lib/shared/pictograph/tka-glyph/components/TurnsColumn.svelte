@@ -164,6 +164,7 @@ Props:
   data-letter={letter}
   data-led-mode={ledMode}
   transform="translate({x}, {y}) scale({scale})"
+  style={ledMode ? "filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)" : undefined}
   onclick={onToggle}
   {...onToggle
     ? {

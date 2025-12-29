@@ -123,8 +123,18 @@ export interface IAvatarSkeletonBuilder {
   setHeight(height: number): void;
 
   /**
-   * Get the Y offset needed to place feet on ground (Y=0)
-   * Returns the negative of the model's min Y after scaling
+   * Get the Y offset from model origin to feet (negative value)
+   * Parent component should position at: groundY - feetOffset
+   * This ensures feet end up at world Y = groundY
+   *
+   * Example: If feetOffset = -312, and groundY = -308,
+   * position the group at Y = -308 - (-312) = 4,
+   * so feet world Y = 4 + (-312) = -308 = groundY ✓
+   */
+  getFeetOffset(): number;
+
+  /**
+   * @deprecated Use getFeetOffset() instead
    */
   getGroundOffset(): number;
 

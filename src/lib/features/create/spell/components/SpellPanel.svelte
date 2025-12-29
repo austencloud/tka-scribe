@@ -21,6 +21,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   import LetterPalette from "./LetterPalette.svelte";
   import PreferencesPanel from "./PreferencesPanel.svelte";
   import ResultDisplay from "./ResultDisplay.svelte";
+  import LOOPPicker from "$lib/shared/components/loop-picker/LOOPPicker.svelte";
 
   // Props
   let {
@@ -258,13 +259,19 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       <PreferencesPanel
         preferences={spellState.preferences}
         onUpdate={(key, value) => spellState.updatePreference(key, value)}
-        availableLOOPOptions={spellState.availableLOOPOptions}
-        onApplyLOOP={handleApplyLOOP}
-        circularizationOptions={spellState.circularizationOptions}
-        directLoopUnavailableReason={spellState.directLoopUnavailableReason}
-        needsCircularization={spellState.needsCircularization}
       />
     </div>
+
+    <!-- LOOP Selection (shown when makeCircular is on and sequence exists) -->
+    {#if spellState.preferences.makeCircular && spellState.hasSequence()}
+      <LOOPPicker
+        directOptions={spellState.availableLOOPOptions}
+        circularizationOptions={spellState.circularizationOptions}
+        onSelect={handleApplyLOOP}
+        directUnavailableReason={spellState.directLoopUnavailableReason}
+        isApplying={spellState.isGenerating}
+      />
+    {/if}
 
     <!-- Generate Button -->
     <div class="actions-section">
@@ -329,8 +336,6 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     display: flex;
     flex-direction: column;
     gap: var(--settings-spacing-md, 16px);
-    max-width: 600px;
-    margin: 0 auto;
     width: 100%;
   }
 

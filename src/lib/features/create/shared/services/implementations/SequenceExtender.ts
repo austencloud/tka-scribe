@@ -20,9 +20,15 @@ import type {
   ExtensionOptions,
   ExtensionType,
   LOOPOption,
+  CircularizationOption,
 } from "../contracts/ISequenceExtender";
 import type { ILOOPExecutorSelector } from "$lib/features/create/generate/circular/services/contracts/ILOOPExecutorSelector";
 import type { IReversalDetector } from "../contracts/IReversalDetector";
+import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
+import type { IBeatConverter } from "$lib/features/create/generate/shared/services/contracts/IBeatConverter";
+import type { IOrientationCalculator } from "$lib/shared/pictograph/prop/services/contracts/IOrientationCalculator";
+import { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import { recalculateAllOrientations } from "./sequence-transforms/orientation-propagation";
 import {
   HALF_POSITION_MAP,
   QUARTER_POSITION_MAP_CW,
@@ -113,7 +119,13 @@ export class SequenceExtender implements ISequenceExtender {
     @inject(TYPES.ILOOPExecutorSelector)
     private loopExecutorSelector: ILOOPExecutorSelector,
     @inject(TYPES.IReversalDetector)
-    private reversalDetector: IReversalDetector
+    private reversalDetector: IReversalDetector,
+    @inject(TYPES.ILetterQueryHandler)
+    private letterQueryHandler: ILetterQueryHandler,
+    @inject(TYPES.IBeatConverter)
+    private beatConverter: IBeatConverter,
+    @inject(TYPES.IOrientationCalculator)
+    private orientationCalculator: IOrientationCalculator
   ) {}
 
   /**
@@ -605,5 +617,166 @@ export class SequenceExtender implements ISequenceExtender {
     result.push(...actualBeats);
 
     return result;
+  }
+
+  // ============ Bridge Letter Methods ============
+
+  /**
+   * Get circularization options for a sequence that isn't directly loopable.
+   * Returns bridge letter options that would bring the sequence to a loopable position.
+   */
+  async getCircularizationOptions(
+    sequence: SequenceData
+  ): Promise<CircularizationOption[]> {
+    const startPosition = this.getStartPosition(sequence);
+    const endPosition = this.getCurrentEndPosition(sequence);
+
+    if (!startPosition || !endPosition) {
+      return [];
+    }
+
+    // Get position groups
+    const startGroup = this.getPositionGroup(startPosition);
+    const endGroup = this.getPositionGroup(endPosition);
+
+    // If already in same group, no bridge needed (use regular extension)
+    if (!startGroup || !endGroup || startGroup === endGroup) {
+      return [];
+    }
+
+    const options: CircularizationOption[] = [];
+    const gridMode = sequence.gridMode || GridMode.DIAMOND;
+
+    // Get all pictographs
+    const allPictographs =
+      await this.letterQueryHandler.getAllPictographVariations(gridMode);
+
+    // Find pictographs that:
+    // 1. Start at the sequence's current end position
+    // 2. End at a position in the start group
+    const bridgeCandidates = allPictographs.filter((p) => {
+      if (p.startPosition !== endPosition) return false;
+      const pEndGroup = this.getPositionGroup(p.endPosition as GridPosition);
+      return pEndGroup === startGroup;
+    });
+
+    if (bridgeCandidates.length === 0) {
+      return [];
+    }
+
+    // Group candidates by letter and ending position to avoid duplicates
+    const uniqueBridges = new Map<
+      string,
+      { letter: Letter; endPosition: string }
+    >();
+    for (const variation of bridgeCandidates) {
+      const key = `${variation.letter}|${variation.endPosition}`;
+      if (!uniqueBridges.has(key)) {
+        uniqueBridges.set(key, {
+          letter: variation.letter as Letter,
+          endPosition: variation.endPosition || "",
+        });
+      }
+    }
+
+    // For each unique bridge, analyze available LOOPs
+    for (const [_, bridge] of uniqueBridges) {
+      // Create temporary beat for the bridge letter
+      const bridgeBeat: BeatData = {
+        id: `bridge-${bridge.letter}`,
+        beatNumber: (sequence.beats?.length || 0) + 1,
+        startPosition: endPosition,
+        endPosition: bridge.endPosition as GridPosition,
+        letter: bridge.letter,
+        motions: {},
+        duration: 1,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+      };
+
+      // Create temporary sequence with bridge letter
+      const tempSequence: SequenceData = {
+        ...sequence,
+        beats: [...(sequence.beats || []), bridgeBeat],
+      };
+
+      // Analyze available LOOPs (exclude REWOUND since it's always available)
+      const analysis = this.analyzeSequence(tempSequence);
+      const positionDependentLOOPs = analysis.availableLOOPOptions.filter(
+        (opt) => opt.loopType !== LOOPType.REWOUND
+      );
+
+      if (positionDependentLOOPs.length > 0) {
+        options.push({
+          bridgeLetters: [bridge.letter],
+          endPosition: bridge.endPosition,
+          availableLOOPs: positionDependentLOOPs,
+          description: `Add "${bridge.letter}" to end at ${bridge.endPosition}`,
+        });
+      }
+    }
+
+    return options;
+  }
+
+  /**
+   * Extend a sequence by first appending a bridge letter, then applying a LOOP.
+   */
+  async extendWithBridge(
+    sequence: SequenceData,
+    bridgeLetter: Letter,
+    loopType: LOOPType
+  ): Promise<SequenceData> {
+    const endPosition = this.getCurrentEndPosition(sequence);
+    if (!endPosition) {
+      throw new Error("Cannot extend: no end position found");
+    }
+
+    const gridMode = sequence.gridMode || GridMode.DIAMOND;
+
+    // Find a pictograph for the bridge letter that starts at current end position
+    const allPictographs =
+      await this.letterQueryHandler.getAllPictographVariations(gridMode);
+
+    const bridgeVariations = allPictographs.filter(
+      (p) =>
+        p.letter === bridgeLetter && p.startPosition === endPosition
+    );
+
+    if (bridgeVariations.length === 0) {
+      throw new Error(
+        `No variation of "${bridgeLetter}" starts at position "${endPosition}"`
+      );
+    }
+
+    // Pick a random variation for variety
+    const randomIndex = Math.floor(Math.random() * bridgeVariations.length);
+    const bridgeVariation = bridgeVariations[randomIndex];
+    if (!bridgeVariation) {
+      throw new Error("Failed to select bridge variation");
+    }
+
+    // Convert to beat and append
+    const bridgeBeat = this.beatConverter.convertToBeat(
+      bridgeVariation,
+      (sequence.beats?.length || 0) + 1,
+      gridMode
+    );
+
+    // Create sequence with bridge letter
+    let extendedSequence: SequenceData = {
+      ...sequence,
+      beats: [...(sequence.beats || []), bridgeBeat],
+    };
+
+    // Recalculate orientations
+    extendedSequence = recalculateAllOrientations(
+      extendedSequence,
+      this.orientationCalculator
+    );
+
+    // Now apply the LOOP
+    return this.extendSequence(extendedSequence, { loopType });
   }
 }

@@ -173,6 +173,7 @@ Based on legacy start_to_end_pos_glyph.py implementation.
     class:led-mode={ledMode}
     data-led-mode={ledMode}
     transform="translate({groupX}, {Y_POSITION})"
+    style={ledMode ? "filter: invert(0.9)" : undefined}
     onclick={onToggle}
     {...onToggle
       ? {
