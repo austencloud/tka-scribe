@@ -63,10 +63,11 @@ canvas rendering. This ensures the entire glyph fades as a unified unit.
     const currentTurnsTuple = turnsTuple;
 
     if (currentLetter && svgElement && isReady) {
-      // Give the DOM a tick to fully render the TKAGlyph
-      setTimeout(() => {
+      // Serialize immediately - transition timing is controlled by GlyphTransitionController
+      // Using requestAnimationFrame ensures DOM is ready without artificial delay
+      requestAnimationFrame(() => {
         serializeAndNotify();
-      }, 50); // Increased timeout to ensure TKAGlyph is fully rendered
+      });
     }
   });
 

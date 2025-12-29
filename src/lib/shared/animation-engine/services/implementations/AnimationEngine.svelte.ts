@@ -144,6 +144,7 @@ export class AnimationEngine {
       turnNumbers: true,
       blueMotion: true,
       redMotion: true,
+      ledMode: false,
     },
     isPreRendering: false,
     preRenderProgress: null,
@@ -203,6 +204,7 @@ export class AnimationEngine {
   private prevSequenceData: SequenceData | null = null;
   private prevIsPlaying: boolean = false;
   private prevGridMode: GridMode | null = null;
+  private prevLedMode: boolean = false;
 
   // Simple reference to last props for initial render (not a copy - avoids GC)
   private lastPropsRef: AnimationEngineProps | null = null;
@@ -248,6 +250,7 @@ export class AnimationEngine {
 
     // Initialize visibility manager
     const visibilityManager = getAnimationVisibilityManager();
+    this.prevLedMode = visibilityManager.isLedMode();
     this.state.visibilityState = {
       grid: visibilityManager.getGridMode() !== "none",
       beatNumbers: visibilityManager.getVisibility("beatNumbers"),
@@ -257,12 +260,24 @@ export class AnimationEngine {
       turnNumbers: visibilityManager.getVisibility("turnNumbers"),
       blueMotion: visibilityManager.getVisibility("blueMotion"),
       redMotion: visibilityManager.getVisibility("redMotion"),
+      ledMode: visibilityManager.isLedMode(),
     };
 
     // Initialize services that don't need renderer
     this.visibilitySyncService = new AnimationVisibilitySynchronizer();
     this.unsubscribeVisibility = this.visibilitySyncService.subscribe((state) => {
       this.state.visibilityState = state;
+
+      // Sync LED mode to renderer when it changes
+      if (state.ledMode !== this.prevLedMode) {
+        console.log("[AnimationEngine] LED mode changed:", state.ledMode, "renderer:", !!this.animationRenderer);
+        this.prevLedMode = state.ledMode;
+        this.animationRenderer?.setLedMode(state.ledMode);
+        // Trigger re-render to show the change
+        if (this.state.isInitialized) {
+          this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS));
+        }
+      }
     });
 
     this.glyphTransitionService = new GlyphTransitionController();
@@ -529,6 +544,8 @@ export class AnimationEngine {
         },
         onPixiRendererReady: (renderer) => {
           this.animationRenderer = renderer;
+          // Set initial LED mode on renderer
+          renderer.setLedMode(this.prevLedMode);
         },
         onInitialized: (initialized) => {
           this.state.isInitialized = initialized;

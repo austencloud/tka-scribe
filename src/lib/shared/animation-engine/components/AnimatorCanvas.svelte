@@ -96,6 +96,7 @@ Last audit: 2025-12-27
   const fadingOutTurnsTuple = $derived(engine.state.fadingOutTurnsTuple);
   const fadingOutBeatNumber = $derived(engine.state.fadingOutBeatNumber);
   const isNewLetter = $derived(engine.state.isNewLetter);
+  const ledModeEnabled = $derived(engine.state.visibilityState.ledMode);
 
   // Initialize engine when container mounts
   onMount(() => {
@@ -162,6 +163,7 @@ Last audit: 2025-12-27
   class="canvas-wrapper"
   bind:this={containerElement}
   data-transparent={backgroundAlpha === 0 ? "true" : "false"}
+  data-led-mode={ledModeEnabled ? "true" : "false"}
 >
   <GlyphOverlay
     {letter}
@@ -209,5 +211,11 @@ Last audit: 2025-12-27
     background: transparent !important;
     border: none !important;
     --canvas-bg: transparent;
+  }
+
+  /* LED Mode: dark background for glowing light stick effect */
+  .canvas-wrapper[data-led-mode="true"] :global(canvas) {
+    background: #0a0a0f !important;
+    border-color: rgba(0, 255, 255, 0.2);
   }
 </style>

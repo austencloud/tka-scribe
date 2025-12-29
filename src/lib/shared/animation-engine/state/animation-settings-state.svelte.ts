@@ -20,13 +20,14 @@ import {
   TrailMode,
   TrackingMode,
   TrailStyle,
+  TrailEffect,
   type TrailSettings,
   type TrailPoint,
   DEFAULT_TRAIL_SETTINGS as MODULE_DEFAULT_TRAIL_SETTINGS,
 } from "../domain/types/TrailTypes";
 
 // Re-export for convenience
-export { TrailMode, TrackingMode, TrailStyle };
+export { TrailMode, TrackingMode, TrailStyle, TrailEffect };
 export type { TrailSettings, TrailPoint };
 
 /**
@@ -131,6 +132,7 @@ export type AnimationSettingsState = {
   // Trail setters
   setTrailEnabled: (enabled: boolean) => void;
   setTrailMode: (mode: TrailMode) => void;
+  setTrailEffect: (effect: TrailEffect) => void;
   setTrackingMode: (mode: TrackingMode) => void;
   setFadeDuration: (ms: number) => void;
   setTrailAppearance: (appearance: Partial<TrailAppearance>) => void;
@@ -156,6 +158,7 @@ export function createAnimationSettingsState(): AnimationSettingsState {
       void settings.shouldLoop;
       void settings.trail.enabled;
       void settings.trail.mode;
+      void settings.trail.effect;
       void settings.trail.trackingMode;
       void settings.trail.lineWidth;
       void settings.trail.maxOpacity;
@@ -211,6 +214,13 @@ export function createAnimationSettingsState(): AnimationSettingsState {
           mode,
           enabled: mode !== TrailMode.OFF,
         },
+      };
+    },
+
+    setTrailEffect: (effect: TrailEffect) => {
+      settings = {
+        ...settings,
+        trail: { ...settings.trail, effect },
       };
     },
 

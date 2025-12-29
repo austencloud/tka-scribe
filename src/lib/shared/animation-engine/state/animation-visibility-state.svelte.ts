@@ -20,6 +20,7 @@ interface AnimationVisibilitySettings {
   trailStyle: TrailStyle; // Trail visualization style (3-state)
   playbackMode: PlaybackMode; // Continuous flow vs step-by-step
   speed: number; // Speed multiplier (1.0 = 60 BPM, range 0.1-3.0)
+  ledMode: boolean; // LED Mode: dark background + glowing props + neon trails
 
   // Shared with pictograph visibility (can sync)
   tkaGlyph: boolean;
@@ -45,6 +46,7 @@ export class AnimationVisibilityStateManager {
       trailStyle: "subtle", // Default to subtle trails
       playbackMode: "continuous", // Default to continuous playback
       speed: 1.0, // Default to 60 BPM
+      ledMode: false, // LED mode off by default
 
       // Shared elements - defaults optimized for animation viewing
       tkaGlyph: true,
@@ -194,6 +196,7 @@ export class AnimationVisibilityStateManager {
       trailStyle: "subtle",
       playbackMode: "continuous",
       speed: 1.0,
+      ledMode: false,
       tkaGlyph: true,
       reversalIndicators: false,
       turnNumbers: true,
@@ -298,6 +301,35 @@ export class AnimationVisibilityStateManager {
    */
   setBpm(bpm: number): void {
     this.setSpeed(bpm / 60);
+  }
+
+  // ============================================================================
+  // LED MODE
+  // ============================================================================
+
+  /**
+   * Get LED mode status
+   * LED Mode: dark background + glowing props + neon trails
+   */
+  isLedMode(): boolean {
+    return this.settings.ledMode;
+  }
+
+  /**
+   * Set LED mode
+   * When enabled: dark background, props glow with their colors, neon trail effect
+   */
+  setLedMode(enabled: boolean): void {
+    this.settings.ledMode = enabled;
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * Toggle LED mode
+   */
+  toggleLedMode(): void {
+    this.setLedMode(!this.settings.ledMode);
   }
 }
 

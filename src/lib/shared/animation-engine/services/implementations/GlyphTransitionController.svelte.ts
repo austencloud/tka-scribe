@@ -12,7 +12,10 @@ import type {
   GlyphTransitionState,
 } from "../contracts/IGlyphTransitionController";
 
-const GLYPH_TRANSITION_DURATION_MS = 200;
+// Glyph transition duration - controls the cross-fade animation
+// Set to 0 for instant swap (best for step playback sync)
+// Set higher (e.g., 100-200) for smoother continuous playback
+const GLYPH_TRANSITION_DURATION_MS = 0;
 
 export class GlyphTransitionController implements IGlyphTransitionController {
   // Reactive state - owned by service
@@ -39,14 +42,12 @@ export class GlyphTransitionController implements IGlyphTransitionController {
     const hasBeatChanged = beatNumber !== this.state.displayedBeatNumber;
 
     if (!hasLetterChanged && !hasTurnsChanged && !hasBeatChanged) {
-      return; // No change
+      return; // No change at all
     }
 
-    // Start fading out old values (if we have any displayed)
-    if (
-      this.state.displayedLetter !== null ||
-      this.state.displayedBeatNumber !== null
-    ) {
+    // Only trigger fade animation if the LETTER actually changed
+    // If just beat number or turns changed but letter is same, skip the fade
+    if (hasLetterChanged && this.state.displayedLetter !== null) {
       this.state.fadingOutLetter = this.state.displayedLetter;
       this.state.fadingOutTurnsTuple = this.state.displayedTurnsTuple;
       this.state.fadingOutBeatNumber = this.state.displayedBeatNumber;
@@ -73,7 +74,7 @@ export class GlyphTransitionController implements IGlyphTransitionController {
       }, GLYPH_TRANSITION_DURATION_MS);
     }
 
-    // Update displayed values
+    // Always update displayed values (silently if letter didn't change)
     this.state.displayedLetter = letter;
     this.state.displayedTurnsTuple = turnsTuple;
     this.state.displayedBeatNumber = beatNumber;

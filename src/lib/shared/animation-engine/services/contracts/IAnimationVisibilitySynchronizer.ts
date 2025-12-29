@@ -18,6 +18,7 @@ export interface AnimationVisibilityState {
   turnNumbers: boolean;
   blueMotion: boolean;
   redMotion: boolean;
+  ledMode: boolean;
 }
 
 /**

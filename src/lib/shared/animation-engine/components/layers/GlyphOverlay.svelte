@@ -9,6 +9,21 @@ Displays TKA glyph and beat number with fade transitions.
   import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
   import TurnsColumn from "$lib/shared/pictograph/tka-glyph/components/TurnsColumn.svelte";
   import BeatNumber from "$lib/shared/pictograph/shared/components/BeatNumber.svelte";
+  import { getAnimationVisibilityManager } from "../../state/animation-visibility-state.svelte";
+
+  // Track LED mode for styling
+  const visibilityManager = getAnimationVisibilityManager();
+  let ledModeEnabled = $state(visibilityManager.isLedMode());
+
+  // Sync LED mode from visibility manager
+  $effect(() => {
+    ledModeEnabled = visibilityManager.isLedMode();
+    const handler = () => {
+      ledModeEnabled = visibilityManager.isLedMode();
+    };
+    visibilityManager.registerObserver(handler);
+    return () => visibilityManager.unregisterObserver(handler);
+  });
 
   let {
     // Current glyph state
@@ -39,7 +54,7 @@ Displays TKA glyph and beat number with fade transitions.
   } = $props();
 </script>
 
-<div class="glyph-overlay">
+<div class="glyph-overlay" data-led-mode={ledModeEnabled ? "true" : "false"}>
   <!-- Fading out glyph (previous letter + beat number) -->
   {#if fadingOutLetter || fadingOutBeatNumber !== null}
     <div class="glyph-wrapper fade-out">
@@ -65,10 +80,11 @@ Displays TKA glyph and beat number with fade transitions.
             y={800}
             scale={1}
             visible={true}
+            ledMode={ledModeEnabled}
           />
         {/if}
         {#if beatNumbersVisible}
-          <BeatNumber beatNumber={fadingOutBeatNumber} />
+          <BeatNumber beatNumber={fadingOutBeatNumber} ledMode={ledModeEnabled} />
         {/if}
       </svg>
     </div>
@@ -99,10 +115,11 @@ Displays TKA glyph and beat number with fade transitions.
             y={800}
             scale={1}
             visible={true}
+            ledMode={ledModeEnabled}
           />
         {/if}
         {#if beatNumbersVisible}
-          <BeatNumber beatNumber={displayedBeatNumber} />
+          <BeatNumber beatNumber={displayedBeatNumber} ledMode={ledModeEnabled} />
         {/if}
       </svg>
     </div>
@@ -140,34 +157,27 @@ Displays TKA glyph and beat number with fade transitions.
     transition: none !important;
   }
 
+  /* Instant transitions - no fade animation for step playback sync */
   .glyph-wrapper.fade-out {
-    animation: glyphFadeOut 200ms ease-out forwards;
+    opacity: 0;
   }
 
   .glyph-wrapper.fade-in {
-    animation: glyphFadeIn 200ms ease-in forwards;
-  }
-
-  @keyframes glyphFadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes glyphFadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    opacity: 1;
   }
 
   .glyph-svg {
     width: 100%;
     height: 100%;
+  }
+
+  /* LED Mode: invert TKA letter colors (but NOT turns column - keep red/blue) */
+  .glyph-overlay[data-led-mode="true"] :global(.tka-glyph) {
+    filter: invert(0.9) drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+  }
+
+  /* LED Mode: add subtle glow to turns column without inverting colors */
+  .glyph-overlay[data-led-mode="true"] :global(.turns-column) {
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
   }
 </style>
