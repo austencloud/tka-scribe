@@ -31,9 +31,24 @@ export interface SequenceExportOptions {
   beatSize: number;
   margin: number;
 
-  // Visibility settings
+  // Visibility settings (prop colors)
   redVisible: boolean;
   blueVisible: boolean;
+
+  // Pictograph visibility overrides (optional)
+  // When provided, these override the global visibility settings
+  // Useful for batch exports with specific visibility requirements
+  visibilityOverrides?: {
+    showTKA?: boolean;
+    showVTG?: boolean;
+    showElemental?: boolean;
+    showPositions?: boolean;
+    showReversals?: boolean;
+    showNonRadialPoints?: boolean;
+    showTurnNumbers?: boolean;
+    /** LED mode - dark background with glow effects on props/arrows */
+    ledMode?: boolean;
+  };
 
   // User information
   userName: string;

@@ -33,6 +33,7 @@ export interface ITextRenderer {
   /**
    * Render word in a header at the top of the canvas
    * Simple background with optional level badge indicator
+   * @param ledMode - When true, uses dark theme styling (dark bg, light text)
    */
   renderWordHeader(
     canvas: HTMLCanvasElement,
@@ -40,20 +41,23 @@ export interface ITextRenderer {
     options: TextRenderOptions,
     headerHeight: number,
     difficultyLevel?: number,
-    showDifficultyBadge?: boolean
+    showDifficultyBadge?: boolean,
+    ledMode?: boolean
   ): void;
 
   /**
    * Render user information (name, date, notes)
    * @param footerHeight - Height of the footer area for proper text positioning
    * @param beatCount - Number of beats for legacy-matching font sizing
+   * @param ledMode - When true, uses dark theme styling (dark bg, light text)
    */
   renderUserInfo(
     canvas: HTMLCanvasElement,
     userInfo: UserInfo,
     options: TextRenderOptions,
     footerHeight?: number,
-    beatCount?: number
+    beatCount?: number,
+    ledMode?: boolean
   ): void;
 
   /**

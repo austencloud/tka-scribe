@@ -50,20 +50,40 @@ export class ImageComposer implements IImageComposer {
     private readonly DimensionCalculator: IDimensionCalculator
   ) {}
   /**
-   * Get current visibility settings from global visibility manager
-   * These are passed to each pictograph during export to ensure consistency
+   * Get visibility settings for export
+   * Uses explicit overrides from options if provided, otherwise falls back to global settings
    *
-   * NOTE: This is async to ensure settings have been loaded from persistence
-   * before reading values. The VisibilityStateManager loads settings
-   * asynchronously on construction, so we need to await that load.
+   * @param overrides Optional visibility overrides from export options
    */
-  private async getCurrentVisibilitySettings(): Promise<PictographVisibilityOptions> {
-    const visibilityManager = getVisibilityStateManager();
+  private async getVisibilitySettings(
+    overrides?: SequenceExportOptions["visibilityOverrides"]
+  ): Promise<PictographVisibilityOptions> {
+    // If all required overrides are provided, use them directly (no async needed)
+    if (overrides &&
+        overrides.showTKA !== undefined &&
+        overrides.showVTG !== undefined &&
+        overrides.showElemental !== undefined &&
+        overrides.showPositions !== undefined &&
+        overrides.showReversals !== undefined &&
+        overrides.showNonRadialPoints !== undefined &&
+        overrides.showTurnNumbers !== undefined) {
+      return {
+        showTKA: overrides.showTKA,
+        showVTG: overrides.showVTG,
+        showElemental: overrides.showElemental,
+        showPositions: overrides.showPositions,
+        showReversals: overrides.showReversals,
+        showNonRadialPoints: overrides.showNonRadialPoints,
+        showTurnNumbers: overrides.showTurnNumbers,
+        ledMode: overrides.ledMode,
+      };
+    }
 
-    // Wait for settings to be loaded from persistence
+    // Get global settings as base
+    const visibilityManager = getVisibilityStateManager();
     await visibilityManager.ensureSettingsLoaded();
 
-    const settings: PictographVisibilityOptions = {
+    const globalSettings: PictographVisibilityOptions = {
       showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"),
       showVTG: visibilityManager.getGlyphVisibility("vtgGlyph"),
       showElemental: visibilityManager.getGlyphVisibility("elementalGlyph"),
@@ -71,9 +91,24 @@ export class ImageComposer implements IImageComposer {
       showReversals: visibilityManager.getGlyphVisibility("reversalIndicators"),
       showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
       showTurnNumbers: visibilityManager.getGlyphVisibility("turnNumbers"),
+      ledMode: visibilityManager.getLedMode(),
     };
 
-    return settings;
+    // Merge overrides with global settings (overrides take precedence)
+    if (overrides) {
+      return {
+        showTKA: overrides.showTKA ?? globalSettings.showTKA,
+        showVTG: overrides.showVTG ?? globalSettings.showVTG,
+        showElemental: overrides.showElemental ?? globalSettings.showElemental,
+        showPositions: overrides.showPositions ?? globalSettings.showPositions,
+        showReversals: overrides.showReversals ?? globalSettings.showReversals,
+        showNonRadialPoints: overrides.showNonRadialPoints ?? globalSettings.showNonRadialPoints,
+        showTurnNumbers: overrides.showTurnNumbers ?? globalSettings.showTurnNumbers,
+        ledMode: overrides.ledMode ?? globalSettings.ledMode,
+      };
+    }
+
+    return globalSettings;
   }
 
   /**
@@ -90,9 +125,9 @@ export class ImageComposer implements IImageComposer {
     }
 
     // Get visibility settings ONCE at the start of composition
-    // This ensures all pictographs use the same settings
-    // NOTE: await ensures settings are loaded from persistence before reading
-    const visibilitySettings = await this.getCurrentVisibilitySettings();
+    // Uses explicit overrides from options if provided, otherwise falls back to global settings
+    // NOTE: await ensures settings are loaded from persistence before reading (when no overrides)
+    const visibilitySettings = await this.getVisibilitySettings(options.visibilityOverrides);
 
     // Step 1: Calculate layout using LayoutCalculator
     // This service has the proper lookup tables matching the desktop application
@@ -148,9 +183,11 @@ export class ImageComposer implements IImageComposer {
       throw new Error("Failed to get 2D context");
     }
 
-    // Step 3: Fill white background for the grid area (offset by header height)
+    // Step 3: Fill background for the grid area (offset by header height)
     // Note: Footer background is drawn by renderUserInfo with gray matching header style
-    ctx.fillStyle = "white";
+    // LED mode uses dark background (#0a0a0f), normal mode uses white
+    const isLedMode = visibilitySettings.ledMode ?? false;
+    ctx.fillStyle = isLedMode ? "#0a0a0f" : "white";
     ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
 
     // Calculate total items to render for progress tracking
@@ -235,7 +272,8 @@ export class ImageComposer implements IImageComposer {
       beatSize,
       sequence,
       options,
-      headerHeight // Offset grid below header
+      headerHeight, // Offset grid below header
+      isLedMode
     );
 
     // Step 7: Render header with word at the top
@@ -251,7 +289,8 @@ export class ImageComposer implements IImageComposer {
         },
         headerHeight,
         difficultyLevel,
-        options.addDifficultyLevel // Only show badge if toggle is on
+        options.addDifficultyLevel, // Only show badge if toggle is on
+        isLedMode // LED mode for dark theme styling
       );
     }
 
@@ -269,7 +308,8 @@ export class ImageComposer implements IImageComposer {
           beatScale: options.beatScale || 1,
         },
         footerHeight, // Pass footer height for proper text positioning
-        beatCount // Pass beat count for legacy-matching font sizing
+        beatCount, // Pass beat count for legacy-matching font sizing
+        isLedMode // LED mode for dark theme styling
       );
     }
 
@@ -386,7 +426,7 @@ export class ImageComposer implements IImageComposer {
     // Include visibility settings in cache key (important for correct caching!)
     if (visibilitySettings) {
       keyParts.push(
-        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|${visibilitySettings.showTurnNumbers ?? "d"}`
+        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|${visibilitySettings.showTurnNumbers ?? "d"}|led:${visibilitySettings.ledMode ?? false}`
       );
     }
 
@@ -430,9 +470,11 @@ export class ImageComposer implements IImageComposer {
     beatSize: number,
     sequence: SequenceData,
     options: SequenceExportOptions,
-    titleOffset: number = 0
+    titleOffset: number = 0,
+    isLedMode: boolean = false
   ): void {
-    ctx.strokeStyle = "#e0e0e0"; // Light gray border color (matching workbench)
+    // LED mode uses subtle light borders on dark background
+    ctx.strokeStyle = isLedMode ? "rgba(255, 255, 255, 0.15)" : "#e0e0e0";
     ctx.lineWidth = 1;
 
     // Create a map of occupied cells

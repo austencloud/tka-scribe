@@ -11,6 +11,7 @@ import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { SequenceExportOptions } from "$lib/shared/render/domain/models/SequenceExportOptions";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 import { json } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import {
@@ -19,16 +20,71 @@ import {
   RATE_LIMITS,
 } from "$lib/server/security/rate-limiter";
 
+/**
+ * Check if a sequence requires non-radial points to be shown
+ * Returns true if:
+ * - Sequence is level 3 or higher, OR
+ * - Any motion has clock or counter orientation
+ */
+function requiresNonRadialPoints(sequence: SequenceData): boolean {
+  // Check difficulty level
+  if (sequence.level && sequence.level >= 3) {
+    return true;
+  }
+
+  // Check start position for clock/counter orientations
+  if (sequence.startPosition?.motions) {
+    const { blue, red } = sequence.startPosition.motions;
+    if (blue?.startOrientation === Orientation.CLOCK || blue?.startOrientation === Orientation.COUNTER ||
+        blue?.endOrientation === Orientation.CLOCK || blue?.endOrientation === Orientation.COUNTER ||
+        red?.startOrientation === Orientation.CLOCK || red?.startOrientation === Orientation.COUNTER ||
+        red?.endOrientation === Orientation.CLOCK || red?.endOrientation === Orientation.COUNTER) {
+      return true;
+    }
+  }
+
+  // Check all beats for clock/counter orientations
+  for (const beat of sequence.beats || []) {
+    const { blue, red } = beat.motions;
+    if (blue?.startOrientation === Orientation.CLOCK || blue?.startOrientation === Orientation.COUNTER ||
+        blue?.endOrientation === Orientation.CLOCK || blue?.endOrientation === Orientation.COUNTER ||
+        red?.startOrientation === Orientation.CLOCK || red?.startOrientation === Orientation.COUNTER ||
+        red?.endOrientation === Orientation.CLOCK || red?.endOrientation === Orientation.COUNTER) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export const GET: RequestHandler = async () => {
   return json({
     endpoint: "/api/batch-render",
     method: "POST",
-    description: "Renders sequence images with optional prop type override",
+    description: "Renders sequence images for word cards with standardized visibility",
+    settings: {
+      export: {
+        includeStartPosition: true,
+        addBeatNumbers: true,
+        addWord: true,
+        addDifficultyLevel: true,
+        addReversalSymbols: true,
+        addUserInfo: false,
+      },
+      visibility: {
+        showTKA: "always",
+        showVTG: "hidden",
+        showElemental: "hidden",
+        showPositions: "hidden",
+        showReversals: "always",
+        showNonRadialPoints: "conditional (level 3+ or clock/counter orientations)",
+        showTurnNumbers: "always",
+      },
+    },
     usage: {
       body: {
         sequence: "SequenceData object (required)",
-        propType:
-          "PropType enum value (optional) - e.g., 'staff', 'fan', 'hoop'",
+        propType: "PropType enum value (optional) - e.g., 'staff', 'fan', 'hoop'",
         beatSize: "number (optional, default: 120)",
         format: "PNG | JPEG | WebP (optional, default: WebP)",
         quality: "number 0-1 (optional, default: 0.9)",
@@ -46,7 +102,7 @@ export const GET: RequestHandler = async () => {
         quality: 0.9,
       },
     },
-    script: "node scripts/batch-rerender-gallery.js --prop-types=all",
+    script: "node scripts/batch-rerender-gallery.js --prop-types=staff",
   });
 };
 
@@ -84,17 +140,20 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       TYPES.ISequenceRenderer
     );
 
-    // Prepare rendering options with prop type override
+    // Determine if this sequence needs non-radial points shown
+    const showNonRadial = requiresNonRadialPoints(sequence);
+
+    // Prepare rendering options with word card visibility settings
     const options: Partial<SequenceExportOptions> = {
       beatSize,
       format,
       quality,
       includeStartPosition: true,
-      addBeatNumbers: false,
-      addWord: true,
-      addDifficultyLevel: true,
-      addUserInfo: false,
-      addReversalSymbols: false,
+      addBeatNumbers: true,           // Show beat numbers
+      addWord: true,                  // Show word header
+      addDifficultyLevel: true,       // Show difficulty badge
+      addUserInfo: false,             // No footer
+      addReversalSymbols: true,       // Show reversal symbols
       combinedGrids: false,
       beatScale: 1.0,
       margin: 0,
@@ -104,7 +163,18 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       exportDate: "",
       notes: "",
       scale: 1.0,
-      propTypeOverride: propType, // Apply prop type override if provided
+      propTypeOverride: propType,     // Apply prop type override if provided
+
+      // Word card visibility overrides
+      visibilityOverrides: {
+        showTKA: true,                // Always show TKA glyph
+        showVTG: false,               // Hide VTG glyph
+        showElemental: false,         // Hide elemental glyph
+        showPositions: false,         // Hide positions
+        showReversals: true,          // Show reversal indicators
+        showNonRadialPoints: showNonRadial,  // Conditional: level 3+ or clock/counter
+        showTurnNumbers: true,        // Always show turn numbers
+      },
     };
 
     // Render sequence to blob
