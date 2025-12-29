@@ -12,7 +12,14 @@ Now with intelligent rotation animation matching prop behavior!
   import {
     Orientation,
     RotationDirection,
+    MotionColor,
   } from "../../../shared/domain/enums/pictograph-enums";
+
+  // LED mode glow colors matching animation system
+  const LED_GLOW_COLORS = {
+    [MotionColor.BLUE]: "#2E3192",
+    [MotionColor.RED]: "#ED1C24",
+  };
   import type {
     ArrowAssets,
     ArrowPosition,
@@ -28,6 +35,7 @@ Now with intelligent rotation animation matching prop behavior!
     color,
     pictographData = null,
     isClickable = false,
+    ledMode = false,
   } = $props<{
     motionData: MotionData;
     arrowAssets: ArrowAssets;
@@ -37,7 +45,12 @@ Now with intelligent rotation animation matching prop behavior!
     color: string;
     pictographData?: PictographData | null;
     isClickable?: boolean;
+    /** LED mode - applies glow effect to arrows */
+    ledMode?: boolean;
   }>();
+
+  // Get the glow color based on motion color
+  const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
 
   // ============================================================================
   // INTELLIGENT ROTATION ANIMATION SYSTEM (matching PropSvg behavior)
@@ -289,6 +302,8 @@ Now with intelligent rotation animation matching prop behavior!
     class:mirrored={shouldMirror}
     class:clickable={isClickable}
     class:selected={isSelected}
+    class:led-mode={ledMode}
+    data-led-mode={ledMode}
     onclick={isClickable ? handleArrowClick : undefined}
     onkeydown={isClickable ? (e) => (e.key === "Enter" || e.key === " ") && handleArrowClick(e) : undefined}
     role={isClickable ? "button" : undefined}
@@ -300,6 +315,7 @@ Now with intelligent rotation animation matching prop behavior!
       transform: translate({arrowPosition.x}px, {arrowPosition.y}px)
                  rotate({displayedRotation}deg)
                  {shouldMirror ? 'scale(-1, 1)' : ''};
+      {ledMode && !isSelected ? `filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);` : ''}
     "
   >
     <!-- Position group at calculated coordinates, let SVG handle its own centering -->

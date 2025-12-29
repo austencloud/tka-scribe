@@ -13,17 +13,29 @@ Now with smooth transitions when position or orientation changes!
   import type { PropAssets } from "../domain/models/PropAssets";
   import type { PropPosition } from "../domain/models/PropPosition";
 
+  // LED mode glow colors matching animation system
+  const LED_GLOW_COLORS = {
+    [MotionColor.BLUE]: "#2E3192",
+    [MotionColor.RED]: "#ED1C24",
+  };
+
   let {
     motionData,
     propAssets,
     propPosition,
     showProp = true,
+    ledMode = false,
   } = $props<{
     motionData: MotionData;
     propAssets: PropAssets;
     propPosition: PropPosition;
     showProp?: boolean;
+    /** LED mode - applies glow effect to props */
+    ledMode?: boolean;
   }>();
+
+  // Get the glow color based on motion color
+  const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
 
   type MotionSnapshot = {
     startOrientation?: Orientation;
@@ -204,8 +216,10 @@ Now with smooth transitions when position or orientation changes!
 {#if showProp}
   <g
     class="prop-svg {motionData.color}-prop-svg"
+    class:led-mode={ledMode}
     data-prop-type={motionData?.propType}
-    style="transform: {transformString};"
+    data-led-mode={ledMode}
+    style="transform: {transformString};{ledMode ? ` filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor});` : ''}"
   >
     {@html propAssets.imageSrc}
   </g>

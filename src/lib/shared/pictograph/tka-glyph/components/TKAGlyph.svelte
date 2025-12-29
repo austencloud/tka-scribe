@@ -129,6 +129,7 @@ Uses pure runes instead of stores for reactivity.
     visible = true,
     previewMode = false,
     onToggle = undefined,
+    ledMode = false,
   } = $props<{
     /** The letter to display */
     letter: string | null | undefined;
@@ -146,6 +147,8 @@ Uses pure runes instead of stores for reactivity.
     previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
+    /** LED mode - inverts letter color for dark backgrounds */
+    ledMode?: boolean;
   }>();
 
   // Letter dimensions state - match legacy behavior
@@ -285,7 +288,9 @@ Uses pure runes instead of stores for reactivity.
     class:visible={visible && imageReady}
     class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
+    class:led-mode={ledMode}
     data-letter={letter}
+    data-led-mode={ledMode}
     transform="translate({x}, {y}) scale({scale})"
     onclick={onToggle}
     {...onToggle
@@ -345,5 +350,10 @@ Uses pure runes instead of stores for reactivity.
   .letter-image {
     /* Smooth image rendering */
     image-rendering: optimizeQuality;
+  }
+
+  /* LED mode: invert letter color for dark backgrounds */
+  .tka-glyph.led-mode {
+    filter: invert(0.9);
   }
 </style>

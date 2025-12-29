@@ -17,6 +17,7 @@ colored according to the motion that is reversing between pictographs.
     visible = true,
     previewMode = false,
     onToggle = undefined,
+    ledMode = false,
   } = $props<{
     /** Whether to show blue reversal indicator */
     blueReversal?: boolean;
@@ -30,6 +31,8 @@ colored according to the motion that is reversing between pictographs.
     previewMode?: boolean;
     /** Callback when glyph is clicked to toggle visibility */
     onToggle?: () => void;
+    /** LED mode - adds white outline for dark backgrounds */
+    ledMode?: boolean;
   }>();
 
   // Get global visibility manager to respect motion visibility settings

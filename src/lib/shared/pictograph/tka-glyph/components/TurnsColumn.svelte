@@ -40,6 +40,7 @@ Props:
     y = 800,
     scale = 1,
     onToggle = undefined,
+    ledMode = false,
   } = $props<{
     turnsTuple: string;
     letter: string | null | undefined;
@@ -58,6 +59,8 @@ Props:
     scale?: number;
     /** Toggle callback for interactive mode */
     onToggle?: () => void;
+    /** LED mode - adds glow effect (does NOT invert colors) */
+    ledMode?: boolean;
   }>();
 
   // Service instance for color interpretation
@@ -157,7 +160,9 @@ Props:
   class:visible
   class:preview-mode={previewMode}
   class:interactive={onToggle !== undefined}
+  class:led-mode={ledMode}
   data-letter={letter}
+  data-led-mode={ledMode}
   transform="translate({x}, {y}) scale({scale})"
   onclick={onToggle}
   {...onToggle
@@ -276,5 +281,11 @@ Props:
   .turn-number image {
     /* Smooth rendering for number SVGs */
     image-rendering: optimizeQuality;
+  }
+
+  /* LED mode: add subtle white outline using drop-shadow with small blur
+     Creates uniform outline around numbers for contrast on dark backgrounds */
+  .turns-column.led-mode {
+    filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);
   }
 </style>

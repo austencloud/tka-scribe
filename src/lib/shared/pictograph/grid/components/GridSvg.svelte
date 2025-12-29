@@ -13,6 +13,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   let {
     gridMode = GridMode.DIAMOND,
     showNonRadialPoints = false,
+    ledMode = false,
     onLoaded,
     onError,
     onToggleNonRadial = undefined,
@@ -21,6 +22,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     gridMode?: GridMode;
     /** Show non-radial points (layer 2 diagonal points) */
     showNonRadialPoints?: boolean;
+    /** LED mode - inverts grid colors to light for dark backgrounds */
+    ledMode?: boolean;
     /** Called when grid is successfully loaded */
     onLoaded?: () => void;
     /** Called when grid loading fails */
@@ -62,10 +65,10 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     }
   }
 
-  // Styled grid content - reactively updates when gridMode or showNonRadialPoints changes
+  // Styled grid content - reactively updates when gridMode, showNonRadialPoints, or ledMode changes
   const styledGridSvg = $derived.by(() => {
     if (!baseGridSvg) return "";
-    return applyGridModeStyles(baseGridSvg, gridMode, showNonRadialPoints);
+    return applyGridModeStyles(baseGridSvg, gridMode, showNonRadialPoints, ledMode);
   });
 
   // Load grid on mount
@@ -76,8 +79,12 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   function applyGridModeStyles(
     svgContent: string,
     mode: GridMode,
-    showNonRadial: boolean
+    showNonRadial: boolean,
+    isLedMode: boolean
   ): string {
+    // LED mode uses light colors for dark backgrounds, normal mode uses black
+    const gridColor = isLedMode ? "#d0d0d0" : "#000";
+
     const outerPointIds = [
       "n_diamond_outer_point",
       "e_diamond_outer_point",
@@ -129,7 +136,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           cleaned = cleaned.replace(/\s*stroke-miterlimit="[^"]*"/g, "");
 
           // Add all attributes inline for correct export rendering
-          return `${cleaned} fill="#000" fill-opacity="${fillOpacity}" stroke="#000" stroke-opacity="${strokeOpacity}" stroke-width="13" stroke-miterlimit="10"${closing}`;
+          return `${cleaned} fill="${gridColor}" fill-opacity="${fillOpacity}" stroke="${gridColor}" stroke-opacity="${strokeOpacity}" stroke-width="13" stroke-miterlimit="10"${closing}`;
         }
       );
     }
@@ -151,7 +158,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
 
           // Add the correct fill and opacity attributes (matching CSS values)
-          return `${cleaned} fill="#000" opacity="${nonRadialOpacity}"${closing}`;
+          return `${cleaned} fill="${gridColor}" opacity="${nonRadialOpacity}"${closing}`;
         }
       );
     }
@@ -169,7 +176,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
         (match, opening, closing) => {
           let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
           cleaned = cleaned.replace(/\s*class="[^"]*"/g, ""); // Remove class to prevent CSS override
-          return `${cleaned} fill="#000"${closing}`;
+          return `${cleaned} fill="${gridColor}"${closing}`;
         }
       );
     }
@@ -183,7 +190,17 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
       centerPattern,
       (match, opening, closing) => {
         let cleaned = opening.replace(/\s*fill="[^"]*"/g, "");
-        return `${cleaned} fill="#000"${closing}`;
+        return `${cleaned} fill="${gridColor}"${closing}`;
+      }
+    );
+
+    // Update all line elements to use the grid color for stroke
+    // This handles the grid lines between points
+    const linePattern = /(<line[^>]*)(stroke="[^"]*")([^>]*\/>)/g;
+    modifiedSvg = modifiedSvg.replace(
+      linePattern,
+      (match, before, stroke, after) => {
+        return `${before}stroke="${gridColor}"${after}`;
       }
     );
 
@@ -291,7 +308,9 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   class:box-mode={gridMode === GridMode.BOX}
   class:show-non-radial={showNonRadialPoints}
   class:interactive-non-radial={onToggleNonRadial !== undefined}
+  class:led-mode={ledMode}
   data-grid-mode={gridMode}
+  data-led-mode={ledMode}
   transform="rotate({cumulativeRotation}, 475, 475)"
 >
   {#if !hasError && styledGridSvg}
@@ -343,7 +362,18 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     stroke-miterlimit: 10;
     transition:
       fill-opacity 0.2s ease,
-      stroke-opacity 0.2s ease;
+      stroke-opacity 0.2s ease,
+      fill 0.2s ease,
+      stroke 0.2s ease;
+  }
+
+  /* LED mode - outer points use light color */
+  :global(.grid-container.led-mode #n_diamond_outer_point),
+  :global(.grid-container.led-mode #e_diamond_outer_point),
+  :global(.grid-container.led-mode #s_diamond_outer_point),
+  :global(.grid-container.led-mode #w_diamond_outer_point) {
+    fill: #d0d0d0;
+    stroke: #d0d0d0;
   }
 
   /* Diamond mode - filled circles */
@@ -371,7 +401,17 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   :global(#nw_diamond_layer2_point) {
     fill: #000;
     opacity: 0;
-    transition: opacity 0.2s ease;
+    transition:
+      opacity 0.2s ease,
+      fill 0.2s ease;
+  }
+
+  /* LED mode - non-radial points use light color */
+  :global(.grid-container.led-mode #ne_diamond_layer2_point),
+  :global(.grid-container.led-mode #se_diamond_layer2_point),
+  :global(.grid-container.led-mode #sw_diamond_layer2_point),
+  :global(.grid-container.led-mode #nw_diamond_layer2_point) {
+    fill: #d0d0d0;
   }
 
   /* Show non-radial points when enabled */
@@ -399,5 +439,43 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   .non-radial-click-overlay:focus-visible {
     outline: 2px solid var(--primary-color, #6366f1);
     outline-offset: 2px;
+  }
+
+  /* Hand points - use currentColor by default */
+  /* Note: strict-hand-point is NOT styled here - it remains fill:none (hidden) as defined in SVG */
+  :global(.normal-hand-point) {
+    transition: fill 0.2s ease;
+  }
+
+  /* LED mode - normal hand points use light color */
+  /* Note: strict-hand-point is intentionally excluded - it stays hidden in pictograph */
+  :global(.grid-container.led-mode .normal-hand-point) {
+    fill: #d0d0d0;
+  }
+
+  /* Center point */
+  :global(#center_point) {
+    fill: #000;
+    transition: fill 0.2s ease;
+  }
+
+  /* LED mode - center point uses light color */
+  :global(.grid-container.led-mode #center_point) {
+    fill: #d0d0d0;
+  }
+
+  /* Strict layer 2 points - intentionally NOT styled for LED mode
+     These remain fill:none (hidden) as defined in the SVG.
+     Strict points are only used for animation mode, not pictograph display. */
+
+  /* Lines between grid points */
+  :global(.grid-container line) {
+    stroke: #000;
+    transition: stroke 0.2s ease;
+  }
+
+  /* LED mode - lines use light color */
+  :global(.grid-container.led-mode line) {
+    stroke: #d0d0d0;
   }
 </style>

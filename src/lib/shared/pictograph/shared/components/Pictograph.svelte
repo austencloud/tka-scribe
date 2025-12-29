@@ -6,6 +6,7 @@
   import { onMount, onDestroy } from "svelte";
   import { resolve, tryResolve, TYPES } from "../../../inversify/di";
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
+  import { getAnimationVisibilityManager } from "../../../animation-engine/state/animation-visibility-state.svelte";
   import { getSettings } from "../../../application/state/app-state.svelte";
   import ArrowSvg from "../../arrow/rendering/components/ArrowSvg.svelte";
   import GridSvg from "../../grid/components/GridSvg.svelte";
@@ -46,6 +47,7 @@
     onToggleReversals = undefined,
     onToggleNonRadial = undefined,
     onToggleTurnNumbers = undefined,
+    ledMode = undefined,
   } = $props<{
     pictographData?: (BeatData | PictographData) | null;
     disableContentTransitions?: boolean;
@@ -70,6 +72,8 @@
     onToggleReversals?: () => void;
     onToggleNonRadial?: () => void;
     onToggleTurnNumbers?: () => void;
+    /** LED mode - dark background with glow effects. If undefined, uses global animation visibility state */
+    ledMode?: boolean;
   }>();
 
   // Extract beat context from pictographData (if it's BeatData)
@@ -86,6 +90,7 @@
 
   // Subscribe to global visibility state manager
   const visibilityManager = getVisibilityStateManager();
+  const animationVisibilityManager = getAnimationVisibilityManager();
   let visibilityUpdateCount = $state(0);
 
   // Force re-render when visibility changes
@@ -94,9 +99,13 @@
   }
 
   onMount(() => {
+    // Subscribe to pictograph visibility changes
     visibilityManager.registerObserver(handleVisibilityChange);
+    // Subscribe to animation visibility changes (for LED mode)
+    animationVisibilityManager.registerObserver(handleVisibilityChange);
     return () => {
       visibilityManager.unregisterObserver(handleVisibilityChange);
+      animationVisibilityManager.unregisterObserver(handleVisibilityChange);
     };
   });
 
@@ -156,6 +165,17 @@
     // This applies to both preview mode and normal pictograph rendering.
     return visibilityManager.getRawGlyphVisibility("turnNumbers");
   });
+
+  // LED mode - reads from global animation visibility state when not explicitly set
+  const effectiveLedMode = $derived.by(() => {
+    visibilityUpdateCount; // Force reactivity when animation visibility changes
+    if (ledMode !== undefined) return ledMode;
+    // Read directly from animation visibility manager (not via pictograph manager's require() hack)
+    return animationVisibilityManager.isLedMode();
+  });
+
+  // Background color based on LED mode
+  const backgroundColor = $derived(effectiveLedMode ? "#0a0a0f" : "white");
 
   // =============================================================================
   // STATE MANAGEMENT (using pictograph-state.svelte.ts)
@@ -459,6 +479,8 @@
   class:loaded={pictographState.isLoaded}
   class:has-error={pictographState.errorMessage}
   class:selected={isSelected}
+  class:led-mode={effectiveLedMode}
+  data-led-mode={effectiveLedMode}
 >
   <svg
     width="100%"
@@ -470,8 +492,8 @@
       ? "Pictograph"
       : "Empty Pictograph"}
   >
-    <!-- Background -->
-    <rect width="950" height="950" fill="white" />
+    <!-- Background - dark for LED mode, white otherwise -->
+    <rect width="950" height="950" fill={backgroundColor} />
 
     {#if pictographState.hasValidData}
       <!-- Show loading placeholder until all components are loaded -->
@@ -483,6 +505,7 @@
       <GridSvg
         {gridMode}
         showNonRadialPoints={effectiveShowNonRadialPoints}
+        ledMode={effectiveLedMode}
         onLoaded={() => handleComponentLoaded("grid")}
         onError={(error) => handleComponentError("grid", error)}
         {onToggleNonRadial}
@@ -500,6 +523,7 @@
                 propAssets={pictographState.propAssets[color]}
                 propPosition={pictographState.propPositions[color]}
                 showProp={pictographState.showProps}
+                ledMode={effectiveLedMode}
               />
             {/if}
           {/each}
@@ -516,6 +540,7 @@
                 shouldMirror={pictographState.arrowMirroring[color] || false}
                 showArrow={pictographState.showArrows}
                 isClickable={arrowsClickable}
+                ledMode={effectiveLedMode}
               />
             {/if}
           {/each}
@@ -528,6 +553,7 @@
               visible={effectiveShowTKA}
               {previewMode}
               onToggle={onToggleTKA}
+              ledMode={effectiveLedMode}
             />
           {/if}
 
@@ -540,6 +566,7 @@
             {previewMode}
             standalone={!effectiveShowTKA && !previewMode}
             onToggle={onToggleTurnNumbers}
+            ledMode={effectiveLedMode}
           />
 
           <!-- Beat number overlay -->
@@ -589,6 +616,7 @@
             visible={effectiveShowPositions}
             {previewMode}
             onToggle={onTogglePositions}
+            ledMode={effectiveLedMode}
           />
         </g>
       {:else}
@@ -607,6 +635,7 @@
                   propAssets={pictographState.propAssets[color]}
                   propPosition={pictographState.propPositions[color]}
                   showProp={pictographState.showProps}
+                  ledMode={effectiveLedMode}
                 />
               {/if}
             {/each}
@@ -623,6 +652,7 @@
                   shouldMirror={pictographState.arrowMirroring[color] || false}
                   showArrow={pictographState.showArrows}
                   isClickable={arrowsClickable}
+                  ledMode={effectiveLedMode}
                 />
               {/if}
             {/each}
@@ -635,6 +665,7 @@
                 visible={effectiveShowTKA}
                 {previewMode}
                 onToggle={onToggleTKA}
+                ledMode={effectiveLedMode}
               />
             {/if}
 
@@ -647,6 +678,7 @@
               {previewMode}
               standalone={!effectiveShowTKA && !previewMode}
               onToggle={onToggleTurnNumbers}
+              ledMode={effectiveLedMode}
             />
 
             <!-- Beat number overlay -->
@@ -696,6 +728,7 @@
               visible={effectiveShowPositions}
               {previewMode}
               onToggle={onTogglePositions}
+              ledMode={effectiveLedMode}
             />
           </g>
         {/key}

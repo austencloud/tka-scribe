@@ -22,7 +22,9 @@ export class ArrowGridCoordinator implements IArrowGridCoordinator {
 
   getInitialPosition(motion: MotionData, location: GridLocation): Point {
     const motionType = motion.motionType.toLowerCase();
-    const gridMode = motion.gridMode || GridMode.DIAMOND;
+    // Infer grid mode from location if not explicitly set
+    // Box mode uses intercardinal (NE, SE, SW, NW), diamond uses cardinal (N, E, S, W)
+    const gridMode = motion.gridMode || this.inferGridModeFromLocation(location);
 
     if (["pro", "anti", "float"].includes(motionType || "")) {
       // Shift arrows use layer2 points
@@ -154,11 +156,26 @@ export class ArrowGridCoordinator implements IArrowGridCoordinator {
   }
 
   private getLayer2Coords(location: GridLocation, gridMode: GridMode): Point {
-    const layer2Points = this.getAllLayer2Points(gridMode);
-    const coords = layer2Points[location];
+    // Try requested mode first
+    let layer2Points = this.getAllLayer2Points(gridMode);
+    let coords = layer2Points[location];
+
+    // If not found, try the opposite mode (data may have gridMode/location mismatch)
+    if (!coords) {
+      const altMode = gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+      layer2Points = this.getAllLayer2Points(altMode);
+      coords = layer2Points[location];
+
+      if (coords) {
+        console.debug(
+          `Layer2 location ${location} not in ${gridMode} mode, found in ${altMode} mode`
+        );
+      }
+    }
+
     if (!coords) {
       console.warn(
-        `No layer2 coordinates for location: ${location} in ${gridMode} mode, using center`
+        `No layer2 coordinates for location: ${location} in any mode, using center`
       );
       return this.getSceneCenter();
     }
@@ -169,14 +186,45 @@ export class ArrowGridCoordinator implements IArrowGridCoordinator {
     location: GridLocation,
     gridMode: GridMode
   ): Point {
-    const handPoints = this.getAllHandPoints(gridMode);
-    const coords = handPoints[location];
+    // Try requested mode first
+    let handPoints = this.getAllHandPoints(gridMode);
+    let coords = handPoints[location];
+
+    // If not found, try the opposite mode (data may have gridMode/location mismatch)
+    if (!coords) {
+      const altMode = gridMode === GridMode.DIAMOND ? GridMode.BOX : GridMode.DIAMOND;
+      handPoints = this.getAllHandPoints(altMode);
+      coords = handPoints[location];
+
+      if (coords) {
+        // Found in alternate mode - data has mismatch but we recovered
+        console.debug(
+          `Location ${location} not in ${gridMode} mode, found in ${altMode} mode`
+        );
+      }
+    }
+
     if (!coords) {
       console.warn(
-        `No hand point coordinates for location: ${location} in ${gridMode} mode, using center`
+        `No hand point coordinates for location: ${location} in any mode, using center`
       );
       return this.getSceneCenter();
     }
     return coords;
+  }
+
+  /**
+   * Infer grid mode from location when not explicitly set.
+   * Intercardinal locations (NE, SE, SW, NW) = BOX mode
+   * Cardinal locations (N, E, S, W) = DIAMOND mode
+   */
+  private inferGridModeFromLocation(location: GridLocation): GridMode {
+    const boxLocations = [
+      GridLocation.NORTHEAST,
+      GridLocation.SOUTHEAST,
+      GridLocation.SOUTHWEST,
+      GridLocation.NORTHWEST,
+    ];
+    return boxLocations.includes(location) ? GridMode.BOX : GridMode.DIAMOND;
   }
 }
