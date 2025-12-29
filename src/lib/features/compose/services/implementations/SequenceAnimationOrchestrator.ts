@@ -6,7 +6,6 @@
  */
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
-import type { StartPositionData } from "../../../create/shared/domain/models/StartPositionData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type {
   PropState,
@@ -16,7 +15,6 @@ import type {
   SequenceData,
   SequenceMetadata,
 } from "$lib/shared/foundation/domain/models/SequenceData";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -149,43 +147,14 @@ export class SequenceAnimationOrchestrator
     this.atStartPosition = currentBeat < 1;
 
     if (this.atStartPosition) {
-      // At start position - use start position data
+      // At start position - derive from first beat's starting state
       this.currentBeatIndex = 0;
       this.currentBeatProgress = 0;
 
-      if (!this.startPosition?.motions) {
-        // No start position data - use first beat's starting state
-        const firstBeat = this.beats[0];
-        if (firstBeat?.motions?.blue && firstBeat?.motions?.red) {
-          const initialAngles =
-            this.propInterpolationService.calculateInitialAngles(firstBeat);
-          if (initialAngles.isValid) {
-            this.animationStateService.setPropStates(
-              {
-                centerPathAngle: initialAngles.blueAngles.centerPathAngle,
-                staffRotationAngle: initialAngles.blueAngles.staffRotationAngle,
-              },
-              {
-                centerPathAngle: initialAngles.redAngles.centerPathAngle,
-                staffRotationAngle: initialAngles.redAngles.staffRotationAngle,
-              }
-            );
-          }
-        }
-        return;
-      }
-
-      // Use start position motion data
-      const startMotions = this.startPosition.motions;
-      if (startMotions?.blue && startMotions?.red) {
-        // Create a temporary beat-like structure for the interpolator
-        const startAsBeat = {
-          motions: startMotions,
-          beatNumber: 0,
-        } as BeatData;
-
+      const firstBeat = this.beats[0];
+      if (firstBeat?.motions?.blue && firstBeat?.motions?.red) {
         const initialAngles =
-          this.propInterpolationService.calculateInitialAngles(startAsBeat);
+          this.propInterpolationService.calculateInitialAngles(firstBeat);
         if (initialAngles.isValid) {
           this.animationStateService.setPropStates(
             {
@@ -308,35 +277,10 @@ export class SequenceAnimationOrchestrator
 
   /**
    * Initialize prop states using focused services
-   * Priority: start position > first beat with motion > reset
+   * Uses first beat with motion data to derive initial pose
    */
   private initializePropStates(): void {
-    // First try to use start position data (this is the initial pose before animation)
-    if (this.startPosition?.motions?.blue && this.startPosition?.motions?.red) {
-      const startAsBeat = {
-        motions: this.startPosition.motions,
-        beatNumber: 0,
-      } as BeatData;
-
-      const initialAngles =
-        this.propInterpolationService.calculateInitialAngles(startAsBeat);
-
-      if (initialAngles.isValid) {
-        this.animationStateService.setPropStates(
-          {
-            centerPathAngle: initialAngles.blueAngles.centerPathAngle,
-            staffRotationAngle: initialAngles.blueAngles.staffRotationAngle,
-          },
-          {
-            centerPathAngle: initialAngles.redAngles.centerPathAngle,
-            staffRotationAngle: initialAngles.redAngles.staffRotationAngle,
-          }
-        );
-        return;
-      }
-    }
-
-    // Fall back to first beat with motion data
+    // Use first beat with motion data to derive initial pose
     if (!this.beats || this.beats.length === 0) {
       console.warn(
         "SequenceAnimationOrchestrator: No beats available, using fallback"
@@ -385,24 +329,15 @@ export class SequenceAnimationOrchestrator
   }
 
   /**
-   * Get the letter for the current beat or start position
+   * Get the letter for the current beat
+   * At start position, returns beats[0]'s letter
    */
   getCurrentLetter(): Letter | null {
-    if (!this.initialized) {
+    if (!this.initialized || this.beats.length === 0) {
       return null;
     }
 
-    // At start position - return start position letter
-    if (this.atStartPosition && this.startPosition) {
-      return (this.startPosition as any).letter || null;
-    }
-
-    // At a motion beat
-    if (this.beats.length === 0) {
-      return null;
-    }
-
-    // Clamp beat index to valid range
+    // Clamp beat index to valid range (0 for start position, otherwise current beat)
     const beatIndex = Math.max(
       0,
       Math.min(this.currentBeatIndex, this.beats.length - 1)
@@ -438,7 +373,6 @@ export class SequenceAnimationOrchestrator
    * Dispose of resources and reset state
    */
   dispose(): void {
-    this.startPosition = null;
     this.beats = [];
     this.totalBeats = 0;
     this.metadata = { word: "", author: "", totalBeats: 0 };

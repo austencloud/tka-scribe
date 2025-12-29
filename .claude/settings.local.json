@@ -1245,7 +1245,9 @@
       "WebFetch(domain:thekineticalphabet.com)",
       "Bash(cmd //c \"dir F:\\\\_THE\\\\ KINETIC\\\\ ALPHABET\\\\_TKA-SCRIBE\\\\LICENSE* 2>nul || echo No LICENSE file found in project root\")",
       "WebFetch(domain:www.gnu.org)",
-      "WebFetch(domain:www.svgrepo.com)"
+      "WebFetch(domain:www.svgrepo.com)",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:uxwing.com)"
     ],
     "deny": [],
     "ask": []

@@ -24,6 +24,8 @@
   import { EffectComposer } from "threlte-postprocessing";
   import Grid3D from "./Grid3D.svelte";
   import BloomEffect from "../effects/post-processing/BloomEffect.svelte";
+  import Environment3D from "../environments/components/Environment3D.svelte";
+  import { EnvironmentType } from "../environments/domain/enums/environment-enums";
   import { Plane } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
 
@@ -54,6 +56,8 @@
     bloomThreshold?: number;
     /** Bloom blur radius (how far glow spreads) */
     bloomRadius?: number;
+    /** Environment type for 3D scene background */
+    environmentType?: EnvironmentType;
     /** Children content (props, etc.) */
     children?: Snippet;
   }
@@ -71,6 +75,7 @@
     bloomIntensity = 1.5,
     bloomThreshold = 0.8,
     bloomRadius = 0.4,
+    environmentType = EnvironmentType.NONE,
     children,
   }: Props = $props();
 
