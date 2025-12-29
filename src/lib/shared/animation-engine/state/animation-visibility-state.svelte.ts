@@ -20,7 +20,13 @@ interface AnimationVisibilitySettings {
   trailStyle: TrailStyle; // Trail visualization style (3-state)
   playbackMode: PlaybackMode; // Continuous flow vs step-by-step
   speed: number; // Speed multiplier (1.0 = 60 BPM, range 0.1-3.0)
-  ledMode: boolean; // LED Mode: dark background + glowing props + neon trails
+
+  // Global Effects (applies to pictograph, animation, and image export)
+  lightsOff: boolean; // Lights Off: dark background, inverted grid, white text/outlines
+  propGlow: boolean; // Prop Glow: glowing drop-shadow effect on props
+
+  // Legacy property - kept for migration only, do not use
+  ledMode?: boolean;
 
   // Shared with pictograph visibility (can sync)
   tkaGlyph: boolean;
@@ -38,7 +44,14 @@ export class AnimationVisibilityStateManager {
 
   constructor() {
     // Load from localStorage or use defaults
-    this.settings = this.loadFromStorage() || {
+    this.settings = this.loadFromStorage() || this.getDefaultSettings();
+  }
+
+  /**
+   * Get default settings
+   */
+  private getDefaultSettings(): AnimationVisibilitySettings {
+    return {
       // Animation-specific defaults
       gridMode: "diamond", // Default to diamond grid
       beatNumbers: true,
@@ -46,7 +59,10 @@ export class AnimationVisibilityStateManager {
       trailStyle: "subtle", // Default to subtle trails
       playbackMode: "continuous", // Default to continuous playback
       speed: 1.0, // Default to 60 BPM
-      ledMode: false, // LED mode off by default
+
+      // Global effects - both off by default
+      lightsOff: false, // Lights off mode disabled by default
+      propGlow: false, // Prop glow disabled by default
 
       // Shared elements - defaults optimized for animation viewing
       tkaGlyph: true,
@@ -58,7 +74,7 @@ export class AnimationVisibilityStateManager {
   }
 
   /**
-   * Load settings from localStorage
+   * Load settings from localStorage with migration support
    */
   private loadFromStorage(): AnimationVisibilitySettings | null {
     if (typeof window === "undefined") return null;
@@ -66,7 +82,24 @@ export class AnimationVisibilityStateManager {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored) as AnimationVisibilitySettings;
+        const parsed = JSON.parse(stored);
+
+        // Migration: convert old ledMode to new lightsOff + propGlow
+        if (parsed.ledMode !== undefined && parsed.lightsOff === undefined) {
+          // Old ledMode enabled both effects - migrate to both new settings
+          parsed.lightsOff = parsed.ledMode;
+          parsed.propGlow = parsed.ledMode;
+          delete parsed.ledMode;
+          // Save migrated settings
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+
+        // Ensure new properties exist with defaults if missing
+        const defaults = this.getDefaultSettings();
+        return {
+          ...defaults,
+          ...parsed,
+        };
       }
     } catch (err) {
       console.warn(
@@ -189,20 +222,7 @@ export class AnimationVisibilityStateManager {
    * Reset to defaults
    */
   resetToDefaults(): void {
-    this.settings = {
-      gridMode: "diamond",
-      beatNumbers: true,
-      props: true,
-      trailStyle: "subtle",
-      playbackMode: "continuous",
-      speed: 1.0,
-      ledMode: false,
-      tkaGlyph: true,
-      reversalIndicators: false,
-      turnNumbers: true,
-      blueMotion: true,
-      redMotion: true,
-    };
+    this.settings = this.getDefaultSettings();
     this.saveToStorage();
     this.notifyObservers();
   }
@@ -304,32 +324,87 @@ export class AnimationVisibilityStateManager {
   }
 
   // ============================================================================
-  // LED MODE
+  // GLOBAL EFFECTS: LIGHTS OFF + PROP GLOW
   // ============================================================================
 
   /**
-   * Get LED mode status
-   * LED Mode: dark background + glowing props + neon trails
+   * Check if Lights Off mode is enabled
+   * When enabled: dark background, inverted grid colors, white text/outlines
    */
-  isLedMode(): boolean {
-    return this.settings.ledMode;
+  isLightsOff(): boolean {
+    return this.settings.lightsOff;
   }
 
   /**
-   * Set LED mode
-   * When enabled: dark background, props glow with their colors, neon trail effect
+   * Set Lights Off mode
+   * Controls: dark background, inverted grid, white text/outlines
    */
-  setLedMode(enabled: boolean): void {
-    this.settings.ledMode = enabled;
+  setLightsOff(enabled: boolean): void {
+    this.settings.lightsOff = enabled;
     this.saveToStorage();
     this.notifyObservers();
   }
 
   /**
-   * Toggle LED mode
+   * Toggle Lights Off mode
+   */
+  toggleLightsOff(): void {
+    this.setLightsOff(!this.settings.lightsOff);
+  }
+
+  /**
+   * Check if Prop Glow is enabled
+   * When enabled: props have a glowing drop-shadow effect
+   */
+  isPropGlow(): boolean {
+    return this.settings.propGlow;
+  }
+
+  /**
+   * Set Prop Glow mode
+   * Controls: glowing drop-shadow effect on props
+   */
+  setPropGlow(enabled: boolean): void {
+    this.settings.propGlow = enabled;
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * Toggle Prop Glow mode
+   */
+  togglePropGlow(): void {
+    this.setPropGlow(!this.settings.propGlow);
+  }
+
+  // ============================================================================
+  // LEGACY COMPATIBILITY (for gradual migration)
+  // ============================================================================
+
+  /**
+   * @deprecated Use isLightsOff() instead
+   * Kept for backward compatibility - returns lightsOff status
+   */
+  isLedMode(): boolean {
+    return this.settings.lightsOff;
+  }
+
+  /**
+   * @deprecated Use setLightsOff() and setPropGlow() instead
+   * Kept for backward compatibility - sets both lightsOff and propGlow
+   */
+  setLedMode(enabled: boolean): void {
+    this.settings.lightsOff = enabled;
+    this.settings.propGlow = enabled;
+    this.saveToStorage();
+    this.notifyObservers();
+  }
+
+  /**
+   * @deprecated Use toggleLightsOff() instead
    */
   toggleLedMode(): void {
-    this.setLedMode(!this.settings.ledMode);
+    this.setLedMode(!this.settings.lightsOff);
   }
 }
 

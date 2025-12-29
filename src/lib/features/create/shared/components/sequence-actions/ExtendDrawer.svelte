@@ -3,25 +3,38 @@
 
   Drawer for selecting a LOOP (Linked Offset Operation Pattern) to extend a sequence.
   LOOP = TKA's algorithmic extension patterns (Mirrored, Rotated, Swapped, etc.)
-  Shows only the available extension options as simple, prominent buttons.
+  Uses the shared LOOPPicker component for consistent selection UI.
 -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import type { ExtensionAnalysis, LOOPType } from "../../services/contracts/ISequenceExtender";
+  import LOOPPicker from "$lib/shared/components/loop-picker/LOOPPicker.svelte";
+  import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import type {
+    ExtensionAnalysis,
+    LOOPType,
+    CircularizationOption,
+  } from "../../services/contracts/ISequenceExtender";
 
   interface Props {
     isOpen: boolean;
     analysis: ExtensionAnalysis | null;
+    /** Circularization options when sequence isn't directly loopable */
+    circularizationOptions?: CircularizationOption[];
+    /** Reason why direct LOOPs aren't available */
+    directUnavailableReason?: string | null;
     isApplying: boolean;
     /** Measured tool panel width for desktop sizing */
     toolPanelWidth?: number;
     onClose: () => void;
-    onApply: (loopType: LOOPType) => void;
+    /** Called when user selects a LOOP (with optional bridge letter) */
+    onApply: (bridgeLetter: Letter | null, loopType: LOOPType) => void;
   }
 
   let {
     isOpen = $bindable(),
     analysis,
+    circularizationOptions = [],
+    directUnavailableReason = null,
     isApplying,
     toolPanelWidth = 0,
     onClose,
@@ -36,9 +49,9 @@
   // Available LOOP options only
   const availableOptions = $derived(analysis?.availableLOOPOptions ?? []);
 
-  function handleSelect(loopType: LOOPType) {
+  function handleSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
     if (isApplying) return;
-    onApply(loopType);
+    onApply(bridgeLetter, loopType);
   }
 
   function handleClose() {
@@ -83,7 +96,7 @@
         </button>
       </header>
 
-      {#if !analysis || !analysis.canExtend || availableOptions.length === 0}
+      {#if !analysis || !analysis.canExtend || (availableOptions.length === 0 && circularizationOptions.length === 0)}
         <div class="no-options">
           <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <p>No extension patterns available for this sequence.</p>
@@ -102,26 +115,14 @@
             </div>
           </div>
 
-          <!-- Available Options - fill remaining space -->
-          <div class="options-grid">
-            {#each availableOptions as option}
-              <button
-                class="loop-option"
-                class:applying={isApplying}
-                onclick={() => handleSelect(option.loopType)}
-                disabled={isApplying}
-              >
-                {option.name}
-              </button>
-            {/each}
-          </div>
-
-          {#if isApplying}
-            <div class="applying-overlay">
-              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-              <span>Applying pattern...</span>
-            </div>
-          {/if}
+          <!-- Use shared LOOPPicker component -->
+          <LOOPPicker
+            directOptions={availableOptions}
+            {circularizationOptions}
+            onSelect={handleSelect}
+            {directUnavailableReason}
+            {isApplying}
+          />
         </div>
       {/if}
     </div>
@@ -219,7 +220,7 @@
     flex-direction: column;
     padding: 16px;
     gap: 16px;
-    position: relative;
+    overflow-y: auto;
   }
 
   .position-info {
@@ -246,78 +247,5 @@
     font-family: monospace;
     font-weight: 500;
     color: var(--theme-accent);
-  }
-
-  .options-grid {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    justify-content: center;
-  }
-
-  .loop-option {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    min-height: 60px;
-    padding: 16px 20px;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--theme-accent) 20%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent) 8%, transparent) 100%
-    );
-    border: 2px solid
-      color-mix(in srgb, var(--theme-accent) 40%, transparent);
-    border-radius: var(--radius-lg, 12px);
-    cursor: pointer;
-    color: var(--theme-text);
-    font-size: var(--font-size-lg, 1.1rem);
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-
-  .loop-option:hover:not(:disabled) {
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--theme-accent) 30%, transparent) 0%,
-      color-mix(in srgb, var(--theme-accent) 15%, transparent) 100%
-    );
-    border-color: var(--theme-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px
-      color-mix(in srgb, var(--theme-accent) 30%, transparent);
-  }
-
-  .loop-option:active:not(:disabled) {
-    transform: translateY(0);
-  }
-
-  .loop-option:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .loop-option.applying {
-    pointer-events: none;
-  }
-
-  .applying-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: var(--theme-panel-bg);
-    color: var(--theme-accent);
-    font-size: var(--font-size-sm, 14px);
-    border-radius: var(--radius-md, 8px);
-  }
-
-  .applying-overlay i {
-    font-size: var(--font-size-xl, 1.5rem);
   }
 </style>
