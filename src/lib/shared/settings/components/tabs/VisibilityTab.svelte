@@ -24,6 +24,7 @@
 
   import MobileSegmentControl from "./visibility/MobileSegmentControl.svelte";
   import type { VisibilityMode } from "./visibility/visibility-types";
+  import GlobalEffectsSection from "./visibility/GlobalEffectsSection.svelte";
   import PictographPanel from "./visibility/PictographPanel.svelte";
   import AnimationPanel from "./visibility/AnimationPanel.svelte";
   import ImagePanel from "./visibility/ImagePanel.svelte";
@@ -69,6 +70,10 @@
   let animBpm = $state(60);
   let animTkaGlyphVisible = $state(true);
   let animTurnNumbersVisible = $state(true);
+
+  // Global effects state
+  let lightsOff = $state(false);
+  let propGlow = $state(false);
 
   // Image composition state
   let imgAddWord = $state(true);
@@ -200,6 +205,19 @@
         imageCompositionManager.setAddUserInfo(imgAddUserInfo);
         break;
     }
+  }
+
+  // Global effects toggle handlers
+  function handleLightsOffToggle() {
+    triggerHaptic();
+    lightsOff = !lightsOff;
+    animationVisibilityManager.setLightsOff(lightsOff);
+  }
+
+  function handlePropGlowToggle() {
+    triggerHaptic();
+    propGlow = !propGlow;
+    animationVisibilityManager.setPropGlow(propGlow);
   }
 
   onMount(() => {

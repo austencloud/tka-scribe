@@ -12,7 +12,9 @@
     ISequenceExtender,
     ExtensionAnalysis,
     LOOPType,
+    CircularizationOption,
   } from "../../services/contracts/ISequenceExtender";
+  import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { UndoOperationType } from "../../services/contracts/IUndoManager";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
@@ -87,6 +89,8 @@
   let showRotationDirectionDrawer = $state(false);
   let showExtendDrawer = $state(false);
   let extensionAnalysis = $state<ExtensionAnalysis | null>(null);
+  let circularizationOptions = $state<CircularizationOption[]>([]);
+  let directUnavailableReason = $state<string | null>(null);
   let isExtending = $state(false);
   let showShiftConfirmDialog = $state(false);
   let pendingShiftBeatNumber = $state<number | null>(null);
@@ -236,33 +240,60 @@
     hapticService?.trigger("success");
   }
 
-  function handleExtend() {
+  async function handleExtend() {
     if (!sequence || !sequenceExtender) return;
     hapticService?.trigger("selection");
 
     // Analyze the sequence to get available LOOP options
     const analysis = sequenceExtender.analyzeSequence(sequence);
 
-    if (!analysis.canExtend) {
-      toast.warning("Cannot extend this sequence");
-      return;
+    // Store the analysis
+    extensionAnalysis = analysis;
+
+    // Fetch circularization options (bridge letters) if direct LOOPs aren't available
+    if (!analysis.canExtend || analysis.availableLOOPOptions.length === 0) {
+      try {
+        circularizationOptions = await sequenceExtender.getCircularizationOptions(sequence);
+        if (circularizationOptions.length === 0) {
+          toast.warning("Cannot extend this sequence");
+          return;
+        }
+        directUnavailableReason = "Position groups don't match for direct extension";
+      } catch (error) {
+        console.error("[Extend] Failed to get circularization options:", error);
+        toast.warning("Cannot extend this sequence");
+        return;
+      }
+    } else {
+      circularizationOptions = [];
+      directUnavailableReason = null;
     }
 
-    // Store the analysis and show the drawer
-    extensionAnalysis = analysis;
     showExtendDrawer = true;
   }
 
-  async function handleExtendApply(loopType: LOOPType) {
+  async function handleExtendApply(bridgeLetter: Letter | null, loopType: LOOPType) {
     if (!sequence || !sequenceExtender || isExtending) return;
     isExtending = true;
     hapticService?.trigger("selection");
 
     try {
-      const extendedSequence = await sequenceExtender.extendSequence(
-        sequence,
-        { loopType }
-      );
+      let extendedSequence;
+
+      if (bridgeLetter) {
+        // Extend with a bridge letter first
+        extendedSequence = await sequenceExtender.extendWithBridge(
+          sequence,
+          bridgeLetter,
+          loopType
+        );
+      } else {
+        // Direct extension without bridge letter
+        extendedSequence = await sequenceExtender.extendSequence(
+          sequence,
+          { loopType }
+        );
+      }
 
       if (extendedSequence.beats?.length === sequence.beats?.length) {
         console.warn("[Extend] No new beats were added!");
@@ -275,13 +306,19 @@
 
       activeSequenceState.setCurrentSequence(extendedSequence);
       hapticService?.trigger("success");
-      toast.success(
-        `Extended with ${loopType.replace(/_/g, " ")}! Added ${(extendedSequence.beats?.length || 0) - (sequence.beats?.length || 0)} beats`
-      );
+
+      const beatsAdded = (extendedSequence.beats?.length || 0) - (sequence.beats?.length || 0);
+      const loopName = loopType.replace(/_/g, " ");
+      const message = bridgeLetter
+        ? `Extended via ${bridgeLetter} + ${loopName}! Added ${beatsAdded} beats`
+        : `Extended with ${loopName}! Added ${beatsAdded} beats`;
+      toast.success(message);
 
       // Close the drawer on success
       showExtendDrawer = false;
       extensionAnalysis = null;
+      circularizationOptions = [];
+      directUnavailableReason = null;
     } catch (error) {
       console.error("[Extend] Failed:", error);
       toast.error("Could not extend sequence");
@@ -608,11 +645,15 @@
 <ExtendDrawer
   bind:isOpen={showExtendDrawer}
   analysis={extensionAnalysis}
+  {circularizationOptions}
+  {directUnavailableReason}
   isApplying={isExtending}
   toolPanelWidth={panelState.toolPanelWidth}
   onClose={() => {
     showExtendDrawer = false;
     extensionAnalysis = null;
+    circularizationOptions = [];
+    directUnavailableReason = null;
   }}
   onApply={handleExtendApply}
 />

@@ -24,15 +24,21 @@ Now with smooth transitions when position or orientation changes!
     propAssets,
     propPosition,
     showProp = true,
+    propGlow = false,
     ledMode = false,
   } = $props<{
     motionData: MotionData;
     propAssets: PropAssets;
     propPosition: PropPosition;
     showProp?: boolean;
-    /** LED mode - applies glow effect to props */
+    /** Prop Glow - applies glowing drop-shadow effect to props */
+    propGlow?: boolean;
+    /** @deprecated Use propGlow instead. Kept for backward compatibility. */
     ledMode?: boolean;
   }>();
+
+  // Use propGlow if explicitly set, otherwise fall back to ledMode for compatibility
+  const effectiveGlow = $derived(propGlow || ledMode);
 
   // Get the glow color based on motion color
   const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
@@ -216,10 +222,10 @@ Now with smooth transitions when position or orientation changes!
 {#if showProp}
   <g
     class="prop-svg {motionData.color}-prop-svg"
-    class:led-mode={ledMode}
+    class:prop-glow={effectiveGlow}
     data-prop-type={motionData?.propType}
-    data-led-mode={ledMode}
-    style="transform: {transformString};{ledMode ? ` filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor});` : ''}"
+    data-prop-glow={effectiveGlow}
+    style="transform: {transformString};{effectiveGlow ? ` filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor});` : ''}"
   >
     {@html propAssets.imageSrc}
   </g>
