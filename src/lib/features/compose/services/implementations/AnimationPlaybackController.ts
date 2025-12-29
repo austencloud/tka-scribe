@@ -414,17 +414,27 @@ export class AnimationPlaybackController
     const beatDelta = (deltaTime / 1000) * beatsPerSecond;
     const newBeat = this.state.currentBeat + beatDelta;
 
-    // Determine animation end beat based on whether sequence is seamlessly loopable
-    // If seamlessly loopable, end at totalBeats (skip the start position beat)
-    // Otherwise, add 1 beat buffer to show start position again
-    const animationEndBeat = this.isSeamlesslyLoopable
-      ? this.state.totalBeats
-      : this.state.totalBeats + 1;
+    // Animation timing explained:
+    // - Start position is at currentBeat < 1 (before beat 1)
+    // - Beat N's motion spans from currentBeat N to N+1
+    // - For a 4-beat sequence, totalBeats = 4
+    // - To complete beat 4's motion, we need currentBeat to reach 5 (totalBeats + 1)
+    //
+    // For seamlessly loopable sequences (circular patterns):
+    // - Skip showing start position entirely in continuous playback
+    // - Loop from end of last beat (totalBeats + 1) back to beat 1
+    //
+    // For non-loopable sequences:
+    // - Show start position at the end before looping
+    // - Loop from totalBeats + 1 back to beat 0 (start position)
+    const animationEndBeat = this.state.totalBeats + 1;
 
     if (newBeat > animationEndBeat) {
       if (this.state.shouldLoop) {
-        // Loop back to start
-        this.state.setCurrentBeat(0);
+        // For seamlessly loopable sequences, skip start position and loop to beat 1
+        // For non-loopable sequences, show start position briefly by looping to 0
+        const loopBackBeat = this.isSeamlesslyLoopable ? 1 : 0;
+        this.state.setCurrentBeat(loopBackBeat);
 
         // Re-initialize engine if needed
         if (this.sequenceData) {

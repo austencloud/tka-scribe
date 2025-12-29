@@ -24,4 +24,15 @@ export interface ISequenceAnimationOrchestrator {
   getCurrentLetter(): Letter | null;
   isInitialized(): boolean;
   dispose(): void;
+
+  /**
+   * Check if currently showing the start position (before beat 1)
+   * Start position is conceptually different from beats - it's the pose held before animation begins
+   */
+  isAtStartPosition(): boolean;
+
+  /**
+   * Get the total number of motion beats (NOT including start position)
+   */
+  getTotalBeats(): number;
 }

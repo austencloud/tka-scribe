@@ -6,6 +6,7 @@
  */
 
 import type { BeatData } from "../../../create/shared/domain/models/BeatData";
+import type { StartPositionData } from "../../../create/shared/domain/models/StartPositionData";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import type {
   PropState,
@@ -15,6 +16,7 @@ import type {
   SequenceData,
   SequenceMetadata,
 } from "$lib/shared/foundation/domain/models/SequenceData";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
@@ -26,19 +28,32 @@ import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnima
 /**
  * Lightweight Animation Orchestrator
  * Coordinates focused services instead of doing everything itself
+ *
+ * IMPORTANT: Start position vs Beats distinction
+ * - Start position: The initial pose held BEFORE animation begins (not a beat)
+ * - Beats: The actual movements in the sequence (beat 1, beat 2, etc.)
+ *
+ * When currentBeat < 1: We're at the start position
+ * When currentBeat >= 1: We're at a motion beat (beat N uses this.beats[N-1])
  */
 @injectable()
 export class SequenceAnimationOrchestrator
   implements ISequenceAnimationOrchestrator
 {
+  // Start position is separate from beats - it's the pose before animation begins
+  private startPosition: PictographData | null = null;
+
+  // Motion beats (beat 1 = beats[0], beat 2 = beats[1], etc.)
   private beats: readonly BeatData[] = [];
-  private totalBeats = 0;
+  private totalBeats = 0; // Number of motion beats (NOT including start position)
+
   private hasMotionData = false;
   private missingMotionLogged = new Set<number>();
   private metadata: SequenceMetadata = { word: "", author: "", totalBeats: 0 };
   private initialized = false;
   private currentBeatIndex = 0;
   private currentBeatProgress = 0; // Sub-beat progress (0.0 to 1.0)
+  private atStartPosition = true; // Track if we're at start position
 
   constructor(
     @inject(TYPES.IAnimationStateService)
@@ -52,9 +67,20 @@ export class SequenceAnimationOrchestrator
   /**
    * Initialize with domain sequence data (PURE DOMAIN!)
    * Data arrives already normalized from SequenceService
+   *
+   * Start position and beats are stored separately:
+   * - startPosition: The initial pose before animation (not a beat)
+   * - beats: Motion beats (beat 1 = beats[0], beat 2 = beats[1], etc.)
    */
   initializeWithDomainData(sequenceData: SequenceData): boolean {
     try {
+      // Store start position separately (check both fields for backward compatibility)
+      this.startPosition =
+        (sequenceData.startPosition as PictographData) ??
+        (sequenceData.startingPositionBeat as PictographData) ??
+        null;
+
+      // Store motion beats (beat 1+)
       const beats = (sequenceData.beats ?? [])
         .filter((beat): beat is BeatData => !!beat)
         .map((beat, index) => ({
@@ -85,7 +111,7 @@ export class SequenceAnimationOrchestrator
       this.metadata = {
         word: sequenceData.word || sequenceData.name || "",
         author: (sequenceData.metadata["author"] as string) || "",
-        totalBeats: beats.length,
+        totalBeats: beats.length, // Number of motion beats (NOT including start position)
         propType: sequenceData.propType, // Legacy fallback
         bluePropType:
           settings.bluePropType || settings.propType || sequenceData.propType,
@@ -94,9 +120,10 @@ export class SequenceAnimationOrchestrator
         gridMode: sequenceData.gridMode,
       };
 
-      // Store domain beats directly - NO CONVERSION!
+      // Store motion beats - beat 1 is at index 0, beat 2 at index 1, etc.
       this.beats = beats;
       this.totalBeats = this.metadata.totalBeats;
+      this.atStartPosition = true; // Start at start position
 
       this.initializePropStates();
       this.initialized = true;
@@ -113,6 +140,10 @@ export class SequenceAnimationOrchestrator
 
   /**
    * Calculate animation state for given beat using focused services
+   *
+   * IMPORTANT: currentBeat semantics
+   * - currentBeat < 1: We're at the start position (use startPosition data)
+   * - currentBeat >= 1: We're at a motion beat (beat N uses this.beats[N-1])
    */
   calculateState(currentBeat: number): void {
     if (this.beats.length === 0 || this.totalBeats === 0) {
@@ -120,9 +151,70 @@ export class SequenceAnimationOrchestrator
       return;
     }
 
+    // Check if we're at start position (before beat 1)
+    this.atStartPosition = currentBeat < 1;
+
+    if (this.atStartPosition) {
+      // At start position - use start position data
+      this.currentBeatIndex = 0;
+      this.currentBeatProgress = 0;
+
+      if (!this.startPosition?.motions) {
+        // No start position data - use first beat's starting state
+        const firstBeat = this.beats[0];
+        if (firstBeat?.motions?.blue && firstBeat?.motions?.red) {
+          const initialAngles =
+            this.propInterpolationService.calculateInitialAngles(firstBeat);
+          if (initialAngles.isValid) {
+            this.animationStateService.setPropStates(
+              {
+                centerPathAngle: initialAngles.blueAngles.centerPathAngle,
+                staffRotationAngle: initialAngles.blueAngles.staffRotationAngle,
+              },
+              {
+                centerPathAngle: initialAngles.redAngles.centerPathAngle,
+                staffRotationAngle: initialAngles.redAngles.staffRotationAngle,
+              }
+            );
+          }
+        }
+        return;
+      }
+
+      // Use start position motion data
+      const startMotions = this.startPosition.motions;
+      if (startMotions?.blue && startMotions?.red) {
+        // Create a temporary beat-like structure for the interpolator
+        const startAsBeat = {
+          motions: startMotions,
+          beatNumber: 0,
+        } as BeatData;
+
+        const initialAngles =
+          this.propInterpolationService.calculateInitialAngles(startAsBeat);
+        if (initialAngles.isValid) {
+          this.animationStateService.setPropStates(
+            {
+              centerPathAngle: initialAngles.blueAngles.centerPathAngle,
+              staffRotationAngle: initialAngles.blueAngles.staffRotationAngle,
+            },
+            {
+              centerPathAngle: initialAngles.redAngles.centerPathAngle,
+              staffRotationAngle: initialAngles.redAngles.staffRotationAngle,
+            }
+          );
+        }
+      }
+      return;
+    }
+
+    // At a motion beat - adjust currentBeat to use correct array index
+    // Beat 1 uses beats[0], beat 2 uses beats[1], etc.
+    const adjustedBeat = currentBeat - 1;
+
     // Use focused service for beat calculations
     const beatState = this.beatCalculationService.calculateBeatState(
-      currentBeat,
+      adjustedBeat,
       this.beats,
       this.totalBeats
     );
@@ -133,6 +225,7 @@ export class SequenceAnimationOrchestrator
     }
 
     // Store current beat index and progress for trail rendering
+    // Note: currentBeatIndex here is the array index, not the beat number
     this.currentBeatIndex = beatState.currentBeatIndex;
     this.currentBeatProgress = beatState.beatProgress;
 
@@ -221,8 +314,35 @@ export class SequenceAnimationOrchestrator
 
   /**
    * Initialize prop states using focused services
+   * Priority: start position > first beat with motion > reset
    */
   private initializePropStates(): void {
+    // First try to use start position data (this is the initial pose before animation)
+    if (this.startPosition?.motions?.blue && this.startPosition?.motions?.red) {
+      const startAsBeat = {
+        motions: this.startPosition.motions,
+        beatNumber: 0,
+      } as BeatData;
+
+      const initialAngles =
+        this.propInterpolationService.calculateInitialAngles(startAsBeat);
+
+      if (initialAngles.isValid) {
+        this.animationStateService.setPropStates(
+          {
+            centerPathAngle: initialAngles.blueAngles.centerPathAngle,
+            staffRotationAngle: initialAngles.blueAngles.staffRotationAngle,
+          },
+          {
+            centerPathAngle: initialAngles.redAngles.centerPathAngle,
+            staffRotationAngle: initialAngles.redAngles.staffRotationAngle,
+          }
+        );
+        return;
+      }
+    }
+
+    // Fall back to first beat with motion data
     if (!this.beats || this.beats.length === 0) {
       console.warn(
         "SequenceAnimationOrchestrator: No beats available, using fallback"
@@ -231,7 +351,6 @@ export class SequenceAnimationOrchestrator
       return;
     }
 
-    // Use first beat that has motion data for initial state
     const firstBeatWithMotion = this.findFirstBeatWithMotion();
 
     if (!firstBeatWithMotion) {
@@ -250,12 +369,10 @@ export class SequenceAnimationOrchestrator
         {
           centerPathAngle: initialAngles.blueAngles.centerPathAngle,
           staffRotationAngle: initialAngles.blueAngles.staffRotationAngle,
-          // x,y are optional - only set for dash motions
         },
         {
           centerPathAngle: initialAngles.redAngles.centerPathAngle,
           staffRotationAngle: initialAngles.redAngles.staffRotationAngle,
-          // x,y are optional - only set for dash motions
         }
       );
     } else {
@@ -274,10 +391,20 @@ export class SequenceAnimationOrchestrator
   }
 
   /**
-   * Get the letter for the current beat
+   * Get the letter for the current beat or start position
    */
   getCurrentLetter(): Letter | null {
-    if (!this.initialized || this.beats.length === 0) {
+    if (!this.initialized) {
+      return null;
+    }
+
+    // At start position - return start position letter
+    if (this.atStartPosition && this.startPosition) {
+      return (this.startPosition as any).letter || null;
+    }
+
+    // At a motion beat
+    if (this.beats.length === 0) {
       return null;
     }
 
@@ -299,14 +426,31 @@ export class SequenceAnimationOrchestrator
   }
 
   /**
+   * Check if currently showing the start position (before beat 1)
+   * Start position is conceptually different from beats - it's the pose held before animation begins
+   */
+  isAtStartPosition(): boolean {
+    return this.atStartPosition;
+  }
+
+  /**
+   * Get the total number of motion beats (NOT including start position)
+   */
+  getTotalBeats(): number {
+    return this.totalBeats;
+  }
+
+  /**
    * Dispose of resources and reset state
    */
   dispose(): void {
+    this.startPosition = null;
     this.beats = [];
     this.totalBeats = 0;
     this.metadata = { word: "", author: "", totalBeats: 0 };
     this.initialized = false;
     this.currentBeatIndex = 0;
+    this.atStartPosition = true;
     this.animationStateService.resetPropStates();
   }
 }

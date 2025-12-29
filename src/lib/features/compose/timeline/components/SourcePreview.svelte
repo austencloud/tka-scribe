@@ -47,29 +47,49 @@
   let redPropState = $state<PropState | null>(null);
 
   // Derived values
-  const totalBeats = $derived(sequence?.beats?.length || 1);
+  // totalBeats = number of motion beats (NOT including start position)
+  const totalBeats = $derived(sequence?.beats?.length || 0);
   const displayName = $derived(sequence?.word || sequence?.name || "No sequence loaded");
 
+  // Check if we're at start position (before beat 1)
+  const isAtStartPosition = $derived(currentBeat < 1);
+
+  // Get current letter - start position has its own letter (e.g., "α")
   const currentLetter = $derived.by(() => {
     if (!sequence) return null;
-    const beatIndex = Math.floor(currentBeat);
 
-    if (beatIndex === 0 && sequence.startPosition) {
+    // At start position - return start position letter
+    if (isAtStartPosition && sequence.startPosition) {
       return (sequence.startPosition as any).letter || null;
     }
 
+    // At motion beat - beat N uses beats[N-1]
     if (sequence.beats && sequence.beats.length > 0) {
-      const clampedIndex = Math.max(0, Math.min(beatIndex, sequence.beats.length - 1));
+      const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
+      const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
+      const clampedIndex = Math.max(0, Math.min(arrayIndex, sequence.beats.length - 1));
       return sequence.beats[clampedIndex]?.letter || null;
     }
     return null;
   });
 
+  // Get current beat data - start position is separate from beats
   const currentBeatData = $derived.by(() => {
-    if (!sequence?.beats) return null;
-    const beatIndex = Math.floor(currentBeat);
-    const clampedIndex = Math.max(0, Math.min(beatIndex, sequence.beats.length - 1));
-    return sequence.beats[clampedIndex] || null;
+    if (!sequence) return null;
+
+    // At start position - return start position data
+    if (isAtStartPosition && sequence.startPosition) {
+      return sequence.startPosition as any;
+    }
+
+    // At motion beat - beat N uses beats[N-1]
+    if (sequence.beats && sequence.beats.length > 0) {
+      const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
+      const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
+      const clampedIndex = Math.max(0, Math.min(arrayIndex, sequence.beats.length - 1));
+      return sequence.beats[clampedIndex] || null;
+    }
+    return null;
   });
 
   // Initialize services on mount
@@ -166,8 +186,10 @@
 
     playbackInterval = window.setInterval(() => {
       currentBeat += 1 / stepsPerBeat;
-      if (currentBeat >= totalBeats) {
-        currentBeat = 0; // Loop
+      // Range: 0 (start position) to totalBeats (last motion beat)
+      // Loop back to start position after completing last beat
+      if (currentBeat > totalBeats) {
+        currentBeat = 0; // Loop back to start position
       }
     }, msPerStep);
   }
@@ -181,11 +203,11 @@
   }
 
   function goToStart() {
-    currentBeat = 0;
+    currentBeat = 0; // Go to start position
   }
 
   function goToEnd() {
-    currentBeat = Math.max(0, totalBeats - 1);
+    currentBeat = totalBeats; // Go to last motion beat
   }
 
   function stepBackward() {
@@ -193,7 +215,8 @@
   }
 
   function stepForward() {
-    currentBeat = Math.min(totalBeats - 1, Math.floor(currentBeat) + 1);
+    // Range: 0 (start position) to totalBeats (last motion beat)
+    currentBeat = Math.min(totalBeats, Math.floor(currentBeat) + 1);
   }
 
   function handleScrub(e: Event) {
@@ -254,7 +277,11 @@
 
       <!-- Beat indicator overlay -->
       <div class="beat-indicator">
-        Beat {Math.floor(currentBeat) + 1} / {totalBeats}
+        {#if isAtStartPosition}
+          Start
+        {:else}
+          Beat {Math.floor(currentBeat)} / {totalBeats}
+        {/if}
       </div>
 
       <!-- Playback status overlay -->
@@ -279,7 +306,7 @@
       <input
         type="range"
         min="0"
-        max={sequence ? totalBeats - 0.01 : 1}
+        max={sequence ? totalBeats : 1}
         step="0.01"
         value={currentBeat}
         oninput={handleScrub}

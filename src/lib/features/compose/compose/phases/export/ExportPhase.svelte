@@ -104,7 +104,7 @@
         <div class="empty-icon">
           <i class="fas fa-layer-group" aria-hidden="true"></i>
         </div>
-        <h3>Nothing to export</h3>
+        <h2>Nothing to export</h2>
         <p>Add sequences to your composition first</p>
         <p class="hint">Go back to Canvas to build your composition</p>
       </div>

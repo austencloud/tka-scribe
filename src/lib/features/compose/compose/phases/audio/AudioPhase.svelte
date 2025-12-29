@@ -295,7 +295,7 @@
               </div>
             {:else if bpmError}
               <div class="error-container">
-                <span class="error">
+                <span class="error" role="alert" aria-live="assertive">
                   <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
                   {bpmError}
                 </span>

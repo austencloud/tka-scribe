@@ -157,9 +157,10 @@ export class Canvas2DTrailRenderer {
   ): void {
     if (points.length < 2) return;
 
-    // Separate points by endType if tracking both ends (single-pass to avoid 2 array allocations)
+    // Separate points by endType based on tracking mode
     let pointSets: TrailPoint[][];
     if (settings.trackingMode === TrackingMode.BOTH_ENDS) {
+      // Both ends: render each end's trail separately
       const leftPoints: TrailPoint[] = [];
       const rightPoints: TrailPoint[] = [];
       for (let i = 0; i < points.length; i++) {
@@ -168,8 +169,22 @@ export class Canvas2DTrailRenderer {
         else rightPoints.push(p);
       }
       pointSets = [leftPoints, rightPoints];
+    } else if (settings.trackingMode === TrackingMode.LEFT_END) {
+      // Left end only: filter to endType 0
+      const leftPoints: TrailPoint[] = [];
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i]!;
+        if (p.endType === 0) leftPoints.push(p);
+      }
+      pointSets = [leftPoints];
     } else {
-      pointSets = [points]; // Single end (left or right)
+      // Right end only: filter to endType 1
+      const rightPoints: TrailPoint[] = [];
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i]!;
+        if (p.endType === 1) rightPoints.push(p);
+      }
+      pointSets = [rightPoints];
     }
 
     for (const pointSet of pointSets) {

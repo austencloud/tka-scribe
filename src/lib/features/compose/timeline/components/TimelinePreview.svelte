@@ -108,37 +108,55 @@
       return beat % totalBeats;
     }
 
-    return Math.min(beat, totalBeats - 0.001);
+    return Math.min(beat, totalBeats);
   });
 
+  // Check if we're at start position (before beat 1)
+  const isAtStartPosition = $derived(clipBeatPosition < 1);
+
   // Current letter derived from beat position
+  // Start position has its own letter (e.g., "α"), beats have their own
   const currentLetter = $derived.by(() => {
     if (!activeClip?.sequence) return null;
 
     const seq = activeClip.sequence;
-    const beatIndex = Math.floor(clipBeatPosition);
 
-    // At beat 0, show start position
-    if (beatIndex === 0 && seq.startPosition) {
+    // At start position - return start position letter
+    if (isAtStartPosition && seq.startPosition) {
       return (seq.startPosition as any).letter || null;
     }
 
-    // Get letter from beat
+    // At motion beat - beat N uses beats[N-1]
     if (seq.beats && seq.beats.length > 0) {
-      const clampedIndex = Math.max(0, Math.min(beatIndex, seq.beats.length - 1));
+      const beatNumber = Math.floor(clipBeatPosition); // 1, 2, 3, etc.
+      const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
+      const clampedIndex = Math.max(0, Math.min(arrayIndex, seq.beats.length - 1));
       return seq.beats[clampedIndex]?.letter || null;
     }
 
     return null;
   });
 
-  // Current beat data
+  // Current beat data - start position is separate from beats
   const currentBeatData = $derived.by(() => {
-    if (!activeClip?.sequence?.beats) return null;
+    if (!activeClip?.sequence) return null;
 
-    const beatIndex = Math.floor(clipBeatPosition);
-    const clampedIndex = Math.max(0, Math.min(beatIndex, activeClip.sequence.beats.length - 1));
-    return activeClip.sequence.beats[clampedIndex] || null;
+    const seq = activeClip.sequence;
+
+    // At start position - return start position data
+    if (isAtStartPosition && seq.startPosition) {
+      return seq.startPosition as any;
+    }
+
+    // At motion beat - beat N uses beats[N-1]
+    if (seq.beats && seq.beats.length > 0) {
+      const beatNumber = Math.floor(clipBeatPosition); // 1, 2, 3, etc.
+      const arrayIndex = beatNumber - 1; // beats[0] = beat 1, beats[1] = beat 2, etc.
+      const clampedIndex = Math.max(0, Math.min(arrayIndex, seq.beats.length - 1));
+      return seq.beats[clampedIndex] || null;
+    }
+
+    return null;
   });
 
   // Initialize services on mount
@@ -285,7 +303,11 @@
 
       <!-- Beat indicator overlay -->
       <div class="beat-indicator">
-        Beat {Math.floor(clipBeatPosition) + 1} / {activeClip.sequence.beats?.length || 1}
+        {#if isAtStartPosition}
+          Start
+        {:else}
+          Beat {Math.floor(clipBeatPosition)} / {activeClip.sequence.beats?.length || 1}
+        {/if}
       </div>
 
       <!-- Playback status overlay -->

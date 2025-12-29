@@ -140,7 +140,7 @@ Features:
   <!-- Grid -->
   <div class="grid-section">
     {#if browseState.error}
-      <div class="error-state">
+      <div class="error-state" role="alert" aria-live="assertive">
         <i class="fas fa-exclamation-triangle error-icon" aria-hidden="true"></i>
         <p class="error-message">{browseState.error}</p>
         <button class="retry-btn" onclick={() => browseState.loadAnimations()}>
