@@ -26,6 +26,11 @@
   import { keyboardShortcutState } from "$lib/shared/keyboard/state/keyboard-shortcut-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
+  // Effects system
+  import EffectsLayer from "./effects/EffectsLayer.svelte";
+  import EffectsControlPanel from "./effects/components/EffectsControlPanel.svelte";
+  import { getEffectsConfigState } from "./effects/state/effects-config-state.svelte";
+
   // CameraState type (matches Scene3D.svelte's internal definition)
   interface CameraState {
     position: [number, number, number];
@@ -43,6 +48,9 @@
   let persistenceService: IAnimation3DPersister | null = $state(null);
   let animState: Animation3DState | null = $state(null);
   let servicesReady = $state(false);
+
+  // Effects configuration state
+  const effectsConfig = getEffectsConfigState();
 
   // UI state
   let visiblePlanes = $state(new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]));

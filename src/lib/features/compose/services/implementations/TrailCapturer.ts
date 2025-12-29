@@ -138,6 +138,7 @@ export class TrailCapturer implements ITrailCapturer {
       mode: TrailMode.OFF,
       trackingMode: TrackingMode.RIGHT_END,
       style: TrailStyle.SMOOTH_LINE as TrailStyle, // Default trail style
+      effect: TrailEffect.NONE, // Default to no effect
       fadeDurationMs: 3000,
       maxPoints: 1000,
       lineWidth: 2,
