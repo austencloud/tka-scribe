@@ -1,90 +1,88 @@
-<!-- ActBrowser.svelte - Act browser component with grid layout -->
+<!--
+  ActBrowser.svelte - Vertical list of saved acts
+
+  Clean sidebar-style browser with act cards.
+-->
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { ActThumbnailInfo } from "../../word-card/domain/types/write";
   import { onMount } from "svelte";
-  import ActThumbnail from "./ActThumbnail.svelte";
+  import ActCard from "./ActCard.svelte";
 
-  // Props
-  let {
-    acts = [],
-    isLoading = false,
-    onActSelected,
-    onRefresh,
-  } = $props<{
+  interface Props {
     acts?: ActThumbnailInfo[];
+    selectedActId?: string | null;
     isLoading?: boolean;
     onActSelected?: (filePath: string) => void;
     onRefresh?: () => void;
-  }>();
+  }
 
-  // Services
+  let {
+    acts = [],
+    selectedActId = null,
+    isLoading = false,
+    onActSelected,
+    onRefresh,
+  }: Props = $props();
+
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
-  // Handle refresh
   function handleRefresh() {
-    // Trigger selection haptic feedback for refresh
     hapticService?.trigger("selection");
-
     onRefresh?.();
   }
 
-  // Handle act selection
   function handleActSelected(filePath: string) {
-    // Trigger selection haptic feedback for act selection
-    hapticService?.trigger("selection");
     onActSelected?.(filePath);
   }
 </script>
 
 <div class="act-browser">
-  <!-- Header -->
-  <div class="browser-header">
-    <h3 class="browser-title">Acts</h3>
+  <header class="browser-header">
+    <h3 class="browser-title">
+      <i class="fas fa-folder-open" aria-hidden="true"></i>
+      <span>Acts</span>
+      <span class="count">{acts.length}</span>
+    </h3>
     <button
-      class="refresh-button btn-glass"
+      class="icon-btn"
       onclick={handleRefresh}
       disabled={isLoading}
+      aria-label={isLoading ? "Loading" : "Refresh"}
+      title="Refresh"
     >
-      {#if isLoading}
-        🔄 Loading...
-      {:else}
-        🔄 Refresh
-      {/if}
+      <i class="fas fa-sync-alt" class:spinning={isLoading} aria-hidden="true"></i>
     </button>
-  </div>
+  </header>
 
-  <!-- Content -->
   <div class="browser-content">
     {#if isLoading}
-      <!-- Loading state -->
-      <div class="loading-state">
-        <div class="loading-spinner"></div>
+      <div class="state-container">
+        <div class="spinner"></div>
         <p>Loading acts...</p>
       </div>
     {:else if acts.length === 0}
-      <!-- Empty state -->
-      <div class="empty-state">
-        <div class="empty-icon">📄</div>
-        <h4>No Acts Found</h4>
-        <p>Create your first act to get started.</p>
-        <button class="refresh-button btn-primary" onclick={handleRefresh}>
-          🔄 Refresh
-        </button>
+      <div class="state-container">
+        <div class="empty-icon">
+          <i class="fas fa-theater-masks" aria-hidden="true"></i>
+        </div>
+        <p class="empty-title">No acts yet</p>
+        <p class="empty-hint">Create a new act to get started</p>
       </div>
     {:else}
-      <!-- Acts grid -->
-      <div class="acts-grid">
+      <div class="acts-list">
         {#each acts as act (act.id)}
-          <ActThumbnail actInfo={act} onActSelected={handleActSelected} />
+          <ActCard
+            actInfo={act}
+            isSelected={selectedActId === act.id}
+            onSelect={handleActSelected}
+          />
         {/each}
       </div>
     {/if}
@@ -96,182 +94,167 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 100%;
-    min-width: 252px;
-    background: var(--surface-color);
-    backdrop-filter: var(--glass-backdrop);
-    border: var(--glass-border);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-glass);
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-lg, 12px);
     overflow: hidden;
   }
 
   .browser-header {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-md);
-    background: var(--theme-card-bg);
-    border-bottom: var(--glass-border);
-    backdrop-filter: var(--glass-backdrop);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   .browser-title {
-    color: var(--text-color);
-    font-size: var(--font-size-lg);
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
     margin: 0;
-    text-shadow: var(--text-shadow-glass);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 600;
+    color: var(--theme-text, #ffffff);
   }
 
-  .refresh-button {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: 6px;
-    font-size: var(--font-size-sm);
+  .browser-title i {
+    color: var(--theme-accent, #f43f5e);
+    font-size: 0.85rem;
+  }
+
+  .count {
+    padding: 2px 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    font-size: var(--font-size-compact, 12px);
     font-weight: 500;
-    transition: all var(--transition-normal);
-    white-space: nowrap;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
-  .refresh-button:disabled {
-    opacity: 0.6;
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius-sm, 6px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .icon-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--theme-text, #ffffff);
+  }
+
+  .icon-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .icon-btn:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
+  }
+
+  .icon-btn i.spinning {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .browser-content {
     flex: 1;
     overflow-y: auto;
-    padding: var(--spacing-md);
+    padding: var(--spacing-xs);
   }
 
-  .loading-state {
+  .acts-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* States */
+  .state-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 200px;
-    gap: var(--spacing-md);
-  }
-
-  .loading-spinner {
-    width: 32px;
-    height: 32px;
-    border: 3px solid var(--theme-stroke);
-    border-top: 3px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .loading-state p {
-    color: var(--text-secondary);
-    margin: 0;
-  }
-
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 300px;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xl);
     text-align: center;
-    gap: var(--spacing-md);
+    min-height: 200px;
+  }
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top-color: var(--theme-accent, #f43f5e);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .state-container p {
+    margin: 0;
+    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .empty-icon {
-    font-size: 4rem;
-    opacity: 0.5;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 50%;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: 1.25rem;
   }
 
-  .empty-state h4 {
-    color: var(--text-color);
-    font-size: var(--font-size-lg);
-    margin: 0;
-    text-shadow: var(--text-shadow-glass);
+  .empty-title {
+    font-weight: 500;
+    color: var(--theme-text, #ffffff) !important;
   }
 
-  .empty-state p {
-    color: var(--text-secondary);
-    margin: 0;
-    max-width: 200px;
+  .empty-hint {
+    font-size: var(--font-size-compact, 12px) !important;
   }
 
-  .acts-grid {
-    display: grid;
-    /* 🎯 Pure CSS auto-fit grid - no JavaScript needed! */
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: var(--spacing-md);
-    justify-items: center;
-    align-items: start;
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .act-browser {
-      min-width: 200px;
-    }
-
-    .browser-header {
-      padding: var(--spacing-sm);
-    }
-
-    .browser-title {
-      font-size: var(--font-size-base);
-    }
-
-    .refresh-button {
-      padding: var(--spacing-xs);
-      font-size: var(--font-size-xs);
-    }
-
-    .browser-content {
-      padding: var(--spacing-sm);
-    }
-
-    .acts-grid {
-      gap: var(--spacing-sm);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .act-browser {
-      min-width: 152px;
-    }
-
-    .empty-state {
-      height: 200px;
-    }
-
-    .empty-icon {
-      font-size: 3rem;
-    }
-  }
-
-  /* Custom scrollbar */
+  /* Scrollbar */
   .browser-content::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
 
   .browser-content::-webkit-scrollbar-track {
     background: transparent;
-    border-radius: var(--border-radius-sm);
   }
 
   .browser-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
   }
 
   .browser-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon-btn,
+    .spinner,
+    .icon-btn i.spinning {
+      animation: none;
+      transition: none;
+    }
   }
 </style>

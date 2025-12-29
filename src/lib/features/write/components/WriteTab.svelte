@@ -230,6 +230,7 @@
     <div class="browser-section" style="width: {browserWidth}px;">
       <ActBrowser
         acts={availableActs}
+        selectedActId={currentAct?.id}
         {isLoading}
         onActSelected={handleActSelected}
         onRefresh={handleActBrowserRefresh}
@@ -237,14 +238,20 @@
     </div>
 
     <!-- Splitter -->
-    <button
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+    <div
       class="splitter"
       class:dragging={isDragging}
       onmousedown={handleSplitterMouseDown}
       onkeydown={handleSplitterKeyDown}
+      role="separator"
+      aria-orientation="vertical"
       aria-label="Resize panels"
-      type="button"
-    ></button>
+      aria-valuenow={browserWidth}
+      aria-valuemin={200}
+      aria-valuemax={500}
+      tabindex="0"
+    ></div>
 
     <!-- Right panel with act sheet and music player -->
     <div class="right-panel">
@@ -305,17 +312,38 @@
   }
 
   .splitter {
-    width: 4px;
-    background: var(--theme-stroke);
+    width: 12px;
+    background: transparent;
     cursor: col-resize;
-    transition: background-color var(--transition-fast);
+    transition: background-color 0.2s ease;
     flex-shrink: 0;
-    border: none;
+    position: relative;
   }
 
-  .splitter:hover,
-  .splitter.dragging {
-    background: var(--theme-accent, var(--primary-color));
+  .splitter::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    transform: translateX(-50%);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    transition: background-color 0.2s ease;
+  }
+
+  .splitter:hover::before,
+  .splitter.dragging::before {
+    background: var(--theme-accent, #6366f1);
+  }
+
+  .splitter:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: -2px;
+  }
+
+  .splitter:focus-visible::before {
+    background: var(--theme-accent, #6366f1);
   }
 
   .right-panel {
@@ -374,5 +402,12 @@
   /* Prevent text selection during drag */
   .splitter.dragging {
     user-select: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .splitter,
+    .splitter::before {
+      transition: none;
+    }
   }
 </style>

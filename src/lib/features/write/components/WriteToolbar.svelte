@@ -1,35 +1,36 @@
-<!-- WriteToolbar.svelte - Top toolbar with file operations -->
+<!--
+  WriteToolbar.svelte - Top toolbar with file operations
+
+  Controls for creating, saving, and managing acts.
+-->
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
-  // Props
+  interface Props {
+    hasUnsavedChanges?: boolean;
+    disabled?: boolean;
+    onNewActRequested?: () => void;
+    onSaveRequested?: () => void;
+    onSaveAsRequested?: () => void;
+  }
+
   let {
     hasUnsavedChanges = false,
     disabled = false,
     onNewActRequested,
     onSaveRequested,
     onSaveAsRequested,
-  } = $props<{
-    hasUnsavedChanges?: boolean;
-    disabled?: boolean;
-    onNewActRequested?: () => void;
-    onSaveRequested?: () => void;
-    onSaveAsRequested?: () => void;
-  }>();
+  }: Props = $props();
 
-  // Services
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
-  // Handle toolbar actions
   function handleNewAct() {
     if (disabled) return;
     hapticService?.trigger("selection");
@@ -50,154 +51,141 @@
 </script>
 
 <div class="write-toolbar" class:disabled>
-  <!-- File operations -->
-  <div class="toolbar-section file-operations">
+  <div class="toolbar-group">
     <button
-      class="toolbar-button new-button btn-primary"
+      class="toolbar-btn primary"
       {disabled}
       onclick={handleNewAct}
-      title="Create new act"
+      aria-label="Create new act"
     >
-      📄 New Act
+      <i class="fas fa-file-circle-plus" aria-hidden="true"></i>
+      <span class="btn-label">New Act</span>
     </button>
 
     <button
-      class="toolbar-button save-button btn-glass"
+      class="toolbar-btn"
       class:has-changes={hasUnsavedChanges}
       {disabled}
       onclick={handleSave}
-      title="Save current act"
+      aria-label={hasUnsavedChanges ? "Save act (unsaved changes)" : "Save act"}
     >
-      💾 Save
+      <i class="fas fa-floppy-disk" aria-hidden="true"></i>
+      <span class="btn-label">Save</span>
       {#if hasUnsavedChanges}
-        <span class="unsaved-indicator" aria-hidden="true">●</span>
-        <span class="sr-only">(unsaved changes)</span>
+        <span class="unsaved-dot" aria-hidden="true"></span>
       {/if}
     </button>
 
     <button
-      class="toolbar-button save-as-button btn-glass"
+      class="toolbar-btn"
       {disabled}
       onclick={handleSaveAs}
-      title="Save act with new name"
+      aria-label="Save act with new name"
     >
-      💾 Save As...
+      <i class="fas fa-file-export" aria-hidden="true"></i>
+      <span class="btn-label">Save As</span>
     </button>
   </div>
-
-  <!-- Spacer -->
-  <div class="toolbar-spacer"></div>
 </div>
 
 <style>
   .write-toolbar {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(40, 40, 50, 0.9);
-    border: 1px solid rgba(80, 80, 100, 0.4);
-    border-radius: 8px;
-    backdrop-filter: var(--glass-backdrop);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-lg, 12px);
     min-height: var(--min-touch-target);
-    transition: all var(--transition-normal);
+    transition: opacity 0.2s ease;
   }
 
   .write-toolbar.disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     pointer-events: none;
   }
 
-  .toolbar-section {
+  .toolbar-group {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
   }
 
-  .file-operations {
-    flex-shrink: 0;
-  }
-
-  .toolbar-spacer {
-    flex: 1;
-  }
-
-  .toolbar-button {
-    padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: 6px;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    font-family: "Segoe UI", sans-serif;
-    transition: all var(--transition-normal);
-    white-space: nowrap;
+  .toolbar-btn {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    position: relative;
-    border: 1px solid transparent;
+    padding: var(--spacing-xs) var(--spacing-md);
+    min-height: var(--min-touch-target);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-md, 8px);
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 500;
     cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
   }
 
-  .toolbar-button:disabled {
-    opacity: 0.5;
+  .toolbar-btn i {
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+
+  .toolbar-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+    transform: translateY(-1px);
+  }
+
+  .toolbar-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .toolbar-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .toolbar-btn:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
-    transform: none;
   }
 
-  .new-button {
-    background: rgba(70, 130, 180, 0.8);
-    border: 1px solid rgba(100, 150, 200, 0.6);
+  /* Primary action button (New Act) */
+  .toolbar-btn.primary {
+    background: var(--theme-accent, #f43f5e);
+    border-color: transparent;
     color: white;
   }
 
-  .new-button:hover:not(:disabled) {
-    background: rgba(80, 140, 190, 0.9);
-    transform: translateY(-1px);
+  .toolbar-btn.primary:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--theme-accent, #f43f5e) 85%, white);
+    border-color: transparent;
   }
 
-  .save-button,
-  .save-as-button {
-    background: rgba(60, 60, 70, 0.8);
-    border: 1px solid rgba(100, 100, 120, 0.4);
-    color: var(--theme-text);
+  .toolbar-btn.primary i {
+    opacity: 1;
   }
 
-  .save-button:hover:not(:disabled),
-  .save-as-button:hover:not(:disabled) {
-    background: rgba(70, 70, 80, 0.9);
-    border-color: rgba(120, 120, 140, 0.6);
-    transform: translateY(-1px);
+  /* Save button with unsaved changes */
+  .toolbar-btn.has-changes {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.4);
   }
 
-  .save-button.has-changes {
-    background: rgba(100, 150, 100, 0.8);
-    border-color: rgba(120, 170, 120, 0.6);
-    color: white;
+  .toolbar-btn.has-changes:hover:not(:disabled) {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: rgba(34, 197, 94, 0.5);
   }
 
-  .save-button.has-changes:hover:not(:disabled) {
-    background: rgba(110, 160, 110, 0.9);
-  }
-
-  .unsaved-indicator {
-    color: rgba(255, 200, 100, 0.9);
-    font-weight: bold;
-    font-size: var(--font-size-lg);
-    line-height: 1;
-    animation: pulse 2s infinite;
-  }
-
-  /* Screen reader only - visually hidden but accessible */
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  .unsaved-dot {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
   }
 
   @keyframes pulse {
@@ -206,62 +194,44 @@
       opacity: 1;
     }
     50% {
-      opacity: 0.5;
+      opacity: 0.4;
     }
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
+  /* Responsive */
+  @media (max-width: 600px) {
     .write-toolbar {
       padding: var(--spacing-xs) var(--spacing-sm);
-      gap: var(--spacing-sm);
-      min-height: var(--min-touch-target);
     }
 
-    .toolbar-section {
+    .toolbar-group {
       gap: var(--spacing-xs);
     }
 
-    .toolbar-button {
+    .toolbar-btn {
       padding: var(--spacing-xs) var(--spacing-sm);
-      font-size: var(--font-size-xs);
     }
 
-    .unsaved-indicator {
-      font-size: var(--font-size-base);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .write-toolbar {
-      flex-direction: column;
-      align-items: stretch;
-      gap: var(--spacing-xs);
-      padding: var(--spacing-xs);
-    }
-
-    .toolbar-section {
-      justify-content: center;
-    }
-
-    .toolbar-spacer {
+    .btn-label {
       display: none;
     }
 
-    .file-operations {
-      order: 1;
-    }
-
-    .toolbar-button {
-      flex: 1;
-      justify-content: center;
-      min-width: 0;
+    .toolbar-btn i {
+      font-size: 1.1rem;
     }
   }
 
-  /* Focus styles for accessibility */
-  .toolbar-button:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.6);
-    outline-offset: 2px;
+  @media (prefers-reduced-motion: reduce) {
+    .toolbar-btn {
+      transition: none;
+    }
+
+    .toolbar-btn:hover:not(:disabled) {
+      transform: none;
+    }
+
+    .unsaved-dot {
+      animation: none;
+    }
   }
 </style>

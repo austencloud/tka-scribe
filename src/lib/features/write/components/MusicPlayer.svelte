@@ -1,4 +1,12 @@
-<!-- MusicPlayer.svelte - Music player component with playback controls -->
+<!--
+  MusicPlayer.svelte - Compact music player with playback controls
+
+  Features:
+  - Play/Pause/Stop transport controls
+  - Timeline scrubber with seek
+  - Time display (current / total)
+  - Music file status indicator
+-->
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
@@ -10,7 +18,15 @@
   } from "../../word-card/domain/types/write";
   import { onMount } from "svelte";
 
-  // Props
+  interface Props {
+    playerState?: MusicPlayerState;
+    disabled?: boolean;
+    onPlayRequested?: () => void;
+    onPauseRequested?: () => void;
+    onStopRequested?: () => void;
+    onSeekRequested?: (position: number) => void;
+  }
+
   let {
     playerState = createDefaultMusicPlayerState(),
     disabled = false,
@@ -18,79 +34,48 @@
     onPauseRequested,
     onStopRequested,
     onSeekRequested,
-  } = $props<{
-    playerState?: MusicPlayerState;
-    disabled?: boolean;
-    onPlayRequested?: () => void;
-    onPauseRequested?: () => void;
-    onStopRequested?: () => void;
-    onSeekRequested?: (position: number) => void;
-  }>();
+  }: Props = $props();
 
-  // Local state for seeking
   let isSeeking = $state(false);
   let seekPosition = $state(0);
-
-  // Services
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
-  // Handle play button
   function handlePlay() {
     if (disabled || !playerState.isLoaded) return;
-
-    // Trigger selection haptic feedback for play button
     hapticService?.trigger("selection");
-
     onPlayRequested?.();
   }
 
-  // Handle pause button
   function handlePause() {
     if (disabled) return;
-
-    // Trigger selection haptic feedback for pause button
     hapticService?.trigger("selection");
-
     onPauseRequested?.();
   }
 
-  // Handle stop button
   function handleStop() {
     if (disabled) return;
-
-    // Trigger selection haptic feedback for stop button
     hapticService?.trigger("selection");
-
     onStopRequested?.();
   }
 
-  // Handle seek start
   function handleSeekStart() {
     if (disabled || !playerState.isLoaded) return;
-
-    // Trigger selection haptic feedback when starting to seek
     hapticService?.trigger("selection");
-
     isSeeking = true;
     seekPosition = playerState.currentTime;
   }
 
-  // Handle seek end
   function handleSeekEnd() {
     if (disabled || !playerState.isLoaded) return;
-    // Trigger navigation haptic feedback for seek end
     hapticService?.trigger("selection");
     isSeeking = false;
     onSeekRequested?.(seekPosition);
   }
 
-  // Handle slider input
   function handleSliderInput(event: Event) {
     if (disabled || !playerState.isLoaded) return;
     const target = event.target as HTMLInputElement;
@@ -98,7 +83,6 @@
     seekPosition = (value / 1000) * playerState.duration;
   }
 
-  // Computed values
   const sliderValue = $derived(
     !playerState.isLoaded || playerState.duration === 0
       ? 0
@@ -112,34 +96,30 @@
   );
 
   const totalTimeDisplay = $derived(formatTime(playerState.duration));
-
-  const statusText = $derived(
-    !playerState.isLoaded
-      ? "No music loaded"
-      : `♪ ${playerState.filename || "Music loaded"}`
-  );
-
-  const statusColor = $derived(
-    playerState.isLoaded
-      ? "rgba(100, 200, 100, 0.9)"
-      : "var(--theme-text-dim)"
-  );
 </script>
 
 <div class="music-player" class:disabled>
-  <!-- Top row: Title and status -->
-  <div class="title-row">
-    <span class="title">🎵 Music Player</span>
-    <span class="status" style="color: {statusColor}">
-      {statusText}
-    </span>
+  <!-- Header row -->
+  <div class="player-header">
+    <div class="title">
+      <i class="fas fa-music" aria-hidden="true"></i>
+      <span>Music</span>
+    </div>
+    <div class="status" class:loaded={playerState.isLoaded}>
+      {#if playerState.isLoaded}
+        <i class="fas fa-circle-check" aria-hidden="true"></i>
+        <span class="filename">{playerState.filename || "Loaded"}</span>
+      {:else}
+        <span class="no-music">No music loaded</span>
+      {/if}
+    </div>
   </div>
 
-  <!-- Position slider -->
-  <div class="slider-container">
+  <!-- Timeline -->
+  <div class="timeline">
     <input
       type="range"
-      class="position-slider"
+      class="scrubber"
       min="0"
       max="1000"
       value={sliderValue}
@@ -149,71 +129,66 @@
       onmouseup={handleSeekEnd}
       ontouchstart={handleSeekStart}
       ontouchend={handleSeekEnd}
+      aria-label="Playback position"
     />
+    <div class="time-display">
+      <span class="current">{currentTimeDisplay}</span>
+      <span class="separator">/</span>
+      <span class="total">{totalTimeDisplay}</span>
+    </div>
   </div>
 
-  <!-- Controls row -->
-  <div class="controls-row">
-    <!-- Time display -->
-    <div class="time-display">
-      <span class="current-time">{currentTimeDisplay}</span>
-      <span class="time-separator">/</span>
-      <span class="total-time">{totalTimeDisplay}</span>
-    </div>
+  <!-- Transport controls -->
+  <div class="transport">
+    <button
+      class="transport-btn"
+      class:active={playerState.isPlaying}
+      disabled={disabled || !playerState.isLoaded || playerState.isPlaying}
+      onclick={handlePlay}
+      aria-label="Play"
+    >
+      <i class="fas fa-play" aria-hidden="true"></i>
+    </button>
 
-    <!-- Control buttons -->
-    <div class="control-buttons">
-      <button
-        class="control-button play-button"
-        disabled={disabled || !playerState.isLoaded || playerState.isPlaying}
-        onclick={handlePlay}
-        title="Play"
-      >
-        ▶
-      </button>
+    <button
+      class="transport-btn"
+      disabled={disabled || !playerState.isPlaying}
+      onclick={handlePause}
+      aria-label="Pause"
+    >
+      <i class="fas fa-pause" aria-hidden="true"></i>
+    </button>
 
-      <button
-        class="control-button pause-button"
-        disabled={disabled || !playerState.isPlaying}
-        onclick={handlePause}
-        title="Pause"
-      >
-        ⏸
-      </button>
-
-      <button
-        class="control-button stop-button"
-        disabled={disabled || !playerState.isLoaded}
-        onclick={handleStop}
-        title="Stop"
-      >
-        ⏹
-      </button>
-    </div>
+    <button
+      class="transport-btn"
+      disabled={disabled || !playerState.isLoaded}
+      onclick={handleStop}
+      aria-label="Stop"
+    >
+      <i class="fas fa-stop" aria-hidden="true"></i>
+    </button>
   </div>
 </div>
 
 <style>
   .music-player {
-    background: var(--surface-color);
-    backdrop-filter: var(--glass-backdrop);
-    border: var(--glass-border);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-glass);
-    padding: var(--spacing-sm) var(--spacing-md);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
-    min-height: 85px;
-    transition: all var(--transition-normal);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-lg, 12px);
+    transition: opacity 0.2s ease;
   }
 
   .music-player.disabled {
-    opacity: 0.6;
+    opacity: 0.5;
     pointer-events: none;
   }
 
-  .title-row {
+  /* Header */
+  .player-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -221,215 +196,187 @@
   }
 
   .title {
-    color: var(--theme-text, var(--theme-text));
-    font-size: var(--font-size-sm);
-    font-weight: bold;
-    font-family: "Segoe UI", sans-serif;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 600;
+  }
+
+  .title i {
+    color: var(--theme-accent, #f43f5e);
+    font-size: 0.9rem;
   }
 
   .status {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    font-family: "Segoe UI", sans-serif;
-    transition: color var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
-  .slider-container {
-    width: 100%;
+  .status.loaded {
+    color: #22c55e;
   }
 
-  .position-slider {
+  .status.loaded i {
+    font-size: 0.8rem;
+  }
+
+  .filename {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .no-music {
+    font-style: italic;
+  }
+
+  /* Timeline */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .scrubber {
     width: 100%;
     height: 6px;
-    background: var(--theme-stroke);
-    border-radius: var(--border-radius-sm);
+    background: var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 3px;
     outline: none;
     cursor: pointer;
-    transition: all var(--transition-normal);
     -webkit-appearance: none;
     appearance: none;
+    transition: opacity 0.2s ease;
   }
 
-  .position-slider::-webkit-slider-track {
-    height: 6px;
-    background: var(--theme-stroke);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
-  }
-
-  .position-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 16px;
-    width: 16px;
-    background: var(--primary-color);
-    border: 1px solid var(--primary-light);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
-  }
-
-  .position-slider::-webkit-slider-thumb:hover {
-    background: var(--primary-light);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
-  }
-
-  .position-slider::-moz-range-track {
-    height: 6px;
-    background: var(--theme-stroke);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke-strong, var(--theme-stroke-strong));
-  }
-
-  .position-slider::-moz-range-thumb {
-    height: 16px;
-    width: 16px;
-    background: var(--primary-color);
-    border: 1px solid var(--primary-light);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-  }
-
-  .position-slider:disabled {
-    opacity: 0.5;
+  .scrubber:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
-  .controls-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--spacing-md);
+  .scrubber::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--theme-accent, #f43f5e);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+
+  .scrubber:not(:disabled)::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+
+  .scrubber::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--theme-accent, #f43f5e);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
   }
 
   .time-display {
     display: flex;
     align-items: center;
-    gap: var(--spacing-xs);
-    font-size: var(--font-size-sm);
-    font-family: "Segoe UI", sans-serif;
-    color: var(--theme-text, var(--text-color, var(--theme-text)));
+    gap: 4px;
+    font-size: var(--font-size-compact, 12px);
+    font-variant-numeric: tabular-nums;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
-  .time-separator {
-    color: var(
-      --theme-text-dim,
-      var(--text-secondary, var(--theme-text-dim))
-    );
+  .current {
+    color: var(--theme-text, #ffffff);
   }
 
-  .control-buttons {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
+  .separator {
+    opacity: 0.5;
   }
 
-  .control-button {
-    background: var(--primary-color);
-    border: 1px solid var(--primary-light);
-    border-radius: var(--border-radius-sm);
-    color: white;
-    font-weight: bold;
-    font-size: var(--font-size-sm);
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
-    cursor: pointer;
-    transition: all var(--transition-normal);
+  /* Transport controls */
+  .transport {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+    gap: var(--spacing-sm);
   }
 
-  .control-button:hover:not(:disabled) {
-    background: var(--primary-light);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+  .transport-btn {
+    width: var(--min-touch-target);
+    height: var(--min-touch-target);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 50%;
+    color: var(--theme-text, #ffffff);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
   }
 
-  .control-button:active:not(:disabled) {
-    background: var(--primary-dark);
-    transform: translateY(0);
+  .transport-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.2));
+    transform: scale(1.05);
   }
 
-  .control-button:disabled {
-    background: var(--theme-card-bg);
-    border-color: var(--theme-stroke, var(--theme-stroke));
-    color: var(
-      --theme-text-dim,
-      var(--text-secondary, var(--theme-text-dim))
-    );
+  .transport-btn:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .transport-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .transport-btn:disabled {
+    opacity: 0.3;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
   }
 
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
+  .transport-btn.active {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #22c55e;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
     .music-player {
-      padding: var(--spacing-xs) var(--spacing-sm);
-      min-height: 70px;
+      padding: var(--spacing-sm);
     }
 
-    .title-row {
+    .player-header {
       flex-direction: column;
       align-items: flex-start;
       gap: var(--spacing-xs);
     }
 
-    .title,
-    .status {
-      font-size: var(--font-size-xs);
-    }
-
-    .controls-row {
-      flex-direction: column;
-      gap: var(--spacing-xs);
-    }
-
-    .time-display {
-      font-size: var(--font-size-xs);
-    }
-
-    .control-button {
-      width: var(--min-touch-target);
-      height: var(--min-touch-target);
-      font-size: var(--font-size-xs);
+    .filename {
+      max-width: 200px;
     }
   }
 
-  @media (max-width: 480px) {
-    .music-player {
-      padding: var(--spacing-xs);
-      min-height: 60px;
+  @media (prefers-reduced-motion: reduce) {
+    .transport-btn,
+    .scrubber::-webkit-slider-thumb {
+      transition: none;
     }
 
-    .title,
-    .status {
-      font-size: var(
-        --font-size-compact,
-        12px
-      ); /* Supplementary, compact minimum */
-    }
-
-    .time-display {
-      font-size: var(
-        --font-size-compact,
-        12px
-      ); /* Supplementary, compact minimum */
-    }
-
-    .control-button {
-      width: var(--min-touch-target);
-      height: var(--min-touch-target);
-      font-size: var(--font-size-compact); /* Touch target maintained */
+    .transport-btn:hover:not(:disabled),
+    .scrubber:not(:disabled)::-webkit-slider-thumb:hover {
+      transform: none;
     }
   }
 </style>

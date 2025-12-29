@@ -1,4 +1,6 @@
-<!-- ActHeader.svelte - Act name, description, and music controls -->
+<!--
+  ActHeader.svelte - Editable act name and description with music controls
+-->
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
@@ -6,41 +8,30 @@
   import type { ActData } from "../../word-card/domain/types/write";
   import { onMount } from "svelte";
 
-  // Props
-  let {
-    act,
-    disabled = false,
-    onActInfoChanged,
-    onMusicLoadRequested,
-  } = $props<{
+  interface Props {
     act: ActData;
     disabled?: boolean;
     onActInfoChanged?: (name: string, description: string) => void;
     onMusicLoadRequested?: () => void;
-  }>();
+  }
 
-  // Services
+  let { act, disabled = false, onActInfoChanged, onMusicLoadRequested }: Props = $props();
+
   let hapticService: IHapticFeedback;
-
-  onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-  });
-
-  // Local state for editing - initialized with defaults, synced from act via $effect below
   let nameInput = $state("");
   let descriptionInput = $state("");
   let isEditingName = $state(false);
   let isEditingDescription = $state(false);
 
-  // Update inputs when act changes
+  onMount(() => {
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
+  });
+
   $effect(() => {
     nameInput = act.name || "";
     descriptionInput = act.description || "";
   });
 
-  // Handle name editing
   function startEditingName() {
     if (disabled) return;
     hapticService?.trigger("selection");
@@ -55,15 +46,13 @@
   }
 
   function handleNameKeydown(event: KeyboardEvent) {
-    if (event.key === "Enter") {
-      finishEditingName();
-    } else if (event.key === "Escape") {
+    if (event.key === "Enter") finishEditingName();
+    else if (event.key === "Escape") {
       nameInput = act.name || "";
       isEditingName = false;
     }
   }
 
-  // Handle description editing
   function startEditingDescription() {
     if (disabled) return;
     hapticService?.trigger("selection");
@@ -87,111 +76,86 @@
     }
   }
 
-  // Handle music load request
-  function handleMusicLoadClick() {
+  function handleMusicClick() {
     if (disabled) return;
     hapticService?.trigger("selection");
     onMusicLoadRequested?.();
   }
+
+  function formatDuration(seconds: number): string {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${String(secs).padStart(2, "0")}`;
+  }
 </script>
 
 <div class="act-header" class:disabled>
-  <!-- Act name section -->
-  <div class="name-section">
-    <div class="name-label">Act Name</div>
+  <!-- Name -->
+  <div class="field">
     {#if isEditingName}
       <input
-        class="name-input editing"
+        class="field-input title-input"
+        type="text"
         bind:value={nameInput}
         onblur={finishEditingName}
         onkeydown={handleNameKeydown}
-        placeholder="Enter act name..."
+        placeholder="Act name..."
       />
     {:else}
-      <div
-        class="name-display"
-        class:empty={!nameInput}
+      <button
+        class="field-display title-display"
+        class:placeholder={!nameInput}
         onclick={startEditingName}
-        tabindex="0"
-        role="button"
-        aria-label="Edit act name"
-        onkeydown={(e) =>
-          (e.key === "Enter" || e.key === " ") && startEditingName()}
+        type="button"
       >
         {nameInput || "Untitled Act"}
-      </div>
+        <i class="fas fa-pen edit-icon" aria-hidden="true"></i>
+      </button>
     {/if}
   </div>
 
-  <!-- Act description section -->
-  <div class="description-section">
-    <div class="description-label">Description</div>
+  <!-- Description -->
+  <div class="field">
     {#if isEditingDescription}
       <textarea
-        class="description-input editing"
+        class="field-input desc-input"
         bind:value={descriptionInput}
         onblur={finishEditingDescription}
         onkeydown={handleDescriptionKeydown}
-        placeholder="Enter act description..."
-        rows="3"
+        placeholder="Add a description..."
+        rows="2"
       ></textarea>
     {:else}
-      <div
-        class="description-display"
-        class:empty={!descriptionInput}
+      <button
+        class="field-display desc-display"
+        class:placeholder={!descriptionInput}
         onclick={startEditingDescription}
-        tabindex="0"
-        role="button"
-        aria-label="Edit act description"
-        onkeydown={(e) =>
-          (e.key === "Enter" || e.key === " ") && startEditingDescription()}
+        type="button"
       >
-        {descriptionInput || "Click to add description..."}
-      </div>
+        {descriptionInput || "Add a description..."}
+      </button>
     {/if}
   </div>
 
-  <!-- Music section -->
-  <div class="music-section">
-    <div class="music-label">Music</div>
-    <div class="music-controls">
-      <button
-        class="music-load-btn"
-        onclick={handleMusicLoadClick}
-        {disabled}
-        title="Load music file for this act"
-      >
+  <!-- Stats row -->
+  <div class="stats-row">
+    <button class="music-btn" onclick={handleMusicClick} {disabled} type="button">
+      <i class="fas fa-music" aria-hidden="true"></i>
+      <span class="music-label">
         {#if act.musicFile}
-          🎵 {act.musicFile.name}
+          {act.musicFile.name}
+          {#if act.musicFile.duration}
+            <span class="duration">({formatDuration(act.musicFile.duration)})</span>
+          {/if}
         {:else}
-          🎵 Load Music
+          Add music
         {/if}
-      </button>
-      {#if act.musicFile}
-        <div class="music-info">
-          <span class="music-duration">
-            {act.musicFile.duration
-              ? `${Math.floor(act.musicFile.duration / 60)}:${String(Math.floor(act.musicFile.duration % 60)).padStart(2, "0")}`
-              : ""}
-          </span>
-        </div>
-      {/if}
-    </div>
-  </div>
-
-  <!-- Act stats -->
-  <div class="stats-section">
-    <div class="stat">
-      <span class="stat-label">Sequences:</span>
-      <span class="stat-value">{act.sequences?.length || 0}</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Duration:</span>
-      <span class="stat-value">
-        {act.musicFile?.duration
-          ? `${Math.floor(act.musicFile.duration / 60)}:${String(Math.floor(act.musicFile.duration % 60)).padStart(2, "0")}`
-          : "Unknown"}
       </span>
+    </button>
+
+    <div class="stat">
+      <i class="fas fa-layer-group" aria-hidden="true"></i>
+      <span>{act.sequences?.length || 0} sequences</span>
     </div>
   </div>
 </div>
@@ -200,178 +164,178 @@
   .act-header {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
-    padding: var(--spacing-lg);
-    background: var(--theme-card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--theme-stroke);
-    transition: all var(--transition-normal);
-  }
-
-  .act-header.disabled {
-    opacity: 0.6;
-    pointer-events: none;
-  }
-
-  .name-section,
-  .description-section,
-  .music-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-
-  .name-label,
-  .description-label,
-  .music-label {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.75);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .name-display,
-  .description-display {
-    padding: var(--spacing-sm);
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    color: var(--theme-text);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    min-height: var(--min-touch-target);
-    display: flex;
-    align-items: center;
-  }
-
-  .name-display:hover,
-  .description-display:hover {
-    background: rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .name-display.empty,
-  .description-display.empty {
-    color: rgba(255, 255, 255, 0.75);
-    font-style: italic;
-  }
-
-  .name-input,
-  .description-input {
-    padding: var(--spacing-sm);
-    background: rgba(0, 0, 0, 0.5);
-    border: 2px solid rgba(74, 144, 226, 0.8);
-    border-radius: 4px;
-    color: var(--theme-text);
-    font-size: var(--font-size-base);
-    outline: none;
-    transition: all var(--transition-fast);
-  }
-
-  .name-input.editing,
-  .description-input.editing {
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
-  }
-
-  .description-input {
-    resize: vertical;
-    min-height: 60px;
-    font-family: inherit;
-  }
-
-  .music-controls {
-    display: flex;
-    align-items: center;
     gap: var(--spacing-sm);
   }
 
-  .music-load-btn {
+  .act-header.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .field {
+    position: relative;
+  }
+
+  .field-input {
+    width: 100%;
     padding: var(--spacing-sm) var(--spacing-md);
-    background: rgba(74, 144, 226, 0.2);
-    border: 1px solid rgba(74, 144, 226, 0.4);
-    border-radius: 4px;
-    color: var(--theme-text);
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--theme-accent, #6366f1);
+    border-radius: var(--border-radius-md, 8px);
+    color: var(--theme-text, #ffffff);
+    font-family: inherit;
+    outline: none;
+  }
+
+  .field-input:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  .title-input {
+    font-size: var(--font-size-lg, 18px);
+    font-weight: 600;
+  }
+
+  .desc-input {
+    font-size: var(--font-size-sm, 14px);
+    resize: none;
+    min-height: 60px;
+  }
+
+  .field-display {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-md, 8px);
+    color: var(--theme-text, #ffffff);
+    text-align: left;
     cursor: pointer;
-    transition: all var(--transition-fast);
-    font-size: var(--font-size-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
+    transition: all 0.15s ease;
   }
 
-  .music-load-btn:hover:not(:disabled) {
-    background: rgba(74, 144, 226, 0.3);
-    border-color: rgba(74, 144, 226, 0.6);
+  .field-display:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
 
-  .music-load-btn:disabled {
+  .field-display:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .field-display.placeholder {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+    font-style: italic;
+  }
+
+  .title-display {
+    font-size: var(--font-size-lg, 18px);
+    font-weight: 600;
+  }
+
+  .desc-display {
+    font-size: var(--font-size-sm, 14px);
+    line-height: 1.4;
+  }
+
+  .edit-icon {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    opacity: 0;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    transition: opacity 0.15s ease;
+  }
+
+  .field-display:hover .edit-icon {
+    opacity: 1;
+  }
+
+  .stats-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding-top: var(--spacing-xs);
+  }
+
+  .music-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: transparent;
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-md, 8px);
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .music-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+  }
+
+  .music-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .music-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  .music-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.75);
+  .music-btn i {
+    color: var(--theme-accent, #f43f5e);
+    font-size: 0.8rem;
   }
 
-  .stats-section {
-    display: flex;
-    gap: var(--spacing-lg);
-    padding-top: var(--spacing-sm);
-    border-top: 1px solid var(--theme-stroke);
+  .music-label {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .duration {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
   .stat {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
+    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 
-  .stat-label {
-    font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.75);
-  }
-
-  .stat-value {
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: rgba(255, 255, 255, 0.8);
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .act-header {
-      padding: var(--spacing-md);
-      gap: var(--spacing-sm);
-    }
-
-    .stats-section {
-      flex-direction: column;
-      gap: var(--spacing-xs);
-    }
-
-    .music-load-btn {
-      max-width: 152px;
-    }
+  .stat i {
+    font-size: 0.75rem;
+    opacity: 0.7;
   }
 
   @media (max-width: 480px) {
-    .act-header {
-      padding: var(--spacing-sm);
-    }
-
-    .music-controls {
+    .stats-row {
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
+      gap: var(--spacing-xs);
     }
 
-    .music-load-btn {
-      max-width: none;
+    .music-label {
+      max-width: 150px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .field-display,
+    .music-btn,
+    .edit-icon {
+      transition: none;
     }
   }
 </style>
