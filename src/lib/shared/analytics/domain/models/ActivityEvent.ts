@@ -82,7 +82,7 @@ export interface ActivityMetadata {
 
   // Generation context
   generationType?: string;
-  capType?: string;
+  loopType?: string;
 
   // Learn context
   lessonId?: string;

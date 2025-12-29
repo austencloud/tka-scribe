@@ -13,7 +13,7 @@ import type { BeatData } from "../../../../features/create/shared/domain/models/
 import type { StartPositionData } from "../../../../features/create/shared/domain/models/StartPositionData";
 import type { GridPositionGroup } from "../../../pictograph/grid/domain/enums/grid-enums";
 import type { PropType } from "../../../pictograph/prop/domain/enums/PropType";
-import type { CAPType } from "../../../../features/create/generate/circular/domain/models/circular-models";
+import type { LOOPType } from "../../../../features/create/generate/circular/domain/models/circular-models";
 
 export interface SequenceData {
   readonly id: string;
@@ -44,8 +44,11 @@ export interface SequenceData {
    */
   readonly isFavorite: boolean;
   readonly isCircular: boolean;
-  /** Detected Continuous Assembly Pattern type (populated by migration/save) */
-  readonly capType?: CAPType | null;
+  /**
+   * LOOP type - Linked Offset Operation Pattern (TKA's algorithmic extension patterns)
+   * Formerly known as CAP type (Continuous Assembly Pattern).
+   */
+  readonly loopType?: LOOPType | null;
   /** Number of sequence repetitions needed to return to starting orientation (1, 2, or 4) */
   readonly orientationCycleCount?: 1 | 2 | 4;
   readonly difficultyLevel?: string;
@@ -82,7 +85,7 @@ export function createSequenceData(
     thumbnails: data.thumbnails ?? [],
     isFavorite: data.isFavorite ?? false,
     isCircular: data.isCircular ?? false,
-    ...(data.capType !== undefined && { capType: data.capType }),
+    ...(data.loopType !== undefined && { loopType: data.loopType }),
     ...(data.orientationCycleCount !== undefined && { orientationCycleCount: data.orientationCycleCount }),
     tags: data.tags ?? [],
     metadata: data.metadata ?? {},

@@ -53,9 +53,13 @@ export const CreateTypes = {
   ISwipeDetector: Symbol.for("ISwipeDetector"),
   IPathToMotionConverter: Symbol.for("IPathToMotionConverter"),
 
-  // Autocomplete
-  IAutocompleter: Symbol.for("IAutocompleter"),
+  // Sequence Extension
+  ISequenceExtender: Symbol.for("ISequenceExtender"),
 
   // Panel Management
   IPanelPersister: Symbol.for("IPanelPersister"),
+
+  // Spell Tab (Word-to-Sequence)
+  ILetterTransitionGraph: Symbol.for("ILetterTransitionGraph"),
+  IWordSequenceGenerator: Symbol.for("IWordSequenceGenerator"),
 } as const;

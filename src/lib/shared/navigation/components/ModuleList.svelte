@@ -16,6 +16,7 @@
   import type { ModuleDefinition, ModuleId } from "../domain/types";
   import type { IHapticFeedback } from "../../application/services/contracts/IHapticFeedback";
   import { resolve, TYPES, preloadFeatureModule } from "../../inversify/di";
+  import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { onMount } from "svelte";
 
   let {
@@ -166,10 +167,12 @@
 
   /**
    * Get badge count for a module
-   * Note: Inbox module removed - badges accessible via Dashboard widget drawer
+   * Dashboard shows notification count so users know where to go
    */
-  function getModuleBadgeCount(_moduleId: ModuleId): number {
-    // No modules currently have badges (inbox moved to Dashboard drawer)
+  function getModuleBadgeCount(moduleId: ModuleId): number {
+    if (moduleId === "dashboard") {
+      return inboxState.unreadNotificationCount;
+    }
     return 0;
   }
 

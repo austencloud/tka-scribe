@@ -6,8 +6,12 @@
 -->
 <script lang="ts">
   import AnimationPreviewController from "./AnimationPreviewController.svelte";
-  import CyclingButton from "./CyclingButton.svelte";
   import type { TrailStyle, PlaybackMode } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import {
+    animationSettings,
+    TrailMode,
+    TrackingMode,
+  } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
 
   interface Props {
     gridVisible: boolean;
@@ -16,7 +20,6 @@
     playbackMode: PlaybackMode;
     bpm: number;
     tkaGlyphVisible: boolean;
-    reversalIndicatorsVisible: boolean;
     turnNumbersVisible: boolean;
     onToggle: (key: string) => void;
     onTrailStyleChange: (style: string) => void;
@@ -33,7 +36,6 @@
     playbackMode,
     bpm,
     tkaGlyphVisible,
-    reversalIndicatorsVisible,
     turnNumbersVisible,
     onToggle,
     onTrailStyleChange,
@@ -44,6 +46,55 @@
   }: Props = $props();
 
   const bpmPresets = [30, 60, 90, 120];
+
+  // Check if tracking both ends
+  const isBothEnds = $derived(
+    animationSettings.trail.trackingMode === TrackingMode.BOTH_ENDS
+  );
+
+  // Show bilateral toggle only when trails are enabled
+  const showBilateralToggle = $derived(trailStyle !== "off");
+
+  /**
+   * Set trail preset with detailed settings
+   * Applies the correct appearance settings for each preset
+   */
+  function setTrailPreset(preset: TrailStyle) {
+    // Notify parent of style change (updates visibility manager)
+    onTrailStyleChange(preset);
+
+    // Apply detailed trail appearance settings
+    switch (preset) {
+      case "off":
+        animationSettings.setTrailMode(TrailMode.OFF);
+        break;
+      case "subtle":
+        animationSettings.setTrailMode(TrailMode.FADE);
+        animationSettings.setFadeDuration(1500);
+        animationSettings.setTrailAppearance({
+          lineWidth: 2.5,
+          maxOpacity: 0.7,
+          glowEnabled: false,
+        });
+        break;
+      case "vivid":
+        animationSettings.setTrailMode(TrailMode.FADE);
+        animationSettings.setFadeDuration(2500);
+        animationSettings.setTrailAppearance({
+          lineWidth: 4,
+          maxOpacity: 0.95,
+          glowEnabled: true,
+        });
+        break;
+    }
+  }
+
+  function toggleBothEnds() {
+    const newMode = isBothEnds
+      ? TrackingMode.RIGHT_END
+      : TrackingMode.BOTH_ENDS;
+    animationSettings.setTrackingMode(newMode);
+  }
 </script>
 
 <section class="settings-panel animation-panel" class:mobile-hidden={isMobileHidden}>
@@ -123,12 +174,54 @@
           class:active={beatNumbersVisible}
           onclick={() => onToggle("beatNumbers")}>Beat #s</button
         >
-        <CyclingButton
-          value={trailStyle}
-          options={["off", "subtle", "vivid"]}
-          onValueChange={onTrailStyleChange}
-          ariaLabel="Trail style"
-        />
+      </div>
+    </div>
+
+    <div class="control-group">
+      <span class="group-label">Trails</span>
+      <div class="trail-preset-row">
+        <div class="preset-buttons">
+          <button
+            class="preset-btn"
+            class:active={trailStyle === "off"}
+            onclick={() => setTrailPreset("off")}
+            type="button"
+          >
+            Off
+          </button>
+          <button
+            class="preset-btn"
+            class:active={trailStyle === "subtle"}
+            onclick={() => setTrailPreset("subtle")}
+            type="button"
+          >
+            Subtle
+          </button>
+          <button
+            class="preset-btn"
+            class:active={trailStyle === "vivid"}
+            onclick={() => setTrailPreset("vivid")}
+            type="button"
+          >
+            Vivid
+          </button>
+        </div>
+
+        {#if showBilateralToggle}
+          <button
+            class="ends-toggle"
+            class:active={isBothEnds}
+            onclick={toggleBothEnds}
+            type="button"
+            title={isBothEnds ? "Trailing both ends" : "Trailing one end"}
+          >
+            <i
+              class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}"
+              aria-hidden="true"
+            ></i>
+            <span class="ends-label">{isBothEnds ? "Both" : "One"}</span>
+          </button>
+        {/if}
       </div>
     </div>
 
@@ -139,11 +232,6 @@
           class="toggle-btn"
           class:active={tkaGlyphVisible}
           onclick={() => onToggle("tka")}>TKA Glyph</button
-        >
-        <button
-          class="toggle-btn"
-          class:active={reversalIndicatorsVisible}
-          onclick={() => onToggle("reversals")}>Reversals</button
         >
         <button
           class="toggle-btn"
@@ -495,12 +583,185 @@
     outline-offset: 2px;
   }
 
+  /* Trail Preset Controls */
+  .trail-preset-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .preset-buttons {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .preset-btn {
+    flex: 1;
+    min-height: var(--min-touch-target);
+    padding: 12px 10px;
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+      sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .preset-btn:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
+    transform: translateY(-1px);
+  }
+
+  .preset-btn:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 50ms;
+  }
+
+  .preset-btn.active {
+    background: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 45%,
+      transparent
+    );
+    color: white;
+    box-shadow:
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 15%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 25%, transparent);
+  }
+
+  .preset-btn.active:hover {
+    background: color-mix(
+      in srgb,
+      var(--theme-accent) 35%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent, var(--theme-accent)) 55%,
+      transparent
+    );
+    box-shadow:
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent),
+      0 4px 16px
+        color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
+  }
+
+  .preset-btn:focus-visible {
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent) 50%, transparent);
+    outline-offset: 2px;
+  }
+
+  /* Ends Toggle Button */
+  .ends-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: var(--min-touch-target);
+    padding: 12px 14px;
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 12px;
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
+      sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+  }
+
+  .ends-toggle i {
+    font-size: var(--font-size-sm);
+  }
+
+  .ends-label {
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .ends-toggle:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-text);
+    transform: translateY(-1px);
+  }
+
+  .ends-toggle:active {
+    transform: translateY(0) scale(0.97);
+    transition-duration: 50ms;
+  }
+
+  .ends-toggle.active {
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 25%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 45%,
+      transparent
+    );
+    color: white;
+    box-shadow:
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent-strong) 15%, transparent),
+      0 4px 12px
+        color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
+  }
+
+  .ends-toggle.active:hover {
+    background: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 35%,
+      transparent
+    );
+    border-color: color-mix(
+      in srgb,
+      var(--theme-accent-strong) 55%,
+      transparent
+    );
+    box-shadow:
+      0 0 0 1px
+        color-mix(in srgb, var(--theme-accent-strong) 20%, transparent),
+      0 4px 16px
+        color-mix(in srgb, var(--theme-accent-strong) 35%, transparent);
+  }
+
+  .ends-toggle:focus-visible {
+    outline: 2px solid
+      color-mix(in srgb, var(--theme-accent-strong) 50%, transparent);
+    outline-offset: 2px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .settings-panel,
     .toggle-btn,
     .mode-btn,
     .bpm-btn,
-    .help-btn {
+    .help-btn,
+    .preset-btn,
+    .ends-toggle {
       transition: none;
     }
   }
@@ -509,11 +770,14 @@
     .toggle-btn,
     .mode-btn,
     .bpm-btn,
+    .preset-btn,
+    .ends-toggle,
     .settings-panel {
       border-width: 2px;
     }
 
-    .toggle-btn.active {
+    .toggle-btn.active,
+    .preset-btn.active {
       border-color: var(--theme-accent, var(--theme-accent));
     }
 
@@ -521,13 +785,16 @@
       border-color: var(--semantic-warning);
     }
 
-    .bpm-btn.active {
+    .bpm-btn.active,
+    .ends-toggle.active {
       border-color: var(--theme-accent-strong);
     }
 
     .toggle-btn:focus-visible,
     .mode-btn:focus-visible,
-    .bpm-btn:focus-visible {
+    .bpm-btn:focus-visible,
+    .preset-btn:focus-visible,
+    .ends-toggle:focus-visible {
       outline-width: 3px;
     }
   }

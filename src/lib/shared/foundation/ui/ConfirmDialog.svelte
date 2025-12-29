@@ -27,6 +27,8 @@
     onConfirm,
     onCancel,
     variant = "warning",
+    showDontAskAgain = false,
+    onDontAskAgainChange,
   } = $props<{
     isOpen?: boolean;
     title: string;
@@ -36,7 +38,11 @@
     onConfirm: () => void;
     onCancel: () => void;
     variant?: "warning" | "danger" | "info";
+    showDontAskAgain?: boolean;
+    onDontAskAgainChange?: (checked: boolean) => void;
   }>();
+
+  let dontAskAgainChecked = $state(false);
 
   // Services
   let hapticService: IHapticFeedback;
@@ -54,6 +60,11 @@
       hapticService?.trigger("warning");
     } else {
       hapticService?.trigger("success");
+    }
+
+    // Notify about "Don't ask again" if checked
+    if (dontAskAgainChecked && onDontAskAgainChange) {
+      onDontAskAgainChange(true);
     }
 
     onConfirm();
@@ -103,6 +114,24 @@
           {message}
         </DialogPrimitive.Description>
       </div>
+
+      <!-- Don't Ask Again Chip -->
+      {#if showDontAskAgain}
+        <button
+          type="button"
+          class="dont-ask-chip"
+          class:selected={dontAskAgainChecked}
+          onclick={() => dontAskAgainChecked = !dontAskAgainChecked}
+          aria-pressed={dontAskAgainChecked}
+        >
+          {#if dontAskAgainChecked}
+            <svg class="chip-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+          {/if}
+          <span>Don't ask again</span>
+        </button>
+      {/if}
 
       <!-- Actions -->
       <div class="dialog-actions">
@@ -199,6 +228,54 @@
     font-size: var(--font-size-base);
     line-height: 1.6;
     color: var(--theme-text-dim, var(--theme-text-dim));
+  }
+
+  .dont-ask-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    background: transparent;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--theme-text-dim);
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .dont-ask-chip:hover {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.25));
+  }
+
+  .dont-ask-chip:active {
+    transform: scale(0.97);
+  }
+
+  .dont-ask-chip.selected {
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 15%, transparent);
+    border-color: var(--theme-accent, #6366f1);
+    color: var(--theme-accent, #6366f1);
+  }
+
+  .dont-ask-chip.selected:hover {
+    background: color-mix(in srgb, var(--theme-accent, #6366f1) 22%, transparent);
+  }
+
+  .dont-ask-chip:focus-visible {
+    outline: 2px solid var(--theme-accent);
+    outline-offset: 2px;
+  }
+
+  .chip-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   .dialog-actions {

@@ -76,6 +76,7 @@
         class="input"
         bind:value={personalInfoState.displayName}
         placeholder="Enter your display name"
+        autocomplete="name"
       />
     </div>
 

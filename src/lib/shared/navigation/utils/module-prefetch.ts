@@ -37,7 +37,7 @@ const NAVIGATION_PATTERNS: Record<string, string[]> = {
  * These are dynamically imported in ModuleRenderer.svelte
  */
 const MODULE_PATHS: Record<string, string> = {
-  dashboard: "/src/lib/features/dashboard/DashboardModule.svelte",
+  dashboard: "/src/lib/features/dashboard/components/Dashboard.svelte",
   create: "/src/lib/features/create/shared/components/CreateModule.svelte",
   discover: "/src/lib/features/discover/shared/components/DiscoverModule.svelte",
   compose: "/src/lib/features/compose/ComposeModule.svelte",

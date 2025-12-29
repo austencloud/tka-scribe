@@ -19,7 +19,7 @@ import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/ser
 import type { ICodex } from "$lib/features/learn/codex/services/contracts/ICodex";
 // TODO: IQuizRepoManager contract doesn't exist yet - uncomment when created
 // import type { IQuizRepoManager } from "$lib/features/learn/quiz/services/contracts/IQuizRepoManager";
-import type { ICAPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ICAPTypeResolver";
+import type { ILOOPTypeResolver } from "$lib/features/create/generate/shared/services/contracts/ILOOPTypeResolver";
 import type { IStartPositionManager } from "$lib/features/create/construct/start-position-picker/services/contracts/IStartPositionManager";
 
 const APP_SERVICES_KEY = "app-services";
@@ -39,7 +39,7 @@ export interface AppServicesContext {
   discoverLoader?: IDiscoverLoader;
   codexService?: ICodex;
   // quizRepo?: IQuizRepoManager; // TODO: uncomment when IQuizRepoManager contract is created
-  CAPTypeResolver?: ICAPTypeResolver;
+  LOOPTypeResolver?: ILOOPTypeResolver;
   StartPositionManager?: IStartPositionManager;
 }
 

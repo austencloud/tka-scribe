@@ -110,7 +110,9 @@
     <section
       class="features"
       in:fly={{ y: 20, duration: 400, delay: 200, easing: cubicOut }}
+      aria-labelledby="features-heading"
     >
+      <h2 id="features-heading" class="sr-only">Features</h2>
       {#each features as feature, i}
         <div
           class="feature-card"
@@ -184,6 +186,19 @@
 </div>
 
 <style>
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
   .landing-page {
     --theme-transition: 300ms ease-in-out;
 

@@ -43,10 +43,10 @@
   // T-bar thickness should match shaft thickness (in SVG they're nearly equal: 18.2 vs 17)
   const tBarThickness = $derived(thickness); // Slightly thinner than main shaft
 
-  // Color values
+  // Color values - use hex for Three.js compatibility
   const colors = {
-    blue: { main: "var(--semantic-info)", dark: "#1d4ed8", light: "var(--semantic-info)" },
-    red: { main: "var(--semantic-error)", dark: "#b91c1c", light: "var(--semantic-error)" },
+    blue: { main: "#3b82f6", dark: "#1d4ed8", light: "#60a5fa" },
+    red: { main: "#ef4444", dark: "#b91c1c", light: "#f87171" },
   };
   const palette = $derived(colors[color]);
 

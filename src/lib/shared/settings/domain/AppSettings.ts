@@ -80,6 +80,9 @@ export interface AppSettings {
 
   // Community/Privacy Settings
   favoritesPublic?: boolean; // Whether favorites are visible to followers (default: true)
+
+  // Workflow Settings
+  skipClearConfirmation?: boolean; // Skip confirmation when clearing sequence (undo is available)
 }
 
 /**

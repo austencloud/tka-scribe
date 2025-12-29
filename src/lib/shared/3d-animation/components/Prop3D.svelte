@@ -32,8 +32,8 @@
     width = 25,
   }: Props = $props();
 
-  // Color hex values - derived from prop
-  const colorHex = $derived(color === "blue" ? "var(--semantic-info)" : "var(--semantic-error)");
+  // Color hex values - use hex for Three.js compatibility
+  const colorHex = $derived(color === "blue" ? "#3b82f6" : "#ef4444");
   const colorDark = $derived(color === "blue" ? "#1d4ed8" : "#b91c1c");
 
   // Get position as tuple

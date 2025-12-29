@@ -506,9 +506,9 @@ export async function loadFeatureModule(feature: string): Promise<void> {
         await loadIfNeeded("inbox", () => import("./modules/inbox.module"));
         break;
 
-      case "cap-labeler":
+      case "loop-labeler":
         await loadIfNeeded("create", () => import("./modules/build.module"));
-        await loadIfNeeded("cap-labeler", () => import("./modules/cap-labeler.module"));
+        await loadIfNeeded("loop-labeler", () => import("./modules/loop-labeler.module"));
         break;
 
       case "3d-viewer":

@@ -74,7 +74,7 @@
     </button>
   </div>
   {#if googleError}
-    <p class="error-message">{googleError}</p>
+    <p class="error-message" role="alert">{googleError}</p>
   {/if}
 </div>
 

@@ -278,7 +278,7 @@
 
 <div class="video-record-panel">
   {#if cameraError}
-    <div class="error-state">
+    <div class="error-state" role="alert">
       <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
       <p>Camera Error</p>
       <p class="error-detail">{cameraError}</p>

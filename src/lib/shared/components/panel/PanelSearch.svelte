@@ -38,6 +38,7 @@
     {placeholder}
     {value}
     oninput={handleInput}
+    aria-label="Search"
   />
 </div>
 

@@ -173,7 +173,7 @@
 
       <!-- Error Message -->
       {#if inviteError}
-        <div class="error-banner">
+        <div class="error-banner" role="alert">
           <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <span>{inviteError}</span>
         </div>

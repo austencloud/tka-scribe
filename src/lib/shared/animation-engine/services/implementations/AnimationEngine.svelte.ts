@@ -403,6 +403,18 @@ export class AnimationEngine {
     const turnsTuple = this.calculateTurnsTuple(props);
     this.glyphTransitionService?.updateTarget(props.letter ?? null, turnsTuple, beatNumber);
 
+    // Sync glyph state immediately after update so component sees new values
+    // (syncServiceState() at start of update() syncs previous frame's values)
+    if (this.glyphTransitionService) {
+      this.state.displayedLetter = this.glyphTransitionService.state.displayedLetter;
+      this.state.displayedTurnsTuple = this.glyphTransitionService.state.displayedTurnsTuple;
+      this.state.displayedBeatNumber = this.glyphTransitionService.state.displayedBeatNumber;
+      this.state.fadingOutLetter = this.glyphTransitionService.state.fadingOutLetter;
+      this.state.fadingOutTurnsTuple = this.glyphTransitionService.state.fadingOutTurnsTuple;
+      this.state.fadingOutBeatNumber = this.glyphTransitionService.state.fadingOutBeatNumber;
+      this.state.isNewLetter = this.glyphTransitionService.state.isNewLetter;
+    }
+
     // Trigger render if initialized
     if (this.state.isInitialized) {
       this.renderLoopService?.triggerRender(() => this.getFrameParams(props));

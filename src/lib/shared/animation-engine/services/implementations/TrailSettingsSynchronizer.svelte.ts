@@ -67,6 +67,16 @@ export class TrailSettingsSynchronizer implements ITrailSettingsSynchronizer {
       if (settingsChanged) {
         // Update reactive state - component will react via $derived
         this.state.syncedSettings = { ...externalSettings };
+
+        // CRITICAL: Also update the trail capturer with external settings
+        // Without this, changes to trackingMode, style, etc. won't take effect
+        if (this.TrailCapturer) {
+          this.TrailCapturer.updateSettings(externalSettings);
+        }
+
+        // Signal render needed
+        this.state.renderSignal++;
+        this.renderTrigger?.();
       }
     }
   }

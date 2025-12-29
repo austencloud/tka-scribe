@@ -132,8 +132,8 @@ export class ActivityLogger implements IActivityLogger {
             0,
             100
           );
-        if (metadata["capType"])
-          params["cap_type"] = String(metadata["capType"]).slice(0, 100);
+        if (metadata["loopType"])
+          params["cap_type"] = String(metadata["loopType"]).slice(0, 100);
         if (metadata["shareMethod"])
           params["share_method"] = String(metadata["shareMethod"]).slice(
             0,

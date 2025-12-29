@@ -41,12 +41,12 @@
       <span class="placeholder-hint">Add beats to generate preview</span>
     </div>
   {:else if isGenerating}
-    <div class="preview-loading">
-      <div class="loading-spinner"></div>
+    <div class="preview-loading" role="status" aria-live="polite" aria-busy="true">
+      <div class="loading-spinner" aria-hidden="true"></div>
       <p>Generating preview...</p>
     </div>
   {:else if error}
-    <div class="preview-error">
+    <div class="preview-error" role="alert">
       <div class="error-icon">⚠️</div>
       <p>Preview failed</p>
       <span class="error-message">{error}</span>

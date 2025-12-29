@@ -68,7 +68,6 @@
   let animPlaybackMode = $state<PlaybackMode>("continuous");
   let animBpm = $state(60);
   let animTkaGlyphVisible = $state(true);
-  let animReversalIndicatorsVisible = $state(false);
   let animTurnNumbersVisible = $state(true);
 
   // Image composition state
@@ -152,10 +151,6 @@
         animTkaGlyphVisible = !animTkaGlyphVisible;
         animationVisibilityManager.setVisibility("tkaGlyph", animTkaGlyphVisible);
         break;
-      case "reversals":
-        animReversalIndicatorsVisible = !animReversalIndicatorsVisible;
-        animationVisibilityManager.setVisibility("reversalIndicators", animReversalIndicatorsVisible);
-        break;
       case "turnNumbers":
         animTurnNumbersVisible = !animTurnNumbersVisible;
         animationVisibilityManager.setVisibility("turnNumbers", animTurnNumbersVisible);
@@ -226,7 +221,6 @@
     animPlaybackMode = animationVisibilityManager.getPlaybackMode();
     animBpm = animationVisibilityManager.getBpm();
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
-    animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
     animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
 
     // Load initial image composition
@@ -254,7 +248,6 @@
       animPlaybackMode = animationVisibilityManager.getPlaybackMode();
       animBpm = animationVisibilityManager.getBpm();
       animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
-      animReversalIndicatorsVisible = animationVisibilityManager.getVisibility("reversalIndicators");
       animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
     };
 
@@ -309,7 +302,6 @@
       playbackMode={animPlaybackMode}
       bpm={animBpm}
       tkaGlyphVisible={animTkaGlyphVisible}
-      reversalIndicatorsVisible={animReversalIndicatorsVisible}
       turnNumbersVisible={animTurnNumbersVisible}
       onToggle={handleAnimationToggle}
       onTrailStyleChange={handleTrailStyleChange}

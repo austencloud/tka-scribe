@@ -357,12 +357,12 @@
   <!-- Main Content -->
   <main class="viewer-content">
     {#if viewerState.isLoading}
-      <div class="loading-state">
-        <div class="spinner"></div>
+      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Loading sequence...</p>
       </div>
     {:else if viewerState.error}
-      <div class="error-state">
+      <div class="error-state" role="alert">
         <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <p>{viewerState.error}</p>
         <button onclick={handleClose}>Go Back</button>

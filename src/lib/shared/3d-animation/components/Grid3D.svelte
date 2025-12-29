@@ -74,7 +74,7 @@
   <!-- Center point indicator (always visible) -->
   <T.Mesh position={[0, 0, 0]}>
     <T.SphereGeometry args={[8, 32, 32]} />
-    <T.MeshBasicMaterial color="var(--semantic-warning)" />
+    <T.MeshBasicMaterial color="#f59e0b" />
   </T.Mesh>
 
   <!-- Axis helpers for orientation reference -->

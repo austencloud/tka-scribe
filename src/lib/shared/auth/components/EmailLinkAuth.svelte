@@ -179,7 +179,7 @@
   </div>
 
   {#if error}
-    <p class="error-message">{error}</p>
+    <p class="error-message" role="alert">{error}</p>
   {/if}
 
   {#if success}

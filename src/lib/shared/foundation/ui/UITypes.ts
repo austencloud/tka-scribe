@@ -40,7 +40,8 @@ export type BuildModeId =
   | "gestural"
   | "guided" // Guided mode
   | "generator" // Automatic sequence generation
-  | "generate"; // Alias for generator (legacy/UI compatibility)
+  | "generate" // Alias for generator (legacy/UI compatibility)
+  | "spell"; // Word-to-sequence generator
 
 /**
  * Legacy type alias for backwards compatibility

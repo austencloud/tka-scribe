@@ -400,7 +400,7 @@
 
       <!-- Error -->
       {#if uploadError}
-        <div class="error-banner">
+        <div class="error-banner" role="alert">
           <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <span>{uploadError}</span>
         </div>

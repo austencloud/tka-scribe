@@ -18,11 +18,13 @@ export interface PropDimensions {
 }
 
 /**
- * Default prop dimensions
+ * Default prop dimensions (staff dimensions)
+ * These values ensure props render at correct size before textures load.
+ * Matches the standard staff SVG dimensions from prop generation.
  */
 export const DEFAULT_PROP_DIMENSIONS: PropDimensions = {
-  width: 100,
-  height: 100,
+  width: 252.8,
+  height: 77.8,
 };
 
 /**

@@ -140,7 +140,7 @@
   <!-- Center point (largest, white/gold) -->
   <T.Mesh position={[0, 0, 1]}>
     <T.SphereGeometry args={[CENTER_POINT_SIZE, 16, 16]} />
-    <T.MeshBasicMaterial color="var(--semantic-warning)" />
+    <T.MeshBasicMaterial color="#f59e0b" />
   </T.Mesh>
 </T.Group>
 
@@ -177,7 +177,7 @@
       text={locationLabels[location]}
       position={[pos[0] * 1.08, pos[1] * 1.08, pos[2] * 1.08]}
       fontSize={11}
-      color="var(--theme-text-dim)"
+      color="#9ca3af"
       anchorX="center"
       anchorY="middle"
     />

@@ -414,9 +414,9 @@
     <h2 id="animation-panel-title" class="sr-only">Animation Viewer</h2>
 
     {#if loading}
-      <div class="loading-message">Loading animation...</div>
+      <div class="loading-message" role="status" aria-live="polite" aria-busy="true">Loading animation...</div>
     {:else if error}
-      <div class="error-message">{error}</div>
+      <div class="error-message" role="alert">{error}</div>
     {:else}
       <!-- Animation Viewer with Adaptive Layout -->
       <div class="canvas-container">

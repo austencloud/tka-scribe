@@ -21,15 +21,17 @@ Based on the legacy BeatNumberLabel.svelte component architecture.
     hasValidData?: boolean;
   }>();
 
-  // Only render if conditions are met
+  // Only render beat number if conditions are met
+  // Beat number 0 is excluded so it falls through to show "Start" text
   const shouldRender = $derived.by(() => {
     return (
       showBeatNumber &&
       !isStartPosition &&
       hasValidData &&
       beatNumber !== null &&
-      beatNumber !== -1
-    ); // Hide beat numbers for option picker previews
+      beatNumber !== -1 &&
+      beatNumber !== 0 // Exclude 0 so it shows "Start" instead
+    );
   });
 
   // Show "Start" text for beat number 0 (start position)

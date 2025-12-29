@@ -82,9 +82,12 @@
 
   let measuredArrowWidth = $state(DEFAULT_ARROW_WIDTH);
 
-  // Use the measured arrow width only when arrows render
+  // CRITICAL: Always reserve arrow padding space when showArrows is true
+  // This prevents the "burst" effect where content initially renders at full width,
+  // then shrinks when arrows appear after slide count is determined.
+  // We assume arrows WILL be present initially to avoid layout shift.
   let navPadding = $derived(() =>
-    showArrows && shouldShowNavigation ? measuredArrowWidth + ARROW_SPACING : 0
+    showArrows ? measuredArrowWidth + ARROW_SPACING : 0
   );
 
   let prevArrowButton = $state<HTMLButtonElement | undefined>();
@@ -113,14 +116,10 @@
     if (onContentAreaChange && emblaNode) {
       const viewportRect = emblaNode.getBoundingClientRect();
 
-      // Calculate navigation state directly to avoid reactivity timing issues
-      // Use slides.length directly instead of derived shouldShowNavigation
-      const currentSlideCount = slides.length;
-      const shouldShowNav = currentSlideCount > 1;
-
-      // Calculate the actual content area between the arrows
-      const navPaddingValue =
-        showArrows && shouldShowNav ? measuredArrowWidth + ARROW_SPACING : 0;
+      // CRITICAL: Always assume arrow space when showArrows is true
+      // This matches the navPadding calculation above and prevents layout shift
+      // where content initially renders larger then shrinks when arrows appear
+      const navPaddingValue = showArrows ? measuredArrowWidth + ARROW_SPACING : 0;
       const leftOffset = navPaddingValue;
       const rightOffset = navPaddingValue;
 

@@ -8,7 +8,7 @@
  * (CreateModule and MainInterface) to coordinate without prop drilling.
  *
  * Panels that hide UI: All mutually exclusive modal/slide panels
- * (Edit, Animation, Share, Filter, Sequence Actions, CAP, Creation Method)
+ * (Edit, Animation, Share, Filter, Sequence Actions, LOOP, Creation Method)
  */
 
 /**

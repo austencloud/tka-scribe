@@ -1,7 +1,7 @@
 /**
  * Shared Domain Models for Sequence Review
  *
- * Generic types used by any sequence review workflow (CAP labeling, tag review, etc.)
+ * Generic types used by any sequence review workflow (LOOP labeling, tag review, etc.)
  */
 
 /**

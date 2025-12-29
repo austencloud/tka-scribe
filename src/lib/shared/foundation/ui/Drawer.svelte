@@ -58,6 +58,8 @@
     springAnimation = false,
     scaleBackground = false,
     preventScroll = true,
+    // Focus behavior
+    autoFocus = true,
     onclose,
     onOpenChange,
     onbackdropclick,
@@ -97,6 +99,8 @@
     scaleBackground?: boolean;
     /** Prevent body scrolling when drawer is open. Default: true */
     preventScroll?: boolean;
+    /** Auto-focus the drawer when it opens. Set to false to keep focus on triggering element. Default: true */
+    autoFocus?: boolean;
     onclose?: (event: CustomEvent<{ reason: CloseReason }>) => void;
     onOpenChange?: (open: boolean) => void;
     onbackdropclick?: (event: MouseEvent) => boolean;
@@ -300,8 +304,8 @@
             // Activate focus trap after animation starts (element is in DOM)
             if (trapFocus && drawerElement) {
               focusTrap.activate(drawerElement);
-            } else if (drawerElement) {
-              // Even without focus trap, focus the drawer for proper interaction
+            } else if (autoFocus && drawerElement) {
+              // Focus the drawer for proper interaction (unless autoFocus is disabled)
               drawerElement.focus();
             }
           });

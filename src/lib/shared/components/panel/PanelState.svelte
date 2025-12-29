@@ -42,7 +42,7 @@
   const resolvedTitle = $derived(title ?? defaultTitles[type]);
 </script>
 
-<div class="panel-state" class:panel-state--error={type === "error"}>
+<div class="panel-state" class:panel-state--error={type === "error"} role={type === "error" ? "alert" : undefined}>
   {#if type === "loading"}
     <PanelSpinner />
   {:else if resolvedIcon}

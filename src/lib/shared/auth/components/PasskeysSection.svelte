@@ -98,7 +98,7 @@
   </div>
 
   {#if error}
-    <p class="error-message">
+    <p class="error-message" role="alert">
       <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       {error}
     </p>

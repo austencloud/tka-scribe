@@ -36,6 +36,17 @@
     await handleModuleChange("settings");
   }
 
+  async function handleSubmitFeedback() {
+    releaseNotesDrawerState.close();
+    // Navigate to feedback module with submit tab
+    await handleModuleChange("feedback", "submit");
+  }
+
+  // Detect if user is on desktop (has mouse/keyboard)
+  const isDesktop = $derived(
+    typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches
+  );
+
   function handleClose() {
     releaseNotesDrawerState.close();
   }
@@ -114,6 +125,25 @@
         {/if}
       {:else}
         <p class="no-version">Version information not available.</p>
+      {/if}
+    </div>
+
+    <div class="feedback-reminder">
+      <div class="reminder-icon">
+        <i class="fas fa-lightbulb" aria-hidden="true"></i>
+      </div>
+      <div class="reminder-content">
+        <p class="reminder-heading">Have ideas or found a bug?</p>
+        <p class="reminder-subtext">Your feedback shapes TKA Scribe. I read every submission!</p>
+      </div>
+      <button class="feedback-btn" onclick={handleSubmitFeedback}>
+        Submit Feedback
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </button>
+      {#if isDesktop}
+        <p class="keyboard-hint">
+          <kbd>F</kbd> for quick feedback anytime
+        </p>
       {/if}
     </div>
 
@@ -266,6 +296,108 @@
     font-size: var(--font-size-3xl);
     color: var(--semantic-error);
     margin-bottom: 12px;
+  }
+
+  /* Feedback reminder section */
+  .feedback-reminder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 0 24px;
+    padding: 20px;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--theme-accent) 8%, transparent),
+      color-mix(in srgb, var(--theme-accent) 4%, transparent)
+    );
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-radius: 12px;
+  }
+
+  .reminder-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+    border-radius: 50%;
+  }
+
+  .reminder-icon i {
+    font-size: var(--font-size-lg);
+    color: var(--theme-accent);
+  }
+
+  .reminder-content {
+    text-align: center;
+  }
+
+  .reminder-heading {
+    margin: 0 0 4px 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--theme-text);
+  }
+
+  .reminder-subtext {
+    margin: 0;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    line-height: 1.4;
+  }
+
+  .feedback-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: var(--theme-accent);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .feedback-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  .feedback-btn:active {
+    transform: translateY(0);
+  }
+
+  .feedback-btn i {
+    font-size: var(--font-size-xs);
+    transition: transform 0.2s;
+  }
+
+  .feedback-btn:hover i {
+    transform: translateX(3px);
+  }
+
+  .keyboard-hint {
+    margin: 4px 0 0 0;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+  }
+
+  .keyboard-hint kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.1));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 600;
+    color: var(--theme-text, #fff);
   }
 
   .drawer-footer {

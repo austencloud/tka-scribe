@@ -77,10 +77,10 @@
     display: flex;
     flex-direction: column;
     outline: none;
-    /* Background with theme-aware fallback */
-    background: var(--sheet-bg, linear-gradient(135deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.60)));
-    backdrop-filter: var(--sheet-filter, blur(24px));
-    -webkit-backdrop-filter: var(--sheet-filter, blur(24px));
+    /* Background - solid by default, components can override with --sheet-bg */
+    background: var(--sheet-bg, rgb(15, 15, 20));
+    backdrop-filter: var(--sheet-filter, none);
+    -webkit-backdrop-filter: var(--sheet-filter, none);
 
     border: var(
       --sheet-border,
@@ -248,9 +248,9 @@
    */
   .drawer-handle {
     position: relative;
-    width: 48px;
+    width: 10px;
     height: 4px;
-    min-height: 48px; /* WCAG AAA touch target */
+    min-height: 10px; 
     margin: 10px auto 8px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.45);
@@ -288,7 +288,7 @@
     position: relative;
     width: 48px;
     height: 4px;
-    min-height: 48px; /* WCAG AAA touch target */
+    min-height: 10px; 
     margin: 8px auto 10px;
     order: 1; /* Place below content */
   }
@@ -299,7 +299,7 @@
     position: relative;
     width: 48px;
     height: 4px;
-    min-height: 48px; /* WCAG AAA touch target */
+    min-height: 10px; 
     margin: 10px auto 8px;
   }
 

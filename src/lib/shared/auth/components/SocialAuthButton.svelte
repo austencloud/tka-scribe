@@ -89,7 +89,7 @@
   </button>
 
   {#if error}
-    <p class="error" role="status">{error}</p>
+    <p class="error" role="alert">{error}</p>
   {/if}
 </div>
 

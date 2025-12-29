@@ -38,7 +38,7 @@ export const animation3DModule = new ContainerModule(
 
     // Motion calculator (depends on angle math + orientation)
     options
-      .bind(ANIMATION_3D_TYPES.IMotionCalculator)
+      .bind(ANIMATION_3D_TYPES.IMotionCalculator3D)
       .to(MotionCalculator)
       .inSingletonScope();
 

@@ -227,7 +227,7 @@ ${
           </div>
 
           {#if diagnostics.indexedDBDatabases.some( (db) => db.includes("the-kinetic-constructor") )}
-            <div class="alert alert-error">
+            <div class="alert alert-error" role="alert">
               <strong>🚨 OLD PROJECT DETECTED!</strong>
               <p>
                 Old "the-kinetic-constructor" database found. This WILL cause

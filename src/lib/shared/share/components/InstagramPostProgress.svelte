@@ -90,7 +90,7 @@
 
   <!-- Error Details -->
   {#if isFailed && status.error}
-    <div class="error-details">
+    <div class="error-details" role="alert">
       <div class="error-header">
         <i class="fas fa-bug" aria-hidden="true"></i>
         <span>Error Details</span>

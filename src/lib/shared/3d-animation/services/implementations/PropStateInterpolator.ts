@@ -31,7 +31,7 @@ export class PropStateInterpolator
     private angleMath: IAngleMathCalculator,
     @inject(ANIMATION_3D_TYPES.IOrientationMapper)
     private orientationService: IOrientationMapper,
-    @inject(ANIMATION_3D_TYPES.IMotionCalculator)
+    @inject(ANIMATION_3D_TYPES.IMotionCalculator3D)
     private motionCalculator: IMotionCalculator
   ) {}
 

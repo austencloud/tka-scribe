@@ -105,29 +105,34 @@
   let isRespondingToRouteChange = false;
 
   // Derived: Current letter from sequence data
+  // Uses same indexing as SequenceAnimationOrchestrator:
+  // - currentBeat < 1: start position (the pose before animation begins)
+  // - currentBeat >= 1: motion beats where beat N uses beats[N-1]
   let currentLetter = $derived.by(() => {
     if (!animationPanelState.sequenceData) return null;
 
     const currentBeat = animationPanelState.currentBeat;
 
-    // Before animation starts (beat 0 and not playing) = start position
-    if (
-      currentBeat === 0 &&
-      !animationPanelState.isPlaying &&
-      animationPanelState.sequenceData.startPosition
-    ) {
+    // Start position: currentBeat < 1 (before beat 1 starts)
+    // This matches SequenceAnimationOrchestrator's check
+    if (currentBeat < 1 && animationPanelState.sequenceData.startPosition) {
       return animationPanelState.sequenceData.startPosition.letter || null;
     }
 
-    // During animation: show beat letters
+    // Motion beats: currentBeat >= 1
+    // Beat numbering: currentBeat 1.x = beat 1 = beats[0]
+    //                 currentBeat 2.x = beat 2 = beats[1]
     if (
       animationPanelState.sequenceData.beats &&
       animationPanelState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
+      // Beat number is 1-indexed, array is 0-indexed
+      // currentBeat of 1.5 means we're in beat 1, which is beats[0]
+      const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
+      const arrayIndex = beatNumber - 1; // 0, 1, 2, etc.
       const clampedIndex = Math.max(
         0,
-        Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1)
+        Math.min(arrayIndex, animationPanelState.sequenceData.beats.length - 1)
       );
       return (
         animationPanelState.sequenceData.beats[clampedIndex]?.letter || null
@@ -138,29 +143,30 @@
   });
 
   // Derived: Current beat data (for turns tuple generation)
+  // Uses same indexing as SequenceAnimationOrchestrator:
+  // - currentBeat < 1: start position
+  // - currentBeat >= 1: motion beats where beat N uses beats[N-1]
   let currentBeatData = $derived.by(() => {
     if (!animationPanelState.sequenceData) return null;
 
     const currentBeat = animationPanelState.currentBeat;
 
-    // Before animation starts (beat 0 and not playing) = start position
-    if (
-      currentBeat === 0 &&
-      !animationPanelState.isPlaying &&
-      animationPanelState.sequenceData.startPosition
-    ) {
+    // Start position: currentBeat < 1 (before beat 1 starts)
+    if (currentBeat < 1 && animationPanelState.sequenceData.startPosition) {
       return animationPanelState.sequenceData.startPosition;
     }
 
-    // During animation: show beat data
+    // Motion beats: currentBeat >= 1
+    // Beat numbering matches currentLetter logic
     if (
       animationPanelState.sequenceData.beats &&
       animationPanelState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
+      const beatNumber = Math.floor(currentBeat); // 1, 2, 3, etc.
+      const arrayIndex = beatNumber - 1; // 0, 1, 2, etc.
       const clampedIndex = Math.max(
         0,
-        Math.min(beatIndex, animationPanelState.sequenceData.beats.length - 1)
+        Math.min(arrayIndex, animationPanelState.sequenceData.beats.length - 1)
       );
       return animationPanelState.sequenceData.beats[clampedIndex] || null;
     }
@@ -550,10 +556,12 @@
   });
 
   // Notify parent when current beat changes
+  // currentBeat uses 1-indexed beat numbers: 1.x = beat 1, 2.x = beat 2, etc.
+  // currentBeat < 1 = start position (beat 0)
   $effect(() => {
     const currentBeat = animationPanelState.currentBeat;
     if (animationPanelState.isPlaying || currentBeat > 0) {
-      _animatingBeatNumber = Math.floor(currentBeat) + 1;
+      _animatingBeatNumber = Math.floor(currentBeat);
     }
   });
 

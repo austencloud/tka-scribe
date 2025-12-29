@@ -30,28 +30,29 @@ import { PathToMotionConverter } from "../../../features/create/assemble/handpat
 import { SwipeDetector } from "../../../features/create/assemble/handpath-builder/services/implementations/SwipeDetector";
 import { ReversalChecker } from "../../../features/create/construct/option-picker/services/implementations/ReversalChecker";
 import { StartPositionManager } from "../../../features/create/construct/start-position-picker/services/implementations/StartPositionManager";
-import { CAPEndPositionSelector } from "../../../features/create/generate/circular/services/implementations/CAPEndPositionSelector";
-import { CAPExecutorSelector } from "../../../features/create/generate/circular/services/implementations/CAPExecutorSelector";
-import { MirroredInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredInvertedCAPExecutor";
-import { MirroredRotatedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedCAPExecutor";
-import { MirroredRotatedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedComplementaryCAPExecutor";
-import { MirroredRotatedInvertedSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedComplementarySwappedCAPExecutor";
-import { MirroredSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredSwappedCAPExecutor";
-import { MirroredSwappedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredSwappedInvertedCAPExecutor";
+import { LOOPEndPositionSelector } from "../../../features/create/generate/circular/services/implementations/LOOPEndPositionSelector";
+import { LOOPExecutorSelector } from "../../../features/create/generate/circular/services/implementations/LOOPExecutorSelector";
+import { MirroredInvertedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredInvertedLOOPExecutor";
+import { MirroredRotatedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedLOOPExecutor";
+import { MirroredRotatedInvertedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedInvertedLOOPExecutor";
+import { MirroredRotatedInvertedSwappedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredRotatedInvertedSwappedLOOPExecutor";
+import { MirroredSwappedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredSwappedLOOPExecutor";
+import { MirroredSwappedInvertedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/MirroredSwappedInvertedLOOPExecutor";
 import { PartialSequenceGenerator } from "../../../features/create/generate/circular/services/implementations/PartialSequenceGenerator";
 import { RotatedEndPositionSelector } from "../../../features/create/generate/circular/services/implementations/RotatedEndPositionSelector";
-import { RotatedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/RotatedInvertedCAPExecutor";
-import { RotatedSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/RotatedSwappedCAPExecutor";
-import { StrictInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictInvertedCAPExecutor";
-import { StrictMirroredCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictMirroredCAPExecutor";
-import { StrictRotatedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictRotatedCAPExecutor";
-import { StrictSwappedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictSwappedCAPExecutor";
-import { SwappedInvertedCAPExecutor } from "../../../features/create/generate/circular/services/implementations/SwappedComplementaryCAPExecutor";
+import { RotatedInvertedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/RotatedInvertedLOOPExecutor";
+import { RotatedSwappedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/RotatedSwappedLOOPExecutor";
+import { StrictInvertedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictInvertedLOOPExecutor";
+import { StrictMirroredLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictMirroredLOOPExecutor";
+import { StrictRotatedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictRotatedLOOPExecutor";
+import { StrictSwappedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/StrictSwappedLOOPExecutor";
+import { SwappedInvertedLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/SwappedInvertedLOOPExecutor";
+import { RewoundLOOPExecutor } from "../../../features/create/generate/circular/services/implementations/RewoundLOOPExecutor";
 import { BeatConverter } from "../../../features/create/generate/shared/services/implementations/BeatConverter";
 import { BeatGenerationOrchestrator } from "../../../features/create/generate/shared/services/implementations/BeatGenerationOrchestrator";
-import { CAPParameterProvider } from "../../../features/create/generate/shared/services/implementations/CAPParameterProvider";
-import { CAPTypeResolver } from "../../../features/create/generate/shared/services/implementations/CAPTypeResolver";
-import { CAPDetector } from "../../../features/create/generate/circular/services/implementations/CAPDetector";
+import { LOOPParameterProvider } from "../../../features/create/generate/shared/services/implementations/LOOPParameterProvider";
+import { LOOPTypeResolver } from "../../../features/create/generate/shared/services/implementations/LOOPTypeResolver";
+import { LOOPDetector } from "../../../features/create/generate/circular/services/implementations/LOOPDetector";
 import { OrientationCycleDetector } from "../../../features/create/generate/circular/services/implementations/OrientationCycleDetector";
 import { CardConfigurator } from "../../../features/create/generate/shared/services/implementations/CardConfigurator";
 import { GenerationOrchestrator } from "../../../features/create/generate/shared/services/implementations/GenerationOrchestrator";
@@ -70,8 +71,10 @@ import { OptionLoader } from "../../../features/create/construct/option-picker/s
 import { OptionTransitionCoordinator } from "../../../features/create/construct/option-picker/services/implementations/OptionTransitionCoordinator";
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
 import { PictographPreparer } from "../../../features/create/construct/option-picker/services/implementations/PictographPreparer";
-import { Autocompleter } from "../../../features/create/shared/services/implementations/Autocompleter";
+import { SequenceExtender } from "../../../features/create/shared/services/implementations/SequenceExtender";
 import { PanelPersister } from "../../../features/create/shared/services/implementations/PanelPersister.svelte";
+import { LetterTransitionGraph } from "../../../features/create/spell/services/implementations/LetterTransitionGraph";
+import { WordSequenceGenerator } from "../../../features/create/spell/services/implementations/WordSequenceGenerator";
 
 export const createModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -137,8 +140,8 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IPictographFilter).to(PictographFilter);
     options.bind(TYPES.ITurnManager).to(TurnManager);
 
-    // NEW: Consolidated CAP Parameter Provider (consolidates 4 services)
-    options.bind(TYPES.ICAPParameterProvider).to(CAPParameterProvider);
+    // NEW: Consolidated LOOP Parameter Provider (consolidates 4 services)
+    options.bind(TYPES.ILOOPParameterProvider).to(LOOPParameterProvider);
 
     options.bind(TYPES.ISequenceMetadataManager).to(SequenceMetadataManager);
 
@@ -150,55 +153,56 @@ export const createModule = new ContainerModule(
       .to(BeatGenerationOrchestrator);
     options.bind(TYPES.IPartialSequenceGenerator).to(PartialSequenceGenerator);
 
-    // Circular Generation (CAP) Services
+    // Circular Generation (LOOP) Services
     options
       .bind(TYPES.IRotatedEndPositionSelector)
       .to(RotatedEndPositionSelector);
-    options.bind(TYPES.ICAPEndPositionSelector).to(CAPEndPositionSelector);
-    options.bind(TYPES.IStrictRotatedCAPExecutor).to(StrictRotatedCAPExecutor);
+    options.bind(TYPES.ILOOPEndPositionSelector).to(LOOPEndPositionSelector);
+    options.bind(TYPES.IStrictRotatedLOOPExecutor).to(StrictRotatedLOOPExecutor);
     options
-      .bind(TYPES.IStrictMirroredCAPExecutor)
-      .to(StrictMirroredCAPExecutor);
-    options.bind(TYPES.IStrictSwappedCAPExecutor).to(StrictSwappedCAPExecutor);
+      .bind(TYPES.IStrictMirroredLOOPExecutor)
+      .to(StrictMirroredLOOPExecutor);
+    options.bind(TYPES.IStrictSwappedLOOPExecutor).to(StrictSwappedLOOPExecutor);
     options
-      .bind(TYPES.IStrictInvertedCAPExecutor)
-      .to(StrictInvertedCAPExecutor);
+      .bind(TYPES.IStrictInvertedLOOPExecutor)
+      .to(StrictInvertedLOOPExecutor);
     options
-      .bind(TYPES.IMirroredSwappedCAPExecutor)
-      .to(MirroredSwappedCAPExecutor);
+      .bind(TYPES.IMirroredSwappedLOOPExecutor)
+      .to(MirroredSwappedLOOPExecutor);
     options
-      .bind(TYPES.ISwappedInvertedCAPExecutor)
-      .to(SwappedInvertedCAPExecutor);
+      .bind(TYPES.ISwappedInvertedLOOPExecutor)
+      .to(SwappedInvertedLOOPExecutor);
     options
-      .bind(TYPES.IMirroredInvertedCAPExecutor)
-      .to(MirroredInvertedCAPExecutor);
+      .bind(TYPES.IMirroredInvertedLOOPExecutor)
+      .to(MirroredInvertedLOOPExecutor);
     options
-      .bind(TYPES.IRotatedSwappedCAPExecutor)
-      .to(RotatedSwappedCAPExecutor);
+      .bind(TYPES.IRotatedSwappedLOOPExecutor)
+      .to(RotatedSwappedLOOPExecutor);
     options
-      .bind(TYPES.IRotatedInvertedCAPExecutor)
-      .to(RotatedInvertedCAPExecutor);
+      .bind(TYPES.IRotatedInvertedLOOPExecutor)
+      .to(RotatedInvertedLOOPExecutor);
     options
-      .bind(TYPES.IMirroredRotatedCAPExecutor)
-      .to(MirroredRotatedCAPExecutor);
+      .bind(TYPES.IMirroredRotatedLOOPExecutor)
+      .to(MirroredRotatedLOOPExecutor);
     options
-      .bind(TYPES.IMirroredRotatedInvertedCAPExecutor)
-      .to(MirroredRotatedInvertedCAPExecutor);
+      .bind(TYPES.IMirroredRotatedInvertedLOOPExecutor)
+      .to(MirroredRotatedInvertedLOOPExecutor);
     options
-      .bind(TYPES.IMirroredSwappedInvertedCAPExecutor)
-      .to(MirroredSwappedInvertedCAPExecutor);
+      .bind(TYPES.IMirroredSwappedInvertedLOOPExecutor)
+      .to(MirroredSwappedInvertedLOOPExecutor);
     options
-      .bind(TYPES.IMirroredRotatedInvertedSwappedCAPExecutor)
-      .to(MirroredRotatedInvertedSwappedCAPExecutor);
-    options.bind(TYPES.ICAPExecutorSelector).to(CAPExecutorSelector);
+      .bind(TYPES.IMirroredRotatedInvertedSwappedLOOPExecutor)
+      .to(MirroredRotatedInvertedSwappedLOOPExecutor);
+    options.bind(TYPES.ILOOPExecutorSelector).to(LOOPExecutorSelector);
+    options.bind(TYPES.IRewoundLOOPExecutor).to(RewoundLOOPExecutor);
 
     // Generation UI Services (SRP Refactoring - Dec 2024)
     options
       .bind(TYPES.IResponsiveTypographer)
       .to(TypographyScaler);
     options.bind(TYPES.ICardConfigurator).to(CardConfigurator);
-    options.bind(TYPES.ICAPTypeResolver).to(CAPTypeResolver);
-    options.bind(TYPES.ICAPDetector).to(CAPDetector);
+    options.bind(TYPES.ILOOPTypeResolver).to(LOOPTypeResolver);
+    options.bind(TYPES.ILOOPDetector).to(LOOPDetector);
     options
       .bind(TYPES.IOrientationCycleDetector)
       .to(OrientationCycleDetector);
@@ -237,11 +241,18 @@ export const createModule = new ContainerModule(
       .to(SequencePersister);
     options.bind(TYPES.ISequenceIndexer).to(SequenceIndexer);
 
-    // === AUTOCOMPLETE SERVICE ===
-    options.bind(TYPES.IAutocompleter).to(Autocompleter);
+    // === SEQUENCE EXTENSION SERVICE ===
+    options.bind(TYPES.ISequenceExtender).to(SequenceExtender);
 
     // === PANEL MANAGEMENT ===
     options.bind(TYPES.IPanelPersister).to(PanelPersister);
+
+    // === SPELL TAB SERVICES === (Word-to-Sequence)
+    options
+      .bind(TYPES.ILetterTransitionGraph)
+      .to(LetterTransitionGraph)
+      .inSingletonScope();
+    options.bind(TYPES.IWordSequenceGenerator).to(WordSequenceGenerator);
 
     // === LAYOUT SERVICES ===
     // Note: PrintablePageLayoutService handled in word-card module

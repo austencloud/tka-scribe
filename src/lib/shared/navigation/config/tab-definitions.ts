@@ -37,6 +37,14 @@ export const CREATE_TABS: Section[] = [
     color: "#f59e0b",
     gradient: "linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #f97316 100%)",
   },
+  {
+    id: "spell",
+    label: "Spell",
+    icon: '<i class="fas fa-spell-check" aria-hidden="true"></i>',
+    description: "Type words, get sequences",
+    color: "#10b981",
+    gradient: "linear-gradient(135deg, #34d399 0%, #10b981 100%)",
+  },
 ];
 
 // Learn tabs configuration

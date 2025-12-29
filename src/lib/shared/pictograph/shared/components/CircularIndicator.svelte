@@ -3,10 +3,10 @@
    * CircularIndicator.svelte
    *
    * Displays a golden star indicator in the top-right corner of the start position
-   * pictograph when the sequence is circular-capable (can be autocompleted as a CAP).
+   * pictograph when the sequence is circular-capable (can be autocompleted as a LOOP).
    *
    * This indicator:
-   * - Shows that the sequence can be turned into a circular/CAP pattern
+   * - Shows that the sequence can be turned into a circular/LOOP pattern
    * - Appears in exported images (part of the SVG)
    * - Only renders on the start position (beatNumber === 0)
    * - Can be extended later to show different indicators for completed circular sequences

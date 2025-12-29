@@ -1,0 +1,86 @@
+<script lang="ts">
+  /**
+   * PropMotionEffects Component
+   *
+   * Combined motion effects wrapper for a single prop.
+   * Provides motion blur (ghost trail) and speed lines effects.
+   *
+   * Manages previous position tracking internally, so consumers
+   * only need to pass the current position.
+   */
+
+  import { Vector3 } from "three";
+  import MotionBlur from "./MotionBlur.svelte";
+  import SpeedLines from "./SpeedLines.svelte";
+
+  interface Props {
+    /** Current prop position in world space */
+    position: Vector3;
+    /** Prop color for matching effects */
+    color: "blue" | "red";
+    /** Enable motion blur effect */
+    enableBlur?: boolean;
+    /** Enable speed lines effect */
+    enableSpeedLines?: boolean;
+    /** Effect intensity (0-1) */
+    intensity?: number;
+    /** Minimum velocity to trigger effects (units per frame) */
+    threshold?: number;
+  }
+
+  let {
+    position,
+    color,
+    enableBlur = true,
+    enableSpeedLines = true,
+    intensity = 0.6,
+    threshold = 5,
+  }: Props = $props();
+
+  // Color mapping
+  const colorHex = $derived(color === "blue" ? "#3b82f6" : "#ef4444");
+  const colorLight = $derived(color === "blue" ? "#60a5fa" : "#f87171");
+
+  // Track previous position internally
+  let previousPosition = $state(position.clone());
+
+  // Update previous position when current position changes
+  $effect(() => {
+    // Store current as previous for next frame
+    const current = position.clone();
+
+    // Use setTimeout to ensure this runs after render
+    const timeoutId = setTimeout(() => {
+      previousPosition = current;
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  });
+</script>
+
+{#if enableBlur}
+  <MotionBlur
+    currentPosition={position}
+    {previousPosition}
+    enabled={enableBlur}
+    {intensity}
+    {threshold}
+    color={colorHex}
+    trailCount={5}
+    ghostSize={8}
+  />
+{/if}
+
+{#if enableSpeedLines}
+  <SpeedLines
+    currentPosition={position}
+    {previousPosition}
+    enabled={enableSpeedLines}
+    intensity={intensity * 0.8}
+    {threshold}
+    color={colorLight}
+    lineCount={5}
+    maxLength={0.6}
+    spread={12}
+  />
+{/if}

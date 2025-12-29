@@ -92,6 +92,7 @@
       onblur={validateEmail}
       placeholder="Enter new email address"
       disabled={uiState.changingEmail}
+      autocomplete="email"
       aria-invalid={!!emailError}
       aria-describedby={emailError ? "new-email-error" : undefined}
     />
@@ -115,6 +116,7 @@
       onblur={validatePassword}
       placeholder="Enter your current password"
       disabled={uiState.changingEmail}
+      autocomplete="current-password"
       aria-invalid={!!passwordError}
       aria-describedby={passwordError ? "verify-password-error" : undefined}
     />

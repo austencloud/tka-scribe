@@ -8,7 +8,7 @@ export const ANIMATION_3D_TYPES = {
   // Core math services
   IAngleMathCalculator: Symbol.for("IAngleMathCalculator"),
   IOrientationMapper: Symbol.for("IOrientationMapper"),
-  IMotionCalculator: Symbol.for("IMotionCalculator"),
+  IMotionCalculator3D: Symbol.for("IMotionCalculator3D"),
 
   // Coordinate and interpolation services
   IPlaneCoordinateMapper: Symbol.for("IPlaneCoordinateMapper"),

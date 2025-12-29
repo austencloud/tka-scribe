@@ -15,12 +15,15 @@
    * - Lighting
    * - Grid planes
    * - Props (when provided)
+   * - Optional bloom post-processing
    */
 
   import { Canvas } from "@threlte/core";
   import { T } from "@threlte/core";
   import { OrbitControls } from "@threlte/extras";
+  import { EffectComposer } from "threlte-postprocessing";
   import Grid3D from "./Grid3D.svelte";
+  import BloomEffect from "../effects/post-processing/BloomEffect.svelte";
   import { Plane } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
 
@@ -43,6 +46,14 @@
     customCameraTarget?: [number, number, number] | null;
     /** Callback when camera moves (for persistence) */
     onCameraChange?: (state: CameraState) => void;
+    /** Enable bloom post-processing effect */
+    bloomEnabled?: boolean;
+    /** Bloom effect intensity (0 = none, higher = stronger glow) */
+    bloomIntensity?: number;
+    /** Bloom luminance threshold (0-1, only pixels brighter than this glow) */
+    bloomThreshold?: number;
+    /** Bloom blur radius (how far glow spreads) */
+    bloomRadius?: number;
     /** Children content (props, etc.) */
     children?: Snippet;
   }
@@ -56,6 +67,10 @@
     customCameraPosition = null,
     customCameraTarget = null,
     onCameraChange,
+    bloomEnabled = false,
+    bloomIntensity = 1.5,
+    bloomThreshold = 0.8,
+    bloomRadius = 0.4,
     children,
   }: Props = $props();
 
@@ -140,14 +155,37 @@
       color="#ffffff"
     />
 
-    <!-- Grid planes -->
-    {#if showGrid}
-      <Grid3D {visiblePlanes} {showLabels} {gridMode} />
-    {/if}
+    <!-- Post-processing effects (wraps scene content when enabled) -->
+    {#if bloomEnabled}
+      <EffectComposer>
+        <!-- Grid planes -->
+        {#if showGrid}
+          <Grid3D {visiblePlanes} {showLabels} {gridMode} />
+        {/if}
 
-    <!-- Children content (props, etc.) -->
-    {#if children}
-      {@render children()}
+        <!-- Children content (props, etc.) -->
+        {#if children}
+          {@render children()}
+        {/if}
+
+        <!-- Bloom effect -->
+        <BloomEffect
+          enabled={bloomEnabled}
+          intensity={bloomIntensity}
+          luminanceThreshold={bloomThreshold}
+          radius={bloomRadius}
+        />
+      </EffectComposer>
+    {:else}
+      <!-- Grid planes -->
+      {#if showGrid}
+        <Grid3D {visiblePlanes} {showLabels} {gridMode} />
+      {/if}
+
+      <!-- Children content (props, etc.) -->
+      {#if children}
+        {@render children()}
+      {/if}
     {/if}
   </Canvas>
 </div>

@@ -81,7 +81,7 @@
           <span>Check your inbox and click the verification link.</span>
         {:else if error}
           <strong>Verify your email</strong>
-          <span class="error-text">{error}</span>
+          <span class="error-text" role="alert">{error}</span>
         {:else}
           <strong>Please verify your email</strong>
           <span

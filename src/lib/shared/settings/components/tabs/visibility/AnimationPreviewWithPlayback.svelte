@@ -22,6 +22,7 @@
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { animationSettings } from "$lib/shared/animation-engine/state/animation-settings-state.svelte";
   import { TurnPatternManager } from "$lib/features/create/shared/services/implementations/TurnPatternManager";
   import type { TurnPattern } from "$lib/features/create/shared/domain/models/TurnPatternData";
   import { Timestamp } from "firebase/firestore";
@@ -84,14 +85,15 @@
     }
 
     // For beats, use direct indexing with clamping
+    // currentBeat is 1-based: currentBeat 1.0-2.0 = beat 1's motion (uses beats[0])
     if (
       animationState.sequenceData.beats &&
       animationState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
-      const clampedIndex = Math.max(
-        0,
-        Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
+      const beatIndex = Math.max(0, Math.floor(currentBeat) - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationState.sequenceData.beats.length - 1
       );
       return animationState.sequenceData.beats[clampedIndex] || null;
     }
@@ -287,6 +289,7 @@
     beatData={currentBeatData}
     currentBeat={animationState.currentBeat}
     sequenceData={animationState.sequenceData}
+    trailSettings={animationSettings.trail}
   />
 {:else}
   <div class="preview-error">

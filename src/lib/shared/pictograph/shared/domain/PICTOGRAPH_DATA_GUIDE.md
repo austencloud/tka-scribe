@@ -77,7 +77,7 @@ if (result.success && result.sequence) {
 For creating new circular sequences:
 
 ```typescript
-// Use CAP executors for circular assembly patterns
+// Use LOOP executors for circular assembly patterns
 import { StrictInvertedCAPExecutor } from "$lib/features/create/generate/circular/services/implementations/StrictInvertedCAPExecutor";
 ```
 
@@ -195,7 +195,7 @@ const bWithOneTurn = result.sequence;
 
 1. **Load** sequences from the database using DiscoverLoader
 2. **Modify** sequences using TurnPatternService
-3. **Generate** circular sequences using CAP executors
+3. **Generate** circular sequences using LOOP executors
 4. **NEVER** hand-craft MotionData, BeatData, or SequenceData
 
 The infrastructure exists to handle the complexity. Use it.

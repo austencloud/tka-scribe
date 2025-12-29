@@ -1,7 +1,17 @@
 /**
  * Generation Service Type Identifiers
  *
- * Services for generating sequences, including CAP (Circular Alternating Pattern) executors.
+ * Services for generating sequences, including LOOP executors.
+ *
+ * ## TERMINOLOGY: LOOP
+ *
+ * **LOOP (Linked Offset Operation Pattern)** - TKA's algorithmic extension patterns.
+ * These are transformation-based patterns unique to TKA:
+ * - Rotated, Mirrored, Swapped, Inverted (and combinations)
+ * - Rewound (temporal reversal)
+ *
+ * Examples:
+ * - LOOP patterns: Rotated, Mirrored, Swapped, Inverted, Rewound (TKA transformations)
  */
 
 export const GenerationTypes = {
@@ -18,47 +28,50 @@ export const GenerationTypes = {
   IBeatGenerationOrchestrator: Symbol.for("IBeatGenerationOrchestrator"),
   IPartialSequenceGenerator: Symbol.for("IPartialSequenceGenerator"),
 
-  // CAP Parameter & Selection
-  ICAPParameterProvider: Symbol.for("ICAPParameterProvider"),
+  // LOOP Parameter & Selection
+  ILOOPParameterProvider: Symbol.for("ILOOPParameterProvider"),
   IRotatedEndPositionSelector: Symbol.for("IRotatedEndPositionSelector"),
-  ICAPEndPositionSelector: Symbol.for("ICAPEndPositionSelector"),
-  ICAPExecutorSelector: Symbol.for("ICAPExecutorSelector"),
+  ILOOPEndPositionSelector: Symbol.for("ILOOPEndPositionSelector"),
+  ILOOPExecutorSelector: Symbol.for("ILOOPExecutorSelector"),
 
-  // CAP Executors - Strict Single Transform
-  IStrictRotatedCAPExecutor: Symbol.for("IStrictRotatedCAPExecutor"),
-  IStrictMirroredCAPExecutor: Symbol.for("IStrictMirroredCAPExecutor"),
-  IStrictSwappedCAPExecutor: Symbol.for("IStrictSwappedCAPExecutor"),
-  IStrictInvertedCAPExecutor: Symbol.for("IStrictInvertedCAPExecutor"),
+  // LOOP Executors - Strict Single Transform
+  IStrictRotatedLOOPExecutor: Symbol.for("IStrictRotatedLOOPExecutor"),
+  IStrictMirroredLOOPExecutor: Symbol.for("IStrictMirroredLOOPExecutor"),
+  IStrictSwappedLOOPExecutor: Symbol.for("IStrictSwappedLOOPExecutor"),
+  IStrictInvertedLOOPExecutor: Symbol.for("IStrictInvertedLOOPExecutor"),
 
-  // CAP Executors - Double Transform Combinations
-  IMirroredSwappedCAPExecutor: Symbol.for("IMirroredSwappedCAPExecutor"),
-  ISwappedInvertedCAPExecutor: Symbol.for("ISwappedInvertedCAPExecutor"),
-  IMirroredInvertedCAPExecutor: Symbol.for("IMirroredInvertedCAPExecutor"),
-  IRotatedSwappedCAPExecutor: Symbol.for("IRotatedSwappedCAPExecutor"),
-  IRotatedInvertedCAPExecutor: Symbol.for("IRotatedInvertedCAPExecutor"),
-  IMirroredRotatedCAPExecutor: Symbol.for("IMirroredRotatedCAPExecutor"),
+  // LOOP Executors - Double Transform Combinations
+  IMirroredSwappedLOOPExecutor: Symbol.for("IMirroredSwappedLOOPExecutor"),
+  ISwappedInvertedLOOPExecutor: Symbol.for("ISwappedInvertedLOOPExecutor"),
+  IMirroredInvertedLOOPExecutor: Symbol.for("IMirroredInvertedLOOPExecutor"),
+  IRotatedSwappedLOOPExecutor: Symbol.for("IRotatedSwappedLOOPExecutor"),
+  IRotatedInvertedLOOPExecutor: Symbol.for("IRotatedInvertedLOOPExecutor"),
+  IMirroredRotatedLOOPExecutor: Symbol.for("IMirroredRotatedLOOPExecutor"),
 
-  // CAP Executors - Triple/Quad Transform Combinations
-  IMirroredRotatedInvertedCAPExecutor: Symbol.for(
-    "IMirroredRotatedInvertedCAPExecutor"
+  // LOOP Executors - Triple/Quad Transform Combinations
+  IMirroredRotatedInvertedLOOPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedLOOPExecutor"
   ),
-  IMirroredSwappedInvertedCAPExecutor: Symbol.for(
-    "IMirroredSwappedInvertedCAPExecutor"
+  IMirroredSwappedInvertedLOOPExecutor: Symbol.for(
+    "IMirroredSwappedInvertedLOOPExecutor"
   ),
-  IMirroredRotatedInvertedSwappedCAPExecutor: Symbol.for(
-    "IMirroredRotatedInvertedSwappedCAPExecutor"
+  IMirroredRotatedInvertedSwappedLOOPExecutor: Symbol.for(
+    "IMirroredRotatedInvertedSwappedLOOPExecutor"
   ),
+
+  // LOOP Executors - Temporal
+  IRewoundLOOPExecutor: Symbol.for("IRewoundLOOPExecutor"),
 
   // Generation UI Services
   IResponsiveTypographer: Symbol.for("IResponsiveTypographer"),
   ICardConfigurator: Symbol.for("ICardConfigurator"),
-  ICAPTypeResolver: Symbol.for("ICAPTypeResolver"),
+  ILOOPTypeResolver: Symbol.for("ILOOPTypeResolver"),
   IGenerationOrchestrator: Symbol.for(
     "IGenerationOrchestrator"
   ),
   IPresetFormatterService: Symbol.for("IPresetFormatterService"),
 
-  // CAP Detection (reverse of generation - detect CAP type from existing sequence)
-  ICAPDetector: Symbol.for("ICAPDetector"),
+  // LOOP Detection (reverse of generation - detect LOOP type from existing sequence)
+  ILOOPDetector: Symbol.for("ILOOPDetector"),
   IOrientationCycleDetector: Symbol.for("IOrientationCycleDetector"),
 } as const;

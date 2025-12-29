@@ -24,7 +24,7 @@
     );
   });
 
-  // Toggle options with Font Awesome icons and colors (matching your CAP card style)
+  // Toggle options with Font Awesome icons and colors (matching your LOOP card style)
   const toggleOptions = [
     {
       key: "addWord" as const,
@@ -86,7 +86,7 @@
 
 <div class="share-options">
   {#if options}
-    <!-- Toggle Buttons Grid (matching CAP card style) -->
+    <!-- Toggle Buttons Grid (matching LOOP card style) -->
     <div class="toggles-grid">
       {#each toggleOptions as option}
         <button

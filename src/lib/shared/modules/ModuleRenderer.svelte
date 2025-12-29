@@ -103,8 +103,8 @@
 
 {#if isModuleLoading}
   <!-- Loading state while module is being restored -->
-  <div class="module-loading">
-    <div class="loading-spinner"></div>
+  <div class="module-loading" role="status" aria-live="polite" aria-busy="true">
+    <div class="loading-spinner" aria-hidden="true"></div>
     <p>Loading...</p>
   </div>
 {:else}
@@ -114,8 +114,8 @@
       <div class="module-content">
         {#await modulePromise}
           <!-- Loading state while module chunk is being fetched -->
-          <div class="module-loading">
-            <div class="loading-spinner"></div>
+          <div class="module-loading" role="status" aria-live="polite" aria-busy="true">
+            <div class="loading-spinner" aria-hidden="true"></div>
             <p>Loading module...</p>
           </div>
         {:then LoadedModule}
@@ -129,7 +129,7 @@
             {/if}
           {/if}
         {:catch error}
-          <div class="module-error">
+          <div class="module-error" role="alert">
             <p>Failed to load module</p>
             <p class="error-details">{error?.message || "Unknown error"}</p>
           </div>
