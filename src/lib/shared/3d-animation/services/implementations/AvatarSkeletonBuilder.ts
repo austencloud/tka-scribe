@@ -64,6 +64,12 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
   private originalHeight: number = 0;
   private skeleton: Skeleton | null = null;
 
+  /** Offset from model origin to feet (negative value - feet are below origin) */
+  private feetOffset: number = 0;
+
+  /** Original bounding box min Y (in unscaled model space) - computed once at load time */
+  private originalMinY: number = 0;
+
   async loadModel(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
       this.loader.load(
@@ -104,9 +110,11 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
       }
     });
 
-    // Compute original height of new model
+    // Compute original bounding box of new model (before any transforms)
+    // This is done ONCE at load time, before the model is added to the scene
     const box = new Box3().setFromObject(gltf.scene);
     this.originalHeight = box.max.y - box.min.y;
+    this.originalMinY = box.min.y; // Store original feet position for scaling
 
     // Now atomically swap everything at once
     this.state.root = gltf.scene;
@@ -325,23 +333,36 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
   setScale(scale: number): void {
     if (!this.state.root) return;
 
+    // Reset transforms and apply new scale
+    // IMPORTANT: We only set scale here, NOT position.
+    // Position is handled by the parent component using getFeetOffset()
+    this.state.root.position.set(0, 0, 0);
+    this.state.root.rotation.set(0, 0, 0);
     this.state.root.scale.setScalar(scale);
+
+    // Calculate feet offset from ORIGINAL bounds (computed once at load time)
+    // This avoids the infinite loop caused by recomputing bounding box
+    // when the model is already in the scene with a parent transform
+    this.feetOffset = this.originalMinY * scale; // Scale the original feet position
+
+    // DEBUG: Log the calculation values
+    console.log(`[AvatarSkeletonBuilder.setScale] scale=${scale.toFixed(4)}, originalHeight=${this.originalHeight.toFixed(2)}, originalMinY=${this.originalMinY.toFixed(2)}`);
+    console.log(`  feetOffset=${this.feetOffset.toFixed(2)} (originalMinY * scale)`);
 
     // Update matrices after scaling
     this.state.root.updateMatrixWorld(true);
 
-    // Compute bounding box to find where feet are
-    const box = new Box3().setFromObject(this.state.root);
-
-    // Adjust Y position so feet (box.min.y) are at Y=0 in model space
-    // The parent group in Avatar3D.svelte handles placing at scene ground level
-    this.state.root.position.y = -box.min.y;
-
-    // Update matrices again after position change
-    this.state.root.updateMatrixWorld(true);
-
     // Rebuild arm chains with new scale
     this.buildArmChains();
+  }
+
+  /**
+   * Get the Y offset from model origin to feet (negative value)
+   * Parent component should position at: groundY - feetOffset
+   * This ensures feet end up at world Y = groundY
+   */
+  getFeetOffset(): number {
+    return this.feetOffset;
   }
 
   /**

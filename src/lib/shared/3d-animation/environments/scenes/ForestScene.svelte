@@ -21,11 +21,6 @@
 
   let { variant = "autumn" }: Props = $props();
 
-  // Debug: log variant
-  $effect(() => {
-    console.log("[ForestScene] variant:", variant, "fireflies:", palettes[variant]?.fireflies);
-  });
-
   // Load KayKit forest models
   const tree1 = useGltf("/models/forest/Tree_1_A_Color1.gltf");
   const tree2 = useGltf("/models/forest/Tree_2_A_Color1.gltf");
@@ -114,8 +109,8 @@
       ground: "#0c1a14", // Very dark forest floor
       // Subtle green leaves barely visible in the dark
       leaves: ["#1a3a1a", "#0d2a15", "#153020", "#0f2518"],
-      // Firefly colors: yellow-green, bright green, warm gold
-      fireflies: ["#bef264", "#a3e635", "#fde047", "#84cc16"],
+      // Single warm yellow-green like real fireflies
+      fireflies: ["#d4e157"],
     },
   };
 
@@ -150,20 +145,16 @@
 />
 
 <!-- Fireflies - only in firefly variant -->
-<!-- Concentrated in the clearing area where the performer is -->
 {#if palette.fireflies}
-  {@const _ = console.log("[ForestScene] Rendering fireflies component with colors:", palette.fireflies)}
   <FallingParticles
     type="fireflies"
-    count={150}
-    area={{ width: 1800, height: 500, depth: 1800 }}
-    speed={2}
+    count={60}
+    area={{ width: 1600, height: 400, depth: 1600 }}
+    speed={1}
     colors={palette.fireflies}
-    sizeRange={[60, 120]}
+    sizeRange={[40, 80]}
     spin={false}
   />
-{:else}
-  {@const _ = console.log("[ForestScene] NOT rendering fireflies - palette.fireflies is:", palette.fireflies)}
 {/if}
 
 <!-- KayKit Trees - ring around clearing -->

@@ -173,11 +173,11 @@ Displays TKA glyph and beat number with fade transitions.
 
   /* LED Mode: invert TKA letter colors (but NOT turns column - keep red/blue) */
   .glyph-overlay[data-led-mode="true"] :global(.tka-glyph) {
-    filter: invert(0.9) drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+    filter: invert(0.9);
   }
 
-  /* LED Mode: add subtle glow to turns column without inverting colors */
+  /* LED Mode: add white outline to turns column without inverting colors */
   .glyph-overlay[data-led-mode="true"] :global(.turns-column) {
-    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+    filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);
   }
 </style>

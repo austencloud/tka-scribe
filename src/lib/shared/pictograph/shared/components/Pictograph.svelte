@@ -585,6 +585,7 @@
             visible={effectiveShowReversals}
             {previewMode}
             onToggle={onToggleReversals}
+            ledMode={effectiveLedMode}
           />
 
           <!-- Elemental glyph -->
@@ -697,6 +698,7 @@
               visible={effectiveShowReversals}
               {previewMode}
               onToggle={onToggleReversals}
+              ledMode={effectiveLedMode}
             />
 
             <!-- Elemental glyph -->

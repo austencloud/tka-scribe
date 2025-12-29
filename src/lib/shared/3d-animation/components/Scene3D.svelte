@@ -79,6 +79,24 @@
     children,
   }: Props = $props();
 
+  // Determine if this is a night/dark environment that needs reduced lighting
+  const isNightEnvironment = $derived(
+    backgroundType === BackgroundType.FIREFLY_FOREST ||
+    backgroundType === BackgroundType.NIGHT_SKY ||
+    backgroundType === BackgroundType.AURORA ||
+    backgroundType === BackgroundType.DEEP_OCEAN
+  );
+
+  // Environment-aware lighting intensities
+  const ambientIntensity = $derived(isNightEnvironment ? 0.2 : 0.6);
+  const mainLightIntensity = $derived(isNightEnvironment ? 0.35 : 0.8);
+  const fillLightIntensity = $derived(isNightEnvironment ? 0.15 : 0.3);
+
+  // Light colors - cool tint for night, warm neutral for day
+  const ambientColor = $derived(isNightEnvironment ? "#4466aa" : "#ffffff");
+  const mainLightColor = $derived(isNightEnvironment ? "#6688cc" : "#ffffff");
+  const fillLightColor = $derived(isNightEnvironment ? "#334477" : "#ffffff");
+
   // Camera position based on preset
   // Grid radius is ~300, so camera at ~800 gives good overview with padding
   const cameraPositions = {
@@ -143,21 +161,21 @@
       />
     </T.PerspectiveCamera>
 
-    <!-- Ambient light for base illumination -->
-    <T.AmbientLight intensity={0.6} color="#ffffff" />
+    <!-- Ambient light for base illumination (reduced for night environments) -->
+    <T.AmbientLight intensity={ambientIntensity} color={ambientColor} />
 
-    <!-- Directional light for depth -->
+    <!-- Directional light for depth (reduced for night environments) -->
     <T.DirectionalLight
       position={[200, 300, 200]}
-      intensity={0.8}
-      color="#ffffff"
+      intensity={mainLightIntensity}
+      color={mainLightColor}
     />
 
     <!-- Additional fill light from opposite side -->
     <T.DirectionalLight
       position={[-100, 100, -100]}
-      intensity={0.3}
-      color="#ffffff"
+      intensity={fillLightIntensity}
+      color={fillLightColor}
     />
 
     <!-- Post-processing effects (wraps scene content when enabled) -->

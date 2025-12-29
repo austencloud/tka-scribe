@@ -10,7 +10,7 @@
    * 2. Procedural mode: Uses IKFigure3D as fallback
    */
 
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, untrack } from "svelte";
   import { T, useTask } from "@threlte/core";
   import { container, loadFeatureModule } from "$lib/shared/inversify/container";
   import { ANIMATION_3D_TYPES } from "../inversify/animation-3d.types";
@@ -62,10 +62,18 @@
   // Cache the root object to avoid reactivity issues during swap
   let cachedRoot = $state<import('three').Object3D | null>(null);
 
+  // Feet offset from model origin (negative value, updated after setHeight)
+  let feetOffset = $state(0);
+
   // Derived values from user proportions
   // avatarHeight is the target height in scene units (cm * CM_TO_UNITS)
   const avatarHeight = $derived(cmToUnits(userProportionsState.heightCm));
   const groundY = $derived(userProportionsState.groundY);
+
+  // Calculate group Y position to put feet at groundY
+  // feetOffset is negative (feet are below model origin)
+  // groupY = groundY - feetOffset puts feet at world Y = groundY
+  const groupY = $derived(groundY - feetOffset);
 
   // Load a GLTF model for a specific avatar
   // Uses hot-swap pattern: keeps old avatar visible until new one is ready
@@ -84,8 +92,11 @@
       await skeletonService.loadModel(url);
 
       // Scale model to match user's height
-      // setHeight() calculates proper scale and positions feet at Y=0 in model space
+      // setHeight() calculates proper scale and stores feet offset
       skeletonService.setHeight(avatarHeight);
+
+      // Get the feet offset for positioning (negative value)
+      feetOffset = skeletonService.getFeetOffset();
 
       // Update cached root AFTER everything is ready
       // This ensures Threlte only sees the swap when the new model is complete
@@ -163,9 +174,20 @@
     if (!skeletonService || !modelLoaded || useProceduralFallback) return;
 
     // Update height when user proportions change
-    // setHeight() calculates proper scale and positions feet at Y=0 in model space
-    // The group is placed at groundY to put feet on the ground plane
+    // setHeight() calculates proper scale and stores feet offset
     skeletonService.setHeight(avatarHeight);
+
+    // Update feetOffset for positioning (use untrack to prevent re-triggering)
+    const newFeetOffset = skeletonService.getFeetOffset();
+    untrack(() => {
+      feetOffset = newFeetOffset;
+    });
+
+    // DEBUG: Log the values being used (use untrack for reading derived values)
+    untrack(() => {
+      console.log(`[Avatar3D] Height changed: avatarHeight=${avatarHeight.toFixed(2)} units`);
+      console.log(`  groundY=${groundY.toFixed(2)}, feetOffset=${newFeetOffset.toFixed(2)}, groupY=${(groundY - newFeetOffset).toFixed(2)}`);
+    });
   });
 
   // Update animation each frame
@@ -203,17 +225,19 @@
     <!--
       Position the avatar:
       - X: 0 (centered)
-      - Y: groundY (derived from user height, where shoulder = grid center)
+      - Y: groupY (calculated to put feet at groundY)
       - Z: FIGURE_Z (-80, behind grid, facing toward props)
 
-      The avatar model is scaled so feet are at Y=0 in model space.
-      groundY is calculated as -(shoulder height) so feet land on ground.
+      groupY = groundY - feetOffset
+      - feetOffset is negative (feet are below model origin)
+      - This positions the group so feet end up at world Y = groundY
+      - Shoulders end up at world Y = 0 (grid center)
 
       Using cachedRoot instead of skeletonService.getRoot() ensures
       the template only updates AFTER a new model is fully loaded,
       preventing visual glitches during avatar swap.
     -->
-    <T.Group position={[0, groundY, FIGURE_Z]}>
+    <T.Group position={[0, groupY, FIGURE_Z]}>
       <T is={cachedRoot} />
     </T.Group>
   {/if}

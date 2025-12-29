@@ -130,6 +130,7 @@ colored according to the motion that is reversing between pictographs.
     class:visible
     class:preview-mode={previewMode}
     class:interactive={onToggle !== undefined}
+    class:led-mode={ledMode}
     onclick={onToggle}
     {...onToggle
       ? {
@@ -198,5 +199,10 @@ colored according to the motion that is reversing between pictographs.
   /* When not visible in preview mode, dim on hover */
   .reversal-indicators.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
+  }
+
+  /* LED mode: add white outline for contrast on dark backgrounds */
+  .reversal-indicators.led-mode {
+    filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);
   }
 </style>

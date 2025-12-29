@@ -71,12 +71,6 @@
   let geometry = $state<BufferGeometry | null>(null);
   let material = $state<ShaderMaterial | null>(null);
 
-  // Pre-allocated buffers
-  const positions = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
-  const rotations = new Float32Array(count);
-  const colorIndices = new Float32Array(count);
-
   // Type-specific behavior
   const typeConfigs = {
     leaves: {
@@ -123,7 +117,7 @@
     },
     fireflies: {
       gravity: 0, // No gravity - they float freely
-      swayAmount: 60, // Gentle wandering
+      swayAmount: 30, // Very gentle meandering
       blending: AdditiveBlending,
       shape: "glow", // Special glowing shape
       pulses: true, // Pulsing glow effect
@@ -238,10 +232,10 @@
       baseSize,
       colorIndex: Math.floor(Math.random() * colors.length),
       swayPhase: Math.random() * Math.PI * 2,
-      swaySpeed: isFirefly ? 0.3 + Math.random() * 0.5 : 1 + Math.random() * 2,
-      // Firefly pulse timing - each has its own rhythm
+      swaySpeed: isFirefly ? 0.15 + Math.random() * 0.25 : 1 + Math.random() * 2,
+      // Firefly pulse timing - slow, gentle glow
       pulsePhase: Math.random() * Math.PI * 2,
-      pulseSpeed: 0.5 + Math.random() * 1.5, // Random blink rhythm
+      pulseSpeed: isFirefly ? 0.2 + Math.random() * 0.4 : 0.5 + Math.random() * 1.5,
     };
   }
 
@@ -257,21 +251,23 @@
   }
 
   onMount(() => {
-    console.log(`[FallingParticles] onMount - type: ${type}, count: ${count}, config:`, config);
+    // Create buffers for geometry attributes
+    const positionBuffer = new Float32Array(count * 3);
+    const sizeBuffer = new Float32Array(count);
+    const rotationBuffer = new Float32Array(count);
+    const colorIndexBuffer = new Float32Array(count);
 
     geometry = new BufferGeometry();
-    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
-    geometry.setAttribute("size", new Float32BufferAttribute(sizes, 1));
-    geometry.setAttribute("rotation", new Float32BufferAttribute(rotations, 1));
-    geometry.setAttribute("colorIndex", new Float32BufferAttribute(colorIndices, 1));
+    geometry.setAttribute("position", new Float32BufferAttribute(positionBuffer, 3));
+    geometry.setAttribute("size", new Float32BufferAttribute(sizeBuffer, 1));
+    geometry.setAttribute("rotation", new Float32BufferAttribute(rotationBuffer, 1));
+    geometry.setAttribute("colorIndex", new Float32BufferAttribute(colorIndexBuffer, 1));
 
     // Convert color strings to Color objects
     const colorArray = colors.slice(0, 4).map((c) => new Color(c));
     while (colorArray.length < 4) {
       colorArray.push(colorArray[0] || new Color("#ffffff"));
     }
-
-    console.log(`[FallingParticles] Creating material - shape: ${config.shape}, shapeIndex: ${getShapeIndex()}, blending:`, config.blending);
 
     material = new ShaderMaterial({
       uniforms: {
@@ -285,15 +281,12 @@
       transparent: true,
     });
 
-    // Initialize particles
+    // Initialize particles distributed throughout the area
     for (let i = 0; i < count; i++) {
       const p = spawnParticle();
-      // Distribute vertically for initial state
       p.position.y = (Math.random() - 0.5) * area.height;
       particles.push(p);
     }
-
-    console.log(`[FallingParticles] Initialized ${particles.length} particles. First particle pos:`, particles[0]?.position);
   });
 
   onDestroy(() => {
@@ -327,6 +320,12 @@
     const time = performance.now() / 1000;
     const isFirefly = type === "fireflies";
 
+    // Get direct references to geometry arrays (once per frame, not per particle)
+    const posArray = geometry.attributes.position.array as Float32Array;
+    const sizeArray = geometry.attributes.size.array as Float32Array;
+    const rotArray = geometry.attributes.rotation.array as Float32Array;
+    const colorArray = geometry.attributes.colorIndex.array as Float32Array;
+
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
 
@@ -349,13 +348,21 @@
       // Update rotation
       p.rotation += p.rotationSpeed * delta;
 
-      // Firefly pulsing - smooth glow cycle (always visible, varies in brightness)
+      // Firefly pulsing - realistic blink pattern (mostly dark, occasional flash)
       if (isFirefly && config.pulses) {
         const pulseValue = Math.sin(time * p.pulseSpeed + p.pulsePhase);
-        // Smooth 0-1 range (always visible, just varies in intensity)
-        const glowIntensity = (pulseValue + 1) / 2;
-        // 40% minimum size when dimmest, 100% when brightest
-        p.size = p.baseSize * (0.4 + glowIntensity * 0.6);
+        // Only flash when sine wave is above threshold (~30% of cycle)
+        const flashThreshold = 0.5;
+        if (pulseValue > flashThreshold) {
+          // Map threshold-1.0 to 0-1 for intensity
+          const rawIntensity = (pulseValue - flashThreshold) / (1 - flashThreshold);
+          // Apply smoothstep for gentle fade in/out
+          const smoothedIntensity = rawIntensity * rawIntensity * (3 - 2 * rawIntensity);
+          p.size = p.baseSize * smoothedIntensity;
+        } else {
+          // Dark/invisible when not flashing
+          p.size = 0;
+        }
       }
 
       // Respawn if out of bounds
@@ -383,27 +390,26 @@
         p.pulseSpeed = newP.pulseSpeed;
       }
 
-      // Write to buffers
-      positions[i * 3] = p.position.x;
-      positions[i * 3 + 1] = p.position.y;
-      positions[i * 3 + 2] = p.position.z;
-      sizes[i] = p.size;
-      rotations[i] = p.rotation;
-      colorIndices[i] = p.colorIndex;
+      // Write to geometry attribute arrays
+      posArray[i * 3] = p.position.x;
+      posArray[i * 3 + 1] = p.position.y;
+      posArray[i * 3 + 2] = p.position.z;
+      sizeArray[i] = p.size;
+      rotArray[i] = p.rotation;
+      colorArray[i] = p.colorIndex;
     }
 
-    // Update geometry
-    const attrs = geometry.attributes;
-    if (attrs.position) attrs.position.needsUpdate = true;
-    if (attrs.size) attrs.size.needsUpdate = true;
-    if (attrs.rotation) attrs.rotation.needsUpdate = true;
-    if (attrs.colorIndex) attrs.colorIndex.needsUpdate = true;
+    // Mark attributes as needing update
+    geometry.attributes.position.needsUpdate = true;
+    geometry.attributes.size.needsUpdate = true;
+    geometry.attributes.rotation.needsUpdate = true;
+    geometry.attributes.colorIndex.needsUpdate = true;
+
+    // Compute bounding sphere for proper culling
+    geometry.computeBoundingSphere();
   });
 </script>
 
 {#if geometry && material}
-  {@const _ = console.log(`[FallingParticles] Rendering T.Points for type: ${type}`)}
-  <T.Points {geometry} {material} />
-{:else}
-  {@const _ = console.log(`[FallingParticles] NOT rendering - geometry: ${!!geometry}, material: ${!!material}`)}
+  <T.Points {geometry} {material} frustumCulled={false} />
 {/if}
