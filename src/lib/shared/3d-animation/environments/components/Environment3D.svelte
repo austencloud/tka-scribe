@@ -3,33 +3,79 @@
    * Environment3D
    *
    * Switcher component that renders the appropriate 3D environment
-   * based on the selected type.
+   * based on the BackgroundType setting. This unifies the 2D background
+   * and 3D environment selection - they are the same setting.
    */
 
-  import { EnvironmentType } from "../domain/enums/environment-enums";
+  import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
   import ForestScene from "../scenes/ForestScene.svelte";
   import CosmicScene from "../scenes/CosmicScene.svelte";
+  import WinterScene from "../scenes/WinterScene.svelte";
+  import OceanScene from "../scenes/OceanScene.svelte";
+  import EmberScene from "../scenes/EmberScene.svelte";
+  import SakuraScene from "../scenes/SakuraScene.svelte";
 
   interface Props {
-    /** Environment type to render */
-    type?: EnvironmentType;
-    /** Forest variant (autumn/firefly) */
-    forestVariant?: "autumn" | "firefly";
-    /** Cosmic variant (night/aurora) */
-    cosmicVariant?: "night" | "aurora";
+    /** Background type from settings */
+    backgroundType: BackgroundType;
   }
 
-  let {
-    type = EnvironmentType.NONE,
-    forestVariant = "autumn",
-    cosmicVariant = "night",
-  }: Props = $props();
+  let { backgroundType }: Props = $props();
+
+  // Debug: log what background type we're receiving
+  $effect(() => {
+    console.log("[Environment3D] backgroundType:", backgroundType, "config:", getSceneConfig(backgroundType));
+  });
+
+  // Map BackgroundType to scene type and variant
+  type SceneConfig =
+    | { scene: "forest"; variant: "autumn" | "firefly" }
+    | { scene: "cosmic"; variant: "night" | "aurora" }
+    | { scene: "winter" }
+    | { scene: "ocean" }
+    | { scene: "ember" }
+    | { scene: "sakura" }
+    | { scene: "none" };
+
+  function getSceneConfig(bg: BackgroundType): SceneConfig {
+    switch (bg) {
+      case BackgroundType.AUTUMN_DRIFT:
+        return { scene: "forest", variant: "autumn" };
+      case BackgroundType.FIREFLY_FOREST:
+        return { scene: "forest", variant: "firefly" };
+      case BackgroundType.NIGHT_SKY:
+        return { scene: "cosmic", variant: "night" };
+      case BackgroundType.AURORA:
+        return { scene: "cosmic", variant: "aurora" };
+      case BackgroundType.SNOWFALL:
+        return { scene: "winter" };
+      case BackgroundType.DEEP_OCEAN:
+        return { scene: "ocean" };
+      case BackgroundType.EMBER_GLOW:
+        return { scene: "ember" };
+      case BackgroundType.SAKURA_DRIFT:
+        return { scene: "sakura" };
+      // SOLID_COLOR and LINEAR_GRADIENT show no 3D scene
+      default:
+        return { scene: "none" };
+    }
+  }
+
+  const config = $derived(getSceneConfig(backgroundType));
 </script>
 
-{#if type === EnvironmentType.FOREST}
-  <ForestScene variant={forestVariant} />
-{:else if type === EnvironmentType.COSMIC}
-  <CosmicScene variant={cosmicVariant} />
+{#if config.scene === "forest"}
+  <ForestScene variant={config.variant} />
+{:else if config.scene === "cosmic"}
+  <CosmicScene variant={config.variant} />
+{:else if config.scene === "winter"}
+  <WinterScene />
+{:else if config.scene === "ocean"}
+  <OceanScene />
+{:else if config.scene === "ember"}
+  <EmberScene />
+{:else if config.scene === "sakura"}
+  <SakuraScene />
 {/if}
 
-<!-- EnvironmentType.NONE renders nothing - just the default grid -->
+<!-- SOLID_COLOR and LINEAR_GRADIENT render nothing - just the default grid -->

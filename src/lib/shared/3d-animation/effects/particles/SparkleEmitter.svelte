@@ -2,30 +2,19 @@
   /**
    * SparkleEmitter Component
    *
-   * Creates magical glitter/sparkle effects around a position in 3D space.
-   * Uses GPU-accelerated Points geometry with a custom shader for:
-   * - Twinkling opacity animation (sin wave with per-particle phase)
-   * - Star/cross-shaped sprites with glow
-   * - Additive blending for brightness
+   * Creates sparkle/glitter effects around a position in 3D space.
+   * Uses instanced sprites for reliable rendering in Threlte.
    */
 
   import { T, useTask } from "@threlte/core";
-  import { onMount, onDestroy } from "svelte";
-  import {
-    Vector3,
-    BufferGeometry,
-    Float32BufferAttribute,
-    ShaderMaterial,
-    AdditiveBlending,
-    Color,
-  } from "three";
+  import { Vector3 } from "three";
 
   interface Props {
     /** Emission center position */
     position: Vector3;
     /** Whether particles are emitting */
     enabled?: boolean;
-    /** Emission intensity (0-1), affects spawn rate */
+    /** Emission intensity multiplier */
     intensity?: number;
     /** Base color for sparkles */
     color?: string;
@@ -37,246 +26,118 @@
     position,
     enabled = true,
     intensity = 1.0,
-    color = "#fffacd", // Light gold/white default
+    color = "#ffffff",
     spread = 15,
   }: Props = $props();
 
   // Particle configuration
-  const MAX_PARTICLES = 150;
-  const BASE_SPAWN_RATE = 30; // particles per second at intensity=1
-  const GRAVITY = 8; // slight downward drift
+  const MAX_PARTICLES = 50;
+  const BASE_SPAWN_RATE = 15;
+  const GRAVITY = 30;
 
-  // Particle data structure
-  interface SparkleParticle {
-    position: Vector3;
-    velocity: Vector3;
+  // Particle data stored as plain objects for Svelte reactivity
+  interface Particle {
+    id: number;
+    x: number;
+    y: number;
+    z: number;
+    vx: number;
+    vy: number;
+    vz: number;
     life: number;
     maxLife: number;
-    size: number;
-    twinklePhase: number;
-    twinkleSpeed: number;
+    scale: number;
   }
 
-  // Active particles pool
-  let particles: SparkleParticle[] = [];
+  let particles = $state<Particle[]>([]);
   let spawnAccumulator = 0;
+  let nextId = 0;
 
-  // Three.js objects
-  let geometry: BufferGeometry | null = null;
-  let material: ShaderMaterial | null = null;
+  function spawnParticle(): Particle {
+    // Extract position values (handles Svelte Proxy)
+    const px = position.x;
+    const py = position.y;
+    const pz = position.z;
 
-  // Buffer arrays (pre-allocated for performance)
-  const positions = new Float32Array(MAX_PARTICLES * 3);
-  const sizes = new Float32Array(MAX_PARTICLES);
-  const phases = new Float32Array(MAX_PARTICLES);
-  const speeds = new Float32Array(MAX_PARTICLES);
-  const lifetimes = new Float32Array(MAX_PARTICLES); // 0-1 normalized life
-
-  // Vertex shader - handles position and passes attributes to fragment
-  const vertexShader = `
-    attribute float size;
-    attribute float phase;
-    attribute float speed;
-    attribute float lifetime;
-
-    varying float vPhase;
-    varying float vSpeed;
-    varying float vLifetime;
-
-    void main() {
-      vPhase = phase;
-      vSpeed = speed;
-      vLifetime = lifetime;
-
-      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = size * (300.0 / -mvPosition.z);
-      gl_Position = projectionMatrix * mvPosition;
-    }
-  `;
-
-  // Fragment shader - creates star shape with twinkle
-  const fragmentShader = `
-    uniform float uTime;
-    uniform vec3 uColor;
-
-    varying float vPhase;
-    varying float vSpeed;
-    varying float vLifetime;
-
-    void main() {
-      // Distance from center of point sprite
-      vec2 center = gl_PointCoord - 0.5;
-      float dist = length(center);
-
-      // Discard pixels outside circular bounds
-      if (dist > 0.5) discard;
-
-      // Create star/cross pattern
-      // Cross arms along x and y axes
-      float crossX = abs(center.x);
-      float crossY = abs(center.y);
-      float cross = min(crossX, crossY);
-
-      // Radial glow
-      float glow = 1.0 - smoothstep(0.0, 0.5, dist);
-
-      // Star shape: bright at center and along cross arms
-      float starIntensity = glow * 0.6 + (1.0 - smoothstep(0.0, 0.15, cross)) * 0.4;
-
-      // Twinkle effect using sin wave with per-particle phase
-      float twinkle = 0.4 + 0.6 * sin(uTime * vSpeed + vPhase);
-
-      // Fade out at end of life
-      float lifeFade = 1.0 - smoothstep(0.7, 1.0, vLifetime);
-      // Fade in at start
-      float fadeIn = smoothstep(0.0, 0.15, vLifetime);
-
-      float alpha = starIntensity * twinkle * lifeFade * fadeIn;
-
-      // Slight color variation based on lifetime
-      vec3 finalColor = uColor * (0.9 + 0.1 * sin(vLifetime * 3.14159));
-
-      gl_FragColor = vec4(finalColor, alpha);
-    }
-  `;
-
-  // Initialize geometry and material
-  onMount(() => {
-    geometry = new BufferGeometry();
-
-    // Initialize all buffer attributes
-    geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
-    geometry.setAttribute("size", new Float32BufferAttribute(sizes, 1));
-    geometry.setAttribute("phase", new Float32BufferAttribute(phases, 1));
-    geometry.setAttribute("speed", new Float32BufferAttribute(speeds, 1));
-    geometry.setAttribute("lifetime", new Float32BufferAttribute(lifetimes, 1));
-
-    material = new ShaderMaterial({
-      uniforms: {
-        uTime: { value: 0 },
-        uColor: { value: new Color(color) },
-      },
-      vertexShader,
-      fragmentShader,
-      blending: AdditiveBlending,
-      depthWrite: false,
-      transparent: true,
-    });
-  });
-
-  onDestroy(() => {
-    geometry?.dispose();
-    material?.dispose();
-    particles = [];
-  });
-
-  // Update color uniform when prop changes
-  $effect(() => {
-    if (material?.uniforms?.uColor) {
-      material.uniforms.uColor.value.set(color);
-    }
-  });
-
-  // Spawn a new particle
-  function spawnParticle(): SparkleParticle {
-    // Random position within spread sphere
+    // Random position within sphere
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
-    const r = Math.random() * spread;
+    const r = Math.random() * spread * 0.5; // Tighter spread
 
-    const spawnPos = new Vector3(
-      position.x + r * Math.sin(phi) * Math.cos(theta),
-      position.y + r * Math.sin(phi) * Math.sin(theta),
-      position.z + r * Math.cos(phi)
-    );
+    const x = px + r * Math.sin(phi) * Math.cos(theta);
+    const y = py + r * Math.sin(phi) * Math.sin(theta);
+    const z = pz + r * Math.cos(phi);
 
-    // Velocity: slight outward drift from center
-    const outward = spawnPos.clone().sub(position).normalize();
-    const velocity = outward.multiplyScalar(5 + Math.random() * 10);
-    // Add slight upward bias then gravity pulls down
-    velocity.y += 3;
+    // Outward velocity
+    const dx = x - px;
+    const dy = y - py;
+    const dz = z - pz;
+    const len = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1;
+    const speed = 20 + Math.random() * 30;
 
     return {
-      position: spawnPos,
-      velocity,
+      id: nextId++,
+      x,
+      y,
+      z,
+      vx: (dx / len) * speed,
+      vy: (dy / len) * speed + 20, // Upward bias
+      vz: (dz / len) * speed,
       life: 0,
-      maxLife: 0.5 + Math.random() * 1.0, // 0.5-1.5 seconds
-      size: 4 + Math.random() * 6, // 4-10 units
-      twinklePhase: Math.random() * Math.PI * 2,
-      twinkleSpeed: 3 + Math.random() * 4, // 3-7 Hz twinkle
+      maxLife: 0.3 + Math.random() * 0.4,
+      scale: 3 + Math.random() * 4,
     };
   }
 
-  // Animation update loop
   useTask((delta) => {
-    if (!geometry || !material) return;
-
-    // Update time uniform
-    if (material.uniforms.uTime) {
-      material.uniforms.uTime.value += delta;
-    }
-
-    // Spawn new particles if enabled
+    // Spawn particles
     if (enabled && particles.length < MAX_PARTICLES) {
       spawnAccumulator += delta * BASE_SPAWN_RATE * intensity;
-
       while (spawnAccumulator >= 1 && particles.length < MAX_PARTICLES) {
         particles.push(spawnParticle());
         spawnAccumulator -= 1;
       }
     }
 
-    // Update existing particles
-    let writeIndex = 0;
-    const survivingParticles: SparkleParticle[] = [];
+    // Update particles
+    const surviving: Particle[] = [];
 
     for (const p of particles) {
-      // Update life
       p.life += delta / p.maxLife;
-
-      // Remove dead particles
       if (p.life >= 1) continue;
 
-      // Update physics
-      p.velocity.y -= GRAVITY * delta;
-      p.position.add(p.velocity.clone().multiplyScalar(delta));
+      // Physics
+      p.vy -= GRAVITY * delta;
+      p.x += p.vx * delta;
+      p.y += p.vy * delta;
+      p.z += p.vz * delta;
 
-      // Write to buffers
-      positions[writeIndex * 3] = p.position.x;
-      positions[writeIndex * 3 + 1] = p.position.y;
-      positions[writeIndex * 3 + 2] = p.position.z;
-      sizes[writeIndex] = p.size;
-      phases[writeIndex] = p.twinklePhase;
-      speeds[writeIndex] = p.twinkleSpeed;
-      lifetimes[writeIndex] = p.life;
+      // Fade out
+      p.scale = (3 + Math.random() * 2) * (1 - p.life);
 
-      survivingParticles.push(p);
-      writeIndex++;
+      surviving.push(p);
     }
 
-    // Zero out unused slots
-    for (let i = writeIndex; i < MAX_PARTICLES; i++) {
-      positions[i * 3] = 0;
-      positions[i * 3 + 1] = 0;
-      positions[i * 3 + 2] = 0;
-      sizes[i] = 0;
-    }
-
-    particles = survivingParticles;
-
-    // Update geometry attributes (safely access with null checks)
-    const attrs = geometry.attributes;
-    if (attrs.position) attrs.position.needsUpdate = true;
-    if (attrs.size) attrs.size.needsUpdate = true;
-    if (attrs.phase) attrs.phase.needsUpdate = true;
-    if (attrs.speed) attrs.speed.needsUpdate = true;
-    if (attrs.lifetime) attrs.lifetime.needsUpdate = true;
-
-    // Update draw range to only render active particles
-    geometry.setDrawRange(0, particles.length);
+    particles = surviving;
   });
+
+  // Convert hex color to RGB for emissive
+  const colorValue = $derived(color);
 </script>
 
-{#if geometry && material}
-  <T.Points {geometry} {material} />
-{/if}
+<!-- Render each particle as a small glowing sphere -->
+{#each particles as particle (particle.id)}
+  <T.Mesh
+    position.x={particle.x}
+    position.y={particle.y}
+    position.z={particle.z}
+    scale={particle.scale}
+  >
+    <T.SphereGeometry args={[1, 8, 8]} />
+    <T.MeshBasicMaterial
+      color={colorValue}
+      transparent
+      opacity={0.8 * (1 - particle.life)}
+    />
+  </T.Mesh>
+{/each}

@@ -14,7 +14,7 @@
   import { T } from "@threlte/core";
   import { Quaternion, Euler } from "three";
   import type { PropState3D } from "../domain/models/PropState3D";
-  import { AUSTEN_STAFF } from "../config/avatar-proportions";
+  import { userProportionsState } from "../state/user-proportions-state.svelte";
 
   interface Props {
     /** Prop state with position and rotation */
@@ -23,7 +23,7 @@
     color: "blue" | "red";
     /** Whether to show the prop */
     visible?: boolean;
-    /** Staff length in scene units (default: 34" staff = 173 units) */
+    /** Staff length in scene units (default: from user proportions) */
     length?: number;
     /** Staff thickness (radius of the tube) */
     thickness?: number;
@@ -33,15 +33,19 @@
     propState,
     color,
     visible = true,
-    length = AUSTEN_STAFF.length, // 34" staff = 86.4cm = 173 units
-    thickness = AUSTEN_STAFF.radius * 2, // ~1" diameter = 5 units diameter
+    length, // Will use user proportions if not provided
+    thickness, // Will use user proportions if not provided
   }: Props = $props();
+
+  // Use user proportions as defaults if not explicitly provided
+  const effectiveLength = $derived(length ?? userProportionsState.staffLength);
+  const effectiveThickness = $derived(thickness ?? userProportionsState.dimensions.staffRadius * 2);
 
   // T-bar dimensions - proportional to staff
   // T-bar length (perpendicular extent) from SVG ratio: 57.6/252.8 = 22.8%
-  const tBarLength = $derived(length * 0.228); // ~68 for length 300
+  const tBarLength = $derived(effectiveLength * 0.228); // ~68 for length 300
   // T-bar thickness should match shaft thickness (in SVG they're nearly equal: 18.2 vs 17)
-  const tBarThickness = $derived(thickness); // Slightly thinner than main shaft
+  const tBarThickness = $derived(effectiveThickness); // Slightly thinner than main shaft
 
   // Color values - use hex for Three.js compatibility
   const colors = {
@@ -76,7 +80,7 @@
   });
 
   // Half length for positioning end caps
-  const halfLength = $derived(length / 2);
+  const halfLength = $derived(effectiveLength / 2);
 </script>
 
 {#if visible}
@@ -84,7 +88,7 @@
     <!-- Staff CENTER (grip) is at the hand/grid point -->
     <!-- Main staff body - cylinder along Y axis -->
     <T.Mesh>
-      <T.CylinderGeometry args={[thickness, thickness, length, 16, 1]} />
+      <T.CylinderGeometry args={[effectiveThickness, effectiveThickness, effectiveLength, 16, 1]} />
       <T.MeshStandardMaterial
         color={palette.main}
         roughness={0.3}
@@ -125,7 +129,7 @@
 
     <!-- Rounded cap at other end -->
     <T.Mesh position={[0, -halfLength, 0]}>
-      <T.SphereGeometry args={[thickness, 16, 16]} />
+      <T.SphereGeometry args={[effectiveThickness, 16, 16]} />
       <T.MeshStandardMaterial
         color={palette.dark}
         roughness={0.3}
@@ -135,7 +139,7 @@
 
     <!-- Center grip ring (white, at the hand point) -->
     <T.Mesh>
-      <T.TorusGeometry args={[thickness * 1.15, thickness * 0.15, 12, 24]} />
+      <T.TorusGeometry args={[effectiveThickness * 1.15, effectiveThickness * 0.15, 12, 24]} />
       <T.MeshStandardMaterial
         color="white"
         roughness={0.4}

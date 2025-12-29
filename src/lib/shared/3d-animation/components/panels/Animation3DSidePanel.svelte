@@ -2,15 +2,19 @@
   /**
    * Animation3DSidePanel - Collapsible sidebar for 3D animation
    *
-   * Contains: sequence loader, beat info, active configs, grid settings.
-   * Composes smaller control components.
+   * Contains: sequence loader, beat info, effects, grid settings.
+   * Sections are collapsible to avoid content overflow.
    */
 
   import type { MotionConfig3D } from "../../domain/models/MotionData3D";
   import type { GridMode } from "../../domain/constants/grid-layout";
+  import type { AvatarId } from "../../config/avatar-definitions";
   import { Plane } from "../../domain/enums/Plane";
   import GridSettingsPanel from "../controls/GridSettingsPanel.svelte";
-  import ActiveConfigDisplay from "../controls/ActiveConfigDisplay.svelte";
+  import EffectsSettingsPanel from "../controls/EffectsSettingsPanel.svelte";
+  import EnvironmentSettingsPanel from "../controls/EnvironmentSettingsPanel.svelte";
+  import AvatarSettingsPanel from "../controls/AvatarSettingsPanel.svelte";
+  import ProportionsPanel from "./ProportionsPanel.svelte";
 
   interface Props {
     /** Whether panel is collapsed */
@@ -21,19 +25,25 @@
     currentBeatIndex: number;
     /** Total beats */
     totalBeats: number;
-    /** Blue config (null if not visible) */
-    blueConfig: MotionConfig3D | null;
-    /** Red config (null if not visible) */
-    redConfig: MotionConfig3D | null;
+    /** Blue config (null if not visible) - kept for future use */
+    blueConfig?: MotionConfig3D | null;
+    /** Red config (null if not visible) - kept for future use */
+    redConfig?: MotionConfig3D | null;
     /** Grid mode */
     gridMode: GridMode;
     /** Visible planes */
     visiblePlanes: Set<Plane>;
+    /** Whether avatar is visible */
+    showFigure: boolean;
+    /** Selected avatar ID */
+    avatarId: AvatarId;
 
     // Callbacks
     onLoadSequence: () => void;
     onGridModeChange: (mode: GridMode) => void;
     onPlaneToggle: (plane: Plane) => void;
+    onToggleFigure: () => void;
+    onAvatarChange: (id: AvatarId) => void;
   }
 
   let {
@@ -41,14 +51,21 @@
     hasSequence,
     currentBeatIndex,
     totalBeats,
-    blueConfig,
-    redConfig,
+    blueConfig = null,
+    redConfig = null,
     gridMode,
     visiblePlanes,
+    showFigure,
+    avatarId,
     onLoadSequence,
     onGridModeChange,
     onPlaneToggle,
+    onToggleFigure,
+    onAvatarChange,
   }: Props = $props();
+
+  // Section expansion state - Avatar expanded by default, others collapsed
+  let expandedSections = $state<Set<string>>(new Set(["avatar"]));
 </script>
 
 <aside class="side-panel" class:collapsed>
@@ -72,20 +89,127 @@
     </div>
   {/if}
 
-  <!-- Scrollable Content -->
+  <!-- Scrollable Content with Collapsible Sections -->
   <div class="panel-scroll">
-    <!-- Active Configs (when sequence loaded) -->
-    {#if hasSequence}
-      <ActiveConfigDisplay {blueConfig} {redConfig} />
-    {/if}
+    <!-- Avatar Section -->
+    <section class="collapsible-section">
+      <button
+        class="section-header"
+        onclick={() => {
+          const next = new Set(expandedSections);
+          next.has("avatar") ? next.delete("avatar") : next.add("avatar");
+          expandedSections = next;
+        }}
+        aria-expanded={expandedSections.has("avatar")}
+      >
+        <i class="fas fa-person" aria-hidden="true"></i>
+        <span>Avatar</span>
+        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("avatar")} aria-hidden="true"></i>
+      </button>
+      {#if expandedSections.has("avatar")}
+        <div class="section-content">
+          <AvatarSettingsPanel
+            {showFigure}
+            {avatarId}
+            onToggle={onToggleFigure}
+            {onAvatarChange}
+          />
+        </div>
+      {/if}
+    </section>
 
-    <!-- Grid Settings -->
-    <GridSettingsPanel
-      {gridMode}
-      {visiblePlanes}
-      {onGridModeChange}
-      {onPlaneToggle}
-    />
+    <!-- Proportions Section -->
+    <section class="collapsible-section">
+      <button
+        class="section-header"
+        onclick={() => {
+          const next = new Set(expandedSections);
+          next.has("proportions") ? next.delete("proportions") : next.add("proportions");
+          expandedSections = next;
+        }}
+        aria-expanded={expandedSections.has("proportions")}
+      >
+        <i class="fas fa-ruler-vertical" aria-hidden="true"></i>
+        <span>Proportions</span>
+        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("proportions")} aria-hidden="true"></i>
+      </button>
+      {#if expandedSections.has("proportions")}
+        <div class="section-content">
+          <ProportionsPanel compact />
+        </div>
+      {/if}
+    </section>
+
+    <!-- Environment Section -->
+    <section class="collapsible-section">
+      <button
+        class="section-header"
+        onclick={() => {
+          const next = new Set(expandedSections);
+          next.has("environment") ? next.delete("environment") : next.add("environment");
+          expandedSections = next;
+        }}
+        aria-expanded={expandedSections.has("environment")}
+      >
+        <i class="fas fa-mountain-sun" aria-hidden="true"></i>
+        <span>Environment</span>
+        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("environment")} aria-hidden="true"></i>
+      </button>
+      {#if expandedSections.has("environment")}
+        <div class="section-content">
+          <EnvironmentSettingsPanel />
+        </div>
+      {/if}
+    </section>
+
+    <!-- Effects Section -->
+    <section class="collapsible-section">
+      <button
+        class="section-header"
+        onclick={() => {
+          const next = new Set(expandedSections);
+          next.has("effects") ? next.delete("effects") : next.add("effects");
+          expandedSections = next;
+        }}
+        aria-expanded={expandedSections.has("effects")}
+      >
+        <i class="fas fa-sparkles" aria-hidden="true"></i>
+        <span>Effects</span>
+        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("effects")} aria-hidden="true"></i>
+      </button>
+      {#if expandedSections.has("effects")}
+        <div class="section-content">
+          <EffectsSettingsPanel />
+        </div>
+      {/if}
+    </section>
+
+    <!-- Grid Section -->
+    <section class="collapsible-section">
+      <button
+        class="section-header"
+        onclick={() => {
+          const next = new Set(expandedSections);
+          next.has("grid") ? next.delete("grid") : next.add("grid");
+          expandedSections = next;
+        }}
+        aria-expanded={expandedSections.has("grid")}
+      >
+        <i class="fas fa-border-all" aria-hidden="true"></i>
+        <span>Grid</span>
+        <i class="fas fa-chevron-down chevron" class:rotated={!expandedSections.has("grid")} aria-hidden="true"></i>
+      </button>
+      {#if expandedSections.has("grid")}
+        <div class="section-content">
+          <GridSettingsPanel
+            {gridMode}
+            {visiblePlanes}
+            {onGridModeChange}
+            {onPlaneToggle}
+          />
+        </div>
+      {/if}
+    </section>
   </div>
 </aside>
 
@@ -177,10 +301,62 @@
   .panel-scroll {
     flex: 1;
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0.75rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
+  }
+
+  /* Collapsible Sections */
+  .collapsible-section {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.875rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  .section-header:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.06));
+  }
+
+  .section-header i:first-child {
+    opacity: 0.7;
+    width: 1rem;
+    text-align: center;
+  }
+
+  .section-header span {
+    flex: 1;
+    text-align: left;
+  }
+
+  .section-header .chevron {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    transition: transform 0.2s ease;
+  }
+
+  .section-header .chevron.rotated {
+    transform: rotate(-90deg);
+  }
+
+  .section-content {
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.08));
   }
 
   @media (max-width: 1024px) {

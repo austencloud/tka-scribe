@@ -1,22 +1,18 @@
 /**
- * Environment Type Enum
+ * Environment Enums
  *
- * Defines available 3D environments for the viewer.
- * Maps conceptually to BackgroundType but for 3D scenes.
+ * Scene variant types for 3D environments.
+ * Note: The actual environment/background selection is now handled by
+ * BackgroundType from settingsService, which maps to these variants
+ * in Environment3D.svelte.
  */
-export enum EnvironmentType {
-  /** No environment - just the grid planes */
-  NONE = "none",
-
-  /** Forest environment - ground, fog, falling leaves */
-  FOREST = "forest",
-
-  /** Cosmic environment - floating in space, drifting stars */
-  COSMIC = "cosmic",
-}
 
 /**
- * Environment variant for theme-specific color palettes
+ * Forest scene color variants
  */
 export type ForestVariant = "autumn" | "firefly";
+
+/**
+ * Cosmic scene color variants
+ */
 export type CosmicVariant = "night" | "aurora";

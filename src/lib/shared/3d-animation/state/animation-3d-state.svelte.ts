@@ -208,6 +208,9 @@ export function createAnimation3DState(deps: Animation3DStateDeps) {
     nextBeat,
     prevBeat,
     goToBeat,
+
+    // Initialization
+    autoStartIfNeeded: playback.autoStartIfNeeded,
   };
 }
 

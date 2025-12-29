@@ -3,8 +3,10 @@
  *
  * Manages user preferences for all visual effects (trails, particles, etc.).
  * Uses Svelte 5 runes for reactive state management.
+ * Persists settings to localStorage for survival across refreshes.
  */
 
+import { browser } from "$app/environment";
 import {
   DEFAULT_TRAIL_CONFIG,
   DEFAULT_FIRE_CONFIG,
@@ -17,6 +19,12 @@ import {
   type ElectricityConfig,
   type GlowConfig,
 } from "../types";
+
+// =============================================================================
+// Persistence Keys
+// =============================================================================
+
+const STORAGE_KEY = "tka-3d-effects-config";
 
 // =============================================================================
 // Motion Effects Configuration
@@ -96,6 +104,42 @@ export const DEFAULT_EFFECTS_CONFIG: EffectsConfig = {
 };
 
 // =============================================================================
+// Persistence Helpers
+// =============================================================================
+
+/**
+ * Load config from localStorage
+ */
+function loadPersistedConfig(): Partial<EffectsConfig> | null {
+  if (!browser) return null;
+
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return null;
+
+    const parsed = JSON.parse(stored);
+    console.log("[EffectsConfig] Loaded persisted config");
+    return parsed;
+  } catch (e) {
+    console.warn("[EffectsConfig] Failed to load persisted config:", e);
+    return null;
+  }
+}
+
+/**
+ * Save config to localStorage
+ */
+function persistConfig(config: EffectsConfig): void {
+  if (!browser) return;
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+  } catch (e) {
+    console.warn("[EffectsConfig] Failed to persist config:", e);
+  }
+}
+
+// =============================================================================
 // Effects Config State Factory
 // =============================================================================
 
@@ -105,19 +149,37 @@ export const DEFAULT_EFFECTS_CONFIG: EffectsConfig = {
 export function createEffectsConfigState(
   initialConfig: Partial<EffectsConfig> = {}
 ) {
+  // Load persisted config first, then merge with defaults and initial
+  const persisted = loadPersistedConfig();
+  const merged = persisted ?? initialConfig;
+
   // Merge with defaults
   let config = $state<EffectsConfig>({
-    trails: { ...DEFAULT_TRAIL_CONFIG, ...initialConfig.trails },
-    fire: { ...DEFAULT_FIRE_CONFIG, ...initialConfig.fire },
-    sparkles: { ...DEFAULT_SPARKLE_CONFIG, ...initialConfig.sparkles },
-    electricity: { ...DEFAULT_ELECTRICITY_CONFIG, ...initialConfig.electricity },
-    motion: { ...DEFAULT_MOTION_CONFIG, ...initialConfig.motion },
-    bloom: { ...DEFAULT_BLOOM_CONFIG, ...initialConfig.bloom },
-    glow: { ...DEFAULT_GLOW_CONFIG, ...initialConfig.glow },
+    trails: { ...DEFAULT_TRAIL_CONFIG, ...merged.trails },
+    fire: { ...DEFAULT_FIRE_CONFIG, ...merged.fire },
+    sparkles: { ...DEFAULT_SPARKLE_CONFIG, ...merged.sparkles },
+    electricity: { ...DEFAULT_ELECTRICITY_CONFIG, ...merged.electricity },
+    motion: { ...DEFAULT_MOTION_CONFIG, ...merged.motion },
+    bloom: { ...DEFAULT_BLOOM_CONFIG, ...merged.bloom },
+    glow: { ...DEFAULT_GLOW_CONFIG, ...merged.glow },
   });
 
   // Panel collapsed state
   let isCollapsed = $state(false);
+
+  // Auto-persist config on changes (debounced)
+  let persistTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  $effect(() => {
+    // Access all config properties to track them
+    const snapshot = JSON.stringify(config);
+
+    // Debounce persistence to avoid excessive writes
+    if (persistTimeout) clearTimeout(persistTimeout);
+    persistTimeout = setTimeout(() => {
+      persistConfig(config);
+    }, 300);
+  });
 
   // =============================================================================
   // Derived States - Count of enabled effects
@@ -149,6 +211,23 @@ export function createEffectsConfigState(
 
   function setTrailMode(mode: "color" | "rainbow") {
     config.trails.color = mode === "rainbow" ? "rainbow" : "#ffffff";
+  }
+
+  function setTrackingMode(mode: "left" | "right" | "both") {
+    const modeMap = {
+      left: "left_end",
+      right: "right_end",
+      both: "both_ends",
+    } as const;
+    config.trails = { ...config.trails, trackingMode: modeMap[mode] as any };
+  }
+
+  function getTrackingModeLabel(): "left" | "right" | "both" {
+    switch (config.trails.trackingMode) {
+      case "left_end": return "left";
+      case "right_end": return "right";
+      default: return "both";
+    }
   }
 
   // =============================================================================
@@ -299,6 +378,8 @@ export function createEffectsConfigState(
     updateTrails,
     toggleTrails,
     setTrailMode,
+    setTrackingMode,
+    getTrackingModeLabel,
 
     // Fire methods
     updateFire,

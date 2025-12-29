@@ -5,17 +5,21 @@
  *
  * Defines the radii for center, hand, and outer points,
  * and which locations are hand vs layer2 in each mode.
+ *
+ * NOTE: These are DEFAULT values. Use userProportionsState for
+ * user-specific dimensions that respect their height and staff length.
  */
 
 import { GridLocation } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+import { DEFAULT_SCENE_DIMENSIONS } from "../../config/user-proportions";
 
-// Base radius for hand points (matches GRID_RADIUS_3D)
-// ~50cm from body center = comfortable arm extension
-export const HAND_POINT_RADIUS = 100; // 50cm
+// Base radius for hand points (comfortable arm extension)
+// Default: ~76cm for 6'3" person (40% of height)
+export const HAND_POINT_RADIUS = DEFAULT_SCENE_DIMENSIONS.handPointRadius;
 
 // Outer points where staff tips reach when held at hand point
-// Hand at 100 + half of 173-unit staff (86.5) ≈ 186
-export const OUTER_POINT_RADIUS = 186;
+// Default: hand radius + half of 34" staff
+export const OUTER_POINT_RADIUS = DEFAULT_SCENE_DIMENSIONS.outerPointRadius;
 
 // Point sizes - scaled proportionally for new grid size
 export const CENTER_POINT_SIZE = 8;

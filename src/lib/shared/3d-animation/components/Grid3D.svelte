@@ -4,18 +4,21 @@
    *
    * Renders all three orthogonal grid planes (Wall, Wheel, Floor)
    * with visibility toggles for each.
+   *
+   * Grid size is derived from user proportions (height + staff length)
+   * to ensure the grid matches the user's actual reach and staff size.
    */
 
   import { T } from "@threlte/core";
   import GridPlane from "./GridPlane.svelte";
   import { Plane, PLANE_COLORS } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
-  import { OUTER_POINT_RADIUS } from "../domain/constants/grid-layout";
+  import { userProportionsState } from "../state/user-proportions-state.svelte";
 
   interface Props {
     /** Which planes to show */
     visiblePlanes?: Set<Plane>;
-    /** Size of each plane */
+    /** Size of each plane (default: derived from user proportions) */
     size?: number;
     /** Whether to show grid point labels */
     showLabels?: boolean;
@@ -27,11 +30,14 @@
 
   let {
     visiblePlanes = new Set([Plane.WALL, Plane.WHEEL, Plane.FLOOR]),
-    size = OUTER_POINT_RADIUS + 50,
+    size, // Will use user proportions if not provided
     showLabels = true,
     planeOpacity = 0.15,
     gridMode = "diamond",
   }: Props = $props();
+
+  // Use user proportions as default if size not explicitly provided
+  const effectiveSize = $derived(size ?? userProportionsState.gridSize);
 </script>
 
 <T.Group>
@@ -42,7 +48,7 @@
       color={PLANE_COLORS[Plane.WALL]}
       opacity={planeOpacity}
       {showLabels}
-      {size}
+      size={effectiveSize}
       {gridMode}
     />
   {/if}
@@ -54,7 +60,7 @@
       color={PLANE_COLORS[Plane.WHEEL]}
       opacity={planeOpacity}
       {showLabels}
-      {size}
+      size={effectiveSize}
       {gridMode}
     />
   {/if}
@@ -66,7 +72,7 @@
       color={PLANE_COLORS[Plane.FLOOR]}
       opacity={planeOpacity}
       {showLabels}
-      {size}
+      size={effectiveSize}
       {gridMode}
     />
   {/if}
@@ -84,7 +90,7 @@
       args={[
         [1, 0, 0],
         [0, 0, 0],
-        size * 1.2,
+        effectiveSize * 1.2,
         0xff4444,
         15,
         8
@@ -95,7 +101,7 @@
       args={[
         [0, 1, 0],
         [0, 0, 0],
-        size * 1.2,
+        effectiveSize * 1.2,
         0x44ff44,
         15,
         8
@@ -106,7 +112,7 @@
       args={[
         [0, 0, 1],
         [0, 0, 0],
-        size * 1.2,
+        effectiveSize * 1.2,
         0x4444ff,
         15,
         8

@@ -17,8 +17,6 @@
   import { LOCATION_ANGLES } from "$lib/features/compose/shared/domain/math-constants";
   import { planeAngleToWorldPosition } from "../domain/constants/plane-transforms";
   import {
-    HAND_POINT_RADIUS,
-    OUTER_POINT_RADIUS,
     CENTER_POINT_SIZE,
     HAND_POINT_SIZE,
     OUTER_POINT_SIZE,
@@ -26,6 +24,7 @@
     getHandPoints,
     getOuterPoints,
   } from "../domain/constants/grid-layout";
+  import { userProportionsState } from "../state/user-proportions-state.svelte";
 
   interface Props {
     plane: Plane;
@@ -42,9 +41,14 @@
     color = "var(--theme-accent-strong)",
     opacity = 0.15,
     showLabels = true,
-    size = OUTER_POINT_RADIUS + 50, // Ensure plane contains outer points with padding
+    size, // Will use user proportions if not provided
     gridMode = "diamond",
   }: Props = $props();
+
+  // Use user proportions for radii (reactive to user changes)
+  const handPointRadius = $derived(userProportionsState.handPointRadius);
+  const outerPointRadius = $derived(userProportionsState.outerPointRadius);
+  const effectiveSize = $derived(size ?? userProportionsState.gridSize);
 
   // Get points based on current mode
   const handPoints = $derived(getHandPoints(gridMode));
@@ -86,26 +90,26 @@
     [GridLocation.NORTHWEST]: "NW",
   };
 
-  // Get label position for the plane title
-  function getPlaneLabelPosition(): [number, number, number] {
+  // Get label position for the plane title (uses effectiveSize for consistency)
+  const planeLabelPosition = $derived.by((): [number, number, number] => {
     switch (plane) {
       case Plane.WALL:
-        return [0, size * 0.9, 0];
+        return [0, effectiveSize * 0.9, 0];
       case Plane.WHEEL:
-        return [0, size * 0.9, 0];
+        return [0, effectiveSize * 0.9, 0];
       case Plane.FLOOR:
-        return [0, 0, -size * 0.9];
+        return [0, 0, -effectiveSize * 0.9];
       default:
-        return [0, size * 0.9, 0];
+        return [0, effectiveSize * 0.9, 0];
     }
-  }
+  });
 </script>
 
 <!-- Plane group with rotation -->
 <T.Group rotation={getPlaneRotation()}>
   <!-- Semi-transparent plane surface -->
   <T.Mesh>
-    <T.PlaneGeometry args={[size * 2, size * 2]} />
+    <T.PlaneGeometry args={[effectiveSize * 2, effectiveSize * 2]} />
     <T.MeshBasicMaterial
       {color}
       {opacity}
@@ -117,7 +121,7 @@
 
   <!-- Hand point circle (inner ring) -->
   <T.Mesh position={[0, 0, 0.5]}>
-    <T.RingGeometry args={[HAND_POINT_RADIUS - 1.5, HAND_POINT_RADIUS + 1.5, 64]} />
+    <T.RingGeometry args={[handPointRadius - 1.5, handPointRadius + 1.5, 64]} />
     <T.MeshBasicMaterial
       {color}
       opacity={0.5}
@@ -128,7 +132,7 @@
 
   <!-- Outer point circle -->
   <T.Mesh position={[0, 0, 0.3]}>
-    <T.RingGeometry args={[OUTER_POINT_RADIUS - 1, OUTER_POINT_RADIUS + 1, 64]} />
+    <T.RingGeometry args={[outerPointRadius - 1, outerPointRadius + 1, 64]} />
     <T.MeshBasicMaterial
       {color}
       opacity={0.25}
@@ -146,7 +150,7 @@
 
 <!-- Hand point markers (medium size, at hand radius) -->
 {#each handPoints as location}
-  {@const pos = getGridPointPosition(location, HAND_POINT_RADIUS)}
+  {@const pos = getGridPointPosition(location, handPointRadius)}
   <T.Mesh position={pos}>
     <T.SphereGeometry args={[HAND_POINT_SIZE, 16, 16]} />
     <T.MeshBasicMaterial {color} />
@@ -166,7 +170,7 @@
 
 <!-- Outer point markers (smaller, at outer radius) -->
 {#each outerPoints as location}
-  {@const pos = getGridPointPosition(location, OUTER_POINT_RADIUS)}
+  {@const pos = getGridPointPosition(location, outerPointRadius)}
   <T.Mesh position={pos}>
     <T.SphereGeometry args={[OUTER_POINT_SIZE, 12, 12]} />
     <T.MeshBasicMaterial color={color} opacity={0.6} transparent />
@@ -188,7 +192,7 @@
 {#if showLabels}
   <Text
     text={PLANE_LABELS[plane]}
-    position={getPlaneLabelPosition()}
+    position={planeLabelPosition}
     fontSize={16}
     {color}
     anchorX="center"

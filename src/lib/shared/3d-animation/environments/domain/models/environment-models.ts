@@ -2,19 +2,12 @@
  * Environment Models
  *
  * Configuration interfaces for 3D environments and primitives.
+ * Note: Environment selection now uses BackgroundType from settingsService
+ * instead of a separate EnvironmentType. These interfaces are for
+ * configuring individual scene primitives.
  */
 
-import type { EnvironmentType, ForestVariant, CosmicVariant } from "../enums/environment-enums";
-
-/**
- * Base environment configuration
- */
-export interface EnvironmentConfig {
-  type: EnvironmentType;
-  name: string;
-  description: string;
-  icon: string;
-}
+import type { ForestVariant, CosmicVariant } from "../enums/environment-enums";
 
 /**
  * Ground plane configuration
@@ -25,15 +18,6 @@ export interface GroundPlaneConfig {
   size: number;
   segments?: number;
   position?: [number, number, number];
-}
-
-/**
- * Fog configuration
- */
-export interface FogConfig {
-  color: string;
-  near: number;
-  far: number;
 }
 
 /**
@@ -49,7 +33,7 @@ export interface SkyGradientConfig {
 /**
  * Particle type for FallingParticles
  */
-export type ParticleType = "leaves" | "snow" | "petals" | "embers" | "stars";
+export type ParticleType = "leaves" | "snow" | "petals" | "embers" | "stars" | "bubbles" | "fireflies";
 
 /**
  * Falling particles configuration
@@ -70,7 +54,6 @@ export interface FallingParticlesConfig {
 export interface ForestSceneConfig {
   variant: ForestVariant;
   ground: GroundPlaneConfig;
-  fog: FogConfig;
   sky: SkyGradientConfig;
   particles: FallingParticlesConfig;
 }
@@ -80,38 +63,6 @@ export interface ForestSceneConfig {
  */
 export interface CosmicSceneConfig {
   variant: CosmicVariant;
-  fog: FogConfig;
   sky: SkyGradientConfig;
   particles: FallingParticlesConfig;
-}
-
-/**
- * Environment metadata for the picker UI
- */
-export const environmentMetadata: EnvironmentConfig[] = [
-  {
-    type: EnvironmentType.NONE,
-    name: "None",
-    description: "No environment - just the grid",
-    icon: "fa-border-none",
-  },
-  {
-    type: EnvironmentType.FOREST,
-    name: "Forest",
-    description: "Misty forest with falling leaves",
-    icon: "fa-tree",
-  },
-  {
-    type: EnvironmentType.COSMIC,
-    name: "Cosmic",
-    description: "Floating in space with drifting stars",
-    icon: "fa-stars",
-  },
-];
-
-/**
- * Get environment metadata by type
- */
-export function getEnvironmentConfig(type: EnvironmentType): EnvironmentConfig | undefined {
-  return environmentMetadata.find((env) => env.type === type);
 }

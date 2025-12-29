@@ -15,7 +15,6 @@
   import type { BodyType } from "./services/contracts/IAvatarCustomizer";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
-  import AvatarToggleButton from "./components/controls/AvatarToggleButton.svelte";
   import Keyboard3DCoordinator from "./keyboard/Keyboard3DCoordinator.svelte";
   import type { CameraPreset } from "./components/controls/CameraPresetBar.svelte";
   import { Plane } from "./domain/enums/Plane";
@@ -25,10 +24,10 @@
   import ShortcutsHelp from "$lib/shared/keyboard/components/ShortcutsHelp.svelte";
   import { keyboardShortcutState } from "$lib/shared/keyboard/state/keyboard-shortcut-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
 
   // Effects system
   import EffectsLayer from "./effects/EffectsLayer.svelte";
-  import EffectsControlPanel from "./effects/components/EffectsControlPanel.svelte";
   import { getEffectsConfigState } from "./effects/state/effects-config-state.svelte";
 
   // CameraState type (matches Scene3D.svelte's internal definition)
@@ -41,6 +40,23 @@
   import type { IPropStateInterpolator } from "./services/contracts/IPropStateInterpolator";
   import type { ISequenceConverter } from "./services/contracts/ISequenceConverter";
   import type { IAnimation3DPersister } from "./services/contracts/IAnimation3DPersister";
+  import { browser } from "$app/environment";
+  import { DEFAULT_AVATAR_ID, type AvatarId } from "./config/avatar-definitions";
+
+  // Synchronously read avatar ID from localStorage to prevent flash
+  function getInitialAvatarId(): AvatarId {
+    if (!browser) return DEFAULT_AVATAR_ID;
+    try {
+      const stored = localStorage.getItem("tka-3d-animator-state");
+      if (!stored) return DEFAULT_AVATAR_ID;
+      const parsed = JSON.parse(stored);
+      return parsed.avatarId ?? DEFAULT_AVATAR_ID;
+    } catch {
+      return DEFAULT_AVATAR_ID;
+    }
+  }
+
+  const initialAvatarId = getInitialAvatarId();
 
   // Services and state - initialized asynchronously
   let propInterpolator: IPropStateInterpolator | null = $state(null);
@@ -62,8 +78,9 @@
   let browserOpen = $state(false);
   let speed = $state(1);
   let showFigure = $state(true);
-  let bodyType = $state<BodyType>("masculine");
-  let skinTone = $state("#d4a574");
+  let avatarId = $state<AvatarId>(initialAvatarId);
+
+  // Background type comes from settingsService (unified with 2D theme)
 
   // Avatar model is now determined by bodyType in Avatar3D component
 
@@ -141,8 +158,8 @@
     if (saved.cameraPosition) customCameraPosition = saved.cameraPosition;
     if (saved.cameraTarget) customCameraTarget = saved.cameraTarget;
     if (saved.loop !== undefined) animState.loop = saved.loop;
-    if (saved.bodyType) bodyType = saved.bodyType;
-    if (saved.skinTone) skinTone = saved.skinTone;
+    if (saved.avatarId) avatarId = saved.avatarId;
+    // Note: environmentType removed - now uses settingsService.settings.backgroundType
 
     if (saved.loadedSequence) {
       animState.loadSequence(saved.loadedSequence);
@@ -150,6 +167,9 @@
         animState.goToBeat(saved.currentBeatIndex);
       }
     }
+
+    // Auto-start playback if it was playing before
+    animState.autoStartIfNeeded();
 
     servicesReady = true;
     setTimeout(() => (initialized = true), 50);
@@ -176,8 +196,8 @@
       loop: animState.loop,
       loadedSequence: animState.loadedSequence ?? null,
       currentBeatIndex: animState.currentBeatIndex,
-      bodyType,
-      skinTone,
+      avatarId,
+      // Note: environmentType removed - now uses settingsService for background
     });
   });
 
@@ -205,6 +225,7 @@
         bloomEnabled={effectsConfig.bloom.enabled}
         bloomIntensity={effectsConfig.bloom.intensity}
         bloomThreshold={effectsConfig.bloom.threshold}
+        backgroundType={settingsService.settings.backgroundType}
       >
         {#if animState.showBlue && animState.bluePropState}
           <Staff3D propState={animState.bluePropState} color="blue" />
@@ -216,8 +237,7 @@
           <Avatar3D
             bluePropState={animState.bluePropState}
             redPropState={animState.redPropState}
-            {bodyType}
-            {skinTone}
+            {avatarId}
           />
         {/if}
 
@@ -228,9 +248,6 @@
           isPlaying={animState.isPlaying}
         />
       </Scene3D>
-
-      <!-- Effects Control Panel (overlay) -->
-      <EffectsControlPanel />
 
       <SceneOverlayControls
         {cameraPreset}
@@ -257,14 +274,6 @@
         onShowHelp={() => keyboardShortcutState.openHelp()}
       >
         {#snippet trailing()}
-          <AvatarToggleButton
-            {showFigure}
-            {bodyType}
-            {skinTone}
-            onToggle={() => (showFigure = !showFigure)}
-            onBodyTypeChange={(t) => (bodyType = t)}
-            onSkinToneChange={(c) => (skinTone = c)}
-          />
           <button
             class="toggle-panel-btn"
             onclick={() => (panelOpen = !panelOpen)}
@@ -286,9 +295,13 @@
       redConfig={animState?.showRed ? animState.activeRedConfig : null}
       {gridMode}
       {visiblePlanes}
+      {showFigure}
+      {avatarId}
       onLoadSequence={() => (browserOpen = true)}
       onGridModeChange={(m) => (gridMode = m)}
       onPlaneToggle={togglePlane}
+      onToggleFigure={() => (showFigure = !showFigure)}
+      onAvatarChange={(id) => (avatarId = id)}
     />
   </div>
 

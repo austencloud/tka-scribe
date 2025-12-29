@@ -112,10 +112,21 @@ export interface IAvatarSkeletonBuilder {
   updateMatrices(): void;
 
   /**
-   * Set the overall scale of the avatar
-   * @param height Target height in scene units
+   * Set the avatar scale directly
+   * @param scale Scale factor (1.0 = base model size, 1.1 = 10% larger)
+   */
+  setScale(scale: number): void;
+
+  /**
+   * @deprecated Use setScale() instead - height units were ambiguous
    */
   setHeight(height: number): void;
+
+  /**
+   * Get the Y offset needed to place feet on ground (Y=0)
+   * Returns the negative of the model's min Y after scaling
+   */
+  getGroundOffset(): number;
 
   /**
    * Dispose of the loaded model and free resources

@@ -82,31 +82,95 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
   }
 
   private processGLTF(gltf: GLTF): void {
-    this.state.root = gltf.scene;
-    this.state.meshes = [];
-    this.state.bones = new Map();
+    // Hot-swap: keep old arm chains valid until new ones are ready
+    // This ensures animation continues smoothly during the swap
+    const oldRoot = this.state.root;
 
-    // Find all skinned meshes and bones
+    // Build new state in temporary variables first
+    const newMeshes: SkinnedMesh[] = [];
+    const newBones = new Map<BoneName, Bone>();
+    let newSkeleton: Skeleton | null = null;
+
+    // Find all skinned meshes and bones in the new model
     gltf.scene.traverse((child) => {
       if ((child as SkinnedMesh).isSkinnedMesh) {
         const skinnedMesh = child as SkinnedMesh;
-        this.state.meshes.push(skinnedMesh);
-        this.skeleton = skinnedMesh.skeleton;
+        newMeshes.push(skinnedMesh);
+        newSkeleton = skinnedMesh.skeleton;
       }
 
       if ((child as Bone).isBone) {
-        this.mapBone(child as Bone);
+        this.mapBoneToMap(child as Bone, newBones);
       }
     });
 
-    // Compute original height
+    // Compute original height of new model
     const box = new Box3().setFromObject(gltf.scene);
     this.originalHeight = box.max.y - box.min.y;
 
-    // Build arm chains
+    // Now atomically swap everything at once
+    this.state.root = gltf.scene;
+    this.state.meshes = newMeshes;
+    this.state.bones = newBones;
+    this.skeleton = newSkeleton;
+
+    // Build new arm chains (uses the new bones map)
     this.buildArmChains();
 
     this.state.isLoaded = true;
+
+    // Dispose old model resources after swap is complete
+    if (oldRoot) {
+      queueMicrotask(() => {
+        oldRoot.traverse((child) => {
+          const mesh = child as SkinnedMesh;
+          if (mesh.geometry) {
+            mesh.geometry.dispose();
+          }
+          if (mesh.material) {
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach((m) => m.dispose());
+            } else {
+              mesh.material.dispose();
+            }
+          }
+        });
+      });
+    }
+  }
+
+  /**
+   * Map a bone to a bones map (used during hot-swap)
+   */
+  private mapBoneToMap(bone: Bone, bonesMap: Map<BoneName, Bone>): void {
+    const boneName = bone.name.toLowerCase();
+
+    // Skip finger bones
+    if (boneName.includes('thumb') || boneName.includes('index') ||
+        boneName.includes('middle') || boneName.includes('ring') ||
+        boneName.includes('pinky')) {
+      return;
+    }
+
+    for (const [standardName, aliases] of Object.entries(BONE_NAME_ALIASES)) {
+      for (const alias of aliases) {
+        if (boneName === alias.toLowerCase()) {
+          bonesMap.set(standardName as BoneName, bone);
+          return;
+        }
+      }
+    }
+
+    // Fallback: check contains
+    for (const [standardName, aliases] of Object.entries(BONE_NAME_ALIASES)) {
+      if (bonesMap.has(standardName as BoneName)) continue;
+      for (const alias of aliases) {
+        if (boneName.includes(alias.toLowerCase())) {
+          bonesMap.set(standardName as BoneName, bone);
+          return;
+        }
+      }
+    }
   }
 
   private mapBone(bone: Bone): void {
@@ -254,15 +318,47 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
     }
   }
 
+  /**
+   * Set avatar scale directly (relative to base model)
+   * @param scale - Scale factor (1.0 = base model size, 1.1 = 10% larger)
+   */
+  setScale(scale: number): void {
+    if (!this.state.root) return;
+
+    this.state.root.scale.setScalar(scale);
+
+    // Update matrices after scaling
+    this.state.root.updateMatrixWorld(true);
+
+    // Compute bounding box to find where feet are
+    const box = new Box3().setFromObject(this.state.root);
+
+    // Adjust Y position so feet (box.min.y) are at Y=0 in model space
+    // The parent group in Avatar3D.svelte handles placing at scene ground level
+    this.state.root.position.y = -box.min.y;
+
+    // Update matrices again after position change
+    this.state.root.updateMatrixWorld(true);
+
+    // Rebuild arm chains with new scale
+    this.buildArmChains();
+  }
+
+  /**
+   * @deprecated Use setScale() instead - height units were ambiguous
+   */
   setHeight(height: number): void {
     if (!this.state.root || this.originalHeight === 0) return;
 
+    // Legacy behavior - calculate scale from height
     const scale = height / this.originalHeight;
-    this.state.root.scale.setScalar(scale);
+    this.setScale(scale);
+  }
 
-    // Rebuild arm chains with new scale
-    this.state.root.updateMatrixWorld(true);
-    this.buildArmChains();
+  getGroundOffset(): number {
+    // Ground offset is now handled internally by setHeight
+    // The model is already positioned with feet at Y=0
+    return 0;
   }
 
   dispose(): void {

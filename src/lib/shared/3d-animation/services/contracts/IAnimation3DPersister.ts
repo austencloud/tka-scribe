@@ -2,6 +2,8 @@
  * IAnimation3DPersister Contract
  *
  * Service for persisting 3D animation UI state to localStorage.
+ * Note: Environment/background type is not persisted here - it uses
+ * the shared settingsService which handles its own persistence.
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";

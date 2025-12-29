@@ -60,11 +60,16 @@
     colorIndex: number;
     swayPhase: number;
     swaySpeed: number;
+    // Firefly-specific
+    pulsePhase: number;
+    pulseSpeed: number;
+    baseSize: number;
   }
 
   let particles: Particle[] = [];
-  let geometry: BufferGeometry | null = null;
-  let material: ShaderMaterial | null = null;
+  // Must be $state for Svelte 5 reactivity - template needs to re-render after onMount
+  let geometry = $state<BufferGeometry | null>(null);
+  let material = $state<ShaderMaterial | null>(null);
 
   // Pre-allocated buffers
   const positions = new Float32Array(count * 3);
@@ -79,30 +84,49 @@
       swayAmount: 40,
       blending: NormalBlending,
       shape: "diamond",
+      pulses: false,
     },
     snow: {
       gravity: 15,
       swayAmount: 20,
       blending: AdditiveBlending,
       shape: "circle",
+      pulses: false,
     },
     petals: {
       gravity: 12,
       swayAmount: 50,
       blending: NormalBlending,
       shape: "petal",
+      pulses: false,
     },
     embers: {
       gravity: -25, // Rise up
       swayAmount: 15,
       blending: AdditiveBlending,
       shape: "circle",
+      pulses: false,
     },
     stars: {
       gravity: 5, // Very slow drift
       swayAmount: 10,
       blending: AdditiveBlending,
       shape: "star",
+      pulses: false,
+    },
+    bubbles: {
+      gravity: -20, // Rise up
+      swayAmount: 25,
+      blending: AdditiveBlending,
+      shape: "circle",
+      pulses: false,
+    },
+    fireflies: {
+      gravity: 0, // No gravity - they float freely
+      swayAmount: 60, // Gentle wandering
+      blending: AdditiveBlending,
+      shape: "glow", // Special glowing shape
+      pulses: true, // Pulsing glow effect
     },
   };
 
@@ -130,7 +154,7 @@
   // Fragment shader with shape support
   const fragmentShader = `
     uniform vec3 uColors[4];
-    uniform float uShape; // 0=circle, 1=diamond, 2=petal, 3=star
+    uniform float uShape; // 0=circle, 1=diamond, 2=petal, 3=star, 4=glow
 
     varying float vRotation;
     varying float vColorIndex;
@@ -160,11 +184,16 @@
         // Petal
         float petal = dist + 0.3 * abs(rotated.x);
         alpha = 1.0 - smoothstep(0.3, 0.45, petal);
-      } else {
+      } else if (uShape < 3.5) {
         // Star
         float angle = atan(rotated.y, rotated.x);
         float star = dist * (1.0 + 0.3 * sin(angle * 5.0));
         alpha = 1.0 - smoothstep(0.25, 0.4, star);
+      } else {
+        // Glow (fireflies) - soft radial gradient with bright core
+        float core = 1.0 - smoothstep(0.0, 0.15, dist);
+        float halo = (1.0 - smoothstep(0.1, 0.5, dist)) * 0.6;
+        alpha = core + halo;
       }
 
       if (alpha < 0.01) discard;
@@ -179,22 +208,40 @@
 
   function spawnParticle(): Particle {
     const x = (Math.random() - 0.5) * area.width;
-    const y = area.height / 2 + Math.random() * 100;
     const z = (Math.random() - 0.5) * area.depth;
+
+    // Fireflies spawn throughout the area, others at top
+    const isFirefly = type === "fireflies";
+    const y = isFirefly
+      ? (Math.random() - 0.5) * area.height * 0.8 // Throughout area
+      : area.height * 0.4 + Math.random() * 50; // At top
+
+    // Fireflies have very slow random drift, others fall/rise
+    const vx = isFirefly
+      ? (Math.random() - 0.5) * 5
+      : (Math.random() - 0.5) * 10;
+    const vy = isFirefly
+      ? (Math.random() - 0.5) * 3 // Gentle vertical drift
+      : -speed * (0.5 + Math.random() * 0.5) * (type === "embers" ? -1 : 1);
+    const vz = isFirefly
+      ? (Math.random() - 0.5) * 5
+      : (Math.random() - 0.5) * 10;
+
+    const baseSize = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
 
     return {
       position: new Vector3(x, y, z),
-      velocity: new Vector3(
-        (Math.random() - 0.5) * 10,
-        -speed * (0.5 + Math.random() * 0.5) * (type === "embers" ? -1 : 1),
-        (Math.random() - 0.5) * 10
-      ),
+      velocity: new Vector3(vx, vy, vz),
       rotation: Math.random() * Math.PI * 2,
       rotationSpeed: spin ? (Math.random() - 0.5) * 3 : 0,
-      size: sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]),
+      size: baseSize,
+      baseSize,
       colorIndex: Math.floor(Math.random() * colors.length),
       swayPhase: Math.random() * Math.PI * 2,
-      swaySpeed: 1 + Math.random() * 2,
+      swaySpeed: isFirefly ? 0.3 + Math.random() * 0.5 : 1 + Math.random() * 2,
+      // Firefly pulse timing - each has its own rhythm
+      pulsePhase: Math.random() * Math.PI * 2,
+      pulseSpeed: 0.5 + Math.random() * 1.5, // Random blink rhythm
     };
   }
 
@@ -204,11 +251,14 @@
       case "diamond": return 1;
       case "petal": return 2;
       case "star": return 3;
+      case "glow": return 4;
       default: return 0;
     }
   }
 
   onMount(() => {
+    console.log(`[FallingParticles] onMount - type: ${type}, count: ${count}, config:`, config);
+
     geometry = new BufferGeometry();
     geometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
     geometry.setAttribute("size", new Float32BufferAttribute(sizes, 1));
@@ -220,6 +270,8 @@
     while (colorArray.length < 4) {
       colorArray.push(colorArray[0] || new Color("#ffffff"));
     }
+
+    console.log(`[FallingParticles] Creating material - shape: ${config.shape}, shapeIndex: ${getShapeIndex()}, blending:`, config.blending);
 
     material = new ShaderMaterial({
       uniforms: {
@@ -240,6 +292,8 @@
       p.position.y = (Math.random() - 0.5) * area.height;
       particles.push(p);
     }
+
+    console.log(`[FallingParticles] Initialized ${particles.length} particles. First particle pos:`, particles[0]?.position);
   });
 
   onDestroy(() => {
@@ -271,22 +325,38 @@
     if (!geometry || !material || !enabled) return;
 
     const time = performance.now() / 1000;
+    const isFirefly = type === "fireflies";
 
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
 
-      // Apply gravity
-      p.velocity.y -= config.gravity * delta * (type === "embers" ? -1 : 1);
+      // Apply gravity (fireflies have none)
+      if (config.gravity !== 0) {
+        p.velocity.y -= config.gravity * delta * (type === "embers" ? -1 : 1);
+      }
 
-      // Apply sway
+      // Apply sway - fireflies also sway in Z direction for 3D wandering
       const sway = Math.sin(time * p.swaySpeed + p.swayPhase) * config.swayAmount * delta;
       p.position.x += sway;
+      if (isFirefly) {
+        const swayZ = Math.cos(time * p.swaySpeed * 0.7 + p.swayPhase) * config.swayAmount * delta * 0.5;
+        p.position.z += swayZ;
+      }
 
       // Update position
       p.position.add(p.velocity.clone().multiplyScalar(delta));
 
       // Update rotation
       p.rotation += p.rotationSpeed * delta;
+
+      // Firefly pulsing - smooth glow cycle (always visible, varies in brightness)
+      if (isFirefly && config.pulses) {
+        const pulseValue = Math.sin(time * p.pulseSpeed + p.pulsePhase);
+        // Smooth 0-1 range (always visible, just varies in intensity)
+        const glowIntensity = (pulseValue + 1) / 2;
+        // 40% minimum size when dimmest, 100% when brightest
+        p.size = p.baseSize * (0.4 + glowIntensity * 0.6);
+      }
 
       // Respawn if out of bounds
       const halfHeight = area.height / 2;
@@ -305,9 +375,12 @@
         p.rotation = newP.rotation;
         p.rotationSpeed = newP.rotationSpeed;
         p.size = newP.size;
+        p.baseSize = newP.baseSize;
         p.colorIndex = newP.colorIndex;
         p.swayPhase = newP.swayPhase;
         p.swaySpeed = newP.swaySpeed;
+        p.pulsePhase = newP.pulsePhase;
+        p.pulseSpeed = newP.pulseSpeed;
       }
 
       // Write to buffers
@@ -329,5 +402,8 @@
 </script>
 
 {#if geometry && material}
+  {@const _ = console.log(`[FallingParticles] Rendering T.Points for type: ${type}`)}
   <T.Points {geometry} {material} />
+{:else}
+  {@const _ = console.log(`[FallingParticles] NOT rendering - geometry: ${!!geometry}, material: ${!!material}`)}
 {/if}

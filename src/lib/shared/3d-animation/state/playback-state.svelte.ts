@@ -3,7 +3,40 @@
  *
  * Manages animation playback timing using requestAnimationFrame.
  * Pure playback logic with no knowledge of what's being animated.
+ * Persists settings to localStorage for survival across refreshes.
  */
+
+import { browser } from "$app/environment";
+
+const STORAGE_KEY = "tka-3d-playback-state";
+
+interface PersistedPlaybackState {
+  isPlaying: boolean;
+  speed: number;
+  loop: boolean;
+}
+
+function loadPersistedState(): PersistedPlaybackState | null {
+  if (!browser) return null;
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    console.log("[PlaybackState] Loaded persisted state:", parsed);
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function persistState(state: PersistedPlaybackState): void {
+  if (!browser) return;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Ignore persistence errors
+  }
+}
 
 export interface PlaybackOptions {
   /** Called when progress completes a cycle (reaches 1) */
@@ -14,13 +47,32 @@ export interface PlaybackOptions {
  * Create playback state for animation timing
  */
 export function createPlaybackState(options: PlaybackOptions = {}) {
-  let isPlaying = $state(false);
+  // Load persisted state
+  const persisted = loadPersistedState();
+
+  let isPlaying = $state(persisted?.isPlaying ?? false);
   let progress = $state(0);
-  let speed = $state(1); // Units per second
-  let loop = $state(true);
+  let speed = $state(persisted?.speed ?? 1); // Units per second
+  let loop = $state(persisted?.loop ?? true);
 
   let animationFrameId: number | null = null;
   let lastTimestamp: number = 0;
+
+  // Persist state manually (called on meaningful changes)
+  function saveState() {
+    persistState({ isPlaying, speed, loop });
+  }
+
+  // Auto-start if persisted state was playing (called after mount)
+  // Note: This must call play() directly because loadSequence() calls reset() -> pause()
+  // which sets isPlaying to false before this runs
+  function autoStartIfNeeded() {
+    if (persisted?.isPlaying) {
+      setTimeout(() => {
+        play();
+      }, 100);
+    }
+  }
 
   /**
    * Animation loop - updates progress based on elapsed time
@@ -67,6 +119,7 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
     isPlaying = true;
     lastTimestamp = 0;
     animationFrameId = requestAnimationFrame(animate);
+    saveState();
   }
 
   function pause() {
@@ -75,6 +128,7 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
       cancelAnimationFrame(animationFrameId);
       animationFrameId = null;
     }
+    saveState();
   }
 
   function togglePlay() {
@@ -102,9 +156,9 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
     get isPlaying() { return isPlaying; },
     get progress() { return progress; },
     get speed() { return speed; },
-    set speed(value: number) { speed = value; },
+    set speed(value: number) { speed = value; saveState(); },
     get loop() { return loop; },
-    set loop(value: boolean) { loop = value; },
+    set loop(value: boolean) { loop = value; saveState(); },
 
     play,
     pause,
@@ -112,6 +166,7 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
     reset,
     setProgress,
     destroy,
+    autoStartIfNeeded,
   };
 }
 

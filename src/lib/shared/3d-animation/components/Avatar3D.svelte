@@ -7,10 +7,7 @@
    *
    * This component can work in two modes:
    * 1. GLTF mode: Loads a rigged humanoid model (production)
-   * 2. Procedural mode: Uses IKFigure3D as fallback (current POC)
-   *
-   * The service architecture is designed for GLTF mode, but we'll
-   * use the procedural fallback until a proper model is created.
+   * 2. Procedural mode: Uses IKFigure3D as fallback
    */
 
   import { onMount, onDestroy } from "svelte";
@@ -20,54 +17,25 @@
   import type { IAvatarSkeletonBuilder } from "../services/contracts/IAvatarSkeletonBuilder";
   import type { IIKSolver } from "../services/contracts/IIKSolver";
   import type { IAvatarAnimator } from "../services/contracts/IAvatarAnimator";
-  import type { IAvatarCustomizer, BodyType } from "../services/contracts/IAvatarCustomizer";
+  import type { IAvatarCustomizer } from "../services/contracts/IAvatarCustomizer";
   import type { PropState3D } from "../domain/models/PropState3D";
-  import { getHeightForBodyType, deriveSceneProportions, AUSTEN_MEASUREMENTS, cmToUnits } from "../config/avatar-proportions";
+  import { cmToUnits } from "../config/avatar-proportions";
+  import { getAvatarModelPath, type AvatarId, DEFAULT_AVATAR_ID } from "../config/avatar-definitions";
+  import { userProportionsState } from "../state/user-proportions-state.svelte";
   import IKFigure3D from "./IKFigure3D.svelte";
 
-  // Get scene proportions for positioning
-  const sceneProps = deriveSceneProportions(AUSTEN_MEASUREMENTS, "masculine");
-
-  // Figure Z position
+  // Figure positioning constants
   // Camera is at positive Z looking toward origin.
   // Grid is at Z=0. Props are rendered at Z=0.
   // Mixamo models face +Z by default.
   // Avatar at Z=-80, facing +Z = facing toward the props at Z=0.
   const FIGURE_Z = -80; // Avatar stands behind grid, facing toward props
 
-  // The GLTF model has feet at Y=0, but IKFigure3D has shoulders at Y=0.
-  // We need to offset the model so shoulders align with the expected Y=0.
-  // Shoulder height from feet ≈ torsoLength + headHeight/2 + neckLength (rough estimate)
-  // For the scaled model, we calculate this based on the model's proportions.
-  //
-  // In IKFigure3D: footY = -(torsoLength + inseam) below shoulder level
-  // So the shoulder-to-foot distance = torsoLength + inseam
-  const SHOULDER_TO_FOOT = cmToUnits(AUSTEN_MEASUREMENTS.torsoLength + AUSTEN_MEASUREMENTS.inseam);
-
-  // Model Y offset: move the model down so its shoulders are at Y=0
-  // Since the model's feet are at local Y=0 and we want shoulders at world Y=0,
-  // we need to move the model down by the shoulder height from feet.
-  // But GLTF models are scaled, so we calculate based on the body type's scaled height.
-  function getModelYOffset(targetBodyType: BodyType): number {
-    const scaledHeight = getHeightForBodyType(targetBodyType);
-    // Shoulder is approximately at 77% of total height (human proportions)
-    const shoulderHeightRatio = 0.77;
-    return -(scaledHeight * shoulderHeightRatio);
-  }
-
-  // Model URLs for different body types
-  const MODEL_URLS: Record<BodyType, string> = {
-    masculine: "/models/x-bot.glb",
-    feminine: "/models/y-bot.glb",
-    androgynous: "/models/x-bot.glb", // Default to x-bot for androgynous
-  };
-
   interface Props {
     bluePropState: PropState3D | null;
     redPropState: PropState3D | null;
     visible?: boolean;
-    bodyType?: BodyType;
-    skinTone?: string;
+    avatarId?: AvatarId;
     useGLTF?: boolean; // Whether to use GLTF model or procedural fallback
   }
 
@@ -75,8 +43,7 @@
     bluePropState,
     redPropState,
     visible = true,
-    bodyType = "masculine",
-    skinTone = "#d4a574",
+    avatarId = DEFAULT_AVATAR_ID,
     useGLTF = true, // Default to using GLTF model
   }: Props = $props();
 
@@ -89,37 +56,42 @@
   let servicesReady = $state(false);
   let modelLoaded = $state(false);
   let useProceduralFallback = $state(true);
-  let currentLoadedBodyType = $state<BodyType | null>(null);
+  let currentLoadedAvatarId = $state<string | null>(null);
   let isLoading = $state(false);
 
-  // Load a GLTF model for a specific body type
-  async function loadModelForBodyType(targetBodyType: BodyType) {
+  // Cache the root object to avoid reactivity issues during swap
+  let cachedRoot = $state<import('three').Object3D | null>(null);
+
+  // Derived values from user proportions
+  // avatarHeight is the target height in scene units (cm * CM_TO_UNITS)
+  const avatarHeight = $derived(cmToUnits(userProportionsState.heightCm));
+  const groundY = $derived(userProportionsState.groundY);
+
+  // Load a GLTF model for a specific avatar
+  // Uses hot-swap pattern: keeps old avatar visible until new one is ready
+  async function loadAvatar(targetAvatarId: string) {
     if (!skeletonService || isLoading) return;
 
-    const url = MODEL_URLS[targetBodyType];
-    const height = getHeightForBodyType(targetBodyType);
+    // Skip if already loaded
+    if (currentLoadedAvatarId === targetAvatarId) return;
 
-    // Skip if already loaded for this body type
-    if (currentLoadedBodyType === targetBodyType) {
-      return;
-    }
+    const url = getAvatarModelPath(targetAvatarId);
 
     isLoading = true;
 
     try {
-      // Dispose old model if any
-      if (currentLoadedBodyType !== null) {
-        skeletonService.dispose();
-      }
-
+      // Load new model (skeleton service handles internal swap)
       await skeletonService.loadModel(url);
 
-      // Scale model to match our scene units
-      // Height is in scene units (1 unit = 0.5 cm)
-      // Masculine: 188cm = 376 units, Feminine: 178cm = 356 units
-      skeletonService.setHeight(height);
+      // Scale model to match user's height
+      // setHeight() calculates proper scale and positions feet at Y=0 in model space
+      skeletonService.setHeight(avatarHeight);
 
-      currentLoadedBodyType = targetBodyType;
+      // Update cached root AFTER everything is ready
+      // This ensures Threlte only sees the swap when the new model is complete
+      cachedRoot = skeletonService.getRoot();
+
+      currentLoadedAvatarId = targetAvatarId;
       modelLoaded = true;
       useProceduralFallback = false;
 
@@ -168,20 +140,32 @@
 
       servicesReady = true;
 
-      // Load initial model for current body type
-      await loadModelForBodyType(bodyType);
+      // Load initial avatar
+      await loadAvatar(avatarId);
     } catch (err) {
       console.error("[Avatar3D] Failed to initialize avatar services:", err);
       useProceduralFallback = true;
     }
   });
 
-  // React to bodyType changes by reloading model
+  // React to avatarId changes by reloading model
   $effect(() => {
     // Only react after initial mount and services are ready
-    if (servicesReady && useGLTF && bodyType !== currentLoadedBodyType && !isLoading) {
-      loadModelForBodyType(bodyType);
+    if (!servicesReady || !useGLTF || isLoading) return;
+
+    if (avatarId !== currentLoadedAvatarId) {
+      loadAvatar(avatarId);
     }
+  });
+
+  // React to height changes - update avatar scale
+  $effect(() => {
+    if (!skeletonService || !modelLoaded || useProceduralFallback) return;
+
+    // Update height when user proportions change
+    // setHeight() calculates proper scale and positions feet at Y=0 in model space
+    // The group is placed at groundY to put feet on the ground plane
+    skeletonService.setHeight(avatarHeight);
   });
 
   // Update animation each frame
@@ -195,11 +179,9 @@
     animationService.update(delta);
   });
 
-  // Sync customization changes (only when using GLTF mode, not procedural fallback)
+  // Sync visibility changes (only when using GLTF mode, not procedural fallback)
   $effect(() => {
     if (customizationService && !useProceduralFallback) {
-      customizationService.setBodyType(bodyType);
-      customizationService.setSkinTone(skinTone);
       customizationService.setVisible(visible);
     }
   });
@@ -214,43 +196,25 @@
 
 {#if visible}
   {#if useProceduralFallback}
-    <!-- Procedural fallback (current POC implementation) -->
-    <!-- Map androgynous to masculine for IKFigure3D which only supports masculine/feminine -->
-    {@const figureBodyType = bodyType === "androgynous" ? "masculine" : bodyType}
-    <IKFigure3D
-      {bluePropState}
-      {redPropState}
-      bodyType={figureBodyType}
-      {skinTone}
-    />
-  {:else if modelLoaded && skeletonService}
+    <!-- Procedural fallback (used when GLTF loading fails) -->
+    <IKFigure3D {bluePropState} {redPropState} />
+  {:else if modelLoaded && cachedRoot}
     <!-- GLTF model (production mode) -->
     <!--
       Position the avatar:
       - X: 0 (centered)
-      - Y: offset down so shoulders are at Y=0 (matching IKFigure3D coordinate system)
-      - Z: -80 (behind grid, further from camera)
+      - Y: groundY (derived from user height, where shoulder = grid center)
+      - Z: FIGURE_Z (-80, behind grid, facing toward props)
 
-      Rotation:
-      - Mixamo models face +Z by default
-      - Avatar is at Z=-80, props are at Z=0
-      - Avatar facing +Z = facing toward the props
+      The avatar model is scaled so feet are at Y=0 in model space.
+      groundY is calculated as -(shoulder height) so feet land on ground.
+
+      Using cachedRoot instead of skeletonService.getRoot() ensures
+      the template only updates AFTER a new model is fully loaded,
+      preventing visual glitches during avatar swap.
     -->
-    {@const root = skeletonService.getRoot()}
-    {@const yOffset = getModelYOffset(bodyType)}
-    {#if root}
-      <T.Group position={[0, yOffset, FIGURE_Z]}>
-        <T is={root} />
-      </T.Group>
-    {:else}
-      <!-- Root is null, show fallback -->
-      {@const figureBodyType = bodyType === "androgynous" ? "masculine" : bodyType}
-      <IKFigure3D
-        {bluePropState}
-        {redPropState}
-        bodyType={figureBodyType}
-        {skinTone}
-      />
-    {/if}
+    <T.Group position={[0, groundY, FIGURE_Z]}>
+      <T is={cachedRoot} />
+    </T.Group>
   {/if}
 {/if}

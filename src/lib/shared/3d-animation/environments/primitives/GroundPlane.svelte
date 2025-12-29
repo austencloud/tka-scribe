@@ -3,10 +3,12 @@
    * GroundPlane Primitive
    *
    * A configurable ground surface for 3D environments.
-   * Renders as a circular plane at the specified position.
+   * Renders as a circular plane at the ground level.
+   * Ground Y is derived from user proportions (shoulder at grid center Y=0).
    */
 
   import { T } from "@threlte/core";
+  import { userProportionsState } from "../../state/user-proportions-state.svelte";
 
   interface Props {
     /** Ground color (hex string) */
@@ -17,8 +19,8 @@
     size?: number;
     /** Geometry segments for smoothness */
     segments?: number;
-    /** Position in scene [x, y, z] */
-    position?: [number, number, number];
+    /** Override Y position (uses user proportions if not provided) */
+    overrideY?: number;
   }
 
   let {
@@ -26,11 +28,14 @@
     opacity = 0.9,
     size = 500,
     segments = 64,
-    position = [0, -200, 0],
+    overrideY,
   }: Props = $props();
+
+  // Use dynamic ground Y from user proportions, or override if provided
+  const groundY = $derived(overrideY ?? userProportionsState.groundY);
 </script>
 
-<T.Group position={position}>
+<T.Group position={[0, groundY, 0]}>
   <T.Mesh rotation.x={-Math.PI / 2}>
     <T.CircleGeometry args={[size, segments]} />
     <T.MeshStandardMaterial

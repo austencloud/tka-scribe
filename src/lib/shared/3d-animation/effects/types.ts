@@ -51,19 +51,44 @@ export interface EffectConfig {
 // =============================================================================
 
 /**
+ * Which prop end(s) to track for trails
+ */
+export enum TrackingMode {
+  LEFT_END = "left_end",     // Track only left end (base)
+  RIGHT_END = "right_end",   // Track only right end (tip)
+  BOTH_ENDS = "both_ends",   // Track both ends
+}
+
+/**
+ * Trail rendering style
+ */
+export enum TrailStyle {
+  RIBBON = "ribbon",         // Physics-based ribbon (default)
+  TUBE = "tube",             // Simple tube geometry (legacy)
+}
+
+/**
  * Configuration for trail/ribbon effects
  */
 export interface TrailConfig extends EffectConfig {
-  /** Number of trail points to display */
+  /** Number of ribbon segments */
   length: number;
-  /** Trail width in world units */
+  /** Trail/ribbon width in world units */
   width: number;
-  /** Trail color - hex color or 'rainbow' for velocity-based coloring */
+  /** Trail color - hex color or 'rainbow' for HSL cycling */
   color: string;
   /** Whether trail should fade out towards the end */
   fadeOut: boolean;
   /** Opacity of the trail (0-1) */
   opacity: number;
+  /** Which end(s) to track */
+  trackingMode: TrackingMode;
+  /** Rendering style */
+  style: TrailStyle;
+  /** Gravity strength for physics ribbon */
+  gravity: number;
+  /** Air drag for physics ribbon (0-1) */
+  drag: number;
 }
 
 /**
@@ -72,11 +97,15 @@ export interface TrailConfig extends EffectConfig {
 export const DEFAULT_TRAIL_CONFIG: TrailConfig = {
   enabled: false,
   intensity: 1,
-  length: 30,
-  width: 0.05,
+  length: 12,  // Ribbon segments
+  width: 3,    // Appropriate for 3D scene scale
   color: "rainbow",
   fadeOut: true,
-  opacity: 0.8,
+  opacity: 0.85,
+  trackingMode: TrackingMode.BOTH_ENDS,
+  style: TrailStyle.RIBBON,
+  gravity: 50,
+  drag: 0.03,
 };
 
 // =============================================================================

@@ -9,15 +9,17 @@
    * Must be placed inside Scene3D's children snippet to be part of the 3D scene.
    */
 
-  import { Vector3 } from "three";
+  import { Vector3, Quaternion, Euler } from "three";
   import { useTask } from "@threlte/core";
   import type { PropState3D } from "../domain/models/PropState3D";
   import { getEffectState } from "./state/effect-state.svelte";
   import { getEffectsConfigState } from "./state/effects-config-state.svelte";
   import { AUSTEN_STAFF } from "../config/avatar-proportions";
+  import { TrackingMode, TrailStyle } from "./types";
 
   // Effect components
   import TrailRenderer from "./trails/TrailRenderer.svelte";
+  import RibbonTrail3D from "./trails/RibbonTrail3D.svelte";
   import FireEmitter from "./particles/FireEmitter.svelte";
   import SparkleEmitter from "./particles/SparkleEmitter.svelte";
   import ElectricityArc from "./energy/ElectricityArc.svelte";
@@ -54,18 +56,24 @@
 
   /**
    * Calculate the two end positions of a staff given its state
-   * Staff is oriented along its local Y axis after the horizontal rotation
+   * Must match the exact rotation logic used in Staff3D.svelte
    */
   function calculatePropEnds(
     propState: PropState3D
   ): { positive: Vector3; negative: Vector3 } {
     const center = propState.worldPosition.clone();
-    const rotation = propState.worldRotation;
 
-    // Staff is along local Y axis (after the 90-degree rotation applied in Staff3D)
-    // Create a vector along the local Y axis and rotate it by the prop's world rotation
+    // Staff3D applies: finalQuat = worldRotation.clone().multiply(horizontalQuat)
+    // where horizontalQuat is 90° around Z axis
+    // This makes the cylinder (which is vertical by default along Y) horizontal
+    const horizontalQuat = new Quaternion().setFromEuler(
+      new Euler(0, 0, Math.PI / 2)
+    );
+    const finalQuat = propState.worldRotation.clone().multiply(horizontalQuat);
+
+    // After this combined rotation, the staff's Y axis points in the staff direction
     const localAxis = new Vector3(0, 1, 0);
-    const worldAxis = localAxis.applyQuaternion(rotation);
+    const worldAxis = localAxis.applyQuaternion(finalQuat);
 
     // Calculate end positions
     const positive = center.clone().add(worldAxis.clone().multiplyScalar(halfLength));
@@ -153,27 +161,72 @@
 </script>
 
 <!-- =============================================================================
-     Trail Effects
+     Trail Effects - Physics-based ribbons attached to prop ends
      ============================================================================= -->
 {#if configState.trails.enabled && isPlaying}
-  {#if blueCenter && hasBlueTrailHistory && blueTrailPositions.length >= 2}
-    <TrailRenderer
-      positions={blueTrailPositions}
-      color={configState.trails.color === "rainbow" ? "rainbow" : "#3b82f6"}
-      width={configState.trails.width}
-      opacity={configState.trails.opacity}
-      fadeOut={configState.trails.fadeOut}
-    />
+  {@const trackMode = configState.trails.trackingMode}
+  {@const isRainbow = configState.trails.color === "rainbow"}
+  {@const showLeftEnd = trackMode === TrackingMode.LEFT_END || trackMode === TrackingMode.BOTH_ENDS}
+  {@const showRightEnd = trackMode === TrackingMode.RIGHT_END || trackMode === TrackingMode.BOTH_ENDS}
+
+  <!-- Blue prop ribbons -->
+  {#if blueEnds}
+    {#if showRightEnd}
+      <RibbonTrail3D
+        attachPoint={blueEnds.positive}
+        color={isRainbow ? "rainbow" : "#3b82f6"}
+        rainbow={isRainbow}
+        segments={configState.trails.length}
+        width={configState.trails.width}
+        opacity={configState.trails.opacity}
+        gravity={configState.trails.gravity}
+        drag={configState.trails.drag}
+        enabled={true}
+      />
+    {/if}
+    {#if showLeftEnd}
+      <RibbonTrail3D
+        attachPoint={blueEnds.negative}
+        color={isRainbow ? "rainbow" : "#60a5fa"}
+        rainbow={isRainbow}
+        segments={configState.trails.length}
+        width={configState.trails.width * 0.8}
+        opacity={configState.trails.opacity * 0.7}
+        gravity={configState.trails.gravity}
+        drag={configState.trails.drag}
+        enabled={true}
+      />
+    {/if}
   {/if}
 
-  {#if redCenter && hasRedTrailHistory && redTrailPositions.length >= 2}
-    <TrailRenderer
-      positions={redTrailPositions}
-      color={configState.trails.color === "rainbow" ? "rainbow" : "#ef4444"}
-      width={configState.trails.width}
-      opacity={configState.trails.opacity}
-      fadeOut={configState.trails.fadeOut}
-    />
+  <!-- Red prop ribbons -->
+  {#if redEnds}
+    {#if showRightEnd}
+      <RibbonTrail3D
+        attachPoint={redEnds.positive}
+        color={isRainbow ? "rainbow" : "#ef4444"}
+        rainbow={isRainbow}
+        segments={configState.trails.length}
+        width={configState.trails.width}
+        opacity={configState.trails.opacity}
+        gravity={configState.trails.gravity}
+        drag={configState.trails.drag}
+        enabled={true}
+      />
+    {/if}
+    {#if showLeftEnd}
+      <RibbonTrail3D
+        attachPoint={redEnds.negative}
+        color={isRainbow ? "rainbow" : "#f87171"}
+        rainbow={isRainbow}
+        segments={configState.trails.length}
+        width={configState.trails.width * 0.8}
+        opacity={configState.trails.opacity * 0.7}
+        gravity={configState.trails.gravity}
+        drag={configState.trails.drag}
+        enabled={true}
+      />
+    {/if}
   {/if}
 {/if}
 
@@ -219,26 +272,42 @@
 {/if}
 
 <!-- =============================================================================
-     Sparkle Effects (around prop centers)
+     Sparkle Effects (on prop ends)
      ============================================================================= -->
 {#if configState.sparkles.enabled && isPlaying}
-  {#if blueCenter}
+  <!-- Blue prop sparkles -->
+  {#if blueEnds}
     <SparkleEmitter
-      position={blueCenter}
+      position={blueEnds.positive}
       enabled={configState.sparkles.enabled}
       intensity={configState.sparkles.rate}
       color="#60a5fa"
-      spread={configState.sparkles.size * 500}
+      spread={configState.sparkles.size * 200}
+    />
+    <SparkleEmitter
+      position={blueEnds.negative}
+      enabled={configState.sparkles.enabled}
+      intensity={configState.sparkles.rate * 0.7}
+      color="#93c5fd"
+      spread={configState.sparkles.size * 150}
     />
   {/if}
 
-  {#if redCenter}
+  <!-- Red prop sparkles -->
+  {#if redEnds}
     <SparkleEmitter
-      position={redCenter}
+      position={redEnds.positive}
       enabled={configState.sparkles.enabled}
       intensity={configState.sparkles.rate}
       color="#f87171"
-      spread={configState.sparkles.size * 500}
+      spread={configState.sparkles.size * 200}
+    />
+    <SparkleEmitter
+      position={redEnds.negative}
+      enabled={configState.sparkles.enabled}
+      intensity={configState.sparkles.rate * 0.7}
+      color="#fca5a5"
+      spread={configState.sparkles.size * 150}
     />
   {/if}
 {/if}

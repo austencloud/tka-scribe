@@ -2,12 +2,12 @@
   /**
    * SkyGradient Primitive
    *
-   * Renders a gradient background as a large inverted sphere.
-   * Uses a custom shader for smooth color transitions.
+   * Sets the scene background to a gradient using a canvas texture.
+   * This is more reliable than a mesh-based approach.
    */
 
-  import { T } from "@threlte/core";
-  import { ShaderMaterial, Color, BackSide } from "three";
+  import { useThrelte } from "@threlte/core";
+  import { CanvasTexture } from "three";
   import { onMount, onDestroy } from "svelte";
 
   interface Props {
@@ -17,90 +17,60 @@
     bottomColor?: string;
     /** Optional middle color for 3-stop gradient */
     midColor?: string;
-    /** Radius of sky sphere */
-    radius?: number;
   }
 
   let {
     topColor = "#1e1b4b",
     bottomColor = "#0a0a12",
     midColor,
-    radius = 2000,
   }: Props = $props();
 
-  // Shader material for gradient
-  let material: ShaderMaterial | null = $state(null);
+  const { scene } = useThrelte();
+  let texture: CanvasTexture | null = null;
+  let originalBackground: typeof scene.background = null;
 
-  // Vertex shader - passes UV to fragment
-  const vertexShader = `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  function createGradientTexture(): CanvasTexture {
+    const canvas = document.createElement("canvas");
+    canvas.width = 2;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d")!;
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 256);
+    gradient.addColorStop(0, topColor);
+    if (midColor) {
+      gradient.addColorStop(0.5, midColor);
     }
-  `;
+    gradient.addColorStop(1, bottomColor);
 
-  // Fragment shader - creates vertical gradient
-  const fragmentShader = `
-    uniform vec3 uTopColor;
-    uniform vec3 uBottomColor;
-    uniform vec3 uMidColor;
-    uniform float uHasMidColor;
-    varying vec2 vUv;
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 2, 256);
 
-    void main() {
-      float t = vUv.y;
-
-      vec3 color;
-      if (uHasMidColor > 0.5) {
-        // 3-stop gradient
-        if (t < 0.5) {
-          color = mix(uBottomColor, uMidColor, t * 2.0);
-        } else {
-          color = mix(uMidColor, uTopColor, (t - 0.5) * 2.0);
-        }
-      } else {
-        // 2-stop gradient
-        color = mix(uBottomColor, uTopColor, t);
-      }
-
-      gl_FragColor = vec4(color, 1.0);
-    }
-  `;
+    return new CanvasTexture(canvas);
+  }
 
   onMount(() => {
-    material = new ShaderMaterial({
-      uniforms: {
-        uTopColor: { value: new Color(topColor) },
-        uBottomColor: { value: new Color(bottomColor) },
-        uMidColor: { value: new Color(midColor ?? topColor) },
-        uHasMidColor: { value: midColor ? 1.0 : 0.0 },
-      },
-      vertexShader,
-      fragmentShader,
-      side: BackSide,
-      depthWrite: false,
-    });
+    // Store original background
+    originalBackground = scene.background;
+
+    // Create and set gradient texture
+    texture = createGradientTexture();
+    scene.background = texture;
   });
 
   onDestroy(() => {
-    material?.dispose();
+    // Restore original background
+    scene.background = originalBackground;
+    texture?.dispose();
   });
 
-  // Update uniforms when colors change
+  // Update when colors change
   $effect(() => {
-    if (material?.uniforms) {
-      material.uniforms.uTopColor.value.set(topColor);
-      material.uniforms.uBottomColor.value.set(bottomColor);
-      material.uniforms.uMidColor.value.set(midColor ?? topColor);
-      material.uniforms.uHasMidColor.value = midColor ? 1.0 : 0.0;
+    if (texture) {
+      texture.dispose();
+      texture = createGradientTexture();
+      scene.background = texture;
     }
   });
 </script>
 
-{#if material}
-  <T.Mesh renderOrder={-1000}>
-    <T.SphereGeometry args={[radius, 32, 32]} />
-    <T is={material} />
-  </T.Mesh>
-{/if}
+<!-- No visual output - this sets scene.background directly -->

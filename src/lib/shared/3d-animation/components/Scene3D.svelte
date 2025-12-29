@@ -25,7 +25,7 @@
   import Grid3D from "./Grid3D.svelte";
   import BloomEffect from "../effects/post-processing/BloomEffect.svelte";
   import Environment3D from "../environments/components/Environment3D.svelte";
-  import { EnvironmentType } from "../environments/domain/enums/environment-enums";
+  import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
   import { Plane } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
 
@@ -56,8 +56,8 @@
     bloomThreshold?: number;
     /** Bloom blur radius (how far glow spreads) */
     bloomRadius?: number;
-    /** Environment type for 3D scene background */
-    environmentType?: EnvironmentType;
+    /** Background type - controls both 2D theme and 3D environment */
+    backgroundType?: BackgroundType;
     /** Children content (props, etc.) */
     children?: Snippet;
   }
@@ -75,7 +75,7 @@
     bloomIntensity = 1.5,
     bloomThreshold = 0.8,
     bloomRadius = 0.4,
-    environmentType = EnvironmentType.NONE,
+    backgroundType = BackgroundType.SOLID_COLOR,
     children,
   }: Props = $props();
 
@@ -127,9 +127,9 @@
     <T.PerspectiveCamera
       makeDefault
       position={cameraPosition}
-      fov={50}
+      fov={65}
       near={1}
-      far={3000}
+      far={6000}
     >
       <!-- Orbit controls attached to camera -->
       <OrbitControls
@@ -160,12 +160,12 @@
       color="#ffffff"
     />
 
-    <!-- 3D Environment (sky, fog, ground, particles) -->
-    <Environment3D type={environmentType} />
-
     <!-- Post-processing effects (wraps scene content when enabled) -->
     {#if bloomEnabled}
       <EffectComposer>
+        <!-- 3D Environment (sky, ground, particles - matches 2D theme) -->
+        <Environment3D {backgroundType} />
+
         <!-- Grid planes -->
         {#if showGrid}
           <Grid3D {visiblePlanes} {showLabels} {gridMode} />
@@ -185,6 +185,9 @@
         />
       </EffectComposer>
     {:else}
+      <!-- 3D Environment (sky, ground, particles - matches 2D theme) -->
+      <Environment3D {backgroundType} />
+
       <!-- Grid planes -->
       {#if showGrid}
         <Grid3D {visiblePlanes} {showLabels} {gridMode} />
