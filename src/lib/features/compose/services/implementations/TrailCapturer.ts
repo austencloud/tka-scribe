@@ -25,6 +25,7 @@ import {
   TrackingMode,
   TrailMode,
   TrailStyle,
+  TrailEffect,
 } from "../../shared/domain/types/TrailTypes";
 import type {
   ITrailCapturer,

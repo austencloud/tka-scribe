@@ -202,6 +202,9 @@
         {customCameraPosition}
         {customCameraTarget}
         onCameraChange={handleCameraChange}
+        bloomEnabled={effectsConfig.bloom.enabled}
+        bloomIntensity={effectsConfig.bloom.intensity}
+        bloomThreshold={effectsConfig.bloom.threshold}
       >
         {#if animState.showBlue && animState.bluePropState}
           <Staff3D propState={animState.bluePropState} color="blue" />
@@ -217,7 +220,17 @@
             {skinTone}
           />
         {/if}
+
+        <!-- Visual Effects Layer -->
+        <EffectsLayer
+          bluePropState={animState.bluePropState}
+          redPropState={animState.redPropState}
+          isPlaying={animState.isPlaying}
+        />
       </Scene3D>
+
+      <!-- Effects Control Panel (overlay) -->
+      <EffectsControlPanel />
 
       <SceneOverlayControls
         {cameraPreset}

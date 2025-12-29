@@ -160,6 +160,9 @@
       color="#ffffff"
     />
 
+    <!-- 3D Environment (sky, fog, ground, particles) -->
+    <Environment3D type={environmentType} />
+
     <!-- Post-processing effects (wraps scene content when enabled) -->
     {#if bloomEnabled}
       <EffectComposer>
@@ -200,7 +203,9 @@
     width: 100%;
     height: 100%;
     min-height: 400px;
-    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+    /* Background now handled by SkyGradient in 3D when environment is active */
+    /* Fallback gradient for NONE environment type */
+    background: linear-gradient(180deg, #0a0a12 0%, #050510 100%);
     border-radius: 8px;
     overflow: hidden;
   }
