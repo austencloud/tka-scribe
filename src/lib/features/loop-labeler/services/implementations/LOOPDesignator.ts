@@ -1,0 +1,73 @@
+import { injectable } from "inversify";
+import { SliceSize } from "$lib/features/create/generate/circular/domain/models/circular-models";
+import type {
+  ILOOPDesignator,
+  LOOPDesignation,
+  SectionDesignation,
+} from "../contracts/ILOOPDesignator";
+
+/**
+ * Base LOOP components for reference
+ */
+const BASE_COMPONENTS = [
+  { id: "rotated", label: "Rotated" },
+  { id: "swapped", label: "Swapped" },
+  { id: "mirrored", label: "Mirrored" },
+  { id: "flipped", label: "Flipped" },
+  { id: "inverted", label: "Inverted" },
+  { id: "rewound", label: "Rewound" },
+] as const;
+
+/**
+ * Service for formatting and managing LOOP designations
+ */
+@injectable()
+export class LOOPDesignator implements ILOOPDesignator {
+  formatDesignation(d: LOOPDesignation | SectionDesignation): string {
+    if (d.components.length === 0) return "Freeform";
+
+    let label = d.components
+      .map((c) => BASE_COMPONENTS.find((b) => b.id === c)?.label ?? c)
+      .join(" + ");
+
+    // Add slice size if rotated and has a slice size
+    if (d.components.includes("rotated") && d.sliceSize) {
+      const sliceLabel = d.sliceSize === SliceSize.HALVED ? "180°" : "90°";
+      label += ` (${sliceLabel})`;
+    }
+
+    return label;
+  }
+
+  formatSectionBeats(beats: number[]): string {
+    if (beats.length === 0) return "";
+    if (beats.length === 1) return `Beat ${beats[0]}`;
+
+    // Check if consecutive
+    const sorted = [...beats].sort((a, b) => a - b);
+    let isConsecutive = true;
+    for (let i = 1; i < sorted.length; i++) {
+      if (sorted[i]! !== sorted[i - 1]! + 1) {
+        isConsecutive = false;
+        break;
+      }
+    }
+
+    if (isConsecutive) {
+      return `Beats ${sorted[0]}-${sorted[sorted.length - 1]}`;
+    } else {
+      return `Beats ${sorted.join(", ")}`;
+    }
+  }
+
+  isDuplicateDesignation(
+    designation: LOOPDesignation,
+    existing: LOOPDesignation[]
+  ): boolean {
+    return existing.some(
+      (d) =>
+        d.components.sort().join(",") ===
+        designation.components.sort().join(",")
+    );
+  }
+}
