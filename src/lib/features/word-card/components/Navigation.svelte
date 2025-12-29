@@ -1,290 +1,268 @@
-<!-- Navigation.svelte - Simple navigation matching legacy desktop -->
+<!--
+  Navigation.svelte - Word card filter sidebar
+
+  Length filter buttons and column layout selector.
+-->
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
 
-  // Props
-  let { selectedLength, columnCount, onLengthSelected, onColumnCountChanged } =
-    $props<{
-      selectedLength: number;
-      columnCount: number;
-      onLengthSelected: (length: number) => void;
-      onColumnCountChanged: (count: number) => void;
-    }>();
+  interface Props {
+    selectedLength: number;
+    columnCount: number;
+    onLengthSelected: (length: number) => void;
+    onColumnCountChanged: (count: number) => void;
+  }
 
-  // Services
+  let { selectedLength, columnCount, onLengthSelected, onColumnCountChanged }: Props = $props();
+
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
-  // Length options matching desktop exactly
   const lengthOptions = [
-    { value: 0, label: "Show All" },
-    { value: 2, label: "2 beats" },
-    { value: 3, label: "3 beats" },
-    { value: 4, label: "4 beats" },
-    { value: 5, label: "5 beats" },
-    { value: 6, label: "6 beats" },
-    { value: 8, label: "8 beats" },
-    { value: 10, label: "10 beats" },
-    { value: 12, label: "12 beats" },
-    { value: 16, label: "16 beats" },
+    { value: 0, label: "All", icon: "fa-layer-group" },
+    { value: 2, label: "2" },
+    { value: 3, label: "3" },
+    { value: 4, label: "4" },
+    { value: 6, label: "6" },
+    { value: 8, label: "8" },
+    { value: 10, label: "10" },
+    { value: 12, label: "12" },
+    { value: 16, label: "16" },
   ];
 
-  // Column options matching desktop
-  const columnOptions = [
-    { value: 1, label: "1 Column" },
-    { value: 2, label: "2 Columns" },
-    { value: 3, label: "3 Columns" },
-    { value: 4, label: "4 Columns" },
-    { value: 5, label: "5 Columns" },
-    { value: 6, label: "6 Columns" },
-  ];
+  const columnOptions = [1, 2, 3, 4];
 
   function handleLengthClick(length: number) {
-    // Trigger selection haptic feedback for length filter selection
     hapticService?.trigger("selection");
-
     onLengthSelected(length);
   }
 
-  function handleColumnChange(event: Event) {
-    // Trigger selection haptic feedback for column count change
+  function handleColumnClick(count: number) {
     hapticService?.trigger("selection");
-
-    const target = event.target as HTMLSelectElement;
-    const newCount = parseInt(target.value);
-    onColumnCountChanged(newCount);
+    onColumnCountChanged(count);
   }
 </script>
 
-<div class="word-card-navigation">
-  <!-- Header -->
-  <div class="nav-header">
-    <h2 class="nav-title">Navigation</h2>
-    <p class="nav-subtitle">Filter and layout options</p>
-  </div>
-
-  <!-- Length Selection -->
-  <div class="length-section">
-    <h3 class="section-title">Sequence Length</h3>
-    <div class="length-scroll-area">
-      <div class="length-options">
-        {#each lengthOptions as option (option.value)}
-          <button
-            class="length-button"
-            class:selected={selectedLength === option.value}
-            onclick={() => handleLengthClick(option.value)}
-            title="Show sequences with {option.value === 0
-              ? 'any length'
-              : `${option.value} beats`}"
-          >
-            {option.label}
-          </button>
-          {#if option.value === 0}
-            <div class="separator"></div>
+<div class="navigation">
+  <!-- Length Filter -->
+  <section class="section">
+    <h3 class="section-title">
+      <i class="fas fa-filter" aria-hidden="true"></i>
+      <span>Beats</span>
+    </h3>
+    <div class="length-grid">
+      {#each lengthOptions as option (option.value)}
+        <button
+          class="length-btn"
+          class:selected={selectedLength === option.value}
+          class:all={option.value === 0}
+          onclick={() => handleLengthClick(option.value)}
+          aria-pressed={selectedLength === option.value}
+          type="button"
+        >
+          {#if option.icon}
+            <i class="fas {option.icon}" aria-hidden="true"></i>
           {/if}
-        {/each}
-      </div>
-    </div>
-  </div>
-
-  <!-- Column Count Selection -->
-  <div class="column-section">
-    <h3 class="section-title">Page Layout</h3>
-    <select
-      class="column-select"
-      value={columnCount}
-      onchange={handleColumnChange}
-    >
-      {#each columnOptions as option (option.value)}
-        <option value={option.value}>{option.label}</option>
+          <span>{option.label}</span>
+        </button>
       {/each}
-    </select>
-  </div>
+    </div>
+  </section>
+
+  <!-- Column Layout -->
+  <section class="section">
+    <h3 class="section-title">
+      <i class="fas fa-columns" aria-hidden="true"></i>
+      <span>Columns</span>
+    </h3>
+    <div class="column-grid">
+      {#each columnOptions as count (count)}
+        <button
+          class="column-btn"
+          class:selected={columnCount === count}
+          onclick={() => handleColumnClick(count)}
+          aria-pressed={columnCount === count}
+          type="button"
+        >
+          {count}
+        </button>
+      {/each}
+    </div>
+  </section>
 </div>
 
 <style>
-  .word-card-navigation {
+  .navigation {
     height: 100%;
-    padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
+    padding: var(--spacing-md);
     gap: var(--spacing-lg);
-    background: transparent;
-  }
-
-  /* Header */
-  .nav-header {
-    border-bottom: var(--glass-border);
-    padding-bottom: var(--spacing-lg);
-  }
-
-  .nav-title {
-    margin: 0 0 var(--spacing-xs) 0;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    color: var(--text-color);
-    text-shadow: var(--text-shadow-glass);
-  }
-
-  .nav-subtitle {
-    margin: 0;
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
-  }
-
-  /* Section Titles */
-  .section-title {
-    margin: 0 0 var(--spacing-md) 0;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    color: var(--text-color);
-  }
-
-  /* Length Selection */
-  .length-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  .length-scroll-area {
-    flex: 1;
     overflow-y: auto;
-    min-height: 120px;
-    max-height: 400px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
 
-  .length-scroll-area::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .length-scroll-area::-webkit-scrollbar-track {
-    background: transparent;
-    border-radius: var(--border-radius-sm);
-  }
-
-  .length-scroll-area::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke);
-  }
-
-  .length-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: var(--theme-stroke-strong);
-  }
-
-  .length-options {
+  .section {
     display: flex;
     flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin: 0;
+    font-size: var(--font-size-compact, 12px);
+    font-weight: 600;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-title i {
+    font-size: 0.7rem;
+    opacity: 0.7;
+  }
+
+  /* Length Grid - flexible wrap */
+  .length-grid {
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-xs);
   }
 
-  .length-button {
-    background: var(--theme-card-bg, var(--theme-card-bg));
-    border: 1px solid var(--theme-stroke, var(--theme-stroke));
-    color: var(--theme-text, var(--text-color, var(--theme-text)));
+  .length-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 48px;
+    min-height: 48px;
     padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    cursor: pointer;
-    text-align: left;
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    transition: all var(--transition-normal);
-  }
-
-  .length-button:hover {
-    background: var(--theme-card-hover-bg);
-    border-color: var(--theme-stroke-strong);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-shadow) 20%, transparent);
-  }
-
-  .length-button.selected {
-    background: var(--primary-color);
-    border-color: var(--primary-light);
-    color: white;
-    box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
-  }
-
-  .separator {
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      var(--theme-stroke) 50%,
-      transparent 100%
-    );
-    margin: var(--spacing-sm) 0;
-  }
-
-  /* Column Selection */
-  .column-section {
-    border-top: var(--glass-border);
-    padding-top: var(--spacing-lg);
-  }
-
-  .column-select {
-    width: 100%;
-    background: var(--theme-card-bg, var(--theme-card-bg));
-    border: 1px solid var(--theme-stroke, var(--theme-stroke));
-    color: var(--theme-text, var(--text-color, var(--theme-text)));
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-sm);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-md, 8px);
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
     font-weight: 500;
     cursor: pointer;
-    transition: all var(--transition-normal);
+    transition: all 0.15s ease;
   }
 
-  .column-select:hover {
-    background: var(--theme-card-hover-bg);
-    border-color: var(--theme-stroke-strong);
+  .length-btn.all {
+    /* Slightly wider for "All" with icon */
+    min-width: 64px;
   }
 
-  .column-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 20%, transparent);
+  .length-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
   }
 
-  .column-select option {
-    background: var(--background);
-    color: var(--text-color);
+  .length-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
   }
 
-  /* Responsive */
+  .length-btn.selected {
+    background: var(--theme-accent, #f43f5e);
+    border-color: var(--theme-accent, #f43f5e);
+    color: #ffffff;
+  }
+
+  .length-btn i {
+    font-size: 0.7rem;
+  }
+
+  /* Column Grid - flexible wrap */
+  .column-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .column-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-md, 8px);
+    color: var(--theme-text, #ffffff);
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .column-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--theme-stroke-strong, rgba(255, 255, 255, 0.15));
+  }
+
+  .column-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .column-btn.selected {
+    background: var(--theme-accent, #f43f5e);
+    border-color: var(--theme-accent, #f43f5e);
+    color: #ffffff;
+  }
+
+  /* Scrollbar */
+  .navigation::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .navigation::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .navigation::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 3px;
+  }
+
+  /* Responsive - horizontal layout on mobile */
   @media (max-width: 768px) {
-    .word-card-navigation {
-      padding: var(--spacing-md);
+    .navigation {
+      flex-direction: row;
+      padding: var(--spacing-sm);
       gap: var(--spacing-md);
+      overflow-x: auto;
+      overflow-y: hidden;
     }
 
-    .length-scroll-area {
-      max-height: 152px;
+    .section {
+      flex-shrink: 0;
     }
 
-    .length-button {
-      padding: var(--spacing-sm);
-      font-size: var(--font-size-xs);
+    .length-grid,
+    .column-grid {
+      flex-wrap: nowrap;
     }
 
-    .column-select {
-      padding: var(--spacing-sm);
-      font-size: var(--font-size-xs);
+    .length-btn,
+    .column-btn {
+      font-size: var(--font-size-compact, 12px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .length-btn,
+    .column-btn {
+      transition: none;
     }
   }
 </style>

@@ -1,159 +1,176 @@
-<!-- WordCard.svelte - Bare bones sequence image matching legacy desktop -->
+<!--
+  WordCard.svelte - Sequence card for print preview
+
+  Displays a sequence image. In print mode, uses light styling for paper.
+-->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
 
-  // Props
-  let { sequence } = $props<{
+  interface Props {
     sequence: SequenceData;
-  }>();
+    printMode?: boolean;
+  }
 
-  // State for tracking which image version loads successfully
-  let imageVersion = $state<number>(1);
-  let imageLoadFailed = $state<boolean>(false);
+  let { sequence, printMode = false }: Props = $props();
 
-  // Services
   let hapticService: IHapticFeedback;
+  let imageVersion = $state(1);
+  let imageLoadFailed = $state(false);
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
-  // Generate sequence image path - try multiple versions like PNG metadata extractor
+  // Generate image path - try multiple versions
   let imagePath = $derived.by(() => {
-    // Strip " Sequence" suffix from name to get the actual folder/file name
     const word = sequence.name.replace(" Sequence", "");
     return `/gallery/${word}/${word}_ver${imageVersion}.webp`;
   });
 
-  function handleCardClick() {
-    // Trigger selection haptic feedback for word card selection
+  function handleClick() {
     hapticService?.trigger("selection");
-
     console.log("Word card clicked:", sequence.name);
   }
 
-  // Handle image load errors by trying next version
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleClick();
+    }
+  }
+
   function handleImageError() {
     if (imageVersion < 6) {
-      // Try up to version 6
       imageVersion++;
       imageLoadFailed = false;
     } else {
       imageLoadFailed = true;
-      console.warn(
-        `No WebP image found for sequence: ${sequence.name} (tried versions 1-6)`
-      );
     }
   }
 </script>
 
-<!-- Bare bones word card - just the image -->
-<div
+<button
   class="word-card"
-  onclick={handleCardClick}
-  onkeydown={(e) => e.key === "Enter" && handleCardClick()}
-  role="button"
-  tabindex="0"
+  class:print-mode={printMode}
+  onclick={handleClick}
+  onkeydown={handleKeyDown}
   aria-label="View sequence {sequence.name}"
+  type="button"
 >
-  <img
-    src={imagePath}
-    alt={sequence.name}
-    class="sequence-image"
-    class:hidden={imageLoadFailed}
-    loading="lazy"
-    onerror={handleImageError}
-  />
-
-  <!-- Simple fallback for missing images -->
-  <div class="image-fallback" class:visible={imageLoadFailed}>
-    <div class="fallback-content">
-      <div class="sequence-name">{sequence.name}</div>
-      <div class="beat-count">{sequence.beats.length} beats</div>
-      <div class="missing-image-note">Image not found</div>
+  {#if !imageLoadFailed}
+    <img
+      src={imagePath}
+      alt={sequence.name}
+      class="card-image"
+      loading="lazy"
+      onerror={handleImageError}
+    />
+  {:else}
+    <!-- Fallback for missing images -->
+    <div class="card-fallback">
+      <div class="fallback-icon">
+        <i class="fas fa-image" aria-hidden="true"></i>
+      </div>
+      <span class="fallback-name">{sequence.name.replace(" Sequence", "")}</span>
+      <span class="fallback-beats">{sequence.beats.length} beats</span>
     </div>
-  </div>
-</div>
+  {/if}
+</button>
 
 <style>
   .word-card {
-    cursor: pointer;
-    border-radius: var(--border-radius-md);
+    display: block;
+    width: 100%;
+    padding: 0;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--border-radius-md, 8px);
     overflow: hidden;
-    transition: all var(--transition-normal);
-    background: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    /* No forced aspect ratio - let the actual sequence image determine size */
+    cursor: pointer;
+    transition: all 0.15s ease;
   }
 
-  .word-card:hover {
-    transform: scale(1.02) translateY(-2px);
-    box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.15),
-      0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Print mode - exact print preview (no decorations) */
+  .word-card.print-mode {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
-  .word-card:focus {
-    outline: 2px solid var(--primary-color);
+  .word-card:hover:not(.print-mode) {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .word-card:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
     outline-offset: 2px;
   }
 
-  .sequence-image {
-    max-width: 100%;
+  .card-image {
+    width: 100%;
     height: auto;
     display: block;
-    /* Let the image maintain its natural aspect ratio */
   }
 
-  .sequence-image.hidden {
-    display: none;
-  }
-
-  .image-fallback {
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    display: none;
+  /* Fallback - dark mode */
+  .card-fallback {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 120px;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    min-height: 80px;
+    aspect-ratio: 2 / 1; /* Approximate sequence aspect ratio */
   }
 
-  .image-fallback.visible {
+  .fallback-icon {
+    width: 36px;
+    height: 36px;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 50%;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.3));
+    font-size: 0.9rem;
   }
 
-  .fallback-content {
-    text-align: center;
-    padding: var(--spacing-lg);
-    color: var(--text-color);
-  }
-
-  .sequence-name {
-    font-size: var(--font-size-sm);
+  .fallback-name {
+    font-size: var(--font-size-sm, 14px);
     font-weight: 500;
-    margin-bottom: var(--spacing-xs);
-    color: var(--text-color);
+    color: var(--theme-text, #ffffff);
+    text-align: center;
   }
 
-  .beat-count {
-    font-size: var(--font-size-xs);
-    color: var(--text-secondary);
+  .fallback-beats {
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
-  .missing-image-note {
-    font-size: var(--font-size-xs);
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: var(--spacing-xs);
+  /* Print mode fallback - simple black text for print */
+  .print-mode .fallback-icon {
+    background: transparent;
+    color: #666666;
+  }
+
+  .print-mode .fallback-name {
+    color: #000000;
+  }
+
+  .print-mode .fallback-beats {
+    color: #666666;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word-card {
+      transition: none;
+    }
   }
 </style>

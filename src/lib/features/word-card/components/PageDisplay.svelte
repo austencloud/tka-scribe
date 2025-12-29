@@ -1,192 +1,74 @@
-<!-- PageDisplay.svelte - Simple page display matching legacy desktop -->
+<!--
+  PageDisplay.svelte - Print-preview page display
+
+  Shows sequences as they would appear on printed pages (letter size).
+-->
 <script lang="ts">
-  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
+  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import { onMount } from "svelte";
+  import type { PrintPreviewPage } from "../domain/types/PageLayoutTypes";
   import WordCard from "./WordCard.svelte";
 
-  // Services
-  let hapticService: IHapticFeedback;
-
-  // Initialize haptic service
-  $effect(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
-  });
-
-  // Props
-  let {
-    pages,
-    isLoading,
-    error,
-    onRetry,
-    columnCount = 1, // Default to 1 page per row
-  } = $props<{
-    pages: Array<{
-      id: string;
-      sequences: SequenceData[];
-      isEmpty: boolean;
-    }>;
+  interface Props {
+    pages: PrintPreviewPage[];
     isLoading: boolean;
     error: string | null;
+    columnCount?: number;
     onRetry: () => void;
-    columnCount?: number; // For page display layout (how many pages side-by-side)
-  }>();
-
-  // Calculate responsive page size based on container and column count
-  let containerElement: HTMLElement;
-  let pageWidth = $state(816); // Default letter size width
-  let pageHeight = $state(1056); // Default letter size height
-
-  // Resize observer to handle window resizing
-  let resizeObserver: ResizeObserver | null = null;
-
-  // Update page size when container or column count changes
-  function updatePageSize() {
-    if (containerElement && columnCount > 0) {
-      const containerWidth = containerElement.clientWidth;
-      const containerHeight = containerElement.clientHeight;
-
-      // Calculate optimal page size based on available space and column count
-      // Account for padding and gaps between pages
-      const totalPadding = 40; // 20px padding on each side
-      const totalGaps = (columnCount - 1) * 20; // 20px gap between pages
-      const availableWidth = containerWidth - totalPadding - totalGaps;
-
-      // Calculate page width based on column count
-      const calculatedPageWidth = Math.max(300, availableWidth / columnCount);
-
-      // Calculate page height based on content needs rather than fixed aspect ratio
-      // Account for: padding + (3 rows of sequences) + gaps between rows
-      const pagePadding = 48 + 24; // top + bottom padding
-      const estimatedSequenceHeight = calculatedPageWidth * 0.4; // Estimate sequence height
-      const gridGap = 10; // Gap between grid items
-      const rowsNeeded = 3; // 2 columns × 3 rows = 6 sequences
-      const contentHeight =
-        estimatedSequenceHeight * rowsNeeded + gridGap * (rowsNeeded - 1);
-      const calculatedPageHeight = contentHeight + pagePadding;
-
-      // Ensure pages don't exceed container height (with some margin)
-      const maxHeight = containerHeight - 40; // Leave some margin
-      if (calculatedPageHeight > maxHeight) {
-        // If content doesn't fit, scale down proportionally
-        const scaleFactor = maxHeight / calculatedPageHeight;
-        pageHeight = maxHeight;
-        pageWidth = calculatedPageWidth * scaleFactor;
-      } else {
-        pageWidth = calculatedPageWidth;
-        pageHeight = calculatedPageHeight;
-      }
-    }
   }
 
-  // Set up resize observer when container is available
-  $effect(() => {
-    if (containerElement) {
-      // Initial size calculation
-      updatePageSize();
+  let { pages, isLoading, error, columnCount = 1, onRetry }: Props = $props();
 
-      // Set up resize observer for responsive updates
-      resizeObserver = new ResizeObserver(() => {
-        updatePageSize();
-      });
+  let hapticService: IHapticFeedback;
 
-      resizeObserver.observe(containerElement);
-
-      // Cleanup function
-      return () => {
-        if (resizeObserver) {
-          resizeObserver.disconnect();
-          resizeObserver = null;
-        }
-      };
-    }
-    return undefined;
+  onMount(() => {
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
-  // Update when column count changes
-  $effect(() => {
-    updatePageSize();
-  });
-
-  // Also listen for window resize events for additional responsiveness
-  $effect(() => {
-    const handleWindowResize = () => {
-      // Small delay to ensure container has updated
-      setTimeout(updatePageSize, 10);
-    };
-
-    window.addEventListener("resize", handleWindowResize);
-
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  });
+  function handleRetry() {
+    hapticService?.trigger("selection");
+    onRetry();
+  }
 </script>
 
-<div class="page-display" bind:this={containerElement}>
+<div class="page-display" style:--column-count={columnCount}>
   {#if isLoading}
-    <!-- Loading State -->
-    <div class="state-container loading">
-      <div class="loading-spinner"></div>
+    <div class="state-container">
+      <div class="spinner"></div>
       <h3 class="state-title">Loading sequences...</h3>
-      <p class="state-message">Please wait while we load your sequence cards</p>
+      <p class="state-message">Preparing print preview</p>
     </div>
   {:else if error}
-    <!-- Error State -->
-    <div class="state-container error">
-      <div class="error-icon">⚠️</div>
+    <div class="state-container">
+      <div class="state-icon error">
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+      </div>
       <h3 class="state-title">Error Loading Sequences</h3>
       <p class="state-message">{error}</p>
-      <button
-        class="retry-button"
-        onclick={() => {
-          // Trigger selection haptic for retry action
-          hapticService?.trigger("selection");
-          onRetry();
-        }}>Try Again</button
-      >
+      <button class="retry-btn" onclick={handleRetry} type="button">
+        <i class="fas fa-redo" aria-hidden="true"></i>
+        <span>Try Again</span>
+      </button>
     </div>
   {:else if pages.length === 1 && pages[0].isEmpty}
-    <!-- Empty State -->
-    <div class="state-container empty">
-      <div class="empty-icon">📄</div>
+    <div class="state-container">
+      <div class="state-icon empty">
+        <i class="fas fa-file-alt" aria-hidden="true"></i>
+      </div>
       <h3 class="state-title">No Sequences Found</h3>
-      <p class="state-message">
-        No sequences match your current filter criteria
-      </p>
+      <p class="state-message">No sequences match your current filter</p>
     </div>
   {:else}
-    <!-- Pages Display -->
-    <div
-      class="pages-container"
-      style:grid-template-columns={`repeat(${columnCount}, 1fr)`}
-    >
+    <!-- Print Preview Pages -->
+    <div class="pages-container">
       {#each pages as page (page.id)}
-        <div
-          class="page"
-          data-page-id={page.id}
-          style:width="{pageWidth}px"
-          style:height="{pageHeight}px"
-        >
-          <!-- Page Header -->
-          <div class="page-header">
-            <h3 class="page-title">Page {page.id.replace("page-", "")}</h3>
-            <span class="page-info"
-              >{page.sequences.length} sequences • 2 columns</span
-            >
-          </div>
-
-          <!-- Page Content -->
+        <div class="page" data-page-id={page.id}>
           <div class="page-content">
-            <div
-              class="sequence-grid"
-              style:grid-template-columns="repeat(2, 1fr)"
-            >
+            <div class="sequence-grid">
               {#each page.sequences as sequence (sequence.id)}
-                <WordCard {sequence} />
+                <WordCard {sequence} printMode />
               {/each}
             </div>
           </div>
@@ -200,7 +82,7 @@
   .page-display {
     height: 100%;
     overflow-y: auto;
-    background: transparent;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
@@ -211,17 +93,11 @@
 
   .page-display::-webkit-scrollbar-track {
     background: transparent;
-    border-radius: var(--border-radius-sm);
   }
 
   .page-display::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--theme-stroke);
-  }
-
-  .page-display::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
   }
 
   /* State Containers */
@@ -231,169 +107,135 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    padding: var(--spacing-2xl);
+    padding: var(--spacing-xl);
     text-align: center;
-    color: var(--text-secondary);
   }
 
-  .loading-spinner {
-    width: var(--min-touch-target);
-    height: var(--min-touch-target);
-    border: 4px solid var(--theme-stroke);
-    border-top: 4px solid var(--primary-color);
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-top-color: var(--theme-accent, #f43f5e);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: var(--spacing-xl);
-  }
-
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  .error-icon,
-  .empty-icon {
-    font-size: var(--font-size-3xl);
+    animation: spin 0.8s linear infinite;
     margin-bottom: var(--spacing-lg);
   }
 
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .state-icon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.5rem;
+  }
+
+  .state-icon.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+  }
+
+  .state-icon.empty {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.4));
+  }
+
   .state-title {
-    margin: 0 0 var(--spacing-sm) 0;
-    font-size: var(--font-size-xl);
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-lg, 18px);
     font-weight: 600;
-    color: var(--text-color);
-    text-shadow: var(--text-shadow-glass);
+    color: var(--theme-text, #ffffff);
   }
 
   .state-message {
-    margin: 0 0 var(--spacing-xl) 0;
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    max-width: 400px;
-    line-height: 1.5;
+    margin: 0 0 var(--spacing-lg) 0;
+    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.5));
   }
 
-  .retry-button {
-    background: var(--primary-color);
-    border: 1px solid var(--primary-light);
-    color: white;
-    padding: var(--spacing-md) var(--spacing-xl);
-    border-radius: var(--border-radius-md);
-    font-size: var(--font-size-sm);
+  .retry-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    min-height: 48px;
+    padding: var(--spacing-sm) var(--spacing-xl);
+    background: var(--theme-accent, #f43f5e);
+    border: none;
+    border-radius: var(--border-radius-md, 8px);
+    color: #ffffff;
+    font-size: var(--font-size-sm, 14px);
     font-weight: 500;
     cursor: pointer;
-    transition: all var(--transition-normal);
-    box-shadow: 0 4px 16px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 30%, transparent);
+    transition: all 0.15s ease;
   }
 
-  .retry-button:hover {
-    background: var(--primary-light);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px
-      color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 40%, transparent);
+  .retry-btn:hover {
+    filter: brightness(1.1);
   }
 
-  /* Pages Container - grid layout for multiple pages side-by-side */
+  .retry-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #f43f5e);
+    outline-offset: 2px;
+  }
+
+  /* Pages Container - uses CSS custom property for columns */
   .pages-container {
-    padding: var(--spacing-xl);
     display: grid;
-    gap: var(--spacing-xl);
-    max-width: none; /* Allow full width for multiple pages */
-    margin: 0 auto;
-    justify-items: center; /* Center pages in grid cells */
-    /* grid-template-columns set via style attribute based on columnCount */
+    grid-template-columns: repeat(var(--column-count, 3), 1fr);
+    gap: var(--spacing-lg, 16px);
+    padding: var(--spacing-lg, 16px);
+    align-items: start;
   }
 
-  /* Individual Page - Responsive size based on container and column count */
+  /* Individual Page - Print preview (white paper) */
   .page {
-    background: rgba(255, 255, 255, 0.98);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius-lg);
+    width: 100%;
+    aspect-ratio: 8.5 / 11; /* Letter size ratio */
+    background: #ffffff;
+    border-radius: var(--border-radius-md, 8px);
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.1),
-      0 4px 16px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    /* Dimensions set via style attributes based on container size and column count */
-    position: relative;
-    flex-shrink: 0; /* Prevent pages from shrinking */
+      0 4px 20px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
   }
 
-  /* Hide page headers - we want clean printable pages */
-  .page-header {
-    display: none;
-  }
-
-  .page-title {
-    display: none;
-  }
-
-  .page-info {
-    display: none;
-  }
-
   .page-content {
-    /* Legacy desktop margins: 18pt left/right, 36pt top/bottom */
-    /* Convert points to pixels: 18pt = 24px, 36pt = 48px at 96 DPI */
-    /* But reduce top padding to eliminate space above images */
-    padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-2xl)
-      var(--spacing-xl);
+    padding: 3%; /* Proportional margins */
     height: 100%;
     box-sizing: border-box;
   }
 
-  /* Sequence Grid - spacing matches legacy desktop exactly */
+  /* Sequence Grid - 2 columns, rows auto-sized to content */
   .sequence-grid {
     display: grid;
-    /* Legacy desktop spacing calculation: content_width / (columns * 40) */
-    /* For 2 columns on letter size: ~768px / (2 * 40) = ~9.6px */
-    gap: var(--spacing-sm); /* Close to legacy calculation */
-    grid-template-columns: repeat(
-      2,
-      1fr
-    ); /* Default 2 columns like legacy, overridden by style attribute */
-    justify-items: center; /* Center sequence cards in grid cells */
-    align-items: start; /* Align to top of grid cells */
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: min-content;
+    gap: 2%;
+    height: 100%;
+    align-content: start;
   }
 
   /* Responsive */
   @media (max-width: 768px) {
     .pages-container {
-      padding: var(--spacing-lg);
-      gap: var(--spacing-xl);
+      padding: var(--spacing-md, 12px);
+      gap: var(--spacing-md, 12px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spinner {
+      animation: none;
     }
 
-    .page-header {
-      padding: var(--spacing-md) var(--spacing-lg);
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--spacing-xs);
-    }
-
-    .page-content {
-      padding: var(--spacing-lg);
-    }
-
-    .sequence-grid {
-      gap: var(--spacing-md);
-    }
-
-    .page-title {
-      font-size: var(--font-size-lg);
-    }
-
-    .page-info {
-      font-size: var(--font-size-xs);
-    }
-
-    .state-container {
-      padding: var(--spacing-xl);
+    .retry-btn {
+      transition: none;
     }
   }
 </style>
