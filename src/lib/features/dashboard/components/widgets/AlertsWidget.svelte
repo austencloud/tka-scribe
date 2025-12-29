@@ -131,6 +131,11 @@
     <div class="header-left">
       <div class="header-icon">
         <i class="fas fa-bell" aria-hidden="true"></i>
+        {#if unreadCount > 0}
+          <span class="header-badge" aria-label="{unreadCount} unread notifications">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        {/if}
       </div>
       <h3>Alerts</h3>
     </div>
@@ -218,6 +223,7 @@
   }
 
   .header-icon {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -227,6 +233,37 @@
     border-radius: 10px;
     color: var(--semantic-info, var(--semantic-info));
     font-size: var(--font-size-sm);
+  }
+
+  .header-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--semantic-error);
+    color: white;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    border-radius: 9px;
+    border: 2px solid var(--theme-panel-bg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    animation: badge-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes badge-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.08);
+    }
   }
 
   .widget-header h3 {
@@ -417,6 +454,10 @@
     .view-all-btn,
     .clear-all-btn {
       transition: none;
+    }
+
+    .header-badge {
+      animation: none;
     }
   }
 </style>

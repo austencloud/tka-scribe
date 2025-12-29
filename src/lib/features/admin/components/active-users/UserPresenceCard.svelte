@@ -68,7 +68,9 @@
         onload={handleAvatarLoad}
       />
     </div>
-    <span class="presence-dot" class:active={isActive}></span>
+    <span class="presence-dot" class:active={isActive}>
+      <span class="sr-only">{isActive ? "Online" : "Offline"}</span>
+    </span>
   </div>
 
   <!-- User info -->
@@ -192,6 +194,19 @@
   .presence-dot.active {
     background: var(--semantic-success, var(--semantic-success));
     box-shadow: 0 0 8px var(--semantic-success, var(--semantic-success));
+  }
+
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .info {

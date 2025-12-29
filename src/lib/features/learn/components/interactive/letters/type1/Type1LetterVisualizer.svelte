@@ -164,7 +164,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
           <div class="loading-spinner"></div>
         </div>
       {:else if error}
-        <div class="error-state">
+        <div class="error-state" role="alert" aria-live="assertive">
           <span class="error-icon">⚠</span>
           <span class="error-text">{error}</span>
         </div>

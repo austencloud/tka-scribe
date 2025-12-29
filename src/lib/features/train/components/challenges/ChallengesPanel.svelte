@@ -213,8 +213,8 @@
   <!-- Content -->
   <div class="content">
     {#if loading}
-      <div class="loading-state">
-        <div class="spinner"></div>
+      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Loading challenges...</p>
       </div>
     {:else if filteredChallenges.length === 0}
@@ -222,7 +222,7 @@
         <div class="empty-icon">
           <i class="fas fa-trophy" aria-hidden="true"></i>
         </div>
-        <h3>No Challenges Found</h3>
+        <h2>No Challenges Found</h2>
         <p>
           {#if filter === "completed"}
             You haven't completed any challenges yet.

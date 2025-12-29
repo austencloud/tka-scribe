@@ -1,8 +1,8 @@
 <!--
 QuizLoadingState - Loading spinner for quizzes
 -->
-<div class="loading-state">
-  <div class="loading-spinner"></div>
+<div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+  <div class="loading-spinner" aria-hidden="true"></div>
   <p class="loading-text">Loading...</p>
 </div>
 

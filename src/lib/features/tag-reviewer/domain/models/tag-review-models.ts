@@ -5,13 +5,13 @@
  */
 
 import type { BaseSequenceEntry } from "$lib/shared/sequence-review/domain/models/review-models";
-import type { SuggestedTag, TagCategory } from "$lib/features/cap-labeler/domain/models/suggested-tag";
+import type { SuggestedTag, TagCategory } from "$lib/features/loop-labeler/domain/models/suggested-tag";
 
 /**
  * Extended sequence entry with tag data
  */
 export interface TaggedSequenceEntry extends BaseSequenceEntry {
-	capType: string | null;
+	loopType: string | null;
 }
 
 /**

@@ -381,12 +381,12 @@
         <p>Please sign in to access your library.</p>
       </div>
     {:else if isLoading}
-      <div class="loading-state">
-        <div class="spinner"></div>
+      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Loading your library...</p>
       </div>
     {:else if error}
-      <div class="error-state">
+      <div class="error-state" role="alert" aria-live="assertive">
         <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
         <h3>Error Loading Sequences</h3>
         <p>{error}</p>

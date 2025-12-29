@@ -193,7 +193,7 @@ Mapped directly from TKA Level 1.pdf:
 24. Simple CAPs - Basic 2-3 letter patterns (p36-37)
 25. Complex CAPs - Advanced multi-letter patterns (p38-39)
 26. Reversals - Backward letter sequences (p40)
-27. CAP Variations - Expanding pattern vocabulary (p41)
+27. LOOP Variations - Expanding pattern vocabulary (p41)
 
 #### Advanced (1 concept)
 

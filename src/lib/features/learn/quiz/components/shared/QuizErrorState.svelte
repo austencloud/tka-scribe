@@ -11,7 +11,7 @@ QuizErrorState - Error display with retry for quizzes
   } = $props();
 </script>
 
-<div class="error-state">
+<div class="error-state" role="alert" aria-live="assertive">
   <p class="error-text">{error}</p>
   <button class="retry-btn" onclick={onRetry}>Try Again</button>
 </div>

@@ -107,8 +107,8 @@
 
   <div class="detail-content">
     {#if isLoading}
-      <div class="loading">
-        <div class="spinner"></div>
+      <div class="loading" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
         <span>Loading sessions...</span>
       </div>
     {:else if sessions.length === 0}
@@ -151,8 +151,8 @@
           {#if selectedSession?.sessionId === session.sessionId}
             <div class="session-events">
               {#if isLoadingEvents}
-                <div class="loading-inline">
-                  <div class="spinner-small"></div>
+                <div class="loading-inline" role="status" aria-live="polite" aria-busy="true">
+                  <div class="spinner-small" aria-hidden="true"></div>
                 </div>
               {:else if sessionEvents.length === 0}
                 <p class="no-events">No events recorded</p>

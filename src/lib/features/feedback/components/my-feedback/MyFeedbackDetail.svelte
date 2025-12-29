@@ -411,13 +411,14 @@
     --sheet-width: min(520px, 95vw);
     --sheet-bg: linear-gradient(
       135deg,
-      rgba(0, 0, 0, 0.25),
-      rgba(0, 0, 0, 0.4)
+      rgba(0, 0, 0, 0.85),
+      rgba(0, 0, 0, 0.92)
     );
+    --sheet-filter: none;
     background: linear-gradient(
       135deg,
-      rgba(0, 0, 0, 0.25),
-      rgba(0, 0, 0, 0.4)
+      rgba(0, 0, 0, 0.85),
+      rgba(0, 0, 0, 0.92)
     ) !important;
     width: var(--sheet-width) !important;
     z-index: 110 !important;
@@ -425,7 +426,7 @@
 
   :global(.drawer-overlay.feedback-detail-backdrop) {
     z-index: 109 !important;
-    background: transparent !important;
+    background: rgba(0, 0, 0, 0.5) !important;
   }
 
   @media (max-width: 768px) {

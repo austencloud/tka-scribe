@@ -100,8 +100,8 @@ Allows viewing, continuing, or deleting sessions.
   </div>
 
   {#if isLoading}
-    <div class="loading">
-      <div class="spinner"></div>
+    <div class="loading" role="status" aria-live="polite" aria-busy="true">
+      <div class="spinner" aria-hidden="true"></div>
       <p>Loading sessions...</p>
     </div>
   {:else if sessions.length === 0}

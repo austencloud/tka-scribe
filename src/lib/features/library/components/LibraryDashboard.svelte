@@ -157,18 +157,18 @@
   {#if !isAuthenticated}
     <div class="auth-required">
       <i class="fas fa-lock" aria-hidden="true"></i>
-      <h3>Sign In Required</h3>
+      <h2>Sign In Required</h2>
       <p>Please sign in to access your personal library.</p>
     </div>
   {:else if isLoading}
-    <div class="loading-state">
-      <div class="spinner"></div>
+    <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+      <div class="spinner" aria-hidden="true"></div>
       <p>Loading your library...</p>
     </div>
   {:else if error}
-    <div class="error-state">
+    <div class="error-state" role="alert" aria-live="assertive">
       <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
-      <h3>Error Loading Library</h3>
+      <h2>Error Loading Library</h2>
       <p>{error}</p>
       <button class="retry-btn" onclick={() => libraryState.initialize()}>
         <i class="fas fa-redo" aria-hidden="true"></i>
@@ -267,8 +267,8 @@
           </div>
 
           {#if videosLoading}
-            <div class="videos-loading">
-              <div class="spinner small"></div>
+            <div class="videos-loading" role="status" aria-live="polite" aria-busy="true">
+              <div class="spinner small" aria-hidden="true"></div>
               <span>Loading videos...</span>
             </div>
           {:else if recentVideos().length > 0}

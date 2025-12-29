@@ -207,8 +207,8 @@ Mobile-first design:
       <div class="preview-section">
         <h3>Captured Frames</h3>
         {#if isLoadingPreview}
-          <div class="preview-loading">
-            <div class="spinner"></div>
+          <div class="preview-loading" role="status" aria-live="polite" aria-busy="true">
+            <div class="spinner" aria-hidden="true"></div>
             <span>Loading preview...</span>
           </div>
         {:else if previewFrames.length > 0}
@@ -282,7 +282,7 @@ Mobile-first design:
       </div>
 
       {#if exportError}
-        <p class="export-error">{exportError}</p>
+        <p class="export-error" role="alert" aria-live="assertive">{exportError}</p>
       {/if}
     </div>
   {/if}

@@ -6,10 +6,10 @@
  */
 
 import { tryResolve } from "$lib/shared/inversify/di";
-import { CAPLabelerTypes } from "$lib/shared/inversify/types/cap-labeler.types";
-import type { ISequenceFeatureExtractor } from "$lib/features/cap-labeler/services/contracts/ISequenceFeatureExtractor";
-import type { IRuleBasedTagger } from "$lib/features/cap-labeler/services/contracts/IRuleBasedTagger";
-import type { IBeatDataConverter } from "$lib/features/cap-labeler/services/contracts/IBeatDataConverter";
+import { LOOPLabelerTypes } from "$lib/shared/inversify/types/loop-labeler.types";
+import type { ISequenceFeatureExtractor } from "$lib/features/loop-labeler/services/contracts/ISequenceFeatureExtractor";
+import type { IRuleBasedTagger } from "$lib/features/loop-labeler/services/contracts/IRuleBasedTagger";
+import type { IBeatDataConverter } from "$lib/features/loop-labeler/services/contracts/IBeatDataConverter";
 import type {
 	TaggedSequenceEntry,
 	SequenceTagReview,
@@ -123,14 +123,14 @@ export function createTagReviewerState() {
 			);
 
 			// Create a minimal SequenceData object
-			// Include capType for accurate tag generation (uses authoritative CAP label)
+			// Include loopType for accurate tag generation (uses authoritative LOOP label)
 			const sequenceData = createSequenceData({
 				word: seq.word,
 				beats,
 				gridMode: gridMode as any,
 				isCircular: seq.isCircular,
 				startPosition: startPosition ?? undefined,
-				capType: seq.capType as any ?? undefined,
+				loopType: seq.loopType as any ?? undefined,
 			});
 
 			// Extract features and generate tags
@@ -169,11 +169,11 @@ export function createTagReviewerState() {
 
 		// Resolve services
 		featureExtractor = tryResolve<ISequenceFeatureExtractor>(
-			CAPLabelerTypes.ISequenceFeatureExtractor
+			LOOPLabelerTypes.ISequenceFeatureExtractor
 		);
-		tagger = tryResolve<IRuleBasedTagger>(CAPLabelerTypes.IRuleBasedTagger);
+		tagger = tryResolve<IRuleBasedTagger>(LOOPLabelerTypes.IRuleBasedTagger);
 		conversionService = tryResolve<IBeatDataConverter>(
-			CAPLabelerTypes.IBeatDataConverter
+			LOOPLabelerTypes.IBeatDataConverter
 		);
 
 		// Load sequences from sequence-index.json
@@ -190,7 +190,7 @@ export function createTagReviewerState() {
 						sequenceLength: seq.sequenceLength as number,
 						gridMode: (seq.gridMode as string) ?? "diamond",
 						isCircular: seq.isCircular as boolean,
-						capType: (seq.capType as string) ?? null,
+						loopType: (seq.loopType as string) ?? null,
 						fullMetadata: seq.fullMetadata as { sequence?: unknown[] },
 					}) as TaggedSequenceEntry
 			);

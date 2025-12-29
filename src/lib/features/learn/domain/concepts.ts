@@ -491,7 +491,7 @@ export const TKA_CONCEPTS: LearnConcept[] = [
     id: "advanced-caps",
     order: 27,
     category: "combinations",
-    name: "Advanced CAP Examples",
+    name: "Advanced LOOP Examples",
     shortName: "Adv. CAPs",
     description: "16-count sequences and 8-letter words",
     icon: "fa-bullseye",

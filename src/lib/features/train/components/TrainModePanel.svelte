@@ -611,7 +611,7 @@
 
   <!-- Error Toast -->
   {#if trainState.error}
-    <div class="error-toast">
+    <div class="error-toast" role="alert" aria-live="assertive">
       <p>{trainState.error}</p>
       <button
         onclick={() => {

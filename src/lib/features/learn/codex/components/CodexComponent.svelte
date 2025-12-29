@@ -119,7 +119,7 @@
     <div class="content-wrapper">
       <SimpleGlassScroll variant="primary" height="100%">
         {#if error}
-          <div class="error-state">
+          <div class="error-state" role="alert" aria-live="assertive">
             <div class="error-icon">⚠️</div>
             <p class="error-message">{error}</p>
             <button class="retry-button" onclick={handleRetry}> Retry </button>

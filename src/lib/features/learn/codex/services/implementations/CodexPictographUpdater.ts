@@ -22,7 +22,7 @@ import {
   VERTICAL_MIRROR_POSITION_MAP,
   VERTICAL_MIRROR_LOCATION_MAP,
   SWAPPED_POSITION_MAP,
-} from "../../../../create/generate/circular/domain/constants/strict-cap-position-maps";
+} from "../../../../create/generate/circular/domain/constants/strict-loop-position-maps";
 import type { CodexTransformationOperation } from "../../domain/types/codex-types";
 import type { ICodexPictographUpdater } from "../contracts/ICodexPictographUpdater";
 import { injectable } from "inversify";

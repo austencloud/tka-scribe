@@ -70,7 +70,8 @@
     >
       💾 Save
       {#if hasUnsavedChanges}
-        <span class="unsaved-indicator">●</span>
+        <span class="unsaved-indicator" aria-hidden="true">●</span>
+        <span class="sr-only">(unsaved changes)</span>
       {/if}
     </button>
 
@@ -184,6 +185,19 @@
     font-size: var(--font-size-lg);
     line-height: 1;
     animation: pulse 2s infinite;
+  }
+
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   @keyframes pulse {

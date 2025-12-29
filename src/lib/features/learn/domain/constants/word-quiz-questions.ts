@@ -145,7 +145,7 @@ export const WORD_QUIZ_QUESTIONS: WordQuizQuestion[] = [
   },
   {
     type: "cap-concept",
-    question: "What is a CAP (Continuous Assembly Pattern)?",
+    question: "What is a LOOP (Continuous Assembly Pattern)?",
     options: [
       "A letter that uses only one hand",
       "A word where end position returns to start",
@@ -154,7 +154,7 @@ export const WORD_QUIZ_QUESTIONS: WordQuizQuestion[] = [
     ],
     correctAnswer: 1,
     explanation:
-      "A CAP is a word where the final position returns to the original starting position, creating a loop.",
+      "A LOOP is a word where the final position returns to the original starting position, creating a loop.",
   },
   {
     type: "identify-word",

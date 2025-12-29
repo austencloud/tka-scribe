@@ -150,8 +150,8 @@
 
   <div class="active-users-body">
     {#if isLoading}
-      <div class="loading">
-        <div class="spinner"></div>
+      <div class="loading" role="status" aria-live="polite" aria-busy="true">
+        <div class="spinner" aria-hidden="true"></div>
         <span>Loading users...</span>
       </div>
     {:else if error}
