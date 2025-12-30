@@ -33,7 +33,16 @@ export interface SkyGradientConfig {
 /**
  * Particle type for FallingParticles
  */
-export type ParticleType = "leaves" | "snow" | "petals" | "embers" | "stars" | "bubbles" | "fireflies";
+export type ParticleType =
+  | "leaves"
+  | "snow"
+  | "petals"
+  | "embers"
+  | "stars"
+  | "bubbles"
+  | "fireflies"
+  | "dust"
+  | "smoke";
 
 /**
  * Falling particles configuration

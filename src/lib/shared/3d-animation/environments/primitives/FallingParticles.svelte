@@ -122,6 +122,20 @@
       shape: "glow", // Special glowing shape
       pulses: true, // Pulsing glow effect
     },
+    dust: {
+      gravity: 2, // Very slow drift down
+      swayAmount: 60, // Lots of wandering
+      blending: AdditiveBlending,
+      shape: "circle", // Tiny soft circles
+      pulses: false,
+    },
+    smoke: {
+      gravity: -8, // Rise slowly
+      swayAmount: 40, // Gentle drift
+      blending: AdditiveBlending,
+      shape: "circle", // Soft puffs
+      pulses: false,
+    },
   };
 
   const config = $derived(typeConfigs[type]);

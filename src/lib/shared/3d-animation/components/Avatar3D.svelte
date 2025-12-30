@@ -32,8 +32,10 @@
   import { IKSolver } from "../services/implementations/IKSolver";
   import { AvatarAnimator } from "../services/implementations/AvatarAnimator";
 
-  // Default Z position for avatars (behind grid, facing props)
-  const DEFAULT_FIGURE_Z = -80;
+  // Default Z position for avatars
+  // Placing avatar at z=0 (same as grid plane) so hands are exactly at prop positions
+  // The avatar's body is thin enough that it won't clip through the grid
+  const DEFAULT_FIGURE_Z = 0;
 
   interface Props {
     bluePropState: PropState3D | null;
@@ -208,21 +210,41 @@
   useTask((delta) => {
     if (!servicesReady || !animationService || useProceduralFallback) return;
 
-    // DEBUG: Log what positions are being passed to each avatar
-    if (bluePropState || redPropState) {
-      console.log(`[Avatar3D ${id}] IK targets:`, {
-        blue: bluePropState?.worldPosition ? `(${bluePropState.worldPosition.x.toFixed(0)}, ${bluePropState.worldPosition.y.toFixed(0)}, ${bluePropState.worldPosition.z.toFixed(0)})` : 'null',
-        red: redPropState?.worldPosition ? `(${redPropState.worldPosition.x.toFixed(0)}, ${redPropState.worldPosition.y.toFixed(0)}, ${redPropState.worldPosition.z.toFixed(0)})` : 'null',
-        avatarPosX: position.x,
-      });
-    }
+    // Convert prop states from LOCAL grid coords to WORLD coords for IK solver
+    //
+    // The IK solver uses bone.getWorldPosition() which returns WORLD coordinates
+    // (including the parent T.Group offset). So targets must also be in WORLD coords.
+    //
+    // IMPORTANT: Only X needs to be offset!
+    // - X: Each avatar has its own grid offset (e.g., -350 or +350)
+    // - Y: Grid Y coords are already world-relative (shoulder height = 0)
+    // - Z: Props are displayed on the grid plane at Z=0, NOT at avatar's Z position
+    //      The avatar stands behind the grid (z=-80) but reaches FORWARD to it
+    //
+    // Example for avatar1 (position.x = -350, position.z = -80):
+    //   Blue prop at local (x=100, z=0) → world (x=-250, z=0)
+    //   Avatar shoulder at world z≈-80, target at z=0 → reaches forward!
 
-    // Update hand targets from prop states
-    // IMPORTANT: propState.worldPosition is actually LOCAL grid coordinates (e.g., 100)
-    // It does NOT include the avatar's X offset - Staff3D adds that separately for display.
-    // Since the skeleton is inside a T.Group and works in local space,
-    // we can use worldPosition directly - no offset conversion needed.
-    animationService.setHandTargetsFromProps(bluePropState, redPropState);
+    const blueWorldProp = bluePropState ? {
+      ...bluePropState,
+      worldPosition: {
+        x: bluePropState.worldPosition.x + position.x,
+        y: bluePropState.worldPosition.y,  // Y is already correct (grid-relative)
+        z: bluePropState.worldPosition.z,  // Z stays at grid plane (z=0), NOT offset by avatar z
+      }
+    } : null;
+
+    const redWorldProp = redPropState ? {
+      ...redPropState,
+      worldPosition: {
+        x: redPropState.worldPosition.x + position.x,
+        y: redPropState.worldPosition.y,
+        z: redPropState.worldPosition.z,
+      }
+    } : null;
+
+    // Update hand targets from prop states (now in world coords)
+    animationService.setHandTargetsFromProps(blueWorldProp, redWorldProp);
 
     // Update animation (applies IK)
     animationService.update(delta);

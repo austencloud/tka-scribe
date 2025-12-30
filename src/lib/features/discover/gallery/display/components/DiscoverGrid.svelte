@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { slide } from "svelte/transition";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   // NOTE: animate-css-grid disabled - causes layout chaos with async thumbnail loading
   // import { wrapGrid } from "animate-css-grid";
   import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
@@ -62,7 +62,20 @@
   // Get light mode from visibility state (inverse of lightsOff)
   // lightsOff = true means dark mode, lightMode = true means light background
   const visibilityManager = getAnimationVisibilityManager();
-  const lightMode = $derived(!visibilityManager.isLightsOff());
+
+  // Use $state to track lightMode so UI updates when it changes
+  let lightMode = $state(!visibilityManager.isLightsOff());
+
+  // Register observer to react to visibility changes (like "L" key toggle)
+  function handleVisibilityChange() {
+    lightMode = !visibilityManager.isLightsOff();
+  }
+
+  visibilityManager.registerObserver(handleVisibilityChange);
+
+  onDestroy(() => {
+    visibilityManager.unregisterObserver(handleVisibilityChange);
+  });
 
   // Grid element refs for animate-css-grid
   let sectionGridRefs = $state<HTMLElement[]>([]);

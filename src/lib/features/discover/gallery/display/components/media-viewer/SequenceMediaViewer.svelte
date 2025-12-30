@@ -13,7 +13,7 @@
   import type { IDiscoverThumbnailProvider } from "../../services/contracts/IDiscoverThumbnailProvider";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import InlineAnimationPlayer from "./InlineAnimationPlayer.svelte";
   import PropAwareThumbnail from "../PropAwareThumbnail.svelte";
   import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
@@ -60,8 +60,22 @@
     )
   );
 
+  // Get light mode from visibility state (inverse of lightsOff)
   const visibilityManager = getAnimationVisibilityManager();
-  const lightMode = $derived(!visibilityManager.isLightsOff());
+
+  // Use $state to track lightMode so UI updates when it changes
+  let lightMode = $state(!visibilityManager.isLightsOff());
+
+  // Register observer to react to visibility changes (like "L" key toggle)
+  function handleVisibilityChange() {
+    lightMode = !visibilityManager.isLightsOff();
+  }
+
+  visibilityManager.registerObserver(handleVisibilityChange);
+
+  onDestroy(() => {
+    visibilityManager.unregisterObserver(handleVisibilityChange);
+  });
 
   // Derived: available media types
   // Image is always available - we render it on demand via PropAwareThumbnail

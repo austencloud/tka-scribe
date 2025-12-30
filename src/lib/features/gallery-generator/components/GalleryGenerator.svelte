@@ -130,30 +130,24 @@
     async function processNext() {
       if (state.isCancelled || queue.length === 0) {
         activeCount--;
-        console.log(`[GG] Worker done, activeCount=${activeCount}`);
         if (activeCount === 0) resolveAll();
         return;
       }
 
       const sequence = queue.shift()!;
       const name = sequence.word || sequence.name;
-      console.log(`[GG] Starting render: ${name}`);
       state.addRenderingSequence(name);
 
       try {
-        console.log(`[GG] Calling renderSequence for: ${name}`);
         const blob = await galleryRenderer!.renderSequence(
           sequence,
           state.lightMode,
           state.selectedPropType ?? undefined
         );
-        console.log(`[GG] Got blob for: ${name}, size=${blob.size}`);
         const imageUrl = URL.createObjectURL(blob);
         state.removeRenderingSequence(name);
         state.addRenderedImage({ name, imageUrl, written: false }, blob);
-        console.log(`[GG] Added to renderedImages: ${name}, total=${state.renderedImages.length}`);
       } catch (err) {
-        console.error(`[GG] Render failed for ${name}:`, err);
         state.removeRenderingSequence(name);
         state.addFailedSequence({
           name,

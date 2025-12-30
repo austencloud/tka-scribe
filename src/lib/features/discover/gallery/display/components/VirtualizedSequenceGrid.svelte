@@ -1,12 +1,13 @@
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { createVirtualizer, type VirtualItem } from "@tanstack/svelte-virtual";
-  import { onMount, untrack } from "svelte";
+  import { onMount, onDestroy, untrack } from "svelte";
   import { get } from "svelte/store";
   import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import SequenceCard from "./SequenceCard/SequenceCard.svelte";
   import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
   import { isCatDogMode } from "../services/implementations/DiscoverThumbnailCache";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   /**
    * VirtualizedSequenceGrid - High-performance grid for large sequence lists
@@ -46,6 +47,21 @@
       propSettings.catDogMode
     )
   );
+
+  // Get light mode from visibility state (inverse of lightsOff)
+  const visibilityManager = getAnimationVisibilityManager();
+  let lightMode = $state(!visibilityManager.isLightsOff());
+
+  // Register observer to react to visibility changes (like "L" key toggle)
+  function handleVisibilityChange() {
+    lightMode = !visibilityManager.isLightsOff();
+  }
+
+  visibilityManager.registerObserver(handleVisibilityChange);
+
+  onDestroy(() => {
+    visibilityManager.unregisterObserver(handleVisibilityChange);
+  });
 
   // Container and scroll element refs
   let scrollElement = $state<HTMLDivElement | null>(null);
@@ -226,6 +242,7 @@
               bluePropType={propSettings.bluePropType}
               redPropType={propSettings.redPropType}
               catDogModeEnabled={isCatDog}
+              {lightMode}
             />
           </div>
         {/each}

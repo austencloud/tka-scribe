@@ -6,7 +6,7 @@
    * around the performer. Includes falling leaves and supports autumn/firefly variants.
    */
 
-  import { T } from "@threlte/core";
+  import { T, useThrelte } from "@threlte/core";
   import { useGltf } from "@threlte/extras";
   import TexturedGroundPlane from "../primitives/TexturedGroundPlane.svelte";
   import SkyGradient from "../primitives/SkyGradient.svelte";
@@ -14,7 +14,7 @@
   import type { ForestVariant } from "../domain/enums/environment-enums";
   import { userProportionsState } from "../../state/user-proportions-state.svelte";
   import VolumetricFireComponent from "../../effects/volumetric-fire/VolumetricFireComponent.svelte";
-  import { Vector3 } from "three";
+  import { Vector3, FogExp2, Color } from "three";
 
   interface Props {
     /** Color variant: autumn (warm) or firefly (cool green) */
@@ -35,6 +35,13 @@
   // Load camping models (Kenney Survival Kit - CC0)
   const campfire = useGltf("/models/camping/campfire-pit.glb");
   const tent = useGltf("/models/camping/tent-canvas.glb");
+
+  // Load forest floor detail models
+  const fallenLog = useGltf("/models/camping/Models/GLB format/tree-log.glb");
+  const fallenLogSmall = useGltf("/models/camping/Models/GLB format/tree-log-small.glb");
+
+  // Get scene for fog
+  const { scene } = useThrelte();
 
   // Campfire position - to the right and forward of performer
   // Scaled up significantly to match performer size
@@ -123,6 +130,23 @@
     }
   );
 
+  // Fallen log placements - scattered naturally on forest floor
+  const fallenLogPlacements: [number, number, number, number, boolean][] = [
+    // [x, z, scale, rotation, isLarge]
+    // Near the clearing edge
+    [1400, 800, 400, Math.PI * 0.3, true],
+    [-1200, 1100, 350, Math.PI * 0.7, true],
+    [900, -1300, 300, Math.PI * 1.2, false],
+    [-1500, -600, 280, Math.PI * 0.1, false],
+    // Mid-distance
+    [2200, 400, 320, Math.PI * 0.5, true],
+    [-2000, -1200, 300, Math.PI * 1.4, false],
+    [1800, -1800, 350, Math.PI * 0.9, true],
+    // Between tree rings
+    [2800, 1500, 280, Math.PI * 0.2, false],
+    [-2600, 1800, 300, Math.PI * 1.1, true],
+  ];
+
   // Ground level - derived from user proportions
   const groundY = $derived(userProportionsState.groundY);
 
@@ -151,6 +175,10 @@
       leaves: ["#d97706", "#dc2626", "#ea580c", "#92400e"],
       // No fireflies in autumn
       fireflies: null as string[] | null,
+      // Warm amber fog for autumn morning mist
+      fog: { color: "#1a1008", density: 0.00018 },
+      // Smoke colors (gray with warm tint)
+      smoke: ["#443322", "#332211", "#221100"],
     },
     firefly: {
       // From FIREFLY_FOREST: deep night sky transitioning to forest
@@ -165,10 +193,24 @@
       leaves: ["#1a3a1a", "#0d2a15", "#153020", "#0f2518"],
       // Single warm yellow-green like real fireflies
       fireflies: ["#d4e157"],
+      // Cool blue-green fog for mysterious night atmosphere
+      fog: { color: "#0a1210", density: 0.00022 },
+      // Night smoke (darker, cooler)
+      smoke: ["#222222", "#1a1a1a", "#111111"],
     },
   };
 
   const palette = $derived(palettes[variant]);
+
+  // Apply fog to scene (reactive to variant changes)
+  $effect(() => {
+    const fogColor = new Color(palette.fog.color);
+    scene.fog = new FogExp2(fogColor, palette.fog.density);
+
+    return () => {
+      scene.fog = null;
+    };
+  });
 </script>
 
 <!-- Sky gradient background -->
@@ -257,6 +299,21 @@
   {/each}
 {/if}
 
+<!-- Fallen logs - natural forest floor detail -->
+{#if $fallenLog && $fallenLogSmall}
+  {#each fallenLogPlacements as [x, z, scale, rotY, isLarge]}
+    {@const logModel = isLarge ? $fallenLog : $fallenLogSmall}
+    <T
+      is={logModel.scene.clone()}
+      position.x={x}
+      position.y={groundY}
+      position.z={z}
+      scale={scale}
+      rotation.y={rotY}
+    />
+  {/each}
+{/if}
+
 <!-- Campfire with warm point lights and fire particles -->
 {#if $campfire}
   <T
@@ -301,6 +358,22 @@
     groundColor="#221100"
     intensity={variant === "firefly" ? 0.6 : 0.4}
   />
+  <!-- Campfire smoke - gentle plume rising from fire -->
+  <T.Group
+    position.x={campfirePosition.x}
+    position.y={groundY + fireEmitterHeight + 100}
+    position.z={campfirePosition.z}
+  >
+    <FallingParticles
+      type="smoke"
+      count={40}
+      area={{ width: 200, height: 800, depth: 200 }}
+      speed={8}
+      colors={palette.smoke}
+      sizeRange={[30, 80]}
+      spin={false}
+    />
+  </T.Group>
 {/if}
 
 <!-- Cozy tent -->

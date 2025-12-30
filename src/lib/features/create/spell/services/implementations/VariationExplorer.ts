@@ -26,8 +26,8 @@ import { DifficultyLevel } from "$lib/features/create/generate/shared/domain/mod
 import { SPELL_TYPES } from "./spell-types";
 import { recalculateAllOrientations } from "$lib/features/create/shared/services/implementations/sequence-transforms/orientation-propagation";
 
-/** Default maximum variations to prevent runaway generation */
-const DEFAULT_MAX_VARIATIONS = 500;
+/** Default maximum variations (Infinity = no limit, user can cancel) */
+const DEFAULT_MAX_VARIATIONS = Infinity;
 
 @injectable()
 export class VariationExplorer implements IVariationExplorer {

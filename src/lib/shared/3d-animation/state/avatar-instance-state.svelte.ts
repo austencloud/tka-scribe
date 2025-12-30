@@ -19,8 +19,8 @@ import { DEFAULT_AVATAR_ID } from '../config/avatar-definitions';
 // Locomotion Constants
 // ============================================
 
-/** Default Z position for avatars (behind grid, facing props) */
-const FIGURE_Z = -80;
+/** Default Z position for avatars - same as grid plane so hands are at prop positions */
+const FIGURE_Z = 0;
 
 /** Movement speed in scene units per second */
 const MOVE_SPEED = 150;

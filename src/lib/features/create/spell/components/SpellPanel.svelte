@@ -288,7 +288,6 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       deduplicator.reset();
 
       let totalExplored = 0;
-      const MAX_UNIQUE = 500; // Hard cap
 
       // Iterate through all variations using async generator
       const variationGenerator = explorer.exploreVariations(expandedLetters, {
@@ -323,12 +322,6 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
           score,
           branchPath: variation.branchPath,
         });
-
-        // Check hard cap
-        if (variationState.stats.totalUnique >= MAX_UNIQUE) {
-          console.log(`[SpellPanel] Reached max unique variations (${MAX_UNIQUE})`);
-          break;
-        }
 
         // Yield to UI periodically (every 10 variations)
         if (totalExplored % 10 === 0) {

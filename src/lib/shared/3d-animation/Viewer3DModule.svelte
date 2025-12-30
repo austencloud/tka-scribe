@@ -12,6 +12,7 @@
   import Scene3D from "./components/Scene3D.svelte";
   import Staff3D from "./components/Staff3D.svelte";
   import Avatar3D from "./components/Avatar3D.svelte";
+  import AvatarLabel3D from "./components/AvatarLabel3D.svelte";
   import type { BodyType } from "./services/contracts/IAvatarCustomizer";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
@@ -324,7 +325,7 @@
           <Staff3D propState={avatar2State.redPropState} color="red" positionX={avatar2State.position.x} />
         {/if}
 
-        <!-- Avatar 1 Figure -->
+        <!-- Avatar 1 Figure + Label -->
         {#if showFigure}
           <Avatar3D
             id="avatar1"
@@ -335,9 +336,15 @@
             isActive={activeAvatarId === 'avatar1'}
             avatarId={avatar1State.avatarModelId}
           />
+          <AvatarLabel3D
+            label="Avatar 1"
+            x={avatar1State.position.x}
+            z={avatar1State.position.z}
+            isActive={activeAvatarId === 'avatar1'}
+          />
         {/if}
 
-        <!-- Avatar 2 Figure -->
+        <!-- Avatar 2 Figure + Label -->
         {#if showFigure}
           <Avatar3D
             id="avatar2"
@@ -347,6 +354,12 @@
             facingAngle={avatar2State.facingAngle}
             isActive={activeAvatarId === 'avatar2'}
             avatarId={avatar2State.avatarModelId}
+          />
+          <AvatarLabel3D
+            label="Avatar 2"
+            x={avatar2State.position.x}
+            z={avatar2State.position.z}
+            isActive={activeAvatarId === 'avatar2'}
           />
         {/if}
 
