@@ -7,6 +7,8 @@
 export const DiscoverTypes = {
   // Discover Services
   IDiscoverThumbnailProvider: Symbol.for("IDiscoverThumbnailProvider"),
+  IDiscoverThumbnailCache: Symbol.for("IDiscoverThumbnailCache"),
+  ICloudThumbnailCache: Symbol.for("ICloudThumbnailCache"),
   IDiscoverCache: Symbol.for("IDiscoverCache"),
   IDiscoverFilter: Symbol.for("IDiscoverFilter"),
   IDiscoverLoader: Symbol.for("IDiscoverLoader"),

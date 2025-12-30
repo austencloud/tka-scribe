@@ -6,6 +6,7 @@ import { DiscoverMetadataExtractor } from "../../../features/discover/gallery/di
 import { DiscoverSectionManager } from "../../../features/discover/gallery/display/services/implementations/DiscoverSectionManager";
 import { DiscoverSorter } from "../../../features/discover/gallery/display/services/implementations/DiscoverSorter";
 import { DiscoverThumbnailProvider } from "../../../features/discover/gallery/display/services/implementations/DiscoverThumbnailProvider";
+import { DiscoverThumbnailCache } from "../../../features/discover/gallery/display/services/implementations/DiscoverThumbnailCache";
 import { FavoritesManager } from "../../../features/discover/shared/services/implementations/FavoritesManager";
 import { Navigator } from "../../../features/discover/gallery/navigation/services/implementations/Navigator";
 import { DiscoverDeleter } from "../../../features/discover/shared/services/implementations/DiscoverDeleter";
@@ -40,6 +41,9 @@ export const exploreModule = new ContainerModule(
     // options.bind(TYPES.IPersistenceService).to(DiscoverPersistenceService); // REMOVED - conflicts with DexiePersistenceService
     options.bind(TYPES.ISectionManager).to(DiscoverSectionManager);
     options.bind(TYPES.IDiscoverThumbnailProvider).to(DiscoverThumbnailProvider);
+    // Singleton for IndexedDB cache persistence (local device cache)
+    options.bind(TYPES.IDiscoverThumbnailCache).to(DiscoverThumbnailCache).inSingletonScope();
+    // Note: ICloudThumbnailCache is bound in share.module (tier 2) for cross-feature availability
     options.bind(TYPES.IOptimizedDiscoverer).to(OptimizedDiscoverer);
     options.bind(TYPES.INavigator).to(Navigator);
     options.bind(TYPES.IDiscoverDeleter).to(DiscoverDeleter);

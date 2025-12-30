@@ -62,4 +62,7 @@ export const CreateTypes = {
   // Spell Tab (Word-to-Sequence)
   ILetterTransitionGraph: Symbol.for("ILetterTransitionGraph"),
   IWordSequenceGenerator: Symbol.for("IWordSequenceGenerator"),
+  IVariationExplorer: Symbol.for("IVariationExplorer"),
+  IVariationDeduplicator: Symbol.for("IVariationDeduplicator"),
+  IVariationScorer: Symbol.for("IVariationScorer"),
 } as const;

@@ -75,6 +75,9 @@ import { SequenceExtender } from "../../../features/create/shared/services/imple
 import { PanelPersister } from "../../../features/create/shared/services/implementations/PanelPersister.svelte";
 import { LetterTransitionGraph } from "../../../features/create/spell/services/implementations/LetterTransitionGraph";
 import { WordSequenceGenerator } from "../../../features/create/spell/services/implementations/WordSequenceGenerator";
+import { VariationExplorer } from "../../../features/create/spell/services/implementations/VariationExplorer";
+import { VariationDeduplicator } from "../../../features/create/spell/services/implementations/VariationDeduplicator";
+import { VariationScorer } from "../../../features/create/spell/services/implementations/VariationScorer";
 
 export const createModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -253,6 +256,9 @@ export const createModule = new ContainerModule(
       .to(LetterTransitionGraph)
       .inSingletonScope();
     options.bind(TYPES.IWordSequenceGenerator).to(WordSequenceGenerator);
+    options.bind(TYPES.IVariationExplorer).to(VariationExplorer);
+    options.bind(TYPES.IVariationDeduplicator).to(VariationDeduplicator);
+    options.bind(TYPES.IVariationScorer).to(VariationScorer);
 
     // === LAYOUT SERVICES ===
     // Note: PrintablePageLayoutService handled in word-card module

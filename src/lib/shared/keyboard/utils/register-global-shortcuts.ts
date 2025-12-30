@@ -17,6 +17,7 @@ import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-
 import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
 import { adminToolbarState } from "../../debug/state/admin-toolbar-state.svelte";
 import { settingsService } from "../../settings/state/SettingsState.svelte";
+import { getAnimationVisibilityManager } from "../../animation-engine/state/animation-visibility-state.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutManager,
@@ -120,6 +121,25 @@ export function registerGlobalShortcuts(
     priority: "high",
     action: () => {
       quickFeedbackState.toggle();
+    },
+  });
+
+  // l - Toggle Lights Off mode (dark background, LED-style display)
+  service.register({
+    id: "global.toggle-lights",
+    label: "Toggle Lights",
+    description: "Toggle Lights Off mode (dark background with glowing props)",
+    key: "l",
+    modifiers: [],
+    context: "global",
+    scope: "action",
+    priority: "high",
+    action: () => {
+      const visibilityManager = getAnimationVisibilityManager();
+      const beforeValue = visibilityManager.isLightsOff();
+      visibilityManager.toggleLightsOff();
+      const afterValue = visibilityManager.isLightsOff();
+      console.log(`[Keyboard L] Toggled lightsOff: ${beforeValue} -> ${afterValue}`);
     },
   });
 

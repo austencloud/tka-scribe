@@ -41,8 +41,8 @@
   let playheadDirection = $state<1 | -1>(1);
   let shuttleSpeed = $state(1);
 
-  // LED Mode state
-  let ledModeEnabled = $state(false);
+  // Lights Off mode state
+  let lightsOffEnabled = $state(false);
   const visibilityManager = getAnimationVisibilityManager();
 
   // Format current time as MM:SS.ms
@@ -83,28 +83,30 @@
     zoomPercent = Math.round((state.viewport.pixelsPerSecond / 50) * 100);
   });
 
-  // Sync LED mode from visibility manager
+  // Sync Lights Off mode from visibility manager
   $effect(() => {
-    ledModeEnabled = visibilityManager.isLedMode();
+    lightsOffEnabled = visibilityManager.isLightsOff();
     // Re-check on changes
     const handler = () => {
-      ledModeEnabled = visibilityManager.isLedMode();
+      lightsOffEnabled = visibilityManager.isLightsOff();
     };
     visibilityManager.registerObserver(handler);
     return () => visibilityManager.unregisterObserver(handler);
   });
 
   /**
-   * Toggle LED Mode
+   * Toggle Lights Off mode
    * When enabled: dark background, glowing props, neon trails
    */
-  function toggleLedMode() {
-    const newState = !ledModeEnabled;
-    console.log("[TimelineControls] toggleLedMode:", newState);
-    visibilityManager.setLedMode(newState);
-    ledModeEnabled = newState;
+  function toggleLightsOff() {
+    const newState = !lightsOffEnabled;
+    console.log("[TimelineControls] toggleLightsOff:", newState);
+    visibilityManager.setLightsOff(newState);
+    // Also enable prop glow when enabling Lights Off
+    visibilityManager.setPropGlow(newState);
+    lightsOffEnabled = newState;
 
-    // When enabling LED mode, also enable neon trail effect
+    // When enabling Lights Off mode, also enable neon trail effect
     if (newState) {
       animationSettings.setTrailEffect(TrailEffect.NEON);
     } else {
@@ -178,14 +180,14 @@
     </button>
   </div>
 
-  <!-- LED Mode Toggle -->
+  <!-- Lights Off Toggle -->
   <button
-    class="control-btn led-mode-btn"
-    class:active={ledModeEnabled}
-    onclick={toggleLedMode}
-    title={ledModeEnabled ? "Disable LED Mode" : "Enable LED Mode"}
-    aria-label={ledModeEnabled ? "Disable LED Mode" : "Enable LED Mode"}
-    aria-pressed={ledModeEnabled}
+    class="control-btn lights-off-btn"
+    class:active={lightsOffEnabled}
+    onclick={toggleLightsOff}
+    title={lightsOffEnabled ? "Disable Lights Off" : "Enable Lights Off"}
+    aria-label={lightsOffEnabled ? "Disable Lights Off" : "Enable Lights Off"}
+    aria-pressed={lightsOffEnabled}
   >
     <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
   </button>
@@ -354,8 +356,8 @@
     font-size: var(--font-size-compact);
   }
 
-  /* LED Mode button - electric cyan glow when active */
-  .led-mode-btn.active {
+  /* Lights Off button - electric cyan glow when active */
+  .lights-off-btn.active {
     background: rgba(0, 255, 255, 0.15);
     border-color: #00ffff;
     color: #00ffff;
@@ -366,7 +368,7 @@
     text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
   }
 
-  .led-mode-btn.active:hover {
+  .lights-off-btn.active:hover {
     background: rgba(0, 255, 255, 0.25);
     box-shadow:
       0 0 16px rgba(0, 255, 255, 0.5),

@@ -45,4 +45,7 @@ export const AnimationTypes = {
   // Data
   IAnimatedPictographDataService: Symbol.for("IAnimatedPictographDataService"),
   IMotionParameterService: Symbol.for("IMotionParameterService"),
+
+  // State Providers
+  ILightsOffProvider: Symbol.for("ILightsOffProvider"),
 } as const;

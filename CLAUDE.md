@@ -455,6 +455,29 @@ When executing a release, you MUST complete ALL of these steps:
 - Firebase for persistence and auth
 - Focus on animation and interactive pictograph rendering
 
+### Option Picker Architecture
+
+The option picker has two layout branches but uses a **shared rendering primitive**:
+
+```
+Shared Primitive (single source of truth for pictograph rendering):
+$lib/shared/pictograph/option/OptionPictograph.svelte
+
+Desktop (≥750px) - wrapper handles state polling:
+OptionCardContent.svelte → OptionPictograph
+
+Mobile (<750px) - wrapper receives lightsOff as prop:
+OptionPictographCell.svelte → OptionPictograph
+```
+
+**Key files:**
+- `$lib/shared/pictograph/option/OptionPictograph.svelte` - THE renderer (edit this for rendering changes)
+- `$lib/shared/pictograph/option/PreparedPictographData.ts` - shared type definition
+- `OptionCardContent.svelte` - desktop wrapper (polls for Lights Off state)
+- `OptionPictographCell.svelte` - mobile wrapper (receives lightsOff prop from parent)
+
+**When fixing rendering issues:** Edit `OptionPictograph.svelte` - both desktop and mobile use it.
+
 ### User Identity
 
 - **Primary developer**: Austen Cloud (austencloud@gmail.com)

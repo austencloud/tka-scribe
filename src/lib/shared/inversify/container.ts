@@ -371,6 +371,10 @@ export async function loadSharedModules(): Promise<void> {
 export async function loadFeatureModule(feature: string): Promise<void> {
   if (loadedModules.has(feature)) return;
 
+  // CRITICAL: Ensure container is initialized before loading feature modules
+  // Without this, tier2Promise may be null and dependencies won't be loaded
+  await ensureContainerInitialized();
+
   // Helper to load a module only if not already loaded
   const loadIfNeeded = async (
     name: string,

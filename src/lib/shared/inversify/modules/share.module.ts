@@ -12,6 +12,7 @@ import { MediaBundler } from "../../share/services/implementations/MediaBundler"
 import { FirebaseVideoUploader } from "../../share/services/implementations/FirebaseVideoUploader";
 import { RecordingPersister } from "../../video-record/services/implementations/RecordingPersister";
 import { CollaborativeVideoManager } from "../../video-collaboration/services/implementations/CollaborativeVideoManager";
+import { CloudThumbnailCache } from "../../../features/discover/gallery/display/services/implementations/CloudThumbnailCache";
 import { TYPES } from "../types";
 
 export const shareModule = new ContainerModule(
@@ -29,5 +30,11 @@ export const shareModule = new ContainerModule(
     options
       .bind(TYPES.ICollaborativeVideoManager)
       .to(CollaborativeVideoManager);
+
+    // Cloud thumbnail cache - singleton for Firebase Storage (crowd-sourced rendering)
+    options
+      .bind(TYPES.ICloudThumbnailCache)
+      .to(CloudThumbnailCache)
+      .inSingletonScope();
   }
 );
