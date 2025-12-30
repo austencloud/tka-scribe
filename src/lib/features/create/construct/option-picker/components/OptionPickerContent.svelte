@@ -16,7 +16,8 @@ Uses organizer and sizer services for section grouping and sizing.
   import OptionCard from "./OptionCard.svelte";
   import OptionViewerSwipeLayout from "../swipe-layout/components/OptionViewerSwipeLayout.svelte";
   import OptionViewerSection from "../swipe-layout/components/OptionViewerSection.svelte";
-  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import type { ILightsOffProvider } from "$lib/shared/animation-engine/services/contracts/ILightsOffProvider";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
 
   interface Props {
@@ -45,33 +46,9 @@ Uses organizer and sizer services for section grouping and sizing.
     currentSequence = [],
   }: Props = $props();
 
-  // Lights Off state - poll from global manager for mobile layouts
-  const animationVisibilityManager = getAnimationVisibilityManager();
-  let lightsOff = $state(animationVisibilityManager.isLightsOff());
-  let lastCheckedLightsOff = animationVisibilityManager.isLightsOff();
-
-  // Poll for Lights Off changes
-  onMount(() => {
-    let rafId: number | null = null;
-    let isPolling = true;
-
-    const pollLightsOff = () => {
-      if (!isPolling) return;
-      const currentValue = animationVisibilityManager.isLightsOff();
-      if (currentValue !== lastCheckedLightsOff) {
-        lastCheckedLightsOff = currentValue;
-        lightsOff = currentValue;
-      }
-      rafId = requestAnimationFrame(pollLightsOff);
-    };
-
-    rafId = requestAnimationFrame(pollLightsOff);
-
-    return () => {
-      isPolling = false;
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
-  });
+  // Subscribe to Lights Off state via DI
+  let lightsOff = $state(false);
+  let lightsOffUnsubscribe: (() => void) | null = null;
 
   // Track container dimensions with simple resize observer
   let containerElement: HTMLDivElement | null = $state(null);
@@ -206,6 +183,21 @@ Uses organizer and sizer services for section grouping and sizing.
     gridColumns: `repeat(4, 1fr)`,
     gridGap: "8px",
   }));
+
+  // Subscribe to Lights Off changes via DI
+  $effect(() => {
+    const provider = resolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+    lightsOffUnsubscribe = provider.subscribe((value) => {
+      lightsOff = value;
+    });
+
+    return () => {
+      if (lightsOffUnsubscribe) {
+        lightsOffUnsubscribe();
+        lightsOffUnsubscribe = null;
+      }
+    };
+  });
 
   // Simple resize observer - only update after stable
   $effect(() => {

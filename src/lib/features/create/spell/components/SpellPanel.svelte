@@ -227,19 +227,59 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     try {
       // Initialize services
       const graph = await getTransitionGraph();
+      const generator = await getWordGenerator();
       const explorer = await getVariationExplorer();
       const deduplicator = await getVariationDeduplicator();
       const scorer = await getVariationScorer();
 
-      // Get expanded letters (with bridges)
-      const expandedLetters = graph.findBridgeLetters(spellState.inputWord);
+      // Parse word to get original letters
+      const parseResult = generator.parseWord(spellState.inputWord);
+      if (!parseResult || parseResult.error) {
+        spellState.setError(parseResult?.error || "Could not parse word");
+        return;
+      }
+
+      const originalLetters = parseResult.letters;
+      if (originalLetters.length === 0) {
+        spellState.setError("No valid letters in word");
+        return;
+      }
+
+      // Build expanded letters with bridge letters (same logic as WordSequenceGenerator)
+      const expandedLetters: Letter[] = [];
+      for (let i = 0; i < originalLetters.length; i++) {
+        const letter = originalLetters[i];
+        if (!letter) continue;
+
+        if (i === 0) {
+          // First letter - just add it
+          expandedLetters.push(letter);
+        } else {
+          // Check if we need bridge letters
+          const prevLetter = expandedLetters[expandedLetters.length - 1];
+          if (prevLetter) {
+            const bridgeLetters = graph.findBridgeLetters(prevLetter, letter);
+            // Add bridge letters (max 1 for spell)
+            if (bridgeLetters.length > 0 && bridgeLetters[0]) {
+              expandedLetters.push(bridgeLetters[0]);
+            }
+          }
+          // Add the original letter
+          expandedLetters.push(letter);
+        }
+      }
+
       if (expandedLetters.length === 0) {
         spellState.setError("Could not expand word to valid letters");
         return;
       }
 
+      // Store expanded word for display
+      spellState.setExpandedWord(expandedLetters.join(""));
+
       // Estimate total variations for progress UI
-      const estimatedTotal = await explorer.estimateVariationCount(expandedLetters);
+      const gridMode = spellState.preferences.gridMode ?? GridMode.DIAMOND;
+      const estimatedTotal = await explorer.estimateVariationCount(expandedLetters, gridMode);
 
       // Start exploration - this resets the state and returns abort signal
       const abortSignal = variationState.startExploration(estimatedTotal);
@@ -252,7 +292,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
 
       // Iterate through all variations using async generator
       const variationGenerator = explorer.exploreVariations(expandedLetters, {
-        gridMode: spellState.preferences.gridMode ?? GridMode.DIAMOND,
+        gridMode,
         signal: abortSignal,
       });
 

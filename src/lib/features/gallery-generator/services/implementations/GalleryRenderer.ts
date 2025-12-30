@@ -30,13 +30,20 @@ export class GalleryRenderer implements IGalleryRenderer {
     lightMode: boolean,
     propType?: PropType
   ): Promise<Blob> {
+    const name = sequence.word || sequence.name;
+    console.log(`[GalleryRenderer] renderSequence called for: ${name}, beats=${sequence.beats?.length ?? 0}`);
+
     // Load full sequence data if not already loaded
     if (!sequence.beats || sequence.beats.length === 0) {
+      console.log(`[GalleryRenderer] Loading full sequence data for: ${name}`);
       const fullSequence = await this.loaderService.loadFullSequenceData(
         sequence.word || sequence.name
       );
       if (fullSequence) {
         Object.assign(sequence, fullSequence);
+        console.log(`[GalleryRenderer] Loaded ${fullSequence.beats?.length ?? 0} beats for: ${name}`);
+      } else {
+        console.warn(`[GalleryRenderer] Failed to load full sequence for: ${name}`);
       }
     }
 
@@ -75,7 +82,10 @@ export class GalleryRenderer implements IGalleryRenderer {
       },
     };
 
-    return await this.renderService.renderSequenceToBlob(sequence, options);
+    console.log(`[GalleryRenderer] Calling renderSequenceToBlob for: ${name}`);
+    const blob = await this.renderService.renderSequenceToBlob(sequence, options);
+    console.log(`[GalleryRenderer] Got blob for: ${name}, size=${blob.size}`);
+    return blob;
   }
 
   async renderBatch(

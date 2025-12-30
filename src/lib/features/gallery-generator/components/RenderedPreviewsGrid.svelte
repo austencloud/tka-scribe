@@ -9,6 +9,11 @@
 
   const state = galleryGeneratorState;
 
+  // Debug: log when renderedImages changes
+  $effect(() => {
+    console.log(`[RenderedPreviewsGrid] renderedImages changed: ${state.renderedImages.length} items`);
+  });
+
   function handleCardClick(img: { name: string; imageUrl: string }) {
     if (img.imageUrl) {
       state.setViewingImage({ name: img.name, url: img.imageUrl });

@@ -135,8 +135,10 @@ class GalleryGeneratorState {
   }
 
   addRenderedImage(image: RenderedImage, blob: Blob) {
+    console.log(`[State] addRenderedImage called: ${image.name}, current count=${this.renderedImages.length}`);
     this.pendingBlobs.set(image.name, blob);
     this.renderedImages = [...this.renderedImages, image];
+    console.log(`[State] After add, new count=${this.renderedImages.length}`);
     // Persist to IndexedDB
     this.onImageAdded?.(image.name, blob, image.written);
   }

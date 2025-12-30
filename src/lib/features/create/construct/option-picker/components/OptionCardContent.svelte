@@ -1,13 +1,14 @@
 <!--
 OptionCardContent.svelte - Desktop option card wrapper
 
-Handles Lights Off state polling and delegates rendering to shared primitive.
+Subscribes to Lights Off state via DI and delegates rendering to shared primitive.
 Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → OptionCardContent
 -->
 <script lang="ts">
   import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
+  import type { ILightsOffProvider } from "$lib/shared/animation-engine/services/contracts/ILightsOffProvider";
   import OptionPictograph from "$lib/shared/pictograph/option/OptionPictograph.svelte";
-  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
 
   interface Props {
@@ -22,32 +23,15 @@ Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → O
     redReversal = false,
   }: Props = $props();
 
-  // Lights Off state - poll from global manager
-  const animationVisibilityManager = getAnimationVisibilityManager();
-  let lightsOff = $state(animationVisibilityManager.isLightsOff());
-  let lastCheckedLightsOff = animationVisibilityManager.isLightsOff();
+  // Subscribe to Lights Off state via DI
+  let lightsOff = $state(false);
 
-  // Poll for Lights Off changes
   onMount(() => {
-    let rafId: number | null = null;
-    let isPolling = true;
-
-    const pollLightsOff = () => {
-      if (!isPolling) return;
-      const currentValue = animationVisibilityManager.isLightsOff();
-      if (currentValue !== lastCheckedLightsOff) {
-        lastCheckedLightsOff = currentValue;
-        lightsOff = currentValue;
-      }
-      rafId = requestAnimationFrame(pollLightsOff);
-    };
-
-    rafId = requestAnimationFrame(pollLightsOff);
-
-    return () => {
-      isPolling = false;
-      if (rafId !== null) cancelAnimationFrame(rafId);
-    };
+    const provider = resolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+    const unsubscribe = provider.subscribe((value) => {
+      lightsOff = value;
+    });
+    return unsubscribe;
   });
 </script>
 
