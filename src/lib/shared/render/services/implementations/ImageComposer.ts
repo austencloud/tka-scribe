@@ -18,6 +18,7 @@ import {
 } from "../../utils/pictograph-to-svg";
 import { simplifyRepeatedWord } from "../../utils/word-simplifier";
 import { getVisibilityStateManager } from "../../../pictograph/shared/state/visibility-state.svelte";
+import { getAnimationVisibilityManager } from "../../../animation-engine/state/animation-visibility-state.svelte";
 
 import { SequenceDifficultyCalculator } from "$lib/features/discover/gallery/display/services/implementations/SequenceDifficultyCalculator";
 import type { SequenceExportOptions } from "../../domain/models/SequenceExportOptions";
@@ -75,13 +76,17 @@ export class ImageComposer implements IImageComposer {
         showReversals: overrides.showReversals,
         showNonRadialPoints: overrides.showNonRadialPoints,
         showTurnNumbers: overrides.showTurnNumbers,
-        ledMode: overrides.ledMode,
+        lightsOff: overrides.lightsOff,
+        propGlow: overrides.propGlow,
       };
     }
 
     // Get global settings as base
     const visibilityManager = getVisibilityStateManager();
     await visibilityManager.ensureSettingsLoaded();
+
+    // Get animation visibility for Lights Off and Prop Glow settings
+    const animVisibilityManager = getAnimationVisibilityManager();
 
     const globalSettings: PictographVisibilityOptions = {
       showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"),
@@ -91,7 +96,9 @@ export class ImageComposer implements IImageComposer {
       showReversals: visibilityManager.getGlyphVisibility("reversalIndicators"),
       showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
       showTurnNumbers: visibilityManager.getGlyphVisibility("turnNumbers"),
-      ledMode: visibilityManager.getLedMode(),
+      lightsOff: animVisibilityManager.isLightsOff(),
+      // Prop glow is automatically enabled when Lights Off is on
+      propGlow: animVisibilityManager.isLightsOff(),
     };
 
     // Merge overrides with global settings (overrides take precedence)
@@ -104,7 +111,8 @@ export class ImageComposer implements IImageComposer {
         showReversals: overrides.showReversals ?? globalSettings.showReversals,
         showNonRadialPoints: overrides.showNonRadialPoints ?? globalSettings.showNonRadialPoints,
         showTurnNumbers: overrides.showTurnNumbers ?? globalSettings.showTurnNumbers,
-        ledMode: overrides.ledMode ?? globalSettings.ledMode,
+        lightsOff: overrides.lightsOff ?? globalSettings.lightsOff,
+        propGlow: overrides.propGlow ?? globalSettings.propGlow,
       };
     }
 
@@ -185,9 +193,9 @@ export class ImageComposer implements IImageComposer {
 
     // Step 3: Fill background for the grid area (offset by header height)
     // Note: Footer background is drawn by renderUserInfo with gray matching header style
-    // LED mode uses dark background (#0a0a0f), normal mode uses white
-    const isLedMode = visibilitySettings.ledMode ?? false;
-    ctx.fillStyle = isLedMode ? "#0a0a0f" : "white";
+    // Lights Off uses dark background (#0a0a0f), normal mode uses white
+    const isLightsOff = visibilitySettings.lightsOff ?? false;
+    ctx.fillStyle = isLightsOff ? "#0a0a0f" : "white";
     ctx.fillRect(0, headerHeight, canvasWidth, rows * beatSize);
 
     // Calculate total items to render for progress tracking
@@ -199,16 +207,23 @@ export class ImageComposer implements IImageComposer {
     // Report initial progress
     onProgress?.({ current: 0, total: totalItems, stage: "rendering" });
 
+    // Check if prop type overrides are specified (supports single or per-color overrides)
+    const hasPropOverride =
+      options.propTypeOverride ||
+      options.bluePropTypeOverride ||
+      options.redPropTypeOverride;
+
     // Step 4: Render each pictograph directly onto the canvas (offset by header height)
     // Render start position if needed (always at column 0, row 0)
     if (hasStartPosition && sequence.startPosition) {
       // Only pass beat number 0 if addBeatNumbers is true (shows "Start" text)
       const startBeatNumber = options.addBeatNumbers ? 0 : undefined;
-      // Apply prop type override if provided
-      const startPositionData = options.propTypeOverride
+      const startPositionData = hasPropOverride
         ? this.applyPropTypeOverride(
             sequence.startPosition,
-            options.propTypeOverride
+            options.propTypeOverride,
+            options.bluePropTypeOverride,
+            options.redPropTypeOverride
           )
         : sequence.startPosition;
       await this.renderPictographAt(
@@ -242,9 +257,14 @@ export class ImageComposer implements IImageComposer {
       const row = Math.floor(i / beatsPerRow);
       // Only pass beat number if addBeatNumbers is true
       const beatNumber = options.addBeatNumbers ? i + 1 : undefined;
-      // Apply prop type override if provided
-      const beatData = options.propTypeOverride
-        ? this.applyPropTypeOverride(beat, options.propTypeOverride)
+      // Apply prop type override if provided (supports single or per-color overrides)
+      const beatData = hasPropOverride
+        ? this.applyPropTypeOverride(
+            beat,
+            options.propTypeOverride,
+            options.bluePropTypeOverride,
+            options.redPropTypeOverride
+          )
         : beat;
       await this.renderPictographAt(
         ctx,
@@ -273,7 +293,7 @@ export class ImageComposer implements IImageComposer {
       sequence,
       options,
       headerHeight, // Offset grid below header
-      isLedMode
+      isLightsOff
     );
 
     // Step 7: Render header with word at the top
@@ -290,7 +310,7 @@ export class ImageComposer implements IImageComposer {
         headerHeight,
         difficultyLevel,
         options.addDifficultyLevel, // Only show badge if toggle is on
-        isLedMode // LED mode for dark theme styling
+        isLightsOff // LED mode for dark theme styling
       );
     }
 
@@ -309,7 +329,7 @@ export class ImageComposer implements IImageComposer {
         },
         footerHeight, // Pass footer height for proper text positioning
         beatCount, // Pass beat count for legacy-matching font sizing
-        isLedMode // LED mode for dark theme styling
+        isLightsOff // LED mode for dark theme styling
       );
     }
 
@@ -426,7 +446,7 @@ export class ImageComposer implements IImageComposer {
     // Include visibility settings in cache key (important for correct caching!)
     if (visibilitySettings) {
       keyParts.push(
-        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|${visibilitySettings.showTurnNumbers ?? "d"}|led:${visibilitySettings.ledMode ?? false}`
+        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|${visibilitySettings.showTurnNumbers ?? "d"}|lightsOff:${visibilitySettings.lightsOff ?? false}|propGlow:${visibilitySettings.propGlow ?? false}`
       );
     }
 
@@ -471,10 +491,10 @@ export class ImageComposer implements IImageComposer {
     sequence: SequenceData,
     options: SequenceExportOptions,
     titleOffset: number = 0,
-    isLedMode: boolean = false
+    isLightsOff: boolean = false
   ): void {
     // LED mode uses subtle light borders on dark background
-    ctx.strokeStyle = isLedMode ? "rgba(255, 255, 255, 0.15)" : "#e0e0e0";
+    ctx.strokeStyle = isLightsOff ? "rgba(255, 255, 255, 0.15)" : "#e0e0e0";
     ctx.lineWidth = 1;
 
     // Create a map of occupied cells
@@ -608,17 +628,33 @@ export class ImageComposer implements IImageComposer {
   /**
    * Apply prop type override to a beat or start position
    * Creates a shallow copy with prop type overridden in motion data
+   *
+   * Supports three modes:
+   * 1. Single propType - applies to both colors
+   * 2. Per-color (bluePropType/redPropType) - cat-dog mode
+   * 3. Both - per-color overrides take precedence
    */
   private applyPropTypeOverride<
     T extends BeatData | PictographData | StartPositionData,
-  >(data: T, propType: PropType): T {
+  >(
+    data: T,
+    propType?: PropType,
+    bluePropType?: PropType,
+    redPropType?: PropType
+  ): T {
+    // Determine final prop types: per-color overrides take precedence
+    const finalBlueProp = bluePropType ?? propType;
+    const finalRedProp = redPropType ?? propType;
+
     return {
       ...data,
       motions: {
-        blue: data.motions.blue
-          ? { ...data.motions.blue, propType }
-          : undefined,
-        red: data.motions.red ? { ...data.motions.red, propType } : undefined,
+        blue: data.motions.blue && finalBlueProp
+          ? { ...data.motions.blue, propType: finalBlueProp }
+          : data.motions.blue,
+        red: data.motions.red && finalRedProp
+          ? { ...data.motions.red, propType: finalRedProp }
+          : data.motions.red,
       },
     };
   }

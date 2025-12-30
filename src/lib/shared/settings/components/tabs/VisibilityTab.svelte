@@ -73,7 +73,6 @@
 
   // Global effects state
   let lightsOff = $state(false);
-  let propGlow = $state(false);
 
   // Image composition state
   let imgAddWord = $state(true);
@@ -214,12 +213,6 @@
     animationVisibilityManager.setLightsOff(lightsOff);
   }
 
-  function handlePropGlowToggle() {
-    triggerHaptic();
-    propGlow = !propGlow;
-    animationVisibilityManager.setPropGlow(propGlow);
-  }
-
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
@@ -240,6 +233,9 @@
     animBpm = animationVisibilityManager.getBpm();
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
     animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+
+    // Load initial global effects
+    lightsOff = animationVisibilityManager.isLightsOff();
 
     // Load initial image composition
     imgAddWord = imageCompositionManager.addWord;
@@ -267,6 +263,8 @@
       animBpm = animationVisibilityManager.getBpm();
       animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
       animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
+      // Sync global effects
+      lightsOff = animationVisibilityManager.isLightsOff();
     };
 
     const imageObserver = () => {
@@ -293,6 +291,12 @@
 </script>
 
 <div class="visibility-tab" class:visible={isVisible}>
+  <!-- Global Effects Section (above all panels) -->
+  <GlobalEffectsSection
+    {lightsOff}
+    onLightsOffToggle={handleLightsOffToggle}
+  />
+
   <!-- Mobile: Segmented Control (hidden on desktop via container query) -->
   <div class="mobile-only">
     <MobileSegmentControl currentMode={mobileMode} onModeChange={handleModeChange} />

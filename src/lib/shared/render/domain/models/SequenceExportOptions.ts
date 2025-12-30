@@ -26,6 +26,11 @@ export interface SequenceExportOptions {
   // Used for batch re-rendering sequences with different prop types
   propTypeOverride?: PropType;
 
+  // Per-color prop type overrides for cat-dog mode (optional)
+  // When provided, overrides props for specific colors independently
+  bluePropTypeOverride?: PropType;
+  redPropTypeOverride?: PropType;
+
   // Scaling and sizing
   beatScale: number;
   beatSize: number;
@@ -46,8 +51,10 @@ export interface SequenceExportOptions {
     showReversals?: boolean;
     showNonRadialPoints?: boolean;
     showTurnNumbers?: boolean;
-    /** LED mode - dark background with glow effects on props/arrows */
-    ledMode?: boolean;
+    /** Lights Off - dark background, inverted grid, white text/outlines */
+    lightsOff?: boolean;
+    /** Prop Glow - glowing drop-shadow effect on props */
+    propGlow?: boolean;
   };
 
   // User information

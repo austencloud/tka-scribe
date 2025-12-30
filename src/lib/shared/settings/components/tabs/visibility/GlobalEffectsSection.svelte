@@ -1,23 +1,19 @@
 <!--
   GlobalEffectsSection.svelte
 
-  Global effects controls that apply across all three visibility domains:
+  Global effects controls that apply across all visibility domains:
   - Pictograph, Animation, and Image Export
 
-  Two toggles:
-  - Lights Off: Dark background, inverted grid, white text/outlines
-  - Prop Glow: Glowing drop-shadow effect on props
+  Lights Off: Dark background, inverted grid, white text/outlines
+  (Prop glow is automatically enabled for animations when Lights Off is on)
 -->
 <script lang="ts">
   interface Props {
     lightsOff: boolean;
-    propGlow: boolean;
     onLightsOffToggle: () => void;
-    onPropGlowToggle: () => void;
   }
 
-  let { lightsOff, propGlow, onLightsOffToggle, onPropGlowToggle }: Props =
-    $props();
+  let { lightsOff, onLightsOffToggle }: Props = $props();
 </script>
 
 <section class="global-effects-section">
@@ -34,19 +30,6 @@
       <i class="fas fa-moon" aria-hidden="true"></i>
       <span class="effect-label">Lights Off</span>
       <span class="effect-status">{lightsOff ? "ON" : "OFF"}</span>
-    </button>
-
-    <button
-      class="effect-btn prop-glow"
-      class:active={propGlow}
-      onclick={onPropGlowToggle}
-      type="button"
-      aria-label={propGlow ? "Disable Prop Glow" : "Enable Prop Glow"}
-      aria-pressed={propGlow}
-    >
-      <i class="fas fa-sparkles" aria-hidden="true"></i>
-      <span class="effect-label">Prop Glow</span>
-      <span class="effect-status">{propGlow ? "ON" : "OFF"}</span>
     </button>
   </div>
 </section>
@@ -127,7 +110,7 @@
     transition-duration: 50ms;
   }
 
-  /* Lights Off Active - Electric cyan glow (matches previous LED mode) */
+  /* Lights Off Active - Electric cyan glow */
   .effect-btn.lights-off.active {
     background: rgba(0, 255, 255, 0.12);
     border-color: rgba(0, 255, 255, 0.4);
@@ -157,54 +140,9 @@
       inset 0 0 12px rgba(0, 255, 255, 0.1);
   }
 
-  /* Prop Glow Active - Warm golden/orange glow (like glowing props) */
-  .effect-btn.prop-glow.active {
-    background: rgba(251, 191, 36, 0.15);
-    border-color: rgba(251, 191, 36, 0.45);
-    color: #fbbf24;
-    box-shadow:
-      0 0 12px rgba(251, 191, 36, 0.3),
-      0 0 24px rgba(251, 191, 36, 0.18),
-      inset 0 0 8px rgba(251, 191, 36, 0.1);
-  }
-
-  .effect-btn.prop-glow.active i {
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.9);
-  }
-
-  .effect-btn.prop-glow.active .effect-status {
-    color: #fbbf24;
-    opacity: 1;
-    text-shadow: 0 0 6px rgba(251, 191, 36, 0.6);
-  }
-
-  .effect-btn.prop-glow.active:hover {
-    background: rgba(251, 191, 36, 0.22);
-    border-color: rgba(251, 191, 36, 0.6);
-    box-shadow:
-      0 0 16px rgba(251, 191, 36, 0.4),
-      0 0 32px rgba(251, 191, 36, 0.25),
-      inset 0 0 12px rgba(251, 191, 36, 0.12);
-  }
-
   .effect-btn:focus-visible {
-    outline: 2px solid var(--theme-accent, rgba(139, 92, 246, 0.5));
+    outline: 2px solid rgba(0, 255, 255, 0.5);
     outline-offset: 2px;
-  }
-
-  .effect-btn.lights-off:focus-visible {
-    outline-color: rgba(0, 255, 255, 0.5);
-  }
-
-  .effect-btn.prop-glow:focus-visible {
-    outline-color: rgba(251, 191, 36, 0.5);
-  }
-
-  /* Mobile: Stack vertically on small screens */
-  @container visibility-tab (max-width: 400px) {
-    .effects-row {
-      flex-direction: column;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -220,10 +158,6 @@
 
     .effect-btn.lights-off.active {
       border-color: #00ffff;
-    }
-
-    .effect-btn.prop-glow.active {
-      border-color: #fbbf24;
     }
 
     .effect-btn:focus-visible {

@@ -30,8 +30,10 @@ export interface PictographVisibilityOptions {
   showReversals?: boolean;
   showNonRadialPoints?: boolean;
   showTurnNumbers?: boolean;
-  /** LED mode - dark background with glow effects on props/arrows */
-  ledMode?: boolean;
+  /** Lights Off - dark background, inverted grid, white text/outlines */
+  lightsOff?: boolean;
+  /** Prop Glow - glowing drop-shadow effect on props */
+  propGlow?: boolean;
 }
 
 /**
@@ -91,7 +93,8 @@ export async function renderPictographToSVG(
       componentProps.showReversals = visibilityOptions.showReversals;
       componentProps.showNonRadialPoints = visibilityOptions.showNonRadialPoints;
       componentProps.showTurnNumbers = visibilityOptions.showTurnNumbers;
-      componentProps.ledMode = visibilityOptions.ledMode;
+      componentProps.ledMode = visibilityOptions.lightsOff; // Lights Off controls background/grid
+      componentProps.propGlow = visibilityOptions.propGlow; // Prop Glow controls prop effects
     }
 
     // Mount Pictograph component with explicit visibility settings

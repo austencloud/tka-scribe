@@ -56,5 +56,6 @@
   beatData={currentBeatData}
   currentBeat={animationState.currentBeat}
   sequenceData={animationState.sequenceData}
+  isPlaying={animationState.isPlaying}
   trailSettings={animationSettings.trail}
 />

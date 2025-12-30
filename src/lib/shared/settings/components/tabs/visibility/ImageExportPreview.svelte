@@ -11,6 +11,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IImageComposer } from "$lib/shared/render/services/contracts/IImageComposer";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   interface Props {
     beatData: BeatData;
@@ -19,6 +20,7 @@
   let { beatData }: Props = $props();
 
   const compositionManager = getImageCompositionManager();
+  const animationVisibilityManager = getAnimationVisibilityManager();
 
   let previewImageUrl = $state<string | null>(null);
   let isGenerating = $state(false);
@@ -85,11 +87,15 @@
     };
     compositionManager.registerObserver(handleSettingsChange);
 
+    // Subscribe to animation visibility changes (for Lights Off mode)
+    animationVisibilityManager.registerObserver(handleSettingsChange);
+
     return () => {
       if (previewImageUrl) {
         URL.revokeObjectURL(previewImageUrl);
       }
       compositionManager.unregisterObserver(handleSettingsChange);
+      animationVisibilityManager.unregisterObserver(handleSettingsChange);
     };
   });
 
