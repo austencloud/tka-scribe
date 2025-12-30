@@ -1,4 +1,4 @@
-import type { PreparedPictographData } from "./pictograph-batch-preparer";
+import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
 
 export function stabilizePreparedOptions(
   prepared: PreparedPictographData[],

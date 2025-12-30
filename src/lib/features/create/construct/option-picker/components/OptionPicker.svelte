@@ -18,10 +18,8 @@ Delegates all rendering to child components.
   import type { IOptionSorter } from "../services/contracts/IOptionSorter";
   import type { IOptionOrganizer } from "../services/contracts/IOptionOrganizer";
   import type { IOptionSizer } from "../services/contracts/IOptionSizer";
-  import type {
-    IPictographPreparer,
-    PreparedPictographData,
-  } from "../services/PictographPreparer";
+  import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
+  import type { IPictographPreparer } from "../services/PictographPreparer";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import OptionPickerContent from "./OptionPickerContent.svelte";
 

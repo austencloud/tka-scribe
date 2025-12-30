@@ -23,21 +23,16 @@ Orchestrates specialized components and services:
   import type { IOptionSizer } from "../services/contracts/IOptionSizer";
   import type { IOptionSorter } from "../services/contracts/IOptionSorter";
   import type { ISectionTitleFormatter } from "../services/contracts/ISectionTitleFormatter";
-  import type { IArrowLifecycleManager } from "$lib/shared/pictograph/arrow/orchestration/services/contracts/IArrowLifecycleManager";
-  import type { IPropSvgLoader } from "$lib/shared/pictograph/prop/services/contracts/IPropSvgLoader";
-  import type { IPropPlacer } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacer";
-  import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
+  import type { IPictographPreparer } from "$lib/features/create/construct/option-picker/services/contracts/IPictographPreparer";
   import { createContainerDimensionTracker } from "../state/container-dimension-tracker.svelte";
   import { createOptionPickerState } from "../state/option-picker-state.svelte";
-  import {
-    preparePictographBatch,
-    type PreparedPictographData,
-  } from "../utils/pictograph-batch-preparer";
+  import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
   import { stabilizePreparedOptions } from "../utils/prepared-pictograph-cache";
   import { buildOptionViewerDebugText } from "../utils/option-viewer-debug";
   import OptionFilterPanel from "./OptionFilterPanel.svelte";
   import OptionViewerGridLayout from "./OptionViewerGridLayout.svelte";
   import OptionViewerSwipeLayout from "./OptionViewerSwipeLayout.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   // ===== PROPS =====
   let {
@@ -71,11 +66,8 @@ Orchestrates specialized components and services:
   let sectionTitleFormatter: ISectionTitleFormatter | null = null;
   let hapticService: IHapticFeedback | null = null;
 
-  // Services for batch preparation
-  let arrowLifecycleManager: IArrowLifecycleManager | null = null;
-  let propSvgLoader: IPropSvgLoader | null = null;
-  let propPlacementService: IPropPlacer | null = null;
-  let gridModeDeriver: IGridModeDeriver | null = null;
+  // Service for batch preparation
+  let pictographPreparer: IPictographPreparer | null = null;
 
   // ===== STATE =====
   let optionPickerState = $state<ReturnType<
@@ -92,6 +84,11 @@ Orchestrates specialized components and services:
 
   // Fade coordination: prevents premature fade-in during option loading
   let pendingFadeIn = $state(false);
+
+  // Global Lights Off state
+  const animationVisibilityManager = getAnimationVisibilityManager();
+  let lightsOff = $state(animationVisibilityManager.isLightsOff());
+  let lastCheckedLightsOff = animationVisibilityManager.isLightsOff();
 
   // Cache for stable object references - prevents component recreation
   let preparedCache = new Map<string, PreparedPictographData>();
@@ -358,13 +355,8 @@ Orchestrates specialized components and services:
       return;
     }
 
-    // Skip if services not initialized
-    if (
-      !arrowLifecycleManager ||
-      !propSvgLoader ||
-      !propPlacementService ||
-      !gridModeDeriver
-    ) {
+    // Skip if preparer not initialized
+    if (!pictographPreparer) {
       return;
     }
 
@@ -373,13 +365,7 @@ Orchestrates specialized components and services:
       // Prepare all pictographs in batch
       isPreparingOptions = true;
 
-      preparePictographBatch(
-        filtered,
-        arrowLifecycleManager!,
-        propSvgLoader!,
-        propPlacementService!,
-        gridModeDeriver!
-      )
+      pictographPreparer!.prepareBatch(filtered)
         .then((prepared) => {
           console.log("✅ [Preparation Effect] Complete", {
             preparedCount: prepared.length,
@@ -501,6 +487,26 @@ Orchestrates specialized components and services:
 
   // ===== LIFECYCLE =====
   onMount(() => {
+    // Poll for Lights Off changes using requestAnimationFrame
+    // This bypasses the observer pattern which has closure issues in Svelte 5
+    let rafId: number | null = null;
+    let isPolling = true;
+
+    const pollLightsOff = () => {
+      if (!isPolling) return;
+
+      const currentValue = animationVisibilityManager.isLightsOff();
+      if (currentValue !== lastCheckedLightsOff) {
+        lastCheckedLightsOff = currentValue;
+        lightsOff = currentValue;
+      }
+
+      rafId = requestAnimationFrame(pollLightsOff);
+    };
+
+    // Start polling
+    rafId = requestAnimationFrame(pollLightsOff);
+
     try {
       // Resolve services
       const optionLoader = resolve<IOptionLoader>(TYPES.IOptionLoader);
@@ -522,15 +528,8 @@ Orchestrates specialized components and services:
         TYPES.IHapticFeedback
       );
 
-      // Resolve batch preparation services
-      arrowLifecycleManager = resolve<IArrowLifecycleManager>(
-        TYPES.IArrowLifecycleManager
-      );
-      propSvgLoader = resolve<IPropSvgLoader>(TYPES.IPropSvgLoader);
-      propPlacementService = resolve<IPropPlacer>(
-        TYPES.IPropPlacer
-      );
-      gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
+      // Resolve batch preparer
+      pictographPreparer = resolve<IPictographPreparer>(TYPES.IPictographPreparer);
 
       // Create state
       optionPickerState = createOptionPickerState({
@@ -545,10 +544,20 @@ Orchestrates specialized components and services:
     }
 
     // Setup container tracking
+    let containerCleanup: (() => void) | undefined;
     if (containerElement) {
-      return containerDimensions.attachToElement(containerElement);
+      containerCleanup = containerDimensions.attachToElement(containerElement);
     }
-    return undefined;
+
+    // Return cleanup function
+    return () => {
+      // Stop polling
+      isPolling = false;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      containerCleanup?.();
+    };
   });
 </script>
 
@@ -622,6 +631,7 @@ Orchestrates specialized components and services:
               layoutConfig={layoutConfig()}
               {currentSequence}
               {isFadingOut}
+              {lightsOff}
             />
           {:else}
             <OptionViewerGridLayout
@@ -631,6 +641,7 @@ Orchestrates specialized components and services:
               {currentSequence}
               {isFadingOut}
               fitToViewport={shouldFitToViewport()}
+              {lightsOff}
             />
           {/if}
         </div>

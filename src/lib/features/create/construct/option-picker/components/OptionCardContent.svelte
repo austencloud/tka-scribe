@@ -1,19 +1,14 @@
 <!--
-OptionCardContent.svelte - Renders pictograph SVG content
+OptionCardContent.svelte - Desktop option card wrapper
 
-Single responsibility: Render the visual content of an option card.
-Uses pre-calculated positions for arrows and props.
+Handles Lights Off state polling and delegates rendering to shared primitive.
+Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → OptionCardContent
 -->
 <script lang="ts">
-  import type { PreparedPictographData } from "../services/PictographPreparer";
-  import GridSvg from "$lib/shared/pictograph/grid/components/GridSvg.svelte";
-  import PropSvg from "$lib/shared/pictograph/prop/components/PropSvg.svelte";
-  import ArrowSvg from "$lib/shared/pictograph/arrow/rendering/components/ArrowSvg.svelte";
-  import TKAGlyph from "$lib/shared/pictograph/tka-glyph/components/TKAGlyph.svelte";
-  import ReversalIndicators from "$lib/shared/pictograph/shared/components/ReversalIndicators.svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
-  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+  import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
+  import OptionPictograph from "$lib/shared/pictograph/option/OptionPictograph.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { onMount } from "svelte";
 
   interface Props {
     pictograph: PreparedPictographData;
@@ -27,116 +22,48 @@ Uses pre-calculated positions for arrows and props.
     redReversal = false,
   }: Props = $props();
 
-  // Derive grid mode
-  const gridMode = $derived(() => {
-    if (pictograph._prepared?.gridMode) {
-      return pictograph._prepared.gridMode;
-    }
-    if (!pictograph.motions?.blue || !pictograph.motions?.red) {
-      return GridMode.DIAMOND;
-    }
-    try {
-      const service = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
-      return service.deriveGridMode(
-        pictograph.motions.blue,
-        pictograph.motions.red
-      );
-    } catch {
-      return GridMode.DIAMOND;
-    }
-  });
+  // Lights Off state - poll from global manager
+  const animationVisibilityManager = getAnimationVisibilityManager();
+  let lightsOff = $state(animationVisibilityManager.isLightsOff());
+  let lastCheckedLightsOff = animationVisibilityManager.isLightsOff();
 
-  // Pre-calculated positions
-  const arrowPositions = $derived(
-    pictograph._prepared?.arrowPositions || {}
-  );
-  const arrowAssets = $derived(pictograph._prepared?.arrowAssets || {});
-  const arrowMirroring = $derived(
-    pictograph._prepared?.arrowMirroring || {}
-  );
-  const propPositions = $derived(pictograph._prepared?.propPositions || {});
-  const propAssets = $derived(pictograph._prepared?.propAssets || {});
+  // Poll for Lights Off changes
+  onMount(() => {
+    let rafId: number | null = null;
+    let isPolling = true;
 
-  // Motions to render
-  const motions = $derived(() => {
-    if (!pictograph.motions) return [];
-    return Object.entries(pictograph.motions)
-      .filter((entry): entry is [string, any] => entry[1] !== undefined)
-      .map(([color, data]) => ({ color: color as "blue" | "red", data }));
+    const pollLightsOff = () => {
+      if (!isPolling) return;
+      const currentValue = animationVisibilityManager.isLightsOff();
+      if (currentValue !== lastCheckedLightsOff) {
+        lastCheckedLightsOff = currentValue;
+        lightsOff = currentValue;
+      }
+      rafId = requestAnimationFrame(pollLightsOff);
+    };
+
+    rafId = requestAnimationFrame(pollLightsOff);
+
+    return () => {
+      isPolling = false;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   });
 </script>
 
 <div class="option-card-content">
-  <svg
-    width="100%"
-    height="100%"
-    viewBox="0 0 950 950"
-    xmlns="http://www.w3.org/2000/svg"
-    role="img"
-    aria-label="Pictograph Option"
-  >
-    <rect width="950" height="950" fill="white" />
-
-    <GridSvg
-      gridMode={gridMode()}
-      showNonRadialPoints={false}
-      onLoaded={() => {}}
-      onError={() => {}}
-    />
-
-    {#each motions() as { color, data } (color)}
-      {#if propAssets[color] && propPositions[color]}
-        <PropSvg
-          motionData={data}
-          propAssets={propAssets[color]}
-          propPosition={propPositions[color]}
-          showProp={true}
-        />
-      {/if}
-    {/each}
-
-    {#each motions() as { color, data } (color)}
-      {#if arrowAssets[color] && arrowPositions[color]}
-        <ArrowSvg
-          motionData={data}
-          {color}
-          pictographData={pictograph}
-          arrowAssets={arrowAssets[color]}
-          arrowPosition={arrowPositions[color]}
-          shouldMirror={arrowMirroring[color] || false}
-          showArrow={true}
-          isClickable={false}
-        />
-      {/if}
-    {/each}
-
-    {#if pictograph.letter}
-      <TKAGlyph
-        letter={pictograph.letter}
-        pictographData={pictograph}
-        visible={true}
-        previewMode={false}
-      />
-    {/if}
-
-    <ReversalIndicators
-      {blueReversal}
-      {redReversal}
-      hasValidData={true}
-      visible={true}
-      previewMode={false}
-    />
-  </svg>
+  <OptionPictograph
+    {pictograph}
+    {blueReversal}
+    {redReversal}
+    {lightsOff}
+  />
 </div>
 
 <style>
   .option-card-content {
     width: 100%;
     height: 100%;
-    display: block;
-  }
-
-  svg {
     display: block;
   }
 </style>

@@ -18,10 +18,10 @@ Renders a section with:
   import { onMount } from "svelte";
   import { LetterTypeTextPainter } from "../utils/letter-type-text-painter";
   import { getLetterBorderColors } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
-  import OptionPictograph from "./OptionPictograph.svelte";
-  import type { PreparedPictographData } from "../utils/pictograph-batch-preparer";
+  import OptionPictographCell from "./OptionPictographCell.svelte";
+  import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
 
-  // Props
+  // Props - lightsOff is passed down from OptionViewer which manages the subscription
   const {
     letterType = "mixed",
     pictographs = [],
@@ -33,6 +33,7 @@ Renders a section with:
     forcedPictographSize,
     showHeader = true,
     fitToViewport = false,
+    lightsOff = false,
   } = $props<{
     letterType?: string;
     pictographs?: PictographData[];
@@ -52,6 +53,7 @@ Renders a section with:
     forcedPictographSize?: number;
     showHeader?: boolean;
     fitToViewport?: boolean;
+    lightsOff?: boolean;
   }>();
 
   // Services
@@ -395,10 +397,11 @@ Renders a section with:
         data-testid="option-item"
         data-letter={pictograph.letter}
       >
-        <OptionPictograph
+        <OptionPictographCell
           pictographData={pictograph as PreparedPictographData}
           blueReversal={pictograph.blueReversal || false}
           redReversal={pictograph.redReversal || false}
+          {lightsOff}
         />
       </button>
     {/each}

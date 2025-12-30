@@ -25,6 +25,7 @@ Features:
     currentSequence = [],
     isFadingOut = false,
     fitToViewport = false,
+    lightsOff = false,
   } = $props<{
     organizedPictographs?: OrganizedSection[];
     onPictographSelected?: (pictograph: PictographData) => void;
@@ -40,6 +41,7 @@ Features:
     currentSequence?: PictographData[];
     isFadingOut?: boolean;
     fitToViewport?: boolean;
+    lightsOff?: boolean;
   }>();
 
   const uniformPictographSize = $derived(
@@ -106,6 +108,7 @@ Features:
           {isFadingOut}
           forcedPictographSize={uniformPictographSize()}
           {fitToViewport}
+          {lightsOff}
         />
       {:else}
         <!-- Individual section (Types 1-3) -->
@@ -120,6 +123,7 @@ Features:
           contentAreaBounds={null}
           {fitToViewport}
           showHeader={!fitToViewport}
+          {lightsOff}
         />
       {/if}
     </div>

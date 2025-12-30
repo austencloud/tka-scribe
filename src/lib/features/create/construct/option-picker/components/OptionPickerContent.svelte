@@ -5,7 +5,7 @@ Single responsibility: Organize prepared options into sections and layout.
 Uses organizer and sizer services for section grouping and sizing.
 -->
 <script lang="ts">
-  import type { PreparedPictographData } from "../services/PictographPreparer";
+  import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
   import type { IOptionOrganizer } from "../services/contracts/IOptionOrganizer";
   import type { IOptionSizer } from "../services/contracts/IOptionSizer";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
@@ -14,8 +14,10 @@ Uses organizer and sizer services for section grouping and sizing.
   import Option456Row from "./Option456Row.svelte";
   import OptionGrid from "./OptionGrid.svelte";
   import OptionCard from "./OptionCard.svelte";
-  import OptionViewerSwipeLayout from "../option-viewer/components/OptionViewerSwipeLayout.svelte";
-  import OptionViewerSection from "../option-viewer/components/OptionViewerSection.svelte";
+  import OptionViewerSwipeLayout from "../swipe-layout/components/OptionViewerSwipeLayout.svelte";
+  import OptionViewerSection from "../swipe-layout/components/OptionViewerSection.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { onMount } from "svelte";
 
   interface Props {
     options: PreparedPictographData[];
@@ -42,6 +44,34 @@ Uses organizer and sizer services for section grouping and sizing.
     isSideBySideLayout = () => false,
     currentSequence = [],
   }: Props = $props();
+
+  // Lights Off state - poll from global manager for mobile layouts
+  const animationVisibilityManager = getAnimationVisibilityManager();
+  let lightsOff = $state(animationVisibilityManager.isLightsOff());
+  let lastCheckedLightsOff = animationVisibilityManager.isLightsOff();
+
+  // Poll for Lights Off changes
+  onMount(() => {
+    let rafId: number | null = null;
+    let isPolling = true;
+
+    const pollLightsOff = () => {
+      if (!isPolling) return;
+      const currentValue = animationVisibilityManager.isLightsOff();
+      if (currentValue !== lastCheckedLightsOff) {
+        lastCheckedLightsOff = currentValue;
+        lightsOff = currentValue;
+      }
+      rafId = requestAnimationFrame(pollLightsOff);
+    };
+
+    rafId = requestAnimationFrame(pollLightsOff);
+
+    return () => {
+      isPolling = false;
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  });
 
   // Track container dimensions with simple resize observer
   let containerElement: HTMLDivElement | null = $state(null);
@@ -262,6 +292,7 @@ Uses organizer and sizer services for section grouping and sizing.
             showHeader={false}
             isFadingOut={isFading}
             {currentSequence}
+            {lightsOff}
           />
         </div>
       {:else if shouldUseSwipeLayout()}
@@ -273,6 +304,7 @@ Uses organizer and sizer services for section grouping and sizing.
             layoutConfig={mobileLayoutConfig()}
             isFadingOut={isFading}
             {currentSequence}
+            {lightsOff}
           />
         </div>
       {:else if shouldUseWideLayout && !isMobileStackedLayout()}
@@ -317,6 +349,7 @@ Uses organizer and sizer services for section grouping and sizing.
             showHeader={false}
             isFadingOut={isFading}
             {currentSequence}
+            {lightsOff}
           />
         </div>
       {/if}

@@ -61,6 +61,7 @@ Matches the desktop version exactly:
     contentAreaBounds = null,
     forcedPictographSize,
     fitToViewport = false,
+    lightsOff = false,
   } = $props<{
     pictographs?: PictographData[];
     onPictographSelected?: (pictograph: PictographData) => void;
@@ -74,6 +75,7 @@ Matches the desktop version exactly:
     contentAreaBounds?: { left: number; right: number; width: number } | null;
     forcedPictographSize?: number;
     fitToViewport?: boolean;
+    lightsOff?: boolean;
   }>();
 
   const effectivePictographSize = $derived(
@@ -445,6 +447,7 @@ Matches the desktop version exactly:
               {forcedPictographSize}
               showHeader={true}
               {fitToViewport}
+              {lightsOff}
             />
           </div>
         {/if}

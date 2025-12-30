@@ -6,7 +6,7 @@ Handles fade transitions via CSS opacity.
 Computes reversal indicators for options based on current sequence.
 -->
 <script lang="ts">
-  import type { PreparedPictographData } from "../services/PictographPreparer";
+  import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import type { IReversalDetector, PictographWithReversals } from "$lib/features/create/shared/services/contracts/IReversalDetector";
   import { resolve } from "$lib/shared/inversify/di";

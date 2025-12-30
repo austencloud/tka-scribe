@@ -26,6 +26,7 @@ Features:
     layoutConfig,
     currentSequence = [],
     isFadingOut = false,
+    lightsOff = false,
   } = $props<{
     organizedPictographs?: OrganizedSection[];
     onPictographSelected?: (pictograph: PictographData) => void;
@@ -41,6 +42,7 @@ Features:
     };
     currentSequence?: PictographData[];
     isFadingOut?: boolean;
+    lightsOff?: boolean;
   }>();
 
   // ===== Panel Position Persistence =====
@@ -139,6 +141,7 @@ Features:
                 {currentSequence}
                 {isFadingOut}
                 {contentAreaBounds}
+                {lightsOff}
               />
             {:else}
               <!-- Individual section (Types 1-3) -->
@@ -151,6 +154,7 @@ Features:
                 {isFadingOut}
                 {contentAreaBounds}
                 showHeader={false}
+                {lightsOff}
               />
             {/if}
           {/if}
