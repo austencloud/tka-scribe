@@ -103,6 +103,13 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
         const skinnedMesh = child as SkinnedMesh;
         newMeshes.push(skinnedMesh);
         newSkeleton = skinnedMesh.skeleton;
+
+        // Map bones from the skeleton directly (more reliable than checking isBone)
+        if (skinnedMesh.skeleton) {
+          for (const bone of skinnedMesh.skeleton.bones) {
+            this.mapBoneToMap(bone, newBones);
+          }
+        }
       }
 
       if ((child as Bone).isBone) {

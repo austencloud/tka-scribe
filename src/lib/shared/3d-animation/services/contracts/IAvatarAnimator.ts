@@ -63,6 +63,15 @@ export interface TransitionConfig {
   blendMode: BlendMode;
 }
 
+/**
+ * Position offset for converting world coordinates to local
+ */
+export interface PositionOffset {
+  x: number;
+  y: number;
+  z: number;
+}
+
 export interface IAvatarAnimator {
   /**
    * Set the hand targets from prop states
@@ -70,10 +79,14 @@ export interface IAvatarAnimator {
    *
    * Blue prop = performer's left hand = skeleton's LeftHand
    * Red prop = performer's right hand = skeleton's RightHand
+   *
+   * @param offset Optional position offset for multi-avatar mode.
+   *               World prop positions are converted to local by subtracting this offset.
    */
   setHandTargetsFromProps(
     blueProp: PropState3D | null,
-    redProp: PropState3D | null
+    redProp: PropState3D | null,
+    offset?: PositionOffset
   ): void;
 
   /**

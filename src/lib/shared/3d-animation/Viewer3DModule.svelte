@@ -19,12 +19,21 @@
   import type { CameraPreset } from "./components/controls/CameraPresetBar.svelte";
   import { Plane } from "./domain/enums/Plane";
   import type { GridMode } from "./domain/constants/grid-layout";
-  import { createAnimation3DState, type Animation3DState } from "./state/animation-3d-state.svelte";
+  import { createAvatarInstanceState, type AvatarInstanceState } from "./state/avatar-instance-state.svelte";
+  import { createAvatarSyncState, type AvatarSyncState } from "./state/avatar-sync-state.svelte";
+  import AvatarModeSwitcher from "./components/panels/AvatarModeSwitcher.svelte";
+  import AvatarSyncControls from "./components/panels/AvatarSyncControls.svelte";
+  import DuetBrowserPanel from "./components/panels/DuetBrowserPanel.svelte";
+  import DuetCreatorPanel from "./components/panels/DuetCreatorPanel.svelte";
+  import type { DuetSequenceWithData } from "./domain/duet-sequence";
   import SequenceBrowserPanel from "$lib/shared/animation-engine/components/SequenceBrowserPanel.svelte";
   import ShortcutsHelp from "$lib/shared/keyboard/components/ShortcutsHelp.svelte";
   import { keyboardShortcutState } from "$lib/shared/keyboard/state/keyboard-shortcut-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
+
+  // Locomotion system
+  import LocomotionController from "./components/locomotion/LocomotionController.svelte";
 
   // Effects system
   import EffectsLayer from "./effects/EffectsLayer.svelte";
@@ -62,8 +71,23 @@
   let propInterpolator: IPropStateInterpolator | null = $state(null);
   let sequenceConverter: ISequenceConverter | null = $state(null);
   let persistenceService: IAnimation3DPersister | null = $state(null);
-  let animState: Animation3DState | null = $state(null);
+
+  // Dual avatar states
+  let avatar1State: AvatarInstanceState | null = $state(null);
+  let avatar2State: AvatarInstanceState | null = $state(null);
+  let syncState: AvatarSyncState | null = $state(null);
+  let activeAvatarId = $state<'avatar1' | 'avatar2'>('avatar1');
   let servicesReady = $state(false);
+
+  // Duet browser state
+  type BrowserViewMode = 'sequences' | 'duets';
+  let browserViewMode = $state<BrowserViewMode>('sequences');
+  let duetCreatorOpen = $state(false);
+
+  // Derived: active avatar state (routes controls to selected avatar)
+  const activeState = $derived(
+    activeAvatarId === 'avatar1' ? avatar1State : avatar2State
+  );
 
   // Effects configuration state
   const effectsConfig = getEffectsConfigState();
@@ -79,6 +103,7 @@
   let speed = $state(1);
   let showFigure = $state(true);
   let avatarId = $state<AvatarId>(initialAvatarId);
+  let locomotionMode = $state(false); // WASD movement + third-person camera
 
   // Background type comes from settingsService (unified with 2D theme)
 
@@ -93,8 +118,17 @@
 
   // Derived - use function to avoid TypeScript narrowing issues with $state(null)
   const sequenceName = $derived.by(() => {
-    if (!animState) return null;
-    return animState.loadedSequence?.word || animState.loadedSequence?.name || null;
+    if (!activeState) return null;
+    return activeState.loadedSequence?.word || activeState.loadedSequence?.name || null;
+  });
+
+  // Avatar positions for per-avatar grid planes
+  const avatarPositions = $derived.by(() => {
+    if (!avatar1State || !avatar2State) return [];
+    return [
+      { x: avatar1State.position.x, y: 0, z: 0 },
+      { x: avatar2State.position.x, y: 0, z: 0 }
+    ];
   });
 
   // Camera handlers
@@ -122,8 +156,33 @@
 
   // Sequence handlers
   function handleSequenceSelect(sequence: SequenceData) {
-    animState?.loadSequence(sequence);
+    activeState?.loadSequence(sequence);
     browserOpen = false;
+  }
+
+  // Duet handlers
+  function handleDuetSelect(duet: DuetSequenceWithData) {
+    // Load sequences into both avatars
+    avatar1State?.loadSequence(duet.avatar1Sequence);
+    avatar2State?.loadSequence(duet.avatar2Sequence);
+
+    // Apply beat offset via sync state
+    if (syncState) {
+      syncState.setOffset(duet.beatOffset);
+      // Enable sync if there's an offset
+      if (duet.beatOffset !== 0 && !syncState.isSyncEnabled) {
+        syncState.toggleSync();
+      }
+    }
+
+    browserOpen = false;
+  }
+
+  function handleDuetCreated(duetId: string) {
+    console.log('[Viewer3DModule] Duet created:', duetId);
+    duetCreatorOpen = false;
+    browserViewMode = 'duets';
+    browserOpen = true;
   }
 
   // Initialize services asynchronously
@@ -142,8 +201,23 @@
       ANIMATION_3D_TYPES.IAnimation3DPersister
     );
 
-    // Create animation state
-    animState = createAnimation3DState({ propInterpolator, sequenceConverter });
+    // Create dual avatar states
+    const deps = { propInterpolator, sequenceConverter };
+
+    avatar1State = createAvatarInstanceState({
+      id: 'avatar1',
+      positionX: -350,  // Increased separation to prevent grid overlap
+      avatarModelId: initialAvatarId
+    }, deps);
+
+    avatar2State = createAvatarInstanceState({
+      id: 'avatar2',
+      positionX: 350,   // Increased separation to prevent grid overlap
+      avatarModelId: initialAvatarId
+    }, deps);
+
+    // Create sync state for coordinating the two avatars
+    syncState = createAvatarSyncState(avatar1State, avatar2State);
 
     // Load persisted state
     const saved = persistenceService.loadState();
@@ -157,32 +231,34 @@
     if (saved.speed !== undefined) speed = saved.speed;
     if (saved.cameraPosition) customCameraPosition = saved.cameraPosition;
     if (saved.cameraTarget) customCameraTarget = saved.cameraTarget;
-    if (saved.loop !== undefined) animState.loop = saved.loop;
+    if (saved.loop !== undefined && avatar1State) avatar1State.loop = saved.loop;
     if (saved.avatarId) avatarId = saved.avatarId;
     // Note: environmentType removed - now uses settingsService.settings.backgroundType
 
-    if (saved.loadedSequence) {
-      animState.loadSequence(saved.loadedSequence);
+    // Load sequence into avatar1 (primary) if persisted
+    if (saved.loadedSequence && avatar1State) {
+      avatar1State.loadSequence(saved.loadedSequence);
       if (saved.currentBeatIndex !== undefined) {
-        animState.goToBeat(saved.currentBeatIndex);
+        avatar1State.goToBeat(saved.currentBeatIndex);
       }
     }
 
     // Auto-start playback if it was playing before
-    animState.autoStartIfNeeded();
+    avatar1State?.autoStartIfNeeded();
 
     servicesReady = true;
     setTimeout(() => (initialized = true), 50);
   });
 
-  // Sync speed to animState
+  // Sync speed to both avatar states
   $effect(() => {
-    if (animState) animState.speed = speed;
+    if (avatar1State) avatar1State.speed = speed;
+    if (avatar2State) avatar2State.speed = speed;
   });
 
-  // Persist state changes
+  // Persist state changes (using avatar1 as primary for backwards compat)
   $effect(() => {
-    if (!initialized || !persistenceService || !animState) return;
+    if (!initialized || !persistenceService || !avatar1State) return;
     persistenceService.saveState({
       visiblePlanes: Array.from(visiblePlanes),
       showGrid,
@@ -193,15 +269,19 @@
       speed,
       cameraPosition: customCameraPosition,
       cameraTarget: customCameraTarget,
-      loop: animState.loop,
-      loadedSequence: animState.loadedSequence ?? null,
-      currentBeatIndex: animState.currentBeatIndex,
+      loop: avatar1State.loop,
+      loadedSequence: avatar1State.loadedSequence ?? null,
+      currentBeatIndex: avatar1State.currentBeatIndex,
       avatarId,
       // Note: environmentType removed - now uses settingsService for background
     });
   });
 
-  onDestroy(() => animState?.destroy());
+  onDestroy(() => {
+    avatar1State?.destroy();
+    avatar2State?.destroy();
+    syncState?.destroy();
+  });
 </script>
 
 {#if !servicesReady}
@@ -209,7 +289,7 @@
     <div class="loading-spinner"></div>
     <p>Loading 3D Viewer...</p>
   </div>
-{:else if animState}
+{:else if avatar1State && avatar2State}
   <div class="viewer-3d-module">
     <!-- Scene Area -->
     <main class="scene-area">
@@ -226,27 +306,64 @@
         bloomIntensity={effectsConfig.bloom.intensity}
         bloomThreshold={effectsConfig.bloom.threshold}
         backgroundType={settingsService.settings.backgroundType}
+        {avatarPositions}
       >
-        {#if animState.showBlue && animState.bluePropState}
-          <Staff3D propState={animState.bluePropState} color="blue" />
+        <!-- Avatar 1 Props -->
+        {#if avatar1State.showBlue && avatar1State.bluePropState}
+          <Staff3D propState={avatar1State.bluePropState} color="blue" positionX={avatar1State.position.x} />
         {/if}
-        {#if animState.showRed && animState.redPropState}
-          <Staff3D propState={animState.redPropState} color="red" />
+        {#if avatar1State.showRed && avatar1State.redPropState}
+          <Staff3D propState={avatar1State.redPropState} color="red" positionX={avatar1State.position.x} />
         {/if}
+
+        <!-- Avatar 2 Props -->
+        {#if avatar2State.showBlue && avatar2State.bluePropState}
+          <Staff3D propState={avatar2State.bluePropState} color="blue" positionX={avatar2State.position.x} />
+        {/if}
+        {#if avatar2State.showRed && avatar2State.redPropState}
+          <Staff3D propState={avatar2State.redPropState} color="red" positionX={avatar2State.position.x} />
+        {/if}
+
+        <!-- Avatar 1 Figure -->
         {#if showFigure}
           <Avatar3D
-            bluePropState={animState.bluePropState}
-            redPropState={animState.redPropState}
-            {avatarId}
+            id="avatar1"
+            bluePropState={avatar1State.bluePropState}
+            redPropState={avatar1State.redPropState}
+            position={avatar1State.position}
+            facingAngle={avatar1State.facingAngle}
+            isActive={activeAvatarId === 'avatar1'}
+            avatarId={avatar1State.avatarModelId}
           />
         {/if}
 
-        <!-- Visual Effects Layer -->
+        <!-- Avatar 2 Figure -->
+        {#if showFigure}
+          <Avatar3D
+            id="avatar2"
+            bluePropState={avatar2State.bluePropState}
+            redPropState={avatar2State.redPropState}
+            position={avatar2State.position}
+            facingAngle={avatar2State.facingAngle}
+            isActive={activeAvatarId === 'avatar2'}
+            avatarId={avatar2State.avatarModelId}
+          />
+        {/if}
+
+        <!-- Visual Effects Layer (uses active avatar for now) -->
         <EffectsLayer
-          bluePropState={animState.bluePropState}
-          redPropState={animState.redPropState}
-          isPlaying={animState.isPlaying}
+          bluePropState={activeState?.bluePropState ?? null}
+          redPropState={activeState?.redPropState ?? null}
+          isPlaying={activeState?.isPlaying ?? false}
         />
+
+        <!-- Locomotion Controller (WASD + third-person camera) -->
+        {#if locomotionMode && activeState}
+          <LocomotionController
+            avatarState={activeState}
+            enabled={locomotionMode}
+          />
+        {/if}
       </Scene3D>
 
       <SceneOverlayControls
@@ -256,24 +373,33 @@
         {speed}
         onSpeedChange={(s) => (speed = s)}
         {sequenceName}
-        onClearSequence={() => animState?.clearSequence()}
-        isPlaying={animState?.isPlaying ?? false}
-        progress={animState?.progress ?? 0}
-        loop={animState?.loop ?? false}
-        hasSequence={animState?.hasSequence ?? false}
-        currentBeatIndex={animState?.currentBeatIndex ?? 0}
-        totalBeats={animState?.totalBeats ?? 0}
-        onPlay={() => animState?.play()}
-        onPause={() => animState?.pause()}
-        onTogglePlay={() => animState?.togglePlay()}
-        onReset={() => animState?.reset()}
-        onProgressChange={(v) => animState?.setProgress(v)}
-        onLoopChange={(v) => { if (animState) animState.loop = v; }}
-        onPrevBeat={() => animState?.prevBeat()}
-        onNextBeat={() => animState?.nextBeat()}
+        onClearSequence={() => activeState?.clearSequence()}
+        isPlaying={activeState?.isPlaying ?? false}
+        progress={activeState?.progress ?? 0}
+        loop={activeState?.loop ?? false}
+        hasSequence={activeState?.hasSequence ?? false}
+        currentBeatIndex={activeState?.currentBeatIndex ?? 0}
+        totalBeats={activeState?.totalBeats ?? 0}
+        onPlay={() => activeState?.play()}
+        onPause={() => activeState?.pause()}
+        onTogglePlay={() => activeState?.togglePlay()}
+        onReset={() => activeState?.reset()}
+        onProgressChange={(v) => activeState?.setProgress(v)}
+        onLoopChange={(v) => { if (activeState) activeState.loop = v; }}
+        onPrevBeat={() => activeState?.prevBeat()}
+        onNextBeat={() => activeState?.nextBeat()}
         onShowHelp={() => keyboardShortcutState.openHelp()}
       >
         {#snippet trailing()}
+          <button
+            class="locomotion-btn"
+            class:active={locomotionMode}
+            onclick={() => (locomotionMode = !locomotionMode)}
+            aria-label={locomotionMode ? "Exit walk mode" : "Enter walk mode"}
+            title={locomotionMode ? "Exit walk mode (WASD)" : "Enter walk mode (WASD)"}
+          >
+            <i class="fas fa-person-walking" aria-hidden="true"></i>
+          </button>
           <button
             class="toggle-panel-btn"
             onclick={() => (panelOpen = !panelOpen)}
@@ -286,48 +412,121 @@
     </main>
 
     <!-- Side Panel -->
-    <Animation3DSidePanel
-      collapsed={!panelOpen}
-      hasSequence={animState?.hasSequence ?? false}
-      currentBeatIndex={animState?.currentBeatIndex ?? 0}
-      totalBeats={animState?.totalBeats ?? 0}
-      blueConfig={animState?.showBlue ? animState.activeBlueConfig : null}
-      redConfig={animState?.showRed ? animState.activeRedConfig : null}
-      {gridMode}
-      {visiblePlanes}
-      {showFigure}
-      {avatarId}
-      onLoadSequence={() => (browserOpen = true)}
-      onGridModeChange={(m) => (gridMode = m)}
-      onPlaneToggle={togglePlane}
-      onToggleFigure={() => (showFigure = !showFigure)}
-      onAvatarChange={(id) => (avatarId = id)}
-    />
+    <aside class="side-panel-wrapper" class:collapsed={!panelOpen}>
+      <!-- Avatar Mode Switcher -->
+      <div class="mode-switcher-container">
+        <AvatarModeSwitcher
+          {activeAvatarId}
+          onSwitch={(id) => (activeAvatarId = id)}
+          avatar1HasSequence={avatar1State?.hasSequence ?? false}
+          avatar2HasSequence={avatar2State?.hasSequence ?? false}
+        />
+      </div>
+
+      <!-- Avatar Sync Controls -->
+      {#if syncState && avatar1State?.hasSequence && avatar2State?.hasSequence}
+        <div class="sync-controls-container">
+          <AvatarSyncControls {syncState} />
+        </div>
+      {/if}
+
+      <Animation3DSidePanel
+        collapsed={!panelOpen}
+        hasSequence={activeState?.hasSequence ?? false}
+        currentBeatIndex={activeState?.currentBeatIndex ?? 0}
+        totalBeats={activeState?.totalBeats ?? 0}
+        blueConfig={activeState?.showBlue ? activeState.activeBlueConfig : null}
+        redConfig={activeState?.showRed ? activeState.activeRedConfig : null}
+        {gridMode}
+        {visiblePlanes}
+        {showFigure}
+        avatarId={activeState?.avatarModelId ?? avatarId}
+        onLoadSequence={() => (browserOpen = true)}
+        onGridModeChange={(m) => (gridMode = m)}
+        onPlaneToggle={togglePlane}
+        onToggleFigure={() => (showFigure = !showFigure)}
+        onAvatarChange={(id) => activeState?.setAvatarModel(id)}
+      />
+    </aside>
   </div>
 
-  <!-- Sequence Browser -->
-  <SequenceBrowserPanel
-    mode="primary"
-    show={browserOpen}
-    onSelect={handleSequenceSelect}
-    onClose={() => (browserOpen = false)}
-  />
+  <!-- Sequence/Duet Browser -->
+  {#if browserOpen}
+    <div class="browser-overlay">
+      <div class="browser-panel">
+        <header class="browser-header">
+          <h2>Load Sequence</h2>
+          <button class="close-browser-btn" onclick={() => (browserOpen = false)}>
+            <i class="fas fa-times" aria-hidden="true"></i>
+          </button>
+        </header>
+
+        {#if browserViewMode === 'sequences'}
+          <SequenceBrowserPanel
+            mode="primary"
+            show={true}
+            onSelect={handleSequenceSelect}
+            onClose={() => (browserOpen = false)}
+          />
+        {:else}
+          <DuetBrowserPanel
+            viewMode={browserViewMode}
+            onSelectDuet={handleDuetSelect}
+            onCreateDuet={() => (duetCreatorOpen = true)}
+            onViewModeChange={(mode) => (browserViewMode = mode)}
+          />
+        {/if}
+
+        <!-- View Mode Toggle at bottom -->
+        <div class="browser-footer">
+          <button
+            class="view-mode-btn"
+            class:active={browserViewMode === 'sequences'}
+            onclick={() => (browserViewMode = 'sequences')}
+          >
+            <i class="fas fa-film" aria-hidden="true"></i>
+            Solo Sequences
+          </button>
+          <button
+            class="view-mode-btn"
+            class:active={browserViewMode === 'duets'}
+            onclick={() => (browserViewMode = 'duets')}
+          >
+            <i class="fas fa-users" aria-hidden="true"></i>
+            Duets
+          </button>
+        </div>
+      </div>
+    </div>
+  {/if}
+
+  <!-- Duet Creator Panel -->
+  {#if duetCreatorOpen}
+    <div class="duet-creator-overlay">
+      <div class="duet-creator-panel">
+        <DuetCreatorPanel
+          onCreated={handleDuetCreated}
+          onCancel={() => (duetCreatorOpen = false)}
+        />
+      </div>
+    </div>
+  {/if}
 
   <!-- Keyboard Shortcuts -->
   <Keyboard3DCoordinator
-    isPlaying={animState?.isPlaying ?? false}
-    togglePlay={() => animState?.togglePlay()}
-    reset={() => animState?.reset()}
-    loop={animState?.loop ?? false}
-    setLoop={(v) => { if (animState) animState.loop = v; }}
+    isPlaying={activeState?.isPlaying ?? false}
+    togglePlay={() => activeState?.togglePlay()}
+    reset={() => activeState?.reset()}
+    loop={activeState?.loop ?? false}
+    setLoop={(v) => { if (activeState) activeState.loop = v; }}
     {speed}
     setSpeed={(s) => (speed = s)}
-    hasSequence={animState?.hasSequence ?? false}
-    currentBeatIndex={animState?.currentBeatIndex ?? 0}
-    totalBeats={animState?.totalBeats ?? 0}
-    prevBeat={() => animState?.prevBeat()}
-    nextBeat={() => animState?.nextBeat()}
-    goToBeat={(i) => animState?.goToBeat(i)}
+    hasSequence={activeState?.hasSequence ?? false}
+    currentBeatIndex={activeState?.currentBeatIndex ?? 0}
+    totalBeats={activeState?.totalBeats ?? 0}
+    prevBeat={() => activeState?.prevBeat()}
+    nextBeat={() => activeState?.nextBeat()}
+    goToBeat={(i) => activeState?.goToBeat(i)}
     setCameraPreset={setCameraPreset}
     {showGrid}
     setShowGrid={(v) => (showGrid = v)}
@@ -381,13 +580,36 @@
     min-width: 300px;
   }
 
-  .toggle-panel-btn {
+  .side-panel-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    border-left: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    overflow-y: auto;
+    transition: width 0.2s ease, padding 0.2s ease;
+  }
+
+  .side-panel-wrapper.collapsed {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .mode-switcher-container,
+  .sync-controls-container {
+    flex-shrink: 0;
+  }
+
+  .toggle-panel-btn,
+  .locomotion-btn {
     width: 48px;
     height: 48px;
-    display: none;
+    display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-bg, var(--theme-card-bg));
+    background: var(--theme-card-bg);
     border: none;
     border-radius: 12px;
     color: var(--theme-text);
@@ -396,9 +618,23 @@
     transition: all 0.15s;
   }
 
-  .toggle-panel-btn:hover {
+  .toggle-panel-btn {
+    display: none;
+  }
+
+  .toggle-panel-btn:hover,
+  .locomotion-btn:hover {
     background: var(--theme-card-hover-bg);
     color: white;
+  }
+
+  .locomotion-btn.active {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .locomotion-btn.active:hover {
+    background: #2563eb;
   }
 
   @media (max-width: 1024px) {
@@ -420,5 +656,108 @@
     .toggle-panel-btn i {
       transform: rotate(90deg);
     }
+  }
+
+  /* Browser Overlay */
+  .browser-overlay,
+  .duet-creator-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .browser-panel {
+    display: flex;
+    flex-direction: column;
+    width: min(90vw, 600px);
+    max-height: 80vh;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .browser-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  }
+
+  .browser-header h2 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--theme-text, #ffffff);
+  }
+
+  .close-browser-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .close-browser-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, #ffffff);
+  }
+
+  .browser-footer {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+  }
+
+  .view-mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 0.75rem;
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 10px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-sm, 14px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .view-mode-btn:hover {
+    background: var(--theme-card-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, #ffffff);
+  }
+
+  .view-mode-btn.active {
+    background: var(--theme-accent, #64b5f6);
+    border-color: var(--theme-accent, #64b5f6);
+    color: #000;
+  }
+
+  .duet-creator-panel {
+    width: min(90vw, 500px);
+    max-height: 90vh;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    border: 1px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: 16px;
+    overflow: hidden;
   }
 </style>

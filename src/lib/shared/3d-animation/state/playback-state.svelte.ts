@@ -8,7 +8,7 @@
 
 import { browser } from "$app/environment";
 
-const STORAGE_KEY = "tka-3d-playback-state";
+const DEFAULT_STORAGE_KEY = "tka-3d-playback-state";
 
 interface PersistedPlaybackState {
   isPlaying: boolean;
@@ -16,23 +16,23 @@ interface PersistedPlaybackState {
   loop: boolean;
 }
 
-function loadPersistedState(): PersistedPlaybackState | null {
+function loadPersistedState(storageKey: string): PersistedPlaybackState | null {
   if (!browser) return null;
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(storageKey);
     if (!stored) return null;
     const parsed = JSON.parse(stored);
-    console.log("[PlaybackState] Loaded persisted state:", parsed);
+    console.log(`[PlaybackState] Loaded persisted state from ${storageKey}:`, parsed);
     return parsed;
   } catch {
     return null;
   }
 }
 
-function persistState(state: PersistedPlaybackState): void {
+function persistState(storageKey: string, state: PersistedPlaybackState): void {
   if (!browser) return;
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(storageKey, JSON.stringify(state));
   } catch {
     // Ignore persistence errors
   }
@@ -41,14 +41,18 @@ function persistState(state: PersistedPlaybackState): void {
 export interface PlaybackOptions {
   /** Called when progress completes a cycle (reaches 1) */
   onCycleComplete?: () => boolean; // Return true to continue playing, false to pause
+  /** Custom localStorage key for per-avatar persistence */
+  persistenceKey?: string;
 }
 
 /**
  * Create playback state for animation timing
  */
 export function createPlaybackState(options: PlaybackOptions = {}) {
+  const storageKey = options.persistenceKey ?? DEFAULT_STORAGE_KEY;
+
   // Load persisted state
-  const persisted = loadPersistedState();
+  const persisted = loadPersistedState(storageKey);
 
   let isPlaying = $state(persisted?.isPlaying ?? false);
   let progress = $state(0);
@@ -60,7 +64,7 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
 
   // Persist state manually (called on meaningful changes)
   function saveState() {
-    persistState({ isPlaying, speed, loop });
+    persistState(storageKey, { isPlaying, speed, loop });
   }
 
   // Auto-start if persisted state was playing (called after mount)

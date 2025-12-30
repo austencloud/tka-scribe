@@ -27,6 +27,8 @@
     length?: number;
     /** Staff thickness (radius of the tube) */
     thickness?: number;
+    /** Horizontal offset for multi-avatar mode */
+    positionX?: number;
   }
 
   let {
@@ -35,6 +37,7 @@
     visible = true,
     length, // Will use user proportions if not provided
     thickness, // Will use user proportions if not provided
+    positionX = 0, // Multi-avatar offset
   }: Props = $props();
 
   // Use user proportions as defaults if not explicitly provided
@@ -54,9 +57,9 @@
   };
   const palette = $derived(colors[color]);
 
-  // Position as tuple
+  // Position as tuple (with X offset for multi-avatar mode)
   const position = $derived<[number, number, number]>([
-    propState.worldPosition.x,
+    propState.worldPosition.x + positionX,
     propState.worldPosition.y,
     propState.worldPosition.z,
   ]);

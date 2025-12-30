@@ -29,6 +29,8 @@
     bodyType?: BodyType;
     skinTone?: string;
     measurements?: AvatarMeasurements;
+    /** Position offset to convert world prop positions to local coordinates */
+    positionOffset?: { x: number; y: number; z: number };
   }
 
   let {
@@ -38,6 +40,7 @@
     bodyType = "masculine" as BodyType,
     skinTone = "#d4a574",
     measurements = AUSTEN_MEASUREMENTS as AvatarMeasurements,
+    positionOffset = { x: 0, y: 0, z: 0 },
   }: Props = $props();
 
   // Derive proportions from real measurements
@@ -115,12 +118,15 @@
   // IMPORTANT: Screen left (-X) = performer's RIGHT (red)
   //            Screen right (+X) = performer's LEFT (blue)
   // (Because we view the performer from in front)
+  //
+  // positionOffset converts world prop positions to local coordinates:
+  // localPos = worldPos - offset
   const leftTarget = $derived(
     redPropState  // Performer's RIGHT hand (screen left)
       ? new Vector3(
-          redPropState.worldPosition.x,
-          redPropState.worldPosition.y,
-          redPropState.worldPosition.z
+          redPropState.worldPosition.x - positionOffset.x,
+          redPropState.worldPosition.y - positionOffset.y,
+          redPropState.worldPosition.z - positionOffset.z
         )
       : new Vector3(
           -figureProps.shoulderX - figureProps.upperArmLength * 0.5,
@@ -132,9 +138,9 @@
   const rightTarget = $derived(
     bluePropState  // Performer's LEFT hand (screen right)
       ? new Vector3(
-          bluePropState.worldPosition.x,
-          bluePropState.worldPosition.y,
-          bluePropState.worldPosition.z
+          bluePropState.worldPosition.x - positionOffset.x,
+          bluePropState.worldPosition.y - positionOffset.y,
+          bluePropState.worldPosition.z - positionOffset.z
         )
       : new Vector3(
           figureProps.shoulderX + figureProps.upperArmLength * 0.5,

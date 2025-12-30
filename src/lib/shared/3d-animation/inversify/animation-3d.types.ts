@@ -25,4 +25,7 @@ export const ANIMATION_3D_TYPES = {
   IIKSolver: Symbol.for("IIKSolver"),
   IAvatarCustomizer: Symbol.for("IAvatarCustomizer"),
   IAvatarAnimator: Symbol.for("IAvatarAnimator"),
+
+  // Duet system (dual-avatar coordinated performance)
+  IDuetPersister: Symbol.for("IDuetPersister"),
 };

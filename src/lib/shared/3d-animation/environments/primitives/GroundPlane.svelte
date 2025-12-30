@@ -2,8 +2,8 @@
   /**
    * GroundPlane Primitive
    *
-   * A configurable ground surface for 3D environments.
-   * Renders as a circular plane at the ground level.
+   * A simple colored ground surface for 3D environments.
+   * For textured ground, use TexturedGroundPlane instead.
    * Ground Y is derived from user proportions (shoulder at grid center Y=0).
    */
 

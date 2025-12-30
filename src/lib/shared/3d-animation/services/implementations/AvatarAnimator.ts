@@ -14,6 +14,7 @@ import type {
   AnimationLayer,
   TransitionConfig,
   BlendMode,
+  PositionOffset,
 } from "../contracts/IAvatarAnimator";
 import type { IIKSolver } from "../contracts/IIKSolver";
 import type { IAvatarSkeletonBuilder } from "../contracts/IAvatarSkeletonBuilder";
@@ -64,7 +65,8 @@ export class AvatarAnimator implements IAvatarAnimator {
 
   setHandTargetsFromProps(
     blueProp: PropState3D | null,
-    redProp: PropState3D | null
+    redProp: PropState3D | null,
+    offset?: PositionOffset
   ): void {
     // Hand mapping:
     // - Blue prop = performer's LEFT hand = skeleton's LeftHand bone
@@ -73,14 +75,19 @@ export class AvatarAnimator implements IAvatarAnimator {
     // From viewer's perspective (looking at performer facing us):
     // - Skeleton's LeftHand appears on screen RIGHT (+X)
     // - Skeleton's RightHand appears on screen LEFT (-X)
+    //
+    // offset converts world positions to local (skeleton) coordinates
+    const ox = offset?.x ?? 0;
+    const oy = offset?.y ?? 0;
+    const oz = offset?.z ?? 0;
 
     if (blueProp) {
       // Blue prop → performer's left hand → skeleton's LeftHand
       this.targetPose.leftHand = {
         targetPosition: new Vector3(
-          blueProp.worldPosition.x,
-          blueProp.worldPosition.y,
-          blueProp.worldPosition.z
+          blueProp.worldPosition.x - ox,
+          blueProp.worldPosition.y - oy,
+          blueProp.worldPosition.z - oz
         ),
         weight: 1,
       };
@@ -92,9 +99,9 @@ export class AvatarAnimator implements IAvatarAnimator {
       // Red prop → performer's right hand → skeleton's RightHand
       this.targetPose.rightHand = {
         targetPosition: new Vector3(
-          redProp.worldPosition.x,
-          redProp.worldPosition.y,
-          redProp.worldPosition.z
+          redProp.worldPosition.x - ox,
+          redProp.worldPosition.y - oy,
+          redProp.worldPosition.z - oz
         ),
         weight: 1,
       };

@@ -31,6 +31,8 @@
     enabled?: boolean;
     /** Intensity 0-1, affects spawn rate and size */
     intensity?: number;
+    /** Scale multiplier for particle size (1 = small prop fire, 10+ = campfire) */
+    scale?: number;
     /** Base direction for particles (default: up/+Y) */
     direction?: Vector3;
     /** How much prop velocity affects flame direction (0-1) */
@@ -43,6 +45,7 @@
     position,
     enabled = true,
     intensity = 1,
+    scale = 1,
     direction = new Vector3(0, 1, 0),
     velocityInfluence = 0.3,
     propVelocity = new Vector3(0, 0, 0),
@@ -156,8 +159,8 @@
       dir.normalize();
     }
 
-    // Set velocity with speed variation
-    const speed = INITIAL_VELOCITY * (0.8 + Math.random() * 0.4) * intensity;
+    // Set velocity with speed variation (scale affects velocity for larger fires)
+    const speed = INITIAL_VELOCITY * scale * (0.8 + Math.random() * 0.4) * intensity;
     p.velocity.copy(dir).multiplyScalar(speed);
 
     // Add some of the prop velocity directly for motion-reactive flames
@@ -169,11 +172,12 @@
       );
     }
 
-    // Lifetime and size
+    // Lifetime and size (scale directly affects particle size)
     p.life = 0;
-    p.maxLife = MIN_LIFETIME + Math.random() * (MAX_LIFETIME - MIN_LIFETIME);
+    p.maxLife = MIN_LIFETIME + Math.random() * (MAX_LIFETIME - MIN_LIFETIME) * (1 + scale * 0.2);
     p.size =
       (BASE_SIZE + (Math.random() - 0.5) * SIZE_VARIATION * 2) *
+      scale *
       (0.7 + intensity * 0.3);
     p.seed = Math.random() * 1000;
     p.active = true;
@@ -381,12 +385,12 @@
         continue;
       }
 
-      // Apply buoyancy (fire rises)
-      p.velocity.y += BUOYANCY * delta;
+      // Apply buoyancy (fire rises) - scaled for larger fires
+      p.velocity.y += BUOYANCY * scale * delta;
 
-      // Apply turbulence
+      // Apply turbulence - scaled for larger fires
       const turb = turbulence(p.seed, elapsedTime);
-      p.velocity.add(turb.clone().multiplyScalar(delta));
+      p.velocity.add(turb.clone().multiplyScalar(delta * scale));
 
       // Update position
       p.position.addScaledVector(p.velocity, delta);

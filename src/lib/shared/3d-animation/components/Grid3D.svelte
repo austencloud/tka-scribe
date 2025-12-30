@@ -7,6 +7,8 @@
    *
    * Grid size is derived from user proportions (height + staff length)
    * to ensure the grid matches the user's actual reach and staff size.
+   *
+   * Supports positioning at arbitrary center points for multi-avatar setups.
    */
 
   import { T } from "@threlte/core";
@@ -26,6 +28,10 @@
     planeOpacity?: number;
     /** Grid mode: diamond or box */
     gridMode?: GridMode;
+    /** Center position for this grid (default: origin) */
+    centerPosition?: { x: number; y: number; z: number };
+    /** Optional label for this grid (e.g., "Avatar 1") */
+    label?: string;
   }
 
   let {
@@ -34,13 +40,16 @@
     showLabels = true,
     planeOpacity = 0.15,
     gridMode = "diamond",
+    centerPosition = { x: 0, y: 0, z: 0 },
+    label,
   }: Props = $props();
 
   // Use user proportions as default if size not explicitly provided
   const effectiveSize = $derived(size ?? userProportionsState.gridSize);
 </script>
 
-<T.Group>
+<!-- Position entire grid at centerPosition -->
+<T.Group position={[centerPosition.x, centerPosition.y, centerPosition.z]}>
   <!-- Wall plane (purple) -->
   {#if visiblePlanes.has(Plane.WALL)}
     <GridPlane

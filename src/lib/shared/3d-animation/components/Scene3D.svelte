@@ -31,6 +31,13 @@
 
   import type { Snippet } from "svelte";
 
+  /** Avatar position for per-avatar grids */
+  interface AvatarGridPosition {
+    x: number;
+    y: number;
+    z: number;
+  }
+
   interface Props {
     /** Which planes to show */
     visiblePlanes?: Set<Plane>;
@@ -58,6 +65,8 @@
     bloomRadius?: number;
     /** Background type - controls both 2D theme and 3D environment */
     backgroundType?: BackgroundType;
+    /** Avatar positions for per-avatar grids (if empty, single grid at origin) */
+    avatarPositions?: AvatarGridPosition[];
     /** Children content (props, etc.) */
     children?: Snippet;
   }
@@ -76,8 +85,16 @@
     bloomThreshold = 0.8,
     bloomRadius = 0.4,
     backgroundType = BackgroundType.SOLID_COLOR,
+    avatarPositions = [],
     children,
   }: Props = $props();
+
+  // If no avatar positions provided, show single grid at origin
+  const gridPositions = $derived(
+    avatarPositions.length > 0
+      ? avatarPositions
+      : [{ x: 0, y: 0, z: 0 }]
+  );
 
   // Determine if this is a night/dark environment that needs reduced lighting
   const isNightEnvironment = $derived(
@@ -184,9 +201,16 @@
         <!-- 3D Environment (sky, ground, particles - matches 2D theme) -->
         <Environment3D {backgroundType} />
 
-        <!-- Grid planes -->
+        <!-- Grid planes - one per avatar position -->
         {#if showGrid}
-          <Grid3D {visiblePlanes} {showLabels} {gridMode} />
+          {#each gridPositions as pos, i}
+            <Grid3D
+              {visiblePlanes}
+              {showLabels}
+              {gridMode}
+              centerPosition={pos}
+            />
+          {/each}
         {/if}
 
         <!-- Children content (props, etc.) -->
@@ -206,9 +230,16 @@
       <!-- 3D Environment (sky, ground, particles - matches 2D theme) -->
       <Environment3D {backgroundType} />
 
-      <!-- Grid planes -->
+      <!-- Grid planes - one per avatar position -->
       {#if showGrid}
-        <Grid3D {visiblePlanes} {showLabels} {gridMode} />
+        {#each gridPositions as pos, i}
+          <Grid3D
+            {visiblePlanes}
+            {showLabels}
+            {gridMode}
+            centerPosition={pos}
+          />
+        {/each}
       {/if}
 
       <!-- Children content (props, etc.) -->

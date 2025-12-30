@@ -8,28 +8,32 @@
    * This component can work in two modes:
    * 1. GLTF mode: Loads a rigged humanoid model (production)
    * 2. Procedural mode: Uses IKFigure3D as fallback
+   *
+   * IMPORTANT: Each Avatar3D creates its own service instances to support
+   * multi-avatar mode. Services are NOT resolved via DI because they need
+   * to share the same skeleton instance (animator needs the same skeleton
+   * that this component loads the model into).
    */
 
   import { onMount, onDestroy, untrack } from "svelte";
   import { T, useTask } from "@threlte/core";
-  import { container, loadFeatureModule } from "$lib/shared/inversify/container";
-  import { ANIMATION_3D_TYPES } from "../inversify/animation-3d.types";
+  import { loadFeatureModule } from "$lib/shared/inversify/container";
   import type { IAvatarSkeletonBuilder } from "../services/contracts/IAvatarSkeletonBuilder";
   import type { IIKSolver } from "../services/contracts/IIKSolver";
   import type { IAvatarAnimator } from "../services/contracts/IAvatarAnimator";
-  import type { IAvatarCustomizer } from "../services/contracts/IAvatarCustomizer";
   import type { PropState3D } from "../domain/models/PropState3D";
   import { cmToUnits } from "../config/avatar-proportions";
   import { getAvatarModelPath, type AvatarId, DEFAULT_AVATAR_ID } from "../config/avatar-definitions";
   import { userProportionsState } from "../state/user-proportions-state.svelte";
   import IKFigure3D from "./IKFigure3D.svelte";
 
-  // Figure positioning constants
-  // Camera is at positive Z looking toward origin.
-  // Grid is at Z=0. Props are rendered at Z=0.
-  // Mixamo models face +Z by default.
-  // Avatar at Z=-80, facing +Z = facing toward the props at Z=0.
-  const FIGURE_Z = -80; // Avatar stands behind grid, facing toward props
+  // Direct imports for manual instantiation (ensures shared skeleton instance)
+  import { AvatarSkeletonBuilder } from "../services/implementations/AvatarSkeletonBuilder";
+  import { IKSolver } from "../services/implementations/IKSolver";
+  import { AvatarAnimator } from "../services/implementations/AvatarAnimator";
+
+  // Default Z position for avatars (behind grid, facing props)
+  const DEFAULT_FIGURE_Z = -80;
 
   interface Props {
     bluePropState: PropState3D | null;
@@ -37,6 +41,13 @@
     visible?: boolean;
     avatarId?: AvatarId;
     useGLTF?: boolean; // Whether to use GLTF model or procedural fallback
+    // Multi-avatar support
+    id?: string; // Avatar identifier for multi-avatar mode
+    /** Full 3D position (replaces positionX for locomotion support) */
+    position?: { x: number; y?: number; z: number };
+    /** Facing angle in radians for avatar rotation (0 = facing +Z) */
+    facingAngle?: number;
+    isActive?: boolean; // Whether this avatar is currently selected/active
   }
 
   let {
@@ -45,13 +56,17 @@
     visible = true,
     avatarId = DEFAULT_AVATAR_ID,
     useGLTF = true, // Default to using GLTF model
+    // Multi-avatar defaults
+    id = 'avatar1',
+    position = { x: 0, y: 0, z: DEFAULT_FIGURE_Z },
+    facingAngle = 0,
+    isActive = true,
   }: Props = $props();
 
-  // Services (resolved once feature module is loaded)
+  // Services (manually instantiated to ensure shared skeleton instance)
   let skeletonService: IAvatarSkeletonBuilder | null = $state(null);
   let ikSolver: IIKSolver | null = $state(null);
   let animationService: IAvatarAnimator | null = $state(null);
-  let customizationService: IAvatarCustomizer | null = $state(null);
 
   let servicesReady = $state(false);
   let modelLoaded = $state(false);
@@ -134,20 +149,19 @@
     }
 
     try {
+      // Load feature module (ensures GLTF loader etc are available)
       await loadFeatureModule("3d-viewer");
 
-      skeletonService = container.get<IAvatarSkeletonBuilder>(
-        ANIMATION_3D_TYPES.IAvatarSkeletonBuilder
-      );
-      ikSolver = container.get<IIKSolver>(
-        ANIMATION_3D_TYPES.IIKSolver
-      );
-      animationService = container.get<IAvatarAnimator>(
-        ANIMATION_3D_TYPES.IAvatarAnimator
-      );
-      customizationService = container.get<IAvatarCustomizer>(
-        ANIMATION_3D_TYPES.IAvatarCustomizer
-      );
+      // Create per-avatar service instances manually
+      // This ensures the animator uses the SAME skeleton instance we load models into
+      // (Using DI would give animator its own skeleton via constructor injection)
+      const skeleton = new AvatarSkeletonBuilder();
+      const solver = new IKSolver();
+      const animator = new AvatarAnimator(solver, skeleton);
+
+      skeletonService = skeleton;
+      ikSolver = solver;
+      animationService = animator;
 
       servicesReady = true;
 
@@ -194,19 +208,28 @@
   useTask((delta) => {
     if (!servicesReady || !animationService || useProceduralFallback) return;
 
+    // DEBUG: Log what positions are being passed to each avatar
+    if (bluePropState || redPropState) {
+      console.log(`[Avatar3D ${id}] IK targets:`, {
+        blue: bluePropState?.worldPosition ? `(${bluePropState.worldPosition.x.toFixed(0)}, ${bluePropState.worldPosition.y.toFixed(0)}, ${bluePropState.worldPosition.z.toFixed(0)})` : 'null',
+        red: redPropState?.worldPosition ? `(${redPropState.worldPosition.x.toFixed(0)}, ${redPropState.worldPosition.y.toFixed(0)}, ${redPropState.worldPosition.z.toFixed(0)})` : 'null',
+        avatarPosX: position.x,
+      });
+    }
+
     // Update hand targets from prop states
+    // IMPORTANT: propState.worldPosition is actually LOCAL grid coordinates (e.g., 100)
+    // It does NOT include the avatar's X offset - Staff3D adds that separately for display.
+    // Since the skeleton is inside a T.Group and works in local space,
+    // we can use worldPosition directly - no offset conversion needed.
     animationService.setHandTargetsFromProps(bluePropState, redPropState);
 
     // Update animation (applies IK)
     animationService.update(delta);
   });
 
-  // Sync visibility changes (only when using GLTF mode, not procedural fallback)
-  $effect(() => {
-    if (customizationService && !useProceduralFallback) {
-      customizationService.setVisible(visible);
-    }
-  });
+  // Note: Visibility is handled via the {#if visible} in the template
+  // No need for customizationService - skeleton visibility is controlled by Svelte rendering
 
   onDestroy(() => {
     // Only dispose if we loaded a GLTF model
@@ -219,14 +242,20 @@
 {#if visible}
   {#if useProceduralFallback}
     <!-- Procedural fallback (used when GLTF loading fails) -->
-    <IKFigure3D {bluePropState} {redPropState} />
+    <T.Group
+      position={[position.x, position.y ?? 0, position.z]}
+      rotation.y={facingAngle}
+    >
+      <!-- worldPosition is already local grid coordinates, no offset needed -->
+      <IKFigure3D {bluePropState} {redPropState} />
+    </T.Group>
   {:else if modelLoaded && cachedRoot}
     <!-- GLTF model (production mode) -->
     <!--
       Position the avatar:
-      - X: 0 (centered)
+      - X, Z: from position object (supports locomotion)
       - Y: groupY (calculated to put feet at groundY)
-      - Z: FIGURE_Z (-80, behind grid, facing toward props)
+      - rotation.y: facingAngle (avatar faces movement direction)
 
       groupY = groundY - feetOffset
       - feetOffset is negative (feet are below model origin)
@@ -237,7 +266,10 @@
       the template only updates AFTER a new model is fully loaded,
       preventing visual glitches during avatar swap.
     -->
-    <T.Group position={[0, groupY, FIGURE_Z]}>
+    <T.Group
+      position={[position.x, groupY, position.z]}
+      rotation.y={facingAngle}
+    >
       <T is={cachedRoot} />
     </T.Group>
   {/if}

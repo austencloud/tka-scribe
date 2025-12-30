@@ -23,6 +23,9 @@ import { IKSolver } from "../services/implementations/IKSolver";
 import { AvatarCustomizer } from "../services/implementations/AvatarCustomizer";
 import { AvatarAnimator } from "../services/implementations/AvatarAnimator";
 
+// Duet system
+import { DuetPersister } from "../services/implementations/DuetPersister";
+
 export const animation3DModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Core math services (no dependencies)
@@ -69,29 +72,42 @@ export const animation3DModule = new ContainerModule(
     // ═══════════════════════════════════════════════════════════════════════════
     // AVATAR SYSTEM (Production-quality rigged model support)
     // ═══════════════════════════════════════════════════════════════════════════
+    // These are TRANSIENT (not singleton) because each Avatar3D needs its own
+    // independent skeleton, IK solver, animator, and customizer instance.
+    // This enables dual/multi-avatar mode where avatars don't share state.
 
     // Skeleton management (GLTF loading, bone access)
     options
       .bind(ANIMATION_3D_TYPES.IAvatarSkeletonBuilder)
       .to(AvatarSkeletonBuilder)
-      .inSingletonScope();
+      .inTransientScope();
 
     // IK solver (analytic, CCD, FABRIK algorithms)
     options
       .bind(ANIMATION_3D_TYPES.IIKSolver)
       .to(IKSolver)
-      .inSingletonScope();
+      .inTransientScope();
 
     // Customization (body type, skin tone, proportions)
     options
       .bind(ANIMATION_3D_TYPES.IAvatarCustomizer)
       .to(AvatarCustomizer)
-      .inSingletonScope();
+      .inTransientScope();
 
     // Animation (pose blending, transitions)
     options
       .bind(ANIMATION_3D_TYPES.IAvatarAnimator)
       .to(AvatarAnimator)
+      .inTransientScope();
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // DUET SYSTEM (Dual-avatar coordinated performance)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // Duet persistence (localStorage, sequence resolution)
+    options
+      .bind(ANIMATION_3D_TYPES.IDuetPersister)
+      .to(DuetPersister)
       .inSingletonScope();
   }
 );

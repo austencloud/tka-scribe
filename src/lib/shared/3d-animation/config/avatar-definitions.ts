@@ -19,13 +19,6 @@ export interface AvatarDefinition {
  */
 export const AVATAR_DEFINITIONS: AvatarDefinition[] = [
   {
-    id: "austen",
-    name: "Austen",
-    modelPath: "/models/austen.glb",
-    icon: "fa-star",
-    description: "Custom avatar",
-  },
-  {
     id: "x-bot",
     name: "X-Bot",
     modelPath: "/models/x-bot.glb",
@@ -69,10 +62,10 @@ export function getAvatarById(id: string): AvatarDefinition | undefined {
  */
 export function getAvatarModelPath(id: string): string {
   const avatar = getAvatarById(id);
-  return avatar?.modelPath ?? "/models/austen.glb";
+  return avatar?.modelPath ?? "/models/x-bot.glb";
 }
 
 /**
  * Default avatar ID
  */
-export const DEFAULT_AVATAR_ID: AvatarId = "austen";
+export const DEFAULT_AVATAR_ID: AvatarId = "x-bot";
