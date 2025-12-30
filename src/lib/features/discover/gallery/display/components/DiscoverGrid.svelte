@@ -2,11 +2,15 @@
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import { slide } from "svelte/transition";
   import { onMount } from "svelte";
-  import { wrapGrid } from "animate-css-grid";
+  // NOTE: animate-css-grid disabled - causes layout chaos with async thumbnail loading
+  // import { wrapGrid } from "animate-css-grid";
   import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import SequenceCard from "./SequenceCard/SequenceCard.svelte";
   import SectionHeader from "./SectionHeader.svelte";
   import VirtualizedSequenceGrid from "./VirtualizedSequenceGrid.svelte";
+  import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
+  import { isCatDogMode } from "../services/implementations/DiscoverThumbnailCache";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   /**
    * 🚀 PERFORMANCE: Virtualization threshold
@@ -39,6 +43,27 @@
     !showSections && sequences.length > VIRTUALIZATION_THRESHOLD && viewMode === "grid"
   );
 
+  // Get user's prop settings for prop-aware thumbnails
+  const propSettings = $derived({
+    bluePropType: settingsService.settings.bluePropType,
+    redPropType: settingsService.settings.redPropType,
+    catDogMode: settingsService.settings.catDogMode,
+  });
+
+  // Determine if we're in cat-dog mode (different props per hand)
+  const isCatDog = $derived(
+    isCatDogMode(
+      propSettings.bluePropType,
+      propSettings.redPropType,
+      propSettings.catDogMode
+    )
+  );
+
+  // Get light mode from visibility state (inverse of lightsOff)
+  // lightsOff = true means dark mode, lightMode = true means light background
+  const visibilityManager = getAnimationVisibilityManager();
+  const lightMode = $derived(!visibilityManager.isLightsOff());
+
   // Grid element refs for animate-css-grid
   let sectionGridRefs = $state<HTMLElement[]>([]);
   let flatGridRef = $state<HTMLElement | undefined>(undefined);
@@ -55,32 +80,14 @@
     return 2;
   });
 
-  // Initialize animate-css-grid and ResizeObserver
+  // Initialize ResizeObserver for responsive column count
   onMount(() => {
-    // Configure FLIP animation for smooth grid transitions
-    const animationConfig = {
-      duration: 300,
-      stagger: 0, // No stagger for cohesive movement
-      easing: "easeInOut" as const, // Popmotion easing function
-    };
-
-    // Wrap section grids
-    const unwrapFunctions = sectionGridRefs
-      .filter(Boolean)
-      .map((gridElement) => wrapGrid(gridElement, animationConfig));
-
-    // Wrap flat grid
-    if (flatGridRef) {
-      unwrapFunctions.push(wrapGrid(flatGridRef, animationConfig));
-    }
-
     // ResizeObserver to track container width changes
     const targetElement = flatGridRef || sectionGridRefs[0];
     const resizeObserver = targetElement
       ? new ResizeObserver((entries) => {
           for (const entry of entries) {
             const newWidth = entry.contentRect.width;
-            // Only update if we have a valid width
             if (newWidth > 0) {
               containerWidth = newWidth;
             }
@@ -91,7 +98,7 @@
     if (targetElement && resizeObserver) {
       resizeObserver.observe(targetElement);
 
-      // Initial width measurement - prevents stuck at 2 columns
+      // Initial width measurement
       requestAnimationFrame(() => {
         const width = targetElement.getBoundingClientRect().width;
         if (width > 0) {
@@ -100,7 +107,7 @@
       });
     }
 
-    // Additional safeguard: Re-measure on window resize
+    // Re-measure on window resize
     const handleResize = () => {
       if (targetElement) {
         const width = targetElement.getBoundingClientRect().width;
@@ -111,11 +118,9 @@
     };
     window.addEventListener("resize", handleResize);
 
-    // Cleanup function
     return () => {
       window.removeEventListener("resize", handleResize);
       resizeObserver?.disconnect();
-      unwrapFunctions.forEach((unwrap) => unwrap?.unwrapGrid());
     };
   });
 
@@ -125,9 +130,30 @@
   }
 
   function getCoverUrl(sequence: SequenceData) {
-    const firstThumbnail = sequence?.thumbnails?.[0];
-    if (!firstThumbnail || !thumbnailService) return undefined;
+    if (!thumbnailService) return undefined;
+
+    // Cat-dog mode: Return null, PropAwareThumbnail will handle lazy rendering
+    if (isCatDog) {
+      return undefined;
+    }
+
     try {
+      // Single-prop mode: Use prop-specific pre-rendered images
+      const sequenceName = sequence.word || sequence.name;
+      const propType = propSettings.bluePropType || propSettings.redPropType;
+
+      if (sequenceName && propType) {
+        // Use prop-specific thumbnail path: /gallery/{propType}/{sequence}_{mode}.webp
+        return thumbnailService.getPropSpecificThumbnailUrl(
+          sequenceName,
+          propType,
+          false // dark mode
+        );
+      }
+
+      // Fallback to legacy thumbnail path
+      const firstThumbnail = sequence?.thumbnails?.[0];
+      if (!firstThumbnail) return undefined;
       return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
     } catch (error) {
       console.warn(
@@ -170,6 +196,10 @@
                 coverUrl={getCoverUrl(sequence)}
                 onPrimaryAction={(sequence) =>
                   handleSequenceAction("view-detail", sequence)}
+                bluePropType={propSettings.bluePropType}
+                redPropType={propSettings.redPropType}
+                catDogModeEnabled={isCatDog}
+                {lightMode}
               />
             {/each}
           </div>
@@ -195,6 +225,10 @@
         coverUrl={getCoverUrl(sequence)}
         onPrimaryAction={(sequence) =>
           handleSequenceAction("view-detail", sequence)}
+        bluePropType={propSettings.bluePropType}
+        redPropType={propSettings.redPropType}
+        catDogModeEnabled={isCatDog}
+        {lightMode}
       />
     {/each}
   </div>
@@ -220,7 +254,8 @@
     display: grid;
     /* grid-template-columns set via inline style based on debounced container width */
     gap: var(--spacing-lg);
-    grid-auto-rows: max-content;
+    /* Let cards determine their own height via aspect-ratio - no row-based sizing */
+    align-items: start;
   }
 
   .sequences-grid.list-view {

@@ -161,14 +161,7 @@ Used by both desktop side panel and mobile slide-up overlay.
 
   <!-- Metadata -->
   <div class="metadata">
-    <h2 class="viewer-word-label">{sequence.displayName || sequence.word}</h2>
-    <div class="metadata-row">
-      <span class="metadata-item">{sequence.sequenceLength} beats</span>
-      <span class="metadata-item">{sequence.difficultyLevel}</span>
-      {#if sequence.displayName}
-        <span class="metadata-item tka-indicator">TKA: {sequence.word}</span>
-      {/if}
-    </div>
+
     {#if hasCreatorInfo || sequence.author}
       <div class="metadata-row">
         {#if hasCreatorInfo}
@@ -487,13 +480,6 @@ Used by both desktop side panel and mobile slide-up overlay.
     gap: clamp(6px, 2cqi, 10px);
   }
 
-  .viewer-word-label {
-    font-size: clamp(18px, 6cqi, 28px);
-    font-weight: 700;
-    color: var(--theme-text, white);
-    margin: 0;
-    text-align: center;
-  }
 
   .metadata-row {
     display: flex;

@@ -14,11 +14,11 @@
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import {
-    generateSrcset,
-    generateSizes,
-  } from "$lib/shared/components/thumbnail/srcset-utils";
   import InlineAnimationPlayer from "./InlineAnimationPlayer.svelte";
+  import PropAwareThumbnail from "../PropAwareThumbnail.svelte";
+  import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
+  import { isCatDogMode } from "../../services/implementations/DiscoverThumbnailCache";
 
   type MediaType = "image" | "animation" | "video";
 
@@ -42,18 +42,30 @@
     );
   });
 
-  // State - initialized with default, $effect below syncs from prop
+  // State
   let activeMediaType = $state<MediaType>("image");
-  let currentImageIndex = $state(0);
-  let currentVideoIndex = $state(0);
 
-  // Image crossfade state
-  let currentImageUrl = $state<string | undefined>(undefined);
-  let previousImageUrl = $state<string | undefined>(undefined);
-  let isTransitioning = $state(false);
+  // Get prop settings for PropAwareThumbnail
+  const propSettings = $derived({
+    bluePropType: settingsService.settings.bluePropType,
+    redPropType: settingsService.settings.redPropType,
+    catDogMode: settingsService.settings.catDogMode,
+  });
+
+  const isCatDog = $derived(
+    isCatDogMode(
+      propSettings.bluePropType,
+      propSettings.redPropType,
+      propSettings.catDogMode
+    )
+  );
+
+  const visibilityManager = getAnimationVisibilityManager();
+  const lightMode = $derived(!visibilityManager.isLightsOff());
 
   // Derived: available media types
-  const hasImages = $derived((sequence?.thumbnails?.length ?? 0) > 0);
+  // Image is always available - we render it on demand via PropAwareThumbnail
+  const hasImages = $derived(!!sequence);
   // Animation is always available - we generate it live from sequence data
   const hasAnimation = $derived(!!sequence);
   const hasVideo = $derived(!!sequence?.performanceVideoUrl);
@@ -66,55 +78,9 @@
     return types;
   });
 
-  // Image navigation - circular navigation (always enabled if more than 1 image)
-  const totalImages = $derived(sequence?.thumbnails?.length ?? 0);
-  const canGoPrevImage = $derived(totalImages > 1);
-  const canGoNextImage = $derived(totalImages > 1);
-
-  // Current thumbnail URL
-  const currentThumbnailUrl = $derived.by(() => {
-    if (!sequence?.thumbnails?.[currentImageIndex] || !thumbnailService)
-      return undefined;
-    try {
-      const thumbnail = sequence.thumbnails[currentImageIndex];
-      if (!thumbnail) return undefined;
-      return thumbnailService.getThumbnailUrl(sequence.id, thumbnail);
-    } catch {
-      return undefined;
-    }
-  });
-
-  // Responsive srcset for detail panel images
-  const imageSizes = $derived(generateSizes("detail"));
-  // Generate srcset dynamically for both current and previous images
-  const currentSrcset = $derived(generateSrcset(currentImageUrl));
-  const previousSrcset = $derived(generateSrcset(previousImageUrl));
-
-  // Watch for thumbnail changes and trigger crossfade
-  $effect(() => {
-    const newUrl = currentThumbnailUrl;
-    if (newUrl && newUrl !== currentImageUrl) {
-      const shouldAnimate = currentImageUrl !== undefined;
-      previousImageUrl = shouldAnimate ? currentImageUrl : undefined;
-      currentImageUrl = newUrl;
-      isTransitioning = shouldAnimate;
-
-      if (shouldAnimate) {
-        setTimeout(() => {
-          isTransitioning = false;
-          previousImageUrl = undefined;
-        }, 200);
-      }
-    }
-  });
-
   // Reset to image view when sequence changes
   $effect(() => {
     if (sequence) {
-      currentImageIndex = 0;
-      currentVideoIndex = 0;
-      // Always reset to image view when switching sequences
-      // User can click the image to animate if they want
       activeMediaType = "image";
     }
   });
@@ -123,22 +89,6 @@
   function selectMediaType(type: MediaType) {
     hapticService?.trigger("selection");
     activeMediaType = type;
-  }
-
-  function prevImage() {
-    if (canGoPrevImage) {
-      hapticService?.trigger("selection");
-      // Circular navigation: wrap to last image when on first
-      currentImageIndex = (currentImageIndex - 1 + totalImages) % totalImages;
-    }
-  }
-
-  function nextImage() {
-    if (canGoNextImage) {
-      hapticService?.trigger("selection");
-      // Circular navigation: wrap to first image when on last
-      currentImageIndex = (currentImageIndex + 1) % totalImages;
-    }
   }
 
   function handleImageClick() {
@@ -196,7 +146,7 @@
   <!-- Media Content Area -->
   <div class="media-content">
     {#if activeMediaType === "image"}
-      <!-- Image View -->
+      <!-- Image View - uses PropAwareThumbnail for cloud-cached rendering -->
       <div
         class="image-view"
         role="button"
@@ -205,76 +155,25 @@
         onclick={handleImageClick}
         onkeypress={(e) => e.key === "Enter" && handleImageClick()}
       >
-        {#if currentImageUrl || previousImageUrl}
-          <div class="image-crossfade-container">
-            {#if isTransitioning && previousImageUrl}
-              <img
-                src={previousImageUrl}
-                srcset={previousSrcset}
-                sizes={imageSizes}
-                alt="Previous"
-                class="media-image previous"
-                decoding="async"
-              />
-            {/if}
-            {#if currentImageUrl}
-              <img
-                src={currentImageUrl}
-                srcset={currentSrcset}
-                sizes={imageSizes}
-                alt={sequence.name}
-                class="media-image current"
-                class:transitioning={isTransitioning}
-                decoding="async"
-              />
-            {/if}
-          </div>
+        {#key sequence.id}
+          <PropAwareThumbnail
+            {sequence}
+            bluePropType={propSettings.bluePropType}
+            redPropType={propSettings.redPropType}
+            catDogModeEnabled={isCatDog}
+            {lightMode}
+          />
+        {/key}
 
-          <!-- Play overlay hint -->
-          {#if hasAnimation}
-            <div class="play-overlay">
-              <div class="play-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-              <span>Click to animate</span>
+        <!-- Play overlay hint -->
+        {#if hasAnimation}
+          <div class="play-overlay">
+            <div class="play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
             </div>
-          {/if}
-        {:else}
-          <div class="placeholder">No preview available</div>
-        {/if}
-
-        <!-- Image Navigation (if multiple) -->
-        {#if totalImages > 1}
-          <div class="image-nav">
-            <button
-              class="nav-arrow"
-              onclick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              aria-label="Previous variation"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-              </svg>
-            </button>
-            <span class="image-counter"
-              >{currentImageIndex + 1} / {totalImages}</span
-            >
-            <button
-              class="nav-arrow"
-              onclick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              aria-label="Next variation"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-              </svg>
-            </button>
+            <span>Click to animate</span>
           </div>
         {/if}
       </div>
@@ -384,7 +283,7 @@
     overflow: hidden;
   }
 
-  /* Image View */
+  /* Image View - contains PropAwareThumbnail */
   .image-view {
     position: relative;
     width: 100%;
@@ -393,48 +292,6 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-  }
-
-  .image-crossfade-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .media-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-  }
-
-  .media-image.previous {
-    position: absolute;
-    animation: fadeOut 200ms ease forwards;
-  }
-
-  .media-image.current.transitioning {
-    animation: fadeIn 200ms ease forwards;
-  }
-
-  @keyframes fadeOut {
-    from {
-      opacity: 1;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
   }
 
   /* Play overlay */

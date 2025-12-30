@@ -6,6 +6,7 @@
  */
 
 import { injectable } from "inversify";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { IDiscoverThumbnailProvider } from "../contracts/IDiscoverThumbnailProvider";
 
 @injectable()
@@ -42,6 +43,22 @@ export class DiscoverThumbnailProvider implements IDiscoverThumbnailProvider {
     // If thumbnailPath is relative, prepend base URL and optimize
     const fullUrl = `${this.baseUrl}/${thumbnailPath}`;
     return this.getOptimizedUrl(fullUrl);
+  }
+
+  /**
+   * Get prop-specific thumbnail URL
+   * Returns path to pre-rendered gallery image for a specific prop type
+   *
+   * Structure: /gallery/{propType}/{sequenceName}_{mode}.webp
+   * Example: /gallery/staff/Butterfly_dark.webp
+   */
+  getPropSpecificThumbnailUrl(
+    sequenceName: string,
+    propType: PropType,
+    lightMode: boolean = false
+  ): string {
+    const modeSuffix = lightMode ? "_light" : "_dark";
+    return `${this.baseUrl}/${propType}/${sequenceName}${modeSuffix}.webp`;
   }
 
   /**

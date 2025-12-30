@@ -9,28 +9,36 @@ No footer gradient needed - the image speaks for itself.
 
 All actions (favorite, edit, animate, delete) are in the detail panel.
 Enhanced with Svelte 5 runes for reactive state management.
+
+Uses PropAwareThumbnail for cloud-cached rendering:
+- First user to view a prop type renders it locally
+- Rendered image is uploaded to Firebase Storage
+- All subsequent users get instant loading from cloud
 -->
 <script lang="ts">
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import SequenceCardMedia from "./SequenceCardMedia.svelte";
+  import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+  import PropAwareThumbnail from "../PropAwareThumbnail.svelte";
 
   const {
     sequence,
-    coverUrl = undefined,
+    coverUrl = undefined, // Legacy prop, kept for backwards compatibility
     onPrimaryAction = () => {},
     selected = false,
+    bluePropType = undefined,
+    redPropType = undefined,
+    catDogModeEnabled = false,
+    lightMode = false,
   }: {
     sequence: SequenceData;
     coverUrl?: string;
     onPrimaryAction?: (sequence: SequenceData) => void;
     selected?: boolean;
+    bluePropType?: PropType;
+    redPropType?: PropType;
+    catDogModeEnabled?: boolean;
+    lightMode?: boolean;
   } = $props();
-
-  // Extract image dimensions from metadata for layout shift prevention
-  const imageDimensions = $derived({
-    width: (sequence.metadata as any)?.width,
-    height: (sequence.metadata as any)?.height,
-  });
 
   function handlePrimaryAction() {
     onPrimaryAction(sequence);
@@ -38,11 +46,13 @@ Enhanced with Svelte 5 runes for reactive state management.
 </script>
 
 <button class="sequence-card" class:selected onclick={handlePrimaryAction}>
-  <SequenceCardMedia
-    {coverUrl}
-    word={sequence.word}
-    width={imageDimensions.width}
-    height={imageDimensions.height}
+  <!-- Always use PropAwareThumbnail for cloud-cached rendering -->
+  <PropAwareThumbnail
+    {sequence}
+    {bluePropType}
+    {redPropType}
+    {catDogModeEnabled}
+    {lightMode}
   />
 </button>
 
@@ -54,11 +64,9 @@ Enhanced with Svelte 5 runes for reactive state management.
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     color: var(--theme-text);
-    display: flex;
-    flex-direction: column;
+    display: block;
     box-shadow: 0 12px 40px var(--theme-shadow);
     width: 100%; /* Fill grid cell width */
-    height: 100%; /* Fill grid cell height */
     padding: 0; /* Remove default button padding */
     margin: 0; /* Remove default button margin */
 

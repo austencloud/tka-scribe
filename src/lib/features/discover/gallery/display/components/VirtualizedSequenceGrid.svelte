@@ -5,6 +5,8 @@
   import { get } from "svelte/store";
   import type { IDiscoverThumbnailProvider } from "../services/contracts/IDiscoverThumbnailProvider";
   import SequenceCard from "./SequenceCard/SequenceCard.svelte";
+  import { settingsService } from "$lib/shared/settings/state/SettingsState.svelte";
+  import { isCatDogMode } from "../services/implementations/DiscoverThumbnailCache";
 
   /**
    * VirtualizedSequenceGrid - High-performance grid for large sequence lists
@@ -16,6 +18,7 @@
    * - Dynamic column count based on container width
    * - Virtual rows with configurable overscan
    * - Smooth scrolling with estimated item size
+   * - Prop-aware thumbnails (single-prop or cat-dog mode)
    */
 
   const {
@@ -27,6 +30,22 @@
     thumbnailService: IDiscoverThumbnailProvider | null;
     onAction?: (action: string, sequence: SequenceData) => void;
   }>();
+
+  // Get user's prop settings for prop-aware thumbnails
+  const propSettings = $derived({
+    bluePropType: settingsService.settings.bluePropType,
+    redPropType: settingsService.settings.redPropType,
+    catDogMode: settingsService.settings.catDogMode,
+  });
+
+  // Determine if we're in cat-dog mode (different props per hand)
+  const isCatDog = $derived(
+    isCatDogMode(
+      propSettings.bluePropType,
+      propSettings.redPropType,
+      propSettings.catDogMode
+    )
+  );
 
   // Container and scroll element refs
   let scrollElement = $state<HTMLDivElement | null>(null);
@@ -65,9 +84,30 @@
   }
 
   function getCoverUrl(sequence: SequenceData) {
-    const firstThumbnail = sequence?.thumbnails?.[0];
-    if (!firstThumbnail || !thumbnailService) return undefined;
+    if (!thumbnailService) return undefined;
+
+    // Cat-dog mode: Return null, PropAwareThumbnail will handle lazy rendering
+    if (isCatDog) {
+      return undefined;
+    }
+
     try {
+      // Single-prop mode: Use prop-specific pre-rendered images
+      const sequenceName = sequence.word || sequence.name;
+      const propType = propSettings.bluePropType || propSettings.redPropType;
+
+      if (sequenceName && propType) {
+        // Use prop-specific thumbnail path: /gallery/{propType}/{sequence}_{mode}.webp
+        return thumbnailService.getPropSpecificThumbnailUrl(
+          sequenceName,
+          propType,
+          false // dark mode
+        );
+      }
+
+      // Fallback to legacy thumbnail path
+      const firstThumbnail = sequence?.thumbnails?.[0];
+      if (!firstThumbnail) return undefined;
       return thumbnailService.getThumbnailUrl(sequence.id, firstThumbnail);
     } catch {
       return undefined;
@@ -183,6 +223,9 @@
               {sequence}
               coverUrl={getCoverUrl(sequence)}
               onPrimaryAction={(seq) => handleSequenceAction("view-detail", seq)}
+              bluePropType={propSettings.bluePropType}
+              redPropType={propSettings.redPropType}
+              catDogModeEnabled={isCatDog}
             />
           </div>
         {/each}
