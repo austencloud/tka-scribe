@@ -34,7 +34,9 @@ export class AnimationVisibilitySynchronizer
       turnNumbers: this.manager.getVisibility("turnNumbers"),
       blueMotion: this.manager.getVisibility("blueMotion"),
       redMotion: this.manager.getVisibility("redMotion"),
-      ledMode: this.manager.isLedMode(),
+      lightsOff: this.manager.isLightsOff(),
+      // Prop glow is automatically enabled when Lights Off is on (for animations)
+      propGlow: this.manager.isLightsOff(),
     };
   }
 

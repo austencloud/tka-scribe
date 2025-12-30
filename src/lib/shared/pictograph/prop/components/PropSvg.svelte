@@ -24,24 +24,32 @@ Now with smooth transitions when position or orientation changes!
     propAssets,
     propPosition,
     showProp = true,
-    propGlow = false,
-    ledMode = false,
+    glowEnabled = false,
   } = $props<{
     motionData: MotionData;
     propAssets: PropAssets;
     propPosition: PropPosition;
     showProp?: boolean;
-    /** Prop Glow - applies glowing drop-shadow effect to props */
-    propGlow?: boolean;
-    /** @deprecated Use propGlow instead. Kept for backward compatibility. */
-    ledMode?: boolean;
+    /** Enable glow effect on props (for Lights Off mode in animations) */
+    glowEnabled?: boolean;
   }>();
-
-  // Use propGlow if explicitly set, otherwise fall back to ledMode for compatibility
-  const effectiveGlow = $derived(propGlow || ledMode);
 
   // Get the glow color based on motion color
   const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
+
+  // Fans are complex objects - use reduced glow intensity
+  const isFan = $derived(motionData?.propType === PropType.FAN);
+
+  // Build the glow filter string - reduced intensity for fans
+  const glowFilter = $derived.by(() => {
+    if (!glowEnabled) return "";
+    if (isFan) {
+      // Reduced glow for fans - smaller radii and single shadow
+      return `filter: drop-shadow(0 0 4px ${glowColor});`;
+    }
+    // Full glow for other props (staff, club, etc.)
+    return `filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor});`;
+  });
 
   type MotionSnapshot = {
     startOrientation?: Orientation;
@@ -222,10 +230,10 @@ Now with smooth transitions when position or orientation changes!
 {#if showProp}
   <g
     class="prop-svg {motionData.color}-prop-svg"
-    class:prop-glow={effectiveGlow}
+    class:prop-glow={glowEnabled}
     data-prop-type={motionData?.propType}
-    data-prop-glow={effectiveGlow}
-    style="transform: {transformString};{effectiveGlow ? ` filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor});` : ''}"
+    data-glow-enabled={glowEnabled}
+    style="transform: {transformString};{glowFilter}"
   >
     {@html propAssets.imageSrc}
   </g>

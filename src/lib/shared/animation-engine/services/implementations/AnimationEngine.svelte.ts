@@ -144,7 +144,8 @@ export class AnimationEngine {
       turnNumbers: true,
       blueMotion: true,
       redMotion: true,
-      ledMode: false,
+      lightsOff: false,
+      propGlow: false,
     },
     isPreRendering: false,
     preRenderProgress: null,
@@ -204,7 +205,7 @@ export class AnimationEngine {
   private prevSequenceData: SequenceData | null = null;
   private prevIsPlaying: boolean = false;
   private prevGridMode: GridMode | null = null;
-  private prevLedMode: boolean = false;
+  private prevLightsOff: boolean = false;
 
   // Simple reference to last props for initial render (not a copy - avoids GC)
   private lastPropsRef: AnimationEngineProps | null = null;
@@ -232,6 +233,7 @@ export class AnimationEngine {
       blueMotionVisible: true,
       redMotionVisible: true,
     },
+    isPlaying: false,
   };
 
   // ============================================================================
@@ -250,7 +252,7 @@ export class AnimationEngine {
 
     // Initialize visibility manager
     const visibilityManager = getAnimationVisibilityManager();
-    this.prevLedMode = visibilityManager.isLedMode();
+    this.prevLightsOff = visibilityManager.isLightsOff();
     this.state.visibilityState = {
       grid: visibilityManager.getGridMode() !== "none",
       beatNumbers: visibilityManager.getVisibility("beatNumbers"),
@@ -260,7 +262,9 @@ export class AnimationEngine {
       turnNumbers: visibilityManager.getVisibility("turnNumbers"),
       blueMotion: visibilityManager.getVisibility("blueMotion"),
       redMotion: visibilityManager.getVisibility("redMotion"),
-      ledMode: visibilityManager.isLedMode(),
+      lightsOff: visibilityManager.isLightsOff(),
+      // Prop glow is automatically enabled when Lights Off is on (for animations)
+      propGlow: visibilityManager.isLightsOff(),
     };
 
     // Initialize services that don't need renderer
@@ -268,11 +272,12 @@ export class AnimationEngine {
     this.unsubscribeVisibility = this.visibilitySyncService.subscribe((state) => {
       this.state.visibilityState = state;
 
-      // Sync LED mode to renderer when it changes
-      if (state.ledMode !== this.prevLedMode) {
-        console.log("[AnimationEngine] LED mode changed:", state.ledMode, "renderer:", !!this.animationRenderer);
-        this.prevLedMode = state.ledMode;
-        this.animationRenderer?.setLedMode(state.ledMode);
+      // Sync Lights Off mode to renderer when it changes
+      if (state.lightsOff !== this.prevLightsOff) {
+        console.log("[AnimationEngine] Lights Off changed:", state.lightsOff, "renderer:", !!this.animationRenderer);
+        this.prevLightsOff = state.lightsOff;
+        // Note: setLedMode on renderer controls the "Lights Off" effect (dark bg, inverted grid)
+        this.animationRenderer?.setLedMode(state.lightsOff);
         // Trigger re-render to show the change
         if (this.state.isInitialized) {
           this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS));
@@ -544,8 +549,8 @@ export class AnimationEngine {
         },
         onPixiRendererReady: (renderer) => {
           this.animationRenderer = renderer;
-          // Set initial LED mode on renderer
-          renderer.setLedMode(this.prevLedMode);
+          // Set initial Lights Off mode on renderer
+          renderer.setLedMode(this.prevLightsOff);
         },
         onInitialized: (initialized) => {
           this.state.isInitialized = initialized;
@@ -778,6 +783,9 @@ export class AnimationEngine {
     fp.visibility.trailsVisible = this.state.visibilityState.trails;
     fp.visibility.blueMotionVisible = this.state.visibilityState.blueMotion;
     fp.visibility.redMotionVisible = this.state.visibilityState.redMotion;
+
+    // Set isPlaying to control render loop continuation
+    fp.isPlaying = props.isPlaying ?? false;
 
     return fp;
   }

@@ -22,8 +22,9 @@ interface AnimationVisibilitySettings {
   speed: number; // Speed multiplier (1.0 = 60 BPM, range 0.1-3.0)
 
   // Global Effects (applies to pictograph, animation, and image export)
-  lightsOff: boolean; // Lights Off: dark background, inverted grid, white text/outlines
-  propGlow: boolean; // Prop Glow: glowing drop-shadow effect on props
+  // Lights Off: dark background, inverted grid, white text/outlines
+  // Prop glow is automatically enabled for animations when lightsOff is true
+  lightsOff: boolean;
 
   // Legacy property - kept for migration only, do not use
   ledMode?: boolean;
@@ -60,9 +61,8 @@ export class AnimationVisibilityStateManager {
       playbackMode: "continuous", // Default to continuous playback
       speed: 1.0, // Default to 60 BPM
 
-      // Global effects - both off by default
+      // Global effects
       lightsOff: false, // Lights off mode disabled by default
-      propGlow: false, // Prop glow disabled by default
 
       // Shared elements - defaults optimized for animation viewing
       tkaGlyph: true,
@@ -84,13 +84,17 @@ export class AnimationVisibilityStateManager {
       if (stored) {
         const parsed = JSON.parse(stored);
 
-        // Migration: convert old ledMode to new lightsOff + propGlow
+        // Migration: convert old ledMode to lightsOff
         if (parsed.ledMode !== undefined && parsed.lightsOff === undefined) {
-          // Old ledMode enabled both effects - migrate to both new settings
           parsed.lightsOff = parsed.ledMode;
-          parsed.propGlow = parsed.ledMode;
           delete parsed.ledMode;
           // Save migrated settings
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+
+        // Clean up old propGlow setting if present
+        if (parsed.propGlow !== undefined) {
+          delete parsed.propGlow;
           localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
         }
 
@@ -141,6 +145,7 @@ export class AnimationVisibilityStateManager {
    * Notify observers of changes
    */
   private notifyObservers(): void {
+    console.log(`[AnimationVisibilityManager] Notifying ${this.observers.size} observers`);
     this.observers.forEach((callback) => {
       try {
         callback();
@@ -157,9 +162,10 @@ export class AnimationVisibilityStateManager {
   /**
    * Get specific boolean visibility setting
    * (For gridMode, trailStyle, playbackMode, speed use dedicated getters)
+   * (For ledMode, use isLightsOff() instead)
    */
   getVisibility(
-    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle" | "playbackMode" | "speed">
+    key: Exclude<keyof AnimationVisibilitySettings, "gridMode" | "trailStyle" | "playbackMode" | "speed" | "ledMode">
   ): boolean {
     return this.settings[key];
   }
@@ -352,31 +358,6 @@ export class AnimationVisibilityStateManager {
     this.setLightsOff(!this.settings.lightsOff);
   }
 
-  /**
-   * Check if Prop Glow is enabled
-   * When enabled: props have a glowing drop-shadow effect
-   */
-  isPropGlow(): boolean {
-    return this.settings.propGlow;
-  }
-
-  /**
-   * Set Prop Glow mode
-   * Controls: glowing drop-shadow effect on props
-   */
-  setPropGlow(enabled: boolean): void {
-    this.settings.propGlow = enabled;
-    this.saveToStorage();
-    this.notifyObservers();
-  }
-
-  /**
-   * Toggle Prop Glow mode
-   */
-  togglePropGlow(): void {
-    this.setPropGlow(!this.settings.propGlow);
-  }
-
   // ============================================================================
   // LEGACY COMPATIBILITY (for gradual migration)
   // ============================================================================
@@ -390,12 +371,11 @@ export class AnimationVisibilityStateManager {
   }
 
   /**
-   * @deprecated Use setLightsOff() and setPropGlow() instead
-   * Kept for backward compatibility - sets both lightsOff and propGlow
+   * @deprecated Use setLightsOff() instead
+   * Kept for backward compatibility - sets lightsOff
    */
   setLedMode(enabled: boolean): void {
     this.settings.lightsOff = enabled;
-    this.settings.propGlow = enabled;
     this.saveToStorage();
     this.notifyObservers();
   }

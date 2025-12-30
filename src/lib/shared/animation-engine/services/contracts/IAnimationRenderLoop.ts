@@ -68,6 +68,8 @@ export interface RenderFrameParams {
   letter: Letter | null;
   props: RenderPropsState;
   visibility: RenderVisibilitySettings;
+  /** Whether animation playback is active (controls render loop continuation) */
+  isPlaying: boolean;
 }
 
 /**

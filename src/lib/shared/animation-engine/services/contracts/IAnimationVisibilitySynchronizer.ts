@@ -18,7 +18,10 @@ export interface AnimationVisibilityState {
   turnNumbers: boolean;
   blueMotion: boolean;
   redMotion: boolean;
-  ledMode: boolean;
+  /** Lights Off: dark background, inverted grid, white text/outlines */
+  lightsOff: boolean;
+  /** Prop Glow: glowing drop-shadow effect on props */
+  propGlow: boolean;
 }
 
 /**

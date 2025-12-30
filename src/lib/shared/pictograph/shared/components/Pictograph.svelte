@@ -167,14 +167,18 @@
   });
 
   // LED mode - reads from global animation visibility state when not explicitly set
+  // Now renamed to "Lights Off" mode - controls dark background, inverted grid, white text
   const effectiveLedMode = $derived.by(() => {
     visibilityUpdateCount; // Force reactivity when animation visibility changes
     if (ledMode !== undefined) return ledMode;
-    // Read directly from animation visibility manager (not via pictograph manager's require() hack)
-    return animationVisibilityManager.isLedMode();
+    // Read directly from animation visibility manager
+    return animationVisibilityManager.isLightsOff();
   });
 
-  // Background color based on LED mode
+  // Static pictographs never have prop glow - glow is only for animations
+  // (Removed effectivePropGlow - animation handles its own glow)
+
+  // Background color based on LED/Lights Off mode
   const backgroundColor = $derived(effectiveLedMode ? "#0a0a0f" : "white");
 
   // =============================================================================
@@ -523,7 +527,6 @@
                 propAssets={pictographState.propAssets[color]}
                 propPosition={pictographState.propPositions[color]}
                 showProp={pictographState.showProps}
-                ledMode={effectiveLedMode}
               />
             {/if}
           {/each}
@@ -575,6 +578,7 @@
             {showBeatNumber}
             {isStartPosition}
             hasValidData={pictographState.hasValidData}
+            ledMode={effectiveLedMode}
           />
 
           <!-- Reversal indicators -->
@@ -636,7 +640,6 @@
                   propAssets={pictographState.propAssets[color]}
                   propPosition={pictographState.propPositions[color]}
                   showProp={pictographState.showProps}
-                  ledMode={effectiveLedMode}
                 />
               {/if}
             {/each}
@@ -688,6 +691,7 @@
               {showBeatNumber}
               {isStartPosition}
               hasValidData={pictographState.hasValidData}
+              ledMode={effectiveLedMode}
             />
 
             <!-- Reversal indicators -->

@@ -109,7 +109,7 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
     }
 
     const params = this.getFrameParamsCallback();
-    const { trailSettings } = params;
+    const { trailSettings, isPlaying } = params;
 
     // Real-time trail capture
     if (
@@ -133,10 +133,22 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
       );
     }
 
-    if (
-      this.needsRender ||
-      (trailSettings.enabled && trailSettings.mode !== TrailMode.OFF)
-    ) {
+    // Continue render loop if:
+    // 1. One-shot render is needed (needsRender)
+    // 2. Trails are enabled and need continuous updates
+    // 3. Animation is actively playing (props are interpolating)
+    const trailsNeedContinuousRender =
+      trailSettings.enabled && trailSettings.mode !== TrailMode.OFF;
+    const shouldContinueLoop =
+      this.needsRender || trailsNeedContinuousRender || isPlaying;
+
+    // Debug: Log when loop decision changes
+    if (!shouldContinueLoop) {
+      console.log("[RenderLoop] STOPPING - needsRender:", this.needsRender,
+        "trails:", trailsNeedContinuousRender, "isPlaying:", isPlaying);
+    }
+
+    if (shouldContinueLoop) {
       this.render(params, currentTime);
       this.needsRender = false;
       // Only schedule next frame if not disposed
