@@ -13,6 +13,7 @@ import type { SequenceData } from "$lib/shared/foundation/domain/models/Sequence
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { LOOPType } from "$lib/features/create/generate/circular/domain/models/circular-models";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
 // Re-export LOOPType for convenience
 export type { LOOPType };
@@ -74,6 +75,39 @@ export interface ExtensionOptions {
 }
 
 /**
+ * Describes the rotation relationship between end position and start position.
+ * This affects which LOOPs are available and final sequence length.
+ */
+export type RotationRelation =
+  | "exact"    // End position equals start position (0°)
+  | "quarter"  // End position is 90° rotation of start (4x sequence length with rotated LOOPs)
+  | "half";    // End position is 180° rotation of start (2x sequence length with mirrored LOOPs)
+
+/**
+ * Describes orientation alignment status for exact position matches.
+ * When a sequence returns to its start position, orientations may or may not match.
+ */
+export interface OrientationAlignment {
+  /** Whether both blue and red orientations match the start position */
+  matches: boolean;
+  /** End orientation of blue prop after adding bridge letter */
+  blueEndOri: string;
+  /** End orientation of red prop after adding bridge letter */
+  redEndOri: string;
+  /** Start orientation of blue prop (from sequence start position) */
+  blueStartOri: string;
+  /** Start orientation of red prop (from sequence start position) */
+  redStartOri: string;
+  /**
+   * How many times the sequence needs to repeat to return to original orientations.
+   * 1 = orientations already match (true loop)
+   * 2 = orientations flip once, need 2 repetitions
+   * 4 = orientations quarter-cycle, need 4 repetitions
+   */
+  repetitionsNeeded: 1 | 2 | 4;
+}
+
+/**
  * Option for making a non-loopable sequence circular via bridge letter.
  * When a sequence ends at a different position group than it starts,
  * adding a bridge letter can bring it to a position where LOOPs work.
@@ -87,6 +121,16 @@ export interface CircularizationOption {
   availableLOOPs: LOOPOption[];
   /** Description for UI display */
   description: string;
+  /** Pictograph data for visual display of the bridge letter */
+  pictographData?: PictographData;
+  /** Rotation relationship to start position (affects sequence length multiplier) */
+  rotationRelation?: RotationRelation;
+  /** Orientation alignment info (only for exact position matches) */
+  orientationAlignment?: OrientationAlignment;
+  /** Current sequence length (number of beats before extension) */
+  currentLength?: number;
+  /** Resulting sequence length after applying LOOP with this bridge */
+  resultingLength?: number;
 }
 
 export interface ISequenceExtender {
@@ -130,6 +174,16 @@ export interface ISequenceExtender {
   getCircularizationOptions(sequence: SequenceData): Promise<CircularizationOption[]>;
 
   /**
+   * Get extension options that would bring the sequence to a loopable position.
+   * Only returns pictographs that END in the same position GROUP as the sequence starts.
+   * For example: if sequence starts at alpha3, only shows letters that end in alpha1/3/5/7.
+   * Used for pictograph-first UX where users select visually, then pick LOOP.
+   * @param sequence The sequence to analyze
+   * @returns Array of extension options with pictograph data and available LOOPs
+   */
+  getAllExtensionOptions(sequence: SequenceData): Promise<CircularizationOption[]>;
+
+  /**
    * Extend a sequence by first appending a bridge letter, then applying a LOOP.
    * @param sequence The sequence to extend
    * @param bridgeLetter The bridge letter to append before applying LOOP
@@ -141,5 +195,19 @@ export interface ISequenceExtender {
     sequence: SequenceData,
     bridgeLetter: Letter,
     loopType: LOOPType
+  ): Promise<SequenceData>;
+
+  /**
+   * Append just a bridge beat to a sequence (without applying LOOP).
+   * Used when user selects a bridge pictograph and wants to see it in the sequence
+   * before choosing which LOOP to apply.
+   * @param sequence The sequence to append to
+   * @param bridgeLetter The bridge letter to append
+   * @returns A new sequence with the bridge beat appended
+   * @throws Error if no valid pictograph found for the bridge letter
+   */
+  appendBridgeBeat(
+    sequence: SequenceData,
+    bridgeLetter: Letter
   ): Promise<SequenceData>;
 }

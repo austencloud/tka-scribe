@@ -348,4 +348,16 @@
   .applying-overlay i {
     font-size: var(--font-size-xl, 1.5rem);
   }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .loop-button {
+      transition: none;
+    }
+
+    .loop-button:hover:not(:disabled),
+    .loop-button:active:not(:disabled) {
+      transform: none;
+    }
+  }
 </style>

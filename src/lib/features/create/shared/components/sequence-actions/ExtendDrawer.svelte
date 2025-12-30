@@ -1,13 +1,19 @@
 <!--
   ExtendDrawer.svelte
 
-  Drawer for selecting a LOOP (Linked Offset Operation Pattern) to extend a sequence.
-  LOOP = TKA's algorithmic extension patterns (Mirrored, Rotated, Swapped, etc.)
-  Uses the shared LOOPPicker component for consistent selection UI.
+  Drawer for extending a sequence using LOOP (Linked Offset Operation Pattern).
+
+  Two-phase flow:
+  1. If directly loopable → Show LOOPPicker immediately
+  2. If NOT directly loopable → Show bridge pictograph grid first
+     - User selects a bridge pictograph → IMMEDIATELY appends to sequence
+     - Sequence is re-analyzed → should now be loopable
+     - Show LOOPPicker for the now-loopable sequence
 -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import LOOPPicker from "$lib/shared/components/loop-picker/LOOPPicker.svelte";
+  import BridgePictographGrid from "$lib/shared/components/loop-picker/BridgePictographGrid.svelte";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type {
     ExtensionAnalysis,
@@ -26,8 +32,10 @@
     /** Measured tool panel width for desktop sizing */
     toolPanelWidth?: number;
     onClose: () => void;
-    /** Called when user selects a LOOP (with optional bridge letter) */
-    onApply: (bridgeLetter: Letter | null, loopType: LOOPType) => void;
+    /** Called when user selects a bridge pictograph - should immediately append to sequence */
+    onBridgeAppend: (bridgeLetter: Letter) => void;
+    /** Called when user selects a LOOP (no bridge letter needed - already appended) */
+    onApply: (loopType: LOOPType) => void;
   }
 
   let {
@@ -38,26 +46,59 @@
     isApplying,
     toolPanelWidth = 0,
     onClose,
+    onBridgeAppend,
     onApply,
   }: Props = $props();
+
+  // Available LOOP options (direct)
+  const availableDirectOptions = $derived(analysis?.availableLOOPOptions ?? []);
+
+  // Determine if sequence is directly loopable
+  const isDirectlyLoopable = $derived(availableDirectOptions.length > 0);
 
   // Build inline style for drawer width when we have a valid measurement
   const drawerStyle = $derived(
     toolPanelWidth > 0 ? `--measured-panel-width: ${toolPanelWidth}px` : ""
   );
 
-  // Available LOOP options only
-  const availableOptions = $derived(analysis?.availableLOOPOptions ?? []);
-
-  function handleSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
+  function handleBridgeSelect(option: CircularizationOption) {
     if (isApplying) return;
-    onApply(bridgeLetter, loopType);
+    // Immediately append the bridge letter to the sequence
+    // Parent will re-analyze and the analysis prop will update to show LOOPs
+    onBridgeAppend(option.bridgeLetters[0]);
+  }
+
+  function handleLoopSelect(_bridgeLetter: Letter | null, loopType: LOOPType) {
+    if (isApplying) return;
+    // Bridge is already appended, just apply the LOOP
+    onApply(loopType);
   }
 
   function handleClose() {
     if (isApplying) return;
     onClose();
   }
+
+  // Header text based on current state
+  const headerTitle = $derived(
+    isDirectlyLoopable ? "Extend" : "Choose Bridge"
+  );
+
+  const headerSubtitle = $derived(() => {
+    if (!isDirectlyLoopable) {
+      return "Select a pictograph to reach a loopable position";
+    }
+    if (analysis?.extensionType === "half_rotation") {
+      return "180° rotation patterns";
+    }
+    if (analysis?.extensionType === "quarter_rotation") {
+      return "90° rotation patterns";
+    }
+    if (analysis?.extensionType === "already_complete") {
+      return "Extend with pattern";
+    }
+    return "Extend your sequence";
+  });
 </script>
 
 <div style={drawerStyle}>
@@ -73,19 +114,10 @@
     <div class="extend-drawer-content">
       <header class="drawer-header">
         <div class="header-info">
-          <h2>Extend</h2>
-          <span class="subtitle">
-            {#if analysis?.extensionType === "half_rotation"}
-              180° rotation patterns
-            {:else if analysis?.extensionType === "quarter_rotation"}
-              90° rotation patterns
-            {:else if analysis?.extensionType === "already_complete"}
-              Extend with pattern
-            {:else}
-              Extend your sequence
-            {/if}
-          </span>
+          <h2>{headerTitle}</h2>
+          <span class="subtitle">{headerSubtitle()}</span>
         </div>
+
         <button
           class="close-btn"
           onclick={handleClose}
@@ -96,7 +128,8 @@
         </button>
       </header>
 
-      {#if !analysis || !analysis.canExtend || (availableOptions.length === 0 && circularizationOptions.length === 0)}
+      {#if !analysis || (!isDirectlyLoopable && circularizationOptions.length === 0)}
+        <!-- No options at all -->
         <div class="no-options">
           <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <p>No extension patterns available for this sequence.</p>
@@ -115,14 +148,23 @@
             </div>
           </div>
 
-          <!-- Use shared LOOPPicker component -->
-          <LOOPPicker
-            directOptions={availableOptions}
-            {circularizationOptions}
-            onSelect={handleSelect}
-            {directUnavailableReason}
-            {isApplying}
-          />
+          <!-- Bridge Selection (not directly loopable) -->
+          {#if !isDirectlyLoopable}
+            <BridgePictographGrid
+              options={circularizationOptions}
+              onSelect={handleBridgeSelect}
+              isLoading={isApplying}
+            />
+          {:else}
+            <!-- LOOP Selection (directly loopable) -->
+            <LOOPPicker
+              directOptions={availableDirectOptions}
+              circularizationOptions={[]}
+              onSelect={handleLoopSelect}
+              directUnavailableReason={null}
+              {isApplying}
+            />
+          {/if}
         </div>
       {/if}
     </div>
@@ -186,6 +228,11 @@
     cursor: pointer;
     padding: 4px 8px;
     border-radius: var(--radius-sm, 4px);
+    min-width: 36px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .close-btn:hover:not(:disabled) {
@@ -195,6 +242,11 @@
   .close-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .close-btn:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
   }
 
   .no-options {

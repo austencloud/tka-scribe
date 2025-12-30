@@ -63,11 +63,13 @@
     panelState.openSaveToLibraryPanel(); // This calls closeAllPanels() first
   }
 
-  const currentSequence = $derived(sequenceState.currentSequence);
-  const selectedStartPosition = $derived(sequenceState.selectedStartPosition);
-  const removingBeatIndex = $derived(sequenceState.getRemovingBeatIndex());
-  const removingBeatIndices = $derived(sequenceState.getRemovingBeatIndices());
-  const isClearing = $derived(sequenceState.getIsClearing());
+  // Use $derived.by() to ensure Svelte tracks the getters properly
+  // when sequenceState is passed as a prop (not a reactive state)
+  const currentSequence = $derived.by(() => sequenceState.currentSequence);
+  const selectedStartPosition = $derived.by(() => sequenceState.selectedStartPosition);
+  const removingBeatIndex = $derived.by(() => sequenceState.getRemovingBeatIndex());
+  const removingBeatIndices = $derived.by(() => sequenceState.getRemovingBeatIndices());
+  const isClearing = $derived.by(() => sequenceState.getIsClearing());
   const isShiftStartMode = $derived(panelState.isShiftStartMode);
 
   // Convert selectedStartPosition (PictographData) to BeatData format for BeatGrid

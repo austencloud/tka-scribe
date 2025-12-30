@@ -272,28 +272,67 @@
     showExtendDrawer = true;
   }
 
-  async function handleExtendApply(bridgeLetter: Letter | null, loopType: LOOPType) {
+  /**
+   * Handle bridge pictograph selection - immediately appends to sequence
+   * and re-analyzes to show LOOP options.
+   */
+  async function handleBridgeAppend(bridgeLetter: Letter) {
+    console.log("[Extend] handleBridgeAppend called with:", bridgeLetter);
+    if (!sequence || !sequenceExtender || isExtending) {
+      console.log("[Extend] Early return - sequence:", !!sequence, "extender:", !!sequenceExtender, "isExtending:", isExtending);
+      return;
+    }
+    isExtending = true;
+    hapticService?.trigger("selection");
+
+    try {
+      // Push undo snapshot BEFORE appending bridge
+      CreateModuleState.pushUndoSnapshot(UndoOperationType.ADD_BEAT);
+
+      // Append the bridge beat to the sequence
+      console.log("[Extend] Calling appendBridgeBeat...");
+      const sequenceWithBridge = await sequenceExtender.appendBridgeBeat(
+        sequence,
+        bridgeLetter
+      );
+      console.log("[Extend] Got extended sequence with", sequenceWithBridge.beats?.length, "beats");
+
+      // Update the sequence - this will show the new beat immediately
+      activeSequenceState.setCurrentSequence(sequenceWithBridge);
+      hapticService?.trigger("success");
+
+      // Re-analyze the sequence (should now be directly loopable)
+      const analysis = sequenceExtender.analyzeSequence(sequenceWithBridge);
+      console.log("[Extend] Re-analyzed - canExtend:", analysis.canExtend, "LOOPs:", analysis.availableLOOPOptions.length);
+      extensionAnalysis = analysis;
+      circularizationOptions = []; // Clear bridge options since we now have LOOPs
+      directUnavailableReason = null;
+
+      toast.success(`Added "${bridgeLetter}" - now choose LOOP pattern`);
+    } catch (error) {
+      console.error("[Extend] Failed to append bridge:", error);
+      toast.error("Could not add bridge letter");
+      hapticService?.trigger("error");
+    } finally {
+      isExtending = false;
+    }
+  }
+
+  /**
+   * Handle LOOP selection - applies the LOOP to extend the sequence.
+   * Bridge letter (if any) has already been appended by handleBridgeAppend.
+   */
+  async function handleExtendApply(loopType: LOOPType) {
     if (!sequence || !sequenceExtender || isExtending) return;
     isExtending = true;
     hapticService?.trigger("selection");
 
     try {
-      let extendedSequence;
-
-      if (bridgeLetter) {
-        // Extend with a bridge letter first
-        extendedSequence = await sequenceExtender.extendWithBridge(
-          sequence,
-          bridgeLetter,
-          loopType
-        );
-      } else {
-        // Direct extension without bridge letter
-        extendedSequence = await sequenceExtender.extendSequence(
-          sequence,
-          { loopType }
-        );
-      }
+      // Direct extension (bridge already appended if needed)
+      const extendedSequence = await sequenceExtender.extendSequence(
+        sequence,
+        { loopType }
+      );
 
       if (extendedSequence.beats?.length === sequence.beats?.length) {
         console.warn("[Extend] No new beats were added!");
@@ -309,10 +348,7 @@
 
       const beatsAdded = (extendedSequence.beats?.length || 0) - (sequence.beats?.length || 0);
       const loopName = loopType.replace(/_/g, " ");
-      const message = bridgeLetter
-        ? `Extended via ${bridgeLetter} + ${loopName}! Added ${beatsAdded} beats`
-        : `Extended with ${loopName}! Added ${beatsAdded} beats`;
-      toast.success(message);
+      toast.success(`Extended with ${loopName}! Added ${beatsAdded} beats`);
 
       // Close the drawer on success
       showExtendDrawer = false;
@@ -655,6 +691,7 @@
     circularizationOptions = [];
     directUnavailableReason = null;
   }}
+  onBridgeAppend={handleBridgeAppend}
   onApply={handleExtendApply}
 />
 

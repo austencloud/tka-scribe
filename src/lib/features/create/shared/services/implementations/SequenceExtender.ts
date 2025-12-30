@@ -21,7 +21,9 @@ import type {
   ExtensionType,
   LOOPOption,
   CircularizationOption,
+  OrientationAlignment,
 } from "../contracts/ISequenceExtender";
+import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 import type { ILOOPExecutorSelector } from "$lib/features/create/generate/circular/services/contracts/ILOOPExecutorSelector";
 import type { IReversalDetector } from "../contracts/IReversalDetector";
 import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
@@ -570,6 +572,214 @@ export class SequenceExtender implements ISequenceExtender {
   }
 
   /**
+   * Extract the numeric part of a position (e.g., "alpha3" → 3)
+   */
+  private getPositionNumber(position: GridPosition): number | null {
+    const match = position.match(/(\d+)$/);
+    return match && match[1] ? parseInt(match[1], 10) : null;
+  }
+
+  /**
+   * Calculate the rotation relationship between two positions in the same group.
+   *
+   * For alpha/beta (4 positions: 1, 3, 5, 7):
+   * - Same number = exact (0°)
+   * - Difference of 2 = quarter (90°)
+   * - Difference of 4 = half (180°)
+   *
+   * For gamma (8 positions: 1, 3, 5, 7, 9, 11, 13, 15):
+   * - Same number = exact (0°)
+   * - Difference of 4 = quarter (90°)
+   * - Difference of 8 = half (180°)
+   */
+  private getRotationRelation(
+    startPosition: GridPosition,
+    endPosition: GridPosition
+  ): "exact" | "quarter" | "half" | null {
+    const startGroup = this.getPositionGroup(startPosition);
+    const endGroup = this.getPositionGroup(endPosition);
+
+    // Must be in same group
+    if (!startGroup || !endGroup || startGroup !== endGroup) {
+      return null;
+    }
+
+    const startNum = this.getPositionNumber(startPosition);
+    const endNum = this.getPositionNumber(endPosition);
+
+    if (startNum === null || endNum === null) {
+      return null;
+    }
+
+    // Same position = exact
+    if (startNum === endNum) {
+      return "exact";
+    }
+
+    // Calculate the difference (accounting for circular wraparound)
+    const isGamma = startGroup === "gamma";
+    const totalPositions = isGamma ? 16 : 8; // gamma has 8 positions (1-15 odd), alpha/beta have 4 (1-7 odd)
+    const quarterStep = isGamma ? 4 : 2;     // 90° step
+    const halfStep = isGamma ? 8 : 4;        // 180° step
+
+    // Calculate absolute difference, accounting for wraparound
+    let diff = Math.abs(endNum - startNum);
+    if (diff > totalPositions / 2) {
+      diff = totalPositions - diff;
+    }
+
+    if (diff === halfStep) {
+      return "half";
+    }
+    if (diff === quarterStep || diff === quarterStep * 3) {
+      return "quarter";
+    }
+
+    // Fallback - shouldn't happen for valid positions
+    return "quarter";
+  }
+
+  /**
+   * Get the starting orientations from a sequence's start position.
+   * Returns null if start position data is not available.
+   */
+  private getStartOrientations(
+    sequence: SequenceData
+  ): { blueOri: string; redOri: string } | null {
+    const startPosData = sequence.startPosition || sequence.startingPositionBeat;
+    if (!startPosData) return null;
+
+    // Extract orientations from motion data
+    const motions = (startPosData as any).motions;
+    if (!motions) {
+      // Try legacy format with direct blue/red properties
+      const blueData = (startPosData as any).blue;
+      const redData = (startPosData as any).red;
+      if (blueData?.endOri && redData?.endOri) {
+        return {
+          blueOri: blueData.endOri,
+          redOri: redData.endOri,
+        };
+      }
+      return null;
+    }
+
+    const blueMotion = motions.blue;
+    const redMotion = motions.red;
+
+    if (!blueMotion?.endOri || !redMotion?.endOri) {
+      return null;
+    }
+
+    return {
+      blueOri: blueMotion.endOri,
+      redOri: redMotion.endOri,
+    };
+  }
+
+  /**
+   * Calculate how many steps an orientation needs to return to its original.
+   * Orientations cycle: in → clock → out → counter → in (4 states)
+   *
+   * @param startOri Original orientation
+   * @param endOri Final orientation after one sequence pass
+   * @returns Number of passes needed: 1 (same), 2 (opposite), or 4 (quarter-step)
+   */
+  private calculateOrientationSteps(startOri: string, endOri: string): 1 | 2 | 4 {
+    if (startOri === endOri) return 1;
+
+    // Define the orientation cycle
+    const cycle = ["in", "clock", "out", "counter"];
+    const startIdx = cycle.indexOf(startOri);
+    const endIdx = cycle.indexOf(endOri);
+
+    // If either orientation isn't in the cycle, assume they match (conservative)
+    if (startIdx === -1 || endIdx === -1) return 1;
+
+    const diff = (endIdx - startIdx + 4) % 4;
+
+    // diff === 0: same orientation (1 repetition)
+    // diff === 2: opposite orientation (2 repetitions to flip back)
+    // diff === 1 or 3: quarter-step (4 repetitions)
+    if (diff === 0) return 1;
+    if (diff === 2) return 2;
+    return 4;
+  }
+
+  /**
+   * Calculate orientation alignment between sequence start and a potential end position.
+   * Used for "exact position" options to show how many repetitions are needed.
+   *
+   * @param sequence The current sequence
+   * @param bridgePictograph The pictograph data for the bridge letter
+   * @returns OrientationAlignment info or null if can't be calculated
+   */
+  private calculateOrientationAlignment(
+    sequence: SequenceData,
+    bridgePictograph: PictographData
+  ): OrientationAlignment | null {
+    // Get start orientations
+    const startOris = this.getStartOrientations(sequence);
+    if (!startOris) return null;
+
+    // Get end orientations from bridge pictograph
+    const blueMotion = bridgePictograph.motions?.blue;
+    const redMotion = bridgePictograph.motions?.red;
+
+    if (!blueMotion?.endOrientation || !redMotion?.endOrientation) return null;
+
+    const blueEndOri = blueMotion.endOrientation;
+    const redEndOri = redMotion.endOrientation;
+
+    // Calculate steps needed for each prop
+    const blueSteps = this.calculateOrientationSteps(startOris.blueOri, blueEndOri);
+    const redSteps = this.calculateOrientationSteps(startOris.redOri, redEndOri);
+
+    // Need LCM of both steps (if blue needs 2 and red needs 4, we need 4 total)
+    const repetitionsNeeded = Math.max(blueSteps, redSteps) as 1 | 2 | 4;
+
+    return {
+      matches: blueEndOri === startOris.blueOri && redEndOri === startOris.redOri,
+      blueEndOri,
+      redEndOri,
+      blueStartOri: startOris.blueOri,
+      redStartOri: startOris.redOri,
+      repetitionsNeeded,
+    };
+  }
+
+  /**
+   * Calculate the resulting sequence length after applying a LOOP.
+   *
+   * @param currentLength Current sequence length (number of beats)
+   * @param rotationRelation The rotation relation (exact, half, quarter)
+   * @param repetitionsNeeded For exact position, how many repetitions needed for orientation
+   * @returns The final sequence length
+   */
+  private calculateResultingLength(
+    currentLength: number,
+    rotationRelation: "exact" | "half" | "quarter" | null,
+    repetitionsNeeded: 1 | 2 | 4 = 1
+  ): number {
+    // Add 1 for the bridge letter itself
+    const withBridge = currentLength + 1;
+
+    switch (rotationRelation) {
+      case "half":
+        // 180° rotation = 2x sequence length
+        return withBridge * 2;
+      case "quarter":
+        // 90° rotation = 4x sequence length
+        return withBridge * 4;
+      case "exact":
+        // Exact position = multiply by repetitions needed for orientation alignment
+        return withBridge * repetitionsNeeded;
+      default:
+        return withBridge;
+    }
+  }
+
+  /**
    * Convert a SequenceData to BeatData array for LOOP executor
    * The LOOP executor expects: [startPosition (beat 0), beat 1, beat 2, ...]
    */
@@ -665,9 +875,10 @@ export class SequenceExtender implements ISequenceExtender {
     }
 
     // Group candidates by letter and ending position to avoid duplicates
+    // Store the pictograph data for visual display in the UI
     const uniqueBridges = new Map<
       string,
-      { letter: Letter; endPosition: string }
+      { letter: Letter; endPosition: string; pictographData: PictographData }
     >();
     for (const variation of bridgeCandidates) {
       const key = `${variation.letter}|${variation.endPosition}`;
@@ -675,6 +886,7 @@ export class SequenceExtender implements ISequenceExtender {
         uniqueBridges.set(key, {
           letter: variation.letter as Letter,
           endPosition: variation.endPosition || "",
+          pictographData: variation,
         });
       }
     }
@@ -713,6 +925,7 @@ export class SequenceExtender implements ISequenceExtender {
           endPosition: bridge.endPosition,
           availableLOOPs: positionDependentLOOPs,
           description: `Add "${bridge.letter}" to end at ${bridge.endPosition}`,
+          pictographData: bridge.pictographData,
         });
       }
     }
@@ -721,16 +934,151 @@ export class SequenceExtender implements ISequenceExtender {
   }
 
   /**
-   * Extend a sequence by first appending a bridge letter, then applying a LOOP.
+   * Get extension options that would bring the sequence to a loopable position.
+   * Only returns pictographs that END in the same position GROUP as the sequence starts.
+   * For example: if sequence starts at alpha3, only show letters that end in alpha1/3/5/7.
+   * Used for pictograph-first UX.
    */
-  async extendWithBridge(
+  async getAllExtensionOptions(
+    sequence: SequenceData
+  ): Promise<CircularizationOption[]> {
+    const startPosition = this.getStartPosition(sequence);
+    const endPosition = this.getCurrentEndPosition(sequence);
+
+    if (!startPosition || !endPosition) {
+      return [];
+    }
+
+    // Extract the position GROUP from start position (alpha, beta, gamma)
+    const startGroup = this.getPositionGroup(startPosition);
+    if (!startGroup) {
+      return [];
+    }
+
+    const options: CircularizationOption[] = [];
+    const gridMode = sequence.gridMode || GridMode.DIAMOND;
+
+    // Get all pictographs
+    const allPictographs =
+      await this.letterQueryHandler.getAllPictographVariations(gridMode);
+
+    // Find pictographs that:
+    // 1. Start at the sequence's current end position
+    // 2. End in the SAME position group as the sequence start (for loopability)
+    const extensionCandidates = allPictographs.filter((p) => {
+      if (p.startPosition !== endPosition) return false;
+      // Check if end position is in the same group as start
+      const endGroup = this.getPositionGroup(p.endPosition as GridPosition);
+      return endGroup === startGroup;
+    });
+
+    if (extensionCandidates.length === 0) {
+      return [];
+    }
+
+    // Group candidates by letter and ending position to avoid duplicates
+    // Store the pictograph data for visual display in the UI
+    const uniqueExtensions = new Map<
+      string,
+      { letter: Letter; endPosition: string; pictographData: PictographData }
+    >();
+    for (const variation of extensionCandidates) {
+      const key = `${variation.letter}|${variation.endPosition}`;
+      if (!uniqueExtensions.has(key)) {
+        uniqueExtensions.set(key, {
+          letter: variation.letter as Letter,
+          endPosition: variation.endPosition || "",
+          pictographData: variation,
+        });
+      }
+    }
+
+    // For each unique extension, analyze available LOOPs
+    for (const [_, extension] of uniqueExtensions) {
+      // Create temporary beat for the extension letter
+      const extensionBeat: BeatData = {
+        id: `ext-${extension.letter}`,
+        beatNumber: (sequence.beats?.length || 0) + 1,
+        startPosition: endPosition,
+        endPosition: extension.endPosition as GridPosition,
+        letter: extension.letter,
+        motions: {},
+        duration: 1,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+      };
+
+      // Create temporary sequence with extension letter
+      const tempSequence: SequenceData = {
+        ...sequence,
+        beats: [...(sequence.beats || []), extensionBeat],
+      };
+
+      // Analyze available LOOPs for this extended sequence
+      const analysis = this.analyzeSequence(tempSequence);
+
+      // Include all LOOPs (REWOUND is universal, others require position alignment)
+      const availableLOOPs = analysis.availableLOOPOptions;
+
+      if (availableLOOPs.length > 0) {
+        // Calculate rotation relationship between start and this extension's end
+        const rotationRelation = this.getRotationRelation(
+          startPosition,
+          extension.endPosition as GridPosition
+        );
+
+        // Current sequence length (number of beats, not counting start position)
+        const currentLength = sequence.beats?.length || 0;
+
+        // For exact position matches, calculate orientation alignment
+        let orientationAlignment: OrientationAlignment | undefined;
+        let repetitionsNeeded: 1 | 2 | 4 = 1;
+
+        if (rotationRelation === "exact") {
+          orientationAlignment = this.calculateOrientationAlignment(
+            sequence,
+            extension.pictographData
+          ) || undefined;
+          repetitionsNeeded = orientationAlignment?.repetitionsNeeded || 1;
+        }
+
+        // Calculate resulting sequence length
+        const resultingLength = this.calculateResultingLength(
+          currentLength,
+          rotationRelation,
+          repetitionsNeeded
+        );
+
+        options.push({
+          bridgeLetters: [extension.letter],
+          endPosition: extension.endPosition,
+          availableLOOPs: availableLOOPs,
+          description: `Add "${extension.letter}" → ${extension.endPosition}`,
+          pictographData: extension.pictographData,
+          rotationRelation: rotationRelation || undefined,
+          orientationAlignment,
+          currentLength,
+          resultingLength,
+        });
+      }
+    }
+
+    return options;
+  }
+
+  /**
+   * Append just a bridge beat to a sequence (without applying LOOP).
+   * Used when user selects a bridge pictograph and wants to see it in the sequence
+   * before choosing which LOOP to apply.
+   */
+  async appendBridgeBeat(
     sequence: SequenceData,
-    bridgeLetter: Letter,
-    loopType: LOOPType
+    bridgeLetter: Letter
   ): Promise<SequenceData> {
     const endPosition = this.getCurrentEndPosition(sequence);
     if (!endPosition) {
-      throw new Error("Cannot extend: no end position found");
+      throw new Error("Cannot append bridge: no end position found");
     }
 
     const gridMode = sequence.gridMode || GridMode.DIAMOND;
@@ -776,7 +1124,19 @@ export class SequenceExtender implements ISequenceExtender {
       this.orientationCalculator
     );
 
-    // Now apply the LOOP
-    return this.extendSequence(extendedSequence, { loopType });
+    return extendedSequence;
+  }
+
+  /**
+   * Extend a sequence by first appending a bridge letter, then applying a LOOP.
+   */
+  async extendWithBridge(
+    sequence: SequenceData,
+    bridgeLetter: Letter,
+    loopType: LOOPType
+  ): Promise<SequenceData> {
+    // Use appendBridgeBeat to add the bridge, then apply LOOP
+    const sequenceWithBridge = await this.appendBridgeBeat(sequence, bridgeLetter);
+    return this.extendSequence(sequenceWithBridge, { loopType });
   }
 }
