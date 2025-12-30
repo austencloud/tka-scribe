@@ -10,4 +10,7 @@ import { CreateTypes } from "$lib/shared/inversify/types/create.types";
 export const SPELL_TYPES = {
   ILetterTransitionGraph: CreateTypes.ILetterTransitionGraph,
   IWordSequenceGenerator: CreateTypes.IWordSequenceGenerator,
+  IVariationExplorer: CreateTypes.IVariationExplorer,
+  IVariationDeduplicator: CreateTypes.IVariationDeduplicator,
+  IVariationScorer: CreateTypes.IVariationScorer,
 } as const;

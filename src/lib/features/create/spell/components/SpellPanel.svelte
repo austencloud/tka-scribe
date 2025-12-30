@@ -14,14 +14,25 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   import { SPELL_TYPES } from "../services/implementations/spell-types";
   import type { IWordSequenceGenerator } from "../services/contracts/IWordSequenceGenerator";
   import type { ILetterTransitionGraph } from "../services/contracts/ILetterTransitionGraph";
+  import type { IVariationExplorer } from "../services/contracts/IVariationExplorer";
+  import type { IVariationDeduplicator } from "../services/contracts/IVariationDeduplicator";
+  import type { IVariationScorer } from "../services/contracts/IVariationScorer";
   import type { LOOPType } from "../domain/models/spell-models";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
+  import type { CircularizationOption, ISequenceExtender } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { slide } from "svelte/transition";
+  import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import WordInput from "./WordInput.svelte";
   import LetterPalette from "./LetterPalette.svelte";
   import PreferencesPanel from "./PreferencesPanel.svelte";
   import ResultDisplay from "./ResultDisplay.svelte";
   import LOOPPicker from "$lib/shared/components/loop-picker/LOOPPicker.svelte";
+  import BridgePictographGrid from "$lib/shared/components/loop-picker/BridgePictographGrid.svelte";
+  import VariationGrid from "./VariationGrid.svelte";
+  import { getVariationState, type ScoredVariation } from "../state/variation-state.svelte";
+
+  type LOOPPhase = "bridge-selection" | "loop-selection";
 
   // Props
   let {
@@ -37,7 +48,19 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   // Services (resolved on-demand)
   let wordGenerator: IWordSequenceGenerator | null = null;
   let transitionGraph: ILetterTransitionGraph | null = null;
+  let sequenceExtender: ISequenceExtender | null = null;
+  let variationExplorer: IVariationExplorer | null = null;
+  let variationDeduplicator: IVariationDeduplicator | null = null;
+  let variationScorer: IVariationScorer | null = null;
   let modulesLoaded = false;
+
+  // Extension options (ALL valid next pictographs from current position)
+  let extensionOptions = $state<CircularizationOption[]>([]);
+
+  // Variation exploration mode
+  type GenerationMode = "single" | "all";
+  let generationMode = $state<GenerationMode>("single");
+  const variationState = getVariationState();
 
   // Load required modules before resolving services
   async function ensureModulesLoaded(): Promise<void> {
@@ -68,6 +91,38 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       }
     }
     return transitionGraph;
+  }
+
+  async function getSequenceExtender(): Promise<ISequenceExtender> {
+    await ensureModulesLoaded();
+    if (!sequenceExtender) {
+      sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
+    }
+    return sequenceExtender;
+  }
+
+  async function getVariationExplorer(): Promise<IVariationExplorer> {
+    await ensureModulesLoaded();
+    if (!variationExplorer) {
+      variationExplorer = resolve<IVariationExplorer>(SPELL_TYPES.IVariationExplorer);
+    }
+    return variationExplorer;
+  }
+
+  async function getVariationDeduplicator(): Promise<IVariationDeduplicator> {
+    await ensureModulesLoaded();
+    if (!variationDeduplicator) {
+      variationDeduplicator = resolve<IVariationDeduplicator>(SPELL_TYPES.IVariationDeduplicator);
+    }
+    return variationDeduplicator;
+  }
+
+  async function getVariationScorer(): Promise<IVariationScorer> {
+    await ensureModulesLoaded();
+    if (!variationScorer) {
+      variationScorer = resolve<IVariationScorer>(SPELL_TYPES.IVariationScorer);
+    }
+    return variationScorer;
   }
 
   // Generate sequence from the input word
@@ -118,6 +173,21 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
             name: result.originalWord,
             word: result.expandedWord,
           });
+
+          // Fetch ALL extension options (pictograph-first UX)
+          // This shows all valid next letters regardless of whether already loopable
+          try {
+            const extender = await getSequenceExtender();
+            const allOptions = await extender.getAllExtensionOptions({
+              ...result.sequence,
+              name: result.originalWord,
+              word: result.expandedWord,
+            });
+            extensionOptions = allOptions;
+          } catch (extErr) {
+            console.warn("Failed to fetch extension options:", extErr);
+            extensionOptions = [];
+          }
         }
 
         // Push undo snapshot
@@ -145,6 +215,128 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   // Handle regenerate - generates a new variation
   function handleRegenerate() {
     handleGenerate();
+  }
+
+  // Handle "Generate All" - explores all variations
+  async function handleGenerateAll() {
+    if (!spellState.inputWord.trim()) return;
+
+    spellState.setGenerating(true);
+    spellState.clearError();
+
+    try {
+      // Initialize services
+      const graph = await getTransitionGraph();
+      const explorer = await getVariationExplorer();
+      const deduplicator = await getVariationDeduplicator();
+      const scorer = await getVariationScorer();
+
+      // Get expanded letters (with bridges)
+      const expandedLetters = graph.findBridgeLetters(spellState.inputWord);
+      if (expandedLetters.length === 0) {
+        spellState.setError("Could not expand word to valid letters");
+        return;
+      }
+
+      // Estimate total variations for progress UI
+      const estimatedTotal = await explorer.estimateVariationCount(expandedLetters);
+
+      // Start exploration - this resets the state and returns abort signal
+      const abortSignal = variationState.startExploration(estimatedTotal);
+
+      // Reset deduplicator for new exploration
+      deduplicator.reset();
+
+      let totalExplored = 0;
+      const MAX_UNIQUE = 500; // Hard cap
+
+      // Iterate through all variations using async generator
+      const variationGenerator = explorer.exploreVariations(expandedLetters, {
+        gridMode: spellState.preferences.gridMode ?? GridMode.DIAMOND,
+        signal: abortSignal,
+      });
+
+      for await (const variation of variationGenerator) {
+        // Check for cancellation
+        if (abortSignal.aborted) {
+          break;
+        }
+
+        totalExplored++;
+        variationState.updateProgress(totalExplored);
+
+        // Deduplicate using canonical hash
+        if (!deduplicator.tryAdd(variation.sequence)) {
+          continue; // Skip rotational duplicate
+        }
+
+        // Score the unique variation
+        const score = scorer.scoreSequence(variation.sequence, spellState.preferences);
+
+        // Generate unique ID
+        const id = `var-${Date.now()}-${variationState.stats.totalUnique}`;
+
+        // Add to state
+        variationState.addVariation({
+          id,
+          sequence: variation.sequence,
+          score,
+          branchPath: variation.branchPath,
+        });
+
+        // Check hard cap
+        if (variationState.stats.totalUnique >= MAX_UNIQUE) {
+          console.log(`[SpellPanel] Reached max unique variations (${MAX_UNIQUE})`);
+          break;
+        }
+
+        // Yield to UI periodically (every 10 variations)
+        if (totalExplored % 10 === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+
+      variationState.completeExploration();
+
+      // Auto-select the best variation
+      if (variationState.variations.length > 0) {
+        const best = variationState.variations[0];
+        variationState.selectVariation(best.id);
+        handleVariationSelect(best.id);
+      }
+
+    } catch (error) {
+      console.error("Failed to explore variations:", error);
+      if (error instanceof Error && error.name !== "AbortError") {
+        variationState.setError(error.message);
+        spellState.setError(error.message);
+      }
+    } finally {
+      spellState.setGenerating(false);
+    }
+  }
+
+  // Handle variation selection - loads the selected variation into the workspace
+  function handleVariationSelect(variationId: string) {
+    const variation = variationState.allVariations.find((v) => v.id === variationId);
+    if (!variation || !sequenceState) return;
+
+    variationState.selectVariation(variationId);
+
+    // Load the selected variation into the sequence state
+    sequenceState.setCurrentSequence({
+      ...variation.sequence,
+      name: spellState.inputWord,
+      word: spellState.expandedWord || spellState.inputWord,
+    });
+
+    // Update spell state
+    spellState.setExpandedWord(variation.sequence.word || spellState.inputWord);
+  }
+
+  // Cancel ongoing variation exploration
+  function handleCancelExploration() {
+    variationState.cancelExploration();
   }
 
   /**
@@ -222,6 +414,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   // Handle clear
   function handleClear() {
     spellState.clearSpellState();
+    variationState.reset();
     if (sequenceState) {
       sequenceState.clearSequenceCompletely();
     }
@@ -233,6 +426,91 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   function handleInputFocusChange(focused: boolean) {
     isInputFocused = focused;
   }
+
+  // ============================================
+  // Two-Phase LOOP Selection Flow (Pictograph-First UX)
+  // ============================================
+  // Phase 1: Pictograph Selection (ALWAYS show all valid next pictographs)
+  // Phase 2: LOOP Selection (show available LOOPs for selected pictograph)
+
+  /** Selected extension option (for two-phase flow) */
+  let selectedBridge = $state<CircularizationOption | null>(null);
+
+  /** Whether we have extension pictograph options to show */
+  const hasExtensionOptions = $derived(extensionOptions.length > 0);
+
+  /** Current phase of the LOOP selection flow - ALWAYS start at pictograph selection */
+  const loopPhase = $derived<LOOPPhase>(
+    selectedBridge ? "loop-selection" : "bridge-selection"
+  );
+
+  /** LOOP options for current phase (from selected pictograph) */
+  const activeLoopOptions = $derived(
+    selectedBridge ? selectedBridge.availableLOOPs : []
+  );
+
+  /** Handle bridge pictograph selection - immediately adds beat to sequence */
+  async function handleBridgeSelect(option: CircularizationOption) {
+    if (spellState.isGenerating || !sequenceState) return;
+
+    const bridgeLetter = option.bridgeLetters[0] as Letter;
+
+    try {
+      spellState.setGenerating(true);
+
+      // Append the bridge beat to the actual sequence
+      const extender = await getSequenceExtender();
+      const currentSequence = sequenceState.currentSequence;
+
+      if (!currentSequence) {
+        console.error("[SpellPanel] No current sequence to extend");
+        return;
+      }
+
+      const sequenceWithBridge = await extender.appendBridgeBeat(
+        currentSequence,
+        bridgeLetter
+      );
+
+      // Update the sequence state - this should trigger beat grid update
+      sequenceState.setCurrentSequence(sequenceWithBridge);
+
+      // Now transition to LOOP selection phase
+      selectedBridge = option;
+
+    } catch (error) {
+      console.error("[SpellPanel] Failed to append bridge beat:", error);
+      spellState.setError("Failed to add bridge letter");
+    } finally {
+      spellState.setGenerating(false);
+    }
+  }
+
+  /** Handle LOOP selection (applies bridge letter if selected) */
+  function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
+    if (spellState.isGenerating) return;
+    // Use bridge letter from selected option if we're in two-phase flow
+    const finalBridgeLetter = selectedBridge
+      ? (selectedBridge.bridgeLetters[0] as Letter)
+      : bridgeLetter;
+    handleApplyLOOP(finalBridgeLetter, loopType);
+    // Reset selection after applying
+    selectedBridge = null;
+  }
+
+  /** Go back to bridge selection */
+  function handleBackToBridges() {
+    if (spellState.isGenerating) return;
+    selectedBridge = null;
+  }
+
+  // Reset bridge selection when extension options change
+  $effect(() => {
+    // Access to trigger on change
+    extensionOptions;
+    // Reset selection
+    selectedBridge = null;
+  });
 </script>
 
 <div class="spell-panel" data-is-desktop={isDesktop}>
@@ -264,39 +542,146 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
 
     <!-- LOOP Selection (shown when makeCircular is on and sequence exists) -->
     {#if spellState.preferences.makeCircular && spellState.hasSequence()}
-      <LOOPPicker
-        directOptions={spellState.availableLOOPOptions}
-        circularizationOptions={spellState.circularizationOptions}
-        onSelect={handleApplyLOOP}
-        directUnavailableReason={spellState.directLoopUnavailableReason}
-        isApplying={spellState.isGenerating}
-      />
+      <div class="loop-selection-section">
+        <!-- Phase 1: Pictograph Selection (all valid next letters) -->
+        {#if loopPhase === "bridge-selection" && hasExtensionOptions}
+          <div class="loop-phase-header">
+            <h3>Choose Next Pictograph</h3>
+            <p class="phase-subtitle">Select a pictograph to extend your sequence</p>
+          </div>
+          <BridgePictographGrid
+            options={extensionOptions}
+            onSelect={handleBridgeSelect}
+            isLoading={spellState.isGenerating}
+          />
+        {:else if loopPhase === "loop-selection"}
+          <!-- Phase 2: LOOP Selection -->
+          <div class="loop-phase-header">
+            {#if selectedBridge}
+              <button
+                class="back-button"
+                onclick={handleBackToBridges}
+                disabled={spellState.isGenerating}
+                aria-label="Back to bridge selection"
+              >
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
+              </button>
+              <div class="header-text">
+                <h3>Choose Extension Pattern</h3>
+                <p class="phase-subtitle">
+                  Via "{selectedBridge.bridgeLetters[0]}" → {selectedBridge.endPosition}
+                </p>
+              </div>
+            {:else}
+              <div class="header-text">
+                <h3>Choose Extension Pattern</h3>
+                <p class="phase-subtitle">Select how to extend your sequence</p>
+              </div>
+            {/if}
+          </div>
+          <LOOPPicker
+            directOptions={activeLoopOptions}
+            circularizationOptions={[]}
+            onSelect={handleLoopSelect}
+            directUnavailableReason={null}
+            isApplying={spellState.isGenerating}
+          />
+        {:else}
+          <!-- No options available -->
+          <div class="no-loop-options">
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
+            <p>No extension patterns available for this sequence position.</p>
+          </div>
+        {/if}
+      </div>
     {/if}
+
+    <!-- Generation Mode Toggle -->
+    <div class="mode-toggle-section">
+      <div class="mode-toggle">
+        <button
+          class="mode-button"
+          class:active={generationMode === "single"}
+          onclick={() => generationMode = "single"}
+          disabled={variationState.progress.isExploring}
+        >
+          <i class="fas fa-dice-one" aria-hidden="true"></i>
+          Single
+        </button>
+        <button
+          class="mode-button"
+          class:active={generationMode === "all"}
+          onclick={() => generationMode = "all"}
+          disabled={variationState.progress.isExploring}
+        >
+          <i class="fas fa-layer-group" aria-hidden="true"></i>
+          All Variations
+        </button>
+      </div>
+    </div>
 
     <!-- Generate Button -->
     <div class="actions-section">
-      <button
-        class="generate-button"
-        onclick={handleGenerate}
-        disabled={!spellState.canGenerate}
-      >
-        {#if spellState.isGenerating}
-          <span class="spinner"></span>
-          Generating...
-        {:else}
-          Generate Sequence
-        {/if}
-      </button>
+      {#if generationMode === "single"}
+        <button
+          class="generate-button"
+          onclick={handleGenerate}
+          disabled={!spellState.canGenerate}
+        >
+          {#if spellState.isGenerating}
+            <span class="spinner"></span>
+            Generating...
+          {:else}
+            Generate Sequence
+          {/if}
+        </button>
+      {:else}
+        <button
+          class="generate-button"
+          onclick={handleGenerateAll}
+          disabled={!spellState.canGenerate || variationState.progress.isExploring}
+        >
+          {#if variationState.progress.isExploring}
+            <span class="spinner"></span>
+            Exploring... ({variationState.stats.totalUnique} unique)
+          {:else}
+            <i class="fas fa-search" aria-hidden="true"></i>
+            Explore All Variations
+          {/if}
+        </button>
+      {/if}
 
-      {#if spellState.hasSequence()}
+      {#if spellState.hasSequence() && generationMode === "single"}
         <button class="secondary-button" onclick={handleRegenerate}>
           Regenerate
         </button>
+      {/if}
+
+      {#if spellState.hasSequence() || variationState.stats.totalUnique > 0}
         <button class="secondary-button danger" onclick={handleClear}>
           Clear
         </button>
       {/if}
     </div>
+
+    <!-- Variation Grid (shown when in "all" mode and has variations) -->
+    {#if generationMode === "all" && (variationState.stats.totalUnique > 0 || variationState.progress.isExploring)}
+      <div class="variation-section">
+        <VariationGrid
+          variations={variationState.variations}
+          progress={variationState.progress}
+          stats={variationState.stats}
+          selectedVariationId={variationState.selectedVariationId}
+          sortBy={variationState.sortBy}
+          sortDescending={variationState.sortDescending}
+          filters={variationState.filters}
+          onSelect={handleVariationSelect}
+          onToggleFilter={(key) => variationState.toggleFilter(key)}
+          onSetSortBy={(option) => variationState.setSortBy(option)}
+          onCancel={handleCancelExploration}
+        />
+      </div>
+    {/if}
 
     <!-- Error Display -->
     {#if spellState.error}
@@ -429,10 +814,178 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     font-size: var(--font-size-min, 14px);
   }
 
+  /* Mode Toggle */
+  .mode-toggle-section {
+    display: flex;
+    justify-content: center;
+  }
+
+  .mode-toggle {
+    display: inline-flex;
+    background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--settings-radius-md, 12px);
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .mode-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: var(--settings-spacing-sm, 8px) var(--settings-spacing-md, 16px);
+    background: transparent;
+    border: none;
+    border-radius: var(--settings-radius-sm, 8px);
+    color: var(--theme-text-muted, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-min, 14px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mode-button:hover:not(:disabled) {
+    color: var(--theme-text, #ffffff);
+    background: var(--theme-hover-bg, rgba(255, 255, 255, 0.05));
+  }
+
+  .mode-button.active {
+    background: var(--theme-accent, #6366f1);
+    color: white;
+  }
+
+  .mode-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Variation Section */
+  .variation-section {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--settings-radius-md, 12px);
+    padding: var(--settings-spacing-md, 16px);
+    min-height: 300px;
+    max-height: 500px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
   /* Desktop layout */
   @media (min-width: 1024px) {
     .spell-panel-inner {
       justify-content: center;
+    }
+
+    .variation-section {
+      min-height: 400px;
+      max-height: 600px;
+    }
+  }
+
+  /* ============================================
+   * Two-Phase LOOP Selection Styles
+   * ============================================ */
+
+  .loop-selection-section {
+    background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
+    border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
+    border-radius: var(--settings-radius-md, 12px);
+    padding: var(--settings-spacing-md, 16px);
+  }
+
+  .loop-phase-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--settings-spacing-sm, 8px);
+    margin-bottom: var(--settings-spacing-md, 16px);
+  }
+
+  .loop-phase-header h3 {
+    margin: 0;
+    font-size: var(--font-size-md, 16px);
+    font-weight: 600;
+    color: var(--theme-text, #ffffff);
+  }
+
+  .phase-subtitle {
+    margin: 4px 0 0 0;
+    font-size: var(--font-size-compact, 12px);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+  }
+
+  .header-text {
+    flex: 1;
+  }
+
+  .back-button {
+    background: transparent;
+    border: none;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: var(--font-size-lg, 18px);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--settings-radius-sm, 8px);
+    min-width: 48px;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .back-button:hover:not(:disabled) {
+    background: var(--theme-hover-bg, rgba(255, 255, 255, 0.08));
+    color: var(--theme-text, #ffffff);
+  }
+
+  .back-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .back-button:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  .no-loop-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--settings-spacing-sm, 8px);
+    padding: var(--settings-spacing-lg, 24px);
+    text-align: center;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+  }
+
+  .no-loop-options i {
+    font-size: var(--font-size-xl, 1.5rem);
+    opacity: 0.6;
+  }
+
+  .no-loop-options p {
+    margin: 0;
+    font-size: var(--font-size-min, 14px);
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .generate-button,
+    .secondary-button,
+    .back-button {
+      transition: none;
+    }
+
+    .generate-button:hover:not(:disabled),
+    .back-button:hover:not(:disabled) {
+      transform: none;
+    }
+
+    .spinner {
+      animation: none;
+      border-color: white;
     }
   }
 </style>

@@ -51,16 +51,17 @@ Clicking a letter inserts it into the word input.
     <span class="hint">Click to insert</span>
   </div>
 
-  <div class="categories">
+  <div class="categories" role="group" aria-label="Greek letter categories">
     {#each categories as category}
-      <div class="category">
-        <span class="category-label">{category.label}</span>
+      <div class="category" role="group" aria-labelledby="category-{category.key}">
+        <h5 id="category-{category.key}" class="category-label">{category.label}</h5>
         <div class="letter-grid">
           {#each category.letters as letter}
             <button
               class="letter-button"
               onclick={() => handleLetterClick(letter)}
               title={letter}
+              aria-label="Insert letter {letter}"
             >
               {getDisplayLabel(letter)}
             </button>
@@ -111,7 +112,9 @@ Clicking a letter inserts it into the word input.
   }
 
   .category-label {
+    margin: 0;
     font-size: var(--font-size-compact, 12px);
+    font-weight: 500;
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -127,8 +130,8 @@ Clicking a letter inserts it into the word input.
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 44px;
-    height: 44px;
+    min-width: 48px;
+    height: 48px;
     padding: 0 var(--settings-spacing-sm, 8px);
     background: var(--theme-panel-bg, rgba(18, 18, 28, 0.98));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
@@ -150,12 +153,20 @@ Clicking a letter inserts it into the word input.
     transform: translateY(0);
   }
 
-  /* Responsive: smaller buttons on mobile */
-  @media (max-width: 480px) {
+  .letter-button:focus-visible {
+    outline: 2px solid var(--theme-accent, #6366f1);
+    outline-offset: 2px;
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
     .letter-button {
-      min-width: 40px;
-      height: 40px;
-      font-size: var(--font-size-md, 16px);
+      transition: none;
+    }
+
+    .letter-button:hover,
+    .letter-button:active {
+      transform: none;
     }
   }
 </style>

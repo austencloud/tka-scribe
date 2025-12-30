@@ -244,4 +244,15 @@ Displays the original word and expanded word with visual differentiation:
     color: var(--theme-text-muted, rgba(255, 255, 255, 0.5));
     border: 1px dashed var(--theme-stroke, rgba(255, 255, 255, 0.1));
   }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .letter {
+      transition: none;
+    }
+
+    .letter:hover {
+      transform: none;
+    }
+  }
 </style>
