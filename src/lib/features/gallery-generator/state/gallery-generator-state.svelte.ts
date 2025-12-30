@@ -6,6 +6,21 @@
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { RenderedImage, FailedSequence } from "../domain/gallery-models";
+import { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
+
+/** Core prop types for gallery generation (excludes "big" variants) */
+export const CORE_PROP_TYPES = [
+  PropType.STAFF,
+  PropType.CLUB,
+  PropType.FAN,
+  PropType.TRIAD,
+  PropType.MINIHOOP,
+  PropType.BUUGENG,
+  PropType.HAND,
+  PropType.TRIQUETRA,
+  PropType.SWORD,
+  PropType.DOUBLESTAR,
+] as const;
 
 class GalleryGeneratorState {
   // Core data
@@ -20,9 +35,18 @@ class GalleryGeneratorState {
   error = $state<string | null>(null);
   lightMode = $state(false);
   viewingImage = $state<{ name: string; url: string } | null>(null);
+  /** Names of sequences currently being rendered (for progress tracking) */
+  renderingSequences = $state<string[]>([]);
+  /** Selected prop type for rendering (null = default/no override) */
+  selectedPropType = $state<PropType | null>(null);
 
-  // Blob storage (in-memory only, lost on refresh)
+  // Blob storage (in-memory, backed by IndexedDB for persistence)
   pendingBlobs = new Map<string, Blob>();
+
+  // Callback for persistence (set by component)
+  onImageAdded?: (name: string, blob: Blob, written: boolean) => void;
+  onImageWritten?: (name: string) => void;
+  onResultsCleared?: () => void;
 
   // Derived state
   get renderedNames(): Set<string> {
@@ -65,16 +89,64 @@ class GalleryGeneratorState {
   }
 
   setLightMode(light: boolean) {
-    this.lightMode = light;
+    if (this.lightMode !== light) {
+      // Clear rendered images when mode changes - they're no longer valid
+      this.clearResults();
+      this.lightMode = light;
+    }
+  }
+
+  setPropType(propType: PropType | null) {
+    if (this.selectedPropType !== propType) {
+      // Clear rendered images when prop type changes - they're no longer valid
+      this.clearResults();
+      this.selectedPropType = propType;
+    }
+  }
+
+  /** Get the output folder path based on selected prop type */
+  get outputFolder(): string {
+    if (this.selectedPropType) {
+      return `static/gallery/${this.selectedPropType}/`;
+    }
+    return "static/gallery/{word}/";
   }
 
   setViewingImage(image: { name: string; url: string } | null) {
     this.viewingImage = image;
   }
 
+  addRenderingSequence(name: string) {
+    if (!this.renderingSequences.includes(name)) {
+      this.renderingSequences = [...this.renderingSequences, name];
+    }
+  }
+
+  removeRenderingSequence(name: string) {
+    this.renderingSequences = this.renderingSequences.filter((n) => n !== name);
+  }
+
+  clearRenderingSequences() {
+    this.renderingSequences = [];
+  }
+
+  isSequenceRendering(name: string): boolean {
+    return this.renderingSequences.includes(name);
+  }
+
   addRenderedImage(image: RenderedImage, blob: Blob) {
     this.pendingBlobs.set(image.name, blob);
     this.renderedImages = [...this.renderedImages, image];
+    // Persist to IndexedDB
+    this.onImageAdded?.(image.name, blob, image.written);
+  }
+
+  /**
+   * Restore state from IndexedDB persistence
+   */
+  restoreFromPersistence(images: RenderedImage[], blobs: Map<string, Blob>) {
+    this.renderedImages = images;
+    this.pendingBlobs = blobs;
   }
 
   markAsWritten(name: string) {
@@ -87,6 +159,8 @@ class GalleryGeneratorState {
         written: true,
       };
       this.renderedImages = [...this.renderedImages];
+      // Update in IndexedDB
+      this.onImageWritten?.(name);
     }
   }
 
@@ -109,6 +183,8 @@ class GalleryGeneratorState {
     this.renderedImages = [];
     this.failedSequences = [];
     this.error = null;
+    // Clear IndexedDB
+    this.onResultsCleared?.();
   }
 
   reset() {

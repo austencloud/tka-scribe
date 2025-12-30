@@ -2,37 +2,12 @@
   Rendered Previews Grid
 
   Right column showing rendered image previews.
-  Uses the existing SequenceCard component with a status overlay.
+  Shows blob URLs directly (not PropAwareThumbnail which would fetch from cloud).
 -->
 <script lang="ts">
   import { galleryGeneratorState } from "../state/gallery-generator-state.svelte";
-  import SequenceCard from "$lib/features/discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
-  import SpotlightViewer from "$lib/features/discover/gallery/spotlight/components/SpotlightViewer.svelte";
-  import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
   const state = galleryGeneratorState;
-
-  // Create mock sequence objects for the cards
-  function createMockSequence(name: string): SequenceData {
-    return {
-      id: name,
-      name: name,
-      word: name,
-      beats: [],
-    } as SequenceData;
-  }
-
-  // Create a mock sequence object for the spotlight viewer
-  let spotlightSequence = $derived.by((): SequenceData | undefined => {
-    if (!state.viewingImage) return undefined;
-    return {
-      id: state.viewingImage.name,
-      name: state.viewingImage.name,
-      word: state.viewingImage.name,
-      thumbnails: [state.viewingImage.url],
-      beats: [],
-    } as SequenceData;
-  });
 
   function handleCardClick(img: { name: string; imageUrl: string }) {
     if (img.imageUrl) {
@@ -40,10 +15,18 @@
     }
   }
 
-  function handleSpotlightClose() {
+  function closeLightbox() {
     state.setViewingImage(null);
   }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === "Escape" && state.viewingImage) {
+      closeLightbox();
+    }
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <div class="column preview-column">
   <h2>Rendered ({state.renderedImages.length})</h2>
@@ -53,28 +36,32 @@
   {:else}
     <div class="preview-grid">
       {#each state.renderedImages as img (img.name)}
-        <div class="card-wrapper" class:written={img.written}>
-          <SequenceCard
-            sequence={createMockSequence(img.name)}
-            coverUrl={img.imageUrl}
-            onPrimaryAction={() => handleCardClick(img)}
-          />
+        <button
+          class="preview-card"
+          class:written={img.written}
+          on:click={() => handleCardClick(img)}
+        >
+          <img src={img.imageUrl} alt={img.name} loading="lazy" />
+          <span class="card-label">{img.name}</span>
           <span class="status-badge" class:written={img.written}>
             {img.written ? "✓ Written" : "Preview"}
           </span>
-        </div>
+        </button>
       {/each}
     </div>
   {/if}
 </div>
 
-<!-- Spotlight viewer for full-size image viewing -->
-<SpotlightViewer
-  show={!!state.viewingImage}
-  sequence={spotlightSequence}
-  displayMode="image"
-  onClose={handleSpotlightClose}
-/>
+<!-- Simple lightbox for full-size image viewing -->
+{#if state.viewingImage}
+  <button class="lightbox-overlay" on:click={closeLightbox} aria-label="Close lightbox">
+    <div class="lightbox-content" on:click|stopPropagation role="presentation">
+      <img src={state.viewingImage.url} alt={state.viewingImage.name} />
+      <p class="lightbox-title">{state.viewingImage.name}</p>
+      <span class="lightbox-close" aria-hidden="true">×</span>
+    </div>
+  </button>
+{/if}
 
 <style>
   .column {
@@ -97,26 +84,54 @@
 
   .preview-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 0.5rem;
   }
 
-  .card-wrapper {
+  .preview-card {
     position: relative;
     border-radius: 8px;
     border: 2px solid var(--semantic-warning, #f59e0b);
+    background: #1a1a2e;
+    padding: 0;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.15s ease;
   }
 
-  .card-wrapper.written {
+  .preview-card:hover {
+    transform: scale(1.02);
+  }
+
+  .preview-card.written {
     border-color: var(--semantic-success, #22c55e);
+  }
+
+  .preview-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    display: block;
+    background: #1a1a2e;
+  }
+
+  .card-label {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    color: #a1a1aa;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .status-badge {
     position: absolute;
-    bottom: 0.5rem;
-    right: 0.5rem;
-    font-size: var(--font-size-xs, 0.75rem);
-    padding: 0.125rem 0.5rem;
+    bottom: 1.75rem;
+    right: 0.25rem;
+    font-size: 0.65rem;
+    padding: 0.125rem 0.375rem;
     border-radius: 4px;
     font-weight: 500;
     background: rgba(245, 158, 11, 0.9);
@@ -133,5 +148,56 @@
     padding: 3rem 2rem;
     text-align: center;
     font-size: var(--font-size-sm, 0.875rem);
+  }
+
+  /* Lightbox styles */
+  .lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .lightbox-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    cursor: default;
+  }
+
+  .lightbox-content img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+
+  .lightbox-title {
+    text-align: center;
+    color: #e4e4e7;
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: -2rem;
+    right: -1rem;
+    width: 2rem;
+    height: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
   }
 </style>

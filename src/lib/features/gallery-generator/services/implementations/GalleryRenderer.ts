@@ -2,6 +2,7 @@
  * Gallery Renderer
  *
  * Renders sequences to image blobs with standardized gallery visibility settings.
+ * Supports prop type overrides for generating prop-specific gallery images.
  */
 
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -9,8 +10,14 @@ import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/IS
 import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
 import type { SequenceExportOptions } from "$lib/shared/render/domain/models/SequenceExportOptions";
 import { Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
 import type { IGalleryRenderer } from "../contracts/IGalleryRenderer";
 import type { BatchRenderResult } from "../../domain/gallery-models";
+
+export interface RenderOptions {
+  lightMode: boolean;
+  propType?: PropType;
+}
 
 export class GalleryRenderer implements IGalleryRenderer {
   constructor(
@@ -20,7 +27,8 @@ export class GalleryRenderer implements IGalleryRenderer {
 
   async renderSequence(
     sequence: SequenceData,
-    lightMode: boolean
+    lightMode: boolean,
+    propType?: PropType
   ): Promise<Blob> {
     // Load full sequence data if not already loaded
     if (!sequence.beats || sequence.beats.length === 0) {
@@ -51,6 +59,8 @@ export class GalleryRenderer implements IGalleryRenderer {
       blueVisible: true,
       scale: 1.0,
       backgroundColor: lightMode ? "#ffffff" : "#1a1a2e",
+      // Override prop type if specified
+      propTypeOverride: propType,
       visibilityOverrides: {
         showTKA: true,
         showVTG: false,
@@ -59,8 +69,9 @@ export class GalleryRenderer implements IGalleryRenderer {
         showReversals: true,
         showNonRadialPoints: showNonRadial,
         showTurnNumbers: true,
-        // LED mode inverts glyph colors for dark backgrounds
-        ledMode: !lightMode,
+        // Lights Off inverts glyph colors for dark backgrounds
+        lightsOff: !lightMode,
+        propGlow: !lightMode, // Enable prop glow when in dark mode
       },
     };
 
@@ -69,13 +80,14 @@ export class GalleryRenderer implements IGalleryRenderer {
 
   async renderBatch(
     sequences: SequenceData[],
-    lightMode: boolean
+    lightMode: boolean,
+    propType?: PropType
   ): Promise<BatchRenderResult[]> {
     return Promise.all(
       sequences.map(async (sequence) => {
         const name = sequence.word || sequence.name;
         try {
-          const blob = await this.renderSequence(sequence, lightMode);
+          const blob = await this.renderSequence(sequence, lightMode, propType);
           const imageUrl = URL.createObjectURL(blob);
           return { name, imageUrl, blob, success: true as const };
         } catch (err) {

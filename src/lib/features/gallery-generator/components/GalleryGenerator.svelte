@@ -15,6 +15,8 @@
   import { galleryGeneratorState } from "../state/gallery-generator-state.svelte";
   import { GalleryRenderer } from "../services/implementations/GalleryRenderer";
   import { GalleryWriter } from "../services/implementations/GalleryWriter";
+  import { CloudGalleryUploader } from "../services/implementations/CloudGalleryUploader";
+  import { galleryPersistence } from "../services/implementations/GalleryPersistence";
 
   import GallerySettings from "./GallerySettings.svelte";
   import GalleryActions from "./GalleryActions.svelte";
@@ -25,14 +27,34 @@
   import FailedSequencesList from "./FailedSequencesList.svelte";
 
   const state = galleryGeneratorState;
-  const BATCH_SIZE = 4;
+  // Batch size optimized for Ryzen 9 7950X / 128GB RAM / RTX 4090
+  const BATCH_SIZE = 50;
 
   // Services (initialized on mount)
   let galleryRenderer: GalleryRenderer | null = null;
   let galleryWriter: GalleryWriter | null = null;
+  let cloudUploader: CloudGalleryUploader | null = null;
 
   onMount(async () => {
+    // Set up persistence callbacks
+    state.onImageAdded = (name, blob, written) => {
+      galleryPersistence.store(name, blob, written).catch(console.error);
+    };
+    state.onImageWritten = (name) => {
+      galleryPersistence.markWritten(name).catch(console.error);
+    };
+    state.onResultsCleared = () => {
+      galleryPersistence.clear().catch(console.error);
+    };
+
     try {
+      // Load persisted images first (before sequences load)
+      const persisted = await galleryPersistence.loadAll();
+      if (persisted.images.length > 0) {
+        state.restoreFromPersistence(persisted.images, persisted.blobs);
+        console.log(`Restored ${persisted.images.length} rendered images from cache`);
+      }
+
       await Promise.all([
         loadFeatureModule("discover"),
         loadFeatureModule("share"),
@@ -44,6 +66,7 @@
 
       galleryRenderer = new GalleryRenderer(renderService, loaderService);
       galleryWriter = new GalleryWriter();
+      cloudUploader = new CloudGalleryUploader();
 
       const sequences = await loaderService.loadSequenceMetadata();
       state.setSequences(sequences);
@@ -61,24 +84,33 @@
   async function handleRenderSingle(sequence: SequenceData) {
     if (!galleryRenderer) return;
 
-    state.setRendering(true);
-    state.setError(null);
     const name = sequence.word || sequence.name;
+    state.setRendering(true);
+    state.addRenderingSequence(name);
+    state.setError(null);
 
     try {
-      const blob = await galleryRenderer.renderSequence(sequence, state.lightMode);
+      const blob = await galleryRenderer.renderSequence(
+        sequence,
+        state.lightMode,
+        state.selectedPropType ?? undefined
+      );
       const imageUrl = URL.createObjectURL(blob);
       state.addRenderedImage({ name, imageUrl, written: false }, blob);
     } catch (err) {
       state.setError(err instanceof Error ? err.message : "Render failed");
       console.error("Render failed:", err);
     } finally {
-      state.setRendering(false);
+      state.removeRenderingSequence(name);
+      if (state.renderingSequences.length === 0) {
+        state.setRendering(false);
+      }
     }
   }
 
   /**
-   * Render all pending sequences in batches
+   * Render all pending sequences using a worker pool pattern.
+   * Always keeps BATCH_SIZE renders running - as one finishes, the next starts immediately.
    */
   async function handleRenderAll() {
     if (!galleryRenderer || state.pendingSequences.length === 0) {
@@ -90,31 +122,59 @@
     state.setCancelled(false);
     state.setError(null);
 
-    const toProcess = [...state.pendingSequences];
+    const queue = [...state.pendingSequences];
+    let activeCount = 0;
+    let resolveAll: () => void;
+    const allDone = new Promise<void>(r => resolveAll = r);
+
+    async function processNext() {
+      if (state.isCancelled || queue.length === 0) {
+        activeCount--;
+        if (activeCount === 0) resolveAll();
+        return;
+      }
+
+      const sequence = queue.shift()!;
+      const name = sequence.word || sequence.name;
+      state.addRenderingSequence(name);
+
+      try {
+        const blob = await galleryRenderer!.renderSequence(
+          sequence,
+          state.lightMode,
+          state.selectedPropType ?? undefined
+        );
+        const imageUrl = URL.createObjectURL(blob);
+        state.removeRenderingSequence(name);
+        state.addRenderedImage({ name, imageUrl, written: false }, blob);
+      } catch (err) {
+        state.removeRenderingSequence(name);
+        state.addFailedSequence({
+          name,
+          error: err instanceof Error ? err.message : "Unknown error"
+        });
+      }
+
+      // Immediately start next one
+      processNext();
+    }
 
     try {
-      while (toProcess.length > 0 && !state.isCancelled) {
-        const batch = toProcess.splice(0, BATCH_SIZE);
-        const results = await galleryRenderer.renderBatch(batch, state.lightMode);
-
-        for (const result of results) {
-          if (result.success) {
-            state.addRenderedImage(
-              { name: result.name, imageUrl: result.imageUrl, written: false },
-              result.blob
-            );
-          } else {
-            state.addFailedSequence({ name: result.name, error: result.error });
-          }
-        }
-
-        // Brief yield for UI updates
-        await new Promise(r => setTimeout(r, 0));
+      // Start initial pool of workers
+      const initialCount = Math.min(BATCH_SIZE, queue.length);
+      activeCount = initialCount;
+      for (let i = 0; i < initialCount; i++) {
+        processNext();
       }
+
+      // Wait for all to complete
+      await allDone;
     } catch (err) {
-      state.setError(err instanceof Error ? err.message : "Batch render failed");
+      state.setError(err instanceof Error ? err.message : "Render failed");
+      state.clearRenderingSequences();
     } finally {
       state.setRendering(false);
+      state.clearRenderingSequences();
     }
   }
 
@@ -138,7 +198,12 @@
       }
 
       try {
-        await galleryWriter.writeToGallery(img.name, blob);
+        await galleryWriter.writeToGallery(
+          img.name,
+          blob,
+          state.selectedPropType ?? undefined,
+          state.lightMode
+        );
         state.markAsWritten(img.name);
       } catch (err) {
         console.error(`Failed to write ${img.name}:`, err);
@@ -150,6 +215,57 @@
     }
 
     state.setRendering(false);
+  }
+
+  /**
+   * Upload all rendered images to Firebase Storage (cloud cache)
+   */
+  async function handleUploadToCloud() {
+    if (!cloudUploader || !state.selectedPropType) {
+      state.setError("Please select a prop type before uploading to cloud.");
+      return;
+    }
+
+    const toUpload = state.renderedImages;
+    if (toUpload.length === 0) {
+      state.setError("No images to upload. Render some first.");
+      return;
+    }
+
+    state.setRendering(true);
+    state.setError(null);
+
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const img of toUpload) {
+      const blob = state.getBlob(img.name);
+      if (!blob) {
+        console.warn(`No blob found for ${img.name}`);
+        failCount++;
+        continue;
+      }
+
+      try {
+        await cloudUploader.uploadImage(
+          img.name,
+          blob,
+          state.selectedPropType,
+          state.lightMode
+        );
+        successCount++;
+      } catch (err) {
+        console.error(`Failed to upload ${img.name}:`, err);
+        failCount++;
+        state.addFailedSequence({
+          name: img.name,
+          error: err instanceof Error ? err.message : "Cloud upload failed"
+        });
+      }
+    }
+
+    state.setRendering(false);
+    console.log(`☁️ Cloud upload complete: ${successCount} success, ${failCount} failed`);
   }
 
   /**
@@ -178,6 +294,7 @@
   <GalleryActions
     onRenderAll={handleRenderAll}
     onWriteAll={handleWriteAll}
+    onUploadToCloud={handleUploadToCloud}
     onClear={handleClear}
     onCancel={handleCancel}
   />

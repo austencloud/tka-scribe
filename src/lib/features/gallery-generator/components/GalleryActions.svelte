@@ -9,11 +9,12 @@
   interface Props {
     onRenderAll: () => void;
     onWriteAll: () => void;
+    onUploadToCloud: () => void;
     onClear: () => void;
     onCancel: () => void;
   }
 
-  let { onRenderAll, onWriteAll, onClear, onCancel }: Props = $props();
+  let { onRenderAll, onWriteAll, onUploadToCloud, onClear, onCancel }: Props = $props();
 
   const state = galleryGeneratorState;
 </script>
@@ -48,6 +49,12 @@
   {#if state.previewCount > 0 && !state.isRendering}
     <button class="action-btn success" onclick={onWriteAll}>
       Write {state.previewCount} to Gallery
+    </button>
+  {/if}
+
+  {#if state.renderedImages.length > 0 && !state.isRendering && state.selectedPropType}
+    <button class="action-btn cloud" onclick={onUploadToCloud}>
+      ☁️ Upload {state.renderedImages.length} to Cloud
     </button>
   {/if}
 </div>
@@ -106,5 +113,14 @@
   .action-btn.secondary:hover:not(:disabled) {
     background: #3f3f46;
     color: #e4e4e7;
+  }
+
+  .action-btn.cloud {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .action-btn.cloud:hover:not(:disabled) {
+    background: #2563eb;
   }
 </style>

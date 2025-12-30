@@ -17,7 +17,12 @@
 </script>
 
 <div class="column pending-column">
-  <h2>Pending ({state.pendingSequences.length})</h2>
+  <h2>
+    Pending ({state.pendingSequences.length})
+    {#if state.renderingSequences.length > 0}
+      <span class="rendering-count">· {state.renderingSequences.length} rendering</span>
+    {/if}
+  </h2>
 
   {#if state.isLoading}
     <p class="empty-message">Loading sequences...</p>
@@ -26,17 +31,23 @@
   {:else}
     <div class="sequence-list">
       {#each state.pendingSequences.slice(0, 100) as sequence (sequence.id)}
-        <div class="sequence-item">
-          <span class="name">{sequence.word || sequence.name}</span>
+        {@const seqName = sequence.word || sequence.name}
+        {@const isRenderingThis = state.isSequenceRendering(seqName)}
+        <div class="sequence-item" class:rendering={isRenderingThis}>
+          <span class="name">{seqName}</span>
           <span class="meta">L{sequence.level || 1} · {sequence.sequenceLength}b</span>
-          <button
-            class="render-btn"
-            onclick={() => onRenderSingle(sequence)}
-            disabled={state.isRendering}
-            title="Render this sequence"
-          >
-            ▶
-          </button>
+          {#if isRenderingThis}
+            <span class="spinner" title="Rendering..."></span>
+          {:else}
+            <button
+              class="render-btn"
+              onclick={() => onRenderSingle(sequence)}
+              disabled={state.isRendering}
+              title="Render this sequence"
+            >
+              ▶
+            </button>
+          {/if}
         </div>
       {/each}
       {#if state.pendingSequences.length > 100}
@@ -58,6 +69,20 @@
     font-size: 0.875rem;
     font-weight: 600;
     color: #a1a1aa;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .rendering-count {
+    color: #f43f5e;
+    font-weight: 500;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
   }
 
   .pending-column {
@@ -119,6 +144,33 @@
   .render-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
+  }
+
+  /* Rendering state - highlight the item being processed */
+  .sequence-item.rendering {
+    border-left-color: #f43f5e;
+    background: #3f3f46;
+  }
+
+  .sequence-item.rendering .name {
+    color: #f43f5e;
+  }
+
+  /* Spinner */
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #3f3f46;
+    border-top-color: #f43f5e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .more-text {

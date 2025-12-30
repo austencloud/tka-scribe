@@ -1,7 +1,12 @@
 /**
  * Gallery Write API Endpoint
  *
- * Writes rendered word card images directly to static/gallery/{word}/{word}_ver1.webp
+ * Writes rendered gallery images to static/gallery/
+ *
+ * Path structure:
+ * - With propType: /gallery/{propType}/{word}.webp
+ * - Legacy (no propType): /gallery/{word}/{word}_ver1.webp
+ *
  * This is a dev tool endpoint - only works in development mode.
  */
 
@@ -22,17 +27,35 @@ export const POST: RequestHandler = async ({ request }) => {
     const formData = await request.formData();
     const file = formData.get("image") as File;
     const word = formData.get("word") as string;
+    const propType = formData.get("propType") as string | null;
+    const lightMode = formData.get("lightMode") as string | null;
 
     if (!file || !word) {
       return json({ error: "Missing image or word parameter" }, { status: 400 });
     }
 
-    // Sanitize word for filesystem (remove problematic characters)
+    // Sanitize inputs for filesystem
     const safeWord = word.replace(/[<>:"/\\|?*]/g, "_");
+    const safePropType = propType?.replace(/[<>:"/\\|?*]/g, "_");
 
-    // Build the path: static/gallery/{word}/{word}_ver1.webp
-    const galleryDir = join(process.cwd(), "static", "gallery", safeWord);
-    const filePath = join(galleryDir, `${safeWord}_ver1.webp`);
+    let galleryDir: string;
+    let filename: string;
+    let relativePath: string;
+
+    if (safePropType) {
+      // New structure: /gallery/{propType}/{word}.webp or {word}_light.webp / {word}_dark.webp
+      galleryDir = join(process.cwd(), "static", "gallery", safePropType);
+      const modeSuffix = lightMode !== null ? (lightMode === "true" ? "_light" : "_dark") : "";
+      filename = `${safeWord}${modeSuffix}.webp`;
+      relativePath = `gallery/${safePropType}/${filename}`;
+    } else {
+      // Legacy structure: /gallery/{word}/{word}_ver1.webp
+      galleryDir = join(process.cwd(), "static", "gallery", safeWord);
+      filename = `${safeWord}_ver1.webp`;
+      relativePath = `gallery/${safeWord}/${filename}`;
+    }
+
+    const filePath = join(galleryDir, filename);
 
     // Create directory if it doesn't exist
     if (!existsSync(galleryDir)) {
@@ -46,7 +69,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      path: `static/gallery/${safeWord}/${safeWord}_ver1.webp`,
+      path: `static/${relativePath}`,
     });
   } catch (error) {
     console.error("Gallery write failed:", error);
