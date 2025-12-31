@@ -1,4 +1,4 @@
-import adapter from "@sveltejs/adapter-netlify";
+import adapter from "@sveltejs/adapter-static";
 import { vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -12,13 +12,19 @@ const config = {
 
   kit: {
     // ============================================================================
-    // ADAPTER (Netlify deployment - 2025 best practice: explicit adapter)
+    // ADAPTER (Static SPA for Netlify - no SSR needed)
     // ============================================================================
+    // Using adapter-static with fallback for true SPA mode.
+    // This generates a 200.html fallback page that handles all client-side routes.
+    // SSR is disabled in +layout.ts due to InversifyJS compatibility issues.
     adapter: adapter({
-      // 2025: Use Node-based functions (edge: false is default, more compatible)
-      edge: false,
-      // 2025: Single function bundle is simpler and often faster for cold starts
-      split: false,
+      // Generate 200.html fallback for SPA routing (Netlify uses this for client-side routes)
+      fallback: "200.html",
+      // Output to build directory (Netlify default)
+      pages: "build",
+      assets: "build",
+      // Don't require all routes to be prerendered (we're an SPA)
+      strict: false,
     }),
 
     // ============================================================================
