@@ -18,7 +18,7 @@
   import { createAnimationPanelState } from "$lib/features/compose/state/animation-panel-state.svelte";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
-  import { TurnPatternManager } from "$lib/features/create/shared/services/implementations/TurnPatternManager";
+  // TurnPatternManager is loaded dynamically to avoid pulling in entire Create module at startup
   import type { TurnPattern } from "$lib/features/create/shared/domain/models/TurnPatternData";
   import { Timestamp } from "firebase/firestore";
   import AnimationPreviewCanvas from "./AnimationPreviewCanvas.svelte";
@@ -30,7 +30,6 @@
   // Services
   let playbackController: IAnimationPlaybackController | null = null;
   let discoverLoader: IDiscoverLoader | null = null;
-  const turnPatternManager = new TurnPatternManager();
 
   // Component state
   let loading = $state(true);
@@ -129,6 +128,11 @@
       });
 
       // Create and apply 1,1 turn pattern to get visible trails
+      // Dynamic import to avoid loading Create module at startup
+      const { TurnPatternManager } = await import(
+        "$lib/features/create/shared/services/implementations/TurnPatternManager"
+      );
+      const turnPatternManager = new TurnPatternManager();
       const turnPattern = createOneTurnPattern(baseSequence.beats.length);
       const result = turnPatternManager.applyPattern(turnPattern, baseSequence);
 
