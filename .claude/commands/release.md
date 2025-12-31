@@ -9,37 +9,46 @@ Automate the release process by analyzing completed feedback, generating version
 
 ## Workflow
 
-### Step 1: Check Completed Feedback
+### Step 1: Gather ALL Changes (Feedback + Git Commits)
 
-Run the release script in preview mode:
+**CRITICAL**: Always gather BOTH sources of changes. Not everything goes through the feedback system, so you must check both to get a comprehensive picture.
+
+**Step 1a: Run the release script preview**
 
 ```bash
 node scripts/release.js --dry-run
 ```
 
-This will:
+This will show completed feedback items from Firestore.
 
-- Query Firestore for items with status "completed"
-- If no completed feedback: fallback to git commit history since last tag
-- Calculate feedback summary (bugs, features, general) OR parse commits
-- Suggest version number based on feedback types or commit types
-- Generate changelog preview from feedback or commits
-- Check git status
+**Step 1b: Get git commits since last release**
 
-The script automatically handles two modes:
+```bash
+git log v{LAST_VERSION}..HEAD --oneline --no-merges
+```
 
-**Feedback Mode** (preferred):
+Replace `{LAST_VERSION}` with the most recent tag (shown in the dry-run output).
 
-- Uses completed feedback items from Firestore
-- Archives feedback and creates version record
-- Shows feedback count and breakdown
+**Step 1c: Get detailed feedback (if any)**
 
-**Git History Mode** (fallback):
+```bash
+node scripts/fetch-feedback.js list --status completed
+```
 
-- Parses commits since last tag (or all commits if no tags)
-- Uses conventional commit format to categorize changes
-- Skips Firestore operations
-- Shows commit count
+**Why both sources?**
+
+- Feedback captures user-reported issues and feature requests
+- Git commits capture developer-initiated fixes, refactors, and infrastructure work
+- Some work bypasses the feedback system entirely (CSP fixes, build config, etc.)
+- The changelog should reflect ALL meaningful changes, not just tracked feedback
+
+**Combine the information:**
+
+Review both the feedback items AND the commit messages to build a complete picture of what changed. Look for:
+
+- Commits that aren't represented in feedback (infrastructure, build, security)
+- Feedback items that might have multiple related commits
+- Duplicate entries (same fix mentioned in both)
 
 ### Step 2: Rewrite Changelog for Users
 
@@ -69,12 +78,23 @@ The script automatically handles two modes:
 
 ### Step 3: Show Preview to User
 
-Display the output from the dry-run, which includes:
+Present a comprehensive preview that includes:
 
-- Source indicator (feedback mode or git history mode)
-- Completed feedback count and breakdown OR commit count
+**Sources gathered:**
+- Completed feedback count and breakdown (X bugs, Y features, Z general)
+- Git commits since last release (N commits)
+
+**Version info:**
 - Current version vs. suggested new version
-- **YOUR REWRITTEN changelog preview** (categorized by fixed/added/improved)
+- Bump rationale (minor for features, patch for fixes only)
+
+**Combined changelog preview:**
+- **YOUR REWRITTEN changelog** (categorized by fixed/added/improved)
+- Include items from BOTH feedback AND commits
+- Deduplicate where the same change appears in both sources
+- Infrastructure/build changes from commits that weren't in feedback
+
+**Warnings:**
 - Git status warnings (if uncommitted changes exist)
 
 ### Step 4: Get User Confirmation
@@ -226,40 +246,47 @@ If any step fails after confirmation:
 - If Firestore fails after git operations (feedback mode), user must manually clean up
 - Show clear error message with recovery steps
 
-## Example Sessions
-
-### Example 1: Feedback Mode (Preferred)
+## Example Session
 
 ```
 User: /release
 
-Claude: I'll help you create a new release. Let me check the completed feedback...
+Claude: I'll help you create a new release. Let me gather all changes from both
+feedback AND git commits...
 
 [Runs: node scripts/release.js --dry-run]
+[Runs: git log v0.1.0..HEAD --oneline --no-merges]
 
-📦 Starting release process...
+## Release Preview: v0.2.0
 
-🔍 Checking completed feedback...
-✓ Found 8 completed items
-  (5 bugs, 3 features)
+**Sources gathered:**
+- 8 completed feedback items (5 bugs, 3 features)
+- 12 commits since v0.1.0
 
-📌 Current version: 0.1.0
-📌 New version: 0.2.0
-   (minor bump due to features)
+**Version:** 0.1.0 → 0.2.0 (minor bump - includes new features)
 
-📋 Changelog Preview:
+### 📋 Combined Changelog (rewritten for users):
 
-  🐛 Fixed:
-     - Fixed mobile nav overlap
-     - Fixed slow gallery load
-     - Fixed settings persistence
-     - Fixed drag on mobile
-     - Fixed animation lag
+**🐛 Fixed:**
+- Navigation no longer overlaps on mobile
+- Gallery loads faster
+- Settings save properly now
+- Drag gestures work on mobile
+- Animations play smoothly
+- Security headers configured correctly (from commits, not in feedback)
 
-  ✨ Added:
-     - Added favorites functionality
-     - Added bulk export
-     - Added keyboard shortcuts
+**✨ Added:**
+- Save your favorite sequences
+- Export multiple sequences at once
+- Keyboard shortcuts for faster editing
+
+**🔧 Improved:**
+- Smoother page transitions
+- Cleaner navigation sidebar
+
+⚠️ Warning: 3 uncommitted files
+
+---
 
 Claude: [Uses AskUserQuestion]
 Ready to release v0.2.0?
@@ -268,11 +295,12 @@ User: [Selects "Yes, release now"]
 
 Claude: Executing release...
 
-[Runs: node scripts/release.js --confirm]
+[Runs: node scripts/release.js --confirm --changelog .release-changelog.json]
 
 ✓ Updating package.json...
 ✓ Archiving feedback in Firestore...
 ✓ Creating git commit and tag...
+✓ Creating GitHub release...
 
 🎉 Release v0.2.0 complete!
 
@@ -281,8 +309,6 @@ Release v0.2.0 created successfully! Push to remote?
 
 User: [Selects "Yes, push tags and commits"]
 
-Claude: Pushing to remote...
-
 [Runs: git push && git push --tags]
 
 ✓ Pushed commits and tags to origin
@@ -290,73 +316,11 @@ Claude: Pushing to remote...
 All done! Release v0.2.0 is live.
 ```
 
-### Example 2: Git History Mode (Fallback)
-
-```
-User: /release
-
-Claude: I'll help you create a new release. Let me check the completed feedback...
-
-[Runs: node scripts/release.js --dry-run]
-
-📦 Starting release process...
-
-🔍 Checking completed feedback...
-⚠️  No completed feedback found.
-📝 Using git commit history instead...
-
-✓ Found 19 commits since last release
-
-📌 Current version: 0.1.0-beta
-📌 New version: 0.2.0
-   (minor bump due to features)
-
-📋 Changelog Preview:
-
-  🐛 Fixed:
-     - Improve renderer and coordinator components
-     - Fixed drag on mobile
-
-  ✨ Added:
-     - Add view transitions and improve coordinators
-     - Enhance navigation coordinator and bottom nav
-     - Add deep analysis models
-     - Add AI-powered feedback analysis system
-
-  🔧 Improved:
-     - Simplify cards and add OptionsCard
-     - Simplify SettingsModule and improve tab components
-     - Extract reusable UI components to shared library
-     - Modularize practice UI with animated grid overlay
-
-Claude: [Uses AskUserQuestion]
-Ready to release v0.2.0?
-
-User: [Selects "Yes, release now"]
-
-Claude: Executing release...
-
-[Runs: node scripts/release.js --confirm]
-
-✓ Updating package.json...
-⏭️  Skipping Firestore operations (git history mode)
-✓ Creating git commit and tag...
-
-🎉 Release v0.2.0 complete!
-
-Claude: [Uses AskUserQuestion]
-Release v0.2.0 created successfully! Push to remote?
-
-User: [Selects "Yes, push tags and commits"]
-
-Claude: Pushing to remote...
-
-[Runs: git push && git push --tags]
-
-✓ Pushed commits and tags to origin
-
-All done! Release v0.2.0 is live.
-```
+**Key points demonstrated:**
+- Both feedback AND commits were gathered
+- Commits revealed a security fix not tracked in feedback
+- Changelog was rewritten in user-friendly language
+- Combined sources give complete picture of changes
 
 ## Backfilling GitHub Releases
 
