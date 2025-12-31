@@ -12,12 +12,14 @@ import type { IAdminChallengeManager } from "../../../features/admin/services/co
 import type { IAnalyticsDataProvider } from "../../../features/admin/services/contracts/IAnalyticsDataProvider";
 import type { IAnnouncementManager } from "../../../features/admin/services/contracts/IAnnouncementManager";
 import type { IUserActivityTracker } from "../../../features/admin/services/contracts/IUserActivityTracker";
+import type { IQuickAccessPersister } from "../../debug/services/contracts/IQuickAccessPersister";
 import { SystemStateManager } from "../../../features/admin/services/implementations/SystemStateManager";
 import { AuditLogger } from "../../../features/admin/services/implementations/AuditLogger";
 import { AdminChallengeManager } from "../../../features/admin/services/implementations/AdminChallengeManager";
 import { AnalyticsDataProvider } from "../../../features/admin/services/implementations/AnalyticsDataProvider";
 import { AnnouncementManager } from "../../../features/admin/services/implementations/AnnouncementManager";
 import { UserActivityTracker } from "../../../features/admin/services/implementations/UserActivityTracker";
+import { QuickAccessPersister } from "../../debug/services/implementations/QuickAccessPersister";
 
 export const adminModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -55,6 +57,12 @@ export const adminModule = new ContainerModule(
     options
       .bind<IUserActivityTracker>(TYPES.IUserActivityTracker)
       .to(UserActivityTracker)
+      .inSingletonScope();
+
+    // Quick Access Persister (admin toolbar user shortcuts)
+    options
+      .bind<IQuickAccessPersister>(TYPES.IQuickAccessPersister)
+      .to(QuickAccessPersister)
       .inSingletonScope();
   }
 );

@@ -23,4 +23,7 @@ export const AdminTypes = {
 
   // Presence
   IPresenceTracker: Symbol.for("IPresenceTracker"),
+
+  // Debug Tools
+  IQuickAccessPersister: Symbol.for("IQuickAccessPersister"),
 } as const;
