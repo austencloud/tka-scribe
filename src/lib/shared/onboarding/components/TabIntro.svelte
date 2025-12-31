@@ -4,6 +4,11 @@
   Shows an immersive intro overlay on first visit to a tab.
   Takes over the entire content area for maximum impact.
 
+  Sidebar-Aware Centering (2026 pattern):
+  - Imports desktop sidebar state directly
+  - Offsets overlay left edge by sidebar width on desktop
+  - Content centers properly within the content area, not the full viewport
+
   Usage:
   <TabIntro
     moduleId="create"
@@ -19,6 +24,7 @@
   import { fly, fade } from "svelte/transition";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
 
   interface Props {
     moduleId: string;
@@ -42,6 +48,12 @@
     forceShow = false,
     onDismiss,
   }: Props = $props();
+
+  // Sidebar-aware positioning
+  // When desktop sidebar is visible, offset overlay to center content in the content area
+  const sidebarOffset = $derived(
+    desktopSidebarState.isVisible ? desktopSidebarState.width : 0
+  );
 
   // Persistence key
   const storageKey = `tabIntroSeen:${moduleId}:${tabId}`;
@@ -98,12 +110,13 @@
 </script>
 
 {#if isVisible}
-  <!-- Full-screen takeover -->
+  <!-- Full-screen takeover - offset by sidebar width for proper centering -->
   <div
     class="tab-intro-overlay"
     role="dialog"
     aria-modal="true"
     aria-labelledby="tab-intro-title"
+    style="--sidebar-offset: {sidebarOffset}px;"
     transition:fade={{ duration: 250 }}
   >
     <!-- Dismiss on background click -->
@@ -139,7 +152,11 @@
 <style>
   .tab-intro-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    /* Offset left edge by sidebar width - content centers in remaining space */
+    left: var(--sidebar-offset, 0);
     z-index: 1000;
     display: flex;
     flex-direction: column;
@@ -151,6 +168,9 @@
       rgba(10, 10, 18, 0.97) 0%,
       rgba(15, 15, 25, 0.99) 100%
     );
+
+    /* Smooth transition when sidebar collapses/expands */
+    transition: left 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .backdrop-dismiss {

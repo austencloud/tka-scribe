@@ -20,49 +20,7 @@
   import type { ComposeTab } from "./shared/state/compose-module-state.svelte.ts";
   import type { IURLSyncer } from "$lib/shared/navigation/services/contracts/IURLSyncer";
   import type { IDeepLinker } from "$lib/shared/navigation/services/contracts/IDeepLinker";
-  import ModuleOnboarding from "$lib/shared/onboarding/components/ModuleOnboarding.svelte";
-  import { COMPOSE_ONBOARDING } from "$lib/shared/onboarding/config/module-onboarding-content";
-  import {
-    hasCompletedModuleOnboarding,
-    markModuleOnboardingComplete,
-  } from "$lib/shared/onboarding/config/storage-keys";
-
-  // ============================================================================
-  // ONBOARDING STATE
-  // ============================================================================
-  let showOnboarding = $state(false);
-
-  $effect(() => {
-    if (typeof window !== "undefined") {
-      showOnboarding = !hasCompletedModuleOnboarding("compose");
-    }
-  });
-
-  // Sync onboarding visibility with navigation state (for desktop sidebar tab hiding)
-  $effect(() => {
-    const visible = showOnboarding;
-    untrack(() => {
-      navigationState.setModuleOnboardingVisible("compose", visible);
-    });
-  });
-
-  function handleOnboardingChoiceStepReached() {
-    navigationState.setModuleOnboardingOnChoiceStep("compose", true);
-  }
-
-  function handleOnboardingTabSelected(tabId: string) {
-    markModuleOnboardingComplete("compose");
-    showOnboarding = false;
-    navigationState.setModuleOnboardingVisible("compose", false);
-    navigationState.setActiveTab(tabId as ComposeTab);
-  }
-
-  function handleOnboardingSkip() {
-    markModuleOnboardingComplete("compose");
-    showOnboarding = false;
-    navigationState.setModuleOnboardingVisible("compose", false);
-  }
-
+  
   // Import tab components
   // CompositionBuilder replaces old ArrangeTab with unified layout-first composition builder
   import CompositionBuilder from "./compose/CompositionBuilder.svelte";
@@ -152,24 +110,7 @@
   }
 </script>
 
-{#if showOnboarding}
-  <div class="onboarding-wrapper">
-    <ModuleOnboarding
-      moduleId={COMPOSE_ONBOARDING.moduleId}
-      moduleName={COMPOSE_ONBOARDING.moduleName}
-      moduleIcon={COMPOSE_ONBOARDING.moduleIcon}
-      moduleColor={COMPOSE_ONBOARDING.moduleColor}
-      welcomeTitle={COMPOSE_ONBOARDING.welcomeTitle}
-      welcomeSubtitle={COMPOSE_ONBOARDING.welcomeSubtitle}
-      welcomeDescription={COMPOSE_ONBOARDING.welcomeDescription}
-      tabs={COMPOSE_ONBOARDING.tabs}
-      onTabSelected={handleOnboardingTabSelected}
-      onSkip={handleOnboardingSkip}
-      onChoiceStepReached={handleOnboardingChoiceStepReached}
-    />
-  </div>
-{:else}
-  <div class="compose-module">
+<div class="compose-module">
     <div class="content-container">
       {#key composeState.currentTab}
         <div class="tab-panel">
@@ -191,19 +132,8 @@
       </div>
     {/if}
   </div>
-{/if}
 
 <style>
-  .onboarding-wrapper {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--theme-panel-bg);
-  }
-
   .compose-module {
     position: relative;
     display: flex;

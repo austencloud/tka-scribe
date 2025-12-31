@@ -20,54 +20,11 @@ Navigation via bottom tabs (mobile-first UX pattern)
   import CodexTab from "./codex/components/CodexTab.svelte";
   import QuizTab from "./quiz/components/QuizTab.svelte";
   import type { LearnConcept } from "./domain/types";
-  import ModuleOnboarding from "$lib/shared/onboarding/components/ModuleOnboarding.svelte";
-  import { LEARN_ONBOARDING } from "$lib/shared/onboarding/config/module-onboarding-content";
-  import {
-    hasCompletedModuleOnboarding,
-    markModuleOnboardingComplete,
-  } from "$lib/shared/onboarding/config/storage-keys";
-
+  
   type LearnMode = "concepts" | "play" | "codex";
 
   // Tab order for determining slide direction
   const TAB_ORDER: LearnMode[] = ["concepts", "play", "codex"];
-
-  // ============================================================================
-  // ONBOARDING STATE
-  // ============================================================================
-  let showOnboarding = $state(false);
-
-  $effect(() => {
-    if (typeof window !== "undefined") {
-      showOnboarding = !hasCompletedModuleOnboarding("learn");
-    }
-  });
-
-  // Sync onboarding visibility with navigation state (for desktop sidebar tab hiding)
-  $effect(() => {
-    const visible = showOnboarding;
-    untrack(() => {
-      navigationState.setModuleOnboardingVisible("learn", visible);
-    });
-  });
-
-  function handleOnboardingChoiceStepReached() {
-    navigationState.setModuleOnboardingOnChoiceStep("learn", true);
-  }
-
-  function handleOnboardingTabSelected(tabId: string) {
-    markModuleOnboardingComplete("learn");
-    showOnboarding = false;
-    navigationState.setModuleOnboardingVisible("learn", false);
-    // Navigate to the selected tab
-    navigationState.setLearnMode(tabId as LearnMode);
-  }
-
-  function handleOnboardingSkip() {
-    markModuleOnboardingComplete("learn");
-    showOnboarding = false;
-    navigationState.setModuleOnboardingVisible("learn", false);
-  }
 
   // Props
   let {
@@ -183,24 +140,7 @@ Navigation via bottom tabs (mobile-first UX pattern)
   }
 </script>
 
-{#if showOnboarding}
-  <div class="onboarding-wrapper">
-    <ModuleOnboarding
-      moduleId={LEARN_ONBOARDING.moduleId}
-      moduleName={LEARN_ONBOARDING.moduleName}
-      moduleIcon={LEARN_ONBOARDING.moduleIcon}
-      moduleColor={LEARN_ONBOARDING.moduleColor}
-      welcomeTitle={LEARN_ONBOARDING.welcomeTitle}
-      welcomeSubtitle={LEARN_ONBOARDING.welcomeSubtitle}
-      welcomeDescription={LEARN_ONBOARDING.welcomeDescription}
-      tabs={LEARN_ONBOARDING.tabs}
-      onTabSelected={handleOnboardingTabSelected}
-      onSkip={handleOnboardingSkip}
-      onChoiceStepReached={handleOnboardingChoiceStepReached}
-    />
-  </div>
-{:else}
-  <div class="learn-tab">
+<div class="learn-tab">
     <!-- Content area - tab switching with slide transitions -->
     <div class="content-container">
       {#key activeMode}
@@ -230,19 +170,8 @@ Navigation via bottom tabs (mobile-first UX pattern)
       {/key}
     </div>
   </div>
-{/if}
 
 <style>
-  .onboarding-wrapper {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--theme-panel-bg);
-  }
-
   .learn-tab {
     position: relative;
     display: flex;

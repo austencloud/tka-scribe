@@ -21,21 +21,24 @@ export const CREATE_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-cubes",
     color: "#3b82f6",
     title: "Constructor",
-    description: "TODO: Write description", // <-- Fill this in
+    description:
+      "Build sequences beat by beat with full creative control. Choose your start position, then browse and select from all available moves to craft exactly the choreography you envision.",
   },
 
   generator: {
     icon: "fa-wand-magic-sparkles",
     color: "#8b5cf6",
     title: "Generator",
-    description: "TODO: Write description", // <-- Fill this in
+    description:
+      "Let the system surprise you with randomly generated sequences based on your preferences. Set your parameters and discover new movement combinations you might never have imagined.",
   },
 
   assembler: {
     icon: "fa-route",
     color: "#06b6d4",
     title: "Assembler",
-    description: "TODO: Write description", // <-- Fill this in
+    description:
+      "Draw hand paths directly on the grid to create sequences from gesture. Trace the movement you want and watch your choreography come to life.",
   },
 };
 
@@ -47,15 +50,17 @@ export const LEARN_TAB_INTROS: Record<string, TabIntroContent> = {
   concepts: {
     icon: "fa-lightbulb",
     color: "#f59e0b",
-    title: "Concepts",
-    description: "TODO: Write description",
+    title: "Learning Path",
+    description:
+      "Master the Kinetic Alphabet step by step. Work through interactive lessons that build your understanding from foundational concepts to advanced techniques.",
   },
 
   codex: {
     icon: "fa-book",
     color: "#10b981",
     title: "Codex",
-    description: "TODO: Write description",
+    description:
+      "Your complete reference guide to every letter and pictograph in the Kinetic Alphabet. Browse, study, and deepen your understanding of the movement notation system.",
   },
 };
 
@@ -68,14 +73,16 @@ export const DISCOVER_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-compass",
     color: "#a855f7",
     title: "Browse",
-    description: "TODO: Write description",
+    description:
+      "Explore thousands of community-created sequences. Filter by difficulty, style, or props to find inspiration for your next performance.",
   },
 
   creators: {
     icon: "fa-users",
     color: "#ec4899",
     title: "Creators",
-    description: "TODO: Write description",
+    description:
+      "Connect with the flow arts community. Discover talented creators, follow their work, and find collaborators for your next project.",
   },
 };
 
@@ -88,14 +95,16 @@ export const LIBRARY_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-folder",
     color: "#6366f1",
     title: "Your Sequences",
-    description: "TODO: Write description",
+    description:
+      "Your personal collection of created and saved sequences. Organize, edit, and manage all your choreography in one place.",
   },
 
   favorites: {
     icon: "fa-heart",
     color: "#ef4444",
     title: "Favorites",
-    description: "TODO: Write description",
+    description:
+      "Quick access to sequences you've marked as favorites. Keep your go-to choreography close at hand for practice and performance.",
   },
 };
 
@@ -108,14 +117,16 @@ export const COMPOSE_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-play",
     color: "#22c55e",
     title: "Playback",
-    description: "TODO: Write description",
+    description:
+      "Watch your sequences come alive with animated playback. Adjust speed, loop sections, and study the movement flow in real time.",
   },
 
   timeline: {
     icon: "fa-film",
     color: "#f97316",
     title: "Timeline",
-    description: "TODO: Write description",
+    description:
+      "Arrange and sequence your choreography on a visual timeline. Sync movements to music, adjust timing, and create polished performances.",
   },
 };
 

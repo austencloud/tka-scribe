@@ -7,13 +7,7 @@
   import { onMount, setContext, untrack } from "svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import ErrorBanner from "../../../create/shared/components/ErrorBanner.svelte";
-  import ModuleOnboarding from "$lib/shared/onboarding/components/ModuleOnboarding.svelte";
-  import { DISCOVER_ONBOARDING } from "$lib/shared/onboarding/config/module-onboarding-content";
-  import {
-    hasCompletedModuleOnboarding,
-    markModuleOnboardingComplete,
-  } from "$lib/shared/onboarding/config/storage-keys";
-
+  
   import type {
     IDiscoverEventHandler,
     DeleteConfirmationData,
@@ -46,48 +40,6 @@
 
   // Service resolved lazily in onMount to ensure feature module is loaded
   let eventHandlerService: IDiscoverEventHandler | null = null;
-
-  // ============================================================================
-  // ONBOARDING STATE
-  // ============================================================================
-  let showOnboarding = $state(false);
-
-  // Check onboarding status on initialization
-  $effect(() => {
-    // Only run once on mount (not reactive to anything)
-    if (typeof window !== "undefined") {
-      showOnboarding = !hasCompletedModuleOnboarding("discover");
-    }
-  });
-
-  // Sync onboarding visibility with navigation state (for desktop sidebar tab hiding)
-  $effect(() => {
-    const visible = showOnboarding;
-    untrack(() => {
-      navigationState.setModuleOnboardingVisible("discover", visible);
-    });
-  });
-
-  function handleOnboardingChoiceStepReached() {
-    navigationState.setModuleOnboardingOnChoiceStep("discover", true);
-  }
-
-  function handleOnboardingTabSelected(tabId: string) {
-    markModuleOnboardingComplete("discover");
-    showOnboarding = false;
-    navigationState.setModuleOnboardingVisible("discover", false);
-
-    // Navigate to the selected tab
-    // Map tab IDs to navigation state values
-    const navTab = tabId === "gallery" ? "sequences" : tabId;
-    navigationState.setActiveTab(navTab);
-  }
-
-  function handleOnboardingSkip() {
-    markModuleOnboardingComplete("discover");
-    showOnboarding = false;
-    navigationState.setModuleOnboardingVisible("discover", false);
-  }
 
   // ✅ PURE RUNES: Local state
   let _selectedSequence = $state<SequenceData | null>(null);
@@ -400,25 +352,7 @@
   });
 </script>
 
-<!-- Module Onboarding (first-time users) -->
-{#if showOnboarding}
-  <div class="onboarding-wrapper">
-    <ModuleOnboarding
-      moduleId={DISCOVER_ONBOARDING.moduleId}
-      moduleName={DISCOVER_ONBOARDING.moduleName}
-      moduleIcon={DISCOVER_ONBOARDING.moduleIcon}
-      moduleColor={DISCOVER_ONBOARDING.moduleColor}
-      welcomeTitle={DISCOVER_ONBOARDING.welcomeTitle}
-      welcomeSubtitle={DISCOVER_ONBOARDING.welcomeSubtitle}
-      welcomeDescription={DISCOVER_ONBOARDING.welcomeDescription}
-      tabs={DISCOVER_ONBOARDING.tabs}
-      onTabSelected={handleOnboardingTabSelected}
-      onSkip={handleOnboardingSkip}
-      onChoiceStepReached={handleOnboardingChoiceStepReached}
-    />
-  </div>
-{:else}
-  <!-- Error banner -->
+<!-- Error banner -->
   {#if error}
     <ErrorBanner
       message={error}
@@ -480,19 +414,8 @@
       </div>
     </div>
   </div>
-{/if}
 
 <style>
-  .onboarding-wrapper {
-    position: absolute;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--theme-panel-bg);
-  }
-
   .explore-content {
     display: flex;
     flex-direction: column;
