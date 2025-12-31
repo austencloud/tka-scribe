@@ -31,10 +31,30 @@ export class StartPositionDeriver implements IStartPositionDeriver {
   ) {}
 
   deriveFromFirstBeat(firstBeat: BeatData): StartPositionData {
+    console.log(`[StartPositionDeriver] deriveFromFirstBeat called:`, {
+      beatId: firstBeat.id,
+      hasMotions: !!firstBeat.motions,
+      motionsKeys: firstBeat.motions ? Object.keys(firstBeat.motions) : 'none',
+    });
+
     const blueMotion = firstBeat.motions?.[MotionColor.BLUE];
     const redMotion = firstBeat.motions?.[MotionColor.RED];
 
+    console.log(`[StartPositionDeriver] Motion lookup:`, {
+      blueKey: MotionColor.BLUE,
+      redKey: MotionColor.RED,
+      hasBlueMotion: !!blueMotion,
+      hasRedMotion: !!redMotion,
+      blueStartLocation: blueMotion?.startLocation,
+      redStartLocation: redMotion?.startLocation,
+    });
+
     if (!blueMotion || !redMotion) {
+      console.error(`[StartPositionDeriver] Missing motion data:`, {
+        motions: firstBeat.motions,
+        blueMotion,
+        redMotion,
+      });
       throw new Error(
         "Cannot derive start position: first beat missing blue or red motion"
       );

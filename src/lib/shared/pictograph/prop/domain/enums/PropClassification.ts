@@ -96,6 +96,24 @@ export function isBilateralProp(propType: string): boolean {
 }
 
 /**
+ * Buugeng Family Props - asymmetric bilateral props that can nest together
+ * when orientations are opposite. Used for special beta offset handling.
+ */
+export const BUUGENG_FAMILY_PROPS = [
+  "buugeng",
+  "bigbuugeng",
+  "fractalgeng",
+] as const;
+
+/**
+ * Check if a prop is in the Buugeng family (asymmetric bilateral props)
+ */
+export function isBuugengFamilyProp(propType: string): boolean {
+  const normalizedType = propType.toLowerCase();
+  return (BUUGENG_FAMILY_PROPS as readonly string[]).includes(normalizedType);
+}
+
+/**
  * Check if a prop is big (requires larger spacing)
  */
 export function isBigProp(propType: string): boolean {

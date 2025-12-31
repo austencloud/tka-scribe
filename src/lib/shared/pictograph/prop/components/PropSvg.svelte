@@ -12,6 +12,14 @@ Now with smooth transitions when position or orientation changes!
   import type { MotionData } from "../../shared/domain/models/MotionData";
   import type { PropAssets } from "../domain/models/PropAssets";
   import type { PropPosition } from "../domain/models/PropPosition";
+  import { getSettings } from "../../../application/state/app-state.svelte";
+
+  // Buugeng family - asymmetric props that can be flipped
+  const BUUGENG_FAMILY = new Set([
+    PropType.BUUGENG,
+    PropType.BIGBUUGENG,
+    PropType.FRACTALGENG,
+  ]);
 
   let {
     motionData,
@@ -45,12 +53,45 @@ Now with smooth transitions when position or orientation changes!
   let previousRotation: number | null = null;
   let previousSnapshot: MotionSnapshot | null = null;
 
-  // Check if this is a red hand that should be mirrored
-  // Use the motion's actual propType field
-  const shouldMirror = $derived(
-    motionData.propType === PropType.HAND &&
-      motionData.color === MotionColor.RED
-  );
+  // Check if this prop should be mirrored (flipped horizontally)
+  // - Red HAND is always mirrored (left/right hands are anatomically mirrored)
+  // - Buugeng family can be flipped via user preference (asymmetric prop)
+  //
+  // IMPORTANT: We call getSettings() directly inside $derived.by to ensure
+  // Svelte 5 tracks the reactive settings properties. Using an intermediate
+  // $derived(getSettings()) doesn't preserve reactivity for property access.
+  //
+  // NOTE: We check BOTH motionData.propType AND the settings prop type because
+  // motionData may have a stored prop type (e.g., "staff") while settings has
+  // the actual rendered prop type (e.g., "buugeng"). The flip applies to the
+  // RENDERED prop, so we need to check settings.
+  const shouldMirror = $derived.by(() => {
+    const settings = getSettings();
+
+    // Determine the actual prop type being rendered (settings override > stored)
+    const actualPropType =
+      motionData.color === MotionColor.BLUE
+        ? settings.bluePropType ?? motionData.propType
+        : motionData.color === MotionColor.RED
+          ? settings.redPropType ?? motionData.propType
+          : motionData.propType;
+
+    // Red hand is always mirrored
+    if (actualPropType === PropType.HAND && motionData.color === MotionColor.RED) {
+      return true;
+    }
+
+    // Check buugeng flip preference based on hand color
+    if (BUUGENG_FAMILY.has(actualPropType as PropType)) {
+      if (motionData.color === MotionColor.BLUE) {
+        return settings.blueBuugengFlipped ?? false;
+      } else if (motionData.color === MotionColor.RED) {
+        return settings.redBuugengFlipped ?? false;
+      }
+    }
+
+    return false;
+  });
 
   // Build the complete transform string
   const transformString = $derived(

@@ -16,6 +16,8 @@ export interface PropPreset {
   bluePropType: PropType;
   redPropType: PropType;
   catDogMode: boolean;
+  blueBuugengFlipped?: boolean; // Flip buugeng for blue hand (asymmetric prop)
+  redBuugengFlipped?: boolean; // Flip buugeng for red hand (asymmetric prop)
 }
 
 export interface AppSettings {
@@ -28,6 +30,8 @@ export interface AppSettings {
   bluePropType?: PropType; // Per-color prop type for blue motions
   redPropType?: PropType; // Per-color prop type for red motions
   catDogMode?: boolean; // Whether CatDog Mode is enabled in prop type settings
+  blueBuugengFlipped?: boolean; // Flip buugeng for blue hand (asymmetric prop)
+  redBuugengFlipped?: boolean; // Flip buugeng for red hand (asymmetric prop)
   propPresets?: PropPreset[]; // Up to 6 saved prop configurations
   selectedPresetIndex?: number; // Index of currently active preset (0-5)
   backupFrequency?: string;

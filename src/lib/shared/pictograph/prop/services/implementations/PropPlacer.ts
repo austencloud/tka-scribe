@@ -18,6 +18,7 @@ import type { MotionData } from "../../../shared/domain/models/MotionData";
 import type { PictographData } from "../../../shared/domain/models/PictographData";
 import {
   getBetaOffsetSize,
+  isBuugengFamilyProp,
   isUnilateralProp,
 } from "../../domain/enums/PropClassification";
 import { createPropPlacementFromPosition } from "../../domain/factories/createPropPlacementData";
@@ -146,15 +147,27 @@ export class PropPlacer implements IPropPlacer {
       return { x: 0, y: 0 };
     }
 
-    // Skip beta offset for UNILATERAL props when both props have same orientation TYPE
-    // but DIFFERENT specific orientations (OUT/IN or CLOCK/COUNTER)
-    // Bilateral props always get the offset (unless hybrid)
+    // Calculate orientation relationships
     const bothRadial = redIsRadial && blueIsRadial;
     const bothNonRadial = redIsNonRadial && blueIsNonRadial;
     const sameTypeButDifferentOrientation =
       (bothRadial && redEndOri !== blueEndOri) ||
       (bothNonRadial && redEndOri !== blueEndOri);
 
+    // BUUGENG FAMILY SPECIAL CASE:
+    // Buugeng props are asymmetric bilateral props that can "nest" together
+    // when orientations are opposite (IN/OUT or CLOCK/COUNTER).
+    // Skip beta offset so they overlap at the default position.
+    if (
+      isBuugengFamilyProp(motionData.propType) &&
+      sameTypeButDifferentOrientation
+    ) {
+      return { x: 0, y: 0 };
+    }
+
+    // Skip beta offset for UNILATERAL props when both props have same orientation TYPE
+    // but DIFFERENT specific orientations (OUT/IN or CLOCK/COUNTER)
+    // Bilateral props always get the offset (unless hybrid or Buugeng family)
     if (
       sameTypeButDifferentOrientation &&
       isUnilateralProp(motionData.propType)

@@ -107,12 +107,16 @@
     selectedBluePropType = preset.bluePropType;
     selectedRedPropType = preset.redPropType;
     catDogMode = preset.catDogMode;
+    blueBuugengFlipped = preset.blueBuugengFlipped ?? false;
+    redBuugengFlipped = preset.redBuugengFlipped ?? false;
 
     // Update all settings at once
     onUpdate?.({ key: "selectedPresetIndex", value: index });
     onUpdate?.({ key: "bluePropType", value: preset.bluePropType });
     onUpdate?.({ key: "redPropType", value: preset.redPropType });
     onUpdate?.({ key: "catDogMode", value: preset.catDogMode });
+    onUpdate?.({ key: "blueBuugengFlipped", value: blueBuugengFlipped });
+    onUpdate?.({ key: "redBuugengFlipped", value: redBuugengFlipped });
   }
 
   function handleSaveToSlot(index: number) {
@@ -123,6 +127,8 @@
       bluePropType: selectedBluePropType,
       redPropType: selectedRedPropType,
       catDogMode,
+      blueBuugengFlipped,
+      redBuugengFlipped,
     };
 
     // Ensure array is long enough
@@ -158,6 +164,8 @@
       bluePropType: selectedBluePropType,
       redPropType: selectedRedPropType,
       catDogMode,
+      blueBuugengFlipped,
+      redBuugengFlipped,
     };
 
     const newPresets = [...propPresets];
@@ -243,11 +251,47 @@
     updateCurrentPreset();
   }
 
+  // Buugeng family - asymmetric props that can be flipped
+  const BUUGENG_FAMILY = new Set([
+    PropType.BUUGENG,
+    PropType.BIGBUUGENG,
+    PropType.FRACTALGENG,
+  ]);
+
+  // Buugeng flip state
+  let blueBuugengFlipped = $state(false);
+  let redBuugengFlipped = $state(false);
+
+  // Sync buugeng flip state from settings
+  $effect(() => {
+    blueBuugengFlipped = settings.blueBuugengFlipped ?? false;
+    redBuugengFlipped = settings.redBuugengFlipped ?? false;
+  });
+
+  function toggleBuugengFlip(hand: "blue" | "red") {
+    hapticService?.trigger("selection");
+
+    if (hand === "blue") {
+      blueBuugengFlipped = !blueBuugengFlipped;
+      onUpdate?.({ key: "blueBuugengFlipped", value: blueBuugengFlipped });
+      // In single-prop mode, sync both hands
+      if (!catDogMode) {
+        redBuugengFlipped = blueBuugengFlipped;
+        onUpdate?.({ key: "redBuugengFlipped", value: redBuugengFlipped });
+      }
+    } else {
+      redBuugengFlipped = !redBuugengFlipped;
+      onUpdate?.({ key: "redBuugengFlipped", value: redBuugengFlipped });
+    }
+  }
+
   // Display info
   const blueInfo = $derived(getPropTypeDisplayInfo(selectedBluePropType));
   const redInfo = $derived(getPropTypeDisplayInfo(selectedRedPropType));
   const blueHasVariations = $derived(hasVariations(selectedBluePropType));
   const redHasVariations = $derived(hasVariations(selectedRedPropType));
+  const blueIsBuugeng = $derived(BUUGENG_FAMILY.has(selectedBluePropType));
+  const redIsBuugeng = $derived(BUUGENG_FAMILY.has(selectedRedPropType));
 </script>
 
 <div class="prop-type-tab" class:visible={isVisible}>
@@ -295,7 +339,12 @@
             <span class="hand-dot blue"></span>
             Left
           </span>
-          <img src={blueInfo.image} alt={blueInfo.label} class="prop-icon" />
+          <img
+            src={blueInfo.image}
+            alt={blueInfo.label}
+            class="prop-icon"
+            class:flipped={blueIsBuugeng && blueBuugengFlipped}
+          />
           <span class="prop-name">{blueInfo.label}</span>
           {#if blueHasVariations}
             <span
@@ -318,6 +367,29 @@
               <i class="fas fa-sync-alt" aria-hidden="true"></i>
             </span>
           {/if}
+          {#if blueIsBuugeng}
+            <span
+              class="mini-flip-btn"
+              class:active={blueBuugengFlipped}
+              onclick={(e) => {
+                e.stopPropagation();
+                toggleBuugengFlip("blue");
+              }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleBuugengFlip("blue");
+                }
+              }}
+              role="button"
+              tabindex="0"
+              aria-label="Flip buugeng"
+              title="Flip buugeng (asymmetric prop)"
+            >
+              <i class="fas fa-arrows-left-right" aria-hidden="true"></i>
+            </span>
+          {/if}
         </button>
         <button
           class="prop-card red"
@@ -331,7 +403,12 @@
             <span class="hand-dot red"></span>
             Right
           </span>
-          <img src={redInfo.image} alt={redInfo.label} class="prop-icon" />
+          <img
+            src={redInfo.image}
+            alt={redInfo.label}
+            class="prop-icon"
+            class:flipped={redIsBuugeng && redBuugengFlipped}
+          />
           <span class="prop-name">{redInfo.label}</span>
           {#if redHasVariations}
             <span
@@ -354,13 +431,41 @@
               <i class="fas fa-sync-alt" aria-hidden="true"></i>
             </span>
           {/if}
+          {#if redIsBuugeng}
+            <span
+              class="mini-flip-btn"
+              class:active={redBuugengFlipped}
+              onclick={(e) => {
+                e.stopPropagation();
+                toggleBuugengFlip("red");
+              }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleBuugengFlip("red");
+                }
+              }}
+              role="button"
+              tabindex="0"
+              aria-label="Flip buugeng"
+              title="Flip buugeng (asymmetric prop)"
+            >
+              <i class="fas fa-arrows-left-right" aria-hidden="true"></i>
+            </span>
+          {/if}
         </button>
       </div>
     {:else}
       <!-- Single prop display -->
       <div class="prop-display single">
         <button class="prop-card" onclick={handleChangeProp}>
-          <img src={blueInfo.image} alt={blueInfo.label} class="prop-icon" />
+          <img
+            src={blueInfo.image}
+            alt={blueInfo.label}
+            class="prop-icon"
+            class:flipped={blueIsBuugeng && blueBuugengFlipped}
+          />
           <span class="prop-name">{blueInfo.label}</span>
           {#if blueHasVariations}
             <span
@@ -381,6 +486,29 @@
               aria-label="Toggle variation"
             >
               <i class="fas fa-sync-alt" aria-hidden="true"></i>
+            </span>
+          {/if}
+          {#if blueIsBuugeng}
+            <span
+              class="mini-flip-btn"
+              class:active={blueBuugengFlipped}
+              onclick={(e) => {
+                e.stopPropagation();
+                toggleBuugengFlip("blue");
+              }}
+              onkeydown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  toggleBuugengFlip("blue");
+                }
+              }}
+              role="button"
+              tabindex="0"
+              aria-label="Flip buugeng"
+              title="Flip buugeng (asymmetric prop)"
+            >
+              <i class="fas fa-arrows-left-right" aria-hidden="true"></i>
             </span>
           {/if}
         </button>
@@ -650,5 +778,43 @@
     background: var(--theme-card-hover-bg);
     border-color: var(--theme-stroke-strong);
     color: var(--theme-accent);
+  }
+
+  /* Flip button for asymmetric props (Buugeng) */
+  .mini-flip-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 36px;
+    height: 36px;
+    min-width: var(--min-touch-target, 48px);
+    min-height: var(--min-touch-target, 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 10px;
+    color: var(--theme-text-dim);
+    cursor: pointer;
+    font-size: var(--font-size-compact);
+    transition: all 0.2s ease;
+  }
+
+  .mini-flip-btn:hover {
+    background: var(--theme-card-hover-bg);
+    border-color: var(--theme-stroke-strong);
+    color: var(--theme-accent);
+  }
+
+  .mini-flip-btn.active {
+    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
+    border-color: var(--theme-accent);
+    color: var(--theme-accent);
+  }
+
+  /* Flipped prop icon preview */
+  .prop-icon.flipped {
+    transform: scaleX(-1);
   }
 </style>
