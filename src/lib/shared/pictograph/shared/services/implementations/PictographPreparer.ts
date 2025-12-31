@@ -1,26 +1,31 @@
 /**
  * PictographPreparer - Batch prepares pictographs with positions
  *
- * Single responsibility: Calculate arrow/prop positions for multiple pictographs.
- * Used before rendering to eliminate cascade effects.
+ * Single responsibility: Calculate arrow/prop positions for pictographs.
+ * Used before rendering to eliminate per-component async calculations.
+ *
+ * This is the SINGLE SOURCE OF TRUTH for position calculations.
+ * Both batch rendering (option picker) and single rendering (PictographContainer)
+ * should use this service.
  */
 
 import { injectable, inject } from "inversify";
-import { TYPES } from "$lib/shared/inversify/types";
-import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-import type { MotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
-import type { IArrowLifecycleManager } from "$lib/shared/pictograph/arrow/orchestration/services/contracts/IArrowLifecycleManager";
-import type { IPropSvgLoader } from "$lib/shared/pictograph/prop/services/contracts/IPropSvgLoader";
-import type { IPropPlacer } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacer";
-import type { IGridModeDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridModeDeriver";
-import type { PropPosition } from "$lib/shared/pictograph/prop/domain/models/PropPosition";
-import type { PropAssets } from "$lib/shared/pictograph/prop/domain/models/PropAssets";
-import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
-import { getSettings } from "$lib/shared/application/state/app-state.svelte";
+import { TYPES } from "../../../../inversify/types";
+import type { PictographData } from "../../domain/models/PictographData";
+import type { MotionData } from "../../domain/models/MotionData";
 import type {
-  IPictographPreparer,
   PreparedPictographData,
-} from "../contracts/IPictographPreparer";
+  PreparedRenderData,
+} from "../../domain/models/PreparedPictographData";
+import type { IPictographPreparer } from "../contracts/IPictographPreparer";
+import type { IArrowLifecycleManager } from "../../../arrow/orchestration/services/contracts/IArrowLifecycleManager";
+import type { IPropSvgLoader } from "../../../prop/services/contracts/IPropSvgLoader";
+import type { IPropPlacer } from "../../../prop/services/contracts/IPropPlacer";
+import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
+import type { PropPosition } from "../../../prop/domain/models/PropPosition";
+import type { PropAssets } from "../../../prop/domain/models/PropAssets";
+import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import { getSettings } from "../../../../application/state/app-state.svelte";
 
 @injectable()
 export class PictographPreparer implements IPictographPreparer {
@@ -28,8 +33,7 @@ export class PictographPreparer implements IPictographPreparer {
     @inject(TYPES.IArrowLifecycleManager)
     private arrowManager: IArrowLifecycleManager,
     @inject(TYPES.IPropSvgLoader) private propLoader: IPropSvgLoader,
-    @inject(TYPES.IPropPlacer)
-    private propPlacement: IPropPlacer,
+    @inject(TYPES.IPropPlacer) private propPlacer: IPropPlacer,
     @inject(TYPES.IGridModeDeriver) private gridModeDeriver: IGridModeDeriver
   ) {}
 
@@ -42,30 +46,34 @@ export class PictographPreparer implements IPictographPreparer {
           return await this.prepareSingle(p);
         } catch (error) {
           console.error("Failed to prepare pictograph:", p.id, error);
+          // Return unprepared data as fallback
           return p as PreparedPictographData;
         }
       })
     );
   }
 
-  private async prepareSingle(
+  async prepareSingle(
     pictograph: PictographData
   ): Promise<PreparedPictographData> {
     const gridMode = this.deriveGridMode(pictograph);
     const arrowResult =
       await this.arrowManager.coordinateArrowLifecycle(pictograph);
-    const { propPositions, propAssets } = await this.calculateProps(pictograph);
+    const { propPositions, propAssets } =
+      await this.calculateProps(pictograph);
+
+    const prepared: PreparedRenderData = {
+      gridMode,
+      arrowPositions: arrowResult.positions,
+      arrowAssets: arrowResult.assets,
+      arrowMirroring: arrowResult.mirroring,
+      propPositions,
+      propAssets,
+    };
 
     return {
       ...pictograph,
-      _prepared: {
-        gridMode,
-        arrowPositions: arrowResult.positions,
-        arrowAssets: arrowResult.assets,
-        arrowMirroring: arrowResult.mirroring,
-        propPositions,
-        propAssets,
-      },
+      _prepared: prepared,
     };
   }
 
@@ -104,7 +112,7 @@ export class PictographPreparer implements IPictographPreparer {
 
           const [renderData, placementData] = await Promise.all([
             this.propLoader.loadPropSvg(motion.propPlacementData, motion),
-            this.propPlacement.calculatePlacement(pictograph, motion),
+            this.propPlacer.calculatePlacement(pictograph, motion),
           ]);
 
           if (!renderData.svgData) return;

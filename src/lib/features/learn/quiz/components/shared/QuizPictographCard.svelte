@@ -2,7 +2,7 @@
 QuizPictographCard - Question pictograph display
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   let {
@@ -16,7 +16,7 @@ QuizPictographCard - Question pictograph display
 
 <div class="pictograph-section">
   <div class="pictograph-card question-card">
-    <Pictograph pictographData={pictograph} />
+    <PictographContainer pictographData={pictograph} />
   </div>
   {#if showArrow}
     <div class="arrow-indicator">

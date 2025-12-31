@@ -44,13 +44,10 @@ interface VisibilitySettings {
   reversalIndicators: boolean;
 
   // Dependent glyphs (only available when both motions are visible)
-  tkaGlyph: boolean;
+  tkaGlyph: boolean; // TKA Glyph includes turn numbers
   vtgGlyph: boolean;
   elementalGlyph: boolean;
   positionsGlyph: boolean;
-
-  // TKA sub-elements (dependent on TKA glyph)
-  turnNumbers: boolean;
 
   // Grid elements
   nonRadialPoints: boolean;
@@ -69,9 +66,6 @@ export class VisibilityStateManager {
     "positionsGlyph",
   ];
 
-  // Sub-elements that depend on their parent glyph
-  private readonly TKA_SUB_ELEMENTS = ["turnNumbers"];
-
   // Promise that resolves when settings are fully loaded
   private settingsLoadedPromise: Promise<void> | null = null;
   private settingsLoadedResolve: (() => void) | null = null;
@@ -86,14 +80,11 @@ export class VisibilityStateManager {
       // Independent glyph defaults
       reversalIndicators: true,
 
-      // Dependent glyph defaults
+      // Dependent glyph defaults (TKA includes turn numbers)
       tkaGlyph: true,
       vtgGlyph: false,
       elementalGlyph: false,
       positionsGlyph: false,
-
-      // TKA sub-element defaults
-      turnNumbers: true,
 
       // Grid defaults
       nonRadialPoints: false,
@@ -153,7 +144,6 @@ export class VisibilityStateManager {
           this.settings.positionsGlyph = v.positionsGlyph;
         if (v.reversalIndicators !== undefined)
           this.settings.reversalIndicators = v.reversalIndicators;
-        if (v.turnNumbers !== undefined) this.settings.turnNumbers = v.turnNumbers;
         if (v.nonRadialPoints !== undefined)
           this.settings.nonRadialPoints = v.nonRadialPoints;
 
@@ -187,7 +177,6 @@ export class VisibilityStateManager {
       elementalGlyph: this.settings.elementalGlyph,
       positionsGlyph: this.settings.positionsGlyph,
       reversalIndicators: this.settings.reversalIndicators,
-      turnNumbers: this.settings.turnNumbers,
       nonRadialPoints: this.settings.nonRadialPoints,
     };
 
@@ -216,7 +205,6 @@ export class VisibilityStateManager {
       vtgGlyph: this.settings.vtgGlyph,
       elementalGlyph: this.settings.elementalGlyph,
       positionsGlyph: this.settings.positionsGlyph,
-      turnNumbers: this.settings.turnNumbers,
       nonRadialPoints: this.settings.nonRadialPoints,
     };
   }
@@ -369,11 +357,6 @@ export class VisibilityStateManager {
     const baseVisibility =
       (this.settings[glyphType as keyof VisibilitySettings] as boolean) ??
       false;
-
-    // For TKA sub-elements, also check if TKA glyph is visible
-    if (this.TKA_SUB_ELEMENTS.includes(glyphType)) {
-      return baseVisibility && this.getGlyphVisibility("tkaGlyph");
-    }
 
     // For dependent glyphs, also check if both motions are visible
     if (this.DEPENDENT_GLYPHS.includes(glyphType)) {

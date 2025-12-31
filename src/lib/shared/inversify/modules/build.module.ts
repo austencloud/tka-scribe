@@ -70,7 +70,7 @@ import { OptionOrganizer } from "../../../features/create/construct/option-picke
 import { OptionLoader } from "../../../features/create/construct/option-picker/services/implementations/OptionLoader";
 import { OptionTransitionCoordinator } from "../../../features/create/construct/option-picker/services/implementations/OptionTransitionCoordinator";
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
-import { PictographPreparer } from "../../../features/create/construct/option-picker/services/implementations/PictographPreparer";
+import { PictographPreparer } from "../../pictograph/shared/services/implementations/PictographPreparer";
 import { SequenceExtender } from "../../../features/create/shared/services/implementations/SequenceExtender";
 import { PanelPersister } from "../../../features/create/shared/services/implementations/PanelPersister.svelte";
 import { LetterTransitionGraph } from "../../../features/create/spell/services/implementations/LetterTransitionGraph";

@@ -14,7 +14,7 @@ Layout Modes (determined by container size):
 4. all-stacked: All 3 stacked vertically (very narrow)
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
   import { onMount, onDestroy } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
@@ -97,9 +97,9 @@ The container will change layout based on its OWN size, not viewport
   <div class="pictograph-container" data-testid="pictograph-container">
     {#if beatDataForPictograph()}
       <div class="pictograph-wrapper">
-        <Pictograph
+        <PictographContainer
           pictographData={beatDataForPictograph()}
-          disableContentTransitions={true}
+          disableTransitions={true}
         />
       </div>
     {:else}

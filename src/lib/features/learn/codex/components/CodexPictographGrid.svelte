@@ -7,7 +7,7 @@
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
@@ -168,7 +168,7 @@
             <span class="placeholder-letter">{letter}</span>
           {:else}
             <!-- Actual pictograph - simplified container structure -->
-            <Pictograph pictographData={pictograph} />
+            <PictographContainer pictographData={pictograph} />
           {/if}
         </button>
       {/each}

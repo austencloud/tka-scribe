@@ -11,7 +11,7 @@ Uses IStartPositionManager to load variations and displays actual pictographs
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
   import { createStartPositionVariations } from "./start-position-utils";
 
@@ -144,7 +144,7 @@ Uses IStartPositionManager to load variations and displays actual pictographs
           aria-label="Select position {position.startPosition}"
         >
           <div class="pictograph-wrapper">
-            <Pictograph pictographData={position} />
+            <PictographContainer pictographData={position} />
           </div>
         </button>
       {/each}

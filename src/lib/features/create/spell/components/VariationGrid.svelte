@@ -10,7 +10,7 @@ Features:
 -->
 <script lang="ts">
   import type { ScoredVariation, VariationSortOption } from "../state/variation-state.svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   // Props
   let {
@@ -213,9 +213,9 @@ Features:
             <!-- Render first beat as thumbnail -->
             <div class="thumbnail">
               {#if variation.sequence.beats[0]}
-                <Pictograph
+                <PictographContainer
                   pictographData={variation.sequence.beats[0]}
-                  disableContentTransitions={true}
+                  disableTransitions={true}
                 />
               {/if}
             </div>

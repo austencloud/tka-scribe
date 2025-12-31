@@ -3,7 +3,7 @@
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
 
   const {
@@ -60,7 +60,7 @@
     onanimationend={() => onAnimationEnd(pictographData.id)}
   >
     <div class="pictograph-wrapper">
-      <Pictograph {pictographData} />
+      <PictographContainer {pictographData} />
     </div>
   </div>
 {/each}

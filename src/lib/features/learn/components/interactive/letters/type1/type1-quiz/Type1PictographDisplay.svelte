@@ -2,7 +2,7 @@
 Type1PictographDisplay - Pictograph visualizer with loading state
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   let {
@@ -20,14 +20,11 @@ Type1PictographDisplay - Pictograph visualizer with loading state
       <div class="loading-spinner"></div>
     </div>
   {:else if pictographData}
-    <Pictograph
+    <PictographContainer
       {pictographData}
       showTKA={false}
-      showVTG={false}
-      showElemental={false}
-      showPositions={false}
       showReversals={false}
-      disableContentTransitions={true}
+      disableTransitions={true}
     />
   {:else}
     <div class="error-state">

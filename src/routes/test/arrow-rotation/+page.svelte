@@ -5,7 +5,7 @@
   Uses actual X pictographs with static CW arrows at different locations.
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { createMotionData } from "$lib/shared/pictograph/shared/domain/models/MotionData";
   import { GridLocation, GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import {
@@ -226,7 +226,7 @@
         <div class="label">{label}</div>
         <div class="description">{description}</div>
         <div class="pictograph-container">
-          <Pictograph pictographData={pictograph} />
+          <PictographContainer pictographData={pictograph} />
         </div>
         <div class="info">
           <span>Static at: <strong>{staticLocation.toUpperCase()}</strong></span>

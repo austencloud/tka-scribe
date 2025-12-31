@@ -10,7 +10,7 @@ Displays a pictograph with a location label in a selectable button
     GridMode,
   } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   const { pictograph, location, handColor, gridMode, onSelect } = $props<{
     pictograph: PictographData;
@@ -26,7 +26,7 @@ Displays a pictograph with a location label in a selectable button
   onclick={() => onSelect(pictograph, location)}
   aria-label={`Select starting position ${location}`}
 >
-  <Pictograph pictographData={pictograph} visibleHand={handColor} {gridMode} />
+  <PictographContainer pictographData={pictograph} visibleHand={handColor as "blue" | "red"} gridMode={gridMode} />
 </button>
 
 <style>

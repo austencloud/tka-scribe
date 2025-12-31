@@ -7,7 +7,7 @@
   import type { IRotationOverrideManager } from "$lib/shared/pictograph/arrow/positioning/placement/services/implementations/RotationOverrideManager";
   import { onMount, onDestroy } from "svelte";
   import MainAdjustmentPanel from "./MainAdjustmentPanel.svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   let hapticService: IHapticFeedback;
   let rotationOverrideManager: IRotationOverrideManager;
@@ -209,9 +209,9 @@
       <div class="pictograph-display">
         {#if selectedBeatData && !selectedBeatData.isBlank}
           <div class="pictograph-wrapper">
-            <Pictograph
+            <PictographContainer
               pictographData={selectedBeatData}
-              disableContentTransitions={true}
+              disableTransitions={true}
             />
           </div>
         {:else}

@@ -174,12 +174,32 @@ Uses organizer and sizer services for section grouping and sizing.
   // ==================== MOBILE LAYOUT CONFIGS ====================
   // Both configs use consistent values to prevent size "burst" when toggling
 
+  // Heights to subtract when calculating available space for content
+  // Filter header: ~32px on mobile (button height + margins)
+  // Swipe dots: ~73px (margin-top 1.8rem + dot height ~44px)
+  const FILTER_HEADER_HEIGHT = 32;
+  const SWIPE_DOTS_HEIGHT = 73;
+
+  // Calculate effective height for swipe layout accounting for UI chrome
+  const effectiveSwipeHeight = $derived(() => {
+    let height = containerHeight;
+    // Subtract filter header when visible
+    if (shouldShowFilterToggle()) {
+      height -= FILTER_HEADER_HEIGHT;
+    }
+    // Subtract swipe dots height (always present in swipe layout)
+    if (shouldUseSwipeLayout()) {
+      height -= SWIPE_DOTS_HEIGHT;
+    }
+    return Math.max(200, height); // Ensure minimum usable height
+  });
+
   const mobileLayoutConfig = $derived(() => ({
     optionsPerRow: 4,
     pictographSize: 120, // Consistent max size hint
     spacing: 8,
     containerWidth: containerWidth,
-    containerHeight: containerHeight,
+    containerHeight: effectiveSwipeHeight(),
     gridColumns: `repeat(4, 1fr)`,
     gridGap: "8px",
   }));

@@ -362,6 +362,84 @@ Matches the desktop version exactly:
   // Hide headers when vertical space is tight to maximize pictograph size
   const shouldShowHeaders = $derived(() => perRowHeight() > 200);
 
+  // Calculate uniform pictograph size that fits ALL sections
+  // This ensures Types 4, 5, 6 all use the same pictograph size
+  const uniformPictographSize = $derived(() => {
+    const rows = layoutSections();
+    if (rows.length === 0) return effectivePictographSize();
+
+    const pictographsByType = currentPictographsByType();
+    const gap = parseInt(gridGap.replace("px", "")) || 8;
+    const headerHeight = shouldShowHeaders() ? 50 : 0;
+    const availableHeight = Math.max(perRowHeight() - headerHeight, 100);
+
+    let minSize = effectivePictographSize();
+
+    // Find the most constrained section and use its size for all
+    for (const row of rows) {
+      for (const letterType of row.types) {
+        const sectionWidth = getSectionWidthForUniform(
+          row.types,
+          row.containerWidth,
+          row.layout || "horizontal"
+        );
+        const numPictographs = pictographsByType[letterType]?.length || 0;
+        if (numPictographs === 0) continue;
+
+        const targetSize = effectivePictographSize();
+
+        // Calculate columns based on target size
+        const columnsAtTargetSize = Math.max(
+          1,
+          Math.floor(sectionWidth / (targetSize + gap))
+        );
+
+        // Calculate rows needed
+        const rowsNeeded = Math.ceil(numPictographs / columnsAtTargetSize) || 1;
+
+        // Calculate max size that fits in available height
+        const totalVerticalGaps = (rowsNeeded - 1) * gap;
+        const maxHeightBasedSize = Math.floor(
+          (availableHeight - totalVerticalGaps) / rowsNeeded
+        );
+
+        // Calculate max size that fits in available width
+        const totalHorizontalGaps = (columnsAtTargetSize - 1) * gap;
+        const maxWidthBasedSize = Math.floor(
+          (sectionWidth - totalHorizontalGaps) / columnsAtTargetSize
+        );
+
+        // The effective size for this section
+        const sectionSize = Math.max(
+          40,
+          Math.min(targetSize, maxWidthBasedSize, maxHeightBasedSize)
+        );
+
+        // Track the minimum (most constrained) size
+        if (sectionSize < minSize) {
+          minSize = sectionSize;
+        }
+      }
+    }
+
+    return minSize;
+  });
+
+  // Helper for uniform size calculation (non-reactive version)
+  const getSectionWidthForUniform = (
+    types: string[],
+    rowContainerWidth: number,
+    layout: string
+  ) => {
+    if (layout === "vertical" || types.length === 1) {
+      return rowContainerWidth;
+    }
+    const gap = parseInt(gridGap.replace("px", "")) || 8;
+    const totalGaps = gap * (types.length - 1);
+    const availableWidth = rowContainerWidth - totalGaps;
+    return Math.floor(availableWidth / types.length);
+  };
+
   // Calculate section width for each layout row with improved spacing
   const getSectionWidth = (
     types: string[],
@@ -488,7 +566,7 @@ Matches the desktop version exactly:
               {currentSequence}
               {isFadingOut}
               {contentAreaBounds}
-              {forcedPictographSize}
+              forcedPictographSize={uniformPictographSize()}
               showHeader={shouldShowHeaders()}
               {fitToViewport}
               {lightsOff}

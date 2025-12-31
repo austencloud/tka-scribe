@@ -9,7 +9,7 @@ Features:
 -->
 <script lang="ts">
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   // Props
   const { selectedBeats = [] } = $props<{
@@ -27,7 +27,7 @@ Features:
 <div class="thumbnail-grid">
   {#each visibleBeats as beat (beat.id || beat.beatNumber)}
     <div class="thumbnail-wrapper">
-      <Pictograph pictographData={beat} disableContentTransitions={true} />
+      <PictographContainer pictographData={beat} disableTransitions={true} />
       <div class="beat-number-badge">
         {beat.beatNumber}
       </div>

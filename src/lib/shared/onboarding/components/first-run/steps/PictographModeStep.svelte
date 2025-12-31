@@ -6,7 +6,7 @@
   Lights Off: inverted colors, dark background, glow effects
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { examplePictographData } from "$lib/shared/settings/components/tabs/visibility/example-data";
 
   interface Props {
@@ -48,10 +48,10 @@
       aria-pressed={selectedMode === "light"}
     >
       <div class="preview-frame light-preview">
-        <Pictograph
+        <PictographContainer
           pictographData={examplePictographData}
           ledMode={false}
-          disableContentTransitions={true}
+          disableTransitions={true}
         />
       </div>
       <span class="mode-label">Lights On</span>
@@ -70,10 +70,10 @@
       aria-pressed={selectedMode === "dark"}
     >
       <div class="preview-frame dark-preview">
-        <Pictograph
+        <PictographContainer
           pictographData={examplePictographData}
           ledMode={true}
-          disableContentTransitions={true}
+          disableTransitions={true}
         />
       </div>
       <span class="mode-label">Lights Off</span>

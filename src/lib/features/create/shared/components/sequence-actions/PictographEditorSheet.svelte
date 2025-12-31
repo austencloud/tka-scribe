@@ -25,7 +25,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import RotationOverrideButton from "$lib/features/create/edit/components/RotationOverrideButton.svelte";
 
   interface Props {
@@ -269,10 +269,10 @@ Red Rot Key: ${lookupKeys.redRotationOverrideKey ?? "N/A"}`;
       <!-- Pictograph Display -->
       <div class="pictograph-section">
         {#if beatData && !beatData.isBlank}
-          <Pictograph
+          <PictographContainer
             pictographData={beatData}
             arrowsClickable={true}
-            disableContentTransitions={true}
+            disableTransitions={true}
           />
         {:else}
           <div class="no-pictograph">

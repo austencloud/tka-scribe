@@ -15,7 +15,7 @@
 <script lang="ts">
   import { getShareHubState } from '../../state/share-hub-state.svelte';
   import type { MediaFormat } from '../../domain/models/MediaFormat';
-  import Pictograph from '$lib/shared/pictograph/shared/components/Pictograph.svelte';
+  import PictographContainer from '$lib/shared/pictograph/shared/components/PictographContainer.svelte';
 
   let {
     pieceIndex,
@@ -77,9 +77,9 @@
       <!-- Animation: show single pictograph preview -->
       {#if previewBeats.length > 0}
         <div class="animation-preview-mini">
-          <Pictograph
+          <PictographContainer
             pictographData={previewBeats[0]}
-            disableContentTransitions={true}
+            disableTransitions={true}
           />
           <div class="play-overlay">
             <i class="fas fa-play" aria-hidden="true"></i>
@@ -95,9 +95,9 @@
       <!-- Static: show first pictograph -->
       {#if previewBeats.length > 0}
         <div class="static-preview-mini">
-          <Pictograph
+          <PictographContainer
             pictographData={previewBeats[0]}
-            disableContentTransitions={true}
+            disableTransitions={true}
           />
         </div>
       {:else}
@@ -112,9 +112,9 @@
         <div class="grid-preview-mini">
           {#each previewBeats as beat, index (beat.id ?? index)}
             <div class="grid-cell">
-              <Pictograph
+              <PictographContainer
                 pictographData={beat}
-                disableContentTransitions={true}
+                disableTransitions={true}
               />
             </div>
           {/each}

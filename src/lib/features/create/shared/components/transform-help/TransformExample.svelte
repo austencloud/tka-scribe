@@ -5,7 +5,7 @@
   Shows ONE pictograph that transforms in-place when button is clicked.
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   interface Props {
@@ -40,7 +40,7 @@
         </div>
       {:else if pictograph}
         <div class="pictograph-wrapper">
-          <Pictograph pictographData={pictograph} />
+          <PictographContainer pictographData={pictograph} />
         </div>
       {:else}
         <div class="pictograph-empty" aria-hidden="true">

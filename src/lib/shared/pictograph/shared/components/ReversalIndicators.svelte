@@ -8,6 +8,7 @@ colored according to the motion that is reversing between pictographs.
 <script lang="ts">
   import { getVisibilityStateManager } from "../state/visibility-state.svelte";
   import { MotionColor } from "../domain/enums/pictograph-enums";
+  import { getMotionColor } from "../../../utils/svg-color-utils";
   import { onMount } from "svelte";
 
   let {
@@ -82,9 +83,10 @@ colored according to the motion that is reversing between pictographs.
     return render;
   });
 
-  // Match arrow and prop colors for consistency
-  const BLUE_COLOR = "#2E3192"; // Matches ArrowSvgColorTransformer and PropSvgLoader
-  const RED_COLOR = "#ED1C24"; // Matches ArrowSvgColorTransformer and PropSvgLoader
+  // Match arrow and prop colors for consistency - based on pictograph background mode
+  // ledMode=true (dark background) → use bright colors, ledMode=false (white background) → use original dark colors
+  const BLUE_COLOR = $derived(getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light"));
+  const RED_COLOR = $derived(getMotionColor(MotionColor.RED, ledMode ? "dark" : "light"));
 
   // Relative positioning - scales with pictograph size
   // Using percentages of the standard 1000px pictograph dimensions
@@ -199,10 +201,5 @@ colored according to the motion that is reversing between pictographs.
   /* When not visible in preview mode, dim on hover */
   .reversal-indicators.preview-mode:not(.visible).interactive:hover {
     opacity: 0.5;
-  }
-
-  /* LED mode: add white outline for contrast on dark backgrounds */
-  .reversal-indicators.led-mode {
-    filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);
   }
 </style>

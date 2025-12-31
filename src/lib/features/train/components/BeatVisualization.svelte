@@ -6,7 +6,7 @@
 -->
 <script lang="ts">
   import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   interface Props {
     beat: BeatData | null;
@@ -36,7 +36,7 @@
   <!-- Pictograph visualization -->
   <div class="pictograph-container">
     {#if hasBeat && !isBlank}
-      <Pictograph pictographData={beat} />
+      <PictographContainer pictographData={beat} />
     {:else if isBlank}
       <div class="blank-beat">
         <span>Blank Beat</span>

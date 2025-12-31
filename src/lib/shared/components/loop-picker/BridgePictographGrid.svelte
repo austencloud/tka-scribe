@@ -11,7 +11,7 @@
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { CircularizationOption } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
   import { getLetterBorderColorSafe } from "$lib/shared/pictograph/shared/utils/letter-border-utils";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
 
@@ -141,7 +141,7 @@
                 title="{option.bridgeLetters[0]} → {option.endPosition}"
               >
                 <div class="pictograph-wrapper">
-                  <Pictograph pictographData={pictograph} />
+                  <PictographContainer pictographData={pictograph} />
                 </div>
                 <span class="letter-badge">{option.bridgeLetters[0]}</span>
               </button>
@@ -172,7 +172,7 @@
                 title="{option.bridgeLetters[0]} → {option.endPosition}"
               >
                 <div class="pictograph-wrapper">
-                  <Pictograph pictographData={pictograph} />
+                  <PictographContainer pictographData={pictograph} />
                 </div>
                 <span class="letter-badge">{option.bridgeLetters[0]}</span>
               </button>
@@ -204,7 +204,7 @@
                 title="{badgeInfo.tooltip}"
               >
                 <div class="pictograph-wrapper">
-                  <Pictograph pictographData={pictograph} />
+                  <PictographContainer pictographData={pictograph} />
                 </div>
                 <div class="option-info">
                   <span class="letter-badge">{option.bridgeLetters[0]}</span>

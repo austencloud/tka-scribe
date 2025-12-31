@@ -322,9 +322,9 @@ Renders a section with:
       };
     }
 
-    // Use layoutConfig.containerWidth if provided (accurate for Types 4-6 sections)
-    // Fall back to contentAreaBounds or availableWidth for other cases
-    const effectiveWidth = layoutConfig?.containerWidth || contentAreaBounds?.width || availableWidth;
+    // Use contentAreaBounds directly if available (the actual space between navigation arrows)
+    // This is critical for constraining pictographs to the visible area
+    const effectiveWidth = contentAreaBounds?.width || availableWidth;
     // For height, use availableHeight if measured, otherwise fall back to layoutConfig
     const effectiveHeight = availableHeight || layoutConfig?.containerHeight || 0;
 

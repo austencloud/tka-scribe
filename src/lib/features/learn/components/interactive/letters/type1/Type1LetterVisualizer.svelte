@@ -13,7 +13,7 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { ILetterQueryHandler } from "$lib/shared/foundation/services/contracts/data/data-contracts";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import { onMount } from "svelte";
 
   let {
@@ -169,14 +169,11 @@ Shows letters A-V with their start/end positions and prospin/antispin motions
           <span class="error-text">{error}</span>
         </div>
       {:else if pictographData}
-        <Pictograph
+        <PictographContainer
           {pictographData}
           showTKA={true}
-          showVTG={false}
-          showElemental={false}
-          showPositions={false}
           showReversals={false}
-          disableContentTransitions={true}
+          disableTransitions={true}
         />
       {/if}
     </div>

@@ -10,7 +10,7 @@
 -->
 <script lang="ts">
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import TurnsEditMode from "./TurnsEditMode.svelte";
   import StartPositionEditMode from "./StartPositionEditMode.svelte";
   import PictographInspectModal from "./PictographInspectModal.svelte";
@@ -254,9 +254,9 @@
     {#if isSideBySideLayout && hasSelection && displayedBeatData}
       <div class="preview-section">
         <div class="pictograph-container">
-          <Pictograph
+          <PictographContainer
             pictographData={displayedBeatData}
-            disableContentTransitions={true}
+            disableTransitions={true}
           />
         </div>
       </div>

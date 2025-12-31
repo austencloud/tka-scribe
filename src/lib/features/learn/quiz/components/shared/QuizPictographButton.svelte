@@ -2,7 +2,7 @@
 QuizPictographButton - Answer button containing a pictograph
 -->
 <script lang="ts">
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
 
   let {
@@ -27,7 +27,7 @@ QuizPictographButton - Answer button containing a pictograph
   {disabled}
 >
   <div class="pictograph-wrapper">
-    <Pictograph pictographData={pictograph} />
+    <PictographContainer pictographData={pictograph} />
   </div>
   {#if state === "correct"}
     <span class="result-icon correct-icon">✓</span>

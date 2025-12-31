@@ -19,7 +19,7 @@ Features:
   import { onMount } from "svelte";
   import RotationOverrideButton from "./RotationOverrideButton.svelte";
   import Drawer from "../../../../shared/foundation/ui/Drawer.svelte";
-  import Pictograph from "../../../../shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "../../../../shared/pictograph/shared/components/PictographContainer.svelte";
 
   // Props
   const {
@@ -194,10 +194,10 @@ Features:
       <!-- Pictograph display with clickable arrows -->
       <div class="pictograph-section">
         {#if selectedBeatData && !selectedBeatData.isBlank}
-          <Pictograph
+          <PictographContainer
             pictographData={selectedBeatData}
             arrowsClickable={true}
-            disableContentTransitions={true}
+            disableTransitions={true}
           />
         {:else}
           <div class="no-pictograph">

@@ -10,7 +10,7 @@ Shows all pictographs for a selected letter with:
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
   import SimpleGlassScroll from "../../../../shared/foundation/ui/SimpleGlassScroll.svelte";
-  import Pictograph from "../../../../shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "../../../../shared/pictograph/shared/components/PictographContainer.svelte";
 
   // Props
   let {
@@ -119,7 +119,7 @@ Shows all pictographs for a selected letter with:
                 tabindex="0"
                 aria-label="View pictograph details"
               >
-                <Pictograph pictographData={pictograph} />
+                <PictographContainer pictographData={pictograph} />
               </div>
             {/each}
           </div>

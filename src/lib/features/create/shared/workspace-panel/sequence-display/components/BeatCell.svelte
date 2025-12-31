@@ -5,7 +5,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   let {
     beat,
@@ -16,7 +16,6 @@
     shouldAnimate = false,
     isSelected = false,
     isPracticeBeat = false,
-    shouldOrbitAroundCenter = false,
     // Active mode for context-aware messaging
     activeMode = null,
     // Custom highlight style (for multi-select, section highlighting, etc.)
@@ -30,7 +29,6 @@
     shouldAnimate?: boolean;
     isSelected?: boolean;
     isPracticeBeat?: boolean;
-    shouldOrbitAroundCenter?: boolean;
     // Active mode
     activeMode?: BuildModeId | null;
     // Custom highlight style
@@ -299,10 +297,9 @@
   aria-label={ariaLabel}
 >
   <!-- Normal pictograph (will show empty grid when beat.isBlank) -->
-  <Pictograph
+  <PictographContainer
     pictographData={beatDataWithSelection}
-    disableContentTransitions={!enableTransitionsForNewData}
-    {shouldOrbitAroundCenter}
+    disableTransitions={!enableTransitionsForNewData}
   />
 </div>
 

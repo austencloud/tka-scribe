@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
   import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
-  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import PictographContainer from "$lib/shared/pictograph/shared/components/PictographContainer.svelte";
 
   interface Props {
     pictograph: PictographData | null;
@@ -23,7 +23,7 @@
         <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
       </div>
     {:else if pictograph}
-      <Pictograph pictographData={pictograph} />
+      <PictographContainer pictographData={pictograph} />
     {:else}
       <div class="empty-state">
         <i class="fas fa-image" aria-hidden="true"></i>
