@@ -19,6 +19,7 @@ import { adminToolbarState } from "../../debug/state/admin-toolbar-state.svelte"
 import { settingsService } from "../../settings/state/SettingsState.svelte";
 import { getAnimationVisibilityManager } from "../../animation-engine/state/animation-visibility-state.svelte";
 import { getSettings, updateSettings, isSettingsPreviewMode } from "../../application/state/app-state.svelte";
+import { toast } from "../../toast/state/toast-state.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutManager,
@@ -153,6 +154,12 @@ export function registerGlobalShortcuts(
       const visibilityManager = getAnimationVisibilityManager();
       visibilityManager.setLightsOff(newValue);
 
+      // Show toast notification
+      const message = newValue
+        ? "Lights Off mode enabled — press L to toggle"
+        : "Lights Off mode disabled — press L to toggle";
+      toast.info(message, 2500);
+
       console.log(`[Keyboard L] Toggled lightsOff: ${beforeValue} -> ${newValue}`);
     },
   });
@@ -179,6 +186,7 @@ export function registerGlobalShortcuts(
           redPropType: preset.redPropType,
           catDogMode: preset.catDogMode,
         });
+        toast.info(`Preset 1: ${preset.bluePropType}`, 1500);
       }
     },
   });
@@ -203,6 +211,7 @@ export function registerGlobalShortcuts(
           redPropType: preset.redPropType,
           catDogMode: preset.catDogMode,
         });
+        toast.info(`Preset 2: ${preset.bluePropType}`, 1500);
       }
     },
   });
@@ -227,7 +236,70 @@ export function registerGlobalShortcuts(
           redPropType: preset.redPropType,
           catDogMode: preset.catDogMode,
         });
+        toast.info(`Preset 3: ${preset.bluePropType}`, 1500);
       }
+    },
+  });
+
+  // ==================== Prop Type Cycle Shortcuts ====================
+
+  // Common prop types to cycle through (subset of most used props)
+  const cyclePropTypes = [
+    "staff",
+    "club",
+    "fan",
+    "triad",
+    "minihoop",
+    "buugeng",
+    "hand",
+  ];
+
+  // P - Cycle to next prop type
+  service.register({
+    id: "global.cycle-prop-type",
+    label: "Cycle Prop Type",
+    description: "Cycle to next prop type (P)",
+    key: "p",
+    modifiers: [],
+    context: "global",
+    scope: "action",
+    priority: "high",
+    action: () => {
+      const currentPropType = settingsService.settings.bluePropType || "staff";
+      const currentIndex = cyclePropTypes.indexOf(currentPropType);
+      const nextIndex = (currentIndex + 1) % cyclePropTypes.length;
+      const nextPropType = cyclePropTypes[nextIndex];
+
+      settingsService.updateSettings({
+        bluePropType: nextPropType as any,
+        redPropType: nextPropType as any,
+      });
+      toast.info(`Prop: ${nextPropType}`, 1500);
+    },
+  });
+
+  // Shift+P - Cycle to previous prop type
+  service.register({
+    id: "global.cycle-prop-type-reverse",
+    label: "Cycle Prop Type (Reverse)",
+    description: "Cycle to previous prop type (Shift+P)",
+    key: "p",
+    modifiers: ["shift"],
+    context: "global",
+    scope: "action",
+    priority: "high",
+    action: () => {
+      const currentPropType = settingsService.settings.bluePropType || "staff";
+      const currentIndex = cyclePropTypes.indexOf(currentPropType);
+      const prevIndex =
+        currentIndex <= 0 ? cyclePropTypes.length - 1 : currentIndex - 1;
+      const prevPropType = cyclePropTypes[prevIndex];
+
+      settingsService.updateSettings({
+        bluePropType: prevPropType as any,
+        redPropType: prevPropType as any,
+      });
+      toast.info(`Prop: ${prevPropType}`, 1500);
     },
   });
 
