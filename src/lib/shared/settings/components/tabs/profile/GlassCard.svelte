@@ -113,6 +113,9 @@
   }
 
   .card-content {
+    flex: 1; /* Grow to fill available space for equal row heights */
+    display: flex;
+    flex-direction: column;
     padding-top: 4px;
   }
 

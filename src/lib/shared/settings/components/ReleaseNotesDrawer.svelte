@@ -3,7 +3,6 @@
   import { releaseNotesDrawerState } from "../state/release-notes-drawer-state.svelte";
   import { versionService } from "$lib/features/feedback/services/implementations/VersionManager";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
-  import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
   // Load version data when drawer opens
   $effect(() => {
@@ -30,10 +29,8 @@
 
   async function handleViewAllReleases() {
     releaseNotesDrawerState.close();
-    // Set the tab first so settings opens to release-notes
-    navigationState.setActiveTab("release-notes");
-    // Then navigate to settings module
-    await handleModuleChange("settings");
+    // Navigate to settings module with release-notes tab
+    await handleModuleChange("settings", "release-notes");
   }
 
   async function handleSubmitFeedback() {

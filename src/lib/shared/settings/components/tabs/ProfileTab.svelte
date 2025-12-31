@@ -15,7 +15,7 @@
   } from "../../../navigation/state/profile-settings-state.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import ConnectedAccountsPreview from "../../../navigation/components/profile-settings/ConnectedAccountsPreview.svelte";
-  import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
+  import AccountSettingsSection from "../../../navigation/components/profile-settings/AccountSettingsSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
   import AccountSecuritySection from "../../../auth/components/AccountSecuritySection.svelte";
   import SecurityPreview from "../../../auth/components/SecurityPreview.svelte";
@@ -276,19 +276,9 @@
       <!-- Profile Hero -->
       <ProfileHeroSection user={authState.user} onSignOut={handleSignOut} />
 
-      <!-- Settings Grid - CSS Grid with intelligent auto-placement -->
+      <!-- Settings Grid - Flexbox for natural fill behavior -->
       <div class="settings-grid">
-        <!-- Connected Accounts -->
-        <GlassCard
-          icon="fas fa-link"
-          title="Connected Accounts"
-          subtitle="Manage linked providers"
-        >
-          {#snippet children()}
-            <ConnectedAccounts />
-          {/snippet}
-        </GlassCard>
-
+        <!-- Row 1: Smaller cards -->
         <!-- Subscription -->
         <GlassCard
           icon="fas fa-crown"
@@ -301,12 +291,35 @@
           {/snippet}
         </GlassCard>
 
+        <!-- Account Settings - Display name + password (if available) -->
+        <GlassCard
+          icon="fas fa-user-cog"
+          title="Account Settings"
+          subtitle="Manage your profile"
+        >
+          {#snippet children()}
+            <AccountSettingsSection
+              user={authState.user}
+              hasPasswordProvider={hasPasswordProvider()}
+              onChangePassword={handleChangePassword}
+              {hapticService}
+            />
+          {/snippet}
+        </GlassCard>
+
+        <!-- Storage Section -->
+        <StorageSection
+          onClearCache={handleClearCache}
+          isClearing={clearingCache}
+        />
+
+        <!-- Row 2: Complex cards (expand to 50% each) -->
         <!-- Security -->
         {#if authService}
           <GlassCard
             icon="fas fa-shield-alt"
             title="Security"
-            subtitle="Protect sensitive actions"
+            subtitle="Secure your account"
           >
             {#snippet children()}
               <AccountSecuritySection {hapticService} />
@@ -314,27 +327,16 @@
           </GlassCard>
         {/if}
 
-        <!-- Password Section (only for password-authenticated users) -->
-        {#if hasPasswordProvider()}
-          <GlassCard
-            icon="fas fa-key"
-            title="Password"
-            subtitle="Update your account security"
-          >
-            {#snippet children()}
-              <PasswordSection
-                onChangePassword={handleChangePassword}
-                {hapticService}
-              />
-            {/snippet}
-          </GlassCard>
-        {/if}
-
-        <!-- Storage Section -->
-        <StorageSection
-          onClearCache={handleClearCache}
-          isClearing={clearingCache}
-        />
+        <!-- Connected Accounts -->
+        <GlassCard
+          icon="fas fa-link"
+          title="Connected Accounts"
+          subtitle="Manage linked providers"
+        >
+          {#snippet children()}
+            <ConnectedAccounts />
+          {/snippet}
+        </GlassCard>
       </div>
 
       <!-- Danger Zone - Full width, separated from grid -->
@@ -406,21 +408,26 @@
   }
 
   /* ========================================
-     SETTINGS GRID - CSS Grid with intelligent auto-placement
-     Grid automatically balances cards across columns
+     SETTINGS GRID - Flexbox with natural heights
+     Cards keep their natural height, partial rows expand width
      ======================================== */
   .settings-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: clamp(10px, 2cqi, 16px);
-    grid-auto-flow: dense; /* Intelligent placement to fill gaps */
-    align-items: start; /* Prevent stretching */
+    align-items: stretch; /* Cards match row height */
+  }
+
+  /* Each card: min 320px, grows to fill width */
+  .settings-grid > :global(*) {
+    flex: 1 1 320px;
+    min-width: 0;
   }
 
   /* Single column on narrow screens */
-  @container profile-tab (max-width: 600px) {
-    .settings-grid {
-      grid-template-columns: 1fr;
+  @container profile-tab (max-width: 500px) {
+    .settings-grid > :global(*) {
+      flex-basis: 100%;
     }
   }
 

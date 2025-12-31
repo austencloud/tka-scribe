@@ -1,6 +1,7 @@
 <script lang="ts">
   import { PropType } from "../../../../pictograph/prop/domain/enums/PropType";
   import { MotionColor } from "../../../../pictograph/shared/domain/enums/pictograph-enums";
+  import { getMotionColor } from "../../../../utils/svg-color-utils";
   import { getPropTypeDisplayInfo } from "./PropTypeRegistry";
 
   let {
@@ -80,12 +81,8 @@
   }
 
   function applyColorToSvg(svgText: string, motionColor: MotionColor): string {
-    const colorMap: Record<MotionColor, string> = {
-      [MotionColor.BLUE]: "#2E3192",
-      [MotionColor.RED]: "#ED1C24",
-    };
-
-    const targetColor = colorMap[motionColor] || colorMap[MotionColor.BLUE];
+    // Use "dark" mode for prop type buttons (shown on dark card backgrounds)
+    const targetColor = getMotionColor(motionColor, "dark");
 
     // Accent colors to preserve
     const ACCENT_COLORS_TO_PRESERVE = ["#c9ac68"];
