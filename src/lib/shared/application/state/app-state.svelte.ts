@@ -31,34 +31,51 @@ import {
   getIsTransitioning,
   resetUIState,
 } from "./ui/ui-state.svelte";
+import { userPreviewState } from "../../debug/state/user-preview-state.svelte";
 
 // HMR Test Comment - This should trigger a full reload
 
 // ============================================================================
 // SETTINGS
 // ============================================================================
+
+// Default settings returned when services aren't initialized
+const DEFAULT_SETTINGS: AppSettings = {
+  gridMode: GridMode.DIAMOND,
+  backgroundType: BackgroundType.SOLID_COLOR,
+  backgroundQuality: "medium",
+  backgroundEnabled: true,
+  backgroundColor: "#000000",
+};
+
 export function getSettings() {
   const initialized = areServicesInitialized();
-  // Debug logging removed - this function is called hundreds of times during reactive updates
-  // console.log("🔍 getSettings called, servicesInitialized:", initialized);
 
   if (!initialized) {
-    // console.log("🔍 Returning default settings (services not initialized yet)");
     // Return default settings if not initialized
     // Use solidColor (black) to avoid flash while settings load
-    return {
-      gridMode: GridMode.DIAMOND,
-      backgroundType: BackgroundType.SOLID_COLOR,
-      backgroundQuality: "medium" as const,
-      backgroundEnabled: true,
-      backgroundColor: "#000000",
-    };
+    return DEFAULT_SETTINGS;
   }
+
+  // When in preview mode, return the previewed user's settings (read-only)
+  // This allows admins to see how the app looks with another user's configuration
+  if (userPreviewState.isActive && userPreviewState.data.settings) {
+    // Merge with defaults to ensure all required fields are present
+    return { ...DEFAULT_SETTINGS, ...userPreviewState.data.settings };
+  }
+
   // Return the reactive settings object directly (NOT a snapshot)
   // This ensures components using $derived(getSettings()) will re-render when settings change
   const settings = getSettingsServiceSync().settings;
-  // console.log("🔍 Returning reactive settings, backgroundType:", settings.backgroundType);
   return settings;
+}
+
+/**
+ * Check if settings are currently in read-only preview mode
+ * When true, settings changes should be blocked (viewing another user's config)
+ */
+export function isSettingsPreviewMode(): boolean {
+  return userPreviewState.isActive && userPreviewState.data.settings !== null;
 }
 
 // ============================================================================
@@ -93,6 +110,12 @@ export function getCanUseApp() {
 export async function updateSettings(
   newSettings: Partial<AppSettings>
 ): Promise<void> {
+  // Block updates when viewing another user's settings
+  if (isSettingsPreviewMode()) {
+    console.warn("Cannot update settings while in preview mode (viewing another user's configuration)");
+    return;
+  }
+
   if (!areServicesInitialized()) {
     console.warn("Settings service not initialized, cannot update settings");
     return;

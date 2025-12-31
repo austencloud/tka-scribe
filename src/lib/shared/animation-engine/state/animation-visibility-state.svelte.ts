@@ -330,61 +330,67 @@ export class AnimationVisibilityStateManager {
   }
 
   // ============================================================================
-  // GLOBAL EFFECTS: LIGHTS OFF + PROP GLOW
+  // DARK MODE (formerly "Lights Off")
   // ============================================================================
 
   /**
-   * Check if Lights Off mode is enabled
-   * When enabled: dark background, inverted grid colors, white text/outlines
+   * Check if dark mode is enabled
+   * When enabled: dark background, inverted grid colors, white text/outlines, prop glow
    */
-  isLightsOff(): boolean {
+  isDarkMode(): boolean {
     return this.settings.lightsOff;
   }
 
   /**
-   * Set Lights Off mode
-   * Controls: dark background, inverted grid, white text/outlines
+   * Set dark mode
+   * @param enabled - true for dark mode, false for light mode
    */
-  setLightsOff(enabled: boolean): void {
+  setDarkMode(enabled: boolean): void {
     this.settings.lightsOff = enabled;
     this.saveToStorage();
     this.notifyObservers();
   }
 
   /**
-   * Toggle Lights Off mode
+   * Toggle dark mode
    */
+  toggleDarkMode(): void {
+    this.setDarkMode(!this.settings.lightsOff);
+  }
+
+  // Legacy aliases - kept for backwards compatibility
+  /** @deprecated Use isDarkMode() */
+  isLightsOff(): boolean {
+    return this.isDarkMode();
+  }
+
+  /** @deprecated Use setDarkMode() */
+  setLightsOff(enabled: boolean): void {
+    this.setDarkMode(enabled);
+  }
+
+  /** @deprecated Use toggleDarkMode() */
   toggleLightsOff(): void {
-    this.setLightsOff(!this.settings.lightsOff);
+    this.toggleDarkMode();
   }
 
   // ============================================================================
   // LEGACY COMPATIBILITY (for gradual migration)
   // ============================================================================
 
-  /**
-   * @deprecated Use isLightsOff() instead
-   * Kept for backward compatibility - returns lightsOff status
-   */
+  /** @deprecated Use isDarkMode() */
   isLedMode(): boolean {
-    return this.settings.lightsOff;
+    return this.isDarkMode();
   }
 
-  /**
-   * @deprecated Use setLightsOff() instead
-   * Kept for backward compatibility - sets lightsOff
-   */
+  /** @deprecated Use setDarkMode() */
   setLedMode(enabled: boolean): void {
-    this.settings.lightsOff = enabled;
-    this.saveToStorage();
-    this.notifyObservers();
+    this.setDarkMode(enabled);
   }
 
-  /**
-   * @deprecated Use toggleLightsOff() instead
-   */
+  /** @deprecated Use toggleDarkMode() */
   toggleLedMode(): void {
-    this.setLedMode(!this.settings.lightsOff);
+    this.toggleDarkMode();
   }
 }
 

@@ -469,10 +469,8 @@ export async function loadFeatureModule(feature: string): Promise<void> {
 
       case "account":
       case "settings":
-        await Promise.all([
-          loadIfNeeded("create", () => import("./modules/build.module")),
-          loadIfNeeded("library", () => import("./modules/library.module")),
-        ]);
+        // Settings module is lightweight - no heavy dependencies needed
+        // Previously loaded create/library which pulled in 150+ files unnecessarily
         break;
 
       case "about":

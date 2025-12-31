@@ -7,6 +7,7 @@ import {
 } from "../../inversify/resolve-utils";
 import { TYPES } from "../../inversify/types";
 import type { ISettingsState } from "../../settings/services/contracts/ISettingsState";
+import { getAnimationVisibilityManager } from "../../animation-engine/state/animation-visibility-state.svelte";
 
 // Make isInitialized reactive so components using getSettings() will re-evaluate
 let isInitialized = $state(false);
@@ -19,6 +20,21 @@ export async function initializeAppServices(): Promise<void> {
   await waitForContainer();
   settingsService = resolve<ISettingsState>(TYPES.ISettingsState);
   isInitialized = true;
+
+  // Sync lightsOff from AppSettings to animation visibility manager
+  // This ensures animations render correctly with the user's persisted setting
+  syncLightsOffToAnimationManager();
+}
+
+/**
+ * Sync the lightsOff setting from AppSettings to the animation visibility manager.
+ * Called after settings are loaded to ensure animations use the correct setting.
+ */
+function syncLightsOffToAnimationManager(): void {
+  if (!settingsService) return;
+
+  const lightsOff = settingsService.settings.lightsOff ?? false;
+  getAnimationVisibilityManager().setLightsOff(lightsOff);
 }
 
 export function clearAppServicesCache(): void {
