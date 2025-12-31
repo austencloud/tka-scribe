@@ -43,6 +43,9 @@ export interface RenderSceneParams {
   trailSettings: TrailSettings;
   currentTime: number;
   visibility: AnimationVisibilitySettings;
+  // Prop flip settings (for asymmetric props like Buugeng)
+  bluePropFlipped?: boolean;
+  redPropFlipped?: boolean;
 }
 
 export interface IAnimationRenderer {

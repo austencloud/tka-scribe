@@ -14,9 +14,12 @@
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
 import type { IAnimationRenderer } from "../contracts/IAnimationRenderer";
+import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
 import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
 import { getLetterImagePath } from "$lib/shared/pictograph/tka-glyph/utils/letter-image-getter";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
 /**
  * Pre-rendered frame data
  */
@@ -490,6 +493,26 @@ export class SequenceFramePreRenderer {
     // Render the frame to offscreen renderer
     // Note: For pre-rendering, we don't need trails (they'd just be static snapshots)
     // We're capturing the full frame which includes everything
+
+    // Check if props should be flipped (Buugeng family only)
+    let bluePropFlipped = false;
+    let redPropFlipped = false;
+    try {
+      const settingsState = resolve<ISettingsState>(TYPES.ISettingsState);
+      const settings = settingsState.currentSettings;
+      const buugengFamily = ["buugeng", "bigbuugeng", "fractalgeng"];
+      const bluePropType = (settings?.bluePropType || settings?.propType || "staff").toLowerCase();
+      const redPropType = (settings?.redPropType || settings?.propType || "staff").toLowerCase();
+      bluePropFlipped = buugengFamily.includes(bluePropType)
+        ? (settings?.blueBuugengFlipped ?? false)
+        : false;
+      redPropFlipped = buugengFamily.includes(redPropType)
+        ? (settings?.redBuugengFlipped ?? false)
+        : false;
+    } catch {
+      // Settings not available, use defaults
+    }
+
     this.offscreenRenderer.renderScene({
       blueProp,
       redProp,
@@ -510,6 +533,8 @@ export class SequenceFramePreRenderer {
         blueMotionVisible: true,
         redMotionVisible: true,
       },
+      bluePropFlipped,
+      redPropFlipped,
     });
 
     // Capture the rendered frame as ImageBitmap

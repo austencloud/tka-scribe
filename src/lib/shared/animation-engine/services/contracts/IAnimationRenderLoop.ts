@@ -70,6 +70,9 @@ export interface RenderFrameParams {
   visibility: RenderVisibilitySettings;
   /** Whether animation playback is active (controls render loop continuation) */
   isPlaying: boolean;
+  /** Prop flip settings (for asymmetric props like Buugeng) */
+  bluePropFlipped?: boolean;
+  redPropFlipped?: boolean;
 }
 
 /**

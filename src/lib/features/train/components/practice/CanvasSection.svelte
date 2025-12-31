@@ -152,14 +152,15 @@
     }
 
     // For beats, use direct indexing with clamping
+    // currentBeat is 1-based: currentBeat 1.0-2.0 = beat 1 (uses beats[0])
     if (
       animationState.sequenceData.beats &&
       animationState.sequenceData.beats.length > 0
     ) {
-      const beatIndex = Math.floor(currentBeat);
-      const clampedIndex = Math.max(
-        0,
-        Math.min(beatIndex, animationState.sequenceData.beats.length - 1)
+      const beatIndex = Math.max(0, Math.floor(currentBeat) - 1);
+      const clampedIndex = Math.min(
+        beatIndex,
+        animationState.sequenceData.beats.length - 1
       );
       return animationState.sequenceData.beats[clampedIndex] || null;
     }

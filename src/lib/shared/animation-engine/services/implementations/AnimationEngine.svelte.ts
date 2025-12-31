@@ -233,6 +233,8 @@ export class AnimationEngine {
       redMotionVisible: true,
     },
     isPlaying: false,
+    bluePropFlipped: false,
+    redPropFlipped: false,
   };
 
   // ============================================================================
@@ -333,14 +335,21 @@ export class AnimationEngine {
       // CRITICAL: Sync prop type state AFTER checkForChanges() detected the new values
       // Otherwise loadPropTextures() would use stale values from the earlier syncServiceState() call
       if (this.propTypeChangeService) {
+        const oldBlue = this.state.currentBluePropType;
+        const oldRed = this.state.currentRedPropType;
         this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
         this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
         this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
+        console.log(`🔄 [AnimationEngine] Prop type hot-swap: ${oldBlue}/${oldRed} → ${this.state.currentBluePropType}/${this.state.currentRedPropType}`);
       }
 
       // Hot-swap textures without full re-initialization
       // The render loop keeps running with old textures until new ones load
+      const hotSwapStartTime = performance.now();
+      console.log(`🔄 [AnimationEngine] Starting texture hot-swap, isPlaying=${props.isPlaying}, renderLoopRunning=${this.renderLoopService?.isRunning()}`);
       this.loadPropTextures().then(() => {
+        const elapsed = performance.now() - hotSwapStartTime;
+        console.log(`✅ [AnimationEngine] Textures loaded in ${elapsed.toFixed(1)}ms, triggering re-render`);
         // Trigger immediate re-render once new textures are ready
         if (this.state.isInitialized) {
           this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
@@ -812,6 +821,20 @@ export class AnimationEngine {
 
     // Set isPlaying to control render loop continuation
     fp.isPlaying = props.isPlaying ?? false;
+
+    // Get Buugeng flip settings from settings service
+    // Only apply flip for Buugeng family props (buugeng, bigbuugeng, fractalgeng)
+    const settings = this.settingsService?.currentSettings;
+    const buugengFamily = ["buugeng", "bigbuugeng", "fractalgeng"];
+    const bluePropType = this.state.currentBluePropType.toLowerCase();
+    const redPropType = this.state.currentRedPropType.toLowerCase();
+
+    fp.bluePropFlipped = buugengFamily.includes(bluePropType)
+      ? (settings?.blueBuugengFlipped ?? false)
+      : false;
+    fp.redPropFlipped = buugengFamily.includes(redPropType)
+      ? (settings?.redBuugengFlipped ?? false)
+      : false;
 
     return fp;
   }

@@ -163,7 +163,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.blueProp,
           this.imageLoader.getBluePropImage(),
           params.bluePropDimensions,
-          canvasSize
+          canvasSize,
+          params.bluePropFlipped ?? false
         );
       }
 
@@ -174,7 +175,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.redProp,
           this.imageLoader.getRedPropImage(),
           params.redPropDimensions,
-          canvasSize
+          canvasSize,
+          params.redPropFlipped ?? false
         );
       }
 
@@ -185,7 +187,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.secondaryBlueProp,
           this.imageLoader.getSecondaryBluePropImage(),
           params.bluePropDimensions,
-          canvasSize
+          canvasSize,
+          params.bluePropFlipped ?? false
         );
       }
 
@@ -196,7 +199,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
           params.secondaryRedProp,
           this.imageLoader.getSecondaryRedPropImage(),
           params.redPropDimensions,
-          canvasSize
+          canvasSize,
+          params.redPropFlipped ?? false
         );
       }
     }
@@ -207,13 +211,15 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
 
   /**
    * Render a prop at its calculated position with rotation
+   * @param flipped - Whether to mirror the prop horizontally (for asymmetric props like Buugeng)
    */
   private renderProp(
     ctx: CanvasRenderingContext2D,
     propState: { centerPathAngle: number; staffRotationAngle: number; x?: number; y?: number },
     image: HTMLImageElement | null,
     dimensions: { width: number; height: number },
-    canvasSize: number
+    canvasSize: number,
+    flipped: boolean = false
   ): void {
     if (!image) return;
 
@@ -222,6 +228,11 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
     ctx.save();
     ctx.translate(transform.x, transform.y);
     ctx.rotate(transform.rotation);
+
+    // Apply horizontal flip for asymmetric props (Buugeng family)
+    if (flipped) {
+      ctx.scale(-1, 1);
+    }
 
     ctx.drawImage(
       image,

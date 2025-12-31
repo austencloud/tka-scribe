@@ -28,6 +28,7 @@ import type {
 } from "../contracts/IVideoPreRenderer";
 import type { ISVGGenerator } from "../contracts/ISVGGenerator";
 import type { ISequenceAnimationOrchestrator } from "../contracts/ISequenceAnimationOrchestrator";
+import type { ISettingsState } from "$lib/shared/settings/services/contracts/ISettingsState";
 import { Canvas2DAnimationRenderer } from "./Canvas2DAnimationRenderer";
 import {
   DEFAULT_TRAIL_SETTINGS,
@@ -270,6 +271,25 @@ export class VideoPreRenderer implements IVideoPreRenderer {
         enabled: true,
       };
 
+      // Get settings for Buugeng flip
+      let bluePropFlipped = false;
+      let redPropFlipped = false;
+      try {
+        const settingsState = resolve<ISettingsState>(TYPES.ISettingsState);
+        const settings = settingsState.currentSettings;
+        const buugengFamily = ["buugeng", "bigbuugeng", "fractalgeng"];
+        const bluePropType = (settings?.bluePropType || settings?.propType || "staff").toLowerCase();
+        const redPropType = (settings?.redPropType || settings?.propType || "staff").toLowerCase();
+        bluePropFlipped = buugengFamily.includes(bluePropType)
+          ? (settings?.blueBuugengFlipped ?? false)
+          : false;
+        redPropFlipped = buugengFamily.includes(redPropType)
+          ? (settings?.redBuugengFlipped ?? false)
+          : false;
+      } catch {
+        // Settings not available, use defaults
+      }
+
       // Helper function to capture a frame reliably
       const captureFrame = async (): Promise<void> => {
         // Wait for two animation frames to ensure the render is fully painted
@@ -333,6 +353,8 @@ export class VideoPreRenderer implements IVideoPreRenderer {
             blueMotionVisible: true,
             redMotionVisible: true,
           },
+          bluePropFlipped,
+          redPropFlipped,
         });
 
         // Capture this frame

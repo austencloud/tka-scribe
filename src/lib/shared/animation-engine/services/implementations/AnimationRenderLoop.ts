@@ -257,6 +257,8 @@ export class AnimationRenderLoop implements IAnimationRenderLoop {
         blueMotionVisible: effectiveBlueMotionVisible,
         redMotionVisible: effectiveRedMotionVisible,
       },
+      bluePropFlipped: params.bluePropFlipped ?? false,
+      redPropFlipped: params.redPropFlipped ?? false,
     });
   }
 
