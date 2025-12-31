@@ -29,6 +29,7 @@
     variant = "warning",
     showDontAskAgain = false,
     onDontAskAgainChange,
+    confirmDelay = 0,
   } = $props<{
     isOpen?: boolean;
     title: string;
@@ -40,9 +41,43 @@
     variant?: "warning" | "danger" | "info";
     showDontAskAgain?: boolean;
     onDontAskAgainChange?: (checked: boolean) => void;
+    /** Delay in seconds before confirm button becomes clickable. Default: 0 (no delay) */
+    confirmDelay?: number;
   }>();
 
   let dontAskAgainChecked = $state(false);
+  let delayRemaining = $state(0);
+  let delayTimer: ReturnType<typeof setInterval> | null = null;
+
+  // Start countdown when dialog opens with a delay
+  $effect(() => {
+    if (isOpen && confirmDelay > 0) {
+      delayRemaining = confirmDelay;
+      delayTimer = setInterval(() => {
+        delayRemaining--;
+        if (delayRemaining <= 0 && delayTimer) {
+          clearInterval(delayTimer);
+          delayTimer = null;
+        }
+      }, 1000);
+    } else if (!isOpen) {
+      // Reset when dialog closes
+      if (delayTimer) {
+        clearInterval(delayTimer);
+        delayTimer = null;
+      }
+      delayRemaining = 0;
+    }
+
+    return () => {
+      if (delayTimer) {
+        clearInterval(delayTimer);
+        delayTimer = null;
+      }
+    };
+  });
+
+  const isConfirmDisabled = $derived(delayRemaining > 0);
 
   // Services
   let hapticService: IHapticFeedback;
@@ -138,8 +173,17 @@
         <button class="dialog-button cancel-button" onclick={handleCancel}>
           {cancelText}
         </button>
-        <button class="dialog-button confirm-button" onclick={handleConfirm}>
-          {confirmText}
+        <button
+          class="dialog-button confirm-button"
+          class:delayed={isConfirmDisabled}
+          onclick={handleConfirm}
+          disabled={isConfirmDisabled}
+        >
+          {#if isConfirmDisabled}
+            {confirmText} ({delayRemaining}s)
+          {:else}
+            {confirmText}
+          {/if}
         </button>
       </div>
     </DialogPrimitive.Content>
@@ -361,6 +405,19 @@
   :global(.dialog-container.danger) .confirm-button:hover {
     background: linear-gradient(135deg, var(--semantic-error) 0%, var(--semantic-error) 100%);
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+  }
+
+  /* Delayed confirm button - visually distinct waiting state */
+  .confirm-button.delayed {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: var(--theme-card-bg);
+    color: var(--theme-text-dim);
+  }
+
+  .confirm-button.delayed:hover {
+    transform: none;
+    box-shadow: none;
   }
 
   /* Mobile responsive */

@@ -81,7 +81,8 @@
 
       // ⚡ CRITICAL: Initialize Firebase Auth listener AFTER Firestore is ready
       // This is required to catch auth state changes from social sign-in
-      authState.initialize();
+      // Must await to process pending OAuth redirect results (e.g., account linking)
+      await authState.initialize();
     })();
 
     // Note: Sequence restoration tester removed (now integrated into services)
