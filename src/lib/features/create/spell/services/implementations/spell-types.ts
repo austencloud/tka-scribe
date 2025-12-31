@@ -13,4 +13,8 @@ export const SPELL_TYPES = {
   IVariationExplorer: CreateTypes.IVariationExplorer,
   IVariationDeduplicator: CreateTypes.IVariationDeduplicator,
   IVariationScorer: CreateTypes.IVariationScorer,
+  ISpellServiceLoader: CreateTypes.ISpellServiceLoader,
+  ISpellGenerationOrchestrator: CreateTypes.ISpellGenerationOrchestrator,
+  IVariationExplorationOrchestrator: CreateTypes.IVariationExplorationOrchestrator,
+  ILOOPSelectionCoordinator: CreateTypes.ILOOPSelectionCoordinator,
 } as const;

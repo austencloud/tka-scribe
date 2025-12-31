@@ -6,21 +6,20 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
 - Letter palette for clicking to insert Greek symbols
 - Preferences for generation constraints
 - Result display showing original vs expanded word
+
+This component orchestrates the UI; business logic lives in extracted services.
 -->
 <script lang="ts">
   import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
   import type { SpellTabState } from "../state/spell-tab-state.svelte";
-  import { loadFeatureModule, resolve } from "$lib/shared/inversify/di";
+  import { resolve } from "$lib/shared/inversify/di";
   import { SPELL_TYPES } from "../services/implementations/spell-types";
-  import type { IWordSequenceGenerator } from "../services/contracts/IWordSequenceGenerator";
-  import type { ILetterTransitionGraph } from "../services/contracts/ILetterTransitionGraph";
-  import type { IVariationExplorer } from "../services/contracts/IVariationExplorer";
-  import type { IVariationDeduplicator } from "../services/contracts/IVariationDeduplicator";
-  import type { IVariationScorer } from "../services/contracts/IVariationScorer";
+  import type { ISpellGenerationOrchestrator } from "../services/contracts/ISpellGenerationOrchestrator";
+  import type { IVariationExplorationOrchestrator } from "../services/contracts/IVariationExplorationOrchestrator";
+  import type { ILOOPSelectionCoordinator } from "../services/contracts/ILOOPSelectionCoordinator";
   import type { LOOPType } from "../domain/models/spell-models";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
-  import type { CircularizationOption, ISequenceExtender } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
-  import { TYPES } from "$lib/shared/inversify/types";
+  import type { CircularizationOption } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
   import { slide } from "svelte/transition";
   import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
   import WordInput from "./WordInput.svelte";
@@ -30,7 +29,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   import LOOPPicker from "$lib/shared/components/loop-picker/LOOPPicker.svelte";
   import BridgePictographGrid from "$lib/shared/components/loop-picker/BridgePictographGrid.svelte";
   import VariationGrid from "./VariationGrid.svelte";
-  import { getVariationState, type ScoredVariation } from "../state/variation-state.svelte";
+  import { getVariationState } from "../state/variation-state.svelte";
 
   type LOOPPhase = "bridge-selection" | "loop-selection";
 
@@ -45,14 +44,37 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     isDesktop?: boolean;
   } = $props();
 
-  // Services (resolved on-demand)
-  let wordGenerator: IWordSequenceGenerator | null = null;
-  let transitionGraph: ILetterTransitionGraph | null = null;
-  let sequenceExtender: ISequenceExtender | null = null;
-  let variationExplorer: IVariationExplorer | null = null;
-  let variationDeduplicator: IVariationDeduplicator | null = null;
-  let variationScorer: IVariationScorer | null = null;
-  let modulesLoaded = false;
+  // Lazy-resolved services
+  let generationOrchestrator: ISpellGenerationOrchestrator | null = null;
+  let explorationOrchestrator: IVariationExplorationOrchestrator | null = null;
+  let loopCoordinator: ILOOPSelectionCoordinator | null = null;
+
+  function getGenerationOrchestrator(): ISpellGenerationOrchestrator {
+    if (!generationOrchestrator) {
+      generationOrchestrator = resolve<ISpellGenerationOrchestrator>(
+        SPELL_TYPES.ISpellGenerationOrchestrator
+      );
+    }
+    return generationOrchestrator;
+  }
+
+  function getExplorationOrchestrator(): IVariationExplorationOrchestrator {
+    if (!explorationOrchestrator) {
+      explorationOrchestrator = resolve<IVariationExplorationOrchestrator>(
+        SPELL_TYPES.IVariationExplorationOrchestrator
+      );
+    }
+    return explorationOrchestrator;
+  }
+
+  function getLOOPCoordinator(): ILOOPSelectionCoordinator {
+    if (!loopCoordinator) {
+      loopCoordinator = resolve<ILOOPSelectionCoordinator>(
+        SPELL_TYPES.ILOOPSelectionCoordinator
+      );
+    }
+    return loopCoordinator;
+  }
 
   // Extension options (ALL valid next pictographs from current position)
   let extensionOptions = $state<CircularizationOption[]>([]);
@@ -62,69 +84,6 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   let generationMode = $state<GenerationMode>("single");
   const variationState = getVariationState();
 
-  // Load required modules before resolving services
-  async function ensureModulesLoaded(): Promise<void> {
-    if (modulesLoaded) return;
-    // Load learn module for CodexLetterMappingRepo dependency
-    await loadFeatureModule("learn");
-    modulesLoaded = true;
-  }
-
-  async function getWordGenerator(): Promise<IWordSequenceGenerator> {
-    await ensureModulesLoaded();
-    if (!wordGenerator) {
-      wordGenerator = resolve<IWordSequenceGenerator>(
-        SPELL_TYPES.IWordSequenceGenerator
-      );
-    }
-    return wordGenerator;
-  }
-
-  async function getTransitionGraph(): Promise<ILetterTransitionGraph> {
-    await ensureModulesLoaded();
-    if (!transitionGraph) {
-      transitionGraph = resolve<ILetterTransitionGraph>(
-        SPELL_TYPES.ILetterTransitionGraph
-      );
-      if (!transitionGraph.isInitialized()) {
-        await transitionGraph.initialize();
-      }
-    }
-    return transitionGraph;
-  }
-
-  async function getSequenceExtender(): Promise<ISequenceExtender> {
-    await ensureModulesLoaded();
-    if (!sequenceExtender) {
-      sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
-    }
-    return sequenceExtender;
-  }
-
-  async function getVariationExplorer(): Promise<IVariationExplorer> {
-    await ensureModulesLoaded();
-    if (!variationExplorer) {
-      variationExplorer = resolve<IVariationExplorer>(SPELL_TYPES.IVariationExplorer);
-    }
-    return variationExplorer;
-  }
-
-  async function getVariationDeduplicator(): Promise<IVariationDeduplicator> {
-    await ensureModulesLoaded();
-    if (!variationDeduplicator) {
-      variationDeduplicator = resolve<IVariationDeduplicator>(SPELL_TYPES.IVariationDeduplicator);
-    }
-    return variationDeduplicator;
-  }
-
-  async function getVariationScorer(): Promise<IVariationScorer> {
-    await ensureModulesLoaded();
-    if (!variationScorer) {
-      variationScorer = resolve<IVariationScorer>(SPELL_TYPES.IVariationScorer);
-    }
-    return variationScorer;
-  }
-
   // Generate sequence from the input word
   async function handleGenerate() {
     if (!spellState.inputWord.trim()) return;
@@ -133,61 +92,33 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     spellState.clearError();
 
     try {
-      // Ensure transition graph is initialized
-      await getTransitionGraph();
+      const orchestrator = getGenerationOrchestrator();
+      const result = await orchestrator.generate(
+        spellState.inputWord,
+        spellState.preferences
+      );
 
-      const generator = await getWordGenerator();
-      const result = await generator.generateFromWord({
-        word: spellState.inputWord,
-        preferences: spellState.preferences,
-      });
-
-      if (result.success && result.sequence) {
+      if (result.success) {
         // Update spell state with results
         spellState.setExpandedWord(result.expandedWord);
         spellState.setLetterSources(result.letterSources);
 
-        // Store LOOP analysis for UI display
         if (result.loopAnalysis) {
           spellState.setLoopAnalysis(result.loopAnalysis);
         }
+        spellState.setCircularizationOptions(result.circularizationOptions);
+        spellState.setDirectLoopUnavailableReason(result.directLoopUnavailableReason);
 
-        // Store circularization options (when sequence isn't directly loopable)
-        if (result.circularizationOptions) {
-          spellState.setCircularizationOptions(result.circularizationOptions);
-        } else {
-          spellState.setCircularizationOptions([]);
-        }
-        if (result.directLoopUnavailableReason) {
-          spellState.setDirectLoopUnavailableReason(
-            result.directLoopUnavailableReason
-          );
-        } else {
-          spellState.setDirectLoopUnavailableReason(null);
-        }
+        // Update extension options
+        extensionOptions = result.extensionOptions;
 
-        // Push to sequence state - use setCurrentSequence with the complete sequence
+        // Push to sequence state
         if (sequenceState) {
           sequenceState.setCurrentSequence({
             ...result.sequence,
             name: result.originalWord,
             word: result.expandedWord,
           });
-
-          // Fetch ALL extension options (pictograph-first UX)
-          // This shows all valid next letters regardless of whether already loopable
-          try {
-            const extender = await getSequenceExtender();
-            const allOptions = await extender.getAllExtensionOptions({
-              ...result.sequence,
-              name: result.originalWord,
-              word: result.expandedWord,
-            });
-            extensionOptions = allOptions;
-          } catch (extErr) {
-            console.warn("Failed to fetch extension options:", extErr);
-            extensionOptions = [];
-          }
         }
 
         // Push undo snapshot
@@ -195,7 +126,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
           word: result.originalWord,
         });
       } else {
-        spellState.setError(result.error || "Failed to generate sequence");
+        spellState.setError(result.error);
       }
     } catch (error) {
       console.error("Failed to generate sequence:", error);
@@ -225,111 +156,51 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     spellState.clearError();
 
     try {
-      // Initialize services
-      const graph = await getTransitionGraph();
-      const generator = await getWordGenerator();
-      const explorer = await getVariationExplorer();
-      const deduplicator = await getVariationDeduplicator();
-      const scorer = await getVariationScorer();
+      const orchestrator = getExplorationOrchestrator();
 
-      // Parse word to get original letters
-      const parseResult = generator.parseWord(spellState.inputWord);
-      if (!parseResult || parseResult.error) {
-        spellState.setError(parseResult?.error || "Could not parse word");
-        return;
-      }
-
-      const originalLetters = parseResult.letters;
-      if (originalLetters.length === 0) {
-        spellState.setError("No valid letters in word");
-        return;
-      }
-
-      // Build expanded letters with bridge letters (same logic as WordSequenceGenerator)
-      const expandedLetters: Letter[] = [];
-      for (let i = 0; i < originalLetters.length; i++) {
-        const letter = originalLetters[i];
-        if (!letter) continue;
-
-        if (i === 0) {
-          // First letter - just add it
-          expandedLetters.push(letter);
-        } else {
-          // Check if we need bridge letters
-          const prevLetter = expandedLetters[expandedLetters.length - 1];
-          if (prevLetter) {
-            const bridgeLetters = graph.findBridgeLetters(prevLetter, letter);
-            // Add bridge letters (max 1 for spell)
-            if (bridgeLetters.length > 0 && bridgeLetters[0]) {
-              expandedLetters.push(bridgeLetters[0]);
-            }
-          }
-          // Add the original letter
-          expandedLetters.push(letter);
-        }
-      }
-
-      if (expandedLetters.length === 0) {
-        spellState.setError("Could not expand word to valid letters");
+      // Parse word to get expanded letters
+      const parseResult = await orchestrator.parseWord(spellState.inputWord);
+      if (!parseResult.success || !parseResult.expandedLetters) {
+        spellState.setError(parseResult.error || "Could not parse word");
         return;
       }
 
       // Store expanded word for display
-      spellState.setExpandedWord(expandedLetters.join(""));
+      spellState.setExpandedWord(parseResult.expandedWord || spellState.inputWord);
 
       // Estimate total variations for progress UI
       const gridMode = spellState.preferences.gridMode ?? GridMode.DIAMOND;
-      const estimatedTotal = await explorer.estimateVariationCount(expandedLetters, gridMode);
+      const estimatedTotal = await orchestrator.estimateVariationCount(
+        parseResult.expandedLetters,
+        gridMode
+      );
 
-      // Start exploration - this resets the state and returns abort signal
+      // Start exploration
       const abortSignal = variationState.startExploration(estimatedTotal);
+      orchestrator.resetDeduplicator();
 
-      // Reset deduplicator for new exploration
-      deduplicator.reset();
-
-      let totalExplored = 0;
-
-      // Iterate through all variations using async generator
-      const variationGenerator = explorer.exploreVariations(expandedLetters, {
+      // Run exploration with callbacks
+      const result = await orchestrator.exploreVariations(
+        parseResult.expandedLetters,
+        spellState.preferences,
         gridMode,
-        signal: abortSignal,
-      });
-
-      for await (const variation of variationGenerator) {
-        // Check for cancellation
-        if (abortSignal.aborted) {
-          break;
-        }
-
-        totalExplored++;
-        variationState.updateProgress(totalExplored);
-
-        // Deduplicate using canonical hash
-        if (!deduplicator.tryAdd(variation.sequence)) {
-          continue; // Skip rotational duplicate
-        }
-
-        // Score the unique variation
-        const score = scorer.scoreSequence(variation.sequence, spellState.preferences);
-
-        // Generate unique ID
-        const id = `var-${Date.now()}-${variationState.stats.totalUnique}`;
-
-        // Add to state
-        variationState.addVariation({
-          id,
-          sequence: variation.sequence,
-          score,
-          branchPath: variation.branchPath,
-        });
-
-        // Yield to UI periodically (every 10 variations)
-        if (totalExplored % 10 === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 0));
-        }
-      }
+        {
+          onVariationFound: (variation) => {
+            variationState.addVariation(variation);
+          },
+          onProgress: (count) => {
+            variationState.updateProgress(count);
+          },
+        },
+        abortSignal
+      );
 
       variationState.completeExploration();
+
+      if (result.error) {
+        variationState.setError(result.error);
+        spellState.setError(result.error);
+      }
 
       // Auto-select the best variation
       if (variationState.variations.length > 0) {
@@ -337,7 +208,6 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
         variationState.selectVariation(best.id);
         handleVariationSelect(best.id);
       }
-
     } catch (error) {
       console.error("Failed to explore variations:", error);
       if (error instanceof Error && error.name !== "AbortError") {
@@ -349,21 +219,19 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     }
   }
 
-  // Handle variation selection - loads the selected variation into the workspace
+  // Handle variation selection
   function handleVariationSelect(variationId: string) {
     const variation = variationState.allVariations.find((v) => v.id === variationId);
     if (!variation || !sequenceState) return;
 
     variationState.selectVariation(variationId);
 
-    // Load the selected variation into the sequence state
     sequenceState.setCurrentSequence({
       ...variation.sequence,
       name: spellState.inputWord,
       word: spellState.expandedWord || spellState.inputWord,
     });
 
-    // Update spell state
     spellState.setExpandedWord(variation.sequence.word || spellState.inputWord);
   }
 
@@ -372,12 +240,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     variationState.cancelExploration();
   }
 
-  /**
-   * Handle LOOP chip click - immediately apply the LOOP with optional bridge letter.
-   * This is called when user clicks a LOOP chip in PreferencesPanel.
-   * @param bridgeLetter - If provided, this bridge letter will be added before applying LOOP
-   * @param loopType - The LOOP type to apply
-   */
+  // Handle LOOP chip click - apply LOOP with optional bridge
   async function handleApplyLOOP(bridgeLetter: Letter | null, loopType: LOOPType) {
     if (!spellState.inputWord.trim()) return;
 
@@ -385,49 +248,29 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     spellState.clearError();
 
     try {
-      // Ensure transition graph is initialized
-      await getTransitionGraph();
-
-      const generator = await getWordGenerator();
-
-      // Generate with the specified LOOP and optional bridge letter
-      const result = await generator.generateFromWord({
-        word: spellState.inputWord,
-        preferences: {
-          ...spellState.preferences,
-          makeCircular: true, // Ensure circular is on
-          selectedLOOPType: loopType,
-        },
-        // Pass bridge letter if specified (for circularization)
-        forceBridgeLetter: bridgeLetter,
-      });
+      const coordinator = getLOOPCoordinator();
+      const result = await coordinator.applyLOOP(
+        spellState.inputWord,
+        spellState.preferences,
+        bridgeLetter,
+        loopType
+      );
 
       if (result.success && result.sequence) {
-        // Update spell state with results
-        spellState.setExpandedWord(result.expandedWord);
-        spellState.setLetterSources(result.letterSources);
-
-        // Store LOOP analysis
-        if (result.loopAnalysis) {
-          spellState.setLoopAnalysis(result.loopAnalysis);
-        }
-
-        // Clear circularization options since we've applied one
+        spellState.setExpandedWord(result.expandedWord || "");
         spellState.setCircularizationOptions([]);
         spellState.setDirectLoopUnavailableReason(null);
 
-        // Push to sequence state
         if (sequenceState) {
           sequenceState.setCurrentSequence({
             ...result.sequence,
-            name: result.originalWord,
+            name: spellState.inputWord,
             word: result.expandedWord,
           });
         }
 
-        // Push undo snapshot
         spellState.pushUndoSnapshot("spell-apply-loop", {
-          word: result.originalWord,
+          word: spellState.inputWord,
           loopType,
           bridgeLetter,
         });
@@ -461,56 +304,42 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
   }
 
   // ============================================
-  // Two-Phase LOOP Selection Flow (Pictograph-First UX)
+  // Two-Phase LOOP Selection Flow
   // ============================================
-  // Phase 1: Pictograph Selection (ALWAYS show all valid next pictographs)
-  // Phase 2: LOOP Selection (show available LOOPs for selected pictograph)
 
-  /** Selected extension option (for two-phase flow) */
   let selectedBridge = $state<CircularizationOption | null>(null);
 
-  /** Whether we have extension pictograph options to show */
   const hasExtensionOptions = $derived(extensionOptions.length > 0);
 
-  /** Current phase of the LOOP selection flow - ALWAYS start at pictograph selection */
   const loopPhase = $derived<LOOPPhase>(
     selectedBridge ? "loop-selection" : "bridge-selection"
   );
 
-  /** LOOP options for current phase (from selected pictograph) */
   const activeLoopOptions = $derived(
     selectedBridge ? selectedBridge.availableLOOPs : []
   );
 
-  /** Handle bridge pictograph selection - immediately adds beat to sequence */
   async function handleBridgeSelect(option: CircularizationOption) {
     if (spellState.isGenerating || !sequenceState) return;
 
-    const bridgeLetter = option.bridgeLetters[0] as Letter;
+    const currentSequence = sequenceState.currentSequence;
+    if (!currentSequence) {
+      console.error("[SpellPanel] No current sequence to extend");
+      return;
+    }
 
     try {
       spellState.setGenerating(true);
 
-      // Append the bridge beat to the actual sequence
-      const extender = await getSequenceExtender();
-      const currentSequence = sequenceState.currentSequence;
+      const coordinator = getLOOPCoordinator();
+      const result = await coordinator.applyBridge(currentSequence, option);
 
-      if (!currentSequence) {
-        console.error("[SpellPanel] No current sequence to extend");
-        return;
+      if (result.success && result.sequence) {
+        sequenceState.setCurrentSequence(result.sequence);
+        selectedBridge = option;
+      } else {
+        spellState.setError(result.error || "Failed to add bridge");
       }
-
-      const sequenceWithBridge = await extender.appendBridgeBeat(
-        currentSequence,
-        bridgeLetter
-      );
-
-      // Update the sequence state - this should trigger beat grid update
-      sequenceState.setCurrentSequence(sequenceWithBridge);
-
-      // Now transition to LOOP selection phase
-      selectedBridge = option;
-
     } catch (error) {
       console.error("[SpellPanel] Failed to append bridge beat:", error);
       spellState.setError("Failed to add bridge letter");
@@ -519,19 +348,15 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     }
   }
 
-  /** Handle LOOP selection (applies bridge letter if selected) */
   function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
     if (spellState.isGenerating) return;
-    // Use bridge letter from selected option if we're in two-phase flow
     const finalBridgeLetter = selectedBridge
       ? (selectedBridge.bridgeLetters[0] as Letter)
       : bridgeLetter;
     handleApplyLOOP(finalBridgeLetter, loopType);
-    // Reset selection after applying
     selectedBridge = null;
   }
 
-  /** Go back to bridge selection */
   function handleBackToBridges() {
     if (spellState.isGenerating) return;
     selectedBridge = null;
@@ -539,9 +364,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
 
   // Reset bridge selection when extension options change
   $effect(() => {
-    // Access to trigger on change
     extensionOptions;
-    // Reset selection
     selectedBridge = null;
   });
 </script>
@@ -576,7 +399,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     <!-- LOOP Selection (shown when makeCircular is on and sequence exists) -->
     {#if spellState.preferences.makeCircular && spellState.hasSequence()}
       <div class="loop-selection-section">
-        <!-- Phase 1: Pictograph Selection (all valid next letters) -->
+        <!-- Phase 1: Pictograph Selection -->
         {#if loopPhase === "bridge-selection" && hasExtensionOptions}
           <div class="loop-phase-header">
             <h3>Choose Next Pictograph</h3>
@@ -620,7 +443,6 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
             isApplying={spellState.isGenerating}
           />
         {:else}
-          <!-- No options available -->
           <div class="no-loop-options">
             <i class="fas fa-info-circle" aria-hidden="true"></i>
             <p>No extension patterns available for this sequence position.</p>
@@ -697,7 +519,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
       {/if}
     </div>
 
-    <!-- Variation Grid (shown when in "all" mode and has variations) -->
+    <!-- Variation Grid -->
     {#if generationMode === "all" && (variationState.stats.totalUnique > 0 || variationState.progress.isExploring)}
       <div class="variation-section">
         <VariationGrid
@@ -916,10 +738,7 @@ Allows users to type a word and generate a valid TKA sequence with bridge letter
     }
   }
 
-  /* ============================================
-   * Two-Phase LOOP Selection Styles
-   * ============================================ */
-
+  /* LOOP Selection Styles */
   .loop-selection-section {
     background: var(--theme-card-bg, rgba(255, 255, 255, 0.04));
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.1));
