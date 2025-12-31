@@ -9,6 +9,11 @@
 import { MotionColor } from "../pictograph/shared/domain/enums/pictograph-enums";
 
 /**
+ * Theme mode for color selection
+ */
+export type ThemeMode = "dark" | "light";
+
+/**
  * Colors that should NEVER be transformed when applying prop/motion colors.
  * Add new accent colors here and they'll be preserved everywhere.
  */
@@ -19,12 +24,31 @@ export const ACCENT_COLORS_TO_PRESERVE = [
 ] as const;
 
 /**
- * Standard color map for motion colors
+ * Mode-aware color map for motion colors.
+ * Each color has variants optimized for dark and light backgrounds.
  */
-export const MOTION_COLOR_MAP: Record<MotionColor, string> = {
-  [MotionColor.BLUE]: "#2E3192",
-  [MotionColor.RED]: "#ED1C24",
+export const MOTION_COLOR_MAP: Record<MotionColor, { dark: string; light: string }> = {
+  [MotionColor.BLUE]: {
+    dark: "#3575E2",   // Slightly darkened blue - still bright on dark backgrounds
+    light: "#3D44B8", // Lightened TKA blue - more vibrant on light backgrounds
+  },
+  [MotionColor.RED]: {
+    dark: "#ED1C24",   // Standard red - works well on dark
+    light: "#DC2626",  // Tailwind Red 600 - slightly darker for light backgrounds
+  },
 };
+
+/**
+ * Get the appropriate color for a motion color based on theme mode.
+ * This is the primary way to access motion colors throughout the app.
+ *
+ * @param color - The MotionColor enum value
+ * @param mode - The current theme mode ("dark" or "light"), defaults to "dark"
+ * @returns The hex color string
+ */
+export function getMotionColor(color: MotionColor, mode: ThemeMode = "dark"): string {
+  return MOTION_COLOR_MAP[color]?.[mode] ?? MOTION_COLOR_MAP[MotionColor.BLUE][mode];
+}
 
 /**
  * Check if a color should be preserved (not transformed)
@@ -139,7 +163,7 @@ export function applyColorToSvg(
  *
  * @param svgText - The raw SVG string
  * @param motionColor - The MotionColor enum value
- * @param options - Optional configuration
+ * @param options - Optional configuration (includes themeMode for dark/light variants)
  * @returns The transformed SVG string
  */
 export function applyMotionColorToSvg(
@@ -149,10 +173,11 @@ export function applyMotionColorToSvg(
     transformStroke?: boolean;
     removeCenterPoint?: boolean;
     makeClassNamesUnique?: boolean;
+    themeMode?: ThemeMode;
   } = {}
 ): string {
-  const targetColor =
-    MOTION_COLOR_MAP[motionColor] || MOTION_COLOR_MAP[MotionColor.BLUE];
+  const mode = options.themeMode ?? "dark";
+  const targetColor = getMotionColor(motionColor, mode);
   const colorSuffix = motionColor.toLowerCase();
 
   return applyColorToSvg(svgText, targetColor, {

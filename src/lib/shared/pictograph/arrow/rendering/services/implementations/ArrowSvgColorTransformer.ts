@@ -3,18 +3,40 @@
  *
  * Applies color transformations to SVG content.
  * Extracted from ArrowRenderer to improve modularity and reusability.
+ *
+ * Theme mode is read dynamically from AnimationVisibilityStateManager
+ * to ensure colors match the current pictograph background mode.
  */
 
 import type { ISvgColorTransformer as IArrowSvgColorTransformer } from "../contracts/IArrowSvgColorTransformer";
 import { MotionColor } from "../../../../shared/domain/enums/pictograph-enums";
+import { getMotionColor, type ThemeMode } from "../../../../../utils/svg-color-utils";
 import { injectable } from "inversify";
+import { getAnimationVisibilityManager } from "../../../../../animation-engine/state/animation-visibility-state.svelte";
 
 @injectable()
 export class ArrowSvgColorTransformer implements IArrowSvgColorTransformer {
-  private readonly colorMap = new Map([
-    [MotionColor.BLUE, "#2E3192"],
-    [MotionColor.RED, "#ED1C24"],
-  ]);
+  /**
+   * Get the current theme mode based on dark mode setting
+   * Dark mode (Lights Off) = "dark" theme, Light mode = "light" theme
+   */
+  private getCurrentThemeMode(): ThemeMode {
+    try {
+      const manager = getAnimationVisibilityManager();
+      return manager.isDarkMode() ? "dark" : "light";
+    } catch {
+      // Fallback to light mode if manager not available
+      return "light";
+    }
+  }
+
+  /**
+   * Set the current theme mode for color selection
+   * @deprecated Use getCurrentThemeMode() instead - theme mode is now read dynamically
+   */
+  setThemeMode(_mode: ThemeMode): void {
+    // No-op - theme mode is now read dynamically from AnimationVisibilityStateManager
+  }
 
   /**
    * Apply color transformation to SVG content
@@ -22,7 +44,8 @@ export class ArrowSvgColorTransformer implements IArrowSvgColorTransformer {
    * Also makes CSS class names unique to prevent conflicts between different colored arrows
    */
   applyColorToSvg(svgText: string, color: MotionColor): string {
-    const targetColor = this.colorMap.get(color) || "#2E3192";
+    const themeMode = this.getCurrentThemeMode();
+    const targetColor = getMotionColor(color, themeMode);
 
     // Replace fill colors in both attribute and CSS style formats
     let coloredSvg = svgText.replace(

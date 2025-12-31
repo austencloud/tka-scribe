@@ -94,14 +94,17 @@ export const DERIVED_CONSTANTS = {
  */
 export type AnimationConstant = keyof typeof ANIMATION_CONSTANTS;
 export type DerivedConstant = keyof typeof DERIVED_CONSTANTS;
+import { getMotionColor } from "$lib/shared/utils/svg-color-utils";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+
 /**
  * Color constants for the Pictograph Animator
- * Centralizes all color definitions for consistent theming
+ * Uses centralized getMotionColor for consistency (dark mode for animation canvas)
  */
 
 export const PROP_COLORS = {
-  RED: "#ED1C24",
-  BLUE: "#2E3192",
+  RED: getMotionColor(MotionColor.RED, "dark"),
+  BLUE: getMotionColor(MotionColor.BLUE, "dark"),
 } as const;
 
 export const UI_COLORS = {

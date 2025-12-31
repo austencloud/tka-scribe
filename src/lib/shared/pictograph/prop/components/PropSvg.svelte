@@ -12,58 +12,18 @@ Now with smooth transitions when position or orientation changes!
   import type { MotionData } from "../../shared/domain/models/MotionData";
   import type { PropAssets } from "../domain/models/PropAssets";
   import type { PropPosition } from "../domain/models/PropPosition";
-  import { isLightMode } from "$lib/shared/theme/state/theme-mode-state.svelte";
-
-  // LED mode glow colors matching animation system
-  const LED_GLOW_COLORS = {
-    [MotionColor.BLUE]: "#2E3192",
-    [MotionColor.RED]: "#ED1C24",
-  };
 
   let {
     motionData,
     propAssets,
     propPosition,
     showProp = true,
-    glowEnabled = false,
   } = $props<{
     motionData: MotionData;
     propAssets: PropAssets;
     propPosition: PropPosition;
     showProp?: boolean;
-    /** Enable glow effect on props (for Lights Off mode in animations) */
-    glowEnabled?: boolean;
   }>();
-
-  // Get the glow color based on motion color
-  const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
-
-  // Fans are complex objects - use reduced glow intensity
-  const isFan = $derived(motionData?.propType === PropType.FAN);
-
-  // Light mode white stroke for visibility against light backgrounds
-  const lightModeStroke = $derived(
-    isLightMode()
-      ? "drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)"
-      : ""
-  );
-
-  // Build the glow filter string - reduced intensity for fans
-  const glowFilter = $derived.by(() => {
-    // In light mode, always add white stroke for visibility
-    const baseFilter = lightModeStroke;
-
-    if (!glowEnabled) return baseFilter ? `filter: ${baseFilter};` : "";
-
-    if (isFan) {
-      // Reduced glow for fans - smaller radii and single shadow
-      const fanGlow = `drop-shadow(0 0 4px ${glowColor})`;
-      return `filter: ${baseFilter ? baseFilter + " " : ""}${fanGlow};`;
-    }
-    // Full glow for other props (staff, club, etc.)
-    const fullGlow = `drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor})`;
-    return `filter: ${baseFilter ? baseFilter + " " : ""}${fullGlow};`;
-  });
 
   type MotionSnapshot = {
     startOrientation?: Orientation;
@@ -244,10 +204,8 @@ Now with smooth transitions when position or orientation changes!
 {#if showProp}
   <g
     class="prop-svg {motionData.color}-prop-svg"
-    class:prop-glow={glowEnabled}
     data-prop-type={motionData?.propType}
-    data-glow-enabled={glowEnabled}
-    style="transform: {transformString};{glowFilter}"
+    style="transform: {transformString};"
   >
     {@html propAssets.imageSrc}
   </g>

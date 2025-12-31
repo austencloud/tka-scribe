@@ -66,16 +66,14 @@ export class ImageComposer implements IImageComposer {
         overrides.showElemental !== undefined &&
         overrides.showPositions !== undefined &&
         overrides.showReversals !== undefined &&
-        overrides.showNonRadialPoints !== undefined &&
-        overrides.showTurnNumbers !== undefined) {
+        overrides.showNonRadialPoints !== undefined) {
       return {
-        showTKA: overrides.showTKA,
+        showTKA: overrides.showTKA, // TKA Glyph includes turn numbers
         showVTG: overrides.showVTG,
         showElemental: overrides.showElemental,
         showPositions: overrides.showPositions,
         showReversals: overrides.showReversals,
         showNonRadialPoints: overrides.showNonRadialPoints,
-        showTurnNumbers: overrides.showTurnNumbers,
         lightsOff: overrides.lightsOff,
         propGlow: overrides.propGlow,
       };
@@ -89,13 +87,12 @@ export class ImageComposer implements IImageComposer {
     const animVisibilityManager = getAnimationVisibilityManager();
 
     const globalSettings: PictographVisibilityOptions = {
-      showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"),
+      showTKA: visibilityManager.getGlyphVisibility("tkaGlyph"), // TKA Glyph includes turn numbers
       showVTG: visibilityManager.getGlyphVisibility("vtgGlyph"),
       showElemental: visibilityManager.getGlyphVisibility("elementalGlyph"),
       showPositions: visibilityManager.getGlyphVisibility("positionsGlyph"),
       showReversals: visibilityManager.getGlyphVisibility("reversalIndicators"),
       showNonRadialPoints: visibilityManager.getNonRadialVisibility(),
-      showTurnNumbers: visibilityManager.getGlyphVisibility("turnNumbers"),
       lightsOff: animVisibilityManager.isLightsOff(),
       // Prop glow is automatically enabled when Lights Off is on
       propGlow: animVisibilityManager.isLightsOff(),
@@ -104,13 +101,12 @@ export class ImageComposer implements IImageComposer {
     // Merge overrides with global settings (overrides take precedence)
     if (overrides) {
       return {
-        showTKA: overrides.showTKA ?? globalSettings.showTKA,
+        showTKA: overrides.showTKA ?? globalSettings.showTKA, // TKA Glyph includes turn numbers
         showVTG: overrides.showVTG ?? globalSettings.showVTG,
         showElemental: overrides.showElemental ?? globalSettings.showElemental,
         showPositions: overrides.showPositions ?? globalSettings.showPositions,
         showReversals: overrides.showReversals ?? globalSettings.showReversals,
         showNonRadialPoints: overrides.showNonRadialPoints ?? globalSettings.showNonRadialPoints,
-        showTurnNumbers: overrides.showTurnNumbers ?? globalSettings.showTurnNumbers,
         lightsOff: overrides.lightsOff ?? globalSettings.lightsOff,
         propGlow: overrides.propGlow ?? globalSettings.propGlow,
       };
@@ -446,7 +442,7 @@ export class ImageComposer implements IImageComposer {
     // Include visibility settings in cache key (important for correct caching!)
     if (visibilitySettings) {
       keyParts.push(
-        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|${visibilitySettings.showTurnNumbers ?? "d"}|lightsOff:${visibilitySettings.lightsOff ?? false}|propGlow:${visibilitySettings.propGlow ?? false}`
+        `vis:${visibilitySettings.showTKA ?? "d"}|${visibilitySettings.showVTG ?? "d"}|${visibilitySettings.showElemental ?? "d"}|${visibilitySettings.showPositions ?? "d"}|${visibilitySettings.showReversals ?? "d"}|${visibilitySettings.showNonRadialPoints ?? "d"}|lightsOff:${visibilitySettings.lightsOff ?? false}|propGlow:${visibilitySettings.propGlow ?? false}`
       );
     }
 

@@ -16,13 +16,14 @@ import { injectable } from "inversify";
 import type { PropRenderData } from "../../domain/models/PropRenderData";
 import type { IPropSvgLoader } from "../contracts/IPropSvgLoader";
 import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
-import { applyMotionColorToSvg } from "../../../../utils/svg-color-utils";
+import { applyMotionColorToSvg, type ThemeMode } from "../../../../utils/svg-color-utils";
+import { getAnimationVisibilityManager } from "../../../../animation-engine/state/animation-visibility-state.svelte";
 
 @injectable()
 export class PropSvgLoader implements IPropSvgLoader {
   // 🚀 OPTIMIZATION: Multi-level caching
   private rawSvgCache = new Map<string, string>(); // path -> raw SVG text
-  private transformedSvgCache = new Map<string, PropRenderData>(); // path:color -> transformed data
+  private transformedSvgCache = new Map<string, PropRenderData>(); // path:color:themeMode -> transformed data
   private loadingPromises = new Map<string, Promise<string>>(); // path -> loading promise (deduplication)
   private metadataCache = new Map<
     string,
@@ -35,6 +36,20 @@ export class PropSvgLoader implements IPropSvgLoader {
   // Performance monitoring
   private cacheHits = 0;
   private cacheMisses = 0;
+  /**
+   * Get the current theme mode based on dark mode setting
+   * Dark mode (Lights Off) = "dark" theme, Light mode = "light" theme
+   */
+  private getCurrentThemeMode(): ThemeMode {
+    try {
+      const manager = getAnimationVisibilityManager();
+      return manager.isDarkMode() ? "dark" : "light";
+    } catch {
+      // Fallback to light mode if manager not available
+      return "light";
+    }
+  }
+
   /**
    * Load prop SVG data with color transformation
    * 🚀 OPTIMIZED: Checks transformed cache first, then raw cache, then fetches
@@ -52,11 +67,14 @@ export class PropSvgLoader implements IPropSvgLoader {
       const propType = motionData.propType || "staff";
       const color = motionData.color || MotionColor.BLUE;
 
-      // Create cache key including color for transformed prop cache
+      // Get current theme mode for color selection
+      const themeMode = this.getCurrentThemeMode();
+
+      // Create cache key including color AND theme mode for transformed prop cache
       // Use _animated version for animation canvas (scaled to 300px width)
       const suffix = useAnimatedVersion ? "_animated" : "";
       const path = `/images/props/${propType}${suffix}.svg`;
-      const transformedCacheKey = `${path}:${color}`;
+      const transformedCacheKey = `${path}:${color}:${themeMode}`;
 
       // 🚀 OPTIMIZATION: Check transformed cache first (fastest path)
       if (this.transformedSvgCache.has(transformedCacheKey)) {
@@ -81,8 +99,8 @@ export class PropSvgLoader implements IPropSvgLoader {
         path
       );
 
-      // Apply color transformation
-      const coloredSvgText = this.applyColorToSvg(originalSvgText, color);
+      // Apply color transformation with current theme mode
+      const coloredSvgText = this.applyColorToSvg(originalSvgText, color, themeMode);
 
       // Extract SVG content
       const svgContent = this.extractSvgContent(coloredSvgText);
@@ -218,9 +236,10 @@ export class PropSvgLoader implements IPropSvgLoader {
    * Apply color transformation to SVG
    * Delegates to shared svg-color-utils for consistency across the app
    */
-  private applyColorToSvg(svgText: string, color: MotionColor): string {
+  private applyColorToSvg(svgText: string, color: MotionColor, themeMode: ThemeMode): string {
     return applyMotionColorToSvg(svgText, color, {
       makeClassNamesUnique: true,
+      themeMode,
     });
   }
 

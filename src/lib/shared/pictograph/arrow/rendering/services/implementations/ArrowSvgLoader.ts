@@ -4,9 +4,12 @@
  * Handles fetching and loading SVG files with aggressive caching.
  *
  * Key optimizations:
- * - Multi-level caching (raw SVG + transformed SVG by color)
+ * - Multi-level caching (raw SVG + transformed SVG by color AND theme mode)
  * - Request deduplication (prevents duplicate concurrent fetches)
  * - Performance monitoring (cache hit/miss tracking)
+ *
+ * Theme mode is read dynamically from AnimationVisibilityStateManager
+ * to ensure colors match the current pictograph background mode.
  *
  * Extracted from ArrowRenderer to improve modularity and reusability.
  */
@@ -20,12 +23,14 @@ import type { IArrowSvgLoader } from "../contracts/IArrowSvgLoader";
 import type { MotionData } from "../../../../shared/domain/models/MotionData";
 import { TYPES } from "../../../../../inversify/types";
 import { inject, injectable } from "inversify";
+import type { ThemeMode } from "../../../../../utils/svg-color-utils";
+import { getAnimationVisibilityManager } from "../../../../../animation-engine/state/animation-visibility-state.svelte";
 
 @injectable()
 export class ArrowSvgLoader implements IArrowSvgLoader {
   // 🚀 OPTIMIZATION: Multi-level caching
   private rawSvgCache = new Map<string, string>(); // path -> raw SVG text
-  private transformedSvgCache = new Map<string, ArrowSvgData>(); // path:color -> transformed data
+  private transformedSvgCache = new Map<string, ArrowSvgData>(); // path:color:themeMode -> transformed data
   private loadingPromises = new Map<string, Promise<string>>(); // path -> loading promise (deduplication)
 
   // Performance monitoring
@@ -38,6 +43,20 @@ export class ArrowSvgLoader implements IArrowSvgLoader {
     @inject(TYPES.IArrowSvgColorTransformer)
     private colorTransformer: ISvgColorTransformer
   ) {}
+
+  /**
+   * Get the current theme mode based on dark mode setting
+   * Dark mode (Lights Off) = "dark" theme, Light mode = "light" theme
+   */
+  private getCurrentThemeMode(): ThemeMode {
+    try {
+      const manager = getAnimationVisibilityManager();
+      return manager.isDarkMode() ? "dark" : "light";
+    } catch {
+      // Fallback to light mode if manager not available
+      return "light";
+    }
+  }
 
   /**
    * Load arrow SVG data with color transformation based on placement data (extracted from Arrow.svelte)
@@ -56,8 +75,11 @@ export class ArrowSvgLoader implements IArrowSvgLoader {
       throw new Error("No arrow path available - missing motion data");
     }
 
-    // Create cache key including color for transformed SVG cache
-    const transformedCacheKey = `${path}:${motionData.color}`;
+    // Get current theme mode for color selection
+    const themeMode = this.getCurrentThemeMode();
+
+    // Create cache key including color AND theme mode for transformed SVG cache
+    const transformedCacheKey = `${path}:${motionData.color}:${themeMode}`;
 
     // 🚀 OPTIMIZATION: Check transformed cache first (fastest path)
     if (this.transformedSvgCache.has(transformedCacheKey)) {

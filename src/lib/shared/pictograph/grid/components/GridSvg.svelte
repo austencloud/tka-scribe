@@ -14,6 +14,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     gridMode = GridMode.DIAMOND,
     showNonRadialPoints = false,
     ledMode = false,
+    previewMode = false,
     onLoaded,
     onError,
     onToggleNonRadial = undefined,
@@ -24,6 +25,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     showNonRadialPoints?: boolean;
     /** LED mode - inverts grid colors to light for dark backgrounds */
     ledMode?: boolean;
+    /** Preview mode: show "off" elements at 40% opacity instead of hidden */
+    previewMode?: boolean;
     /** Called when grid is successfully loaded */
     onLoaded?: () => void;
     /** Called when grid loading fails */
@@ -65,10 +68,14 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     }
   }
 
-  // Styled grid content - reactively updates when gridMode, showNonRadialPoints, or ledMode changes
+  // Styled grid content - reactively updates when gridMode, ledMode, or previewMode changes
+  // In preview mode, we DON'T depend on showNonRadialPoints to avoid re-rendering (CSS handles opacity transitions)
   const styledGridSvg = $derived.by(() => {
     if (!baseGridSvg) return "";
-    return applyGridModeStyles(baseGridSvg, gridMode, showNonRadialPoints, ledMode);
+    // In preview mode, always pass false for showNonRadial since CSS classes handle visibility
+    // This prevents SVG re-rendering when toggling, allowing CSS transitions to work
+    const effectiveShowNonRadial = previewMode ? false : showNonRadialPoints;
+    return applyGridModeStyles(baseGridSvg, gridMode, effectiveShowNonRadial, ledMode, previewMode);
   });
 
   // Load grid on mount
@@ -80,7 +87,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     svgContent: string,
     mode: GridMode,
     showNonRadial: boolean,
-    isLedMode: boolean
+    isLedMode: boolean,
+    isPreviewMode: boolean
   ): string {
     // LED mode uses light colors for dark backgrounds, normal mode uses black
     const gridColor = isLedMode ? "#d0d0d0" : "#000";
@@ -142,6 +150,8 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
     }
 
     // Set opacity for non-radial points based on visibility setting
+    // In preview mode, DON'T set inline opacity - let CSS handle it for smooth transitions
+    // Only set inline opacity for exports (non-preview mode) where CSS doesn't apply
     const nonRadialOpacity = showNonRadial ? "1" : "0";
 
     for (const id of nonRadialPointIds) {
@@ -157,7 +167,11 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
           let cleaned = opening.replace(/\s*opacity="[^"]*"/g, "");
           cleaned = cleaned.replace(/\s*fill="[^"]*"/g, "");
 
-          // Add the correct fill and opacity attributes (matching CSS values)
+          // In preview mode, skip inline opacity to allow CSS transitions
+          // In non-preview mode (exports), set inline opacity since CSS won't apply
+          if (isPreviewMode) {
+            return `${cleaned} fill="${gridColor}"${closing}`;
+          }
           return `${cleaned} fill="${gridColor}" opacity="${nonRadialOpacity}"${closing}`;
         }
       );
@@ -307,6 +321,7 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   class="grid-container"
   class:box-mode={gridMode === GridMode.BOX}
   class:show-non-radial={showNonRadialPoints}
+  class:preview-mode={previewMode}
   class:interactive-non-radial={onToggleNonRadial !== undefined}
   class:led-mode={ledMode}
   data-grid-mode={gridMode}
@@ -420,6 +435,14 @@ Pure reactive approach - grid mode determines styling, rotation provides animati
   :global(.grid-container.show-non-radial #sw_diamond_layer2_point),
   :global(.grid-container.show-non-radial #nw_diamond_layer2_point) {
     opacity: 1;
+  }
+
+  /* Preview mode: show "off" non-radial points at 40% opacity instead of hidden */
+  :global(.grid-container.preview-mode:not(.show-non-radial) #ne_diamond_layer2_point),
+  :global(.grid-container.preview-mode:not(.show-non-radial) #se_diamond_layer2_point),
+  :global(.grid-container.preview-mode:not(.show-non-radial) #sw_diamond_layer2_point),
+  :global(.grid-container.preview-mode:not(.show-non-radial) #nw_diamond_layer2_point) {
+    opacity: 0.4;
   }
 
   /* Interactive non-radial points - show cursor pointer */

@@ -14,13 +14,7 @@ Now with intelligent rotation animation matching prop behavior!
     RotationDirection,
     MotionColor,
   } from "../../../shared/domain/enums/pictograph-enums";
-  import { isLightMode } from "$lib/shared/theme/state/theme-mode-state.svelte";
-
-  // LED mode glow colors matching animation system
-  const LED_GLOW_COLORS = {
-    [MotionColor.BLUE]: "#2E3192",
-    [MotionColor.RED]: "#ED1C24",
-  };
+  import { getMotionColor } from "../../../../utils/svg-color-utils";
   import type {
     ArrowAssets,
     ArrowPosition,
@@ -46,16 +40,23 @@ Now with intelligent rotation animation matching prop behavior!
     color: string;
     pictographData?: PictographData | null;
     isClickable?: boolean;
-    /** LED mode - applies glow effect to arrows */
+    /** LED mode - applies glow effect to arrows (dark pictograph background) */
     ledMode?: boolean;
   }>();
+
+  // LED mode glow colors - based on pictograph background mode
+  // ledMode=true (dark background) → use bright colors, ledMode=false (white background) → use original dark colors
+  const LED_GLOW_COLORS = $derived({
+    [MotionColor.BLUE]: getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light"),
+    [MotionColor.RED]: getMotionColor(MotionColor.RED, ledMode ? "dark" : "light"),
+  });
 
   // Get the glow color based on motion color
   const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
 
-  // Light mode white stroke for visibility against light backgrounds
+  // White stroke for visibility against light backgrounds (when NOT in dark mode)
   const lightModeStroke = $derived(
-    isLightMode()
+    !ledMode
       ? "drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)"
       : ""
   );

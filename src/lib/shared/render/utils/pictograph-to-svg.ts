@@ -1,7 +1,7 @@
 /**
  * Utility for rendering Pictograph component to SVG string
  *
- * This utility mounts a Pictograph.svelte component to a hidden DOM container,
+ * This utility mounts a PictographContainer component to a hidden DOM container,
  * waits for it to render, then extracts the SVG string.
  *
  * ARCHITECTURE NOTES:
@@ -12,7 +12,7 @@
 
 import type { PictographData } from "../../pictograph/shared/domain/models/PictographData";
 import type { BeatData } from "../../../features/create/shared/domain/models/BeatData";
-import Pictograph from "../../pictograph/shared/components/Pictograph.svelte";
+import PictographContainer from "../../pictograph/shared/components/PictographContainer.svelte";
 import { mount, tick, unmount } from "svelte";
 import { resolve as resolveService } from "../../inversify/di";
 import { TYPES } from "../../inversify/types";
@@ -23,13 +23,12 @@ import type { IGlyphCache } from "../services/implementations/GlyphCache";
  * When provided, these override the global visibility settings
  */
 export interface PictographVisibilityOptions {
-  showTKA?: boolean;
+  showTKA?: boolean; // TKA Glyph includes turn numbers
   showVTG?: boolean;
   showElemental?: boolean;
   showPositions?: boolean;
   showReversals?: boolean;
   showNonRadialPoints?: boolean;
-  showTurnNumbers?: boolean;
   /** Lights Off - dark background, inverted grid, white text/outlines */
   lightsOff?: boolean;
   /** Prop Glow - glowing drop-shadow effect on props */
@@ -81,24 +80,24 @@ export async function renderPictographToSVG(
     // Build props object explicitly (not using spread) to ensure visibility settings are passed
     const componentProps: Record<string, unknown> = {
       pictographData: dataWithBeatNumber,
-      disableContentTransitions: true, // Disable animations for export
+      disableTransitions: true, // Disable container transitions for export
+      disableContentTransitions: true, // Disable content transitions for export
     };
 
     // Add visibility settings explicitly if provided
     if (visibilityOptions) {
-      componentProps.showTKA = visibilityOptions.showTKA;
+      componentProps.showTKA = visibilityOptions.showTKA; // TKA Glyph includes turn numbers
       componentProps.showVTG = visibilityOptions.showVTG;
       componentProps.showElemental = visibilityOptions.showElemental;
       componentProps.showPositions = visibilityOptions.showPositions;
       componentProps.showReversals = visibilityOptions.showReversals;
       componentProps.showNonRadialPoints = visibilityOptions.showNonRadialPoints;
-      componentProps.showTurnNumbers = visibilityOptions.showTurnNumbers;
       componentProps.ledMode = visibilityOptions.lightsOff; // Lights Off controls background/grid
-      componentProps.propGlow = visibilityOptions.propGlow; // Prop Glow controls prop effects
+      // Note: propGlow would need to be added to PictographRenderer if needed in the future
     }
 
-    // Mount Pictograph component with explicit visibility settings
-    const component = mount(Pictograph, {
+    // Mount PictographContainer with explicit visibility settings
+    const component = mount(PictographContainer, {
       target: container,
       props: componentProps,
     });

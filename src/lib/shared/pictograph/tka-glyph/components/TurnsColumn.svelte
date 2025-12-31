@@ -27,6 +27,8 @@ Props:
     getLetterDimensions,
     preloadLetterDimensions,
   } from "./TKAGlyph.svelte";
+  import { getMotionColor } from "../../../utils/svg-color-utils";
+  import { MotionColor } from "../../shared/domain/enums/pictograph-enums";
 
   let {
     turnsTuple = "(s, 0, 0)",
@@ -62,6 +64,11 @@ Props:
     /** LED mode - adds glow effect (does NOT invert colors) */
     ledMode?: boolean;
   }>();
+
+  // Centralized colors for SVG filters - based on pictograph background mode
+  // ledMode=true (dark background) → use bright colors, ledMode=false (white background) → use original dark colors
+  const BLUE_COLOR = $derived(getMotionColor(MotionColor.BLUE, ledMode ? "dark" : "light"));
+  const RED_COLOR = $derived(getMotionColor(MotionColor.RED, ledMode ? "dark" : "light"));
 
   // Service instance for color interpretation
   const colorInterpreter = new TurnColorInterpreter();
@@ -175,7 +182,7 @@ Props:
 >
   <!-- SVG Recoloring Filter Definitions -->
   <defs>
-    <!-- Blue color filter - matches arrow color #2E3192 -->
+    <!-- Blue color filter - uses centralized MOTION_COLOR_MAP -->
     <filter id="turn-color-blue" color-interpolation-filters="sRGB">
       <!-- Extract alpha channel -->
       <feColorMatrix
@@ -186,12 +193,12 @@ Props:
                 0 0 0 1 0"
         result="alpha-only"
       />
-      <!-- Fill with target blue color #2E3192 -->
-      <feFlood flood-color="#2E3192" result="blue-flood" />
+      <!-- Fill with target blue color from MOTION_COLOR_MAP -->
+      <feFlood flood-color={BLUE_COLOR} result="blue-flood" />
       <!-- Composite the color with the alpha mask -->
       <feComposite in="blue-flood" in2="alpha-only" operator="in" />
     </filter>
-    <!-- Red color filter - matches arrow color #ED1C24 -->
+    <!-- Red color filter - uses centralized MOTION_COLOR_MAP -->
     <filter id="turn-color-red" color-interpolation-filters="sRGB">
       <!-- Extract alpha channel -->
       <feColorMatrix
@@ -202,8 +209,8 @@ Props:
                 0 0 0 1 0"
         result="alpha-only"
       />
-      <!-- Fill with target red color #ED1C24 -->
-      <feFlood flood-color="#ED1C24" result="red-flood" />
+      <!-- Fill with target red color from MOTION_COLOR_MAP -->
+      <feFlood flood-color={RED_COLOR} result="red-flood" />
       <!-- Composite the color with the alpha mask -->
       <feComposite in="red-flood" in2="alpha-only" operator="in" />
     </filter>

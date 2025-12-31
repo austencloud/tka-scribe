@@ -10,8 +10,10 @@
 import { injectable } from "inversify";
 import type { PictographData } from "../../../shared/domain/models/PictographData";
 import type { MotionData } from "../../../shared/domain/models/MotionData";
+import { getMotionColor } from "../../../../utils/svg-color-utils";
+import { MotionColor } from "../../../shared/domain/enums/pictograph-enums";
 
-export type TurnNumberColor = "#2E3192" | "#ED1C24"; // Blue or Red (matches arrow colors)
+export type TurnNumberColor = string; // Color hex string from getMotionColor
 
 export interface TurnColors {
   top: TurnNumberColor;
@@ -27,8 +29,8 @@ type LetterType =
   | "TYPE5"
   | "TYPE6";
 
-const BLUE_HEX: TurnNumberColor = "#2E3192"; // Matches ArrowSvgColorTransformer
-const RED_HEX: TurnNumberColor = "#ED1C24"; // Matches ArrowSvgColorTransformer
+const BLUE_HEX: TurnNumberColor = getMotionColor(MotionColor.BLUE, "dark");
+const RED_HEX: TurnNumberColor = getMotionColor(MotionColor.RED, "dark");
 
 @injectable()
 export class TurnColorInterpreter {
