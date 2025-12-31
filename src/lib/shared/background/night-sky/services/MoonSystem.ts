@@ -146,12 +146,8 @@ export class MoonSystem {
 		// 1. Draw outer atmospheric glow
 		this.drawAtmosphericGlow(ctx, x, y, R);
 
-		// 2. Draw moon surface (texture or fallback)
-		if (this.textureLoaded && this.moonTexture) {
-			this.drawMoonTexture(ctx, x, y, R);
-		} else {
-			this.drawMoonSurfaceFallback(ctx, x, y, R);
-		}
+		// 2. Draw moon surface - use procedural for clean edges
+		this.drawMoonSurfaceProcedural(ctx, x, y, R);
 
 		// 3. Draw earthshine on dark portion (during crescent phases)
 		if (illumination.earthshineIntensity > 0) {
@@ -192,24 +188,104 @@ export class MoonSystem {
 		ctx.arc(x, y, R, 0, 2 * Math.PI);
 		ctx.clip();
 
-		// Draw base moon color first to prevent any edge artifacts
-		ctx.fillStyle = '#e8e4d4';
+		// Draw base moon color first
+		ctx.fillStyle = '#d8d4c8';
 		ctx.beginPath();
 		ctx.arc(x, y, R, 0, 2 * Math.PI);
 		ctx.fill();
 
-		// Draw the texture scaled LARGER than the clip circle (18% overscan)
-		// This ensures any dark edge/halo from the source image falls outside the visible area
-		const overscan = 1.18;
-		const size = R * 2 * overscan;
-		const offset = R * overscan;
-		ctx.drawImage(this.moonTexture, x - offset, y - offset, size, size);
+		// Calculate source crop to use only the center portion of the texture
+		// This avoids the black halo around the edge of the source image
+		const img = this.moonTexture;
+		const imgSize = Math.min(img.width, img.height);
+		const cropRatio = 0.72; // Use only the center 72% of the image
+		const cropSize = imgSize * cropRatio;
+		const cropOffset = (imgSize - cropSize) / 2;
+
+		// Draw cropped center portion scaled to fill the moon circle
+		const destSize = R * 2;
+		ctx.drawImage(
+			img,
+			cropOffset,
+			cropOffset,
+			cropSize,
+			cropSize, // Source rectangle (center crop)
+			x - R,
+			y - R,
+			destSize,
+			destSize // Destination rectangle
+		);
 
 		ctx.restore();
 	}
 
+	private drawMoonSurfaceProcedural(ctx: CanvasRenderingContext2D, x: number, y: number, R: number) {
+		// Base moon surface with subtle gradient
+		const surfaceGradient = ctx.createRadialGradient(
+			x - R * 0.2,
+			y - R * 0.2,
+			R * 0.1,
+			x,
+			y,
+			R
+		);
+		surfaceGradient.addColorStop(0, '#f5f3e8');
+		surfaceGradient.addColorStop(0.3, '#e8e5d8');
+		surfaceGradient.addColorStop(0.6, '#dbd8cc');
+		surfaceGradient.addColorStop(1, '#ccc9bc');
+
+		ctx.fillStyle = surfaceGradient;
+		ctx.beginPath();
+		ctx.arc(x, y, R, 0, 2 * Math.PI);
+		ctx.fill();
+
+		// Draw subtle maria (dark regions) - based on real lunar maria positions
+		ctx.save();
+		ctx.beginPath();
+		ctx.arc(x, y, R, 0, 2 * Math.PI);
+		ctx.clip();
+
+		// Mare Imbrium (upper left)
+		this.drawMaria(ctx, x - R * 0.25, y - R * 0.3, R * 0.35, 0.08);
+
+		// Mare Serenitatis (upper right of center)
+		this.drawMaria(ctx, x + R * 0.15, y - R * 0.25, R * 0.22, 0.07);
+
+		// Mare Tranquillitatis (right of center)
+		this.drawMaria(ctx, x + R * 0.25, y + R * 0.05, R * 0.25, 0.06);
+
+		// Mare Crisium (far right)
+		this.drawMaria(ctx, x + R * 0.55, y - R * 0.15, R * 0.15, 0.05);
+
+		// Oceanus Procellarum (left side, large)
+		this.drawMaria(ctx, x - R * 0.4, y + R * 0.1, R * 0.3, 0.06);
+
+		// Mare Nubium (lower center)
+		this.drawMaria(ctx, x - R * 0.1, y + R * 0.35, R * 0.2, 0.05);
+
+		ctx.restore();
+	}
+
+	private drawMaria(
+		ctx: CanvasRenderingContext2D,
+		cx: number,
+		cy: number,
+		radius: number,
+		opacity: number
+	) {
+		const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+		gradient.addColorStop(0, `rgba(80, 80, 90, ${opacity})`);
+		gradient.addColorStop(0.6, `rgba(90, 90, 100, ${opacity * 0.6})`);
+		gradient.addColorStop(1, 'rgba(100, 100, 110, 0)');
+
+		ctx.fillStyle = gradient;
+		ctx.beginPath();
+		ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+		ctx.fill();
+	}
+
 	private drawMoonSurfaceFallback(ctx: CanvasRenderingContext2D, x: number, y: number, R: number) {
-		// Simple gradient fallback if texture fails to load
+		// Simple gradient fallback
 		const surfaceGradient = ctx.createRadialGradient(
 			x - R * 0.25,
 			y - R * 0.25,
