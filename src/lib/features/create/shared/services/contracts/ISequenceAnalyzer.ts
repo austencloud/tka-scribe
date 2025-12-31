@@ -94,7 +94,7 @@ export interface ISequenceAnalyzer {
    * const analysis = service.analyzeCircularity(sequence);
    * if (analysis.isCircular) {
    *   console.log(`Circular type: ${analysis.circularType}`);
-   *   console.log(`Possible CAPs: ${analysis.possibleCapTypes.join(', ')}`);
+   *   console.log(`Possible LOOPs: ${analysis.possibleCapTypes.join(', ')}`);
    * }
    */
   analyzeCircularity(sequence: SequenceData): CircularityAnalysis;

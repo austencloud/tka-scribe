@@ -156,12 +156,12 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
       return "same";
     }
 
-    // Check quartered CAPs (90° rotation)
+    // Check quartered LOOPs (90° rotation)
     if (QUARTERED_LOOPS.has(positionKey)) {
       return "quartered";
     }
 
-    // Check halved CAPs (180° rotation)
+    // Check halved LOOPs (180° rotation)
     if (HALVED_LOOPS.has(positionKey)) {
       return "halved";
     }

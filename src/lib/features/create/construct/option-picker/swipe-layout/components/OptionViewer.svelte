@@ -14,6 +14,7 @@ Orchestrates specialized components and services:
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount, untrack } from "svelte";
   import { fade } from "svelte/transition";
+  import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 
   import ConstructPickerHeader from "$lib/features/create/construct/shared/components/ConstructPickerHeader.svelte";
   import type { ILayoutDetector } from "../../services/contracts/ILayoutDetector";
@@ -340,6 +341,10 @@ Orchestrates specialized components and services:
     // premature re-runs when pendingFadeIn/isFadingOut change
     const filtered = optionPickerState?.filteredOptions || [];
     const pickerState = optionPickerState?.state;
+    // Include prop type settings as dependencies - re-prepare when prop type changes (P button)
+    const settings = getSettings();
+    const _bluePropType = settings.bluePropType;
+    const _redPropType = settings.redPropType;
 
     // Read fade state without tracking (prevents effect re-run on fade state changes)
     const currentPendingFadeIn = untrack(() => pendingFadeIn);

@@ -14,6 +14,7 @@ import type { ICreateModuleEventHandler } from "../contracts/ICreateModuleEventH
 import type { IBuildConstructSectionCoordinator } from "../contracts/IConstructCoordinator";
 import type { PictographData } from "../../../../../shared/pictograph/shared/domain/models/PictographData";
 import type { IOrientationCalculator } from "../../../../../shared/pictograph/prop/services/contracts/IOrientationCalculator";
+import type { IReversalDetector } from "../contracts/IReversalDetector";
 import type { BeatData } from "../../domain/models/BeatData";
 import { createBeatData } from "../../domain/factories/createBeatData";
 
@@ -21,6 +22,7 @@ import { createBeatData } from "../../domain/factories/createBeatData";
 export class CreateModuleEventHandler implements ICreateModuleEventHandler {
   private constructCoordinator: IBuildConstructSectionCoordinator | null = null;
   private OrientationCalculator: IOrientationCalculator | null = null;
+  private ReversalDetector: IReversalDetector | null = null;
   private initialized = false;
 
   // Callback to access current sequence from component state
@@ -53,9 +55,12 @@ export class CreateModuleEventHandler implements ICreateModuleEventHandler {
     this.OrientationCalculator = tryResolve<IOrientationCalculator>(
       TYPES.IOrientationCalculator
     );
+    this.ReversalDetector = tryResolve<IReversalDetector>(
+      TYPES.IReversalDetector
+    );
 
     // Only mark as initialized if at least one service resolved
-    if (this.constructCoordinator || this.OrientationCalculator) {
+    if (this.constructCoordinator || this.OrientationCalculator || this.ReversalDetector) {
       this.initialized = true;
     }
   }
@@ -121,11 +126,30 @@ export class CreateModuleEventHandler implements ICreateModuleEventHandler {
         description: `Add beat ${nextBeatNumber}`,
       });
 
-      // Create initial beat data from option with correct beat number
+      // 🔄 REVERSAL DETECTION: Calculate reversals for the new beat based on current sequence
+      let reversalInfo = { blueReversal: false, redReversal: false };
+      if (this.ReversalDetector && currentSequence.beats.length > 0) {
+        try {
+          reversalInfo = this.ReversalDetector.detectReversalForOption(
+            [...currentSequence.beats], // Spread to mutable array for interface compatibility
+            option
+          );
+        } catch (reversalError) {
+          console.warn(
+            `⚠️ CreateModuleEventHandler: Failed to detect reversals for beat ${nextBeatNumber}:`,
+            reversalError
+          );
+          // Continue without reversal data rather than failing
+        }
+      }
+
+      // Create initial beat data from option with correct beat number and reversals
       let beatData = createBeatData({
         ...option, // Spread PictographData properties since BeatData extends PictographData
         beatNumber: nextBeatNumber,
         isBlank: false, // This is a real beat with pictograph data
+        blueReversal: reversalInfo.blueReversal,
+        redReversal: reversalInfo.redReversal,
       });
 
       performance.mark("beat-data-created");

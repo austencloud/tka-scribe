@@ -32,6 +32,7 @@
 
   // Calculated data with arrow positions populated
   let calculatedData = $state<BeatData | null>(null);
+  let pictographDataState = $state<PictographData | null>(null);
   let isCalculating = $state(false);
 
   // Rotation override status for each color (only applies to STATIC/DASH)
@@ -56,6 +57,7 @@
       calculateArrowPositions();
     } else if (!show) {
       calculatedData = null;
+      pictographDataState = null;
       blueRotationOverride = null;
       redRotationOverride = null;
       lookupKeys = null;
@@ -78,6 +80,9 @@
         endPosition: beatData.endPosition,
         motions: beatData.motions,
       };
+
+      // Store for use in formatAllForAI
+      pictographDataState = pictographData;
 
       const calculated = await arrowOrchestrator.calculateAllArrowPoints(pictographData);
 
@@ -220,11 +225,16 @@
     }
   }
 
-  function handleCopyAll() {
-    copyToClipboard(
-      formatAllForAI(displayData, blueMotion, redMotion, blueRotationOverride, redRotationOverride),
-      "all"
+  async function handleCopyAll() {
+    const text = await formatAllForAI(
+      displayData,
+      blueMotion,
+      redMotion,
+      blueRotationOverride,
+      redRotationOverride,
+      pictographDataState ?? undefined
     );
+    copyToClipboard(text, "all");
   }
 
   function handleCopyJson() {

@@ -35,16 +35,16 @@ Hides header when card height is below 65px for space optimization
     headerFontSize?: string;
   }>();
 
-  // Create state using factory function
-  // Use $derived to ensure reactive updates when props change
-  const state = $derived(
-    createToggleCardState({
-      option1,
-      option2,
-      getActiveOption: () => activeOption,
-      onToggle,
-    })
-  );
+  // Create state using factory function - only created once!
+  // IMPORTANT: Do NOT use $derived here - it would recreate state on every
+  // activeOption change, breaking touch tracking and service initialization.
+  // Instead, pass getters so values are read at call time.
+  const state = createToggleCardState({
+    getOption1: () => option1,
+    getOption2: () => option2,
+    getActiveOption: () => activeOption,
+    getOnToggle: () => onToggle,
+  });
 
   // Simple derived state stays in component
   const isOption1Active = $derived(activeOption === option1.value);

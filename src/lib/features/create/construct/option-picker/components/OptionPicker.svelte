@@ -10,6 +10,7 @@ Delegates all rendering to child components.
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import { onMount } from "svelte";
+  import { getSettings } from "$lib/shared/application/state/app-state.svelte";
 
   import { createFadeState } from "../state/fade-state.svelte";
   import { createOptionPickerState } from "../state/option-picker-state.svelte";
@@ -94,8 +95,9 @@ Delegates all rendering to child components.
     }
   });
 
-  // Prepare options when filtered options change OR LED mode changes
+  // Prepare options when filtered options change, LED mode changes, or prop type changes
   // LED mode affects prop colors which are baked in during preparation
+  // Prop type settings determine which prop SVGs to render
   $effect(() => {
     if (!pickerState || !preparer) {
       preparedOptions = [];
@@ -107,6 +109,10 @@ Delegates all rendering to child components.
     const currentState = pickerState.state;
     // Include ledMode as dependency - prop colors need re-preparation when theme changes
     const _ledMode = ledMode;
+    // Include prop type settings as dependencies - re-prepare when prop type changes (P button)
+    const settings = getSettings();
+    const _bluePropType = settings.bluePropType;
+    const _redPropType = settings.redPropType;
 
     // Skip while loading - prevents preparing intermediate states when
     // currentSequence updates before options finish loading

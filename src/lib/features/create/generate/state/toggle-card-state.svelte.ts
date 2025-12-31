@@ -22,12 +22,18 @@ const TAP_DURATION_THRESHOLD = 500; // ms - max duration for a tap
 
 /**
  * Creates reactive state for toggle card behavior
+ *
+ * IMPORTANT: All props are now getters to prevent state recreation.
+ * The state object is created ONCE and getters are called at runtime
+ * to get current values. This fixes the bug where $derived would
+ * recreate the state on every activeOption change, breaking touch
+ * tracking and causing double-toggle issues.
  */
 export function createToggleCardState<T>(props: {
-  option1: { value: T };
-  option2: { value: T };
-  getActiveOption: () => T; // Changed to getter for reactivity
-  onToggle: (value: T) => void;
+  getOption1: () => { value: T };
+  getOption2: () => { value: T };
+  getActiveOption: () => T;
+  getOnToggle: () => (value: T) => void;
 }) {
   // Services
   let hapticService = $state<IHapticFeedback | null>(null);
@@ -115,7 +121,7 @@ export function createToggleCardState<T>(props: {
     const activeOption = props.getActiveOption();
     if (value !== activeOption) {
       hapticService?.trigger("selection");
-      props.onToggle(value);
+      props.getOnToggle()(value);
     }
   }
 
@@ -124,12 +130,12 @@ export function createToggleCardState<T>(props: {
    */
   function handleCardClick() {
     hapticService?.trigger("selection");
-    const activeOption = props.getActiveOption(); // Get current value reactively
+    const activeOption = props.getActiveOption();
+    const option1 = props.getOption1();
+    const option2 = props.getOption2();
     const newValue =
-      activeOption === props.option1.value
-        ? props.option2.value
-        : props.option1.value;
-    props.onToggle(newValue);
+      activeOption === option1.value ? option2.value : option1.value;
+    props.getOnToggle()(newValue);
   }
 
   /**

@@ -16,7 +16,7 @@
   } from "../../services/contracts/ISequenceExtender";
   import type { ISubDrawerStatePersister, SubDrawerType } from "../../services/contracts/ISubDrawerStatePersister";
   import type { ISequenceTransferHandler } from "../../services/contracts/ISequenceTransferHandler";
-  import type { IShiftStartAnalyzer } from "../../services/contracts/IShiftStartAnalyzer";
+  import type { IFirstBeatAnalyzer } from "../../services/contracts/IFirstBeatAnalyzer";
   import type { ISequenceJsonExporter } from "../../services/contracts/ISequenceJsonExporter";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { UndoOperationType } from "../../services/contracts/IUndoManager";
@@ -83,7 +83,7 @@
   let sequenceExtender: ISequenceExtender | null = $state(null);
   let subDrawerPersister: ISubDrawerStatePersister | null = $state(null);
   let transferHandler: ISequenceTransferHandler | null = $state(null);
-  let shiftAnalyzer: IShiftStartAnalyzer | null = $state(null);
+  let firstBeatAnalyzer: IFirstBeatAnalyzer | null = $state(null);
   let jsonExporter: ISequenceJsonExporter | null = $state(null);
 
   // Local state - $effect below handles initial and prop changes
@@ -177,7 +177,7 @@
       /* Optional service */
     }
     try {
-      shiftAnalyzer = resolve<IShiftStartAnalyzer>(TYPES.IShiftStartAnalyzer);
+      firstBeatAnalyzer = resolve<IFirstBeatAnalyzer>(TYPES.IFirstBeatAnalyzer);
     } catch {
       /* Optional service */
     }
@@ -493,10 +493,10 @@
   }
 
   function handleShiftStartBeatSelect(beatNumber: number) {
-    if (!sequence || !shiftAnalyzer) return;
+    if (!sequence || !firstBeatAnalyzer) return;
     hapticService?.trigger("selection");
 
-    const result = shiftAnalyzer.analyzeShiftSelection(sequence, beatNumber);
+    const result = firstBeatAnalyzer.analyzeSelection(sequence, beatNumber);
 
     switch (result.action) {
       case "no-op":
@@ -514,7 +514,7 @@
   }
 
   async function executeShiftStart(beatNumber: number) {
-    if (!sequence || !shiftAnalyzer || isTransforming) return;
+    if (!sequence || !firstBeatAnalyzer || isTransforming) return;
     isTransforming = true;
 
     // Push undo snapshot BEFORE shifting
@@ -522,7 +522,7 @@
 
     try {
       await activeSequenceState.shiftStartPosition(beatNumber);
-      const result = shiftAnalyzer.getShiftResultMessage(sequence, beatNumber);
+      const result = firstBeatAnalyzer.getResultMessage(sequence, beatNumber);
       toast.success(result.message);
       hapticService?.trigger("success");
     } catch (error) {

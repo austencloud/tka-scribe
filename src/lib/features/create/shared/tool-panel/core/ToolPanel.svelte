@@ -215,6 +215,17 @@
     }
   });
 
+  // DEBUG: Track key value changes to diagnose remount issues
+  let lastKeyValue = $state<string | undefined>(undefined);
+  $effect(() => {
+    const currentKeyValue = `${activeToolPanel}-${createModuleState.sequenceState.currentSequence?.id ?? "empty"}`;
+    if (lastKeyValue !== undefined && lastKeyValue !== currentKeyValue) {
+      console.warn(`🔑 [ToolPanel] KEY CHANGED: "${lastKeyValue}" → "${currentKeyValue}"`);
+      console.trace("Key change stack trace");
+    }
+    lastKeyValue = currentKeyValue;
+  });
+
   // ============================================================================
   // PUBLIC API (Exposed to parent)
   // ============================================================================
