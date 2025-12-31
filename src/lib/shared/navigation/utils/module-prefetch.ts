@@ -124,9 +124,24 @@ export function prefetchOnIntent(targetModuleId: string): void {
  *
  * Prefetches the most commonly used modules after initial load.
  * Called once after the app has rendered.
+ *
+ * IMPORTANT: Only prefetch if user is on Dashboard. Prefetching on every
+ * page (e.g., Settings) would defeat lazy loading - the Create module has
+ * 150+ files that add 5+ seconds to load time.
+ *
+ * @param currentModuleId - Pass the current module to only prefetch from Dashboard
  */
-export function preloadCriticalModules(): void {
+export function preloadCriticalModules(currentModuleId?: string): void {
   if (typeof window === "undefined") return;
+
+  // Only prefetch from Dashboard - other modules should only load what they need
+  // This prevents loading 150+ Create module files when user goes to Settings
+  if (currentModuleId && currentModuleId !== "dashboard") {
+    console.log(
+      `🔮 [Prefetch] Skipping critical prefetch on ${currentModuleId} (not dashboard)`
+    );
+    return;
+  }
 
   // Wait for initial render to complete
   const schedulePrefetch = window.requestIdleCallback ?? setTimeout;
