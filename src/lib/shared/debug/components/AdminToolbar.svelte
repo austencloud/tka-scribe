@@ -22,7 +22,7 @@
   import { adminToolbarState } from "$lib/shared/debug/state/admin-toolbar-state.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getTabIntroContent } from "$lib/shared/onboarding/config/tab-intro-content";
-  import { firstRunState } from "$lib/shared/onboarding/state/first-run-state.svelte";
+  import { firstRunState } from "$lib/shared/onboarding/state/first-run-state.svelte.ts";
   import type { UserRole } from "$lib/shared/auth/domain/models/UserRole";
   import UserSearchInput from "$lib/shared/user-search/UserSearchInput.svelte";
   import RobustAvatar from "$lib/shared/components/avatar/RobustAvatar.svelte";
@@ -200,52 +200,62 @@
         </div>
       {/if}
 
-      <!-- User Search Section -->
+      <!-- Quick Access Chips - Always visible, horizontal scroll -->
       <div class="sheet-section">
-        <div class="section-label">Preview User</div>
-        <UserSearchInput
-          onSelect={selectUser}
-          selectedUserId={previewProfile?.uid || ""}
-          selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
-          placeholder="Search users..."
-          disabled={userPreviewState.isLoading}
-        />
-      </div>
-
-      <!-- Quick Access Section -->
-      {#if quickAccessUsers.length > 0}
-        <div class="sheet-section">
-          <div class="section-label">Quick Access</div>
-          <div class="mobile-quick-access">
-            {#each quickAccessUsers as user (user.uid)}
-              <div
-                class="mobile-user-chip"
-                class:active={previewProfile?.uid === user.uid}
-                onclick={() => selectUser(user)}
-                onkeydown={(e) => e.key === 'Enter' && selectUser(user)}
-                role="button"
-                tabindex="0"
+        <div class="section-label">Quick Access</div>
+        <div class="mobile-chips-row">
+          {#each quickAccessUsers as user (user.uid)}
+            <div
+              class="mobile-chip"
+              class:active={previewProfile?.uid === user.uid}
+              role="button"
+              tabindex="0"
+              onclick={() => selectUser(user)}
+              onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') selectUser(user); }}
+            >
+              <RobustAvatar
+                src={user.photoURL}
+                name={user.displayName}
+                customSize={36}
+                alt=""
+              />
+              <span class="mobile-chip-name">{user.displayName}</span>
+              <button
+                type="button"
+                class="mobile-chip-remove"
+                onclick={(e) => { e.stopPropagation(); removeFromQuickAccess(user.uid); }}
+                aria-label="Remove {user.displayName}"
               >
-                <RobustAvatar
-                  src={user.photoURL}
-                  name={user.displayName}
-                  customSize={32}
-                  alt=""
-                />
-                <span class="chip-label">{user.displayName}</span>
-                <button
-                  type="button"
-                  class="chip-delete"
-                  onclick={(e) => { e.stopPropagation(); removeFromQuickAccess(user.uid); }}
-                  aria-label="Remove {user.displayName} from quick access"
-                >
-                  <i class="fas fa-times" aria-hidden="true"></i>
-                </button>
-              </div>
-            {/each}
-          </div>
+                <i class="fas fa-times" aria-hidden="true"></i>
+              </button>
+            </div>
+          {/each}
+
+          <!-- Search button to add users -->
+          <button
+            type="button"
+            class="mobile-search-btn"
+            class:active={isSearchOpen}
+            onclick={() => adminToolbarState.toggleSearch()}
+          >
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <span>Find User</span>
+          </button>
         </div>
-      {/if}
+
+        <!-- Search input (expandable) -->
+        {#if isSearchOpen}
+          <div class="mobile-search-panel">
+            <UserSearchInput
+              onSelect={selectUser}
+              selectedUserId={previewProfile?.uid || ""}
+              selectedUserDisplay={previewProfile?.displayName || previewProfile?.email || ""}
+              placeholder="Search users to preview..."
+              disabled={userPreviewState.isLoading}
+            />
+          </div>
+        {/if}
+      </div>
 
       <!-- Actions Grid -->
       <div class="sheet-section">
@@ -824,61 +834,102 @@
     margin-bottom: 12px !important;
   }
 
-  .mobile-quick-access {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  /* Quick Access Chips - Horizontal scrolling row */
+  .mobile-chips-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    align-items: center !important;
   }
 
-  .mobile-user-chip {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: var(--theme-text);
-    font-size: var(--font-size-sm);
-    text-align: left;
+  .mobile-chip {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 12px 0 8px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 26px !important;
+    color: var(--theme-text) !important;
+    font-size: var(--font-size-sm) !important;
     cursor: pointer;
     transition: all 0.15s;
+    flex-shrink: 0;
   }
 
-  .mobile-user-chip:active {
-    background: rgba(255, 255, 255, 0.08);
+  .mobile-chip:active {
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
   }
 
-  .mobile-user-chip.active {
-    background: rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
+  .mobile-chip.active {
+    background: rgba(59, 130, 246, 0.3) !important;
+    border-color: var(--semantic-info) !important;
   }
 
-  .mobile-user-chip .chip-label {
-    flex: 1;
+  .mobile-chip-name {
+    max-width: 100px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .mobile-user-chip .chip-delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: transparent;
-    border: none;
-    border-radius: 50%;
-    color: var(--theme-text-dim);
+  .mobile-chip-remove {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 28px !important;
+    height: 28px !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 50% !important;
+    color: var(--theme-text-dim) !important;
+    font-size: var(--font-size-compact) !important;
     cursor: pointer;
     transition: all 0.15s;
   }
 
-  .mobile-user-chip .chip-delete:active {
-    background: rgba(239, 68, 68, 0.3);
-    color: white;
+  .mobile-chip-remove:active {
+    background: rgba(239, 68, 68, 0.3) !important;
+    color: white !important;
+  }
+
+  .mobile-search-btn {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    padding: 0 16px !important;
+    background: rgba(59, 130, 246, 0.15) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 26px !important;
+    color: #93c5fd !important;
+    font-size: var(--font-size-sm) !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .mobile-search-btn:active {
+    background: rgba(59, 130, 246, 0.25) !important;
+  }
+
+  .mobile-search-btn.active {
+    background: rgba(59, 130, 246, 0.3) !important;
+    border-color: var(--semantic-info) !important;
+  }
+
+  .mobile-search-btn i {
+    font-size: var(--font-size-base) !important;
+  }
+
+  .mobile-search-panel {
+    margin-top: 12px !important;
   }
 
   .actions-grid {

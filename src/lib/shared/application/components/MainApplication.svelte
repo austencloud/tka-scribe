@@ -11,7 +11,9 @@
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
   import { myFeedbackDetailState } from "$lib/features/feedback/state/my-feedback-detail-state.svelte";
   import OnboardingExperience from "../../onboarding/components/OnboardingExperience.svelte";
+  import FirstRunWizard from "../../onboarding/components/first-run/FirstRunWizard.svelte";
   import { onboardingState } from "../../onboarding/state/onboarding-state.svelte";
+  import { firstRunState } from "../../onboarding/state/first-run-state.svelte.ts";
 
   import { TYPES } from "../../inversify/types";
 
@@ -95,6 +97,9 @@
 
   // Onboarding state (for first-time users)
   let showOnboarding = $derived(onboardingState.shouldShow);
+
+  // First-run wizard state (before module onboarding)
+  let showFirstRun = $derived(firstRunState.shouldShow);
 
   // Resolve services when container is available
   $effect(() => {
@@ -305,11 +310,16 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 
-  // Trigger onboarding for first-time authenticated users
+  // Trigger first-run wizard and onboarding for first-time authenticated users
   $effect(() => {
     if (isAuthenticated && isInitialized && !authLoading) {
-      // Check if this is first time and trigger onboarding
-      onboardingState.triggerIfFirstTime();
+      // First-run wizard takes priority (app-wide preferences)
+      if (!firstRunState.isDone()) {
+        firstRunState.triggerIfFirstTime();
+      } else {
+        // Only show module onboarding after first-run is complete
+        onboardingState.triggerIfFirstTime();
+      }
     }
   });
 
@@ -380,16 +390,25 @@
     <!-- Auth Gate: Show landing page for logged-out users -->
     <LandingPage />
   {:else if isAuthenticated}
-    <!-- Onboarding overlay for first-time users -->
-    {#if showOnboarding}
-      <OnboardingExperience
-        onComplete={() => onboardingState.markCompleted()}
-        onSkip={() => onboardingState.markSkipped()}
+    <!-- First-run wizard for brand new users (collects preferences) -->
+    <!-- Renders INSTEAD of MainInterface so background shows through -->
+    {#if showFirstRun}
+      <FirstRunWizard
+        onComplete={() => firstRunState.markCompleted()}
+        onSkip={() => firstRunState.markSkipped()}
       />
-    {/if}
+    {:else}
+      <!-- Onboarding overlay for first-time users (module intro) -->
+      {#if showOnboarding}
+        <OnboardingExperience
+          onComplete={() => onboardingState.markCompleted()}
+          onSkip={() => onboardingState.markSkipped()}
+        />
+      {/if}
 
-    <!-- Main Interface - Full app for authenticated users -->
-    <MainInterface />
+      <!-- Main Interface - Full app for authenticated users -->
+      <MainInterface />
+    {/if}
 
     <!-- Auth sheet (route-based) -->
     <AuthSheet
