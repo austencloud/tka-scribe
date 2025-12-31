@@ -4,6 +4,7 @@
   import XPToast from "../../gamification/components/XPToast.svelte";
   import QuickFeedbackPanel from "$lib/features/feedback/components/quick/QuickFeedbackPanel.svelte";
   import AnnouncementChecker from "$lib/features/admin/components/AnnouncementChecker.svelte";
+  import WhatsNewChecker from "../../settings/components/WhatsNewChecker.svelte";
   import MigrationChecker from "../../migration/components/MigrationChecker.svelte";
   import ErrorModal from "../../error/components/ErrorModal.svelte";
   import InboxDrawer from "../../inbox/components/InboxDrawer.svelte";
@@ -452,6 +453,9 @@
 
     <!-- System Announcements Modal -->
     <AnnouncementChecker />
+
+    <!-- What's New Modal (version updates) -->
+    <WhatsNewChecker />
 
     <!-- Domain Migration Notifications -->
     <MigrationChecker />
