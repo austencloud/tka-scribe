@@ -10,6 +10,7 @@
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IImageComposer } from "$lib/shared/render/services/contracts/IImageComposer";
+  import type { IStartPositionDeriver } from "$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver";
   import { getImageCompositionManager } from "$lib/shared/share/state/image-composition-state.svelte";
   import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
@@ -32,13 +33,27 @@
         TYPES.IImageComposer
       );
 
+      // Derive start position from beat data if needed
+      // Since we no longer store start position explicitly, derive it from first beat
+      let derivedStartPosition = undefined;
+      if (compositionManager.includeStartPosition) {
+        try {
+          const startPosDeriver = resolve<IStartPositionDeriver>(
+            TYPES.IStartPositionDeriver
+          );
+          derivedStartPosition = startPosDeriver.deriveFromFirstBeat(beatData);
+        } catch (e) {
+          console.warn("Failed to derive start position for preview:", e);
+        }
+      }
+
       // Generate canvas from beat data using a minimal SequenceData object
       const sequenceData = {
         id: "preview-temp",
         name: "Preview",
         word: "",
         beats: [beatData],
-        startPosition: undefined,
+        startPosition: derivedStartPosition,
         thumbnails: [],
         isFavorite: false,
         isCircular: false,
