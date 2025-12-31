@@ -1534,7 +1534,11 @@
       "Bash(\".gitignore\" )",
       "Bash(\"scripts/find-monoliths.cjs\" )",
       "Bash(\"scripts/release.js\" )",
-      "Bash(\"docs/MVP-GUIDELINES.md\")"
+      "Bash(\"docs/MVP-GUIDELINES.md\")",
+      "Bash(\"static/branding/Level 1 - LOOP.pdf\" )",
+      "Bash(\"static/models/camping/Textures/\" )",
+      "Bash(\"static/models/camping/tree-log-small.glb\" )",
+      "Bash(\"static/models/camping/tree-log.glb\")"
     ],
     "deny": [],
     "ask": []
