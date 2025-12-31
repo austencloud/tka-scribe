@@ -17,6 +17,9 @@ import {
   type Timestamp,
 } from "firebase/firestore";
 import { getFirestoreInstance } from "$lib/shared/auth/firebase";
+import type { AppSettings } from "$lib/shared/settings/domain/AppSettings";
+import type { NotificationPreferences } from "$lib/features/feedback/domain/models/notification-models";
+import { DEFAULT_NOTIFICATION_PREFERENCES } from "$lib/features/feedback/domain/models/notification-models";
 
 // ============================================================================
 // Types
@@ -77,6 +80,40 @@ export interface PreviewNotification {
   createdAt?: string;
 }
 
+export interface PreviewAuthProvider {
+  providerId: string;
+  uid: string;
+  displayName: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  photoURL: string | null;
+}
+
+export interface PreviewMFAFactor {
+  uid: string;
+  displayName: string | null;
+  factorId: string;
+  enrollmentTime: string | undefined;
+}
+
+export interface PreviewAuthData {
+  uid: string;
+  email: string | null;
+  emailVerified: boolean;
+  displayName: string | null;
+  photoURL: string | null;
+  phoneNumber: string | null;
+  disabled: boolean;
+  providers: PreviewAuthProvider[];
+  metadata: {
+    creationTime: string | undefined;
+    lastSignInTime: string | undefined;
+  };
+  multiFactor: {
+    enrolledFactors: PreviewMFAFactor[];
+  } | null;
+}
+
 export interface UserPreviewData {
   profile: PreviewUserProfile | null;
   gamification: PreviewGamification | null;
@@ -84,13 +121,18 @@ export interface UserPreviewData {
   collections: PreviewCollection[];
   achievements: PreviewAchievement[];
   notifications: PreviewNotification[];
+  settings: AppSettings | null;
+  authData: PreviewAuthData | null;
+  notificationPreferences: NotificationPreferences | null;
 }
 
 export type LazySection =
   | "sequences"
   | "collections"
   | "achievements"
-  | "notifications";
+  | "notifications"
+  | "authData"
+  | "notificationPreferences";
 
 interface UserPreviewState {
   isActive: boolean;
@@ -126,6 +168,9 @@ const initialData: UserPreviewData = {
   collections: [],
   achievements: [],
   notifications: [],
+  settings: null,
+  authData: null,
+  notificationPreferences: null,
 };
 
 export const userPreviewState = $state<UserPreviewState>({
@@ -304,6 +349,79 @@ async function fetchNotifications(userId: string): Promise<PreviewNotification[]
   }
 }
 
+async function fetchSettings(userId: string): Promise<AppSettings | null> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const settingsDoc = await getDoc(doc(firestore, `users/${userId}/settings/preferences`));
+
+    if (!settingsDoc.exists()) {
+      return null;
+    }
+
+    const data = settingsDoc.data();
+    // Remove Firestore metadata fields
+    const { updatedAt: _u, createdAt: _c, clearedAt: _cl, ...settings } = data;
+    return settings as AppSettings;
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch settings:", err);
+    return null;
+  }
+}
+
+async function fetchNotificationPreferences(userId: string): Promise<NotificationPreferences | null> {
+  try {
+    const firestore = await getFirestoreInstance();
+    const prefsDoc = await getDoc(doc(firestore, `users/${userId}/settings/notificationPreferences`));
+
+    if (!prefsDoc.exists()) {
+      // Return defaults if no preferences doc exists
+      return { ...DEFAULT_NOTIFICATION_PREFERENCES };
+    }
+
+    const data = prefsDoc.data();
+    // Merge with defaults to ensure all fields are present
+    return { ...DEFAULT_NOTIFICATION_PREFERENCES, ...data } as NotificationPreferences;
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch notification preferences:", err);
+    return null;
+  }
+}
+
+/**
+ * Fetch user's Firebase Auth data via admin endpoint.
+ * Requires the caller to be an admin.
+ */
+async function fetchAuthData(userId: string): Promise<PreviewAuthData | null> {
+  try {
+    // Get the current user's ID token for auth
+    const { getAuth } = await import("firebase/auth");
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      console.warn("[UserPreview] Cannot fetch auth data - not signed in");
+      return null;
+    }
+
+    const idToken = await currentUser.getIdToken();
+    const response = await fetch(`/api/admin/user-auth/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      console.error("[UserPreview] Failed to fetch auth data:", error);
+      return null;
+    }
+
+    return await response.json();
+  } catch (err) {
+    console.error("[UserPreview] Failed to fetch auth data:", err);
+    return null;
+  }
+}
+
 // ============================================================================
 // Actions
 // ============================================================================
@@ -326,7 +444,7 @@ export async function loadUserPreview(
   try {
     if (eager) {
       // Load all data in parallel
-      const [profile, gamification, sequences, collections, achievements, notifications] =
+      const [profile, gamification, sequences, collections, achievements, notifications, settings, authData, notificationPreferences] =
         await Promise.all([
           fetchProfile(userId),
           fetchGamification(userId),
@@ -334,6 +452,9 @@ export async function loadUserPreview(
           fetchCollections(userId),
           fetchAchievements(userId),
           fetchNotifications(userId),
+          fetchSettings(userId),
+          fetchAuthData(userId),
+          fetchNotificationPreferences(userId),
         ]);
 
       userPreviewState.data = {
@@ -343,18 +464,26 @@ export async function loadUserPreview(
         collections,
         achievements,
         notifications,
+        settings,
+        authData,
+        notificationPreferences,
       };
       userPreviewState.loadedSections = new Set([
         "sequences",
         "collections",
         "achievements",
         "notifications",
+        "authData",
+        "notificationPreferences",
       ]);
     } else {
-      // Lazy mode: only fetch profile + gamification initially
-      const [profile, gamification] = await Promise.all([
+      // Lazy mode: fetch profile, gamification, settings, and notification preferences initially
+      // These are needed immediately for ProfileTab and NotificationsTab
+      const [profile, gamification, settings, notificationPreferences] = await Promise.all([
         fetchProfile(userId),
         fetchGamification(userId),
+        fetchSettings(userId),
+        fetchNotificationPreferences(userId),
       ]);
 
       userPreviewState.data = {
@@ -364,6 +493,9 @@ export async function loadUserPreview(
         collections: [],
         achievements: [],
         notifications: [],
+        settings,
+        authData: null,
+        notificationPreferences,
       };
     }
 
@@ -405,6 +537,12 @@ export async function loadPreviewSection(section: LazySection): Promise<void> {
       case "notifications":
         userPreviewState.data.notifications = await fetchNotifications(userId);
         break;
+      case "authData":
+        userPreviewState.data.authData = await fetchAuthData(userId);
+        break;
+      case "notificationPreferences":
+        userPreviewState.data.notificationPreferences = await fetchNotificationPreferences(userId);
+        break;
     }
 
     userPreviewState.loadedSections.add(section);
@@ -438,6 +576,12 @@ export async function refreshPreviewSection(section: LazySection): Promise<void>
         break;
       case "notifications":
         userPreviewState.data.notifications = await fetchNotifications(userId);
+        break;
+      case "authData":
+        userPreviewState.data.authData = await fetchAuthData(userId);
+        break;
+      case "notificationPreferences":
+        userPreviewState.data.notificationPreferences = await fetchNotificationPreferences(userId);
         break;
     }
   } catch (err) {
@@ -509,4 +653,20 @@ export function getEffectivePhotoURL(
  */
 export function isPreviewReadOnly(): boolean {
   return userPreviewState.isActive;
+}
+
+/**
+ * Get the previewed user's settings (or null if not in preview mode)
+ */
+export function getPreviewSettings(): AppSettings | null {
+  if (!userPreviewState.isActive) return null;
+  return userPreviewState.data.settings;
+}
+
+/**
+ * Get the previewed user's notification preferences (or null if not in preview mode)
+ */
+export function getPreviewNotificationPreferences(): NotificationPreferences | null {
+  if (!userPreviewState.isActive) return null;
+  return userPreviewState.data.notificationPreferences;
 }

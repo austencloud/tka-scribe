@@ -32,6 +32,47 @@
   let windowWidth = $state(typeof window !== "undefined" ? window.innerWidth : 1024);
   const isMobile = $derived(windowWidth < MOBILE_BREAKPOINT);
 
+  // Swipe-to-dismiss state
+  let touchStartY = $state(0);
+  let touchCurrentY = $state(0);
+  let isDragging = $state(false);
+  let sheetElement: HTMLElement | null = null;
+  const SWIPE_THRESHOLD = 100; // px to trigger dismiss
+
+  function handleTouchStart(e: TouchEvent) {
+    touchStartY = e.touches[0].clientY;
+    touchCurrentY = touchStartY;
+    isDragging = true;
+  }
+
+  function handleTouchMove(e: TouchEvent) {
+    if (!isDragging) return;
+    touchCurrentY = e.touches[0].clientY;
+    const deltaY = touchCurrentY - touchStartY;
+
+    // Only allow dragging down (positive deltaY)
+    if (deltaY > 0 && sheetElement) {
+      sheetElement.style.transform = `translateY(${deltaY}px)`;
+    }
+  }
+
+  function handleTouchEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+
+    const deltaY = touchCurrentY - touchStartY;
+
+    if (deltaY > SWIPE_THRESHOLD) {
+      // Dismiss
+      handleClose();
+    }
+
+    // Reset transform
+    if (sheetElement) {
+      sheetElement.style.transform = '';
+    }
+  }
+
   $effect(() => {
     if (typeof window === "undefined") return;
     const handleResize = () => {
@@ -173,8 +214,15 @@
       onkeydown={(e) => { if (e.key === 'Escape') handleClose(); }}
       transition:fly={{ duration: 200, opacity: 0 }}
     ></div>
-    <div class="mobile-sheet" transition:fly={{ y: 300, duration: 250 }}>
-      <!-- Handle bar -->
+    <div
+      class="mobile-sheet"
+      bind:this={sheetElement}
+      ontouchstart={handleTouchStart}
+      ontouchmove={handleTouchMove}
+      ontouchend={handleTouchEnd}
+      transition:fly={{ y: 300, duration: 250 }}
+    >
+      <!-- Handle bar - visual hint for swipe -->
       <div class="sheet-handle"></div>
 
       <!-- Header -->
@@ -431,6 +479,31 @@
       {/if}
     </div>
   {/if}
+{/if}
+
+<!-- Persistent Impersonation Banner - Shows when previewing a user, even when panel is closed -->
+{#if isAdmin && isUserPreview && previewProfile && !isOpen}
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <div
+    class="impersonation-banner"
+    class:mobile={isMobile}
+    onclick={() => adminToolbarState.open()}
+    onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') adminToolbarState.open(); }}
+    role="button"
+    tabindex="0"
+    transition:slide={{ duration: 150 }}
+  >
+    <i class="fas fa-eye" aria-hidden="true"></i>
+    <span class="banner-text">Viewing as: {previewProfile.displayName || previewProfile.email}</span>
+    <button
+      type="button"
+      class="banner-exit"
+      onclick={(e) => { e.stopPropagation(); handleClearPreview(); }}
+      aria-label="Exit preview"
+    >
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+  </div>
 {/if}
 
 <style>
@@ -987,5 +1060,79 @@
     font-size: var(--font-size-sm);
     font-weight: 500;
     animation: fadeIn 0.2s ease;
+  }
+
+  /* ============================================================================
+     PERSISTENT IMPERSONATION BANNER
+     Shows when previewing a user with the admin panel closed
+     ============================================================================ */
+
+  .impersonation-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9990;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 16px;
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.9) 0%, rgba(99, 102, 241, 0.9) 100%);
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: var(--font-size-compact);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .impersonation-banner:hover {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 1) 0%, rgba(99, 102, 241, 1) 100%);
+  }
+
+  .impersonation-banner i:first-child {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+  }
+
+  .banner-text {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .banner-exit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-left: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .banner-exit:hover {
+    background: rgba(239, 68, 68, 0.8);
+  }
+
+  /* Mobile: Position at bottom, above bottom nav */
+  .impersonation-banner.mobile {
+    top: auto;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    border-bottom: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
   }
 </style>

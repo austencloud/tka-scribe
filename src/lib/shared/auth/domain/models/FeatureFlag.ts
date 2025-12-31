@@ -84,12 +84,16 @@ const FEATURE_ROLE_OVERRIDES: Partial<Record<FeatureId, UserRole>> = {
   "module:ml-training": "admin", // Admin-only feature
   "module:admin": "admin",
   "module:3d-viewer": "admin", // Level 6 feature - admin-only for now
+  "module:premium": "admin", // Premium module is admin-only for now
+  "module:word_card": "admin", // Word Card is admin-only for now
+  "module:write": "admin", // Write module is admin-only for now
 
   // Modules - Tester access
   "module:feedback": "tester", // Feedback requires sign-in (tester access)
 
   // Create tabs
   "tab:create:assembler": "admin", // Advanced feature - admin only
+  "tab:create:spell": "admin", // Spell tab is admin-only for now
 
   // Learn tabs (inherit from parent module, which is now admin)
   "tab:learn:concepts": "admin",
