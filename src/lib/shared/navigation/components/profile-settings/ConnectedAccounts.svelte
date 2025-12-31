@@ -17,6 +17,7 @@
     PROVIDERS,
     type ProviderId,
   } from "./connectedAccounts.providers";
+  import ConfirmDialog from "../../../foundation/ui/ConfirmDialog.svelte";
 
   // Services
   let authService = $state<IAuthenticator | null>(null);
@@ -29,6 +30,10 @@
 
   // Email linking drawer state
   let showEmailLinkingDrawer = $state(false);
+
+  // Unlink confirmation dialog state
+  let showUnlinkConfirm = $state(false);
+  let providerToUnlink = $state<ProviderId | null>(null);
 
   onMount(() => {
     authService = resolve<IAuthenticator>(TYPES.IAuthenticator);
@@ -104,21 +109,22 @@
     // Note: Don't reset linkingProvider in finally - redirect flow means page navigates away
   }
 
-  // Unlink a provider
-  async function unlinkProvider(providerId: ProviderId) {
+  // Request to unlink a provider (shows confirmation dialog)
+  function requestUnlinkProvider(providerId: ProviderId) {
     if (!authService || unlinkingProvider || !canUnlink) return;
+    providerToUnlink = providerId;
+    showUnlinkConfirm = true;
+  }
 
-    // Confirm before unlinking
+  // Actually unlink the provider (called after confirmation)
+  async function confirmUnlinkProvider() {
+    if (!authService || !providerToUnlink) return;
+
+    const providerId = providerToUnlink;
     const providerName = PROVIDERS[providerId].name;
-    const confirmed = confirm(
-      `Are you sure you want to disconnect ${providerName}? You won't be able to sign in with ${providerName} anymore.`
-    );
-
-    if (!confirmed) return;
 
     unlinkingProvider = providerId;
     errorMessage = null;
-    hapticService?.trigger("selection");
 
     try {
       await authService.unlinkProvider(providerId);
@@ -136,7 +142,13 @@
       hapticService?.trigger("error");
     } finally {
       unlinkingProvider = null;
+      providerToUnlink = null;
     }
+  }
+
+  // Cancel unlinking
+  function cancelUnlinkProvider() {
+    providerToUnlink = null;
   }
 
   function dismissError() {
@@ -222,13 +234,13 @@
                   tabindex="0"
                   onclick={(e) => {
                     e.stopPropagation();
-                    unlinkProvider(providerId as ProviderId);
+                    requestUnlinkProvider(providerId as ProviderId);
                   }}
                   onkeydown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
                       e.stopPropagation();
-                      unlinkProvider(providerId as ProviderId);
+                      requestUnlinkProvider(providerId as ProviderId);
                     }
                   }}
                   aria-label="Disconnect {config.name}"
