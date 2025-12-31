@@ -18,6 +18,7 @@ import { saveActiveTab } from "../../settings/utils/tab-persistence.svelte";
 import { adminToolbarState } from "../../debug/state/admin-toolbar-state.svelte";
 import { settingsService } from "../../settings/state/SettingsState.svelte";
 import { getAnimationVisibilityManager } from "../../animation-engine/state/animation-visibility-state.svelte";
+import { getSettings, updateSettings, isSettingsPreviewMode } from "../../application/state/app-state.svelte";
 
 export function registerGlobalShortcuts(
   service: IKeyboardShortcutManager,
@@ -135,11 +136,24 @@ export function registerGlobalShortcuts(
     scope: "action",
     priority: "high",
     action: () => {
+      // Block changes in preview mode - don't modify the previewed user's settings
+      if (isSettingsPreviewMode()) {
+        console.log("[Keyboard L] Preview mode active - lights toggle blocked");
+        return;
+      }
+
+      const currentSettings = getSettings();
+      const beforeValue = currentSettings.lightsOff ?? false;
+      const newValue = !beforeValue;
+
+      // Update AppSettings (syncs to Firebase)
+      void updateSettings({ lightsOff: newValue });
+
+      // Also sync to animation visibility manager for immediate visual feedback
       const visibilityManager = getAnimationVisibilityManager();
-      const beforeValue = visibilityManager.isLightsOff();
-      visibilityManager.toggleLightsOff();
-      const afterValue = visibilityManager.isLightsOff();
-      console.log(`[Keyboard L] Toggled lightsOff: ${beforeValue} -> ${afterValue}`);
+      visibilityManager.setLightsOff(newValue);
+
+      console.log(`[Keyboard L] Toggled lightsOff: ${beforeValue} -> ${newValue}`);
     },
   });
 
