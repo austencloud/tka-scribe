@@ -133,6 +133,7 @@ export function createAvatarSyncState(
 		isSyncEnabled = !isSyncEnabled;
 		if (isSyncEnabled) {
 			// Sync immediately when enabled
+			const master = getMaster();
 			prevMasterBeat = master.currentBeatIndex;
 			syncFollowerBeat();
 			syncFollowerPlayback();

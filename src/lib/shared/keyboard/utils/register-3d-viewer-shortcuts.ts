@@ -90,12 +90,12 @@ const VIEWER_3D_SHORTCUTS: Omit<ShortcutRegistrationOptions, "action">[] = [
     context: "3d-viewer",
   },
 
-  // === CAMERA PRESETS ===
+  // === CAMERA PRESETS (number keys - WASD reserved for locomotion) ===
   {
     id: "3d-viewer.camera-front",
     label: "Back View",
     description: "View from back (Wall plane)",
-    key: "b",
+    key: "1",
     scope: "view",
     context: "3d-viewer",
   },
@@ -103,7 +103,7 @@ const VIEWER_3D_SHORTCUTS: Omit<ShortcutRegistrationOptions, "action">[] = [
     id: "3d-viewer.camera-top",
     label: "Top View",
     description: "View from above (Floor plane)",
-    key: "t",
+    key: "2",
     scope: "view",
     context: "3d-viewer",
   },
@@ -111,7 +111,7 @@ const VIEWER_3D_SHORTCUTS: Omit<ShortcutRegistrationOptions, "action">[] = [
     id: "3d-viewer.camera-side",
     label: "Side View",
     description: "View from side (Wheel plane)",
-    key: "s",
+    key: "3",
     scope: "view",
     context: "3d-viewer",
   },
@@ -119,7 +119,7 @@ const VIEWER_3D_SHORTCUTS: Omit<ShortcutRegistrationOptions, "action">[] = [
     id: "3d-viewer.camera-perspective",
     label: "Perspective View",
     description: "Angled 3D view",
-    key: "v",
+    key: "4",
     scope: "view",
     context: "3d-viewer",
   },

@@ -55,8 +55,6 @@
 
 	function handleGroundClick(point: { x: number; z: number }) {
 		if (!enabled) return;
-
-		console.log('[WalkController] Ground clicked, setting target:', point);
 		avatarState.setMoveTarget(point);
 	}
 </script>

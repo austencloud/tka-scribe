@@ -198,12 +198,6 @@
     untrack(() => {
       feetOffset = newFeetOffset;
     });
-
-    // DEBUG: Log the values being used (use untrack for reading derived values)
-    untrack(() => {
-      console.log(`[Avatar3D] Height changed: avatarHeight=${avatarHeight.toFixed(2)} units`);
-      console.log(`  groundY=${groundY.toFixed(2)}, feetOffset=${newFeetOffset.toFixed(2)}, groupY=${(groundY - newFeetOffset).toFixed(2)}`);
-    });
   });
 
   // Update animation each frame
@@ -215,22 +209,18 @@
     // The IK solver uses bone.getWorldPosition() which returns WORLD coordinates
     // (including the parent T.Group offset). So targets must also be in WORLD coords.
     //
-    // IMPORTANT: Only X needs to be offset!
-    // - X: Each avatar has its own grid offset (e.g., -350 or +350)
-    // - Y: Grid Y coords are already world-relative (shoulder height = 0)
-    // - Z: Props are displayed on the grid plane at Z=0, NOT at avatar's Z position
-    //      The avatar stands behind the grid (z=-80) but reaches FORWARD to it
+    // With locomotion: Avatar moves around and props/grid move with it.
+    // All coordinates (X, Y, Z) need to be offset by avatar position.
     //
-    // Example for avatar1 (position.x = -350, position.z = -80):
-    //   Blue prop at local (x=100, z=0) → world (x=-250, z=0)
-    //   Avatar shoulder at world z≈-80, target at z=0 → reaches forward!
+    // Example for avatar at position (x=100, z=50):
+    //   Blue prop at local (x=0, y=0, z=0) → world (x=100, y=0, z=50)
 
     const blueWorldProp = bluePropState ? {
       ...bluePropState,
       worldPosition: {
         x: bluePropState.worldPosition.x + position.x,
-        y: bluePropState.worldPosition.y,  // Y is already correct (grid-relative)
-        z: bluePropState.worldPosition.z,  // Z stays at grid plane (z=0), NOT offset by avatar z
+        y: bluePropState.worldPosition.y + (position.y ?? 0),
+        z: bluePropState.worldPosition.z + position.z,
       }
     } : null;
 
@@ -238,8 +228,8 @@
       ...redPropState,
       worldPosition: {
         x: redPropState.worldPosition.x + position.x,
-        y: redPropState.worldPosition.y,
-        z: redPropState.worldPosition.z,
+        y: redPropState.worldPosition.y + (position.y ?? 0),
+        z: redPropState.worldPosition.z + position.z,
       }
     } : null;
 

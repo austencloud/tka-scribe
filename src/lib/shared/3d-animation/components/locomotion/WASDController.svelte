@@ -23,20 +23,20 @@
 
 	let { onInput, enabled = true }: Props = $props();
 
-	// Track which movement keys are held
+	// Track which movement keys are held (WASD + Arrow keys)
 	let keys = $state({
-		w: false,
-		a: false,
-		s: false,
-		d: false
+		forward: false,  // W or ArrowUp
+		left: false,     // A or ArrowLeft
+		backward: false, // S or ArrowDown
+		right: false     // D or ArrowRight
 	});
 
 	// Convert key states to movement input vector
-	// x: -1 (left/A) to 1 (right/D)
-	// z: -1 (back/S) to 1 (forward/W)
+	// x: -1 (left) to 1 (right)
+	// z: -1 (back) to 1 (forward)
 	const input = $derived({
-		x: (keys.d ? 1 : 0) - (keys.a ? 1 : 0),
-		z: (keys.w ? 1 : 0) - (keys.s ? 1 : 0)
+		x: (keys.right ? 1 : 0) - (keys.left ? 1 : 0),
+		z: (keys.forward ? 1 : 0) - (keys.backward ? 1 : 0)
 	});
 
 	// Emit input changes when keys change
@@ -49,6 +49,26 @@
 		}
 	});
 
+	// Map key codes to our key state
+	function getKeyMapping(key: string): keyof typeof keys | null {
+		switch (key.toLowerCase()) {
+			case 'w':
+			case 'arrowup':
+				return 'forward';
+			case 'a':
+			case 'arrowleft':
+				return 'left';
+			case 's':
+			case 'arrowdown':
+				return 'backward';
+			case 'd':
+			case 'arrowright':
+				return 'right';
+			default:
+				return null;
+		}
+	}
+
 	function handleKeyDown(e: KeyboardEvent) {
 		if (!enabled) return;
 
@@ -57,29 +77,29 @@
 			return;
 		}
 
-		const key = e.key.toLowerCase();
-		if (key in keys) {
-			keys[key as keyof typeof keys] = true;
+		const mapping = getKeyMapping(e.key);
+		if (mapping) {
+			keys[mapping] = true;
 			e.preventDefault(); // Prevent scrolling, etc.
 		}
 	}
 
 	function handleKeyUp(e: KeyboardEvent) {
-		const key = e.key.toLowerCase();
-		if (key in keys) {
-			keys[key as keyof typeof keys] = false;
+		const mapping = getKeyMapping(e.key);
+		if (mapping) {
+			keys[mapping] = false;
 		}
 	}
 
 	// Handle window blur - release all keys to prevent stuck movement
 	function handleBlur() {
-		keys = { w: false, a: false, s: false, d: false };
+		keys = { forward: false, left: false, backward: false, right: false };
 	}
 
 	// Handle visibility change (tab switch) - also release keys
 	function handleVisibilityChange() {
 		if (document.hidden) {
-			keys = { w: false, a: false, s: false, d: false };
+			keys = { forward: false, left: false, backward: false, right: false };
 		}
 	}
 
@@ -88,8 +108,6 @@
 		window.addEventListener('keyup', handleKeyUp);
 		window.addEventListener('blur', handleBlur);
 		document.addEventListener('visibilitychange', handleVisibilityChange);
-
-		console.log('[WASDController] Mounted - WASD input enabled');
 	});
 
 	onDestroy(() => {
@@ -97,8 +115,6 @@
 		window.removeEventListener('keyup', handleKeyUp);
 		window.removeEventListener('blur', handleBlur);
 		document.removeEventListener('visibilitychange', handleVisibilityChange);
-
-		console.log('[WASDController] Destroyed');
 	});
 </script>
 

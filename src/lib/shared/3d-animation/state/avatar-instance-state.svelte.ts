@@ -238,6 +238,7 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 	/**
 	 * Update movement each frame.
 	 * Movement direction is relative to the camera angle.
+	 * Avatar faces where the camera looks (standard 3rd person controls).
 	 *
 	 * @param delta - Time since last frame in seconds
 	 * @param cameraAngle - Camera's Y rotation in radians (for camera-relative movement)
@@ -246,22 +247,25 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 		if (!isMoving) return;
 
 		// Transform input by camera rotation for camera-relative movement
+		// Standard Y-axis rotation matrix to convert local input to world space
+		// Reference: https://sbcode.net/threejs/follow-cam/
 		const sin = Math.sin(cameraAngle);
 		const cos = Math.cos(cameraAngle);
 
-		// World-space direction (rotated by camera angle)
-		const worldX = moveInput.x * cos - moveInput.z * sin;
-		const worldZ = moveInput.x * sin + moveInput.z * cos;
+		// World-space direction (rotated by camera yaw)
+		// At yaw=0: forward (+Z local) → +Z world, right (+X local) → +X world
+		// At yaw=π/2: forward → +X world, right → -Z world
+		const worldX = moveInput.x * cos + moveInput.z * sin;
+		const worldZ = -moveInput.x * sin + moveInput.z * cos;
 
 		// Normalize for consistent speed when moving diagonally
 		const length = Math.sqrt(worldX * worldX + worldZ * worldZ);
 		const nx = length > 0 ? worldX / length : 0;
 		const nz = length > 0 ? worldZ / length : 0;
 
-		// Update target facing angle (avatar turns to face movement direction)
-		if (length > 0) {
-			targetFacingAngle = Math.atan2(nx, nz);
-		}
+		// Avatar faces camera direction (where the camera looks)
+		// This is standard 3rd person behavior - avatar always faces forward relative to camera
+		targetFacingAngle = cameraAngle;
 
 		// Smooth rotation toward target angle
 		let angleDiff = targetFacingAngle - facingAngle;

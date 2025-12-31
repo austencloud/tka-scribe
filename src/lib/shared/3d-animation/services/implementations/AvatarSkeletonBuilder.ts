@@ -352,10 +352,6 @@ export class AvatarSkeletonBuilder implements IAvatarSkeletonBuilder {
     // when the model is already in the scene with a parent transform
     this.feetOffset = this.originalMinY * scale; // Scale the original feet position
 
-    // DEBUG: Log the calculation values
-    console.log(`[AvatarSkeletonBuilder.setScale] scale=${scale.toFixed(4)}, originalHeight=${this.originalHeight.toFixed(2)}, originalMinY=${this.originalMinY.toFixed(2)}`);
-    console.log(`  feetOffset=${this.feetOffset.toFixed(2)} (originalMinY * scale)`);
-
     // Update matrices after scaling
     this.state.root.updateMatrixWorld(true);
 

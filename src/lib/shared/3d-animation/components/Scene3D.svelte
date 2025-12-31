@@ -22,13 +22,14 @@
   import { T } from "@threlte/core";
   import { OrbitControls } from "@threlte/extras";
   import { EffectComposer } from "threlte-postprocessing";
+  import * as THREE from "three";
   import Grid3D from "./Grid3D.svelte";
+  import ManualRaycaster from "./ManualRaycaster.svelte";
   import BloomEffect from "../effects/post-processing/BloomEffect.svelte";
   import Environment3D from "../environments/components/Environment3D.svelte";
   import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
   import { Plane } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
-
   import type { Snippet } from "svelte";
 
   /** Avatar position for per-avatar grids */
@@ -67,6 +68,12 @@
     backgroundType?: BackgroundType;
     /** Avatar positions for per-avatar grids (if empty, single grid at origin) */
     avatarPositions?: AvatarGridPosition[];
+    /** Disable built-in camera (for locomotion mode which provides its own) */
+    disableCamera?: boolean;
+    /** Disable orbit controls (for object dragging) */
+    disableOrbitControls?: boolean;
+    /** Callback when a mesh is clicked (for performer selection/dragging) */
+    onMeshClick?: (meshName: string, point: { x: number; y: number; z: number }) => void;
     /** Children content (props, etc.) */
     children?: Snippet;
   }
@@ -86,8 +93,23 @@
     bloomRadius = 0.4,
     backgroundType = BackgroundType.SOLID_COLOR,
     avatarPositions = [],
+    disableCamera = false,
+    disableOrbitControls = false,
+    onMeshClick,
     children,
   }: Props = $props();
+
+  // Handle mesh click from raycaster
+  function handleMeshClick(mesh: THREE.Object3D, point: THREE.Vector3) {
+    const meshName = mesh.name || '';
+    console.log('🎯 Scene3D: handleMeshClick called with:', meshName);
+    if (onMeshClick) {
+      console.log('🎯 Scene3D: Calling parent onMeshClick');
+      onMeshClick(meshName, { x: point.x, y: point.y, z: point.z });
+    } else {
+      console.log('🎯 Scene3D: No parent onMeshClick callback');
+    }
+  }
 
   // If no avatar positions provided, show single grid at origin
   const gridPositions = $derived(
@@ -156,27 +178,38 @@
   }
 </script>
 
-<div class="scene-container">
+<div
+  class="scene-container"
+  role="application"
+  onpointerdown={() => console.log('📍 SCENE CONTAINER: pointerdown')}
+  onclick={() => console.log('📍 SCENE CONTAINER: click')}
+>
   <Canvas>
-    <!-- Perspective Camera -->
-    <T.PerspectiveCamera
-      makeDefault
-      position={cameraPosition}
-      fov={65}
-      near={1}
-      far={6000}
-    >
-      <!-- Orbit controls attached to camera -->
-      <OrbitControls
-        bind:ref={controlsRef}
-        enableDamping
-        dampingFactor={0.05}
-        minDistance={200}
-        maxDistance={1500}
-        target={cameraTarget}
-        onchange={handleCameraChange}
-      />
-    </T.PerspectiveCamera>
+    <!-- Manual raycasting for click detection (bypasses broken Threlte interactivity) -->
+    <ManualRaycaster onMeshClick={handleMeshClick} />
+
+    <!-- Perspective Camera (disabled when locomotion mode provides its own) -->
+    {#if !disableCamera}
+      <T.PerspectiveCamera
+        makeDefault
+        position={cameraPosition}
+        fov={65}
+        near={1}
+        far={6000}
+      >
+        <!-- Orbit controls attached to camera (disabled during object dragging) -->
+        <OrbitControls
+          bind:ref={controlsRef}
+          enabled={!disableOrbitControls}
+          enableDamping
+          dampingFactor={0.05}
+          minDistance={200}
+          maxDistance={1500}
+          target={cameraTarget}
+          onchange={handleCameraChange}
+        />
+      </T.PerspectiveCamera>
+    {/if}
 
     <!-- Ambient light for base illumination (reduced for night environments) -->
     <T.AmbientLight intensity={ambientIntensity} color={ambientColor} />
@@ -194,6 +227,15 @@
       intensity={fillLightIntensity}
       color={fillLightColor}
     />
+
+    <!-- DEBUG: Test cube to verify raycasting is working -->
+    <T.Mesh
+      position={[0, 100, 300]}
+      name="TEST_CUBE"
+    >
+      <T.BoxGeometry args={[100, 100, 100]} />
+      <T.MeshStandardMaterial color="#ff0000" />
+    </T.Mesh>
 
     <!-- Post-processing effects (wraps scene content when enabled) -->
     {#if bloomEnabled}

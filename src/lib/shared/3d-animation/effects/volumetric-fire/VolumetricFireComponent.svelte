@@ -72,10 +72,8 @@
           sliceSpacing: scaledSliceSpacing,
           segments: 16, // Reduced from 24 for better performance
         });
-
-        console.log("[VolumetricFire] Created successfully with sliceSpacing:", scaledSliceSpacing);
-      } catch (e) {
-        console.error("[VolumetricFire] Failed to create:", e);
+      } catch {
+        // Fire effect creation failed - likely missing textures
       }
     }
   });

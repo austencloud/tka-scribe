@@ -30,7 +30,6 @@
 		event.stopPropagation();
 
 		const point = event.point;
-		console.log('[GroundClickPlane] Click detected at:', { x: point.x, z: point.z });
 		onGroundClick({ x: point.x, z: point.z });
 	}
 </script>

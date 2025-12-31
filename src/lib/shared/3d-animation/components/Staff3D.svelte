@@ -27,8 +27,8 @@
     length?: number;
     /** Staff thickness (radius of the tube) */
     thickness?: number;
-    /** Horizontal offset for multi-avatar mode */
-    positionX?: number;
+    /** Avatar world position - props are offset from this */
+    avatarPosition?: { x: number; y: number; z: number };
   }
 
   let {
@@ -37,7 +37,7 @@
     visible = true,
     length, // Will use user proportions if not provided
     thickness, // Will use user proportions if not provided
-    positionX = 0, // Multi-avatar offset
+    avatarPosition = { x: 0, y: 0, z: 0 }, // Avatar's world position
   }: Props = $props();
 
   // Use user proportions as defaults if not explicitly provided
@@ -57,11 +57,11 @@
   };
   const palette = $derived(colors[color]);
 
-  // Position as tuple (with X offset for multi-avatar mode)
+  // Position as tuple (prop position offset by avatar's world position)
   const position = $derived<[number, number, number]>([
-    propState.worldPosition.x + positionX,
-    propState.worldPosition.y,
-    propState.worldPosition.z,
+    propState.worldPosition.x + avatarPosition.x,
+    propState.worldPosition.y + avatarPosition.y,
+    propState.worldPosition.z + avatarPosition.z,
   ]);
 
   // Convert quaternion to Euler for T.Group rotation

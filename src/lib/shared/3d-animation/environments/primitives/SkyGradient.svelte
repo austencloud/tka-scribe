@@ -49,15 +49,12 @@
   }
 
   onMount(() => {
-    console.log(`[SkyGradient] onMount - topColor: ${topColor}, midColor: ${midColor}, bottomColor: ${bottomColor}`);
-
     // Store original background
     originalBackground = scene.background;
 
     // Create and set gradient texture
     texture = createGradientTexture();
     scene.background = texture;
-    console.log(`[SkyGradient] Set scene.background to gradient texture`);
   });
 
   onDestroy(() => {

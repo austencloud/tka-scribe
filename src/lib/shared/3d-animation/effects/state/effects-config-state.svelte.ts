@@ -116,12 +116,8 @@ function loadPersistedConfig(): Partial<EffectsConfig> | null {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) return null;
-
-    const parsed = JSON.parse(stored);
-    console.log("[EffectsConfig] Loaded persisted config");
-    return parsed;
-  } catch (e) {
-    console.warn("[EffectsConfig] Failed to load persisted config:", e);
+    return JSON.parse(stored);
+  } catch {
     return null;
   }
 }
@@ -134,8 +130,8 @@ function persistConfig(config: EffectsConfig): void {
 
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-  } catch (e) {
-    console.warn("[EffectsConfig] Failed to persist config:", e);
+  } catch {
+    // Storage quota exceeded or unavailable - fail silently
   }
 }
 

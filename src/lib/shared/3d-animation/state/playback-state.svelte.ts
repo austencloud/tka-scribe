@@ -21,9 +21,7 @@ function loadPersistedState(storageKey: string): PersistedPlaybackState | null {
   try {
     const stored = localStorage.getItem(storageKey);
     if (!stored) return null;
-    const parsed = JSON.parse(stored);
-    console.log(`[PlaybackState] Loaded persisted state from ${storageKey}:`, parsed);
-    return parsed;
+    return JSON.parse(stored);
   } catch {
     return null;
   }

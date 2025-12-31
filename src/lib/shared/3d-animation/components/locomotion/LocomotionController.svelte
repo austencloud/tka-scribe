@@ -3,21 +3,17 @@
 	 * LocomotionController
 	 *
 	 * Orchestrates WASD movement with third-person camera.
-	 * Main entry point for avatar locomotion system.
-	 *
-	 * PROOF OF CONCEPT - Orchestrator for locomotion MVP.
+	 * Game-style controls with pointer lock:
+	 * - Click canvas to capture mouse
+	 * - Mouse movement orbits camera freely
+	 * - WASD to move (relative to camera direction)
+	 * - Avatar faces camera direction
+	 * - Escape to release mouse
 	 *
 	 * Usage:
 	 * ```svelte
 	 * <LocomotionController avatarState={activeAvatarState} enabled={locomotionMode} />
 	 * ```
-	 *
-	 * The avatarState must implement:
-	 * - position: { x: number, z: number }
-	 * - facingAngle: number
-	 * - isMoving: boolean
-	 * - setMoveInput(input: { x: number, z: number }): void
-	 * - updateMovement(delta: number, cameraAngle: number): void
 	 */
 	import { useTask } from '@threlte/core';
 	import WASDController from './WASDController.svelte';
@@ -37,24 +33,25 @@
 		avatarState: LocomotionState;
 		/** Whether locomotion is enabled */
 		enabled?: boolean;
-		/** Distance of camera behind avatar */
+		/** Distance of camera from avatar */
 		cameraDistance?: number;
 		/** Height of camera above avatar */
 		cameraHeight?: number;
-		/** Camera follow damping (0-1, higher = snappier) */
-		cameraDamping?: number;
+		/** Callback when pointer lock state changes */
+		onPointerLockChange?: (locked: boolean) => void;
 	}
 
 	let {
 		avatarState,
 		enabled = true,
-		cameraDistance = 300,
-		cameraHeight = 150,
-		cameraDamping = 0.08
+		cameraDistance = 400,
+		cameraHeight = 200,
+		onPointerLockChange
 	}: Props = $props();
 
-	// Current camera angle for camera-relative movement
-	let cameraAngle = $state(0);
+	// Current camera angle - use a mutable ref for immediate updates
+	// (Svelte state batches updates which causes lag in movement direction)
+	let cameraAngleRef = { current: 0 };
 
 	// Handle WASD input
 	function handleInput(input: { x: number; z: number }) {
@@ -62,27 +59,32 @@
 		avatarState.setMoveInput(input);
 	}
 
-	// Receive camera angle updates
+	// Receive camera angle updates - store immediately in ref
 	function handleCameraAngle(angle: number) {
-		cameraAngle = angle;
+		cameraAngleRef.current = angle;
 	}
 
-	// Update movement each frame
+	// Track pointer lock state and notify parent
+	function handlePointerLockChange(locked: boolean) {
+		onPointerLockChange?.(locked);
+	}
+
+	// Update movement each frame using the latest camera angle
 	useTask((delta) => {
 		if (!enabled) return;
-		avatarState.updateMovement(delta, cameraAngle);
+		avatarState.updateMovement(delta, cameraAngleRef.current);
 	});
 </script>
 
 <!-- WASD keyboard input handler -->
 <WASDController onInput={handleInput} {enabled} />
 
-<!-- Third-person follow camera -->
+<!-- Third-person follow camera with pointer lock -->
 <ThirdPersonCamera
 	target={avatarState.position}
-	targetAngle={avatarState.facingAngle}
 	distance={cameraDistance}
 	height={cameraHeight}
-	damping={cameraDamping}
 	onAngleChange={handleCameraAngle}
+	onPointerLockChange={handlePointerLockChange}
 />
+

@@ -13,6 +13,7 @@
   import Staff3D from "./components/Staff3D.svelte";
   import Avatar3D from "./components/Avatar3D.svelte";
   import AvatarLabel3D from "./components/AvatarLabel3D.svelte";
+  import DraggablePerformer from "./components/DraggablePerformer.svelte";
   import type { BodyType } from "./services/contracts/IAvatarCustomizer";
   import SceneOverlayControls from "./components/panels/SceneOverlayControls.svelte";
   import Animation3DSidePanel from "./components/panels/Animation3DSidePanel.svelte";
@@ -22,7 +23,8 @@
   import type { GridMode } from "./domain/constants/grid-layout";
   import { createAvatarInstanceState, type AvatarInstanceState } from "./state/avatar-instance-state.svelte";
   import { createAvatarSyncState, type AvatarSyncState } from "./state/avatar-sync-state.svelte";
-  import AvatarModeSwitcher from "./components/panels/AvatarModeSwitcher.svelte";
+  import { getDefaultPositions, MAX_PERFORMERS } from "./utils/performer-positions";
+  import PerformerManager from "./components/panels/PerformerManager.svelte";
   import AvatarSyncControls from "./components/panels/AvatarSyncControls.svelte";
   import DuetBrowserPanel from "./components/panels/DuetBrowserPanel.svelte";
   import DuetCreatorPanel from "./components/panels/DuetCreatorPanel.svelte";
@@ -73,22 +75,26 @@
   let sequenceConverter: ISequenceConverter | null = $state(null);
   let persistenceService: IAnimation3DPersister | null = $state(null);
 
-  // Dual avatar states
-  let avatar1State: AvatarInstanceState | null = $state(null);
-  let avatar2State: AvatarInstanceState | null = $state(null);
+  // Dynamic performer states (1-4 performers)
+  let performerStates = $state<AvatarInstanceState[]>([]);
+  let activePerformerIndex = $state(0);
   let syncState: AvatarSyncState | null = $state(null);
-  let activeAvatarId = $state<'avatar1' | 'avatar2'>('avatar1');
   let servicesReady = $state(false);
+
+  // Dependencies stored for creating new performers
+  let serviceDeps: { propInterpolator: IPropStateInterpolator; sequenceConverter: ISequenceConverter } | null = null;
 
   // Duet browser state
   type BrowserViewMode = 'sequences' | 'duets';
   let browserViewMode = $state<BrowserViewMode>('sequences');
   let duetCreatorOpen = $state(false);
 
-  // Derived: active avatar state (routes controls to selected avatar)
-  const activeState = $derived(
-    activeAvatarId === 'avatar1' ? avatar1State : avatar2State
-  );
+  // Derived: active performer state (routes controls to selected performer)
+  const activeState = $derived(performerStates[activePerformerIndex] ?? null);
+
+  // Helper getters for backwards compatibility with sync (first two performers)
+  const avatar1State = $derived(performerStates[0] ?? null);
+  const avatar2State = $derived(performerStates[1] ?? null);
 
   // Effects configuration state
   const effectsConfig = getEffectsConfigState();
@@ -105,6 +111,8 @@
   let showFigure = $state(true);
   let avatarId = $state<AvatarId>(initialAvatarId);
   let locomotionMode = $state(false); // WASD movement + third-person camera
+  let isPointerLocked = $state(false); // Pointer lock state for locomotion hint
+  let isDraggingPerformer = $state(false); // True when any performer is being dragged
 
   // Background type comes from settingsService (unified with 2D theme)
 
@@ -123,13 +131,13 @@
     return activeState.loadedSequence?.word || activeState.loadedSequence?.name || null;
   });
 
-  // Avatar positions for per-avatar grid planes
+  // Avatar positions for per-avatar grid planes (full 3D position)
   const avatarPositions = $derived.by(() => {
-    if (!avatar1State || !avatar2State) return [];
-    return [
-      { x: avatar1State.position.x, y: 0, z: 0 },
-      { x: avatar2State.position.x, y: 0, z: 0 }
-    ];
+    return performerStates.map(p => ({
+      x: p.position.x,
+      y: p.position.y,
+      z: p.position.z
+    }));
   });
 
   // Camera handlers
@@ -161,11 +169,101 @@
     browserOpen = false;
   }
 
+  // Performer management
+  function createPerformer(index: number): AvatarInstanceState | null {
+    if (!serviceDeps) return null;
+
+    const positions = getDefaultPositions(performerStates.length + 1);
+    const pos = positions[index] ?? { x: 0, z: 0 };
+
+    return createAvatarInstanceState({
+      id: `performer-${index}`,
+      positionX: pos.x,
+      positionZ: pos.z,
+      avatarModelId: initialAvatarId
+    }, serviceDeps);
+  }
+
+  function addPerformer() {
+    if (performerStates.length >= MAX_PERFORMERS || !serviceDeps) return;
+
+    const newPerformer = createPerformer(performerStates.length);
+    if (!newPerformer) return;
+
+    performerStates = [...performerStates, newPerformer];
+    updatePerformerPositions();
+
+    // Recreate sync state if we have exactly 2 performers
+    if (performerStates.length === 2) {
+      syncState?.destroy();
+      syncState = createAvatarSyncState(performerStates[0], performerStates[1]);
+    }
+  }
+
+  function removePerformer() {
+    if (performerStates.length <= 1) return;
+
+    const removed = performerStates[performerStates.length - 1];
+    removed.destroy();
+
+    performerStates = performerStates.slice(0, -1);
+    updatePerformerPositions();
+
+    // Adjust active index if needed
+    if (activePerformerIndex >= performerStates.length) {
+      activePerformerIndex = performerStates.length - 1;
+    }
+
+    // Destroy sync if down to 1 performer
+    if (performerStates.length < 2) {
+      syncState?.destroy();
+      syncState = null;
+    }
+  }
+
+  function updatePerformerPositions() {
+    const positions = getDefaultPositions(performerStates.length);
+    performerStates.forEach((performer, i) => {
+      const pos = positions[i];
+      if (pos) {
+        // Update position - need to reassign the position object
+        performer.position.x = pos.x;
+        performer.position.z = pos.z;
+      }
+    });
+  }
+
+  function handlePerformerDrag(index: number, newPos: { x: number; z: number }) {
+    const performer = performerStates[index];
+    if (performer) {
+      performer.position.x = newPos.x;
+      performer.position.z = newPos.z;
+    }
+  }
+
+  // Handle mesh clicks from raycaster (for performer selection)
+  function handleMeshClick(meshName: string, point: { x: number; y: number; z: number }) {
+    // Check if this is a performer hitbox
+    const hitboxMatch = meshName.match(/^PERFORMER_HITBOX_(\d+)$/);
+    if (hitboxMatch) {
+      const performerIndex = parseInt(hitboxMatch[1], 10);
+      console.log(`🎯 Performer ${performerIndex} selected via click`);
+      activePerformerIndex = performerIndex;
+      isDraggingPerformer = true;
+      // TODO: Implement actual dragging by tracking pointermove
+    }
+  }
+
   // Duet handlers
   function handleDuetSelect(duet: DuetSequenceWithData) {
-    // Load sequences into both avatars
-    avatar1State?.loadSequence(duet.avatar1Sequence);
-    avatar2State?.loadSequence(duet.avatar2Sequence);
+    // Ensure we have at least 2 performers
+    while (performerStates.length < 2) {
+      addPerformer();
+    }
+
+    // Load sequences into first two performers
+    performerStates[0]?.loadSequence(duet.avatar1Sequence);
+    performerStates[1]?.loadSequence(duet.avatar2Sequence);
 
     // Apply beat offset via sync state
     if (syncState) {
@@ -180,7 +278,6 @@
   }
 
   function handleDuetCreated(duetId: string) {
-    console.log('[Viewer3DModule] Duet created:', duetId);
     duetCreatorOpen = false;
     browserViewMode = 'duets';
     browserOpen = true;
@@ -202,23 +299,18 @@
       ANIMATION_3D_TYPES.IAnimation3DPersister
     );
 
-    // Create dual avatar states
-    const deps = { propInterpolator, sequenceConverter };
+    // Store deps for creating additional performers
+    serviceDeps = { propInterpolator, sequenceConverter };
 
-    avatar1State = createAvatarInstanceState({
-      id: 'avatar1',
-      positionX: -350,  // Increased separation to prevent grid overlap
+    // Create initial performer (start with 1, user can add more)
+    const initialPerformer = createAvatarInstanceState({
+      id: 'performer-0',
+      positionX: 0,  // Centered when solo
+      positionZ: 0,
       avatarModelId: initialAvatarId
-    }, deps);
+    }, serviceDeps);
 
-    avatar2State = createAvatarInstanceState({
-      id: 'avatar2',
-      positionX: 350,   // Increased separation to prevent grid overlap
-      avatarModelId: initialAvatarId
-    }, deps);
-
-    // Create sync state for coordinating the two avatars
-    syncState = createAvatarSyncState(avatar1State, avatar2State);
+    performerStates = [initialPerformer];
 
     // Load persisted state
     const saved = persistenceService.loadState();
@@ -232,34 +324,41 @@
     if (saved.speed !== undefined) speed = saved.speed;
     if (saved.cameraPosition) customCameraPosition = saved.cameraPosition;
     if (saved.cameraTarget) customCameraTarget = saved.cameraTarget;
-    if (saved.loop !== undefined && avatar1State) avatar1State.loop = saved.loop;
+    if (saved.loop !== undefined && performerStates[0]) performerStates[0].loop = saved.loop;
     if (saved.avatarId) avatarId = saved.avatarId;
     // Note: environmentType removed - now uses settingsService.settings.backgroundType
 
-    // Load sequence into avatar1 (primary) if persisted
-    if (saved.loadedSequence && avatar1State) {
-      avatar1State.loadSequence(saved.loadedSequence);
+    // Load sequence into first performer if persisted
+    if (saved.loadedSequence && performerStates[0]) {
+      performerStates[0].loadSequence(saved.loadedSequence);
       if (saved.currentBeatIndex !== undefined) {
-        avatar1State.goToBeat(saved.currentBeatIndex);
+        performerStates[0].goToBeat(saved.currentBeatIndex);
       }
     }
 
     // Auto-start playback if it was playing before
-    avatar1State?.autoStartIfNeeded();
+    performerStates[0]?.autoStartIfNeeded();
 
     servicesReady = true;
     setTimeout(() => (initialized = true), 50);
   });
 
-  // Sync speed to both avatar states
+  // Sync speed to all performer states
   $effect(() => {
-    if (avatar1State) avatar1State.speed = speed;
-    if (avatar2State) avatar2State.speed = speed;
+    performerStates.forEach(p => p.speed = speed);
   });
 
-  // Persist state changes (using avatar1 as primary for backwards compat)
+  // Reset pointer lock state when exiting locomotion mode
   $effect(() => {
-    if (!initialized || !persistenceService || !avatar1State) return;
+    if (!locomotionMode) {
+      isPointerLocked = false;
+    }
+  });
+
+  // Persist state changes (using first performer for backwards compat)
+  $effect(() => {
+    const firstPerformer = performerStates[0];
+    if (!initialized || !persistenceService || !firstPerformer) return;
     persistenceService.saveState({
       visiblePlanes: Array.from(visiblePlanes),
       showGrid,
@@ -270,17 +369,16 @@
       speed,
       cameraPosition: customCameraPosition,
       cameraTarget: customCameraTarget,
-      loop: avatar1State.loop,
-      loadedSequence: avatar1State.loadedSequence ?? null,
-      currentBeatIndex: avatar1State.currentBeatIndex,
+      loop: firstPerformer.loop,
+      loadedSequence: firstPerformer.loadedSequence ?? null,
+      currentBeatIndex: firstPerformer.currentBeatIndex,
       avatarId,
       // Note: environmentType removed - now uses settingsService for background
     });
   });
 
   onDestroy(() => {
-    avatar1State?.destroy();
-    avatar2State?.destroy();
+    performerStates.forEach(p => p.destroy());
     syncState?.destroy();
   });
 </script>
@@ -290,7 +388,7 @@
     <div class="loading-spinner"></div>
     <p>Loading 3D Viewer...</p>
   </div>
-{:else if avatar1State && avatar2State}
+{:else if performerStates.length > 0}
   <div class="viewer-3d-module">
     <!-- Scene Area -->
     <main class="scene-area">
@@ -308,60 +406,51 @@
         bloomThreshold={effectsConfig.bloom.threshold}
         backgroundType={settingsService.settings.backgroundType}
         {avatarPositions}
+        disableCamera={locomotionMode}
+        disableOrbitControls={isDraggingPerformer}
+        onMeshClick={handleMeshClick}
       >
-        <!-- Avatar 1 Props -->
-        {#if avatar1State.showBlue && avatar1State.bluePropState}
-          <Staff3D propState={avatar1State.bluePropState} color="blue" positionX={avatar1State.position.x} />
-        {/if}
-        {#if avatar1State.showRed && avatar1State.redPropState}
-          <Staff3D propState={avatar1State.redPropState} color="red" positionX={avatar1State.position.x} />
-        {/if}
+        <!-- Dynamic Performer Props & Figures (with drag positioning) -->
+        {#each performerStates as performer, i (performer.id)}
+          <DraggablePerformer
+            position={performer.position}
+            isActive={activePerformerIndex === i}
+            index={i}
+            onSelect={() => (activePerformerIndex = i)}
+            onPositionChange={(pos) => handlePerformerDrag(i, pos)}
+            onDragStart={() => (isDraggingPerformer = true)}
+            onDragEnd={() => (isDraggingPerformer = false)}
+          >
+            {#snippet children()}
+              <!-- Props -->
+              {#if performer.showBlue && performer.bluePropState}
+                <Staff3D propState={performer.bluePropState} color="blue" avatarPosition={performer.position} />
+              {/if}
+              {#if performer.showRed && performer.redPropState}
+                <Staff3D propState={performer.redPropState} color="red" avatarPosition={performer.position} />
+              {/if}
 
-        <!-- Avatar 2 Props -->
-        {#if avatar2State.showBlue && avatar2State.bluePropState}
-          <Staff3D propState={avatar2State.bluePropState} color="blue" positionX={avatar2State.position.x} />
-        {/if}
-        {#if avatar2State.showRed && avatar2State.redPropState}
-          <Staff3D propState={avatar2State.redPropState} color="red" positionX={avatar2State.position.x} />
-        {/if}
-
-        <!-- Avatar 1 Figure + Label -->
-        {#if showFigure}
-          <Avatar3D
-            id="avatar1"
-            bluePropState={avatar1State.bluePropState}
-            redPropState={avatar1State.redPropState}
-            position={avatar1State.position}
-            facingAngle={avatar1State.facingAngle}
-            isActive={activeAvatarId === 'avatar1'}
-            avatarId={avatar1State.avatarModelId}
-          />
-          <AvatarLabel3D
-            label="Avatar 1"
-            x={avatar1State.position.x}
-            z={avatar1State.position.z}
-            isActive={activeAvatarId === 'avatar1'}
-          />
-        {/if}
-
-        <!-- Avatar 2 Figure + Label -->
-        {#if showFigure}
-          <Avatar3D
-            id="avatar2"
-            bluePropState={avatar2State.bluePropState}
-            redPropState={avatar2State.redPropState}
-            position={avatar2State.position}
-            facingAngle={avatar2State.facingAngle}
-            isActive={activeAvatarId === 'avatar2'}
-            avatarId={avatar2State.avatarModelId}
-          />
-          <AvatarLabel3D
-            label="Avatar 2"
-            x={avatar2State.position.x}
-            z={avatar2State.position.z}
-            isActive={activeAvatarId === 'avatar2'}
-          />
-        {/if}
+              <!-- Figure + Label -->
+              {#if showFigure}
+                <Avatar3D
+                  id={performer.id}
+                  bluePropState={performer.bluePropState}
+                  redPropState={performer.redPropState}
+                  position={performer.position}
+                  facingAngle={performer.facingAngle}
+                  isActive={activePerformerIndex === i}
+                  avatarId={performer.avatarModelId}
+                />
+                <AvatarLabel3D
+                  label={`Performer ${i + 1}`}
+                  x={performer.position.x}
+                  z={performer.position.z}
+                  isActive={activePerformerIndex === i}
+                />
+              {/if}
+            {/snippet}
+          </DraggablePerformer>
+        {/each}
 
         <!-- Visual Effects Layer (uses active avatar for now) -->
         <EffectsLayer
@@ -375,6 +464,7 @@
           <LocomotionController
             avatarState={activeState}
             enabled={locomotionMode}
+            onPointerLockChange={(locked) => (isPointerLocked = locked)}
           />
         {/if}
       </Scene3D>
@@ -422,22 +512,39 @@
           </button>
         {/snippet}
       </SceneOverlayControls>
+
+      <!-- Locomotion Hint (shown when in locomotion mode but pointer not locked) -->
+      {#if locomotionMode && !isPointerLocked}
+        <div class="locomotion-hint">
+          <div class="hint-content">
+            <i class="fas fa-mouse-pointer" aria-hidden="true"></i>
+            <span>Click to enter game mode</span>
+          </div>
+          <div class="hint-controls">
+            <kbd>WASD</kbd> Move
+            <kbd>Mouse</kbd> Look
+            <kbd>Esc</kbd> Exit
+          </div>
+        </div>
+      {/if}
     </main>
 
     <!-- Side Panel -->
     <aside class="side-panel-wrapper" class:collapsed={!panelOpen}>
-      <!-- Avatar Mode Switcher -->
+      <!-- Performer Manager -->
       <div class="mode-switcher-container">
-        <AvatarModeSwitcher
-          {activeAvatarId}
-          onSwitch={(id) => (activeAvatarId = id)}
-          avatar1HasSequence={avatar1State?.hasSequence ?? false}
-          avatar2HasSequence={avatar2State?.hasSequence ?? false}
+        <PerformerManager
+          {performerStates}
+          {activePerformerIndex}
+          maxPerformers={MAX_PERFORMERS}
+          onSelect={(i) => (activePerformerIndex = i)}
+          onAdd={addPerformer}
+          onRemove={removePerformer}
         />
       </div>
 
-      <!-- Avatar Sync Controls -->
-      {#if syncState && avatar1State?.hasSequence && avatar2State?.hasSequence}
+      <!-- Avatar Sync Controls (only shown with 2+ performers) -->
+      {#if syncState && performerStates.length >= 2 && performerStates[0]?.hasSequence && performerStates[1]?.hasSequence}
         <div class="sync-controls-container">
           <AvatarSyncControls {syncState} />
         </div>
@@ -648,6 +755,62 @@
 
   .locomotion-btn.active:hover {
     background: #2563eb;
+  }
+
+  /* Locomotion Hint Overlay */
+  .locomotion-hint {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+    backdrop-filter: blur(8px);
+    pointer-events: none;
+    z-index: 50;
+    animation: locomotion-pulse 2s ease-in-out infinite;
+  }
+
+  .hint-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+  }
+
+  .hint-content i {
+    font-size: 1.25rem;
+    color: #64b5f6;
+  }
+
+  .hint-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .hint-controls kbd {
+    padding: 0.2rem 0.5rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 11px;
+  }
+
+  @keyframes locomotion-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
   }
 
   @media (max-width: 1024px) {

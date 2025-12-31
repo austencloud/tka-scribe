@@ -22,11 +22,6 @@
 
   let { backgroundType }: Props = $props();
 
-  // Debug: log what background type we're receiving
-  $effect(() => {
-    console.log("[Environment3D] backgroundType:", backgroundType, "config:", getSceneConfig(backgroundType));
-  });
-
   // Map BackgroundType to scene type and variant
   type SceneConfig =
     | { scene: "forest"; variant: "autumn" | "firefly" }

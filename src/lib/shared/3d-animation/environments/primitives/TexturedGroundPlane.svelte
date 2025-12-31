@@ -59,12 +59,6 @@
       // Apply directly to material
       mat.map = tex;
       mat.needsUpdate = true;
-
-      console.log("[TexturedGroundPlane] Texture applied directly to material:", {
-        width: tex.image?.width,
-        height: tex.image?.height,
-        matHasMap: !!mat.map,
-      });
     }
   });
 </script>
