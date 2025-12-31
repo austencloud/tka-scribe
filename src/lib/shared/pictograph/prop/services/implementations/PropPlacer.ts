@@ -163,14 +163,20 @@ export class PropPlacer implements IPropPlacer {
     // the props visually complement each other and can overlap at the same position.
     //
     // Conditions for skipping beta offset:
-    // 1. Both props are Buugeng family
+    // 1. Both props are Buugeng family (check ACTUAL rendered prop type from settings)
     // 2. Orientations are opposite (same type but different: IN/OUT or CLOCK/COUNTER)
     // 3. Exactly one prop is flipped (XOR of flip settings)
-    if (
-      isBuugengFamilyProp(motionData.propType) &&
-      sameTypeButDifferentOrientation
-    ) {
-      const settings = getSettings();
+    //
+    // IMPORTANT: We check settings prop type override, not stored motionData.propType,
+    // because the user may have a sequence with "staff" stored but rendering as "buugeng".
+    const settings = getSettings();
+    const actualBluePropType = settings.bluePropType ?? blueMotion.propType;
+    const actualRedPropType = settings.redPropType ?? redMotion.propType;
+    const bothAreBuugengFamily =
+      isBuugengFamilyProp(actualBluePropType) &&
+      isBuugengFamilyProp(actualRedPropType);
+
+    if (bothAreBuugengFamily && sameTypeButDifferentOrientation) {
       const blueFlipped = settings.blueBuugengFlipped ?? false;
       const redFlipped = settings.redBuugengFlipped ?? false;
       const exactlyOneFlipped = blueFlipped !== redFlipped; // XOR condition
@@ -183,10 +189,13 @@ export class PropPlacer implements IPropPlacer {
     // Skip beta offset for UNILATERAL props when both props have same orientation TYPE
     // but DIFFERENT specific orientations (OUT/IN or CLOCK/COUNTER)
     // Bilateral props always get the offset (unless hybrid or Buugeng family)
-    if (
-      sameTypeButDifferentOrientation &&
-      isUnilateralProp(motionData.propType)
-    ) {
+    // Use actual rendered prop type from settings, not stored motionData.propType
+    const actualPropType =
+      motionData.color === MotionColor.BLUE
+        ? actualBluePropType
+        : actualRedPropType;
+
+    if (sameTypeButDifferentOrientation && isUnilateralProp(actualPropType)) {
       return { x: 0, y: 0 };
     }
 
@@ -205,10 +214,10 @@ export class PropPlacer implements IPropPlacer {
       return { x: 0, y: 0 };
     }
 
-    // Calculate the offset based on the direction and prop type
+    // Calculate the offset based on the direction and actual rendered prop type
     const offset = this.getOffsetForDirection(
       direction,
-      motionData.propType,
+      actualPropType,
       gridMode
     );
     return { x: offset.x, y: offset.y };
