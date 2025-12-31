@@ -62,18 +62,8 @@
       .sort((a, b) => a.order - b.order);
   });
 
-  // Get hero feature (first "added" entry, if impressive enough)
-  const heroFeature = $derived.by(() => {
-    if (!version?.changelogEntries) return null;
-    const addedEntries = version.changelogEntries.filter(
-      (e) => e.category === "added"
-    );
-    // Only show hero if there's a substantial feature
-    if (addedEntries.length > 0 && addedEntries[0]!.text.length > 20) {
-      return addedEntries[0]!.text;
-    }
-    return null;
-  });
+  // Get explicitly curated highlights (if any were set during release)
+  const highlights = $derived(version?.highlights ?? []);
 
   // Total count for summary
   const totalChanges = $derived(version?.changelogEntries?.length ?? 0);
@@ -140,16 +130,20 @@
 
       <!-- Body -->
       <div class="modal-body">
-        <!-- Hero Feature (optional) -->
-        {#if heroFeature}
-          <div class="hero-feature">
-            <div class="hero-icon">
-              <i class="fas fa-star" aria-hidden="true"></i>
-            </div>
-            <div class="hero-content">
-              <span class="hero-label">Highlight</span>
-              <p class="hero-text">{heroFeature}</p>
-            </div>
+        <!-- Curated Highlights (optional - only shown if explicitly set during release) -->
+        {#if highlights.length > 0}
+          <div class="highlights-section">
+            {#each highlights as highlight, i}
+              <div class="hero-feature">
+                <div class="hero-icon">
+                  <i class="fas fa-star" aria-hidden="true"></i>
+                </div>
+                <div class="hero-content">
+                  <span class="hero-label">{highlights.length > 1 ? `Highlight ${i + 1}` : "Highlight"}</span>
+                  <p class="hero-text">{highlight}</p>
+                </div>
+              </div>
+            {/each}
           </div>
         {/if}
 
@@ -351,6 +345,13 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+  }
+
+  /* Highlights Section */
+  .highlights-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   /* Hero Feature */

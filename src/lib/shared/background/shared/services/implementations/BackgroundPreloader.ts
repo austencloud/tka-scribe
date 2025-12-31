@@ -79,9 +79,15 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
         "aurora-flow",
         "snow-fall",
         "star-twinkle",
-        "deep-ocean-flow"
+        "deep-ocean-flow",
+        "ember-glow",
+        "sakura-drift",
+        "firefly-forest",
+        "autumn-drift"
       );
-      body.classList.add(newAnimation);
+      if (newAnimation) {
+        body.classList.add(newAnimation);
+      }
 
       // Step 1: Set the ::before overlay to the NEW gradient (separate CSS variable)
       console.log("📝 [Service] Step 1: Setting --gradient-next");

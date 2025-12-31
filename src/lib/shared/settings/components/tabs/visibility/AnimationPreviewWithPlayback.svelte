@@ -217,11 +217,11 @@
       });
 
       // Create and apply 1,1 turn pattern to get visible trails
-      // Dynamic import to avoid loading Create module at startup
-      const { TurnPatternManager } = await import(
-        "$lib/features/create/shared/services/implementations/TurnPatternManager"
-      );
-      const turnPatternManager = new TurnPatternManager();
+      // Use DI to resolve the service (container should be ready by the time user opens settings)
+      const { resolve } = await import("$lib/shared/inversify/di");
+      const { TYPES } = await import("$lib/shared/inversify/types");
+      type ITurnPatternManager = import("$lib/features/create/shared/services/contracts/ITurnPatternManager").ITurnPatternManager;
+      const turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
       const turnPattern = createOneTurnPattern(baseSequence.beats.length);
       const result = turnPatternManager.applyPattern(turnPattern, baseSequence);
 

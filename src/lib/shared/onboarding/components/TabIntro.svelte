@@ -1,8 +1,8 @@
 <!--
-  TabIntro.svelte - Full-screen tab introduction
+  TabIntro.svelte - Full-screen tab introduction with multi-page support
 
   Shows an immersive intro overlay on first visit to a tab.
-  Takes over the entire content area for maximum impact.
+  Supports single or multi-page intros with bullet points and tips.
 
   Sidebar-Aware Centering (2026 pattern):
   - Imports desktop sidebar state directly
@@ -10,14 +10,7 @@
   - Content centers properly within the content area, not the full viewport
 
   Usage:
-  <TabIntro
-    moduleId="create"
-    tabId="generator"
-    icon="fa-wand-magic-sparkles"
-    color="var(--theme-accent-strong)"
-    title="Generator"
-    description="Your custom description here"
-  />
+  <TabIntro moduleId="create" tabId="generator" />
 -->
 <script lang="ts">
   import { onMount } from "svelte";
@@ -25,14 +18,11 @@
   import { resolve, TYPES } from "$lib/shared/inversify/di";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { desktopSidebarState } from "$lib/shared/layout/desktop-sidebar-state.svelte";
+  import { getTabIntroContent, type TabIntroPage } from "../config/tab-intro-content";
 
   interface Props {
     moduleId: string;
     tabId: string;
-    icon: string;
-    color: string;
-    title: string;
-    description: string;
     /** Optional: show even if already seen (for help button) */
     forceShow?: boolean;
     onDismiss?: () => void;
@@ -41,13 +31,16 @@
   const {
     moduleId,
     tabId,
-    icon,
-    color,
-    title,
-    description,
     forceShow = false,
     onDismiss,
   }: Props = $props();
+
+  // Get content from config
+  const introContent = getTabIntroContent(moduleId, tabId);
+  const pages = introContent?.pages ?? [];
+  const icon = introContent?.icon ?? "fa-circle-info";
+  const color = introContent?.color ?? "#6366f1";
+  const title = introContent?.title ?? "Welcome";
 
   // Sidebar-aware positioning
   // When desktop sidebar is visible, offset overlay to center content in the content area
@@ -62,6 +55,13 @@
   let hasSeenIntro = $state(false);
   let isVisible = $state(false);
   let hapticService: IHapticFeedback | null = $state(null);
+  let currentPageIndex = $state(0);
+
+  // Derived
+  const currentPage = $derived(pages[currentPageIndex]);
+  const isMultiPage = pages.length > 1;
+  const isLastPage = $derived(currentPageIndex === pages.length - 1);
+  const hasContent = pages.length > 0;
 
   // Check if user has seen this intro before
   onMount(() => {
@@ -101,22 +101,54 @@
     onDismiss?.();
   }
 
-  function handleKeydown(event: KeyboardEvent) {
-    if (event.key === "Escape" || event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
+  function nextPage() {
+    if (currentPageIndex < pages.length - 1) {
+      hapticService?.trigger("selection");
+      currentPageIndex++;
+    } else {
       dismiss();
     }
   }
+
+  function goToPage(index: number) {
+    if (index >= 0 && index < pages.length) {
+      hapticService?.trigger("selection");
+      currentPageIndex = index;
+    }
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      dismiss();
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      nextPage();
+    } else if (event.key === "ArrowRight" && !isLastPage) {
+      event.preventDefault();
+      nextPage();
+    } else if (event.key === "ArrowLeft" && currentPageIndex > 0) {
+      event.preventDefault();
+      currentPageIndex--;
+    }
+  }
+
+  // Helper to check if content is structured (has points)
+  function isStructuredContent(
+    content: string | { text?: string; points: string[] }
+  ): content is { text?: string; points: string[] } {
+    return typeof content === "object" && "points" in content;
+  }
 </script>
 
-{#if isVisible}
+{#if isVisible && hasContent}
   <!-- Full-screen takeover - offset by sidebar width for proper centering -->
   <div
     class="tab-intro-overlay"
     role="dialog"
     aria-modal="true"
     aria-labelledby="tab-intro-title"
-    style="--sidebar-offset: {sidebarOffset}px;"
+    style="--sidebar-offset: {sidebarOffset}px; --accent-color: {color};"
     transition:fade={{ duration: 250 }}
   >
     <!-- Dismiss on background click -->
@@ -130,19 +162,64 @@
     <!-- Content container -->
     <div class="intro-content" transition:fly={{ y: 30, duration: 350, delay: 50 }}>
       <!-- Icon - large and prominent -->
-      <div class="intro-icon" style="--accent-color: {color}">
+      <div class="intro-icon">
         <i class="fas {icon}" aria-hidden="true"></i>
       </div>
 
-      <!-- Title -->
-      <h1 id="tab-intro-title" class="intro-title">{title}</h1>
+      <!-- Title (uses page heading if available, else main title) -->
+      <h1 id="tab-intro-title" class="intro-title">
+        {currentPage?.heading ?? title}
+      </h1>
 
-      <!-- Description -->
-      <p class="intro-description">{description}</p>
+      <!-- Page content -->
+      {#if currentPage}
+        {#key currentPageIndex}
+          <div class="intro-body" transition:fly={{ x: 20, duration: 200 }}>
+            {#if isStructuredContent(currentPage.content)}
+              <!-- Structured content with optional intro text and bullet points -->
+              {#if currentPage.content.text}
+                <p class="intro-lead">{currentPage.content.text}</p>
+              {/if}
+              <ul class="intro-points">
+                {#each currentPage.content.points as point}
+                  <li>{point}</li>
+                {/each}
+              </ul>
+            {:else}
+              <!-- Simple string content -->
+              <p class="intro-description">{currentPage.content}</p>
+            {/if}
 
-      <!-- Dismiss button -->
-      <button class="intro-dismiss" onclick={dismiss} style="--accent-color: {color}">
-        <span>Let's go</span>
+            <!-- Tip (if present) -->
+            {#if currentPage.tip}
+              <div class="intro-tip">
+                <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                <span>{currentPage.tip}</span>
+              </div>
+            {/if}
+          </div>
+        {/key}
+      {/if}
+
+      <!-- Pagination dots (for multi-page) -->
+      {#if isMultiPage}
+        <div class="pagination-dots" role="tablist">
+          {#each pages as _, index}
+            <button
+              class="dot"
+              class:active={index === currentPageIndex}
+              onclick={() => goToPage(index)}
+              aria-label="Go to page {index + 1}"
+              aria-selected={index === currentPageIndex}
+              role="tab"
+            ></button>
+          {/each}
+        </div>
+      {/if}
+
+      <!-- Action button -->
+      <button class="intro-action" onclick={nextPage}>
+        <span>{isLastPage ? "Let's go" : "Next"}</span>
         <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </button>
     </div>
@@ -193,47 +270,142 @@
   }
 
   .intro-icon {
-    width: 100px;
-    height: 100px;
+    width: 88px;
+    height: 88px;
     display: grid;
     place-items: center;
-    border-radius: 28px;
-    font-size: var(--font-size-3xl);
+    border-radius: 24px;
+    font-size: 2rem;
     color: white;
     background: var(--accent-color);
     box-shadow:
       0 12px 40px color-mix(in srgb, var(--accent-color) 50%, transparent),
       0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
   }
 
   .intro-title {
-    margin: 0 0 16px;
-    font-size: clamp(2rem, 6vw, 2.75rem);
-    font-weight: 800;
+    margin: 0 0 20px;
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    font-weight: 700;
     letter-spacing: -0.02em;
     color: white;
   }
 
-  .intro-description {
-    margin: 0 0 40px;
-    font-size: clamp(1rem, 3vw, 1.25rem);
-    line-height: 1.6;
-    color: var(--theme-text-dim);
+  .intro-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
     max-width: 400px;
   }
 
-  .intro-dismiss {
+  .intro-lead {
+    margin: 0;
+    font-size: clamp(1rem, 3vw, 1.125rem);
+    line-height: 1.5;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    text-align: center;
+  }
+
+  .intro-description {
+    margin: 0;
+    font-size: clamp(1rem, 3vw, 1.125rem);
+    line-height: 1.6;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+    text-align: center;
+  }
+
+  .intro-points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+  }
+
+  .intro-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: clamp(0.9375rem, 2.5vw, 1.0625rem);
+    line-height: 1.5;
+    color: var(--theme-text, #ffffff);
+  }
+
+  .intro-points li::before {
+    content: "";
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    margin-top: 8px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color) 60%, transparent);
+  }
+
+  .intro-tip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.7));
+  }
+
+  .intro-tip i {
+    flex-shrink: 0;
+    color: #f59e0b;
+    font-size: 0.875rem;
+    margin-top: 2px;
+  }
+
+  .pagination-dots {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .dot:hover {
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .dot.active {
+    background: var(--accent-color);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--accent-color) 60%, transparent);
+  }
+
+  .intro-action {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    padding: 18px 40px;
+    padding: 16px 36px;
     border: none;
-    border-radius: 16px;
+    border-radius: 14px;
     background: var(--accent-color);
     color: white;
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -242,38 +414,40 @@
       0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   }
 
-  .intro-dismiss:hover {
+  .intro-action:hover {
     transform: translateY(-2px);
     box-shadow:
       0 8px 30px color-mix(in srgb, var(--accent-color) 50%, transparent),
       0 0 0 1px rgba(255, 255, 255, 0.15) inset;
   }
 
-  .intro-dismiss:active {
+  .intro-action:active {
     transform: translateY(0);
   }
 
-  .intro-dismiss i {
-    font-size: 1rem;
+  .intro-action i {
+    font-size: 0.9375rem;
     transition: transform 0.2s ease;
   }
 
-  .intro-dismiss:hover i {
+  .intro-action:hover i {
     transform: translateX(4px);
   }
 
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .intro-dismiss,
-    .intro-dismiss i {
+    .intro-action,
+    .intro-action i,
+    .dot,
+    .intro-body {
       transition: none;
     }
 
-    .intro-dismiss:hover {
+    .intro-action:hover {
       transform: none;
     }
 
-    .intro-dismiss:hover i {
+    .intro-action:hover i {
       transform: none;
     }
   }
@@ -281,15 +455,24 @@
   /* Larger screens - more breathing room */
   @media (min-width: 768px) {
     .intro-icon {
-      width: 120px;
-      height: 120px;
-      font-size: var(--font-size-3xl);
-      border-radius: 32px;
-      margin-bottom: 40px;
+      width: 100px;
+      height: 100px;
+      font-size: 2.25rem;
+      border-radius: 28px;
+      margin-bottom: 32px;
     }
 
-    .intro-description {
-      margin-bottom: 48px;
+    .intro-title {
+      margin-bottom: 24px;
+    }
+
+    .intro-body {
+      margin-bottom: 32px;
+      max-width: 440px;
+    }
+
+    .pagination-dots {
+      margin-bottom: 32px;
     }
   }
 </style>
