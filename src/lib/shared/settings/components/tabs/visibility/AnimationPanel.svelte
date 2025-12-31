@@ -245,16 +245,20 @@
 
 <style>
   .settings-panel {
+    /* Enable container queries for height-aware sizing */
+    container-type: size;
+    container-name: animation-panel;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 14px;
-    padding: clamp(14px, 2.5cqi, 20px);
+    gap: clamp(8px, 2cqh, 14px);
+    padding: clamp(10px, 2cqh, 20px);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
     flex: 1;
     min-width: 0;
+    min-height: 0;
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
@@ -274,7 +278,7 @@
   .panel-header {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: clamp(6px, 1.5cqh, 10px);
     flex-shrink: 0;
     width: 100%;
   }
@@ -283,9 +287,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: clamp(26px, 6cqh, 32px);
+    height: clamp(26px, 6cqh, 32px);
+    border-radius: clamp(6px, 1.5cqh, 8px);
     font-size: var(--font-size-sm);
     flex-shrink: 0;
     transition: all 0.15s ease;
@@ -330,6 +334,7 @@
     cursor: pointer;
     transition: all 0.15s ease;
     -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
   }
 
   .help-btn:hover {
@@ -347,19 +352,21 @@
     align-items: center;
     justify-content: center;
     background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
-    border-radius: 14px;
+    border-radius: clamp(10px, 2cqh, 14px);
     border: 1px solid var(--theme-stroke);
     overflow: hidden;
+    /* Preview grows to fill available space */
+    flex: 1 1 auto;
     width: 100%;
     aspect-ratio: 1;
-    flex-shrink: 0;
+    min-height: 0;
     box-shadow: inset 0 2px 8px var(--theme-shadow);
   }
 
   .panel-controls {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(6px, 1.5cqh, 10px);
     flex-shrink: 0;
     width: 100%;
   }
@@ -367,7 +374,7 @@
   .control-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: clamp(4px, 1cqh, 6px);
   }
 
   .group-label {
@@ -379,17 +386,18 @@
     padding-left: 2px;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui,
       sans-serif;
+    line-height: 1.2;
   }
 
   .toggle-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    gap: clamp(4px, 1cqh, 8px);
   }
 
   .playback-mode-toggle {
     display: flex;
-    gap: 8px;
+    gap: clamp(4px, 1cqh, 8px);
   }
 
   .mode-btn {
@@ -397,12 +405,12 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-height: var(--min-touch-target);
-    padding: 12px 14px;
+    gap: clamp(4px, 1cqh, 8px);
+    min-height: 48px; /* WCAG touch target */
+    padding: clamp(8px, 2cqh, 12px) clamp(10px, 2cqw, 14px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: 12px;
+    border-radius: clamp(8px, 2cqh, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -453,16 +461,16 @@
 
   .bpm-presets {
     display: flex;
-    gap: 8px;
+    gap: clamp(4px, 1cqh, 8px);
   }
 
   .bpm-btn {
     flex: 1;
-    min-height: var(--min-touch-target);
-    padding: 12px 8px;
+    min-height: 48px; /* WCAG touch target */
+    padding: clamp(8px, 2cqh, 12px) clamp(6px, 1.5cqw, 8px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: 12px;
+    border-radius: clamp(8px, 2cqh, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -512,11 +520,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: var(--min-touch-target);
-    padding: 12px 10px;
+    min-height: 48px; /* WCAG touch target */
+    padding: clamp(8px, 2cqh, 12px) clamp(8px, 1.5cqw, 10px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: 12px;
+    border-radius: clamp(8px, 2cqh, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -587,22 +595,22 @@
   .trail-preset-row {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(4px, 1cqh, 8px);
   }
 
   .preset-buttons {
     display: flex;
-    gap: 6px;
+    gap: clamp(4px, 1cqh, 6px);
     flex: 1;
   }
 
   .preset-btn {
     flex: 1;
-    min-height: var(--min-touch-target);
-    padding: 12px 10px;
+    min-height: 48px; /* WCAG touch target */
+    padding: clamp(8px, 2cqh, 12px) clamp(8px, 1.5cqw, 10px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: 12px;
+    border-radius: clamp(8px, 2cqh, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -673,12 +681,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: var(--min-touch-target);
-    padding: 12px 14px;
+    gap: clamp(4px, 1cqh, 6px);
+    min-height: 48px; /* WCAG touch target */
+    padding: clamp(8px, 2cqh, 12px) clamp(10px, 2cqw, 14px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: 12px;
+    border-radius: clamp(8px, 2cqh, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -796,6 +804,40 @@
     .preset-btn:focus-visible,
     .ends-toggle:focus-visible {
       outline-width: 3px;
+    }
+  }
+
+  /* Container queries for extremely constrained heights (iPhone SE portrait) */
+  @container animation-panel (max-height: 450px) {
+    .panel-header {
+      gap: 6px;
+    }
+
+    .panel-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .help-btn {
+      width: 40px;
+      height: 40px;
+      font-size: 10px;
+    }
+
+    .group-label {
+      font-size: 10px;
+      letter-spacing: 0.3px;
+    }
+  }
+
+  /* Even more constrained - hide non-essential elements */
+  @container animation-panel (max-height: 380px) {
+    .help-btn {
+      display: none;
+    }
+
+    .ends-label {
+      display: none;
     }
   }
 </style>
