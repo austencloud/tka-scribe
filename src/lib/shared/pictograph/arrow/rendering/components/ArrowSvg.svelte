@@ -14,6 +14,7 @@ Now with intelligent rotation animation matching prop behavior!
     RotationDirection,
     MotionColor,
   } from "../../../shared/domain/enums/pictograph-enums";
+  import { isLightMode } from "$lib/shared/theme/state/theme-mode-state.svelte";
 
   // LED mode glow colors matching animation system
   const LED_GLOW_COLORS = {
@@ -51,6 +52,13 @@ Now with intelligent rotation animation matching prop behavior!
 
   // Get the glow color based on motion color
   const glowColor = $derived(LED_GLOW_COLORS[motionData.color] ?? LED_GLOW_COLORS[MotionColor.BLUE]);
+
+  // Light mode white stroke for visibility against light backgrounds
+  const lightModeStroke = $derived(
+    isLightMode()
+      ? "drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)"
+      : ""
+  );
 
   // ============================================================================
   // INTELLIGENT ROTATION ANIMATION SYSTEM (matching PropSvg behavior)
@@ -315,7 +323,7 @@ Now with intelligent rotation animation matching prop behavior!
       transform: translate({arrowPosition.x}px, {arrowPosition.y}px)
                  rotate({displayedRotation}deg)
                  {shouldMirror ? 'scale(-1, 1)' : ''};
-      {ledMode && !isSelected ? `filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);` : ''}
+      {lightModeStroke && !isSelected ? `filter: ${lightModeStroke};` : ''}
     "
   >
     <!-- Position group at calculated coordinates, let SVG handle its own centering -->

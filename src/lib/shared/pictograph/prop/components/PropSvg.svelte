@@ -12,6 +12,7 @@ Now with smooth transitions when position or orientation changes!
   import type { MotionData } from "../../shared/domain/models/MotionData";
   import type { PropAssets } from "../domain/models/PropAssets";
   import type { PropPosition } from "../domain/models/PropPosition";
+  import { isLightMode } from "$lib/shared/theme/state/theme-mode-state.svelte";
 
   // LED mode glow colors matching animation system
   const LED_GLOW_COLORS = {
@@ -40,15 +41,28 @@ Now with smooth transitions when position or orientation changes!
   // Fans are complex objects - use reduced glow intensity
   const isFan = $derived(motionData?.propType === PropType.FAN);
 
+  // Light mode white stroke for visibility against light backgrounds
+  const lightModeStroke = $derived(
+    isLightMode()
+      ? "drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)"
+      : ""
+  );
+
   // Build the glow filter string - reduced intensity for fans
   const glowFilter = $derived.by(() => {
-    if (!glowEnabled) return "";
+    // In light mode, always add white stroke for visibility
+    const baseFilter = lightModeStroke;
+
+    if (!glowEnabled) return baseFilter ? `filter: ${baseFilter};` : "";
+
     if (isFan) {
       // Reduced glow for fans - smaller radii and single shadow
-      return `filter: drop-shadow(0 0 4px ${glowColor});`;
+      const fanGlow = `drop-shadow(0 0 4px ${glowColor})`;
+      return `filter: ${baseFilter ? baseFilter + " " : ""}${fanGlow};`;
     }
     // Full glow for other props (staff, club, etc.)
-    return `filter: drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor});`;
+    const fullGlow = `drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor})`;
+    return `filter: ${baseFilter ? baseFilter + " " : ""}${fullGlow};`;
   });
 
   type MotionSnapshot = {

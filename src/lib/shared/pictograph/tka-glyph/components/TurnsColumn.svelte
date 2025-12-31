@@ -164,7 +164,6 @@ Props:
   data-letter={letter}
   data-led-mode={ledMode}
   transform="translate({x}, {y}) scale({scale})"
-  style={ledMode ? "filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white)" : undefined}
   onclick={onToggle}
   {...onToggle
     ? {
@@ -282,11 +281,5 @@ Props:
   .turn-number image {
     /* Smooth rendering for number SVGs */
     image-rendering: optimizeQuality;
-  }
-
-  /* LED mode: add subtle white outline using drop-shadow with small blur
-     Creates uniform outline around numbers for contrast on dark backgrounds */
-  .turns-column.led-mode {
-    filter: drop-shadow(0 0 1.5px white) drop-shadow(0 0 1.5px white);
   }
 </style>
