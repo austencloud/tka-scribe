@@ -11,12 +11,13 @@
 
   interface Props {
     initialValue?: "light" | "dark";
+    isFinalStep?: boolean;
     onComplete: (mode: "light" | "dark") => void;
     onBack: () => void;
     onSkip: () => void;
   }
 
-  const { initialValue, onComplete, onBack, onSkip }: Props = $props();
+  const { initialValue, isFinalStep = false, onComplete, onBack, onSkip }: Props = $props();
 
   let selectedMode = $state<"light" | "dark" | null>(initialValue ?? null);
 
@@ -95,10 +96,12 @@
     <button
       type="button"
       class="next-button"
+      class:finish-button={isFinalStep}
       disabled={!selectedMode}
       onclick={handleContinue}
     >
-      Finish <i class="fas fa-check" aria-hidden="true"></i>
+      {isFinalStep ? "Finish" : "Continue"}
+      <i class="fas {isFinalStep ? 'fa-check' : 'fa-arrow-right'}" aria-hidden="true"></i>
     </button>
   </div>
 
@@ -287,8 +290,8 @@
     align-items: center;
     gap: 10px;
     padding: 14px 24px;
-    background: color-mix(in srgb, #22c55e 40%, transparent);
-    border: 2px solid color-mix(in srgb, #22c55e 60%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 40%, transparent);
+    border: 2px solid color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 60%, transparent);
     border-radius: 12px;
     color: white;
     font-size: 1rem;
@@ -298,13 +301,23 @@
   }
 
   .next-button:hover:not(:disabled) {
-    background: color-mix(in srgb, #22c55e 50%, transparent);
-    border-color: color-mix(in srgb, #22c55e 80%, transparent);
+    background: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 50%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong, #8b5cf6) 80%, transparent);
   }
 
   .next-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  .next-button.finish-button {
+    background: color-mix(in srgb, #22c55e 40%, transparent);
+    border-color: color-mix(in srgb, #22c55e 60%, transparent);
+  }
+
+  .next-button.finish-button:hover:not(:disabled) {
+    background: color-mix(in srgb, #22c55e 50%, transparent);
+    border-color: color-mix(in srgb, #22c55e 80%, transparent);
   }
 
   .skip-link {

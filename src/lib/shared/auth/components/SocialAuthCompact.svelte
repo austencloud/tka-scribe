@@ -83,12 +83,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    margin-top: 4px;
+    gap: clamp(8px, 1.5vh, 12px);
+    margin-top: clamp(2px, 0.5vh, 4px);
   }
 
   .social-compact-label {
-    font-size: var(--font-size-compact);
+    font-size: clamp(0.6875rem, 1.5vh, var(--font-size-compact));
     color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
     font-weight: 500;
@@ -96,7 +96,7 @@
 
   .social-compact-buttons {
     display: flex;
-    gap: 10px;
+    gap: clamp(6px, 1vw, 10px);
     width: 100%;
     max-width: 400px;
   }
@@ -106,11 +106,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-height: var(--min-touch-target);
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: var(--font-size-sm);
+    gap: clamp(4px, 1vw, 8px);
+    min-height: clamp(36px, 5vh, var(--min-touch-target));
+    padding: clamp(8px, 1.2vh, 10px) clamp(10px, 2vw, 16px);
+    border-radius: clamp(6px, 1vh, 8px);
+    font-size: clamp(0.75rem, 1.8vh, var(--font-size-sm));
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;

@@ -26,7 +26,8 @@ export type FirstRunStep =
   | "displayName"
   | "theme"
   | "favoriteProp"
-  | "pictographMode";
+  | "pictographMode"
+  | "auth";
 
 /**
  * Configuration for a first-run wizard step
@@ -71,5 +72,11 @@ export const FIRST_RUN_STEPS: FirstRunStepConfig[] = [
     title: "How do you like your pictographs?",
     subtitle: "Choose your visual style",
     canSkip: true,
+  },
+  {
+    id: "auth",
+    title: "Create your account",
+    subtitle: "Save your preferences and start creating",
+    canSkip: false,
   },
 ];

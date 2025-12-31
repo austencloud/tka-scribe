@@ -8,6 +8,9 @@
  * - Display name
  * - Favorite prop
  * - Pictograph mode (light/dark)
+ *
+ * IMPORTANT: This state syncs with Firebase so returning users on new
+ * devices/browsers don't see the wizard again.
  */
 
 const FIRST_RUN_COMPLETED_KEY = "tka-first-run-completed";
@@ -23,6 +26,10 @@ interface FirstRunState {
   completedAt: Date | null;
   /** Whether to show the first-run wizard */
   shouldShow: boolean;
+  /** Whether we've synced with cloud this session */
+  cloudSynced: boolean;
+  /** Whether we're currently syncing with cloud */
+  syncInProgress: boolean;
 }
 
 function createFirstRunState() {
@@ -46,6 +53,8 @@ function createFirstRunState() {
     wasSkipped: skipped,
     completedAt,
     shouldShow: false, // Controlled by trigger function
+    cloudSynced: false,
+    syncInProgress: false,
   });
 
   return {
@@ -60,6 +69,12 @@ function createFirstRunState() {
     },
     get shouldShow() {
       return state.shouldShow;
+    },
+    get syncInProgress() {
+      return state.syncInProgress;
+    },
+    get cloudSynced() {
+      return state.cloudSynced;
     },
 
     /**
@@ -96,6 +111,9 @@ function createFirstRunState() {
 
       localStorage.setItem(FIRST_RUN_COMPLETED_KEY, "true");
       localStorage.setItem(FIRST_RUN_COMPLETED_AT_KEY, now.toISOString());
+
+      // Sync to cloud (non-blocking)
+      this.syncToCloud();
     },
 
     /**
@@ -108,6 +126,9 @@ function createFirstRunState() {
       state.shouldShow = false;
 
       localStorage.setItem(FIRST_RUN_SKIPPED_KEY, "true");
+
+      // Sync to cloud (non-blocking)
+      this.syncToCloud();
     },
 
     /**
@@ -138,6 +159,107 @@ function createFirstRunState() {
      */
     isDone(): boolean {
       return state.hasCompleted || state.wasSkipped;
+    },
+
+    /**
+     * Sync first-run status FROM Firebase.
+     * Call this when a user authenticates to check if they've completed
+     * first-run on another device.
+     */
+    async syncFromCloud(): Promise<void> {
+      if (!isBrowser || state.cloudSynced) return;
+
+      state.syncInProgress = true;
+
+      try {
+        const { getFirestoreInstance } = await import(
+          "$lib/shared/auth/firebase"
+        );
+        const { doc, getDoc } = await import("firebase/firestore");
+        const { authState } = await import(
+          "$lib/shared/auth/state/authState.svelte"
+        );
+
+        const userId = authState.effectiveUserId;
+        if (!userId) {
+          state.syncInProgress = false;
+          return;
+        }
+
+        const firestore = await getFirestoreInstance();
+        const docRef = doc(firestore, `users/${userId}/onboarding/firstRun`);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.completed || data.skipped) {
+            // User has completed first-run on another device
+            state.hasCompleted = data.completed ?? false;
+            state.wasSkipped = data.skipped ?? false;
+            state.completedAt = data.completedAt
+              ? new Date(data.completedAt)
+              : null;
+
+            // Also update localStorage for consistency
+            if (data.completed) {
+              localStorage.setItem(FIRST_RUN_COMPLETED_KEY, "true");
+            }
+            if (data.skipped) {
+              localStorage.setItem(FIRST_RUN_SKIPPED_KEY, "true");
+            }
+            if (data.completedAt) {
+              localStorage.setItem(FIRST_RUN_COMPLETED_AT_KEY, data.completedAt);
+            }
+          }
+        }
+
+        state.cloudSynced = true;
+      } catch (error) {
+        console.warn("⚠️ [firstRunState] Failed to sync from cloud:", error);
+        // Don't throw - localStorage still works as fallback
+      } finally {
+        state.syncInProgress = false;
+      }
+    },
+
+    /**
+     * Sync first-run status TO Firebase.
+     * Called automatically when marking complete/skipped.
+     */
+    async syncToCloud(): Promise<void> {
+      if (!isBrowser) return;
+
+      try {
+        const { getFirestoreInstance } = await import(
+          "$lib/shared/auth/firebase"
+        );
+        const { doc, setDoc, serverTimestamp } = await import(
+          "firebase/firestore"
+        );
+        const { authState } = await import(
+          "$lib/shared/auth/state/authState.svelte"
+        );
+
+        const userId = authState.effectiveUserId;
+        if (!userId) return;
+
+        const firestore = await getFirestoreInstance();
+        const docRef = doc(firestore, `users/${userId}/onboarding/firstRun`);
+
+        await setDoc(
+          docRef,
+          {
+            completed: state.hasCompleted,
+            skipped: state.wasSkipped,
+            completedAt: state.completedAt?.toISOString() ?? null,
+            updatedAt: serverTimestamp(),
+          },
+          { merge: true }
+        );
+      } catch (error) {
+        console.warn("⚠️ [firstRunState] Failed to sync to cloud:", error);
+        // Don't throw - localStorage still works as fallback
+      }
     },
   };
 }

@@ -206,6 +206,18 @@ export async function initializeAuthListener() {
     return;
   }
 
+  // CRITICAL: Ensure auth persistence is configured BEFORE setting up listener
+  // This prevents race conditions after cache clearing where onAuthStateChanged
+  // might not fire properly if IndexedDB persistence is still being set up
+  try {
+    const { ensureAuthPersistence } = await import("../firebase");
+    await ensureAuthPersistence();
+    console.log("✅ [authState] Auth persistence ready");
+  } catch (error) {
+    console.warn("⚠️ [authState] Could not ensure auth persistence:", error);
+    // Continue anyway - auth will work, just might have stale state issues
+  }
+
   // Track if we just completed an OAuth redirect (for provider linking)
   let justCompletedOAuthRedirect = false;
   let redirectResultUser: User | null = null;
@@ -234,10 +246,28 @@ export async function initializeAuthListener() {
   }
 
   // Create a promise that resolves when auth state is first determined
+  // CRITICAL: Add timeout to prevent infinite hang after cache clearing
+  const AUTH_TIMEOUT_MS = 10000; // 10 seconds max wait
+
   const authReady = new Promise<User | null>((resolve) => {
+    let resolved = false;
+
+    // Timeout safety - if onAuthStateChanged never fires, resolve with null
+    const timeoutId = setTimeout(() => {
+      if (!resolved) {
+        resolved = true;
+        console.warn("⚠️ [authState] Auth state timed out after 10s - treating as signed out");
+        resolve(null);
+      }
+    }, AUTH_TIMEOUT_MS);
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      unsubscribe(); // Only need the first callback
-      resolve(user);
+      if (!resolved) {
+        resolved = true;
+        clearTimeout(timeoutId);
+        unsubscribe(); // Only need the first callback
+        resolve(user);
+      }
     });
   });
 
@@ -420,6 +450,20 @@ export async function initializeAuthListener() {
           })
           .catch((error) => {
             console.warn("⚠️ [authState] Settings sync initialization failed:", error);
+          });
+
+        // Sync first-run status FROM cloud (critical - must happen before UI renders)
+        // This ensures returning users on new devices don't see the wizard again
+        import("$lib/shared/onboarding/state/first-run-state.svelte")
+          .then(async ({ firstRunState }) => {
+            const { getFirestoreInstance } = await import(
+              "$lib/shared/auth/firebase"
+            );
+            await getFirestoreInstance();
+            await firstRunState.syncFromCloud();
+          })
+          .catch((error) => {
+            console.warn("⚠️ [authState] First-run sync failed:", error);
           });
 
         // Initialize onboarding Firebase sync (non-blocking)

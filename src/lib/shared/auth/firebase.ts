@@ -356,15 +356,36 @@ export async function getAnalyticsInstance(): Promise<Analytics | null> {
  * Configure Firebase Auth persistence
  * Try IndexedDB first (most reliable), fallback to localStorage
  * This provides the best resilience against storage clearing during redirects
+ *
+ * CRITICAL: This must complete BEFORE auth listener is initialized
+ * to prevent race conditions after cache clearing
  */
+let authPersistenceReady: Promise<void> | null = null;
+
 if (typeof window !== "undefined") {
-  setPersistence(auth, indexedDBLocalPersistence)
+  authPersistenceReady = setPersistence(auth, indexedDBLocalPersistence)
     .catch(() => {
+      debug.warn("IndexedDB persistence failed, falling back to localStorage");
       return setPersistence(auth, browserLocalPersistence);
     })
+    .then(() => {
+      debug.success("Auth persistence configured");
+    })
     .catch((error) => {
-      console.error("❌ [Firebase] Failed to set persistence:", error);
+      debug.error("Failed to set persistence:", error);
+      // Even if persistence fails, we can still proceed
+      // Auth will work, just without session persistence
     });
+}
+
+/**
+ * Wait for auth persistence to be configured
+ * Call this before initializing auth listeners to prevent race conditions
+ */
+export async function ensureAuthPersistence(): Promise<void> {
+  if (authPersistenceReady) {
+    await authPersistenceReady;
+  }
 }
 
 /**

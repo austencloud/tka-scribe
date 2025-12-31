@@ -251,27 +251,27 @@
   .form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(8px, 1.5vh, 12px);
     width: 100%;
   }
 
   .label {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-size: var(--font-size-compact);
+    gap: clamp(4px, 0.8vh, 8px);
+    font-size: clamp(0.6875rem, 1.5vh, var(--font-size-compact));
     color: var(--theme-text-dim, var(--theme-text-dim));
     font-weight: 600;
   }
 
   .input {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 10px;
+    padding: clamp(8px, 1.5vh, 12px) clamp(10px, 2vw, 14px);
+    border-radius: clamp(6px, 1vh, 10px);
     background: var(--theme-card-bg, var(--theme-card-bg));
     border: 1px solid var(--theme-stroke);
     color: var(--theme-text);
-    font-size: var(--font-size-sm);
+    font-size: clamp(0.75rem, 1.8vh, var(--font-size-sm));
   }
 
   .password-row {
@@ -283,10 +283,10 @@
   .toggle {
     position: absolute;
     right: 6px;
-    width: var(--min-touch-target); /* WCAG AAA touch target */
-    height: var(--min-touch-target);
+    width: clamp(36px, 5vh, var(--min-touch-target));
+    height: clamp(36px, 5vh, var(--min-touch-target));
     border: none;
-    border-radius: 10px;
+    border-radius: clamp(6px, 1vh, 10px);
     background: transparent;
     color: var(--theme-text-dim);
     cursor: pointer;
@@ -294,10 +294,10 @@
 
   .message {
     margin: 0;
-    padding: 10px 12px;
-    border-radius: 10px;
+    padding: clamp(6px, 1vh, 10px) clamp(8px, 1.5vw, 12px);
+    border-radius: clamp(6px, 1vh, 10px);
     border: 1px solid transparent;
-    font-size: var(--font-size-compact);
+    font-size: clamp(0.6875rem, 1.5vh, var(--font-size-compact));
     line-height: 1.4;
   }
 
@@ -331,8 +331,8 @@
 
   .submit {
     width: 100%;
-    min-height: var(--min-touch-target);
-    border-radius: 12px;
+    min-height: clamp(36px, 5vh, var(--min-touch-target));
+    border-radius: clamp(8px, 1.2vh, 12px);
     border: none;
     background: linear-gradient(
       135deg,
@@ -341,6 +341,7 @@
     );
     color: #fff;
     font-weight: 800;
+    font-size: clamp(0.75rem, 1.8vh, var(--font-size-sm));
     cursor: pointer;
   }
 
@@ -354,10 +355,11 @@
     border: 1px solid var(--theme-stroke);
     background: transparent;
     color: var(--theme-text);
-    border-radius: 12px;
-    padding: 12px 14px;
+    border-radius: clamp(8px, 1.2vh, 12px);
+    padding: clamp(8px, 1.5vh, 12px) clamp(10px, 2vw, 14px);
     cursor: pointer;
     font-weight: 700;
+    font-size: clamp(0.75rem, 1.8vh, var(--font-size-sm));
   }
 
   .switch:disabled {

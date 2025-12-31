@@ -19,12 +19,14 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import type { FirstRunStep } from "../../domain/first-run-types";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   import WelcomeStep from "./steps/WelcomeStep.svelte";
   import DisplayNameStep from "./steps/DisplayNameStep.svelte";
   import ThemePickerStep from "./steps/ThemePickerStep.svelte";
   import PropPickerStep from "./steps/PropPickerStep.svelte";
   import PictographModeStep from "./steps/PictographModeStep.svelte";
+  import AuthStep from "./steps/AuthStep.svelte";
 
   interface Props {
     onComplete: () => void;
@@ -32,6 +34,9 @@
   }
 
   const { onComplete, onSkip }: Props = $props();
+
+  // Auth state - if authenticated, skip auth step (user signed up via LandingPage)
+  const isAuthenticated = $derived(authState.isAuthenticated);
 
   // Wizard state
   let currentStep = $state<FirstRunStep>("welcome");
@@ -46,13 +51,22 @@
   // Services
   let hapticService: IHapticFeedback | null = null;
 
-  const STEPS: FirstRunStep[] = [
+  // All possible steps (auth step only shown if not already authenticated)
+  const ALL_STEPS: FirstRunStep[] = [
     "welcome",
     "displayName",
     "theme",
     "favoriteProp",
     "pictographMode",
+    "auth",
   ];
+
+  // Filter out auth step if already authenticated (user came from LandingPage signup)
+  const STEPS = $derived(
+    isAuthenticated
+      ? ALL_STEPS.filter((step) => step !== "auth")
+      : ALL_STEPS
+  );
 
   // Icons for each step
   const STEP_ICONS: Record<FirstRunStep, string> = {
@@ -61,6 +75,7 @@
     theme: "fa-moon",
     favoriteProp: "fa-fire",
     pictographMode: "fa-lightbulb",
+    auth: "fa-user-plus",
   };
 
   const currentStepIndex = $derived(STEPS.indexOf(currentStep));
@@ -150,20 +165,37 @@
     handleNext("pictographMode");
   }
 
-  function handleModeComplete(mode: "light" | "dark") {
+  async function handleModeComplete(mode: "light" | "dark") {
     pictographMode = mode;
-    applySettingsAndComplete();
+    // Apply mode setting immediately for live preview
+    const visibilityManager = getAnimationVisibilityManager();
+    visibilityManager.setLightsOff(mode === "dark");
+
+    // If already authenticated (came from LandingPage), complete the wizard
+    // Otherwise, go to auth step
+    if (isAuthenticated) {
+      await applyPreferencesAndComplete();
+    } else {
+      handleNext("auth");
+    }
   }
 
   function handleModeSkip() {
     // Keep default mode (light)
-    applySettingsAndComplete();
+    if (isAuthenticated) {
+      applyPreferencesAndComplete();
+    } else {
+      handleNext("auth");
+    }
   }
 
-  async function applySettingsAndComplete() {
+  /**
+   * Apply all collected preferences and complete the wizard.
+   * Called after final step when user is already authenticated.
+   */
+  async function applyPreferencesAndComplete() {
     hapticService?.trigger("success");
 
-    // Apply collected preferences to settings
     try {
       // Update display name if provided
       if (displayName.trim()) {
@@ -176,7 +208,7 @@
         redPropType: favoriteProp,
       });
 
-      // Update pictograph mode (lightsOff)
+      // Ensure pictograph mode is set
       const visibilityManager = getAnimationVisibilityManager();
       visibilityManager.setLightsOff(pictographMode === "dark");
     } catch (error) {
@@ -187,14 +219,25 @@
     onComplete();
   }
 
+  async function handleAuthComplete() {
+    // Auth step completed - apply preferences and finish
+    await applyPreferencesAndComplete();
+  }
+
   function handleSkipAll() {
     hapticService?.trigger("selection");
-    onSkip();
+    // If already authenticated, complete immediately with defaults
+    // Otherwise, go to auth step (auth is required)
+    if (isAuthenticated) {
+      applyPreferencesAndComplete();
+    } else {
+      transitionTo("auth");
+    }
   }
 
   async function handleQuickStart() {
-    // Apply sensible defaults and complete immediately
-    hapticService?.trigger("success");
+    // Apply sensible defaults
+    hapticService?.trigger("selection");
 
     try {
       // Apply default settings (staff prop, light mode, current theme)
@@ -210,7 +253,13 @@
       console.error("Failed to apply default settings:", error);
     }
 
-    onComplete();
+    // If already authenticated, complete immediately
+    // Otherwise, go to auth step (required for all users)
+    if (isAuthenticated) {
+      onComplete();
+    } else {
+      transitionTo("auth");
+    }
   }
 </script>
 
@@ -255,9 +304,15 @@
     {:else if currentStep === "pictographMode"}
       <PictographModeStep
         initialValue={pictographMode}
+        isFinalStep={isAuthenticated}
         onComplete={handleModeComplete}
         onBack={handleBack}
         onSkip={handleModeSkip}
+      />
+    {:else if currentStep === "auth"}
+      <AuthStep
+        onComplete={handleAuthComplete}
+        onBack={handleBack}
       />
     {/if}
   </div>
@@ -348,7 +403,8 @@
   .first-run-wizard :global(.display-name-step),
   .first-run-wizard :global(.theme-picker-step),
   .first-run-wizard :global(.prop-picker-step),
-  .first-run-wizard :global(.pictograph-mode-step) {
+  .first-run-wizard :global(.pictograph-mode-step),
+  .first-run-wizard :global(.auth-step) {
     opacity: 0;
     transform: translateY(20px);
     transition:
@@ -360,7 +416,8 @@
   .first-run-wizard.animate-in :global(.display-name-step),
   .first-run-wizard.animate-in :global(.theme-picker-step),
   .first-run-wizard.animate-in :global(.prop-picker-step),
-  .first-run-wizard.animate-in :global(.pictograph-mode-step) {
+  .first-run-wizard.animate-in :global(.pictograph-mode-step),
+  .first-run-wizard.animate-in :global(.auth-step) {
     opacity: 1;
     transform: translateY(0);
   }
@@ -443,7 +500,8 @@
     .first-run-wizard :global(.display-name-step),
     .first-run-wizard :global(.theme-picker-step),
     .first-run-wizard :global(.prop-picker-step),
-    .first-run-wizard :global(.pictograph-mode-step) {
+    .first-run-wizard :global(.pictograph-mode-step),
+    .first-run-wizard :global(.auth-step) {
       transition: none;
       opacity: 1;
       transform: none;

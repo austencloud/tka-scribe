@@ -1,7 +1,7 @@
 <script lang="ts">
   /**
    * LandingPage - Full-screen auth gate for logged-out users
-   * Clean, focused experience that showcases TKA and prompts sign-in
+   * Minimal, focused design that gets users signed in quickly
    */
   import { fly, fade } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
@@ -63,33 +63,9 @@
     const next = backgrounds[currentBgIndex];
     if (next) {
       await settingsService.updateSetting("backgroundType", next.type);
-      // Apply theme immediately since MainApplication's watcher may not trigger for landing page
       applyThemeForBackground(next.type);
     }
   }
-
-  const features = [
-    {
-      icon: "fa-wand-magic-sparkles",
-      title: "Create",
-      desc: "Build sequences with an intuitive visual editor",
-    },
-    {
-      icon: "fa-compass",
-      title: "Discover",
-      desc: "Browse through community sequences",
-    },
-    {
-      icon: "fa-play",
-      title: "Animate",
-      desc: "Watch your sequences come to life",
-    },
-    {
-      icon: "fa-graduation-cap",
-      title: "Learn",
-      desc: "Master flow arts notation step by step",
-    },
-  ];
 </script>
 
 <div class="landing-page" in:fade={{ duration: 300 }}>
@@ -106,41 +82,18 @@
       <p class="tagline">The visual language for flow arts</p>
     </header>
 
-    <!-- Feature Highlights -->
-    <section
-      class="features"
-      in:fly={{ y: 20, duration: 400, delay: 200, easing: cubicOut }}
-      aria-labelledby="features-heading"
-    >
-      <h2 id="features-heading" class="sr-only">Features</h2>
-      {#each features as feature, i}
-        <div
-          class="feature-card"
-          in:fly={{
-            y: 20,
-            duration: 300,
-            delay: 300 + i * 75,
-            easing: cubicOut,
-          }}
-        >
-          <div class="feature-icon">
-            <i class="fas {feature.icon}" aria-hidden="true"></i>
-          </div>
-          <div class="feature-text">
-            <h3>{feature.title}</h3>
-            <p>{feature.desc}</p>
-          </div>
-        </div>
-      {/each}
-    </section>
-
     <!-- Auth Section -->
     <section
       class="auth-section"
-      in:fly={{ y: 20, duration: 400, delay: 400, easing: cubicOut }}
+      in:fly={{ y: 20, duration: 400, delay: 200, easing: cubicOut }}
     >
-      <h2>Sign in to get started</h2>
-      <p class="auth-subtitle">Free to use. Save your creations.</p>
+      {#if authMode === "signin"}
+        <h2>Welcome back!</h2>
+        <p class="auth-subtitle">Sign in to continue</p>
+      {:else}
+        <h2>Create your account</h2>
+        <p class="auth-subtitle">Free to use. Save your creations.</p>
+      {/if}
 
       <div class="auth-container">
         <SocialAuthCompact
@@ -160,6 +113,21 @@
           <div class="email-auth-wrapper" in:fly={{ y: 10, duration: 200 }}>
             <EmailPasswordAuth bind:mode={authMode} />
           </div>
+        {/if}
+      </div>
+
+      <!-- Mode toggle -->
+      <div class="mode-toggle">
+        {#if authMode === "signin"}
+          <span class="mode-text">New here?</span>
+          <button class="mode-link" onclick={() => { authMode = "signup"; showEmailAuth = false; }}>
+            Create an account
+          </button>
+        {:else}
+          <span class="mode-text">Already have an account?</span>
+          <button class="mode-link" onclick={() => { authMode = "signin"; showEmailAuth = false; }}>
+            Sign in
+          </button>
         {/if}
       </div>
     </section>
@@ -205,9 +173,9 @@
     position: fixed;
     inset: 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    align-items: safe center;
+    justify-content: safe center;
+    padding: clamp(12px, 2vh, 24px);
     overflow-y: auto;
     z-index: 100;
   }
@@ -216,15 +184,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    gap: clamp(12px, 2vh, 24px);
     max-width: 520px;
     width: 100%;
-    padding: 40px 32px;
+    padding: clamp(16px, 2.5vh, 32px) clamp(16px, 3vw, 32px);
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid var(--theme-stroke);
-    border-radius: 28px;
+    border-radius: clamp(16px, 2vw, 28px);
   }
 
   /* Header */
@@ -232,13 +200,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: clamp(4px, 1vh, 10px);
     text-align: center;
   }
 
   .logo-container {
-    width: 80px;
-    height: 80px;
+    width: clamp(48px, 10vh, 80px);
+    height: clamp(48px, 10vh, 80px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -247,7 +215,7 @@
       var(--theme-accent-strong, var(--theme-accent-strong)) 12%,
       transparent
     );
-    border-radius: 20px;
+    border-radius: clamp(12px, 2vh, 20px);
     border: 1px solid
       color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
     transition:
@@ -256,14 +224,14 @@
   }
 
   .logo-icon {
-    font-size: var(--font-size-3xl);
+    font-size: clamp(1.5rem, 5vh, var(--font-size-3xl));
     color: var(--theme-accent-strong, var(--theme-accent-strong));
     transition: color var(--theme-transition);
   }
 
   .landing-header h1 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 5vh, 2.5rem);
     font-weight: 700;
     color: var(--theme-text);
     letter-spacing: -0.03em;
@@ -271,91 +239,10 @@
 
   .tagline {
     margin: 0;
-    font-size: 1.125rem;
+    font-size: clamp(0.875rem, 2vh, 1.125rem);
     font-weight: 500;
     color: var(--theme-accent-strong, var(--theme-accent-strong));
     transition: color var(--theme-transition);
-  }
-
-  /* Features */
-  .features {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-  }
-
-  .feature-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
-      rgba(255, 255, 255, 0.03)
-    );
-    border: 1px solid
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
-    border-radius: 14px;
-    transition:
-      background var(--theme-transition),
-      border-color var(--theme-transition);
-  }
-
-  .feature-card:hover {
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong) 20%,
-      var(--theme-card-bg)
-    );
-    border-color: color-mix(
-      in srgb,
-      var(--theme-accent-strong, var(--theme-accent-strong)) 35%,
-      transparent
-    );
-  }
-
-  .feature-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: color-mix(
-      in srgb,
-      var(--theme-accent-strong, var(--theme-accent-strong)) 20%,
-      transparent
-    );
-    border-radius: 10px;
-    flex-shrink: 0;
-    transition: background var(--theme-transition);
-  }
-
-  .feature-icon i {
-    font-size: var(--font-size-base);
-    color: var(--theme-accent-strong, var(--theme-accent-strong));
-    transition: color var(--theme-transition);
-  }
-
-  .feature-text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .feature-text h3 {
-    margin: 0;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    color: var(--theme-text);
-  }
-
-  .feature-text p {
-    margin: 0;
-    font-size: 0.75rem;
-    color: var(--theme-text-dim, var(--theme-text-dim));
-    line-height: 1.4;
   }
 
   /* Auth Section */
@@ -363,9 +250,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: clamp(8px, 1.5vh, 14px);
     width: 100%;
-    padding: 28px 24px;
+    padding: clamp(14px, 2vh, 24px) clamp(14px, 2.5vw, 20px);
     background: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent-strong)) 15%,
@@ -373,7 +260,7 @@
     );
     border: 1px solid
       color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 25%, transparent);
-    border-radius: 20px;
+    border-radius: clamp(12px, 1.5vh, 18px);
     transition:
       background var(--theme-transition),
       border-color var(--theme-transition);
@@ -381,21 +268,21 @@
 
   .auth-section h2 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: clamp(1rem, 2.5vh, 1.25rem);
     font-weight: 600;
     color: var(--theme-text, white);
   }
 
   .auth-subtitle {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: clamp(0.75rem, 1.8vh, 0.875rem);
     color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
   .auth-container {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(8px, 1.5vh, 12px);
     width: 100%;
   }
 
@@ -405,7 +292,7 @@
     justify-content: center;
     gap: 10px;
     width: 100%;
-    padding: 12px 20px;
+    padding: clamp(10px, 1.5vh, 12px) 20px;
     background: color-mix(
       in srgb,
       var(--theme-accent-strong, var(--theme-accent-strong)) 12%,
@@ -413,9 +300,9 @@
     );
     border: 1px solid
       color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 20%, transparent);
-    border-radius: 12px;
+    border-radius: clamp(10px, 1.5vh, 12px);
     color: var(--theme-text, var(--theme-text));
-    font-size: 0.9375rem;
+    font-size: clamp(0.8125rem, 1.8vh, 0.9375rem);
     font-weight: 500;
     cursor: pointer;
     transition:
@@ -439,7 +326,7 @@
   }
 
   .email-toggle i {
-    font-size: var(--font-size-base);
+    font-size: clamp(0.875rem, 1.8vh, var(--font-size-base));
   }
 
   .divider {
@@ -447,7 +334,7 @@
     align-items: center;
     gap: 16px;
     width: 100%;
-    margin: 4px 0;
+    margin: clamp(2px, 0.5vh, 4px) 0;
   }
 
   .divider::before,
@@ -464,12 +351,42 @@
   }
 
   .divider span {
-    font-size: 0.8125rem;
+    font-size: clamp(0.6875rem, 1.5vh, 0.8125rem);
     color: var(--theme-text-dim);
   }
 
   .email-auth-wrapper {
     width: 100%;
+  }
+
+  /* Mode Toggle */
+  .mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: clamp(4px, 1vh, 8px);
+  }
+
+  .mode-text {
+    font-size: clamp(0.75rem, 1.8vh, 0.875rem);
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+  }
+
+  .mode-link {
+    background: transparent;
+    border: none;
+    padding: 4px 8px;
+    font-size: clamp(0.75rem, 1.8vh, 0.875rem);
+    font-weight: 600;
+    color: var(--theme-accent-strong, #8b5cf6);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+
+  .mode-link:hover {
+    color: var(--theme-text, white);
+    text-decoration: underline;
   }
 
   /* Footer */
@@ -480,10 +397,10 @@
   /* Background Toggle Button */
   .bg-toggle {
     position: fixed;
-    bottom: 24px;
-    right: 24px;
-    width: 44px;
-    height: 44px;
+    bottom: clamp(12px, 3vh, 24px);
+    right: clamp(12px, 3vw, 24px);
+    width: clamp(36px, 6vh, 44px);
+    height: clamp(36px, 6vh, 44px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -494,9 +411,9 @@
     );
     border: 1px solid
       color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 18%, transparent);
-    border-radius: 12px;
+    border-radius: clamp(8px, 1.5vh, 12px);
     color: var(--theme-accent-strong, var(--theme-accent-strong));
-    font-size: var(--font-size-lg);
+    font-size: clamp(0.875rem, 2vh, var(--font-size-lg));
     cursor: pointer;
     transition:
       background var(--theme-transition),
@@ -524,87 +441,10 @@
     transform: scale(0.95);
   }
 
-  /* Responsive */
-  @media (max-width: 480px) {
-    .landing-page {
-      padding: 16px;
-    }
-
-    .landing-content {
-      gap: 32px;
-      padding: 28px 20px;
-      border-radius: 24px;
-    }
-
-    .logo-container {
-      width: 64px;
-      height: 64px;
-    }
-
-    .logo-icon {
-      font-size: var(--font-size-3xl);
-    }
-
-    .landing-header h1 {
-      font-size: 2rem;
-    }
-
-    .tagline {
-      font-size: 1rem;
-    }
-
-    .features {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-
-    .feature-card {
-      padding: 14px;
-    }
-
-    .auth-section {
-      padding: 24px 20px;
-    }
-
-    .auth-section h2 {
-      font-size: 1.125rem;
-    }
-
-    .bg-toggle {
-      bottom: 16px;
-      right: 16px;
-      width: 40px;
-      height: 40px;
-      font-size: var(--font-size-base);
-    }
-  }
-
-  @media (max-height: 700px) {
-    .landing-content {
-      gap: 24px;
-      padding: 24px 20px;
-    }
-
-    .features {
-      gap: 8px;
-    }
-
-    .feature-card {
-      padding: 12px;
-    }
-
-    .auth-section {
-      padding: 20px 16px;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .logo-container,
     .logo-icon,
     .tagline,
-    .feature-card,
-    .feature-icon,
-    .feature-icon i,
     .auth-section,
     .email-toggle,
     .divider::before,
