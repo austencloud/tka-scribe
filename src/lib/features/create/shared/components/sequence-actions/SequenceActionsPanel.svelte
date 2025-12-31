@@ -79,11 +79,31 @@
   let hapticService: IHapticFeedback | null = $state(null);
   let sequenceExtender: ISequenceExtender | null = $state(null);
 
+  // Session storage key for sub-drawer state (survives HMR, clears on tab close)
+  const SUB_DRAWER_KEY = "tka_sequence_actions_sub_drawer";
+
+  // Helper to get active sub-drawer from sessionStorage
+  function getActiveSubDrawer(): string | null {
+    if (typeof sessionStorage === "undefined") return null;
+    return sessionStorage.getItem(SUB_DRAWER_KEY);
+  }
+
+  // Helper to save active sub-drawer to sessionStorage
+  function setActiveSubDrawer(drawer: string | null) {
+    if (typeof sessionStorage === "undefined") return;
+    if (drawer) {
+      sessionStorage.setItem(SUB_DRAWER_KEY, drawer);
+    } else {
+      sessionStorage.removeItem(SUB_DRAWER_KEY);
+    }
+  }
+
   // Local state - $effect below handles initial and prop changes
   let isOpen = $state(false);
   let isTransforming = $state(false);
   let showConfirmDialog = $state(false);
   let pendingSequenceTransfer = $state<any>(null);
+  // Sub-drawer states - initialized to false, restored after parent drawer registers
   let showHelpSheet = $state(false);
   let showTurnPatternDrawer = $state(false);
   let showRotationDirectionDrawer = $state(false);
@@ -94,6 +114,26 @@
   let isExtending = $state(false);
   let showShiftConfirmDialog = $state(false);
   let pendingShiftBeatNumber = $state<number | null>(null);
+
+  // Track if we've completed initial restoration (prevents auto-save from clearing on mount)
+  let restorationComplete = $state(false);
+
+  // Auto-save active sub-drawer to sessionStorage
+  // Only clears if restoration is complete (prevents clearing saved state on mount)
+  $effect(() => {
+    if (showTurnPatternDrawer) {
+      setActiveSubDrawer("turnPattern");
+    } else if (showRotationDirectionDrawer) {
+      setActiveSubDrawer("rotationDirection");
+    } else if (showExtendDrawer) {
+      setActiveSubDrawer("extend");
+    } else if (showHelpSheet) {
+      setActiveSubDrawer("help");
+    } else if (restorationComplete) {
+      // Only clear if restoration is done - prevents clearing on initial mount
+      setActiveSubDrawer(null);
+    }
+  });
 
   // Shift start mode uses panelState for cross-component coordination
   const isShiftStartMode = $derived(panelState.isShiftStartMode);
@@ -139,6 +179,26 @@
       );
     } catch {
       /* Optional service */
+    }
+
+  });
+
+  // Restore sub-drawer state AFTER parent drawer has opened and registered
+  // Watch for when isOpen becomes true, then restore with delay
+  let hasRestoredSubDrawer = false;
+  $effect(() => {
+    if (isOpen && !hasRestoredSubDrawer) {
+      hasRestoredSubDrawer = true;
+      const restoredSubDrawer = getActiveSubDrawer();
+      // Wait for parent drawer to fully register, then open sub-drawer
+      setTimeout(() => {
+        if (restoredSubDrawer === "help") showHelpSheet = true;
+        else if (restoredSubDrawer === "turnPattern") showTurnPatternDrawer = true;
+        else if (restoredSubDrawer === "rotationDirection") showRotationDirectionDrawer = true;
+        else if (restoredSubDrawer === "extend") showExtendDrawer = true;
+        // Mark restoration complete so auto-save can clear when user closes sub-drawers
+        restorationComplete = true;
+      }, 100);
     }
   });
 
@@ -667,6 +727,7 @@
 <TurnPatternDrawer
   bind:isOpen={showTurnPatternDrawer}
   {sequence}
+  toolPanelWidth={panelState.toolPanelWidth}
   onClose={() => (showTurnPatternDrawer = false)}
   onApply={handleTurnPatternApply}
 />
@@ -674,6 +735,7 @@
 <RotationDirectionDrawer
   bind:isOpen={showRotationDirectionDrawer}
   {sequence}
+  toolPanelWidth={panelState.toolPanelWidth}
   onClose={() => (showRotationDirectionDrawer = false)}
   onApply={handleRotationDirectionApply}
 />

@@ -10,6 +10,7 @@
   import { turnPatternState } from "../../state/turn-pattern-state.svelte.ts";
   import { TurnPatternManager } from "../../services/implementations/TurnPatternManager";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
+  import { layoutState } from "$lib/shared/layout/layout-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { TurnPattern } from "../../domain/models/TurnPatternData";
   import { formatTurnValue } from "../../domain/models/TurnPatternData";
@@ -22,9 +23,14 @@
     type TurnValue,
   } from "../../domain/templates/turn-pattern-templates";
 
+  // Mobile detection - use layout state
+  const isMobile = $derived(!layoutState.isSideBySideLayout);
+
   interface Props {
     isOpen: boolean;
     sequence: SequenceData | null;
+    /** Measured tool panel width for desktop sizing (to match parent panel) */
+    toolPanelWidth?: number;
     onClose: () => void;
     onApply: (result: {
       sequence: SequenceData;
@@ -32,21 +38,30 @@
     }) => void;
   }
 
-  let { isOpen = $bindable(), sequence, onClose, onApply }: Props = $props();
+  let { isOpen = $bindable(), sequence, toolPanelWidth = 0, onClose, onApply }: Props = $props();
+
+  // Build inline style for drawer width when we have a valid measurement
+  const drawerStyle = $derived(
+    toolPanelWidth > 0 ? `--measured-panel-width: ${toolPanelWidth}px` : ""
+  );
 
   let mode: "save" | "apply" = $state("apply");
   let patternName = $state("");
   let savingPattern = $state(false);
   let applyingPattern = $state(false);
   let errorMessage = $state<string | null>(null);
-  let complexityFilter = $state<PatternComplexity | "all">("all");
+  let complexityFilter = $state<PatternComplexity | "all">("simple"); // Default to "simple" for mobile-first
 
   const turnPatternManager = new TurnPatternManager();
 
-  // Load patterns when drawer opens
+  // Load patterns when drawer opens and set appropriate default filter
   $effect(() => {
     if (isOpen && authState.user?.uid && !turnPatternState.initialized) {
       turnPatternState.loadPatterns(authState.user.uid);
+    }
+    // Reset filter based on device when drawer opens
+    if (isOpen) {
+      complexityFilter = isMobile ? "simple" : "all";
     }
   });
 
@@ -107,11 +122,15 @@
   }
 </script>
 
+<div style={drawerStyle}>
 <Drawer
   bind:isOpen
   placement="right"
   onclose={handleClose}
+  showHandle={false}
+  respectLayoutMode={true}
   class="turn-pattern-drawer"
+  backdropClass="turn-pattern-backdrop"
 >
   <div class="turn-pattern-drawer-content">
     <header class="drawer-header">
@@ -246,13 +265,15 @@
             <div class="templates-section">
               <div class="templates-header">
                 <h3>Patterns</h3>
-                <!-- Complexity filter -->
-                <div class="complexity-filter">
-                  <button
-                    class="filter-btn"
-                    class:active={complexityFilter === "all"}
-                    onclick={() => (complexityFilter = "all")}>All</button
-                  >
+                <!-- Complexity filter - mobile shows as segmented control without "All" -->
+                <div class="complexity-filter" class:mobile={isMobile}>
+                  {#if !isMobile}
+                    <button
+                      class="filter-btn"
+                      class:active={complexityFilter === "all"}
+                      onclick={() => (complexityFilter = "all")}>All</button
+                    >
+                  {/if}
                   {#each ["simple", "medium", "complex"] as level}
                     {@const info = getComplexityInfo(
                       level as PatternComplexity
@@ -274,42 +295,87 @@
                 </div>
               </div>
 
-              <div class="patterns-list">
-                {#each filteredTemplates as template}
-                  {@const pattern = authState.user
-                    ? templateToPattern(template, authState.user.uid)
-                    : null}
-                  {@const complexityInfo = getComplexityInfo(
-                    template.complexity
-                  )}
-                  {#if pattern}
-                    <div
-                      class="pattern-item template complexity-{template.complexity}"
-                      style="--glass-color: {complexityInfo.color}"
-                      onclick={() => handleApplyPattern(pattern)}
-                      role="button"
-                      tabindex="0"
-                      onkeydown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleApplyPattern(pattern);
-                        }
-                      }}
-                    >
-                      <div class="pattern-info">
-                        <span class="pattern-name">{pattern.name}</span>
-                        <span class="pattern-desc">{template.description}</span>
+              <!-- Desktop grouped display when "All" selected -->
+              {#if !isMobile && complexityFilter === "all"}
+                {#each ["simple", "medium", "complex"] as complexity}
+                  {@const groupTemplates = allTemplates.filter(t => t.complexity === complexity)}
+                  {@const groupInfo = getComplexityInfo(complexity as PatternComplexity)}
+                  {#if groupTemplates.length > 0}
+                    <div class="complexity-group">
+                      <h4 class="group-header" style="--group-color: {groupInfo.color}">
+                        <span class="group-dot" style="background: {groupInfo.color}"></span>
+                        {groupInfo.label}
+                      </h4>
+                      <div class="patterns-list">
+                        {#each groupTemplates as template}
+                          {@const pattern = authState.user
+                            ? templateToPattern(template, authState.user.uid)
+                            : null}
+                          {@const complexityInfo = getComplexityInfo(template.complexity)}
+                          {#if pattern}
+                            <div
+                              class="pattern-item template complexity-{template.complexity}"
+                              style="--glass-color: {complexityInfo.color}"
+                              onclick={() => handleApplyPattern(pattern)}
+                              role="button"
+                              tabindex="0"
+                              onkeydown={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  e.preventDefault();
+                                  handleApplyPattern(pattern);
+                                }
+                              }}
+                            >
+                              <div class="pattern-info">
+                                <span class="pattern-name">{pattern.name}</span>
+                                <span class="pattern-desc">{template.description}</span>
+                              </div>
+                            </div>
+                          {/if}
+                        {/each}
                       </div>
                     </div>
                   {/if}
                 {/each}
+              {:else}
+                <!-- Filtered display (mobile always uses this, desktop when filter selected) -->
+                <div class="patterns-list" class:mobile-compact={isMobile}>
+                  {#each filteredTemplates as template}
+                    {@const pattern = authState.user
+                      ? templateToPattern(template, authState.user.uid)
+                      : null}
+                    {@const complexityInfo = getComplexityInfo(
+                      template.complexity
+                    )}
+                    {#if pattern}
+                      <div
+                        class="pattern-item template complexity-{template.complexity}"
+                        style="--glass-color: {complexityInfo.color}"
+                        onclick={() => handleApplyPattern(pattern)}
+                        role="button"
+                        tabindex="0"
+                        onkeydown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleApplyPattern(pattern);
+                          }
+                        }}
+                      >
+                        <div class="pattern-info">
+                          <span class="pattern-name">{pattern.name}</span>
+                          <span class="pattern-desc">{template.description}</span>
+                        </div>
+                      </div>
+                    {/if}
+                  {/each}
 
-                {#if filteredTemplates.length === 0}
-                  <p class="empty-filter-message">
-                    No {complexityFilter} patterns available
-                  </p>
-                {/if}
-              </div>
+                  {#if filteredTemplates.length === 0}
+                    <p class="empty-filter-message">
+                      No {complexityFilter} patterns available
+                    </p>
+                  {/if}
+                </div>
+              {/if}
             </div>
           {/if}
 
@@ -374,8 +440,21 @@
     {/if}
   </div>
 </Drawer>
+</div>
 
 <style>
+  /* Position turn pattern drawer to cover Sequence Actions panel on desktop */
+  :global(.turn-pattern-drawer.side-by-side-layout) {
+    width: var(--measured-panel-width, clamp(360px, 44.44vw, 900px)) !important;
+    max-width: 100% !important;
+  }
+
+  /* Backdrop transparent - we want to cover sequence actions, not dim everything */
+  :global(.turn-pattern-backdrop) {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    pointer-events: none !important;
+  }
   .turn-pattern-drawer-content {
     display: flex;
     flex-direction: column;
@@ -454,6 +533,12 @@
     flex: 1;
     overflow-y: auto;
     padding: 16px;
+  }
+
+  /* Container query context for responsive grid */
+  .apply-section {
+    container-type: inline-size;
+    container-name: pattern-section;
   }
 
   .empty-message {
@@ -574,16 +659,33 @@
   }
 
   .patterns-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr; /* Mobile: single column */
     gap: 8px;
+  }
+
+  /* 2 columns for wider panels */
+  @container pattern-section (min-width: 400px) {
+    .patterns-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  /* 3 columns for desktop-width panels */
+  @container pattern-section (min-width: 550px) {
+    .patterns-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   .pattern-item {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
     padding: 12px;
+    min-height: 60px;
     background: var(--theme-card-bg);
     border-radius: 8px;
     border: 1px solid var(--theme-stroke, var(--theme-stroke));
@@ -605,40 +707,47 @@
   .pattern-info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
+    width: 100%;
   }
 
   .pattern-name {
     font-weight: 500;
     font-size: 0.9rem;
+    line-height: 1.3;
   }
 
   .pattern-beats,
   .pattern-desc {
     font-size: 0.75rem;
     color: var(--theme-text-muted, var(--theme-text-dim));
+    line-height: 1.4;
   }
 
   .pattern-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #14b8a6;
-    font-size: 1rem;
+    position: absolute;
+    top: 6px;
+    right: 6px;
   }
 
   .delete-btn {
-    padding: 6px 10px;
+    padding: 4px 6px;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
     transition: all 0.15s;
     background: rgba(239, 68, 68, 0.15);
     color: var(--semantic-error);
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .pattern-item:hover .delete-btn {
+    opacity: 1;
   }
 
   .delete-btn:hover {
-    background: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.35);
   }
 
   /* Uniform section */
@@ -742,6 +851,11 @@
     border-radius: 50%;
   }
 
+  /* User saved patterns need padding for delete button */
+  .saved-patterns-section .pattern-item {
+    padding-right: 32px; /* Make room for delete button */
+  }
+
   /* Pattern items with colored glass effect */
   .pattern-item.template {
     background: color-mix(in srgb, var(--glass-color, #fff) 8%, transparent);
@@ -759,5 +873,117 @@
     color: var(--theme-text-dim);
     padding: 16px;
     font-size: 0.85rem;
+    grid-column: 1 / -1; /* Span all columns */
+  }
+
+  /* ========== Desktop Grouped Display ========== */
+  .complexity-group {
+    margin-bottom: 20px;
+  }
+
+  .complexity-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--group-color, var(--theme-text-muted));
+    text-transform: capitalize;
+  }
+
+  .group-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ========== Mobile Segmented Control ========== */
+  .complexity-filter.mobile {
+    display: flex;
+    gap: 0;
+    background: var(--theme-card-bg);
+    border-radius: 8px;
+    padding: 3px;
+    border: 1px solid var(--theme-stroke);
+  }
+
+  .complexity-filter.mobile .filter-btn {
+    flex: 1;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    justify-content: center;
+  }
+
+  .complexity-filter.mobile .filter-btn.active {
+    background: var(--filter-color, rgba(255, 255, 255, 0.15));
+    color: var(--theme-text);
+  }
+
+  .complexity-filter.mobile .complexity-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* ========== Mobile Compact Grid ========== */
+  .patterns-list.mobile-compact {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
+
+  .patterns-list.mobile-compact .pattern-item {
+    padding: 10px;
+    min-height: 44px;
+  }
+
+  .patterns-list.mobile-compact .pattern-name {
+    font-size: 0.8rem;
+  }
+
+  .patterns-list.mobile-compact .pattern-desc {
+    display: none; /* Hide descriptions on mobile to save space */
+  }
+
+  /* Mobile uniform section - more compact */
+  @container pattern-section (max-width: 399px) {
+    .uniform-section {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+    }
+
+    .uniform-section h3 {
+      font-size: 0.8rem;
+      margin-bottom: 2px;
+    }
+
+    .section-desc {
+      font-size: 0.7rem;
+      margin-bottom: 8px;
+    }
+
+    .uniform-buttons {
+      gap: 6px;
+    }
+
+    .uniform-btn {
+      padding: 10px 6px;
+      font-size: 1rem;
+    }
+
+    .templates-section {
+      margin-bottom: 16px;
+    }
+
+    .templates-header h3 {
+      font-size: 0.8rem;
+    }
   }
 </style>
