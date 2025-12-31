@@ -50,7 +50,7 @@
 	const HITBOX_HEIGHT = 380;
 
 	// Debug: make hitbox visible (set to false for production)
-	const DEBUG_HITBOX = false;
+	const DEBUG_HITBOX = true;
 
 	function handlePointerDown(event: ThreltePointerEvent) {
 		onSelect();

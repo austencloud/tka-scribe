@@ -350,10 +350,12 @@
 
           if (stored) {
             const settings = JSON.parse(stored);
-            const backgroundType = settings.backgroundType || "nightSky";
+            // Default to solidColor to match SettingsState defaults
+            const backgroundType = settings.backgroundType || "solidColor";
 
             // Background gradients mapping - same as background-config.ts
             const backgroundGradients = {
+              solidColor: "#000000", // Default: solid black
               aurora:
                 "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)",
               snowfall:
@@ -368,6 +370,7 @@
 
             // Background animation mapping - same as background-config.ts
             const backgroundAnimations = {
+              solidColor: "", // No animation for solid color
               aurora: "aurora-flow",
               snowfall: "snow-fall",
               nightSky: "star-twinkle",
@@ -377,11 +380,10 @@
 
             const selectedGradient =
               backgroundGradients[backgroundType] ||
-              backgroundGradients.nightSky;
+              backgroundGradients.solidColor;
 
             const selectedAnimation =
-              backgroundAnimations[backgroundType] ||
-              backgroundAnimations.nightSky;
+              backgroundAnimations[backgroundType] || "";
 
             // Update the CSS custom property immediately
             document.documentElement.style.setProperty(
