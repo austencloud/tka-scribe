@@ -4,16 +4,19 @@
     description: string;
     enabled?: boolean;
     isBusy?: boolean;
+    disabled?: boolean;
     onToggle: () => void;
   }
 
-  let { label, description, enabled = false, isBusy = false, onToggle }: Props = $props();
+  let { label, description, enabled = false, isBusy = false, disabled = false, onToggle }: Props = $props();
 </script>
 
 <button
   class="preference-item"
   class:enabled
+  class:disabled
   onclick={onToggle}
+  {disabled}
   aria-label={`Toggle ${label}`}
   aria-pressed={enabled}
   aria-busy={isBusy}
@@ -69,6 +72,12 @@
   .preference-item[aria-busy="true"] {
     opacity: 0.7;
     cursor: wait;
+  }
+
+  .preference-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   .preference-item.enabled {

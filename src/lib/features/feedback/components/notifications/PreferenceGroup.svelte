@@ -10,9 +10,10 @@
     preferences: NotificationPreferences;
     isBusyKey: (key: keyof NotificationPreferences) => boolean;
     onToggle: (key: keyof NotificationPreferences) => void;
+    disabled?: boolean;
   }
 
-  let { title, description, items, preferences, isBusyKey, onToggle }: Props = $props();
+  let { title, description, items, preferences, isBusyKey, onToggle, disabled = false }: Props = $props();
 </script>
 
 <div class="preference-group">
@@ -28,6 +29,7 @@
         description={item.description}
         enabled={preferences[item.key]}
         isBusy={isBusyKey(item.key)}
+        {disabled}
         onToggle={() => onToggle(item.key)}
       />
     {/each}

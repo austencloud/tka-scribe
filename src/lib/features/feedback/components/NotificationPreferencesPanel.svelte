@@ -18,6 +18,10 @@
   } from "../domain/models/notification-models";
   import PreferenceGroup from "./notifications/PreferenceGroup.svelte";
   import type { PreferenceItem } from "./notifications/PreferenceItem";
+  import {
+    userPreviewState,
+    getPreviewNotificationPreferences,
+  } from "$lib/shared/debug/state/user-preview-state.svelte";
 
   // State
   let preferences = $state<NotificationPreferences>(
@@ -28,9 +32,23 @@
   let bulkPressed = $state<"enable" | "disable" | null>(null);
   let pendingKeys = $state<Set<keyof NotificationPreferences>>(new Set());
 
+  // Preview mode - show another user's preferences (read-only)
+  const isPreviewMode = $derived(userPreviewState.isActive);
+
   // Load preferences on mount
   onMount(async () => {
     await loadPreferences();
+  });
+
+  // React to preview mode changes
+  $effect(() => {
+    if (isPreviewMode) {
+      const previewPrefs = getPreviewNotificationPreferences();
+      if (previewPrefs) {
+        preferences = previewPrefs;
+        isLoading = false;
+      }
+    }
   });
 
   async function loadPreferences() {
@@ -53,6 +71,9 @@
   }
 
   async function togglePreference(key: keyof NotificationPreferences) {
+    // Block changes in preview mode
+    if (isPreviewMode) return;
+
     const user = authState.user;
     if (!user) return;
     if (pendingKeys.has(key)) return;
@@ -78,6 +99,9 @@
   }
 
   async function enableAll() {
+    // Block changes in preview mode
+    if (isPreviewMode) return;
+
     const user = authState.user;
     if (!user || bulkBusy) return;
 
@@ -94,6 +118,9 @@
   }
 
   async function disableAll() {
+    // Block changes in preview mode
+    if (isPreviewMode) return;
+
     const user = authState.user;
     if (!user || bulkBusy) return;
 
@@ -207,6 +234,13 @@
     <p class="subtitle">Choose which notifications you want to receive</p>
   </div>
 
+  {#if isPreviewMode}
+    <div class="preview-banner">
+      <i class="fas fa-eye" aria-hidden="true"></i>
+      <span>Viewing {userPreviewState.data.displayName ?? "user"}'s preferences (read-only)</span>
+    </div>
+  {/if}
+
   {#if isLoading}
     <div class="loading-state shell">
       <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
@@ -218,35 +252,37 @@
       <p>Sign in to manage notification preferences</p>
     </div>
   {:else}
-    <!-- Quick Actions -->
-    <div class="quick-actions">
-      <button
-        class="action-button"
-        class:pressed={bulkPressed === "enable"}
-        onclick={enableAll}
-        onpointerdown={() => (bulkPressed = "enable")}
-        onpointerup={() => clearBulkPressedSoon()}
-        onpointerleave={() => (bulkPressed = null)}
-        aria-label="Enable all notifications"
-        aria-busy={bulkBusy === "enable"}
-      >
-        <i class="fas fa-check-circle" aria-hidden="true"></i>
-        Enable All
-      </button>
-      <button
-        class="action-button"
-        class:pressed={bulkPressed === "disable"}
-        onclick={disableAll}
-        onpointerdown={() => (bulkPressed = "disable")}
-        onpointerup={() => clearBulkPressedSoon()}
-        onpointerleave={() => (bulkPressed = null)}
-        aria-label="Disable all notifications"
-        aria-busy={bulkBusy === "disable"}
-      >
-        <i class="fas fa-times-circle" aria-hidden="true"></i>
-        Disable All
-      </button>
-    </div>
+    <!-- Quick Actions (hidden in preview mode) -->
+    {#if !isPreviewMode}
+      <div class="quick-actions">
+        <button
+          class="action-button"
+          class:pressed={bulkPressed === "enable"}
+          onclick={enableAll}
+          onpointerdown={() => (bulkPressed = "enable")}
+          onpointerup={() => clearBulkPressedSoon()}
+          onpointerleave={() => (bulkPressed = null)}
+          aria-label="Enable all notifications"
+          aria-busy={bulkBusy === "enable"}
+        >
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
+          Enable All
+        </button>
+        <button
+          class="action-button"
+          class:pressed={bulkPressed === "disable"}
+          onclick={disableAll}
+          onpointerdown={() => (bulkPressed = "disable")}
+          onpointerup={() => clearBulkPressedSoon()}
+          onpointerleave={() => (bulkPressed = null)}
+          aria-label="Disable all notifications"
+          aria-busy={bulkBusy === "disable"}
+        >
+          <i class="fas fa-times-circle" aria-hidden="true"></i>
+          Disable All
+        </button>
+      </div>
+    {/if}
 
     <!-- Preference Groups Grid -->
     <div class="preference-groups-grid">
@@ -258,6 +294,7 @@
           {preferences}
           isBusyKey={(key) => pendingKeys.has(key)}
           onToggle={togglePreference}
+          disabled={isPreviewMode}
         />
       {/each}
     </div>
@@ -296,6 +333,27 @@
     font-size: var(--font-size-compact);
     color: var(--theme-text-dim, var(--theme-text-dim));
     margin: 0;
+  }
+
+  /* ============================================================================
+     PREVIEW BANNER
+     ============================================================================ */
+  .preview-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    background: rgba(139, 92, 246, 0.12);
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 10px;
+    font-size: var(--font-size-sm);
+    color: #a78bfa;
+  }
+
+  .preview-banner i {
+    font-size: var(--font-size-base);
+    flex-shrink: 0;
   }
 
   /* ============================================================================
