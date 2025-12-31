@@ -346,6 +346,21 @@
   onSuccess={handleEmailLinkingSuccess}
 />
 
+<!-- Unlink Confirmation Dialog -->
+{#if providerToUnlink}
+  {@const config = PROVIDERS[providerToUnlink]}
+  <ConfirmDialog
+    bind:isOpen={showUnlinkConfirm}
+    title="Disconnect {config.name}?"
+    message="You won't be able to sign in with {config.name} after disconnecting. Make sure you have another sign-in method available."
+    confirmText="Disconnect"
+    cancelText="Keep Connected"
+    variant="warning"
+    onConfirm={confirmUnlinkProvider}
+    onCancel={cancelUnlinkProvider}
+  />
+{/if}
+
 <style>
   .connected-accounts {
     container-type: inline-size;

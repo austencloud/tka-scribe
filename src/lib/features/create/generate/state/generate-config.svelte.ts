@@ -77,17 +77,31 @@ function loadConfig(): UIGenerationConfig | null {
       return null;
     }
 
-    // Return validated config with proper type assertions
-    return {
+    // Build config object, only including defined values
+    // This prevents undefined values from overriding DEFAULT_CONFIG
+    const result: Partial<UIGenerationConfig> = {
       mode: data.mode as GenerationMode,
       length: data.length,
       level: data.level,
-      turnIntensity: data.turnIntensity,
-      gridMode: data.gridMode as GridMode,
-      propContinuity: data.propContinuity as PropContinuity,
-      sliceSize: data.sliceSize as SliceSize,
-      loopType: data.loopType as LOOPType,
     };
+
+    if (data.turnIntensity !== undefined) {
+      result.turnIntensity = data.turnIntensity;
+    }
+    if (data.gridMode !== undefined) {
+      result.gridMode = data.gridMode as GridMode;
+    }
+    if (data.propContinuity !== undefined) {
+      result.propContinuity = data.propContinuity as PropContinuity;
+    }
+    if (data.sliceSize !== undefined) {
+      result.sliceSize = data.sliceSize as SliceSize;
+    }
+    if (data.loopType !== undefined) {
+      result.loopType = data.loopType as LOOPType;
+    }
+
+    return result as UIGenerationConfig;
   } catch (error) {
     console.warn("⚠️ GenerateConfig: Failed to load config:", error);
     return null;
