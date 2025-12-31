@@ -94,8 +94,6 @@
   let feedbackDetailItem = $derived(myFeedbackDetailState.selectedItem);
   let showFeedbackDetail = $derived(myFeedbackDetailState.isOpen);
 
-  // First-run wizard state (for first-time users)
-  let showFirstRun = $derived(firstRunState.shouldShow);
 
   // Resolve services when container is available
   $effect(() => {
@@ -306,14 +304,10 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 
-  // Trigger first-run wizard for first-time authenticated users
-  $effect(() => {
-    if (isAuthenticated && isInitialized && !authLoading) {
-      if (!firstRunState.isDone()) {
-        firstRunState.triggerIfFirstTime();
-      }
-    }
-  });
+  // Note: First-run wizard is now shown based on simple state checks in the template:
+  // - !isAuthenticated → LandingPage
+  // - isAuthenticated && !firstRunState.isDone() → FirstRunWizard
+  // No need for triggerIfFirstTime() calls since we check isDone() directly
 
   // Create a serialized key for background settings to detect actual changes
   const backgroundSettingsKey = $derived(
@@ -379,20 +373,23 @@
       <p>Checking authentication...</p>
     </div>
   {:else if !isAuthenticated}
-    <!-- Auth Gate: Show landing page for logged-out users -->
+    <!-- Not authenticated: show landing page (login/signup) -->
     <LandingPage />
-  {:else if isAuthenticated}
-    <!-- First-run wizard for brand new users (collects preferences) -->
-    <!-- Renders INSTEAD of MainInterface so background shows through -->
-    {#if showFirstRun}
-      <FirstRunWizard
-        onComplete={() => firstRunState.markCompleted()}
-        onSkip={() => firstRunState.markSkipped()}
-      />
-    {:else}
-      <!-- Main Interface - Full app for authenticated users -->
-      <MainInterface />
-    {/if}
+  {:else if firstRunState.syncInProgress || (!firstRunState.cloudSynced && !firstRunState.isDone())}
+    <!-- Wait for first-run status to sync from cloud before deciding to show wizard -->
+    <div class="auth-loading">
+      <div class="auth-loading-spinner"></div>
+      <p>Loading preferences...</p>
+    </div>
+  {:else if !firstRunState.isDone()}
+    <!-- Authenticated but hasn't completed preferences wizard yet -->
+    <FirstRunWizard
+      onComplete={() => firstRunState.markCompleted()}
+      onSkip={() => firstRunState.markSkipped()}
+    />
+  {:else}
+    <!-- Main Interface - Full app for authenticated users who completed onboarding -->
+    <MainInterface />
 
     <!-- Auth sheet (route-based) -->
     <AuthSheet

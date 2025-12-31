@@ -148,10 +148,19 @@ function createFirstRunState() {
       state.wasSkipped = false;
       state.completedAt = null;
       state.shouldShow = false;
+      state.cloudSynced = false;
 
       localStorage.removeItem(FIRST_RUN_COMPLETED_KEY);
       localStorage.removeItem(FIRST_RUN_COMPLETED_AT_KEY);
       localStorage.removeItem(FIRST_RUN_SKIPPED_KEY);
+    },
+
+    /**
+     * Reset cloud sync state (call on signout so next signin syncs fresh)
+     */
+    resetCloudSync() {
+      state.cloudSynced = false;
+      state.syncInProgress = false;
     },
 
     /**
@@ -216,7 +225,9 @@ function createFirstRunState() {
         state.cloudSynced = true;
       } catch (error) {
         console.warn("⚠️ [firstRunState] Failed to sync from cloud:", error);
-        // Don't throw - localStorage still works as fallback
+        // Mark as synced even on failure to avoid getting stuck in loading state
+        // localStorage fallback will be used
+        state.cloudSynced = true;
       } finally {
         state.syncInProgress = false;
       }

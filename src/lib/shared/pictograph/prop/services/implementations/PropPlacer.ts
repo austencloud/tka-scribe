@@ -11,6 +11,7 @@ import { inject, injectable } from "inversify";
 import { GridMode } from "../../../grid/domain/enums/grid-enums";
 import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridModeDeriver";
 import {
+  MotionColor,
   Orientation,
   VectorDirection,
 } from "../../../shared/domain/enums/pictograph-enums";
@@ -21,6 +22,7 @@ import {
   isBuugengFamilyProp,
   isUnilateralProp,
 } from "../../domain/enums/PropClassification";
+import { getSettings } from "../../../../application/state/app-state.svelte";
 import { createPropPlacementFromPosition } from "../../domain/factories/createPropPlacementData";
 import type { PropPlacementData } from "../../domain/models/PropPlacementData";
 import type { IBetaDetector } from "../contracts/IBetaDetector";
@@ -156,13 +158,26 @@ export class PropPlacer implements IPropPlacer {
 
     // BUUGENG FAMILY SPECIAL CASE:
     // Buugeng props are asymmetric bilateral props that can "nest" together
-    // when orientations are opposite (IN/OUT or CLOCK/COUNTER).
-    // Skip beta offset so they overlap at the default position.
+    // when orientations are opposite (IN/OUT or CLOCK/COUNTER) AND exactly
+    // one of them is flipped. When one is flipped and orientations are opposite,
+    // the props visually complement each other and can overlap at the same position.
+    //
+    // Conditions for skipping beta offset:
+    // 1. Both props are Buugeng family
+    // 2. Orientations are opposite (same type but different: IN/OUT or CLOCK/COUNTER)
+    // 3. Exactly one prop is flipped (XOR of flip settings)
     if (
       isBuugengFamilyProp(motionData.propType) &&
       sameTypeButDifferentOrientation
     ) {
-      return { x: 0, y: 0 };
+      const settings = getSettings();
+      const blueFlipped = settings.blueBuugengFlipped ?? false;
+      const redFlipped = settings.redBuugengFlipped ?? false;
+      const exactlyOneFlipped = blueFlipped !== redFlipped; // XOR condition
+
+      if (exactlyOneFlipped) {
+        return { x: 0, y: 0 };
+      }
     }
 
     // Skip beta offset for UNILATERAL props when both props have same orientation TYPE

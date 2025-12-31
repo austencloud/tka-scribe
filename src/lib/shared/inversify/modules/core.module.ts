@@ -29,7 +29,7 @@ import { PlatformDetector } from "../../mobile/services/implementations/Platform
 import { GestureHandler } from "../../mobile/services/implementations/GestureHandler";
 import { PWAEngagementTracker } from "../../mobile/services/implementations/PWAEngagementTracker";
 import { PWAInstallDismissalManager } from "../../mobile/services/implementations/PWAInstallDismissalManager";
-import { SettingsState } from "../../settings/state/SettingsState.svelte";
+import { SettingsState, settingsService } from "../../settings/state/SettingsState.svelte";
 import { FirebaseSettingsPersister } from "../../settings/services/implementations/FirebaseSettingsPersister";
 import { OnboardingPersister } from "../../onboarding/services/implementations/OnboardingPersister";
 import { TagManager } from "../../../features/library/services/implementations/TagManager";
@@ -88,8 +88,9 @@ export const coreModule = new ContainerModule(
     options.bind(TYPES.ISvgImageConverter).to(SvgImageConverter);
 
     // === SETTINGS SERVICES ===
-    console.log("🔧 [core.module] Binding ISettingsState to SettingsState:", SettingsState);
-    options.bind(TYPES.ISettingsState).to(SettingsState).inSingletonScope();
+    // Use the module-level singleton to ensure there's only ONE instance app-wide
+    // Previously .to(SettingsState).inSingletonScope() created a separate DI instance
+    options.bind(TYPES.ISettingsState).toConstantValue(settingsService);
     options
       .bind(TYPES.ISettingsPersister)
       .to(FirebaseSettingsPersister)

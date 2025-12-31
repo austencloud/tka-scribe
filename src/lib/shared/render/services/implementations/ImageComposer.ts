@@ -642,7 +642,7 @@ export class ImageComposer implements IImageComposer {
     const finalBlueProp = bluePropType ?? propType;
     const finalRedProp = redPropType ?? propType;
 
-    return {
+    const result = {
       ...data,
       motions: {
         blue: data.motions.blue && finalBlueProp
@@ -653,6 +653,20 @@ export class ImageComposer implements IImageComposer {
           : data.motions.red,
       },
     };
+
+    // DEBUG: Log prop type override application
+    if (finalBlueProp || finalRedProp) {
+      console.log('[ImageComposer] Applied prop override:', {
+        originalBlue: data.motions.blue?.propType,
+        originalRed: data.motions.red?.propType,
+        finalBlue: result.motions.blue?.propType,
+        finalRed: result.motions.red?.propType,
+        requestedBlue: finalBlueProp,
+        requestedRed: finalRedProp,
+      });
+    }
+
+    return result;
   }
 
   /**

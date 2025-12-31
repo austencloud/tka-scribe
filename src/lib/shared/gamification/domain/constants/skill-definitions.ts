@@ -303,7 +303,7 @@ export const CONCEPT_MASTERY_SKILLS: SkillProgression[] = [
     skillCategory: "concept_mastery" as SkillCategory,
     description: "Master Continuous Assembly Patterns and reversals",
     icon: "fa-arrows-rotate",
-    levels: createConceptMasteryLevels("CAPs", [
+    levels: createConceptMasteryLevels("LOOPs", [
       "caps-intro",
       "reversals",
       "advanced-caps",

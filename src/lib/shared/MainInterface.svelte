@@ -291,22 +291,37 @@
 </div>
 
 <style>
-  /* Skip link - visually hidden until focused */
+  /* Skip link - visually hidden until focused (sr-only pattern) */
   .skip-link {
     position: absolute;
-    top: -100%;
-    left: 16px;
-    z-index: 9999;
-    padding: 12px 24px;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+    /* Style for when focused */
     background: var(--theme-panel-bg);
     color: var(--theme-text, white);
     border-radius: 8px;
     text-decoration: none;
     font-weight: 600;
+    z-index: 9999;
   }
 
   .skip-link:focus {
+    position: fixed;
     top: 16px;
+    left: 16px;
+    width: auto;
+    height: auto;
+    padding: 12px 24px;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
   }
 
   .main-interface {
