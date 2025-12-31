@@ -28,4 +28,7 @@ export const ANIMATION_3D_TYPES = {
 
   // Duet system (dual-avatar coordinated performance)
   IDuetPersister: Symbol.for("IDuetPersister"),
+
+  // Locomotion animation
+  ILegAnimator: Symbol.for("ILegAnimator"),
 };

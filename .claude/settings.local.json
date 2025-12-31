@@ -1446,7 +1446,11 @@
       "Bash(\"src/lib/shared/background/shared/state/createBackgroundState.ts\" )",
       "Bash(\"src/lib/shared/settings/state/SettingsState.svelte.ts\" )",
       "Bash(\"src/lib/features/create/construct/option-picker/components/OptionPicker.svelte\")",
-      "Bash(\"src/lib/shared/3d-animation/components/DraggablePerformer.svelte\")"
+      "Bash(\"src/lib/shared/3d-animation/components/DraggablePerformer.svelte\")",
+      "Bash(\"src/lib/shared/3d-animation/inversify/animation-3d.module.ts\" )",
+      "Bash(\"src/lib/shared/3d-animation/inversify/animation-3d.types.ts\" )",
+      "Bash(\"src/lib/shared/3d-animation/services/contracts/ILegAnimator.ts\" )",
+      "Bash(\"src/lib/shared/3d-animation/services/implementations/LegAnimator.ts\")"
     ],
     "deny": [],
     "ask": []

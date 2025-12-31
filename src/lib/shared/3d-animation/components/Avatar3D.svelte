@@ -31,6 +31,8 @@
   import { AvatarSkeletonBuilder } from "../services/implementations/AvatarSkeletonBuilder";
   import { IKSolver } from "../services/implementations/IKSolver";
   import { AvatarAnimator } from "../services/implementations/AvatarAnimator";
+  import { LegAnimator } from "../services/implementations/LegAnimator";
+  import type { ILegAnimator } from "../services/contracts/ILegAnimator";
 
   // Default Z position for avatars
   // Placing avatar at z=0 (same as grid plane) so hands are exactly at prop positions
@@ -50,6 +52,13 @@
     /** Facing angle in radians for avatar rotation (0 = facing +Z) */
     facingAngle?: number;
     isActive?: boolean; // Whether this avatar is currently selected/active
+    // Locomotion animation
+    /** Whether the avatar is currently moving (triggers walk animation) */
+    isMoving?: boolean;
+    /** Movement speed 0-1 for animation playback rate */
+    moveSpeed?: number;
+    /** Path to walk animation GLB file (optional) */
+    walkAnimationUrl?: string;
   }
 
   let {

@@ -45,9 +45,9 @@
 	let isHovered = $state(false);
 
 	// Hitbox dimensions - sized to match the avatar model closely
-	// Avatar is approximately 180 units wide and 400 units tall
-	const HITBOX_RADIUS = 80;
-	const HITBOX_HEIGHT = 380;
+	// Avatar is approximately 60 units wide and 200 units tall
+	const HITBOX_RADIUS = 50;
+	const HITBOX_HEIGHT = 200;
 
 	// Debug: make hitbox visible (set to false for production)
 	const DEBUG_HITBOX = true;

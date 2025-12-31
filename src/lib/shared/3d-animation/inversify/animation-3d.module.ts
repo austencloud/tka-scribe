@@ -26,6 +26,9 @@ import { AvatarAnimator } from "../services/implementations/AvatarAnimator";
 // Duet system
 import { DuetPersister } from "../services/implementations/DuetPersister";
 
+// Locomotion animation
+import { LegAnimator } from "../services/implementations/LegAnimator";
+
 export const animation3DModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
     // Core math services (no dependencies)
@@ -109,5 +112,15 @@ export const animation3DModule = new ContainerModule(
       .bind(ANIMATION_3D_TYPES.IDuetPersister)
       .to(DuetPersister)
       .inSingletonScope();
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // LOCOMOTION ANIMATION
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Transient scope - each avatar needs its own leg animator
+
+    options
+      .bind(ANIMATION_3D_TYPES.ILegAnimator)
+      .to(LegAnimator)
+      .inTransientScope();
   }
 );
