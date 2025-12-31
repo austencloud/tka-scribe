@@ -33,6 +33,7 @@ export const CoreTypes = {
 
   // Device & Resource
   IDeviceDetector: Symbol.for("IDeviceDetector"),
+  IGeoLocationProvider: Symbol.for("IGeoLocationProvider"),
   IResourceTracker: Symbol.for("IResourceTracker"),
   IPanelManagementService: Symbol.for("IPanelManagementService"),
 

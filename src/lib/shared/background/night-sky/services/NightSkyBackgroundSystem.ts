@@ -1,25 +1,23 @@
-import { resolve } from "../../../inversify/di";
-import { TYPES } from "../../../inversify/types";
+import { resolve } from '../../../inversify/di';
+import { TYPES } from '../../../inversify/types';
+import type { IGeoLocationProvider } from '$lib/shared/device/services/contracts/IGeoLocationProvider';
 import type {
-  AccessibilitySettings,
-  QualitySettings,
-} from "../../shared/domain/models/background-models";
-import type {
-  Dimensions,
-  QualityLevel,
-} from "../../shared/domain/types/background-types";
-import type { IBackgroundConfigurationService } from "../../shared/services/contracts/IBackgroundConfigurationService";
-import type { IBackgroundRenderingService } from "../../shared/services/contracts/IBackgroundRenderingService";
-import type { IBackgroundSystem } from "../../shared/services/contracts/IBackgroundSystem";
-import { createShootingStarSystem } from "../../shared/services/implementations/ShootingStarSystem";
-import type { NightSkyConfig } from "../domain/constants/night-sky-constants";
-import { CometSystem } from "./CometSystem";
-import { ConstellationSystem } from "./ConstellationSystem";
-import type { INightSkyCalculationService } from "./contracts/INightSkyCalculationService";
-import { MoonSystem } from "./MoonSystem";
-import { NebulaSystem } from "./NebulaSystem";
-import { ParallaxStarSystem } from "./ParallaxStarSystem";
-import { SpaceshipSystem } from "./SpaceshipSystem";
+	AccessibilitySettings,
+	QualitySettings
+} from '../../shared/domain/models/background-models';
+import type { Dimensions, QualityLevel } from '../../shared/domain/types/background-types';
+import type { IBackgroundConfigurationService } from '../../shared/services/contracts/IBackgroundConfigurationService';
+import type { IBackgroundRenderingService } from '../../shared/services/contracts/IBackgroundRenderingService';
+import type { IBackgroundSystem } from '../../shared/services/contracts/IBackgroundSystem';
+import { createShootingStarSystem } from '../../shared/services/implementations/ShootingStarSystem';
+import type { NightSkyConfig } from '../domain/constants/night-sky-constants';
+import { CometSystem } from './CometSystem';
+import { ConstellationSystem } from './ConstellationSystem';
+import type { INightSkyCalculationService } from './contracts/INightSkyCalculationService';
+import { MoonSystem } from './MoonSystem';
+import { NebulaSystem } from './NebulaSystem';
+import { ParallaxStarSystem } from './ParallaxStarSystem';
+import { SpaceshipSystem } from './SpaceshipSystem';
 
 // TODO: Fix this - ShootingStarState should be imported from proper location
 interface ShootingStarState {
@@ -44,14 +42,15 @@ interface ShootingStarState {
 }
 
 export class NightSkyBackgroundSystem implements IBackgroundSystem {
-  // core state -------------------------------------------------------------
-  private quality: QualityLevel = "medium";
-  private isInitialized: boolean = false;
+	// core state -------------------------------------------------------------
+	private quality: QualityLevel = 'medium';
+	private isInitialized: boolean = false;
 
-  // Services (initialized via factory method)
-  private renderingService!: IBackgroundRenderingService;
-  private configurationService!: IBackgroundConfigurationService;
-  private calculationService!: INightSkyCalculationService;
+	// Services (initialized via factory method)
+	private renderingService!: IBackgroundRenderingService;
+	private configurationService!: IBackgroundConfigurationService;
+	private calculationService!: INightSkyCalculationService;
+	private geoLocationProvider!: IGeoLocationProvider;
 
   // Modular systems (initialized via factory method)
   private parallaxStarSystem!: ParallaxStarSystem;
@@ -77,23 +76,33 @@ export class NightSkyBackgroundSystem implements IBackgroundSystem {
   }
 
   static create(): NightSkyBackgroundSystem {
-    const instance = new NightSkyBackgroundSystem();
+		const instance = new NightSkyBackgroundSystem();
 
-    // Inject services synchronously (container already initialized)
-    instance.renderingService = resolve<IBackgroundRenderingService>(
-      TYPES.IBackgroundRenderingService
-    );
-    instance.configurationService = resolve<IBackgroundConfigurationService>(
-      TYPES.IBackgroundConfigurationService
-    );
-    instance.calculationService = resolve<INightSkyCalculationService>(
-      TYPES.INightSkyCalculationService
-    );
+		// Inject services synchronously (container already initialized)
+		instance.renderingService = resolve<IBackgroundRenderingService>(
+			TYPES.IBackgroundRenderingService
+		);
+		instance.configurationService = resolve<IBackgroundConfigurationService>(
+			TYPES.IBackgroundConfigurationService
+		);
+		instance.calculationService = resolve<INightSkyCalculationService>(
+			TYPES.INightSkyCalculationService
+		);
+		instance.geoLocationProvider = resolve<IGeoLocationProvider>(TYPES.IGeoLocationProvider);
 
-    // Initialize configuration after services are injected
-    const optimized = instance.getOptimizedConfig(instance.quality);
-    instance.cfg = optimized.config.nightSky;
-    instance.Q = optimized.qualitySettings;
+		// Set observer latitude from geolocation (sync for now, will be updated async)
+		const latitude = instance.geoLocationProvider.getLatitude();
+		instance.calculationService.setObserverLatitude(latitude);
+
+		// Attempt to get more accurate location asynchronously
+		instance.geoLocationProvider.getLocation().then((location) => {
+			instance.calculationService.setObserverLatitude(location.latitude);
+		});
+
+		// Initialize configuration after services are injected
+		const optimized = instance.getOptimizedConfig(instance.quality);
+		instance.cfg = optimized.config.nightSky;
+		instance.Q = optimized.qualitySettings;
 
     // Initialize all modular systems
     instance.parallaxStarSystem = new ParallaxStarSystem(
