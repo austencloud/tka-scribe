@@ -15,10 +15,6 @@
   } from "../../../navigation/state/profile-settings-state.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
   import ConnectedAccountsPreview from "../../../navigation/components/profile-settings/ConnectedAccountsPreview.svelte";
-  import {
-    type ProviderConfig,
-    type ProviderId,
-  } from "../../../navigation/components/profile-settings/connectedAccounts.providers";
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
   import AccountSecuritySection from "../../../auth/components/AccountSecuritySection.svelte";
@@ -30,7 +26,6 @@
   import ProfileHeroSection from "./profile/ProfileHeroSection.svelte";
   import StorageSection from "./profile/StorageSection.svelte";
   import AuthPrompt from "./profile/AuthPrompt.svelte";
-  import ProviderManagementDrawer from "./profile/ProviderManagementDrawer.svelte";
 
   import type { PreviewUserProfile } from "../../../debug/state/user-preview-state.svelte";
   import type { User } from "firebase/auth";
@@ -83,21 +78,6 @@
 
   // Entry animation
   let isVisible = $state(false);
-
-  // Provider drawer state (for mobile tap-to-manage)
-  let showProviderDrawer = $state(false);
-  let selectedProviderId = $state<ProviderId | null>(null);
-  let selectedProviderConfig = $state<ProviderConfig | null>(null);
-  let selectedProviderEmail = $state<string | null>(null);
-  let connectedAccountsRef = $state<{
-    requestDisconnect: (id: ProviderId) => void;
-    getCanUnlink: () => boolean;
-  } | null>(null);
-
-  // Computed: can user unlink providers?
-  const canUnlinkProviders = $derived(
-    Boolean(authState.user?.providerData && authState.user.providerData.length > 1)
-  );
 
   // Preview mode: auth data state
   const previewAuthData = $derived(userPreviewState.data.authData);
@@ -196,31 +176,6 @@
     }
   }
 
-  // Provider drawer handlers
-  function handleProviderSelect(
-    providerId: ProviderId,
-    config: ProviderConfig,
-    email: string | null
-  ) {
-    selectedProviderId = providerId;
-    selectedProviderConfig = config;
-    selectedProviderEmail = email;
-    showProviderDrawer = true;
-  }
-
-  function closeProviderDrawer() {
-    showProviderDrawer = false;
-  }
-
-  function handleDisconnectFromDrawer() {
-    if (!selectedProviderId || !connectedAccountsRef) return;
-    const providerToDisconnect = selectedProviderId;
-    closeProviderDrawer();
-    // Small delay to let drawer close
-    setTimeout(() => {
-      connectedAccountsRef?.requestDisconnect(providerToDisconnect);
-    }, 150);
-  }
 </script>
 
 <div class="profile-tab" class:visible={isVisible}>
@@ -330,10 +285,7 @@
           subtitle="Manage linked providers"
         >
           {#snippet children()}
-            <ConnectedAccounts
-              bind:this={connectedAccountsRef}
-              onProviderSelect={handleProviderSelect}
-            />
+            <ConnectedAccounts />
           {/snippet}
         </GlassCard>
 
@@ -418,16 +370,6 @@
     onCancel={() => stepUpCoordinator?.handleCancel()}
   />
 {/if}
-
-<!-- Provider Details Drawer (mobile tap-to-manage) -->
-<ProviderManagementDrawer
-  isOpen={showProviderDrawer}
-  providerConfig={selectedProviderConfig}
-  providerEmail={selectedProviderEmail}
-  canUnlink={canUnlinkProviders}
-  onDisconnect={handleDisconnectFromDrawer}
-  onCancel={closeProviderDrawer}
-/>
 
 <style>
   /* ═══════════════════════════════════════════════════════════════════════════

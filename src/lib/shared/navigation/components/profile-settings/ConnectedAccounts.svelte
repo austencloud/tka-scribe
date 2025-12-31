@@ -15,30 +15,8 @@
   import EmailLinkingDrawer from "../../../auth/components/EmailLinkingDrawer.svelte";
   import {
     PROVIDERS,
-    type ProviderConfig,
     type ProviderId,
   } from "./connectedAccounts.providers";
-
-  interface Props {
-    onProviderSelect?: (
-      providerId: ProviderId,
-      config: ProviderConfig,
-      email: string | null
-    ) => void;
-    onDisconnectRequest?: (providerId: ProviderId) => void;
-  }
-
-  let { onProviderSelect, onDisconnectRequest }: Props = $props();
-
-  // Expose disconnect function for parent to call
-  export function requestDisconnect(providerId: ProviderId) {
-    unlinkProvider(providerId);
-  }
-
-  // Expose canUnlink status
-  export function getCanUnlink() {
-    return linkedProviders.length > 1;
-  }
 
   // Services
   let authService = $state<IAuthenticator | null>(null);
@@ -82,7 +60,16 @@
 
   // Link a new provider
   async function linkProvider(providerId: ProviderId) {
-    if (!authService || linkingProvider) return;
+    // Check if authService is available
+    if (!authService) {
+      console.error("Auth service not available - cannot link provider");
+      errorMessage = "Unable to connect. Please refresh the page and try again.";
+      hapticService?.trigger("error");
+      return;
+    }
+
+    // Prevent double-clicking
+    if (linkingProvider) return;
 
     linkingProvider = providerId;
     errorMessage = null;
@@ -95,7 +82,7 @@
         await authService.linkFacebookAccount();
       }
       // Note: Email/password linking requires a separate flow with password input
-      hapticService?.trigger("success");
+      // Note: linkWithRedirect navigates away, so success feedback happens on return
     } catch (error: unknown) {
       console.error(`Failed to link ${providerId}:`, error);
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -105,14 +92,16 @@
         errorMessage = `This ${PROVIDERS[providerId].name} account is already linked.`;
       } else if (message.includes("credential-already-in-use")) {
         errorMessage = `This ${PROVIDERS[providerId].name} account is already linked to another user.`;
+      } else if (message.includes("No user is currently signed in")) {
+        errorMessage = "You must be signed in to link accounts.";
       } else {
         errorMessage = `Failed to link ${PROVIDERS[providerId].name}. Please try again.`;
       }
 
       hapticService?.trigger("error");
-    } finally {
       linkingProvider = null;
     }
+    // Note: Don't reset linkingProvider in finally - redirect flow means page navigates away
   }
 
   // Unlink a provider
@@ -166,14 +155,6 @@
     hapticService?.trigger("success");
   }
 
-  // Open provider details (calls parent callback for drawer)
-  function handleProviderTap(providerId: ProviderId) {
-    hapticService?.trigger("selection");
-    const config = PROVIDERS[providerId];
-    const email = getProviderEmail(providerId);
-    onProviderSelect?.(providerId, config, email);
-  }
-
   // Check if email is verified
   const isEmailVerified = $derived(authState.user?.emailVerified ?? false);
 </script>
@@ -207,11 +188,9 @@
           {@const email = getProviderEmail(providerId)}
           {@const isUnlinking = unlinkingProvider === providerId}
           {#if config}
-            <button
+            <div
               class="provider-card linked"
               style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
-              onclick={() => handleProviderTap(providerId as ProviderId)}
-              type="button"
             >
               <div class="provider-icon">
                 <i class={config.icon} aria-hidden="true"></i>
@@ -235,10 +214,10 @@
                   </span>
                 {/if}
               </div>
-              <!-- Desktop: show unlink button inline -->
+              <!-- Unlink button - visible on all screen sizes -->
               {#if canUnlink}
                 <span
-                  class="unlink-btn desktop-only"
+                  class="unlink-btn"
                   role="button"
                   tabindex="0"
                   onclick={(e) => {
@@ -261,11 +240,7 @@
                   {/if}
                 </span>
               {/if}
-              <!-- Mobile: show chevron hint -->
-              <span class="mobile-chevron">
-                <i class="fas fa-chevron-right" aria-hidden="true"></i>
-              </span>
-            </button>
+            </div>
           {/if}
         {/each}
       </div>
@@ -451,19 +426,7 @@
   }
 
   .provider-card.linked {
-    cursor: pointer;
     width: 100%;
-    text-align: left;
-    font-family: inherit;
-  }
-
-  .provider-card.linked:hover {
-    background: color-mix(in srgb, var(--provider-bg) 100%, white 5%);
-    border-color: var(--provider-color);
-  }
-
-  .provider-card.linked:active {
-    transform: scale(0.99);
   }
 
   .provider-card.available {
@@ -596,16 +559,6 @@
     font-size: var(--font-size-sm);
   }
 
-  /* Mobile chevron - shows on mobile to indicate tappable */
-  .mobile-chevron {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    color: var(--theme-text-dim);
-    font-size: var(--font-size-sm);
-    flex-shrink: 0;
-  }
-
   /* Link Icon (for available providers) */
   .link-icon {
     flex-shrink: 0;
@@ -698,20 +651,13 @@
       display: none;
     }
 
-    /* Hide desktop unlink button on mobile - use drawer instead */
-    .unlink-btn.desktop-only {
-      display: none;
+    /* Compact unlink button on mobile - icon only */
+    .unlink-btn {
+      width: 40px;
+      height: 40px;
     }
 
-    /* Show chevron on mobile to indicate tappable */
-    .mobile-chevron {
-      display: flex;
-    }
-
-    /* Hide hint on mobile - drawer explains it */
-    .hint {
-      display: none;
-    }
+    /* Keep hint visible on mobile */
   }
 
   /* Accessibility - Reduced Motion */
@@ -744,7 +690,6 @@
 
   /* Focus States */
   .provider-card.available:focus-visible,
-  .provider-card.linked:focus-visible,
   .unlink-btn:focus-visible,
   .dismiss-btn:focus-visible {
     outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
