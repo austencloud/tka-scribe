@@ -70,7 +70,7 @@ export function createSequenceViewerState(): SequenceViewerState {
   let isSideBySide = $state(false);
 
   // Derived values
-  const totalVariations = $derived(sequence?.thumbnails.length ?? 1);
+  const totalVariations = $derived(sequence?.thumbnails?.length ?? 1);
   const hasMultipleVariations = $derived(totalVariations > 1);
 
   return {

@@ -246,7 +246,7 @@ Orchestrates specialized components and services:
    */
   const shouldUseCompactHeader = $derived(() => {
     if (
-      !optionPickerState?.filteredOptions.length ||
+      !optionPickerState?.filteredOptions?.length ||
       !optionPickerSizingService ||
       containerDimensions.height === 0
     ) {

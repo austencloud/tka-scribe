@@ -60,11 +60,11 @@
 
   // Derived counts
   const allCount = $derived(
-    (library?.created.length ?? 0) + (library?.collaborations.length ?? 0)
+    (library?.created?.length ?? 0) + (library?.collaborations?.length ?? 0)
   );
-  const createdCount = $derived(library?.created.length ?? 0);
-  const collabCount = $derived(library?.collaborations.length ?? 0);
-  const pendingCount = $derived(library?.pendingInvites.length ?? 0);
+  const createdCount = $derived(library?.created?.length ?? 0);
+  const collabCount = $derived(library?.collaborations?.length ?? 0);
+  const pendingCount = $derived(library?.pendingInvites?.length ?? 0);
 
   // Filtered videos based on tab
   const displayedVideos = $derived(() => {

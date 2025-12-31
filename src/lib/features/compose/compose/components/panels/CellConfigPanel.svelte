@@ -124,7 +124,7 @@
   // Get current media type or default
   const currentMediaType = $derived(cell?.mediaType ?? "animation");
   const maxSequences = $derived(cell?.type === "tunnel" ? 4 : 1);
-  const canAddMore = $derived((cell?.sequences.length ?? 0) < maxSequences);
+  const canAddMore = $derived((cell?.sequences?.length ?? 0) < maxSequences);
 </script>
 
 <Drawer

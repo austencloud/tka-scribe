@@ -6,7 +6,20 @@
  *
  * 🚀 PERFORMANCE: Reduces perceived load time by preloading modules
  * users are likely to navigate to next.
+ *
+ * ⚠️ NOTE: This utility is DISABLED in production builds because Vite
+ * compiles .svelte files to hashed JS chunks. Source file paths like
+ * "/src/lib/features/..." don't exist in production.
+ *
+ * For production prefetching, we would need to:
+ * 1. Use Vite's manifest to map modules to compiled chunk paths, OR
+ * 2. Rely on SvelteKit's built-in prefetching capabilities
+ *
+ * Currently, only dev mode uses this for faster module switching.
  */
+
+// Check if we're in development mode (Vite serves source files directly)
+const IS_DEV = typeof import.meta !== "undefined" && import.meta.env?.DEV === true;
 
 /**
  * Navigation patterns: most likely next modules from each module
@@ -35,6 +48,9 @@ const NAVIGATION_PATTERNS: Record<string, string[]> = {
 /**
  * Module chunk paths - maps module IDs to their chunk entry points
  * These are dynamically imported in ModuleRenderer.svelte
+ *
+ * ⚠️ These paths only work in DEV mode where Vite serves source files.
+ * In production, .svelte files are compiled to hashed chunks.
  */
 const MODULE_PATHS: Record<string, string> = {
   dashboard: "/src/lib/features/dashboard/components/Dashboard.svelte",
@@ -54,8 +70,13 @@ const prefetchedModules = new Set<string>();
 
 /**
  * Prefetch a specific module by adding a modulepreload link
+ *
+ * ⚠️ Only works in DEV mode - production builds compile .svelte to hashed chunks
  */
 function prefetchModule(moduleId: string): void {
+  // Skip in production - source paths don't exist after compilation
+  if (!IS_DEV) return;
+
   if (prefetchedModules.has(moduleId)) return;
   if (typeof document === "undefined") return;
 
