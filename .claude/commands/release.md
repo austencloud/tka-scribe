@@ -60,19 +60,29 @@ Review both the feedback items AND the commit messages to build a complete pictu
 
 1. **Remove developer jargon**: No "persistence", "endpoints", "state", "components", "services"
 2. **Focus on user benefit**: What can they DO now? What problem is fixed?
-3. **Be specific and concrete**: "Videos now save properly" not "Fixed video persistence"
-4. **Keep it short**: 5-10 words per entry
+3. **Be specific about WHAT changed**: Don't just say "better" or "improved" - describe the actual change
+4. **Ideal length: 8-15 words**: Long enough to be clear, short enough to scan
 5. **Use active voice**: "You can now..." or "Fixed..."
-6. **Group related items**: Combine small related fixes into one clear entry
+6. **Name the feature/area**: Users need context - "in the option picker", "when exporting", etc.
+7. **Avoid vague words**: "better", "improved", "enhanced", "updated" alone aren't helpful
+
+**BAD vs GOOD Examples**:
+| ❌ Too Vague | ✅ Specific |
+|-------------|------------|
+| "Better option picker" | "Option picker now shows your filter choices immediately" |
+| "Improved drawer animations" | "Drawers slide open/closed more smoothly with less lag" |
+| "Cleaner visuals" | "Props and arrows now render without visible outlines" |
+| "App security improvements" | "Added security headers for safer browsing" |
+| "Enhanced settings" | "Settings now include a Preferences tab for theme and display options" |
 
 **Transform Examples**:
 | Raw Feedback Title | User-Friendly Version |
 |-------------------|----------------------|
-| "Fixed i thought we had implemented persistence for the feedback..." | "Your feedback drafts now save automatically" |
-| "Added when extending a module in the desktop navigation sidebar..." | "Sidebar sections now expand smoothly" |
-| "Fixed generator endpoint mismatch" | "Sequence generation works reliably now" |
-| "Added video collaboration (Instagram-style)" | "Share videos with collaborators" |
-| "Fixed toggle cards don't register taps with slight finger movement" | "Buttons respond better to taps" |
+| "Fixed i thought we had implemented persistence for the feedback..." | "Your feedback drafts now save automatically between sessions" |
+| "Added when extending a module in the desktop navigation sidebar..." | "Clicking a module in the sidebar now expands its sections smoothly" |
+| "Fixed generator endpoint mismatch" | "Sequence generator now creates the correct number of beats" |
+| "Added video collaboration (Instagram-style)" | "Share videos with collaborators using Instagram-style mentions" |
+| "Fixed toggle cards don't register taps with slight finger movement" | "Toggle buttons now respond even when your finger moves slightly while tapping" |
 
 **After rewriting**, present the polished changelog to the user for review before proceeding.
 
