@@ -168,7 +168,9 @@
     // handleHMRInit(); // Disabled - causing HMR verification loops
 
     // 🚀 PERFORMANCE: Preload critical modules during idle time
-    preloadCriticalModules();
+    // Only prefetch from Dashboard - prefetching on Settings/other modules
+    // would defeat lazy loading (Create has 150+ files = 5+ seconds)
+    preloadCriticalModules(currentModule());
 
     // Enable native back/forward by wiring navigation state to history
     initializeNavigationHistory();
