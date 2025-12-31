@@ -136,6 +136,7 @@ Features:
                 containerWidth={contentAreaBounds?.width ||
                   layoutConfig?.containerWidth ||
                   800}
+                containerHeight={layoutConfig?.containerHeight || 600}
                 pictographSize={layoutConfig?.pictographSize || 144}
                 gridGap={layoutConfig?.gridGap || "8px"}
                 {currentSequence}

@@ -349,6 +349,19 @@ Matches the desktop version exactly:
     );
   });
 
+  // Calculate per-row height to prevent overflow when multiple rows exist
+  const ROW_GAP = 12;
+  const perRowHeight = $derived(() => {
+    const rows = layoutSections();
+    const rowCount = rows.length;
+    if (rowCount === 0) return effectiveContainerHeight();
+    const totalRowGaps = rowCount > 1 ? (rowCount - 1) * ROW_GAP : 0;
+    return Math.floor((effectiveContainerHeight() - totalRowGaps) / rowCount);
+  });
+
+  // Hide headers when vertical space is tight to maximize pictograph size
+  const shouldShowHeaders = $derived(() => perRowHeight() > 200);
+
   // Calculate section width for each layout row with improved spacing
   const getSectionWidth = (
     types: string[],
@@ -371,27 +384,57 @@ Matches the desktop version exactly:
   };
 
   // Create layout config for a specific section
+  // CRITICAL: Constrains pictograph size to fit within BOTH width AND height bounds
   const createSectionLayoutConfig = (
     sectionWidth: number,
     _letterType: string,
-    _numPictographs: number,
+    numPictographs: number,
     targetSize: number,
-    containerHeight: number
+    containerHeight: number,
+    showHeader: boolean = true
   ) => {
     const gap = parseInt(gridGap.replace("px", "")) || 8;
 
-    // For Types 4-6, use responsive grid that fits pictographs at target size
-    // Calculate how many pictographs can fit per row at target size
-    const pictographsPerRow = Math.max(
+    // Account for section header height only when headers are shown
+    const headerHeight = showHeader ? 50 : 0;
+    const availableHeight = Math.max(containerHeight - headerHeight, 100);
+
+    // Calculate columns based on target size
+    const columnsAtTargetSize = Math.max(
       1,
       Math.floor(sectionWidth / (targetSize + gap))
     );
 
-    // Use the target size (don't scale down) - let the grid wrap naturally
-    const effectiveSize = targetSize;
+    // Calculate rows needed at this column count
+    const rowsNeeded = Math.ceil(numPictographs / columnsAtTargetSize) || 1;
 
-    // Auto-fit grid that wraps pictographs naturally
-    const gridColumns = `repeat(auto-fit, minmax(${effectiveSize}px, 1fr))`;
+    // Calculate max size that fits in available height
+    const totalVerticalGaps = (rowsNeeded - 1) * gap;
+    const maxHeightBasedSize = Math.floor(
+      (availableHeight - totalVerticalGaps) / rowsNeeded
+    );
+
+    // Calculate max size that fits in available width
+    const totalHorizontalGaps = (columnsAtTargetSize - 1) * gap;
+    const maxWidthBasedSize = Math.floor(
+      (sectionWidth - totalHorizontalGaps) / columnsAtTargetSize
+    );
+
+    // Constrain to the smallest of: target size, width-based, height-based
+    // This ensures pictographs fit within the container
+    const effectiveSize = Math.max(
+      40, // Minimum size
+      Math.min(targetSize, maxWidthBasedSize, maxHeightBasedSize)
+    );
+
+    // Recalculate columns with constrained size for accuracy
+    const pictographsPerRow = Math.max(
+      1,
+      Math.floor(sectionWidth / (effectiveSize + gap))
+    );
+
+    // Use fixed-size columns to prevent stretching
+    const gridColumns = `repeat(${pictographsPerRow}, ${effectiveSize}px)`;
 
     return {
       optionsPerRow: pictographsPerRow,
@@ -427,7 +470,8 @@ Matches the desktop version exactly:
           letterType,
           sectionPictographs.length,
           effectivePictographSize(),
-          effectiveContainerHeight()
+          perRowHeight(),
+          shouldShowHeaders()
         )}
         {#if sectionPictographs && sectionPictographs.length > 0}
           <div
@@ -445,7 +489,7 @@ Matches the desktop version exactly:
               {isFadingOut}
               {contentAreaBounds}
               {forcedPictographSize}
-              showHeader={true}
+              showHeader={shouldShowHeaders()}
               {fitToViewport}
               {lightsOff}
             />
