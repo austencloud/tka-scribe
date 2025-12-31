@@ -322,9 +322,9 @@ Renders a section with:
       };
     }
 
-    // Use contentAreaBounds directly if available (don't wait for $effect to sync to availableWidth)
-    // This prevents the timing issue where $derived runs before $effect
-    const effectiveWidth = contentAreaBounds?.width || availableWidth;
+    // Use layoutConfig.containerWidth if provided (accurate for Types 4-6 sections)
+    // Fall back to contentAreaBounds or availableWidth for other cases
+    const effectiveWidth = layoutConfig?.containerWidth || contentAreaBounds?.width || availableWidth;
     // For height, use availableHeight if measured, otherwise fall back to layoutConfig
     const effectiveHeight = availableHeight || layoutConfig?.containerHeight || 0;
 
