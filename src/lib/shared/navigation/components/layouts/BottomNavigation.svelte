@@ -15,6 +15,8 @@
   } from "../../state/navigation-state.svelte";
   import { galleryPanelManager } from "$lib/features/discover/shared/state/gallery-panel-state.svelte";
   import { quickFeedbackState } from "$lib/features/feedback/state/quick-feedback-state.svelte";
+  import { featureFlagService } from "$lib/shared/auth/services/FeatureFlagService.svelte";
+  import { adminToolbarState } from "$lib/shared/debug/state/admin-toolbar-state.svelte";
 
   // Module color no longer needed - using global theme system
 
@@ -54,20 +56,26 @@
   let hapticService: IHapticFeedback | undefined;
 
   // Calculate required width for all tabs
-  // Each section button needs: min 48px base + 8px gap
-  // Left buttons (module switcher): 48px
-  // Right buttons (settings only): ~60px (48px + gap)
-  // Padding and spacing: ~30px
-  let requiredWidth = $derived(() => {
-    const buttonWidth = 60; // 48px min + gap
-    const tabsWidth = sections.length * buttonWidth;
-    const fixedButtonsWidth = 140; // Module switcher + settings + gaps + padding
-    return tabsWidth + fixedButtonsWidth;
-  });
+  // Layout: [ModuleSwitcher] [Tab1] [Tab2] [Tab3] [Tab4] [Settings/Back]
+  // Each element: 48px minimum touch target
+  // Gaps: 8px between each element
+  //
+  // Fixed buttons on sides:
+  // - Left: Module switcher (48px)
+  // - Right: Settings OR Back button (48px)
+  // - Gaps: 8px on each side of center area (16px total)
+  // Total fixed: 48 + 48 + 16 = 112px
+  //
+  // Each tab needs: 48px min + 8px gap = 56px effective width
+  const BUTTON_WIDTH = 56; // 48px touch target + 8px gap
+  const FIXED_BUTTONS_WIDTH = 112; // Module switcher + settings/back + gaps
+
+  // Calculate required width - directly access sections.length for proper reactivity
+  let requiredWidth = $derived(sections.length * BUTTON_WIDTH + FIXED_BUTTONS_WIDTH);
 
   // Use overflow selector when tabs don't fit in available space
   let shouldUseOverflowSelector = $derived(
-    availableWidth > 0 && availableWidth < requiredWidth()
+    availableWidth > 0 && availableWidth < requiredWidth
   );
 
   // Handle tap on peek indicator to reveal navigation
@@ -95,6 +103,15 @@
 
   function handleSettingsLongPress() {
     quickFeedbackState.open();
+  }
+
+  // Admin toolbar - accessible via long-press on module switcher for admins
+  const isAdmin = $derived(featureFlagService.userRole === "admin");
+
+  function handleModuleSwitcherLongPress() {
+    if (isAdmin) {
+      adminToolbarState.toggle();
+    }
   }
 
   function startBackButtonLongPress(event: PointerEvent) {
@@ -185,8 +202,12 @@
   bind:this={navElement}
 >
   <!-- Module Switcher Button (Left) - now shown even in settings for consistent home/back affordance -->
+  <!-- Long-press opens admin toolbar for admins -->
   {#if showModuleSwitcher}
-    <ModuleSwitcherButton onClick={onModuleSwitcherTap} />
+    <ModuleSwitcherButton
+      onClick={onModuleSwitcherTap}
+      onLongPress={handleModuleSwitcherLongPress}
+    />
   {/if}
 
   <!-- Current Module's Sections - Use overflow selector for modules with >4 tabs -->
@@ -358,8 +379,8 @@
     justify-content: center;
     align-items: center;
     min-width: 0;
-    /* Leave room for 48px avatar + 48px settings + gaps */
-    max-width: calc(100% - 104px - (var(--nav-gap) * 2));
+    /* Leave room for module switcher (48px) + settings/back (48px) + gaps (16px) = 112px */
+    max-width: calc(100% - 112px);
     opacity: 1;
     transition: opacity var(--transition-smooth);
     pointer-events: auto;
@@ -381,7 +402,8 @@
     justify-content: center;
     align-items: center;
     min-width: 0;
-    max-width: calc(100% - 104px - (var(--nav-gap) * 2));
+    /* Leave room for module switcher (48px) + settings/back (48px) + gaps (16px) = 112px */
+    max-width: calc(100% - 112px);
     opacity: 1;
     transition: opacity var(--transition-smooth);
     pointer-events: auto;

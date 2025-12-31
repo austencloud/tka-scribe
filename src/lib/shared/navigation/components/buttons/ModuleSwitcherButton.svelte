@@ -6,11 +6,19 @@
   import { inboxState } from "$lib/shared/inbox/state/inbox-state.svelte";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
 
-  let { onClick = () => {} } = $props<{
+  let {
+    onClick = () => {},
+    onLongPress = () => {},
+    longPressMs = 500,
+  } = $props<{
     onClick?: () => void;
+    onLongPress?: () => void;
+    longPressMs?: number;
   }>();
 
   let hapticService: IHapticFeedback | undefined;
+  let longPressTimer: ReturnType<typeof setTimeout> | null = null;
+  let suppressClick = $state(false);
 
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(
@@ -18,10 +26,34 @@
     );
   });
 
+  function startLongPress(event: PointerEvent) {
+    // Only trigger long-press for touch (not mouse)
+    if (event.pointerType === "mouse") return;
+    clearLongPress();
+    longPressTimer = setTimeout(() => {
+      suppressClick = true;
+      hapticService?.trigger("impact");
+      onLongPress();
+    }, longPressMs);
+  }
+
+  function clearLongPress() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+
   function handleClick(event: MouseEvent | TouchEvent) {
     // Prevent double-firing on devices that support both touch and mouse
     if (event instanceof TouchEvent) {
       event.preventDefault();
+    }
+
+    // Skip click if long-press just fired
+    if (suppressClick) {
+      suppressClick = false;
+      return;
     }
 
     hapticService?.trigger("selection");
@@ -46,6 +78,10 @@
   class:has-badge={badgeCount > 0}
   onclick={handleClick}
   ontouchend={handleClick}
+  onpointerdown={startLongPress}
+  onpointerup={clearLongPress}
+  onpointerleave={clearLongPress}
+  onpointercancel={clearLongPress}
   aria-label="Open menu{badgeCount > 0
     ? `, ${badgeCount} unread notifications`
     : ''}"

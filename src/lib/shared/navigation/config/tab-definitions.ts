@@ -413,6 +413,14 @@ export const SETTINGS_TABS: Section[] = [
     color: "#8b5cf6",
     gradient: "linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%)",
   },
+  {
+    id: "preferences",
+    label: "Preferences",
+    icon: '<i class="fas fa-sliders" aria-hidden="true"></i>',
+    description: "Workflow and behavior preferences",
+    color: "#f97316",
+    gradient: "linear-gradient(135deg, #fb923c 0%, #f97316 100%)",
+  },
 ];
 
 // Feedback tabs configuration (testers/admins only)

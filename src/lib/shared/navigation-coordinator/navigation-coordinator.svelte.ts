@@ -14,8 +14,9 @@ import {
   navigationState,
 } from "../navigation/state/navigation-state.svelte";
 import { switchModule } from "../application/state/ui/module-state";
-import { authState } from "../auth/state/authState.svelte";
+import { authState, isEffectiveAdmin } from "../auth/state/authState.svelte";
 import { featureFlagService } from "../auth/services/FeatureFlagService.svelte";
+import { userPreviewState } from "../debug/state/user-preview-state.svelte";
 
 // Session storage key for persisting navigation history across HMR
 const PREVIOUS_MODULE_KEY = "tka-previous-module-before-settings";
@@ -114,11 +115,13 @@ export function moduleSections() {
 
     if (!navigationCoordinator.canAccessEditAndExportPanels) {
       return availableSections.filter((section: { id: string }) => {
-        // Show assembler, constructor, and generator sections when no sequence exists
+        // Show all creation method tabs when no sequence exists
+        // These are entry points for building sequences, not editing features
         return (
           section.id === "assembler" ||
           section.id === "constructor" ||
-          section.id === "generator"
+          section.id === "generator" ||
+          section.id === "spell"
         );
       });
     }
@@ -395,20 +398,22 @@ export function getModuleDefinitions() {
   const _isPremium = featureFlagService.isPremium;
   const _effectiveRole = featureFlagService.effectiveRole;
 
+  // Check if we're in user impersonation mode
+  // When impersonating, use the impersonated user's role for access control
+  const isImpersonating = userPreviewState.isActive;
+  const impersonatedRole = userPreviewState.data.profile?.role;
+
+  // Determine effective admin status:
+  // - If impersonating: check the impersonated user's role
+  // - Otherwise: use actual admin status (or debug role override)
+  const effectiveIsAdmin = isImpersonating
+    ? impersonatedRole === "admin"
+    : isEffectiveAdmin();
+
   return MODULE_DEFINITIONS.filter((module) => {
     // Settings module is accessed via sidebar footer gear icon, not main module list
     if (module.id === "settings") {
       return false;
-    }
-
-    // Premium module is admin-only (features not ready for public release)
-    if (module.id === "premium") {
-      // Hide if auth not initialized (prevents flash of premium module)
-      if (!isAuthInitialized || !isFeatureFlagsInitialized) {
-        return false;
-      }
-      // Admin-only access for testing/preview until premium features are built
-      return _isAdmin;
     }
 
     // If auth/feature flags not initialized, show core modules optimistically
@@ -418,9 +423,41 @@ export function getModuleDefinitions() {
       return ["dashboard", "create", "discover"].includes(module.id);
     }
 
-    // Once initialized, use feature flags to determine visibility
-    // Modules the user can't access are hidden entirely (not shown with "Coming Soon")
-    // This provides an accurate preview when impersonating users
+    // When impersonating a user, manually check their role against module requirements
+    // This provides an accurate preview of what the impersonated user would see
+    if (isImpersonating) {
+      // Admin-only modules
+      const adminOnlyModules = [
+        "admin",
+        "ml-training",
+        "3d-viewer",
+        "premium",
+        "word_card",
+        "write",
+        "learn",
+        "compose",
+        "train",
+        "library",
+      ];
+      if (adminOnlyModules.includes(module.id)) {
+        return effectiveIsAdmin;
+      }
+
+      // Tester-level modules
+      const testerModules = ["feedback"];
+      if (testerModules.includes(module.id)) {
+        return (
+          effectiveIsAdmin ||
+          impersonatedRole === "tester" ||
+          impersonatedRole === "premium"
+        );
+      }
+
+      // All other modules are accessible to everyone
+      return true;
+    }
+
+    // Not impersonating - use standard feature flag checks
     return featureFlagService.canAccessModule(module.id);
   });
 }

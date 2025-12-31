@@ -32,6 +32,8 @@ export type ModuleId =
   | "compose"
   | "train"
   | "library"
+  | "word_card"
+  | "write"
   | "feedback"
   | "ml-training"
   | "admin"
