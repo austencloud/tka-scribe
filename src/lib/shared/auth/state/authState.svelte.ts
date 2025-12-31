@@ -27,6 +27,7 @@ import {
   sendEmailVerification,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  getRedirectResult,
   type User,
 } from "firebase/auth";
 import { TYPES } from "../../inversify/types";
@@ -199,16 +200,92 @@ async function initializeSubscriptionListener(user: User) {
  * Initialize the auth state listener
  * Sets up Firebase onAuthStateChanged and orchestrates auth flows
  */
-export function initializeAuthListener() {
+export async function initializeAuthListener() {
   if (cleanupAuthListener) {
     console.warn("⚠️ [authState] Auth listener already initialized");
     return;
+  }
+
+  // Track if we just completed an OAuth redirect (for provider linking)
+  let justCompletedOAuthRedirect = false;
+  let redirectResultUser: User | null = null;
+
+  // CRITICAL: Wait for Firebase Auth to initialize before checking redirect result
+  // Auth needs time to restore persisted session from IndexedDB
+  console.log("🔍 [authState] Waiting for Firebase Auth to initialize...");
+  console.log("🔍 [authState] Current URL:", typeof window !== 'undefined' ? window.location.href : 'SSR');
+  console.log("🔍 [authState] URL hash:", typeof window !== 'undefined' ? window.location.hash : 'SSR');
+  console.log("🔍 [authState] URL search:", typeof window !== 'undefined' ? window.location.search : 'SSR');
+
+  // Check if we're returning from a link redirect
+  if (typeof window !== 'undefined') {
+    try {
+      const linkRedirectMarker = sessionStorage.getItem('tka_link_redirect');
+      if (linkRedirectMarker) {
+        console.log("🔍 [authState] Found link redirect marker:", linkRedirectMarker);
+        // Clear it after reading
+        sessionStorage.removeItem('tka_link_redirect');
+      } else {
+        console.log("🔍 [authState] No link redirect marker found");
+      }
+    } catch (e) {
+      console.warn("🔍 [authState] Could not read redirect marker:", e);
+    }
+  }
+
+  // Create a promise that resolves when auth state is first determined
+  const authReady = new Promise<User | null>((resolve) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe(); // Only need the first callback
+      resolve(user);
+    });
+  });
+
+  const initialUser = await authReady;
+  console.log("🔍 [authState] Auth initialized. Current user:",
+    initialUser?.email ?? "not signed in",
+    "providers:", initialUser?.providerData?.map(p => p.providerId) ?? []);
+
+  // NOW check for OAuth redirect result (auth is ready)
+  try {
+    console.log("🔍 [authState] Checking for OAuth redirect result...");
+
+    const result = await getRedirectResult(auth);
+
+    console.log("🔍 [authState] getRedirectResult returned:", result ? "UserCredential" : "null");
+
+    if (result?.user) {
+      console.log("✅ [authState] OAuth redirect completed for:", result.user.email);
+      console.log("✅ [authState] Providers after redirect:", result.user.providerData.map(p => p.providerId));
+      console.log("✅ [authState] Operation type:", result.operationType);
+      justCompletedOAuthRedirect = true;
+      redirectResultUser = result.user;
+
+      // Reload to ensure providerData is synced
+      await result.user.reload();
+      console.log("✅ [authState] User reloaded, providers:",
+        result.user.providerData.map(p => p.providerId));
+    } else {
+      console.log("🔍 [authState] No OAuth redirect pending");
+    }
+  } catch (error: unknown) {
+    const errorCode = (error as { code?: string })?.code;
+    console.error("❌ [authState] getRedirectResult error:", errorCode || error);
   }
 
   cleanupAuthListener = onAuthStateChanged(
     auth,
     async (user) => {
       _state.loading = true;
+
+      // If we just completed an OAuth redirect, use the redirect result user
+      // because it has the freshest providerData
+      if (justCompletedOAuthRedirect && redirectResultUser) {
+        console.log("✅ [authState] Using OAuth redirect result user with updated providers");
+        user = redirectResultUser;
+        justCompletedOAuthRedirect = false;
+        redirectResultUser = null;
+      }
 
       // CRITICAL: Initialize Firestore before any services try to use it
       // This prevents race condition errors with the lazy-loaded Firestore Proxy
@@ -526,6 +603,40 @@ export async function changeEmail(newEmail: string, currentPassword: string) {
 }
 
 /**
+ * Refresh the current user's data from Firebase
+ * Used after operations that modify user data (like linking providers)
+ * to ensure the local state reflects the latest server state.
+ */
+export async function refreshUser(): Promise<void> {
+  const user = auth.currentUser;
+  if (!user) {
+    console.warn("⚠️ [authState] Cannot refresh - no user signed in");
+    return;
+  }
+
+  try {
+    // Reload user from Firebase to get fresh providerData
+    await user.reload();
+
+    // Get the refreshed user (reload mutates the object but we need to trigger reactivity)
+    const refreshedUser = auth.currentUser;
+
+    if (refreshedUser) {
+      // Update state with refreshed user to trigger Svelte reactivity
+      _state = {
+        ..._state,
+        user: refreshedUser,
+      };
+      console.log("✅ [authState] User refreshed, providers:",
+        refreshedUser.providerData.map(p => p.providerId));
+    }
+  } catch (error) {
+    console.error("❌ [authState] Failed to refresh user:", error);
+    throw error;
+  }
+}
+
+/**
  * Update user's display name
  * @param displayName - The new display name
  */
@@ -619,5 +730,6 @@ export const authState = {
   signOut,
   changeEmail,
   updateDisplayName,
+  refreshUser,
   cleanup,
 };

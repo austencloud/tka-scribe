@@ -2,191 +2,41 @@
   /**
    * Login Page
    *
-   * Provides social authentication options for users
+   * Provides social authentication options for users.
+   * Note: OAuth redirect results are handled centrally by authState.initializeAuthListener()
+   * in the root layout. This page just reacts to auth state changes.
    */
 
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
-  import { getRedirectResult } from "firebase/auth";
-  import { auth } from "$lib/shared/auth/firebase";
   import SocialAuthButton from "$lib/shared/auth/components/SocialAuthButton.svelte";
   import EmailPasswordAuth from "$lib/shared/auth/components/EmailPasswordAuth.svelte";
   import EmailLinkAuth from "$lib/shared/auth/components/EmailLinkAuth.svelte";
 
-  let loadingRedirect = $state(true);
-  let redirectError = $state<string | null>(null);
   let emailAuthMode: "password" | "link" = $state("link"); // Default to passwordless
+  let hasRedirected = $state(false);
 
-  // Handle redirect result (for OAuth flow)
   onMount(() => {
-    console.log("🔐 Login page mounted, checking for redirect result...");
-    console.log("🔐 Current URL:", window.location.href);
-    console.log("🔐 URL search params:", window.location.search);
-    console.log("🔐 URL hash:", window.location.hash);
+    console.log("🔐 Login page mounted");
 
-    // Check for auth attempt markers
-    let authAttempt: any = null;
+    // Clear any stale auth attempt markers
     try {
-      const localStorageItem = localStorage.getItem("tka_auth_attempt");
-      const sessionStorageItem = sessionStorage.getItem("tka_auth_attempt");
-      console.log("🔐 localStorage auth_attempt:", localStorageItem);
-      console.log("🔐 sessionStorage auth_attempt:", sessionStorageItem);
-
-      authAttempt = JSON.parse(
-        localStorageItem || sessionStorageItem || "null"
-      );
-      if (authAttempt) {
-        console.log("✅ Found auth attempt marker:", authAttempt);
-        const timeSinceAttempt = Date.now() - authAttempt.timestamp;
-        console.log(`🔐 Time since auth attempt: ${timeSinceAttempt}ms`);
-      } else {
-        console.log(
-          "ℹ️ No auth attempt marker found (first page load or not returning from OAuth)"
-        );
-      }
-    } catch (e) {
-      console.error("⚠️ Error reading auth attempt markers:", e);
+      localStorage.removeItem("tka_auth_attempt");
+      sessionStorage.removeItem("tka_auth_attempt");
+    } catch {
+      // Ignore storage errors
     }
+  });
 
-    let hasRedirected = false;
-
-    // Async initialization
-    (async () => {
-      // Check for redirect result first
-      try {
-        console.log("🔐 Calling getRedirectResult...");
-        console.log("🔐 Auth instance:", auth);
-        console.log(
-          "🔐 Auth currentUser before getRedirectResult:",
-          auth.currentUser
-        );
-
-        const result = await getRedirectResult(auth);
-
-        console.log("🔐 getRedirectResult returned:", result);
-        console.log("🔐 Result details:", {
-          hasResult: !!result,
-          hasUser: !!result?.user,
-          user: result?.user
-            ? {
-                uid: result.user.uid,
-                email: result.user.email,
-                displayName: result.user.displayName,
-              }
-            : null,
-          credential: result?.providerId,
-        });
-        console.log(
-          "🔐 Auth currentUser after getRedirectResult:",
-          auth.currentUser
-        );
-
-        // Clear auth attempt markers after processing
-        if (authAttempt) {
-          try {
-            localStorage.removeItem("tka_auth_attempt");
-            sessionStorage.removeItem("tka_auth_attempt");
-            console.log("🔐 Cleared auth attempt markers");
-          } catch (e) {
-            console.error("⚠️ Could not clear auth attempt markers:", e);
-          }
-        }
-
-        if (result && result.user) {
-          // User successfully signed in via redirect
-          console.log("✅ User signed in via redirect:", result.user.uid);
-          hasRedirected = true;
-          // Give auth state time to propagate
-          await new Promise((resolve) => setTimeout(resolve, 300));
-          goto("/");
-          return;
-        } else {
-          console.log("ℹ️ No redirect result found");
-
-          if (authAttempt) {
-            console.error(
-              "⚠️ Auth attempt marker exists but no redirect result!"
-            );
-            console.error(
-              "⚠️ This suggests Firebase Auth state was lost during redirect"
-            );
-
-            // RECOVERY ATTEMPT: Check if there's any auth data in storage
-            console.log(
-              "🔧 Attempting recovery: checking localStorage for Firebase auth data..."
-            );
-            try {
-              const firebaseKeys = Object.keys(localStorage).filter(
-                (key) => key.startsWith("firebase:") || key.includes("auth")
-              );
-              console.log(
-                "🔧 Firebase-related localStorage keys:",
-                firebaseKeys
-              );
-
-              // Check IndexedDB for Firebase data
-              if ("indexedDB" in window) {
-                const dbs = await indexedDB.databases?.();
-                console.log("🔧 IndexedDB databases:", dbs);
-              }
-            } catch (storageCheck) {
-              console.error("⚠️ Could not check storage:", storageCheck);
-            }
-
-            redirectError =
-              "Authentication failed. Firebase lost your login session during redirect. This is likely caused by strict browser privacy settings. Try: (1) Allowing cookies for this site, (2) Disabling strict tracking prevention, or (3) Using a different browser.";
-          } else {
-            console.log(
-              "ℹ️ This is likely a first page load (no OAuth redirect happened)"
-            );
-          }
-        }
-      } catch (error: any) {
-        console.error("❌ Redirect sign-in error:", error);
-        console.error("❌ Error details:", {
-          code: error.code,
-          message: error.message,
-          name: error.name,
-          stack: error.stack,
-        });
-
-        // Clear auth attempt markers on error
-        if (authAttempt) {
-          try {
-            localStorage.removeItem("tka_auth_attempt");
-            sessionStorage.removeItem("tka_auth_attempt");
-          } catch (e) {
-            // Ignore
-          }
-        }
-
-        if (error.code === "auth/account-exists-with-different-credential") {
-          redirectError =
-            "An account already exists with this email using a different sign-in method.";
-        } else if (error.code === "auth/network-request-failed") {
-          redirectError =
-            "Network error. Please check your internet connection and firewall settings.";
-        } else {
-          redirectError = error.message || "An error occurred during sign-in";
-        }
-      } finally {
-        loadingRedirect = false;
-        console.log(
-          "🔐 Finished checking redirect result, loadingRedirect = false"
-        );
-      }
-    })();
-
-    // Redirect if already logged in
-    // This handles cases where the user is already authenticated from a previous session
-    $effect(() => {
-      if (authState.isAuthenticated && !hasRedirected && !loadingRedirect) {
-        console.log("✅ User is authenticated, redirecting to home...");
-        hasRedirected = true;
-        goto("/");
-      }
-    });
+  // Redirect when auth state changes (handles both direct login and OAuth redirects)
+  // OAuth redirect results are processed by authState.initializeAuthListener() in the root layout
+  $effect(() => {
+    if (authState.isAuthenticated && authState.initialized && !hasRedirected) {
+      console.log("✅ User is authenticated, redirecting to home...");
+      hasRedirected = true;
+      goto("/");
+    }
   });
 </script>
 
@@ -201,19 +51,12 @@
       <p>Sign in to continue</p>
     </div>
 
-    {#if loadingRedirect}
+    {#if !authState.initialized}
       <div class="loading-state">
         <div class="spinner"></div>
-        <p>Completing sign-in...</p>
+        <p>Loading...</p>
       </div>
     {:else}
-      {#if redirectError}
-        <div class="error-banner">
-          <i class="fas fa-exclamation-circle"></i>
-          {redirectError}
-        </div>
-      {/if}
-
       <div class="social-buttons">
         <SocialAuthButton provider="facebook">
           <svg

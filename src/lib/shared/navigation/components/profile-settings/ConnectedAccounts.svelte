@@ -87,7 +87,11 @@
         await authService.linkFacebookAccount();
       }
       // Note: Email/password linking requires a separate flow with password input
-      // Note: linkWithRedirect navigates away, so success feedback happens on return
+
+      // Popup completed successfully - refresh auth state to pick up new provider
+      await authState.refreshUser();
+      hapticService?.trigger("success");
+      linkingProvider = null;
     } catch (error: unknown) {
       console.error(`Failed to link ${providerId}:`, error);
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -106,7 +110,6 @@
       hapticService?.trigger("error");
       linkingProvider = null;
     }
-    // Note: Don't reset linkingProvider in finally - redirect flow means page navigates away
   }
 
   // Request to unlink a provider (shows confirmation dialog)
@@ -175,168 +178,65 @@
   <!-- Error Message -->
   {#if errorMessage}
     <div class="error-banner" role="alert">
-      <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
       <span>{errorMessage}</span>
-      <button
-        class="dismiss-btn"
-        onclick={dismissError}
-        aria-label="Dismiss error"
-      >
+      <button class="dismiss-btn" onclick={dismissError} aria-label="Dismiss">
         <i class="fas fa-times" aria-hidden="true"></i>
       </button>
     </div>
   {/if}
 
-  <!-- Linked Accounts Section -->
-  {#if linkedProviders.length > 0}
-    <div class="section">
-      <h4 class="section-title">Linked Accounts</h4>
-      <p class="section-description">
-        You can sign in with any of these methods
-      </p>
-      <div class="providers-list">
-        {#each linkedProviders as providerId}
-          {@const config = PROVIDERS[providerId as ProviderId]}
-          {@const email = getProviderEmail(providerId)}
-          {@const isUnlinking = unlinkingProvider === providerId}
-          {#if config}
-            <div
-              class="provider-card linked"
-              style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
+  <!-- All Providers - Compact list -->
+  <div class="providers-list">
+    <!-- Linked providers -->
+    {#each linkedProviders as providerId}
+      {@const config = PROVIDERS[providerId as ProviderId]}
+      {@const isUnlinking = unlinkingProvider === providerId}
+      {#if config}
+        <div class="provider-row linked" style="--provider-color: {config.color};">
+          <i class="{config.icon} provider-icon" aria-hidden="true"></i>
+          <span class="provider-name">{config.name}</span>
+          <i class="fas fa-check-circle status-icon connected" aria-hidden="true"></i>
+          {#if canUnlink}
+            <button
+              class="action-btn unlink"
+              onclick={() => requestUnlinkProvider(providerId as ProviderId)}
+              disabled={isUnlinking}
+              aria-label="Disconnect {config.name}"
             >
-              <div class="provider-icon">
-                <i class={config.icon} aria-hidden="true"></i>
-              </div>
-              <div class="provider-info">
-                <span class="provider-name">{config.name}</span>
-                {#if email}
-                  <span class="provider-email">{email}</span>
-                {/if}
-              </div>
-              <div class="provider-status">
-                {#if providerId === "password" && !isEmailVerified}
-                  <span class="verification-badge pending">
-                    <i class="fas fa-clock" aria-hidden="true"></i>
-                    <span class="badge-text">Unverified</span>
-                  </span>
-                {:else}
-                  <span class="connected-badge">
-                    <i class="fas fa-check-circle" aria-hidden="true"></i>
-                    <span class="badge-text">Connected</span>
-                  </span>
-                {/if}
-              </div>
-              <!-- Unlink button - visible on all screen sizes -->
-              {#if canUnlink}
-                <span
-                  class="unlink-btn"
-                  role="button"
-                  tabindex="0"
-                  onclick={(e) => {
-                    e.stopPropagation();
-                    requestUnlinkProvider(providerId as ProviderId);
-                  }}
-                  onkeydown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      requestUnlinkProvider(providerId as ProviderId);
-                    }
-                  }}
-                  aria-label="Disconnect {config.name}"
-                >
-                  {#if isUnlinking}
-                    <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-                  {:else}
-                    <i class="fas fa-unlink" aria-hidden="true"></i>
-                  {/if}
-                </span>
+              {#if isUnlinking}
+                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+              {:else}
+                <i class="fas fa-unlink" aria-hidden="true"></i>
               {/if}
-            </div>
+            </button>
           {/if}
-        {/each}
-      </div>
-      {#if !canUnlink}
-        <p class="hint">
-          <i class="fas fa-info-circle" aria-hidden="true"></i>
-          Link another account to enable disconnecting
-        </p>
+        </div>
       {/if}
-    </div>
-  {/if}
+    {/each}
 
-  <!-- Available Providers Section -->
-  {#if availableProviders.length > 0}
-    <div class="section">
-      <h4 class="section-title">Add Sign-In Method</h4>
-      <p class="section-description">
-        Link additional accounts for easier access
-      </p>
-      <div class="providers-list">
-        {#each availableProviders as providerId}
-          {@const config = PROVIDERS[providerId]}
-          {@const isLinking = linkingProvider === providerId}
-          {#if providerId === "password"}
-            <!-- Email/Password linking - Opens drawer -->
-            <button
-              class="provider-card available"
-              style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
-              onclick={openEmailLinkingDrawer}
-              disabled={linkingProvider !== null}
-            >
-              <div class="provider-icon">
-                <i class={config.icon} aria-hidden="true"></i>
-              </div>
-              <div class="provider-info">
-                <span class="provider-name">Add Email & Password</span>
-                <span class="provider-description">
-                  Sign in with email and password
-                </span>
-              </div>
-              <div class="link-icon">
-                <i class="fas fa-plus-circle" aria-hidden="true"></i>
-              </div>
-            </button>
-          {:else}
-            <button
-              class="provider-card available"
-              style="--provider-color: {config.color}; --provider-bg: {config.bgColor}; --provider-border: {config.borderColor};"
-              onclick={() => linkProvider(providerId)}
-              disabled={isLinking || linkingProvider !== null}
-            >
-              <div class="provider-icon">
-                {#if isLinking}
-                  <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-                {:else}
-                  <i class={config.icon} aria-hidden="true"></i>
-                {/if}
-              </div>
-              <div class="provider-info">
-                <span class="provider-name">
-                  {isLinking
-                    ? `Connecting ${config.name}...`
-                    : `Connect ${config.name}`}
-                </span>
-                <span class="provider-description">
-                  Sign in with your {config.name} account
-                </span>
-              </div>
-              <div class="link-icon">
-                <i class="fas fa-plus-circle" aria-hidden="true"></i>
-              </div>
-            </button>
-          {/if}
-        {/each}
-      </div>
-    </div>
-  {/if}
+    <!-- Available providers -->
+    {#each availableProviders as providerId}
+      {@const config = PROVIDERS[providerId]}
+      {@const isLinking = linkingProvider === providerId}
+      <button
+        class="provider-row available"
+        style="--provider-color: {config.color};"
+        onclick={() => providerId === "password" ? openEmailLinkingDrawer() : linkProvider(providerId)}
+        disabled={isLinking || linkingProvider !== null}
+      >
+        {#if isLinking}
+          <i class="fas fa-spinner fa-spin provider-icon" aria-hidden="true"></i>
+        {:else}
+          <i class="{config.icon} provider-icon" aria-hidden="true"></i>
+        {/if}
+        <span class="provider-name">{isLinking ? "Connecting..." : `Add ${config.name}`}</span>
+        <i class="fas fa-plus action-icon" aria-hidden="true"></i>
+      </button>
+    {/each}
+  </div>
 
-  <!-- Empty State -->
-  {#if !linkedProviders.length}
-    <div class="empty-state">
-      <i class="fas fa-link" aria-hidden="true"></i>
-      <p>No accounts connected</p>
-    </div>
+  {#if !canUnlink && linkedProviders.length === 1}
+    <p class="hint">Add another method to enable disconnecting</p>
   {/if}
 </div>
 
@@ -356,6 +256,7 @@
     confirmText="Disconnect"
     cancelText="Keep Connected"
     variant="warning"
+    confirmDelay={5}
     onConfirm={confirmUnlinkProvider}
     onCancel={cancelUnlinkProvider}
   />
@@ -363,363 +264,174 @@
 
 <style>
   .connected-accounts {
-    container-type: inline-size;
-    container-name: connected-accounts;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
   }
 
-  /* Error Banner */
+  /* Error Banner - Compact */
   .error-banner {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 10px;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgba(239, 68, 68, 0.12);
+    border-radius: 8px;
     color: #fca5a5;
-    font-size: var(--font-size-sm);
-  }
-
-  .error-banner i:first-child {
-    color: var(--semantic-error);
-    font-size: var(--font-size-base);
-    flex-shrink: 0;
+    font-size: var(--font-size-compact);
   }
 
   .error-banner span {
     flex: 1;
-    line-height: 1.4;
   }
 
   .dismiss-btn {
     background: none;
     border: none;
-    padding: 4px 8px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    padding: 4px;
+    color: var(--theme-text-dim);
     cursor: pointer;
     border-radius: 4px;
-    transition: all 0.2s ease;
   }
 
   .dismiss-btn:hover {
-    color: var(--theme-text-dim);
-    background: var(--theme-stroke);
+    color: var(--theme-text);
   }
 
-  /* Section Styles */
-  .section {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .section-title {
-    margin: 0;
-    font-size: var(--font-size-compact);
-    font-weight: 600;
-    color: var(--theme-text-dim, var(--theme-text-dim));
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .section-description {
-    margin: 0;
-    font-size: var(--font-size-sm);
-    color: var(--theme-text-dim, var(--theme-text-dim));
-    line-height: 1.4;
-  }
-
-  /* Provider List */
+  /* Provider List - Compact rows */
   .providers-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
   }
 
-  /* Provider Card Base */
-  .provider-card {
+  /* Provider Row - Single line compact display */
+  .provider-row {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 14px 16px;
-    background: var(--provider-bg);
-    border: 1px solid var(--provider-border);
-    border-radius: 12px;
-    transition: all 0.2s ease;
-    min-width: 0;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 8px;
+    transition: all 0.15s ease;
   }
 
-  .provider-card.linked {
-    width: 100%;
+  .provider-row.linked {
+    background: color-mix(in srgb, var(--provider-color) 8%, transparent);
+    border-color: color-mix(in srgb, var(--provider-color) 20%, transparent);
   }
 
-  .provider-card.available {
+  .provider-row.available {
     cursor: pointer;
     width: 100%;
     text-align: left;
     font-family: inherit;
+    border: 1px dashed var(--theme-stroke);
+    background: transparent;
   }
 
-  .provider-card.available:hover:not(:disabled) {
-    background: color-mix(in srgb, var(--provider-bg) 100%, white 5%);
-    border-color: var(--provider-color);
-    transform: translateY(-1px);
+  .provider-row.available:hover:not(:disabled) {
+    background: var(--theme-card-bg);
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--provider-color) 40%, transparent);
   }
 
-  .provider-card.available:active:not(:disabled) {
-    transform: translateY(0) scale(0.99);
-  }
-
-  .provider-card.available:disabled {
-    opacity: 0.6;
+  .provider-row.available:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
   }
 
-  /* Provider Icon */
+  /* Provider Icon - Inline, no background */
   .provider-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--theme-stroke);
-    border-radius: 10px;
+    font-size: 16px;
+    color: var(--provider-color);
+    width: 20px;
+    text-align: center;
     flex-shrink: 0;
   }
 
-  .provider-icon i {
-    font-size: var(--font-size-lg);
-    color: var(--provider-color);
-  }
-
-  /* Provider Info */
-  .provider-info {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
+  /* Provider Name */
   .provider-name {
+    flex: 1;
     font-size: var(--font-size-sm);
-    font-weight: 600;
+    font-weight: 500;
     color: var(--theme-text);
   }
 
-  .provider-email,
-  .provider-description {
-    font-size: var(--font-size-compact);
-    color: var(--theme-text-dim, var(--theme-text-dim));
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  /* Connected Badge */
-  .provider-status {
+  /* Status Icon - Connected checkmark */
+  .status-icon {
+    font-size: 14px;
     flex-shrink: 0;
   }
 
-  .connected-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    background: rgba(34, 197, 94, 0.15);
-    border-radius: 20px;
-    font-size: var(--font-size-compact);
-    font-weight: 500;
-    color: #4ade80;
+  .status-icon.connected {
+    color: var(--semantic-success);
   }
 
-  .connected-badge i {
-    font-size: var(--font-size-compact);
+  /* Action Icon - Plus for available */
+  .action-icon {
+    font-size: 12px;
+    color: var(--theme-text-dim);
+    flex-shrink: 0;
   }
 
-  /* Verification Badge (for unverified email) */
-  .verification-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    border-radius: 20px;
-    font-size: var(--font-size-compact);
-    font-weight: 500;
+  .provider-row.available:hover:not(:disabled) .action-icon {
+    color: var(--provider-color);
   }
 
-  .verification-badge.pending {
-    background: rgba(245, 158, 11, 0.15);
-    color: var(--semantic-warning);
-  }
-
-  .verification-badge i {
-    font-size: var(--font-size-compact);
-  }
-
-  /* Unlink Button - Desktop only */
-  .unlink-btn {
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
+  /* Action Button - Unlink */
+  .action-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--theme-card-hover-bg, var(--theme-card-bg));
-    border: 1px solid var(--theme-stroke, var(--theme-stroke));
-    border-radius: 10px;
-    color: var(--theme-text-dim, var(--theme-text-dim));
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--theme-text-dim);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     flex-shrink: 0;
   }
 
-  .unlink-btn:hover {
+  .action-btn.unlink:hover:not(:disabled) {
     background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.3);
     color: var(--semantic-error);
   }
 
-  .unlink-btn i {
-    font-size: var(--font-size-sm);
+  .action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
-  /* Link Icon (for available providers) */
-  .link-icon {
-    flex-shrink: 0;
-    color: var(--provider-color);
-    opacity: 0.7;
-    transition: all 0.2s ease;
+  .action-btn i {
+    font-size: 12px;
   }
 
-  .provider-card.available:hover:not(:disabled) .link-icon {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-
-  .link-icon i {
-    font-size: var(--font-size-xl);
-  }
-
-  /* Hint */
+  /* Hint - Compact */
   .hint {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-size: var(--font-size-compact);
     color: var(--theme-text-dim);
-    margin: 4px 0 0 0;
-    padding: 8px 12px;
+    margin: 2px 0 0 0;
+    padding: 6px 10px;
     background: var(--theme-card-bg);
-    border-radius: 8px;
+    border-radius: 6px;
   }
 
-  .hint i {
-    font-size: var(--font-size-sm);
-    color: color-mix(in srgb, var(--theme-accent) 70%, transparent);
-  }
-
-  /* Empty State */
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 32px 16px;
-    color: var(--theme-text-dim);
-  }
-
-  .empty-state i {
-    font-size: var(--font-size-3xl);
-    opacity: 0.5;
-  }
-
-  .empty-state p {
-    margin: 0;
-    font-size: var(--font-size-sm);
-  }
-
-  /* Mobile - compact layout, use tap-to-manage pattern */
-  @container connected-accounts (max-width: 400px) {
-    .provider-card {
-      padding: 12px 14px;
-      gap: 10px;
-    }
-
-    .provider-icon {
-      width: 36px;
-      height: 36px;
-    }
-
-    .provider-icon i {
-      font-size: var(--font-size-base);
-    }
-
-    .provider-name {
-      font-size: var(--font-size-sm);
-    }
-
-    .provider-email,
-    .provider-description {
-      font-size: var(--font-size-compact);
-    }
-
-    .connected-badge,
-    .verification-badge {
-      padding: 5px 8px;
-      font-size: var(--font-size-compact);
-      gap: 4px;
-    }
-
-    /* Hide badge text on mobile to prevent overflow */
-    .badge-text {
-      display: none;
-    }
-
-    /* Compact unlink button on mobile - icon only */
-    .unlink-btn {
-      width: 40px;
-      height: 40px;
-    }
-
-    /* Keep hint visible on mobile */
-  }
-
-  /* Accessibility - Reduced Motion */
+  /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .provider-card,
-    .unlink-btn,
-    .link-icon,
-    .dismiss-btn {
+    .provider-row,
+    .action-btn {
       transition: none;
     }
-
-    .provider-card.available:hover:not(:disabled),
-    .provider-card.available:active:not(:disabled) {
-      transform: none;
-    }
   }
 
-  /* Accessibility - High Contrast */
-  @media (prefers-contrast: high) {
-    .provider-card,
-    .error-banner,
-    .unlink-btn {
-      border-width: 2px;
-    }
-
-    .connected-badge {
-      background: rgba(34, 197, 94, 0.3);
-    }
-  }
-
-  /* Focus States */
-  .provider-card.available:focus-visible,
-  .unlink-btn:focus-visible,
+  .provider-row.available:focus-visible,
+  .action-btn:focus-visible,
   .dismiss-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--theme-accent) 80%, transparent);
+    outline: 2px solid var(--theme-accent);
     outline-offset: 2px;
   }
 </style>
