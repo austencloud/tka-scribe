@@ -14,6 +14,12 @@
   import { TYPES } from "../../../inversify/types";
   import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import { onMount } from "svelte";
+  import {
+    getSettings,
+    updateSettings,
+    isSettingsPreviewMode,
+  } from "$lib/shared/application/state/app-state.svelte";
+  import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
   let { currentSettings, onSettingUpdate } = $props<{
     currentSettings: AppSettings;
@@ -22,9 +28,14 @@
 
   // Services
   let hapticService: IHapticFeedback | null = null;
+  const animationVisibilityManager = getAnimationVisibilityManager();
 
   // Entry animation
   let isVisible = $state(false);
+
+  // Lights Off state - derived from AppSettings
+  const lightsOff = $derived(getSettings().lightsOff ?? false);
+  const isPreview = $derived(isSettingsPreviewMode());
 
   onMount(async () => {
     try {
@@ -47,6 +58,14 @@
       value: showClearConfirmation, // Toggle: if currently showing, now skip
     });
   }
+
+  function handleLightsOffToggle() {
+    if (isPreview) return;
+    hapticService?.trigger("selection");
+    const newValue = !lightsOff;
+    void updateSettings({ lightsOff: newValue });
+    animationVisibilityManager.setLightsOff(newValue);
+  }
 </script>
 
 <div class="preferences-tab" class:visible={isVisible}>
@@ -60,6 +79,36 @@
       <p>Customize how the app behaves</p>
     </div>
   </header>
+
+  <!-- Visual Effects Section -->
+  <section class="section">
+    <h2 class="section-title">
+      <i class="fas fa-moon" aria-hidden="true"></i>
+      Visual Effects
+    </h2>
+
+    <div class="toggle-list">
+      <!-- Lights Off Mode -->
+      <button
+        type="button"
+        class="toggle-row lights-off-row"
+        class:disabled={isPreview}
+        onclick={handleLightsOffToggle}
+        aria-pressed={lightsOff}
+        disabled={isPreview}
+      >
+        <div class="toggle-info">
+          <span class="toggle-label">Lights Off Mode</span>
+          <span class="toggle-description">
+            Dark background with inverted grid and glowing props. Creates a dramatic night-time effect.
+          </span>
+        </div>
+        <div class="toggle-switch lights-off-switch" class:active={lightsOff}>
+          <div class="toggle-knob"></div>
+        </div>
+      </button>
+    </div>
+  </section>
 
   <!-- Confirmation Dialogs Section -->
   <section class="section">
@@ -179,6 +228,10 @@
     color: var(--theme-accent, #f97316);
   }
 
+  .section-title i.fa-moon {
+    color: #00ffff;
+  }
+
   /* Toggle List */
   .toggle-list {
     display: flex;
@@ -261,6 +314,35 @@
 
   .toggle-switch.active .toggle-knob {
     transform: translateX(20px);
+  }
+
+  /* Lights Off Toggle - Cyan glow effect */
+  .lights-off-row.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .lights-off-switch.active {
+    background: rgba(0, 255, 255, 0.4);
+    box-shadow:
+      0 0 12px rgba(0, 255, 255, 0.4),
+      0 0 24px rgba(0, 255, 255, 0.2);
+  }
+
+  .lights-off-row:has(.lights-off-switch.active) {
+    background: rgba(0, 255, 255, 0.08);
+    border-color: rgba(0, 255, 255, 0.3);
+  }
+
+  .lights-off-row:has(.lights-off-switch.active):hover {
+    background: rgba(0, 255, 255, 0.12);
+    border-color: rgba(0, 255, 255, 0.4);
+  }
+
+  .lights-off-row:has(.lights-off-switch.active) .toggle-label {
+    color: #00ffff;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
   }
 
   /* Tip Card */

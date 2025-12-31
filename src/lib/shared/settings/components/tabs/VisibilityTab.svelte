@@ -20,12 +20,10 @@
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { onMount, untrack } from "svelte";
-  import { getSettings, updateSettings, isSettingsPreviewMode } from "$lib/shared/application/state/app-state.svelte";
+  import { onMount } from "svelte";
 
   import MobileSegmentControl from "./visibility/MobileSegmentControl.svelte";
   import type { VisibilityMode } from "./visibility/visibility-types";
-  import GlobalEffectsSection from "./visibility/GlobalEffectsSection.svelte";
   import PictographPanel from "./visibility/PictographPanel.svelte";
   import AnimationPanel from "./visibility/AnimationPanel.svelte";
   import ImagePanel from "./visibility/ImagePanel.svelte";
@@ -71,24 +69,6 @@
   let animBpm = $state(60);
   let animTkaGlyphVisible = $state(true);
   let animTurnNumbersVisible = $state(true);
-
-  // Global effects state - derived from AppSettings (synced to Firebase)
-  // Use $derived to reactively track AppSettings changes (including preview mode)
-  const lightsOff = $derived(getSettings().lightsOff ?? false);
-
-  // Check if in preview mode (read-only)
-  const isPreview = $derived(isSettingsPreviewMode());
-
-  // Sync lightsOff to animation visibility manager when value changes
-  // Use untrack to read current manager value without creating dependency (prevents infinite loop)
-  $effect(() => {
-    const newValue = lightsOff; // Track this dependency
-    untrack(() => {
-      if (animationVisibilityManager.isLightsOff() !== newValue) {
-        animationVisibilityManager.setLightsOff(newValue);
-      }
-    });
-  });
 
   // Image composition state
   let imgAddWord = $state(true);
@@ -222,19 +202,6 @@
     }
   }
 
-  // Global effects toggle handlers
-  function handleLightsOffToggle() {
-    // Block changes in preview mode
-    if (isPreview) return;
-
-    triggerHaptic();
-    const newValue = !lightsOff;
-    // Update AppSettings (syncs to Firebase)
-    void updateSettings({ lightsOff: newValue });
-    // Also sync to animation visibility manager for existing animation code
-    animationVisibilityManager.setLightsOff(newValue);
-  }
-
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
 
@@ -255,10 +222,6 @@
     animBpm = animationVisibilityManager.getBpm();
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
     animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
-
-    // Sync lightsOff from AppSettings to animation visibility manager on mount
-    // (lightsOff is now derived from AppSettings, not localStorage)
-    animationVisibilityManager.setLightsOff(lightsOff);
 
     // Load initial image composition
     imgAddWord = imageCompositionManager.addWord;
@@ -286,7 +249,6 @@
       animBpm = animationVisibilityManager.getBpm();
       animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
       animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
-      // Note: lightsOff is now derived from AppSettings, not animation visibility manager
     };
 
     const imageObserver = () => {
@@ -313,13 +275,6 @@
 </script>
 
 <div class="visibility-tab" class:visible={isVisible}>
-  <!-- Global Effects Section (above all panels) -->
-  <GlobalEffectsSection
-    {lightsOff}
-    onLightsOffToggle={handleLightsOffToggle}
-    disabled={isPreview}
-  />
-
   <!-- Mobile: Segmented Control (hidden on desktop via container query) -->
   <div class="mobile-only">
     <MobileSegmentControl currentMode={mobileMode} onModeChange={handleModeChange} />
@@ -384,9 +339,13 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 16px;
+    height: 100%;
+    gap: clamp(8px, 1.5cqi, 12px);
+    padding: clamp(8px, 1.5cqi, 12px);
     opacity: 0;
     transition: opacity 200ms ease;
+    min-height: 0;
+    box-sizing: border-box;
   }
 
   .visibility-tab.visible {
@@ -395,6 +354,7 @@
 
   .mobile-only {
     width: 100%;
+    flex-shrink: 0;
   }
 
   /* Hide mobile segment control on desktop */
@@ -407,11 +367,14 @@
   .visibility-panels-container {
     display: flex;
     flex-direction: column;
-    gap: clamp(12px, 2cqi, 20px);
+    gap: clamp(6px, 1.5cqi, 12px);
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    max-height: 100%;
+    flex: 1;
+    min-height: 0;
+    /* Ensure height is available for child container queries */
+    height: 100%;
   }
 
   /* Desktop: Side by side */
@@ -425,20 +388,6 @@
     .visibility-panels-container :global(.mobile-hidden) {
       display: flex !important;
     }
-  }
-
-  /* Scrollbar styling */
-  .visibility-tab::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .visibility-tab::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .visibility-tab::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--theme-accent) 20%, transparent);
-    border-radius: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {
