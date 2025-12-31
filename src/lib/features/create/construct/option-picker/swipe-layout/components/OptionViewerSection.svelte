@@ -551,6 +551,7 @@ Renders a section with:
     max-width: 100%; /* Prevent grid from exceeding container width */
     flex: 1; /* Fill remaining height after header */
     gap: 8px;
+    padding: 0 4px; /* Prevent edge clipping when grid is centered */
     box-sizing: border-box;
     overflow: hidden; /* Clip any overflow */
   }
