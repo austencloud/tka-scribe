@@ -6,7 +6,8 @@ import { BackgroundFactory } from "../services/implementations/BackgroundFactory
 
 export function createBackgroundState() {
   // Runes-based reactive state
-  let backgroundType = $state<BackgroundType>(BackgroundType.NIGHT_SKY);
+  // Default to SOLID_COLOR to match SettingsState defaults
+  let backgroundType = $state<BackgroundType>(BackgroundType.SOLID_COLOR);
   let quality = $state<QualityLevel>("medium");
   let isLoading = $state(true);
   let currentSystem = $state<BackgroundSystem | null>(null);

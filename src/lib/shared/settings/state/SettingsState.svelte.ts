@@ -149,6 +149,9 @@ class SettingsState implements ISettingsState {
   /**
    * Sync settings from Firebase (called on login)
    * Uses timestamp-based conflict resolution: local wins if newer
+   *
+   * On initial login, this will apply ALL settings from Firebase including background.
+   * Background is only applied if the local device doesn't already have a preference.
    */
   async syncFromFirebase(): Promise<void> {
     if (!this.firebasePersistence || !auth.currentUser) return;
@@ -168,7 +171,39 @@ class SettingsState implements ISettingsState {
           );
         } else {
           // No local timestamp means fresh load - accept Firebase settings
+          // This is initial login, so we DO apply background settings
           this.applyRemoteSettings(firebaseSettings);
+
+          // On initial login, also apply background if local doesn't have one set
+          // or if local is still using the default
+          const localBackground = settingsState.backgroundType;
+          const isUsingDefault = localBackground === BackgroundType.SOLID_COLOR;
+
+          if (firebaseSettings.backgroundType && isUsingDefault) {
+            // Apply Firebase background preference on initial login
+            settingsState.backgroundType = firebaseSettings.backgroundType;
+            if (firebaseSettings.backgroundCategory) {
+              settingsState.backgroundCategory = firebaseSettings.backgroundCategory;
+            }
+            if (firebaseSettings.backgroundColor) {
+              settingsState.backgroundColor = firebaseSettings.backgroundColor;
+            }
+            if (firebaseSettings.gradientColors) {
+              settingsState.gradientColors = firebaseSettings.gradientColors;
+            }
+            if (firebaseSettings.gradientDirection !== undefined) {
+              settingsState.gradientDirection = firebaseSettings.gradientDirection;
+            }
+
+            updateBodyBackground(
+              firebaseSettings.backgroundType,
+              getCustomBackgroundOptions(firebaseSettings)
+            );
+            ThemeService.updateTheme(firebaseSettings.backgroundType);
+            this.saveSettingsToStorage(settingsState);
+            debug.success("Applied background from Firebase on initial login");
+          }
+
           debug.success("Applied settings from Firebase");
         }
       } else {
@@ -195,6 +230,10 @@ class SettingsState implements ISettingsState {
   /**
    * Apply remote settings without triggering a save back to Firebase
    * Only applies settings that weren't modified locally more recently
+   *
+   * IMPORTANT: Background settings are intentionally EXCLUDED from real-time sync.
+   * This prevents jarring background changes when using multiple devices simultaneously.
+   * Background preferences are still synced on initial login via syncFromFirebase().
    */
   private applyRemoteSettings(remoteSettings: AppSettings): void {
     // Merge with defaults first, then layer remote settings
@@ -202,12 +241,24 @@ class SettingsState implements ISettingsState {
     const { _localTimestamp: _remoteTs, ...remoteWithoutMeta } = remoteSettings;
     const merged = { ...DEFAULT_SETTINGS, ...remoteWithoutMeta };
 
-    // Apply to state (preserve local timestamp)
-    const currentTimestamp = settingsState._localTimestamp;
+    // Background-related settings to exclude from real-time sync
+    // These are device-local preferences that shouldn't change while actively using the app
+    const excludeFromRealtimeSync = new Set([
+      "backgroundType",
+      "backgroundCategory",
+      "backgroundQuality",
+      "backgroundEnabled",
+      "backgroundColor",
+      "gradientColors",
+      "gradientDirection",
+    ]);
+
+    // Apply to state (preserve local timestamp), excluding background settings
     for (const key in merged) {
       if (
         Object.prototype.hasOwnProperty.call(merged, key) &&
-        key !== "_localTimestamp"
+        key !== "_localTimestamp" &&
+        !excludeFromRealtimeSync.has(key)
       ) {
         settingsState[key as keyof AppSettings] = merged[
           key as keyof AppSettings
@@ -217,14 +268,9 @@ class SettingsState implements ISettingsState {
     // Clear local timestamp since we just synced from remote
     settingsState._localTimestamp = undefined;
 
-    // Update background if changed
-    if (remoteSettings.backgroundType) {
-      updateBodyBackground(
-        remoteSettings.backgroundType,
-        getCustomBackgroundOptions(remoteSettings)
-      );
-      ThemeService.updateTheme(remoteSettings.backgroundType);
-    }
+    // NOTE: We intentionally do NOT update background here during real-time sync.
+    // Background changes from other devices would be jarring during active use.
+    // Background is only synced on initial login (see syncFromFirebase).
 
     // Save to localStorage for offline access
     this.saveSettingsToStorage(settingsState);

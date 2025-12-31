@@ -21,6 +21,7 @@ Delegates all rendering to child components.
   import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
   import type { IPictographPreparer } from "../services/PictographPreparer";
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
+  import type { ILightsOffProvider } from "$lib/shared/animation-engine/services/contracts/ILightsOffProvider";
   import OptionPickerContent from "./OptionPickerContent.svelte";
 
   // Props
@@ -66,6 +67,10 @@ Delegates all rendering to child components.
   let sizerService = $state<IOptionSizer | null>(null);
   let organizerService = $state<IOptionOrganizer | null>(null);
 
+  // LED mode tracking - needed to re-prepare props when theme changes
+  let ledMode = $state(false);
+  let lightsOffProvider: ILightsOffProvider | null = null;
+
   // Track if we're waiting for new options after a selection
   let pendingFadeIn = $state(false);
 
@@ -89,7 +94,8 @@ Delegates all rendering to child components.
     }
   });
 
-  // Prepare options when filtered options change
+  // Prepare options when filtered options change OR LED mode changes
+  // LED mode affects prop colors which are baked in during preparation
   $effect(() => {
     if (!pickerState || !preparer) {
       preparedOptions = [];
@@ -99,6 +105,8 @@ Delegates all rendering to child components.
     // Access filteredOptions and state (reactive) - tracks when options or filters change
     const filtered = pickerState.filteredOptions;
     const currentState = pickerState.state;
+    // Include ledMode as dependency - prop colors need re-preparation when theme changes
+    const _ledMode = ledMode;
 
     // Skip while loading - prevents preparing intermediate states when
     // currentSequence updates before options finish loading
@@ -148,6 +156,8 @@ Delegates all rendering to child components.
 
   // Initialize services
   onMount(() => {
+    let lightsOffUnsubscribe: (() => void) | null = null;
+
     try {
       const loader = resolve<IOptionLoader>(TYPES.IOptionLoader);
       const filter = resolve<IOptionFilter>(TYPES.IOptionFilter);
@@ -161,6 +171,16 @@ Delegates all rendering to child components.
       hapticService = resolve<IHapticFeedback>(
         TYPES.IHapticFeedback
       );
+
+      // Subscribe to LED mode changes for prop color updates
+      try {
+        lightsOffProvider = resolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+        lightsOffUnsubscribe = lightsOffProvider.subscribe((value) => {
+          ledMode = value;
+        });
+      } catch {
+        // Provider not available yet, will default to false
+      }
 
       pickerState = createOptionPickerState({
         optionLoader: loader,
@@ -179,6 +199,12 @@ Delegates all rendering to child components.
     } catch (error) {
       console.error("Failed to initialize option picker:", error);
     }
+
+    return () => {
+      if (lightsOffUnsubscribe) {
+        lightsOffUnsubscribe();
+      }
+    };
   });
 </script>
 

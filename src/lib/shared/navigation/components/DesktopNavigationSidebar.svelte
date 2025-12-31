@@ -70,10 +70,12 @@
   const isInSettings = $derived(navigationState.currentModule === "settings");
 
   // Check if Create module tutorial is active (hides Create tabs until choice step)
-  // We check localStorage directly to avoid flash of tabs before state initializes
+  // NOTE: The "tka-create-method-selected" key was never set anywhere in the codebase,
+  // causing tabs to be permanently hidden. Since there's no functional tutorial flow,
+  // we now always return true to show tabs. If a Create tutorial is implemented later,
+  // this should use the standard pattern: tka-create-onboarding-completed
   const hasCompletedCreateTutorial = $derived(() => {
-    if (typeof localStorage === "undefined") return true;
-    return localStorage.getItem("tka-create-method-selected") === "true";
+    return true; // No tutorial implemented - always show tabs
   });
 
   // Tutorial is active when in Create module AND tutorial not completed yet

@@ -135,8 +135,9 @@ export class BackgroundPreLoader implements IBackgroundPreloader {
         const settings = JSON.parse(stored) as {
           backgroundType?: BackgroundType;
         };
+        // Default to SOLID_COLOR to match SettingsState defaults
         const backgroundType =
-          settings.backgroundType ?? BackgroundType.NIGHT_SKY;
+          settings.backgroundType ?? BackgroundType.SOLID_COLOR;
         this.updateBodyBackground(backgroundType);
       }
     } catch (error) {
