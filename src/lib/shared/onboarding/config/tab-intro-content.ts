@@ -35,24 +35,56 @@ export const CREATE_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-cubes",
     color: "#3b82f6",
     title: "Constructor",
-    description:
-      "Build sequences one beat at a time. Pick a start position, then choose from available options to add each move.",
+    pages: [
+      {
+        content: {
+          text: "Build sequences one beat at a time:",
+          points: [
+            "Start by picking a position from the grid",
+            "Browse available options for the next beat",
+            "Tap an option to add it to your sequence",
+          ],
+        },
+        tip: "Tap a beat in your sequence to edit or remove it",
+      },
+    ],
   },
 
   generator: {
     icon: "fa-wand-magic-sparkles",
     color: "#8b5cf6",
     title: "Generator",
-    description:
-      "Generate random sequences based on filters you set. Good for exploring new combinations or getting unstuck.",
+    pages: [
+      {
+        content: {
+          text: "Generate random sequences based on your settings:",
+          points: [
+            "Set filters for length, prop type, and difficulty",
+            "Tap Generate to create a new sequence",
+            "Keep generating until you find one you like",
+          ],
+        },
+        tip: "Edit generated sequences in Constructor if you want to tweak them",
+      },
+    ],
   },
 
   assembler: {
     icon: "fa-route",
     color: "#06b6d4",
     title: "Assembler",
-    description:
-      "Draw hand paths on the grid to create sequences. Trace the movement and the system figures out the beats.",
+    pages: [
+      {
+        content: {
+          text: "Create sequences by drawing hand paths:",
+          points: [
+            "Trace the path you want each hand to follow",
+            "The system converts your drawing into beats",
+            "Adjust timing and transitions as needed",
+          ],
+        },
+      },
+    ],
   },
 };
 
@@ -65,16 +97,30 @@ export const LEARN_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-lightbulb",
     color: "#f59e0b",
     title: "Learning Path",
-    description:
-      "Interactive lessons that teach the Kinetic Alphabet from basics to advanced concepts. Go at your own pace.",
+    pages: [
+      {
+        content: {
+          text: "Interactive lessons from basics to advanced:",
+          points: [
+            "Work through concepts at your own pace",
+            "Complete quizzes to test your understanding",
+            "Track your progress as you go",
+          ],
+        },
+      },
+    ],
   },
 
   codex: {
     icon: "fa-book",
     color: "#10b981",
     title: "Codex",
-    description:
-      "Reference for all letters and pictographs. Look up any symbol to see how it works.",
+    pages: [
+      {
+        content:
+          "Reference for all letters and pictographs. Tap any symbol to see how it works.",
+      },
+    ],
   },
 };
 
@@ -87,16 +133,30 @@ export const DISCOVER_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-compass",
     color: "#a855f7",
     title: "Browse",
-    description:
-      "Browse sequences created by the community. Filter by length, difficulty, or prop type to find what you're looking for.",
+    pages: [
+      {
+        content: {
+          text: "Browse community sequences:",
+          points: [
+            "Scroll through the gallery or use filters",
+            "Tap a sequence to preview it",
+            "Save favorites to your library",
+          ],
+        },
+      },
+    ],
   },
 
   creators: {
     icon: "fa-users",
     color: "#ec4899",
     title: "Creators",
-    description:
-      "See who's creating sequences. Follow people and check out their work.",
+    pages: [
+      {
+        content:
+          "See who's creating sequences. Follow people and check out their work.",
+      },
+    ],
   },
 };
 
