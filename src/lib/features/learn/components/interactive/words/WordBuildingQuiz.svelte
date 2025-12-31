@@ -1,6 +1,6 @@
 <!--
 WordBuildingQuiz - Coordinator for word formation quiz
-Questions about letter sequences, motion types, position transitions, and CAPs
+Questions about letter sequences, motion types, position transitions, and LOOPs
 -->
 <script lang="ts">
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
@@ -26,7 +26,9 @@ Questions about letter sequences, motion types, position transitions, and CAPs
   let answerState = $state<AnswerState>("idle");
   let selectedAnswer = $state<number | null>(null);
   let currentBeat = $state(0);
-  const shuffledQuestions = $state<WordQuizQuestion[]>(generateWordQuizQuestions());
+  const shuffledQuestions = $state<WordQuizQuestion[]>(
+    generateWordQuizQuestions()
+  );
 
   const isComplete = $derived(currentQuestion >= shuffledQuestions.length);
 

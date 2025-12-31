@@ -200,12 +200,12 @@ export const WORD_QUIZ_QUESTIONS: WordQuizQuestion[] = [
     options: [
       "Any word with 2+ letters",
       "Words starting with A",
-      "CAPs (returning to start)",
+      "LOOPs (returning to start)",
       "Words with all Pro motions",
     ],
     correctAnswer: 2,
     explanation:
-      "CAPs (Continuous Assembly Patterns) return to the starting position, creating seamless loops.",
+      "LOOPs (Continuous Assembly Patterns) return to the starting position, creating seamless loops.",
   },
   {
     type: "identify-word",

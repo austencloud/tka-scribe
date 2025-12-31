@@ -189,9 +189,9 @@ Mapped directly from TKA Level 1.pdf:
 #### Combinations (6 concepts)
 
 22. Words - Combining letters (p29-32)
-23. CAPs Introduction - Continuous Angular Patterns (p33-35)
-24. Simple CAPs - Basic 2-3 letter patterns (p36-37)
-25. Complex CAPs - Advanced multi-letter patterns (p38-39)
+23. LOOPs Introduction - Continuous Angular Patterns (p33-35)
+24. Simple LOOPs - Basic 2-3 letter patterns (p36-37)
+25. Complex LOOPs - Advanced multi-letter patterns (p38-39)
 26. Reversals - Backward letter sequences (p40)
 27. LOOP Variations - Expanding pattern vocabulary (p41)
 

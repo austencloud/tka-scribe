@@ -67,7 +67,7 @@
     <ul>
       <li>Words are sequences of letters connected beat-by-beat</li>
       <li>End position of one letter = start position of the next</li>
-      <li>Many words return to their starting position (CAPs)</li>
+      <li>Many words return to their starting position (LOOPs)</li>
       <li>
         Same word can look different based on rotation direction and thumb
         orientation
