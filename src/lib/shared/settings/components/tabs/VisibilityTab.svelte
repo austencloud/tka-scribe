@@ -20,7 +20,8 @@
   import type { IHapticFeedback } from "$lib/shared/application/services/contracts/IHapticFeedback";
   import { resolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
+  import { getSettings, updateSettings, isSettingsPreviewMode } from "$lib/shared/application/state/app-state.svelte";
 
   import MobileSegmentControl from "./visibility/MobileSegmentControl.svelte";
   import type { VisibilityMode } from "./visibility/visibility-types";
@@ -71,8 +72,23 @@
   let animTkaGlyphVisible = $state(true);
   let animTurnNumbersVisible = $state(true);
 
-  // Global effects state
-  let lightsOff = $state(false);
+  // Global effects state - derived from AppSettings (synced to Firebase)
+  // Use $derived to reactively track AppSettings changes (including preview mode)
+  const lightsOff = $derived(getSettings().lightsOff ?? false);
+
+  // Check if in preview mode (read-only)
+  const isPreview = $derived(isSettingsPreviewMode());
+
+  // Sync lightsOff to animation visibility manager when value changes
+  // Use untrack to read current manager value without creating dependency (prevents infinite loop)
+  $effect(() => {
+    const newValue = lightsOff; // Track this dependency
+    untrack(() => {
+      if (animationVisibilityManager.isLightsOff() !== newValue) {
+        animationVisibilityManager.setLightsOff(newValue);
+      }
+    });
+  });
 
   // Image composition state
   let imgAddWord = $state(true);
@@ -208,9 +224,15 @@
 
   // Global effects toggle handlers
   function handleLightsOffToggle() {
+    // Block changes in preview mode
+    if (isPreview) return;
+
     triggerHaptic();
-    lightsOff = !lightsOff;
-    animationVisibilityManager.setLightsOff(lightsOff);
+    const newValue = !lightsOff;
+    // Update AppSettings (syncs to Firebase)
+    void updateSettings({ lightsOff: newValue });
+    // Also sync to animation visibility manager for existing animation code
+    animationVisibilityManager.setLightsOff(newValue);
   }
 
   onMount(() => {
@@ -234,8 +256,9 @@
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
     animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
 
-    // Load initial global effects
-    lightsOff = animationVisibilityManager.isLightsOff();
+    // Sync lightsOff from AppSettings to animation visibility manager on mount
+    // (lightsOff is now derived from AppSettings, not localStorage)
+    animationVisibilityManager.setLightsOff(lightsOff);
 
     // Load initial image composition
     imgAddWord = imageCompositionManager.addWord;
@@ -263,8 +286,7 @@
       animBpm = animationVisibilityManager.getBpm();
       animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
       animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
-      // Sync global effects
-      lightsOff = animationVisibilityManager.isLightsOff();
+      // Note: lightsOff is now derived from AppSettings, not animation visibility manager
     };
 
     const imageObserver = () => {
@@ -295,6 +317,7 @@
   <GlobalEffectsSection
     {lightsOff}
     onLightsOffToggle={handleLightsOffToggle}
+    disabled={isPreview}
   />
 
   <!-- Mobile: Segmented Control (hidden on desktop via container query) -->

@@ -1,6 +1,7 @@
 <!-- ProfileTab.svelte - User Profile & Account Settings (Refactored) -->
 <script lang="ts">
   import { authState } from "../../../auth/state/authState.svelte";
+  import { userPreviewState, loadPreviewSection, isSectionLoaded } from "../../../debug/state/user-preview-state.svelte";
   import { resolve, TYPES } from "../../../inversify/di";
   import type { IAuthenticator } from "../../../auth/services/contracts/IAuthenticator";
   import type { IAccountManager } from "../../../auth/services/contracts/IAccountManager";
@@ -13,6 +14,7 @@
     uiState,
   } from "../../../navigation/state/profile-settings-state.svelte";
   import ConnectedAccounts from "../../../navigation/components/profile-settings/ConnectedAccounts.svelte";
+  import ConnectedAccountsPreview from "../../../navigation/components/profile-settings/ConnectedAccountsPreview.svelte";
   import {
     type ProviderConfig,
     type ProviderId,
@@ -20,6 +22,7 @@
   import PasswordSection from "../../../navigation/components/profile-settings/PasswordSection.svelte";
   import DangerZone from "../../../navigation/components/profile-settings/DangerZone.svelte";
   import AccountSecuritySection from "../../../auth/components/AccountSecuritySection.svelte";
+  import SecurityPreview from "../../../auth/components/SecurityPreview.svelte";
   import SubscriptionCard from "./profile/SubscriptionCard.svelte";
   import type { IHapticFeedback } from "../../../application/services/contracts/IHapticFeedback";
   import PasskeyStepUpModal from "../../../auth/components/PasskeyStepUpModal.svelte";
@@ -28,6 +31,36 @@
   import StorageSection from "./profile/StorageSection.svelte";
   import AuthPrompt from "./profile/AuthPrompt.svelte";
   import ProviderManagementDrawer from "./profile/ProviderManagementDrawer.svelte";
+
+  import type { PreviewUserProfile } from "../../../debug/state/user-preview-state.svelte";
+  import type { User } from "firebase/auth";
+
+  // Check if we're in preview mode
+  const isPreviewMode = $derived(userPreviewState.isActive && userPreviewState.data.profile !== null);
+
+  // Create a User-like object from preview profile for ProfileHeroSection
+  function createPreviewUser(profile: PreviewUserProfile): User {
+    return {
+      uid: profile.uid,
+      email: profile.email,
+      displayName: profile.displayName,
+      photoURL: profile.photoURL,
+      // Minimal User interface requirements (unused but required)
+      emailVerified: false,
+      isAnonymous: false,
+      metadata: {},
+      providerData: [],
+      refreshToken: "",
+      tenantId: null,
+      phoneNumber: null,
+      providerId: "firebase",
+      delete: async () => {},
+      getIdToken: async () => "",
+      getIdTokenResult: async () => ({} as any),
+      reload: async () => {},
+      toJSON: () => ({}),
+    } as User;
+  }
 
   interface Props {
     currentSettings?: unknown;
@@ -65,6 +98,18 @@
   const canUnlinkProviders = $derived(
     Boolean(authState.user?.providerData && authState.user.providerData.length > 1)
   );
+
+  // Preview mode: auth data state
+  const previewAuthData = $derived(userPreviewState.data.authData);
+  const isLoadingAuthData = $derived(userPreviewState.loadingSection === "authData");
+  const authDataLoaded = $derived(isSectionLoaded("authData"));
+
+  // Load auth data when entering preview mode and viewing profile tab
+  $effect(() => {
+    if (isPreviewMode && !authDataLoaded && !isLoadingAuthData) {
+      loadPreviewSection("authData");
+    }
+  });
 
   onMount(() => {
     hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
@@ -179,7 +224,98 @@
 </script>
 
 <div class="profile-tab" class:visible={isVisible}>
-  {#if authState.isAuthenticated && authState.user}
+  {#if isPreviewMode && userPreviewState.data.profile}
+    <!-- Preview Mode: Show exact same layout with preview user's data -->
+    <div class="profile-content">
+      <!-- Preview banner -->
+      <div class="preview-banner">
+        <i class="fas fa-eye"></i>
+        <span>Viewing as <strong>{userPreviewState.data.profile.displayName || userPreviewState.data.profile.email || 'User'}</strong></span>
+      </div>
+
+      <!-- Profile Hero - same layout, preview user data, no sign out -->
+      <ProfileHeroSection
+        user={createPreviewUser(userPreviewState.data.profile)}
+        onSignOut={() => {}}
+        disabled={true}
+      />
+
+      <!-- Settings Grid - same layout as normal view -->
+      <div class="settings-grid">
+        <!-- Connected Accounts - now uses admin endpoint to fetch real data -->
+        <GlassCard
+          icon="fas fa-link"
+          title="Connected Accounts"
+          subtitle="View linked providers"
+        >
+          {#snippet children()}
+            <ConnectedAccountsPreview
+              providers={previewAuthData?.providers ?? []}
+              emailVerified={previewAuthData?.emailVerified ?? false}
+              loading={isLoadingAuthData}
+            />
+          {/snippet}
+        </GlassCard>
+
+        <!-- Subscription -->
+        <GlassCard
+          icon="fas fa-crown"
+          iconClass="premium-icon"
+          title="Subscription"
+          subtitle="Support TKA development"
+        >
+          {#snippet children()}
+            <SubscriptionCard {hapticService} />
+          {/snippet}
+        </GlassCard>
+
+        <!-- Security - MFA factors from Firebase Auth -->
+        <GlassCard
+          icon="fas fa-shield-alt"
+          title="Security"
+          subtitle="View security settings"
+        >
+          {#snippet children()}
+            <SecurityPreview
+              mfaFactors={previewAuthData?.multiFactor?.enrolledFactors ?? null}
+              loading={isLoadingAuthData}
+            />
+          {/snippet}
+        </GlassCard>
+
+        <!-- Password - show if user has password provider -->
+        {#if previewAuthData?.providers.some(p => p.providerId === "password")}
+          <GlassCard
+            icon="fas fa-key"
+            title="Password"
+            subtitle="Password authentication enabled"
+          >
+            {#snippet children()}
+              <div class="password-preview">
+                <div class="password-status">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Password sign-in enabled</span>
+                </div>
+                {#if !previewAuthData?.emailVerified}
+                  <div class="email-unverified-note">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Email not yet verified</span>
+                  </div>
+                {/if}
+              </div>
+            {/snippet}
+          </GlassCard>
+        {/if}
+
+        <!-- Storage Section -->
+        <StorageSection
+          onClearCache={handleClearCache}
+          isClearing={clearingCache}
+        />
+      </div>
+      <!-- Danger Zone not shown in preview mode - can't delete another user's account -->
+    </div>
+  {:else if authState.isAuthenticated && authState.user}
     <!-- Signed In State -->
     <div class="profile-content">
       <!-- Profile Hero -->
@@ -407,6 +543,69 @@
       rgba(251, 191, 36, 0.15)
     );
     color: var(--semantic-warning);
+  }
+
+  /* ========================================
+     PREVIEW MODE STYLES
+     ======================================== */
+  .preview-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 10px;
+    color: #c4b5fd;
+    font-size: var(--font-size-sm, 14px);
+  }
+
+  .preview-banner i {
+    font-size: 14px;
+  }
+
+  .preview-banner strong {
+    color: #ddd6fe;
+  }
+
+  /* Password Preview in preview mode */
+  .password-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .password-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--theme-card-bg);
+    border: 1px solid var(--theme-stroke);
+    border-radius: 10px;
+    font-size: var(--font-size-sm);
+    color: var(--theme-text);
+  }
+
+  .password-status i {
+    font-size: var(--font-size-base);
+    color: #4ade80;
+  }
+
+  .email-unverified-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 10px;
+    font-size: var(--font-size-compact);
+    color: var(--semantic-warning);
+  }
+
+  .email-unverified-note i {
+    font-size: var(--font-size-sm);
   }
 
   /* ========================================

@@ -30,6 +30,7 @@
  */
 
 import { BackgroundType } from "$lib/shared/background/shared/domain/enums/background-enums";
+import { setThemeMode } from "$lib/shared/theme/state/theme-mode-state.svelte";
 
 /**
  * Theme colors for each background type
@@ -336,6 +337,9 @@ export function applyThemeFromColors(
 
   // Determine theme mode
   const mode = getThemeMode(luminance);
+
+  // Update the reactive theme mode state
+  setThemeMode(mode);
 
   // Extract accent color
   const accentColor = gradientColors

@@ -11,9 +11,10 @@
   interface Props {
     lightsOff: boolean;
     onLightsOffToggle: () => void;
+    disabled?: boolean;
   }
 
-  let { lightsOff, onLightsOffToggle }: Props = $props();
+  let { lightsOff, onLightsOffToggle, disabled = false }: Props = $props();
 </script>
 
 <section class="global-effects-section">
@@ -22,7 +23,9 @@
     <button
       class="effect-btn lights-off"
       class:active={lightsOff}
+      class:disabled
       onclick={onLightsOffToggle}
+      {disabled}
       type="button"
       aria-label={lightsOff ? "Disable Lights Off mode" : "Enable Lights Off mode"}
       aria-pressed={lightsOff}
@@ -108,6 +111,12 @@
   .effect-btn:active {
     transform: translateY(0) scale(0.98);
     transition-duration: 50ms;
+  }
+
+  .effect-btn.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   /* Lights Off Active - Electric cyan glow */
