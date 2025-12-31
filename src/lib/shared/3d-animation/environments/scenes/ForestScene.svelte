@@ -37,8 +37,8 @@
   const tent = useGltf("/models/camping/tent-canvas.glb");
 
   // Load forest floor detail models
-  const fallenLog = useGltf("/models/camping/Models/GLB format/tree-log.glb");
-  const fallenLogSmall = useGltf("/models/camping/Models/GLB format/tree-log-small.glb");
+  const fallenLog = useGltf("/models/camping/tree-log.glb");
+  const fallenLogSmall = useGltf("/models/camping/tree-log-small.glb");
 
   // Get scene for fog
   const { scene } = useThrelte();

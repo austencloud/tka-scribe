@@ -4,6 +4,12 @@
  * Controls leg animations independently from upper body IK.
  * Uses Three.js AnimationMixer with track filtering to only
  * animate leg bones while arms remain controlled by prop IK.
+ *
+ * Supports 4-way directional blending:
+ * - Forward walk
+ * - Backward walk
+ * - Strafe left
+ * - Strafe right
  */
 
 import { injectable } from "inversify";
@@ -20,14 +26,20 @@ import type {
 	ILegAnimator,
 	LocomotionInput,
 	LegAnimatorConfig,
+	DirectionalAnimationUrls,
 } from "../contracts/ILegAnimator";
 
 /**
  * Core bone names for leg animation (standard humanoid names).
  * These are the target bone names we want in the final animation.
+ *
+ * NOTE: We intentionally EXCLUDE "Hips" because:
+ * - Hips rotation affects the whole body orientation
+ * - The facing direction is controlled by the locomotion system
+ * - Including Hips causes the avatar to "lie down" during walk
  */
 const LEG_BONE_CORE_NAMES = [
-	"Hips",
+	// "Hips" - excluded, controlled by locomotion facing angle
 	"LeftUpLeg",
 	"LeftLeg",
 	"LeftFoot",
@@ -41,11 +53,13 @@ const LEG_BONE_CORE_NAMES = [
 /**
  * Known bone name prefixes from various sources.
  * We strip these to get the core bone name.
+ * IMPORTANT: Longer prefixes must come first to avoid partial matches.
  */
 const BONE_PREFIXES = [
+	"mixamorig1",     // Mixamo variant (must come before "mixamorig")
+	"mixamorig:",     // Some exports use colon
 	"mixamorig",      // Mixamo standard
 	"characters3dcom___", // characters3d.com
-	"mixamorig:",     // Some exports use colon
 	"",               // No prefix (standard names)
 ];
 
@@ -144,17 +158,26 @@ function retargetTrackName(trackName: string, targetPrefix: string): string {
 }
 
 /**
- * Filter and retarget animation clip to only include leg bone tracks,
+ * Filter and retarget animation clip to only include leg bone ROTATION tracks,
  * remapping bone names to match the target skeleton.
+ *
+ * IMPORTANT: We only include .quaternion tracks, NOT .position or .scale:
+ * - .position tracks have "root motion" that moves the avatar to wrong locations
+ * - .scale tracks can cause the avatar to disappear
+ * - .quaternion tracks are the actual joint rotations we want
  */
 function filterAndRetargetToLegBones(
 	clip: AnimationClip,
 	targetPrefix: string
 ): AnimationClip {
 	const legTracks: KeyframeTrack[] = [];
-	const mappedBones: string[] = [];
 
 	for (const track of clip.tracks) {
+		// Only include quaternion (rotation) tracks, not position or scale
+		if (!track.name.includes(".quaternion")) {
+			continue;
+		}
+
 		const boneName = track.name.split(".")[0] ?? "";
 		const coreName = extractCoreBoneName(boneName);
 
@@ -164,36 +187,45 @@ function filterAndRetargetToLegBones(
 			const clonedTrack = track.clone();
 			clonedTrack.name = newTrackName;
 			legTracks.push(clonedTrack);
-
-			// Track mapping for debug
-			if (!mappedBones.includes(`${boneName} → ${coreName}`)) {
-				mappedBones.push(`${boneName} → ${coreName}`);
-			}
-		}
-	}
-
-	console.log(
-		`[LegAnimator] Retargeted ${legTracks.length} leg tracks to prefix "${targetPrefix}"`
-	);
-	if (mappedBones.length > 0) {
-		console.log("[LegAnimator] Bone mappings applied:");
-		for (const mapping of mappedBones) {
-			console.log(`  - ${mapping}`);
 		}
 	}
 
 	return new AnimationClip(clip.name + "_legs", clip.duration, legTracks);
 }
 
+/**
+ * Direction keys for the 4-way blend
+ */
+type DirectionKey = "forward" | "backward" | "strafeLeft" | "strafeRight";
+
+/**
+ * Stores raw and processed clips for a direction
+ */
+interface DirectionalClip {
+	raw: AnimationClip | null;
+	processed: AnimationClip | null;
+	action: AnimationAction | null;
+}
+
 @injectable()
 export class LegAnimator implements ILegAnimator {
 	private mixer: AnimationMixer | null = null;
-	private walkAction: AnimationAction | null = null;
-	private walkClip: AnimationClip | null = null;
-	private rawWalkClip: AnimationClip | null = null; // Unprocessed clip
 	private root: Object3D | null = null;
 	private loader: GLTFLoader;
-	private targetBonePrefix: string = "mixamorig"; // Detected from skeleton
+	private targetBonePrefix: string = "mixamorig";
+
+	// Directional animations
+	private directions: Record<DirectionKey, DirectionalClip> = {
+		forward: { raw: null, processed: null, action: null },
+		backward: { raw: null, processed: null, action: null },
+		strafeLeft: { raw: null, processed: null, action: null },
+		strafeRight: { raw: null, processed: null, action: null },
+	};
+
+	// Legacy single animation (for backward compatibility)
+	private walkAction: AnimationAction | null = null;
+	private walkClip: AnimationClip | null = null;
+	private rawWalkClip: AnimationClip | null = null;
 
 	private config: Required<LegAnimatorConfig> = {
 		baseSpeed: 1,
@@ -208,6 +240,7 @@ export class LegAnimator implements ILegAnimator {
 
 	private initialized = false;
 	private animationLoaded = false;
+	private directionalMode = false;
 
 	constructor() {
 		this.loader = new GLTFLoader();
@@ -215,24 +248,8 @@ export class LegAnimator implements ILegAnimator {
 
 	/**
 	 * Detect the bone naming prefix used by the skeleton.
-	 * Searches for common leg bones and extracts their prefix.
 	 */
 	private detectBonePrefix(root: Object3D): string {
-		// DEBUG: Log all bone names in the skeleton
-		const boneNames: string[] = [];
-		root.traverse((obj) => {
-			if (obj.name) {
-				boneNames.push(obj.name);
-			}
-		});
-		console.log("[LegAnimator] Skeleton bone names (first 30):");
-		for (const name of boneNames.slice(0, 30)) {
-			console.log(`  - ${name}`);
-		}
-		if (boneNames.length > 30) {
-			console.log(`  ... and ${boneNames.length - 30} more`);
-		}
-
 		const prefixesToCheck = ["mixamorig", ""];
 
 		for (const prefix of prefixesToCheck) {
@@ -250,9 +267,6 @@ export class LegAnimator implements ILegAnimator {
 			if (obj.name.includes("Hips")) {
 				const idx = obj.name.indexOf("Hips");
 				foundPrefix = obj.name.slice(0, idx);
-				console.log(
-					`[LegAnimator] Found Hips bone: "${obj.name}", extracted prefix: "${foundPrefix}"`
-				);
 			}
 		});
 
@@ -265,120 +279,203 @@ export class LegAnimator implements ILegAnimator {
 		this.targetBonePrefix = this.detectBonePrefix(root);
 		this.initialized = true;
 
-		// If we already have a raw clip loaded, process and create the action now
-		if (this.rawWalkClip) {
+		// Process any pre-loaded animations
+		if (this.directionalMode) {
+			this.processDirectionalAnimations();
+		} else if (this.rawWalkClip) {
 			this.processAndCreateAction();
 		}
 	}
 
 	/**
-	 * Process the raw clip with retargeting and create the walk action.
+	 * Load a single walk animation (legacy mode)
 	 */
-	private processAndCreateAction(): void {
-		if (!this.rawWalkClip || !this.mixer) return;
+	async loadWalkAnimation(url: string): Promise<void> {
+		const clip = await this.loadAnimationClip(url);
+		this.rawWalkClip = clip;
+		this.animationLoaded = true;
+		this.directionalMode = false;
 
-		this.walkClip = filterAndRetargetToLegBones(
-			this.rawWalkClip,
-			this.targetBonePrefix
-		);
-		this.createWalkAction();
-
-		console.log(
-			`[LegAnimator] Loaded walk animation: ${this.walkClip.tracks.length} leg tracks, ${this.walkClip.duration.toFixed(2)}s`
-		);
+		if (this.initialized && this.mixer) {
+			this.processAndCreateAction();
+		}
 	}
 
-	async loadWalkAnimation(url: string): Promise<void> {
+	/**
+	 * Load all 4 directional animations for blending
+	 */
+	async loadDirectionalAnimations(urls: DirectionalAnimationUrls): Promise<void> {
+		console.log("[LegAnimator] Loading directional animations...");
+		this.directionalMode = true;
+
+		// Load all 4 in parallel
+		const [forward, backward, strafeLeft, strafeRight] = await Promise.all([
+			this.loadAnimationClip(urls.forward),
+			this.loadAnimationClip(urls.backward),
+			this.loadAnimationClip(urls.strafeLeft),
+			this.loadAnimationClip(urls.strafeRight),
+		]);
+
+		this.directions.forward.raw = forward;
+		this.directions.backward.raw = backward;
+		this.directions.strafeLeft.raw = strafeLeft;
+		this.directions.strafeRight.raw = strafeRight;
+
+		this.animationLoaded = true;
+		console.log("[LegAnimator] All directional animations loaded");
+
+		if (this.initialized && this.mixer) {
+			this.processDirectionalAnimations();
+		}
+	}
+
+	/**
+	 * Load a single animation clip from URL
+	 */
+	private loadAnimationClip(url: string): Promise<AnimationClip> {
 		return new Promise((resolve, reject) => {
 			this.loader.load(
 				url,
 				(gltf) => {
 					if (gltf.animations.length === 0) {
-						reject(new Error("No animations found in GLTF file"));
+						reject(new Error(`No animations found in ${url}`));
 						return;
 					}
-
-					// Use the first animation (typically the only one from Mixamo)
-					const fullClip = gltf.animations[0];
-					if (!fullClip) {
-						reject(new Error("Animation clip is undefined"));
+					const clip = gltf.animations[0];
+					if (!clip) {
+						reject(new Error(`Animation clip is undefined in ${url}`));
 						return;
 					}
-
-					// DEBUG: Log all tracks in the animation to understand bone naming
-					console.log(
-						`[LegAnimator] Animation "${fullClip.name}" has ${fullClip.tracks.length} tracks, duration: ${fullClip.duration.toFixed(2)}s`
-					);
-					console.log("[LegAnimator] Track names in animation:");
-					for (const track of fullClip.tracks.slice(0, 20)) {
-						console.log(`  - ${track.name}`);
-					}
-					if (fullClip.tracks.length > 20) {
-						console.log(`  ... and ${fullClip.tracks.length - 20} more`);
-					}
-
-					// Store the raw clip - we'll retarget when we know the skeleton prefix
-					this.rawWalkClip = fullClip;
-					this.animationLoaded = true;
-
-					// If already initialized, process and create the action
-					if (this.initialized && this.mixer) {
-						this.processAndCreateAction();
-					}
-
-					resolve();
+					console.log(`[LegAnimator] Loaded ${url}: ${clip.tracks.length} tracks, ${clip.duration.toFixed(2)}s`);
+					resolve(clip);
 				},
 				undefined,
 				(error) => {
-					console.error("[LegAnimator] Failed to load walk animation:", error);
+					console.error(`[LegAnimator] Failed to load ${url}:`, error);
 					reject(error);
 				}
 			);
 		});
 	}
 
-	setWalkClip(clip: AnimationClip): void {
-		// Store the raw clip
-		this.rawWalkClip = clip;
-		this.animationLoaded = true;
+	/**
+	 * Process legacy single animation
+	 */
+	private processAndCreateAction(): void {
+		if (!this.rawWalkClip || !this.mixer) return;
 
-		// If already initialized, process and create the action
-		if (this.initialized && this.mixer) {
-			this.processAndCreateAction();
-		}
-	}
-
-	private createWalkAction(): void {
-		if (!this.mixer || !this.walkClip) return;
-
+		this.walkClip = filterAndRetargetToLegBones(this.rawWalkClip, this.targetBonePrefix);
 		this.walkAction = this.mixer.clipAction(this.walkClip);
 		this.walkAction.setLoop(LoopRepeat, Infinity);
-
-		// Start paused at weight 0
 		this.walkAction.enabled = true;
 		this.walkAction.setEffectiveWeight(0);
 		this.walkAction.play();
+
+		console.log(`[LegAnimator] Created walk action: ${this.walkClip.tracks.length} leg tracks`);
+	}
+
+	/**
+	 * Process all directional animations and create actions
+	 */
+	private processDirectionalAnimations(): void {
+		if (!this.mixer) return;
+
+		for (const key of Object.keys(this.directions) as DirectionKey[]) {
+			const dir = this.directions[key];
+			if (!dir.raw) continue;
+
+			dir.processed = filterAndRetargetToLegBones(dir.raw, this.targetBonePrefix);
+			dir.action = this.mixer.clipAction(dir.processed);
+			dir.action.setLoop(LoopRepeat, Infinity);
+			dir.action.enabled = true;
+			dir.action.setEffectiveWeight(0);
+			dir.action.play();
+
+			console.log(`[LegAnimator] Created ${key} action: ${dir.processed.tracks.length} leg tracks`);
+		}
+	}
+
+	setWalkClip(clip: AnimationClip): void {
+		this.rawWalkClip = clip;
+		this.animationLoaded = true;
+		this.directionalMode = false;
+
+		if (this.initialized && this.mixer) {
+			this.processAndCreateAction();
+		}
 	}
 
 	setLocomotion(input: LocomotionInput): void {
 		const wasMoving = this.currentLocomotion.isMoving;
 		this.currentLocomotion = { ...input };
 
+		if (this.directionalMode) {
+			this.updateDirectionalBlend(input, wasMoving);
+		} else {
+			this.updateSingleAnimation(input, wasMoving);
+		}
+	}
+
+	/**
+	 * Update single animation mode (legacy)
+	 */
+	private updateSingleAnimation(input: LocomotionInput, wasMoving: boolean): void {
 		if (!this.walkAction) return;
 
-		// Start or stop walk animation
 		if (input.isMoving && !wasMoving) {
-			// Start walking - fade in
-			this.walkAction.fadeIn(this.config.blendTime);
+			this.walkAction.setEffectiveWeight(1);
 		} else if (!input.isMoving && wasMoving) {
-			// Stop walking - fade out
-			this.walkAction.fadeOut(this.config.blendTime);
+			this.walkAction.setEffectiveWeight(0);
 		}
 
-		// Adjust playback speed based on movement speed
 		if (input.isMoving) {
 			const playbackSpeed = this.config.baseSpeed * Math.max(0.5, input.speed);
 			this.walkAction.setEffectiveTimeScale(playbackSpeed);
+		}
+	}
+
+	/**
+	 * Update directional blend based on movement direction.
+	 * Uses 4-way blend: calculates weights for each direction based on input.
+	 */
+	private updateDirectionalBlend(input: LocomotionInput, wasMoving: boolean): void {
+		const dir = input.moveDirection ?? { x: 0, z: 1 };
+
+		// Calculate weights for each direction
+		// Forward/backward from z, strafe from x
+		const forwardWeight = Math.max(0, dir.z);      // z > 0 = forward
+		const backwardWeight = Math.max(0, -dir.z);    // z < 0 = backward
+		const strafeLeftWeight = Math.max(0, -dir.x);  // x < 0 = left
+		const strafeRightWeight = Math.max(0, dir.x);  // x > 0 = right
+
+		// Normalize so weights sum to 1 when moving
+		const totalWeight = forwardWeight + backwardWeight + strafeLeftWeight + strafeRightWeight;
+		const normalize = totalWeight > 0 ? 1 / totalWeight : 0;
+
+		// Apply weights (0 when not moving)
+		const movingMultiplier = input.isMoving ? 1 : 0;
+
+		this.setActionWeight("forward", forwardWeight * normalize * movingMultiplier);
+		this.setActionWeight("backward", backwardWeight * normalize * movingMultiplier);
+		this.setActionWeight("strafeLeft", strafeLeftWeight * normalize * movingMultiplier);
+		this.setActionWeight("strafeRight", strafeRightWeight * normalize * movingMultiplier);
+
+		// Adjust playback speed
+		if (input.isMoving) {
+			const playbackSpeed = this.config.baseSpeed * Math.max(0.5, input.speed);
+			for (const key of Object.keys(this.directions) as DirectionKey[]) {
+				this.directions[key].action?.setEffectiveTimeScale(playbackSpeed);
+			}
+		}
+	}
+
+	/**
+	 * Set weight for a directional action
+	 */
+	private setActionWeight(key: DirectionKey, weight: number): void {
+		const action = this.directions[key].action;
+		if (action) {
+			action.setEffectiveWeight(weight);
 		}
 	}
 
@@ -388,6 +485,10 @@ export class LegAnimator implements ILegAnimator {
 	}
 
 	isReady(): boolean {
+		if (this.directionalMode) {
+			return this.initialized && this.animationLoaded &&
+				this.directions.forward.action !== null;
+		}
 		return this.initialized && this.animationLoaded && this.walkAction !== null;
 	}
 
@@ -396,18 +497,31 @@ export class LegAnimator implements ILegAnimator {
 	}
 
 	dispose(): void {
+		// Dispose directional actions
+		for (const key of Object.keys(this.directions) as DirectionKey[]) {
+			const action = this.directions[key].action;
+			if (action) {
+				action.stop();
+			}
+			this.directions[key] = { raw: null, processed: null, action: null };
+		}
+
+		// Dispose legacy action
 		if (this.walkAction) {
 			this.walkAction.stop();
 			this.walkAction = null;
 		}
+
 		if (this.mixer) {
 			this.mixer.stopAllAction();
 			this.mixer = null;
 		}
+
 		this.walkClip = null;
 		this.rawWalkClip = null;
 		this.root = null;
 		this.initialized = false;
 		this.animationLoaded = false;
+		this.directionalMode = false;
 	}
 }

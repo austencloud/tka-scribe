@@ -47,7 +47,7 @@
     position: [number, number, number];
     target: [number, number, number];
   }
-  import { container, loadFeatureModule } from "$lib/shared/inversify/container";
+  import { loadFeatureModule, resolveAsync } from "$lib/shared/inversify/container";
   import { ANIMATION_3D_TYPES } from "./inversify/animation-3d.types";
   import type { IPropStateInterpolator } from "./services/contracts/IPropStateInterpolator";
   import type { ISequenceConverter } from "./services/contracts/ISequenceConverter";
@@ -305,14 +305,14 @@
     // Load the 3D viewer feature module first
     await loadFeatureModule("3d-viewer");
 
-    // Now resolve services
-    propInterpolator = container.get<IPropStateInterpolator>(
+    // Now resolve services using resolveAsync for HMR resilience
+    propInterpolator = await resolveAsync<IPropStateInterpolator>(
       ANIMATION_3D_TYPES.IPropStateInterpolator
     );
-    sequenceConverter = container.get<ISequenceConverter>(
+    sequenceConverter = await resolveAsync<ISequenceConverter>(
       ANIMATION_3D_TYPES.ISequenceConverter
     );
-    persistenceService = container.get<IAnimation3DPersister>(
+    persistenceService = await resolveAsync<IAnimation3DPersister>(
       ANIMATION_3D_TYPES.IAnimation3DPersister
     );
 
@@ -470,6 +470,7 @@
                   isActive={activePerformerIndex === i}
                   avatarId={performer.avatarModelId}
                   isMoving={performer.isMoving}
+                  moveDirection={performer.moveDirection}
                 />
                 <AvatarLabel3D
                   label={`Performer ${i + 1}`}

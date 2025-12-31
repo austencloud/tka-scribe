@@ -100,7 +100,7 @@ export function createPlaybackState(options: PlaybackOptions = {}) {
         const shouldContinue = options.onCycleComplete();
         if (!shouldContinue) {
           isPlaying = false;
-          animationFrameId = requestAnimationFrame(animate);
+          // Don't schedule another frame - we're stopping
           return;
         }
         newProgress = newProgress % 1;

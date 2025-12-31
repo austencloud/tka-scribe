@@ -37,6 +37,52 @@ const SCENE_BOUNDS = {
 };
 
 /**
+ * Check if a sequence is seamlessly loopable (ends where it starts).
+ * Mirrors SequenceLoopabilityChecker logic from the 2D animator.
+ */
+function isSeamlesslyLoopable(sequence: SequenceData): boolean {
+	if (!sequence.beats || sequence.beats.length === 0) {
+		return false;
+	}
+
+	const firstBeat = sequence.beats[0];
+	const lastBeat = sequence.beats[sequence.beats.length - 1];
+
+	if (!firstBeat || !lastBeat) {
+		return false;
+	}
+
+	// Check if positions match
+	if (firstBeat.startPosition !== lastBeat.endPosition) {
+		return false;
+	}
+
+	// Check blue prop orientations
+	const blueFirst = firstBeat.motions?.blue;
+	const blueLast = lastBeat.motions?.blue;
+	if (blueFirst && blueLast) {
+		if (blueFirst.startOrientation !== blueLast.endOrientation) {
+			return false;
+		}
+	} else if (blueFirst || blueLast) {
+		return false;
+	}
+
+	// Check red prop orientations
+	const redFirst = firstBeat.motions?.red;
+	const redLast = lastBeat.motions?.red;
+	if (redFirst && redLast) {
+		if (redFirst.startOrientation !== redLast.endOrientation) {
+			return false;
+		}
+	} else if (redFirst || redLast) {
+		return false;
+	}
+
+	return true;
+}
+
+/**
  * Configuration for an avatar instance
  */
 export interface AvatarInstanceConfig {
@@ -121,20 +167,26 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 		}
 
 		if (currentBeatIndex < beatConfigs.length - 1) {
+			// More beats to play
 			currentBeatIndex++;
 			updateVisibilityFromBeat(beatConfigs[currentBeatIndex]);
 			return true;
 		} else if (playback.loop) {
+			// Loop back to start
 			currentBeatIndex = 0;
 			updateVisibilityFromBeat(beatConfigs[0]);
 			return true;
 		} else {
+			// Sequence complete (no loop) - reset to beat 0 for next play
+			currentBeatIndex = 0;
+			updateVisibilityFromBeat(beatConfigs[0]);
 			return false;
 		}
 	}
 
 	// Derived state
 	const hasSequence = $derived(loadedSequence !== null);
+	const isCircular = $derived(loadedSequence ? isSeamlesslyLoopable(loadedSequence) : false);
 	const currentBeat = $derived<BeatMotionConfigs | null>(
 		beatConfigs.length > 0 ? (beatConfigs[currentBeatIndex] ?? null) : null
 	);
@@ -157,7 +209,8 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 	);
 
 	/**
-	 * Load a sequence for this avatar
+	 * Load a sequence for this avatar.
+	 * Auto-enables looping for circular sequences (matching 2D animator behavior).
 	 */
 	function loadSequence(sequence: SequenceData) {
 		loadedSequence = sequence;
@@ -165,6 +218,11 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 		currentBeatIndex = 0;
 		playback.reset();
 		updateVisibilityFromBeat(beatConfigs[0]);
+
+		// Auto-enable loop for circular sequences
+		if (isSeamlesslyLoopable(sequence)) {
+			playback.loop = true;
+		}
 	}
 
 	/**
@@ -228,11 +286,7 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 	function setMoveInput(input: { x: number; z: number }) {
 		moveInput = input;
 		isMoving = input.x !== 0 || input.z !== 0;
-
-		// Pause sequence playback while moving
-		if (isMoving && playback.isPlaying) {
-			playback.pause();
-		}
+		// Sequence continues playing while moving - hands follow props via IK
 	}
 
 	/**
@@ -253,10 +307,10 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 		const cos = Math.cos(cameraAngle);
 
 		// World-space direction (rotated by camera yaw)
-		// At yaw=0: forward (+Z local) → +Z world, right (+X local) → +X world
-		// At yaw=π/2: forward → +X world, right → -Z world
-		const worldX = moveInput.x * cos + moveInput.z * sin;
-		const worldZ = -moveInput.x * sin + moveInput.z * cos;
+		// X is negated because in our coordinate system, screen-right is -X in world space
+		// At yaw=0: forward (+Z local) → +Z world, right (D key) → -X world
+		const worldX = -moveInput.x * cos + moveInput.z * sin;
+		const worldZ = moveInput.x * sin + moveInput.z * cos;
 
 		// Normalize for consistent speed when moving diagonally
 		const length = Math.sqrt(worldX * worldX + worldZ * worldZ);
@@ -317,6 +371,11 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 			return isMoving;
 		},
 
+		// Move direction for animation blending (raw input, not camera-rotated)
+		get moveDirection() {
+			return moveInput;
+		},
+
 		// Locomotion methods
 		setMoveInput,
 		updateMovement,
@@ -331,6 +390,9 @@ export function createAvatarInstanceState(config: AvatarInstanceConfig, deps: Av
 		// Sequence state
 		get hasSequence() {
 			return hasSequence;
+		},
+		get isCircular() {
+			return isCircular;
 		},
 		get loadedSequence() {
 			return loadedSequence;

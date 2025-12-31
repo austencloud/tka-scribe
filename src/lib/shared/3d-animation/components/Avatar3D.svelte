@@ -58,8 +58,8 @@
     isMoving?: boolean;
     /** Movement speed 0-1 for animation playback rate */
     moveSpeed?: number;
-    /** Path to walk animation GLB file (optional) */
-    walkAnimationUrl?: string;
+    /** Movement direction relative to facing: x (-1 left, +1 right), z (-1 back, +1 forward) */
+    moveDirection?: { x: number; z: number };
   }
 
   let {
@@ -76,7 +76,7 @@
     // Locomotion animation
     isMoving = false,
     moveSpeed = 1,
-    walkAnimationUrl = '/animations/walk.glb',
+    moveDirection = { x: 0, z: 1 },
   }: Props = $props();
 
   // Services (manually instantiated to ensure shared skeleton instance)
@@ -154,9 +154,14 @@
       if (legAnimator && cachedRoot) {
         legAnimator.initialize(cachedRoot);
 
-        // Load walk animation (non-blocking)
-        legAnimator.loadWalkAnimation(walkAnimationUrl).catch((err) => {
-          console.warn("[Avatar3D] Walk animation not loaded:", err.message);
+        // Load directional walk animations (non-blocking)
+        legAnimator.loadDirectionalAnimations({
+          forward: '/animations/walk.glb',
+          backward: '/animations/walk-backward.glb',
+          strafeLeft: '/animations/strafe-left.glb',
+          strafeRight: '/animations/strafe-right.glb',
+        }).catch((err) => {
+          console.warn("[Avatar3D] Directional animations not loaded:", err.message);
           // Animation is optional - avatar will work without it
         });
       }
@@ -228,49 +233,46 @@
     });
   });
 
-  // React to locomotion state changes - update leg animation
-  $effect(() => {
-    if (!legAnimator || !legAnimator.isReady()) return;
-
-    legAnimator.setLocomotion({
-      isMoving,
-      speed: moveSpeed,
-      facingAngle,
-    });
-  });
-
   // Update animation each frame
   useTask((delta) => {
     if (!servicesReady || !animationService || useProceduralFallback) return;
 
-    // Convert prop states from LOCAL grid coords to WORLD coords for IK solver
+    // Convert prop states from grid-local coords to WORLD coords for IK solver.
+    // Uses the EXACT same formula as Staff3D to ensure hands reach prop positions.
     //
-    // The IK solver uses bone.getWorldPosition() which returns WORLD coordinates
-    // (including the parent T.Group offset). So targets must also be in WORLD coords.
-    //
-    // Props are on the wall plane (z=0), while avatar stands behind (z=WALL_OFFSET).
-    // The IK targets need to be at z=0 (where props actually are) so hands reach forward.
-    // We compensate by subtracting WALL_OFFSET from the z offset calculation.
-    //
-    // Example for avatar at position (x=100, z=-60) with WALL_OFFSET=-60:
-    //   Prop at local (x=0, y=0, z=0) → world (x=100, y=0, z=0)  (on wall plane)
+    // Right-handed Y-axis rotation (same as Staff3D lines 82-85):
+    //   x' = x * cos(θ) + z * sin(θ)
+    //   z' = -x * sin(θ) + z * cos(θ)
+
+    const cos = Math.cos(facingAngle);
+    const sin = Math.sin(facingAngle);
+    const gridOffset = -WALL_OFFSET; // Same as passed to Staff3D
+
+    // Transform grid-local position to world position (mirrors Staff3D.position calculation)
+    function toWorldPosition(local: { x: number; y: number; z: number }) {
+      // Body-local position with forward offset (same as Staff3D)
+      const localX = local.x;
+      const localZ = local.z + gridOffset;
+
+      // Right-handed Y-axis rotation (matches Staff3D exactly)
+      const rotatedX = localX * cos + localZ * sin;
+      const rotatedZ = -localX * sin + localZ * cos;
+
+      return {
+        x: rotatedX + position.x,
+        y: local.y + (position.y ?? 0),
+        z: rotatedZ + position.z,
+      };
+    }
 
     const blueWorldProp = bluePropState ? {
       ...bluePropState,
-      worldPosition: {
-        x: bluePropState.worldPosition.x + position.x,
-        y: bluePropState.worldPosition.y + (position.y ?? 0),
-        z: bluePropState.worldPosition.z + (position.z - WALL_OFFSET),  // Props are on wall plane
-      }
+      worldPosition: toWorldPosition(bluePropState.worldPosition),
     } : null;
 
     const redWorldProp = redPropState ? {
       ...redPropState,
-      worldPosition: {
-        x: redPropState.worldPosition.x + position.x,
-        y: redPropState.worldPosition.y + (position.y ?? 0),
-        z: redPropState.worldPosition.z + (position.z - WALL_OFFSET),  // Props are on wall plane
-      }
+      worldPosition: toWorldPosition(redPropState.worldPosition),
     } : null;
 
     // Update hand targets from prop states (now in world coords)
@@ -280,7 +282,15 @@
     animationService.update(delta);
 
     // Update lower body animation (walk cycle)
+    // Pass locomotion state every frame - setLocomotion handles change detection internally
+    // (This avoids reactivity issues with $effect not re-running when animation loads async)
     if (legAnimator) {
+      legAnimator.setLocomotion({
+        isMoving,
+        speed: moveSpeed,
+        facingAngle,
+        moveDirection,
+      });
       legAnimator.update(delta);
     }
   });

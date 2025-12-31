@@ -23,6 +23,18 @@ export interface LocomotionInput {
 	speed: number;
 	/** Optional: facing angle for root motion alignment */
 	facingAngle?: number;
+	/** Movement direction relative to facing: x (-1 left, +1 right), z (-1 back, +1 forward) */
+	moveDirection?: { x: number; z: number };
+}
+
+/**
+ * URLs for directional walk animations
+ */
+export interface DirectionalAnimationUrls {
+	forward: string;
+	backward: string;
+	strafeLeft: string;
+	strafeRight: string;
 }
 
 /**
@@ -51,6 +63,13 @@ export interface ILegAnimator {
 	 * @param url Path to the animation file
 	 */
 	loadWalkAnimation(url: string): Promise<void>;
+
+	/**
+	 * Load all directional walk animations for 4-way blending.
+	 * Enables smooth transitions between forward, backward, and strafe.
+	 * @param urls Paths to all directional animation files
+	 */
+	loadDirectionalAnimations(urls: DirectionalAnimationUrls): Promise<void>;
 
 	/**
 	 * Set a pre-loaded animation clip as the walk animation.
