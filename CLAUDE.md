@@ -483,6 +483,44 @@ OptionPictographCell.svelte → OptionPictograph
 - **Primary developer**: Austen Cloud (austencloud@gmail.com)
 - When submitting feedback via scripts, default to `--user austen`
 
+### Feedback Script Syntax (CRITICAL)
+
+**The feedback script uses POSITIONAL arguments, NOT flags.**
+
+```bash
+# ✅ CORRECT - Positional arguments
+node scripts/fetch-feedback.js create "Title here" "Description here" feature module tab
+
+# ❌ WRONG - Do NOT use flag syntax
+node scripts/fetch-feedback.js create --title "Title" --description "Desc" --type feature
+```
+
+**Create syntax:**
+```bash
+node scripts/fetch-feedback.js create "title" "description" [type] [module] [tab]
+```
+- `type`: bug, feature, enhancement, general (default: enhancement)
+- `module`: compose, create, discover, settings, etc.
+- `tab`: optional sub-tab
+
+**Update status syntax:**
+```bash
+node scripts/fetch-feedback.js <id> <status> "resolution notes"
+```
+- Status: new, in-progress, in-review, completed, archived
+
+**Examples:**
+```bash
+# Create a feature
+node scripts/fetch-feedback.js create "What's New modal" "Shows version changes to users" feature settings
+
+# Mark completed
+node scripts/fetch-feedback.js abc123 completed "Released in v0.7.2"
+
+# Delete
+node scripts/fetch-feedback.js delete abc123
+```
+
 ### /done command behavior (auto-create workflow)
 
 When `/done` is called and there's no matching feedback item for the work just completed:
@@ -519,7 +557,7 @@ Unlike app feedback (problem → resolution), terminal items are work logs:
 
 ---
 
-_Last updated: 2025-12-26_
+_Last updated: 2025-12-30_
 
 ---
 
