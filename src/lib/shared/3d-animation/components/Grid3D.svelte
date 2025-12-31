@@ -28,8 +28,12 @@
     planeOpacity?: number;
     /** Grid mode: diamond or box */
     gridMode?: GridMode;
-    /** Center position for this grid (default: origin) */
+    /** Avatar position - grid rotates around this point */
     centerPosition?: { x: number; y: number; z: number };
+    /** Avatar facing angle - planes rotate with avatar's body orientation */
+    facingAngle?: number;
+    /** Forward offset from avatar to grid center (body-local Z direction) */
+    gridOffset?: number;
     /** Optional label for this grid (e.g., "Avatar 1") */
     label?: string;
   }
@@ -41,6 +45,8 @@
     planeOpacity = 0.15,
     gridMode = "diamond",
     centerPosition = { x: 0, y: 0, z: 0 },
+    facingAngle = 0,
+    gridOffset = 0,
     label,
   }: Props = $props();
 
@@ -48,84 +54,95 @@
   const effectiveSize = $derived(size ?? userProportionsState.gridSize);
 </script>
 
-<!-- Position entire grid at centerPosition -->
-<T.Group position={[centerPosition.x, centerPosition.y, centerPosition.z]}>
-  <!-- Wall plane (purple) -->
-  {#if visiblePlanes.has(Plane.WALL)}
-    <GridPlane
-      plane={Plane.WALL}
-      color={PLANE_COLORS[Plane.WALL]}
-      opacity={planeOpacity}
-      {showLabels}
-      size={effectiveSize}
-      {gridMode}
-    />
-  {/if}
+<!--
+  Grid positioning:
+  - Outer group at avatar position, rotates with facingAngle (pivot point is avatar)
+  - Inner group offsets grid content forward in body-local space
+  When avatar turns, the grid rotates around the avatar, keeping it "in front"
+-->
+<T.Group
+  position={[centerPosition.x, centerPosition.y, centerPosition.z]}
+  rotation.y={facingAngle}
+>
+  <!-- Inner group offsets grid forward from avatar in body-local Z -->
+  <T.Group position.z={gridOffset}>
+    <!-- Wall plane (purple) -->
+    {#if visiblePlanes.has(Plane.WALL)}
+      <GridPlane
+        plane={Plane.WALL}
+        color={PLANE_COLORS[Plane.WALL]}
+        opacity={planeOpacity}
+        {showLabels}
+        size={effectiveSize}
+        {gridMode}
+      />
+    {/if}
 
-  <!-- Wheel plane (blue) -->
-  {#if visiblePlanes.has(Plane.WHEEL)}
-    <GridPlane
-      plane={Plane.WHEEL}
-      color={PLANE_COLORS[Plane.WHEEL]}
-      opacity={planeOpacity}
-      {showLabels}
-      size={effectiveSize}
-      {gridMode}
-    />
-  {/if}
+    <!-- Wheel plane (blue) -->
+    {#if visiblePlanes.has(Plane.WHEEL)}
+      <GridPlane
+        plane={Plane.WHEEL}
+        color={PLANE_COLORS[Plane.WHEEL]}
+        opacity={planeOpacity}
+        {showLabels}
+        size={effectiveSize}
+        {gridMode}
+      />
+    {/if}
 
-  <!-- Floor plane (green) -->
-  {#if visiblePlanes.has(Plane.FLOOR)}
-    <GridPlane
-      plane={Plane.FLOOR}
-      color={PLANE_COLORS[Plane.FLOOR]}
-      opacity={planeOpacity}
-      {showLabels}
-      size={effectiveSize}
-      {gridMode}
-    />
-  {/if}
+    <!-- Floor plane (green) -->
+    {#if visiblePlanes.has(Plane.FLOOR)}
+      <GridPlane
+        plane={Plane.FLOOR}
+        color={PLANE_COLORS[Plane.FLOOR]}
+        opacity={planeOpacity}
+        {showLabels}
+        size={effectiveSize}
+        {gridMode}
+      />
+    {/if}
 
-  <!-- Center point indicator (always visible) -->
-  <T.Mesh position={[0, 0, 0]}>
-    <T.SphereGeometry args={[8, 32, 32]} />
-    <T.MeshBasicMaterial color="#f59e0b" />
-  </T.Mesh>
+    <!-- Center point indicator (always visible) -->
+    <T.Mesh position={[0, 0, 0]}>
+      <T.SphereGeometry args={[8, 32, 32]} />
+      <T.MeshBasicMaterial color="#f59e0b" />
+    </T.Mesh>
 
-  <!-- Axis helpers for orientation reference -->
-  <T.Group>
-    <!-- X axis (red) - performer's right -->
-    <T.ArrowHelper
-      args={[
-        [1, 0, 0],
-        [0, 0, 0],
-        effectiveSize * 1.2,
-        0xff4444,
-        15,
-        8
-      ]}
-    />
-    <!-- Y axis (green) - up/sky -->
-    <T.ArrowHelper
-      args={[
-        [0, 1, 0],
-        [0, 0, 0],
-        effectiveSize * 1.2,
-        0x44ff44,
-        15,
-        8
-      ]}
-    />
-    <!-- Z axis (blue) - toward audience -->
-    <T.ArrowHelper
-      args={[
-        [0, 0, 1],
-        [0, 0, 0],
-        effectiveSize * 1.2,
-        0x4444ff,
-        15,
-        8
-      ]}
-    />
+    <!-- Axis helpers for orientation reference -->
+    <T.Group>
+      <!-- X axis (red) - performer's right -->
+      <T.ArrowHelper
+        args={[
+          [1, 0, 0],
+          [0, 0, 0],
+          effectiveSize * 1.2,
+          0xff4444,
+          15,
+          8
+        ]}
+      />
+      <!-- Y axis (green) - up/sky -->
+      <T.ArrowHelper
+        args={[
+          [0, 1, 0],
+          [0, 0, 0],
+          effectiveSize * 1.2,
+          0x44ff44,
+          15,
+          8
+        ]}
+      />
+      <!-- Z axis (blue) - toward audience -->
+      <T.ArrowHelper
+        args={[
+          [0, 0, 1],
+          [0, 0, 0],
+          effectiveSize * 1.2,
+          0x4444ff,
+          15,
+          8
+        ]}
+      />
+    </T.Group>
   </T.Group>
 </T.Group>

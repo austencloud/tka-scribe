@@ -23,7 +23,7 @@
   import type { GridMode } from "./domain/constants/grid-layout";
   import { createAvatarInstanceState, type AvatarInstanceState } from "./state/avatar-instance-state.svelte";
   import { createAvatarSyncState, type AvatarSyncState } from "./state/avatar-sync-state.svelte";
-  import { getDefaultPositions, MAX_PERFORMERS } from "./utils/performer-positions";
+  import { getDefaultPositions, MAX_PERFORMERS, WALL_OFFSET } from "./utils/performer-positions";
   import PerformerManager from "./components/panels/PerformerManager.svelte";
   import AvatarSyncControls from "./components/panels/AvatarSyncControls.svelte";
   import DuetBrowserPanel from "./components/panels/DuetBrowserPanel.svelte";
@@ -131,12 +131,14 @@
     return activeState.loadedSequence?.word || activeState.loadedSequence?.name || null;
   });
 
-  // Avatar positions for per-avatar grid planes (full 3D position)
+  // Avatar positions for per-avatar grid planes (full 3D position + facing angle)
+  // Grid planes rotate with avatar's body orientation for body-relative coordinate system
   const avatarPositions = $derived.by(() => {
     return performerStates.map(p => ({
       x: p.position.x,
       y: p.position.y,
-      z: p.position.z
+      z: p.position.z,
+      facingAngle: p.facingAngle
     }));
   });
 
@@ -243,10 +245,11 @@
 
   // Handle mesh clicks from raycaster (for performer selection)
   function handleMeshClick(meshName: string, point: { x: number; y: number; z: number }) {
-    // Check if this is a performer hitbox
-    const hitboxMatch = meshName.match(/^PERFORMER_HITBOX_(\d+)$/);
-    if (hitboxMatch) {
-      const performerIndex = parseInt(hitboxMatch[1], 10);
+    // Check if this is a performer (either avatar body or hitbox)
+    // Avatar3D names its group: PERFORMER_performer-0, PERFORMER_performer-1, etc.
+    const performerMatch = meshName.match(/^PERFORMER_performer-(\d+)$/);
+    if (performerMatch) {
+      const performerIndex = parseInt(performerMatch[1], 10);
       activePerformerIndex = performerIndex;
       isDraggingPerformer = true;
     }
@@ -317,10 +320,11 @@
     serviceDeps = { propInterpolator, sequenceConverter };
 
     // Create initial performer (start with 1, user can add more)
+    const initialPosition = getDefaultPositions(1)[0];
     const initialPerformer = createAvatarInstanceState({
       id: 'performer-0',
-      positionX: 0,  // Centered when solo
-      positionZ: 0,
+      positionX: initialPosition.x,
+      positionZ: initialPosition.z,
       avatarModelId: initialAvatarId
     }, serviceDeps);
 
@@ -432,19 +436,27 @@
           <DraggablePerformer
             position={performer.position}
             isActive={activePerformerIndex === i}
-            index={i}
-            onSelect={() => (activePerformerIndex = i)}
-            onPositionChange={(pos) => handlePerformerDrag(i, pos)}
-            onDragStart={() => (isDraggingPerformer = true)}
-            onDragEnd={() => (isDraggingPerformer = false)}
+            isDragging={isDraggingPerformer && activePerformerIndex === i}
           >
             {#snippet children()}
-              <!-- Props -->
+              <!-- Props rotate with avatar (pivot at avatar position, offset forward to grid) -->
               {#if performer.showBlue && performer.bluePropState}
-                <Staff3D propState={performer.bluePropState} color="blue" avatarPosition={performer.position} />
+                <Staff3D
+                  propState={performer.bluePropState}
+                  color="blue"
+                  avatarPosition={performer.position}
+                  facingAngle={performer.facingAngle}
+                  gridOffset={-WALL_OFFSET}
+                />
               {/if}
               {#if performer.showRed && performer.redPropState}
-                <Staff3D propState={performer.redPropState} color="red" avatarPosition={performer.position} />
+                <Staff3D
+                  propState={performer.redPropState}
+                  color="red"
+                  avatarPosition={performer.position}
+                  facingAngle={performer.facingAngle}
+                  gridOffset={-WALL_OFFSET}
+                />
               {/if}
 
               <!-- Figure + Label -->
@@ -457,6 +469,7 @@
                   facingAngle={performer.facingAngle}
                   isActive={activePerformerIndex === i}
                   avatarId={performer.avatarModelId}
+                  isMoving={performer.isMoving}
                 />
                 <AvatarLabel3D
                   label={`Performer ${i + 1}`}

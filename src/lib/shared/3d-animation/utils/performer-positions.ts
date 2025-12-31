@@ -12,6 +12,10 @@ export interface PerformerPosition {
 
 const GRID_SPACING = 400; // Units between performers
 
+// Offset to position avatar behind the wall plane (facing it)
+// 6 inches ≈ 15 cm = 30 units (CM_TO_UNITS = 2)
+export const WALL_OFFSET = -60;
+
 /**
  * Default 2x2 grid positions (all facing same direction)
  *
@@ -27,34 +31,34 @@ export function getDefaultPositions(count: number): PerformerPosition[] {
 	if (count <= 0) return [];
 	if (count > 4) count = 4;
 
-	// Single performer: centered
+	// Single performer: centered, offset back from wall plane
 	if (count === 1) {
-		return [{ x: 0, z: 0 }];
+		return [{ x: 0, z: WALL_OFFSET }];
 	}
 
 	// Two performers: side by side
 	if (count === 2) {
 		return [
-			{ x: -GRID_SPACING / 2, z: 0 }, // Left
-			{ x: GRID_SPACING / 2, z: 0 } // Right
+			{ x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Left
+			{ x: GRID_SPACING / 2, z: WALL_OFFSET } // Right
 		];
 	}
 
 	// Three performers: 2 front, 1 back center
 	if (count === 3) {
 		return [
-			{ x: -GRID_SPACING / 2, z: 0 }, // Front-left
-			{ x: GRID_SPACING / 2, z: 0 }, // Front-right
-			{ x: 0, z: -GRID_SPACING } // Back-center
+			{ x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Front-left
+			{ x: GRID_SPACING / 2, z: WALL_OFFSET }, // Front-right
+			{ x: 0, z: -GRID_SPACING + WALL_OFFSET } // Back-center
 		];
 	}
 
 	// Four performers: full 2x2 grid
 	return [
-		{ x: -GRID_SPACING / 2, z: 0 }, // Front-left
-		{ x: GRID_SPACING / 2, z: 0 }, // Front-right
-		{ x: -GRID_SPACING / 2, z: -GRID_SPACING }, // Back-left
-		{ x: GRID_SPACING / 2, z: -GRID_SPACING } // Back-right
+		{ x: -GRID_SPACING / 2, z: WALL_OFFSET }, // Front-left
+		{ x: GRID_SPACING / 2, z: WALL_OFFSET }, // Front-right
+		{ x: -GRID_SPACING / 2, z: -GRID_SPACING + WALL_OFFSET }, // Back-left
+		{ x: GRID_SPACING / 2, z: -GRID_SPACING + WALL_OFFSET } // Back-right
 	];
 }
 

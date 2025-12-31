@@ -2,8 +2,8 @@
 	/**
 	 * DraggablePerformer
 	 *
-	 * Wrapper component that enables click-and-drag positioning for performers.
-	 * Uses an invisible hitbox cylinder for interaction detection.
+	 * Wrapper component that provides visual feedback for performer selection/dragging.
+	 * Click detection is handled by raycasting against the actual Avatar3D mesh.
 	 */
 
 	import { T } from '@threlte/core';
@@ -15,16 +15,8 @@
 		position: { x: number; y?: number; z: number };
 		/** Whether this performer is active/selected */
 		isActive: boolean;
-		/** Performer index for identification */
-		index: number;
-		/** Called when performer is clicked (to select) */
-		onSelect: () => void;
-		/** Called when position changes during drag */
-		onPositionChange: (position: { x: number; z: number }) => void;
-		/** Called when drag starts */
-		onDragStart?: () => void;
-		/** Called when drag ends */
-		onDragEnd?: () => void;
+		/** Whether this performer is currently being dragged */
+		isDragging?: boolean;
 		/** Children content (Avatar3D, Staff3D, etc.) */
 		children: Snippet;
 	}
@@ -32,79 +24,19 @@
 	let {
 		position,
 		isActive,
-		index,
-		onSelect,
-		onPositionChange,
-		onDragStart,
-		onDragEnd,
+		isDragging = false,
 		children
 	}: Props = $props();
 
-	// Drag state
-	let isDragging = $state(false);
-	let isHovered = $state(false);
-
-	// Hitbox dimensions - sized to match the avatar model closely
-	// Avatar is approximately 60 units wide and 200 units tall
-	const HITBOX_RADIUS = 50;
-	const HITBOX_HEIGHT = 200;
-
-	// Debug: make hitbox visible (set to false for production)
-	const DEBUG_HITBOX = true;
-
-	function handlePointerDown(event: ThreltePointerEvent) {
-		onSelect();
-		isDragging = true;
-		onDragStart?.();
-		event.stopPropagation?.();
-	}
-
-	function handlePointerUp(event: ThreltePointerEvent) {
-		if (isDragging) {
-			isDragging = false;
-			onDragEnd?.();
-		}
-	}
-
-	function handlePointerEnter(event: ThreltePointerEvent) {
-		isHovered = true;
-	}
-
-	function handlePointerLeave(event: ThreltePointerEvent) {
-		if (!isDragging) {
-			isHovered = false;
-		}
-	}
-
-	// Type for Threlte pointer events
-	type ThreltePointerEvent = {
-		stopPropagation?: () => void;
-		point?: THREE.Vector3;
-		nativeEvent?: PointerEvent;
-	};
+	// Ring size for selection indicator
+	const RING_RADIUS = 60;
 </script>
 
-<!-- Invisible hitbox for interaction -->
-<T.Group position.x={position.x} position.z={position.z}>
-	<!-- Clickable cylinder around avatar - named for raycaster identification -->
-	<T.Mesh
-		position.y={HITBOX_HEIGHT / 2}
-		name={`PERFORMER_HITBOX_${index}`}
-	>
-		<T.CylinderGeometry args={[HITBOX_RADIUS, HITBOX_RADIUS, HITBOX_HEIGHT, 16]} />
-		<!-- Invisible when not debugging, but still raycastable -->
-		<T.MeshBasicMaterial
-			transparent
-			opacity={DEBUG_HITBOX ? 0.3 : 0}
-			color={isActive ? '#64b5f6' : '#ff00ff'}
-			depthWrite={false}
-		/>
-	</T.Mesh>
-
-	<!-- Selection ring on ground (visible when active or dragging) -->
-	{#if isActive || isDragging}
+<!-- Selection ring on ground (visible when active or dragging) -->
+{#if isActive || isDragging}
+	<T.Group position.x={position.x} position.z={position.z}>
 		<T.Mesh rotation.x={-Math.PI / 2} position.y={1}>
-			<T.RingGeometry args={[HITBOX_RADIUS - 5, HITBOX_RADIUS + 5, 32]} />
+			<T.RingGeometry args={[RING_RADIUS - 5, RING_RADIUS + 5, 32]} />
 			<T.MeshBasicMaterial
 				color={isDragging ? '#4caf50' : '#64b5f6'}
 				transparent
@@ -112,8 +44,8 @@
 				side={THREE.DoubleSide}
 			/>
 		</T.Mesh>
-	{/if}
-</T.Group>
+	</T.Group>
+{/if}
 
 <!-- Actual performer content (Avatar, Props, Label) rendered as children -->
 {@render children()}

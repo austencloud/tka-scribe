@@ -24,6 +24,7 @@
   import type { PropState3D } from "../domain/models/PropState3D";
   import { cmToUnits } from "../config/avatar-proportions";
   import { getAvatarModelPath, type AvatarId, DEFAULT_AVATAR_ID } from "../config/avatar-definitions";
+  import { WALL_OFFSET } from "../utils/performer-positions";
   import { userProportionsState } from "../state/user-proportions-state.svelte";
   import IKFigure3D from "./IKFigure3D.svelte";
 
@@ -72,12 +73,17 @@
     position = { x: 0, y: 0, z: DEFAULT_FIGURE_Z },
     facingAngle = 0,
     isActive = true,
+    // Locomotion animation
+    isMoving = false,
+    moveSpeed = 1,
+    walkAnimationUrl = '/animations/walk.glb',
   }: Props = $props();
 
   // Services (manually instantiated to ensure shared skeleton instance)
   let skeletonService: IAvatarSkeletonBuilder | null = $state(null);
   let ikSolver: IIKSolver | null = $state(null);
   let animationService: IAvatarAnimator | null = $state(null);
+  let legAnimator: ILegAnimator | null = $state(null);
 
   let servicesReady = $state(false);
   let modelLoaded = $state(false);
@@ -143,6 +149,17 @@
       if (!rightChain) {
         console.warn("[Avatar3D] Right arm chain NOT FOUND");
       }
+
+      // Initialize leg animator with the loaded skeleton
+      if (legAnimator && cachedRoot) {
+        legAnimator.initialize(cachedRoot);
+
+        // Load walk animation (non-blocking)
+        legAnimator.loadWalkAnimation(walkAnimationUrl).catch((err) => {
+          console.warn("[Avatar3D] Walk animation not loaded:", err.message);
+          // Animation is optional - avatar will work without it
+        });
+      }
     } catch (err) {
       console.warn("[Avatar3D] Failed to load avatar model, using procedural fallback:", err);
       useProceduralFallback = true;
@@ -169,10 +186,12 @@
       const skeleton = new AvatarSkeletonBuilder();
       const solver = new IKSolver();
       const animator = new AvatarAnimator(solver, skeleton);
+      const legs = new LegAnimator();
 
       skeletonService = skeleton;
       ikSolver = solver;
       animationService = animator;
+      legAnimator = legs;
 
       servicesReady = true;
 
@@ -209,6 +228,17 @@
     });
   });
 
+  // React to locomotion state changes - update leg animation
+  $effect(() => {
+    if (!legAnimator || !legAnimator.isReady()) return;
+
+    legAnimator.setLocomotion({
+      isMoving,
+      speed: moveSpeed,
+      facingAngle,
+    });
+  });
+
   // Update animation each frame
   useTask((delta) => {
     if (!servicesReady || !animationService || useProceduralFallback) return;
@@ -218,18 +248,19 @@
     // The IK solver uses bone.getWorldPosition() which returns WORLD coordinates
     // (including the parent T.Group offset). So targets must also be in WORLD coords.
     //
-    // With locomotion: Avatar moves around and props/grid move with it.
-    // All coordinates (X, Y, Z) need to be offset by avatar position.
+    // Props are on the wall plane (z=0), while avatar stands behind (z=WALL_OFFSET).
+    // The IK targets need to be at z=0 (where props actually are) so hands reach forward.
+    // We compensate by subtracting WALL_OFFSET from the z offset calculation.
     //
-    // Example for avatar at position (x=100, z=50):
-    //   Blue prop at local (x=0, y=0, z=0) → world (x=100, y=0, z=50)
+    // Example for avatar at position (x=100, z=-60) with WALL_OFFSET=-60:
+    //   Prop at local (x=0, y=0, z=0) → world (x=100, y=0, z=0)  (on wall plane)
 
     const blueWorldProp = bluePropState ? {
       ...bluePropState,
       worldPosition: {
         x: bluePropState.worldPosition.x + position.x,
         y: bluePropState.worldPosition.y + (position.y ?? 0),
-        z: bluePropState.worldPosition.z + position.z,
+        z: bluePropState.worldPosition.z + (position.z - WALL_OFFSET),  // Props are on wall plane
       }
     } : null;
 
@@ -238,21 +269,31 @@
       worldPosition: {
         x: redPropState.worldPosition.x + position.x,
         y: redPropState.worldPosition.y + (position.y ?? 0),
-        z: redPropState.worldPosition.z + position.z,
+        z: redPropState.worldPosition.z + (position.z - WALL_OFFSET),  // Props are on wall plane
       }
     } : null;
 
     // Update hand targets from prop states (now in world coords)
     animationService.setHandTargetsFromProps(blueWorldProp, redWorldProp);
 
-    // Update animation (applies IK)
+    // Update upper body animation (applies arm IK)
     animationService.update(delta);
+
+    // Update lower body animation (walk cycle)
+    if (legAnimator) {
+      legAnimator.update(delta);
+    }
   });
 
   // Note: Visibility is handled via the {#if visible} in the template
   // No need for customizationService - skeleton visibility is controlled by Svelte rendering
 
   onDestroy(() => {
+    // Dispose leg animator
+    if (legAnimator) {
+      legAnimator.dispose();
+    }
+
     // Only dispose if we loaded a GLTF model
     if (skeletonService && !useProceduralFallback) {
       skeletonService.dispose();
@@ -264,6 +305,7 @@
   {#if useProceduralFallback}
     <!-- Procedural fallback (used when GLTF loading fails) -->
     <T.Group
+      name={`PERFORMER_${id}`}
       position={[position.x, position.y ?? 0, position.z]}
       rotation.y={facingAngle}
     >
@@ -288,6 +330,7 @@
       preventing visual glitches during avatar swap.
     -->
     <T.Group
+      name={`PERFORMER_${id}`}
       position={[position.x, groupY, position.z]}
       rotation.y={facingAngle}
     >

@@ -69,10 +69,36 @@
 		return null;
 	}
 
+	/**
+	 * Walk up the parent hierarchy to find a group named PERFORMER_X
+	 * Returns the performer ID (e.g., "performer-0") or null if not found
+	 */
+	function findPerformerAncestor(object: THREE.Object3D): string | null {
+		let current: THREE.Object3D | null = object;
+		while (current) {
+			if (current.name?.startsWith('PERFORMER_')) {
+				// Extract the ID part after PERFORMER_
+				return current.name.replace('PERFORMER_', '');
+			}
+			current = current.parent;
+		}
+		return null;
+	}
+
 	function handlePointerDown(event: PointerEvent) {
 		const intersection = findIntersection(event);
 		if (intersection && onMeshClick) {
-			onMeshClick(intersection.object, intersection.point);
+			// Check if the clicked mesh belongs to a performer
+			const performerId = findPerformerAncestor(intersection.object);
+			if (performerId) {
+				// Create a virtual object with the performer name for identification
+				const virtualMesh = new THREE.Object3D();
+				virtualMesh.name = `PERFORMER_${performerId}`;
+				onMeshClick(virtualMesh, intersection.point);
+			} else {
+				// Not a performer - pass through the original mesh
+				onMeshClick(intersection.object, intersection.point);
+			}
 		}
 	}
 

@@ -23,58 +23,165 @@ import type {
 } from "../contracts/ILegAnimator";
 
 /**
- * Bone names that should be animated by the walk cycle.
- * Only these bones will have their animation tracks preserved.
+ * Core bone names for leg animation (standard humanoid names).
+ * These are the target bone names we want in the final animation.
  */
-const LEG_BONE_NAMES = [
-	// Hips - only rotation (walk has hip sway)
+const LEG_BONE_CORE_NAMES = [
 	"Hips",
-	"mixamorigHips",
-	// Left leg
 	"LeftUpLeg",
-	"mixamorigLeftUpLeg",
 	"LeftLeg",
-	"mixamorigLeftLeg",
 	"LeftFoot",
-	"mixamorigLeftFoot",
 	"LeftToeBase",
-	"mixamorigLeftToeBase",
-	// Right leg
 	"RightUpLeg",
-	"mixamorigRightUpLeg",
 	"RightLeg",
-	"mixamorigRightLeg",
 	"RightFoot",
-	"mixamorigRightFoot",
 	"RightToeBase",
-	"mixamorigRightToeBase",
 ];
 
 /**
- * Check if a track name corresponds to a leg bone.
- * Track names are formatted as: "boneName.property" (e.g., "LeftUpLeg.quaternion")
+ * Known bone name prefixes from various sources.
+ * We strip these to get the core bone name.
  */
-function isLegBoneTrack(trackName: string): boolean {
-	const boneName = trackName.split(".")[0];
-	return LEG_BONE_NAMES.some(
-		(legBone) => boneName === legBone || boneName.endsWith(legBone)
-	);
-}
+const BONE_PREFIXES = [
+	"mixamorig",      // Mixamo standard
+	"characters3dcom___", // characters3d.com
+	"mixamorig:",     // Some exports use colon
+	"",               // No prefix (standard names)
+];
 
 /**
- * Filter an animation clip to only include leg bone tracks.
- * This allows upper body to remain controlled by IK.
+ * Bone name mapping from characters3d.com convention to standard humanoid names.
+ * characters3d.com uses different names entirely, not just different prefixes.
  */
-function filterToLegBones(clip: AnimationClip): AnimationClip {
-	const legTracks: KeyframeTrack[] = [];
+const BONE_NAME_MAPPING: Record<string, string> = {
+	// Hips/Pelvis
+	"Pelvis": "Hips",
+	"pelvis": "Hips",
 
-	for (const track of clip.tracks) {
-		if (isLegBoneTrack(track.name)) {
-			legTracks.push(track);
+	// Left leg
+	"L_Thigh": "LeftUpLeg",
+	"L_Calf": "LeftLeg",
+	"L_Foot": "LeftFoot",
+	"L_Toe": "LeftToeBase",
+	"L_ToeBase": "LeftToeBase",
+	"LeftThigh": "LeftUpLeg",
+	"LeftCalf": "LeftLeg",
+	"Left_Thigh": "LeftUpLeg",
+	"Left_Calf": "LeftLeg",
+	"Left_Foot": "LeftFoot",
+	"Left_Toe": "LeftToeBase",
+
+	// Right leg
+	"R_Thigh": "RightUpLeg",
+	"R_Calf": "RightLeg",
+	"R_Foot": "RightFoot",
+	"R_Toe": "RightToeBase",
+	"R_ToeBase": "RightToeBase",
+	"RightThigh": "RightUpLeg",
+	"RightCalf": "RightLeg",
+	"Right_Thigh": "RightUpLeg",
+	"Right_Calf": "RightLeg",
+	"Right_Foot": "RightFoot",
+	"Right_Toe": "RightToeBase",
+
+	// Already standard names (identity mapping)
+	"Hips": "Hips",
+	"LeftUpLeg": "LeftUpLeg",
+	"LeftLeg": "LeftLeg",
+	"LeftFoot": "LeftFoot",
+	"LeftToeBase": "LeftToeBase",
+	"RightUpLeg": "RightUpLeg",
+	"RightLeg": "RightLeg",
+	"RightFoot": "RightFoot",
+	"RightToeBase": "RightToeBase",
+};
+
+/**
+ * Extract the core bone name by stripping known prefixes
+ * and mapping to standard humanoid names.
+ * e.g., "characters3dcom___L_Thigh" -> "LeftUpLeg"
+ *       "mixamorigLeftUpLeg" -> "LeftUpLeg"
+ */
+function extractCoreBoneName(boneName: string): string {
+	// First strip any known prefix
+	let stripped = boneName;
+	for (const prefix of BONE_PREFIXES) {
+		if (prefix && boneName.startsWith(prefix)) {
+			stripped = boneName.slice(prefix.length);
+			break;
 		}
 	}
 
-	// Create a new clip with only leg tracks
+	// Then map to standard name if needed
+	const mapped = BONE_NAME_MAPPING[stripped];
+	if (mapped) {
+		return mapped;
+	}
+
+	// Return stripped name as-is if no mapping found
+	return stripped;
+}
+
+/**
+ * Check if a bone name (after extraction/mapping) is a leg bone.
+ */
+function isLegBone(coreName: string): boolean {
+	return LEG_BONE_CORE_NAMES.includes(coreName);
+}
+
+/**
+ * Retarget animation track name to match target skeleton's naming convention.
+ * e.g., "characters3dcom___Hips.quaternion" -> "mixamorigHips.quaternion"
+ */
+function retargetTrackName(trackName: string, targetPrefix: string): string {
+	const [boneName, ...rest] = trackName.split(".");
+	if (!boneName) return trackName;
+
+	const coreName = extractCoreBoneName(boneName);
+	const property = rest.join(".");
+
+	return `${targetPrefix}${coreName}.${property}`;
+}
+
+/**
+ * Filter and retarget animation clip to only include leg bone tracks,
+ * remapping bone names to match the target skeleton.
+ */
+function filterAndRetargetToLegBones(
+	clip: AnimationClip,
+	targetPrefix: string
+): AnimationClip {
+	const legTracks: KeyframeTrack[] = [];
+	const mappedBones: string[] = [];
+
+	for (const track of clip.tracks) {
+		const boneName = track.name.split(".")[0] ?? "";
+		const coreName = extractCoreBoneName(boneName);
+
+		if (isLegBone(coreName)) {
+			// Clone the track with retargeted name
+			const newTrackName = retargetTrackName(track.name, targetPrefix);
+			const clonedTrack = track.clone();
+			clonedTrack.name = newTrackName;
+			legTracks.push(clonedTrack);
+
+			// Track mapping for debug
+			if (!mappedBones.includes(`${boneName} → ${coreName}`)) {
+				mappedBones.push(`${boneName} → ${coreName}`);
+			}
+		}
+	}
+
+	console.log(
+		`[LegAnimator] Retargeted ${legTracks.length} leg tracks to prefix "${targetPrefix}"`
+	);
+	if (mappedBones.length > 0) {
+		console.log("[LegAnimator] Bone mappings applied:");
+		for (const mapping of mappedBones) {
+			console.log(`  - ${mapping}`);
+		}
+	}
+
 	return new AnimationClip(clip.name + "_legs", clip.duration, legTracks);
 }
 
@@ -83,8 +190,10 @@ export class LegAnimator implements ILegAnimator {
 	private mixer: AnimationMixer | null = null;
 	private walkAction: AnimationAction | null = null;
 	private walkClip: AnimationClip | null = null;
+	private rawWalkClip: AnimationClip | null = null; // Unprocessed clip
 	private root: Object3D | null = null;
 	private loader: GLTFLoader;
+	private targetBonePrefix: string = "mixamorig"; // Detected from skeleton
 
 	private config: Required<LegAnimatorConfig> = {
 		baseSpeed: 1,
@@ -104,15 +213,79 @@ export class LegAnimator implements ILegAnimator {
 		this.loader = new GLTFLoader();
 	}
 
+	/**
+	 * Detect the bone naming prefix used by the skeleton.
+	 * Searches for common leg bones and extracts their prefix.
+	 */
+	private detectBonePrefix(root: Object3D): string {
+		// DEBUG: Log all bone names in the skeleton
+		const boneNames: string[] = [];
+		root.traverse((obj) => {
+			if (obj.name) {
+				boneNames.push(obj.name);
+			}
+		});
+		console.log("[LegAnimator] Skeleton bone names (first 30):");
+		for (const name of boneNames.slice(0, 30)) {
+			console.log(`  - ${name}`);
+		}
+		if (boneNames.length > 30) {
+			console.log(`  ... and ${boneNames.length - 30} more`);
+		}
+
+		const prefixesToCheck = ["mixamorig", ""];
+
+		for (const prefix of prefixesToCheck) {
+			const testBoneName = `${prefix}Hips`;
+			const bone = root.getObjectByName(testBoneName);
+			if (bone) {
+				console.log(`[LegAnimator] Detected bone prefix: "${prefix}"`);
+				return prefix;
+			}
+		}
+
+		// Fallback: search for any bone containing "Hips"
+		let foundPrefix = "mixamorig";
+		root.traverse((obj) => {
+			if (obj.name.includes("Hips")) {
+				const idx = obj.name.indexOf("Hips");
+				foundPrefix = obj.name.slice(0, idx);
+				console.log(
+					`[LegAnimator] Found Hips bone: "${obj.name}", extracted prefix: "${foundPrefix}"`
+				);
+			}
+		});
+
+		return foundPrefix;
+	}
+
 	initialize(root: Object3D): void {
 		this.root = root;
 		this.mixer = new AnimationMixer(root);
+		this.targetBonePrefix = this.detectBonePrefix(root);
 		this.initialized = true;
 
-		// If we already have a clip loaded, create the action now
-		if (this.walkClip) {
-			this.createWalkAction();
+		// If we already have a raw clip loaded, process and create the action now
+		if (this.rawWalkClip) {
+			this.processAndCreateAction();
 		}
+	}
+
+	/**
+	 * Process the raw clip with retargeting and create the walk action.
+	 */
+	private processAndCreateAction(): void {
+		if (!this.rawWalkClip || !this.mixer) return;
+
+		this.walkClip = filterAndRetargetToLegBones(
+			this.rawWalkClip,
+			this.targetBonePrefix
+		);
+		this.createWalkAction();
+
+		console.log(
+			`[LegAnimator] Loaded walk animation: ${this.walkClip.tracks.length} leg tracks, ${this.walkClip.duration.toFixed(2)}s`
+		);
 	}
 
 	async loadWalkAnimation(url: string): Promise<void> {
@@ -127,19 +300,32 @@ export class LegAnimator implements ILegAnimator {
 
 					// Use the first animation (typically the only one from Mixamo)
 					const fullClip = gltf.animations[0];
-
-					// Filter to only leg bones
-					this.walkClip = filterToLegBones(fullClip);
-					this.animationLoaded = true;
-
-					// If already initialized, create the action
-					if (this.initialized && this.mixer) {
-						this.createWalkAction();
+					if (!fullClip) {
+						reject(new Error("Animation clip is undefined"));
+						return;
 					}
 
+					// DEBUG: Log all tracks in the animation to understand bone naming
 					console.log(
-						`[LegAnimator] Loaded walk animation: ${this.walkClip.tracks.length} leg tracks, ${this.walkClip.duration.toFixed(2)}s`
+						`[LegAnimator] Animation "${fullClip.name}" has ${fullClip.tracks.length} tracks, duration: ${fullClip.duration.toFixed(2)}s`
 					);
+					console.log("[LegAnimator] Track names in animation:");
+					for (const track of fullClip.tracks.slice(0, 20)) {
+						console.log(`  - ${track.name}`);
+					}
+					if (fullClip.tracks.length > 20) {
+						console.log(`  ... and ${fullClip.tracks.length - 20} more`);
+					}
+
+					// Store the raw clip - we'll retarget when we know the skeleton prefix
+					this.rawWalkClip = fullClip;
+					this.animationLoaded = true;
+
+					// If already initialized, process and create the action
+					if (this.initialized && this.mixer) {
+						this.processAndCreateAction();
+					}
+
 					resolve();
 				},
 				undefined,
@@ -152,13 +338,13 @@ export class LegAnimator implements ILegAnimator {
 	}
 
 	setWalkClip(clip: AnimationClip): void {
-		// Filter to only leg bones
-		this.walkClip = filterToLegBones(clip);
+		// Store the raw clip
+		this.rawWalkClip = clip;
 		this.animationLoaded = true;
 
-		// If already initialized, create the action
+		// If already initialized, process and create the action
 		if (this.initialized && this.mixer) {
-			this.createWalkAction();
+			this.processAndCreateAction();
 		}
 	}
 
@@ -219,6 +405,7 @@ export class LegAnimator implements ILegAnimator {
 			this.mixer = null;
 		}
 		this.walkClip = null;
+		this.rawWalkClip = null;
 		this.root = null;
 		this.initialized = false;
 		this.animationLoaded = false;

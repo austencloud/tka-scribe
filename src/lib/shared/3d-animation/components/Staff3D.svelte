@@ -27,8 +27,12 @@
     length?: number;
     /** Staff thickness (radius of the tube) */
     thickness?: number;
-    /** Avatar world position - props are offset from this */
+    /** Avatar world position - rotation pivot point */
     avatarPosition?: { x: number; y: number; z: number };
+    /** Avatar facing angle - props rotate with avatar's body orientation */
+    facingAngle?: number;
+    /** Forward offset from avatar to grid center (body-local Z direction) */
+    gridOffset?: number;
   }
 
   let {
@@ -37,7 +41,9 @@
     visible = true,
     length, // Will use user proportions if not provided
     thickness, // Will use user proportions if not provided
-    avatarPosition = { x: 0, y: 0, z: 0 }, // Avatar's world position
+    avatarPosition = { x: 0, y: 0, z: 0 }, // Avatar's world position (rotation pivot)
+    facingAngle = 0,
+    gridOffset = 0,
   }: Props = $props();
 
   // Use user proportions as defaults if not explicitly provided
@@ -57,16 +63,32 @@
   };
   const palette = $derived(colors[color]);
 
-  // Position as tuple (prop position offset by avatar's world position)
-  const position = $derived<[number, number, number]>([
-    propState.worldPosition.x + avatarPosition.x,
-    propState.worldPosition.y + avatarPosition.y,
-    propState.worldPosition.z + avatarPosition.z,
-  ]);
+  // Position as tuple:
+  // 1. Start with body-local position (from prop state)
+  // 2. Offset forward by gridOffset (places prop at grid center in body-local space)
+  // 3. Rotate around Y by facingAngle (pivot is avatar)
+  // 4. Add avatar world position
+  const position = $derived.by((): [number, number, number] => {
+    // Body-local position with forward offset
+    const localX = propState.worldPosition.x;
+    const localZ = propState.worldPosition.z + gridOffset;
+
+    // Rotate around Y by facingAngle
+    const cos = Math.cos(facingAngle);
+    const sin = Math.sin(facingAngle);
+    const rotatedX = localX * cos - localZ * sin;
+    const rotatedZ = localX * sin + localZ * cos;
+
+    return [
+      rotatedX + avatarPosition.x,
+      propState.worldPosition.y + avatarPosition.y,
+      rotatedZ + avatarPosition.z,
+    ];
+  });
 
   // Convert quaternion to Euler for T.Group rotation
   // The worldRotation quaternion already includes plane + staff angle rotation
-  // We need to compose it with a 90° rotation to orient the cylinder horizontally
+  // We need to compose it with facingAngle rotation and a 90° rotation to orient the cylinder horizontally
   const rotation = $derived.by(() => {
     // The cylinder is vertical by default (along Y axis)
     // We need to rotate it 90° around Z to make it horizontal (along X)
@@ -74,8 +96,15 @@
       new Euler(0, 0, Math.PI / 2)
     );
 
-    // Combine: first make horizontal, then apply world rotation
-    const finalQuat = propState.worldRotation.clone().multiply(horizontalQuat);
+    // Apply facingAngle rotation around Y axis (body orientation)
+    const facingQuat = new Quaternion().setFromEuler(
+      new Euler(0, facingAngle, 0)
+    );
+
+    // Combine: first make horizontal, then apply world rotation, then apply facing rotation
+    const finalQuat = facingQuat.clone()
+      .multiply(propState.worldRotation)
+      .multiply(horizontalQuat);
 
     // Convert to Euler for Three.js rotation prop
     const euler = new Euler().setFromQuaternion(finalQuat);

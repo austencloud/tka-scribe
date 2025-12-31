@@ -31,12 +31,15 @@
   import { Plane } from "../domain/enums/Plane";
   import type { GridMode } from "../domain/constants/grid-layout";
   import type { Snippet } from "svelte";
+  import { WALL_OFFSET } from "../utils/performer-positions";
 
   /** Avatar position for per-avatar grids */
   interface AvatarGridPosition {
     x: number;
     y: number;
     z: number;
+    /** Avatar facing angle - grids rotate with avatar's body orientation */
+    facingAngle?: number;
   }
 
   interface Props {
@@ -116,12 +119,17 @@
     }
   }
 
-  // If no avatar positions provided, show single grid at origin
+  // Grid positions match avatar positions - rotation pivot is at the avatar
+  // The gridOffset prop on Grid3D handles the forward offset in body-local space
   const gridPositions = $derived(
     avatarPositions.length > 0
       ? avatarPositions
       : [{ x: 0, y: 0, z: 0 }]
   );
+
+  // Grid offset pushes the grid forward from avatar in body-local space
+  // WALL_OFFSET is negative (avatar behind grid), so negate to get positive forward offset
+  const gridOffset = -WALL_OFFSET;
 
   // Determine if this is a night/dark environment that needs reduced lighting
   const isNightEnvironment = $derived(
@@ -234,7 +242,7 @@
         <!-- 3D Environment (sky, ground, particles - matches 2D theme) -->
         <Environment3D {backgroundType} />
 
-        <!-- Grid planes - one per avatar position -->
+        <!-- Grid planes - one per avatar position, rotating with avatar facing -->
         {#if showGrid}
           {#each gridPositions as pos, i}
             <Grid3D
@@ -242,6 +250,8 @@
               {showLabels}
               {gridMode}
               centerPosition={pos}
+              facingAngle={pos.facingAngle ?? 0}
+              {gridOffset}
             />
           {/each}
         {/if}
@@ -263,7 +273,7 @@
       <!-- 3D Environment (sky, ground, particles - matches 2D theme) -->
       <Environment3D {backgroundType} />
 
-      <!-- Grid planes - one per avatar position -->
+      <!-- Grid planes - one per avatar position, rotating with avatar facing -->
       {#if showGrid}
         {#each gridPositions as pos, i}
           <Grid3D
@@ -271,6 +281,8 @@
             {showLabels}
             {gridMode}
             centerPosition={pos}
+            facingAngle={pos.facingAngle ?? 0}
+            {gridOffset}
           />
         {/each}
       {/if}
