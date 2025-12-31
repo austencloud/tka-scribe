@@ -65,7 +65,10 @@
     "monolith:all": "node scripts/find-monoliths.cjs --all"
   },
   "overrides": {
-    "cookie": "^0.7.2"
+    "cookie": "^0.7.2",
+    "threlte-postprocessing": {
+      "three": "$three"
+    }
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.3",
