@@ -193,10 +193,13 @@ service cloud.firestore {
       allow delete: if isOwner(userId);
 
       // -------------------------------------------------------------------------
-      // USER SETTINGS (Private)
+      // USER SETTINGS (Private - admin can read for impersonation preview)
       // -------------------------------------------------------------------------
       match /settings/{settingId} {
-        allow read, write: if isOwner(userId);
+        // Admins can read any user's settings for impersonation/preview mode
+        allow read: if isOwner(userId) || isAdmin();
+        // Only the owner can write their own settings
+        allow write: if isOwner(userId);
       }
 
       // -------------------------------------------------------------------------
@@ -207,12 +210,14 @@ service cloud.firestore {
       }
 
       // -------------------------------------------------------------------------
-      // USER GAMIFICATION SUBCOLLECTIONS (Private)
+      // USER GAMIFICATION SUBCOLLECTIONS (Private - admin can read for preview)
       // -------------------------------------------------------------------------
 
       // User achievements
       match /achievements/{achievementId} {
-        allow read, write: if isOwner(userId);
+        // Admins can read for impersonation/preview mode
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if isOwner(userId);
       }
 
       // User XP (single document or subcollection)
@@ -239,7 +244,9 @@ service cloud.firestore {
 
       // User notifications
       match /notifications/{notificationId} {
-        allow read, write: if isOwner(userId);
+        // Admins can read for impersonation/preview mode
+        allow read: if isOwner(userId) || isAdmin();
+        allow write: if isOwner(userId);
       }
 
       // Dismissed announcements - users can read/write their own dismissals
@@ -249,6 +256,13 @@ service cloud.firestore {
 
       // Create module sessions - users can read/write their own sessions
       match /sessions/{sessionId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // -------------------------------------------------------------------------
+      // ONBOARDING STATUS
+      // -------------------------------------------------------------------------
+      match /onboarding/{docId} {
         allow read, write: if isOwner(userId);
       }
 
@@ -359,17 +373,18 @@ service cloud.firestore {
     // MESSAGING COLLECTIONS
     // ============================================================================
 
-    // Check if user is a participant in a conversation
+    // Check if user is a participant in a conversation (or admin for preview mode)
     function isConversationParticipant(conversationId) {
       let conv = get(/databases/$(database)/documents/conversations/$(conversationId)).data;
-      return isAuthenticated() && request.auth.uid in conv.participants;
+      return isAuthenticated() && (request.auth.uid in conv.participants || isAdmin());
     }
 
     // Conversations - only participants can read/write
+    // Admins can read any conversation for impersonation/preview mode
     match /conversations/{conversationId} {
-      // Only participants can read the conversation
+      // Participants can read their conversations, admins can read any (for preview mode)
       allow read: if isAuthenticated()
-        && request.auth.uid in resource.data.participants;
+        && (request.auth.uid in resource.data.participants || isAdmin());
 
       // Creating a conversation - user must be in participants list
       allow create: if isAuthenticated()
