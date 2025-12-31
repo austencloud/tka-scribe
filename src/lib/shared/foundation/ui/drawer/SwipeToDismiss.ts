@@ -8,7 +8,7 @@
  */
 
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
-import { isTopDrawer } from "./DrawerStack";
+import { isTopDrawer, dismissTopDrawer } from "./DrawerStack";
 
 const debug = createComponentLogger("SwipeToDismiss");
 
@@ -46,6 +46,10 @@ export class SwipeToDismiss {
   // Scroll-aware dismiss: track scrollable container state
   private scrollableContainer: HTMLElement | null = null;
   private scrollAtBoundary = true; // True if scroll is at the edge where dismiss would occur
+
+  // Delegation flag: when true, this drawer is not the top drawer,
+  // so swipe gestures should dismiss the top drawer instead
+  private delegatingToTopDrawer = false;
 
   constructor(private options: SwipeToDismissOptions) {}
 
@@ -119,6 +123,7 @@ export class SwipeToDismiss {
   attach(element: HTMLElement) {
     this.detach(); // Clean up any previous listeners
     this.element = element;
+    console.log('[SwipeToDismiss] attach called for drawer:', this.options.drawerId);
 
     const handleStart = (e: TouchEvent | MouseEvent) =>
       this.handleTouchStart(e);
@@ -215,6 +220,7 @@ export class SwipeToDismiss {
     this.hasMoved = false;
     this.startedOnInteractive = false;
     this.justDragged = false;
+    this.delegatingToTopDrawer = false;
     this.startY = 0;
     this.currentY = 0;
     this.startX = 0;
@@ -224,16 +230,29 @@ export class SwipeToDismiss {
   }
 
   private handleTouchStart(event: TouchEvent | MouseEvent) {
-    if (!this.options.dismissible) return;
+    console.log('[SwipeToDismiss] handleTouchStart for drawer:', this.options.drawerId);
+
+    if (!this.options.dismissible) {
+      console.log('[SwipeToDismiss] blocked: not dismissible');
+      return;
+    }
 
     // Ignore right-click (context menu) - allow browser default behavior
     if (event instanceof MouseEvent && event.button !== 0) {
+      console.log('[SwipeToDismiss] blocked: right-click');
       return;
     }
 
     // Only process if this drawer is the top drawer (prevents nested drawer conflicts)
+    // If not the top drawer, delegate swipe to dismiss the top drawer instead
     if (this.options.drawerId && !isTopDrawer(this.options.drawerId)) {
-      return;
+      console.log('[SwipeToDismiss] not top drawer, delegating to dismissTopDrawer');
+      // Don't start a drag on this drawer - instead, when gesture completes,
+      // we'll dismiss the top drawer. For now, track the gesture but don't
+      // apply visuals to this drawer.
+      this.delegatingToTopDrawer = true;
+    } else {
+      this.delegatingToTopDrawer = false;
     }
 
     // Track if we started on an interactive element
@@ -282,6 +301,16 @@ export class SwipeToDismiss {
     } else {
       this.currentY = event.clientY;
       this.currentX = event.clientX;
+    }
+
+    // When delegating to top drawer, just track movement but don't apply visuals
+    if (this.delegatingToTopDrawer) {
+      const deltaY = this.currentY - this.startY;
+      const deltaX = this.currentX - this.startX;
+      if (Math.abs(deltaY) > 5 || Math.abs(deltaX) > 5) {
+        this.hasMoved = true;
+      }
+      return;
     }
 
     const deltaY = this.currentY - this.startY;
@@ -363,6 +392,32 @@ export class SwipeToDismiss {
     const deltaY = this.currentY - this.startY;
     const deltaX = this.currentX - this.startX;
     const duration = Date.now() - this.startTime;
+
+    // Handle delegation to top drawer
+    if (this.delegatingToTopDrawer) {
+      this.isDragging = false;
+      this.delegatingToTopDrawer = false;
+
+      // Check if gesture was significant enough to dismiss
+      let wasAboveThreshold = false;
+      if (this.options.placement === "bottom") {
+        wasAboveThreshold = deltaY > 100 || (deltaY > 50 && duration < 500);
+      } else if (this.options.placement === "top") {
+        wasAboveThreshold = deltaY < -100 || (deltaY < -50 && duration < 500);
+      } else if (this.options.placement === "right") {
+        wasAboveThreshold = deltaX > 100 || (deltaX > 50 && duration < 500);
+      } else if (this.options.placement === "left") {
+        wasAboveThreshold = deltaX < -100 || (deltaX < -50 && duration < 500);
+      }
+
+      if (wasAboveThreshold) {
+        console.log('[SwipeToDismiss] delegating dismiss to top drawer');
+        dismissTopDrawer();
+      }
+
+      this.reset();
+      return;
+    }
 
     if (this.startedOnInteractive && this.hasMoved) {
       event.preventDefault();

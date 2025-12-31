@@ -97,11 +97,11 @@
       <!-- Icon -->
       <div class="dialog-icon">
         {#if variant === "warning"}
-          <span class="icon">⚠️</span>
+          <i class="fa-solid fa-triangle-exclamation icon warning-icon" aria-hidden="true"></i>
         {:else if variant === "danger"}
-          <span class="icon">🗑️</span>
+          <i class="fa-solid fa-trash icon danger-icon" aria-hidden="true"></i>
         {:else}
-          <span class="icon">ℹ️</span>
+          <i class="fa-solid fa-circle-info icon info-icon" aria-hidden="true"></i>
         {/if}
       </div>
 
@@ -117,20 +117,20 @@
 
       <!-- Don't Ask Again Chip -->
       {#if showDontAskAgain}
-        <button
-          type="button"
-          class="dont-ask-chip"
-          class:selected={dontAskAgainChecked}
-          onclick={() => dontAskAgainChecked = !dontAskAgainChecked}
-          aria-pressed={dontAskAgainChecked}
-        >
-          {#if dontAskAgainChecked}
-            <svg class="chip-icon" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-          {/if}
-          <span>Don't ask again</span>
-        </button>
+        <div class="dont-ask-wrapper">
+          <button
+            type="button"
+            class="dont-ask-chip"
+            class:selected={dontAskAgainChecked}
+            onclick={() => dontAskAgainChecked = !dontAskAgainChecked}
+            aria-pressed={dontAskAgainChecked}
+          >
+            {#if dontAskAgainChecked}
+              <i class="fa-solid fa-check chip-icon" aria-hidden="true"></i>
+            {/if}
+            <span>Don't ask again</span>
+          </button>
+        </div>
       {/if}
 
       <!-- Actions -->
@@ -200,8 +200,20 @@
   }
 
   .icon {
-    font-size: var(--font-size-3xl);
+    font-size: 2.5rem;
     line-height: 1;
+  }
+
+  .warning-icon {
+    color: var(--semantic-warning, #f59e0b);
+  }
+
+  .danger-icon {
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+  }
+
+  .info-icon {
+    color: var(--semantic-info, #3b82f6);
   }
 
   .dialog-content {
@@ -230,12 +242,17 @@
     color: var(--theme-text-dim, var(--theme-text-dim));
   }
 
+  .dont-ask-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
   .dont-ask-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    margin-bottom: 20px;
     padding: 8px 16px;
     border-radius: 100px;
     border: 1.5px solid var(--theme-stroke, rgba(255, 255, 255, 0.15));
@@ -273,8 +290,7 @@
   }
 
   .chip-icon {
-    width: 16px;
-    height: 16px;
+    font-size: 0.875rem;
     flex-shrink: 0;
   }
 
@@ -369,7 +385,7 @@
     }
 
     .icon {
-      font-size: var(--font-size-3xl);
+      font-size: 2rem;
     }
   }
 </style>

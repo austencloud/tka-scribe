@@ -11,6 +11,9 @@
 // Global drawer stack - tracks open drawer IDs in order
 const drawerStack: string[] = [];
 
+// Map of drawer IDs to their dismiss callbacks
+const dismissCallbacks = new Map<string, () => void>();
+
 // Base z-index for drawers (must be higher than navigation sidebar z-index: 150)
 const BASE_Z_INDEX = 200;
 
@@ -26,20 +29,30 @@ export function generateDrawerId(): string {
 
 /**
  * Register a drawer as open and get its z-index
+ * @param id - Unique drawer ID
+ * @param onDismiss - Optional callback to dismiss this drawer
  * @returns The z-index to use for this drawer
  */
-export function registerDrawer(id: string): number {
+export function registerDrawer(id: string, onDismiss?: () => void): number {
   // Remove if already exists (shouldn't happen, but be safe)
   const existingIndex = drawerStack.indexOf(id);
   if (existingIndex !== -1) {
     drawerStack.splice(existingIndex, 1);
+    dismissCallbacks.delete(id);
   }
 
   // Add to top of stack
   drawerStack.push(id);
 
-  // Return z-index based on position
-  return BASE_Z_INDEX + (drawerStack.length - 1) * Z_INDEX_INCREMENT;
+  // Store dismiss callback if provided
+  if (onDismiss) {
+    dismissCallbacks.set(id, onDismiss);
+  }
+
+  const zIndex = BASE_Z_INDEX + (drawerStack.length - 1) * Z_INDEX_INCREMENT;
+  // Debug logging for HMR swipe issue
+  console.log('[DrawerStack] registerDrawer:', id, '| stack now:', [...drawerStack], '| zIndex:', zIndex);
+  return zIndex;
 }
 
 /**
@@ -50,13 +63,43 @@ export function unregisterDrawer(id: string): void {
   if (index !== -1) {
     drawerStack.splice(index, 1);
   }
+  dismissCallbacks.delete(id);
+}
+
+/**
+ * Dismiss the topmost drawer in the stack.
+ * Used when a swipe is detected on a non-top drawer (e.g., when a child drawer
+ * has pointer-events: none on its backdrop, allowing touches to pass through).
+ * @returns true if a drawer was dismissed, false if stack is empty
+ */
+export function dismissTopDrawer(): boolean {
+  if (drawerStack.length === 0) {
+    return false;
+  }
+
+  const topDrawerId = drawerStack[drawerStack.length - 1]!;
+  const dismissCallback = dismissCallbacks.get(topDrawerId);
+
+  console.log('[DrawerStack] dismissTopDrawer: dismissing', topDrawerId);
+
+  if (dismissCallback) {
+    dismissCallback();
+    return true;
+  }
+
+  // No callback registered - drawer can't be dismissed this way
+  console.log('[DrawerStack] dismissTopDrawer: no callback for', topDrawerId);
+  return false;
 }
 
 /**
  * Check if a drawer is the topmost drawer
  */
 export function isTopDrawer(id: string): boolean {
-  return drawerStack.length > 0 && drawerStack[drawerStack.length - 1] === id;
+  const result = drawerStack.length > 0 && drawerStack[drawerStack.length - 1] === id;
+  // Debug logging for HMR swipe issue
+  console.log('[DrawerStack] isTopDrawer:', id, '| stack:', [...drawerStack], '| result:', result);
+  return result;
 }
 
 /**

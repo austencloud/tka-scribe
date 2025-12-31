@@ -130,6 +130,9 @@
   let dragOffsetX = $state(0);
   let dragOffsetY = $state(0);
 
+  // Track if handlers have been initialized (lazy creation)
+  let handlersInitialized = $state(false);
+
   // Compute effective placement based on layout mode
   // When respectLayoutMode is true and on mobile, use bottom regardless of specified placement
   // This ensures consistent UX across the app: bottom sheets on mobile, side drawers on desktop
@@ -186,16 +189,61 @@
     return true; // Handled - don't trigger default dismiss
   }
 
-  // Swipe-to-dismiss handler
+  // Swipe-to-dismiss handler - LAZILY CREATED on first open
   let drawerElement = $state<HTMLElement | null>(null);
   let swipeToDismiss = $state<SwipeToDismiss | null>(null);
 
-  // Recreate swipe handler when placement changes (effectivePlacement is reactive)
-  $effect(() => {
+  // Focus trap handler for accessibility - LAZILY CREATED on first open
+  let focusTrap: FocusTrap | null = null;
+
+  // Snap points handler (only created when snapPoints are provided)
+  let snapPointsInstance: SnapPoints | null = null;
+  let snapPointOffset = $state(0); // Current snap point transform offset
+  let currentSnapIndex = $state<number | null>(null);
+
+  // Drawer effects - LAZILY CREATED on first open
+  let drawerEffects: DrawerEffects | null = null;
+
+  // Initialize handlers lazily when drawer first opens
+  function initializeHandlers() {
+    if (handlersInitialized) return;
+    handlersInitialized = true;
+
+    // Create SwipeToDismiss
     swipeToDismiss = new SwipeToDismiss({
       placement: effectivePlacement,
       dismissible,
-      drawerId, // Pass drawer ID so only top drawer responds to swipe
+      drawerId,
+      onDismiss: () => {
+        isOpen = false;
+      },
+      onDragChange: handleInternalDragChange,
+      onDragEnd: handleDragEnd,
+    });
+
+    // Create FocusTrap
+    focusTrap = new FocusTrap({
+      initialFocus: initialFocusElement ?? undefined,
+      returnFocusOnDeactivate: returnFocusOnClose,
+      setInertOnSiblings: setInertOnSiblings,
+    });
+
+    // Create DrawerEffects
+    drawerEffects = new DrawerEffects({
+      scaleBackground,
+      preventScroll,
+      isAnimatedOpen: false,
+    });
+  }
+
+  // Update SwipeToDismiss when placement changes (only if already initialized)
+  $effect(() => {
+    if (!handlersInitialized) return;
+    // Recreate swipe handler when placement changes
+    swipeToDismiss = new SwipeToDismiss({
+      placement: effectivePlacement,
+      dismissible,
+      drawerId,
       onDismiss: () => {
         isOpen = false;
       },
@@ -204,29 +252,9 @@
     });
   });
 
-  // Focus trap handler for accessibility
-  // Initialize with defaults - $effect below syncs actual prop values
-  let focusTrap = new FocusTrap({
-    initialFocus: undefined,
-    returnFocusOnDeactivate: true,
-    setInertOnSiblings: true,
-  });
-
-  // Snap points handler (only created when snapPoints are provided)
-  let snapPointsInstance: SnapPoints | null = null;
-  let snapPointOffset = $state(0); // Current snap point transform offset
-  let currentSnapIndex = $state<number | null>(null);
-
-  // Drawer effects
-  // Initialize with defaults - $effect below syncs actual prop values
-  let drawerEffects = new DrawerEffects({
-    scaleBackground: false,
-    preventScroll: true,
-    isAnimatedOpen: false,
-  });
-
-  // Initialize snap handler when snapPoints are provided
+  // Initialize snap handler when snapPoints are provided (only after drawer has opened)
   $effect(() => {
+    if (!handlersInitialized) return;
     if (snapPoints && snapPoints.length > 0) {
       snapPointsInstance = new SnapPoints({
         placement: effectivePlacement,
@@ -292,8 +320,14 @@
 
       // When opening, add to DOM in closed state, then animate open
       if (isOpen) {
+        // LAZY INITIALIZATION: Create handlers on first open
+        initializeHandlers();
+
         // Register with drawer stack and get z-index for nested support
-        stackZIndex = registerDrawer(drawerId);
+        // Pass dismiss callback so other drawers can trigger dismissal of this one
+        stackZIndex = registerDrawer(drawerId, () => {
+          isOpen = false;
+        });
         shouldRender = true;
         isAnimatedOpen = false; // Start closed
         swipeToDismiss?.reset(); // Reset drag state when opening
@@ -302,7 +336,7 @@
           requestAnimationFrame(() => {
             isAnimatedOpen = true; // Then transition to open
             // Activate focus trap after animation starts (element is in DOM)
-            if (trapFocus && drawerElement) {
+            if (trapFocus && drawerElement && focusTrap) {
               focusTrap.activate(drawerElement);
             } else if (autoFocus && drawerElement) {
               // Focus the drawer for proper interaction (unless autoFocus is disabled)
@@ -318,7 +352,7 @@
         isAnimatedOpen = false; // Trigger close animation
         swipeToDismiss?.reset(); // Reset drag state when closing
         // Deactivate focus trap immediately so focus can return
-        focusTrap.deactivate();
+        focusTrap?.deactivate();
         // Unregister from drawer stack
         unregisterDrawer(drawerId);
         // Keep in DOM during closing animation (350ms), then remove
@@ -411,8 +445,9 @@
     return "";
   });
 
-  // Update focus trap options when props change
+  // Update focus trap options when props change (only if initialized)
   $effect(() => {
+    if (!focusTrap) return;
     focusTrap.updateOptions({
       initialFocus: initialFocusElement,
       returnFocusOnDeactivate: returnFocusOnClose,
@@ -430,7 +465,9 @@
     };
   });
 
+  // Update drawer effects (only if initialized)
   $effect(() => {
+    if (!drawerEffects) return;
     drawerEffects.update({
       scaleBackground,
       preventScroll,
@@ -441,8 +478,8 @@
   // Clean up on component destroy
   onDestroy(() => {
     swipeToDismiss?.detach();
-    focusTrap.deactivate();
-    drawerEffects.cleanup();
+    focusTrap?.deactivate();
+    drawerEffects?.cleanup();
     // Unregister from drawer stack
     unregisterDrawer(drawerId);
   });
