@@ -169,16 +169,23 @@ export const LIBRARY_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-folder",
     color: "#6366f1",
     title: "Your Sequences",
-    description:
-      "Sequences you've created or saved. Organize them into collections if you want.",
+    pages: [
+      {
+        content:
+          "Sequences you've created or saved. Organize them into collections if you want.",
+      },
+    ],
   },
 
   favorites: {
     icon: "fa-heart",
     color: "#ef4444",
     title: "Favorites",
-    description:
-      "Sequences you've favorited for quick access.",
+    pages: [
+      {
+        content: "Sequences you've favorited for quick access.",
+      },
+    ],
   },
 };
 
@@ -191,16 +198,36 @@ export const COMPOSE_TAB_INTROS: Record<string, TabIntroContent> = {
     icon: "fa-play",
     color: "#22c55e",
     title: "Playback",
-    description:
-      "Play back sequences as animations. Adjust speed, loop, or step through beat by beat.",
+    pages: [
+      {
+        content: {
+          text: "Watch your sequences animate:",
+          points: [
+            "Use play/pause and speed controls",
+            "Step through beat by beat",
+            "Loop sections for practice",
+          ],
+        },
+      },
+    ],
   },
 
   timeline: {
     icon: "fa-film",
     color: "#f97316",
     title: "Timeline",
-    description:
-      "Arrange sequences on a timeline and sync them to music. Export videos when you're done.",
+    pages: [
+      {
+        content: {
+          text: "Arrange and export your choreography:",
+          points: [
+            "Drag sequences onto the timeline",
+            "Sync to music if you want",
+            "Export as video when you're done",
+          ],
+        },
+      },
+    ],
   },
 };
 
