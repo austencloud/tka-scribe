@@ -41,6 +41,7 @@
 import admin from 'firebase-admin';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { execSync } from 'child_process';
+import * as readline from 'readline';
 
 // Load service account key
 const serviceAccount = JSON.parse(
@@ -55,6 +56,97 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
+
+/**
+ * Create readline interface for user prompts
+ */
+function createPrompt() {
+  return readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+}
+
+/**
+ * Ask user a question and wait for response
+ */
+function askQuestion(rl, question) {
+  return new Promise((resolve) => {
+    rl.question(question, (answer) => {
+      resolve(answer.trim());
+    });
+  });
+}
+
+/**
+ * Prompt user to select highlights from changelog entries
+ * @param {Array} changelogEntries - The changelog entries to suggest as highlights
+ * @returns {Promise<string[]>} - Selected highlights (may be empty)
+ */
+async function promptForHighlights(changelogEntries) {
+  // Get potential highlights (features and major improvements)
+  const potentialHighlights = changelogEntries
+    .filter(e => e.category === 'added' || e.category === 'improved')
+    .map(e => e.text);
+
+  if (potentialHighlights.length === 0) {
+    console.log('\n📌 No feature/improvement entries to highlight.\n');
+    return [];
+  }
+
+  console.log('\n' + '═'.repeat(60));
+  console.log('⭐ HIGHLIGHT SELECTION');
+  console.log('═'.repeat(60));
+  console.log('\nHighlights appear prominently at the top of the "What\'s New" modal.');
+  console.log('Only select items that are genuinely exciting for users.\n');
+
+  console.log('Potential highlights from this release:\n');
+  potentialHighlights.forEach((text, i) => {
+    console.log(`  [${i + 1}] ${text}`);
+  });
+  console.log(`  [0] No highlights for this release`);
+  console.log(`  [c] Enter custom highlight text\n`);
+
+  const rl = createPrompt();
+
+  try {
+    const answer = await askQuestion(rl, 'Select highlights (comma-separated numbers, 0 for none, or c for custom): ');
+
+    if (answer === '0' || answer === '') {
+      console.log('\n✓ No highlights selected.\n');
+      return [];
+    }
+
+    if (answer.toLowerCase() === 'c') {
+      const customText = await askQuestion(rl, 'Enter custom highlight text: ');
+      if (customText) {
+        console.log(`\n✓ Custom highlight: "${customText}"\n`);
+        return [customText];
+      }
+      return [];
+    }
+
+    // Parse comma-separated numbers
+    const selectedIndices = answer
+      .split(',')
+      .map(s => parseInt(s.trim()) - 1)
+      .filter(i => i >= 0 && i < potentialHighlights.length);
+
+    const selectedHighlights = selectedIndices.map(i => potentialHighlights[i]);
+
+    if (selectedHighlights.length > 0) {
+      console.log('\n✓ Selected highlights:');
+      selectedHighlights.forEach(h => console.log(`   • ${h}`));
+      console.log('');
+    } else {
+      console.log('\n✓ No valid highlights selected.\n');
+    }
+
+    return selectedHighlights;
+  } finally {
+    rl.close();
+  }
+}
 
 /**
  * Get completed feedback items ready for release
@@ -266,7 +358,7 @@ function updateServiceWorkerVersion(newVersion) {
  * Prepare release in Firestore
  * (archives completed feedback and creates version record)
  */
-async function prepareFirestoreRelease(version, changelogEntries, feedbackItems) {
+async function prepareFirestoreRelease(version, changelogEntries, feedbackItems, highlights = []) {
   const batch = db.batch();
 
   // Calculate summary counts
@@ -289,13 +381,20 @@ async function prepareFirestoreRelease(version, changelogEntries, feedbackItems)
 
   // Create version document
   const versionRef = db.collection('versions').doc(version);
-  batch.set(versionRef, {
+  const versionData = {
     version,
     feedbackCount: feedbackItems.length,
     feedbackSummary: summary,
     changelogEntries,
     releasedAt: admin.firestore.FieldValue.serverTimestamp()
-  });
+  };
+
+  // Only include highlights if there are any (keeps data clean)
+  if (highlights.length > 0) {
+    versionData.highlights = highlights;
+  }
+
+  batch.set(versionRef, versionData);
 
   // Commit batch
   await batch.commit();
@@ -760,7 +859,13 @@ async function main() {
     process.exit(0);
   }
 
-  // 5. Execute release
+  // 5. Prompt for highlights (only for feedback-based releases with features/improvements)
+  let selectedHighlights = [];
+  if (!useGitHistory && feedbackItems.length > 0) {
+    selectedHighlights = await promptForHighlights(changelog);
+  }
+
+  // 6. Execute release
   console.log('🚀 Executing release...\n');
 
   let didStash = false;
@@ -803,7 +908,8 @@ async function main() {
   if (!useGitHistory && feedbackItems.length > 0) {
     console.log('✓ Archiving feedback in Firestore...');
     // Use custom changelog entries if provided, otherwise use generated ones
-    await prepareFirestoreRelease(suggestedVersion, changelog, feedbackItems);
+    // Include selected highlights (if any) in the version document
+    await prepareFirestoreRelease(suggestedVersion, changelog, feedbackItems, selectedHighlights);
   } else if (useGitHistory) {
     console.log('⏭️  Skipping Firestore operations (git history mode)');
   }

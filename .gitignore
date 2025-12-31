@@ -114,3 +114,6 @@ find-image-feedback.js
 
 # Local mobile dev config (contains network info)
 mobile-dev.ps1
+
+# Monolith refactor claims (local multi-agent coordination)
+.monolith-claims.json

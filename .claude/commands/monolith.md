@@ -5,7 +5,7 @@ First, run the detection script:
 node scripts/find-monoliths.cjs
 ```
 
-Show the results summary to the user, then **automatically read the top candidate file** and provide a full analysis:
+Show the results summary to the user, then **automatically read the top AVAILABLE candidate file** (skip any marked 🔒 claimed) and provide a full analysis:
 
 1. **Read the file** - Don't ask permission, just read it
 2. **Identify responsibilities** - List each distinct thing the file does
@@ -13,6 +13,29 @@ Show the results summary to the user, then **automatically read the top candidat
 4. **Estimate complexity** - Simple (1 session), Medium (2-3 extractions), Complex (major refactor)
 
 Present your analysis and recommendations, then ask if the user wants to proceed with decomposition.
+
+## Multi-Agent Claiming (IMPORTANT)
+
+When multiple agents are working on monoliths simultaneously, use the claiming system to avoid conflicts:
+
+**Before starting work**, claim the file:
+```bash
+node scripts/find-monoliths.cjs --claim "lib/path/to/File.svelte"
+```
+
+**After completing the refactor**, release the claim:
+```bash
+node scripts/find-monoliths.cjs --release "lib/path/to/File.svelte"
+```
+
+**Other useful commands:**
+- `--claims` - See all active claims
+- `--clear-expired` - Remove claims older than 2 hours (stale/crashed agents)
+
+**If a file is already claimed:**
+- The script will show who claimed it and when
+- Move to the next available candidate instead
+- Do NOT work on claimed files - another agent is already on it
 
 ## Decomposition Philosophy
 

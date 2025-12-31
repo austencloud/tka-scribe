@@ -14,6 +14,12 @@
  *   node scripts/find-monoliths.cjs --type svelte    # Only .svelte files
  *   node scripts/find-monoliths.cjs --type ts        # Only .ts files
  *   node scripts/find-monoliths.cjs --include-audited  # Include audited files in results
+ *
+ * Claiming (for multi-agent coordination):
+ *   node scripts/find-monoliths.cjs --claim <path>   # Claim a file to work on
+ *   node scripts/find-monoliths.cjs --release <path> # Release a claim
+ *   node scripts/find-monoliths.cjs --claims         # Show all active claims
+ *   node scripts/find-monoliths.cjs --clear-expired  # Clear claims older than 2 hours
  */
 
 const fs = require('fs');
@@ -62,6 +68,205 @@ const WEIGHTS = {
   deriveds: 5,        // Each $derived = reactive complexity
 };
 
+// Claims configuration
+const CLAIMS_FILE = path.join(__dirname, '..', '.monolith-claims.json');
+const CLAIM_EXPIRY_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+/**
+ * Read claims from file
+ */
+function readClaims() {
+  try {
+    if (fs.existsSync(CLAIMS_FILE)) {
+      const data = fs.readFileSync(CLAIMS_FILE, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('Warning: Could not read claims file:', err.message);
+  }
+  return { claims: {} };
+}
+
+/**
+ * Write claims to file
+ */
+function writeClaims(claimsData) {
+  try {
+    fs.writeFileSync(CLAIMS_FILE, JSON.stringify(claimsData, null, 2));
+    return true;
+  } catch (err) {
+    console.error('Error writing claims file:', err.message);
+    return false;
+  }
+}
+
+/**
+ * Check if a claim is expired
+ */
+function isExpired(claim) {
+  const claimedAt = new Date(claim.claimedAt).getTime();
+  return Date.now() - claimedAt > CLAIM_EXPIRY_MS;
+}
+
+/**
+ * Normalize path for consistent keys (forward slashes, relative to src/)
+ */
+function normalizePath(filePath) {
+  // Handle both absolute and relative paths
+  let normalized = filePath;
+
+  // If it's an absolute path, make it relative to src/
+  if (path.isAbsolute(filePath)) {
+    normalized = path.relative(SRC_DIR, filePath);
+  }
+
+  // Remove leading src/ or lib/ if present
+  normalized = normalized.replace(/^src[\/\\]/, '');
+
+  // Convert to forward slashes
+  return normalized.replace(/\\/g, '/');
+}
+
+/**
+ * Claim a file
+ */
+function claimFile(filePath) {
+  const normalizedPath = normalizePath(filePath);
+  const claimsData = readClaims();
+
+  // Check if already claimed and not expired
+  if (claimsData.claims[normalizedPath]) {
+    const existing = claimsData.claims[normalizedPath];
+    if (!isExpired(existing)) {
+      console.log(`\n❌ File already claimed:`);
+      console.log(`   Path: ${normalizedPath}`);
+      console.log(`   Claimed at: ${existing.claimedAt}`);
+      console.log(`   Status: ${existing.status}`);
+      console.log(`\n   Use --release to free this claim if needed.\n`);
+      return false;
+    }
+    // Claim is expired, will be overwritten
+    console.log(`\n⏰ Previous claim expired, claiming file...\n`);
+  }
+
+  // Create new claim
+  claimsData.claims[normalizedPath] = {
+    claimedAt: new Date().toISOString(),
+    status: 'in-progress',
+    agentId: `agent-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  };
+
+  if (writeClaims(claimsData)) {
+    console.log(`\n✅ Claimed: ${normalizedPath}`);
+    console.log(`   Status: in-progress`);
+    console.log(`   Expires: ${new Date(Date.now() + CLAIM_EXPIRY_MS).toLocaleTimeString()}\n`);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Release a claim
+ */
+function releaseClaim(filePath) {
+  const normalizedPath = normalizePath(filePath);
+  const claimsData = readClaims();
+
+  if (!claimsData.claims[normalizedPath]) {
+    console.log(`\n⚠️  No claim found for: ${normalizedPath}\n`);
+    return false;
+  }
+
+  delete claimsData.claims[normalizedPath];
+
+  if (writeClaims(claimsData)) {
+    console.log(`\n✅ Released claim: ${normalizedPath}\n`);
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Show all active claims
+ */
+function showClaims() {
+  const claimsData = readClaims();
+  const claims = Object.entries(claimsData.claims);
+
+  if (claims.length === 0) {
+    console.log('\n📋 No active claims.\n');
+    return;
+  }
+
+  console.log('\n📋 Active Claims:\n');
+
+  let activeCount = 0;
+  let expiredCount = 0;
+
+  claims.forEach(([filePath, claim]) => {
+    const expired = isExpired(claim);
+    const icon = expired ? '⏰' : '🔒';
+    const status = expired ? 'EXPIRED' : claim.status;
+
+    if (expired) expiredCount++;
+    else activeCount++;
+
+    console.log(`${icon} ${filePath}`);
+    console.log(`   Status: ${status}`);
+    console.log(`   Claimed: ${new Date(claim.claimedAt).toLocaleString()}`);
+    if (!expired) {
+      const expiresIn = Math.round((CLAIM_EXPIRY_MS - (Date.now() - new Date(claim.claimedAt).getTime())) / 60000);
+      console.log(`   Expires in: ${expiresIn} minutes`);
+    }
+    console.log('');
+  });
+
+  console.log(`Summary: ${activeCount} active, ${expiredCount} expired`);
+  if (expiredCount > 0) {
+    console.log(`Use --clear-expired to remove expired claims.\n`);
+  }
+}
+
+/**
+ * Clear expired claims
+ */
+function clearExpiredClaims() {
+  const claimsData = readClaims();
+  const before = Object.keys(claimsData.claims).length;
+
+  for (const [filePath, claim] of Object.entries(claimsData.claims)) {
+    if (isExpired(claim)) {
+      delete claimsData.claims[filePath];
+    }
+  }
+
+  const after = Object.keys(claimsData.claims).length;
+  const removed = before - after;
+
+  if (removed > 0) {
+    writeClaims(claimsData);
+    console.log(`\n🧹 Cleared ${removed} expired claim(s).\n`);
+  } else {
+    console.log('\n✨ No expired claims to clear.\n');
+  }
+}
+
+/**
+ * Get set of currently claimed (non-expired) file paths
+ */
+function getClaimedPaths() {
+  const claimsData = readClaims();
+  const claimed = new Set();
+
+  for (const [filePath, claim] of Object.entries(claimsData.claims)) {
+    if (!isExpired(claim)) {
+      claimed.add(filePath);
+    }
+  }
+
+  return claimed;
+}
+
 // Parse arguments
 const args = process.argv.slice(2);
 const showAll = args.includes('--all');
@@ -71,6 +276,43 @@ const threshold = thresholdIdx !== -1 ? parseInt(args[thresholdIdx + 1]) : DEFAU
 const typeIdx = args.indexOf('--type');
 const fileType = typeIdx !== -1 ? args[typeIdx + 1] : null;
 const limit = showAll ? Infinity : 20;
+
+// Claim-related arguments
+const claimIdx = args.indexOf('--claim');
+const releaseIdx = args.indexOf('--release');
+const showClaimsFlag = args.includes('--claims');
+const clearExpiredFlag = args.includes('--clear-expired');
+
+// Handle claim commands before main scan
+if (showClaimsFlag) {
+  showClaims();
+  process.exit(0);
+}
+
+if (clearExpiredFlag) {
+  clearExpiredClaims();
+  process.exit(0);
+}
+
+if (claimIdx !== -1) {
+  const pathToClaim = args[claimIdx + 1];
+  if (!pathToClaim) {
+    console.error('\n❌ Usage: --claim <file-path>\n');
+    process.exit(1);
+  }
+  const success = claimFile(pathToClaim);
+  process.exit(success ? 0 : 1);
+}
+
+if (releaseIdx !== -1) {
+  const pathToRelease = args[releaseIdx + 1];
+  if (!pathToRelease) {
+    console.error('\n❌ Usage: --release <file-path>\n');
+    process.exit(1);
+  }
+  const success = releaseClaim(pathToRelease);
+  process.exit(success ? 0 : 1);
+}
 
 // File analysis
 function analyzeFile(filePath) {
@@ -88,6 +330,10 @@ function analyzeFile(filePath) {
   // Check if file has been audited
   const auditInfo = AUDITED_FILES[normalizedPath];
   const isAudited = !!auditInfo;
+
+  // Check if file is claimed
+  const claimedPaths = getClaimedPaths();
+  const isClaimed = claimedPaths.has(normalizedPath);
 
   // Count complexity indicators
   const effectCount = (content.match(/\$effect\s*\(/g) || []).length;
@@ -110,6 +356,7 @@ function analyzeFile(filePath) {
   if (lineCount >= MONOLITH_THRESHOLD) severity = 'monolith';
   if (lineCount >= 1000) severity = 'critical';
   if (isAudited) severity = 'audited';
+  if (isClaimed) severity = 'claimed';
 
   return {
     path: relativePath,
@@ -122,6 +369,7 @@ function analyzeFile(filePath) {
     severity,
     isAudited,
     auditInfo,
+    isClaimed,
   };
 }
 
@@ -202,6 +450,7 @@ function main() {
       monolith: '🟠',
       candidate: '🟡',
       audited: '✅',
+      claimed: '🔒',
     }[file.severity];
 
     const num = String(index + 1).padStart(3);
@@ -229,24 +478,31 @@ function main() {
   const critical = analyses.filter(a => a.severity === 'critical').length;
   const monoliths = analyses.filter(a => a.severity === 'monolith').length;
   const candidates = analyses.filter(a => a.severity === 'candidate').length;
+  const claimed = analyses.filter(a => a.severity === 'claimed').length;
   const audited = auditedFiles.length;
 
   console.log('\n📊 Summary:');
   console.log(`   🔴 Critical (1000+ lines): ${critical}`);
   console.log(`   🟠 Monolith (500+ lines):  ${monoliths}`);
   console.log(`   🟡 Candidate (${threshold}+ lines): ${candidates}`);
+  if (claimed > 0) {
+    console.log(`   🔒 Claimed (in progress):  ${claimed}`);
+  }
   if (audited > 0 && !includeAudited) {
     console.log(`   ✅ Audited (excluded):     ${audited}`);
   }
 
-  // Top recommendation
-  const nonAuditedToShow = toShow.filter(f => !f.isAudited);
-  if (nonAuditedToShow.length > 0) {
-    const top = nonAuditedToShow[0];
-    console.log('\n🎯 Top refactor candidate:');
+  // Top recommendation - skip audited AND claimed files
+  const availableToWork = toShow.filter(f => !f.isAudited && !f.isClaimed);
+  if (availableToWork.length > 0) {
+    const top = availableToWork[0];
+    console.log('\n🎯 Top refactor candidate (available):');
     console.log(`   ${top.path}`);
     console.log(`   ${top.lines} lines, ${top.effects} $effects, ${top.imports} imports`);
     console.log(`   Score: ${top.score}`);
+  } else if (toShow.length > 0) {
+    console.log('\n⚠️  All top candidates are either audited or claimed.');
+    console.log('   Use --claims to see active claims, or --include-audited to see audited files.');
   }
 
   // Show audited files summary if any
