@@ -5,7 +5,7 @@
   Mobile: Segmented control to switch between modes
 
   This component coordinates three visibility domains:
-  - Pictograph: Glyphs, reversals, turn numbers
+  - Pictograph: Glyphs (TKA includes turn numbers), reversals, non-radial
   - Animation: Grid mode, trails, overlays
   - Image Export: Elements included in exported images
 -->
@@ -58,7 +58,6 @@
   let elementalGlyphVisible = $state(false);
   let positionsGlyphVisible = $state(false);
   let reversalIndicatorsVisible = $state(true);
-  let turnNumbersVisible = $state(true);
   let nonRadialVisible = $state(false);
 
   // Animation visibility state
@@ -68,7 +67,6 @@
   let animPlaybackMode = $state<PlaybackMode>("continuous");
   let animBpm = $state(60);
   let animTkaGlyphVisible = $state(true);
-  let animTurnNumbersVisible = $state(true);
 
   // Image composition state
   let imgAddWord = $state(true);
@@ -123,10 +121,6 @@
         reversalIndicatorsVisible = !reversalIndicatorsVisible;
         visibilityManager.setGlyphVisibility("reversalIndicators", reversalIndicatorsVisible);
         break;
-      case "turnNumbers":
-        turnNumbersVisible = !turnNumbersVisible;
-        visibilityManager.setGlyphVisibility("turnNumbers", turnNumbersVisible);
-        break;
       case "nonRadial":
         nonRadialVisible = !nonRadialVisible;
         visibilityManager.setNonRadialVisibility(nonRadialVisible);
@@ -150,10 +144,6 @@
       case "tka":
         animTkaGlyphVisible = !animTkaGlyphVisible;
         animationVisibilityManager.setVisibility("tkaGlyph", animTkaGlyphVisible);
-        break;
-      case "turnNumbers":
-        animTurnNumbersVisible = !animTurnNumbersVisible;
-        animationVisibilityManager.setVisibility("turnNumbers", animTurnNumbersVisible);
         break;
     }
   }
@@ -211,7 +201,6 @@
     elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
     positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
     reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
-    turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
     nonRadialVisible = visibilityManager.getNonRadialVisibility();
 
     // Load initial animation visibility
@@ -221,7 +210,6 @@
     animPlaybackMode = animationVisibilityManager.getPlaybackMode();
     animBpm = animationVisibilityManager.getBpm();
     animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
-    animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
 
     // Load initial image composition
     imgAddWord = imageCompositionManager.addWord;
@@ -237,7 +225,6 @@
       elementalGlyphVisible = visibilityManager.getRawGlyphVisibility("elementalGlyph");
       positionsGlyphVisible = visibilityManager.getRawGlyphVisibility("positionsGlyph");
       reversalIndicatorsVisible = visibilityManager.getRawGlyphVisibility("reversalIndicators");
-      turnNumbersVisible = visibilityManager.getRawGlyphVisibility("turnNumbers");
       nonRadialVisible = visibilityManager.getNonRadialVisibility();
     };
 
@@ -248,7 +235,6 @@
       animPlaybackMode = animationVisibilityManager.getPlaybackMode();
       animBpm = animationVisibilityManager.getBpm();
       animTkaGlyphVisible = animationVisibilityManager.getVisibility("tkaGlyph");
-      animTurnNumbersVisible = animationVisibilityManager.getVisibility("turnNumbers");
     };
 
     const imageObserver = () => {
@@ -288,7 +274,6 @@
       {elementalGlyphVisible}
       {positionsGlyphVisible}
       {reversalIndicatorsVisible}
-      {turnNumbersVisible}
       {nonRadialVisible}
       onToggle={handlePictographToggle}
       onOpenHelp={() => openHelpModal("pictograph")}
@@ -302,7 +287,6 @@
       playbackMode={animPlaybackMode}
       bpm={animBpm}
       tkaGlyphVisible={animTkaGlyphVisible}
-      turnNumbersVisible={animTurnNumbersVisible}
       onToggle={handleAnimationToggle}
       onTrailStyleChange={handleTrailStyleChange}
       onPlaybackModeChange={handlePlaybackModeChange}

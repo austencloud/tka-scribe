@@ -69,12 +69,11 @@ export interface AppSettings {
 
   // Pictograph Visibility Settings
   visibility?: {
-    tkaGlyph?: boolean;
+    tkaGlyph?: boolean; // TKA Glyph includes turn numbers
     vtgGlyph?: boolean;
     elementalGlyph?: boolean;
     positionsGlyph?: boolean;
     reversalIndicators?: boolean;
-    turnNumbers?: boolean;
     nonRadialPoints?: boolean;
   };
 

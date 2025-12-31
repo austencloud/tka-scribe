@@ -5,12 +5,11 @@
   Highlights one element while dimming others for educational focus.
 
   Supported elements:
-  - tka: TKA Glyph (the letter in the center)
+  - tka: TKA Glyph (letter in the center with turn numbers)
   - vtg: VTG Glyph (motion type indicator)
   - elemental: Elemental Glyph
   - positions: Positions Glyph
   - reversals: Reversal Indicators
-  - turnNumbers: Turn Numbers
   - arrows: Motion Arrows
   - props: Props (hands/objects)
   - grid: Background Grid
@@ -38,7 +37,6 @@
     | "elemental"
     | "positions"
     | "reversals"
-    | "turnNumbers"
     | "arrows"
     | "props"
     | "grid"
@@ -107,7 +105,6 @@
   class:indicate-elemental={indicatedElement === "elemental"}
   class:indicate-positions={indicatedElement === "positions"}
   class:indicate-reversals={indicatedElement === "reversals"}
-  class:indicate-turnNumbers={indicatedElement === "turnNumbers"}
   class:indicate-arrows={indicatedElement === "arrows"}
   class:indicate-props={indicatedElement === "props"}
   class:indicate-grid={indicatedElement === "grid"}
@@ -177,9 +174,6 @@
     :global(.reversal-indicators),
   .element-indicator[class*="indicate-"]
     .pictograph-wrapper
-    :global(.turns-column),
-  .element-indicator[class*="indicate-"]
-    .pictograph-wrapper
     :global(.arrow-svg),
   .element-indicator[class*="indicate-"] .pictograph-wrapper :global(.prop-svg),
   .element-indicator[class*="indicate-"]
@@ -194,8 +188,9 @@
       filter 300ms ease;
   }
 
-  /* Highlight TKA Glyph */
-  .indicate-tka .pictograph-wrapper :global(.tka-glyph) {
+  /* Highlight TKA Glyph (includes turn numbers) */
+  .indicate-tka .pictograph-wrapper :global(.tka-glyph),
+  .indicate-tka .pictograph-wrapper :global(.turns-column) {
     opacity: 1 !important;
     filter: drop-shadow(0 0 12px rgba(129, 140, 248, 0.8));
   }
@@ -222,12 +217,6 @@
   .indicate-reversals .pictograph-wrapper :global(.reversal-indicators) {
     opacity: 1 !important;
     filter: drop-shadow(0 0 12px rgba(244, 114, 182, 0.8));
-  }
-
-  /* Highlight Turn Numbers (part of TKA glyph) */
-  .indicate-turnNumbers .pictograph-wrapper :global(.turns-column) {
-    opacity: 1 !important;
-    filter: drop-shadow(0 0 12px rgba(96, 165, 250, 0.8));
   }
 
   /* Highlight Arrows */
@@ -265,7 +254,6 @@
   .animating.indicate-reversals
     .pictograph-wrapper
     :global(.reversal-indicators),
-  .animating.indicate-turnNumbers .pictograph-wrapper :global(.turns-column),
   .animating.indicate-arrows .pictograph-wrapper :global(.arrow-svg),
   .animating.indicate-props .pictograph-wrapper :global(.prop-svg),
   .animating.indicate-grid .pictograph-wrapper :global(.grid-container),

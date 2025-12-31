@@ -30,9 +30,8 @@ interface AnimationVisibilitySettings {
   ledMode?: boolean;
 
   // Shared with pictograph visibility (can sync)
-  tkaGlyph: boolean;
+  tkaGlyph: boolean; // TKA Glyph includes turn numbers
   reversalIndicators: boolean;
-  turnNumbers: boolean;
   blueMotion: boolean;
   redMotion: boolean;
 }
@@ -65,9 +64,8 @@ export class AnimationVisibilityStateManager {
       lightsOff: false, // Lights off mode disabled by default
 
       // Shared elements - defaults optimized for animation viewing
-      tkaGlyph: true,
+      tkaGlyph: true, // TKA Glyph includes turn numbers
       reversalIndicators: false, // Less clutter during animation
-      turnNumbers: true,
       blueMotion: true,
       redMotion: true,
     };
@@ -210,13 +208,11 @@ export class AnimationVisibilityStateManager {
   syncFromPictographVisibility(pictographSettings: {
     tkaGlyph: boolean;
     reversalIndicators: boolean;
-    turnNumbers: boolean;
     blueMotion: boolean;
     redMotion: boolean;
   }): void {
     this.settings.tkaGlyph = pictographSettings.tkaGlyph;
     this.settings.reversalIndicators = pictographSettings.reversalIndicators;
-    this.settings.turnNumbers = pictographSettings.turnNumbers;
     this.settings.blueMotion = pictographSettings.blueMotion;
     this.settings.redMotion = pictographSettings.redMotion;
 

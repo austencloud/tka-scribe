@@ -30,8 +30,7 @@ export class AnimationVisibilitySynchronizer
       beatNumbers: this.manager.getVisibility("beatNumbers"),
       props: this.manager.getVisibility("props"),
       trails: this.manager.isTrailsVisible(),
-      tkaGlyph: this.manager.getVisibility("tkaGlyph"),
-      turnNumbers: this.manager.getVisibility("turnNumbers"),
+      tkaGlyph: this.manager.getVisibility("tkaGlyph"), // TKA Glyph includes turn numbers
       blueMotion: this.manager.getVisibility("blueMotion"),
       redMotion: this.manager.getVisibility("redMotion"),
       lightsOff: this.manager.isLightsOff(),

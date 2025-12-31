@@ -13,7 +13,6 @@
     elementalVisible: boolean;
     positionsVisible: boolean;
     reversalsVisible: boolean;
-    turnNumbersVisible: boolean;
     nonRadialVisible: boolean;
     blueMotionVisible: boolean;
     redMotionVisible: boolean;
@@ -22,7 +21,6 @@
     onToggleElemental: () => void;
     onTogglePositions: () => void;
     onToggleReversals: () => void;
-    onToggleTurnNumbers: () => void;
     onToggleNonRadial: () => void;
     onToggleBlueMotion: () => void;
     onToggleRedMotion: () => void;
@@ -34,7 +32,6 @@
     elementalVisible,
     positionsVisible,
     reversalsVisible,
-    turnNumbersVisible,
     nonRadialVisible,
     blueMotionVisible,
     redMotionVisible,
@@ -43,7 +40,6 @@
     onToggleElemental,
     onTogglePositions,
     onToggleReversals,
-    onToggleTurnNumbers,
     onToggleNonRadial,
     onToggleBlueMotion,
     onToggleRedMotion,
@@ -58,15 +54,7 @@
       label="TKA"
       checked={tkaVisible}
       onChange={onToggleTKA}
-      ariaLabel="Toggle TKA glyph visibility"
-    />
-    <ChipRow
-      label="Turn #s"
-      checked={turnNumbersVisible}
-      disabled={!tkaVisible}
-      badgeText={!tkaVisible ? "Needs TKA" : undefined}
-      onChange={onToggleTurnNumbers}
-      ariaLabel="Toggle turn numbers visibility"
+      ariaLabel="Toggle TKA glyph visibility (includes turn numbers)"
     />
     <ChipRow
       label="VTG"

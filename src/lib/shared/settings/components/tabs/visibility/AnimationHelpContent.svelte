@@ -31,7 +31,7 @@
     {
       id: "tka",
       label: "TKA Glyph",
-      description: "Letter identifier during animation.",
+      description: "Letter identifier with turn numbers during animation.",
       icon: "fa-font",
       color: "#818cf8",
     },
@@ -41,13 +41,6 @@
       description: "Direction change markers.",
       icon: "fa-undo",
       color: "var(--semantic-warning)",
-    },
-    {
-      id: "turnNumbers",
-      label: "Turn Numbers",
-      description: "Rotation count on each prop.",
-      icon: "fa-sync",
-      color: "#34d399",
     },
   ];
 </script>

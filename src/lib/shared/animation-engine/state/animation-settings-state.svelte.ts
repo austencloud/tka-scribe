@@ -59,14 +59,17 @@ export interface AnimationSettings {
 // DEFAULTS
 // ============================================================================
 
+import { getMotionColor } from "$lib/shared/utils/svg-color-utils";
+import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+
 export const DEFAULT_TRAIL_APPEARANCE: TrailAppearance = {
   lineWidth: 3.5,
   maxOpacity: 0.95,
   minOpacity: 0.15,
   glowEnabled: true,
   glowBlur: 2,
-  blueColor: "#2E3192",
-  redColor: "#ED1C24",
+  blueColor: getMotionColor(MotionColor.BLUE, "dark"),
+  redColor: getMotionColor(MotionColor.RED, "dark"),
 };
 
 export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {

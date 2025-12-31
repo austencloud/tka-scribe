@@ -96,11 +96,6 @@
     return visibilityManager.getVisibility("tkaGlyph");
   }
 
-  function getTurnNumbers() {
-    updateCounter;
-    return visibilityManager.getVisibility("turnNumbers");
-  }
-
   function getLedMode() {
     updateCounter;
     return visibilityManager.isLedMode();
@@ -141,12 +136,6 @@
   function toggleTkaGlyph() {
     const current = visibilityManager.getVisibility("tkaGlyph");
     visibilityManager.setVisibility("tkaGlyph", !current);
-    updateCounter++;
-  }
-
-  function toggleTurnNumbers() {
-    const current = visibilityManager.getVisibility("turnNumbers");
-    visibilityManager.setVisibility("turnNumbers", !current);
     updateCounter++;
   }
 
@@ -286,16 +275,9 @@
             class:active={getTkaGlyph()}
             onclick={toggleTkaGlyph}
             type="button"
+            title="TKA Glyph includes turn numbers"
           >
             Glyph
-          </button>
-          <button
-            class="chip-btn turns-btn"
-            class:active={getTurnNumbers()}
-            onclick={toggleTurnNumbers}
-            type="button"
-          >
-            Turns
           </button>
           <button
             class="chip-btn led-btn"
@@ -541,13 +523,6 @@
     background: rgba(168, 85, 247, 0.2);
     border-color: rgba(168, 85, 247, 0.5);
     color: rgba(216, 180, 254, 1);
-  }
-
-  /* Turns - pink accent */
-  .chip-btn.turns-btn.active {
-    background: rgba(236, 72, 153, 0.2);
-    border-color: rgba(236, 72, 153, 0.5);
-    color: rgba(249, 168, 212, 1);
   }
 
   /* LED Mode - electric cyan/neon accent */

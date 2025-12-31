@@ -93,8 +93,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(8px, 2cqh, 14px);
-    padding: clamp(10px, 2cqh, 20px);
+    /* Distribute space evenly when there's extra room */
+    justify-content: space-between;
+    gap: clamp(12px, 3cqh, 20px);
+    padding: clamp(12px, 3cqh, 24px);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
@@ -194,22 +196,25 @@
     align-items: center;
     justify-content: center;
     background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
-    border-radius: clamp(10px, 2cqh, 14px);
+    border-radius: clamp(10px, 2cqh, 16px);
     border: 1px solid var(--theme-stroke);
     overflow: hidden;
-    /* Preview grows to fill available space */
+    /* Allow preview to grow and fill available space */
     flex: 1 1 auto;
     width: 100%;
+    max-width: 100%;
     aspect-ratio: 1;
-    min-height: 0;
+    /* Constrain max size so it doesn't get too huge on tall screens */
+    max-height: min(60cqh, 400px);
     box-shadow: inset 0 2px 8px var(--theme-shadow);
   }
 
   .panel-controls {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5cqh, 10px);
-    flex-shrink: 0;
+    gap: clamp(8px, 2cqh, 12px);
+    /* Don't grow - take only the space needed for controls */
+    flex: 0 0 auto;
     width: 100%;
   }
 

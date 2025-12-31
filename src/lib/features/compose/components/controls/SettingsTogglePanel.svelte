@@ -103,10 +103,6 @@
     updateCounter;
     return visibilityManager.getVisibility("tkaGlyph");
   }
-  function getTurnNumbers() {
-    updateCounter;
-    return visibilityManager.getVisibility("turnNumbers");
-  }
 
   // Toggle handlers
   function toggleGrid() {
@@ -138,11 +134,6 @@
   function toggleTkaGlyph() {
     const current = visibilityManager.getVisibility("tkaGlyph");
     visibilityManager.setVisibility("tkaGlyph", !current);
-    updateCounter++;
-  }
-  function toggleTurnNumbers() {
-    const current = visibilityManager.getVisibility("turnNumbers");
-    visibilityManager.setVisibility("turnNumbers", !current);
     updateCounter++;
   }
 
@@ -265,16 +256,9 @@
             class:active={getTkaGlyph()}
             onclick={toggleTkaGlyph}
             type="button"
+            title="TKA Glyph includes turn numbers"
           >
             Glyph
-          </button>
-          <button
-            class="chip-btn turns-btn"
-            class:active={getTurnNumbers()}
-            onclick={toggleTurnNumbers}
-            type="button"
-          >
-            Turns
           </button>
         </div>
       </section>
@@ -511,13 +495,6 @@
     background: var(--theme-accent-bg);
     border-color: var(--theme-accent-border);
     color: var(--theme-accent-text);
-  }
-
-  /* Turns - pink accent */
-  .chip-btn.turns-btn.active {
-    background: rgba(236, 72, 153, 0.2);
-    border-color: rgba(236, 72, 153, 0.5);
-    color: rgba(249, 168, 212, 1);
   }
 
   /* Trail Off - gray accent */

@@ -76,6 +76,9 @@ export interface TrailSettings {
   previewMode: boolean; // Show future path (training mode) vs past trail (normal mode)
 }
 
+import { getMotionColor } from "../../../utils/svg-color-utils";
+import { MotionColor } from "../../../pictograph/shared/domain/enums/pictograph-enums";
+
 /**
  * Default trail settings
  */
@@ -89,8 +92,8 @@ export const DEFAULT_TRAIL_SETTINGS: TrailSettings = {
   lineWidth: 4, // Vivid preset line width
   glowEnabled: true, // Legacy field
   glowBlur: 2,
-  blueColor: "#2E3192",
-  redColor: "#ED1C24",
+  blueColor: getMotionColor(MotionColor.BLUE, "dark"),
+  redColor: getMotionColor(MotionColor.RED, "dark"),
   minOpacity: 0.15,
   maxOpacity: 0.95, // Vivid preset opacity
   trackingMode: TrackingMode.RIGHT_END, // Track right end (tip) by default

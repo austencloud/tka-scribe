@@ -13,7 +13,6 @@
     | "elemental"
     | "positions"
     | "reversals"
-    | "turnNumbers"
     | "nonRadial"
     | null;
 
@@ -30,7 +29,7 @@
     {
       id: "tka",
       label: "TKA Glyph",
-      description: "The letter at the center identifying the pictograph.",
+      description: "The letter at the center with turn numbers on each side.",
       icon: "fa-font",
       color: "#818cf8",
     },
@@ -62,14 +61,6 @@
       description: "Markers when motion reverses direction.",
       icon: "fa-undo",
       color: "#f472b6",
-    },
-    {
-      id: "turnNumbers",
-      label: "Turn Numbers",
-      description:
-        "Rotation counts shown beside the TKA glyph. Only visible when glyph is on.",
-      icon: "fa-hashtag",
-      color: "var(--semantic-info)",
     },
     {
       id: "nonRadial",

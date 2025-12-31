@@ -140,8 +140,7 @@ export class AnimationEngine {
       beatNumbers: true,
       props: true,
       trails: true,
-      tkaGlyph: true,
-      turnNumbers: true,
+      tkaGlyph: true, // TKA Glyph includes turn numbers
       blueMotion: true,
       redMotion: true,
       lightsOff: false,
@@ -258,8 +257,7 @@ export class AnimationEngine {
       beatNumbers: visibilityManager.getVisibility("beatNumbers"),
       props: visibilityManager.getVisibility("props"),
       trails: visibilityManager.getTrailStyle() !== "off",
-      tkaGlyph: visibilityManager.getVisibility("tkaGlyph"),
-      turnNumbers: visibilityManager.getVisibility("turnNumbers"),
+      tkaGlyph: visibilityManager.getVisibility("tkaGlyph"), // TKA Glyph includes turn numbers
       blueMotion: visibilityManager.getVisibility("blueMotion"),
       redMotion: visibilityManager.getVisibility("redMotion"),
       lightsOff: visibilityManager.isLightsOff(),

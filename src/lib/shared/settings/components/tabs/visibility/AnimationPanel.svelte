@@ -20,7 +20,6 @@
     playbackMode: PlaybackMode;
     bpm: number;
     tkaGlyphVisible: boolean;
-    turnNumbersVisible: boolean;
     onToggle: (key: string) => void;
     onTrailStyleChange: (style: string) => void;
     onPlaybackModeChange: (mode: PlaybackMode) => void;
@@ -36,7 +35,6 @@
     playbackMode,
     bpm,
     tkaGlyphVisible,
-    turnNumbersVisible,
     onToggle,
     onTrailStyleChange,
     onPlaybackModeChange,
@@ -118,21 +116,22 @@
   </div>
 
   <div class="panel-controls">
-    <div class="control-group">
-      <span class="group-label">Playback</span>
-      <div class="playback-mode-toggle">
+    <!-- Mobile: Compact 2-column layout -->
+    <div class="mobile-controls">
+      <!-- Row 1: Playback mode -->
+      <div class="mobile-row">
         <button
-          class="mode-btn"
+          class="compact-btn"
           class:active={playbackMode === "continuous"}
           onclick={() => onPlaybackModeChange("continuous")}
           type="button"
           aria-label="Continuous playback"
         >
           <i class="fas fa-wave-square" aria-hidden="true"></i>
-          <span>Continuous</span>
+          <span>Loop</span>
         </button>
         <button
-          class="mode-btn"
+          class="compact-btn"
           class:active={playbackMode === "step"}
           onclick={() => onPlaybackModeChange("step")}
           type="button"
@@ -142,14 +141,12 @@
           <span>Step</span>
         </button>
       </div>
-    </div>
 
-    <div class="control-group">
-      <span class="group-label">Speed (BPM)</span>
-      <div class="bpm-presets">
+      <!-- Row 2: BPM -->
+      <div class="mobile-row bpm-row">
         {#each bpmPresets as presetBpm}
           <button
-            class="bpm-btn"
+            class="compact-btn bpm"
             class:active={bpm === presetBpm}
             onclick={() => onBpmChange(presetBpm)}
             type="button"
@@ -159,85 +156,196 @@
           </button>
         {/each}
       </div>
-    </div>
 
-    <div class="control-group">
-      <span class="group-label">Canvas</span>
-      <div class="toggle-grid">
+      <!-- Row 3: Canvas + Overlay toggles -->
+      <div class="mobile-row">
         <button
-          class="toggle-btn"
+          class="compact-btn"
           class:active={gridVisible}
-          onclick={() => onToggle("grid")}>Grid</button
+          onclick={() => onToggle("grid")}
+          type="button"
         >
+          <i class="fas fa-th" aria-hidden="true"></i>
+          <span>Grid</span>
+        </button>
         <button
-          class="toggle-btn"
+          class="compact-btn"
           class:active={beatNumbersVisible}
-          onclick={() => onToggle("beatNumbers")}>Beat #s</button
+          onclick={() => onToggle("beatNumbers")}
+          type="button"
         >
+          <i class="fas fa-hashtag" aria-hidden="true"></i>
+          <span>Beat #</span>
+        </button>
+        <button
+          class="compact-btn"
+          class:active={tkaGlyphVisible}
+          onclick={() => onToggle("tka")}
+          type="button"
+        >
+          <i class="fas fa-font" aria-hidden="true"></i>
+          <span>TKA</span>
+        </button>
       </div>
-    </div>
 
-    <div class="control-group">
-      <span class="group-label">Trails</span>
-      <div class="trail-preset-row">
-        <div class="preset-buttons">
-          <button
-            class="preset-btn"
-            class:active={trailStyle === "off"}
-            onclick={() => setTrailPreset("off")}
-            type="button"
-          >
-            Off
-          </button>
-          <button
-            class="preset-btn"
-            class:active={trailStyle === "subtle"}
-            onclick={() => setTrailPreset("subtle")}
-            type="button"
-          >
-            Subtle
-          </button>
-          <button
-            class="preset-btn"
-            class:active={trailStyle === "vivid"}
-            onclick={() => setTrailPreset("vivid")}
-            type="button"
-          >
-            Vivid
-          </button>
-        </div>
-
+      <!-- Row 4: Trails -->
+      <div class="mobile-row trails-row">
+        <button
+          class="compact-btn trail"
+          class:active={trailStyle === "off"}
+          onclick={() => setTrailPreset("off")}
+          type="button"
+        >
+          Off
+        </button>
+        <button
+          class="compact-btn trail"
+          class:active={trailStyle === "subtle"}
+          onclick={() => setTrailPreset("subtle")}
+          type="button"
+        >
+          Subtle
+        </button>
+        <button
+          class="compact-btn trail"
+          class:active={trailStyle === "vivid"}
+          onclick={() => setTrailPreset("vivid")}
+          type="button"
+        >
+          Vivid
+        </button>
         {#if showBilateralToggle}
           <button
-            class="ends-toggle"
+            class="compact-btn trail ends"
             class:active={isBothEnds}
             onclick={toggleBothEnds}
             type="button"
             title={isBothEnds ? "Trailing both ends" : "Trailing one end"}
           >
-            <i
-              class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}"
-              aria-hidden="true"
-            ></i>
-            <span class="ends-label">{isBothEnds ? "Both" : "One"}</span>
+            <i class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}" aria-hidden="true"></i>
           </button>
         {/if}
       </div>
     </div>
 
-    <div class="control-group">
-      <span class="group-label">Overlays</span>
-      <div class="toggle-grid">
-        <button
-          class="toggle-btn"
-          class:active={tkaGlyphVisible}
-          onclick={() => onToggle("tka")}>TKA Glyph</button
-        >
-        <button
-          class="toggle-btn"
-          class:active={turnNumbersVisible}
-          onclick={() => onToggle("turnNumbers")}>Turn #s</button
-        >
+    <!-- Desktop: Original expanded layout -->
+    <div class="desktop-controls">
+      <div class="control-group">
+        <span class="group-label">Playback</span>
+        <div class="playback-mode-toggle">
+          <button
+            class="mode-btn"
+            class:active={playbackMode === "continuous"}
+            onclick={() => onPlaybackModeChange("continuous")}
+            type="button"
+            aria-label="Continuous playback"
+          >
+            <i class="fas fa-wave-square" aria-hidden="true"></i>
+            <span>Continuous</span>
+          </button>
+          <button
+            class="mode-btn"
+            class:active={playbackMode === "step"}
+            onclick={() => onPlaybackModeChange("step")}
+            type="button"
+            aria-label="Step playback"
+          >
+            <i class="fas fa-shoe-prints" aria-hidden="true"></i>
+            <span>Step</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="group-label">Speed (BPM)</span>
+        <div class="bpm-presets">
+          {#each bpmPresets as presetBpm}
+            <button
+              class="bpm-btn"
+              class:active={bpm === presetBpm}
+              onclick={() => onBpmChange(presetBpm)}
+              type="button"
+              aria-label="Set BPM to {presetBpm}"
+            >
+              {presetBpm}
+            </button>
+          {/each}
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="group-label">Canvas</span>
+        <div class="toggle-grid">
+          <button
+            class="toggle-btn"
+            class:active={gridVisible}
+            onclick={() => onToggle("grid")}>Grid</button
+          >
+          <button
+            class="toggle-btn"
+            class:active={beatNumbersVisible}
+            onclick={() => onToggle("beatNumbers")}>Beat #s</button
+          >
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="group-label">Trails</span>
+        <div class="trail-preset-row">
+          <div class="preset-buttons">
+            <button
+              class="preset-btn"
+              class:active={trailStyle === "off"}
+              onclick={() => setTrailPreset("off")}
+              type="button"
+            >
+              Off
+            </button>
+            <button
+              class="preset-btn"
+              class:active={trailStyle === "subtle"}
+              onclick={() => setTrailPreset("subtle")}
+              type="button"
+            >
+              Subtle
+            </button>
+            <button
+              class="preset-btn"
+              class:active={trailStyle === "vivid"}
+              onclick={() => setTrailPreset("vivid")}
+              type="button"
+            >
+              Vivid
+            </button>
+          </div>
+
+          {#if showBilateralToggle}
+            <button
+              class="ends-toggle"
+              class:active={isBothEnds}
+              onclick={toggleBothEnds}
+              type="button"
+              title={isBothEnds ? "Trailing both ends" : "Trailing one end"}
+            >
+              <i
+                class="fas {isBothEnds ? 'fa-arrows-alt-h' : 'fa-long-arrow-alt-right'}"
+                aria-hidden="true"
+              ></i>
+              <span class="ends-label">{isBothEnds ? "Both" : "One"}</span>
+            </button>
+          {/if}
+        </div>
+      </div>
+
+      <div class="control-group">
+        <span class="group-label">Overlays</span>
+        <div class="toggle-grid">
+          <button
+            class="toggle-btn"
+            class:active={tkaGlyphVisible}
+            onclick={() => onToggle("tka")}>TKA Glyph</button
+          >
+        </div>
       </div>
     </div>
   </div>
@@ -251,8 +359,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(8px, 2cqh, 14px);
-    padding: clamp(10px, 2cqh, 20px);
+    /* Use justify-content to distribute space when there's extra room */
+    justify-content: space-between;
+    gap: clamp(12px, 3cqh, 20px);
+    padding: clamp(12px, 3cqh, 24px);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
@@ -352,23 +462,127 @@
     align-items: center;
     justify-content: center;
     background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
-    border-radius: clamp(10px, 2cqh, 14px);
+    border-radius: clamp(10px, 2cqh, 16px);
     border: 1px solid var(--theme-stroke);
     overflow: hidden;
-    /* Preview grows to fill available space */
+    /* Allow preview to grow and fill available space */
     flex: 1 1 auto;
     width: 100%;
+    max-width: 100%;
     aspect-ratio: 1;
-    min-height: 0;
+    /* Constrain max size so it doesn't get too huge on tall screens */
+    max-height: min(60cqh, 400px);
     box-shadow: inset 0 2px 8px var(--theme-shadow);
+  }
+
+  /* Constrain AnimatorCanvas to square within the preview frame */
+  .preview-frame :global(.canvas-wrapper) {
+    height: auto !important;
+    width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1;
   }
 
   .panel-controls {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5cqh, 10px);
-    flex-shrink: 0;
+    gap: clamp(8px, 2cqh, 12px);
+    /* Don't grow - take only the space needed for controls */
+    flex: 0 0 auto;
     width: 100%;
+  }
+
+  /* Mobile/Desktop control visibility - use width to detect layout */
+  .mobile-controls {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(6px, 1.5cqh, 10px);
+    width: 100%;
+  }
+
+  .desktop-controls {
+    display: none;
+  }
+
+  /* Desktop: Show expanded layout when panel is wide (side-by-side mode) */
+  @container animation-panel (min-width: 320px) {
+    .mobile-controls {
+      display: none;
+    }
+    .desktop-controls {
+      display: flex;
+      flex-direction: column;
+      gap: clamp(6px, 1.5cqh, 10px);
+      width: 100%;
+    }
+  }
+
+  /* Mobile compact button rows */
+  .mobile-row {
+    display: flex;
+    gap: clamp(4px, 1cqh, 8px);
+    width: 100%;
+  }
+
+  .compact-btn {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(4px, 1cqh, 6px);
+    min-height: 48px; /* WCAG AAA touch target */
+    padding: clamp(10px, 2cqh, 14px) clamp(6px, 1cqw, 10px);
+    background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
+    border: 1px solid var(--theme-stroke);
+    border-radius: clamp(8px, 1.5cqh, 12px);
+    color: var(--theme-text-dim);
+    font-size: var(--font-size-compact);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    cursor: pointer;
+    transition: all 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .compact-btn i {
+    font-size: 12px;
+  }
+
+  .compact-btn span {
+    white-space: nowrap;
+  }
+
+  .compact-btn:active {
+    transform: scale(0.95);
+    transition-duration: 50ms;
+  }
+
+  .compact-btn.active {
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 45%, transparent);
+    color: white;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 20%, transparent);
+  }
+
+  /* BPM buttons - narrower */
+  .compact-btn.bpm {
+    padding: 8px 4px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .compact-btn.bpm.active {
+    background: color-mix(in srgb, var(--theme-accent-strong) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent-strong) 45%, transparent);
+  }
+
+  /* Trail buttons */
+  .compact-btn.trail {
+    flex: 1;
+  }
+
+  .compact-btn.trail.ends {
+    flex: 0 0 48px;
+    padding: 8px;
   }
 
   .control-group {

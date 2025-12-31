@@ -20,6 +20,8 @@
   import MirrorRenderer from "./renderers/MirrorRenderer.svelte";
   import GridRenderer from "./renderers/GridRenderer.svelte";
   import type { TrailSettings } from "../../shared/domain/types/TrailTypes";
+  import { getMotionColor } from "$lib/shared/utils/svg-color-utils";
+  import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
 
   // Get state instances
   const playbackState = getPlaybackState();
@@ -46,11 +48,11 @@
   let isTrailSettingsOpen = $state(false);
   let currentSettingsCanvasId = $state<string>("main");
 
-  // Tunnel colors (placeholder - should come from settings)
+  // Tunnel colors - uses centralized getMotionColor (dark mode for animation canvas)
   const tunnelColors = {
     primary: {
-      blue: "#2E3192",
-      red: "#ED1C24",
+      blue: getMotionColor(MotionColor.BLUE, "dark"),
+      red: getMotionColor(MotionColor.RED, "dark"),
     },
     secondary: {
       blue: "#06b6d4",

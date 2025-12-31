@@ -11,7 +11,6 @@
     trailsVisible = true,
     tkaGlyphVisible = true,
     reversalIndicatorsVisible = false,
-    turnNumbersVisible = true,
     blueMotionVisible = true,
     redMotionVisible = true,
     onToggleGrid,
@@ -20,7 +19,6 @@
     onToggleTrails,
     onToggleTKA,
     onToggleReversals,
-    onToggleTurnNumbers,
     onToggleBlueMotion,
     onToggleRedMotion,
   }: {
@@ -30,7 +28,6 @@
     trailsVisible: boolean;
     tkaGlyphVisible: boolean;
     reversalIndicatorsVisible: boolean;
-    turnNumbersVisible: boolean;
     blueMotionVisible: boolean;
     redMotionVisible: boolean;
     onToggleGrid: () => void;
@@ -39,7 +36,6 @@
     onToggleTrails: () => void;
     onToggleTKA: () => void;
     onToggleReversals: () => void;
-    onToggleTurnNumbers: () => void;
     onToggleBlueMotion: () => void;
     onToggleRedMotion: () => void;
   } = $props();
@@ -96,18 +92,10 @@
         class="control-btn"
         class:active={tkaGlyphVisible}
         onclick={onToggleTKA}
+        title="TKA Glyph includes turn numbers"
       >
         <span class="icon-letter">A</span>
         <span>TKA</span>
-      </button>
-
-      <button
-        class="control-btn"
-        class:active={turnNumbersVisible}
-        onclick={onToggleTurnNumbers}
-      >
-        <i class="fas fa-sort-numeric-down" aria-hidden="true"></i>
-        <span>Turns</span>
       </button>
 
       <button

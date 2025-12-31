@@ -70,8 +70,7 @@ export type AnimatorCanvasState = {
   readonly beatNumbersVisible: boolean;
   readonly propsVisible: boolean;
   readonly trailsVisible: boolean;
-  readonly tkaGlyphVisible: boolean;
-  readonly turnNumbersVisible: boolean;
+  readonly tkaGlyphVisible: boolean; // TKA Glyph includes turn numbers
   readonly blueMotionVisible: boolean;
   readonly redMotionVisible: boolean;
 
@@ -117,9 +116,8 @@ export type AnimationVisibilitySettings = {
   beatNumbers: boolean;
   props: boolean;
   trails: boolean;
-  tkaGlyph: boolean;
+  tkaGlyph: boolean; // TKA Glyph includes turn numbers
   reversalIndicators: boolean;
-  turnNumbers: boolean;
   blueMotion: boolean;
   redMotion: boolean;
 };
@@ -178,9 +176,6 @@ export function createAnimatorCanvasState(
   let trailsVisible = $state(visibilityManager?.isTrailsVisible() ?? true);
   let tkaGlyphVisible = $state(
     visibilityManager?.getVisibility("tkaGlyph") ?? true
-  );
-  let turnNumbersVisible = $state(
-    visibilityManager?.getVisibility("turnNumbers") ?? true
   );
   let blueMotionVisible = $state(
     visibilityManager?.getVisibility("blueMotion") ?? true
@@ -265,9 +260,6 @@ export function createAnimatorCanvasState(
     },
     get tkaGlyphVisible() {
       return tkaGlyphVisible;
-    },
-    get turnNumbersVisible() {
-      return turnNumbersVisible;
     },
     get blueMotionVisible() {
       return blueMotionVisible;
@@ -383,8 +375,6 @@ export function createAnimatorCanvasState(
         propsVisible = visible;
       if (key === "tkaGlyph" && typeof visible === "boolean")
         tkaGlyphVisible = visible;
-      if (key === "turnNumbers" && typeof visible === "boolean")
-        turnNumbersVisible = visible;
       if (key === "blueMotion" && typeof visible === "boolean")
         blueMotionVisible = visible;
       if (key === "redMotion" && typeof visible === "boolean")
@@ -404,7 +394,6 @@ export function createAnimatorCanvasState(
       propsVisible = manager.getVisibility("props");
       trailsVisible = manager.isTrailsVisible();
       tkaGlyphVisible = manager.getVisibility("tkaGlyph");
-      turnNumbersVisible = manager.getVisibility("turnNumbers");
       blueMotionVisible = manager.getVisibility("blueMotion");
       redMotionVisible = manager.getVisibility("redMotion");
     },
@@ -438,7 +427,6 @@ export function createAnimatorCanvasState(
       propsVisible = true;
       trailsVisible = true;
       tkaGlyphVisible = true;
-      turnNumbersVisible = true;
       blueMotionVisible = true;
       redMotionVisible = true;
       containerElement = null;

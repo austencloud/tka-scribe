@@ -14,8 +14,7 @@ export interface AnimationVisibilityState {
   beatNumbers: boolean;
   props: boolean;
   trails: boolean;
-  tkaGlyph: boolean;
-  turnNumbers: boolean;
+  tkaGlyph: boolean; // TKA Glyph includes turn numbers
   blueMotion: boolean;
   redMotion: boolean;
   /** Lights Off: dark background, inverted grid, white text/outlines */
