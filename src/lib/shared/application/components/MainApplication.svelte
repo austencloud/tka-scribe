@@ -11,9 +11,7 @@
   import InboxSubscriptionProvider from "../../inbox/components/InboxSubscriptionProvider.svelte";
   import MyFeedbackDetail from "$lib/features/feedback/components/my-feedback/MyFeedbackDetail.svelte";
   import { myFeedbackDetailState } from "$lib/features/feedback/state/my-feedback-detail-state.svelte";
-  import OnboardingExperience from "../../onboarding/components/OnboardingExperience.svelte";
   import FirstRunWizard from "../../onboarding/components/first-run/FirstRunWizard.svelte";
-  import { onboardingState } from "../../onboarding/state/onboarding-state.svelte";
   import { firstRunState } from "../../onboarding/state/first-run-state.svelte.ts";
 
   import { TYPES } from "../../inversify/types";
@@ -96,10 +94,7 @@
   let feedbackDetailItem = $derived(myFeedbackDetailState.selectedItem);
   let showFeedbackDetail = $derived(myFeedbackDetailState.isOpen);
 
-  // Onboarding state (for first-time users)
-  let showOnboarding = $derived(onboardingState.shouldShow);
-
-  // First-run wizard state (before module onboarding)
+  // First-run wizard state (for first-time users)
   let showFirstRun = $derived(firstRunState.shouldShow);
 
   // Resolve services when container is available
@@ -311,15 +306,11 @@
     return () => document.removeEventListener("keydown", handleKeydown);
   });
 
-  // Trigger first-run wizard and onboarding for first-time authenticated users
+  // Trigger first-run wizard for first-time authenticated users
   $effect(() => {
     if (isAuthenticated && isInitialized && !authLoading) {
-      // First-run wizard takes priority (app-wide preferences)
       if (!firstRunState.isDone()) {
         firstRunState.triggerIfFirstTime();
-      } else {
-        // Only show module onboarding after first-run is complete
-        onboardingState.triggerIfFirstTime();
       }
     }
   });
@@ -399,14 +390,6 @@
         onSkip={() => firstRunState.markSkipped()}
       />
     {:else}
-      <!-- Onboarding overlay for first-time users (module intro) -->
-      {#if showOnboarding}
-        <OnboardingExperience
-          onComplete={() => onboardingState.markCompleted()}
-          onSkip={() => onboardingState.markSkipped()}
-        />
-      {/if}
-
       <!-- Main Interface - Full app for authenticated users -->
       <MainInterface />
     {/if}

@@ -45,9 +45,6 @@ import {
   PREVIOUS_TAB_SESSION_KEY,
 } from "../config/storage-keys";
 
-// Import onboarding visibility state (extracted for single responsibility)
-import { onboardingVisibilityState } from "../../onboarding/state/onboarding-visibility-state.svelte";
-
 // Import panel persistence state (extracted for single responsibility)
 import { panelPersistenceState } from "./panel-persistence-state.svelte";
 
@@ -599,31 +596,6 @@ export function createNavigationState() {
     getTabsForModule,
     getModuleDefinition,
     updateTabAccessibility,
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Onboarding Visibility (delegated to onboardingVisibilityState)
-    // ─────────────────────────────────────────────────────────────────────────
-
-    /** @see onboardingVisibilityState.isCreateTutorialOnChoiceStep */
-    get isCreateTutorialOnChoiceStep() {
-      return onboardingVisibilityState.isCreateTutorialOnChoiceStep;
-    },
-    /** @see onboardingVisibilityState.setCreateTutorialOnChoiceStep */
-    setCreateTutorialOnChoiceStep:
-      onboardingVisibilityState.setCreateTutorialOnChoiceStep,
-
-    /** @see onboardingVisibilityState.isModuleOnboardingVisible */
-    isModuleOnboardingVisible:
-      onboardingVisibilityState.isModuleOnboardingVisible,
-    /** @see onboardingVisibilityState.setModuleOnboardingVisible */
-    setModuleOnboardingVisible:
-      onboardingVisibilityState.setModuleOnboardingVisible,
-    /** @see onboardingVisibilityState.isModuleOnboardingOnChoiceStep */
-    isModuleOnboardingOnChoiceStep:
-      onboardingVisibilityState.isModuleOnboardingOnChoiceStep,
-    /** @see onboardingVisibilityState.setModuleOnboardingOnChoiceStep */
-    setModuleOnboardingOnChoiceStep:
-      onboardingVisibilityState.setModuleOnboardingOnChoiceStep,
 
     // ─────────────────────────────────────────────────────────────────────────
     // Panel Persistence (delegated to panelPersistenceState)
