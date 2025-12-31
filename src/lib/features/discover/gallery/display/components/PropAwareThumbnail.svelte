@@ -132,12 +132,22 @@
         throw new Error("Could not determine prop configuration");
       }
 
+      // DEBUG: Log what prop type we're requesting
+      console.log(`[PropAwareThumbnail] Loading ${sequenceName} with props:`, {
+        isCatDog,
+        effectivePropType,
+        bluePropType,
+        redPropType,
+        cloudKey,
+      });
+
       // Step 1: Check Firebase Storage (cloud cache)
       loadingStatus = "Checking cloud...";
       const cloudUrl = await cloudCache.getUrl(cloudKey);
 
       if (cloudUrl) {
         // Found in cloud! Use directly (no blob URL needed)
+        console.log(`[PropAwareThumbnail] Found in cloud: ${cloudUrl}`);
         thumbnailUrl = cloudUrl;
         hasInitiallyLoaded = true;
         loadingStatus = "";
@@ -145,6 +155,7 @@
       }
 
       // Step 2: Not in cloud - render locally
+      console.log(`[PropAwareThumbnail] Not in cloud, rendering locally...`);
       loadingStatus = "Rendering...";
       const blob = await renderThumbnail();
 
@@ -243,9 +254,9 @@
     }
 
     // Render with appropriate props
-    const blob = await renderer.renderSequenceToBlob(fullSequence, {
+    const renderOptions = {
       beatSize: 240,
-      format: "WebP",
+      format: "WebP" as const,
       quality: 0.9,
       includeStartPosition: true,
       addBeatNumbers: true,
@@ -268,7 +279,17 @@
         lightsOff: !lightMode,
         propGlow: !lightMode,
       },
+    };
+
+    console.log(`[PropAwareThumbnail] Rendering ${sequenceName} with options:`, {
+      propTypeOverride: renderOptions.propTypeOverride,
+      bluePropTypeOverride: renderOptions.bluePropTypeOverride,
+      redPropTypeOverride: renderOptions.redPropTypeOverride,
+      sequenceHasBeats: fullSequence.beats.length,
+      sequenceHasStartPosition: !!fullSequence.startPosition,
     });
+
+    const blob = await renderer.renderSequenceToBlob(fullSequence, renderOptions);
 
     return blob;
   }

@@ -120,10 +120,21 @@ export class DiscoverLoader implements IDiscoverLoader {
       // Check if we have bundled metadata in the sequence index cache
       // This would be populated if you run: npm run bundle:metadata
       const cachedSequence = this.sequenceCache.get(sequenceName);
+      console.log(`[DiscoverLoader] loadFullSequenceData("${sequenceName}"):`, {
+        cacheHit: !!cachedSequence,
+        hasFullMetadata: !!cachedSequence?.fullMetadata,
+        cacheSize: this.sequenceCache.size,
+      });
 
       if (cachedSequence?.fullMetadata) {
         console.log(`⚡ Using bundled metadata for ${sequenceName}`);
-        return this.createSequenceFromBundledMetadata(cachedSequence);
+        const result = this.createSequenceFromBundledMetadata(cachedSequence);
+        console.log(`[DiscoverLoader] createSequenceFromBundledMetadata result:`, {
+          success: !!result,
+          beatsLength: result?.beats?.length,
+          firstBeatMotionsBlue: result?.beats?.[0]?.motions?.blue ? 'exists' : 'MISSING',
+        });
+        return result;
       }
 
       // Fallback: Fetch metadata from .meta.json file (slower, but works in development)
@@ -567,6 +578,10 @@ export class DiscoverLoader implements IDiscoverLoader {
 
       // Cache the raw sequence for later lazy loading
       this.sequenceCache.set(word, rawSeq);
+      if (this.sequenceCache.size === 1) {
+        // Log first cache entry as sanity check
+        console.log(`[DiscoverLoader] First cache entry: "${word}", hasFullMetadata=${!!rawSeq.fullMetadata}`);
+      }
 
       try {
         const sequence = await this.createSequenceFromRaw(rawSeq, word);

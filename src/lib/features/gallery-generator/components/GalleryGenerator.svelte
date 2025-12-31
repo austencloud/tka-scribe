@@ -11,6 +11,7 @@
   import { TYPES } from "$lib/shared/inversify/types";
   import type { IDiscoverLoader } from "$lib/features/discover/gallery/display/services/contracts/IDiscoverLoader";
   import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
+  import type { IStartPositionDeriver } from "$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver";
 
   import { galleryGeneratorState } from "../state/gallery-generator-state.svelte";
   import { GalleryRenderer } from "../services/implementations/GalleryRenderer";
@@ -63,8 +64,9 @@
       const container = await getContainerInstance();
       const loaderService = container.get<IDiscoverLoader>(TYPES.IDiscoverLoader);
       const renderService = container.get<ISequenceRenderer>(TYPES.ISequenceRenderer);
+      const startPosDeriver = container.get<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
 
-      galleryRenderer = new GalleryRenderer(renderService, loaderService);
+      galleryRenderer = new GalleryRenderer(renderService, loaderService, startPosDeriver);
       galleryWriter = new GalleryWriter();
       cloudUploader = new CloudGalleryUploader();
 
