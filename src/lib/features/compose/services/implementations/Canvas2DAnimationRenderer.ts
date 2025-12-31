@@ -235,9 +235,8 @@ export class Canvas2DAnimationRenderer implements IAnimationRenderer {
 
     // Apply glow effect when LED mode is active (not based on trail effect)
     if (this.appManager.isLedModeEnabled() && glowColor) {
-      // Multi-layer glow for LED staff effect
-      // Layer 1: Outer diffuse glow
-      ctx.filter = `drop-shadow(0 0 12px ${glowColor}) drop-shadow(0 0 6px ${glowColor})`;
+      // Multi-layer glow for LED staff effect (subtle glow)
+      ctx.filter = `drop-shadow(0 0 6px ${glowColor}) drop-shadow(0 0 3px ${glowColor})`;
     }
 
     ctx.drawImage(

@@ -331,8 +331,23 @@ export class AnimationEngine {
     const textureSignal = this.propTypeChangeService?.state.textureReloadSignal ?? 0;
     if (textureSignal > 0 && textureSignal !== this.lastTextureReloadSignal) {
       this.lastTextureReloadSignal = textureSignal;
-      this.state.isInitialized = false;
-      this.loadPropTextures();
+
+      // CRITICAL: Sync prop type state AFTER checkForChanges() detected the new values
+      // Otherwise loadPropTextures() would use stale values from the earlier syncServiceState() call
+      if (this.propTypeChangeService) {
+        this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
+        this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
+        this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
+      }
+
+      // Hot-swap textures without full re-initialization
+      // The render loop keeps running with old textures until new ones load
+      this.loadPropTextures().then(() => {
+        // Trigger immediate re-render once new textures are ready
+        if (this.state.isInitialized) {
+          this.renderLoopService?.triggerRender(() => this.getFrameParams(props));
+        }
+      });
     }
 
     // Handle trail settings changes
@@ -624,10 +639,23 @@ export class AnimationEngine {
   private async loadPropTextures(): Promise<void> {
     if (!this.propTextureService) return;
 
-    await this.propTextureService.loadPropTextures(
-      this.state.currentBluePropType,
-      this.state.currentRedPropType
-    );
+    // Read prop types from settings service directly to ensure we have the latest values
+    // This handles both initial load (before checkForChanges ran) and subsequent updates
+    let bluePropType = this.state.currentBluePropType;
+    let redPropType = this.state.currentRedPropType;
+
+    if (this.settingsService?.currentSettings) {
+      const settings = this.settingsService.currentSettings;
+      bluePropType = settings.bluePropType || settings.propType || "staff";
+      redPropType = settings.redPropType || settings.propType || "staff";
+
+      // Also update engine state to keep it in sync
+      this.state.currentBluePropType = bluePropType;
+      this.state.currentRedPropType = redPropType;
+      this.state.currentPropType = bluePropType;
+    }
+
+    await this.propTextureService.loadPropTextures(bluePropType, redPropType);
   }
 
   private initializeResizeService(): void {
