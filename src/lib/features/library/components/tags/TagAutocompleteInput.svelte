@@ -324,7 +324,7 @@
     padding: 24px 16px;
     background: var(--theme-card-bg);
     border: 1px dashed var(--theme-stroke, var(--theme-stroke));
-    border-radius: 12px;
+    border-radius: var(--radius-2026-md, 14px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-style: italic;
@@ -399,7 +399,7 @@
     margin-left: auto;
     padding: 4px 8px;
     background: color-mix(in srgb, var(--tag-color, var(--theme-accent-strong)) 20%, transparent);
-    border-radius: 10px;
+    border-radius: var(--radius-2026-sm, 10px);
     font-size: var(--font-size-compact);
     font-weight: 600;
     opacity: 0.8;
@@ -425,7 +425,7 @@
     padding: 14px 20px;
     background: transparent;
     border: 1px dashed rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
+    border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-text-secondary, var(--theme-text-dim));
     font-size: var(--font-size-min);
     cursor: pointer;
@@ -467,7 +467,7 @@
     padding: 14px 16px;
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke, var(--theme-stroke));
-    border-radius: 8px;
+    border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-text);
     font-size: var(--font-size-min);
     outline: none;
@@ -490,7 +490,7 @@
     height: var(--min-touch-target);
     padding: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--radius-2026-sm, 10px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -584,7 +584,7 @@
     padding: 10px 12px;
     background: color-mix(in srgb, var(--semantic-warning) 10%, transparent);
     border: 1px solid color-mix(in srgb, var(--semantic-warning) 30%, transparent);
-    border-radius: 8px;
+    border-radius: var(--radius-2026-sm, 10px);
     color: var(--semantic-warning);
     font-size: var(--font-size-compact);
   }

@@ -128,7 +128,7 @@
     margin: 0;
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 8px;
+    border-radius: var(--radius-2026-sm, 10px);
     font-size: var(--font-size-compact);
     color: var(--theme-text-dim, var(--theme-text-dim));
     line-height: 1.4;

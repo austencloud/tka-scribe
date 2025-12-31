@@ -1,36 +1,30 @@
 <!--
   SequencesView.svelte - Sequences Library View
 
-  Displays:
-  - All sequences: All sequences in user's library
-  - My Creations: Sequences created by the user
-  - Forked: Sequences forked from other creators
-  - Favorites: User's starred/bookmarked sequences
+  Displays user's saved sequences with optional favorites filter.
+  Library = sequences YOU created/saved.
 
   Features:
   - Real-time Firestore sync
-  - Search, sort, and filter
+  - Search, sort, and filter by tags
+  - Favorites toggle
   - Selection mode for batch operations
-  - Opens sequence viewer on click
 -->
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { libraryState } from "../state/library-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte.ts";
   import SequenceCard from "../../discover/gallery/display/components/SequenceCard/SequenceCard.svelte";
-  import type { LibrarySequence } from "../domain/models/LibrarySequence";
+  import SequenceDetailDrawer from "./SequenceDetailDrawer.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
-  import { openSpotlightViewer } from "$lib/shared/application/state/ui/ui-state.svelte";
-  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
-  import type { IDiscoverThumbnailProvider } from "../../discover/gallery/display/services/contracts/IDiscoverThumbnailProvider";
   import TagFilterChips from "./tags/TagFilterChips.svelte";
 
-  type ViewFilter = "all" | "created" | "forked" | "favorites";
-
   // Local UI state
-  let currentFilter = $state<ViewFilter>("all");
+  let showOnlyFavorites = $state(false);
   let searchQuery = $state("");
   let showSortMenu = $state(false);
+  let showDetailDrawer = $state(false);
+  let selectedSequenceId = $state<string | null>(null);
 
   // Derived from library state
   const isLoading = $derived(libraryState.isLoading);
@@ -39,30 +33,20 @@
   const selectedCount = $derived(libraryState.selectedCount);
   const isAuthenticated = $derived(!!authState.effectiveUserId);
 
-  // Filtered sequences based on current filter
+  // Filtered sequences
   const displayedSequences = $derived(() => {
     let sequences = libraryState.filteredSequences;
-
-    switch (currentFilter) {
-      case "created":
-        return sequences.filter((s) => s.source === "created");
-      case "forked":
-        return sequences.filter((s) => s.source === "forked");
-      case "favorites":
-        return sequences.filter((s) => s.isFavorite);
-      default:
-        return sequences;
+    if (showOnlyFavorites) {
+      return sequences.filter((s) => s.isFavorite);
     }
+    return sequences;
   });
 
-  // Stats for filter badges
-  const stats = $derived({
-    all: libraryState.sequences.length,
-    created: libraryState.sequences.filter((s) => s.source === "created")
-      .length,
-    forked: libraryState.sequences.filter((s) => s.source === "forked").length,
-    favorites: libraryState.sequences.filter((s) => s.isFavorite).length,
-  });
+  // Stats
+  const totalCount = $derived(libraryState.sequences.length);
+  const favoritesCount = $derived(
+    libraryState.sequences.filter((s) => s.isFavorite).length
+  );
 
   // Sort options
   const sortOptions = [
@@ -71,11 +55,6 @@
     { field: "name", label: "Name" },
     { field: "word", label: "Word" },
   ] as const;
-
-  // Filter handlers
-  function handleFilterChange(filter: ViewFilter) {
-    currentFilter = filter;
-  }
 
   function handleSearchInput(event: Event) {
     const target = event.target as HTMLInputElement;
@@ -111,22 +90,15 @@
     if (isSelectMode) {
       libraryState.toggleSelection(sequence.id ?? "");
     } else {
-      // Open in spotlight viewer
-      openSequenceInViewer(sequence);
+      // Open detail drawer
+      selectedSequenceId = sequence.id ?? null;
+      showDetailDrawer = true;
     }
   }
 
-  function openSequenceInViewer(sequence: SequenceData) {
-    // Try to resolve thumbnail service, but it's optional
-    // SpotlightViewer can work without it if thumbnails are full URLs
-    const thumbnailService = tryResolve<IDiscoverThumbnailProvider>(
-      TYPES.IDiscoverThumbnailProvider
-    );
-    // Pass null if service not available - SpotlightViewer handles this
-    openSpotlightViewer(
-      sequence,
-      thumbnailService as IDiscoverThumbnailProvider
-    );
+  function handleCloseDetail() {
+    showDetailDrawer = false;
+    selectedSequenceId = null;
   }
 
   // Batch actions
@@ -184,15 +156,6 @@
     }
   });
 
-  // Get cover URL for sequence - handles both array and single URL formats
-  function getCoverUrl(sequence: LibrarySequence): string | undefined {
-    // Check thumbnails array first (SequenceData standard)
-    if (sequence.thumbnails && sequence.thumbnails.length > 0) {
-      return sequence.thumbnails[0];
-    }
-    // Fall back to thumbnailUrl field (backward compatibility)
-    return (sequence as any).thumbnailUrl;
-  }
 </script>
 
 <div class="sequences-view">
@@ -279,52 +242,26 @@
     </div>
   </div>
 
-  <!-- Filter Tabs -->
-  <div class="filter-tabs">
-    <button
-      class="filter-tab"
-      class:active={currentFilter === "all"}
-      onclick={() => handleFilterChange("all")}
-    >
-      <i class="fas fa-th" aria-hidden="true"></i>
-      <span>All</span>
-      {#if stats.all > 0}
-        <span class="badge">{stats.all}</span>
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="sequence-count">
+      {#if showOnlyFavorites}
+        <span>{favoritesCount} favorite{favoritesCount !== 1 ? 's' : ''}</span>
+      {:else}
+        <span>{totalCount} sequence{totalCount !== 1 ? 's' : ''}</span>
       {/if}
-    </button>
-    <button
-      class="filter-tab"
-      class:active={currentFilter === "created"}
-      onclick={() => handleFilterChange("created")}
-    >
-      <i class="fas fa-pencil-alt" aria-hidden="true"></i>
-      <span>Created</span>
-      {#if stats.created > 0}
-        <span class="badge">{stats.created}</span>
-      {/if}
-    </button>
-    <button
-      class="filter-tab"
-      class:active={currentFilter === "forked"}
-      onclick={() => handleFilterChange("forked")}
-    >
-      <i class="fas fa-code-branch" aria-hidden="true"></i>
-      <span>Forked</span>
-      {#if stats.forked > 0}
-        <span class="badge">{stats.forked}</span>
-      {/if}
-    </button>
-    <button
-      class="filter-tab"
-      class:active={currentFilter === "favorites"}
-      onclick={() => handleFilterChange("favorites")}
-    >
-      <i class="fas fa-star" aria-hidden="true"></i>
-      <span>Favorites</span>
-      {#if stats.favorites > 0}
-        <span class="badge">{stats.favorites}</span>
-      {/if}
-    </button>
+    </div>
+
+    {#if favoritesCount > 0}
+      <button
+        class="favorites-toggle"
+        class:active={showOnlyFavorites}
+        onclick={() => (showOnlyFavorites = !showOnlyFavorites)}
+      >
+        <i class="fas fa-star" aria-hidden="true"></i>
+        <span>{showOnlyFavorites ? 'Show All' : 'Favorites'}</span>
+      </button>
+    {/if}
   </div>
 
   <!-- Tag Filter Chips -->
@@ -404,11 +341,7 @@
         <h3>
           {#if searchQuery}
             No Results Found
-          {:else if currentFilter === "created"}
-            No Sequences Created Yet
-          {:else if currentFilter === "forked"}
-            No Forked Sequences
-          {:else if currentFilter === "favorites"}
+          {:else if showOnlyFavorites}
             No Favorites Yet
           {:else}
             Library is Empty
@@ -417,14 +350,10 @@
         <p>
           {#if searchQuery}
             Try a different search term.
-          {:else if currentFilter === "created"}
-            Create your first sequence in the Create module!
-          {:else if currentFilter === "forked"}
-            Fork sequences from the Explore tab to add them here.
-          {:else if currentFilter === "favorites"}
+          {:else if showOnlyFavorites}
             Star sequences to add them to your favorites.
           {:else}
-            Start creating or exploring sequences to build your library.
+            Create your first sequence in the Create module!
           {/if}
         </p>
       </div>
@@ -433,7 +362,6 @@
         {#each displayedSequences() as sequence (sequence.id)}
           <SequenceCard
             {sequence}
-            coverUrl={getCoverUrl(sequence)}
             onPrimaryAction={handleCardClick}
             selected={libraryState.isSelected(sequence.id)}
           />
@@ -441,6 +369,13 @@
       </div>
     {/if}
   </div>
+
+  <!-- Detail Drawer -->
+  <SequenceDetailDrawer
+    bind:isOpen={showDetailDrawer}
+    sequenceId={selectedSequenceId}
+    onClose={handleCloseDetail}
+  />
 </div>
 
 <style>
@@ -483,7 +418,7 @@
     padding-left: calc(var(--spacing-sm) + 1.5rem);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-text);
     font-size: 0.875rem;
   }
@@ -527,7 +462,7 @@
     height: var(--min-touch-target);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-text-dim);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -556,7 +491,7 @@
     margin-top: var(--spacing-xs);
     background: rgba(30, 30, 40, 0.98);
     border: 1px solid var(--theme-stroke-strong);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--radius-2026-sm, 10px);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     z-index: 100;
     min-width: 180px;
@@ -587,60 +522,49 @@
     color: rgba(16, 185, 129, 0.9);
   }
 
-  /* Filter Tabs */
-  .filter-tabs {
+  /* Filter Bar */
+  .filter-bar {
     display: flex;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
     background: rgba(255, 255, 255, 0.02);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    overflow-x: auto;
-    overflow-y: hidden;
     flex-shrink: 0;
   }
 
-  .filter-tab {
+  .sequence-count {
+    font-size: var(--font-size-sm, 14px);
+    color: var(--theme-text-dim);
+  }
+
+  .favorites-toggle {
     display: flex;
     align-items: center;
     gap: var(--spacing-xs);
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-md);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
-    border-radius: var(--border-radius-md);
+    border-radius: 999px;
     color: var(--theme-text-dim);
-    font-size: 0.875rem;
-    font-weight: 500;
+    font-size: var(--font-size-sm, 14px);
     cursor: pointer;
     transition: all 0.2s ease;
-    white-space: nowrap;
   }
 
-  .filter-tab:hover {
+  .favorites-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--theme-text);
-    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  .filter-tab.active {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: rgba(255, 255, 255, 1);
+  .favorites-toggle.active {
+    background: rgba(250, 204, 21, 0.2);
+    border-color: rgba(250, 204, 21, 0.4);
+    color: rgba(250, 204, 21, 1);
   }
 
-  .filter-tab i {
+  .favorites-toggle i {
     font-size: 0.875rem;
-  }
-
-  .badge {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 2px 6px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .filter-tab.active .badge {
-    background: rgba(16, 185, 129, 0.4);
   }
 
   /* Selection Bar */
@@ -687,7 +611,7 @@
     height: var(--min-touch-target);
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--theme-stroke-strong);
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--radius-2026-sm, 10px);
     color: rgba(255, 255, 255, 0.8);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -836,7 +760,7 @@
     padding: var(--spacing-sm) var(--spacing-lg);
     background: rgba(16, 185, 129, 0.2);
     border: 1px solid rgba(16, 185, 129, 0.4);
-    border-radius: var(--border-radius-md);
+    border-radius: var(--radius-2026-sm, 10px);
     color: var(--theme-text);
     font-size: 0.875rem;
     font-weight: 500;
@@ -862,11 +786,7 @@
       grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
 
-    .filter-tab span {
-      display: none;
-    }
-
-    .filter-tab .badge {
+    .favorites-toggle span {
       display: none;
     }
   }
