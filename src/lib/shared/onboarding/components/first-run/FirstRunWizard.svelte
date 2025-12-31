@@ -60,7 +60,7 @@
     displayName: "fa-user",
     theme: "fa-moon",
     favoriteProp: "fa-fire",
-    pictographMode: "fa-palette",
+    pictographMode: "fa-lightbulb",
   };
 
   const currentStepIndex = $derived(STEPS.indexOf(currentStep));
@@ -191,6 +191,27 @@
     hapticService?.trigger("selection");
     onSkip();
   }
+
+  async function handleQuickStart() {
+    // Apply sensible defaults and complete immediately
+    hapticService?.trigger("success");
+
+    try {
+      // Apply default settings (staff prop, light mode, current theme)
+      await settingsService.updateSettings({
+        bluePropType: PropType.STAFF,
+        redPropType: PropType.STAFF,
+      });
+
+      // Default to lights on (light mode)
+      const visibilityManager = getAnimationVisibilityManager();
+      visibilityManager.setLightsOff(false);
+    } catch (error) {
+      console.error("Failed to apply default settings:", error);
+    }
+
+    onComplete();
+  }
 </script>
 
 <div class="first-run-wizard" class:animate-in={animateIn}>
@@ -205,7 +226,10 @@
   <!-- Step content -->
   <div class="step-container">
     {#if currentStep === "welcome"}
-      <WelcomeStep onNext={() => handleNext("displayName")} />
+      <WelcomeStep
+        onNext={() => handleNext("displayName")}
+        onQuickStart={handleQuickStart}
+      />
     {:else if currentStep === "displayName"}
       <DisplayNameStep
         initialValue={displayName}

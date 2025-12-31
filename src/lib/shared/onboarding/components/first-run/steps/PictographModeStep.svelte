@@ -1,11 +1,14 @@
 <!--
-  PictographModeStep - Choose light or dark pictograph mode
+  PictographModeStep - Choose lights on or lights off mode
 
-  Shows visual examples of both modes side by side.
-  Light mode: standard display on light background
-  Dark mode (Lights Off): inverted colors, dark background, glow effects
+  Shows real pictographs side by side demonstrating both modes.
+  Lights On: standard display on light background
+  Lights Off: inverted colors, dark background, glow effects
 -->
 <script lang="ts">
+  import Pictograph from "$lib/shared/pictograph/shared/components/Pictograph.svelte";
+  import { examplePictographData } from "$lib/shared/settings/components/tabs/visibility/example-data";
+
   interface Props {
     initialValue?: "light" | "dark";
     onComplete: (mode: "light" | "dark") => void;
@@ -30,15 +33,14 @@
 
 <div class="pictograph-mode-step">
   <div class="icon-container">
-    <i class="fas fa-palette" aria-hidden="true"></i>
+    <i class="fas fa-lightbulb" aria-hidden="true"></i>
   </div>
 
-  <h1 class="title">How do you like your pictographs?</h1>
+  <h1 class="title">Lights on or lights off?</h1>
 
-  <p class="subtitle">Choose your visual style</p>
 
   <div class="mode-options">
-    <!-- Light Mode Option -->
+    <!-- Lights On Option -->
     <button
       class="mode-card"
       class:selected={selectedMode === "light"}
@@ -46,41 +48,13 @@
       aria-pressed={selectedMode === "light"}
     >
       <div class="preview-frame light-preview">
-        <!-- Simplified pictograph preview - Light mode -->
-        <svg viewBox="0 0 100 100" class="preview-svg">
-          <!-- Diamond grid -->
-          <path
-            d="M50 10 L90 50 L50 90 L10 50 Z"
-            fill="none"
-            stroke="#ccc"
-            stroke-width="1.5"
-          />
-          <line x1="10" y1="50" x2="90" y2="50" stroke="#ddd" stroke-width="1" />
-          <line x1="50" y1="10" x2="50" y2="90" stroke="#ddd" stroke-width="1" />
-
-          <!-- Blue arrow -->
-          <path
-            d="M50 70 Q30 60 35 40"
-            fill="none"
-            stroke="#2E3192"
-            stroke-width="4"
-            stroke-linecap="round"
-          />
-          <circle cx="35" cy="40" r="4" fill="#2E3192" />
-
-          <!-- Red arrow -->
-          <path
-            d="M50 30 Q70 40 65 60"
-            fill="none"
-            stroke="#ED1C24"
-            stroke-width="4"
-            stroke-linecap="round"
-          />
-          <circle cx="65" cy="60" r="4" fill="#ED1C24" />
-        </svg>
+        <Pictograph
+          pictographData={examplePictographData}
+          ledMode={false}
+          disableContentTransitions={true}
+        />
       </div>
-      <span class="mode-label">Light Mode</span>
-      <span class="mode-description">Standard display</span>
+      <span class="mode-label">Lights On</span>
       {#if selectedMode === "light"}
         <div class="selected-badge">
           <i class="fas fa-check" aria-hidden="true"></i>
@@ -88,7 +62,7 @@
       {/if}
     </button>
 
-    <!-- Dark Mode Option -->
+    <!-- Lights Off Option -->
     <button
       class="mode-card"
       class:selected={selectedMode === "dark"}
@@ -96,74 +70,13 @@
       aria-pressed={selectedMode === "dark"}
     >
       <div class="preview-frame dark-preview">
-        <!-- Simplified pictograph preview - Dark mode with glow -->
-        <svg viewBox="0 0 100 100" class="preview-svg">
-          <defs>
-            <filter id="blue-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-            <filter id="red-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-
-          <!-- Diamond grid (inverted) -->
-          <path
-            d="M50 10 L90 50 L50 90 L10 50 Z"
-            fill="none"
-            stroke="rgba(255,255,255,0.3)"
-            stroke-width="1.5"
-          />
-          <line
-            x1="10"
-            y1="50"
-            x2="90"
-            y2="50"
-            stroke="rgba(255,255,255,0.15)"
-            stroke-width="1"
-          />
-          <line
-            x1="50"
-            y1="10"
-            x2="50"
-            y2="90"
-            stroke="rgba(255,255,255,0.15)"
-            stroke-width="1"
-          />
-
-          <!-- Blue arrow with glow -->
-          <path
-            d="M50 70 Q30 60 35 40"
-            fill="none"
-            stroke="#4B9CFF"
-            stroke-width="4"
-            stroke-linecap="round"
-            filter="url(#blue-glow)"
-          />
-          <circle cx="35" cy="40" r="4" fill="#4B9CFF" filter="url(#blue-glow)" />
-
-          <!-- Red arrow with glow -->
-          <path
-            d="M50 30 Q70 40 65 60"
-            fill="none"
-            stroke="#FF6B6B"
-            stroke-width="4"
-            stroke-linecap="round"
-            filter="url(#red-glow)"
-          />
-          <circle cx="65" cy="60" r="4" fill="#FF6B6B" filter="url(#red-glow)" />
-        </svg>
+        <Pictograph
+          pictographData={examplePictographData}
+          ledMode={true}
+          disableContentTransitions={true}
+        />
       </div>
-      <span class="mode-label">Dark Mode</span>
-      <span class="mode-description">LED glow effect</span>
+      <span class="mode-label">Lights Off</span>
       {#if selectedMode === "dark"}
         <div class="selected-badge">
           <i class="fas fa-check" aria-hidden="true"></i>
@@ -175,7 +88,7 @@
   <p class="hint">You can change this anytime in settings</p>
 
   <div class="button-row">
-    <button type="button" class="back-button" onclick={onBack}>
+    <button type="button" class="back-button" onclick={onBack} aria-label="Go back">
       <i class="fas fa-arrow-left" aria-hidden="true"></i>
     </button>
 
@@ -189,9 +102,6 @@
     </button>
   </div>
 
-  <button type="button" class="skip-link" onclick={onSkip}>
-    Skip for now
-  </button>
 </div>
 
 <style>
@@ -217,10 +127,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: color-mix(in srgb, #06b6d4 15%, transparent);
+    background: color-mix(in srgb, #f59e0b 15%, transparent);
     border-radius: 18px;
     font-size: 1.5rem;
-    color: #06b6d4;
+    color: #f59e0b;
   }
 
   .title {
@@ -289,16 +199,17 @@
   }
 
   .light-preview {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: white;
   }
 
   .dark-preview {
-    background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+    background: #0a0a0f;
   }
 
-  .preview-svg {
-    width: 80%;
-    height: 80%;
+  /* Make Pictograph fill the preview frame */
+  .preview-frame :global(.pictograph) {
+    width: 100%;
+    height: 100%;
   }
 
   .mode-label {

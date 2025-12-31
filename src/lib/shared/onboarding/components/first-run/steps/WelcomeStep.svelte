@@ -7,9 +7,10 @@
 <script lang="ts">
   interface Props {
     onNext: () => void;
+    onQuickStart: () => void;
   }
 
-  const { onNext }: Props = $props();
+  const { onNext, onQuickStart }: Props = $props();
 </script>
 
 <div class="welcome-step">
@@ -31,9 +32,15 @@
     Let's personalize your experience with a few quick questions.
   </p>
 
-  <button class="next-button" onclick={onNext}>
-    Get started <i class="fas fa-arrow-right" aria-hidden="true"></i>
-  </button>
+  <div class="button-group">
+    <button class="next-button" onclick={onNext}>
+      Get started <i class="fas fa-arrow-right" aria-hidden="true"></i>
+    </button>
+
+    <button class="quick-start-button" onclick={onQuickStart}>
+      Just get me started
+    </button>
+  </div>
 </div>
 
 <style>
@@ -142,6 +149,36 @@
     transform: scale(0.98);
   }
 
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .quick-start-button {
+    padding: 12px 20px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quick-start-button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: var(--theme-text, rgba(255, 255, 255, 0.9));
+  }
+
+  .quick-start-button:active {
+    transform: scale(0.98);
+  }
+
   /* Mobile */
   @media (max-width: 480px) {
     .welcome-step {
@@ -171,15 +208,21 @@
       padding: 12px 24px;
       font-size: 1rem;
     }
+
+    .quick-start-button {
+      font-size: 0.9rem;
+    }
   }
 
   /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .next-button {
+    .next-button,
+    .quick-start-button {
       transition: none;
     }
 
-    .next-button:active {
+    .next-button:active,
+    .quick-start-button:active {
       transform: none;
     }
   }
