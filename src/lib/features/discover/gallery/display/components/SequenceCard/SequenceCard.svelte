@@ -4,12 +4,6 @@ SequenceCard.svelte
 Ultra-minimal card component for the Explore grid.
 Clicking the card opens the sequence detail viewer.
 
-Redesigned with word + difficulty badge baked into the image itself.
-No footer gradient needed - the image speaks for itself.
-
-All actions (favorite, edit, animate, delete) are in the detail panel.
-Enhanced with Svelte 5 runes for reactive state management.
-
 Uses PropAwareThumbnail for cloud-cached rendering:
 - First user to view a prop type renders it locally
 - Rendered image is uploaded to Firebase Storage
@@ -22,7 +16,6 @@ Uses PropAwareThumbnail for cloud-cached rendering:
 
   const {
     sequence,
-    coverUrl = undefined, // Legacy prop, kept for backwards compatibility
     onPrimaryAction = () => {},
     selected = false,
     bluePropType = undefined,
@@ -31,7 +24,6 @@ Uses PropAwareThumbnail for cloud-cached rendering:
     lightMode = false,
   }: {
     sequence: SequenceData;
-    coverUrl?: string;
     onPrimaryAction?: (sequence: SequenceData) => void;
     selected?: boolean;
     bluePropType?: PropType;
@@ -46,7 +38,6 @@ Uses PropAwareThumbnail for cloud-cached rendering:
 </script>
 
 <button class="sequence-card" class:selected onclick={handlePrimaryAction}>
-  <!-- Always use PropAwareThumbnail for cloud-cached rendering -->
   <PropAwareThumbnail
     {sequence}
     {bluePropType}

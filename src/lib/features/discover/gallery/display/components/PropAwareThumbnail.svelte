@@ -225,13 +225,21 @@
    */
   async function renderThumbnail(): Promise<Blob> {
     const container = await getContainerInstance();
-    const loader = container.get<IDiscoverLoader>(TYPES.IDiscoverLoader);
     const renderer = container.get<ISequenceRenderer>(TYPES.ISequenceRenderer);
 
-    // Load full sequence data
-    const fullSequence = await loader.loadFullSequenceData(sequenceName);
-    if (!fullSequence) {
-      throw new Error(`Sequence not found: ${sequenceName}`);
+    // Use the sequence prop directly if it has beat data (Library sequences)
+    // Otherwise fall back to loading from the Gallery index
+    let fullSequence = sequence;
+
+    const hasBeats = sequence.beats && sequence.beats.length > 0;
+    if (!hasBeats) {
+      // No beat data in prop - try loading from Gallery index
+      const loader = container.get<IDiscoverLoader>(TYPES.IDiscoverLoader);
+      const loadedSequence = await loader.loadFullSequenceData(sequenceName);
+      if (!loadedSequence) {
+        throw new Error(`Sequence not found: ${sequenceName}`);
+      }
+      fullSequence = loadedSequence;
     }
 
     // Render with appropriate props

@@ -403,8 +403,10 @@
                   "bubble-float",
                   "deep-ocean-flow"
                 );
-                // Add the selected animation class
-                body.classList.add(selectedAnimation);
+                // Add the selected animation class (if one exists)
+                if (selectedAnimation) {
+                  body.classList.add(selectedAnimation);
+                }
               } else {
                 // If body isn't ready yet, try again in a moment
                 setTimeout(applyBackgroundAnimation, 10);

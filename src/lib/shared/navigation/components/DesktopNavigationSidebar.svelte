@@ -454,8 +454,9 @@
     border-right: 1px solid var(--theme-stroke);
     z-index: 150;
     overflow: hidden;
-    transition: width var(--duration-emphasis, 280ms)
-      var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+    transition:
+      width var(--duration-emphasis, 280ms) var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+      top 0.2s ease;
 
     /* Completely exclude from view transitions */
     view-transition-name: none;

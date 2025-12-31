@@ -39,6 +39,7 @@ export interface AppVersion {
   feedbackCount: number; // Denormalized total count
   feedbackSummary: FeedbackSummary;
   changelogEntries?: ChangelogEntry[]; // Curated user-facing changelog (primary display)
+  highlights?: string[]; // Optional curated highlights for this release (shown prominently in What's New)
 }
 
 /**

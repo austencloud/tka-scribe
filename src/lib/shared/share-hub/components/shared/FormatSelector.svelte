@@ -24,10 +24,12 @@
     onFormatSelect?: (format: MediaFormat) => void;
   } = $props();
 
+  // MVP: Only Animation and Static available
+  // Performance video not ready - requires camera/upload implementation
   const formats: Array<{ id: MediaFormat; label: string; icon: string }> = [
     { id: 'animation', label: 'Animation', icon: 'fa-play-circle' },
     { id: 'static', label: 'Static', icon: 'fa-image' },
-    { id: 'performance', label: 'Performance', icon: 'fa-video' },
+    // { id: 'performance', label: 'Performance', icon: 'fa-video' }, // TODO: Enable post-MVP
   ];
 
   function handleFormatSelect(format: MediaFormat) {

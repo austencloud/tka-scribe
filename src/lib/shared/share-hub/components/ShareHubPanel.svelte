@@ -49,24 +49,18 @@
   // FIX: Use 'hubState' instead of 'state' to avoid collision with $state rune
   const hubState = createShareHubState();
 
-  // Sync sequence to state when it changes
-  // COMPLETELY DISABLED to test if this is causing the loop
-  // $effect(() => {
-  //   if (sequence !== undefined) {
-  //     const currentSequence = untrack(() => hubState.sequence);
-  //     if (sequence !== currentSequence) {
-  //       hubState.setSequence(sequence ?? null);
-  //     }
-  //   }
-  // });
-
-  // Alternative: Set sequence once on mount, don't sync reactively
-  // ALSO DISABLED - testing if ANY sequence sync causes loop
-  // $effect(() => {
-  //   if (sequence !== undefined && hubState.sequence === null) {
-  //     hubState.setSequence(sequence ?? null);
-  //   }
-  // });
+  // Initialize sequence once on mount - sequence shouldn't change during Share Hub lifetime
+  // Using $effect.pre to run before DOM updates
+  let sequenceInitialized = false;
+  $effect.pre(() => {
+    if (!sequenceInitialized && sequence !== undefined) {
+      sequenceInitialized = true;
+      // Use untrack to avoid creating a reactive dependency on hubState
+      untrack(() => {
+        hubState.setSequence(sequence ?? null);
+      });
+    }
+  });
 
   // Settings panel title based on context
   const settingsTitle = $derived(
@@ -106,18 +100,15 @@
 </script>
 
 <div class="share-hub-panel">
-  <!-- Mode Toggle (Top Control) -->
-  <div class="mode-toggle-container">
+  <!-- MVP: Mode toggle hidden - only Single Media available -->
+  <!-- Composite mode not ready (requires video stitching implementation) -->
+  <!-- <div class="mode-toggle-container">
     <ModeToggle mode={hubState.mode} onModeChange={handleModeChange} />
-  </div>
+  </div> -->
 
-  <!-- Conditional Content (Single Media or Composite) -->
+  <!-- Content Area - Single Media only for MVP -->
   <div class="content-area">
-    {#if hubState.mode === 'single'}
-      <SingleMediaView {isSequenceSaved} {isMobile} onExport={handleExport} />
-    {:else}
-      <CompositeView {isSequenceSaved} {isMobile} onExport={handleExport} />
-    {/if}
+    <SingleMediaView {isSequenceSaved} {isMobile} onExport={handleExport} />
   </div>
 
   <!-- Settings Panel Overlay -->
