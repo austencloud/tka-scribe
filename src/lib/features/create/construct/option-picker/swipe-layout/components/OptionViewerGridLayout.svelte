@@ -64,7 +64,8 @@ Features:
     // Account for gaps between sections (4px gap in fitToViewport mode for tighter spacing)
     const gapSize = 4;
     const totalGaps = (sectionCount - 1) * gapSize;
-    const paddingBlock = 8; // Minimal padding in fitToViewport mode
+    // Uniform padding of 8px on each side (16px total vertical)
+    const paddingBlock = 16;
     const availableHeight =
       layoutConfig.containerHeight - totalGaps - paddingBlock;
 
@@ -94,6 +95,8 @@ Features:
       class="section-wrapper"
       class:grouped-section={section.title === "Types 4-6" ||
         section.type === "grouped"}
+      style:max-height={fitToViewport ? `${perSectionHeight()}px` : undefined}
+      style:height={fitToViewport ? `${perSectionHeight()}px` : undefined}
     >
       {#if section.title === "Types 4-6" || section.type === "grouped"}
         <!-- Grouped section (Types 4-6) -->
@@ -140,19 +143,23 @@ Features:
     gap: 16px;
     overflow-y: auto;
     padding-block: 24px;
+    box-sizing: border-box;
+    max-width: 100%; /* Ensure grid doesn't exceed container width */
   }
 
   /* When fitToViewport is true, disable scrolling and fit content with minimal spacing */
   .grid-layout.fit-to-viewport {
-    overflow-y: visible;
-    overflow: visible;
-    padding-block: 4px;
+    overflow: hidden; /* Prevent content from spilling outside container */
+    padding: 8px; /* Uniform padding to account for in size calculations */
     gap: 4px;
   }
 
   .section-wrapper {
     width: 100%;
+    max-width: 100%; /* Prevent section from exceeding container */
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
+    overflow: hidden; /* Clip any overflow */
   }
 </style>

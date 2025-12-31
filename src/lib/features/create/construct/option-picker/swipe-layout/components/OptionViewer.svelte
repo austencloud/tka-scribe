@@ -94,7 +94,9 @@ Orchestrates specialized components and services:
   let preparedCache = new Map<string, PreparedPictographData>();
 
   const containerDimensions = createContainerDimensionTracker();
+  const contentAreaDimensions = createContainerDimensionTracker();
   let containerElement: HTMLElement;
+  let contentAreaElement: HTMLElement;
 
   // Transition timing constants
   const FADE_OUT_DURATION = 250;
@@ -139,21 +141,29 @@ Orchestrates specialized components and services:
 
   // ===== DERIVED - Layout configuration =====
   const layoutConfig = $derived(() => {
+    // When fitToViewport is true (continuous mode on mobile), use content area dimensions
+    // This ensures the grid sizes correctly between the header and bottom nav
+    const isFitToViewport = shouldFitToViewport();
+    const effectiveWidth = containerDimensions.width;
+    const effectiveHeight = isFitToViewport && contentAreaDimensions.isReady
+      ? contentAreaDimensions.height
+      : containerDimensions.height;
+
     if (!optionPickerSizingService || !optionPickerState) {
       return {
         optionsPerRow: 4,
         pictographSize: 144,
         spacing: 8,
-        containerWidth: containerDimensions.width,
-        containerHeight: containerDimensions.height,
+        containerWidth: effectiveWidth,
+        containerHeight: effectiveHeight,
         gridColumns: "repeat(4, 1fr)",
         gridGap: "8px",
       };
     }
 
     const optionsPerRow = optionPickerSizingService.getOptimalColumns(
-      containerDimensions.width,
-      containerDimensions.width < 600
+      effectiveWidth,
+      effectiveWidth < 600
     );
 
     const layoutMode: "8-column" | "4-column" =
@@ -165,11 +175,11 @@ Orchestrates specialized components and services:
     );
 
     const sizingResult = optionPickerSizingService.calculateOverflowAwareSize({
-      containerWidth: containerDimensions.width,
-      containerHeight: containerDimensions.height,
+      containerWidth: effectiveWidth,
+      containerHeight: effectiveHeight,
       layoutMode,
       maxPictographsPerSection,
-      isMobileDevice: containerDimensions.width < 800,
+      isMobileDevice: effectiveWidth < 800,
       headerHeight: 40,
       targetOverflowBuffer: 30,
     });
@@ -178,8 +188,8 @@ Orchestrates specialized components and services:
       optionsPerRow,
       pictographSize: sizingResult.pictographSize,
       spacing: parseInt(sizingResult.gridGap.replace("px", "")),
-      containerWidth: containerDimensions.width,
-      containerHeight: containerDimensions.height,
+      containerWidth: effectiveWidth,
+      containerHeight: effectiveHeight,
       gridColumns: `repeat(${optionsPerRow}, 1fr)`,
       gridGap: sizingResult.gridGap,
     };
@@ -276,12 +286,8 @@ Orchestrates specialized components and services:
 
   // ===== EFFECTS - Load options =====
   $effect(() => {
-    // Skip loading during fade transitions to prevent visual glitches
-    if (isFadingOut) {
-      console.log("🔒 [OptionViewer $effect] Skipped - isFadingOut=true");
-      return;
-    }
-
+    // Load options even during fade - the preparation effect handles fade-in timing
+    // Loading during fade ensures new options are ready when fade completes
     if (
       optionPickerState &&
       servicesReady &&
@@ -330,21 +336,35 @@ Orchestrates specialized components and services:
 
   // ===== EFFECTS - Prepare pictographs with positions =====
   $effect(() => {
-    // Prepare options when filtered options change
+    // ONLY track filteredOptions and state - use untrack for fade state to prevent
+    // premature re-runs when pendingFadeIn/isFadingOut change
     const filtered = optionPickerState?.filteredOptions || [];
+    const pickerState = optionPickerState?.state;
+
+    // Read fade state without tracking (prevents effect re-run on fade state changes)
+    const currentPendingFadeIn = untrack(() => pendingFadeIn);
+    const currentIsFadingOut = untrack(() => isFadingOut);
 
     console.log("🔄 [Preparation Effect] Triggered", {
       filteredCount: filtered.length,
       firstOption: filtered[0]?.letter,
-      isFadingOut,
-      pendingFadeIn,
+      pickerState,
+      isFadingOut: currentIsFadingOut,
+      pendingFadeIn: currentPendingFadeIn,
     });
+
+    // Skip while loading - prevents preparing intermediate states when
+    // currentSequence updates before options finish loading
+    if (pickerState === "loading") {
+      console.log("⏳ [Preparation Effect] Skipped - picker is loading");
+      return;
+    }
 
     if (filtered.length === 0) {
       preparedOptions = [];
       isPreparingOptions = false;
       // Only reset fade state if NOT waiting for new options (prevents premature fade-in)
-      if (!pendingFadeIn) {
+      if (!currentPendingFadeIn) {
         isFadingOut = false;
       }
       return;
@@ -360,50 +380,47 @@ Orchestrates specialized components and services:
       return;
     }
 
-    // Use untrack to prevent reactive re-runs during async operation
-    untrack(() => {
-      // Prepare all pictographs in batch
-      isPreparingOptions = true;
+    // Prepare all pictographs in batch
+    isPreparingOptions = true;
 
-      pictographPreparer!.prepareBatch(filtered)
-        .then((prepared) => {
-          console.log("✅ [Preparation Effect] Complete", {
-            preparedCount: prepared.length,
-            firstPrepared: prepared[0]?.letter,
-            hasPositions: !!prepared[0]?._prepared,
-            pendingFadeIn,
-          });
+    pictographPreparer.prepareBatch(filtered)
+      .then((prepared) => {
+        console.log("✅ [Preparation Effect] Complete", {
+          preparedCount: prepared.length,
+          firstPrepared: prepared[0]?.letter,
+          hasPositions: !!prepared[0]?._prepared,
+          pendingFadeIn,
+        });
 
-          // Memoize: reuse existing objects if ID matches (prevents component recreation)
-          const stabilized = stabilizePreparedOptions(
-            prepared,
-            preparedCache
+        // Memoize: reuse existing objects if ID matches (prevents component recreation)
+        const stabilized = stabilizePreparedOptions(
+          prepared,
+          preparedCache
+        );
+
+        preparedOptions = stabilized;
+        isPreparingOptions = false;
+
+        // Fade in after new options are ready (coordinated with pendingFadeIn)
+        if (pendingFadeIn) {
+          console.log(
+            "✨ [Preparation Effect] pendingFadeIn=true, triggering fade-in"
           );
-
-          preparedOptions = stabilized;
-          isPreparingOptions = false;
-
-          // Fade in after new options are ready (coordinated with pendingFadeIn)
-          if (pendingFadeIn) {
-            console.log(
-              "✨ [Preparation Effect] pendingFadeIn=true, triggering fade-in"
-            );
-            pendingFadeIn = false;
-            isFadingOut = false;
-          } else {
-            // Not waiting for fade-in, just ensure visible
-            isFadingOut = false;
-          }
-        })
-        .catch((error) => {
-          console.error("Failed to prepare pictographs:", error);
-          // Fallback: use unprepared options
-          preparedOptions = filtered as PreparedPictographData[];
-          isPreparingOptions = false;
           pendingFadeIn = false;
           isFadingOut = false;
-        });
-    });
+        } else {
+          // Not waiting for fade-in, just ensure visible
+          isFadingOut = false;
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to prepare pictographs:", error);
+        // Fallback: use unprepared options
+        preparedOptions = filtered as PreparedPictographData[];
+        isPreparingOptions = false;
+        pendingFadeIn = false;
+        isFadingOut = false;
+      });
   });
 
   // ===== HANDLERS =====
@@ -538,6 +555,12 @@ Orchestrates specialized components and services:
         optionSorter,
       });
 
+      // Initialize with the prop value BEFORE marking services ready
+      // This ensures filtering is applied when options first load
+      if (isContinuousOnly) {
+        optionPickerState.setContinuousOnly(isContinuousOnly);
+      }
+
       servicesReady = true;
     } catch (error) {
       console.error("Failed to initialize option picker services:", error);
@@ -558,6 +581,15 @@ Orchestrates specialized components and services:
       }
       containerCleanup?.();
     };
+  });
+
+  // Setup content area tracking when element becomes available
+  // (it's inside a conditional block so can't be done in onMount)
+  $effect(() => {
+    if (contentAreaElement) {
+      const cleanup = contentAreaDimensions.attachToElement(contentAreaElement);
+      return cleanup;
+    }
   });
 </script>
 
@@ -586,8 +618,8 @@ Orchestrates specialized components and services:
     </div>
 
     <!-- Main content -->
-    <div class="option-picker-content">
-      {#if !containerDimensions.isReady}
+    <div class="option-picker-content" bind:this={contentAreaElement}>
+      {#if !containerDimensions.isReady || (shouldFitToViewport() && !contentAreaDimensions.isReady)}
         <div class="loading-state">
           <p>Initializing container...</p>
         </div>
@@ -671,8 +703,9 @@ Orchestrates specialized components and services:
   .option-picker-content {
     flex: 1;
     position: relative;
-    overflow: visible;
+    overflow: hidden; /* Prevent content from spilling outside bounds */
     min-height: 0;
+    box-sizing: border-box;
   }
 
   .loading-state,

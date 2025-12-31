@@ -26,6 +26,7 @@
     startPositionState,
     onOptionSelected,
     currentSequence = [],
+    currentGridMode = GridMode.DIAMOND,
     isUndoingOption = false,
     onStartPositionNavigateToAdvanced,
     onStartPositionNavigateToDefault,
@@ -40,6 +41,7 @@
     startPositionState?: SimplifiedStartPositionState | null;
     onOptionSelected: (option: PictographData) => Promise<void>;
     currentSequence?: PictographData[];
+    currentGridMode?: GridMode;
     isUndoingOption?: boolean;
     onStartPositionNavigateToAdvanced?: () => void;
     onStartPositionNavigateToDefault?: () => void;
@@ -74,8 +76,7 @@
           <OptionPicker
             {onOptionSelected}
             {currentSequence}
-            currentGridMode={startPositionState?.currentGridMode ||
-              GridMode.DIAMOND}
+            {currentGridMode}
             {isSideBySideLayout}
             {isUndoingOption}
             {isContinuousOnly}

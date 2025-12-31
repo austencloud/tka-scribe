@@ -89,18 +89,22 @@ Delegates all rendering to child components.
     }
   });
 
-  // Prepare options when filtered options change OR continuous filter changes
+  // Prepare options when filtered options change
   $effect(() => {
-    // Track continuous state - when this changes, we need to re-filter and re-prepare
-    const continuousFilter = internalContinuousOnly;
-
     if (!pickerState || !preparer) {
       preparedOptions = [];
       return;
     }
 
-    // Call getFilteredOptions() as a function to get fresh filtered results
-    const filtered = pickerState.getFilteredOptions();
+    // Access filteredOptions and state (reactive) - tracks when options or filters change
+    const filtered = pickerState.filteredOptions;
+    const currentState = pickerState.state;
+
+    // Skip while loading - prevents preparing intermediate states when
+    // currentSequence updates before options finish loading
+    if (currentState === "loading") {
+      return;
+    }
 
     if (filtered.length === 0) {
       preparedOptions = [];
@@ -163,6 +167,14 @@ Delegates all rendering to child components.
         filterService: filter,
         optionSorter: sorter,
       });
+
+      // Initialize with the prop value BEFORE marking ready
+      // This ensures filtering is applied when options first load
+      if (isContinuousOnly) {
+        pickerState.setContinuousOnly(isContinuousOnly);
+        internalContinuousOnly = isContinuousOnly;
+      }
+
       isReady = true;
     } catch (error) {
       console.error("Failed to initialize option picker:", error);

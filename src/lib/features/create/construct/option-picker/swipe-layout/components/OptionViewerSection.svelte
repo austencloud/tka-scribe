@@ -57,12 +57,12 @@ Renders a section with:
   }>();
 
   // Services
-  let hapticService: IHapticFeedback;
+  let hapticService: IHapticFeedback | null = null;
+  let reversalDetector: IReversalDetector | null = null;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
+    reversalDetector = resolve<IReversalDetector>(TYPES.IReversalDetector);
   });
 
   // Get type info using shared infrastructure
@@ -97,14 +97,18 @@ Renders a section with:
   // Pictographs are already filtered when passed to this component
   const sectionPictographs = $derived(() => pictographs);
 
-  // Get reversal detection service
-  const ReversalDetector = resolve(
-    TYPES.IReversalDetector
-  ) as IReversalDetector;
-
   // Get pictographs with reversal information from service
+  // Returns the pictographs with reversal flags attached when service is ready
   const pictographsWithReversals = $derived(() => {
-    return ReversalDetector.detectReversalsForOptions(
+    if (!reversalDetector) {
+      // Service not ready yet, return pictographs without reversal info
+      return sectionPictographs().map(p => ({
+        ...p,
+        blueReversal: false,
+        redReversal: false,
+      })) as PictographWithReversals[];
+    }
+    return reversalDetector.detectReversalsForOptions(
       currentSequence,
       sectionPictographs()
     );
@@ -213,6 +217,35 @@ Renders a section with:
     };
   });
 
+  /**
+   * Calculate the max pictograph size for a given column count.
+   * Returns the size that fits all items within the available space.
+   */
+  function calculateFitSize(
+    itemCount: number,
+    columnCount: number,
+    effectiveWidth: number,
+    effectiveHeight: number,
+    gridGapValue: number,
+    maxSize: number
+  ): number {
+    const columns = Math.min(columnCount, itemCount);
+    const rows = Math.ceil(itemCount / columns) || 1;
+    const totalWidthGapSpace = (columns - 1) * gridGapValue;
+    const totalHeightGapSpace = (rows - 1) * gridGapValue;
+
+    const maxWidthBasedSize = Math.floor(
+      (effectiveWidth - totalWidthGapSpace) / columns
+    );
+    const maxHeightBasedSize = Math.floor(
+      (effectiveHeight - totalHeightGapSpace) / rows
+    );
+
+    // Use the smaller of width/height constraints to ensure fit
+    const fitSize = Math.min(maxWidthBasedSize, maxHeightBasedSize, maxSize);
+    return Math.max(fitSize, 40);
+  }
+
   // Calculate optimal pictograph size and grid columns based on available space
   // CRITICAL: Considers BOTH width AND height constraints to prevent overflow
   const optimalLayout = $derived(() => {
@@ -224,10 +257,11 @@ Renders a section with:
     const gridGapValue = parseInt(layoutConfig?.gridGap || "8px");
     const targetSize = forcedPictographSize ?? basePictographSize;
 
-    console.log(`[OptionViewerSection] Layout calc: letterType=${letterType}, effectiveW=${contentAreaBounds?.width || availableWidth}, effectiveH=${availableHeight || layoutConfig?.containerHeight}, basePictographSize=${basePictographSize}`);
 
     // When fitToViewport is true (mobile + continuous filter), calculate size
     // to ensure all options fit within the container without scrolling
+    // CRITICAL: Compare 4-column vs 8-column layouts and pick whichever
+    // produces LARGER pictographs (the user's key requirement)
     if (
       fitToViewport &&
       layoutConfig?.containerHeight &&
@@ -236,37 +270,47 @@ Renders a section with:
       const containerWidth = layoutConfig.containerWidth;
       const containerHeight = layoutConfig.containerHeight;
 
-      // Account for header (~50px) and padding (~16px)
+      // Account for:
+      // - Section header (~50px) if shown
+      // - Floating filter button (~44px) in fitToViewport mode
+      // - Grid layout padding (8px on each side = 16px total horizontal)
+      // - Additional vertical safety margin
       const headerSpace = showHeader ? 50 : 0;
-      const padding = 16;
-      const effectiveHeight = containerHeight - headerSpace - padding;
-      const effectiveWidth = containerWidth - padding;
+      const filterButtonSpace = 44; // The "Continuous" floating filter button
+      const horizontalPadding = 24; // 8px padding on each side + 8px safety margin
+      const verticalPadding = 24; // More padding to account for gaps and button
+      const effectiveHeight = containerHeight - headerSpace - filterButtonSpace - verticalPadding;
+      const effectiveWidth = containerWidth - horizontalPadding;
 
-      const rows = Math.ceil(rawItemCount / columns) || 1;
-      const totalWidthGapSpace = (columns - 1) * gridGapValue;
-      const totalHeightGapSpace = (rows - 1) * gridGapValue;
-
-      const maxWidthBasedSize = Math.floor(
-        (effectiveWidth - totalWidthGapSpace) / columns
-      );
-      const maxHeightBasedSize = Math.floor(
-        (effectiveHeight - totalHeightGapSpace) / rows
-      );
-
-      // Use the smaller of width/height constraints to ensure fit
-      const fitSize = Math.min(
-        maxWidthBasedSize,
-        maxHeightBasedSize,
+      // Calculate optimal size for both 4-column and 8-column layouts
+      const size4Col = calculateFitSize(
+        rawItemCount,
+        4,
+        effectiveWidth,
+        effectiveHeight,
+        gridGapValue,
         basePictographSize
       );
-      const finalSize = Math.max(fitSize, 40);
+      const size8Col = calculateFitSize(
+        rawItemCount,
+        8,
+        effectiveWidth,
+        effectiveHeight,
+        gridGapValue,
+        basePictographSize
+      );
 
-      console.log(`[OptionViewerSection] fitToViewport size: ${finalSize}px (container=${containerWidth}x${containerHeight})`);
+      // Pick whichever column count produces larger pictographs
+      const use8Columns = size8Col > size4Col;
+      const optimalColumns = use8Columns
+        ? Math.min(8, rawItemCount)
+        : Math.min(4, rawItemCount);
+      const finalSize = use8Columns ? size8Col : size4Col;
 
       return {
-        columns,
+        columns: optimalColumns,
         pictographSize: finalSize,
-        gridColumns: `repeat(${columns}, ${finalSize}px)`,
+        gridColumns: `repeat(${optimalColumns}, ${finalSize}px)`,
       };
     }
 
@@ -289,47 +333,67 @@ Renders a section with:
       // Use a conservative fallback size that accounts for potential arrow space
       const containerWidth = layoutConfig?.containerWidth || 800;
       const estimatedAvailableWidth = Math.max(containerWidth - 80, 300);
-      const totalGapSpace = (columns - 1) * gridGapValue;
-      const availableForPictographs = estimatedAvailableWidth - totalGapSpace;
-      const conservativeMaxSize = Math.floor(availableForPictographs / columns);
 
-      const conservativeSize = Math.min(
-        basePictographSize,
-        conservativeMaxSize
+      // Even for fallback, compare 4 vs 8 columns
+      const size4Col = calculateFitSize(
+        rawItemCount,
+        4,
+        estimatedAvailableWidth,
+        effectiveHeight || 400,
+        gridGapValue,
+        basePictographSize
       );
-      const fallbackSize = Math.max(conservativeSize, 40);
+      const size8Col = calculateFitSize(
+        rawItemCount,
+        8,
+        estimatedAvailableWidth,
+        effectiveHeight || 400,
+        gridGapValue,
+        basePictographSize
+      );
 
-      console.log(`[OptionViewerSection] FALLBACK size: ${fallbackSize}px (no dimensions yet, effectiveWidth=${effectiveWidth})`);
+      const use8Columns = size8Col > size4Col;
+      const optimalColumns = use8Columns
+        ? Math.min(8, rawItemCount)
+        : Math.min(4, rawItemCount);
+      const fallbackSize = use8Columns ? size8Col : size4Col;
 
       return {
-        columns,
+        columns: optimalColumns,
         pictographSize: fallbackSize,
-        gridColumns: `repeat(${columns}, ${fallbackSize}px)`,
+        gridColumns: `repeat(${optimalColumns}, ${fallbackSize}px)`,
       };
     }
 
-    const totalWidthGapSpace = (columns - 1) * gridGapValue;
-    const availableWidthForPictographs = effectiveWidth - totalWidthGapSpace;
-    const maxWidthBasedSize = Math.floor(
-      availableWidthForPictographs / columns
+    // Compare 4-column vs 8-column layouts and pick whichever produces larger pictographs
+    const adjustedHeight = effectiveHeight - actualHeaderHeight;
+    const size4Col = calculateFitSize(
+      rawItemCount,
+      4,
+      effectiveWidth,
+      adjustedHeight,
+      gridGapValue,
+      basePictographSize
+    );
+    const size8Col = calculateFitSize(
+      rawItemCount,
+      8,
+      effectiveWidth,
+      adjustedHeight,
+      gridGapValue,
+      basePictographSize
     );
 
-    const rows = Math.ceil(rawItemCount / columns) || 1;
-    const totalHeightGapSpace = (rows - 1) * gridGapValue;
-    const availableHeightForPictographs =
-      effectiveHeight - actualHeaderHeight - totalHeightGapSpace;
-    const maxHeightBasedSize = Math.floor(availableHeightForPictographs / rows);
-
-    const maxPictographSize = Math.min(maxWidthBasedSize, maxHeightBasedSize);
-    const optimalSize = Math.min(basePictographSize, maxPictographSize);
-    const finalSize = Math.max(optimalSize, 40);
-
-    console.log(`[OptionViewerSection] Final size: ${finalSize}px (maxW=${maxWidthBasedSize}, maxH=${maxHeightBasedSize}, effectiveWidth=${effectiveWidth})`);
+    const use8Columns = size8Col > size4Col;
+    const optimalColumns = use8Columns
+      ? Math.min(8, rawItemCount)
+      : Math.min(4, rawItemCount);
+    const finalSize = use8Columns ? size8Col : size4Col;
 
     return {
-      columns,
+      columns: optimalColumns,
       pictographSize: finalSize,
-      gridColumns: `repeat(${columns}, ${finalSize}px)`,
+      gridColumns: `repeat(${optimalColumns}, ${finalSize}px)`,
     };
   });
 
@@ -414,6 +478,11 @@ Renders a section with:
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-width: 100%; /* Prevent section from exceeding container width */
+    max-height: 100%; /* Prevent section from exceeding container height */
+    height: 100%; /* Fill available height in parent */
+    box-sizing: border-box;
+    overflow: hidden; /* Clip any overflow rather than letting it spill */
   }
 
   /* Section Header Styles (consolidated from OptionViewerSectionHeader) */
@@ -477,8 +546,13 @@ Renders a section with:
     display: grid;
     justify-content: center;
     justify-items: center;
+    align-content: center; /* Center rows vertically within available space */
     width: 100%;
+    max-width: 100%; /* Prevent grid from exceeding container width */
+    flex: 1; /* Fill remaining height after header */
     gap: 8px;
+    box-sizing: border-box;
+    overflow: hidden; /* Clip any overflow */
   }
 
   .pictograph-option {

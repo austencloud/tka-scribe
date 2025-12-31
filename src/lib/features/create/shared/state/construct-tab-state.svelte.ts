@@ -29,6 +29,7 @@ import type { SequenceState } from "./SequenceStateOrchestrator.svelte";
 import type { IUndoManager } from "../services/contracts/IUndoManager";
 import { UndoOperationType } from "../services/contracts/IUndoManager";
 import type { BuildModeId } from "$lib/shared/foundation/ui/UITypes";
+import type { IFilterPersister } from "../../construct/option-picker/services/FilterPersister";
 
 /**
  * Minimal interface for createModuleState dependency
@@ -89,7 +90,23 @@ export function createConstructTabState(
     hmrBackup.initialValue.selectedStartPosition
   );
   let isInitialized = $state(hmrBackup.initialValue.isInitialized);
-  let isContinuousOnly = $state(false); // Filter state for option viewer
+  // Filter persistence service - resolved lazily to avoid circular dependency issues
+  let filterPersister: IFilterPersister | null = null;
+
+  // Load persisted continuous filter on initialization
+  function loadPersistedContinuousFilter(): boolean {
+    try {
+      if (!filterPersister) {
+        filterPersister = resolve<IFilterPersister>(TYPES.IOptionPickerFilterPersister);
+      }
+      return filterPersister.loadContinuousOnly();
+    } catch (e) {
+      console.warn("⚠️ ConstructTabState: Failed to load continuous filter:", e);
+      return false;
+    }
+  }
+
+  let isContinuousOnly = $state(loadPersistedContinuousFilter()); // Filter state for option viewer (persisted)
 
   // Construct tab has its own independent sequence state
   // IMPORTANT: Pass tabId="constructor" to ensure persistence loads/saves only constructor's data
@@ -417,6 +434,15 @@ export function createConstructTabState(
 
   function setContinuousOnly(continuous: boolean) {
     isContinuousOnly = continuous;
+    // Persist the continuous filter setting
+    try {
+      if (!filterPersister) {
+        filterPersister = resolve<IFilterPersister>(TYPES.IOptionPickerFilterPersister);
+      }
+      filterPersister.saveContinuousOnly(continuous);
+    } catch (e) {
+      console.warn("⚠️ ConstructTabState: Failed to save continuous filter:", e);
+    }
   }
 
   async function clearSequenceCompletely() {

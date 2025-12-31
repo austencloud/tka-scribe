@@ -42,6 +42,30 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
     containerHeight: 600,
   });
 
+  /**
+   * Creates a sequence ID that captures position and orientation changes.
+   * This ensures the option picker refreshes when:
+   * - Beats are added/removed (length changes)
+   * - Sequence is rotated (endPosition changes)
+   * - Sequence is mirrored/flipped (endPosition and orientations change)
+   * - Grid mode changes
+   */
+  function createSequenceId(
+    sequence: PictographData[],
+    gridMode: GridMode
+  ): string {
+    if (sequence.length === 0) {
+      return `empty-${gridMode}`;
+    }
+
+    const lastBeat = sequence[sequence.length - 1];
+    const endPos = lastBeat?.endPosition ?? "none";
+    const blueEndOri = lastBeat?.motions?.blue?.endOrientation ?? "none";
+    const redEndOri = lastBeat?.motions?.red?.endOrientation ?? "none";
+
+    return `${sequence.length}-${lastBeat?.id || "empty"}-${endPos}-${blueEndOri}-${redEndOri}-${gridMode}`;
+  }
+
   // Simplified filter state - just continuous vs all
   let isContinuousOnly = $state(false);
 
@@ -87,11 +111,9 @@ export function createOptionPickerState(config: OptionPickerStateConfig) {
       return; // Prevent concurrent loads
     }
 
-    // Create a simple sequence ID to prevent reloading the same sequence
-    const sequenceId =
-      sequence.length > 0
-        ? `${sequence.length}-${sequence[sequence.length - 1]?.id || "empty"}-${gridMode}`
-        : `empty-${gridMode}`;
+    // Create a sequence ID that includes end position and orientations
+    // This ensures the option picker refreshes when transforms change positions
+    const sequenceId = createSequenceId(sequence, gridMode);
 
     if (lastSequenceId === sequenceId) {
       // Even if skipped, update currentSequence in case it changed

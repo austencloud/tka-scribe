@@ -78,6 +78,17 @@
     return [startBeat, ...seq.beats];
   });
 
+  // Get grid mode from the sequence (source of truth after transforms)
+  // Falls back to startPositionState when no sequence exists yet
+  const sequenceGridMode = $derived.by(() => {
+    const activeSequenceState = createModuleState.getActiveTabSequenceState();
+    const seq = activeSequenceState.currentSequence;
+    // Use sequence's grid mode if available (updated by rotations)
+    if (seq?.gridMode) return seq.gridMode;
+    // Fallback to start position picker's grid mode (for initial selection)
+    return constructTabState?.startPositionStateService?.currentGridMode ?? GridMode.DIAMOND;
+  });
+
   // Transition state for undo animations
   let isUndoingOption = $state(false);
 
@@ -294,6 +305,7 @@
                   true}
                 startPositionState={constructTabState.startPositionStateService}
                 currentSequence={currentSequenceData}
+                currentGridMode={sequenceGridMode}
                 {onOptionSelected}
                 {isUndoingOption}
                 onStartPositionNavigateToAdvanced={() => {}}

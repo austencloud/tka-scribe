@@ -8,7 +8,7 @@ Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → O
   import type { PreparedPictographData } from "$lib/shared/pictograph/option/PreparedPictographData";
   import type { ILightsOffProvider } from "$lib/shared/animation-engine/services/contracts/ILightsOffProvider";
   import OptionPictograph from "$lib/shared/pictograph/option/OptionPictograph.svelte";
-  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
 
   interface Props {
@@ -27,7 +27,13 @@ Used by the desktop hierarchy: OptionSection → OptionGrid → OptionCard → O
   let lightsOff = $state(false);
 
   onMount(() => {
-    const provider = resolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+    // Use tryResolve to handle HMR gracefully - animator module may not be loaded yet
+    const provider = tryResolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+    if (!provider) {
+      // Provider not available yet (e.g., during HMR rebuild)
+      // Default to false
+      return;
+    }
     const unsubscribe = provider.subscribe((value) => {
       lightsOff = value;
     });

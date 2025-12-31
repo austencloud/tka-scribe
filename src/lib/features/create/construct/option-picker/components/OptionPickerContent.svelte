@@ -17,7 +17,7 @@ Uses organizer and sizer services for section grouping and sizing.
   import OptionViewerSwipeLayout from "../swipe-layout/components/OptionViewerSwipeLayout.svelte";
   import OptionViewerSection from "../swipe-layout/components/OptionViewerSection.svelte";
   import type { ILightsOffProvider } from "$lib/shared/animation-engine/services/contracts/ILightsOffProvider";
-  import { resolve, TYPES } from "$lib/shared/inversify/di";
+  import { tryResolve, TYPES } from "$lib/shared/inversify/di";
   import { onMount } from "svelte";
 
   interface Props {
@@ -186,7 +186,15 @@ Uses organizer and sizer services for section grouping and sizing.
 
   // Subscribe to Lights Off changes via DI
   $effect(() => {
-    const provider = resolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+    // Use tryResolve to handle HMR gracefully - animator module may not be loaded yet
+    const provider = tryResolve<ILightsOffProvider>(TYPES.ILightsOffProvider);
+    if (!provider) {
+      // Provider not available yet (e.g., during HMR rebuild)
+      // Default to false, will re-run when module loads
+      lightsOff = false;
+      return;
+    }
+
     lightsOffUnsubscribe = provider.subscribe((value) => {
       lightsOff = value;
     });

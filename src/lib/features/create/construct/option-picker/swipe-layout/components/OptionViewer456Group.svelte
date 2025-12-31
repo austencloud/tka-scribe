@@ -460,11 +460,13 @@ Matches the desktop version exactly:
   .group-widget {
     width: min(100%, var(--content-area-width, 100%));
     max-width: var(--content-area-width, 100%);
+    height: 100%; /* Fill parent container height */
+    max-height: 100%; /* Don't exceed parent */
     padding: 8px; /* Add container padding for better spacing */
     /* Fixed size policy like desktop to prevent stretching */
     flex-shrink: 0;
     flex-grow: 0;
-    overflow: visible; /* Ensure content isn't clipped */
+    overflow: hidden; /* Clip content to prevent spilling */
     box-sizing: border-box;
     margin: 0 auto;
   }
@@ -474,8 +476,9 @@ Matches the desktop version exactly:
     align-items: flex-start;
     justify-content: center;
     width: 100%;
-    /* Allow content to be fully visible */
-    overflow: visible;
+    flex: 1; /* Fill available height */
+    /* Clip content to prevent spilling */
+    overflow: hidden;
     /* FLIP-inspired smooth layout transitions */
     transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   }
@@ -499,10 +502,12 @@ Matches the desktop version exactly:
     /* Fixed size policy to prevent stretching */
     flex-shrink: 0;
     flex-grow: 0;
+    height: 100%; /* Fill parent row height */
+    max-height: 100%; /* Don't exceed parent */
     /* Ensure sections don't exceed their allocated width */
     min-width: 0;
     max-width: 100%; /* Prevent overflow */
-    overflow: visible; /* Allow content to be fully visible */
+    overflow: hidden; /* Clip content to prevent spilling */
     box-sizing: border-box; /* Include padding in width calculations */
   }
 

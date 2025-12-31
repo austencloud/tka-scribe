@@ -9,26 +9,32 @@ export interface IFilterPersister {
     sortMethod: SortMethod,
     typeFilter: TypeFilter,
     endPositionFilter: Record<string, boolean>,
-    reversalFilter: Record<string, boolean>
+    reversalFilter: Record<string, boolean>,
+    isContinuousOnly?: boolean
   ): void;
   loadFilters(): {
     sortMethod: SortMethod;
     typeFilter: TypeFilter;
     endPositionFilter: Record<string, boolean>;
     reversalFilter: Record<string, boolean>;
+    isContinuousOnly: boolean;
   } | null;
+  saveContinuousOnly(value: boolean): void;
+  loadContinuousOnly(): boolean;
   clearFilters(): void;
 }
 
 @injectable()
 export class FilterPersister implements IFilterPersister {
   private readonly STORAGE_KEY = "tka-option-picker-filters";
+  private readonly CONTINUOUS_KEY = "tka-option-picker-continuous";
 
   saveFilters(
     sortMethod: SortMethod,
     typeFilter: TypeFilter,
     endPositionFilter: Record<string, boolean>,
-    reversalFilter: Record<string, boolean>
+    reversalFilter: Record<string, boolean>,
+    isContinuousOnly?: boolean
   ): void {
     try {
       const filterData = {
@@ -36,6 +42,7 @@ export class FilterPersister implements IFilterPersister {
         typeFilter,
         endPositionFilter,
         reversalFilter,
+        isContinuousOnly: isContinuousOnly ?? false,
         timestamp: Date.now(),
       };
 
@@ -48,11 +55,39 @@ export class FilterPersister implements IFilterPersister {
     }
   }
 
+  saveContinuousOnly(value: boolean): void {
+    try {
+      localStorage.setItem(this.CONTINUOUS_KEY, JSON.stringify(value));
+    } catch (error) {
+      console.warn(
+        "⚠️ FilterPersister: Failed to save continuous filter:",
+        error
+      );
+    }
+  }
+
+  loadContinuousOnly(): boolean {
+    try {
+      const stored = localStorage.getItem(this.CONTINUOUS_KEY);
+      if (!stored) {
+        return false;
+      }
+      return JSON.parse(stored) === true;
+    } catch (error) {
+      console.warn(
+        "⚠️ FilterPersister: Failed to load continuous filter:",
+        error
+      );
+      return false;
+    }
+  }
+
   loadFilters(): {
     sortMethod: SortMethod;
     typeFilter: TypeFilter;
     endPositionFilter: Record<string, boolean>;
     reversalFilter: Record<string, boolean>;
+    isContinuousOnly: boolean;
   } | null {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
@@ -75,6 +110,7 @@ export class FilterPersister implements IFilterPersister {
         typeFilter: parsed["typeFilter"],
         endPositionFilter: parsed.endPositionFilter ?? {},
         reversalFilter: parsed.reversalFilter ?? {},
+        isContinuousOnly: parsed.isContinuousOnly ?? this.loadContinuousOnly(),
       };
     } catch (error) {
       console.warn(
@@ -93,6 +129,7 @@ export class FilterPersister implements IFilterPersister {
     typeFilter: TypeFilter;
     endPositionFilter?: Record<string, boolean>;
     reversalFilter?: Record<string, boolean>;
+    isContinuousOnly?: boolean;
   } {
     if (!obj || typeof obj !== "object") return false;
 
@@ -107,6 +144,7 @@ export class FilterPersister implements IFilterPersister {
   clearFilters(): void {
     try {
       localStorage.removeItem(this.STORAGE_KEY);
+      localStorage.removeItem(this.CONTINUOUS_KEY);
     } catch (error) {
       console.warn(
         "⚠️ FilterPersister: Failed to clear filters:",
