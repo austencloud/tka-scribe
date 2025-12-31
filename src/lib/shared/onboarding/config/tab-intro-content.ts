@@ -1,15 +1,29 @@
 /**
  * Tab Intro Content - Definitions for all tab introductions
  *
- * Each tab's intro content is defined here. Descriptions should be
- * written by the product owner to capture the right voice/messaging.
+ * Each tab's intro content is defined here. Most tabs need just one page,
+ * but some benefit from a second page to show additional features.
+ *
+ * Page content can be:
+ * - A simple string for basic descriptions
+ * - An object with heading + bullet points for structured content
  */
+
+export interface TabIntroPage {
+  /** Optional heading for this page (uses main title if omitted) */
+  heading?: string;
+  /** Main content - string or structured with bullets */
+  content: string | { text?: string; points: string[] };
+  /** Optional tip shown at bottom of page */
+  tip?: string;
+}
 
 export interface TabIntroContent {
   icon: string;
   color: string;
   title: string;
-  description: string; // Write your own!
+  /** Single page or array of pages (max 2-3 recommended) */
+  pages: TabIntroPage[];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -22,7 +36,7 @@ export const CREATE_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#3b82f6",
     title: "Constructor",
     description:
-      "Build sequences beat by beat with full creative control. Choose your start position, then browse and select from all available moves to craft exactly the choreography you envision.",
+      "Build sequences one beat at a time. Pick a start position, then choose from available options to add each move.",
   },
 
   generator: {
@@ -30,7 +44,7 @@ export const CREATE_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#8b5cf6",
     title: "Generator",
     description:
-      "Let the system surprise you with randomly generated sequences based on your preferences. Set your parameters and discover new movement combinations you might never have imagined.",
+      "Generate random sequences based on filters you set. Good for exploring new combinations or getting unstuck.",
   },
 
   assembler: {
@@ -38,7 +52,7 @@ export const CREATE_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#06b6d4",
     title: "Assembler",
     description:
-      "Draw hand paths directly on the grid to create sequences from gesture. Trace the movement you want and watch your choreography come to life.",
+      "Draw hand paths on the grid to create sequences. Trace the movement and the system figures out the beats.",
   },
 };
 
@@ -52,7 +66,7 @@ export const LEARN_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#f59e0b",
     title: "Learning Path",
     description:
-      "Master the Kinetic Alphabet step by step. Work through interactive lessons that build your understanding from foundational concepts to advanced techniques.",
+      "Interactive lessons that teach the Kinetic Alphabet from basics to advanced concepts. Go at your own pace.",
   },
 
   codex: {
@@ -60,7 +74,7 @@ export const LEARN_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#10b981",
     title: "Codex",
     description:
-      "Your complete reference guide to every letter and pictograph in the Kinetic Alphabet. Browse, study, and deepen your understanding of the movement notation system.",
+      "Reference for all letters and pictographs. Look up any symbol to see how it works.",
   },
 };
 
@@ -74,7 +88,7 @@ export const DISCOVER_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#a855f7",
     title: "Browse",
     description:
-      "Explore thousands of community-created sequences. Filter by difficulty, style, or props to find inspiration for your next performance.",
+      "Browse sequences created by the community. Filter by length, difficulty, or prop type to find what you're looking for.",
   },
 
   creators: {
@@ -82,7 +96,7 @@ export const DISCOVER_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#ec4899",
     title: "Creators",
     description:
-      "Connect with the flow arts community. Discover talented creators, follow their work, and find collaborators for your next project.",
+      "See who's creating sequences. Follow people and check out their work.",
   },
 };
 
@@ -96,7 +110,7 @@ export const LIBRARY_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#6366f1",
     title: "Your Sequences",
     description:
-      "Your personal collection of created and saved sequences. Organize, edit, and manage all your choreography in one place.",
+      "Sequences you've created or saved. Organize them into collections if you want.",
   },
 
   favorites: {
@@ -104,7 +118,7 @@ export const LIBRARY_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#ef4444",
     title: "Favorites",
     description:
-      "Quick access to sequences you've marked as favorites. Keep your go-to choreography close at hand for practice and performance.",
+      "Sequences you've favorited for quick access.",
   },
 };
 
@@ -118,7 +132,7 @@ export const COMPOSE_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#22c55e",
     title: "Playback",
     description:
-      "Watch your sequences come alive with animated playback. Adjust speed, loop sections, and study the movement flow in real time.",
+      "Play back sequences as animations. Adjust speed, loop, or step through beat by beat.",
   },
 
   timeline: {
@@ -126,7 +140,7 @@ export const COMPOSE_TAB_INTROS: Record<string, TabIntroContent> = {
     color: "#f97316",
     title: "Timeline",
     description:
-      "Arrange and sequence your choreography on a visual timeline. Sync movements to music, adjust timing, and create polished performances.",
+      "Arrange sequences on a timeline and sync them to music. Export videos when you're done.",
   },
 };
 
