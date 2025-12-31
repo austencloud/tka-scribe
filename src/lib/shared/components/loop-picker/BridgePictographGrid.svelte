@@ -258,7 +258,7 @@
     min-width: 1.75rem;
     padding: 0.125rem 0.5rem;
     border-radius: 0.375rem;
-    font-size: 0.875rem; /* 14px - above 12px minimum */
+    font-size: var(--font-size-sm, 14px);
     font-weight: 700;
     font-family: monospace;
   }
@@ -282,7 +282,7 @@
   }
 
   .group-label {
-    font-size: 0.75rem; /* 12px minimum */
+    font-size: var(--font-size-compact, 12px);
     color: var(--theme-text-dim, rgba(255, 255, 255, 0.6));
   }
 

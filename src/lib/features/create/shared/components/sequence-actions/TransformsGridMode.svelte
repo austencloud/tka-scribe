@@ -350,7 +350,7 @@
   }
 
   .btn-label {
-    font-size: 0.9rem;
+    font-size: var(--font-size-min, 14px);
     font-weight: 600;
     color: rgba(255, 255, 255, 0.95);
     white-space: nowrap;
@@ -360,7 +360,7 @@
   }
 
   .btn-desc {
-    font-size: 0.7rem;
+    font-size: var(--font-size-compact, 12px);
     color: rgba(255, 255, 255, 0.65);
     white-space: nowrap;
     overflow: hidden;
@@ -382,7 +382,7 @@
     font-size: var(--font-size-base);
   }
   .actions-container.mobile .btn-label {
-    font-size: 0.75rem;
+    font-size: var(--font-size-compact, 12px);
   }
 
   /* Taller buttons: larger icons and text */
@@ -393,10 +393,10 @@
       font-size: var(--font-size-xl);
     }
     .btn-label {
-      font-size: 0.95rem;
+      font-size: var(--font-size-md, 16px);
     }
     .btn-desc {
-      font-size: 0.75rem;
+      font-size: var(--font-size-compact, 12px);
     }
   }
 
