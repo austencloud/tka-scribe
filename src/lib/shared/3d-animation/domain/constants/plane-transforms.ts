@@ -16,18 +16,22 @@ import { Plane } from "../enums/Plane";
 /**
  * Scale: 1 unit = 0.5 cm
  *
- * Grid radius = comfortable arm extension distance from body center
- * For a 6'3" person, this is about 50cm (100 units)
+ * Grid radius is calculated as: staffLength * HAND_RADIUS_STAFF_RATIO (0.6)
+ * For a 34" staff: 34" * 2.54 cm/in * 2 units/cm * 0.6 = ~104 units
  *
- * Staff length is SEPARATE - a 34" staff = 86.4cm = 173 units
+ * This matches the handPointRadius calculation in user-proportions.ts
+ * to ensure props align with grid point markers.
  */
 
 /**
  * Default grid radius in 3D world units.
  * This determines the distance from center to hand points.
- * Based on comfortable arm extension (~50cm for tall performer)
+ * Matches handPointRadius for default 34" staff (86.4cm * 2 * 0.6 ≈ 104)
+ *
+ * TODO: This should eventually be passed dynamically based on user proportions
+ * rather than hardcoded. For now, it matches the default staff size.
  */
-export const GRID_RADIUS_3D = 100; // 50cm in new scale
+export const GRID_RADIUS_3D = 104;
 
 /**
  * Conversion factor from 2D canvas (950x950) to 3D units

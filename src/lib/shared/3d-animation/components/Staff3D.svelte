@@ -68,16 +68,21 @@
   // 2. Offset forward by gridOffset (places prop at grid center in body-local space)
   // 3. Rotate around Y by facingAngle (pivot is avatar)
   // 4. Add avatar world position
+  //
+  // Y-axis rotation matrix (right-handed, Y up):
+  //   x' = x * cos(θ) + z * sin(θ)
+  //   y' = y
+  //   z' = -x * sin(θ) + z * cos(θ)
   const position = $derived.by((): [number, number, number] => {
     // Body-local position with forward offset
     const localX = propState.worldPosition.x;
     const localZ = propState.worldPosition.z + gridOffset;
 
-    // Rotate around Y by facingAngle
+    // Rotate around Y by facingAngle (standard Y-axis rotation)
     const cos = Math.cos(facingAngle);
     const sin = Math.sin(facingAngle);
-    const rotatedX = localX * cos - localZ * sin;
-    const rotatedZ = localX * sin + localZ * cos;
+    const rotatedX = localX * cos + localZ * sin;
+    const rotatedZ = -localX * sin + localZ * cos;
 
     return [
       rotatedX + avatarPosition.x,
