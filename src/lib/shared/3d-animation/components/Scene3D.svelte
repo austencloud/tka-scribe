@@ -74,6 +74,12 @@
     disableOrbitControls?: boolean;
     /** Callback when a mesh is clicked (for performer selection/dragging) */
     onMeshClick?: (meshName: string, point: { x: number; y: number; z: number }) => void;
+    /** Callback when pointer is released (for drag end) */
+    onPointerUp?: () => void;
+    /** Callback during drag with ground plane coordinates */
+    onDrag?: (position: { x: number; z: number }) => void;
+    /** Whether dragging is currently active */
+    isDragging?: boolean;
     /** Children content (props, etc.) */
     children?: Snippet;
   }
@@ -96,18 +102,17 @@
     disableCamera = false,
     disableOrbitControls = false,
     onMeshClick,
+    onPointerUp,
+    onDrag,
+    isDragging = false,
     children,
   }: Props = $props();
 
   // Handle mesh click from raycaster
   function handleMeshClick(mesh: THREE.Object3D, point: THREE.Vector3) {
     const meshName = mesh.name || '';
-    console.log('🎯 Scene3D: handleMeshClick called with:', meshName);
     if (onMeshClick) {
-      console.log('🎯 Scene3D: Calling parent onMeshClick');
       onMeshClick(meshName, { x: point.x, y: point.y, z: point.z });
-    } else {
-      console.log('🎯 Scene3D: No parent onMeshClick callback');
     }
   }
 
@@ -178,15 +183,10 @@
   }
 </script>
 
-<div
-  class="scene-container"
-  role="application"
-  onpointerdown={() => console.log('📍 SCENE CONTAINER: pointerdown')}
-  onclick={() => console.log('📍 SCENE CONTAINER: click')}
->
+<div class="scene-container" role="application">
   <Canvas>
     <!-- Manual raycasting for click detection (bypasses broken Threlte interactivity) -->
-    <ManualRaycaster onMeshClick={handleMeshClick} />
+    <ManualRaycaster onMeshClick={handleMeshClick} {onPointerUp} {onDrag} {isDragging} />
 
     <!-- Perspective Camera (disabled when locomotion mode provides its own) -->
     {#if !disableCamera}
@@ -227,15 +227,6 @@
       intensity={fillLightIntensity}
       color={fillLightColor}
     />
-
-    <!-- DEBUG: Test cube to verify raycasting is working -->
-    <T.Mesh
-      position={[0, 100, 300]}
-      name="TEST_CUBE"
-    >
-      <T.BoxGeometry args={[100, 100, 100]} />
-      <T.MeshStandardMaterial color="#ff0000" />
-    </T.Mesh>
 
     <!-- Post-processing effects (wraps scene content when enabled) -->
     {#if bloomEnabled}

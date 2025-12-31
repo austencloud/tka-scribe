@@ -247,10 +247,24 @@
     const hitboxMatch = meshName.match(/^PERFORMER_HITBOX_(\d+)$/);
     if (hitboxMatch) {
       const performerIndex = parseInt(hitboxMatch[1], 10);
-      console.log(`🎯 Performer ${performerIndex} selected via click`);
       activePerformerIndex = performerIndex;
       isDraggingPerformer = true;
-      // TODO: Implement actual dragging by tracking pointermove
+    }
+  }
+
+  // Handle pointer up (reset drag state)
+  function handlePointerUp() {
+    if (isDraggingPerformer) {
+      isDraggingPerformer = false;
+    }
+  }
+
+  // Handle drag movement (update active performer position)
+  function handleDrag(position: { x: number; z: number }) {
+    const performer = performerStates[activePerformerIndex];
+    if (performer && isDraggingPerformer) {
+      performer.position.x = position.x;
+      performer.position.z = position.z;
     }
   }
 
@@ -409,6 +423,9 @@
         disableCamera={locomotionMode}
         disableOrbitControls={isDraggingPerformer}
         onMeshClick={handleMeshClick}
+        onPointerUp={handlePointerUp}
+        onDrag={handleDrag}
+        isDragging={isDraggingPerformer}
       >
         <!-- Dynamic Performer Props & Figures (with drag positioning) -->
         {#each performerStates as performer, i (performer.id)}

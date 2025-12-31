@@ -44,29 +44,22 @@
 	let isDragging = $state(false);
 	let isHovered = $state(false);
 
-	// Hitbox dimensions - must be large enough to cover the avatar model
+	// Hitbox dimensions - sized to match the avatar model closely
 	// Avatar is approximately 180 units wide and 400 units tall
-	const HITBOX_RADIUS = 120;
-	const HITBOX_HEIGHT = 450;
+	const HITBOX_RADIUS = 80;
+	const HITBOX_HEIGHT = 380;
 
 	// Debug: make hitbox visible (set to false for production)
-	const DEBUG_HITBOX = true;
+	const DEBUG_HITBOX = false;
 
 	function handlePointerDown(event: ThreltePointerEvent) {
-		console.log('[DraggablePerformer] CLICK on performer', index);
-		// Select this performer
 		onSelect();
-
-		// Start drag
 		isDragging = true;
 		onDragStart?.();
-
-		// Prevent orbit controls from taking over
 		event.stopPropagation?.();
 	}
 
 	function handlePointerUp(event: ThreltePointerEvent) {
-		console.log('[DraggablePerformer] POINTER UP on performer', index);
 		if (isDragging) {
 			isDragging = false;
 			onDragEnd?.();
@@ -74,12 +67,10 @@
 	}
 
 	function handlePointerEnter(event: ThreltePointerEvent) {
-		console.log('[DraggablePerformer] HOVER ENTER on performer', index);
 		isHovered = true;
 	}
 
 	function handlePointerLeave(event: ThreltePointerEvent) {
-		console.log('[DraggablePerformer] HOVER LEAVE on performer', index);
 		if (!isDragging) {
 			isHovered = false;
 		}
@@ -101,11 +92,12 @@
 		name={`PERFORMER_HITBOX_${index}`}
 	>
 		<T.CylinderGeometry args={[HITBOX_RADIUS, HITBOX_RADIUS, HITBOX_HEIGHT, 16]} />
-		<!-- Using solid material for reliable raycasting - transparency can interfere -->
-		<T.MeshStandardMaterial
-			transparent={DEBUG_HITBOX}
-			opacity={DEBUG_HITBOX ? 0.3 : 1}
+		<!-- Invisible when not debugging, but still raycastable -->
+		<T.MeshBasicMaterial
+			transparent
+			opacity={DEBUG_HITBOX ? 0.3 : 0}
 			color={isActive ? '#64b5f6' : '#ff00ff'}
+			depthWrite={false}
 		/>
 	</T.Mesh>
 

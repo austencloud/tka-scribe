@@ -4,6 +4,7 @@
 	 *
 	 * Implements manual raycasting for click detection on 3D objects.
 	 * Bypasses Threlte's interactivity plugin which has issues with multiple Three.js instances.
+	 * Also supports drag-to-move by raycasting against a ground plane.
 	 */
 	import { useThrelte } from '@threlte/core';
 	import * as THREE from 'three';
@@ -14,18 +15,26 @@
 		onMeshClick?: (mesh: THREE.Object3D, point: THREE.Vector3) => void;
 		/** Callback when pointer is released */
 		onPointerUp?: () => void;
+		/** Callback during drag with ground plane coordinates */
+		onDrag?: (position: { x: number; z: number }) => void;
+		/** Whether dragging is currently active (controls ground plane raycasting) */
+		isDragging?: boolean;
 		/** Callback when mouse enters a mesh */
 		onMeshEnter?: (mesh: THREE.Object3D) => void;
 		/** Callback when mouse leaves a mesh */
 		onMeshLeave?: (mesh: THREE.Object3D) => void;
 	}
 
-	let { onMeshClick, onPointerUp, onMeshEnter, onMeshLeave }: Props = $props();
+	let { onMeshClick, onPointerUp, onDrag, isDragging = false, onMeshEnter, onMeshLeave }: Props = $props();
 
 	const { scene, camera, renderer } = useThrelte();
 
 	const raycaster = new THREE.Raycaster();
 	const pointer = new THREE.Vector2();
+
+	// Ground plane for drag raycasting (y = 0, facing up)
+	const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+	const intersectPoint = new THREE.Vector3();
 
 	let currentHovered: THREE.Object3D | null = null;
 	let canvasElement: HTMLCanvasElement | null = null;
@@ -62,24 +71,32 @@
 
 	function handlePointerDown(event: PointerEvent) {
 		const intersection = findIntersection(event);
-		if (intersection) {
-			const meshName = intersection.object.name || intersection.object.uuid;
-			console.log('🎯 ManualRaycaster: HIT', meshName, 'callback exists:', !!onMeshClick);
-			if (onMeshClick) {
-				onMeshClick(intersection.object, intersection.point);
-				console.log('🎯 ManualRaycaster: Callback invoked');
-			}
-		} else {
-			console.log('🎯 ManualRaycaster: MISS (no mesh hit)');
+		if (intersection && onMeshClick) {
+			onMeshClick(intersection.object, intersection.point);
 		}
 	}
 
 	function handlePointerUp(event: PointerEvent) {
-		console.log('🎯 ManualRaycaster: pointerup');
 		onPointerUp?.();
 	}
 
 	function handlePointerMove(event: PointerEvent) {
+		// If dragging, raycast against ground plane for position updates
+		if (isDragging && onDrag) {
+			const cam = camera.current;
+			if (cam) {
+				getCanvasCoords(event);
+				raycaster.setFromCamera(pointer, cam);
+
+				// Intersect with ground plane (y = 0)
+				if (raycaster.ray.intersectPlane(groundPlane, intersectPoint)) {
+					onDrag({ x: intersectPoint.x, z: intersectPoint.z });
+				}
+			}
+			return; // Skip hover logic during drag
+		}
+
+		// Normal hover detection when not dragging
 		const intersection = findIntersection(event);
 		const hitObject = intersection?.object ?? null;
 
@@ -102,7 +119,6 @@
 			return;
 		}
 
-		console.log('[ManualRaycaster] Attached to canvas');
 		canvasElement.addEventListener('pointerdown', handlePointerDown);
 		canvasElement.addEventListener('pointerup', handlePointerUp);
 		canvasElement.addEventListener('pointermove', handlePointerMove);
