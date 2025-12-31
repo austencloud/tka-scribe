@@ -1,7 +1,7 @@
 /**
  * Layered Path LOOP Detection Service
  *
- * Detects CAPs constructed from independent hand paths layered together.
+ * Detects LOOPs constructed from independent hand paths layered together.
  * Each hand has its own repeating cycle, and the combination creates the full sequence.
  */
 

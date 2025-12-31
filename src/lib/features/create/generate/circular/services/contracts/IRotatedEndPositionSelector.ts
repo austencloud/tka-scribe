@@ -1,7 +1,7 @@
 /**
  * Rotated End Position Selector Interface
  *
- * Determines the required end position for rotated CAPs based on slice size.
+ * Determines the required end position for rotated LOOPs based on slice size.
  */
 
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";

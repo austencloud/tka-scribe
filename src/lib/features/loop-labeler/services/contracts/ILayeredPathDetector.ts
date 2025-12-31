@@ -1,8 +1,8 @@
 /**
  * Layered Path LOOP Detection Service Contract
  *
- * Detects CAPs constructed from independent hand paths layered together.
- * This is the "traditional" or "classic" way CAPs were originally designed.
+ * Detects LOOPs constructed from independent hand paths layered together.
+ * This is the "traditional" or "classic" way LOOPs were originally designed.
  *
  * Subtypes:
  * - Isorhythmic: Both hands have the same cycle length (e.g., 4:4)

@@ -1,12 +1,12 @@
 /**
  * Rotated End Position Selector
  *
- * Determines the required end position for rotated CAPs based on:
+ * Determines the required end position for rotated LOOPs based on:
  * - The start position
  * - The slice size (halved or quartered)
  *
- * For halved CAPs: Returns the opposite position (180° rotation)
- * For quartered CAPs: Randomly chooses between clockwise or counter-clockwise 90° rotation
+ * For halved LOOPs: Returns the opposite position (180° rotation)
+ * For quartered LOOPs: Randomly chooses between clockwise or counter-clockwise 90° rotation
  */
 
 import { injectable } from "inversify";
@@ -32,7 +32,7 @@ export class RotatedEndPositionSelector {
     startPosition: GridPosition
   ): GridPosition {
     if (sliceSize === SliceSize.QUARTERED) {
-      // For quartered CAPs, randomly choose between clockwise and counter-clockwise
+      // For quartered LOOPs, randomly choose between clockwise and counter-clockwise
       const cwEndPosition = QUARTER_POSITION_MAP_CW[startPosition];
       const ccwEndPosition = QUARTER_POSITION_MAP_CCW[startPosition];
 
@@ -40,7 +40,7 @@ export class RotatedEndPositionSelector {
       return Math.random() < 0.5 ? cwEndPosition : ccwEndPosition;
     }
     // SliceSize.HALVED
-    // For halved CAPs, use the opposite position (180° rotation)
+    // For halved LOOPs, use the opposite position (180° rotation)
     return HALF_POSITION_MAP[startPosition];
   }
 

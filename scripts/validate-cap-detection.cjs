@@ -70,7 +70,7 @@ const ROTATE_180 = {
 
 /**
  * Rotation maps for 90-degree CCW rotation
- * (used for quartered CAPs)
+ * (used for quartered LOOPs)
  */
 const ROTATE_90_CCW = {
   n: "w",
