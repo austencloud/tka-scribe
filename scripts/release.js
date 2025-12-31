@@ -35,7 +35,6 @@
  *   node scripts/release.js --version 0.2.0    - Manual version
  *   node scripts/release.js --confirm          - Execute release (requires prior preview)
  *   node scripts/release.js --changelog file.json - Use custom changelog entries (user-friendly)
- *   node scripts/release.js --skip-announcement - Don't create the "What's New" popup
  *   node scripts/release.js --from-main        - Release directly from main (skip branch workflow)
  */
 
@@ -244,6 +243,26 @@ function updatePackageVersion(newVersion) {
 }
 
 /**
+ * Update service worker cache version
+ * This ensures users get fresh assets after a release
+ */
+function updateServiceWorkerVersion(newVersion) {
+  const swPath = './static/sw.js';
+  if (!existsSync(swPath)) {
+    console.log('   ⚠️  No service worker found, skipping SW version update');
+    return;
+  }
+
+  let swContent = readFileSync(swPath, 'utf8');
+  // Replace the CACHE_VERSION line
+  swContent = swContent.replace(
+    /const CACHE_VERSION = "[^"]+";/,
+    `const CACHE_VERSION = "v${newVersion}";`
+  );
+  writeFileSync(swPath, swContent);
+}
+
+/**
  * Prepare release in Firestore
  * (archives completed feedback and creates version record)
  */
@@ -280,84 +299,6 @@ async function prepareFirestoreRelease(version, changelogEntries, feedbackItems)
 
   // Commit batch
   await batch.commit();
-}
-
-/**
- * Create a "What's New" announcement for the release
- * This will show as a popup to all users when they next open the app
- *
- * IMPORTANT: Deletes any previous "What's New" announcements first,
- * so users who haven't opened the app in a while only see the latest.
- */
-async function createReleaseAnnouncement(version, changelogEntries, adminUserId) {
-  // First, delete any existing "What's New" announcements
-  const announcementsRef = db.collection('announcements');
-  const existingSnapshot = await announcementsRef
-    .where('title', '>=', "What's New in v")
-    .where('title', '<', "What's New in w")
-    .get();
-
-  if (!existingSnapshot.empty) {
-    const batch = db.batch();
-    existingSnapshot.docs.forEach(doc => {
-      batch.delete(doc.ref);
-    });
-    await batch.commit();
-    console.log(`  🗑️  Deleted ${existingSnapshot.docs.length} previous release announcement(s)`);
-  }
-
-  // Build a clean, simple message from changelog
-  const fixed = changelogEntries.filter(e => e.category === 'fixed');
-  const added = changelogEntries.filter(e => e.category === 'added');
-  const improved = changelogEntries.filter(e => e.category === 'improved');
-
-  let message = '';
-
-  if (added.length > 0) {
-    message += `**✨ New**\n`;
-    added.slice(0, 3).forEach(e => {
-      message += `• ${e.text}\n`;
-    });
-    if (added.length > 3) {
-      message += `• +${added.length - 3} more\n`;
-    }
-    message += '\n';
-  }
-
-  if (fixed.length > 0) {
-    message += `**🐛 Fixed**\n`;
-    message += `• ${fixed.length} bug${fixed.length > 1 ? 's' : ''} squashed\n\n`;
-  }
-
-  if (improved.length > 0) {
-    message += `**🔧 Improved**\n`;
-    improved.slice(0, 2).forEach(e => {
-      message += `• ${e.text}\n`;
-    });
-    message += '\n';
-  }
-
-  // Footer encouraging feedback
-  message += `---\n\n`;
-  message += `💬 **Your feedback shapes TKA Scribe.**\n`;
-  message += `Found a bug? Have an idea? Let us know in the Feedback tab!`;
-
-  // Create announcement document
-  const newDoc = announcementsRef.doc();
-
-  await newDoc.set({
-    title: `What's New in v${version}`,
-    message,
-    severity: 'info',
-    targetAudience: 'all',
-    showAsModal: true,
-    createdBy: adminUserId,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    actionUrl: '/settings?tab=ReleaseNotes',
-    actionLabel: 'View Full Release Notes'
-  });
-
-  return newDoc.id;
 }
 
 /**
@@ -434,8 +375,8 @@ function pushToRemote(branch) {
  * Create git commit and tag
  */
 function createGitRelease(version, changelog) {
-  // Stage package.json
-  execSync('git add package.json', { stdio: 'inherit' });
+  // Stage package.json and sw.js
+  execSync('git add package.json static/sw.js', { stdio: 'inherit' });
 
   // Create commit message
   const changelogSummary = changelog
@@ -649,7 +590,7 @@ async function showLastRelease() {
 
     console.log('\n' + '─'.repeat(70));
     console.log(`\n💡 View on GitHub: gh release view v${version}`);
-    console.log(`💡 View in app: Settings → What's New tab\n`);
+    console.log(`💡 In app: "What's New" modal shows automatically on first login\n`);
 
   } catch (error) {
     console.error('❌ Error fetching last release:', error.message);
@@ -669,11 +610,7 @@ async function main() {
   const manualVersion = manualVersionIndex >= 0 ? args[manualVersionIndex + 1] : null;
   const changelogFileIndex = args.indexOf('--changelog');
   const changelogFile = changelogFileIndex >= 0 ? args[changelogFileIndex + 1] : null;
-  const skipAnnouncement = args.includes('--skip-announcement');
   const fromMain = args.includes('--from-main');
-
-  // Admin user ID for announcement creation (defaults to Austen's ID)
-  const ADMIN_USER_ID = 'PBp3GSBO6igCKPwJyLZNmVEmamI3'; // austencloud
 
   // Show last release mode
   if (showLast) {
@@ -858,6 +795,10 @@ async function main() {
   console.log('✓ Updating package.json...');
   updatePackageVersion(suggestedVersion);
 
+  // Update service worker cache version (forces cache bust for users)
+  console.log('✓ Updating service worker cache version...');
+  updateServiceWorkerVersion(suggestedVersion);
+
   // Prepare Firestore (only if using feedback or custom changelog with feedback)
   if (!useGitHistory && feedbackItems.length > 0) {
     console.log('✓ Archiving feedback in Firestore...');
@@ -879,14 +820,8 @@ async function main() {
   console.log('✓ Creating GitHub release...');
   createGitHubRelease(suggestedVersion, changelog);
 
-  // Create "What's New" announcement (unless skipped)
-  if (!skipAnnouncement && !useGitHistory) {
-    console.log('✓ Creating release announcement...');
-    const announcementId = await createReleaseAnnouncement(suggestedVersion, changelog, ADMIN_USER_ID);
-    console.log(`  📢 Announcement created: ${announcementId}`);
-  } else if (skipAnnouncement) {
-    console.log('⏭️  Skipping announcement (--skip-announcement)');
-  }
+  // Note: "What's New" modal is handled by WhatsNewChecker component
+  // which reads from the 'versions' collection created above
 
   // Switch back to develop and restore stash
   if (isOnDevelop) {
@@ -916,7 +851,7 @@ async function main() {
   console.log('');
   console.log('   View the release:');
   console.log(`   - GitHub: gh release view v${suggestedVersion}`);
-  console.log('   - In app: Settings → What\'s New tab');
+  console.log('   - In app: "What\'s New" modal shows automatically on first login');
   console.log('');
 
   process.exit(0);
