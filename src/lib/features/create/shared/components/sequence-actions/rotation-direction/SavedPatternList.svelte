@@ -1,0 +1,178 @@
+<!--
+  SavedPatternList.svelte
+
+  List of user's saved rotation direction patterns with apply and delete actions.
+-->
+<script lang="ts">
+  import type { RotationDirectionPattern } from "../../../domain/models/RotationDirectionPatternData";
+
+  interface Props {
+    patterns: RotationDirectionPattern[];
+    currentBeatCount: number;
+    applying: boolean;
+    onApply: (pattern: RotationDirectionPattern) => void;
+    onDelete: (pattern: RotationDirectionPattern) => void;
+  }
+
+  let { patterns, currentBeatCount, applying, onApply, onDelete }: Props = $props();
+</script>
+
+{#if patterns.length === 0}
+  <p class="empty-message">
+    No saved patterns yet. Save a pattern from the current sequence or
+    try a template above.
+  </p>
+{:else}
+  <div class="saved-patterns-section">
+    <h3>Your Patterns</h3>
+    <div class="patterns-list">
+      {#each patterns as pattern}
+        {@const isDisabled = applying || currentBeatCount !== pattern.beatCount}
+        <div
+          class="pattern-item"
+          class:disabled={isDisabled}
+          onclick={() => !isDisabled && onApply(pattern)}
+          role="button"
+          tabindex={isDisabled ? -1 : 0}
+          onkeydown={(e) => {
+            if (!isDisabled && (e.key === "Enter" || e.key === " ")) {
+              e.preventDefault();
+              onApply(pattern);
+            }
+          }}
+          title={currentBeatCount !== pattern.beatCount
+            ? `Requires ${pattern.beatCount} beats`
+            : "Apply pattern"}
+        >
+          <div class="pattern-info">
+            <span class="pattern-name">{pattern.name}</span>
+            <span class="pattern-beats">{pattern.beatCount} beats</span>
+          </div>
+          <div class="pattern-actions">
+            <button
+              class="delete-btn"
+              onclick={(e) => {
+                e.stopPropagation();
+                onDelete(pattern);
+              }}
+              title="Delete pattern"
+              aria-label="Delete pattern"
+            >
+              <i class="fas fa-trash" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      {/each}
+    </div>
+  </div>
+{/if}
+
+<style>
+  .empty-message {
+    text-align: center;
+    color: var(--theme-text-muted, var(--theme-text-dim));
+    padding: 32px 16px;
+  }
+
+  .saved-patterns-section {
+    margin-bottom: 24px;
+  }
+
+  .saved-patterns-section h3 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin: 0 0 12px;
+    color: var(--theme-text-muted, var(--theme-text-dim));
+  }
+
+  .patterns-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    container-type: inline-size;
+  }
+
+  @container (min-width: 300px) {
+    .patterns-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @container (min-width: 450px) {
+    .patterns-list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .pattern-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: relative;
+    padding: 12px;
+    padding-right: 32px; /* Room for delete button */
+    min-height: 60px;
+    background: var(--theme-card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--theme-stroke, var(--theme-stroke));
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .pattern-item:hover:not(.disabled) {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(245, 158, 11, 0.4);
+  }
+
+  .pattern-item.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pattern-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .pattern-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .pattern-beats {
+    font-size: 0.75rem;
+    color: var(--theme-text-muted, var(--theme-text-dim));
+    line-height: 1.4;
+  }
+
+  .pattern-actions {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+
+  .delete-btn {
+    padding: 4px 6px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--semantic-error);
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .pattern-item:hover .delete-btn {
+    opacity: 1;
+  }
+
+  .delete-btn:hover {
+    background: rgba(239, 68, 68, 0.35);
+  }
+</style>

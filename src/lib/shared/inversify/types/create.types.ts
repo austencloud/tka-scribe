@@ -55,9 +55,20 @@ export const CreateTypes = {
 
   // Sequence Extension
   ISequenceExtender: Symbol.for("ISequenceExtender"),
+  ILOOPValidator: Symbol.for("ILOOPValidator"),
+  IOrientationAlignmentCalculator: Symbol.for("IOrientationAlignmentCalculator"),
+  IBridgeFinder: Symbol.for("IBridgeFinder"),
 
   // Panel Management
   IPanelPersister: Symbol.for("IPanelPersister"),
+  ISubDrawerStatePersister: Symbol.for("ISubDrawerStatePersister"),
+  ISequenceTransferHandler: Symbol.for("ISequenceTransferHandler"),
+  IFirstBeatAnalyzer: Symbol.for("IFirstBeatAnalyzer"),
+  ISequenceJsonExporter: Symbol.for("ISequenceJsonExporter"),
+
+  // Pattern Management
+  IRotationDirectionPatternManager: Symbol.for("IRotationDirectionPatternManager"),
+  ITurnPatternManager: Symbol.for("ITurnPatternManager"),
 
   // Spell Tab (Word-to-Sequence)
   ILetterTransitionGraph: Symbol.for("ILetterTransitionGraph"),
@@ -65,4 +76,8 @@ export const CreateTypes = {
   IVariationExplorer: Symbol.for("IVariationExplorer"),
   IVariationDeduplicator: Symbol.for("IVariationDeduplicator"),
   IVariationScorer: Symbol.for("IVariationScorer"),
+  ISpellServiceLoader: Symbol.for("ISpellServiceLoader"),
+  ISpellGenerationOrchestrator: Symbol.for("ISpellGenerationOrchestrator"),
+  IVariationExplorationOrchestrator: Symbol.for("IVariationExplorationOrchestrator"),
+  ILOOPSelectionCoordinator: Symbol.for("ILOOPSelectionCoordinator"),
 } as const;

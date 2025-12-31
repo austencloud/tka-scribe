@@ -14,13 +14,16 @@
     LOOPType,
     CircularizationOption,
   } from "../../services/contracts/ISequenceExtender";
+  import type { ISubDrawerStatePersister, SubDrawerType } from "../../services/contracts/ISubDrawerStatePersister";
+  import type { ISequenceTransferHandler } from "../../services/contracts/ISequenceTransferHandler";
+  import type { IShiftStartAnalyzer } from "../../services/contracts/IShiftStartAnalyzer";
+  import type { ISequenceJsonExporter } from "../../services/contracts/ISequenceJsonExporter";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import { UndoOperationType } from "../../services/contracts/IUndoManager";
   import { navigationState } from "$lib/shared/navigation/state/navigation-state.svelte";
   import { getCreateModuleContext } from "../../context/create-module-context";
   import { openSpotlightWithBeatGrid } from "$lib/shared/application/state/ui/ui-state.svelte";
   import { toast } from "$lib/shared/toast/state/toast-state.svelte";
-  import { areSequencesEqual } from "../../utils/sequence-comparison";
   import { isAdmin } from "$lib/shared/auth/state/authState.svelte";
 
   import CreatePanelDrawer from "../CreatePanelDrawer.svelte";
@@ -31,7 +34,7 @@
   import RotationDirectionDrawer from "./RotationDirectionDrawer.svelte";
   import ExtendDrawer from "./ExtendDrawer.svelte";
   import BeatGridSection from "./BeatGridSection.svelte";
-  import ShiftStartConfirmDialog from "./ShiftStartConfirmDialog.svelte";
+  import FirstBeatConfirmDialog from "./FirstBeatConfirmDialog.svelte";
   import { setGridRotationDirection } from "$lib/shared/pictograph/grid/state/grid-rotation-state.svelte";
 
   interface Props {
@@ -78,25 +81,10 @@
   // Services
   let hapticService: IHapticFeedback | null = $state(null);
   let sequenceExtender: ISequenceExtender | null = $state(null);
-
-  // Session storage key for sub-drawer state (survives HMR, clears on tab close)
-  const SUB_DRAWER_KEY = "tka_sequence_actions_sub_drawer";
-
-  // Helper to get active sub-drawer from sessionStorage
-  function getActiveSubDrawer(): string | null {
-    if (typeof sessionStorage === "undefined") return null;
-    return sessionStorage.getItem(SUB_DRAWER_KEY);
-  }
-
-  // Helper to save active sub-drawer to sessionStorage
-  function setActiveSubDrawer(drawer: string | null) {
-    if (typeof sessionStorage === "undefined") return;
-    if (drawer) {
-      sessionStorage.setItem(SUB_DRAWER_KEY, drawer);
-    } else {
-      sessionStorage.removeItem(SUB_DRAWER_KEY);
-    }
-  }
+  let subDrawerPersister: ISubDrawerStatePersister | null = $state(null);
+  let transferHandler: ISequenceTransferHandler | null = $state(null);
+  let shiftAnalyzer: IShiftStartAnalyzer | null = $state(null);
+  let jsonExporter: ISequenceJsonExporter | null = $state(null);
 
   // Local state - $effect below handles initial and prop changes
   let isOpen = $state(false);
@@ -121,17 +109,19 @@
   // Auto-save active sub-drawer to sessionStorage
   // Only clears if restoration is complete (prevents clearing saved state on mount)
   $effect(() => {
-    if (showTurnPatternDrawer) {
-      setActiveSubDrawer("turnPattern");
-    } else if (showRotationDirectionDrawer) {
-      setActiveSubDrawer("rotationDirection");
-    } else if (showExtendDrawer) {
-      setActiveSubDrawer("extend");
-    } else if (showHelpSheet) {
-      setActiveSubDrawer("help");
+    if (!subDrawerPersister) return;
+
+    let activeDrawer: SubDrawerType = null;
+    if (showTurnPatternDrawer) activeDrawer = "turnPattern";
+    else if (showRotationDirectionDrawer) activeDrawer = "rotationDirection";
+    else if (showExtendDrawer) activeDrawer = "extend";
+    else if (showHelpSheet) activeDrawer = "help";
+
+    if (activeDrawer) {
+      subDrawerPersister.setActiveSubDrawer(activeDrawer);
     } else if (restorationComplete) {
       // Only clear if restoration is done - prevents clearing on initial mount
-      setActiveSubDrawer(null);
+      subDrawerPersister.clear();
     }
   });
 
@@ -167,29 +157,44 @@
 
   onMount(() => {
     try {
-      hapticService = resolve<IHapticFeedback>(
-        TYPES.IHapticFeedback
-      );
+      hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     } catch {
       /* Optional service */
     }
     try {
-      sequenceExtender = resolve<ISequenceExtender>(
-        TYPES.ISequenceExtender
-      );
+      sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
     } catch {
       /* Optional service */
     }
-
+    try {
+      subDrawerPersister = resolve<ISubDrawerStatePersister>(TYPES.ISubDrawerStatePersister);
+    } catch {
+      /* Optional service */
+    }
+    try {
+      transferHandler = resolve<ISequenceTransferHandler>(TYPES.ISequenceTransferHandler);
+    } catch {
+      /* Optional service */
+    }
+    try {
+      shiftAnalyzer = resolve<IShiftStartAnalyzer>(TYPES.IShiftStartAnalyzer);
+    } catch {
+      /* Optional service */
+    }
+    try {
+      jsonExporter = resolve<ISequenceJsonExporter>(TYPES.ISequenceJsonExporter);
+    } catch {
+      /* Optional service */
+    }
   });
 
   // Restore sub-drawer state AFTER parent drawer has opened and registered
   // Watch for when isOpen becomes true, then restore with delay
   let hasRestoredSubDrawer = false;
   $effect(() => {
-    if (isOpen && !hasRestoredSubDrawer) {
+    if (isOpen && !hasRestoredSubDrawer && subDrawerPersister) {
       hasRestoredSubDrawer = true;
-      const restoredSubDrawer = getActiveSubDrawer();
+      const restoredSubDrawer = subDrawerPersister.getActiveSubDrawer();
       // Wait for parent drawer to fully register, then open sub-drawer
       setTimeout(() => {
         if (restoredSubDrawer === "help") showHelpSheet = true;
@@ -425,59 +430,39 @@
   }
 
   function handleEditInConstructor() {
-    if (!sequence) return;
+    if (!sequence || !transferHandler) return;
     hapticService?.trigger("selection");
 
     const constructTabState = ctx.constructTabState;
     if (!constructTabState?.sequenceState) return;
 
-    const currentConstructorSequence =
-      constructTabState.sequenceState.currentSequence;
+    const currentConstructorSequence = constructTabState.sequenceState.currentSequence;
+    const hasSequence = constructTabState.sequenceState.hasSequence();
 
-    // Check if sequences are identical - if so, skip modal and just navigate
-    if (areSequencesEqual(sequence, currentConstructorSequence)) {
-      toast.info("Sequence already loaded in Constructor");
-      handleClose();
-      navigationState.setActiveTab("constructor");
-      return;
-    }
+    const result = transferHandler.checkTransfer(sequence, currentConstructorSequence, hasSequence);
 
-    // Different sequences - show modal if constructor has content
-    if (constructTabState.sequenceState.hasSequence()) {
-      pendingSequenceTransfer = sequence;
-      showConfirmDialog = true;
-    } else {
-      performSequenceTransfer(sequence);
+    switch (result.action) {
+      case "already-loaded":
+        toast.info("Sequence already loaded in Constructor");
+        handleClose();
+        navigationState.setActiveTab("constructor");
+        break;
+      case "confirm-needed":
+        pendingSequenceTransfer = result.pendingSequence;
+        showConfirmDialog = true;
+        break;
+      case "transfer":
+        performSequenceTransfer(result.sequence);
+        break;
     }
   }
 
   async function performSequenceTransfer(sequenceToTransfer: any) {
+    if (!transferHandler) return;
     const constructTabState = ctx.constructTabState;
     if (!constructTabState?.sequenceState) return;
 
-    const sequenceCopy = JSON.parse(JSON.stringify(sequenceToTransfer));
-
-    // Sync grid mode and sequence state IMMEDIATELY before tab switch
-    // This prevents the flicker of options disappearing and reappearing
-    if (sequenceCopy.gridMode) {
-      constructTabState.syncGridModeFromSequence?.(sequenceCopy.gridMode);
-    }
-
-    constructTabState.sequenceState.setCurrentSequence(sequenceCopy);
-
-    const startPos =
-      sequenceCopy.startPosition || sequenceCopy.startingPositionBeat;
-    if (startPos) {
-      constructTabState.sequenceState.setStartPosition(startPos);
-      constructTabState.setSelectedStartPosition(startPos);
-      constructTabState.setShowStartPositionPicker(false);
-    }
-
-    constructTabState.syncPickerStateWithSequence?.();
-
-    // CRITICAL: Save to persistence BEFORE switching tabs!
-    // Otherwise restoreStateForTab will load the OLD persisted sequence and overwrite our new one
-    await constructTabState.sequenceState.saveCurrentState("constructor");
+    await transferHandler.executeTransfer(sequenceToTransfer, constructTabState);
 
     // Close panel and switch tab AFTER state is saved
     handleClose();
@@ -508,28 +493,28 @@
   }
 
   function handleShiftStartBeatSelect(beatNumber: number) {
-    if (!sequence || beatNumber < 1) return;
+    if (!sequence || !shiftAnalyzer) return;
     hapticService?.trigger("selection");
 
-    // No-op if selecting beat 1
-    if (beatNumber === 1) {
-      toast.info("That's already Beat 1");
-      panelState.exitShiftStartMode();
-      return;
-    }
+    const result = shiftAnalyzer.analyzeShiftSelection(sequence, beatNumber);
 
-    // For circular sequences, shift immediately
-    if (sequence.isCircular) {
-      executeShiftStart(beatNumber);
-    } else {
-      // For non-circular, show confirmation
-      pendingShiftBeatNumber = beatNumber;
-      showShiftConfirmDialog = true;
+    switch (result.action) {
+      case "no-op":
+        toast.info(result.reason);
+        panelState.exitShiftStartMode();
+        break;
+      case "immediate":
+        executeShiftStart(result.beatNumber);
+        break;
+      case "confirm-needed":
+        pendingShiftBeatNumber = result.beatNumber;
+        showShiftConfirmDialog = true;
+        break;
     }
   }
 
   async function executeShiftStart(beatNumber: number) {
-    if (!sequence || isTransforming) return;
+    if (!sequence || !shiftAnalyzer || isTransforming) return;
     isTransforming = true;
 
     // Push undo snapshot BEFORE shifting
@@ -537,14 +522,8 @@
 
     try {
       await activeSequenceState.shiftStartPosition(beatNumber);
-      const beatsRemoved = sequence.isCircular ? 0 : beatNumber - 1;
-      if (beatsRemoved > 0) {
-        toast.success(
-          `Shifted start. Removed ${beatsRemoved} beat${beatsRemoved > 1 ? "s" : ""}.`
-        );
-      } else {
-        toast.success(`Beat ${beatNumber} is now beat 1`);
-      }
+      const result = shiftAnalyzer.getShiftResultMessage(sequence, beatNumber);
+      toast.success(result.message);
       hapticService?.trigger("success");
     } catch (error) {
       console.error("[ShiftStart] Failed:", error);
@@ -565,55 +544,15 @@
   }
 
   async function handleCopySequenceJson() {
-    if (!sequence) return;
+    if (!sequence || !jsonExporter) return;
     hapticService?.trigger("selection");
 
-    try {
-      // Create minimal representation - strip placement data fluff
-      const minimalSequence = {
-        name: sequence.name,
-        word: sequence.word,
-        isCircular: sequence.isCircular,
-        gridMode: sequence.gridMode,
-        propType: sequence.propType,
-        startPosition: minimalBeat(
-          sequence.startPosition || sequence.startingPositionBeat
-        ),
-        beats: sequence.beats.map(minimalBeat),
-      };
-
-      const jsonString = JSON.stringify(minimalSequence, null, 2);
-      await navigator.clipboard.writeText(jsonString);
+    const success = await jsonExporter.copyToClipboard(sequence);
+    if (success) {
       toast.success("Sequence JSON copied to clipboard");
-    } catch (error) {
-      console.error("Failed to copy sequence JSON:", error);
+    } else {
       toast.error("Failed to copy to clipboard");
     }
-  }
-
-  function minimalMotion(motion: any) {
-    if (!motion) return null;
-    return {
-      type: motion.motionType,
-      dir: motion.rotationDirection,
-      start: motion.startLocation,
-      end: motion.endLocation,
-      turns: motion.turns,
-      startOri: motion.startOrientation,
-      endOri: motion.endOrientation,
-    };
-  }
-
-  function minimalBeat(beat: any) {
-    if (!beat) return null;
-    return {
-      beat: beat.beatNumber,
-      letter: beat.letter,
-      start: beat.startPosition,
-      end: beat.endPosition,
-      blue: minimalMotion(beat.motions?.blue),
-      red: minimalMotion(beat.motions?.red),
-    };
   }
 </script>
 
@@ -757,8 +696,8 @@
   onApply={handleExtendApply}
 />
 
-<!-- Shift Start Confirmation Dialog (non-circular sequences) -->
-<ShiftStartConfirmDialog
+<!-- First Beat Confirmation Dialog (non-circular sequences) -->
+<FirstBeatConfirmDialog
   show={showShiftConfirmDialog && pendingShiftBeatNumber !== null}
   beatNumber={pendingShiftBeatNumber ?? 1}
   onConfirm={() => executeShiftStart(pendingShiftBeatNumber!)}

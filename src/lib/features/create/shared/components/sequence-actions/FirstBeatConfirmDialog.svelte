@@ -1,8 +1,8 @@
 <!--
-  ShiftStartConfirmDialog.svelte
+  FirstBeatConfirmDialog.svelte
 
-  Confirmation dialog for shifting start position on non-circular sequences.
-  Warns user that beats before the new start will be permanently removed.
+  Confirmation dialog for setting a new first beat on non-circular sequences.
+  Warns user that beats before the new first beat will be permanently removed.
 -->
 <script lang="ts">
   interface Props {
@@ -19,9 +19,9 @@
 </script>
 
 {#if show}
-  <div class="shift-confirm-overlay" role="dialog" aria-modal="true">
-    <div class="shift-confirm-dialog">
-      <h3>Shift Start Position</h3>
+  <div class="first-beat-overlay" role="dialog" aria-modal="true">
+    <div class="first-beat-dialog">
+      <h3>Set New First Beat</h3>
       <p>
         This will permanently remove beat{isPlural ? "s" : ""} 1{isPlural
           ? `-${beatsToRemove}`
@@ -32,7 +32,7 @@
           Cancel
         </button>
         <button class="dialog-btn confirm" onclick={onConfirm}>
-          Shift Start
+          Set First Beat
         </button>
       </div>
     </div>
@@ -40,7 +40,7 @@
 {/if}
 
 <style>
-  .shift-confirm-overlay {
+  .first-beat-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.7);
@@ -51,7 +51,7 @@
     padding: 16px;
   }
 
-  .shift-confirm-dialog {
+  .first-beat-dialog {
     background: rgba(30, 35, 45, 0.98);
     border: 1px solid var(--theme-stroke-strong);
     border-radius: 16px;
@@ -61,14 +61,14 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   }
 
-  .shift-confirm-dialog h3 {
+  .first-beat-dialog h3 {
     margin: 0 0 12px;
     font-size: 1.1rem;
     font-weight: 600;
     color: #06b6d4;
   }
 
-  .shift-confirm-dialog p {
+  .first-beat-dialog p {
     margin: 0 0 20px;
     font-size: 0.9rem;
     color: rgba(255, 255, 255, 0.8);

@@ -72,12 +72,25 @@ import { OptionTransitionCoordinator } from "../../../features/create/construct/
 import { SectionTitleFormatter } from "../../../features/create/construct/option-picker/services/implementations/SectionTitleFormatter";
 import { PictographPreparer } from "../../pictograph/shared/services/implementations/PictographPreparer";
 import { SequenceExtender } from "../../../features/create/shared/services/implementations/SequenceExtender";
-import { PanelPersister } from "../../../features/create/shared/services/implementations/PanelPersister.svelte";
+import { LOOPValidator } from "../../../features/create/shared/services/implementations/LOOPValidator";
+import { OrientationAlignmentCalculator } from "../../../features/create/shared/services/implementations/OrientationAlignmentCalculator";
+import { BridgeFinder } from "../../../features/create/shared/services/implementations/BridgeFinder";
+import { PanelPersister } from "../../../features/create/shared/services/implementations/PanelPersister.svelte.ts";
+import { SubDrawerStatePersister } from "../../../features/create/shared/services/implementations/SubDrawerStatePersister";
+import { SequenceTransferHandler } from "../../../features/create/shared/services/implementations/SequenceTransferHandler";
+import { FirstBeatAnalyzer } from "../../../features/create/shared/services/implementations/FirstBeatAnalyzer";
+import { SequenceJsonExporter } from "../../../features/create/shared/services/implementations/SequenceJsonExporter";
 import { LetterTransitionGraph } from "../../../features/create/spell/services/implementations/LetterTransitionGraph";
 import { WordSequenceGenerator } from "../../../features/create/spell/services/implementations/WordSequenceGenerator";
 import { VariationExplorer } from "../../../features/create/spell/services/implementations/VariationExplorer";
 import { VariationDeduplicator } from "../../../features/create/spell/services/implementations/VariationDeduplicator";
 import { VariationScorer } from "../../../features/create/spell/services/implementations/VariationScorer";
+import { SpellServiceLoader } from "../../../features/create/spell/services/implementations/SpellServiceLoader";
+import { SpellGenerationOrchestrator } from "../../../features/create/spell/services/implementations/SpellGenerationOrchestrator";
+import { VariationExplorationOrchestrator } from "../../../features/create/spell/services/implementations/VariationExplorationOrchestrator";
+import { LOOPSelectionCoordinator } from "../../../features/create/spell/services/implementations/LOOPSelectionCoordinator";
+import { RotationDirectionPatternManager } from "../../../features/create/shared/services/implementations/RotationDirectionPatternManager";
+import { TurnPatternManager } from "../../../features/create/shared/services/implementations/TurnPatternManager";
 
 export const createModule = new ContainerModule(
   (options: ContainerModuleLoadOptions) => {
@@ -244,11 +257,26 @@ export const createModule = new ContainerModule(
       .to(SequencePersister);
     options.bind(TYPES.ISequenceIndexer).to(SequenceIndexer);
 
-    // === SEQUENCE EXTENSION SERVICE ===
+    // === SEQUENCE EXTENSION SERVICES ===
     options.bind(TYPES.ISequenceExtender).to(SequenceExtender);
+    options.bind(TYPES.ILOOPValidator).to(LOOPValidator);
+    options
+      .bind(TYPES.IOrientationAlignmentCalculator)
+      .to(OrientationAlignmentCalculator);
+    options.bind(TYPES.IBridgeFinder).to(BridgeFinder);
 
     // === PANEL MANAGEMENT ===
     options.bind(TYPES.IPanelPersister).to(PanelPersister);
+    options.bind(TYPES.ISubDrawerStatePersister).to(SubDrawerStatePersister);
+    options.bind(TYPES.ISequenceTransferHandler).to(SequenceTransferHandler);
+    options.bind(TYPES.IFirstBeatAnalyzer).to(FirstBeatAnalyzer);
+    options.bind(TYPES.ISequenceJsonExporter).to(SequenceJsonExporter);
+
+    // === PATTERN MANAGEMENT ===
+    options
+      .bind(TYPES.IRotationDirectionPatternManager)
+      .to(RotationDirectionPatternManager);
+    options.bind(TYPES.ITurnPatternManager).to(TurnPatternManager);
 
     // === SPELL TAB SERVICES === (Word-to-Sequence)
     options
@@ -259,6 +287,14 @@ export const createModule = new ContainerModule(
     options.bind(TYPES.IVariationExplorer).to(VariationExplorer);
     options.bind(TYPES.IVariationDeduplicator).to(VariationDeduplicator);
     options.bind(TYPES.IVariationScorer).to(VariationScorer);
+    options.bind(TYPES.ISpellServiceLoader).to(SpellServiceLoader);
+    options
+      .bind(TYPES.ISpellGenerationOrchestrator)
+      .to(SpellGenerationOrchestrator);
+    options
+      .bind(TYPES.IVariationExplorationOrchestrator)
+      .to(VariationExplorationOrchestrator);
+    options.bind(TYPES.ILOOPSelectionCoordinator).to(LOOPSelectionCoordinator);
 
     // === LAYOUT SERVICES ===
     // Note: PrintablePageLayoutService handled in word-card module

@@ -8,7 +8,6 @@
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { turnPatternState } from "../../state/turn-pattern-state.svelte.ts";
-  import { TurnPatternManager } from "../../services/implementations/TurnPatternManager";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { layoutState } from "$lib/shared/layout/layout-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
@@ -22,6 +21,9 @@
     type PatternComplexity,
     type TurnValue,
   } from "../../domain/templates/turn-pattern-templates";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { ITurnPatternManager } from "../../services/contracts/ITurnPatternManager";
 
   // Mobile detection - use layout state
   const isMobile = $derived(!layoutState.isSideBySideLayout);
@@ -52,7 +54,7 @@
   let errorMessage = $state<string | null>(null);
   let complexityFilter = $state<PatternComplexity | "all">("simple"); // Default to "simple" for mobile-first
 
-  const turnPatternManager = new TurnPatternManager();
+  const turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
 
   // Load patterns when drawer opens and set appropriate default filter
   $effect(() => {
@@ -444,7 +446,8 @@
 
 <style>
   /* Position turn pattern drawer to cover Sequence Actions panel on desktop */
-  :global(.turn-pattern-drawer.side-by-side-layout) {
+  /* Must include [data-placement] for specificity to override Drawer.css */
+  :global(.turn-pattern-drawer[data-placement="right"].side-by-side-layout) {
     width: var(--measured-panel-width, clamp(360px, 44.44vw, 900px)) !important;
     max-width: 100% !important;
   }
@@ -458,6 +461,7 @@
   .turn-pattern-drawer-content {
     display: flex;
     flex-direction: column;
+    width: 100%;
     height: 100%;
     background: var(--theme-panel-bg);
     color: var(--theme-text);

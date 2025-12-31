@@ -1,0 +1,48 @@
+/**
+ * ISequenceTransferHandler
+ *
+ * Handles transferring sequences between Create module tabs.
+ * Primary use case: Edit in Constructor from Generator/Assembler.
+ */
+
+import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+
+export type TransferCheckResult =
+	| { action: 'transfer'; sequence: SequenceData }
+	| { action: 'already-loaded' }
+	| { action: 'confirm-needed'; pendingSequence: SequenceData };
+
+export interface ISequenceTransferHandler {
+	/**
+	 * Check if a transfer is needed and what action to take.
+	 *
+	 * @returns
+	 * - 'already-loaded': Target already has the same sequence
+	 * - 'transfer': Can transfer immediately (target is empty)
+	 * - 'confirm-needed': Target has different sequence, needs confirmation
+	 */
+	checkTransfer(
+		sourceSequence: SequenceData,
+		targetSequence: SequenceData | null,
+		targetHasSequence: boolean
+	): TransferCheckResult;
+
+	/**
+	 * Perform the actual transfer to constructor tab.
+	 * Call this after confirmation (or immediately if checkTransfer returned 'transfer').
+	 */
+	executeTransfer(
+		sequence: SequenceData,
+		constructTabState: {
+			sequenceState: {
+				setCurrentSequence: (seq: SequenceData) => void;
+				setStartPosition: (pos: any) => void;
+				saveCurrentState: (tab: string) => Promise<void>;
+			};
+			syncGridModeFromSequence?: (mode: string) => void;
+			setSelectedStartPosition: (pos: any) => void;
+			setShowStartPositionPicker: (show: boolean) => void;
+			syncPickerStateWithSequence?: () => void;
+		}
+	): Promise<void>;
+}

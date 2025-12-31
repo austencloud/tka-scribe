@@ -6,10 +6,10 @@
 
   Layout:
   - LEFT ZONE: Sequence Actions (tools menu)
-  - CENTER ZONE: Play (Animation), Share Hub (2 main actions)
+  - CENTER ZONE: Play, Share Hub
   - RIGHT ZONE: Clear Sequence
 
-  Note: Undo button moved to workspace top-left (near WordLabel) for better UX.
+  Note: Undo and Save to Library are in the workspace top bar (SequenceDisplay).
 
   Architecture:
   - Uses CreateModuleContext for state access
@@ -47,9 +47,7 @@
 
   // Derive computed values from context
   const showPlayButton = $derived(CreateModuleState.canShowActionButtons());
-  const showShareHubButton = $derived(
-    CreateModuleState.canShowActionButtons()
-  );
+  const showShareHubButton = $derived(CreateModuleState.canShowActionButtons());
   const showSequenceActions = $derived(
     CreateModuleState.canShowSequenceActionsButton()
   );

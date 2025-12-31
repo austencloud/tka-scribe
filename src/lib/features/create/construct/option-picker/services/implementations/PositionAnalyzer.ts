@@ -1,8 +1,8 @@
 /**
  * Position Analyzer Implementation
  *
- * Handles analysis of position data for end position calculations and grouping.
- * Extracted from OptionPickerService for better separation of concerns.
+ * Handles analysis of position data for end position calculations, grouping,
+ * and rotation relationships. Used by option picker and sequence extension.
  */
 
 import type { PictographData } from "$lib/shared/pictograph/shared/domain/models/PictographData";
@@ -10,7 +10,10 @@ import { GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid
 import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { TYPES } from "$lib/shared/inversify/types";
 import { inject, injectable } from "inversify";
-import type { IPositionAnalyzer } from "../contracts/IPositionAnalyzer";
+import type {
+  IPositionAnalyzer,
+  RotationRelation,
+} from "../contracts/IPositionAnalyzer";
 import type { IGridPositionDeriver } from "$lib/shared/pictograph/grid/services/contracts/IGridPositionDeriver";
 
 @injectable()
@@ -28,7 +31,7 @@ export class PositionAnalyzer implements IPositionAnalyzer {
   ): GridPositionGroup | null {
     if (!endPosition) return null;
 
-    const positionStr = endPosition.toString();
+    const positionStr = endPosition.toString().toLowerCase();
 
     if (positionStr.startsWith("alpha")) return GridPositionGroup.ALPHA;
     if (positionStr.startsWith("beta")) return GridPositionGroup.BETA;
@@ -39,7 +42,6 @@ export class PositionAnalyzer implements IPositionAnalyzer {
 
   /**
    * Calculate end position from motion data
-   * PRESERVED: Core position calculation logic
    */
   getEndPosition(pictographData: PictographData): string | null {
     if (!pictographData.motions.blue || !pictographData.motions.red) {
@@ -57,5 +59,72 @@ export class PositionAnalyzer implements IPositionAnalyzer {
       console.error("Error calculating end position:", error);
       return null;
     }
+  }
+
+  /**
+   * Extract the numeric part of a position (e.g., "alpha3" → 3)
+   */
+  getPositionNumber(position: GridPosition): number | null {
+    const match = position.toString().match(/(\d+)$/);
+    return match && match[1] ? parseInt(match[1], 10) : null;
+  }
+
+  /**
+   * Calculate the rotation relationship between two positions in the same group.
+   */
+  getRotationRelation(
+    startPosition: GridPosition,
+    endPosition: GridPosition
+  ): RotationRelation | null {
+    const startGroup = this.getEndPositionGroup(startPosition);
+    const endGroup = this.getEndPositionGroup(endPosition);
+
+    // Must be in same group
+    if (!startGroup || !endGroup || startGroup !== endGroup) {
+      return null;
+    }
+
+    const startNum = this.getPositionNumber(startPosition);
+    const endNum = this.getPositionNumber(endPosition);
+
+    if (startNum === null || endNum === null) {
+      return null;
+    }
+
+    // Same position = exact
+    if (startNum === endNum) {
+      return "exact";
+    }
+
+    // Calculate the difference (accounting for circular wraparound)
+    const isGamma = startGroup === GridPositionGroup.GAMMA;
+    const totalPositions = isGamma ? 16 : 8;
+    const quarterStep = isGamma ? 4 : 2;
+    const halfStep = isGamma ? 8 : 4;
+
+    // Calculate absolute difference, accounting for wraparound
+    let diff = Math.abs(endNum - startNum);
+    if (diff > totalPositions / 2) {
+      diff = totalPositions - diff;
+    }
+
+    if (diff === halfStep) {
+      return "half";
+    }
+    if (diff === quarterStep || diff === quarterStep * 3) {
+      return "quarter";
+    }
+
+    // Default to quarter for other valid position relationships
+    return "quarter";
+  }
+
+  /**
+   * Check if two positions are in the same group (can potentially form a loop)
+   */
+  areInSameGroup(position1: GridPosition, position2: GridPosition): boolean {
+    const group1 = this.getEndPositionGroup(position1);
+    const group2 = this.getEndPositionGroup(position2);
+    return group1 !== null && group1 === group2;
   }
 }

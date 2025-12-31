@@ -1,0 +1,77 @@
+import { injectable } from 'inversify';
+import type { SequenceData } from '$lib/shared/foundation/domain/models/SequenceData';
+import type {
+	ISequenceTransferHandler,
+	TransferCheckResult
+} from '../contracts/ISequenceTransferHandler';
+import { areSequencesEqual } from '../../utils/sequence-comparison';
+
+/**
+ * SequenceTransferHandler
+ *
+ * Handles transferring sequences to the Constructor tab.
+ * Manages the comparison logic and state synchronization.
+ */
+@injectable()
+export class SequenceTransferHandler implements ISequenceTransferHandler {
+	checkTransfer(
+		sourceSequence: SequenceData,
+		targetSequence: SequenceData | null,
+		targetHasSequence: boolean
+	): TransferCheckResult {
+		// Check if sequences are identical - skip modal and just navigate
+		if (targetSequence && areSequencesEqual(sourceSequence, targetSequence)) {
+			return { action: 'already-loaded' };
+		}
+
+		// Different sequences - need confirmation if constructor has content
+		if (targetHasSequence) {
+			return { action: 'confirm-needed', pendingSequence: sourceSequence };
+		}
+
+		// Target is empty - can transfer immediately
+		return { action: 'transfer', sequence: sourceSequence };
+	}
+
+	async executeTransfer(
+		sequence: SequenceData,
+		constructTabState: {
+			sequenceState: {
+				setCurrentSequence: (seq: SequenceData) => void;
+				setStartPosition: (pos: any) => void;
+				saveCurrentState: (tab: string) => Promise<void>;
+			};
+			syncGridModeFromSequence?: (mode: string) => void;
+			setSelectedStartPosition: (pos: any) => void;
+			setShowStartPositionPicker: (show: boolean) => void;
+			syncPickerStateWithSequence?: () => void;
+		}
+	): Promise<void> {
+		// Deep copy to avoid mutations affecting source
+		const sequenceCopy = JSON.parse(JSON.stringify(sequence)) as SequenceData;
+
+		// Sync grid mode IMMEDIATELY before updating sequence state
+		// This prevents the flicker of options disappearing and reappearing
+		if (sequenceCopy.gridMode) {
+			constructTabState.syncGridModeFromSequence?.(sequenceCopy.gridMode);
+		}
+
+		// Set the sequence
+		constructTabState.sequenceState.setCurrentSequence(sequenceCopy);
+
+		// Sync start position
+		const startPos = sequenceCopy.startPosition || (sequenceCopy as any).startingPositionBeat;
+		if (startPos) {
+			constructTabState.sequenceState.setStartPosition(startPos);
+			constructTabState.setSelectedStartPosition(startPos);
+			constructTabState.setShowStartPositionPicker(false);
+		}
+
+		// Sync picker state
+		constructTabState.syncPickerStateWithSequence?.();
+
+		// CRITICAL: Save to persistence BEFORE switching tabs!
+		// Otherwise restoreStateForTab will load the OLD persisted sequence and overwrite our new one
+		await constructTabState.sequenceState.saveCurrentState('constructor');
+	}
+}

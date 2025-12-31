@@ -6,7 +6,9 @@
  */
 
 import type { TurnPattern } from "../domain/models/TurnPatternData";
-import { TurnPatternManager } from "../services/implementations/TurnPatternManager";
+import type { ITurnPatternManager } from "../services/contracts/ITurnPatternManager";
+import { resolve } from "$lib/shared/inversify/di";
+import { TYPES } from "$lib/shared/inversify/types";
 import { createComponentLogger } from "$lib/shared/utils/debug-logger";
 
 const logger = createComponentLogger("TurnPatternState");
@@ -18,8 +20,14 @@ let _selectedPattern: TurnPattern | null = null;
 let _error: string | null = null;
 let _initialized = false;
 
-// Create service instance
-const turnPatternManager = new TurnPatternManager();
+// Lazy service resolution (resolved on first use)
+let _turnPatternManager: ITurnPatternManager | null = null;
+function getTurnPatternManager(): ITurnPatternManager {
+  if (!_turnPatternManager) {
+    _turnPatternManager = resolve<ITurnPatternManager>(TYPES.ITurnPatternManager);
+  }
+  return _turnPatternManager;
+}
 
 export const turnPatternState = {
   // Getters
@@ -54,7 +62,7 @@ export const turnPatternState = {
     _error = null;
 
     try {
-      _patterns = await turnPatternManager.loadPatterns(userId);
+      _patterns = await getTurnPatternManager().loadPatterns(userId);
       _initialized = true;
       logger.log(`Loaded ${_patterns.length} patterns`);
     } catch (err) {
@@ -79,11 +87,11 @@ export const turnPatternState = {
     _error = null;
 
     try {
-      const patternData = turnPatternManager.extractPattern(
+      const patternData = getTurnPatternManager().extractPattern(
         sequence as any,
         name
       );
-      const saved = await turnPatternManager.savePattern(patternData, userId);
+      const saved = await getTurnPatternManager().savePattern(patternData, userId);
 
       // Add to local state
       _patterns = [saved, ..._patterns];
@@ -108,7 +116,7 @@ export const turnPatternState = {
     _error = null;
 
     try {
-      await turnPatternManager.deletePattern(patternId, userId);
+      await getTurnPatternManager().deletePattern(patternId, userId);
 
       // Remove from local state
       _patterns = _patterns.filter((p) => p.id !== patternId);

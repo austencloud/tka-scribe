@@ -4,30 +4,34 @@
   Drawer for saving and applying rotation direction patterns.
   - Save: Extract rotation directions from current sequence and save
   - Apply: Browse and apply saved patterns or templates
+
+  This is a thin orchestrator that composes child components.
 -->
 <script lang="ts">
   import Drawer from "$lib/shared/foundation/ui/Drawer.svelte";
   import { rotationDirectionPatternState } from "../../state/rotation-direction-pattern-state.svelte.ts";
-  import { RotationDirectionPatternManager } from "../../services/implementations/RotationDirectionPatternManager";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
   import { layoutState } from "$lib/shared/layout/layout-state.svelte";
   import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
   import type { RotationDirectionPattern } from "../../domain/models/RotationDirectionPatternData";
-  import { formatRotationValue } from "../../domain/models/RotationDirectionPatternData";
   import {
-    getTemplatesForBeatCount,
-    getTemplatesByCategory,
-    getCategoryInfo,
     templateToPattern,
     createUniformPattern,
-    type TemplateCategory,
     type RotationDirectionTemplateDefinition,
   } from "../../domain/templates/rotation-direction-templates";
+  import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
+  import type { IRotationDirectionPatternManager } from "../../services/contracts/IRotationDirectionPatternManager";
+
+  // Child components
+  import SaveModePanel from "./rotation-direction/SaveModePanel.svelte";
+  import UniformPatternButtons from "./rotation-direction/UniformPatternButtons.svelte";
+  import TemplatePatternGrid from "./rotation-direction/TemplatePatternGrid.svelte";
+  import SavedPatternList from "./rotation-direction/SavedPatternList.svelte";
 
   interface Props {
     isOpen: boolean;
     sequence: SequenceData | null;
-    /** Measured tool panel width for desktop sizing (to match parent panel) */
     toolPanelWidth?: number;
     onClose: () => void;
     onApply: (result: {
@@ -38,37 +42,32 @@
 
   let { isOpen = $bindable(), sequence, toolPanelWidth = 0, onClose, onApply }: Props = $props();
 
-  // Build inline style for drawer width when we have a valid measurement
-  const drawerStyle = $derived(
-    toolPanelWidth > 0 ? `--measured-panel-width: ${toolPanelWidth}px` : ""
-  );
-
+  // Local state
   let mode: "save" | "apply" = $state("apply");
   let patternName = $state("");
   let savingPattern = $state(false);
   let applyingPattern = $state(false);
   let errorMessage = $state<string | null>(null);
-  let categoryFilter = $state<TemplateCategory | "all">("alternating"); // Default to first category for mobile-first
 
-  const rotationPatternService = new RotationDirectionPatternManager();
+  // Service via DI
+  const rotationPatternService = resolve<IRotationDirectionPatternManager>(
+    TYPES.IRotationDirectionPatternManager
+  );
 
-  // Mobile detection - use layout state
+  // Derived state
   const isMobile = $derived(!layoutState.isSideBySideLayout);
+  const drawerStyle = $derived(
+    toolPanelWidth > 0 ? `--measured-panel-width: ${toolPanelWidth}px` : ""
+  );
 
-  // Load patterns when drawer opens and set appropriate default filter
+  // Load patterns when drawer opens
   $effect(() => {
-    if (
-      isOpen &&
-      authState.user?.uid &&
-      !rotationDirectionPatternState.initialized
-    ) {
+    if (isOpen && authState.user?.uid && !rotationDirectionPatternState.initialized) {
       rotationDirectionPatternState.loadPatterns(authState.user.uid);
     }
-    // Reset filter based on device when drawer opens
-    if (isOpen) {
-      categoryFilter = isMobile ? "alternating" : "all";
-    }
   });
+
+  // === Handlers ===
 
   function handleSavePattern() {
     if (!sequence || !authState.user?.uid) return;
@@ -76,9 +75,7 @@
     savingPattern = true;
     errorMessage = null;
 
-    // Auto-generate name if empty
-    const finalName =
-      patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
+    const finalName = patternName.trim() || `Rotation ${new Date().toLocaleTimeString()}`;
 
     rotationDirectionPatternState
       .savePattern(finalName, authState.user.uid, sequence)
@@ -87,8 +84,7 @@
           patternName = "";
           mode = "apply";
         } else {
-          errorMessage =
-            rotationDirectionPatternState.error ?? "Failed to save pattern";
+          errorMessage = rotationDirectionPatternState.error ?? "Failed to save pattern";
         }
       })
       .finally(() => {
@@ -103,23 +99,18 @@
     errorMessage = null;
 
     try {
-      const result = await rotationPatternService.applyPattern(
-        pattern,
-        sequence
-      );
+      const result = await rotationPatternService.applyPattern(pattern, sequence);
 
       if (result.success && result.sequence) {
         onApply({
           sequence: result.sequence,
           warnings: result.warnings,
         });
-        // Keep drawer open to allow applying multiple patterns
       } else {
         errorMessage = result.error ?? "Failed to apply pattern";
       }
     } catch (error) {
-      errorMessage =
-        error instanceof Error ? error.message : "Failed to apply pattern";
+      errorMessage = error instanceof Error ? error.message : "Failed to apply pattern";
     } finally {
       applyingPattern = false;
     }
@@ -139,11 +130,7 @@
   function handleApplyTemplate(template: RotationDirectionTemplateDefinition) {
     if (!sequence || !authState.user?.uid) return;
 
-    const pattern = templateToPattern(
-      template,
-      authState.user.uid,
-      sequence.beats.length
-    );
+    const pattern = templateToPattern(template, authState.user.uid, sequence.beats.length);
     handleApplyPattern(pattern);
   }
 
@@ -156,376 +143,110 @@
     errorMessage = null;
     onClose();
   }
-
-  // Get color class for rotation value display
-  function getRotationColorClass(value: string): string {
-    if (value === "CW") return "cw";
-    if (value === "CC") return "ccw";
-    return "none";
-  }
 </script>
 
 <div style={drawerStyle}>
-<Drawer
-  bind:isOpen
-  placement="right"
-  onclose={handleClose}
-  showHandle={false}
-  respectLayoutMode={true}
-  class="rotation-direction-drawer"
-  backdropClass="rotation-direction-backdrop"
->
-  <div class="rotation-direction-drawer-content">
-    <header class="drawer-header">
-      <h2>Rotation Direction</h2>
-      <button class="close-btn" onclick={handleClose} aria-label="Close">
-        <i class="fas fa-times" aria-hidden="true"></i>
-      </button>
-    </header>
+  <Drawer
+    bind:isOpen
+    placement="right"
+    onclose={handleClose}
+    showHandle={false}
+    respectLayoutMode={true}
+    class="rotation-direction-drawer"
+    backdropClass="rotation-direction-backdrop"
+  >
+    <div class="drawer-content">
+      <header class="drawer-header">
+        <h2>Rotation Direction</h2>
+        <button class="close-btn" onclick={handleClose} aria-label="Close">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </header>
 
-    <!-- Mode tabs -->
-    <div class="mode-tabs">
-      <button
-        class="tab"
-        class:active={mode === "apply"}
-        onclick={() => (mode = "apply")}
-      >
-        Apply
-      </button>
-      <button
-        class="tab"
-        class:active={mode === "save"}
-        onclick={() => (mode = "save")}
-      >
-        Save Current
-      </button>
-    </div>
-
-    {#if errorMessage}
-      <div class="error-message">
-        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
-        {errorMessage}
+      <div class="mode-tabs">
+        <button
+          class="tab"
+          class:active={mode === "apply"}
+          onclick={() => (mode = "apply")}
+        >
+          Apply
+        </button>
+        <button
+          class="tab"
+          class:active={mode === "save"}
+          onclick={() => (mode = "save")}
+        >
+          Save Current
+        </button>
       </div>
-    {/if}
 
-    {#if mode === "save"}
-      <!-- Save mode -->
-      <div class="save-section">
-        {#if !sequence || sequence.beats.length === 0}
-          <p class="empty-message">No sequence to save pattern from</p>
-        {:else}
-          <div class="pattern-preview">
-            <h3>Current Pattern ({sequence.beats.length} beats)</h3>
-            <div class="preview-grid">
-              {#each sequence.beats as beat, i}
-                {@const blueRotation = formatRotationValue(
-                  beat.motions?.blue?.rotationDirection === "cw"
-                    ? "cw"
-                    : beat.motions?.blue?.rotationDirection === "ccw"
-                      ? "ccw"
-                      : beat.motions?.blue
-                        ? "none"
-                        : null
-                )}
-                {@const redRotation = formatRotationValue(
-                  beat.motions?.red?.rotationDirection === "cw"
-                    ? "cw"
-                    : beat.motions?.red?.rotationDirection === "ccw"
-                      ? "ccw"
-                      : beat.motions?.red
-                        ? "none"
-                        : null
-                )}
-                <div class="preview-beat">
-                  <span class="beat-num">{i + 1}</span>
-                  <div class="rotation-pair">
-                    <span
-                      class="rotation-value {getRotationColorClass(
-                        blueRotation
-                      )} blue"
-                    >
-                      {blueRotation}
-                    </span>
-                    <span class="separator">|</span>
-                    <span
-                      class="rotation-value {getRotationColorClass(
-                        redRotation
-                      )} red"
-                    >
-                      {redRotation}
-                    </span>
-                  </div>
-                </div>
-              {/each}
+      {#if errorMessage}
+        <div class="error-message">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+          {errorMessage}
+        </div>
+      {/if}
+
+      {#if mode === "save"}
+        <SaveModePanel
+          {sequence}
+          {patternName}
+          saving={savingPattern}
+          onSave={handleSavePattern}
+          onNameChange={(name) => (patternName = name)}
+        />
+      {:else}
+        <div class="apply-section">
+          {#if rotationDirectionPatternState.isLoading}
+            <div class="loading">
+              <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+              Loading patterns...
             </div>
-          </div>
-
-          <div class="save-form">
-            <input
-              type="text"
-              placeholder="Pattern name (optional - auto-generated if empty)"
-              bind:value={patternName}
-              maxlength={50}
-            />
-            <button
-              class="save-btn"
-              onclick={handleSavePattern}
-              disabled={savingPattern}
-            >
-              {#if savingPattern}
-                <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-              {:else}
-                <i class="fas fa-save" aria-hidden="true"></i>
-              {/if}
-              Save Pattern
-            </button>
-          </div>
-        {/if}
-      </div>
-    {:else}
-      <!-- Apply mode -->
-      <div class="apply-section">
-        {#if rotationDirectionPatternState.isLoading}
-          <div class="loading">
-            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
-            Loading patterns...
-          </div>
-        {:else}
-          <!-- Uniform Pattern Section -->
-          {#if sequence && sequence.beats.length > 0}
-            <div class="uniform-section">
-              <h3>Uniform</h3>
-              <p class="section-desc">Apply same direction to all beats</p>
-              <div class="uniform-buttons">
-                <button
-                  class="uniform-btn cw"
-                  onclick={() => handleApplyUniform("cw")}
-                  disabled={applyingPattern}
-                >
-                  <i class="fas fa-rotate-right" aria-hidden="true"></i>
-                  All CW
-                </button>
-                <button
-                  class="uniform-btn ccw"
-                  onclick={() => handleApplyUniform("ccw")}
-                  disabled={applyingPattern}
-                >
-                  <i class="fas fa-rotate-left" aria-hidden="true"></i>
-                  All CCW
-                </button>
-              </div>
-            </div>
-          {/if}
-
-          <!-- Templates section -->
-          {@const allTemplates = sequence
-            ? getTemplatesForBeatCount(sequence.beats.length)
-            : []}
-          {@const nonUniformTemplates = allTemplates.filter(
-            (t) => t.category !== "uniform"
-          )}
-          {@const filteredTemplates =
-            categoryFilter === "all"
-              ? nonUniformTemplates
-              : nonUniformTemplates.filter(
-                  (t) => t.category === categoryFilter
-                )}
-
-          {#if nonUniformTemplates.length > 0}
-            <div class="templates-section">
-              <div class="templates-header">
-                <h3>Patterns</h3>
-                <!-- Category filter - segmented control on mobile -->
-                <div class="category-filter" class:mobile-segmented={isMobile}>
-                  {#if !isMobile}
-                    <button
-                      class="filter-btn"
-                      class:active={categoryFilter === "all"}
-                      onclick={() => (categoryFilter = "all")}>All</button
-                    >
-                  {/if}
-                  {#each ["alternating", "split-hand", "split-half"] as category}
-                    {@const info = getCategoryInfo(
-                      category as TemplateCategory
-                    )}
-                    {@const hasTemplates = nonUniformTemplates.some(
-                      (t) => t.category === category
-                    )}
-                    {#if hasTemplates}
-                      <button
-                        class="filter-btn"
-                        class:active={categoryFilter === category}
-                        onclick={() =>
-                          (categoryFilter = category as TemplateCategory)}
-                        style="--filter-color: {info.color}"
-                      >
-                        <span
-                          class="category-dot"
-                          style="background: {info.color}"
-                        ></span>
-                        {info.label}
-                      </button>
-                    {/if}
-                  {/each}
-                </div>
-              </div>
-
-              <!-- Desktop grouped display when "All" selected -->
-              {#if !isMobile && categoryFilter === "all"}
-                <div class="grouped-patterns">
-                  {#each ["alternating", "split-hand", "split-half"] as category}
-                    {@const groupTemplates = nonUniformTemplates.filter(
-                      (t) => t.category === category
-                    )}
-                    {@const categoryInfo = getCategoryInfo(category as TemplateCategory)}
-                    {#if groupTemplates.length > 0}
-                      <div class="category-group">
-                        <div class="group-header" style="--group-color: {categoryInfo.color}">
-                          <span class="group-dot" style="background: {categoryInfo.color}"></span>
-                          <span class="group-label">{categoryInfo.label}</span>
-                        </div>
-                        <div class="patterns-list">
-                          {#each groupTemplates as template}
-                            <div
-                              class="pattern-item template"
-                              style="--glass-color: {categoryInfo.color}"
-                              onclick={() => handleApplyTemplate(template)}
-                              role="button"
-                              tabindex="0"
-                              onkeydown={(e) => {
-                                if (e.key === "Enter" || e.key === " ") {
-                                  e.preventDefault();
-                                  handleApplyTemplate(template);
-                                }
-                              }}
-                            >
-                              <div class="pattern-info">
-                                <span class="pattern-name">{template.name}</span>
-                                <span class="pattern-desc">{template.description}</span>
-                              </div>
-                            </div>
-                          {/each}
-                        </div>
-                      </div>
-                    {/if}
-                  {/each}
-                </div>
-              {:else}
-                <!-- Regular filtered display (mobile always, desktop when filter selected) -->
-                <div class="patterns-list" class:mobile-compact={isMobile}>
-                  {#each filteredTemplates as template}
-                    {@const categoryInfo = getCategoryInfo(template.category)}
-                    <div
-                      class="pattern-item template"
-                      style="--glass-color: {categoryInfo.color}"
-                      onclick={() => handleApplyTemplate(template)}
-                      role="button"
-                      tabindex="0"
-                      onkeydown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          handleApplyTemplate(template);
-                        }
-                      }}
-                    >
-                      <div class="pattern-info">
-                        <span class="pattern-name">{template.name}</span>
-                        {#if !isMobile}
-                          <span class="pattern-desc">{template.description}</span>
-                        {/if}
-                      </div>
-                    </div>
-                  {/each}
-
-                  {#if filteredTemplates.length === 0}
-                    <p class="empty-filter-message">
-                      No {categoryFilter} patterns available
-                    </p>
-                  {/if}
-                </div>
-              {/if}
-            </div>
-          {/if}
-
-          <!-- User's saved patterns -->
-          {#if rotationDirectionPatternState.patterns.length === 0}
-            <p class="empty-message">
-              No saved patterns yet. Save a pattern from the current sequence or
-              try a template above.
-            </p>
           {:else}
-            <div class="saved-patterns-section">
-              <h3>Your Patterns</h3>
-              <div class="patterns-list">
-                {#each rotationDirectionPatternState.patterns as pattern}
-                  {@const isDisabled =
-                    applyingPattern ||
-                    !sequence ||
-                    sequence.beats.length !== pattern.beatCount}
-                  <div
-                    class="pattern-item"
-                    class:disabled={isDisabled}
-                    onclick={() => !isDisabled && handleApplyPattern(pattern)}
-                    role="button"
-                    tabindex={isDisabled ? -1 : 0}
-                    onkeydown={(e) => {
-                      if (!isDisabled && (e.key === "Enter" || e.key === " ")) {
-                        e.preventDefault();
-                        handleApplyPattern(pattern);
-                      }
-                    }}
-                    title={sequence &&
-                    sequence.beats.length !== pattern.beatCount
-                      ? `Requires ${pattern.beatCount} beats`
-                      : "Apply pattern"}
-                  >
-                    <div class="pattern-info">
-                      <span class="pattern-name">{pattern.name}</span>
-                      <span class="pattern-beats"
-                        >{pattern.beatCount} beats</span
-                      >
-                    </div>
-                    <div class="pattern-actions">
-                      <button
-                        class="delete-btn"
-                        onclick={(e) => {
-                          e.stopPropagation();
-                          handleDeletePattern(pattern);
-                        }}
-                        title="Delete pattern"
-                        aria-label="Delete pattern"
-                      >
-                        <i class="fas fa-trash" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                {/each}
-              </div>
-            </div>
+            {#if sequence && sequence.beats.length > 0}
+              <UniformPatternButtons
+                disabled={applyingPattern}
+                onApplyUniform={handleApplyUniform}
+              />
+
+              <TemplatePatternGrid
+                beatCount={sequence.beats.length}
+                {isMobile}
+                onApplyTemplate={handleApplyTemplate}
+              />
+            {/if}
+
+            <SavedPatternList
+              patterns={rotationDirectionPatternState.patterns}
+              currentBeatCount={sequence?.beats.length ?? 0}
+              applying={applyingPattern}
+              onApply={handleApplyPattern}
+              onDelete={handleDeletePattern}
+            />
           {/if}
-        {/if}
-      </div>
-    {/if}
-  </div>
-</Drawer>
+        </div>
+      {/if}
+    </div>
+  </Drawer>
 </div>
 
 <style>
-  /* Position rotation direction drawer to cover Sequence Actions panel on desktop */
-  :global(.rotation-direction-drawer.side-by-side-layout) {
+  /* Drawer positioning for desktop - must include [data-placement] for specificity */
+  :global(.rotation-direction-drawer[data-placement="right"].side-by-side-layout) {
     width: var(--measured-panel-width, clamp(360px, 44.44vw, 900px)) !important;
     max-width: 100% !important;
   }
 
-  /* Backdrop transparent - we want to cover sequence actions, not dim everything */
   :global(.rotation-direction-backdrop) {
     background: transparent !important;
     backdrop-filter: none !important;
     pointer-events: none !important;
   }
-  .rotation-direction-drawer-content {
+
+  .drawer-content {
     display: flex;
     flex-direction: column;
+    width: 100%;
     height: 100%;
     background: var(--theme-panel-bg);
     color: var(--theme-text);
@@ -536,7 +257,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px;
-    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .drawer-header h2 {
@@ -548,7 +269,7 @@
   .close-btn {
     background: transparent;
     border: none;
-    color: var(--theme-text-muted, var(--theme-text-dim));
+    color: var(--theme-text-muted);
     font-size: 1.1rem;
     cursor: pointer;
     padding: 4px 8px;
@@ -561,7 +282,7 @@
 
   .mode-tabs {
     display: flex;
-    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
+    border-bottom: 1px solid var(--theme-stroke);
   }
 
   .tab {
@@ -569,7 +290,7 @@
     padding: 12px;
     background: transparent;
     border: none;
-    color: var(--theme-text-muted, var(--theme-text-dim));
+    color: var(--theme-text-muted);
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.15s;
@@ -596,132 +317,11 @@
     border-radius: 8px;
   }
 
-  .save-section,
   .apply-section {
     flex: 1;
     overflow-y: auto;
     padding: 16px;
-  }
-
-  /* Container query context for responsive grid */
-  .apply-section {
     container-type: inline-size;
-    container-name: pattern-section;
-  }
-
-  .empty-message {
-    text-align: center;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-    padding: 32px 16px;
-  }
-
-  .pattern-preview {
-    margin-bottom: 16px;
-  }
-
-  .pattern-preview h3 {
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin: 0 0 12px;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-  }
-
-  .preview-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-    gap: 6px;
-  }
-
-  .preview-beat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 6px 4px;
-    background: var(--theme-card-bg);
-    border-radius: 6px;
-    font-size: 0.75rem;
-    gap: 4px;
-  }
-
-  .beat-num {
-    font-weight: 600;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-  }
-
-  .rotation-pair {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .separator {
-    color: var(--theme-text-dim);
-    font-size: 0.7rem;
-  }
-
-  .rotation-value {
-    font-family: monospace;
-    display: inline-block;
-    min-width: 20px;
-    text-align: center;
-    font-size: 0.7rem;
-    font-weight: 600;
-  }
-
-  .rotation-value.cw {
-    color: #06b6d4; /* cyan */
-  }
-
-  .rotation-value.ccw {
-    color: var(--semantic-warning); /* amber */
-  }
-
-  .rotation-value.none {
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-
-  .save-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .save-form input {
-    padding: 12px;
-    background: var(--theme-card-bg);
-    border: 1px solid var(--theme-stroke, var(--theme-stroke-strong));
-    border-radius: 8px;
-    color: var(--theme-text);
-    font-size: 0.9rem;
-  }
-
-  .save-form input::placeholder {
-    color: var(--theme-text-dim);
-  }
-
-  .save-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    background: linear-gradient(135deg, var(--semantic-warning) 0%, #d97706 100%);
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .save-btn:hover:not(:disabled) {
-    filter: brightness(1.1);
-  }
-
-  .save-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   .loading {
@@ -730,328 +330,6 @@
     justify-content: center;
     gap: 8px;
     padding: 32px;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-  }
-
-  .patterns-list {
-    display: grid;
-    grid-template-columns: 1fr; /* Mobile: single column */
-    gap: 8px;
-  }
-
-  /* 2 columns for wider panels */
-  @container pattern-section (min-width: 400px) {
-    .patterns-list {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  /* 3 columns for desktop-width panels */
-  @container pattern-section (min-width: 550px) {
-    .patterns-list {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .pattern-item {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    position: relative;
-    padding: 12px;
-    min-height: 60px;
-    background: var(--theme-card-bg);
-    border-radius: 8px;
-    border: 1px solid var(--theme-stroke, var(--theme-stroke));
-    cursor: pointer;
-    transition: all 0.15s ease;
-    user-select: none;
-  }
-
-  .pattern-item:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(245, 158, 11, 0.4);
-  }
-
-  .pattern-item.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .pattern-info {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    width: 100%;
-  }
-
-  .pattern-name {
-    font-weight: 500;
-    font-size: 0.9rem;
-    line-height: 1.3;
-  }
-
-  .pattern-beats,
-  .pattern-desc {
-    font-size: 0.75rem;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-    line-height: 1.4;
-  }
-
-  .pattern-actions {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-  }
-
-  .delete-btn {
-    padding: 4px 6px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: rgba(239, 68, 68, 0.15);
-    color: var(--semantic-error);
-    font-size: 0.75rem;
-    opacity: 0.7;
-  }
-
-  .pattern-item:hover .delete-btn {
-    opacity: 1;
-  }
-
-  .delete-btn:hover {
-    background: rgba(239, 68, 68, 0.35);
-  }
-
-  /* Uniform section */
-  .uniform-section {
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--theme-stroke, var(--theme-stroke));
-  }
-
-  .uniform-section h3 {
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin: 0 0 4px;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-  }
-
-  .section-desc {
-    font-size: 0.75rem;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-    margin: 0 0 12px;
-  }
-
-  .uniform-buttons {
-    display: flex;
-    gap: 8px;
-  }
-
-  .uniform-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .uniform-btn.cw {
-    background: rgba(6, 182, 212, 0.15);
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    color: var(--theme-text);
-  }
-
-  .uniform-btn.cw:hover:not(:disabled) {
-    background: rgba(6, 182, 212, 0.25);
-    border-color: rgba(6, 182, 212, 0.5);
-  }
-
-  .uniform-btn.ccw {
-    background: rgba(245, 158, 11, 0.15);
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    color: var(--theme-text);
-  }
-
-  .uniform-btn.ccw:hover:not(:disabled) {
-    background: rgba(245, 158, 11, 0.25);
-    border-color: rgba(245, 158, 11, 0.5);
-  }
-
-  .uniform-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* Templates section */
-  .templates-section,
-  .saved-patterns-section {
-    margin-bottom: 24px;
-  }
-
-  .templates-header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-
-  .templates-section h3,
-  .saved-patterns-section h3 {
-    font-size: 0.85rem;
-    font-weight: 500;
-    margin: 0;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-  }
-
-  /* Category filter */
-  .category-filter {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-  }
-
-  .filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    font-size: 0.75rem;
-    background: var(--theme-card-bg);
-    border: 1px solid var(--theme-stroke, var(--theme-stroke));
-    border-radius: 16px;
-    color: var(--theme-text-muted, var(--theme-text-dim));
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
-
-  .filter-btn.active {
-    background: var(--theme-card-hover-bg);
-    color: var(--theme-text);
-    border-color: var(--filter-color, rgba(255, 255, 255, 0.3));
-  }
-
-  .category-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  /* User saved patterns need padding for delete button */
-  .saved-patterns-section .pattern-item {
-    padding-right: 32px; /* Make room for delete button */
-  }
-
-  /* Pattern items with colored glass effect */
-  .pattern-item.template {
-    background: color-mix(in srgb, var(--glass-color, #fff) 8%, transparent);
-    border: 1px solid
-      color-mix(in srgb, var(--glass-color, #fff) 20%, transparent);
-  }
-
-  .pattern-item.template:hover {
-    background: color-mix(in srgb, var(--glass-color, #fff) 15%, transparent);
-    border-color: color-mix(in srgb, var(--glass-color, #fff) 40%, transparent);
-  }
-
-  .empty-filter-message {
-    text-align: center;
-    color: var(--theme-text-dim);
-    padding: 16px;
-    font-size: 0.85rem;
-    grid-column: 1 / -1; /* Span all columns */
-  }
-
-  /* Desktop grouped patterns display */
-  .grouped-patterns {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .category-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .group-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--group-color, #fff) 25%, transparent);
-  }
-
-  .group-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .group-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
     color: var(--theme-text-muted);
-  }
-
-  /* Mobile segmented control styling */
-  .category-filter.mobile-segmented {
-    display: flex;
-    gap: 0;
-    background: var(--theme-card-bg);
-    border-radius: 8px;
-    padding: 3px;
-    border: 1px solid var(--theme-stroke);
-  }
-
-  .category-filter.mobile-segmented .filter-btn {
-    flex: 1;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 4px;
-    font-size: 0.7rem;
-    gap: 3px;
-    justify-content: center;
-  }
-
-  .category-filter.mobile-segmented .filter-btn.active {
-    background: var(--filter-color, var(--theme-accent));
-    color: white;
-  }
-
-  .category-filter.mobile-segmented .category-dot {
-    width: 6px;
-    height: 6px;
-  }
-
-  /* Mobile compact grid - 2 columns, smaller items */
-  .patterns-list.mobile-compact {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 6px;
-  }
-
-  .patterns-list.mobile-compact .pattern-item {
-    padding: 10px;
-    min-height: 44px;
-  }
-
-  .patterns-list.mobile-compact .pattern-name {
-    font-size: 0.8rem;
   }
 </style>

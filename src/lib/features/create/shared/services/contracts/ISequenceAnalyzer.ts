@@ -220,4 +220,33 @@ export interface ISequenceAnalyzer {
    * service.detectCompletedCapTypes(sequence); // ['static']
    */
   detectCompletedCapTypes(sequence: SequenceData): readonly StrictCapType[];
+
+  // ============ Position Extraction Methods ============
+
+  /**
+   * Get the starting position from a sequence.
+   * Checks multiple possible locations: startPosition object, startingPositionBeat, beat 0.
+   *
+   * @param sequence - The sequence to extract start position from
+   * @returns The start position or null if not found
+   */
+  getStartPosition(sequence: SequenceData): GridPosition | null;
+
+  /**
+   * Get the current end position from the last beat in a sequence.
+   * Finds the highest beat number (excluding beat 0) and returns its end position.
+   *
+   * @param sequence - The sequence to extract end position from
+   * @returns The end position or null if not found
+   */
+  getCurrentEndPosition(sequence: SequenceData): GridPosition | null;
+
+  /**
+   * Convert a SequenceData to BeatData array for LOOP executor.
+   * The LOOP executor expects: [startPosition (beat 0), beat 1, beat 2, ...]
+   *
+   * @param sequence - The sequence to convert
+   * @returns Array of beats including synthesized beat 0 if needed
+   */
+  convertSequenceToBeats(sequence: SequenceData): BeatData[];
 }

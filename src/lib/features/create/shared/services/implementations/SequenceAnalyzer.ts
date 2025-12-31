@@ -417,4 +417,154 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
 
     return { group, number: num, groupSize };
   }
+
+  // ============ Position Extraction Methods ============
+
+  /**
+   * Get the starting position from a sequence.
+   * Checks multiple possible locations for start position data.
+   */
+  getStartPosition(sequence: SequenceData): GridPosition | null {
+    // Check for explicit start position data object
+    if (sequence.startPosition) {
+      const startPosData = sequence.startPosition as unknown as Record<
+        string,
+        unknown
+      >;
+
+      // Internal format: startPosition field
+      if ("startPosition" in startPosData && startPosData.startPosition) {
+        return startPosData.startPosition as GridPosition;
+      }
+      // External/JSON format: start field
+      if ("start" in startPosData && startPosData.start) {
+        return startPosData.start as GridPosition;
+      }
+      // gridPosition field (StartPositionData format)
+      if ("gridPosition" in startPosData && startPosData.gridPosition) {
+        return startPosData.gridPosition as GridPosition;
+      }
+    }
+
+    // Check for startingPositionBeat (legacy field)
+    const startBeat = sequence.startingPositionBeat as
+      | Record<string, unknown>
+      | undefined;
+    if (startBeat) {
+      if ("startPosition" in startBeat && startBeat.startPosition) {
+        return startBeat.startPosition as GridPosition;
+      }
+      if ("start" in startBeat && startBeat.start) {
+        return startBeat.start as GridPosition;
+      }
+    }
+
+    // Check first beat (beat 0) if it's the start position
+    const beats = sequence.beats || [];
+    const firstBeat = beats.find(
+      (b) =>
+        b.beatNumber === 0 ||
+        (b as unknown as Record<string, unknown>).beat === 0
+    );
+    if (firstBeat) {
+      const beatData = firstBeat as unknown as Record<string, unknown>;
+      if (beatData.startPosition) {
+        return beatData.startPosition as GridPosition;
+      }
+      if (beatData.start) {
+        return beatData.start as GridPosition;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Get the current end position from the last beat in a sequence.
+   */
+  getCurrentEndPosition(sequence: SequenceData): GridPosition | null {
+    const beats = sequence.beats || [];
+    if (beats.length === 0) return null;
+
+    // Helper to get beat number from either format
+    const getBeatNumber = (beat: Record<string, unknown>): number => {
+      if (typeof beat.beatNumber === "number") return beat.beatNumber;
+      if (typeof beat.beat === "number") return beat.beat;
+      return 0;
+    };
+
+    // Helper to get end position from either format
+    const getEndPosition = (beat: Record<string, unknown>): string | null => {
+      if (beat.endPosition) return beat.endPosition as string;
+      if (beat.end) return beat.end as string;
+      return null;
+    };
+
+    // Find the last actual beat (not the start position beat 0)
+    const beatsAsRecords = beats as unknown as Record<string, unknown>[];
+    const sortedBeats = [...beatsAsRecords].sort(
+      (a, b) => getBeatNumber(b) - getBeatNumber(a)
+    );
+    const lastBeat =
+      sortedBeats.find((b) => getBeatNumber(b) > 0) || sortedBeats[0];
+
+    if (lastBeat) {
+      const endPos = getEndPosition(lastBeat);
+      if (endPos) {
+        return endPos as GridPosition;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Convert a SequenceData to BeatData array for LOOP executor.
+   * The LOOP executor expects: [startPosition (beat 0), beat 1, beat 2, ...]
+   */
+  convertSequenceToBeats(sequence: SequenceData): BeatData[] {
+    const beats = sequence.beats || [];
+    const result: BeatData[] = [];
+
+    // Check if beat 0 (start position) is already in beats array
+    const beat0 = beats.find((b) => b.beatNumber === 0);
+
+    if (beat0) {
+      // Beat 0 exists in the array, just sort and return
+      return [...beats]
+        .filter((b) => b.beatNumber >= 0)
+        .sort((a, b) => a.beatNumber - b.beatNumber);
+    }
+
+    // Beat 0 not in array - need to create it from startPosition/startingPositionBeat
+    const startPosData =
+      sequence.startPosition || sequence.startingPositionBeat;
+
+    if (startPosData) {
+      const startPos = this.getStartPosition(sequence);
+      // Create a beat 0 entry from the start position data
+      const startBeat: BeatData = {
+        id: "start-position",
+        beatNumber: 0,
+        startPosition: startPos,
+        endPosition: startPos, // Start position ends where it starts
+        letter: null,
+        motions: (startPosData as unknown as Record<string, unknown>).motions as Record<string, unknown> || {},
+        duration: 1,
+        blueReversal: false,
+        redReversal: false,
+        isBlank: false,
+      };
+      result.push(startBeat);
+    }
+
+    // Add all actual beats (beat 1+)
+    const actualBeats = beats
+      .filter((b) => b.beatNumber > 0)
+      .sort((a, b) => a.beatNumber - b.beatNumber);
+
+    result.push(...actualBeats);
+
+    return result;
+  }
 }
