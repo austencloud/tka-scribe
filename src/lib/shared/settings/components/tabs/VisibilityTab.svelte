@@ -27,7 +27,6 @@
   import PictographPanel from "./visibility/PictographPanel.svelte";
   import AnimationPanel from "./visibility/AnimationPanel.svelte";
   import ImagePanel from "./visibility/ImagePanel.svelte";
-  import VisibilityHelpModal from "./visibility/VisibilityHelpModal.svelte";
 
   interface Props {
     currentSettings: unknown;
@@ -47,10 +46,6 @@
   // UI state
   let mobileMode = $state<VisibilityMode>("pictograph");
   let isVisible = $state(false);
-
-  // Help modal state
-  let helpModalPanel = $state<"pictograph" | "animation" | "image" | null>(null);
-  let isHelpModalOpen = $state(false);
 
   // Pictograph visibility state
   let tkaGlyphVisible = $state(true);
@@ -78,18 +73,6 @@
   // Haptics
   let hapticService: IHapticFeedback | null = null;
   const triggerHaptic = () => hapticService?.trigger("selection");
-
-  // Help modal handlers
-  function openHelpModal(panel: "pictograph" | "animation" | "image") {
-    triggerHaptic();
-    helpModalPanel = panel;
-    isHelpModalOpen = true;
-  }
-
-  function closeHelpModal() {
-    isHelpModalOpen = false;
-    setTimeout(() => (helpModalPanel = null), 300);
-  }
 
   // Mobile mode handler
   function handleModeChange(mode: VisibilityMode) {
@@ -276,7 +259,6 @@
       {reversalIndicatorsVisible}
       {nonRadialVisible}
       onToggle={handlePictographToggle}
-      onOpenHelp={() => openHelpModal("pictograph")}
       isMobileHidden={mobileMode !== "pictograph"}
     />
 
@@ -291,7 +273,6 @@
       onTrailStyleChange={handleTrailStyleChange}
       onPlaybackModeChange={handlePlaybackModeChange}
       onBpmChange={handleBpmChange}
-      onOpenHelp={() => openHelpModal("animation")}
       isMobileHidden={mobileMode !== "animation"}
     />
 
@@ -302,17 +283,9 @@
       includeStartPosition={imgIncludeStartPosition}
       addUserInfo={imgAddUserInfo}
       onToggle={handleImageToggle}
-      onOpenHelp={() => openHelpModal("image")}
       isMobileHidden={mobileMode !== "image"}
     />
   </div>
-
-  <!-- Help Modal -->
-  <VisibilityHelpModal
-    bind:isOpen={isHelpModalOpen}
-    panel={helpModalPanel}
-    onClose={closeHelpModal}
-  />
 </div>
 
 <style>
@@ -323,12 +296,10 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: 100%;
     gap: clamp(8px, 1.5cqi, 12px);
     padding: clamp(8px, 1.5cqi, 12px);
     opacity: 0;
     transition: opacity 200ms ease;
-    min-height: 0;
     box-sizing: border-box;
   }
 
@@ -355,16 +326,13 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    flex: 1;
-    min-height: 0;
-    /* Ensure height is available for child container queries */
-    height: 100%;
   }
 
-  /* Desktop: Side by side */
+  /* Desktop: Side by side - all panels match tallest panel's height */
   @container visibility-tab (min-width: 700px) {
     .visibility-panels-container {
       flex-direction: row;
+      /* Stretch all panels to match the tallest (Animation panel) */
       align-items: stretch;
     }
 

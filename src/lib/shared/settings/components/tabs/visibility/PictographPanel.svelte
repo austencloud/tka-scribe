@@ -16,7 +16,6 @@
     reversalIndicatorsVisible: boolean;
     nonRadialVisible: boolean;
     onToggle: (key: string) => void;
-    onOpenHelp: () => void;
     isMobileHidden?: boolean;
   }
 
@@ -28,7 +27,6 @@
     reversalIndicatorsVisible,
     nonRadialVisible,
     onToggle,
-    onOpenHelp,
     isMobileHidden = false,
   }: Props = $props();
 </script>
@@ -39,14 +37,6 @@
       <i class="fas fa-image" aria-hidden="true"></i>
     </span>
     <h3 class="panel-title">Pictograph</h3>
-    <button
-      class="help-btn"
-      onclick={onOpenHelp}
-      aria-label="Learn about pictograph options"
-      type="button"
-    >
-      <i class="fas fa-info-circle" aria-hidden="true"></i>
-    </button>
   </header>
 
   <div class="preview-frame">
@@ -110,22 +100,19 @@
 
 <style>
   .settings-panel {
-    /* Enable container queries for height-aware sizing */
-    container-type: size;
+    container-type: inline-size;
     container-name: pictograph-panel;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Distribute space evenly when there's extra room */
-    justify-content: space-between;
-    gap: clamp(12px, 3cqh, 20px);
-    padding: clamp(12px, 3cqh, 24px);
+    gap: clamp(12px, 2cqi, 16px);
+    padding: clamp(12px, 2cqi, 20px);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
-    flex: 1;
+    /* Take equal width but don't stretch height */
+    flex: 1 1 0;
     min-width: 0;
-    min-height: 0;
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
@@ -145,8 +132,7 @@
   .panel-header {
     display: flex;
     align-items: center;
-    gap: clamp(6px, 1.5cqh, 10px);
-    flex-shrink: 0;
+    gap: clamp(6px, 1.5cqi, 10px);
     width: 100%;
   }
 
@@ -154,9 +140,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(26px, 6cqh, 32px);
-    height: clamp(26px, 6cqh, 32px);
-    border-radius: clamp(6px, 1.5cqh, 8px);
+    width: clamp(26px, 8cqi, 32px);
+    height: clamp(26px, 8cqi, 32px);
+    border-radius: clamp(6px, 2cqi, 8px);
     font-size: var(--font-size-sm);
     flex-shrink: 0;
     transition: all 0.15s ease;
@@ -185,50 +171,18 @@
     flex: 1;
   }
 
-  .help-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
-    padding: 0;
-    margin-left: auto;
-    background: color-mix(in srgb, #818cf8 15%, transparent);
-    border: 1px solid color-mix(in srgb, #818cf8 30%, transparent);
-    border-radius: 50%;
-    color: #818cf8;
-    font-size: var(--font-size-min);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-    flex-shrink: 0;
-  }
-
-  .help-btn:hover {
-    background: color-mix(in srgb, #818cf8 25%, transparent);
-    border-color: color-mix(in srgb, #818cf8 45%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, #818cf8 25%, transparent);
-  }
-
-  .help-btn:active {
-    transform: scale(0.92);
-  }
-
   .preview-frame {
     display: flex;
     align-items: center;
     justify-content: center;
     background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
-    border-radius: clamp(10px, 2cqh, 16px);
+    border-radius: clamp(10px, 2cqi, 14px);
     border: 1px solid var(--theme-stroke);
     overflow: hidden;
-    /* Allow preview to grow and fill available space */
-    flex: 1 1 auto;
+    /* Fixed size preview - don't grow */
     width: 100%;
-    max-width: 100%;
     aspect-ratio: 1;
-    /* Constrain max size so it doesn't get too huge on tall screens */
-    max-height: min(60cqh, 400px);
+    max-width: 280px;
     box-shadow: inset 0 2px 8px var(--theme-shadow);
   }
 
@@ -248,16 +202,16 @@
   .panel-controls {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 2cqh, 12px);
-    /* Don't grow - take only the space needed for controls */
-    flex: 0 0 auto;
+    gap: clamp(8px, 2cqi, 12px);
     width: 100%;
+    /* Push controls to bottom when panel is stretched */
+    margin-top: auto;
   }
 
   .control-group {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 1cqh, 6px);
+    gap: clamp(4px, 1cqi, 6px);
   }
 
   .group-label {
@@ -275,18 +229,18 @@
   .toggle-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(4px, 1cqh, 8px);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 48px; /* WCAG touch target */
-    padding: clamp(8px, 2cqh, 12px) clamp(8px, 1.5cqw, 10px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(8px, 1.5cqi, 12px) clamp(8px, 1.5cqi, 10px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 2cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -346,8 +300,7 @@
         color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
   }
 
-  .toggle-btn:focus-visible,
-  .help-btn:focus-visible {
+  .toggle-btn:focus-visible {
     outline: 2px solid
       color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
@@ -355,8 +308,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .settings-panel,
-    .toggle-btn,
-    .help-btn {
+    .toggle-btn {
       transition: none;
     }
   }
@@ -376,8 +328,8 @@
     }
   }
 
-  /* Container queries for extremely constrained heights (iPhone SE portrait) */
-  @container pictograph-panel (max-height: 450px) {
+  /* Compact width adjustments */
+  @container pictograph-panel (max-width: 280px) {
     .panel-header {
       gap: 6px;
     }
@@ -387,22 +339,9 @@
       height: 24px;
     }
 
-    .help-btn {
-      width: 40px;
-      height: 40px;
-      font-size: 10px;
-    }
-
     .group-label {
       font-size: 10px;
       letter-spacing: 0.3px;
-    }
-  }
-
-  /* Even more constrained - hide non-essential elements */
-  @container pictograph-panel (max-height: 380px) {
-    .help-btn {
-      display: none;
     }
   }
 </style>

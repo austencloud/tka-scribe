@@ -99,9 +99,7 @@
       >
         <div class="toggle-info">
           <span class="toggle-label">Lights Off Mode</span>
-          <span class="toggle-description">
-            Dark background with inverted grid and glowing props. Creates a dramatic night-time effect.
-          </span>
+
         </div>
         <div class="toggle-switch lights-off-switch" class:active={lightsOff}>
           <div class="toggle-knob"></div>
@@ -127,9 +125,7 @@
       >
         <div class="toggle-info">
           <span class="toggle-label">Ask before clearing sequence</span>
-          <span class="toggle-description">
-            Show a confirmation dialog when you tap the clear button in Create mode
-          </span>
+
         </div>
         <div class="toggle-switch" class:active={showClearConfirmation}>
           <div class="toggle-knob"></div>
@@ -144,7 +140,7 @@
   <div class="tip-card">
     <i class="fas fa-lightbulb" aria-hidden="true"></i>
     <p>
-      <strong>Tip:</strong> Even with confirmations disabled, you can always use
+      <strong>Tip:</strong> You can always use
       <strong>Undo</strong> to reverse accidental changes.
     </p>
   </div>

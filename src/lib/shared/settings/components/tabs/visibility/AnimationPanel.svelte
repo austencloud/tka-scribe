@@ -24,7 +24,6 @@
     onTrailStyleChange: (style: string) => void;
     onPlaybackModeChange: (mode: PlaybackMode) => void;
     onBpmChange: (bpm: number) => void;
-    onOpenHelp: () => void;
     isMobileHidden?: boolean;
   }
 
@@ -39,7 +38,6 @@
     onTrailStyleChange,
     onPlaybackModeChange,
     onBpmChange,
-    onOpenHelp,
     isMobileHidden = false,
   }: Props = $props();
 
@@ -101,14 +99,6 @@
       <i class="fas fa-film" aria-hidden="true"></i>
     </span>
     <h3 class="panel-title">Animation</h3>
-    <button
-      class="help-btn"
-      onclick={onOpenHelp}
-      aria-label="Learn about animation options"
-      type="button"
-    >
-      <i class="fas fa-info-circle" aria-hidden="true"></i>
-    </button>
   </header>
 
   <div class="preview-frame animation-preview">
@@ -353,22 +343,19 @@
 
 <style>
   .settings-panel {
-    /* Enable container queries for height-aware sizing */
-    container-type: size;
+    container-type: inline-size;
     container-name: animation-panel;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Use justify-content to distribute space when there's extra room */
-    justify-content: space-between;
-    gap: clamp(12px, 3cqh, 20px);
-    padding: clamp(12px, 3cqh, 24px);
+    gap: clamp(12px, 2cqi, 16px);
+    padding: clamp(12px, 2cqi, 20px);
     background: var(--theme-card-bg);
     border: 1px solid var(--theme-stroke);
     border-radius: 20px;
-    flex: 1;
+    /* Take equal width but don't stretch height */
+    flex: 1 1 0;
     min-width: 0;
-    min-height: 0;
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
@@ -388,8 +375,7 @@
   .panel-header {
     display: flex;
     align-items: center;
-    gap: clamp(6px, 1.5cqh, 10px);
-    flex-shrink: 0;
+    gap: clamp(6px, 1.5cqi, 10px);
     width: 100%;
   }
 
@@ -397,9 +383,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: clamp(26px, 6cqh, 32px);
-    height: clamp(26px, 6cqh, 32px);
-    border-radius: clamp(6px, 1.5cqh, 8px);
+    width: clamp(26px, 8cqi, 32px);
+    height: clamp(26px, 8cqi, 32px);
+    border-radius: clamp(6px, 2cqi, 8px);
     font-size: var(--font-size-sm);
     flex-shrink: 0;
     transition: all 0.15s ease;
@@ -428,50 +414,18 @@
     flex: 1;
   }
 
-  .help-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px; /* WCAG AAA touch target */
-    height: 48px;
-    padding: 0;
-    margin-left: auto;
-    background: color-mix(in srgb, #f472b6 15%, transparent);
-    border: 1px solid color-mix(in srgb, #f472b6 30%, transparent);
-    border-radius: 50%;
-    color: #f472b6;
-    font-size: var(--font-size-min);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    -webkit-tap-highlight-color: transparent;
-    flex-shrink: 0;
-  }
-
-  .help-btn:hover {
-    background: color-mix(in srgb, #f472b6 25%, transparent);
-    border-color: color-mix(in srgb, #f472b6 45%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, #f472b6 25%, transparent);
-  }
-
-  .help-btn:active {
-    transform: scale(0.92);
-  }
-
   .preview-frame {
     display: flex;
     align-items: center;
     justify-content: center;
     background: color-mix(in srgb, var(--theme-panel-bg) 80%, transparent);
-    border-radius: clamp(10px, 2cqh, 16px);
+    border-radius: clamp(10px, 2cqi, 14px);
     border: 1px solid var(--theme-stroke);
     overflow: hidden;
-    /* Allow preview to grow and fill available space */
-    flex: 1 1 auto;
+    /* Fixed size preview - don't grow */
     width: 100%;
-    max-width: 100%;
     aspect-ratio: 1;
-    /* Constrain max size so it doesn't get too huge on tall screens */
-    max-height: min(60cqh, 400px);
+    max-width: 280px;
     box-shadow: inset 0 2px 8px var(--theme-shadow);
   }
 
@@ -486,17 +440,17 @@
   .panel-controls {
     display: flex;
     flex-direction: column;
-    gap: clamp(8px, 2cqh, 12px);
-    /* Don't grow - take only the space needed for controls */
-    flex: 0 0 auto;
+    gap: clamp(8px, 2cqi, 12px);
     width: 100%;
+    /* Push controls to bottom when panel is stretched */
+    margin-top: auto;
   }
 
   /* Mobile/Desktop control visibility - use width to detect layout */
   .mobile-controls {
     display: flex;
     flex-direction: column;
-    gap: clamp(6px, 1.5cqh, 10px);
+    gap: clamp(6px, 1.5cqi, 10px);
     width: 100%;
   }
 
@@ -512,7 +466,7 @@
     .desktop-controls {
       display: flex;
       flex-direction: column;
-      gap: clamp(6px, 1.5cqh, 10px);
+      gap: clamp(6px, 1.5cqi, 10px);
       width: 100%;
     }
   }
@@ -520,7 +474,7 @@
   /* Mobile compact button rows */
   .mobile-row {
     display: flex;
-    gap: clamp(4px, 1cqh, 8px);
+    gap: clamp(4px, 1cqi, 8px);
     width: 100%;
   }
 
@@ -529,12 +483,12 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1cqh, 6px);
-    min-height: 48px; /* WCAG AAA touch target */
-    padding: clamp(10px, 2cqh, 14px) clamp(6px, 1cqw, 10px);
+    gap: clamp(4px, 1cqi, 6px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(10px, 2cqi, 14px) clamp(6px, 1cqi, 10px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 1.5cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -588,7 +542,7 @@
   .control-group {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 1cqh, 6px);
+    gap: clamp(4px, 1cqi, 6px);
   }
 
   .group-label {
@@ -606,12 +560,12 @@
   .toggle-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: clamp(4px, 1cqh, 8px);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .playback-mode-toggle {
     display: flex;
-    gap: clamp(4px, 1cqh, 8px);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .mode-btn {
@@ -619,12 +573,12 @@
     flex: 1;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1cqh, 8px);
-    min-height: 48px; /* WCAG touch target */
-    padding: clamp(8px, 2cqh, 12px) clamp(10px, 2cqw, 14px);
+    gap: clamp(4px, 1cqi, 8px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(8px, 1.5cqi, 12px) clamp(10px, 2cqi, 14px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 2cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -652,39 +606,39 @@
   }
 
   .mode-btn.active {
-    background: color-mix(in srgb, var(--semantic-warning) 20%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-warning) 40%, transparent);
-    color: #fcd34d;
+    background: color-mix(in srgb, var(--theme-accent) 25%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 45%, transparent);
+    color: white;
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--semantic-warning) 15%, transparent),
-      0 4px 12px color-mix(in srgb, var(--semantic-warning) 20%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent) 15%, transparent),
+      0 4px 12px color-mix(in srgb, var(--theme-accent) 25%, transparent);
   }
 
   .mode-btn.active:hover {
-    background: color-mix(in srgb, var(--semantic-warning) 30%, transparent);
-    border-color: color-mix(in srgb, var(--semantic-warning) 50%, transparent);
+    background: color-mix(in srgb, var(--theme-accent) 35%, transparent);
+    border-color: color-mix(in srgb, var(--theme-accent) 55%, transparent);
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--semantic-warning) 20%, transparent),
-      0 4px 16px color-mix(in srgb, var(--semantic-warning) 30%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--theme-accent) 20%, transparent),
+      0 4px 16px color-mix(in srgb, var(--theme-accent) 35%, transparent);
   }
 
   .mode-btn:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--semantic-warning) 50%, transparent);
+    outline: 2px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
   }
 
   .bpm-presets {
     display: flex;
-    gap: clamp(4px, 1cqh, 8px);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .bpm-btn {
     flex: 1;
-    min-height: 48px; /* WCAG touch target */
-    padding: clamp(8px, 2cqh, 12px) clamp(6px, 1.5cqw, 8px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(8px, 1.5cqi, 12px) clamp(6px, 1.5cqi, 8px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 2cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -734,11 +688,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 48px; /* WCAG touch target */
-    padding: clamp(8px, 2cqh, 12px) clamp(8px, 1.5cqw, 10px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(8px, 1.5cqi, 12px) clamp(8px, 1.5cqi, 10px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 2cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -798,8 +752,7 @@
         color-mix(in srgb, var(--theme-accent, var(--theme-accent)) 35%, transparent);
   }
 
-  .toggle-btn:focus-visible,
-  .help-btn:focus-visible {
+  .toggle-btn:focus-visible {
     outline: 2px solid
       color-mix(in srgb, var(--theme-accent) 50%, transparent);
     outline-offset: 2px;
@@ -809,22 +762,22 @@
   .trail-preset-row {
     display: flex;
     align-items: center;
-    gap: clamp(4px, 1cqh, 8px);
+    gap: clamp(4px, 1cqi, 8px);
   }
 
   .preset-buttons {
     display: flex;
-    gap: clamp(4px, 1cqh, 6px);
+    gap: clamp(4px, 1cqi, 6px);
     flex: 1;
   }
 
   .preset-btn {
     flex: 1;
-    min-height: 48px; /* WCAG touch target */
-    padding: clamp(8px, 2cqh, 12px) clamp(8px, 1.5cqw, 10px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(8px, 1.5cqi, 12px) clamp(8px, 1.5cqi, 10px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 2cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -895,12 +848,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(4px, 1cqh, 6px);
-    min-height: 48px; /* WCAG touch target */
-    padding: clamp(8px, 2cqh, 12px) clamp(10px, 2cqw, 14px);
+    gap: clamp(4px, 1cqi, 6px);
+    min-height: 44px; /* WCAG touch target */
+    padding: clamp(8px, 1.5cqi, 12px) clamp(10px, 2cqi, 14px);
     background: color-mix(in srgb, var(--theme-card-bg) 70%, transparent);
     border: 1px solid var(--theme-stroke);
-    border-radius: clamp(8px, 2cqh, 12px);
+    border-radius: clamp(8px, 1.5cqi, 12px);
     color: var(--theme-text-dim);
     font-size: var(--font-size-compact);
     font-weight: 600;
@@ -981,7 +934,6 @@
     .toggle-btn,
     .mode-btn,
     .bpm-btn,
-    .help-btn,
     .preset-btn,
     .ends-toggle {
       transition: none;
@@ -1004,7 +956,7 @@
     }
 
     .mode-btn.active {
-      border-color: var(--semantic-warning);
+      border-color: var(--theme-accent);
     }
 
     .bpm-btn.active,
@@ -1021,8 +973,8 @@
     }
   }
 
-  /* Container queries for extremely constrained heights (iPhone SE portrait) */
-  @container animation-panel (max-height: 450px) {
+  /* Compact width adjustments */
+  @container animation-panel (max-width: 280px) {
     .panel-header {
       gap: 6px;
     }
@@ -1032,22 +984,9 @@
       height: 24px;
     }
 
-    .help-btn {
-      width: 40px;
-      height: 40px;
-      font-size: 10px;
-    }
-
     .group-label {
       font-size: 10px;
       letter-spacing: 0.3px;
-    }
-  }
-
-  /* Even more constrained - hide non-essential elements */
-  @container animation-panel (max-height: 380px) {
-    .help-btn {
-      display: none;
     }
 
     .ends-label {
