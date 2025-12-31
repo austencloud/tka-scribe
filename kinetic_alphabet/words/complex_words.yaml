@@ -1,7 +1,7 @@
-# Complex Words - Advanced sequences, CAPs, and multi-letter combinations
+# Complex Words - Advanced sequences, LOOPs, and multi-letter combinations
 
 metadata:
-  description: "Complex word formations including CAPs, extended sequences, and advanced combinations"
+  description: "Complex word formations including LOOPs, extended sequences, and advanced combinations"
   complexity_levels:
     [
       "4-letter words",
@@ -132,7 +132,7 @@ reversal_words:
       description: "3-letter word with full-reversal"
       reversal_types: "Uses hand, prop, and full reversals"
 
-# Prop-Reversal CAPs
+# Prop-Reversal LOOPs
 prop_reversal_caps:
   EΣQY:
     letters: ["E", "Σ", "Q", "Y"]
@@ -166,14 +166,14 @@ construction_principles:
     includes: "Variations on reversals and thumb orientations"
 
   complexity_scaling:
-    simple_to_complex: "Build from basic letter combinations to advanced CAPs"
+    simple_to_complex: "Build from basic letter combinations to advanced LOOPs"
     execution_requirements: "More complex words need advanced execution techniques"
     musical_integration: "Complex words often align with musical phrasing"
 
 # Performance and Collaboration
 performance_applications:
   solo_practice:
-    progression: "Start with simple words, build to complex CAPs"
+    progression: "Start with simple words, build to complex LOOPs"
     skill_development: "Master execution techniques through word practice"
 
   group_choreography:

@@ -18,8 +18,8 @@ I've successfully implemented the **Strict Rotated CAP (Continuous Assembly Patt
   - Example: `ALPHA1` (S,N) → `ALPHA5` (N,S)
 - `QUARTER_POSITION_MAP_CW`: 90° clockwise rotations
 - `QUARTER_POSITION_MAP_CCW`: 90° counter-clockwise rotations
-- `HALVED_CAPS` validation set: All valid (start, end) pairs for halved CAPs
-- `QUARTERED_CAPS` validation set: All valid pairs for quartered CAPs
+- `HALVED_CAPS` validation set: All valid (start, end) pairs for halved LOOPs
+- `QUARTERED_CAPS` validation set: All valid pairs for quartered LOOPs
 
 ### 3. **Location Rotation Maps** (`location-rotation-maps.ts`)
 
@@ -141,7 +141,7 @@ Beat 1: ALPHA1 (S,N) → ALPHA3 (W,E)
 ### 1. **Faithful Port from Legacy**
 
 - Location rotation maps match exactly: `loc_map_cw`, `loc_map_ccw`, `loc_map_dash`, `loc_map_static`
-- Position validation sets match: `halved_CAPs`, `quartered_CAPs`
+- Position validation sets match: `halved_LOOPs`, `quartered_LOOPs`
 - Index mapping logic matches the Python implementation
 - Hand rotation direction detection is identical
 

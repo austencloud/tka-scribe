@@ -471,18 +471,18 @@ letter_transformations:
 
   polyrhythmic_relevance:
     description: |
-      In polyrhythmic CAPs like the 3:4 DΣPMYDJθMPWJ example:
+      In polyrhythmic LOOPs like the 3:4 DΣPMYDJθMPWJ example:
       - Beat pairs often follow alpha_beta_counterpart patterns
       - D↔J and Σ↔θ relationships repeat at the polyrhythmic interval
       - Motion types (pro/anti) may follow Period 3
       - Spatial positions (section transitions) may follow Period 4
 
-# CAPs (Continuous Assembly Patterns)
+# LOOPs (Continuous Assembly Patterns)
 # Sequences that return to their starting position through specific transformations
 caps:
   definition: |
     A CAP is a circular sequence - one that returns to its starting position.
-    CAPs are classified by which transformation(s) bring the sequence home.
+    LOOPs are classified by which transformation(s) bring the sequence home.
     A single sequence may satisfy multiple transformation paths (OR relationship).
 
   # The 5 base components that can combine to form CAP types
