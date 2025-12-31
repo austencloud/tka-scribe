@@ -1333,7 +1333,9 @@
       "WebFetch(domain:threejs-flame-shader.vercel.app)",
       "WebFetch(domain:codepen.io)",
       "WebFetch(domain:techbrood.com)",
-      "WebFetch(domain:discourse.threejs.org)"
+      "WebFetch(domain:discourse.threejs.org)",
+      "Bash(firebase firestore:rules:*)",
+      "Bash(firebase firestore:delete:*)"
     ],
     "deny": [],
     "ask": []
