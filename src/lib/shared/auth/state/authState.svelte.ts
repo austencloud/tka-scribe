@@ -558,6 +558,16 @@ export async function signOut() {
       // Profile settings may not be loaded - that's ok
     }
 
+    // Reset first-run cloud sync so next signin will sync fresh
+    try {
+      const { firstRunState } = await import(
+        "../../onboarding/state/first-run-state.svelte"
+      );
+      firstRunState.resetCloudSync();
+    } catch {
+      // First-run state may not be loaded - that's ok
+    }
+
     // Mark user as offline in presence system before signing out
     try {
       const presenceService = tryResolve<{ goOffline: () => Promise<void> }>(
