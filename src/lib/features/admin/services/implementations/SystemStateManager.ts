@@ -204,7 +204,7 @@ export class SystemStateManager implements ISystemStateManager {
   private async loadDailyChallenges(): Promise<CachedChallenge[]> {
     try {
       const firestore = await getFirestoreInstance();
-      const challengesRef = collection(firestore, "daily_challenges");
+      const challengesRef = collection(firestore, "dailyChallenges");
       const snapshot = await withTimeout(
         getDocs(challengesRef),
         QUERY_TIMEOUT_MS,
@@ -262,7 +262,7 @@ export class SystemStateManager implements ISystemStateManager {
   private async loadTrainChallenges(): Promise<CachedChallenge[]> {
     try {
       const firestore = await getFirestoreInstance();
-      const challengesRef = collection(firestore, "train_challenges");
+      const challengesRef = collection(firestore, "trainChallenges");
       const snapshot = await withTimeout(
         getDocs(challengesRef),
         QUERY_TIMEOUT_MS,
