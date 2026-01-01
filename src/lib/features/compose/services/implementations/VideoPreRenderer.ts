@@ -121,6 +121,96 @@ export class VideoPreRenderer implements IVideoPreRenderer {
     // Check for cached video first
     const cached = await this.getCachedVideo(sequenceId);
     if (cached?.success) {
+      console.log(`📼 Using cached video for ${sequenceId}`);
+      return cached;
+    }
+
+    this.isCurrentlyRendering = true;
+    this.cancelRequested = false;
+
+    const {
+      fps = 60,
+      quality = 0.9,
+      format = "webm",
+      width = 500,
+      height = 500,
+    } = options;
+
+    const totalBeats = sequence.beats.length || 0;
+    if (totalBeats === 0) {
+      this.isCurrentlyRendering = false;
+      return {
+        success: false,
+        error: "Sequence has no beats",
+        sequenceId,
+      };
+    }
+
+    console.log(
+      `🎬 Starting video generation for ${sequenceId} (${totalBeats} beats @ ${fps}fps)`
+    );
+    console.log(`📐 Using REAL PixiJS renderer with actual SVG assets`);
+
+    // Create offscreen container for PixiJS
+    // IMPORTANT: Use opacity: 0 instead of visibility: hidden
+    // visibility: hidden can prevent canvas rendering in some browsers
+    const offscreenContainer = document.createElement("div");
+    offscreenContainer.style.cssText = `
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: ${width}px;
+      height: ${height}px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: -9999;
+    `;
+    document.body.appendChild(offscreenContainer);
+
+    // Create the Canvas2D renderer (same as live preview)
+    const canvasRenderer = new Canvas2DAnimationRenderer();
+
+    try {
+      // Report preparation phase
+      onProgress?.({
+        currentFrame: 0,
+        totalFrames: 0,
+        percent: 0,
+        estimatedTimeRemaining: 0,
+        phase: "rendering",
+      });
+
+      // Initialize Canvas2D with offscreen container
+      console.log("🔧 Initializing offscreen Canvas2D renderer...");
+      await canvasRenderer.initialize(offscreenContainer, width, 1);
+
+      // Load REAL grid and prop images (the actual SVGs!)
+      console.log("📦 Loading real SVG images...");
+      await Promise.all([
+        canvasRenderer.loadGridTexture("diamond"),
+        canvasRenderer.loadPropTextures("staff"),
+      ]);
+
+      // Get prop dimensions from SVG generator
+      const svgGenerator = resolve<ISVGGenerator>(TYPES.ISVGGenerator);
+      const [bluePropData, redPropData] = await Promise.all([
+        svgGenerator.generateBluePropSvg("staff"),
+        svgGenerator.generateRedPropSvg("staff"),
+      ]);
+
+      const bluePropDimensions = {
+        width: bluePropData.width,
+        height: bluePropData.height,
+      };
+      const redPropDimensions = {
+        width: redPropData.width,
+        height: redPropData.height,
+      };
+
+      // Get orchestrator for calculating prop states
+      const orchestrator = resolve<ISequenceAnimationOrchestrator>(
+        TYPES.ISequenceAnimationOrchestrator
+      );
 
       // Initialize orchestrator with sequence data
       const initSuccess = orchestrator.initializeWithDomainData(sequence);
@@ -148,6 +238,32 @@ export class VideoPreRenderer implements IVideoPreRenderer {
           ? "video/webm"
           : "video/mp4";
 
+      console.log(`📹 MediaRecorder using: ${mimeType}`);
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: quality * 8_000_000,
+      });
+
+      const recordedChunks: Blob[] = [];
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+
+      // Start recording - use smaller chunks for smoother capture
+      mediaRecorder.start(50);
+
+      // Use 30fps for smoother video (60fps causes timing issues)
+      const videoFps = 30;
+      const totalFrames = Math.ceil(totalBeats * videoFps);
+      const frameDuration = 1000 / videoFps; // ~33.3ms per frame
+      const startTime = performance.now();
+
+      console.log(
+        `🎥 Rendering ${totalFrames} frames at ${videoFps}fps (${totalBeats} beats)`
+      );
 
       // Trail settings for rendering
       const trailSettings: TrailSettings = {
@@ -275,7 +391,13 @@ export class VideoPreRenderer implements IVideoPreRenderer {
 
       const videoBlob = await new Promise<Blob>((resolve) => {
         mediaRecorder.onstop = () => {
+          console.log(
+            `📦 MediaRecorder stopped with ${recordedChunks.length} chunks`
+          );
           const blob = new Blob(recordedChunks, { type: mimeType });
+          console.log(
+            `📦 Created video blob: ${(blob.size / 1024).toFixed(1)}KB, type: ${blob.type}`
+          );
           resolve(blob);
         };
       });
@@ -300,6 +422,9 @@ export class VideoPreRenderer implements IVideoPreRenderer {
         phase: "complete",
       });
 
+      console.log(
+        `✅ Video generated with REAL PixiJS: ${sequenceId} (${duration.toFixed(1)}s, ${(videoBlob.size / 1024).toFixed(0)}KB)`
+      );
 
       this.isCurrentlyRendering = false;
 
