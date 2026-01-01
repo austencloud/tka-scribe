@@ -34,8 +34,8 @@
     redPropType = null,
   }: Props = $props();
 
-  // Check if EITHER prop is bilateral (staff, buugeng, etc.)
-  // This allows users to track both ends even with mixed props
+  // Check if ANY selected prop is bilateral (staff, buugeng, etc.)
+  // Toggle shown when at least one prop has trackable ends
   const showBilateralToggle = $derived.by(() => {
     // Use new props if provided, fall back to legacy propType
     const blue = bluePropType ?? propType;
@@ -44,7 +44,8 @@
     const blueIsBilateral = blue != null && isBilateralProp(blue);
     const redIsBilateral = red != null && isBilateralProp(red);
 
-    // Show toggle if either prop is bilateral
+    // Show toggle if ANY prop is bilateral
+    // (applies to whichever prop has trackable ends)
     return blueIsBilateral || redIsBilateral;
   });
 
