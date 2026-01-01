@@ -49,16 +49,19 @@ export class FollowingFeedProvider implements IFollowingFeedProvider {
   async getFollowingFeed(
     options: FollowingFeedOptions = {}
   ): Promise<FollowingFeedItem[]> {
-    const { limit = 10, daysBack = 7, eventTypes } = options;
+    const { limit = 10, daysBack = 7, eventTypes, userId } = options;
 
-    if (!this.getServices() || !authState.user?.uid) {
+    // Use provided userId (for preview mode) or fall back to authenticated user
+    const effectiveUserId = userId || authState.user?.uid;
+
+    if (!this.getServices() || !effectiveUserId) {
       return [];
     }
 
     try {
       // Get followed users
       const followedUsers = await this.userService!.getFollowing(
-        authState.user.uid,
+        effectiveUserId,
         100
       );
 
@@ -127,13 +130,16 @@ export class FollowingFeedProvider implements IFollowingFeedProvider {
     }
   }
 
-  async hasFollowing(): Promise<boolean> {
-    const count = await this.getFollowingCount();
+  async hasFollowing(userId?: string): Promise<boolean> {
+    const count = await this.getFollowingCount(userId);
     return count > 0;
   }
 
-  async getFollowingCount(): Promise<number> {
-    if (!authState.user?.uid) {
+  async getFollowingCount(userId?: string): Promise<number> {
+    // Use provided userId (for preview mode) or fall back to authenticated user
+    const effectiveUserId = userId || authState.user?.uid;
+
+    if (!effectiveUserId) {
       return 0;
     }
 
@@ -149,7 +155,7 @@ export class FollowingFeedProvider implements IFollowingFeedProvider {
 
     try {
       const followedUsers = await this.userService.getFollowing(
-        authState.user.uid,
+        effectiveUserId,
         1
       );
       return followedUsers.length;

@@ -6,7 +6,6 @@
    * Displays: sequences created, sequences favorited, achievements earned
    */
 
-  import { onMount } from "svelte";
   import { tryResolve } from "$lib/shared/inversify/di";
   import { TYPES } from "$lib/shared/inversify/types";
   import type {
@@ -14,6 +13,8 @@
     FollowingFeedItem,
   } from "$lib/features/dashboard/services/contracts/IFollowingFeedProvider";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
+  import { getEffectiveUserId } from "$lib/shared/debug/state/user-preview-state.svelte";
+  import { authState } from "$lib/shared/auth/state/authState.svelte";
   import FeedItem from "./feed/FeedItem.svelte";
 
   // State
@@ -22,32 +23,48 @@
   let hasFollowing = $state(false);
   let error = $state<string | null>(null);
 
-  onMount(async () => {
+  // Reactive: reload feed when effective user changes (preview mode toggle)
+  const effectiveUserId = $derived(getEffectiveUserId(authState.user?.uid || null));
+
+  async function loadFeed() {
+    isLoading = true;
+    error = null;
+
     try {
       const feedService = tryResolve<IFollowingFeedProvider>(
         TYPES.IFollowingFeedProvider
       );
 
-      if (!feedService) {
+      if (!feedService || !effectiveUserId) {
         isLoading = false;
         return;
       }
 
       // Check if user follows anyone
-      hasFollowing = await feedService.hasFollowing();
+      hasFollowing = await feedService.hasFollowing(effectiveUserId);
 
       if (hasFollowing) {
         // Fetch the feed
         feedItems = await feedService.getFollowingFeed({
           limit: 8,
           daysBack: 7,
+          userId: effectiveUserId,
         });
+      } else {
+        feedItems = [];
       }
     } catch (e) {
       console.warn("[FollowingFeed] Failed to load feed:", e);
       error = "Unable to load feed";
     } finally {
       isLoading = false;
+    }
+  }
+
+  // Load feed when effectiveUserId changes
+  $effect(() => {
+    if (effectiveUserId) {
+      loadFeed();
     }
   });
 

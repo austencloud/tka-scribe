@@ -187,7 +187,18 @@ service cloud.firestore {
       allow read: if true;
 
       // Users can only update their own profile
-      allow create, update: if isOwner(userId);
+      allow create: if isOwner(userId);
+
+      // Allow updates for:
+      // 1. Owner updating their own profile
+      // 2. Authenticated users incrementing/decrementing followerCount (for follow/unfollow)
+      allow update: if isOwner(userId)
+        || (isAuthenticated()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followerCount'])
+            && request.resource.data.followerCount == resource.data.followerCount + 1)
+        || (isAuthenticated()
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followerCount'])
+            && request.resource.data.followerCount == resource.data.followerCount - 1);
 
       // Users can delete their own profile (with caution)
       allow delete: if isOwner(userId);
@@ -213,10 +224,11 @@ service cloud.firestore {
       // USER GAMIFICATION SUBCOLLECTIONS (Private - admin can read for preview)
       // -------------------------------------------------------------------------
 
-      // User achievements
+      // User achievements - PUBLIC read for creator profiles in Discover
       match /achievements/{achievementId} {
-        // Admins can read for impersonation/preview mode
-        allow read: if isOwner(userId) || isAdmin();
+        // Anyone can read achievements (for viewing creator profiles)
+        // Only owner can write
+        allow read: if true;
         allow write: if isOwner(userId);
       }
 

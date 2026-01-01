@@ -218,16 +218,18 @@
   /* Sequence grid */
   .sequence-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(80px, 120px));
     gap: 12px;
     width: 100%;
     min-width: 0;
+    max-width: 100%;
+    justify-content: center;
   }
 
   .sequence-card {
     position: relative;
     aspect-ratio: 1;
-    min-width: 0;
+    width: 100%;
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
@@ -312,7 +314,7 @@
     }
 
     .sequence-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(80px, 120px));
     }
 
     .view-all-btn {

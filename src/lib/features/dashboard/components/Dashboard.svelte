@@ -16,7 +16,7 @@
   import type { ResponsiveSettings } from "$lib/shared/device/domain/models/device-models";
   import { handleModuleChange } from "$lib/shared/navigation-coordinator/navigation-coordinator.svelte";
   import type { ModuleId } from "$lib/shared/navigation/domain/types";
-  import { userPreviewState } from "$lib/shared/debug/state/user-preview-state.svelte";
+  import { userPreviewState, getEffectiveUserId } from "$lib/shared/debug/state/user-preview-state.svelte";
   import { authState } from "$lib/shared/auth/state/authState.svelte";
 
   // Components
@@ -81,6 +81,9 @@
     responsiveSettings?.isMobile || responsiveSettings?.isTablet || false
   );
 
+  // Reactive: get effective user ID (preview mode or authenticated user)
+  const effectiveUserId = $derived(getEffectiveUserId(authState.user?.uid || null));
+
   onMount(() => {
     let cleanup: (() => void) | undefined;
     try {
@@ -97,9 +100,6 @@
       console.warn("Dashboard: Failed to resolve DeviceDetector", error);
     }
 
-    // Check if user follows anyone (for showing Following vs Community feed)
-    checkHasFollowing();
-
     setTimeout(() => {
       dashboardState.isVisible = true;
     }, 30);
@@ -110,8 +110,16 @@
     };
   });
 
+  // Reactively check following status when effectiveUserId changes
+  $effect(() => {
+    if (effectiveUserId) {
+      checkHasFollowing();
+    }
+  });
+
   async function checkHasFollowing(retryCount = 0) {
-    if (!authState.isAuthenticated) {
+    if (!effectiveUserId) {
+      console.log("[Dashboard] No effectiveUserId, skipping following check");
       return;
     }
 
@@ -120,9 +128,11 @@
         TYPES.IFollowingFeedProvider
       );
       if (feedService) {
-        hasFollowing = await feedService.hasFollowing();
+        hasFollowing = await feedService.hasFollowing(effectiveUserId);
+        console.log(`[Dashboard] hasFollowing check for user ${effectiveUserId}:`, hasFollowing);
       } else if (retryCount < 3) {
         // Service not available yet (Tier 2 still loading), retry after delay
+        console.log("[Dashboard] Feed service not ready, retrying...", retryCount + 1);
         setTimeout(() => checkHasFollowing(retryCount + 1), 500);
       }
     } catch (error) {

@@ -46,6 +46,9 @@ export interface FollowingFeedOptions {
 
   /** Event types to include (default: all) */
   eventTypes?: FollowingFeedItem["eventType"][];
+
+  /** Optional user ID (for preview mode). If not provided, uses authenticated user. */
+  userId?: string;
 }
 
 /**
@@ -53,26 +56,28 @@ export interface FollowingFeedOptions {
  */
 export interface IFollowingFeedProvider {
   /**
-   * Get the following feed for the current user
+   * Get the following feed for a user
    * Aggregates recent activity from all followed users
    *
-   * @param options Feed options (limit, days, event types)
+   * @param options Feed options (limit, days, event types, userId for preview)
    * @returns Array of feed items sorted by timestamp (newest first)
    */
   getFollowingFeed(options?: FollowingFeedOptions): Promise<FollowingFeedItem[]>;
 
   /**
-   * Check if the current user follows anyone
+   * Check if a user follows anyone
    * Used to determine if the feed widget should be shown
    *
+   * @param userId Optional user ID (for preview mode). If not provided, uses authenticated user.
    * @returns true if user follows at least one other user
    */
-  hasFollowing(): Promise<boolean>;
+  hasFollowing(userId?: string): Promise<boolean>;
 
   /**
-   * Get the count of users the current user follows
+   * Get the count of users a user follows
    *
+   * @param userId Optional user ID (for preview mode). If not provided, uses authenticated user.
    * @returns Number of followed users
    */
-  getFollowingCount(): Promise<number>;
+  getFollowingCount(userId?: string): Promise<number>;
 }
