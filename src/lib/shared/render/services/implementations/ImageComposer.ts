@@ -654,17 +654,7 @@ export class ImageComposer implements IImageComposer {
       },
     };
 
-    // DEBUG: Log prop type override application
-    if (finalBlueProp || finalRedProp) {
-      console.log('[ImageComposer] Applied prop override:', {
-        originalBlue: data.motions.blue?.propType,
-        originalRed: data.motions.red?.propType,
-        finalBlue: result.motions.blue?.propType,
-        finalRed: result.motions.red?.propType,
-        requestedBlue: finalBlueProp,
-        requestedRed: finalRedProp,
-      });
-    }
+
 
     return result;
   }
