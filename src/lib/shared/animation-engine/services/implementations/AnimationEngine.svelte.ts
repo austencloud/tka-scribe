@@ -278,9 +278,15 @@ export class AnimationEngine {
         this.prevLightsOff = state.lightsOff;
         // Note: setLedMode on renderer controls the "Lights Off" effect (dark bg, inverted grid)
         this.animationRenderer?.setLedMode(state.lightsOff);
-        // Trigger re-render to show the change
+
+        // CRITICAL: Reload prop textures when dark mode changes
+        // Prop colors are theme-dependent (light/dark mode), so textures must be regenerated
         if (this.state.isInitialized) {
-          this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS));
+          console.log("[AnimationEngine] Reloading prop textures for new theme mode");
+          this.loadPropTextures().then(() => {
+            console.log("[AnimationEngine] Textures reloaded, triggering re-render");
+            this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS));
+          });
         }
       }
     });

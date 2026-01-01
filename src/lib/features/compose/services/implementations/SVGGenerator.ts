@@ -1,8 +1,9 @@
 import { GridMode } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import { injectable } from "inversify";
 import type { ISVGGenerator, PropSvgData } from "../contracts/ISVGGenerator";
-import { applyColorToSvg, getMotionColor } from "$lib/shared/utils/svg-color-utils";
+import { applyColorToSvg, getMotionColor, type ThemeMode } from "$lib/shared/utils/svg-color-utils";
 import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { getAnimationVisibilityManager } from "$lib/shared/animation-engine/state/animation-visibility-state.svelte";
 
 /**
  * SVG Generator for creating prop staff images and grid
@@ -13,6 +14,21 @@ import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictogra
 export class SVGGenerator implements ISVGGenerator {
   // Static cache for fetched SVG content to avoid repeated network requests
   private static svgCache = new Map<string, string>();
+
+  /**
+   * Get the current theme mode based on animation visibility settings
+   * Lights Off (dark mode) = "dark" theme colors (brighter props for contrast)
+   * Lights On (light mode) = "light" theme colors (darker props for contrast)
+   */
+  private getCurrentThemeMode(): ThemeMode {
+    try {
+      const manager = getAnimationVisibilityManager();
+      return manager.isDarkMode() ? "dark" : "light";
+    } catch {
+      // Fallback to dark mode if manager not available
+      return "dark";
+    }
+  }
 
   /**
    * Generate grid SVG with support for strict mode points
@@ -104,17 +120,21 @@ export class SVGGenerator implements ISVGGenerator {
 
   /**
    * Generate blue staff SVG exactly as in standalone_animator.html
+   * @deprecated Use generateBluePropSvg instead
    */
   generateBlueStaffSvg(): string {
-    const blueColor = getMotionColor(MotionColor.BLUE, "dark");
+    const themeMode = this.getCurrentThemeMode();
+    const blueColor = getMotionColor(MotionColor.BLUE, themeMode);
     return `<svg version="1.1" id="staff" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 252.8 77.8" style="enable-background:new 0 0 252.8 77.8;" xml:space="preserve"><path fill="${blueColor}" stroke="#555555" stroke-width="1" stroke-miterlimit="10" d="M251.4,67.7V10.1c0-4.8-4.1-8.7-9.1-8.7s-9.1,3.9-9.1,8.7v19.2H10.3c-4.9,0-8.9,3.8-8.9,8.5V41 c0,4.6,4,8.5,8.9,8.5h222.9v18.2c0,4.8,4.1,8.7,9.1,8.7S251.4,72.5,251.4,67.7z"/><circle id="centerPoint" fill="#FF0000" cx="126.4" cy="38.9" r="5" /></svg>`;
   }
 
   /**
    * Generate red staff SVG exactly as in standalone_animator.html
+   * @deprecated Use generateRedPropSvg instead
    */
   generateRedStaffSvg(): string {
-    const redColor = getMotionColor(MotionColor.RED, "dark");
+    const themeMode = this.getCurrentThemeMode();
+    const redColor = getMotionColor(MotionColor.RED, themeMode);
     return `<svg version="1.1" id="staff" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 252.8 77.8" style="enable-background:new 0 0 252.8 77.8;" xml:space="preserve"><path fill="${redColor}" stroke="#555555" stroke-width="1" stroke-miterlimit="10" d="M251.4,67.7V10.1c0-4.8-4.1-8.7-9.1-8.7s-9.1,3.9-9.1,8.7v19.2H10.3c-4.9,0-8.9,3.8-8.9,8.5V41 c0,4.6,4,8.5,8.9,8.5h222.9v18.2c0,4.8,4.1,8.7,9.1,8.7S251.4,72.5,251.4,67.7z"/><circle id="centerPoint" fill="#FF0000" cx="126.4" cy="38.9" r="5" /></svg>`;
   }
 
@@ -136,16 +156,20 @@ export class SVGGenerator implements ISVGGenerator {
 
   /**
    * Generate blue prop SVG with dynamic prop type
+   * Color adapts to theme: dark backgrounds get bright blue, light backgrounds get darker blue
    */
   async generateBluePropSvg(propType: string = "staff"): Promise<PropSvgData> {
-    return this.generatePropSvg(propType, getMotionColor(MotionColor.BLUE, "dark"));
+    const themeMode = this.getCurrentThemeMode();
+    return this.generatePropSvg(propType, getMotionColor(MotionColor.BLUE, themeMode));
   }
 
   /**
    * Generate red prop SVG with dynamic prop type
+   * Color adapts to theme: dark backgrounds get bright red, light backgrounds get darker red
    */
   async generateRedPropSvg(propType: string = "staff"): Promise<PropSvgData> {
-    return this.generatePropSvg(propType, getMotionColor(MotionColor.RED, "dark"));
+    const themeMode = this.getCurrentThemeMode();
+    return this.generatePropSvg(propType, getMotionColor(MotionColor.RED, themeMode));
   }
 
   /**
