@@ -551,7 +551,27 @@ Task({
 
 **Note:** Most tasks that seem "trivial" should actually go to Sonnet. Haiku is only for the absolute simplest changes where you already know exactly what to change.
 
-### Example 2: MEDIUM → Delegate to Sonnet (most common)
+### Example 2: "Seems trivial" but → Delegate to Sonnet
+
+**Feedback:** "The feedback submit button icon should be a paper airplane instead of a send icon"
+
+**Triage Decision:**
+
+```
+Complexity Assessment: MEDIUM
+Model Routing: Delegating to Sonnet
+Reasoning: Icon change requires finding the correct file, identifying the icon system used, and making the swap. Not a literal known change.
+```
+
+**Why not Haiku?** Even though this is "just an icon swap," the agent needs to:
+- Find the correct component file
+- Understand the icon system (FontAwesome? Custom SVGs? Icon component?)
+- Locate the specific icon reference
+- Make the appropriate change
+
+Haiku struggles with investigation. Sonnet handles this reliably.
+
+### Example 3: MEDIUM → Delegate to Sonnet (most common)
 
 **Feedback:** "When I close the feedback panel, it should save my draft automatically"
 
@@ -609,7 +629,7 @@ Task({
 });
 ```
 
-### Example 3: COMPLEX → Handle as Opus
+### Example 4: COMPLEX → Handle as Opus
 
 **Feedback:** "I've been thinking about how users discover new features. We should add a What's New notification system that shows release notes in-app when users log in after an update."
 
