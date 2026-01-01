@@ -118,30 +118,40 @@ After displaying feedback, **immediately assess complexity** to route to the mos
 
 Evaluate the feedback against these criteria:
 
-#### TRIVIAL → Delegate to Haiku (1/10th token cost)
+#### TRIVIAL → Delegate to Haiku (VERY restrictive - only truly menial tasks)
+
+**IMPORTANT:** Haiku is unreliable for anything beyond the absolute simplest changes. When in doubt, use Sonnet.
+
+**Only use Haiku for:**
+
+- Literal string/text swaps (changing one word to another)
+- Single-line icon class changes (e.g., `icon-send` → `icon-plane`)
+- Updating a hardcoded number or string constant
+- Adding/removing a single CSS property where the exact change is specified
+
+**NOT for Haiku (use Sonnet instead):**
+
+- CSS fixes requiring any investigation
+- Anything involving component logic
+- Changes where the exact solution isn't already known
+- Multi-property CSS changes
+- Anything requiring reading context from other files
+
+**Examples that qualify for Haiku:**
+
+- "Change 'Submit' button text to 'Send'"
+- "Update the max value from 10 to 15 in this constant"
+- "Swap the fa-send icon class to fa-paper-plane"
+
+#### MEDIUM → Delegate to Sonnet (default choice for most tasks)
 
 **Indicators:**
 
-- Keywords: "tiny", "small", "quick", "just", "simple", "swap", "change"
-- Icon or text changes
 - CSS tweaks (colors, spacing, sizing, overflow fixes)
-- Validation caps or simple constraints
-- Single-file changes where pattern already exists
+- Icon or visual changes requiring any investigation
+- Validation constraints or simple logic changes
+- Single-file changes even when pattern exists
 - Applying an existing pattern to a new location
-- String/label updates
-
-**Examples:**
-
-- "Change the icon for X to Y"
-- "The text spills over" (CSS overflow)
-- "Cap the value at 3"
-- "Add version number text"
-- "Apply the same styling as X to Y"
-
-#### MEDIUM → Delegate to Sonnet (1/3rd token cost)
-
-**Indicators:**
-
 - Clear bug with specific reproduction steps
 - Feature scoped to 1-3 files
 - "When X happens, do Y" patterns
@@ -152,6 +162,9 @@ Evaluate the feedback against these criteria:
 
 **Examples:**
 
+- "Change the icon for X to Y" (needs to find the right file)
+- "The text spills over" (CSS overflow)
+- "Cap the value at 3"
 - "When I click X, nothing happens"
 - "The panel doesn't close when..."
 - "Add a clear button to the form"
@@ -494,22 +507,22 @@ If a feedback item has been "in-progress" for over 2 hours, it's considered stal
 
 ## Real-World Triage Examples
 
-### Example 1: TRIVIAL → Delegate to Haiku
+### Example 1: TRIVIAL → Delegate to Haiku (rare)
 
-**Feedback:** "The feedback submit button icon should be a paper airplane instead of a send icon"
+**Feedback:** "Change the 'Submit' button text to 'Send Feedback'"
 
 **Triage Decision:**
 
 ```
 Complexity Assessment: TRIVIAL
 Model Routing: Delegating to Haiku
-Reasoning: Simple icon swap in a single component. No logic changes.
+Reasoning: Literal text swap. The exact file and change are already known. No investigation needed.
 ```
 
 **Confirmation Step:**
 
 ```
-This is a straightforward icon change in the feedback submit button. Changing from a "send" icon to a "paper airplane" icon should improve the visual metaphor for submission. This is a purely cosmetic change with no logic implications.
+This is a simple text change on the submit button. No logic changes, just swapping the label.
 
 Should I proceed with delegating this to Haiku?
 ```
@@ -520,23 +533,25 @@ Should I proceed with delegating this to Haiku?
 Task({
   subagent_type: "general-purpose",
   model: "haiku",
-  description: "Change submit button icon",
+  description: "Change button text",
   prompt: `
     Feedback ID: abc123
-    Task: Change the feedback submit button icon from send to paper airplane
+    Task: Change button text from "Submit" to "Send Feedback"
 
     File to modify: src/lib/features/feedback/components/submit/FeedbackForm.svelte
+    Line ~45: Change the button text
 
-    Change: Find the button with the send icon and replace with paper airplane icon
-    (use the icon system already in place - likely FontAwesome or similar)
+    This is a literal string swap, nothing else.
 
     After completing, run:
-    node scripts/fetch-feedback.js.js abc123 in-review "Changed submit button icon to paper airplane"
+    node scripts/fetch-feedback.js.js abc123 in-review "Changed submit button text"
   `,
 });
 ```
 
-### Example 2: MEDIUM → Delegate to Sonnet
+**Note:** Most tasks that seem "trivial" should actually go to Sonnet. Haiku is only for the absolute simplest changes where you already know exactly what to change.
+
+### Example 2: MEDIUM → Delegate to Sonnet (most common)
 
 **Feedback:** "When I close the feedback panel, it should save my draft automatically"
 
