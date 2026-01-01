@@ -48,6 +48,7 @@ export class WordCardBatchProcessor
       );
 
       const actualBatchSize = Math.min(config.batchSize, optimalBatchSize);
+      console.log(
         `📊 Using batch size: ${actualBatchSize} (requested: ${config.batchSize}, optimal: ${optimalBatchSize})`
       );
 
@@ -61,6 +62,7 @@ export class WordCardBatchProcessor
         const batchEnd = Math.min(i + actualBatchSize, items.length);
         const batchItems = items.slice(batchStart, batchEnd);
 
+        console.log(
           `📦 Processing batch ${Math.floor(i / actualBatchSize) + 1} (items ${batchStart + 1}-${batchEnd})`
         );
 
@@ -110,6 +112,7 @@ export class WordCardBatchProcessor
       const successCount = results.filter((r) => r.success).length;
       const failureCount = results.filter((r) => !r.success).length;
 
+      console.log(
         `✅ Batch processing complete: ${successCount} success, ${failureCount} failures`
       );
 
@@ -155,6 +158,7 @@ export class WordCardBatchProcessor
     // Ensure minimum batch size of 1 and maximum of 50
     const clampedBatchSize = Math.max(1, Math.min(optimalBatchSize, 50));
 
+    console.log(`Memory analysis:
       - Items: ${itemCount}
       - Avg item size: ${this.formatBytes(averageItemSize)}
       - Available memory: ${this.formatBytes(availableMemory)}

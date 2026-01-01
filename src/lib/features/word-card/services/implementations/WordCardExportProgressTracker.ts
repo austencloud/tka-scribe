@@ -42,6 +42,7 @@ export class WordCardExportProgressTracker
     };
 
     this.operations.set(operationId, operation);
+    console.log(
       `🎯 Started tracking operation: ${operationId} (${totalSteps} steps)`
     );
   }
@@ -84,6 +85,7 @@ export class WordCardExportProgressTracker
       }
     });
 
+    console.log(
       `📊 Progress ${operationId}: ${completed}/${operation.totalSteps} (${progress.percentage.toFixed(1)}%) - ${currentItem || "Processing..."}`
     );
   }
@@ -151,6 +153,7 @@ export class WordCardExportProgressTracker
     });
 
     const duration = Date.now() - operation.startTime.getTime();
+    console.log(
       `✅ Completed operation ${operationId} in ${duration}ms. Errors: ${operation.errors.length}, Warnings: ${operation.warnings.length}`
     );
 
