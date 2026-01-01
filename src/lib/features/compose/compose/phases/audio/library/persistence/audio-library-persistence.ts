@@ -92,7 +92,6 @@ export async function saveAudio(
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        console.log("🎵 Audio cached:", metadata.title);
         resolve();
       };
     });
@@ -126,7 +125,6 @@ export async function loadAudio(trackId: string): Promise<{
         }
 
         const blob = new Blob([data.file], { type: data.mimeType });
-        console.log("🎵 Audio loaded from cache:", data.title);
         resolve({
           blob,
           metadata: {
@@ -180,7 +178,6 @@ export async function deleteAudio(trackId: string): Promise<void> {
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        console.log("🎵 Audio deleted from cache:", trackId);
         resolve();
       };
     });
@@ -253,7 +250,6 @@ export async function clearAllAudio(): Promise<number> {
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        console.log("🎵 All audio cache cleared");
         resolve(sizeBeforeClear);
       };
     });

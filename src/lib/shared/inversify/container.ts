@@ -73,8 +73,6 @@ let initializationPromise: Promise<void> | null = null;
 
 if (import.meta.hot) {
   import.meta.hot.accept(async () => {
-    console.log("🔄 HMR: Container module updated - rebuilding with zero downtime...");
-
     // Capture modules to restore BEFORE clearing
     const featureModulesToRestore = Array.from(loadedModules).filter(
       (module) => !getTierModuleNames().includes(module)
@@ -94,20 +92,16 @@ if (import.meta.hot) {
     for (const module of featureModulesToRestore) {
       try {
         await loadFeatureModule(module);
-        console.log(`✅ HMR: Restored feature module "${module}"`);
       } catch (error) {
-        console.warn(`⚠️ HMR: Failed to restore "${module}":`, error);
+        console.warn(`Failed to restore "${module}":`, error);
       }
     }
 
     // Reset state after successful rebuild
     isInitialized = true;
-    console.log("✅ HMR: Container rebuilt with zero downtime");
   });
 
   import.meta.hot.dispose((data) => {
-    console.log("🔄 HMR: Preparing for container rebuild...");
-
     // Save state for next version
     data.loadedModules = new Set(loadedModules);
     data.tier1Loaded = tier1Loaded;

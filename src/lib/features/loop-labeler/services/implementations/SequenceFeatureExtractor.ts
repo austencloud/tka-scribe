@@ -8,7 +8,7 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 import type { BeatData } from "$lib/features/create/shared/domain/models/BeatData";
-import type { ISequenceAnalyzer, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalyzer";
+import type { ISequenceAnalyzer, StrictLoopType } from "$lib/features/create/shared/services/contracts/ISequenceAnalyzer";
 import type { ISequenceFeatureExtractor } from "../contracts/ISequenceFeatureExtractor";
 import type {
 	SequenceFeatures,
@@ -88,27 +88,27 @@ export class SequenceFeatureExtractor implements ISequenceFeatureExtractor {
 	 * Get detected LOOP types, preferring existing loopType from sequence data
 	 *
 	 * The loopType field is the authoritative label set by the LOOP labeler.
-	 * We parse it to extract the base StrictCapType(s) for tagging.
+	 * We parse it to extract the base StrictLoopType(s) for tagging.
 	 */
-	private getDetectedCapTypes(sequence: SequenceData): readonly StrictCapType[] {
+	private getDetectedCapTypes(sequence: SequenceData): readonly StrictLoopType[] {
 		// If sequence has an authoritative loopType, parse it
 		if (sequence.loopType) {
 			return this.parseCapTypeToStrictTypes(sequence.loopType);
 		}
 
 		// Fall back to detection (may have bugs, but better than nothing)
-		return this.SequenceAnalyzer.detectCompletedCapTypes(sequence);
+		return this.SequenceAnalyzer.detectCompletedLoopTypes(sequence);
 	}
 
 	/**
-	 * Parse a LOOPType string to extract base StrictCapType(s)
+	 * Parse a LOOPType string to extract base StrictLoopType(s)
 	 *
 	 * LOOPType values like "strict_rotated_quartered", "strict_mirrored",
 	 * "mirrored_swapped", etc. are parsed to extract the base transformations.
 	 */
-	private parseCapTypeToStrictTypes(loopType: string): readonly StrictCapType[] {
+	private parseCapTypeToStrictTypes(loopType: string): readonly StrictLoopType[] {
 		const loopTypeLower = loopType.toLowerCase();
-		const types: StrictCapType[] = [];
+		const types: StrictLoopType[] = [];
 
 		// Check for rotated (covers "strict_rotated", "strict_rotated_quartered", "rotated_*", etc.)
 		if (loopTypeLower.includes("rotated") || loopTypeLower.includes("rotation")) {

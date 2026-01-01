@@ -158,8 +158,6 @@ export class CloudThumbnailCache implements ICloudThumbnailCache {
     const storagePath = this.getStoragePath(key);
     const storageRef = ref(storage, storagePath);
 
-    console.log(`☁️ Uploading thumbnail to Firebase: ${storagePath}`);
-
     // Upload with metadata
     await uploadBytes(storageRef, blob, {
       contentType: "image/webp",
@@ -172,9 +170,7 @@ export class CloudThumbnailCache implements ICloudThumbnailCache {
       },
     });
 
-    // Get the download URL
     const url = await getDownloadURL(storageRef);
-    console.log(`✅ Thumbnail uploaded: ${storagePath}`);
     return url;
   }
 

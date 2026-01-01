@@ -110,7 +110,6 @@ export async function loadLibraryFromFirestore(): Promise<AudioTrackLocal[]> {
     tracks.push(toLocalTrack(data, isLocallyAvailable));
   }
 
-  console.log(`📚 Loaded ${tracks.length} tracks from audio library`);
   return tracks;
 }
 
@@ -122,7 +121,6 @@ export async function deleteTrackMetadata(trackId: string): Promise<void> {
   const docRef = doc(collectionRef, trackId);
 
   await deleteDoc(docRef);
-  console.log("🗑️ Track metadata deleted from Firestore:", trackId);
 }
 
 /**

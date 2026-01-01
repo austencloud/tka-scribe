@@ -68,7 +68,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     currentFilter.type === "length" ? (currentFilter.value as number) : null
   );
   const isFavoritesActive = $derived(currentFilter.type === "favorites");
-  const currentCapType = $derived(
+  const currentLoopType = $derived(
     currentFilter.type === "cap_type" ? (currentFilter.value as string) : null
   );
 
@@ -97,7 +97,7 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     }
   }
 
-  function handleCapTypeChange(value: string | null) {
+  function handleLoopTypeChange(value: string | null) {
     if (value === null) {
       onFilterChange("all");
     } else {
@@ -148,8 +148,8 @@ Uses shared parameter cards from $lib/shared/components/parameter-cards
     />
 
     <LOOPTypeFilterCard
-      currentValue={currentCapType}
-      onValueChange={handleCapTypeChange}
+      currentValue={currentLoopType}
+      onValueChange={handleLoopTypeChange}
       {loopTypeCounts}
       gridColumnSpan={2}
       cardIndex={5}

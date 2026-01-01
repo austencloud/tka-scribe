@@ -42,7 +42,6 @@ export class VideoPlayer implements IVideoPlayer {
     }
 
     this.videoElement.playbackRate = rate;
-    console.log(`📹 Video playbackRate set to: ${rate}`);
   }
 
   seek(timeInSeconds: number): void {

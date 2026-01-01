@@ -440,7 +440,6 @@ export function registerCreateShortcuts(
       const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
       if (!sequenceState?.hasSequence()) return;
 
-      console.log("⌨️ H - Swap hands");
       await sequenceState.swapColors();
     },
   });
@@ -469,7 +468,6 @@ export function registerCreateShortcuts(
       const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
       if (!sequenceState?.hasSequence()) return;
 
-      console.log("⌨️ R - Rotate clockwise");
       await sequenceState.rotateSequence("clockwise");
     },
   });
@@ -497,7 +495,6 @@ export function registerCreateShortcuts(
       const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
       if (!sequenceState?.hasSequence()) return;
 
-      console.log("⌨️ Shift+R - Rotate counter-clockwise");
       await sequenceState.rotateSequence("counterclockwise");
     },
   });
@@ -526,7 +523,6 @@ export function registerCreateShortcuts(
       const sequenceState = ref.CreateModuleState.getActiveTabSequenceState();
       if (!sequenceState?.hasSequence()) return;
 
-      console.log("⌨️ W - Rewind sequence");
       await sequenceState.rewindSequence();
     },
   });

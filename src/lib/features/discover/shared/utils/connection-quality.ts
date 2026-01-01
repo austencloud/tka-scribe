@@ -155,7 +155,7 @@ export function logConnectionInfo(): void {
   const info = getConnectionInfo();
   const strategy = getLoadingStrategy(info);
 
-  console.log("🌐 Connection Info:", {
+  console.log("Connection Info:", {
     quality: info.quality,
     effectiveType: info.effectiveType || "unknown",
     saveData: info.saveData,
@@ -163,7 +163,7 @@ export function logConnectionInfo(): void {
     rtt: info.rtt ? `${info.rtt}ms` : "unknown",
   });
 
-  console.log("📊 Loading Strategy:", {
+  console.log("Loading Strategy:", {
     initialPageSize: strategy.initialPageSize,
     scrollPageSize: strategy.scrollPageSize,
     preloadCount: strategy.preloadCount,

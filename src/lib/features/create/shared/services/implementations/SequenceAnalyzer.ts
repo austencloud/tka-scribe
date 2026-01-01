@@ -8,7 +8,7 @@ import type {
   ISequenceAnalyzer,
   CircularityAnalysis,
   CircularType,
-  StrictCapType,
+  StrictLoopType,
 } from "../contracts/ISequenceAnalyzer";
 import {
   HALVED_LOOPS,
@@ -53,7 +53,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
       endPosition: null,
       startIsBeta: false,
       endIsBeta: false,
-      possibleCapTypes: [],
+      possibleLoopTypes: [],
       description: "Not circular",
     };
 
@@ -101,8 +101,8 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
     }
 
     // Get possible LOOP types based on circular type
-    const possibleCapTypes =
-      this.getPossibleCapTypesForCircularType(circularType);
+    const possibleLoopTypes =
+      this.getPossibleLoopTypesForCircularType(circularType);
 
     return {
       isCircular: true,
@@ -111,7 +111,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
       endPosition,
       startIsBeta,
       endIsBeta,
-      possibleCapTypes,
+      possibleLoopTypes,
       description: this.buildCircularDescription(
         startPosition,
         endPosition,
@@ -131,9 +131,9 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
   /**
    * Get possible LOOP types for a circular sequence
    */
-  getPossibleCapTypes(sequence: SequenceData): readonly StrictCapType[] {
+  getPossibleLoopTypes(sequence: SequenceData): readonly StrictLoopType[] {
     const analysis = this.analyzeCircularity(sequence);
-    return analysis.possibleCapTypes;
+    return analysis.possibleLoopTypes;
   }
 
   /**
@@ -251,7 +251,7 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
    * Analyzes ALL consecutive beat transformations to determine what type
    * of completed LOOP pattern the sequence represents.
    */
-  detectCompletedCapTypes(sequence: SequenceData): readonly StrictCapType[] {
+  detectCompletedLoopTypes(sequence: SequenceData): readonly StrictLoopType[] {
     if (!sequence.beats || sequence.beats.length === 0) {
       return [];
     }
@@ -354,9 +354,9 @@ export class SequenceAnalyzer implements ISequenceAnalyzer {
    * - 'halved' → ['mirrored']
    * - 'quartered' → ['rotated']
    */
-  private getPossibleCapTypesForCircularType(
+  private getPossibleLoopTypesForCircularType(
     circularType: CircularType
-  ): readonly StrictCapType[] {
+  ): readonly StrictLoopType[] {
     switch (circularType) {
       case "same":
         return ["static"] as const;

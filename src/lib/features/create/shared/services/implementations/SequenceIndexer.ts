@@ -20,25 +20,21 @@ interface SearchIndex {
 export class SequenceIndexer implements ISequenceIndexer {
   buildIndex(sequences: SequenceData[]): void {
     // Build search index for sequences - placeholder implementation
-    console.log(`Building index for ${sequences.length} sequences`);
     // TODO: Implement full-text search indexing when needed
   }
 
   getSequencesByTag(tag: string): SequenceData[] {
     // Get sequences by tag - placeholder implementation
-    console.log(`Searching for sequences with tag: ${tag}`);
     return [];
   }
 
   updateIndex(sequence: SequenceData): void {
     // Update index with new/modified sequence - placeholder implementation
-    console.log(`Updating index for sequence: ${sequence.id}`);
     // TODO: Implement incremental index updates when needed
   }
 
   removeFromIndex(sequenceId: string): void {
     // Remove sequence from search index - placeholder implementation
-    console.log(`Removing sequence from index: ${sequenceId}`);
     // TODO: Implement index cleanup when needed
   }
   private sequenceIndex: SequenceData[] | null = null;
@@ -72,7 +68,6 @@ export class SequenceIndexer implements ISequenceIndexer {
 
   scanSequenceDirectory(): SequenceData[] {
     // Placeholder implementation - would scan for sequence files
-    console.log("Scanning sequence directory...");
     return [];
   }
 

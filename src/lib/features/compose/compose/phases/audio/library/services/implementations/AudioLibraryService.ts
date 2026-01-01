@@ -139,7 +139,6 @@ export class AudioLibrary implements IAudioLibrary {
     title: string
   ): Promise<void> {
     try {
-      console.log("☁️ Starting background upload to cloud storage...");
       const cloudUrl = await this.audioStorage.uploadAudioFile(trackId, file);
 
       // Update Firestore metadata with cloudUrl
@@ -150,8 +149,6 @@ export class AudioLibrary implements IAudioLibrary {
       if (track) {
         track.cloudUrl = cloudUrl;
       }
-
-      console.log("☁️ Background upload complete:", title);
     } catch (error) {
       console.warn(
         "☁️ Background upload failed (local copy still available):",

@@ -146,9 +146,8 @@
       hideScrollbar: true, // Hide scrollbar - minimap handles navigation
     });
 
-    // Log zoom events for debugging
+    // Listen for zoom events
     wavesurfer.on("zoom", (pxPerSec: number) => {
-      console.log(`🔍 Wavesurfer zoom event: ${pxPerSec}px/s`);
       updateViewport();
     });
 

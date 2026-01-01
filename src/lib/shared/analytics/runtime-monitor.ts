@@ -60,8 +60,6 @@ class RuntimeMonitor {
     this.isRunning = true;
     this.statsCallback = options?.onStats ?? null;
 
-    console.log("🎬 [Runtime Monitor] Started");
-
     // Start FPS tracking
     this.startFPSTracking();
 
@@ -86,7 +84,6 @@ class RuntimeMonitor {
     this.observers.forEach((obs) => obs.disconnect());
     this.observers = [];
 
-    console.log("🎬 [Runtime Monitor] Stopped");
     this.report();
   }
 
@@ -116,7 +113,7 @@ class RuntimeMonitor {
 
         // Warn on low FPS
         if (fps < 30) {
-          console.warn(`🎬 [Runtime Monitor] Low FPS: ${fps}`);
+          console.warn(`Low FPS: ${fps}`);
         }
 
         this.frameCount = 0;
@@ -161,7 +158,7 @@ class RuntimeMonitor {
           // Warn on very long tasks (>100ms)
           if (entry.duration > 100) {
             console.warn(
-              `🎬 [Runtime Monitor] Long task: ${entry.duration.toFixed(1)}ms`,
+              `Long task: ${entry.duration.toFixed(1)}ms`,
               taskEntry.attribution
             );
           }
@@ -206,7 +203,7 @@ class RuntimeMonitor {
             // Warn on significant shifts
             if (shiftEntry.value > 0.1) {
               console.warn(
-                `🎬 [Runtime Monitor] Layout shift: ${shiftEntry.value.toFixed(4)}`,
+                `Layout shift: ${shiftEntry.value.toFixed(4)}`,
                 layoutShift.sources
               );
             }
@@ -246,34 +243,16 @@ class RuntimeMonitor {
   report(): void {
     const stats = this.getStats();
 
-    console.group("🎬 [Runtime Monitor] Report");
-    console.log(`📊 Average FPS: ${stats.avgFps}`);
-    console.log(`📊 Long Tasks (>50ms): ${stats.longTasks.length}`);
-    console.log(`📊 CLS: ${stats.cumulativeLayoutShift.toFixed(4)}`);
-
-    // FPS quality assessment
-    if (stats.avgFps >= 55) {
-      console.log("✅ FPS: Excellent (55+ avg)");
-    } else if (stats.avgFps >= 45) {
-      console.log("⚠️ FPS: Good (45-55 avg)");
-    } else {
-      console.warn("❌ FPS: Poor (<45 avg)");
-    }
-
-    // CLS assessment
-    if (stats.cumulativeLayoutShift <= 0.1) {
-      console.log("✅ CLS: Good (≤0.1)");
-    } else if (stats.cumulativeLayoutShift <= 0.25) {
-      console.warn("⚠️ CLS: Needs Improvement (0.1-0.25)");
-    } else {
-      console.warn("❌ CLS: Poor (>0.25)");
-    }
+    console.group("Runtime Monitor Report");
+    console.log(`Average FPS: ${stats.avgFps}`);
+    console.log(`Long Tasks (>50ms): ${stats.longTasks.length}`);
+    console.log(`CLS: ${stats.cumulativeLayoutShift.toFixed(4)}`);
 
     // Long tasks summary
     if (stats.longTasks.length > 0) {
       const avgDuration =
         stats.longTasks.reduce((a, t) => a + t.duration, 0) / stats.longTasks.length;
-      console.log(`📊 Avg Long Task Duration: ${avgDuration.toFixed(1)}ms`);
+      console.log(`Avg Long Task Duration: ${avgDuration.toFixed(1)}ms`);
     }
 
     console.groupEnd();
@@ -287,7 +266,6 @@ class RuntimeMonitor {
     this.longTasks = [];
     this.layoutShifts = [];
     this.cumulativeLayoutShift = 0;
-    console.log("🎬 [Runtime Monitor] Data cleared");
   }
 }
 

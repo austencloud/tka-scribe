@@ -50,7 +50,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       });
 
       this.syncStatus = "synced";
-      console.log(`Saved label for "${word}" to Firebase`);
     } catch (error) {
       console.error("Failed to save to Firebase:", error);
       this.syncStatus = "error";
@@ -66,7 +65,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       await deleteDoc(doc(firestore, LOOP_LABELS_COLLECTION, word));
 
       this.syncStatus = "synced";
-      console.log(`Deleted label for "${word}" from Firebase`);
     } catch (error) {
       console.error("Failed to delete from Firebase:", error);
       this.syncStatus = "error";
@@ -124,7 +122,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       this.syncStatus = "syncing";
 
       const entries = Array.from(labels.entries());
-      console.log(`Syncing ${entries.length} labels to Firebase...`);
 
       let successCount = 0;
       for (const [word, label] of entries) {
@@ -140,7 +137,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       }
 
       this.syncStatus = successCount === entries.length ? "synced" : "error";
-      console.log(
         `Synced ${successCount}/${entries.length} labels to Firebase`
       );
     } catch (error) {
@@ -164,7 +160,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       labels.set(docSnap.id, docSnap.data() as LabeledSequence);
     });
 
-    console.log(`Loaded ${labels.size} labels from Firebase`);
     return labels;
   }
 
@@ -194,7 +189,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       } else {
         // Delete from publicSequences
         await deleteDoc(sequenceRef);
-        console.log(`Deleted sequence "${sequenceId}" from publicSequences`);
       }
 
       // Also delete the LOOP label if it exists
@@ -202,7 +196,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       const labelSnap = await getDoc(labelRef);
       if (labelSnap.exists()) {
         await deleteDoc(labelRef);
-        console.log(`Deleted LOOP label for "${word}"`);
       }
 
       this.syncStatus = "synced";

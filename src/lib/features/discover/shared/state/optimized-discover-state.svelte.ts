@@ -99,7 +99,7 @@ export function createOptimizedExploreState() {
       const duration = performance.now() - (loadStartTime || 0);
       lastLoadDuration = Math.round(duration);
     } catch (error) {
-      console.error("❌ OptimizedGalleryState: Initial load failed:", error);
+      console.error("Initial load failed:", error);
       loadingState.error =
         error instanceof Error ? error.message : "Failed to load sequences";
     } finally {
@@ -128,10 +128,7 @@ export function createOptimizedExploreState() {
         void galleryService.preloadNextBatch(result.sequences);
       }
     } catch (error) {
-      console.error(
-        `❌ OptimizedGalleryState: Failed to load page ${currentPage}:`,
-        error
-      );
+      console.error(`Failed to load page ${currentPage}:`, error);
       loadingState.error =
         error instanceof Error
           ? error.message
@@ -166,7 +163,7 @@ export function createOptimizedExploreState() {
         const result = await galleryService.searchSequences(searchQuery);
         searchResults = result.sequences;
       } catch (error) {
-        console.error("❌ OptimizedGalleryState: Search failed:", error);
+        console.error("Search failed:", error);
         searchResults = [];
       } finally {
         isSearching = false;

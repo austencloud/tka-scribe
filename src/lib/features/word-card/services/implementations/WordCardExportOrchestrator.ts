@@ -107,12 +107,10 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
     const sequenceId = sequence.id || sequence.name || "unknown";
 
     try {
-      console.log(`🚀 Starting export for sequence: ${sequenceId}`);
 
       // Check cache first
       const cachedBlob = this.cacheService.retrieveImage(sequenceId);
       if (cachedBlob) {
-        console.log(`🎯 Cache hit for sequence: ${sequenceId}`);
         return {
           sequenceId,
           success: true,
@@ -152,7 +150,6 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
         },
       };
 
-      console.log(`✅ Successfully exported sequence: ${sequenceId}`);
       return result;
     } catch (error) {
       console.error(`❌ Failed to export sequence ${sequenceId}:`, error);
@@ -178,7 +175,6 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
     this.currentOperationId = operationId;
 
     try {
-      console.log(`🚀 Starting batch export of ${sequences.length} sequences`);
 
       // Start progress tracking
       this.progressTracker.startTracking(operationId, sequences.length);
@@ -213,7 +209,6 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       const successCount = results.filter((r) => r.success).length;
       const failureCount = results.filter((r) => !r.success).length;
 
-      console.log(
         `✅ Batch export complete: ${successCount} success, ${failureCount} failures`
       );
       return results;
@@ -235,7 +230,6 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
    */
   async cancelBatch(): Promise<void> {
     if (this.currentOperationId) {
-      console.log("🛑 Cancelling current batch operation");
       await this.batchProcessingService.cancelBatch(this.currentOperationId);
     } else {
       console.warn("⚠️ No active batch operation to cancel");

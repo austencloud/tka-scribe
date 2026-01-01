@@ -41,7 +41,7 @@ export interface SectionModeState {
     addSection(
       currentWord: string,
       notes: string,
-      derivedCapType: string | null
+      derivedLoopType: string | null
     ): Promise<void>;
     removeSection(
       currentWord: string,
@@ -139,7 +139,7 @@ export function createSectionModeState(): SectionModeState {
     async addSection(
       currentWord: string,
       notes: string,
-      derivedCapType: string | null
+      derivedLoopType: string | null
     ) {
       // Can add section if: beats selected AND (components selected OR base word selected)
       if (selectedBeats.size === 0) {
@@ -163,7 +163,7 @@ export function createSectionModeState(): SectionModeState {
       const section: SectionDesignation = {
         beats: Array.from(selectedBeats).sort((a, b) => a - b),
         components: Array.from(selectedComponents),
-        loopType: derivedCapType,
+        loopType: derivedLoopType,
         sliceSize: selectedComponents.has("rotated") ? selectedSliceSize : null,
         baseWord: selectedBaseWord ?? undefined,
       };

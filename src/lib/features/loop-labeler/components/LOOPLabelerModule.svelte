@@ -286,7 +286,7 @@
   });
 
   // Derived LOOP type from selected components (for whole/section modes)
-  const derivedCapType = $derived.by(() => {
+  const derivedLoopType = $derived.by(() => {
     if (!sectionState || !wholeState) return null;
 
     const components =
@@ -342,7 +342,7 @@
     await sectionState.actions.addSection(
       currentSequence.word,
       notes,
-      derivedCapType
+      derivedLoopType
     );
   }
 
@@ -362,7 +362,7 @@
 
   async function handleAddDesignation() {
     if (!wholeState) return;
-    wholeState.actions.addDesignation(derivedCapType);
+    wholeState.actions.addDesignation(derivedLoopType);
   }
 
   function handleRemoveDesignation(index: number) {
@@ -397,7 +397,7 @@
     await wholeState.actions.labelSequence(
       currentSequence.word,
       notes,
-      derivedCapType
+      derivedLoopType
     );
     loopLabelerController.nextSequence();
   }
@@ -687,7 +687,7 @@
                 {sectionState}
                 {beatPairState}
                 {wholeState}
-                {derivedCapType}
+                {derivedLoopType}
                 {notes}
                 onToggleBuilder={(show) => (showManualBuilder = show)}
                 onLabelingModeChange={(mode) =>

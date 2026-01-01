@@ -81,7 +81,6 @@ export class AudioStorageManager implements IAudioStorageManager {
                 stage: "complete",
                 message: "Upload complete!",
               });
-              console.log("☁️ Audio uploaded to cloud:", downloadURL);
               resolve(downloadURL);
             } catch (err) {
               reject(err);
@@ -97,7 +96,6 @@ export class AudioStorageManager implements IAudioStorageManager {
 
   async downloadAudioFile(cloudUrl: string): Promise<Blob> {
     try {
-      console.log("☁️ Downloading audio from cloud...");
       const response = await fetch(cloudUrl);
 
       if (!response.ok) {
@@ -105,7 +103,6 @@ export class AudioStorageManager implements IAudioStorageManager {
       }
 
       const blob = await response.blob();
-      console.log("☁️ Audio downloaded from cloud:", blob.size, "bytes");
       return blob;
     } catch (error) {
       console.error("Download error:", error);
@@ -132,7 +129,6 @@ export class AudioStorageManager implements IAudioStorageManager {
       const storageRef = ref(storage, path);
 
       await deleteObject(storageRef);
-      console.log("☁️ Audio deleted from cloud:", path);
     } catch (error) {
       console.error("Delete error:", error);
       throw error;

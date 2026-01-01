@@ -48,31 +48,9 @@ export class MotionPathCalculator {
     pointsPerBeat: number = 100,
     endType: 0 | 1 = 1
   ): Point2D[] {
-    console.log(`📐 Calculating path for:`, {
-      motionType: motionData.motionType,
-      start: motionData.startLocation,
-      end: motionData.endLocation,
-      turns: motionData.turns,
-      rotation: motionData.rotationDirection,
-      startOrientation: motionData.startOrientation,
-      pointsPerBeat,
-      endType: endType === 0 ? "left" : "right",
-    });
-
     // Calculate motion endpoints using existing service
     const endpoints =
       this.endpointCalculator.calculateMotionEndpoints(motionData);
-
-    console.log(`📊 Calculated endpoints:`, {
-      startCenterAngle:
-        ((endpoints.startCenterAngle * 180) / Math.PI).toFixed(1) + "°",
-      targetCenterAngle:
-        ((endpoints.targetCenterAngle * 180) / Math.PI).toFixed(1) + "°",
-      startStaffAngle:
-        ((endpoints.startStaffAngle * 180) / Math.PI).toFixed(1) + "°",
-      staffRotationDelta:
-        ((endpoints.staffRotationDelta * 180) / Math.PI).toFixed(1) + "°",
-    });
 
     const points: Point2D[] = [];
 
@@ -125,10 +103,6 @@ export class MotionPathCalculator {
 
       points.push(endpoint);
     }
-
-    console.log(`✅ Generated ${points.length} points`);
-    console.log(`📍 First point:`, points[0]);
-    console.log(`📍 Last point:`, points[points.length - 1]);
 
     return points;
   }

@@ -276,7 +276,6 @@ Orchestrates specialized components and services:
     const unsubscribe = optionPickerSizingService.subscribeToOverflowChanges(
       (hasOverflow, overflowAmount) => {
         if (hasOverflow) {
-          console.log(`⚠️ Overflow detected: ${overflowAmount}px`);
           containerDimensions.forceUpdate();
         }
       }
@@ -295,18 +294,12 @@ Orchestrates specialized components and services:
       currentSequence &&
       currentSequence.length > 0
     ) {
-      console.log("🔄 [OptionViewer $effect] Triggering loadOptions", {
-        sequenceLength: currentSequence.length,
-        gridMode: currentGridMode,
-        timestamp: Date.now(),
-      });
       optionPickerState.loadOptions(currentSequence, currentGridMode);
     } else if (
       optionPickerState &&
       servicesReady &&
       (!currentSequence || currentSequence.length === 0)
     ) {
-      console.log("🔄 [OptionViewer $effect] Resetting state - empty sequence");
       optionPickerState.reset();
     }
   });
@@ -350,18 +343,9 @@ Orchestrates specialized components and services:
     const currentPendingFadeIn = untrack(() => pendingFadeIn);
     const currentIsFadingOut = untrack(() => isFadingOut);
 
-    console.log("🔄 [Preparation Effect] Triggered", {
-      filteredCount: filtered.length,
-      firstOption: filtered[0]?.letter,
-      pickerState,
-      isFadingOut: currentIsFadingOut,
-      pendingFadeIn: currentPendingFadeIn,
-    });
-
     // Skip while loading - prevents preparing intermediate states when
     // currentSequence updates before options finish loading
     if (pickerState === "loading") {
-      console.log("⏳ [Preparation Effect] Skipped - picker is loading");
       return;
     }
 
@@ -390,13 +374,6 @@ Orchestrates specialized components and services:
 
     pictographPreparer.prepareBatch(filtered)
       .then((prepared) => {
-        console.log("✅ [Preparation Effect] Complete", {
-          preparedCount: prepared.length,
-          firstPrepared: prepared[0]?.letter,
-          hasPositions: !!prepared[0]?._prepared,
-          pendingFadeIn,
-        });
-
         // Memoize: reuse existing objects if ID matches (prevents component recreation)
         const stabilized = stabilizePreparedOptions(
           prepared,
@@ -408,9 +385,6 @@ Orchestrates specialized components and services:
 
         // Fade in after new options are ready (coordinated with pendingFadeIn)
         if (pendingFadeIn) {
-          console.log(
-            "✨ [Preparation Effect] pendingFadeIn=true, triggering fade-in"
-          );
           pendingFadeIn = false;
           isFadingOut = false;
         } else {
@@ -431,13 +405,9 @@ Orchestrates specialized components and services:
   // ===== HANDLERS =====
   async function handleOptionSelected(option: PictographData) {
     if (!optionPickerState || isFadingOut) {
-      console.log(
-        "⛔ [handleOptionSelected] Blocked - already fading or no state"
-      );
       return;
     }
 
-    console.log("🖱️ [handleOptionSelected] Starting fade-out");
     hapticService?.trigger("selection");
 
     // Step 1: Mark that we need to fade in after new options load
@@ -445,23 +415,15 @@ Orchestrates specialized components and services:
 
     // Step 2: Start fade-out, disable buttons
     isFadingOut = true;
-    console.log(
-      "🌫️ [handleOptionSelected] isFadingOut = true, pendingFadeIn = true, waiting for fade..."
-    );
 
     // Step 3: Wait for fade-out to complete BEFORE updating data
     // This ensures the user sees the current content fade out
     await new Promise((resolve) => setTimeout(resolve, FADE_OUT_DURATION));
 
-    console.log("⏱️ [handleOptionSelected] Fade complete, updating data...");
-
     // Step 4: Now update the data (while content is invisible)
     onOptionSelected(option);
     optionPickerState.selectOption(option);
 
-    console.log(
-      "📦 [handleOptionSelected] Data updated, waiting for preparation..."
-    );
     // Note: isFadingOut will be set to false by the preparation effect
     // when new content is ready AND pendingFadeIn is true, triggering fade-in
   }

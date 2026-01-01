@@ -56,10 +56,10 @@ export function useDiscoverHandlers({
           galleryState.openAnimationModal(sequence);
           break;
         default:
-          console.warn("⚠️ Unknown action:", action);
+          console.warn("Unknown action:", action);
       }
     } catch (err: unknown) {
-      console.error("❌ Action failed:", err);
+      console.error("Action failed:", err);
       setError(
         err instanceof Error ? err.message : `Failed to ${action} sequence`
       );
@@ -137,7 +137,7 @@ export function useDiscoverHandlers({
         handleCloseDetailPanel(); // Close panel before showing delete dialog
         break;
       default:
-        console.warn("⚠️ Unknown detail panel action:", action);
+        console.warn("Unknown detail panel action:", action);
     }
   }
 
@@ -163,12 +163,11 @@ export function useDiscoverHandlers({
 
     try {
       // TODO: Implement actual delete logic
-      console.log("🗑️ Deleting sequence:", deleteConfirmationData.sequence.id);
       setDeleteConfirmationData(null);
       // Refresh the sequence list
       await galleryState.loadAllSequences();
     } catch (err: unknown) {
-      console.error("❌ Delete failed:", err);
+      console.error("Delete failed:", err);
       setError(
         err instanceof Error ? err.message : "Failed to delete sequence"
       );

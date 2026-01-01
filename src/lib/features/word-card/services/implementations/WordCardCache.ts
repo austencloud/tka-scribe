@@ -169,7 +169,6 @@ export class WordCardCache implements IWordCardCache {
       this.hitCount = 0;
       this.missCount = 0;
       this.lastCleanup = new Date();
-      console.log("🧹 Cache cleared");
     } catch (error) {
       console.error("Failed to clear cache:", error);
     }
@@ -221,9 +220,6 @@ export class WordCardCache implements IWordCardCache {
       }
 
       this.lastCleanup = now;
-      console.log(
-        `🧹 Cache cleanup: removed ${removedCount} entries, freed ${this.formatBytes(freedSpace)}`
-      );
     } catch (error) {
       console.error("Cache cleanup failed:", error);
     }
@@ -339,9 +335,6 @@ export class WordCardCache implements IWordCardCache {
       removedCount++;
     }
 
-    console.log(
-      `🗑️ Evicted ${removedCount} cache entries, freed ${this.formatBytes(freedSpace)}`
-    );
   }
 
   /**
@@ -362,7 +355,6 @@ export class WordCardCache implements IWordCardCache {
       };
 
       this.dataCache.set(cacheKey, entry);
-      console.log(`💾 Cached word card data for sequence: ${sequenceId}`);
 
       // Cleanup if needed
       this.cleanup();
@@ -400,7 +392,6 @@ export class WordCardCache implements IWordCardCache {
       entry.lastAccessed = new Date();
       this.hitCount++;
 
-      console.log(`🎯 Cache hit for word card data: ${sequenceId}`);
       return entry.data as SequenceData;
     } catch (error) {
       console.error(

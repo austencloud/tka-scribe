@@ -8,13 +8,9 @@ import { nuclearCacheClear } from "../auth/utils/nuclearCacheClear";
 export async function clearAllCaches(): Promise<void> {
   if (typeof window === "undefined") return;
 
-  console.log("🧹 Starting nuclear cache clear...");
-
   try {
     // Use the comprehensive nuclear cache clear
     await nuclearCacheClear();
-
-    console.log("🎉 All caches cleared! Reloading page...");
 
     // Wait a moment for operations to complete
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -22,7 +18,7 @@ export async function clearAllCaches(): Promise<void> {
     // Force hard reload
     window.location.reload();
   } catch (error) {
-    console.error("❌ Error clearing caches:", error);
+    console.error("Error clearing caches:", error);
   }
 }
 
@@ -42,8 +38,7 @@ export function checkAndClearIfBroken(): void {
         root.querySelector("svg, img, button, input, canvas");
 
       if (!hasContent) {
-        console.warn("⚠️ Page appears to be stuck on white screen!");
-        console.warn("Auto-clearing caches in 2 seconds...");
+        console.warn("Page appears to be stuck on white screen!");
 
         setTimeout(() => {
           void clearAllCaches();
@@ -62,8 +57,6 @@ export function registerCacheClearShortcut(): void {
   // Check for URL parameter to force cache clear
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.has("clear-cache")) {
-    console.log("🔗 URL parameter detected: ?clear-cache");
-    console.log("Auto-clearing caches...");
     void clearAllCaches();
     return;
   }
@@ -72,7 +65,6 @@ export function registerCacheClearShortcut(): void {
     // Ctrl+Shift+Delete (Windows/Linux) or Cmd+Shift+Delete (Mac)
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "Delete") {
       e.preventDefault();
-      console.log("🔑 Cache clear shortcut triggered!");
 
       const confirm = window.confirm(
         "Clear all caches and reload?\n\nThis will:\n- Clear service worker caches\n- Clear IndexedDB\n- Clear localStorage\n- Clear sessionStorage\n- Reload the page"

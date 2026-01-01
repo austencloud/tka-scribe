@@ -508,14 +508,7 @@ export class TrailCapturer implements ITrailCapturer {
             }
           }
 
-          // Debug log backfill events
-          if (addedCount > 0) {
-            const propName = ["blue", "red", "blue2", "red2"][propIndex];
-            const endName = endType === 0 ? "left" : "right";
-            console.log(
-              `🔄 BACKFILL: ${propName}-${endName}, gap ${beatDelta.toFixed(3)} beats, added ${addedCount} points`
-            );
-          }
+          // Backfill gaps silently
 
           // Update last captured point
           this.lastCapturedPoints.set(key, {
@@ -600,10 +593,6 @@ export class TrailCapturer implements ITrailCapturer {
       this.redTrailBuffer.length +
       this.secondaryBlueTrailBuffer.length +
       this.secondaryRedTrailBuffer.length;
-
-    console.log(
-      `✂️ Pruned trails to ${this.totalPointsCaptured} points (kept last 5s)`
-    );
   }
 
   /**

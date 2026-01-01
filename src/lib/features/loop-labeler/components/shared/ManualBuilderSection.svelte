@@ -21,7 +21,7 @@
     sectionState: ReturnType<typeof createSectionModeState> | undefined;
     beatPairState: ReturnType<typeof createBeatPairModeState> | undefined;
     wholeState: ReturnType<typeof createWholeModeState> | undefined;
-    derivedCapType: string | null;
+    derivedLoopType: string | null;
     notes: string;
     onToggleBuilder: (show: boolean) => void;
     onLabelingModeChange: (mode: LabelingMode) => void;
@@ -38,7 +38,7 @@
     sectionState,
     beatPairState,
     wholeState,
-    derivedCapType,
+    derivedLoopType,
     notes,
     onToggleBuilder,
     onLabelingModeChange,

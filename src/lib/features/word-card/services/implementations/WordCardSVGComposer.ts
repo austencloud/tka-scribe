@@ -45,8 +45,6 @@ export class WordCardSVGComposer {
         throw new Error("No beat SVGs provided");
       }
 
-      console.log(`🎨 Creating SVG layout for ${beatSVGs.length} beats`);
-
       // Calculate optimal layout
       const layout = this.calculateBeatLayout(beatSVGs.length, dimensions);
 
@@ -59,9 +57,6 @@ export class WordCardSVGComposer {
       // Combine into final SVG
       const finalSVG = this.combineSVGElements(containerSVG, beatsGroup);
 
-      console.log(
-        `✅ Created SVG layout: ${layout.rows}x${layout.columns} grid`
-      );
       return finalSVG;
     } catch (error) {
       console.error("❌ Failed to create SVG layout:", error);
@@ -100,7 +95,6 @@ export class WordCardSVGComposer {
         },
       };
 
-      console.log(`📊 Calculated beat layout:`, layout);
       return layout;
     } catch (error) {
       console.error("❌ Failed to calculate beat layout:", error);
@@ -146,10 +140,6 @@ export class WordCardSVGComposer {
         }),
       };
 
-      console.log(
-        `📱 Responsive dimensions for ${beatCount} beats:`,
-        responsiveDimensions
-      );
       return responsiveDimensions;
     } catch (error) {
       console.error("❌ Failed to calculate responsive dimensions:", error);

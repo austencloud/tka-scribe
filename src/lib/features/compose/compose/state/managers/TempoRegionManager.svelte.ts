@@ -19,9 +19,6 @@ export function createTempoRegionManager() {
   function add(region: TempoRegion) {
     // Insert in sorted order by startTime
     regions = [...regions, region].sort((a, b) => a.startTime - b.startTime);
-    console.log(
-      `🎵 Tempo: Added region at ${region.startTime}s (${region.bpm} BPM)`
-    );
   }
 
   function remove(regionId: string) {
