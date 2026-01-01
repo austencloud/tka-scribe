@@ -33,17 +33,9 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
     type: SequenceType
   ): Promise<SequenceData | null> {
     try {
-      console.log(
-        `🎬 TunnelModeSequenceManager: Loading ${type} sequence:`,
-        sequence.id
-      );
-
       const result = await this.loadSequenceData(sequence);
 
       if (result) {
-        console.log(
-          `✅ TunnelModeSequenceManager: ${type} sequence loaded with ${result.beats.length} beats`
-        );
         return result;
       } else {
         console.error(
@@ -146,8 +138,6 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
     onUpdate: (transformed: SequenceData) => void
   ): Promise<void> {
     try {
-      console.log(`🔄 Transforming ${type} sequence: ${operation}`);
-
       let transformed: SequenceData;
 
       switch (operation) {
@@ -173,7 +163,6 @@ export class TunnelModeSequenceManager implements ITunnelModeSequenceManager {
           return;
       }
 
-      console.log(`✅ ${type} sequence transformed successfully: ${operation}`);
       onUpdate(transformed);
     } catch (err) {
       console.error(

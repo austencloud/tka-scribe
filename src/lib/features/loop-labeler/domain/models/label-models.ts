@@ -44,7 +44,7 @@ export interface TransformationIntervals {
 /**
  * Extended LOOP Designation with per-transformation intervals
  */
-export interface CAPDesignation {
+export interface LOOPDesignation {
   components: ComponentId[];
   loopType: string | null;
 
@@ -62,7 +62,7 @@ export interface CAPDesignation {
  * Candidate Designation - an auto-detected designation that can be confirmed or denied
  * Multiple candidates may exist when a sequence satisfies multiple valid patterns
  */
-export interface CandidateDesignation extends CAPDesignation {
+export interface CandidateDesignation extends LOOPDesignation {
   /** Short label (e.g., "rotated+swapped (CCW) @¼") */
   label: string;
 
@@ -88,7 +88,7 @@ export type BeatPairGroups = Record<string, number[]>;
 
 export interface LabeledSequence {
   word: string;
-  designations: CAPDesignation[]; // Confirmed designations (whole sequence)
+  designations: LOOPDesignation[]; // Confirmed designations (whole sequence)
   candidateDesignations?: CandidateDesignation[]; // Auto-detected candidates to confirm/deny
   hasMultipleCandidates?: boolean; // Convenience flag for multiple valid patterns
   sections?: SectionDesignation[]; // Section-based designations

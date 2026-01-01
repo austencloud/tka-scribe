@@ -220,13 +220,6 @@ export function createSpotlightState() {
     },
 
     onImageLoaded(): void {
-      const loadEndTime = performance.now();
-      const loadDuration = loadEndTime - imageState.loadStartTime;
-
-      console.log(
-        `🖼️ [TIMING] Image loaded at ${loadEndTime.toFixed(2)}ms, triggering content fade-in (duration: ${loadDuration.toFixed(2)}ms)`
-      );
-
       imageState.isLoading = false;
       imageState.hasError = false;
       displayState.isContentVisible = true;

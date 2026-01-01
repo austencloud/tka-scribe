@@ -120,7 +120,6 @@ export class Autosaver {
 
       try {
         await this.saveDraft(sessionId, sequenceData);
-        console.log("📦 Draft autosaved:", sessionId);
       } catch (error) {
         console.error("Failed to autosave draft:", error);
       }

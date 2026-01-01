@@ -274,7 +274,6 @@ export class AnimationEngine {
 
       // Sync Lights Off mode to renderer when it changes
       if (state.lightsOff !== this.prevLightsOff) {
-        console.log("[AnimationEngine] Lights Off changed:", state.lightsOff, "renderer:", !!this.animationRenderer);
         this.prevLightsOff = state.lightsOff;
         // Note: setLedMode on renderer controls the "Lights Off" effect (dark bg, inverted grid)
         this.animationRenderer?.setLedMode(state.lightsOff);
@@ -282,9 +281,7 @@ export class AnimationEngine {
         // CRITICAL: Reload prop textures when dark mode changes
         // Prop colors are theme-dependent (light/dark mode), so textures must be regenerated
         if (this.state.isInitialized) {
-          console.log("[AnimationEngine] Reloading prop textures for new theme mode");
           this.loadPropTextures().then(() => {
-            console.log("[AnimationEngine] Textures reloaded, triggering re-render");
             this.renderLoopService?.triggerRender(() => this.getFrameParams(this.lastPropsRef ?? DEFAULT_ENGINE_PROPS));
           });
         }
@@ -341,21 +338,14 @@ export class AnimationEngine {
       // CRITICAL: Sync prop type state AFTER checkForChanges() detected the new values
       // Otherwise loadPropTextures() would use stale values from the earlier syncServiceState() call
       if (this.propTypeChangeService) {
-        const oldBlue = this.state.currentBluePropType;
-        const oldRed = this.state.currentRedPropType;
         this.state.currentBluePropType = this.propTypeChangeService.state.bluePropType;
         this.state.currentRedPropType = this.propTypeChangeService.state.redPropType;
         this.state.currentPropType = this.propTypeChangeService.state.legacyPropType;
-        console.log(`🔄 [AnimationEngine] Prop type hot-swap: ${oldBlue}/${oldRed} → ${this.state.currentBluePropType}/${this.state.currentRedPropType}`);
       }
 
       // Hot-swap textures without full re-initialization
       // The render loop keeps running with old textures until new ones load
-      const hotSwapStartTime = performance.now();
-      console.log(`🔄 [AnimationEngine] Starting texture hot-swap, isPlaying=${props.isPlaying}, renderLoopRunning=${this.renderLoopService?.isRunning()}`);
       this.loadPropTextures().then(() => {
-        const elapsed = performance.now() - hotSwapStartTime;
-        console.log(`✅ [AnimationEngine] Textures loaded in ${elapsed.toFixed(1)}ms, triggering re-render`);
         // Trigger immediate re-render once new textures are ready
         if (this.state.isInitialized) {
           this.renderLoopService?.triggerRender(() => this.getFrameParams(props));

@@ -414,7 +414,14 @@
     <h2 id="animation-panel-title" class="sr-only">Animation Viewer</h2>
 
     {#if loading}
-      <div class="loading-message" role="status" aria-live="polite" aria-busy="true">Loading animation...</div>
+      <div
+        class="loading-message"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        Loading animation...
+      </div>
     {:else if error}
       <div class="error-message" role="alert">{error}</div>
     {:else}
@@ -664,7 +671,7 @@
   }
 
   /* ===========================
-     LANDSCAPE LAYOUT - Side-by-side
+     LANDSLOOPE LAYOUT - Side-by-side
      =========================== */
 
   @container animator-canvas (min-aspect-ratio: 1.5/1) {

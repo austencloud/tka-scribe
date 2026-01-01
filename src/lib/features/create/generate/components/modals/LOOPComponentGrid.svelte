@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 LOOPComponentGrid.svelte - Grid layout for LOOP component selection buttons
 Displays all available LOOP transformations in a responsive 2x2 grid
 -->

@@ -100,7 +100,7 @@
     padding: 8px 16px;
   }
 
-  /* 🎯 LANDSCAPE MOBILE */
+  /* 🎯 LANDSLOOPE MOBILE */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .workspace-header {
       min-height: var(--min-touch-target);

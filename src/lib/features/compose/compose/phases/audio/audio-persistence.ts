@@ -71,7 +71,6 @@ export async function saveAudioToCache(
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        console.log("🎵 Audio cached to IndexedDB:", file.name);
         resolve();
       };
     });
@@ -109,7 +108,6 @@ export async function loadAudioFromCache(): Promise<{
         const blob = new Blob([data.file], { type: data.mimeType });
         const file = new File([blob], data.fileName, { type: data.mimeType });
 
-        console.log("🎵 Audio restored from IndexedDB:", data.fileName);
         resolve({
           file,
           duration: data.duration,
@@ -138,7 +136,6 @@ export async function clearAudioCache(): Promise<void> {
 
       request.onerror = () => reject(request.error);
       request.onsuccess = () => {
-        console.log("🎵 Audio cache cleared");
         resolve();
       };
     });

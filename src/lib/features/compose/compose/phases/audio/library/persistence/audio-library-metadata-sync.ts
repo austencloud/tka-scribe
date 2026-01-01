@@ -76,7 +76,6 @@ export async function saveTrackMetadata(
   };
 
   await setDoc(docRef, trackData);
-  console.log("📝 Track metadata saved to Firestore:", metadata.title);
 }
 
 /**
@@ -90,7 +89,6 @@ export async function updateTrackMetadata(
   const docRef = doc(collectionRef, trackId);
 
   await updateDoc(docRef, updates as any);
-  console.log("📝 Track metadata updated:", trackId);
 }
 
 /**
@@ -112,7 +110,6 @@ export async function loadLibraryFromFirestore(): Promise<AudioTrackLocal[]> {
     tracks.push(toLocalTrack(data, isLocallyAvailable));
   }
 
-  console.log(`📚 Loaded ${tracks.length} tracks from audio library`);
   return tracks;
 }
 
@@ -124,7 +121,6 @@ export async function deleteTrackMetadata(trackId: string): Promise<void> {
   const docRef = doc(collectionRef, trackId);
 
   await deleteDoc(docRef);
-  console.log("🗑️ Track metadata deleted from Firestore:", trackId);
 }
 
 /**

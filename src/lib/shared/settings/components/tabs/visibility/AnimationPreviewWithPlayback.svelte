@@ -170,7 +170,6 @@
       } catch (err) {
         lastError = err instanceof Error ? err : new Error(String(err));
         if (attempt < maxAttempts) {
-          console.log(`🔄 Retry attempt ${attempt}/${maxAttempts} after error:`, lastError.message);
           await new Promise((r) => setTimeout(r, delayMs * attempt));
         }
       }
@@ -207,15 +206,6 @@
         throw new Error("Failed to load B sequence from database");
       }
 
-      console.log("🎬 VISIBILITY PREVIEW - Loaded base B sequence:", {
-        word: baseSequence.word,
-        beatsCount: baseSequence.beats.length,
-        beat1Turns: {
-          blue: baseSequence.beats[0]?.motions?.blue?.turns,
-          red: baseSequence.beats[0]?.motions?.red?.turns,
-        },
-      });
-
       // Create and apply 1,1 turn pattern to get visible trails
       // Use DI to resolve the service (container should be ready by the time user opens settings)
       const { resolve } = await import("$lib/shared/inversify/di");
@@ -226,26 +216,11 @@
       const result = turnPatternManager.applyPattern(turnPattern, baseSequence);
 
       if (!result.success || !result.sequence) {
-        console.error("❌ Failed to apply turn pattern:", result.error);
+        console.error("Failed to apply turn pattern:", result.error);
         throw new Error(result.error || "Failed to apply turn pattern");
       }
 
       const modifiedSequence = result.sequence;
-
-      console.log("🎬 VISIBILITY PREVIEW - Applied 1,1 turn pattern:", {
-        word: modifiedSequence.word,
-        modifiedBeats: result.modifiedBeats,
-        warnings: result.warnings,
-        beat1Turns: {
-          blue: modifiedSequence.beats[0]?.motions?.blue?.turns,
-          red: modifiedSequence.beats[0]?.motions?.red?.turns,
-        },
-        beat1EndOri: {
-          blue: modifiedSequence.beats[0]?.motions?.blue?.endOrientation,
-          red: modifiedSequence.beats[0]?.motions?.red?.endOrientation,
-        },
-      });
-
       sequenceData = modifiedSequence;
 
       // Small delay to ensure UI is ready
@@ -274,7 +249,7 @@
         }
       }, 100);
     } catch (err) {
-      console.error("❌ Failed to initialize animation preview:", err);
+      console.error("Failed to initialize animation preview:", err);
       error = err instanceof Error ? err.message : "Failed to load animation";
       loading = false;
     }

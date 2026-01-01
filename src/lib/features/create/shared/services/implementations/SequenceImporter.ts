@@ -31,8 +31,6 @@ export class SequenceImporter implements ISequenceImporter {
    * Import sequence from PNG metadata
    */
   async importFromPNG(id: string): Promise<SequenceData | null> {
-    console.log(`🎬 Loading sequence from PNG metadata for ID: ${id}`);
-
     try {
       // Extract metadata from PNG file using the reliable extractor
       // NOTE: Don't uppercase the ID - Greek letters like θ would become Θ,
@@ -47,7 +45,6 @@ export class SequenceImporter implements ISequenceImporter {
 
       // Convert PNG metadata to web app format
       const sequence = this.convertPngMetadata(id, pngMetadata);
-      console.log(`✅ Loaded real sequence data from PNG for ${id}`);
       return sequence;
     } catch (error) {
       console.error(`Failed to load PNG metadata for ${id}:`, error);
@@ -63,7 +60,6 @@ export class SequenceImporter implements ISequenceImporter {
    * Replaces 100+ lines of manual type assertions with validated parsing.
    */
   convertPngMetadata(id: string, pngMetadata: unknown[]): SequenceData {
-    console.log(`🔄 Converting PNG metadata to web app format for ${id}`);
 
     // Validate PNG structure first - throws if malformed
     const validatedSteps = parseStrict(
@@ -154,8 +150,6 @@ export class SequenceImporter implements ISequenceImporter {
         isBlank: false,
       };
     });
-
-    console.log(`✅ Converted to web app format: ${beats.length} beats`);
 
     // Create sequence data with validated structure - final validation
     // NOTE: Don't uppercase the name - Greek letters like θ would become Θ

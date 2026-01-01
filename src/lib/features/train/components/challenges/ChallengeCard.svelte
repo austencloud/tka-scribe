@@ -27,9 +27,7 @@
   let hapticService: IHapticFeedback | undefined;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   // Calculated values
@@ -56,19 +54,22 @@
     > = {
       easy: {
         color: "var(--semantic-success)",
-        gradient: "linear-gradient(90deg, var(--semantic-success) 0%, #34d399 100%)",
+        gradient:
+          "linear-gradient(90deg, var(--semantic-success) 0%, #34d399 100%)",
         tint: "rgba(16, 185, 129, 0.06)",
         glow: "rgba(16, 185, 129, 0.3)",
       },
       beginner: {
         color: "var(--semantic-success)",
-        gradient: "linear-gradient(90deg, var(--semantic-success) 0%, #4ade80 100%)",
+        gradient:
+          "linear-gradient(90deg, var(--semantic-success) 0%, #4ade80 100%)",
         tint: "rgba(34, 197, 94, 0.06)",
         glow: "rgba(34, 197, 94, 0.3)",
       },
       medium: {
         color: "var(--semantic-warning)",
-        gradient: "linear-gradient(90deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%)",
+        gradient:
+          "linear-gradient(90deg, var(--semantic-warning) 0%, var(--semantic-warning) 100%)",
         tint: "rgba(245, 158, 11, 0.06)",
         glow: "rgba(245, 158, 11, 0.3)",
       },
@@ -86,13 +87,15 @@
       },
       advanced: {
         color: "var(--semantic-error)",
-        gradient: "linear-gradient(90deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
+        gradient:
+          "linear-gradient(90deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
         tint: "rgba(239, 68, 68, 0.06)",
         glow: "rgba(239, 68, 68, 0.3)",
       },
       expert: {
         color: "var(--semantic-error)",
-        gradient: "linear-gradient(90deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
+        gradient:
+          "linear-gradient(90deg, var(--semantic-error) 0%, var(--semantic-error) 100%)",
         tint: "rgba(220, 38, 38, 0.08)",
         glow: "rgba(220, 38, 38, 0.35)",
       },
@@ -240,7 +243,11 @@
   }
 
   .challenge-card.complete .accent-bar {
-    background: linear-gradient(90deg, var(--semantic-success) 0%, #4ade80 100%);
+    background: linear-gradient(
+      90deg,
+      var(--semantic-success) 0%,
+      #4ade80 100%
+    );
   }
 
   /* Colored top accent bar */
@@ -380,7 +387,11 @@
   }
 
   .progress-fill.complete {
-    background: linear-gradient(90deg, var(--semantic-success), #4ade80) !important;
+    background: linear-gradient(
+      90deg,
+      var(--semantic-success),
+      #4ade80
+    ) !important;
   }
 
   .progress-text {
@@ -505,7 +516,7 @@
   }
 
   /* ============================================================================
-     LANDSCAPE MOBILE - Compact with accessible touch targets
+     LANDSLOOPE MOBILE - Compact with accessible touch targets
      ============================================================================ */
   @media (max-height: 500px) and (orientation: landscape) {
     .challenge-card {

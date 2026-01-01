@@ -40,7 +40,6 @@ export class WordCardBatchProcessor
     const startTime = Date.now();
 
     try {
-      console.log(`🚀 Starting batch processing of ${items.length} items`);
 
       const optimalBatchSize = this.calculateOptimalBatchSize(
         items.length,
@@ -49,14 +48,12 @@ export class WordCardBatchProcessor
       );
 
       const actualBatchSize = Math.min(config.batchSize, optimalBatchSize);
-      console.log(
         `📊 Using batch size: ${actualBatchSize} (requested: ${config.batchSize}, optimal: ${optimalBatchSize})`
       );
 
       // Process items in batches
       for (let i = 0; i < items.length; i += actualBatchSize) {
         if (this.isCancellationRequested()) {
-          console.log("🛑 Batch processing cancelled");
           break;
         }
 
@@ -64,7 +61,6 @@ export class WordCardBatchProcessor
         const batchEnd = Math.min(i + actualBatchSize, items.length);
         const batchItems = items.slice(batchStart, batchEnd);
 
-        console.log(
           `📦 Processing batch ${Math.floor(i / actualBatchSize) + 1} (items ${batchStart + 1}-${batchEnd})`
         );
 
@@ -114,7 +110,6 @@ export class WordCardBatchProcessor
       const successCount = results.filter((r) => r.success).length;
       const failureCount = results.filter((r) => !r.success).length;
 
-      console.log(
         `✅ Batch processing complete: ${successCount} success, ${failureCount} failures`
       );
 
@@ -160,7 +155,6 @@ export class WordCardBatchProcessor
     // Ensure minimum batch size of 1 and maximum of 50
     const clampedBatchSize = Math.max(1, Math.min(optimalBatchSize, 50));
 
-    console.log(`📊 Optimal batch size calculation:
       - Items: ${itemCount}
       - Avg item size: ${this.formatBytes(averageItemSize)}
       - Available memory: ${this.formatBytes(availableMemory)}
@@ -205,7 +199,6 @@ export class WordCardBatchProcessor
    */
   requestCancellation(): void {
     this.cancellationRequested = true;
-    console.log("🛑 Batch cancellation requested");
   }
 
   /**
@@ -295,7 +288,6 @@ export class WordCardBatchProcessor
       typeof (window as { gc?: () => void }).gc === "function"
     ) {
       (window as { gc: () => void }).gc();
-      console.log("🗑️ Forced garbage collection");
     }
 
     // Additional cleanup delay
@@ -313,7 +305,6 @@ export class WordCardBatchProcessor
    * Cancel a batch operation
    */
   async cancelBatch(operationId: string): Promise<void> {
-    console.log(`🛑 Cancelling batch operation: ${operationId}`);
     this.cancellationRequested = true;
     this.currentOperations.delete(operationId);
   }

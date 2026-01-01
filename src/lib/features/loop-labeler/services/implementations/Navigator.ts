@@ -81,7 +81,7 @@ export class Navigator implements INavigator {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `cap-labels-${new Date().toISOString().split("T")[0]}.json`;
+    a.download = `loop-labels-${new Date().toISOString().split("T")[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }

@@ -85,11 +85,6 @@ export class Canvas2DApplicationManager {
 
     // LED Mode: dark background for glowing light stick effect
     if (this.ledModeEnabled) {
-      // DEBUG: Log once per LED mode session
-      if (!this._ledModeLoggedOnce) {
-        console.log("[Canvas2DApplicationManager] clear() using LED mode background");
-        this._ledModeLoggedOnce = true;
-      }
       this.ctx.globalAlpha = 1;
       this.ctx.fillStyle = LED_MODE_BACKGROUND;
       this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -110,7 +105,6 @@ export class Canvas2DApplicationManager {
    * Set LED mode (dark background for glowing props)
    */
   setLedMode(enabled: boolean): void {
-    console.log("[Canvas2DApplicationManager] setLedMode called:", enabled);
     this.ledModeEnabled = enabled;
   }
 

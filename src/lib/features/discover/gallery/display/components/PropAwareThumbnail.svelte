@@ -273,9 +273,8 @@
           ...fullSequence,
           startPosition: derivedStartPos,
         };
-        console.log(`[PropAwareThumbnail] ✅ Derived start position for ${sequenceName}: gridPosition=${derivedStartPos.gridPosition}`);
       } catch (err) {
-        console.warn(`[PropAwareThumbnail] Failed to derive start position for ${sequenceName}:`, err);
+        console.warn(`Failed to derive start position for ${sequenceName}:`, err);
       }
     }
 

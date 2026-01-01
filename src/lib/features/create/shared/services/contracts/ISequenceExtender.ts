@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sequence Extender Interface
  *
  * Detects when a sequence is in an extendable state (end position is a rotation of start)

@@ -73,7 +73,6 @@ export class DiscoverDeleter implements IDiscoverDeleter {
 
       // In a real implementation, this would call the persistence service
       // For now, we'll simulate the deletion
-      console.log(`Deleting sequence: ${sequence.word} (${sequence.id})`);
 
       // Remove the sequence from the list
 

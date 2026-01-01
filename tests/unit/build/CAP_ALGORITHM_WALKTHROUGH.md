@@ -1,8 +1,8 @@
-# Strict Rotated CAP Algorithm - Detailed Walkthrough
+# Strict Rotated LOOP Algorithm - Detailed Walkthrough
 
-## Example: HALVED CAP with Concrete Data
+## Example: HALVED LOOP with Concrete Data
 
-Let's walk through exactly what happens when we execute a HALVED CAP with a simple 2-beat sequence.
+Let's walk through exactly what happens when we execute a HALVED LOOP with a simple 2-beat sequence.
 
 ### Input Sequence
 
@@ -29,11 +29,11 @@ startPos = ALPHA1
 endPos = ALPHA2  // from last beat
 key = "ALPHA1,ALPHA2"
 
-Check: Is "ALPHA1,ALPHA2" in HALVED_CAPS set?
-Result: ✅ YES - this is a valid halved CAP pair
+Check: Is "ALPHA1,ALPHA2" in HALVED_LOOPS set?
+Result: ✅ YES - this is a valid halved LOOP pair
 ```
 
-The validation passes because ALPHA1 and ALPHA2 are configured as a valid halved CAP start/end pair in the position maps.
+The validation passes because ALPHA1 and ALPHA2 are configured as a valid halved LOOP start/end pair in the position maps.
 
 #### Step 2: Remove Start Position
 
@@ -87,7 +87,7 @@ Determine hand rotation directions:
 
 Wait, I need to use a more realistic beat. Let me redo this with proper cardinal movements:
 
-### Corrected Example: HALVED CAP
+### Corrected Example: HALVED LOOP
 
 ```
 Beat 0 (Start Position):
@@ -237,21 +237,21 @@ Looking at the validation code:
 
 ```typescript
 const key = `${startPos},${endPos}`;
-if (!HALVED_CAPS.has(key)) {
+if (!HALVED_LOOPS.has(key)) {
   throw new Error(...);
 }
 ```
 
-So for a HALVED CAP, the sequence must:
+So for a HALVED LOOP, the sequence must:
 
 1. Start at position X
 2. End at position Y
-3. The pair (X, Y) must be in the HALVED_CAPS validation set
+3. The pair (X, Y) must be in the HALVED_LOOPS validation set
 
 What this means:
 
-- The **input sequence** (before CAP execution) must end at the correct position
-- The HALVED_CAPS set contains pairs where Y is positioned such that when you double the sequence, you return to X
+- The **input sequence** (before LOOP execution) must end at the correct position
+- The HALVED_LOOPS set contains pairs where Y is positioned such that when you double the sequence, you return to X
 
 So if the input sequence is:
 
@@ -260,9 +260,9 @@ Beat 0: ALPHA1 → ALPHA1
 Beat 1: ALPHA1 → ALPHA3
 ```
 
-The pair "ALPHA1,ALPHA3" must be in HALVED_CAPS. But ALPHA3 is only 90° from ALPHA1, not 180°.
+The pair "ALPHA1,ALPHA3" must be in HALVED_LOOPS. But ALPHA3 is only 90° from ALPHA1, not 180°.
 
-For a HALVED CAP, the input must end at the 180° position, so:
+For a HALVED LOOP, the input must end at the 180° position, so:
 
 ```
 Beat 0: ALPHA1 → ALPHA1
@@ -271,7 +271,7 @@ Beat 1: ALPHA1 → ALPHA5 (180° opposite)
 
 Then when we double it, Beat 2 will rotate another 180° back to ALPHA1.
 
-### Corrected Example: Proper HALVED CAP
+### Corrected Example: Proper HALVED LOOP
 
 ```
 INPUT:
@@ -306,9 +306,9 @@ Beat 2: ALPHA5 → ALPHA1 (second half, returns to start) ✓
 Circular? YES! Last beat ends at ALPHA1, same as first beat starts!
 ```
 
-## QUARTERED CAP Example
+## QUARTERED LOOP Example
 
-For a QUARTERED CAP with 90° rotations:
+For a QUARTERED LOOP with 90° rotations:
 
 ```
 INPUT:

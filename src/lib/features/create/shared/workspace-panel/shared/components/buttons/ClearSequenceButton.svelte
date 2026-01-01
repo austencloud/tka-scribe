@@ -21,9 +21,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -88,7 +86,11 @@
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 40%,
+        transparent
+      );
   }
 
   .clear-button:hover {
@@ -98,7 +100,11 @@
       transparent
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 60%,
+        transparent
+      );
   }
 
   /* Mobile responsive - 48px minimum per iOS/Android guidelines */
@@ -126,7 +132,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSLOOPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
       width: var(

@@ -182,51 +182,15 @@ export class PictographDataDebugger {
   private logDebugInfo(debugInfo: PictographDebugInfo): void {
     if (!this.debugEnabled) return;
 
-    console.group(`🔍 Pictograph Debug: ${debugInfo.letter}`);
-
-    console.log("📊 Overview:", {
-      letter: debugInfo.letter,
-      gridMode: debugInfo.gridMode,
-      endsWithBeta: debugInfo.endsWithBeta,
-      hasValidMotionData: debugInfo.hasValidMotionData,
-      hasValidPropPlacementData: debugInfo.hasValidPropPlacementData,
-    });
-
-    console.log("📍 Prop Locations:", debugInfo.propLocations);
-    console.log("🎯 Motion End Locations:", debugInfo.motionEndLocations);
-
-    if (debugInfo.csvRowData) {
-      console.log("📄 CSV Row Data:", debugInfo.csvRowData);
-    }
-
-    // Check for data mismatches
-    const mismatches: string[] = [];
-    Object.entries(debugInfo.propLocations).forEach(([color, propLoc]) => {
-      const motionEndLoc = debugInfo.motionEndLocations[color];
-      if (
-        propLoc !== motionEndLoc &&
-        propLoc !== "unknown" &&
-        motionEndLoc !== "unknown"
-      ) {
-        mismatches.push(
-          `${color}: prop(${propLoc}) != motion(${motionEndLoc})`
-        );
-      }
-    });
-
-    if (mismatches.length > 0) {
-      console.warn("⚠️ GridLocation Mismatches:", mismatches);
-    }
+    console.group(`Pictograph Debug: ${debugInfo.letter}`);
 
     if (debugInfo.dataFlowTrace.length > 0) {
-      console.log("🔄 Data Flow Trace:");
       debugInfo.dataFlowTrace.forEach((trace, index) => {
-        console.log(`  ${index + 1}. ${trace.step}`, trace.data);
         if (trace.warnings?.length) {
-          console.warn(`     Warnings:`, trace.warnings);
+          console.warn(`Step ${index + 1}: ${trace.step} - Warnings:`, trace.warnings);
         }
         if (trace.errors?.length) {
-          console.error(`     Errors:`, trace.errors);
+          console.error(`Step ${index + 1}: ${trace.step} - Errors:`, trace.errors);
         }
       });
     }

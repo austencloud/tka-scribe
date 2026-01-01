@@ -173,7 +173,6 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
   async function syncSessionToFirebase(session: CaptureSession) {
     // Only sync if user is authenticated
     if (!auth.currentUser) {
-      console.log("User not authenticated - skipping Firebase sync");
       return;
     }
 
@@ -190,13 +189,8 @@ Hybrid sync: saves locally first, then syncs to Firebase in background.
         },
         (progress) => {
           syncProgress = progress;
-          console.log(
-            `Sync progress: ${progress.progress}% (${progress.syncedFrames}/${progress.totalFrames})`
-          );
         }
       );
-
-      console.log("Session synced to Firebase successfully");
     } catch (error) {
       console.error("Firebase sync failed:", error);
       // Don't throw - sync failure shouldn't break the UI

@@ -201,9 +201,6 @@
       location.contextId
     ) {
       // TODO: Re-open sequence detail panel with contextId
-      console.log(
-        `[DiscoverModule] Would open sequence detail: ${location.contextId}`
-      );
     }
   }
 
@@ -337,7 +334,7 @@
         // console.log("✅ DiscoverModule: Data loaded");
       })
       .catch((err) => {
-        console.error("❌ DiscoverModule: Data loading failed:", err);
+        console.error("Data loading failed:", err);
         error =
           err instanceof Error
             ? err.message

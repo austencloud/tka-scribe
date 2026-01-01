@@ -1,7 +1,7 @@
-/**
- * Auto-Label CAP Sequences
+﻿/**
+ * Auto-Label LOOP Sequences
  *
- * Runs the CAP detection algorithm on all unlabeled circular sequences
+ * Runs the LOOP detection algorithm on all unlabeled circular sequences
  * and saves predictions to Firebase with needsVerification: true flag.
  *
  * Usage:
@@ -32,7 +32,7 @@ try {
 }
 
 // ============================================================================
-// CAP Detection Logic (from validate-cap-detection.cjs)
+// LOOP Detection Logic (from validate-loop-detection.cjs)
 // ============================================================================
 
 // Beat-pair graph transformation maps (includes 90° and 270° rotations)
@@ -348,7 +348,7 @@ function compareBeatPair(beat1, beat2) {
 
   // ============================================================
   // Check COMPOUND transformations first (rotation + swap)
-  // These are the most common CAP patterns
+  // These are the most common LOOP patterns
   // ============================================================
 
   // ROTATED + SWAPPED position checks (colors swapped)
@@ -1044,18 +1044,18 @@ function detectModularPattern(beats) {
   return null;
 }
 
-function detectCAPType(sequence) {
+function detectLOOPType(sequence) {
   const circular = isCircular(sequence);
   const beats = extractBeats(sequence);
 
   if (!circular || beats.length < 2) {
-    return { capType: null, components: [], transformationIntervals: {} };
+    return { loopType: null, components: [], transformationIntervals: {} };
   }
 
   // Continue with standard halved/quartered detection for non-modular patterns
   const halfLength = Math.floor(beats.length / 2);
   if (beats.length % 2 !== 0) {
-    return { capType: null, components: [], transformationIntervals: {} };
+    return { loopType: null, components: [], transformationIntervals: {} };
   }
 
   const results = {
@@ -1293,12 +1293,12 @@ function detectCAPType(sequence) {
         if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = primaryInterval;
         if (derivedComponents.includes("inverted")) derivedIntervals.invert = primaryInterval;
 
-        const capType = primaryInterval === "halved"
+        const loopType = primaryInterval === "halved"
           ? derivedComponents.sort().join("_")
           : derivedComponents.sort().join("_") + "_quartered";
 
         return {
-          capType,
+          loopType,
           components: derivedComponents,
           transformationIntervals: derivedIntervals,
           rotationDirection: derivedDirection,
@@ -1315,7 +1315,7 @@ function detectCAPType(sequence) {
 
   // ============================================================
   // PRIORITY 1: Find COMMON transformation across ALL beat pairs (halved)
-  // This is the most accurate way to identify the CAP pattern
+  // This is the most accurate way to identify the LOOP pattern
   // ============================================================
   const allHalvedCommon = findAllCommonTransformations(beatPairs);
   const commonTransformation = allHalvedCommon.length > 0 ? allHalvedCommon[0] : null;
@@ -1339,11 +1339,11 @@ function detectCAPType(sequence) {
       if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = "halved";
       if (derivedComponents.includes("flipped")) derivedIntervals.flip = "halved";
 
-      const capType = derivedComponents.sort().join("_");
+      const loopType = derivedComponents.sort().join("_");
 
       // Use previously detected rotation direction if available
       return {
-        capType,
+        loopType,
         components: derivedComponents,
         transformationIntervals: derivedIntervals,
         rotationDirection,
@@ -1374,10 +1374,10 @@ function detectCAPType(sequence) {
       if (derivedComponents.includes("mirrored")) derivedIntervals.mirror = "halved";
       if (derivedComponents.includes("flipped")) derivedIntervals.flip = "halved";
 
-      const capType = derivedComponents.sort().join("_");
+      const loopType = derivedComponents.sort().join("_");
 
       return {
-        capType,
+        loopType,
         components: derivedComponents,
         transformationIntervals: derivedIntervals,
         rotationDirection,
@@ -1394,7 +1394,7 @@ function detectCAPType(sequence) {
   const modularResult = detectModularPattern(beats);
   if (modularResult && modularResult.isModular) {
     return {
-      capType: "modular",
+      loopType: "modular",
       components: ["modular"],
       transformationIntervals: {},
       rotationDirection,
@@ -1407,7 +1407,7 @@ function detectCAPType(sequence) {
   // ============================================================
   // PRIORITY 4: Fall back to old detection for complex/mixed patterns
   // ============================================================
-  let capType = null;
+  let loopType = null;
   if (detectedComponents.length > 0) {
     const sorted = [...detectedComponents].sort().join("_");
     const typeMap = {
@@ -1433,11 +1433,11 @@ function detectCAPType(sequence) {
       "inverted_rotated_swapped": "rotated_swapped_inverted",
       "mirrored+swapped+inverted": "mirrored_swapped_inverted",
     };
-    capType = typeMap[sorted] || sorted;
+    loopType = typeMap[sorted] || sorted;
   }
 
   return {
-    capType,
+    loopType,
     components: detectedComponents,
     transformationIntervals,
     rotationDirection,
@@ -1516,9 +1516,9 @@ function generateMinimalSequenceJSON(sequence, detected) {
       intervals: c.intervals,
     })),
 
-    // Primary auto-detected CAP label (first candidate)
+    // Primary auto-detected LOOP label (first candidate)
     primaryDetection: {
-      capType: detected.capType,
+      loopType: detected.loopType,
       components: detected.components,
       rotationDirection: detected.rotationDirection || null,
       intervals: detected.transformationIntervals,
@@ -1527,7 +1527,7 @@ function generateMinimalSequenceJSON(sequence, detected) {
     // All common transformations found (raw)
     allCommonTransformations: detected.allCommonTransformations || [],
 
-    // Minimal beat data - only what matters for CAP analysis
+    // Minimal beat data - only what matters for LOOP analysis
     beats: beats.map((b) => ({
       beat: b.beatNumber,
       letter: b.letter,
@@ -1554,8 +1554,8 @@ async function main() {
   if (!formatMode) {
     console.log("=".repeat(70));
     const modeLabel = applyMode
-      ? (forceMode ? "AUTO-LABEL CAP SEQUENCES (APPLY + FORCE MODE)" : "AUTO-LABEL CAP SEQUENCES (APPLY MODE)")
-      : "AUTO-LABEL CAP SEQUENCES (DRY RUN)";
+      ? (forceMode ? "AUTO-LABEL LOOP SEQUENCES (APPLY + FORCE MODE)" : "AUTO-LABEL LOOP SEQUENCES (APPLY MODE)")
+      : "AUTO-LABEL LOOP SEQUENCES (DRY RUN)";
     console.log(modeLabel);
     console.log("=".repeat(70));
     console.log();
@@ -1568,7 +1568,7 @@ async function main() {
   if (!formatMode) console.log(`Loaded ${sequences.length} sequences from sequence-index.json`);
 
   // Get existing labels
-  const snapshot = await db.collection("cap-labels").get();
+  const snapshot = await db.collection("loop-labels").get();
   const existingLabels = new Set();
   snapshot.forEach((doc) => existingLabels.add(doc.id));
   if (!formatMode) console.log(`Found ${existingLabels.size} existing labels in Firebase`);
@@ -1598,8 +1598,8 @@ async function main() {
   const results = [];
 
   for (const seq of toLabel) {
-    const detected = detectCAPType(seq);
-    const typeKey = detected.capType || "none";
+    const detected = detectLOOPType(seq);
+    const typeKey = detected.loopType || "none";
 
     if (!byType[typeKey]) byType[typeKey] = [];
     byType[typeKey].push(seq.word);
@@ -1607,7 +1607,7 @@ async function main() {
     results.push({
       word: seq.word,
       beatCount: extractBeats(seq).length,
-      capType: detected.capType,
+      loopType: detected.loopType,
       components: detected.components,
       transformationIntervals: detected.transformationIntervals,
       rotationDirection: detected.rotationDirection,
@@ -1643,12 +1643,12 @@ async function main() {
     const BATCH_LIMIT = 500;
 
     for (const result of results) {
-      const docRef = db.collection("cap-labels").doc(result.word);
+      const docRef = db.collection("loop-labels").doc(result.word);
 
       // Build ALL candidate designations for Firebase storage
       const candidates = (result.candidateDesignations || []).map(c => ({
         components: c.components,
-        capType: c.components.sort().join("_"),
+        loopType: c.components.sort().join("_"),
         transformationIntervals: c.intervals,
         rotationDirection: c.rotationDirection || null,
         label: c.label,
@@ -1659,7 +1659,7 @@ async function main() {
       // Build primary designation for backwards compatibility
       const designation = {
         components: result.components,
-        capType: result.capType,
+        loopType: result.loopType,
       };
       if (Object.keys(result.transformationIntervals || {}).length > 0) {
         designation.transformationIntervals = result.transformationIntervals;
@@ -1733,7 +1733,7 @@ async function main() {
 
     // Format mode: output minimal JSON only
     if (formatMode) {
-      const detected = detectCAPType(seq);
+      const detected = detectLOOPType(seq);
       const minimal = generateMinimalSequenceJSON(seq, detected);
       console.log(JSON.stringify(minimal, null, 2));
       process.exit(0);
@@ -1744,7 +1744,7 @@ async function main() {
     console.log(`SINGLE WORD RESULT: ${singleWord}`);
     console.log("=".repeat(70));
     console.log(`  Beat count: ${result.beatCount}`);
-    console.log(`  CAP Type: ${result.capType || "none"}`);
+    console.log(`  LOOP Type: ${result.loopType || "none"}`);
     console.log(`  Components: ${result.components.join("+") || "none"}`);
     if (Object.keys(result.transformationIntervals || {}).length > 0) {
       console.log(`  Intervals: ${Object.entries(result.transformationIntervals).map(([k,v]) => `${k}=${v}`).join(", ")}`);
@@ -1795,12 +1795,12 @@ async function main() {
       console.log();
       console.log("  Saving to Firebase...");
 
-      const docRef = db.collection("cap-labels").doc(result.word);
+      const docRef = db.collection("loop-labels").doc(result.word);
 
       // Build ALL candidate designations for Firebase storage (same as batch mode)
       const candidates = (result.candidateDesignations || []).map(c => ({
         components: c.components,
-        capType: c.components.sort().join("_"),
+        loopType: c.components.sort().join("_"),
         transformationIntervals: c.intervals,
         rotationDirection: c.rotationDirection || null,
         label: c.label,
@@ -1811,7 +1811,7 @@ async function main() {
       // Build primary designation for backwards compatibility
       const designation = {
         components: result.components,
-        capType: result.capType,
+        loopType: result.loopType,
       };
       if (Object.keys(result.transformationIntervals || {}).length > 0) {
         designation.transformationIntervals = result.transformationIntervals;

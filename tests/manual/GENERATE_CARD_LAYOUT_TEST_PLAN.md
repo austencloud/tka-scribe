@@ -14,14 +14,14 @@
 ```
 Row 1: [Level] [Length] [TurnIntensity]    (3 cards @ 2 cols)
 Row 2: [GenMode] [Grid] [PropContinuity]   (3 cards @ 2 cols)
-Row 3: [SliceSize (50%)] [CAP (50%)]        (2 cards @ 3 cols) ✅ NO EMPTY SPACE
+Row 3: [SliceSize (50%)] [LOOP (50%)]        (2 cards @ 3 cols) ✅ NO EMPTY SPACE
 ```
 
 **Verification:**
 
 - [ ] All 8 cards are visible
 - [ ] SliceSize card takes up exactly half the row width
-- [ ] CAP card takes up exactly half the row width
+- [ ] LOOP card takes up exactly half the row width
 - [ ] No empty cell in row 3
 
 ---
@@ -38,14 +38,14 @@ Row 3: [SliceSize (50%)] [CAP (50%)]        (2 cards @ 3 cols) ✅ NO EMPTY SPAC
 ```
 Row 1: [Level] [Length] [GenMode]          (3 cards @ 2 cols)
 Row 2: [Grid] [PropContinuity] [SliceSize] (3 cards @ 2 cols)
-Row 3: [CAP] [empty] [empty]                (1 card @ 2 cols)
+Row 3: [LOOP] [empty] [empty]                (1 card @ 2 cols)
 ```
 
 **Verification:**
 
 - [ ] Turn Intensity card is NOT visible
 - [ ] 6 cards total are visible
-- [ ] SliceSize and CAP use default 2-column span
+- [ ] SliceSize and LOOP use default 2-column span
 - [ ] Row 3 has one card and two empty cells
 
 ---
@@ -68,7 +68,7 @@ Row 2: [Grid] [PropContinuity] [empty] (2 cards @ 2 cols)
 
 - [ ] Turn Intensity card is NOT visible
 - [ ] SliceSize card is NOT visible
-- [ ] CAP card is NOT visible
+- [ ] LOOP card is NOT visible
 - [ ] 5 cards total are visible
 
 ---
@@ -91,7 +91,7 @@ Row 2: [GenMode] [Grid] [PropContinuity] (3 cards @ 2 cols)
 
 - [ ] Turn Intensity card IS visible
 - [ ] SliceSize card is NOT visible
-- [ ] CAP card is NOT visible
+- [ ] LOOP card is NOT visible
 - [ ] 6 cards total are visible
 - [ ] Perfect 2-row layout, no empty cells
 
@@ -115,7 +115,7 @@ Row 2: [GenMode] [Grid] [PropContinuity] (3 cards @ 2 cols)
 
 - [ ] Turn Intensity card IS visible (with more intensity options)
 - [ ] SliceSize card is NOT visible
-- [ ] CAP card is NOT visible
+- [ ] LOOP card is NOT visible
 - [ ] 6 cards total are visible
 - [ ] Perfect 2-row layout, no empty cells
 
@@ -134,7 +134,7 @@ Row 2: [GenMode] [Grid] [PropContinuity] (3 cards @ 2 cols)
 
 ## Current Implementation Status
 
-✅ **Implemented:** 8-card scenario optimization (SliceSize + CAP span 3 columns each)
+✅ **Implemented:** 8-card scenario optimization (SliceSize + LOOP span 3 columns each)
 
 🔜 **Pending:** Additional optimizations for other scenarios
 

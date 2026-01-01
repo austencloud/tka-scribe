@@ -511,17 +511,11 @@ export function createConstructTabState(
 
     // When sequence state has a start position, hide the start position picker
     if (sequenceState.hasStartPosition && showStartPositionPicker === true) {
-      console.log(
-        "🔄 ConstructTabState: Syncing picker state - hiding start position picker (hasStartPosition: true)"
-      );
       setShowStartPositionPicker(false);
     }
 
     // When sequence state loses start position, show the start position picker
     if (!sequenceState.hasStartPosition && showStartPositionPicker === false) {
-      console.log(
-        "🔄 ConstructTabState: Syncing picker state - showing start position picker (hasStartPosition: false)"
-      );
       setShowStartPositionPicker(true);
     }
 
@@ -532,9 +526,6 @@ export function createConstructTabState(
       const currentPickerGridMode = startPositionStateService.currentGridMode;
 
       if (sequenceGridMode !== currentPickerGridMode) {
-        console.log(
-          `🔄 ConstructTabState: Syncing grid mode from sequence - ${currentPickerGridMode} → ${sequenceGridMode}`
-        );
         // Update the start position state's grid mode to match the sequence
         startPositionStateService.loadPositions(sequenceGridMode);
       }
@@ -551,9 +542,6 @@ export function createConstructTabState(
 
     const currentPickerGridMode = startPositionStateService.currentGridMode;
     if (sequenceGridMode !== currentPickerGridMode) {
-      console.log(
-        `🔄 ConstructTabState: Syncing grid mode from imported sequence - ${currentPickerGridMode} → ${sequenceGridMode}`
-      );
       // Use synchronous setter to avoid UI flicker from async loadPositions
       startPositionStateService.setGridMode(sequenceGridMode);
     }

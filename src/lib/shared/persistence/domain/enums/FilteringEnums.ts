@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Filtering Domain Enums
  *
  * Core enumerations for the filtering system.
@@ -20,5 +20,5 @@ export enum ExploreFilterType {
   FAVORITES = "favorites",
   ALL_SEQUENCES = "all_sequences",
   /** Filter by circular sequences and LOOP type */
-  CAP_TYPE = "cap_type",
+  LOOP_TYPE = "cap_type",
 }

@@ -21,9 +21,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -126,7 +124,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSLOOPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
       width: var(

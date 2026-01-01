@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Sequence Features Domain Model
  *
  * Analyzable features extracted from sequences for rule-based tagging.
@@ -7,7 +7,7 @@
 
 import type { GridMode, GridPositionGroup } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { PropType } from "$lib/shared/pictograph/prop/domain/enums/PropType";
-import type { CircularityAnalysis, StrictCapType } from "$lib/features/create/shared/services/contracts/ISequenceAnalyzer";
+import type { CircularityAnalysis, StrictLoopType } from "$lib/features/create/shared/services/contracts/ISequenceAnalyzer";
 
 /**
  * Position group dominance analysis
@@ -81,7 +81,7 @@ export interface SequenceFeatures {
 	readonly circularity: CircularityAnalysis;
 
 	/** Detected LOOP types for completed sequences */
-	readonly detectedCapTypes: readonly StrictCapType[];
+	readonly detectedCapTypes: readonly StrictLoopType[];
 
 	// === Reversal Analysis ===
 	readonly reversals: ReversalAnalysis;
@@ -126,7 +126,7 @@ export function createDefaultSequenceFeatures(): SequenceFeatures {
 			endPosition: null,
 			startIsBeta: false,
 			endIsBeta: false,
-			possibleCapTypes: [],
+			possibleLoopTypes: [],
 			description: "Not circular",
 		},
 		detectedCapTypes: [],

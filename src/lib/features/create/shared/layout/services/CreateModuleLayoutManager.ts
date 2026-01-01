@@ -36,7 +36,7 @@ export class CreateModuleLayoutManager implements ICreateModuleLayoutManager {
 
     // Landscape detection: Use side-by-side for significantly landscape orientations
     const isSignificantlyLandscape =
-      aspectRatio > LAYOUT_BREAKPOINTS.LANDSCAPE_ASPECT_RATIO;
+      aspectRatio > LAYOUT_BREAKPOINTS.LANDSLOOPE_ASPECT_RATIO;
 
     // Z Fold specific: More flexible detection that accounts for browser UI
     const isLikelyZFoldUnfolded = this.isZFoldUnfolded(

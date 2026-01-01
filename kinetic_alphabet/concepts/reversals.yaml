@@ -73,7 +73,7 @@ notation_rules:
     challenge: "In complex sequences, identify where each reversal type occurs"
     skill_development: "Practice recognizing reversal patterns"
 
-# Reversal in CAP Sequences
+# Reversal in LOOP Sequences
 cap_integration:
   mirrored_caps:
     reversal_timing: "Often use reversals to achieve mirroring"

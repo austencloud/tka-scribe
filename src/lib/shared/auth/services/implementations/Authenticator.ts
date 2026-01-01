@@ -103,9 +103,6 @@ export class Authenticator implements IAuthenticator {
 
   async linkFacebookAccount(): Promise<void> {
     const currentUser = auth.currentUser;
-    console.log("🔗 [Authenticator] linkFacebookAccount called");
-    console.log("🔗 [Authenticator] Current user:", currentUser?.email);
-    console.log("🔗 [Authenticator] Current providers:", currentUser?.providerData?.map(p => p.providerId));
 
     if (!currentUser) throw new Error("No user is currently signed in");
 
@@ -118,11 +115,8 @@ export class Authenticator implements IAuthenticator {
     provider.addScope("email");
     provider.addScope("public_profile");
 
-    console.log("🔗 [Authenticator] Calling linkWithPopup...");
-
     // Use popup instead of redirect - more reliable and better UX
-    const result = await linkWithPopup(currentUser, provider);
-    console.log("✅ [Authenticator] linkWithPopup succeeded:", result.user.providerData.map(p => p.providerId));
+    await linkWithPopup(currentUser, provider);
   }
 
   getLinkedProviders(): string[] {

@@ -66,7 +66,6 @@
 
   // Handlers
   function handleClose() {
-    console.log("🎬 Closing playback overlay");
     moduleState.closePlayback();
   }
 
@@ -83,12 +82,10 @@
   }
 
   function handleSave() {
-    console.log("💾 Save composition requested");
     // TODO: Implement save functionality
   }
 
   function handleShare() {
-    console.log("🔗 Share composition requested");
     // TODO: Implement share functionality
   }
 
@@ -105,12 +102,10 @@
   }
 
   function handleGridSelectCell(index: number) {
-    console.log(`🎬 Grid cell ${index} selected`);
     // TODO: Open sequence browser for this grid cell
   }
 
   function handleGridRemoveCell(index: number) {
-    console.log(`🎬 Grid cell ${index} removed`);
     // TODO: Remove sequence from grid cell
   }
 

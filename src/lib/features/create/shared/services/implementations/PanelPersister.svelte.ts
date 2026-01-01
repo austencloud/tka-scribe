@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Panel Persistence Service Implementation
  *
  * Extracted from CreateModule.svelte to handle panel state persistence
@@ -22,7 +22,7 @@ export class PanelPersister implements IPanelPersister {
     if (panelState.isVideoRecordPanelOpen) return "videoRecord";
     if (panelState.isFilterPanelOpen) return "filter";
     if (panelState.isSequenceActionsPanelOpen) return "sequenceActions";
-    if (panelState.isCAPPanelOpen) return "cap";
+    if (panelState.isLOOPPanelOpen) return "cap";
     if (panelState.isCustomizePanelOpen) return "customize";
     return null;
   }
@@ -34,7 +34,7 @@ export class PanelPersister implements IPanelPersister {
     panelState.closeVideoRecordPanel();
     panelState.closeFilterPanel();
     panelState.closeSequenceActionsPanel();
-    panelState.closeCAPPanel();
+    panelState.closeLOOPPanel();
     panelState.closeCustomizePanel();
   }
 

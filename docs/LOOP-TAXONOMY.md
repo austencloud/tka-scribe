@@ -1,16 +1,16 @@
-# CAP Taxonomy
+# LOOP Taxonomy
 
 ## Overview
 
-The CAP (Continuous Assembly Pattern) taxonomy defines how flow prop sequences achieve circularity through transformation patterns. This document provides the definitive reference for all CAP component types.
+The LOOP (Continuous Assembly Pattern) taxonomy defines how flow prop sequences achieve circularity through transformation patterns. This document provides the definitive reference for all LOOP component types.
 
 ## Core Principles
 
-A CAP sequence is **circular** - it ends where it began with matching orientations. This circularity is achieved through **transformation patterns** where the second half of the sequence relates to the first half in specific, predictable ways.
+A LOOP sequence is **circular** - it ends where it began with matching orientations. This circularity is achieved through **transformation patterns** where the second half of the sequence relates to the first half in specific, predictable ways.
 
 ---
 
-## CAP Component Types
+## LOOP Component Types
 
 ### 1. Rotated
 **Transformation:** Positions rotate 180° (halved) or 90° (quartered)
@@ -151,7 +151,7 @@ Use "modular" when you observe:
 1. ✅ Distinct recurring motifs/phrases within the sequence
 2. ✅ Each motif transforms according to its own pattern
 3. ✅ Transformation intervals differ between motifs
-4. ✅ Cannot be cleanly described by a single whole-sequence CAP
+4. ✅ Cannot be cleanly described by a single whole-sequence LOOP
 
 **Do NOT use modular for:**
 - ❌ Simple whole-sequence transformations
@@ -205,7 +205,7 @@ Transformations can occur at different intervals:
 
 ---
 
-## Non-CAP Designations
+## Non-LOOP Designations
 
 ### Freeform
 No recognizable transformation pattern. Use **only when**:
@@ -230,11 +230,11 @@ Does the sequence have recognizable patterns?
 └─ YES
    │
    Does the entire sequence follow one transformation?
-   ├─ YES → Simple CAP (rotated, swapped, mirrored, etc.)
+   ├─ YES → Simple LOOP (rotated, swapped, mirrored, etc.)
    └─ NO
       │
       Do sections relate with the same transformation?
-      ├─ YES → Section CAP
+      ├─ YES → Section LOOP
       └─ NO
          │
          Do distinct motifs transform independently?
@@ -257,5 +257,5 @@ Does the sequence have recognizable patterns?
 
 ## Related Documentation
 
-- [CAP Detection Algorithm](./CAP-DETECTION-ALGORITHM.md) - Automated detection implementation
-- [Feedback Workflow](./FEEDBACK-WORKFLOW.md) - How CAP labeling fits into development workflow
+- [LOOP Detection Algorithm](./LOOP-DETECTION-ALGORITHM.md) - Automated detection implementation
+- [Feedback Workflow](./FEEDBACK-WORKFLOW.md) - How LOOP labeling fits into development workflow

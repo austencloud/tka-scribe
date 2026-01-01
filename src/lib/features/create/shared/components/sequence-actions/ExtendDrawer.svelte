@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   ExtendDrawer.svelte
 
   Drawer for extending a sequence using LOOP (Linked Offset Operation Pattern).

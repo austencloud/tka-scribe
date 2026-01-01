@@ -37,17 +37,9 @@
 
   // Handle tab click
   function handleTabClick(tab: "construct" | "generate") {
-    console.log("��� CreateModuleHeader.handleTabClick:", {
-      tab,
-      activeTab,
-      onTabChange: typeof onTabChange,
-    });
     if (tab !== activeTab) {
-      console.log("��� Tab changed, calling onTabChange");
       hapticService?.trigger("selection");
       onTabChange(tab);
-    } else {
-      console.log("⚠️ Tab is already active, skipping");
     }
   }
 

@@ -14,9 +14,9 @@ import type {
   LabeledSequence,
 } from "../contracts/ILOOPLabelsFirebaseRepository";
 
-const CAP_LABELS_COLLECTION = "cap-labels";
+const LOOP_LABELS_COLLECTION = "loop-labels";
 const PUBLIC_SEQUENCES_COLLECTION = "publicSequences";
-const LOCAL_STORAGE_KEY = "cap-labels";
+const LOCAL_STORAGE_KEY = "loop-labels";
 
 /**
  * Service for Firebase persistence of LOOP labels
@@ -44,13 +44,12 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       const firestore = await this.ensureFirestore();
       this.syncStatus = "syncing";
 
-      await setDoc(doc(firestore, CAP_LABELS_COLLECTION, word), {
+      await setDoc(doc(firestore, LOOP_LABELS_COLLECTION, word), {
         ...label,
         updatedAt: new Date().toISOString(),
       });
 
       this.syncStatus = "synced";
-      console.log(`Saved label for "${word}" to Firebase`);
     } catch (error) {
       console.error("Failed to save to Firebase:", error);
       this.syncStatus = "error";
@@ -63,10 +62,9 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       const firestore = await this.ensureFirestore();
       this.syncStatus = "syncing";
 
-      await deleteDoc(doc(firestore, CAP_LABELS_COLLECTION, word));
+      await deleteDoc(doc(firestore, LOOP_LABELS_COLLECTION, word));
 
       this.syncStatus = "synced";
-      console.log(`Deleted label for "${word}" from Firebase`);
     } catch (error) {
       console.error("Failed to delete from Firebase:", error);
       this.syncStatus = "error";
@@ -124,12 +122,11 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       this.syncStatus = "syncing";
 
       const entries = Array.from(labels.entries());
-      console.log(`Syncing ${entries.length} labels to Firebase...`);
 
       let successCount = 0;
       for (const [word, label] of entries) {
         try {
-          await setDoc(doc(firestore, CAP_LABELS_COLLECTION, word), {
+          await setDoc(doc(firestore, LOOP_LABELS_COLLECTION, word), {
             ...label,
             updatedAt: new Date().toISOString(),
           });
@@ -156,7 +153,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
   private async loadFromFirebase(): Promise<Map<string, LabeledSequence>> {
     const firestore = await this.ensureFirestore();
     const snapshot = await getDocs(
-      collection(firestore, CAP_LABELS_COLLECTION)
+      collection(firestore, LOOP_LABELS_COLLECTION)
     );
 
     const labels = new Map<string, LabeledSequence>();
@@ -164,7 +161,6 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       labels.set(docSnap.id, docSnap.data() as LabeledSequence);
     });
 
-    console.log(`Loaded ${labels.size} labels from Firebase`);
     return labels;
   }
 
@@ -194,15 +190,13 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       } else {
         // Delete from publicSequences
         await deleteDoc(sequenceRef);
-        console.log(`Deleted sequence "${sequenceId}" from publicSequences`);
       }
 
       // Also delete the LOOP label if it exists
-      const labelRef = doc(firestore, CAP_LABELS_COLLECTION, word);
+      const labelRef = doc(firestore, LOOP_LABELS_COLLECTION, word);
       const labelSnap = await getDoc(labelRef);
       if (labelSnap.exists()) {
         await deleteDoc(labelRef);
-        console.log(`Deleted LOOP label for "${word}"`);
       }
 
       this.syncStatus = "synced";

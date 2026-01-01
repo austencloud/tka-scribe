@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 SpellPanel.svelte - Word-to-Sequence Generation Panel
 
 Allows users to type a word and generate a valid TKA sequence with bridge letters.
@@ -245,12 +245,8 @@ This component orchestrates the UI; business logic lives in extracted services.
   // Handle LOOP chip click - apply LOOP with optional bridge
   async function handleApplyLOOP(bridgeLetter: Letter | null, loopType: LOOPType) {
     if (!spellState.inputWord.trim()) {
-      console.warn("[SpellPanel] Cannot apply LOOP: no input word");
       return;
     }
-
-    console.log(`[SpellPanel] Applying LOOP type: ${loopType}, bridge: ${bridgeLetter || 'none'}`);
-    console.log(`[SpellPanel] Two-phase flow: ${selectedBridge ? 'yes (using current sequence)' : 'no (regenerating)'}`);
 
     spellState.setGenerating(true);
     spellState.clearError();
@@ -260,7 +256,6 @@ This component orchestrates the UI; business logic lives in extracted services.
       // the sequence already has the bridge beat appended. We should just
       // apply the LOOP to the current sequence instead of regenerating.
       if (selectedBridge && sequenceState?.currentSequence) {
-        console.log("[SpellPanel] Using two-phase LOOP application (current sequence)");
         const sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
 
         const extendedSequence = await sequenceExtender.extendSequence(
@@ -284,11 +279,8 @@ This component orchestrates the UI; business logic lives in extracted services.
           loopType,
           bridgeLetter: selectedBridge.bridgeLetters[0],
         });
-
-        console.log("[SpellPanel] Two-phase LOOP applied successfully");
       } else {
         // No bridge selected - regenerate from scratch with LOOP + bridge
-        console.log("[SpellPanel] Using regeneration LOOP application");
         const coordinator = getLOOPCoordinator();
         const result = await coordinator.applyLOOP(
           spellState.inputWord,
@@ -296,8 +288,6 @@ This component orchestrates the UI; business logic lives in extracted services.
           bridgeLetter,
           loopType
         );
-
-        console.log("[SpellPanel] LOOP application result:", result);
 
         if (result.success && result.sequence) {
           spellState.setExpandedWord(result.expandedWord || "");
@@ -317,8 +307,6 @@ This component orchestrates the UI; business logic lives in extracted services.
             loopType,
             bridgeLetter,
           });
-
-          console.log("[SpellPanel] LOOP applied successfully");
         } else {
           const errorMsg = result.error || "Failed to apply LOOP";
           console.error("[SpellPanel] LOOP application failed:", errorMsg);
@@ -398,25 +386,18 @@ This component orchestrates the UI; business logic lives in extracted services.
 
   async function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
     if (spellState.isGenerating) {
-      console.warn("[SpellPanel] handleLoopSelect ignored: already generating");
       return;
     }
-
-    console.log(`[SpellPanel] handleLoopSelect called: bridgeLetter=${bridgeLetter}, loopType=${loopType}`);
-    console.log(`[SpellPanel] selectedBridge:`, selectedBridge);
 
     const finalBridgeLetter = selectedBridge
       ? (selectedBridge.bridgeLetters[0] as Letter)
       : bridgeLetter;
-
-    console.log(`[SpellPanel] Final bridge letter to apply: ${finalBridgeLetter || 'none'}`);
 
     // Apply the LOOP and wait for it to complete before resetting selection
     await handleApplyLOOP(finalBridgeLetter, loopType);
 
     // Only reset selectedBridge after LOOP application completes
     selectedBridge = null;
-    console.log("[SpellPanel] Bridge selection reset");
   }
 
   function handleBackToBridges() {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LOOPExplanationTextGenerator - Generates explanation text for LOOP transformations
  */
 

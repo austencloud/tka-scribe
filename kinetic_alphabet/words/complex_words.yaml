@@ -22,50 +22,50 @@ four_letter_words:
   DJII:
     letters: ["D", "J", "I", "I"]
     description: "Compound word plus hybrid repeats"
-    cap_type: "Mirrored CAP"
+    cap_type: "Mirrored LOOP"
     repetitions: 2
     total_beats: 8
 
   BBLF:
     letters: ["B", "B", "L", "F"]
     description: "Mixed Type 1 and compound letters"
-    cap_type: "Swapped & Rotated CAP"
+    cap_type: "Swapped & Rotated LOOP"
 
 # Gamma-focused 4-letter words
 gamma_four_letter:
   SOTR:
     letters: ["S", "O", "T", "R"]
     description: "Mixed Quarter-Same and Quarter-Opp"
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
     gamma_pattern: "Each word ends in gamma on opposite side"
 
   VPUQ:
     letters: ["V", "P", "U", "Q"]
     description: "Quarter-Same and Quarter-Opp combination"
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
 
   MVNU:
     letters: ["M", "V", "N", "U"]
     description: "Quarter-Opp and Quarter-Same mix"
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
 
-# Type 2 CAP Words
+# Type 2 LOOP Words
 type_2_cap_words:
   BΣTX:
     letters: ["B", "Σ", "T", "X"]
     description: "Type 1 and Type 2 combination"
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
     pattern: "Travel between α/β and Γ"
 
   EΔUZ:
     letters: ["E", "Δ", "U", "Z"]
     description: "Compound and Type 2 mix"
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
 
   OYHθ:
     letters: ["O", "Y", "H", "θ"]
     description: "Gamma and Type 2 combination"
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
 
 # 16-Count Sequences
 sixteen_count_sequences:
@@ -74,14 +74,14 @@ sixteen_count_sequences:
       letters: ["G", "θ", "O", "Z"]
       repetitions: 4
       total_beats: 16
-      cap_type: "Rotated+Swapped CAP"
+      cap_type: "Rotated+Swapped LOOP"
       pattern: "Each repetition 90° from start, takes 4 reps to return home"
 
     EΔQY:
       letters: ["E", "Δ", "Q", "Y"]
       repetitions: 4
       total_beats: 16
-      cap_type: "Rotated + Mirrored + Swapped CAP"
+      cap_type: "Rotated + Mirrored + Swapped LOOP"
       pattern: "Returns to home after 2 reps, repeats twice more for symmetry"
 
 # 8-Letter Words (repeated twice)
@@ -90,14 +90,14 @@ eight_letter_words:
     letters: ["I", "I", "Ω", "X", "K", "E", "Σ", "Y"]
     repetitions: 2
     total_beats: 16
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
     complexity: "Mixed Type 1, Type 2, and compound letters"
 
   CΣNZIθVW:
     letters: ["C", "Σ", "N", "Z", "I", "θ", "V", "W"]
     repetitions: 2
     total_beats: 16
-    cap_type: "Mirrored + Swapped CAP"
+    cap_type: "Mirrored + Swapped LOOP"
     complexity: "All motion types represented"
 
 # Reversal-Based Complex Words
@@ -124,7 +124,7 @@ reversal_words:
 
     FLII:
       letters: ["F", "L", "I", "I"]
-      description: "Full-reversal CAP"
+      description: "Full-reversal LOOP"
       additional_reversals: "Contains prop-reversals"
 
     DAK:
@@ -136,17 +136,17 @@ reversal_words:
 prop_reversal_caps:
   EΣQY:
     letters: ["E", "Σ", "Q", "Y"]
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
     reversal_pattern: "Includes prop-reversals"
 
   TWKθ:
     letters: ["T", "W", "K", "θ"]
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
     reversal_pattern: "Prop-reversals integrated"
 
   BΔMX:
     letters: ["B", "Δ", "M", "X"]
-    cap_type: "Rotated CAP"
+    cap_type: "Rotated LOOP"
     special_note: "Right hand stops on beats 2 and 4, still mark reversal with R"
     static_reversal: "Reversal with beat of no motion in between"
 
@@ -158,7 +158,7 @@ construction_principles:
 
   cap_requirements:
     ending_position: "Word must end on variation of start position"
-    enables_repetition: "Allows seamless CAP formation"
+    enables_repetition: "Allows seamless LOOP formation"
 
   reversal_integration:
     placement_effects: "Different reversal locations create notably different outcomes"

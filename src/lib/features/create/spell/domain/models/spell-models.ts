@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Spell Tab Domain Models
  *
  * Models for the word-to-sequence generation feature ("Spell" tab).

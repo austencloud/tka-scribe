@@ -69,17 +69,10 @@
 
     try {
       const sequenceName = sequenceMetadata.name || sequenceMetadata.id;
-      console.log(
-        `EditModule: Loading full sequence data for "${sequenceName}"...`
-      );
-
       const fullSequence =
         await exploreLoader.loadFullSequenceData(sequenceName);
 
       if (fullSequence) {
-        console.log(
-          `EditModule: Loaded full sequence with ${fullSequence.beats?.length ?? 0} beats`
-        );
         editState.loadSequence(fullSequence, { module: "browser" });
       } else {
         console.error(
@@ -95,20 +88,16 @@
 
   // Initialize on mount
   onMount(() => {
-    console.log("EditModule: Mounted");
-
     try {
       transformService = resolve<ISequenceTransformer>(
         TYPES.ISequenceTransformer
       );
-      console.log("EditModule: Resolved transformation service");
     } catch (error) {
       console.warn("Failed to resolve ISequenceTransformer:", error);
     }
 
     try {
       exploreLoader = resolve<IDiscoverLoader>(TYPES.IDiscoverLoader);
-      console.log("EditModule: Resolved explore loader");
     } catch (error) {
       console.warn("Failed to resolve IDiscoverLoader:", error);
     }
@@ -117,14 +106,12 @@
       motionQueryHandler = resolve<IMotionQueryHandler>(
         TYPES.IMotionQueryHandler
       );
-      console.log("EditModule: Resolved motion query handler");
     } catch (error) {
       console.warn("Failed to resolve IMotionQueryHandler:", error);
     }
 
     try {
       gridModeDeriver = resolve<IGridModeDeriver>(TYPES.IGridModeDeriver);
-      console.log("EditModule: Resolved grid mode deriver");
     } catch (error) {
       console.warn("Failed to resolve IGridModeDeriver:", error);
     }
@@ -173,9 +160,6 @@
             );
 
           if (newLetter && newLetter !== updatedBeat.letter) {
-            console.log(
-              `EditModule: Derived new letter "${newLetter}" for beat ${beatIndex + 1} (was "${updatedBeat.letter}")`
-            );
             // Include the new letter in the updates (cast string to Letter enum)
             updates = { ...updates, letter: newLetter as Letter };
           }

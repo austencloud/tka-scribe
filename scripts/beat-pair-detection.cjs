@@ -1,5 +1,5 @@
 /**
- * Beat-Pair Graph CAP Detection
+ * Beat-Pair Graph LOOP Detection
  *
  * New approach: Build a graph of beat relationships, analyze patterns bottom-up
  */
@@ -244,11 +244,11 @@ function analyzeLetterGroupPattern(beatNumbers, graph) {
 /**
  * Main detection function using beat-pair graph approach
  */
-function detectCAPWithBeatPairs(sequence) {
+function detectLOOPWithBeatPairs(sequence) {
   const beats = extractBeats(sequence);
 
   if (beats.length < 2) {
-    return { capType: null, components: [], analysis: "too_short" };
+    return { loopType: null, components: [], analysis: "too_short" };
   }
 
   // Build the beat pair graph
@@ -288,7 +288,7 @@ function testSequence(sequence, name) {
   console.log("=".repeat(70));
   console.log();
 
-  const result = detectCAPWithBeatPairs(sequence);
+  const result = detectLOOPWithBeatPairs(sequence);
 
   console.log("Letter Groups:");
   console.log(JSON.stringify(result.letterGroups, null, 2));

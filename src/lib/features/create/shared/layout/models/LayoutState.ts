@@ -12,7 +12,7 @@ export const LAYOUT_BREAKPOINTS = {
   WIDE_VIEWPORT: 1024,
 
   /** Aspect ratio threshold for landscape detection */
-  LANDSCAPE_ASPECT_RATIO: 1.2,
+  LANDSLOOPE_ASPECT_RATIO: 1.2,
 
   /** Z Fold minimum width */
   Z_FOLD_MIN_WIDTH: 750,

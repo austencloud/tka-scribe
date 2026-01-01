@@ -47,8 +47,6 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
   }
 
   async loadInitialSequences(): Promise<PaginatedSequences> {
-    console.log("🚀 OptimizedGallery: Loading initial sequences...");
-
     try {
       // Load first page with priority images
       const response = await fetch(
@@ -65,10 +63,6 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
       this.cache.set(1, data.sequences);
       this.totalCount = data.totalCount;
 
-      console.log(
-        `✅ OptimizedGallery: Loaded ${data.sequences.length} initial sequences`
-      );
-
       return {
         sequences: data.sequences,
         totalCount: data.totalCount,
@@ -76,17 +70,12 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
         nextPage: 2,
       };
     } catch (error) {
-      console.error(
-        "❌ OptimizedGallery: Failed to load initial sequences:",
-        error
-      );
+      console.error("Failed to load initial sequences:", error);
       throw error;
     }
   }
 
   async loadMoreSequences(page: number): Promise<PaginatedSequences> {
-    console.log(`🔄 OptimizedGallery: Loading page ${page}...`);
-
     // Check cache first
     if (this.cache.has(page)) {
       const sequences = this.cache.get(page) ?? [];
@@ -112,10 +101,6 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
       // Cache the results
       this.cache.set(page, data.sequences);
 
-      console.log(
-        `✅ OptimizedGallery: Loaded page ${page} with ${data.sequences.length} sequences`
-      );
-
       return {
         sequences: data.sequences,
         totalCount: data.totalCount,
@@ -123,7 +108,7 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
         nextPage: page + 1,
       };
     } catch (error) {
-      console.error(`❌ OptimizedGallery: Failed to load page ${page}:`, error);
+      console.error(`Failed to load page ${page}:`, error);
       throw error;
     }
   }
@@ -153,12 +138,8 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
 
     try {
       await Promise.allSettled(preloadPromises);
-      console.log(`✅ OptimizedGallery: Preloaded ${preloadCount} images`);
     } catch (error) {
-      console.warn(
-        "⚠️ OptimizedGallery: Some images failed to preload:",
-        error
-      );
+      console.warn("Some images failed to preload:", error);
     }
   }
 
@@ -173,7 +154,7 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
       this.totalCount = data.count;
       return this.totalCount;
     } catch (error) {
-      console.error("❌ OptimizedGallery: Failed to get total count:", error);
+      console.error("Failed to get total count:", error);
       return 0;
     }
   }
@@ -200,7 +181,7 @@ export class OptimizedDiscoverer implements IOptimizedDiscoverer {
         nextPage: page + 1,
       };
     } catch (error) {
-      console.error("❌ OptimizedGallery: Search failed:", error);
+      console.error("Search failed:", error);
       throw error;
     }
   }

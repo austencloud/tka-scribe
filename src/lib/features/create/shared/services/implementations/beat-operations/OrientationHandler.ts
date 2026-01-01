@@ -31,14 +31,7 @@ export function updateBeatOrientation(
   orientation: string,
   createModuleState: ICreateModuleState
 ): void {
-  console.log(`🎨 OrientationHandler.updateBeatOrientation called:`, {
-    beatNumber,
-    color,
-    orientation,
-  });
-
   const beatData = getBeatDataFromState(beatNumber, createModuleState);
-  console.log(`  Beat data from live state:`, beatData);
 
   if (!beatData?.motions) {
     logger.warn("Cannot update orientation - no beat data available");

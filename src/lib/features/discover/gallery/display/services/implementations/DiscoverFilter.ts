@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Explore Filter Service
  *
  * Handles all filtering operations for gallery sequences.
@@ -214,34 +214,17 @@ export class DiscoverFilter implements IDiscoverFilter {
       // PictographData object - extract position from startPosition field
       const pictoData = filterValue as { startPosition?: string | null };
       targetPosition = pictoData.startPosition?.toLowerCase() ?? null;
-      console.log("🔍 Position filter - PictographData:", {
-        startPosition: pictoData.startPosition,
-        targetPosition,
-      });
     } else if (typeof filterValue === "string") {
       // Direct string value (e.g., "alpha1", "beta5")
       targetPosition = filterValue.toLowerCase();
-      console.log("🔍 Position filter - string:", targetPosition);
     }
 
     if (!targetPosition) {
-      console.log("🔍 Position filter - no target position, returning all");
       return sequences;
     }
 
     // Extract position group (alpha, beta, gamma) for fallback matching
     const targetGroup = targetPosition.replace(/[0-9]/g, "");
-    console.log(
-      "🔍 Position filter - targetGroup:",
-      targetGroup,
-      "from",
-      targetPosition
-    );
-    console.log(
-      "🔍 Position filter - filtering",
-      sequences.length,
-      "sequences"
-    );
 
     const results = sequences.filter((seq) => {
       // Try exact position match first
@@ -270,13 +253,6 @@ export class DiscoverFilter implements IDiscoverFilter {
 
       return false;
     });
-
-    console.log("🔍 Position filter - found", results.length, "matches");
-    if (results.length === 0 && sequences.length > 0) {
-      // Debug: show what position groups are available
-      const groups = new Set(sequences.map((s) => s.startingPositionGroup));
-      console.log("🔍 Available position groups:", Array.from(groups));
-    }
 
     return results;
   }

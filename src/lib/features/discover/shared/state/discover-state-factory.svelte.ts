@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Simple Explore State
  *
  * Essential gallery functionality without over-engineering.
@@ -172,7 +172,7 @@ export function createExploreState() {
       applyFilterAndSort();
       await generateSequenceSections();
     } catch (err) {
-      console.error("❌ ExploreState: Failed to load sequences:", err);
+      console.error("Failed to load sequences:", err);
       error = err instanceof Error ? err.message : "Failed to load sequences";
     } finally {
       isLoading = false;
@@ -183,7 +183,6 @@ export function createExploreState() {
   async function loadLibrarySequences(): Promise<void> {
     const libService = getLibraryRepository();
     if (!libService) {
-      console.warn("LibraryRepository not available");
       error = "Please sign in to view your library";
       allSequences = [];
       displayedSequences = [];
@@ -206,7 +205,7 @@ export function createExploreState() {
       applyFilterAndSort();
       await generateSequenceSections();
     } catch (err) {
-      console.error("❌ ExploreState: Failed to load library sequences:", err);
+      console.error("Failed to load library sequences:", err);
       error = err instanceof Error ? err.message : "Failed to load library";
     } finally {
       isLoading = false;
@@ -266,7 +265,6 @@ export function createExploreState() {
 
   async function toggleFavorite(sequenceId: string): Promise<void> {
     if (!FavoritesManager) {
-      console.warn("FavoritesManager not available");
       return;
     }
 
@@ -314,8 +312,6 @@ export function createExploreState() {
   // Apply filtering and sorting to sequences
   function applyFilterAndSort(): void {
     try {
-      // console.log("🔍 Applying filter:", $state.snapshot(currentFilter));
-
       // Apply filtering
       let filtered = allSequences;
       if (currentFilter.type !== "all") {
@@ -327,11 +323,6 @@ export function createExploreState() {
       }
 
       // Apply sorting
-      // console.log(
-      //   "📊 Applying sort:",
-      //   $state.snapshot(currentSortMethod),
-      //   $state.snapshot(sortDirection)
-      // );
       const sorted = sortService.sortSequences(filtered, currentSortMethod);
 
       // TODO: Apply sort direction (galleryService.sortSequences doesn't handle direction yet)
@@ -342,7 +333,7 @@ export function createExploreState() {
       filteredSequences = sorted;
       displayedSequences = sorted;
     } catch (err) {
-      console.error("❌ Failed to apply filter and sort:", err);
+      console.error("Failed to apply filter and sort:", err);
     }
   }
 
@@ -380,11 +371,8 @@ export function createExploreState() {
         config
       );
       sequenceSections = sections;
-      // console.log(
-      //   `✅ Generated ${sections.length} sequence sections (grouped by ${groupBy})`
-      // );
     } catch (err) {
-      console.error("❌ Failed to generate sequence sections:", err);
+      console.error("Failed to generate sequence sections:", err);
     }
   }
 

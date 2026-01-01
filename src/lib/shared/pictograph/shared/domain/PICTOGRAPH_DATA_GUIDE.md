@@ -77,8 +77,8 @@ if (result.success && result.sequence) {
 For creating new circular sequences:
 
 ```typescript
-// Use LOOP executors for circular assembly patterns
-import { StrictInvertedCAPExecutor } from "$lib/features/create/generate/circular/services/implementations/StrictInvertedCAPExecutor";
+// Use LOOP executors for Linked Offset Operation Patterns
+import { StrictInvertedLOOPExecutor } from "$lib/features/create/generate/circular/services/implementations/StrictInvertedLOOPExecutor";
 ```
 
 ## What Makes Motion Data Valid

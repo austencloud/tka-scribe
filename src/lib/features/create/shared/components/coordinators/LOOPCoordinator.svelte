@@ -1,9 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
   /**
    * LOOP Coordinator Component
    *
    * Manages LOOP selection modal state at CreateModule level.
-   * Extracts LOOP modal logic from CAPCard for proper stacking context.
+   * Extracts LOOP modal logic from LOOPCard for proper stacking context.
    *
    * Domain: Create module - LOOP Panel Coordination
    */
@@ -27,13 +27,13 @@
 
   // Use pending components if available, otherwise use the original
   const displayComponents = $derived(
-    pendingComponents || panelState.capSelectedComponents || new Set()
+    pendingComponents || panelState.loopSelectedComponents || new Set()
   );
 
   // Event handlers
   function handleConfirm() {
     // Apply pending changes if any
-    if (pendingComponents && panelState.capOnChange) {
+    if (pendingComponents && panelState.loopOnChange) {
       // Check if the combination is implemented
       const isImplemented = LOOPTypeResolver.isImplemented(pendingComponents);
 
@@ -49,26 +49,27 @@
         return; // Don't close the panel, let user select a different combination
       }
 
-      const finalLOOPType = LOOPTypeResolver.generateLOOPType(pendingComponents);
-      panelState.capOnChange(finalLOOPType);
+      const finalLOOPType =
+        LOOPTypeResolver.generateLOOPType(pendingComponents);
+      panelState.loopOnChange(finalLOOPType);
     }
 
     // Reset state and close
     pendingComponents = null;
-    panelState.closeCAPPanel();
+    panelState.closeLOOPPanel();
   }
 
   function handleClose() {
     // Discard pending changes without applying them
     pendingComponents = null;
-    panelState.closeCAPPanel();
+    panelState.closeLOOPPanel();
   }
 
   function handleToggleComponent(component: any) {
     // Initialize pending if not set
     if (!pendingComponents) {
       pendingComponents = new Set(
-        panelState.capSelectedComponents || new Set()
+        panelState.loopSelectedComponents || new Set()
       );
     }
 
@@ -85,14 +86,14 @@
 
   // Reset pending state when panel closes
   $effect(() => {
-    if (!panelState.isCAPPanelOpen) {
+    if (!panelState.isLOOPPanelOpen) {
       pendingComponents = null;
     }
   });
 </script>
 
 <LOOPSelectionPanel
-  isOpen={panelState.isCAPPanelOpen}
+  isOpen={panelState.isLOOPPanelOpen}
   selectedComponents={displayComponents}
   onToggleComponent={handleToggleComponent}
   onConfirm={handleConfirm}

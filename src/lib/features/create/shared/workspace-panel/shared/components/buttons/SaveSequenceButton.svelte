@@ -21,9 +21,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(() => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -80,7 +78,12 @@
     background: linear-gradient(
       135deg,
       var(--semantic-success, var(--semantic-success)) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, #15803d) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 80%,
+          #15803d
+        )
+        100%
     );
     border-color: color-mix(
       in srgb,
@@ -88,17 +91,35 @@
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 40%,
+        transparent
+      );
   }
 
   .save-button:hover {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 80%, #15803d) 0%,
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, #15803d) 100%
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 80%,
+          #15803d
+        )
+        0%,
+      color-mix(
+          in srgb,
+          var(--semantic-success, var(--semantic-success)) 60%,
+          #15803d
+        )
+        100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--semantic-success, var(--semantic-success)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--semantic-success, var(--semantic-success)) 60%,
+        transparent
+      );
   }
 
   /* Mobile responsive adjustments */
@@ -128,7 +149,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSLOOPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
       width: var(

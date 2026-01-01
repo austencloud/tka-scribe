@@ -10,7 +10,7 @@ import { LOOPLabelerTypes } from "$lib/shared/inversify/types/loop-labeler.types
 import type { ILOOPLabelsFirebaseRepository } from "../services/contracts/ILOOPLabelsFirebaseRepository";
 import type { ILOOPDesignator } from "../services/contracts/ILOOPDesignator";
 import type {
-  CAPDesignation,
+  LOOPDesignation,
   LabeledSequence,
   TransformationIntervals,
   TransformationInterval,
@@ -47,7 +47,7 @@ export interface WholeModeState {
   transformationIntervals: TransformationIntervals;
 
   // Multiple designations
-  pendingDesignations: CAPDesignation[];
+  pendingDesignations: LOOPDesignation[];
 
   // Actions
   actions: {
@@ -58,12 +58,12 @@ export interface WholeModeState {
       interval: TransformationInterval
     ): void;
     setFreeform(isFreeform: boolean): void;
-    addDesignation(derivedCapType: string | null): void;
+    addDesignation(derivedLoopType: string | null): void;
     removeDesignation(index: number): void;
     labelSequence(
       currentWord: string,
       notes: string,
-      derivedCapType: string | null
+      derivedLoopType: string | null
     ): Promise<void>;
     markAsUnknown(currentWord: string, notes: string): Promise<void>;
     clearSelection(): void;
@@ -79,7 +79,7 @@ export function createWholeModeState(): WholeModeState {
   let isFreeform = $state(false);
   let selectedSliceSize = $state<SliceSize | null>(null);
   let transformationIntervals = $state<TransformationIntervals>({});
-  let pendingDesignations = $state<CAPDesignation[]>([]);
+  let pendingDesignations = $state<LOOPDesignation[]>([]);
 
   // Services
   const labelsService = tryResolve<ILOOPLabelsFirebaseRepository>(
@@ -148,7 +148,7 @@ export function createWholeModeState(): WholeModeState {
       }
     },
 
-    addDesignation(derivedCapType: string | null) {
+    addDesignation(derivedLoopType: string | null) {
       if (selectedComponents.size === 0) {
         console.warn(
           "[WholeModeState] Cannot add designation: no components selected"
@@ -183,9 +183,9 @@ export function createWholeModeState(): WholeModeState {
         relevantIntervals.invert = transformationIntervals.invert;
       }
 
-      const designation: CAPDesignation = {
+      const designation: LOOPDesignation = {
         components: Array.from(selectedComponents),
-        loopType: derivedCapType,
+        loopType: derivedLoopType,
         sliceSize: selectedComponents.has("rotated") ? selectedSliceSize : null,
         transformationIntervals:
           Object.keys(relevantIntervals).length > 0
@@ -220,7 +220,7 @@ export function createWholeModeState(): WholeModeState {
     async labelSequence(
       currentWord: string,
       notes: string,
-      derivedCapType: string | null
+      derivedLoopType: string | null
     ) {
       if (!labelsService) {
         console.warn("[WholeModeState] LabelsService not available");
@@ -259,7 +259,7 @@ export function createWholeModeState(): WholeModeState {
 
         allDesignations.push({
           components: Array.from(selectedComponents),
-          loopType: derivedCapType,
+          loopType: derivedLoopType,
           sliceSize: selectedComponents.has("rotated")
             ? selectedSliceSize
             : null,

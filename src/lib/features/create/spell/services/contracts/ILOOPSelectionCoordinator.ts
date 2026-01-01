@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LOOP Selection Coordinator Interface
  *
  * Coordinates the two-phase LOOP selection flow:

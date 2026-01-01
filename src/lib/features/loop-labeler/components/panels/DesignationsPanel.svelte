@@ -7,14 +7,17 @@
    * Supports multiple candidate designations with individual confirm/deny.
    */
   import type {
-    CAPDesignation,
+    LOOPDesignation,
     CandidateDesignation,
     BeatPairGroups,
   } from "../../domain/models/label-models";
   import type { SectionDesignation } from "../../domain/models/section-models";
   import type { BeatPairRelationship } from "../../domain/models/beatpair-models";
-  import type { PolyrhythmicCAPResult } from "../../services/contracts/IPolyrhythmicDetector";
-  import type { CompoundPattern, AxisAlternatingPattern } from "../../services/contracts/ILOOPDetector";
+  import type { PolyrhythmicLOOPResult } from "../../services/contracts/IPolyrhythmicDetector";
+  import type {
+    CompoundPattern,
+    AxisAlternatingPattern,
+  } from "../../services/contracts/ILOOPDetector";
   import FontAwesomeIcon from "$lib/shared/foundation/ui/FontAwesomeIcon.svelte";
   import BeatPairAnalysisDisplay from "../shared/BeatPairAnalysisDisplay.svelte";
   import CandidatesSection from "./designations/CandidatesSection.svelte";
@@ -25,18 +28,18 @@
   import DeleteConfirmSection from "./designations/DeleteConfirmSection.svelte";
 
   interface Props {
-    wholeDesignations: CAPDesignation[];
+    wholeDesignations: LOOPDesignation[];
     sectionDesignations: SectionDesignation[];
     beatPairDesignations: BeatPairRelationship[];
     isFreeform: boolean;
     isModular?: boolean;
     isPolyrhythmic?: boolean;
-    polyrhythmic?: PolyrhythmicCAPResult | null;
+    polyrhythmic?: PolyrhythmicLOOPResult | null;
     compoundPattern?: CompoundPattern | null;
     isAxisAlternating?: boolean;
     axisAlternatingPattern?: AxisAlternatingPattern | null;
     needsVerification?: boolean;
-    autoDetectedDesignations?: CAPDesignation[];
+    autoDetectedDesignations?: LOOPDesignation[];
     candidateDesignations?: CandidateDesignation[];
     autoDetectedBeatPairs?: BeatPairRelationship[];
     autoDetectedBeatPairGroups?: BeatPairGroups;
@@ -106,9 +109,13 @@
     };
 
     try {
-      await navigator.clipboard.writeText(JSON.stringify(detectionInfo, null, 2));
+      await navigator.clipboard.writeText(
+        JSON.stringify(detectionInfo, null, 2)
+      );
       copySuccess = true;
-      setTimeout(() => { copySuccess = false; }, 2000);
+      setTimeout(() => {
+        copySuccess = false;
+      }, 2000);
     } catch (err) {
       console.error("Failed to copy detection info:", err);
     }
@@ -121,7 +128,6 @@
   const pendingCandidates = $derived(
     candidateDesignations.filter((c) => !c.confirmed && !c.denied)
   );
-
 </script>
 
 <div class="designations-panel">
@@ -196,10 +202,7 @@
 
   <!-- Delete sequence section -->
   {#if onDeleteSequence}
-    <DeleteConfirmSection
-      {sequenceWord}
-      {onDeleteSequence}
-    />
+    <DeleteConfirmSection {sequenceWord} {onDeleteSequence} />
   {/if}
 </div>
 

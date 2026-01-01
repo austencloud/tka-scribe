@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Generation Service Type Identifiers
  *
  * Services for generating sequences, including LOOP executors.

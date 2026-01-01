@@ -198,21 +198,20 @@ export function adjustQueueForConnection(
 ): void {
   // Localhost gets maximum performance
   if (isLocalhost()) {
-    imageRequestQueue.setMaxConcurrent(20); // Blazing fast on localhost
-    console.log("🚀 Localhost detected - using 20 concurrent requests");
+    imageRequestQueue.setMaxConcurrent(20);
     return;
   }
 
   // Production adjustments based on connection
   switch (quality) {
     case "slow":
-      imageRequestQueue.setMaxConcurrent(2); // Very conservative on slow networks
+      imageRequestQueue.setMaxConcurrent(2);
       break;
     case "medium":
-      imageRequestQueue.setMaxConcurrent(6); // Moderate
+      imageRequestQueue.setMaxConcurrent(6);
       break;
     case "fast":
-      imageRequestQueue.setMaxConcurrent(12); // Aggressive on fast connections
+      imageRequestQueue.setMaxConcurrent(12);
       break;
   }
 }

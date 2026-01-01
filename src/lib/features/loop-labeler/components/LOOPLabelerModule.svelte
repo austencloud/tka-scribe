@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   LOOP Labeler Module
 
   Main orchestrator component that replaces the monolithic +page.svelte.
@@ -20,7 +20,7 @@
   import {
     LOOPLabelerState,
     loopLabelerState,
-    loopLabelerController
+    loopLabelerController,
   } from "../state/loop-labeler-state.svelte";
   import { createSectionModeState } from "../state/section-mode-state.svelte";
   import { createBeatPairModeState } from "../state/beatpair-mode-state.svelte";
@@ -78,10 +78,10 @@
         // Silent - will try direct import
       }
 
-      // If tryResolve failed, log error - CAPDetector has too many dependencies for manual instantiation
+      // If tryResolve failed, log error - LOOPDetector has too many dependencies for manual instantiation
       if (!resolvedService) {
         console.error(
-          "[LOOPLabelerModule] Failed to resolve CAPDetector from DI container. Detection features will be unavailable."
+          "[LOOPLabelerModule] Failed to resolve LOOPDetector from DI container. Detection features will be unavailable."
         );
       }
 
@@ -286,7 +286,7 @@
   });
 
   // Derived LOOP type from selected components (for whole/section modes)
-  const derivedCapType = $derived.by(() => {
+  const derivedLoopType = $derived.by(() => {
     if (!sectionState || !wholeState) return null;
 
     const components =
@@ -300,7 +300,7 @@
 
     const sorted = Array.from(components).sort().join("_");
 
-    // Component mapping (simplified - real mapping in CAPDesignator)
+    // Component mapping (simplified - real mapping in LOOPDesignator)
     const mapping: Record<string, string> = {
       rotated: "STRICT_ROTATED",
       mirrored: "STRICT_MIRRORED",
@@ -342,7 +342,7 @@
     await sectionState.actions.addSection(
       currentSequence.word,
       notes,
-      derivedCapType
+      derivedLoopType
     );
   }
 
@@ -362,7 +362,7 @@
 
   async function handleAddDesignation() {
     if (!wholeState) return;
-    wholeState.actions.addDesignation(derivedCapType);
+    wholeState.actions.addDesignation(derivedLoopType);
   }
 
   function handleRemoveDesignation(index: number) {
@@ -397,7 +397,7 @@
     await wholeState.actions.labelSequence(
       currentSequence.word,
       notes,
-      derivedCapType
+      derivedLoopType
     );
     loopLabelerController.nextSequence();
   }
@@ -687,7 +687,7 @@
                 {sectionState}
                 {beatPairState}
                 {wholeState}
-                {derivedCapType}
+                {derivedLoopType}
                 {notes}
                 onToggleBuilder={(show) => (showManualBuilder = show)}
                 onLabelingModeChange={(mode) =>

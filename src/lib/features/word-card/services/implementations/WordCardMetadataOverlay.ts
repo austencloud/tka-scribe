@@ -44,7 +44,6 @@ export class WordCardMetadataOverlay {
     dimensions: WordCardDimensions
   ): string {
     try {
-      console.log(`🏷️ Adding metadata overlays for sequence: ${sequence.name}`);
 
       let modifiedSVG = svg;
 
@@ -109,7 +108,6 @@ export class WordCardMetadataOverlay {
         }
       }
 
-      console.log("✅ Successfully added metadata overlays");
       return modifiedSVG;
     } catch (error) {
       console.error("❌ Failed to add metadata overlays:", error);

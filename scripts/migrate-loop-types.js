@@ -1,10 +1,10 @@
-/**
- * CAP Type Migration Script
+﻿/**
+ * LOOP Type Migration Script
  *
- * Analyzes sequences in sequence-index.json and adds capType and isCircular fields
+ * Analyzes sequences in sequence-index.json and adds loopType and isCircular fields
  * based on Continuous Assembly Pattern detection.
  *
- * Usage: node scripts/migrate-cap-types.js [--dry-run]
+ * Usage: node scripts/migrate-loop-types.js [--dry-run]
  *
  * Options:
  *   --dry-run    Preview changes without writing to file
@@ -22,8 +22,8 @@ const SEQUENCE_INDEX_PATH = resolve(
   "../static/data/sequence-index.json"
 );
 
-// CAP Type definitions (mirrored from circular-models.ts)
-const CAPType = {
+// LOOP Type definitions (mirrored from circular-models.ts)
+const LOOPType = {
   STRICT_ROTATED: "strict_rotated",
   STRICT_MIRRORED: "strict_mirrored",
   STRICT_SWAPPED: "strict_swapped",
@@ -38,31 +38,31 @@ const CAPType = {
   MIRRORED_SWAPPED_INVERTED: "mirrored_swapped_inverted",
 };
 
-const CAPComponent = {
+const LOOPComponent = {
   ROTATED: "rotated",
   MIRRORED: "mirrored",
   SWAPPED: "swapped",
   INVERTED: "inverted",
 };
 
-// Component to CAPType mapping
-const COMPONENT_TO_CAP_TYPE = {
-  rotated: CAPType.STRICT_ROTATED,
-  mirrored: CAPType.STRICT_MIRRORED,
-  swapped: CAPType.STRICT_SWAPPED,
-  inverted: CAPType.STRICT_INVERTED,
-  "mirrored,swapped": CAPType.MIRRORED_SWAPPED,
-  "inverted,swapped": CAPType.SWAPPED_INVERTED,
-  "inverted,mirrored": CAPType.MIRRORED_INVERTED,
-  "rotated,swapped": CAPType.ROTATED_SWAPPED,
-  "inverted,rotated": CAPType.ROTATED_INVERTED,
-  "mirrored,rotated": CAPType.MIRRORED_ROTATED,
-  "inverted,mirrored,rotated": CAPType.MIRRORED_ROTATED_INVERTED,
-  "inverted,mirrored,swapped": CAPType.MIRRORED_SWAPPED_INVERTED,
+// Component to LOOPType mapping
+const COMPONENT_TO_LOOP_TYPE = {
+  rotated: LOOPType.STRICT_ROTATED,
+  mirrored: LOOPType.STRICT_MIRRORED,
+  swapped: LOOPType.STRICT_SWAPPED,
+  inverted: LOOPType.STRICT_INVERTED,
+  "mirrored,swapped": LOOPType.MIRRORED_SWAPPED,
+  "inverted,swapped": LOOPType.SWAPPED_INVERTED,
+  "inverted,mirrored": LOOPType.MIRRORED_INVERTED,
+  "rotated,swapped": LOOPType.ROTATED_SWAPPED,
+  "inverted,rotated": LOOPType.ROTATED_INVERTED,
+  "mirrored,rotated": LOOPType.MIRRORED_ROTATED,
+  "inverted,mirrored,rotated": LOOPType.MIRRORED_ROTATED_INVERTED,
+  "inverted,mirrored,swapped": LOOPType.MIRRORED_SWAPPED_INVERTED,
 };
 
-// Position maps for CAP detection
-const HALVED_CAPS = new Set([
+// Position maps for LOOP detection
+const HALVED_LOOPS = new Set([
   "alpha1,alpha3",
   "alpha3,alpha1",
   "alpha2,alpha4",
@@ -320,25 +320,25 @@ function detectsInversion(beats) {
   return true;
 }
 
-// Map components to CAP type
-function mapComponentsToCAPType(components) {
+// Map components to LOOP type
+function mapComponentsToLOOPType(components) {
   if (components.size === 0) return null;
 
   const sortedComponents = Array.from(components).sort().join(",");
-  return COMPONENT_TO_CAP_TYPE[sortedComponents] || null;
+  return COMPONENT_TO_LOOP_TYPE[sortedComponents] || null;
 }
 
-// Detect CAP type for a sequence
-function detectCAPType(sequence) {
+// Detect LOOP type for a sequence
+function detectLOOPType(sequence) {
   const isCircular = checkCircularity(sequence);
 
   if (!isCircular) {
-    return { isCircular: false, capType: null };
+    return { isCircular: false, loopType: null };
   }
 
   const beats = extractBeats(sequence);
   if (!beats || beats.length < 2) {
-    return { isCircular: true, capType: null };
+    return { isCircular: true, loopType: null };
   }
 
   const components = new Set();
@@ -346,24 +346,24 @@ function detectCAPType(sequence) {
   // Note: Full detection requires grid position analysis
   // For now, we detect swapping and inversion which can be done from motion data
   if (detectsSwapping(beats)) {
-    components.add(CAPComponent.SWAPPED);
+    components.add(LOOPComponent.SWAPPED);
   }
   if (detectsInversion(beats)) {
-    components.add(CAPComponent.INVERTED);
+    components.add(LOOPComponent.INVERTED);
   }
 
-  const capType = mapComponentsToCAPType(components);
+  const loopType = mapComponentsToLOOPType(components);
 
   return {
     isCircular: true,
-    capType,
+    loopType,
     components: Array.from(components),
   };
 }
 
 // Main migration function
 function migrateCapTypes(dryRun = false) {
-  console.log(`\n🔄 CAP Type Migration${dryRun ? " (DRY RUN)" : ""}\n`);
+  console.log(`\n🔄 LOOP Type Migration${dryRun ? " (DRY RUN)" : ""}\n`);
   console.log(`Reading from: ${SEQUENCE_INDEX_PATH}\n`);
 
   // Read the sequence index
@@ -388,38 +388,38 @@ function migrateCapTypes(dryRun = false) {
     errors: 0,
   };
 
-  const capTypeCounts = {};
+  const loopTypeCounts = {};
 
   // Process each sequence
   for (const seq of sequences) {
     try {
-      const result = detectCAPType(seq);
+      const result = detectLOOPType(seq);
 
       if (result.isCircular) {
         stats.circular++;
 
-        // Track if it already had capType
-        if (seq.capType) {
+        // Track if it already had loopType
+        if (seq.loopType) {
           stats.alreadyHadCapType++;
         }
 
-        // Count CAP types
-        if (result.capType) {
+        // Count LOOP types
+        if (result.loopType) {
           stats.withCapType++;
-          capTypeCounts[result.capType] =
-            (capTypeCounts[result.capType] || 0) + 1;
+          loopTypeCounts[result.loopType] =
+            (loopTypeCounts[result.loopType] || 0) + 1;
         }
 
         // Update sequence
         const needsUpdate =
           result.isCircular !== seq.isCircular ||
-          result.capType !== seq.capType;
+          result.loopType !== seq.loopType;
 
         if (needsUpdate) {
           if (!dryRun) {
             seq.isCircular = true;
-            if (result.capType) {
-              seq.capType = result.capType;
+            if (result.loopType) {
+              seq.loopType = result.loopType;
             }
           }
           stats.updated++;
@@ -446,16 +446,16 @@ function migrateCapTypes(dryRun = false) {
   console.log("\n📊 Migration Results\n");
   console.log(`Total sequences:     ${stats.total}`);
   console.log(`Circular sequences:  ${stats.circular}`);
-  console.log(`With CAP type:       ${stats.withCapType}`);
-  console.log(`Already had CAP:     ${stats.alreadyHadCapType}`);
+  console.log(`With LOOP type:       ${stats.withCapType}`);
+  console.log(`Already had LOOP:     ${stats.alreadyHadCapType}`);
   console.log(
     `${dryRun ? "Would update" : "Updated"}:        ${stats.updated}`
   );
   console.log(`Errors:              ${stats.errors}`);
 
-  if (Object.keys(capTypeCounts).length > 0) {
-    console.log("\n📈 CAP Type Distribution\n");
-    const sortedTypes = Object.entries(capTypeCounts).sort(
+  if (Object.keys(loopTypeCounts).length > 0) {
+    console.log("\n📈 LOOP Type Distribution\n");
+    const sortedTypes = Object.entries(loopTypeCounts).sort(
       (a, b) => b[1] - a[1]
     );
     for (const [type, count] of sortedTypes) {

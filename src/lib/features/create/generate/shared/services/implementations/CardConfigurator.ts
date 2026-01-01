@@ -1,4 +1,4 @@
-import { LOOPType } from "../../../circular/domain/models/circular-models";
+﻿import { LOOPType } from "../../../circular/domain/models/circular-models";
 import type { UIGenerationConfig } from "../../../state/generate-config.svelte";
 import { DifficultyLevel } from "../../domain/models/generate-models";
 import type {
@@ -152,19 +152,19 @@ export class CardConfigurator implements ICardConfigurator {
     // - LOOP (6) = full row (no customize, no slice size)
     if (!isFreeformMode) {
       // Determine LOOP column span based on what else is in row 3
-      let capColumnSpan: number;
+      let loopColumnSpan: number;
       if (loopTypeAllowsSliceChoice && hasCustomizeCard) {
-        capColumnSpan = 2; // SliceSize(2) + LOOP(2) + Customize(2)
+        loopColumnSpan = 2; // SliceSize(2) + LOOP(2) + Customize(2)
       } else if (loopTypeAllowsSliceChoice) {
-        capColumnSpan = 4; // SliceSize(2) + LOOP(4)
+        loopColumnSpan = 4; // SliceSize(2) + LOOP(4)
       } else if (hasCustomizeCard) {
-        capColumnSpan = 4; // LOOP(4) + Customize(2)
+        loopColumnSpan = 4; // LOOP(4) + Customize(2)
       } else {
-        capColumnSpan = 6; // LOOP(6) full row
+        loopColumnSpan = 6; // LOOP(6) full row
       }
 
       cardList.push({
-        id: "cap-type",
+        id: "loop-type",
         props: {
           currentLOOPType: config.loopType,
           onLOOPTypeChange: handlers.handleLOOPTypeChange,
@@ -172,7 +172,7 @@ export class CardConfigurator implements ICardConfigurator {
           cardIndex: cardIndex++,
           headerFontSize,
         },
-        gridColumnSpan: capColumnSpan,
+        gridColumnSpan: loopColumnSpan,
       });
 
       // Add Customize card in row 3 for circular mode

@@ -135,10 +135,6 @@ export class AnimationStorageManager implements IAnimationStorageManager {
       const firestoreData = this.animationToFirestore(animation);
 
       await setDoc(docRef, firestoreData, { merge: true });
-
-      console.log(
-        `✅ [AnimationStorageManager] Saved animation "${animation.name}" (${animation.id})`
-      );
     } catch (error) {
       console.error(
         `❌ [AnimationStorageManager] Failed to save animation:`,
@@ -157,18 +153,11 @@ export class AnimationStorageManager implements IAnimationStorageManager {
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        console.warn(
-          `⚠️ [AnimationStorageManager] Animation not found: ${animationId}`
-        );
         return null;
       }
 
       const data = docSnap.data() as AnimationFirestoreData;
       const animation = this.firestoreToAnimation(data);
-
-      console.log(
-        `✅ [AnimationStorageManager] Loaded animation "${animation.name}" (${animationId})`
-      );
 
       return animation;
     } catch (error) {
@@ -203,10 +192,6 @@ export class AnimationStorageManager implements IAnimationStorageManager {
         animations.push(this.firestoreToAnimation(data));
       });
 
-      console.log(
-        `✅ [AnimationStorageManager] Loaded ${animations.length} animations for user ${userId}`
-      );
-
       return animations;
     } catch (error) {
       console.error(
@@ -224,10 +209,6 @@ export class AnimationStorageManager implements IAnimationStorageManager {
     try {
       const docRef = await this.getAnimationDocRef(userId, animationId);
       await deleteDoc(docRef);
-
-      console.log(
-        `✅ [AnimationStorageManager] Deleted animation ${animationId}`
-      );
     } catch (error) {
       console.error(
         `❌ [AnimationStorageManager] Failed to delete animation:`,
@@ -264,10 +245,6 @@ export class AnimationStorageManager implements IAnimationStorageManager {
       // Save the duplicate
       await this.save(duplicate);
 
-      console.log(
-        `✅ [AnimationStorageManager] Duplicated animation "${original.name}" → "${duplicate.name}"`
-      );
-
       return duplicate;
     } catch (error) {
       console.error(
@@ -303,10 +280,6 @@ export class AnimationStorageManager implements IAnimationStorageManager {
       const collectionRef = await this.getUserAnimationsCollectionRef(userId);
       const snapshot = await getCountFromServer(collectionRef);
       const count = snapshot.data().count;
-
-      console.log(
-        `✅ [AnimationStorageManager] User ${userId} has ${count} animations`
-      );
 
       return count;
     } catch (error) {

@@ -13,22 +13,18 @@ import type { IDiscoverCache } from "../../features/discover/gallery/display/ser
 import type { IOptimizedDiscoverer } from "../../features/discover/shared/services/contracts/IOptimizedDiscoverer";
 
 export async function clearAllGalleryCaches(): Promise<void> {
-  console.log("🧹 Clearing ALL gallery caches...");
-
   try {
     // 1. Clear DiscoverCache
     const exploreCacheService = resolve<IDiscoverCache>(
       TYPES.IDiscoverCache
     );
     exploreCacheService.clearCache();
-    console.log("✅ Cleared DiscoverCache");
 
     // 2. Clear OptimizedDiscoverer
     const optimizedService = resolve<IOptimizedDiscoverer>(
       TYPES.IOptimizedDiscoverer
     );
     optimizedService.clearCache();
-    console.log("✅ Cleared OptimizedDiscoverer");
 
     // 3. Clear IndexedDB/Dexie cache if it exists
     if ("indexedDB" in window) {
@@ -37,13 +33,12 @@ export async function clearAllGalleryCaches(): Promise<void> {
         await new Promise<void>((resolve, reject) => {
           const request = indexedDB.deleteDatabase(dbName);
           request.onsuccess = () => {
-            console.log("✅ Cleared IndexedDB");
             resolve();
           };
           request.onerror = () => reject(request.error);
         });
       } catch (err) {
-        console.log("⚠️ No IndexedDB to clear");
+        // No IndexedDB to clear
       }
     }
 
@@ -55,18 +50,11 @@ export async function clearAllGalleryCaches(): Promise<void> {
         key.includes("sequence")
     );
     galleryKeys.forEach((key) => localStorage.removeItem(key));
-    if (galleryKeys.length > 0) {
-      console.log(`✅ Cleared ${galleryKeys.length} localStorage entries`);
-    }
-
-    console.log(
-      "🎉 All gallery caches cleared! Refresh the page to load fresh data."
-    );
 
     // Return success message
     return Promise.resolve();
   } catch (error) {
-    console.error("❌ Error clearing caches:", error);
+    console.error("Error clearing caches:", error);
     throw error;
   }
 }

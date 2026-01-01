@@ -61,9 +61,6 @@ export class VideoExporter implements IVideoExporter {
 
     // Choose encoder based on browser support
     const useWebCodecs = this.hasWebCodecs();
-    console.log(
-      `🎬 Using ${useWebCodecs ? "WebCodecs" : "WASM"} encoder for video export`
-    );
 
     if (useWebCodecs) {
       this.activeEncoder = new WebCodecsVideoEncoder({
@@ -128,11 +125,9 @@ export class VideoExporter implements IVideoExporter {
   }
 
   cancelExport(): void {
-    console.log("🛑 VideoExporter.cancelExport() called");
     this.shouldCancel = true;
 
     if (this.activeEncoder) {
-      console.log("🛑 Cancelling active encoder...");
       this.activeEncoder.cancel();
       this.activeEncoder = null;
     }

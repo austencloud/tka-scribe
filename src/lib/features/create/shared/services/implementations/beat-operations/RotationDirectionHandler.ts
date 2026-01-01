@@ -49,12 +49,6 @@ export function updateRotationDirection(
   motionQueryHandler: IMotionQueryHandler | null,
   gridModeDeriver: IGridModeDeriver | null
 ): void {
-  logger.log(`🔄 RotationDirectionHandler.updateRotationDirection called:`, {
-    beatNumber,
-    color,
-    rotationDirection,
-  });
-
   const beatData = getBeatDataFromState(beatNumber, createModuleState);
 
   if (!beatData?.motions) {
@@ -293,21 +287,13 @@ export async function recalculateLetterForBeat(
   motionQueryHandler: IMotionQueryHandler | null,
   gridModeDeriver: IGridModeDeriver | null
 ): Promise<void> {
-  console.log(`📝 recalculateLetterForBeat called for beat ${beatNumber}`);
-  console.log(`  motionQueryHandler available: ${!!motionQueryHandler}`);
-  console.log(`  gridModeDeriver available: ${!!gridModeDeriver}`);
-
   if (!motionQueryHandler || !gridModeDeriver) {
-    console.warn(
-      "⚠️ Cannot recalculate letter - MotionQueryHandler or GridModeDeriver not available"
-    );
     return;
   }
 
   const beatData = getBeatDataFromState(beatNumber, createModuleState);
 
   if (!beatData) {
-    console.warn("⚠️ Cannot recalculate letter - beat data not found");
     return;
   }
 
@@ -315,20 +301,11 @@ export async function recalculateLetterForBeat(
   const redMotion = beatData.motions?.[MotionColor.RED];
 
   if (!blueMotion || !redMotion) {
-    console.warn("⚠️ Cannot recalculate letter - incomplete motion data");
     return;
   }
 
   try {
     const gridMode = gridModeDeriver.deriveGridMode(blueMotion, redMotion);
-    console.log(`  gridMode: ${gridMode}`);
-
-    console.log(`  Looking up letter for:`, {
-      blueMotionType: blueMotion.motionType,
-      redMotionType: redMotion.motionType,
-      blueRotation: blueMotion.rotationDirection,
-      redRotation: redMotion.rotationDirection,
-    });
 
     const newLetter = (await motionQueryHandler.findLetterByMotionConfiguration(
       blueMotion,
@@ -336,14 +313,10 @@ export async function recalculateLetterForBeat(
       gridMode
     )) as Letter | null;
 
-    console.log(
-      `  Found letter: ${newLetter}, current letter: ${beatData.letter}`
-    );
-
     if (newLetter) {
       if (newLetter !== beatData.letter) {
-        console.log(
-          `📝 Letter changed: "${beatData.letter}" → "${newLetter}" for beat ${beatNumber}`
+        logger.log(
+          `Letter changed: "${beatData.letter}" → "${newLetter}" for beat ${beatNumber}`
         );
 
         const updatedBeatData: BeatData = {

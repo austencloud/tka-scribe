@@ -1,14 +1,14 @@
 /**
- * Backfill CAP Metadata Script
+ * Backfill LOOP Metadata Script
  *
  * Updates existing sequences in Firestore with:
  * - isCircular flag
- * - capType (for circular sequences)
+ * - loopType (for circular sequences)
  * - orientationCycleCount (for circular sequences)
  *
  * Uses pagination to avoid Firestore quota limits.
  *
- * Usage: node scripts/backfill-cap-metadata.js [--dry-run] [--collection=publicSequences]
+ * Usage: node scripts/backfill-loop-metadata.js [--dry-run] [--collection=publicSequences]
  */
 
 import admin from "firebase-admin";
@@ -135,7 +135,7 @@ function getStartingOrientations(sequence) {
 }
 
 /**
- * Analyze a sequence and return CAP metadata
+ * Analyze a sequence and return LOOP metadata
  */
 function analyzeSequence(sequence) {
   const circular = isCircular(sequence);
@@ -158,7 +158,7 @@ function analyzeSequence(sequence) {
 }
 
 async function backfillInPages() {
-  console.log(`\n📦 Starting CAP metadata backfill for ${targetCollection}...`);
+  console.log(`\n📦 Starting LOOP metadata backfill for ${targetCollection}...`);
   console.log(`   Mode: ${isDryRun ? "DRY RUN (no changes)" : "LIVE UPDATE"}\n`);
 
   let lastDoc = null;

@@ -6,7 +6,7 @@ import {
 } from "../domain/constants/loop-components";
 import type { TransformationIntervals } from "../domain/models/label-models";
 
-interface CAPDesignation {
+interface LOOPDesignation {
   components: ComponentId[];
   loopType: string | null;
   sliceSize?: SliceSize | null;
@@ -25,10 +25,10 @@ function formatInterval(interval: string | undefined): string {
 }
 
 /**
- * Format a designation for display (works with both CAPDesignation and SectionDesignation)
+ * Format a designation for display (works with both LOOPDesignation and SectionDesignation)
  */
 export function formatDesignation(
-  d: CAPDesignation | SectionDesignation
+  d: LOOPDesignation | SectionDesignation
 ): string {
   // Check for base word first (for section designations with only a base word)
   const hasBaseWord = "baseWord" in d && d.baseWord;

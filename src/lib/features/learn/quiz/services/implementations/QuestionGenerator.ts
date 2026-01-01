@@ -37,54 +37,28 @@ export class QuestionGeneratorService {
     if (this.isInitialized) return;
 
     try {
-      console.log("🔄 QuestionGenerator: Initializing ILetterQueryHandler...");
       this.letterQueryHandler = resolve<ILetterQueryHandler>(
         TYPES.ILetterQueryHandler
       );
 
       // Load ALL pictograph variations from CSV (Diamond mode)
-      console.log("🔄 QuestionGenerator: Loading pictographs from CSV...");
       this.allPictographs =
         await this.letterQueryHandler.getAllPictographVariations(
           GridMode.DIAMOND
         );
-      console.log(
-        `✅ QuestionGenerator: Loaded ${this.allPictographs.length} pictographs`
-      );
-
-      // Log first pictograph to see its structure
-      if (this.allPictographs.length > 0) {
-        const sample = this.allPictographs[0];
-        console.log("📝 QuestionGenerator: Sample pictograph:", {
-          letter: sample?.letter,
-          startPosition: sample?.startPosition,
-          endPosition: sample?.endPosition,
-          hasMotions: !!sample?.motions,
-        });
-      }
 
       // Group by letter
       this.pictographsByLetter.clear();
-      let pictographsWithLetters = 0;
       this.allPictographs.forEach((picto) => {
         if (picto.letter) {
-          pictographsWithLetters++;
           const existing = this.pictographsByLetter.get(picto.letter) || [];
           existing.push(picto);
           this.pictographsByLetter.set(picto.letter, existing);
         }
       });
 
-      console.log(
-        `📊 QuestionGenerator: ${pictographsWithLetters} pictographs have letters`
-      );
-
       // Get available letters
       this.availableLetters = Array.from(this.pictographsByLetter.keys());
-      console.log(
-        `✅ QuestionGenerator: ${this.availableLetters.length} letters available:`,
-        this.availableLetters.join(", ")
-      );
 
       this.isInitialized = true;
     } catch (error) {

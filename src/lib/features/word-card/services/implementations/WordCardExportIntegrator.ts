@@ -125,7 +125,6 @@ export class WordCardExportIntegrationService
     } = {},
     onProgress?: (current: number, total: number, message: string) => void
   ): Promise<{ successCount: number; failureCount: number; errors: Error[] }> {
-    console.log("🖼️ Starting export of all printable pages as images");
 
     // Validate export capability
     const validation = this.validateExportCapability();
@@ -145,7 +144,6 @@ export class WordCardExportIntegrationService
       return { successCount: 0, failureCount: 1, errors: [error] };
     }
 
-    console.log(`📄 Found ${pageElements.length} page elements to export`);
 
     try {
       this.isExporting = true;
@@ -153,7 +151,6 @@ export class WordCardExportIntegrationService
 
       // Prepare export options
       const exportOptions = this.prepareImageExportOptions(options);
-      console.log("⚙️ Export options prepared:", exportOptions);
 
       // Progress tracking
       const totalCount = pageElements.length;
@@ -170,7 +167,6 @@ export class WordCardExportIntegrationService
         throw new Error("Export service not available");
       }
 
-      console.log("📊 Batch export result:", batchResult);
 
       // Prepare download data
       const downloadData: Array<{ blob: Blob; filename: string }> = [];
@@ -204,7 +200,6 @@ export class WordCardExportIntegrationService
         }
       }
 
-      console.log(`💾 Prepared ${downloadData.length} files for download`);
 
       // Download files
       if (downloadData.length > 0) {
@@ -232,7 +227,6 @@ export class WordCardExportIntegrationService
           });
         }
 
-        console.log(
           `✅ Successfully downloaded ${downloadData.length - failedDownloads.length} files`
         );
       }
@@ -271,7 +265,6 @@ export class WordCardExportIntegrationService
     } = {},
     onProgress?: (current: number, total: number, message: string) => void
   ): Promise<{ successCount: number; failureCount: number; errors: Error[] }> {
-    console.log("🎯 Starting export of selected pages:", pageIndices);
 
     // Get all page elements
     const allPageElements = this.getPrintablePageElements();
@@ -291,7 +284,6 @@ export class WordCardExportIntegrationService
 
     // For now, delegate to the full export method but with filtered elements
     // TODO: Could optimize this by modifying the export service to accept specific elements
-    console.log(`📄 Exporting ${selectedElements.length} selected pages`);
 
     // This is a simplified implementation - in reality, we'd need to modify the export flow
     // For now, we'll export all and notify about the selected ones
@@ -305,7 +297,6 @@ export class WordCardExportIntegrationService
   }
 
   getPrintablePageElements(): HTMLElement[] {
-    console.log("🔍 Searching for printable page elements in DOM");
 
     // Look for page elements with the expected data attribute or class
     const selectors = [
@@ -321,7 +312,6 @@ export class WordCardExportIntegrationService
       const found = document.querySelectorAll(selector);
       if (found.length > 0) {
         elements = Array.from(found) as HTMLElement[];
-        console.log(
           `✅ Found ${elements.length} page elements using selector: ${selector}`
         );
         break;
@@ -330,12 +320,9 @@ export class WordCardExportIntegrationService
 
     if (elements.length === 0) {
       console.warn("⚠️ No printable page elements found with any selector");
-      console.log("🔍 Available elements in DOM:");
-      console.log(
         "- Elements with data-page-id:",
         document.querySelectorAll("[data-page-id]").length
       );
-      console.log(
         "- Elements with class printable-page:",
         document.querySelectorAll(".printable-page").length
       );
@@ -376,7 +363,6 @@ export class WordCardExportIntegrationService
 
     const canExport = issues.length === 0;
 
-    console.log("🔍 Export capability validation:", {
       canExport,
       pageCount,
       issues,
@@ -391,7 +377,6 @@ export class WordCardExportIntegrationService
 
   cancelExport(): Promise<void> {
     if (this.isExporting && this.abortController) {
-      console.log("🛑 Cancelling export operation");
       this.abortController.abort();
       void this.pageImageExportService.cancelExport?.();
       this.isExporting = false;

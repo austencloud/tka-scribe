@@ -1,10 +1,10 @@
-/**
- * CAP Detection Validation Script
+﻿/**
+ * LOOP Detection Validation Script
  *
- * Validates the CAP detection algorithm against manually labeled sequences.
- * Compares detected CAP types with ground truth labels from Firebase.
+ * Validates the LOOP detection algorithm against manually labeled sequences.
+ * Compares detected LOOP types with ground truth labels from Firebase.
  *
- * Usage: node scripts/validate-cap-detection.cjs
+ * Usage: node scripts/validate-loop-detection.cjs
  */
 
 const admin = require("firebase-admin");
@@ -29,7 +29,7 @@ try {
 }
 
 // ============================================================================
-// CAP Detection Logic (Ported from CAPDetectionService)
+// LOOP Detection Logic (Ported from LOOPDetectionService)
 // ============================================================================
 
 /**
@@ -474,17 +474,17 @@ function isQuarteredRotatedSwapped(beat1, beat2) {
 }
 
 /**
- * Detect CAP type for a sequence using halved comparison
+ * Detect LOOP type for a sequence using halved comparison
  * (compare first half beats to second half beats)
  */
-function detectCAPType(sequence) {
+function detectLOOPType(sequence) {
   const circular = isCircular(sequence);
   const beats = extractBeats(sequence);
 
   if (!circular || beats.length < 2) {
     return {
       isCircular: circular,
-      capType: null,
+      loopType: null,
       components: [],
       confidence: "accidental",
       details: "Not circular or too short",
@@ -496,10 +496,10 @@ function detectCAPType(sequence) {
   if (beats.length % 2 !== 0) {
     return {
       isCircular: true,
-      capType: null,
+      loopType: null,
       components: [],
       confidence: "accidental",
-      details: "Odd number of beats - cannot be halved CAP",
+      details: "Odd number of beats - cannot be halved LOOP",
     };
   }
 
@@ -751,8 +751,8 @@ function detectCAPType(sequence) {
     }
   }
 
-  // Map to CAP type
-  let capType = null;
+  // Map to LOOP type
+  let loopType = null;
   let confidence = "accidental";
 
   if (detectedComponents.length > 0) {
@@ -778,13 +778,13 @@ function detectCAPType(sequence) {
       "inverted_mirrored_swapped": "MIRRORED_SWAPPED_INVERTED",
     };
 
-    capType = typeMap[sorted] || `CUSTOM_${sorted.toUpperCase()}`;
+    loopType = typeMap[sorted] || `CUSTOM_${sorted.toUpperCase()}`;
     confidence = "strict";
   }
 
   return {
     isCircular: true,
-    capType,
+    loopType,
     components: detectedComponents,
     confidence,
     sliceSize: "halved",
@@ -798,9 +798,9 @@ function detectCAPType(sequence) {
 // ============================================================================
 
 /**
- * Normalize CAP type for comparison
+ * Normalize LOOP type for comparison
  */
-function normalizeCAPType(type) {
+function normalizeLOOPType(type) {
   if (!type) return null;
   return type
     .toUpperCase()
@@ -896,7 +896,7 @@ function compareResults(detected, labeled) {
 
 async function main() {
   console.log("=".repeat(70));
-  console.log("CAP DETECTION VALIDATION");
+  console.log("LOOP DETECTION VALIDATION");
   console.log("=".repeat(70));
   console.log();
 
@@ -917,7 +917,7 @@ async function main() {
   console.log(`Loaded ${sequenceMap.size} sequences from sequence-index.json`);
 
   // Load labels from Firebase
-  const snapshot = await db.collection("cap-labels").get();
+  const snapshot = await db.collection("loop-labels").get();
   const labels = [];
   snapshot.forEach((doc) => {
     labels.push({ word: doc.id, ...doc.data() });
@@ -950,7 +950,7 @@ async function main() {
 
     results.total++;
 
-    const detected = detectCAPType(sequence);
+    const detected = detectLOOPType(sequence);
     const comparison = compareResults(detected, label);
 
     if (comparison.match) {

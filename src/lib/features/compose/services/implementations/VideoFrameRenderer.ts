@@ -101,8 +101,6 @@ export class VideoFrameRenderer {
    * Prepare for rendering by pre-calculating all trail data
    */
   prepareSequence(sequence: SequenceData): void {
-    console.log("📊 Pre-calculating trail data...");
-
     this.trailData = this.trailGenerator.generateTrailsForSequence(
       this.orchestrator,
       sequence,
@@ -112,10 +110,6 @@ export class VideoFrameRenderer {
         bluePropDimensions: this.config.bluePropDimensions,
         redPropDimensions: this.config.redPropDimensions,
       }
-    );
-
-    console.log(
-      `✅ Trail data generated: ${this.trailData.blueLeft.length} points per trail`
     );
   }
 

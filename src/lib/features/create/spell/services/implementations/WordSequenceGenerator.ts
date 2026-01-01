@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Word Sequence Generator Implementation
  *
  * Converts typed words into valid TKA sequences with bridge letters.

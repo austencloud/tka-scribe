@@ -23,9 +23,7 @@
   let hapticService: IHapticFeedback;
 
   onMount(async () => {
-    hapticService = await resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = await resolve<IHapticFeedback>(TYPES.IHapticFeedback);
   });
 
   function handleClick() {
@@ -103,7 +101,11 @@
       transparent
     );
     box-shadow: 0 4px 12px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 40%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 40%,
+        transparent
+      );
   }
 
   .add-to-library-button:hover:not(:disabled) {
@@ -123,7 +125,11 @@
         100%
     );
     box-shadow: 0 6px 16px
-      color-mix(in srgb, var(--theme-accent-strong, var(--theme-accent-strong)) 60%, transparent);
+      color-mix(
+        in srgb,
+        var(--theme-accent-strong, var(--theme-accent-strong)) 60%,
+        transparent
+      );
   }
 
   /* Mobile responsive adjustments */
@@ -153,7 +159,7 @@
     }
   }
 
-  /* 🎯 LANDSCAPE MOBILE: Maintain 48px minimum for accessibility */
+  /* 🎯 LANDSLOOPE MOBILE: Maintain 48px minimum for accessibility */
   @media (min-aspect-ratio: 17/10) and (max-height: 500px) {
     .panel-button {
       width: var(

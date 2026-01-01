@@ -1,4 +1,4 @@
-import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
+﻿import type { GridPosition } from "$lib/shared/pictograph/grid/domain/enums/grid-enums";
 import type { BeatData } from "../../domain/models/BeatData";
 import type { SequenceData } from "$lib/shared/foundation/domain/models/SequenceData";
 
@@ -21,7 +21,7 @@ export type CircularType = "same" | "halved" | "quartered";
  * - 'rotated-mirrored': Combination of rotation and mirroring
  * - 'static': No rotation or mirroring (same position)
  */
-export type StrictCapType =
+export type StrictLoopType =
   | "rotated"
   | "mirrored"
   | "rotated-mirrored"
@@ -52,7 +52,7 @@ export interface CircularityAnalysis {
   readonly endIsBeta: boolean;
 
   /** Possible LOOP types this sequence could become */
-  readonly possibleCapTypes: readonly StrictCapType[];
+  readonly possibleLoopTypes: readonly StrictLoopType[];
 
   /** Human-readable description of the circular relationship */
   readonly description: string;
@@ -94,7 +94,7 @@ export interface ISequenceAnalyzer {
    * const analysis = service.analyzeCircularity(sequence);
    * if (analysis.isCircular) {
    *   console.log(`Circular type: ${analysis.circularType}`);
-   *   console.log(`Possible LOOPs: ${analysis.possibleCapTypes.join(', ')}`);
+   *   console.log(`Possible LOOPs: ${analysis.possibleLoopTypes.join(', ')}`);
    * }
    */
   analyzeCircularity(sequence: SequenceData): CircularityAnalysis;
@@ -124,12 +124,12 @@ export interface ISequenceAnalyzer {
    * @returns Array of possible strict LOOP types
    *
    * @example
-   * const loopTypes = service.getPossibleCapTypes(sequence);
+   * const loopTypes = service.getPossibleLoopTypes(sequence);
    * // ['rotated'] for quartered sequences (e.g., alpha1→alpha3)
    * // ['mirrored'] for halved sequences (e.g., beta1→beta5)
    * // ['static'] for same-position sequences (e.g., gamma1→gamma1)
    */
-  getPossibleCapTypes(sequence: SequenceData): readonly StrictCapType[];
+  getPossibleLoopTypes(sequence: SequenceData): readonly StrictLoopType[];
 
   /**
    * Determine the circular relationship between two positions
@@ -211,15 +211,15 @@ export interface ISequenceAnalyzer {
    *
    * @example
    * // For a rotated sequence: alpha1 → alpha3 → alpha5 → alpha7 → alpha1
-   * service.detectCompletedCapTypes(sequence); // ['rotated']
+   * service.detectCompletedLoopTypes(sequence); // ['rotated']
    *
    * // For a mirrored sequence: gamma1 → gamma9 → gamma1 → gamma9 → gamma1
-   * service.detectCompletedCapTypes(sequence); // ['mirrored']
+   * service.detectCompletedLoopTypes(sequence); // ['mirrored']
    *
    * // For a static sequence: beta1 → beta1 → beta1 → beta1
-   * service.detectCompletedCapTypes(sequence); // ['static']
+   * service.detectCompletedLoopTypes(sequence); // ['static']
    */
-  detectCompletedCapTypes(sequence: SequenceData): readonly StrictCapType[];
+  detectCompletedLoopTypes(sequence: SequenceData): readonly StrictLoopType[];
 
   // ============ Position Extraction Methods ============
 

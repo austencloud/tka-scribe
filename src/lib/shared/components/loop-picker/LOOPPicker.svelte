@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   LOOPPicker.svelte - Unified LOOP Selection Component
 
   Reusable component for selecting LOOP patterns to extend a sequence.

@@ -35,7 +35,6 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
    * - Toggles grid mode (DIAMOND ↔ BOX)
    */
   rotateAllPictographs(pictographs: PictographData[]): PictographData[] {
-    console.log("🔄 Applying rotation to", pictographs.length, "pictographs");
     return pictographs.map((p) => this.rotatePictograph(p));
   }
 
@@ -45,7 +44,6 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
    * - Reverses rotation directions
    */
   mirrorAllPictographs(pictographs: PictographData[]): PictographData[] {
-    console.log("🪞 Applying mirror to", pictographs.length, "pictographs");
     return pictographs.map((p) => this.mirrorPictograph(p));
   }
 
@@ -55,11 +53,6 @@ export class CodexPictographUpdater implements ICodexPictographUpdater {
    * - Updates positions based on swapped locations
    */
   colorSwapAllPictographs(pictographs: PictographData[]): PictographData[] {
-    console.log(
-      "⚫⚪ Applying color swap to",
-      pictographs.length,
-      "pictographs"
-    );
     return pictographs.map((p) => this.colorSwapPictograph(p));
   }
 

@@ -64,9 +64,6 @@ export interface LOOPDetectionResult {
   compoundPattern?: CompoundPattern;
 }
 
-/** @deprecated Use LOOPDetectionResult instead */
-export type CAPDetectionResult = LOOPDetectionResult;
-
 /**
  * Service interface for LOOP detection
  */
@@ -93,6 +90,3 @@ export interface ILOOPDetector {
    */
   isCircular(sequence: SequenceData): boolean;
 }
-
-/** @deprecated Use ILOOPDetector instead */
-export type ICAPDetector = ILOOPDetector;

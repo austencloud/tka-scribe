@@ -29,8 +29,6 @@ Provides access to the complete TKA letter codex with drill-down detail view:
 
   // Handle letter selection from the grid
   async function handleLetterSelected(letter: string) {
-    console.log("📖 CodexTab: Letter selected:", letter);
-
     isLoadingDetails = true;
     try {
       // Fetch all pictographs for this letter
@@ -55,7 +53,6 @@ Provides access to the complete TKA letter codex with drill-down detail view:
 
   // Handle pictograph click (could be used to add to sequence, etc.)
   function handlePictographClick(pictograph: PictographData) {
-    console.log("📖 CodexTab: Pictograph clicked:", pictograph);
     // Could emit events or handle selection logic here
   }
 </script>

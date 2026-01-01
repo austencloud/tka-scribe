@@ -191,7 +191,6 @@ export class LOOPLabelerController {
 
     const targetIndex = this.state.filteredSequences.findIndex((s) => s.id === sequenceId);
     if (targetIndex < 0) {
-      console.log(`[${logPrefix}] Sequence ${sequenceId} not in current filter`);
       return false;
     }
 

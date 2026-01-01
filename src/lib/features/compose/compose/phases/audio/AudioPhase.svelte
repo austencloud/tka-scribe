@@ -95,19 +95,10 @@
       bpmIsUncertain = result.isUncertain ?? result.confidence < 0.5;
 
       if (bpmIsUncertain) {
-        console.log(
-          `🎵 BPM estimate: ${result.bpm} (low confidence: ${(result.confidence * 100).toFixed(0)}%) - verify manually`
-        );
       } else {
-        console.log(
-          `🎵 BPM detected: ${result.bpm} (confidence: ${(result.confidence * 100).toFixed(0)}%)`
-        );
       }
 
       if (result.bestSectionStart !== undefined) {
-        console.log(
-          `🎵 Best beat detection at ${result.bestSectionStart}s into the track`
-        );
       }
     } catch (err) {
       console.error("🎵 BPM analysis failed:", err);
@@ -272,7 +263,7 @@
             audioUrl={audioState.url ?? ""}
             isPlaying={isAudioPlaying}
             currentTime={currentAudioTime}
-            onReady={() => console.log("🎵 Waveform ready")}
+            onReady={() => {}}
             onTimeUpdate={(time) => (currentAudioTime = time)}
             onDurationChange={(duration) => onSetDuration?.(duration)}
             onPlayPause={(playing) => (isAudioPlaying = playing)}

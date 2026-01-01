@@ -110,9 +110,7 @@
 
   // Load challenges (will use cache if already loaded)
   onMount(async () => {
-    hapticService = resolve<IHapticFeedback>(
-      TYPES.IHapticFeedback
-    );
+    hapticService = resolve<IHapticFeedback>(TYPES.IHapticFeedback);
     await trainChallengesState.loadChallenges(challengeService);
   });
 
@@ -213,7 +211,12 @@
   <!-- Content -->
   <div class="content">
     {#if loading}
-      <div class="loading-state" role="status" aria-live="polite" aria-busy="true">
+      <div
+        class="loading-state"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div class="spinner" aria-hidden="true"></div>
         <p>Loading challenges...</p>
       </div>
@@ -487,8 +490,16 @@
   .chip.active {
     background: linear-gradient(
       135deg,
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 25%, transparent),
-      color-mix(in srgb, var(--semantic-error, var(--semantic-error)) 20%, transparent)
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 25%,
+        transparent
+      ),
+      color-mix(
+        in srgb,
+        var(--semantic-error, var(--semantic-error)) 20%,
+        transparent
+      )
     );
     border-color: color-mix(
       in srgb,
@@ -803,7 +814,11 @@
   .apply-btn {
     flex: 1;
     height: 52px;
-    background: linear-gradient(135deg, var(--semantic-error), var(--semantic-error));
+    background: linear-gradient(
+      135deg,
+      var(--semantic-error),
+      var(--semantic-error)
+    );
     border: none;
     border-radius: 14px;
     font-size: var(--font-size-sm);
@@ -822,7 +837,7 @@
   }
 
   /* ============================================================================
-     LANDSCAPE MOBILE - Compact layout with accessible touch targets
+     LANDSLOOPE MOBILE - Compact layout with accessible touch targets
      ============================================================================ */
   @media (max-height: 500px) and (orientation: landscape) {
     .header {

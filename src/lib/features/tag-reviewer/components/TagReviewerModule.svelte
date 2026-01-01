@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Tag Reviewer Module
 
   Main component for reviewing and managing auto-generated tags.

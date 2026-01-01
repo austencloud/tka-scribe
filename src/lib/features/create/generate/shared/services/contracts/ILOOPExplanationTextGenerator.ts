@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Service contract for generating LOOP transformation explanation text
  */
 

@@ -29,7 +29,6 @@ function createCreatorsViewState() {
     viewUserProfile(userId: string) {
       state.viewingUserId = userId;
       state.currentView = "user-profile";
-      console.log(`[CreatorsViewState] Viewing user profile: ${userId}`);
     },
 
     /**
@@ -38,7 +37,6 @@ function createCreatorsViewState() {
     goBack() {
       state.currentView = "list";
       state.viewingUserId = null;
-      console.log(`[CreatorsViewState] Returned to creators list`);
     },
 
     /**

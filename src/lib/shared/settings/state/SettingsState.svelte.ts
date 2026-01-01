@@ -96,9 +96,6 @@ class SettingsState implements ISettingsState {
 
       // Listen for online events to process queued changes
       this.onlineHandler = () => {
-        console.log(
-          "🌐 [SettingsState] Back online, processing offline queue..."
-        );
         this.processOfflineQueue();
       };
       window.addEventListener("online", this.onlineHandler);
@@ -424,7 +421,6 @@ class SettingsState implements ISettingsState {
         this.saveSettingsToStorage(settingsState);
         // Clear offline queue since save succeeded
         this.clearOfflineQueue();
-        console.log("✅ [SettingsState] Settings saved to Firebase");
       })
       .catch((error) => {
         console.error("❌ [SettingsState] Failed to save to Firebase:", error);
@@ -449,7 +445,6 @@ class SettingsState implements ISettingsState {
         timestamp: Date.now(),
       };
       localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queueEntry));
-      console.log("📦 [SettingsState] Queued settings for offline sync");
     } catch (error) {
       console.error("Failed to queue offline change:", error);
     }
@@ -470,10 +465,8 @@ class SettingsState implements ISettingsState {
 
       // If we have Firebase persistence and are online, sync the queued changes
       if (this.firebasePersistence && auth.currentUser) {
-        console.log("📤 [SettingsState] Processing offline queue...");
         await this.firebasePersistence.saveSettings(queueEntry.settings);
         this.clearOfflineQueue();
-        console.log("✅ [SettingsState] Offline queue processed");
       }
     } catch (error) {
       console.error("Failed to process offline queue:", error);

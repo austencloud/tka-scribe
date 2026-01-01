@@ -52,13 +52,10 @@ export class PropTextureLoader implements IPropTextureLoader {
 
     this.state.isLoading = true;
     this.state.error = null;
-    const startTime = performance.now();
-    console.log(`🔄 [PropTextureLoader] Loading textures for ${bluePropType}/${redPropType}...`);
 
     try {
       // Load textures for both prop colors
       await this.renderer.loadPerColorPropTextures(bluePropType, redPropType);
-      console.log(`✅ [PropTextureLoader] Renderer textures loaded in ${(performance.now() - startTime).toFixed(1)}ms`);
 
       // Get prop dimensions for each color (may be different types!)
       const [bluePropData, redPropData] = await Promise.all([

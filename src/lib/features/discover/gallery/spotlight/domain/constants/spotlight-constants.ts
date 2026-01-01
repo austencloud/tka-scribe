@@ -18,7 +18,7 @@ export const SPOTLIGHT_CONSTANTS = {
     CLOSE_ANIMATION_DELAY: 400,
   },
   KEYBOARD: {
-    ESCAPE_KEY: "Escape",
+    ESLOOPE_KEY: "Escape",
     ARROW_LEFT: "ArrowLeft",
     ARROW_RIGHT: "ArrowRight",
   },

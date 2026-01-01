@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 LOOPTypeFilterCard.svelte - Card for filtering by LOOP type (Continuous Assembly Pattern)
 Uses shared StepperCard for consistent styling
 Options: All → Non-Circular → Circular → specific LOOP types

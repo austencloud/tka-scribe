@@ -116,7 +116,6 @@
     // } catch (error) {
     //   console.error("Failed to generate question:", error);
     // }
-    console.log("generateNewQuestion called - service temporarily disabled");
   }
 
   function handleAnswerClick(option: QuizAnswerOption) {
