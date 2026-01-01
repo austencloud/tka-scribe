@@ -32,7 +32,7 @@ try {
 }
 
 // ============================================================================
-// LOOP Detection Logic (from validate-cap-detection.cjs)
+// LOOP Detection Logic (from validate-loop-detection.cjs)
 // ============================================================================
 
 // Beat-pair graph transformation maps (includes 90° and 270° rotations)
@@ -1568,7 +1568,7 @@ async function main() {
   if (!formatMode) console.log(`Loaded ${sequences.length} sequences from sequence-index.json`);
 
   // Get existing labels
-  const snapshot = await db.collection("cap-labels").get();
+  const snapshot = await db.collection("loop-labels").get();
   const existingLabels = new Set();
   snapshot.forEach((doc) => existingLabels.add(doc.id));
   if (!formatMode) console.log(`Found ${existingLabels.size} existing labels in Firebase`);
@@ -1643,7 +1643,7 @@ async function main() {
     const BATCH_LIMIT = 500;
 
     for (const result of results) {
-      const docRef = db.collection("cap-labels").doc(result.word);
+      const docRef = db.collection("loop-labels").doc(result.word);
 
       // Build ALL candidate designations for Firebase storage
       const candidates = (result.candidateDesignations || []).map(c => ({
@@ -1795,7 +1795,7 @@ async function main() {
       console.log();
       console.log("  Saving to Firebase...");
 
-      const docRef = db.collection("cap-labels").doc(result.word);
+      const docRef = db.collection("loop-labels").doc(result.word);
 
       // Build ALL candidate designations for Firebase storage (same as batch mode)
       const candidates = (result.candidateDesignations || []).map(c => ({

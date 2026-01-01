@@ -4,7 +4,7 @@
  * Validates the LOOP detection algorithm against manually labeled sequences.
  * Compares detected LOOP types with ground truth labels from Firebase.
  *
- * Usage: node scripts/validate-cap-detection.cjs
+ * Usage: node scripts/validate-loop-detection.cjs
  */
 
 const admin = require("firebase-admin");
@@ -917,7 +917,7 @@ async function main() {
   console.log(`Loaded ${sequenceMap.size} sequences from sequence-index.json`);
 
   // Load labels from Firebase
-  const snapshot = await db.collection("cap-labels").get();
+  const snapshot = await db.collection("loop-labels").get();
   const labels = [];
   snapshot.forEach((doc) => {
     labels.push({ word: doc.id, ...doc.data() });

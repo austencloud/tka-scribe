@@ -14,9 +14,9 @@ import type {
   LabeledSequence,
 } from "../contracts/ILOOPLabelsFirebaseRepository";
 
-const LOOP_LABELS_COLLECTION = "cap-labels";
+const LOOP_LABELS_COLLECTION = "loop-labels";
 const PUBLIC_SEQUENCES_COLLECTION = "publicSequences";
-const LOCAL_STORAGE_KEY = "cap-labels";
+const LOCAL_STORAGE_KEY = "loop-labels";
 
 /**
  * Service for Firebase persistence of LOOP labels
@@ -137,6 +137,7 @@ export class LOOPLabelsFirebaseRepository implements ILOOPLabelsFirebaseReposito
       }
 
       this.syncStatus = successCount === entries.length ? "synced" : "error";
+      console.log(
         `Synced ${successCount}/${entries.length} labels to Firebase`
       );
     } catch (error) {

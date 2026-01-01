@@ -8,7 +8,7 @@
  *
  * Uses pagination to avoid Firestore quota limits.
  *
- * Usage: node scripts/backfill-cap-metadata.js [--dry-run] [--collection=publicSequences]
+ * Usage: node scripts/backfill-loop-metadata.js [--dry-run] [--collection=publicSequences]
  */
 
 import admin from "firebase-admin";

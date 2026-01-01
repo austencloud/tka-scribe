@@ -4,7 +4,7 @@
  * Analyzes sequences in sequence-index.json and adds loopType and isCircular fields
  * based on Continuous Assembly Pattern detection.
  *
- * Usage: node scripts/migrate-cap-types.js [--dry-run]
+ * Usage: node scripts/migrate-loop-types.js [--dry-run]
  *
  * Options:
  *   --dry-run    Preview changes without writing to file

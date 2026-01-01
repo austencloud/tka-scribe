@@ -1,13 +1,13 @@
 ﻿/**
  * Fetch LOOP Labels from Firebase
  *
- * Usage: node scripts/fetch-cap-labels.cjs [command] [args]
+ * Usage: node scripts/fetch-loop-labels.cjs [command] [args]
  *
  * Examples:
- *   node scripts/fetch-cap-labels.cjs              # List all labels
- *   node scripts/fetch-cap-labels.cjs AABB         # Get specific label
- *   node scripts/fetch-cap-labels.cjs --stats      # Show statistics
- *   node scripts/fetch-cap-labels.cjs --note AABB "My note here"  # Add note to label
+ *   node scripts/fetch-loop-labels.cjs              # List all labels
+ *   node scripts/fetch-loop-labels.cjs AABB         # Get specific label
+ *   node scripts/fetch-loop-labels.cjs --stats      # Show statistics
+ *   node scripts/fetch-loop-labels.cjs --note AABB "My note here"  # Add note to label
  */
 
 const admin = require("firebase-admin");
@@ -34,7 +34,7 @@ try {
 }
 
 async function fetchAllLabels() {
-  const snapshot = await db.collection("cap-labels").get();
+  const snapshot = await db.collection("loop-labels").get();
   const labels = [];
 
   snapshot.forEach((doc) => {
@@ -45,7 +45,7 @@ async function fetchAllLabels() {
 }
 
 async function fetchLabel(word) {
-  const doc = await db.collection("cap-labels").doc(word).get();
+  const doc = await db.collection("loop-labels").doc(word).get();
 
   if (!doc.exists) {
     return null;
@@ -55,7 +55,7 @@ async function fetchLabel(word) {
 }
 
 async function addNoteToLabel(word, note) {
-  const docRef = db.collection("cap-labels").doc(word);
+  const docRef = db.collection("loop-labels").doc(word);
   const doc = await docRef.get();
 
   if (!doc.exists) {
@@ -83,7 +83,7 @@ async function addNoteToLabel(word, note) {
 }
 
 async function setNoteForLabel(word, note) {
-  const docRef = db.collection("cap-labels").doc(word);
+  const docRef = db.collection("loop-labels").doc(word);
   const doc = await docRef.get();
 
   if (!doc.exists) {
