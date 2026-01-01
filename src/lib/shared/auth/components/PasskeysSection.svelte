@@ -24,7 +24,7 @@
     error = null;
     try {
       const res = await listPasskeys();
-      passkeys = res.passkeys;
+      passkeys = res.passkeys ?? [];
     } catch (e: unknown) {
       error = e instanceof Error ? e.message : "Something went wrong";
     } finally {

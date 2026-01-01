@@ -9,12 +9,12 @@
   import { PROVIDERS, type ProviderId } from "./connectedAccounts.providers";
 
   interface Props {
-    providers: PreviewAuthProvider[];
+    providers?: PreviewAuthProvider[];
     emailVerified?: boolean;
     loading?: boolean;
   }
 
-  let { providers, emailVerified = false, loading = false }: Props = $props();
+  let { providers = [], emailVerified = false, loading = false }: Props = $props();
 
   // Map Firebase provider IDs to our config
   function getProviderConfig(providerId: string) {
