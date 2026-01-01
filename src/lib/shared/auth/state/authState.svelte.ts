@@ -586,6 +586,17 @@ export async function signOut() {
       cleanupSubscriptionListener = null;
     }
 
+    // Clean up Firestore subscriptions BEFORE signing out
+    // This prevents permission errors when Firebase auth is invalidated
+    try {
+      const { settingsService } = await import(
+        "../../settings/state/SettingsState.svelte"
+      );
+      settingsService.cleanup();
+    } catch {
+      // Settings service may not be loaded - that's ok
+    }
+
     // Sign out from Firebase
     await firebaseSignOut(auth);
     // State will be updated automatically by onAuthStateChanged

@@ -42,6 +42,7 @@
   const animationState = createAnimationPanelState();
 
   // Track last loaded sequence to prevent re-loading same sequence
+  // Also prevents remounts during prop type changes (hot-swap handles those)
   let lastLoadedSequenceId: string | null = null;
 
   // Local reactive state for UI

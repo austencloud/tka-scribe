@@ -87,6 +87,10 @@
   let error = $state<string | null>(null);
   let secondaryTexturesLoaded = $state(false);
 
+  // Track last loaded sequence IDs to prevent unnecessary remounts during prop type changes
+  let lastLoadedPrimarySequenceId: string | null = null;
+  let lastLoadedSecondarySequenceId: string | null = null;
+
   // Trail settings - derive directly from animationSettings for proper reactivity
   // This ensures changes to trail effect (e.g., LED mode enabling NEON) are picked up
   let trailSettings = $derived(animationSettings.trail);

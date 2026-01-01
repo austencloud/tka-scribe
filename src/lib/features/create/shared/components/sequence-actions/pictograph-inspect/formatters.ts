@@ -12,7 +12,8 @@ import { resolve } from "$lib/shared/inversify/di";
 import { TYPES } from "$lib/shared/inversify/types";
 import type { IPropPlacer } from "$lib/shared/pictograph/prop/services/contracts/IPropPlacer";
 import { getSettings } from "$lib/shared/application/state/app-state.svelte";
-import { MotionColor } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { MotionColor, Orientation } from "$lib/shared/pictograph/shared/domain/enums/pictograph-enums";
+import { isBuugengFamilyProp } from "$lib/shared/pictograph/prop/domain/enums/PropClassification";
 
 export async function formatMotionText(
   motion: MotionData | undefined,
@@ -148,11 +149,109 @@ export async function formatAllForAI(
     formatMotionText(redMotion, "red", redRotationOverride, pictographData),
   ]);
 
+  const betaAnalysis = formatBetaAnalysis(blueMotion, redMotion);
+
   return `=== PICTOGRAPH DATA ===
 
 ${formatBasicInfo(displayData, blueMotion, redMotion)}
 
+${betaAnalysis}
+
 ${blueText}
 
 ${redText}`;
+}
+
+/**
+ * Analyze and format beta offset decision factors
+ */
+function formatBetaAnalysis(
+  blueMotion: MotionData | undefined,
+  redMotion: MotionData | undefined
+): string {
+  if (!blueMotion || !redMotion) {
+    return "BETA ANALYSIS: Insufficient motion data";
+  }
+
+  const settings = getSettings();
+  const lines: string[] = ["BETA OFFSET ANALYSIS:"];
+
+  // Prop types (stored vs actual)
+  const storedBlueProp = blueMotion.propType;
+  const storedRedProp = redMotion.propType;
+  const actualBlueProp = settings.bluePropType ?? storedBlueProp;
+  const actualRedProp = settings.redPropType ?? storedRedProp;
+
+  lines.push(`  Stored Prop Types: blue=${storedBlueProp}, red=${storedRedProp}`);
+  lines.push(`  Actual Prop Types: blue=${actualBlueProp}, red=${actualRedProp}`);
+
+  // Buugeng family check
+  const blueIsBuugeng = isBuugengFamilyProp(actualBlueProp);
+  const redIsBuugeng = isBuugengFamilyProp(actualRedProp);
+  const bothBuugeng = blueIsBuugeng && redIsBuugeng;
+  lines.push(`  Blue is Buugeng Family: ${blueIsBuugeng}`);
+  lines.push(`  Red is Buugeng Family: ${redIsBuugeng}`);
+  lines.push(`  Both are Buugeng Family: ${bothBuugeng}`);
+
+  // Chirality: which mirror-image form of the asymmetric Buugeng is used
+  // (separate concept from orientation - orientation affects rotation angle,
+  // chirality affects the shape itself)
+  const blueChirality = settings.blueBuugengFlipped ?? false;
+  const redChirality = settings.redBuugengFlipped ?? false;
+  const oppositeChirality = blueChirality !== redChirality;
+  lines.push(`  Blue Buugeng Chirality: ${blueChirality ? "B" : "A"}`);
+  lines.push(`  Red Buugeng Chirality: ${redChirality ? "B" : "A"}`);
+  lines.push(`  Opposite Chirality: ${oppositeChirality}`);
+
+  // End locations
+  const sameEndLocation = blueMotion.endLocation === redMotion.endLocation;
+  lines.push(`  Same End Location: ${sameEndLocation} (blue=${blueMotion.endLocation}, red=${redMotion.endLocation})`);
+
+  // Orientation analysis
+  const blueEndOri = blueMotion.endOrientation;
+  const redEndOri = redMotion.endOrientation;
+  const radialOrientations = [Orientation.IN, Orientation.OUT];
+  const nonRadialOrientations = [Orientation.CLOCK, Orientation.COUNTER];
+
+  const blueIsRadial = radialOrientations.includes(blueEndOri);
+  const redIsRadial = radialOrientations.includes(redEndOri);
+  const blueIsNonRadial = nonRadialOrientations.includes(blueEndOri);
+  const redIsNonRadial = nonRadialOrientations.includes(redEndOri);
+
+  const bothRadial = blueIsRadial && redIsRadial;
+  const bothNonRadial = blueIsNonRadial && redIsNonRadial;
+  const hybridOrientation = (blueIsRadial && redIsNonRadial) || (blueIsNonRadial && redIsRadial);
+  const sameTypeButDifferent = (bothRadial || bothNonRadial) && blueEndOri !== redEndOri;
+
+  lines.push(`  Blue End Orientation: ${blueEndOri} (radial=${blueIsRadial})`);
+  lines.push(`  Red End Orientation: ${redEndOri} (radial=${redIsRadial})`);
+  lines.push(`  Both Radial (IN/OUT): ${bothRadial}`);
+  lines.push(`  Both Non-Radial (CLOCK/COUNTER): ${bothNonRadial}`);
+  lines.push(`  Hybrid (one radial, one not): ${hybridOrientation}`);
+  lines.push(`  Same Type But Different Orientation: ${sameTypeButDifferent}`);
+
+  // Decision summary
+  // NOTE: Orientation (IN/OUT/CLOCK/COUNTER) is SEPARATE from Chirality (shape form)
+  // Buugeng nesting only requires: both Buugeng + opposite chirality
+  lines.push(``, `  BUUGENG NESTING CONDITIONS:`);
+  lines.push(`    1. Both Buugeng Family: ${bothBuugeng ? "✓" : "✗"}`);
+  lines.push(`    2. Opposite Chirality: ${oppositeChirality ? "✓" : "✗"}`);
+  lines.push(`    (Orientation is irrelevant for nesting decision)`);
+
+  const shouldSkipBetaOffset = bothBuugeng && oppositeChirality;
+  lines.push(`  → Should Skip Beta Offset: ${shouldSkipBetaOffset ? "YES" : "NO"}`);
+
+  if (!shouldSkipBetaOffset && bothBuugeng) {
+    if (!oppositeChirality) {
+      lines.push(`  → Reason: Same chirality (both ${blueChirality ? "B" : "A"})`);
+    }
+  }
+
+  // Orientation analysis (for reference, not part of nesting decision)
+  lines.push(``, `  ORIENTATION ANALYSIS (for reference):`);
+  lines.push(`    Blue End Orientation: ${blueEndOri} (radial=${blueIsRadial})`);
+  lines.push(`    Red End Orientation: ${redEndOri} (radial=${redIsRadial})`);
+  lines.push(`    Same Type But Different: ${sameTypeButDifferent}`);
+
+  return lines.join("\n");
 }

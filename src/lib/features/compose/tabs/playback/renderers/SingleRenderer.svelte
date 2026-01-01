@@ -60,6 +60,9 @@
   let loading = $state(false);
   let error = $state<string | null>(null);
 
+  // Track last loaded sequence ID to prevent unnecessary remounts during prop type changes
+  let lastLoadedSequenceId: string | null = null;
+
   // Trail settings - derive directly from animationSettings for proper reactivity
   // This ensures changes to trail effect (e.g., LED mode enabling NEON) are picked up
   let trailSettings = $derived(animationSettings.trail);
@@ -93,12 +96,26 @@
   });
 
   // Load and start animation when sequence changes
+  // Only trigger full loading for truly different sequences (ID changes)
+  // Prop type changes within same sequence should not cause remounts - AnimationEngine handles hot-swap
   $effect(() => {
     if (!sequence || !playbackController) return;
-    loadAndStartAnimation();
+
+    const currentSequenceId = sequence.id || sequence.word || sequence.name || "unknown";
+    const isSameSequence = currentSequenceId === lastLoadedSequenceId;
+
+    if (isSameSequence) {
+      // Same sequence, just prop type or other metadata change
+      // Don't trigger loading state - AnimationEngine hot-swap handles prop changes
+      console.log("🔄 SingleRenderer: Same sequence, skipping reload (prop type change handled by hot-swap)");
+      return;
+    }
+
+    // Different sequence - do full load
+    loadAndStartAnimation(currentSequenceId);
   });
 
-  async function loadAndStartAnimation() {
+  async function loadAndStartAnimation(sequenceId: string) {
     if (!sequence || !playbackController) return;
 
     try {
@@ -121,6 +138,9 @@
       if (!success) {
         throw new Error("Failed to initialize animation playback");
       }
+
+      // Track the loaded sequence ID
+      lastLoadedSequenceId = sequenceId;
 
       console.log("✅ Single animation initialized successfully");
       loading = false;

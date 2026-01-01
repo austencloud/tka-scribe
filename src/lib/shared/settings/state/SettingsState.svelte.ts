@@ -278,12 +278,17 @@ class SettingsState implements ISettingsState {
 
   /**
    * Clean up Firebase sync subscription and event listeners
+   * Call this before signout to prevent permission errors
    */
   cleanup(): void {
     if (this.unsubscribeFirebaseSync) {
       this.unsubscribeFirebaseSync();
       this.unsubscribeFirebaseSync = null;
     }
+
+    // Reset sync state so next sign-in will reinitialize
+    this.syncInitialized = false;
+    this.firebasePersistence = null;
 
     // Remove online event listener
     if (browser && this.onlineHandler) {

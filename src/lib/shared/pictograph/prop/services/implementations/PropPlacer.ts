@@ -158,14 +158,15 @@ export class PropPlacer implements IPropPlacer {
 
     // BUUGENG FAMILY SPECIAL CASE:
     // Buugeng props are asymmetric bilateral props that can "nest" together
-    // when orientations are opposite (IN/OUT or CLOCK/COUNTER) AND exactly
-    // one of them is flipped. When one is flipped and orientations are opposite,
-    // the props visually complement each other and can overlap at the same position.
+    // when they have opposite CHIRALITY (mirror-image forms of the asymmetric shape).
     //
-    // Conditions for skipping beta offset:
-    // 1. Both props are Buugeng family (check ACTUAL rendered prop type from settings)
-    // 2. Orientations are opposite (same type but different: IN/OUT or CLOCK/COUNTER)
-    // 3. Exactly one prop is flipped (XOR of flip settings)
+    // Two separate concepts (do NOT confuse):
+    //   - ORIENTATION: IN/OUT/CLOCK/COUNTER - affects prop rotation angle
+    //   - CHIRALITY: Which mirror-image form of the asymmetric Buugeng is used
+    //                (controlled by blueBuugengFlipped/redBuugengFlipped settings)
+    //
+    // Nesting condition: Both Buugeng + opposite chirality → skip beta offset
+    // Orientation is irrelevant for this decision.
     //
     // IMPORTANT: We check settings prop type override, not stored motionData.propType,
     // because the user may have a sequence with "staff" stored but rendering as "buugeng".
@@ -176,12 +177,16 @@ export class PropPlacer implements IPropPlacer {
       isBuugengFamilyProp(actualBluePropType) &&
       isBuugengFamilyProp(actualRedPropType);
 
-    if (bothAreBuugengFamily && sameTypeButDifferentOrientation) {
-      const blueFlipped = settings.blueBuugengFlipped ?? false;
-      const redFlipped = settings.redBuugengFlipped ?? false;
-      const exactlyOneFlipped = blueFlipped !== redFlipped; // XOR condition
+    if (bothAreBuugengFamily) {
+      // Chirality is determined by the "flipped" setting - each value represents
+      // one of two mirror-image forms of the asymmetric Buugeng shape
+      const blueChirality = settings.blueBuugengFlipped ?? false;
+      const redChirality = settings.redBuugengFlipped ?? false;
+      const oppositeChirality = blueChirality !== redChirality; // XOR
 
-      if (exactlyOneFlipped) {
+      // When Buugeng have opposite chirality, the asymmetric shapes complement
+      // each other and can nest together without needing beta offset separation
+      if (oppositeChirality) {
         return { x: 0, y: 0 };
       }
     }

@@ -1538,7 +1538,8 @@
       "Bash(\"static/branding/Level 1 - LOOP.pdf\" )",
       "Bash(\"static/models/camping/Textures/\" )",
       "Bash(\"static/models/camping/tree-log-small.glb\" )",
-      "Bash(\"static/models/camping/tree-log.glb\")"
+      "Bash(\"static/models/camping/tree-log.glb\")",
+      "Bash(gsutil:*)"
     ],
     "deny": [],
     "ask": []

@@ -30,6 +30,7 @@
   import type { ICloudThumbnailCache } from "../services/contracts/ICloudThumbnailCache";
   import type { ISequenceRenderer } from "$lib/shared/render/services/contracts/ISequenceRenderer";
   import type { IDiscoverLoader } from "../services/contracts/IDiscoverLoader";
+  import type { IStartPositionDeriver } from "$lib/shared/pictograph/shared/services/contracts/IStartPositionDeriver";
   import { isCatDogMode } from "../services/implementations/DiscoverThumbnailCache";
 
   interface Props {
@@ -237,6 +238,7 @@
   async function renderThumbnail(): Promise<Blob> {
     const container = await getContainerInstance();
     const renderer = container.get<ISequenceRenderer>(TYPES.ISequenceRenderer);
+    const startPositionDeriver = container.get<IStartPositionDeriver>(TYPES.IStartPositionDeriver);
 
     // Use the sequence prop directly if it has beat data (Library sequences)
     // Otherwise fall back to loading from the Gallery index
@@ -251,6 +253,30 @@
         throw new Error(`Sequence not found: ${sequenceName}`);
       }
       fullSequence = loadedSequence;
+    }
+
+    // Derive start position from first beat if not present or invalid
+    // Start positions are no longer stored - they're derived dynamically
+    const firstBeat = fullSequence.beats?.[0];
+    const existingStartPos = fullSequence.startPosition;
+    const hasValidStartPosition = existingStartPos &&
+      existingStartPos.motions?.blue &&
+      existingStartPos.motions?.red;
+
+    const firstBeatHasValidMotions = firstBeat?.motions?.blue?.startLocation &&
+      firstBeat?.motions?.red?.startLocation;
+
+    if (!hasValidStartPosition && firstBeat && firstBeatHasValidMotions) {
+      try {
+        const derivedStartPos = startPositionDeriver.deriveFromFirstBeat(firstBeat);
+        fullSequence = {
+          ...fullSequence,
+          startPosition: derivedStartPos,
+        };
+        console.log(`[PropAwareThumbnail] ✅ Derived start position for ${sequenceName}: gridPosition=${derivedStartPos.gridPosition}`);
+      } catch (err) {
+        console.warn(`[PropAwareThumbnail] Failed to derive start position for ${sequenceName}:`, err);
+      }
     }
 
     // Render with appropriate props
@@ -287,6 +313,7 @@
       redPropTypeOverride: renderOptions.redPropTypeOverride,
       sequenceHasBeats: fullSequence.beats.length,
       sequenceHasStartPosition: !!fullSequence.startPosition,
+      startPositionGridPos: fullSequence.startPosition?.gridPosition ?? 'none',
     });
 
     const blob = await renderer.renderSequenceToBlob(fullSequence, renderOptions);
