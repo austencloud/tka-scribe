@@ -49,6 +49,7 @@ export class CardConfigurator implements ICardConfigurator {
       id: "length",
       props: {
         currentLength: config.length,
+        currentMode: config.mode,
         onLengthChange: handlers.handleLengthChange,
         color: "#3b82f6",
         cardIndex: cardIndex++,

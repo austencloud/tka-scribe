@@ -30,7 +30,7 @@ Shows BOTH Freeform and Circular options vertically with clear active/inactive s
   title="Gen Mode"
   option1={{
     value: GenerationMode.CIRCULAR,
-    label: "Circular",
+    label: "Loop",
     icon: "arrows-rotate",
   }}
   option2={{
