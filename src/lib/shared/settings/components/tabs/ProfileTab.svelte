@@ -212,17 +212,19 @@
           {/snippet}
         </GlassCard>
 
-        <!-- Subscription -->
-        <GlassCard
-          icon="fas fa-crown"
-          iconClass="premium-icon"
-          title="Subscription"
-          subtitle="Support TKA development"
-        >
-          {#snippet children()}
-            <SubscriptionCard {hapticService} />
-          {/snippet}
-        </GlassCard>
+        <!-- Subscription - Admin only (premium not ready yet) -->
+        {#if userPreviewState.data.profile?.role === "admin"}
+          <GlassCard
+            icon="fas fa-crown"
+            iconClass="premium-icon"
+            title="Subscription"
+            subtitle="Support TKA development"
+          >
+            {#snippet children()}
+              <SubscriptionCard {hapticService} />
+            {/snippet}
+          </GlassCard>
+        {/if}
 
         <!-- Security - MFA factors from Firebase Auth -->
         <GlassCard
@@ -279,17 +281,19 @@
       <!-- Settings Grid - Flexbox for natural fill behavior -->
       <div class="settings-grid">
         <!-- Row 1: Smaller cards -->
-        <!-- Subscription -->
-        <GlassCard
-          icon="fas fa-crown"
-          iconClass="premium-icon"
-          title="Subscription"
-          subtitle="Support TKA development"
-        >
-          {#snippet children()}
-            <SubscriptionCard {hapticService} />
-          {/snippet}
-        </GlassCard>
+        <!-- Subscription - Admin only (premium not ready yet) -->
+        {#if authState.isAdmin}
+          <GlassCard
+            icon="fas fa-crown"
+            iconClass="premium-icon"
+            title="Subscription"
+            subtitle="Support TKA development"
+          >
+            {#snippet children()}
+              <SubscriptionCard {hapticService} />
+            {/snippet}
+          </GlassCard>
+        {/if}
 
         <!-- Account Settings - Display name + password (if available) -->
         <GlassCard

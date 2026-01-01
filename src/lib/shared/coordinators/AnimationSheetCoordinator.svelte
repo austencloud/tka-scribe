@@ -198,6 +198,9 @@
     animationPanelState.setExportLoopCount(count);
   }
 
+  // Track last loaded sequence ID to prevent unnecessary remounts during prop type changes
+  let lastLoadedSequenceId: string | null = null;
+
   // Track route listener cleanup at module level
   let cleanupRouteListener: (() => void) | undefined;
 
@@ -302,6 +305,8 @@
 
   // Load and auto-start animation when panel becomes visible
   // Also reloads when sequence changes (e.g., after rotation) while panel is open
+  // Only trigger full loading for truly different sequences (ID changes)
+  // Prop type changes within same sequence should not cause remounts - AnimationEngine handles hot-swap
   $effect(() => {
     debug.log("Animation effect triggered:", {
       isOpen,
@@ -325,12 +330,23 @@
       sequenceService &&
       playbackController
     ) {
+      // Check if this is the same sequence (prop type change only)
+      const currentSequenceId = sequence.id || sequence.word || sequence.name || "unknown";
+      const isSameSequence = currentSequenceId === lastLoadedSequenceId;
+
+      if (isSameSequence) {
+        // Same sequence, just prop type or other metadata change
+        // Don't trigger loading state - AnimationEngine hot-swap handles prop changes
+        debug.log("Same sequence, skipping reload (prop type change handled by hot-swap)");
+        return undefined;
+      }
+
       debug.success("All conditions met, loading animation...");
       animationPanelState.setLoading(true);
       animationPanelState.setError(null);
 
       const loadTimeout = setTimeout(() => {
-        loadAndStartAnimation(sequence);
+        loadAndStartAnimation(sequence, currentSequenceId);
       }, ANIMATION_LOAD_DELAY_MS);
 
       return () => clearTimeout(loadTimeout);
@@ -340,7 +356,7 @@
     return undefined;
   });
 
-  async function loadAndStartAnimation(seq: SequenceData) {
+  async function loadAndStartAnimation(seq: SequenceData, sequenceId: string) {
     if (!sequenceService || !playbackController) return;
 
     animationPanelState.setLoading(true);
@@ -364,6 +380,9 @@
       if (!success) {
         throw new Error("Failed to initialize animation playback");
       }
+
+      // Track the loaded sequence ID
+      lastLoadedSequenceId = sequenceId;
 
       animationPanelState.setSequenceData(loadedSequence);
 
@@ -588,6 +607,9 @@
       playbackController.dispose();
       setAnimationPlaybackRef(null);
     }
+
+    // Reset sequence tracking so reopening properly loads the sequence
+    lastLoadedSequenceId = null;
 
     // Close the sheet route (this will trigger the route change listener which will set isOpen = false)
     sheetRouterService?.closeSheet();

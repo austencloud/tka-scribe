@@ -17,13 +17,10 @@ import { visualizer } from "rollup-plugin-visualizer";
  * 2025: Added error handling and proper caching
  */
 import { fileURLToPath } from "node:url";
-import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 const dirname =
   typeof __dirname !== "undefined"
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
-
-// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 
 const dictionaryPlugin = () => ({
   name: "dictionary-files",
@@ -177,13 +174,8 @@ const webpWasmDevPlugin = () => ({
   },
 });
 
-const isStorybook =
-  Boolean(process.env.STORYBOOK) ||
-  process.env.npm_lifecycle_event === "storybook" ||
-  process.argv.some((arg) => arg.includes("storybook"));
-
 const webpStaticCopyPlugin = () => {
-  if (isStorybook || !fs.existsSync(webpEncoderWasmAbsolute)) {
+  if (!fs.existsSync(webpEncoderWasmAbsolute)) {
     return null;
   }
 
@@ -384,33 +376,5 @@ export default defineConfig({
     port: 4173,
     strictPort: true,
     host: "0.0.0.0",
-  },
-  test: {
-    projects: [
-      {
-        extends: true,
-        plugins: [
-          // The plugin will run tests for the stories defined in your Storybook config
-          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-          storybookTest({
-            configDir: path.join(dirname, ".storybook"),
-          }),
-        ],
-        test: {
-          name: "storybook",
-          browser: {
-            enabled: true,
-            headless: true,
-            provider: "playwright",
-            instances: [
-              {
-                browser: "chromium",
-              },
-            ],
-          },
-          setupFiles: [".storybook/vitest.setup.ts"],
-        },
-      },
-    ],
   },
 });

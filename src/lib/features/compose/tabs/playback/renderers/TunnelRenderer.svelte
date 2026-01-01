@@ -169,6 +169,8 @@
   });
 
   // Load and start animations when sequences change
+  // Only trigger full loading for truly different sequences (ID changes)
+  // Prop type changes within same sequence should not cause remounts - AnimationEngine handles hot-swap
   $effect(() => {
     if (
       !primarySequence ||
@@ -178,10 +180,24 @@
     )
       return;
 
-    loadAndStartAnimations();
+    const currentPrimaryId = primarySequence.id || primarySequence.word || primarySequence.name || "unknown-primary";
+    const currentSecondaryId = secondarySequence.id || secondarySequence.word || secondarySequence.name || "unknown-secondary";
+    const isSameSequences =
+      currentPrimaryId === lastLoadedPrimarySequenceId &&
+      currentSecondaryId === lastLoadedSecondarySequenceId;
+
+    if (isSameSequences) {
+      // Same sequences, just prop type or other metadata change
+      // Don't trigger loading state - AnimationEngine hot-swap handles prop changes
+      console.log("🔄 TunnelRenderer: Same sequences, skipping reload (prop type change handled by hot-swap)");
+      return;
+    }
+
+    // Different sequences - do full load
+    loadAndStartAnimations(currentPrimaryId, currentSecondaryId);
   });
 
-  async function loadAndStartAnimations() {
+  async function loadAndStartAnimations(primaryId: string, secondaryId: string) {
     if (
       !primarySequence ||
       !secondarySequence ||
@@ -216,6 +232,10 @@
       if (!primarySuccess || !secondarySuccess) {
         throw new Error("Failed to initialize animation playback");
       }
+
+      // Track the loaded sequence IDs
+      lastLoadedPrimarySequenceId = primaryId;
+      lastLoadedSecondarySequenceId = secondaryId;
 
       console.log("✅ Tunnel animations initialized successfully");
       loading = false;

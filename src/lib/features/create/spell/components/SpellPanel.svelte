@@ -242,7 +242,12 @@ This component orchestrates the UI; business logic lives in extracted services.
 
   // Handle LOOP chip click - apply LOOP with optional bridge
   async function handleApplyLOOP(bridgeLetter: Letter | null, loopType: LOOPType) {
-    if (!spellState.inputWord.trim()) return;
+    if (!spellState.inputWord.trim()) {
+      console.warn("[SpellPanel] Cannot apply LOOP: no input word");
+      return;
+    }
+
+    console.log(`[SpellPanel] Applying LOOP type: ${loopType}, bridge: ${bridgeLetter || 'none'}`);
 
     spellState.setGenerating(true);
     spellState.clearError();
@@ -255,6 +260,8 @@ This component orchestrates the UI; business logic lives in extracted services.
         bridgeLetter,
         loopType
       );
+
+      console.log("[SpellPanel] LOOP application result:", result);
 
       if (result.success && result.sequence) {
         spellState.setExpandedWord(result.expandedWord || "");
@@ -274,11 +281,15 @@ This component orchestrates the UI; business logic lives in extracted services.
           loopType,
           bridgeLetter,
         });
+
+        console.log("[SpellPanel] LOOP applied successfully");
       } else {
-        spellState.setError(result.error || "Failed to apply LOOP");
+        const errorMsg = result.error || "Failed to apply LOOP";
+        console.error("[SpellPanel] LOOP application failed:", errorMsg);
+        spellState.setError(errorMsg);
       }
     } catch (error) {
-      console.error("Failed to apply LOOP:", error);
+      console.error("[SpellPanel] Exception while applying LOOP:", error);
       spellState.setError(
         error instanceof Error ? error.message : "Unknown error"
       );
@@ -348,13 +359,27 @@ This component orchestrates the UI; business logic lives in extracted services.
     }
   }
 
-  function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
-    if (spellState.isGenerating) return;
+  async function handleLoopSelect(bridgeLetter: Letter | null, loopType: LOOPType) {
+    if (spellState.isGenerating) {
+      console.warn("[SpellPanel] handleLoopSelect ignored: already generating");
+      return;
+    }
+
+    console.log(`[SpellPanel] handleLoopSelect called: bridgeLetter=${bridgeLetter}, loopType=${loopType}`);
+    console.log(`[SpellPanel] selectedBridge:`, selectedBridge);
+
     const finalBridgeLetter = selectedBridge
       ? (selectedBridge.bridgeLetters[0] as Letter)
       : bridgeLetter;
-    handleApplyLOOP(finalBridgeLetter, loopType);
+
+    console.log(`[SpellPanel] Final bridge letter to apply: ${finalBridgeLetter || 'none'}`);
+
+    // Apply the LOOP and wait for it to complete before resetting selection
+    await handleApplyLOOP(finalBridgeLetter, loopType);
+
+    // Only reset selectedBridge after LOOP application completes
     selectedBridge = null;
+    console.log("[SpellPanel] Bridge selection reset");
   }
 
   function handleBackToBridges() {

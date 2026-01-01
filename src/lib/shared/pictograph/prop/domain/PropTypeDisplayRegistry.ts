@@ -17,18 +17,18 @@ export interface PropTypeDisplayInfo {
 export const PROP_TYPE_DISPLAY_REGISTRY: Record<PropType, PropTypeDisplayInfo> =
   {
     // === STAFF FAMILY ===
-    [PropType.STAFF]: { label: "Staff", image: "/images/props/staff.svg" },
+    [PropType.STAFF]: { label: "Staff", image: "/images/props/staff.svg?v=2" },
     [PropType.SIMPLESTAFF]: {
       label: "Simple Staff",
-      image: "/images/props/simple_staff.svg",
+      image: "/images/props/simple_staff.svg?v=2",
     },
     [PropType.BIGSTAFF]: {
       label: "Big Staff",
-      image: "/images/props/bigstaff.svg",
+      image: "/images/props/bigstaff.svg?v=2",
     },
     [PropType.STAFF2]: {
       label: "Staff V2",
-      image: "/images/props/staff_v2.svg",
+      image: "/images/props/staff_v2.svg?v=2",
     },
 
     // === CLUB FAMILY ===
