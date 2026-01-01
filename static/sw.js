@@ -1,7 +1,7 @@
 // Modern Service Worker for TKA Launcher PWA
 // Implements advanced caching strategies, offline support, and real-time sync
 
-const CACHE_VERSION = "v0.7.4";
+const CACHE_VERSION = "v0.7.5";
 const STATIC_CACHE = `tka-launcher-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `tka-launcher-dynamic-${CACHE_VERSION}`;
 const API_CACHE = `tka-launcher-api-${CACHE_VERSION}`;
