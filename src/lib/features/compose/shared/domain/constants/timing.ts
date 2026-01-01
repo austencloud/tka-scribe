@@ -21,7 +21,7 @@ export const VIDEO_FRAME_RENDER_DELAY_MS = 50;
 /**
  * Delay before initial frame capture during video export
  */
-export const VIDEO_INITIAL_LOOPTURE_DELAY_MS = 100;
+export const VIDEO_INITIAL_CAPTURE_DELAY_MS = 100;
 
 /**
  * Delay before closing export dialog after successful export
