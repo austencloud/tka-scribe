@@ -68,13 +68,17 @@ Now with smooth transitions when position or orientation changes!
   const shouldMirror = $derived.by(() => {
     const settings = getSettings();
 
-    // Determine the actual prop type being rendered (settings override > stored)
+    // Determine the actual prop type being rendered
+    // If motionData explicitly specifies HAND (e.g., Assembly mode), use it
+    // Otherwise, use settings override > stored prop type
     const actualPropType =
-      motionData.color === MotionColor.BLUE
-        ? settings.bluePropType ?? motionData.propType
-        : motionData.color === MotionColor.RED
-          ? settings.redPropType ?? motionData.propType
-          : motionData.propType;
+      motionData.propType === PropType.HAND
+        ? PropType.HAND
+        : motionData.color === MotionColor.BLUE
+          ? settings.bluePropType ?? motionData.propType
+          : motionData.color === MotionColor.RED
+            ? settings.redPropType ?? motionData.propType
+            : motionData.propType;
 
     // Red hand is always mirrored
     if (actualPropType === PropType.HAND && motionData.color === MotionColor.RED) {

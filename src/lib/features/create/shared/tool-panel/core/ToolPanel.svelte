@@ -342,7 +342,7 @@
                 }
               }}
               onSequenceComplete={(pictographs) => {
-                // Complete - update current sequence beats
+                // Complete - update current sequence beats and set level to 1
                 const currentSeq =
                   createModuleState.sequenceState.currentSequence;
                 if (currentSeq) {
@@ -352,6 +352,7 @@
                   createModuleState.sequenceState.updateSequence({
                     ...currentSeq,
                     beats,
+                    level: 1, // Assembly sequences are always level 1
                   });
                 }
               }}

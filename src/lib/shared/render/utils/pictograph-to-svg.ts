@@ -51,10 +51,6 @@ export async function renderPictographToSVG(
   visibilityOptions?: PictographVisibilityOptions
 ): Promise<string> {
   // Debug: Log visibility options being passed
-  if (beatNumber === 1 || beatNumber === 0) {
-    // Only log for first beat to avoid spam
-    console.log("📸 renderPictographToSVG: Visibility options received:", visibilityOptions);
-  }
 
   // Create hidden container
   const container = document.createElement("div");

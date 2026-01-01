@@ -25,6 +25,7 @@ import type { IGridModeDeriver } from "../../../grid/services/contracts/IGridMod
 import type { PropPosition } from "../../../prop/domain/models/PropPosition";
 import type { PropAssets } from "../../../prop/domain/models/PropAssets";
 import { GridMode } from "../../../grid/domain/enums/grid-enums";
+import { PropType } from "../../../prop/domain/enums/PropType";
 import { getSettings } from "../../../../application/state/app-state.svelte";
 
 @injectable()
@@ -144,6 +145,12 @@ export class PictographPreparer implements IPictographPreparer {
     return Object.entries(pictograph.motions || {})
       .filter((entry): entry is [string, MotionData] => entry[1] !== undefined)
       .map(([color, motion]) => {
+        // If motion explicitly uses HAND (e.g., Assembly mode), don't override
+        if (motion.propType === PropType.HAND) {
+          return [color, motion] as [string, MotionData];
+        }
+
+        // Otherwise, apply settings override if available
         const override =
           color === "blue" ? settings.bluePropType : settings.redPropType;
         if (override) {
