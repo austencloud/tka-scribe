@@ -155,13 +155,30 @@
     }
   }
 
-  function handlePropComplete(prop: PropType) {
+  async function handlePropComplete(prop: PropType) {
     favoriteProp = prop;
+    // Apply prop type immediately so pictographs show correct prop on next screen
+    try {
+      await settingsService.updateSettings({
+        bluePropType: prop,
+        redPropType: prop,
+      });
+    } catch (error) {
+      console.error("Failed to apply prop type:", error);
+    }
     handleNext("pictographMode");
   }
 
-  function handlePropSkip() {
-    // Keep default prop (Staff)
+  async function handlePropSkip() {
+    // Keep default prop (Staff) - apply it immediately
+    try {
+      await settingsService.updateSettings({
+        bluePropType: PropType.STAFF,
+        redPropType: PropType.STAFF,
+      });
+    } catch (error) {
+      console.error("Failed to apply default prop type:", error);
+    }
     handleNext("pictographMode");
   }
 
