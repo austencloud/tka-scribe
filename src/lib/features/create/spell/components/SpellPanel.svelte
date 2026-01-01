@@ -13,10 +13,12 @@ This component orchestrates the UI; business logic lives in extracted services.
   import type { SequenceState } from "$lib/features/create/shared/state/SequenceStateOrchestrator.svelte";
   import type { SpellTabState } from "../state/spell-tab-state.svelte";
   import { resolve } from "$lib/shared/inversify/di";
+  import { TYPES } from "$lib/shared/inversify/types";
   import { SPELL_TYPES } from "../services/implementations/spell-types";
   import type { ISpellGenerationOrchestrator } from "../services/contracts/ISpellGenerationOrchestrator";
   import type { IVariationExplorationOrchestrator } from "../services/contracts/IVariationExplorationOrchestrator";
   import type { ILOOPSelectionCoordinator } from "../services/contracts/ILOOPSelectionCoordinator";
+  import type { ISequenceExtender } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
   import type { LOOPType } from "../domain/models/spell-models";
   import type { Letter } from "$lib/shared/foundation/domain/models/Letter";
   import type { CircularizationOption } from "$lib/features/create/shared/services/contracts/ISequenceExtender";
@@ -248,45 +250,80 @@ This component orchestrates the UI; business logic lives in extracted services.
     }
 
     console.log(`[SpellPanel] Applying LOOP type: ${loopType}, bridge: ${bridgeLetter || 'none'}`);
+    console.log(`[SpellPanel] Two-phase flow: ${selectedBridge ? 'yes (using current sequence)' : 'no (regenerating)'}`);
 
     spellState.setGenerating(true);
     spellState.clearError();
 
     try {
-      const coordinator = getLOOPCoordinator();
-      const result = await coordinator.applyLOOP(
-        spellState.inputWord,
-        spellState.preferences,
-        bridgeLetter,
-        loopType
-      );
+      // If we're in the two-phase flow (user selected a bridge pictograph),
+      // the sequence already has the bridge beat appended. We should just
+      // apply the LOOP to the current sequence instead of regenerating.
+      if (selectedBridge && sequenceState?.currentSequence) {
+        console.log("[SpellPanel] Using two-phase LOOP application (current sequence)");
+        const sequenceExtender = resolve<ISequenceExtender>(TYPES.ISequenceExtender);
 
-      console.log("[SpellPanel] LOOP application result:", result);
+        const extendedSequence = await sequenceExtender.extendSequence(
+          sequenceState.currentSequence,
+          { loopType }
+        );
 
-      if (result.success && result.sequence) {
-        spellState.setExpandedWord(result.expandedWord || "");
+        // Update sequence state
+        sequenceState.setCurrentSequence({
+          ...extendedSequence,
+          name: spellState.inputWord,
+          word: extendedSequence.word || spellState.expandedWord,
+        });
+
+        // Clear circularization options since we just applied one
         spellState.setCircularizationOptions([]);
         spellState.setDirectLoopUnavailableReason(null);
-
-        if (sequenceState) {
-          sequenceState.setCurrentSequence({
-            ...result.sequence,
-            name: spellState.inputWord,
-            word: result.expandedWord,
-          });
-        }
 
         spellState.pushUndoSnapshot("spell-apply-loop", {
           word: spellState.inputWord,
           loopType,
-          bridgeLetter,
+          bridgeLetter: selectedBridge.bridgeLetters[0],
         });
 
-        console.log("[SpellPanel] LOOP applied successfully");
+        console.log("[SpellPanel] Two-phase LOOP applied successfully");
       } else {
-        const errorMsg = result.error || "Failed to apply LOOP";
-        console.error("[SpellPanel] LOOP application failed:", errorMsg);
-        spellState.setError(errorMsg);
+        // No bridge selected - regenerate from scratch with LOOP + bridge
+        console.log("[SpellPanel] Using regeneration LOOP application");
+        const coordinator = getLOOPCoordinator();
+        const result = await coordinator.applyLOOP(
+          spellState.inputWord,
+          spellState.preferences,
+          bridgeLetter,
+          loopType
+        );
+
+        console.log("[SpellPanel] LOOP application result:", result);
+
+        if (result.success && result.sequence) {
+          spellState.setExpandedWord(result.expandedWord || "");
+          spellState.setCircularizationOptions([]);
+          spellState.setDirectLoopUnavailableReason(null);
+
+          if (sequenceState) {
+            sequenceState.setCurrentSequence({
+              ...result.sequence,
+              name: spellState.inputWord,
+              word: result.expandedWord,
+            });
+          }
+
+          spellState.pushUndoSnapshot("spell-apply-loop", {
+            word: spellState.inputWord,
+            loopType,
+            bridgeLetter,
+          });
+
+          console.log("[SpellPanel] LOOP applied successfully");
+        } else {
+          const errorMsg = result.error || "Failed to apply LOOP";
+          console.error("[SpellPanel] LOOP application failed:", errorMsg);
+          spellState.setError(errorMsg);
+        }
       }
     } catch (error) {
       console.error("[SpellPanel] Exception while applying LOOP:", error);
