@@ -209,6 +209,7 @@ export class WordCardExportOrchestrator implements IWordCardExportOrchestrator {
       const successCount = results.filter((r) => r.success).length;
       const failureCount = results.filter((r) => !r.success).length;
 
+      console.log(
         `✅ Batch export complete: ${successCount} success, ${failureCount} failures`
       );
       return results;
